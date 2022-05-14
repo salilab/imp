@@ -59,5 +59,6 @@ fname = sys.argv[1]
 
 with open(fname) as fh:
     with open('output.cif', 'w') as fhout:
-        ihm.dumper.write(fhout,
-                         [add_ihm_info(s) for s in ihm.reader.read(fh)])
+        ihm.dumper.write(
+            fhout, [add_ihm_info(s) for s in ihm.reader.read(fh)],
+            variant=ihm.dumper.IgnoreVariant(['_audit_conform']))

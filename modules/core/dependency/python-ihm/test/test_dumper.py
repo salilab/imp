@@ -472,6 +472,9 @@ _pdbx_entity_src_syn.organism_common_name
         system = ihm.System()
         system.entities.append(ihm.Entity('AHC', description='foo',
                                           source=ihm.source.Natural()))
+        system.entities.append(
+            ihm.Entity('AHCG', description='bar',
+                       source=ihm.source.Manipulated(gene=None, host=None)))
         gene = ihm.source.Details(ncbi_taxonomy_id='1234',
                                   scientific_name='Test latin name',
                                   common_name='Test common name',
@@ -499,7 +502,7 @@ _entity_src_gen.pdbx_host_org_ncbi_taxonomy_id
 _entity_src_gen.pdbx_host_org_scientific_name
 _entity_src_gen.host_org_common_name
 _entity_src_gen.pdbx_host_org_strain
-2 1 1234 'Test latin name' 'Test common name' 'test strain' 5678
+3 2 1234 'Test latin name' 'Test common name' 'test strain' 5678
 'Other latin name' 'Other common name' 'other strain'
 #
 """)

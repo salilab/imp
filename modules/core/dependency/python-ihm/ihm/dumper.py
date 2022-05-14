@@ -302,6 +302,9 @@ class _EntitySrcGenDumper(Dumper):
 
     def _dump_source(self, lp, e):
         s = e.source
+        # Skip output if all fields are blank
+        if s.gene is None and s.host is None:
+            return
         lp.write(entity_id=e._id, pdbx_src_id=s._id,
                  pdbx_gene_src_ncbi_taxonomy_id=s.gene.ncbi_taxonomy_id
                  if s.gene else None,
