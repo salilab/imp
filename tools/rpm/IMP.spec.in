@@ -1,5 +1,6 @@
 # On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
-# subpackage). On older systems, the IMP package uses Python 2 only.
+# subpackage; on RHEL 9 or later, use Python 3 only).
+# On older systems, the IMP package uses Python 2 only.
 %if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
 %define cmake_use_python2 off
@@ -8,6 +9,12 @@
 %define with_python3 0
 %define cmake_use_python2 on
 %define default_python python2
+%endif
+
+%if 0%{?rhel} >= 9
+%define with_python2 0
+%else
+%define with_python2 1
 %endif
 
 # Old RHEL only has a python-devel package, but RHEL8 only has python2-devel
@@ -34,11 +41,13 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
+%if 0%{?with_python2}
+BuildRequires: %{PYTHON2}-devel >= 2.6
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-BuildRequires: %{PYTHON2}-devel >= 2.6, gcc-c++
-BuildRequires: hdf5-devel >= 1.8
+BuildRequires: gcc-c++, hdf5-devel >= 1.8
 %if 0%{?rhel} == 7
 # The default SWIG package in RHEL7 is SWIG 2, but SWIG 3 is provided
 # (in the CentOS Extras repository)
@@ -94,7 +103,7 @@ BuildRequires: CGAL-nogui-devel
 %if 0%{?with_python3}
 BuildRequires: python3-numpy, python3-scipy
 Requires: python3-numpy, python3-scipy
-%if 0%{?fedora} < 34 || 0%{?rhel}
+%if 0%{?with_python2} && (0%{?fedora} < 34 || 0%{?rhel})
 BuildRequires: python2-numpy
 %endif
 %else
@@ -166,7 +175,7 @@ Requires:      opencv-devel
 This package contains the include files for building applications that link
 against IMP.
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 %package python2
 Group:         Applications/Engineering
 Summary:       Python wrappers for Python 2
@@ -322,7 +331,7 @@ module purge
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 # Build Python 2 wrappers
 py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
@@ -438,7 +447,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
 %endif
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 %files python2
 %defattr(-,root,root)
 %{_libdir}/python2*/site-packages/IMP
