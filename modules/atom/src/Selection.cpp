@@ -561,9 +561,9 @@ Selection::SearchResult Selection::search(
   ParticleIndexes rep_pis;
   bool from_rep;
   Hierarchy cur(m, pi);
-  for (Hierarchy child : cur.get_children()) {
+  for (ParticleIndex childpi : cur.get_children_indexes()) {
     expand_search_representation(
-            m, child, resolution_, representation_type_, from_rep, rep_pis);
+            m, childpi, resolution_, representation_type_, from_rep, rep_pis);
     if (rep_pis.size() > 0) {
       found_rep_node |= from_rep;
       for (ParticleIndex ch : rep_pis) {
