@@ -59,6 +59,10 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   /** This could be made more efficient. */
   bool get_contains_residue(int rindex) const;
 
+  //! Return true if this fragment contains any of the sorted residues
+  /** The input list of residue indexes must be sorted. */
+  bool get_contains_any_sorted_residue(const Ints &rinds) const;
+
   IMP_DECORATOR_METHODS(Fragment, Hierarchy);
   IMP_DECORATOR_SETUP_0(Fragment);
   IMP_DECORATOR_SETUP_1(Fragment, Fragment, other);

@@ -55,6 +55,19 @@ bool Fragment::get_contains_residue(int ri) const {
   return false;
 }
 
+bool Fragment::get_contains_any_sorted_residue(const Ints &rinds) const {
+  IMP_INTERNAL_CHECK(std::is_sorted(rinds.begin(), rinds.end()),
+                     "The residue list is not sorted.");
+  IntPairs all = get_residue_index_ranges();
+  for (const IntPair &p : all) {
+    if (std::lower_bound(rinds.begin(), rinds.end(), p.first) !=
+        std::lower_bound(rinds.begin(), rinds.end(), p.second)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 IntPairs Fragment::get_residue_index_ranges() const {
   if (!get_model()->get_has_attribute(get_begins_key(), get_particle_index())) {
     return IntPairs();

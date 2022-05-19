@@ -358,11 +358,7 @@ bool get_is_residue_index_match(const Ints &data, Model *m,
                               Residue(m, pi).get_index());
   }
   if (Fragment::get_is_setup(m, pi)) {
-    Ints cur = Fragment(m, pi).get_residue_indexes();
-    Ints si;
-    std::set_intersection(data.begin(), data.end(), cur.begin(), cur.end(),
-                          std::back_inserter(si));
-    return !si.empty();
+    return Fragment(m, pi).get_contains_any_sorted_residue(data);
   } else if (Domain::get_is_setup(m, pi)) {
     IntRange ir = Domain(m, pi).get_index_range();
     return std::lower_bound(data.begin(), data.end(), ir.first) !=
