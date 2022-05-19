@@ -320,10 +320,12 @@ void Selection::set_hierarchies(Model *m,
                                 const ParticleIndexes &pi) {
   m_ = m;
   h_ = pi;
-  for (unsigned int i = 0; i < pi.size(); ++i) {
-    Hierarchy h(m_, pi[i]);
-    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
-                                                       << " is not valid.");
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i = 0; i < pi.size(); ++i) {
+      Hierarchy h(m_, pi[i]);
+      IMP_INTERNAL_CHECK(h.get_is_valid(true),
+                         "Hierarchy " << h << " is not valid.");
+    }
   }
 }
 

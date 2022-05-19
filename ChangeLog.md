@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- IMP::atom::Selection no longer checks that the passed hierarchies are valid,
+  as this can be quite computationally expensive. If in doubt, call
+  IMP::atom::Hierarchy::get_is_valid() on each one first.
 - The IMP::em::CoarseCC class has been removed. Use similarly-named free
   functions instead to calculate coarse cross correlation.
 - IMP now requires a C++11 compiler and SWIG 3 (or later) to build. Most

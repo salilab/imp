@@ -58,6 +58,10 @@ IMPATOM_BEGIN_NAMESPACE
     To actually get the selected particles, call get_selected_particle_indexes()
     or get_selected_particles().
 
+    This class assumes the hierarchies are valid (and if they are not, may not
+    select the correct particles). If in doubt, call
+    IMP::atom::Hierarchy::get_is_valid() on each one first to verify this.
+
     \note The highest resolution representation
     that fits is returned. If you want lower resolution, use the
     resolution parameter to select the desired resolution (pass a very large
