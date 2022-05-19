@@ -509,20 +509,17 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   }
 });
 
-IMP_NAMED_TUPLE_2(ExpandResult, ExpandResults, bool, from_rep,
-                  ParticleIndexes, indexes, );
-
-ExpandResult expand_search(Model *m,
-                           ParticleIndex pi,
-                           double resolution,
-                           RepresentationType representation_type) {
+void expand_search_representation(
+        Model *m, ParticleIndex pi, double resolution,
+        RepresentationType representation_type, bool &from_rep,
+	ParticleIndexes &idxs) {
   // to handle representations
-  ParticleIndexes idxs;
-  bool from_rep = false;
+  from_rep = false;
+  idxs.clear();
   if (Representation::get_is_setup(m, pi)) {
     from_rep = true;
     if (resolution == ALL_RESOLUTIONS) {
-      idxs = Representation(m, pi).get_representations(representation_type);
+      idxs += Representation(m, pi).get_representations(representation_type);
     }
     else {
       Hierarchy tmp = Representation(m, pi).get_representation(resolution,
@@ -533,21 +530,8 @@ ExpandResult expand_search(Model *m,
   else {
     idxs.push_back(pi);
   }
-  return ExpandResult(from_rep,idxs);
 }
 
-ExpandResults expand_children_search(Model *m,
-                                     ParticleIndex pi,
-                                     double resolution,
-                                     RepresentationType representation_type) {
-  Hierarchy h(m, pi);
-  ExpandResults ret;
-  for(Hierarchy c : h.get_children()) {
-    ExpandResult r = expand_search(m, c, resolution, representation_type);
-    if (r.get_indexes().size()>0) ret.push_back(r);
-  }
-  return ret;
-}
 }
 
 Selection::SearchResult Selection::search(
@@ -570,23 +554,28 @@ Selection::SearchResult Selection::search(
     }
     else return SearchResult(false, ParticleIndexes());
   }
-  Hierarchy cur(m, pi);
   ParticleIndexes children;
-  ExpandResults cur_children =
-    expand_children_search(m, pi, resolution_, representation_type_);
   bool children_covered = true;
   bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
                   || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
-  for(ExpandResult chlist : cur_children) {
-    found_rep_node |= chlist.get_from_rep();
-    for(ParticleIndex ch : chlist.get_indexes()) {
-      SearchResult curr = search(m, ch, parent, with_representation, found_rep_node);
-      matched |= curr.get_match();
-      if (curr.get_match()) {
-        if (curr.get_indexes().empty()) {
-          children_covered = false;
-        } else {
-          children += curr.get_indexes();
+  ParticleIndexes rep_pis;
+  bool from_rep;
+  Hierarchy cur(m, pi);
+  for (Hierarchy child : cur.get_children()) {
+    expand_search_representation(
+            m, child, resolution_, representation_type_, from_rep, rep_pis);
+    if (rep_pis.size() > 0) {
+      found_rep_node |= from_rep;
+      for (ParticleIndex ch : rep_pis) {
+        SearchResult curr = search(m, ch, parent, with_representation,
+                                   found_rep_node);
+        matched |= curr.get_match();
+        if (curr.get_match()) {
+          if (curr.get_indexes().empty()) {
+            children_covered = false;
+          } else {
+            children += curr.get_indexes();
+          }
         }
       }
     }
@@ -627,11 +616,13 @@ Selection::get_selected_particle_indexes(bool with_representation) const {
   IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
                 << std::endl);
   IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
+  ParticleIndexes rep_pis;
+  bool from_rep;
   for(ParticleIndex pi : h_) {
-    ExpandResult res = expand_search(m_, pi, resolution_,
-                                     representation_type_);
-    for(ParticleIndex rpi : res.get_indexes()) {
-      ret += search(m_, rpi, base, with_representation, res.get_from_rep()).get_indexes();
+    expand_search_representation(
+            m_, pi, resolution_, representation_type_, from_rep, rep_pis);
+    for (ParticleIndex rpi : rep_pis) {
+      ret += search(m_, rpi, base, with_representation, from_rep).get_indexes();
     }
   }
   return ret;
