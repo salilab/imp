@@ -61,14 +61,12 @@ IMPKERNELEXPORT ParticlesTemp
                             const DependencyGraphVertexIndex &index);
 
 #ifndef IMP_DOXYGEN
-//! Return all Restraints that depend on this Particle.
-/*  Model::set_has_all_dependencies() must be called first.
-    \note The list may contain duplicates. */
+
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.17)
 IMPKERNELEXPORT RestraintsTemp
     get_dependent_restraints(Model *m, ParticleIndex pi);
 
-//! Return all ScoreStates that depend on this Particle.
-/** \note The list may contain duplicates. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.17)
 IMPKERNELEXPORT ScoreStatesTemp
     get_dependent_score_states(Model *m, ParticleIndex pi);
 
@@ -77,8 +75,7 @@ IMPKERNELEXPORT ScoreStatesTemp
 IMPKERNELEXPORT ScoreStatesTemp
     get_required_score_states(Model *m, ParticleIndex pi);
 
-//! Return all Particles that depend on this Particle.
-/** \note The list may contain duplicates. */
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.17)
 IMPKERNELEXPORT ParticlesTemp
     get_dependent_particles(Model *m, ParticleIndex pi);
 

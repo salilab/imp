@@ -139,6 +139,26 @@ class IMPKERNELEXPORT Model : public Object
     }
   }
 
+  template <class MOType, class MOVector>
+  void do_get_dependent(ModelObject *mo, MOVector &ret) {
+    const auto &node = dependency_graph_.find(mo);
+    IMP_INTERNAL_CHECK(mo->get_has_dependencies(),
+                       "Object " << mo->get_name()
+                                 << " does not have dependencies.");
+    IMP_INTERNAL_CHECK(node != dependency_graph_.end(),
+                       "Node not in dependency_graph.");
+    MOType *r = dynamic_cast<MOType *>(mo);
+    if (r) {
+      ret.push_back(r);
+    }
+    for (ModelObject *cur : node->second.get_outputs()) {
+      do_get_dependent<MOType, MOVector>(cur, ret);
+    }
+    for (ModelObject *cur : node->second.get_readers()) {
+      do_get_dependent<MOType, MOVector>(cur, ret);
+    }
+  }
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
  public:
@@ -221,6 +241,14 @@ class IMPKERNELEXPORT Model : public Object
 
   //! Add the passed Undecorator to the particle.
   void add_undecorator(ParticleIndex pi, Undecorator *d);
+
+#if !defined(IMP_DOXYGEN)
+  RestraintsTemp get_dependent_restraints_uncached(ParticleIndex pi);
+
+  ParticlesTemp get_dependent_particles_uncached(ParticleIndex pi);
+
+  ScoreStatesTemp get_dependent_score_states_uncached(ParticleIndex pi);
+#endif
 
   /** @name States
 

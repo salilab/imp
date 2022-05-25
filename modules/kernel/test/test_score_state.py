@@ -61,8 +61,8 @@ class Tests(IMP.test.TestCase):
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
         ss1 = LoggingScoreState(m, log, inputs=[p1])
-        self.assertEqual(IMP.get_dependent_score_states(m, p1), [ss1])
-        self.assertEqual(IMP.get_dependent_score_states(m, p2), [])
+        self.assertEqual(m.get_dependent_score_states_uncached(p1), [ss1])
+        self.assertEqual(m.get_dependent_score_states_uncached(p2), [])
 
     def test_evaluate_moved(self):
         """Test score state skipping in evaluate_moved()"""

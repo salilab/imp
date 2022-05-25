@@ -17,7 +17,7 @@ const std::set<Restraint *> &
 MovedParticlesRestraintCache::get_dependent_restraints(ParticleIndex pi) {
   CacheMap::const_iterator it = cache_.find(pi);
   if (it == cache_.end()) {
-    RestraintsTemp rs = IMP::get_dependent_restraints(m_, pi);
+    RestraintsTemp rs = m_->get_dependent_restraints_uncached(pi);
     std::set<Restraint *> rsset(rs.begin(), rs.end());
     cache_[pi] = rsset;
     it = cache_.find(pi);
@@ -29,7 +29,7 @@ const std::set<ParticleIndex> &
 MovedParticlesParticleCache::get_dependent_particles(ParticleIndex pi) {
   CacheMap::const_iterator it = cache_.find(pi);
   if (it == cache_.end()) {
-    ParticlesTemp ps = IMP::get_dependent_particles(m_, pi);
+    ParticlesTemp ps = m_->get_dependent_particles_uncached(pi);
     std::set<ParticleIndex> psset;
     for (ParticlesTemp::const_iterator pi = ps.begin(); pi != ps.end(); ++pi) {
       psset.insert((*pi)->get_index());
@@ -44,7 +44,7 @@ const std::set<ScoreState *> &
 MovedParticlesScoreStateCache::get_affected_score_states(ParticleIndex pi) {
   CacheMap::const_iterator it = cache_.find(pi);
   if (it == cache_.end()) {
-    ScoreStatesTemp pssin = IMP::get_dependent_score_states(m_, pi);
+    ScoreStatesTemp pssin = m_->get_dependent_score_states_uncached(pi);
     // We should not be moving a particle that will just be overwritten by
     // a ScoreState, but include these anyway to make sure the Model stays
     // consistent

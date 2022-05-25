@@ -402,6 +402,30 @@ ModelObjectsTemp Model::get_dependency_graph_outputs(const ModelObject *mo)
          dependency_graph_.find(mo)->second.get_readers();
 }
 
+RestraintsTemp Model::get_dependent_restraints_uncached(ParticleIndex pi) {
+  set_has_all_dependencies(true);
+  ModelObject *cur = get_particle(pi);
+  RestraintsTemp ret;
+  do_get_dependent<Restraint, RestraintsTemp>(cur, ret);
+  return ret;
+}
+
+ScoreStatesTemp Model::get_dependent_score_states_uncached(ParticleIndex pi) {
+  set_has_all_dependencies(true);
+  ModelObject *cur = get_particle(pi);
+  ScoreStatesTemp ret;
+  do_get_dependent<ScoreState, ScoreStatesTemp>(cur, ret);
+  return ret;
+}
+
+ParticlesTemp Model::get_dependent_particles_uncached(ParticleIndex pi) {
+  set_has_all_dependencies(true);
+  ModelObject *cur = get_particle(pi);
+  ParticlesTemp ret;
+  do_get_dependent<Particle, ParticlesTemp>(cur, ret);
+  return ret;
+}
+
 bool Model::do_get_has_required_score_states(const ModelObject *mo) const {
   return required_score_states_.find(mo) != required_score_states_.end();
 }

@@ -49,9 +49,9 @@ class Tests(IMP.test.TestCase):
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
         s0 = NullConstraint(m, inputs=[p0], outputs=[p1])
-        self.assertEqual(IMP.get_dependent_particles(m, p0), [p0, p1])
-        self.assertEqual(IMP.get_dependent_particles(m, p1), [p1])
-        self.assertEqual(IMP.get_dependent_particles(m, p2), [p2])
+        self.assertEqual(m.get_dependent_particles_uncached(p0), [p0, p1])
+        self.assertEqual(m.get_dependent_particles_uncached(p1), [p1])
+        self.assertEqual(m.get_dependent_particles_uncached(p2), [p2])
 
     def test_dependency_age(self):
         """Test dependency age counter"""
