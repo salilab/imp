@@ -469,6 +469,12 @@ void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
 }
 
 void Model::do_add_model_object(ModelObject *mo) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (dependencies_saved_) {
+      mos_added_since_save_.push_back(mo);
+    }
+  }
+
   IMP_LOG_VERBOSE("Adding " << mo->get_name() << " to model." << std::endl);
   if (dependency_graph_.find(mo) == dependency_graph_.end()) {
     dependency_graph_[mo] = NodeInfo();
@@ -478,6 +484,11 @@ void Model::do_add_model_object(ModelObject *mo) {
 }
 
 void Model::do_remove_model_object(ModelObject *mo) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (dependencies_saved_) {
+      mos_removed_since_save_.push_back(mo);
+    }
+  }
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(dependency_graph_.find(mo) != dependency_graph_.end(),

@@ -21,6 +21,8 @@ Model::Model(std::string name)
   first_call_ = true;
   age_counter_ = 1;
   dependencies_age_ = 0;
+  saved_dependencies_age_ = 0;
+  dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(

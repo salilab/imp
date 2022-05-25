@@ -123,6 +123,12 @@ class IMPKERNELEXPORT Model : public Object
   Vector<unsigned> trigger_age_;
   // time when dependencies were last changed, or 0
   unsigned dependencies_age_;
+
+  // allow skipping updating dependencies_age_ for temporary ModelObjects
+  bool dependencies_saved_;
+  unsigned saved_dependencies_age_;
+  ModelObjectsTemp mos_added_since_save_, mos_removed_since_save_;
+
   // cache of restraints that are affected by each moved particle,
   // used for evaluate_moved() and related functions
   internal::MovedParticlesRestraintCache moved_particles_restraint_cache_;
@@ -449,6 +455,40 @@ class IMPKERNELEXPORT Model : public Object
       or ScoreStates were last added or removed. It is typically used to
       help maintain caches that depend on the model's dependency graph. */
   unsigned get_dependencies_updated() { return dependencies_age_; }
+
+  //! Mark a 'restore point' for ModelObject dependencies.
+  /** \see restore_dependencies() */
+  void save_dependencies() {
+    dependencies_saved_ = true;
+    saved_dependencies_age_ = dependencies_age_;
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      mos_added_since_save_.clear();
+      mos_removed_since_save_.clear();
+    }
+  }
+
+  //! Restore ModelObject dependencies to previous restore point.
+  /** This method, when paired with save_dependencies(), can be used to
+      avoid triggering a model dependency update due to a temporary change
+      in the model dependency graph, for example due to adding a temporary
+      restraint, evaluating it, then removing that same restraint. It should
+      only be called in cases where it is known that the dependency graph
+      is the same as when save_dependencies() was called (this is only checked
+      in debug mode). Save/restore call pairs cannot be nested, although it
+      is OK to skip the call to restore_dependencies(), e.g. if an exception
+      occurs.
+
+      \see get_dependencies_updated()
+      \see save_dependencies()
+   */
+  void restore_dependencies() {
+    if (dependencies_saved_) {
+      dependencies_saved_ = false;
+      dependencies_age_ = saved_dependencies_age_;
+      IMP_INTERNAL_CHECK(mos_added_since_save_ == mos_removed_since_save_,
+                         "ModelObjects added do not match those removed");
+    }
+  }
 
   IMP_OBJECT_METHODS(Model);
 

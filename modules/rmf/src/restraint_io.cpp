@@ -541,43 +541,41 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       if (no_terms_.find(o) != no_terms_.end()) {
         // too big, do nothing
       } else if (!dynamic_cast<RestraintSet *>(o)) {
-        // required to set last score
-        Pointer<Restraint> rd = o->create_current_decomposition();
-        // set all child scores to 0 for this frame, we will over
-        // right below
-        /*RMF::NodeHandles chs = nh.get_children();
-        for (unsigned int i = 0; i < chs.size(); ++i) {
-          if (chs[i].get_type() == RMF::FEATURE) {
-            RMF::Score s = sf_.get(chs[i]);
-            s.set_frame_score(0);
-          }
-          }*/
-        if (rd && rd != o) {
-          rd->set_was_used(true);
-          if (Subset(get_input_particles(rd->get_inputs())) != os) {
-            RestraintsTemp rs =
-                get_restraints(RestraintsTemp(1, rd));
-            if (rs.size() > max_terms_) {
-              no_terms_.insert(o);
-              // delete old children
-            } else {
-              for(Restraint * r : rs) {
-                Subset s(get_input_particles(r->get_inputs()));
-                double score = r->get_last_score();
-                r->set_was_used(true);
-                if (score != 0) {
-                  IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
-                                                         << " of " << score
-                                                         << std::endl);
-                  RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
-                  RMF::decorator::Score csd = sf_.get(nnh);
-                  csd.set_frame_score(score);
-                  // csd.set_representation(get_node_ids(nh.get_file(), s));
+        Model *m = o->get_model();
+        // adding the decomposed restraint will update the dependency graph;
+        // restore this again since the restraint is only temporary
+        m->save_dependencies();
+        // make sure rd goes out of scope before we call restore_dependencies
+        {
+          // required to set last score
+          Pointer<Restraint> rd = o->create_current_decomposition();
+          if (rd && rd != o) {
+            rd->set_was_used(true);
+            if (Subset(get_input_particles(rd->get_inputs())) != os) {
+              RestraintsTemp rs =
+                  get_restraints(RestraintsTemp(1, rd));
+              if (rs.size() > max_terms_) {
+                no_terms_.insert(o);
+                // delete old children
+              } else {
+                for(Restraint * r : rs) {
+                  Subset s(get_input_particles(r->get_inputs()));
+                  double score = r->get_last_score();
+                  r->set_was_used(true);
+                  if (score != 0) {
+                    IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
+                                                           << " of " << score
+                                                           << std::endl);
+                    RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
+                    RMF::decorator::Score csd = sf_.get(nnh);
+                    csd.set_frame_score(score);
+                  }
                 }
               }
             }
           }
         }
+        m->restore_dependencies();
       }
     }
   }

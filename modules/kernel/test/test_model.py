@@ -283,5 +283,29 @@ class Tests(IMP.test.TestCase):
         for p in ps:
             p.set_has_required_score_states(True)
 
+    def test_save_restore_dependencies(self):
+        """Test save_dependencies() and restore_dependencies()"""
+        m = IMP.Model()
+        # No dependencies yet
+        self.assertEqual(m.get_dependencies_updated(), 0)
+        m.save_dependencies()
+        p2 = IMP.Particle(m)
+        # Adding p2 should update the dependency graph
+        self.assertEqual(m.get_dependencies_updated(), 1)
+        m.remove_particle(p2)
+        m.restore_dependencies()
+        # Should be back to "no dependencies" state after restore
+        self.assertEqual(m.get_dependencies_updated(), 0)
+
+    def test_save_restore_dependencies_bad(self):
+        """Test save/restore_dependencies() with incorrect state"""
+        m = IMP.Model()
+        m.save_dependencies()
+        p2 = IMP.Particle(m)
+        # Cannot restore dependencies since graph does not match original
+        # (as p2 was added)
+        self.assertRaisesInternalException(m.restore_dependencies)
+
+
 if __name__ == '__main__':
     IMP.test.main()
