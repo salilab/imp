@@ -127,7 +127,9 @@ class IMPKERNELEXPORT Model : public Object
   // allow skipping updating dependencies_age_ for temporary ModelObjects
   bool dependencies_saved_;
   unsigned saved_dependencies_age_;
-  ModelObjectsTemp mos_added_since_save_, mos_removed_since_save_;
+  // We don't use ModelObjectsTemp here because these objects might get freed
+  // under us, which would cause WeakPointer to raise an exception
+  std::vector<ModelObject *> mos_added_since_save_, mos_removed_since_save_;
 
   // cache of restraints that are affected by each moved particle,
   // used for evaluate_moved() and related functions
