@@ -29,6 +29,7 @@ function_name_exceptions=[
     'ArgumentParser.register',
     'ArgumentParser.parse_intermixed_args',
     'ArgumentParser.parse_known_intermixed_args',
+    'Model.restore_dependencies',
     ]
 
 value_object_exceptions=['Exception', 'TypeException',
