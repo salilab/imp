@@ -487,8 +487,14 @@ class IMPKERNELEXPORT Model : public Object
     if (dependencies_saved_) {
       dependencies_saved_ = false;
       dependencies_age_ = saved_dependencies_age_;
-      IMP_INTERNAL_CHECK(mos_added_since_save_ == mos_removed_since_save_,
-                         "ModelObjects added do not match those removed");
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        // Need to sort pointers since we may not add/remove in the same order
+        std::sort(mos_added_since_save_.begin(), mos_added_since_save_.end());
+        std::sort(mos_removed_since_save_.begin(),
+                  mos_removed_since_save_.end());
+        IMP_INTERNAL_CHECK(mos_added_since_save_ == mos_removed_since_save_,
+                           "ModelObjects added do not match those removed");
+      }
     }
   }
 
