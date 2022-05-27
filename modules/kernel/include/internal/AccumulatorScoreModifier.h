@@ -21,6 +21,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/check_macros.h>
 #include <boost/utility/enable_if.hpp>
+#include <boost/dynamic_bitset.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -29,15 +30,21 @@ template<typename Score> inline
 typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
                            std::vector<unsigned> >::type
 get_container_indexes(
+            Model *m,
             const Vector<typename Score::IndexArgument> &contents,
             const std::set<ParticleIndex> &ps) {
+  boost::dynamic_bitset<> bps(m->get_particles_size());
+  for (ParticleIndex pi : ps) {
+    bps[pi.get_index()] = true;
+  }
+
   std::vector<unsigned> ret;
   unsigned i = 0;
   for (typename Vector<typename Score::IndexArgument>::const_iterator
        cit = contents.begin(); cit != contents.end(); ++cit, ++i) {
     for (typename Score::IndexArgument::const_iterator pit = cit->begin();
          pit != cit->end(); ++pit) {
-      if (ps.find(*pit) != ps.end()) {
+      if (bps[pit->get_index()]) {
         ret.push_back(i);
         break;
       }
@@ -52,13 +59,19 @@ template<typename Score> inline
 typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
                           std::vector<unsigned> >::type
 get_container_indexes(
+            Model *m,
             const Vector<typename Score::IndexArgument> &contents,
             const std::set<ParticleIndex> &ps) {
+  boost::dynamic_bitset<> bps(m->get_particles_size());
+  for (ParticleIndex pi : ps) {
+    bps[pi.get_index()] = true;
+  }
+
   std::vector<unsigned> ret;
   unsigned i = 0;
   for (Vector<ParticleIndex>::const_iterator cit = contents.begin();
        cit != contents.end(); ++cit, ++i) {
-    if (ps.find(*cit) != ps.end()) {
+    if (bps[cit->get_index()]) {
       ret.push_back(i);
     }
   }
@@ -85,7 +98,7 @@ public:
     CacheMap::const_iterator it = cache_.find(pi);
     if (it == cache_.end()) {
       cache_[pi] = get_container_indexes<Score>(
-                      container_->get_contents(),
+                      m, container_->get_contents(),
                       m->get_dependent_particles(pi));
       it = cache_.find(pi);
     }

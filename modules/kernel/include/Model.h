@@ -498,6 +498,12 @@ class IMPKERNELEXPORT Model : public Object
     }
   }
 
+  //! Get an upper bound on the number of particles in the Model.
+  /** This value is guaranteed to be at least the number of particles in
+      the model (there may be fewer particles if any have been removed)
+      and every ParticleIndex will be smaller than this value. */
+  unsigned get_particles_size() const { return particle_index_.size(); }
+
   IMP_OBJECT_METHODS(Model);
 
  public:
