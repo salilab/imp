@@ -2,6 +2,7 @@
 
 import re
 import os
+import collections
 import operator
 import itertools
 import ihm.format
@@ -552,11 +553,10 @@ class _EntityPolyDumper(Dumper):
             return self._seq_type_map.get(all_types, 'other')
 
     def dump(self, system, writer):
-        # Get the first asym unit (if any) for each entity
-        strand = {}
+        # Get all asym units (if any) for each entity
+        strands = collections.defaultdict(list)
         for asym in system.asym_units:
-            if asym.entity._id not in strand:
-                strand[asym.entity._id] = asym.strand_id
+            strands[asym.entity._id].append(asym.strand_id)
         with writer.loop("_entity_poly",
                          ["entity_id", "type", "nstd_linkage",
                           "nstd_monomer", "pdbx_strand_id",
@@ -567,10 +567,11 @@ class _EntityPolyDumper(Dumper):
                     continue
                 nstd = any(isinstance(x, ihm.NonPolymerChemComp)
                            for x in entity.sequence)
+                sids = strands[entity._id]
                 lp.write(entity_id=entity._id, type=self._get_seq_type(entity),
                          nstd_linkage='no',
                          nstd_monomer='yes' if nstd else 'no',
-                         pdbx_strand_id=strand.get(entity._id, None),
+                         pdbx_strand_id=",".join(sids) if sids else None,
                          pdbx_seq_one_letter_code=self._get_sequence(entity),
                          pdbx_seq_one_letter_code_can=self._get_canon(entity))
 
@@ -1230,10 +1231,14 @@ class _ProtocolDumper(Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
-                          "software_id", "script_file_id",
+                          "ensemble_flag", "software_id", "script_file_id",
                           "description"]) as lp:
             for p in system._all_protocols():
                 for s in p.steps:
+                    if s.ensemble == 'default':
+                        ensemble = len(system.ensembles) > 0
+                    else:
+                        ensemble = s.ensemble
                     lp.write(
                         id=next(ordinal), protocol_id=p._id,
                         step_id=s._id,
@@ -1246,6 +1251,7 @@ class _ProtocolDumper(Dumper):
                         multi_state_flag=s.multi_state,
                         ordered_flag=s.ordered,
                         multi_scale_flag=s.multi_scale,
+                        ensemble_flag=ensemble,
                         software_id=s.software._id if s.software else None,
                         script_file_id=s.script_file._id
                         if s.script_file else None,

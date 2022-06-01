@@ -4,4 +4,4 @@ include examples/*
 include util/make-mmcif.py
 include src/ihm_format.h
 include src/ihm_format.i
-include src/ihm_format_wrap_0.31.c
+include src/ihm_format_wrap_0.32.c

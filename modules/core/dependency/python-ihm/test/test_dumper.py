@@ -765,7 +765,7 @@ _entity_poly.nstd_monomer
 _entity_poly.pdbx_strand_id
 _entity_poly.pdbx_seq_one_letter_code
 _entity_poly.pdbx_seq_one_letter_code_can
-1 polypeptide(L) no no a ACGT ACGT
+1 polypeptide(L) no no a,b ACGT ACGT
 2 polypeptide(L) no no . ACC(UNK)(MSE) ACCXM
 3 polypeptide(D) no no . (DAL)(DCY)G ACG
 4 polypeptide(D) no no . (DAL)(DCY) AC
@@ -1646,11 +1646,11 @@ _ihm_starting_model_seq_dif.details
         p1.steps.append(ihm.protocol.Step(
             assembly=assembly, dataset_group=dsg,
             method='Monte Carlo', num_models_begin=0,
-            num_models_end=500, multi_scale=True, name='s1'))
+            num_models_end=500, multi_scale=True, ensemble=True, name='s1'))
         p1.steps.append(ihm.protocol.Step(
             assembly=assembly, dataset_group=dsg,
             method='Replica exchange', num_models_begin=500,
-            num_models_end=2000, multi_scale=True))
+            num_models_end=2000, multi_scale=True, ensemble=False))
         system.orphan_protocols.append(p1)
 
         p2 = ihm.protocol.Protocol('sampling')
@@ -1687,12 +1687,13 @@ _ihm_modeling_protocol_details.num_models_end
 _ihm_modeling_protocol_details.multi_scale_flag
 _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.ensemble_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 42 99 s1 'Monte Carlo' 0 500 YES NO NO . . .
-2 1 2 42 99 . 'Replica exchange' 500 2000 YES NO NO . . .
-3 2 1 42 101 . 'Replica exchange' 2000 1000 YES NO NO 80 90 'test step'
+1 1 1 42 99 s1 'Monte Carlo' 0 500 YES NO NO YES . . .
+2 1 2 42 99 . 'Replica exchange' 500 2000 YES NO NO NO . . .
+3 2 1 42 101 . 'Replica exchange' 2000 1000 YES NO NO NO 80 90 'test step'
 #
 """)
 

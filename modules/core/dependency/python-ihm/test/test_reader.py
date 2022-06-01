@@ -1265,11 +1265,12 @@ _ihm_modeling_protocol_details.num_models_end
 _ihm_modeling_protocol_details.multi_scale_flag
 _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.ensemble_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO . . .
-2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO 401 501 'test step'
+1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO NO . . .
+2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO YES 401 501 'test step'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1285,6 +1286,7 @@ _ihm_modeling_protocol_details.description
             self.assertEqual(p1.steps[0].multi_scale, True)
             self.assertEqual(p1.steps[0].multi_state, False)
             self.assertEqual(p1.steps[0].ordered, False)
+            self.assertEqual(p1.steps[0].ensemble, False)
             self.assertIsNone(p1.steps[0].software)
             self.assertIsNone(p1.steps[0].script_file)
             self.assertIsNone(p1.steps[0].description)
@@ -1292,6 +1294,7 @@ _ihm_modeling_protocol_details.description
             self.assertEqual(p1.steps[1].multi_scale, True)
             self.assertIsNone(p1.steps[1].multi_state)
             self.assertEqual(p1.steps[1].ordered, False)
+            self.assertEqual(p1.steps[1].ensemble, True)
             self.assertEqual(p1.steps[1].software._id, '401')
             self.assertEqual(p1.steps[1].script_file._id, '501')
             self.assertEqual(p1.steps[1].description, 'test step')
@@ -3635,9 +3638,9 @@ _flr_fret_analysis_lifetime.details
         flr, = s.flr_data
         a = flr._collection_flr_fret_analysis['2']
         self.assertEqual(a.type, 'lifetime-based')
-        self.assertIsInstance(a.reference_measurement_group,
+        self.assertIsInstance(a.ref_measurement_group,
                               ihm.flr.RefMeasurementGroup)
-        self.assertEqual(a.reference_measurement_group._id, '19')
+        self.assertEqual(a.ref_measurement_group._id, '19')
         self.assertIsInstance(a.lifetime_fit_model, ihm.flr.LifetimeFitModel)
         self.assertEqual(a.lifetime_fit_model._id, '23')
         self.assertAlmostEqual(a.donor_only_fraction, 0.3, delta=0.1)

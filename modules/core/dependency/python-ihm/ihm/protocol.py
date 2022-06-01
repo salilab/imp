@@ -23,12 +23,15 @@ class Step(object):
        :param bool multi_scale: Indicates if the modeling is multi-scale
        :param bool multi_state: Indicates if the modeling is multi-state
        :param bool ordered: Indicates if the modeling is ordered
+       :param bool ensemble: Indicates if the modeling involves an ensemble;
+              the default if unspecified is True iff the system contains
+              at least one :class:`~ihm.model.Ensemble`.
        :param str description: Additional text describing the step
     """
     def __init__(self, assembly, dataset_group, method, num_models_begin=None,
                  num_models_end=None, software=None, script_file=None,
                  multi_scale=False, multi_state=False, ordered=False,
-                 name=None, description=None):
+                 ensemble='default', name=None, description=None):
         self.assembly = assembly
         self.dataset_group = dataset_group
         self.method = method
@@ -36,6 +39,7 @@ class Step(object):
         self.num_models_end = num_models_end
         self.multi_scale, self.multi_state = multi_scale, multi_state
         self.software, self.ordered, self.name = software, ordered, name
+        self.ensemble = ensemble
         self.script_file = script_file
         self.description = description
 

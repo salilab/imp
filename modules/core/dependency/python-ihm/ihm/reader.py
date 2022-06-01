@@ -1063,10 +1063,10 @@ class _StructRefHandler(Handler):
         e = self.sysr.entities.get_by_id(entity_id)
         typ = self.type_map.get(db_name.lower())
         ref = self.sysr.references.get_by_id(id, typ)
-        # Strip newlines if code is split over multiple lines
+        # Strip newlines and whitespace from code
         if pdbx_seq_one_letter_code not in (None, ihm.unknown):
             pdbx_seq_one_letter_code \
-                = pdbx_seq_one_letter_code.replace('\n', '')
+                = pdbx_seq_one_letter_code.replace('\n', '').replace(' ', '')
         self.copy_if_present(
             ref, locals(), keys=('db_name', 'db_code', 'details'),
             mapkeys={'pdbx_db_accession': 'accession',
@@ -1562,14 +1562,15 @@ class _ProtocolDetailsHandler(Handler):
 
     def __call__(self, protocol_id, step_id, num_models_begin,
                  num_models_end, multi_scale_flag, multi_state_flag,
-                 ordered_flag, struct_assembly_id, dataset_group_id,
-                 software_id, script_file_id, step_name, step_method,
-                 description):
+                 ordered_flag, ensemble_flag, struct_assembly_id,
+                 dataset_group_id, software_id, script_file_id, step_name,
+                 step_method, description):
         p = self.sysr.protocols.get_by_id(protocol_id)
         nbegin = self.get_int(num_models_begin)
         nend = self.get_int(num_models_end)
         mscale = self.get_bool(multi_scale_flag)
         mstate = self.get_bool(multi_state_flag)
+        ensemble = self.get_bool(ensemble_flag)
         ordered = self.get_bool(ordered_flag)
         assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
@@ -1580,8 +1581,8 @@ class _ProtocolDetailsHandler(Handler):
                               method=None, num_models_begin=nbegin,
                               num_models_end=nend, multi_scale=mscale,
                               multi_state=mstate, ordered=ordered,
-                              software=software, script_file=script,
-                              description=description)
+                              ensemble=ensemble, software=software,
+                              script_file=script, description=description)
         s._id = step_id
         self.copy_if_present(
             s, locals(),
@@ -2847,7 +2848,7 @@ class _FLRFretAnalysisLifetimeHandler(Handler):
                  details):
         f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
         f.type = 'lifetime-based'
-        f.reference_measurement_group \
+        f.ref_measurement_group \
             = self.sysr.flr_ref_measurement_groups.get_by_id(
                 reference_measurement_group_id)
         f.lifetime_fit_model = self.sysr.flr_lifetime_fit_models.get_by_id(
