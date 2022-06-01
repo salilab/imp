@@ -7,6 +7,8 @@ ChangeLog {#changelog}
   IMP::atom::Hierarchy::get_is_valid() on each one first.
 - The IMP::em::CoarseCC class has been removed. Use similarly-named free
   functions instead to calculate coarse cross correlation.
+- The Windows .exe installer no longer supports Python 2 (it works with
+  Python 3.6 through 3.10).
 - IMP now requires a C++11 compiler and SWIG 3 (or later) to build. Most
   recent compilers should support C++11, such as gcc, clang
   or MS Visual Studio 2012 or later. Various IMP macro and header workarounds
