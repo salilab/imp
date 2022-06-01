@@ -574,7 +574,7 @@ class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
             method=method, name='Sampling',
             num_models_begin=None,  # filled in by add_step()
             num_models_end=rex.vars["number_of_frames"],
-            multi_scale=True, multi_state=False, ordered=False)
+            multi_scale=True, multi_state=False, ordered=False, ensemble=True)
 
 
 class _ReplicaExchangeProtocolDumper(ihm.dumper.Dumper):
@@ -628,7 +628,8 @@ class _SimpleProtocolStep(ihm.protocol.Step):
                 method=method, name='Sampling',
                 num_models_begin=None,  # filled in by add_step()
                 num_models_end=num_models_end,
-                multi_scale=True, multi_state=False, ordered=False)
+                multi_scale=True, multi_state=False, ordered=False,
+                ensemble=True)
 
 
 class _Chain(object):
