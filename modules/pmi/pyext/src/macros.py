@@ -435,7 +435,8 @@ class ReplicaExchange0(object):
                         pdb_dir + "/" + self.vars["best_pdb_name_suffix"],
                         self.root_hier,
                         self.vars["number_of_best_scoring_models"],
-                        replica_exchange=True)
+                        replica_exchange=True,
+                        best_score_file=globaldir + "best.scores.rex.py")
                     output.write_psf(
                         pdb_dir + "/" + "model.psf",
                         pdb_dir + "/" +
@@ -448,7 +449,8 @@ class ReplicaExchange0(object):
                             self.vars["best_pdb_name_suffix"],
                             self.root_hiers[n],
                             self.vars["number_of_best_scoring_models"],
-                            replica_exchange=True)
+                            replica_exchange=True,
+                            best_score_file=globaldir + "best.scores.rex.py")
                         output.write_psf(
                             pdb_dir + "/" + str(n) + "/" + "model.psf",
                             pdb_dir + "/" + str(n) + "/" +

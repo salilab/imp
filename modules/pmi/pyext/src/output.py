@@ -211,7 +211,7 @@ class Output(object):
         self.dictionary_stats2 = {}
         self.best_score_list = None
         self.nbestscoring = None
-        self.suffixes = []
+        self.prefixes = []
         self.replica_exchange = False
         self.ascii = ascii
         self.initoutput = {}
@@ -475,17 +475,26 @@ class Output(object):
         for pdb in self.dictionary_pdbs.keys():
             self.write_pdb(pdb, appendmode)
 
-    def init_pdb_best_scoring(self,
-                              suffix,
-                              prot,
-                              nbestscoring,
-                              replica_exchange=False, mmcif=False):
-        # save only the nbestscoring conformations
-        # create as many pdbs as needed
+    def init_pdb_best_scoring(self, prefix, prot, nbestscoring,
+                              replica_exchange=False, mmcif=False,
+                              best_score_file='best.scores.rex.py'):
+        """Prepare for writing best-scoring PDBs (or mmCIFs) for a
+           sampling run.
+
+           @param prefix Initial part of each PDB filename (e.g. 'model').
+           @param prot The top-level Hierarchy to output.
+           @param nbestscoring The number of best-scoring files to output.
+           @param replica_exchange Whether to combine best scores from a
+                  replica exchange run.
+           @param mmcif If True, output models in mmCIF format. If False
+                  (the default) output in legacy PDB format.
+           @param best_score_file The filename to use for replica
+                  exchange scores.
+        """
 
         self._pdb_best_scoring_mmcif = mmcif
         fileext = '.cif' if mmcif else '.pdb'
-        self.suffixes.append(suffix)
+        self.prefixes.append(prefix)
         self.replica_exchange = replica_exchange
         if not self.replica_exchange:
             # common usage
@@ -495,7 +504,7 @@ class Output(object):
         else:
             # otherwise the replicas must communicate
             # through a common file to know what are the best scores
-            self.best_score_file_name = "best.scores.rex.py"
+            self.best_score_file_name = best_score_file
             self.best_score_list = []
             with open(self.best_score_file_name, "w") as best_score_file:
                 best_score_file.write(
@@ -503,7 +512,7 @@ class Output(object):
 
         self.nbestscoring = nbestscoring
         for i in range(self.nbestscoring):
-            name = suffix + "." + str(i) + fileext
+            name = prefix + "." + str(i) + fileext
             flpdb = open(name, 'w')
             flpdb.close()
             self.dictionary_pdbs[name] = prot
@@ -521,21 +530,22 @@ class Output(object):
         if self.replica_exchange:
             # read the self.best_score_list from the file
             with open(self.best_score_file_name) as fh:
-                exec(fh.read())
+                self.best_score_list = ast.literal_eval(
+                    fh.read().split('=')[1])
 
         if len(self.best_score_list) < self.nbestscoring:
             self.best_score_list.append(score)
             self.best_score_list.sort()
             index = self.best_score_list.index(score)
-            for suffix in self.suffixes:
+            for prefix in self.prefixes:
                 for i in range(len(self.best_score_list) - 2, index - 1, -1):
-                    oldname = suffix + "." + str(i) + fileext
-                    newname = suffix + "." + str(i + 1) + fileext
+                    oldname = prefix + "." + str(i) + fileext
+                    newname = prefix + "." + str(i + 1) + fileext
                     # rename on Windows fails if newname already exists
                     if os.path.exists(newname):
                         os.unlink(newname)
                     os.rename(oldname, newname)
-                filetoadd = suffix + "." + str(index) + fileext
+                filetoadd = prefix + "." + str(index) + fileext
                 self.write_pdb(filetoadd, appendmode=False)
 
         else:
@@ -544,16 +554,16 @@ class Output(object):
                 self.best_score_list.sort()
                 self.best_score_list.pop(-1)
                 index = self.best_score_list.index(score)
-                for suffix in self.suffixes:
+                for prefix in self.prefixes:
                     for i in range(len(self.best_score_list) - 1,
                                    index - 1, -1):
-                        oldname = suffix + "." + str(i) + fileext
-                        newname = suffix + "." + str(i + 1) + fileext
+                        oldname = prefix + "." + str(i) + fileext
+                        newname = prefix + "." + str(i + 1) + fileext
                         os.rename(oldname, newname)
-                    filenametoremove = suffix + \
+                    filenametoremove = prefix + \
                         "." + str(self.nbestscoring) + fileext
                     os.remove(filenametoremove)
-                    filetoadd = suffix + "." + str(index) + fileext
+                    filetoadd = prefix + "." + str(index) + fileext
                     self.write_pdb(filetoadd, appendmode=False)
 
         if self.replica_exchange:
