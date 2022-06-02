@@ -32,7 +32,7 @@ typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument> &contents,
-            const std::set<ParticleIndex> &ps) {
+            const ParticleIndexes &ps) {
   boost::dynamic_bitset<> bps(m->get_particles_size());
   for (ParticleIndex pi : ps) {
     bps[pi.get_index()] = true;
@@ -61,7 +61,7 @@ typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument> &contents,
-            const std::set<ParticleIndex> &ps) {
+            const ParticleIndexes &ps) {
   boost::dynamic_bitset<> bps(m->get_particles_size());
   for (ParticleIndex pi : ps) {
     bps[pi.get_index()] = true;

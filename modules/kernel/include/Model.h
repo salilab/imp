@@ -182,7 +182,7 @@ class IMPKERNELEXPORT Model : public Object
   }
 
   //! Get all particles that depend on the given particle
-  const std::set<ParticleIndex> &get_dependent_particles(ParticleIndex pi) {
+  const ParticleIndexes &get_dependent_particles(ParticleIndex pi) {
     return moved_particles_particle_cache_.get_dependent_particles(pi);
   }
 

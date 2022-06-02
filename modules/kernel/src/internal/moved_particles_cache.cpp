@@ -25,16 +25,16 @@ MovedParticlesRestraintCache::get_dependent_restraints(ParticleIndex pi) {
   return it->second;
 }
 
-const std::set<ParticleIndex> &
+const ParticleIndexes &
 MovedParticlesParticleCache::get_dependent_particles(ParticleIndex pi) {
   CacheMap::const_iterator it = cache_.find(pi);
   if (it == cache_.end()) {
     ParticlesTemp ps = m_->get_dependent_particles_uncached(pi);
-    std::set<ParticleIndex> psset;
+    ParticleIndexes pis;
     for (ParticlesTemp::const_iterator pi = ps.begin(); pi != ps.end(); ++pi) {
-      psset.insert((*pi)->get_index());
+      pis.push_back((*pi)->get_index());
     }
-    cache_[pi] = psset;
+    cache_[pi] = pis;
     it = cache_.find(pi);
   }
   return it->second;
