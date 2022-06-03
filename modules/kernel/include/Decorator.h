@@ -151,6 +151,8 @@ class IMPKERNELEXPORT Decorator : public Value {
   bool __ge__(Object* o) const { return operator>=(o); }
   bool __le__(Object* o) const { return operator<=(o); }
 #ifndef SWIG
+  bool operator==(Decorator d) const { return (compare(d) == 0); }
+
   bool operator==(Object* o) const { return (compare(o) == 0); }
   bool operator!=(Object* o) const { return (compare(o) != 0); }
   bool operator<(Object* o) const { return (compare(o) < 0); }
