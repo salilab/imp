@@ -79,19 +79,30 @@ BuildRequires: cmake >= 2.8
 BuildRequires: boost-devel >= 1.53
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL.
+# RHEL 7 and 8 have OpenCV, but it was dropped in RHEL 9, so disable the em2d
+# module.
 %if 0%{?fedora}
 BuildRequires: CGAL-devel
 %endif
+%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 BuildRequires: opencv-devel
+%endif
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom CGAL package
+# invocation. This will pull in our custom CGAL and OpenCV packages
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
 # from https://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
+%if 0%{?rhel} == 9
+BuildRequires: opencv-nogui-devel
+%endif
 BuildRequires: CGAL-nogui-devel
+%if 0%{?rhel} == 9
+%define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so
+%else
 %define bundled libTAU\\.so\\|libCGAL\\.so
+%endif
 %else
 %define bundled libTAU\\.so
 %endif
@@ -169,7 +180,9 @@ Requires:      %{PYTHON2}-devel
 %if 0%{?fedora}
 Requires:      CGAL-devel
 %endif
+%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
+%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -404,7 +417,13 @@ mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-# Bundle CGAL libraries
+# Bundle CGAL (and potentially OpenCV) libraries
+%if 0%{?rhel} == 9
+for cvlib in cv cxcore highgui; do
+  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+done
+%endif
+
 %if 0%{?rhel} == 8
 cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %else
