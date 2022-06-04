@@ -419,12 +419,12 @@ cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle CGAL (and potentially OpenCV) libraries
 %if 0%{?rhel} == 9
-for cvlib in cv cxcore highgui; do
-  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+for cvlib in core imgproc highgui imgcodecs; do
+  cp /usr/%{_lib}/libopencv_${cvlib}.so.4.5 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
 %endif
 
-%if 0%{?rhel} == 8
+%if 0%{?rhel} >= 8
 cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %else
 cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
