@@ -67,10 +67,10 @@ BuildRequires: libTAU-devel
 
 # Need for npctransport module
 BuildRequires: protobuf-devel
-%if 0%{?fedora}
+# No Python protobuf package in RHEL8
+%if 0%{?fedora} || 0%{?rhel} == 9
 Requires: python3-protobuf
 %endif
-# No Python protobuf package in RHEL8
 %if 0%{?rhel} == 7
 Requires: protobuf-python
 %endif
