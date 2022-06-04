@@ -277,8 +277,8 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 %global __requires_exclude ^libTAU\\.so.*$
 %endif
 %else
-%define reqprog %{_builddir}/find-requires-%{name}
-%define proprog %{_builddir}/find-provides-%{name}
+%define reqprog %{_builddir}/find-requires-IMP
+%define proprog %{_builddir}/find-provides-IMP
 
 cat <<EOF > %{reqprog}
 #!/bin/bash
