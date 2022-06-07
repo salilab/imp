@@ -304,6 +304,7 @@ rm -f Info.plist.$$ Description.plist.$$
 
 echo "Making disk image (.dmg)..."
 hdiutil create -fs HFS+ -volname "IMP ${VER} for OS X ${TARGET_OSX_VER}" \
+               -megabytes 300 \
                -srcfolder imp-${VER}-package IMP-${VER}-${TARGET_OSX_VER}.dmg \
         || exit 1
 hdiutil internet-enable -yes IMP-${VER}-${TARGET_OSX_VER}.dmg || exit 1
