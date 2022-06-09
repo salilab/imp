@@ -171,7 +171,9 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
             ci = chain_info[chain_id]
             if atom_type is None:
                 atom_type = IMP.atom.AT_CA
-            c = xyz - geometric_center
+            c = (xyz[0] - geometric_center[0],
+                 xyz[1] - geometric_center[1],
+                 xyz[2] - geometric_center[2])
             if write_all_residues_per_bead and all_indexes is not None:
                 for residue_number in all_indexes:
                     lp.write(group_PDB='ATOM',

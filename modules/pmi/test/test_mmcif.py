@@ -6,7 +6,10 @@ import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
 import sys
-import os
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path
 import ihm.format
 import ihm.location
 import ihm.dataset
@@ -559,8 +562,8 @@ _ihm_sphere_obj_site.model_id
                                      representation)
         group.append(model)
         model.name = 'foo'
-        model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
-                              'Nup84.0')
+        model.parse_rmsf_file(
+            Path(self.get_input_file_name('test.nup84.rmsf')), 'Nup84.0')
         self.assertAlmostEqual(model.get_rmsf('Nup84.0', (1,)), 4.5,
                                delta=1e-4)
         self.assertRaises(ValueError, model.get_rmsf, 'Nup84.0', (1, 2))
@@ -965,11 +968,11 @@ _ihm_modeling_post_process.details
             _number_of_clusters = 2
         d = DummyRex()
         with IMP.test.temporary_directory() as tmpdir:
-            d._outputdir = tmpdir
+            d._outputdir = Path(tmpdir)
             for i in range(d._number_of_clusters):
-                subdir = os.path.join(tmpdir, 'cluster.%d' % i)
-                os.mkdir(subdir)
-                with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+                subdir = Path(tmpdir) / ('cluster.%d' % i)
+                subdir.mkdir()
+                with open(str(subdir / 'stat.out'), 'w') as fh:
                     # 1 model for first cluster, 2 for second cluster
                     for line in range(i + 1):
                         fh.write('#\n')
@@ -1003,18 +1006,18 @@ _ihm_modeling_post_process.details
         comp_to_asym = {'Nup84': None}
         with IMP.test.temporary_directory() as tmpdir:
             d = DummyRex()
-            d._outputdir = tmpdir
-            subdir = os.path.join(tmpdir, 'cluster.0')
-            os.mkdir(subdir)
+            d._outputdir = Path(tmpdir)
+            subdir = Path(tmpdir) / 'cluster.0'
+            subdir.mkdir()
             # Two models
-            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+            with open(str(subdir / 'stat.out'), 'w') as fh:
                 fh.write("{'modelnum': 0}\n")
                 fh.write("{'modelnum': 1}\n")
             # Mock localization density file
-            with open(os.path.join(subdir, 'Nup84.mrc'), 'w') as fh:
+            with open(str(subdir / 'Nup84.mrc'), 'w') as fh:
                 pass
             # Mock RMSF file
-            with open(os.path.join(subdir, 'rmsf.Nup84.dat'), 'w') as fh:
+            with open(str(subdir / 'rmsf.Nup84.dat'), 'w') as fh:
                 pass
             pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
             mg = DummyGroup()
@@ -1027,8 +1030,7 @@ _ihm_modeling_post_process.details
             self.assertEqual(e.clustering_feature, 'RMSD')
             self.assertEqual(e.name, 'dgroup')
             self.assertEqual(e.get_rmsf_file('Nup84'),
-                             os.path.join(tmpdir, 'cluster.0',
-                                          'rmsf.Nup84.dat'))
+                             Path(tmpdir) /  'cluster.0' / 'rmsf.Nup84.dat')
             # RMSF that doesn't exist
             e.load_rmsf(None, 'normsf')
             # RMSF that does exist
@@ -1036,7 +1038,7 @@ _ihm_modeling_post_process.details
             e.load_rmsf(dm, 'Nup84')
             self.assertEqual(dm.comp, 'Nup84')
             self.assertEqual(e.get_localization_density_file('Nup84'),
-                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+                             Path(tmpdir) / 'cluster.0' / 'Nup84.mrc')
             self.assertEqual(len(e.densities), 0)
             # Density that doesn't exist
             e.load_localization_density(None, 'noden', [], comp_to_asym)
@@ -1048,7 +1050,7 @@ _ihm_modeling_post_process.details
             e.load_localization_density(state, 'Nup84', ['Nup84'],
                                         comp_to_asym)
             self.assertEqual(e.densities[0].file.path,
-                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+                             str(Path(tmpdir) / 'cluster.0' / 'Nup84.mrc'))
             self.assertEqual(
                 e.densities[0].file.details,
                 'Localization density for Nup84 dgroup')
@@ -1056,7 +1058,7 @@ _ihm_modeling_post_process.details
             self.assertEqual(e._get_precision(), ihm.unknown)
             self.assertEqual(e.precision, ihm.unknown)
             # Make precision available
-            with open(os.path.join(tmpdir, 'precision.0.0.out'), 'w') as fh:
+            with open(str(Path(tmpdir) / 'precision.0.0.out'), 'w') as fh:
                 fh.write("""
 All kmeans_weight_500_2/cluster.0/ average centroid distance 24.3744728893
 All kmeans_weight_500_2/cluster.0/ centroid index 49
@@ -1087,11 +1089,11 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
         with IMP.test.temporary_directory() as tmpdir:
             rex = DummyRex()
-            rex._outputdir = tmpdir
-            subdir = os.path.join(tmpdir, 'cluster.0')
-            os.mkdir(subdir)
+            rex._outputdir = Path(tmpdir)
+            subdir = Path(tmpdir) / 'cluster.0'
+            subdir.mkdir()
             # Two models
-            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+            with open(str(subdir / 'stat.out'), 'w') as fh:
                 fh.write("{'modelnum': 0}\n")
                 fh.write("{'modelnum': 1}\n")
             prot = DummyProtocolStep()

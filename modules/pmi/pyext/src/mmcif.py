@@ -26,6 +26,10 @@ import re
 import ast
 import sys
 import os
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path  # noqa: F401
 import weakref
 import ihm.location
 import ihm.dataset
@@ -761,7 +765,7 @@ class _Model(ihm.model.Model):
 
     def parse_rmsf_file(self, fname, component):
         self.rmsf[component] = rmsf = {}
-        with open(fname) as fh:
+        with open(str(fname)) as fh:
             for line in fh:
                 resnum, blocknum, val = line.split()
                 rmsf[int(resnum)] = (int(blocknum), float(val))
@@ -936,15 +940,14 @@ class _ReplicaExchangeAnalysisPostProcess(ihm.analysis.ClusterStep):
         self.rex = rex
         num_models_end = 0
         for fname in self.get_all_stat_files():
-            with open(fname) as fh:
+            with open(str(fname)) as fh:
                 num_models_end += len(fh.readlines())
         super(_ReplicaExchangeAnalysisPostProcess, self).__init__(
                 feature='RMSD', num_models_begin=num_models_begin,
                 num_models_end=num_models_end)
 
     def get_stat_file(self, cluster_num):
-        return os.path.join(self.rex._outputdir, "cluster.%d" % cluster_num,
-                            'stat.out')
+        return self.rex._outputdir / ("cluster.%d" % cluster_num) / 'stat.out'
 
     def get_all_stat_files(self):
         for i in range(self.rex._number_of_clusters):
@@ -957,7 +960,7 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     num_models_deposited = None  # Override base class property
 
     def __init__(self, pp, cluster_num, model_group, num_deposit):
-        with open(pp.get_stat_file(cluster_num)) as fh:
+        with open(str(pp.get_stat_file(cluster_num))) as fh:
             num_models = len(fh.readlines())
         super(_ReplicaExchangeAnalysisEnsemble, self).__init__(
                 num_models=num_models,
@@ -968,27 +971,27 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
         self.num_models_deposited = num_deposit
 
     def get_rmsf_file(self, component):
-        return os.path.join(self.post_process.rex._outputdir,
-                            'cluster.%d' % self.cluster_num,
-                            'rmsf.%s.dat' % component)
+        return (self.post_process.rex._outputdir
+                / ('cluster.%d' % self.cluster_num)
+                / ('rmsf.%s.dat' % component))
 
     def load_rmsf(self, model, component):
         fname = self.get_rmsf_file(component)
-        if os.path.exists(fname):
+        if fname.exists():
             model.parse_rmsf_file(fname, component)
 
     def get_localization_density_file(self, fname):
-        return os.path.join(self.post_process.rex._outputdir,
-                            'cluster.%d' % self.cluster_num,
-                            '%s.mrc' % fname)
+        return (self.post_process.rex._outputdir
+                / ('cluster.%d' % self.cluster_num)
+                / ('%s.mrc' % fname))
 
     def load_localization_density(self, state, fname, select_tuple,
                                   asym_units):
         fullpath = self.get_localization_density_file(fname)
-        if os.path.exists(fullpath):
+        if fullpath.exists():
             details = "Localization density for %s %s" \
                       % (fname, self.model_group.name)
-            local_file = ihm.location.OutputFileLocation(fullpath,
+            local_file = ihm.location.OutputFileLocation(str(fullpath),
                                                          details=details)
             for s in select_tuple:
                 if isinstance(s, tuple) and len(s) == 3:
@@ -1002,14 +1005,13 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     def load_all_models(self, simo, state):
         stat_fname = self.post_process.get_stat_file(self.cluster_num)
         model_num = 0
-        with open(stat_fname) as fh:
+        with open(str(stat_fname)) as fh:
             stats = ast.literal_eval(fh.readline())
             # Correct path
-            rmf_file = os.path.join(os.path.dirname(stat_fname),
-                                    "%d.rmf3" % model_num)
+            rmf_file = stat_fname.parent / ("%d.rmf3" % model_num)
             # todo: test with real PMI2 systems
-            if os.path.exists(rmf_file):
-                rh = RMF.open_rmf_file_read_only(rmf_file)
+            if rmf_file.exists():
+                rh = RMF.open_rmf_file_read_only(str(rmf_file))
                 system = state._pmi_object.system
                 IMP.rmf.link_hierarchies(rh, [system.hier])
                 IMP.rmf.load_frame(fh, RMF.FrameID(0))
@@ -1021,16 +1023,16 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
 
     # todo: also support dRMS precision
     def _get_precision(self):
-        precfile = os.path.join(self.post_process.rex._outputdir,
-                                "precision.%d.%d.out" % (self.cluster_num,
-                                                         self.cluster_num))
-        if not os.path.exists(precfile):
+        precfile = (self.post_process.rex._outputdir /
+                    ("precision.%d.%d.out" % (self.cluster_num,
+                                              self.cluster_num)))
+        if not precfile.exists():
             return ihm.unknown
         # Fail if the precision.x.x.out file doesn't match the cluster
         r = re.compile(
             r'All .*/cluster.%d/ average centroid distance ([\d\.]+)'
             % self.cluster_num)
-        with open(precfile) as fh:
+        with open(str(precfile)) as fh:
             for line in fh:
                 m = r.match(line)
                 if m:
