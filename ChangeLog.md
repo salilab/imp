@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.17.0 - 2022-06-23 # {#changelog_2_17_0}
 - IMP::atom::Selection no longer checks that the passed hierarchies are valid,
   as this can be quite computationally expensive. If in doubt, call
   IMP::atom::Hierarchy::get_is_valid() on each one first.

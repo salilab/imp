@@ -532,6 +532,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Thu Jun 23 2022 Ben Webb <ben@salilab.org>   2.17.0-1
+- 2.17.0 release.
+
 * Thu Dec 16 2021 Ben Webb <ben@salilab.org>   2.16.0-1
 - 2.16.0 release.
 
