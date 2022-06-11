@@ -18,10 +18,8 @@ class SurfaceRestraint(IMP.pmi.restraints.RestraintBase):
                              sphere.get_particle_index()))
         self.rs.add_restraint(r)
 
-    def get_particles_to_sample(self):
-        ps = super(SurfaceRestraint, self).get_particles_to_sample()
-        ps["Surfaces" + self._label_suffix] = ([self.surf], 1., .1, .1)
-        return ps
+    def get_mover(self):
+        return IMP.core.SurfaceMover(self.surf, 1.0, 0.1, 0.1)
 
 
 class Tests(IMP.test.TestCase):
@@ -40,8 +38,7 @@ class Tests(IMP.test.TestCase):
         rs.add_to_model()
 
         init_height = IMP.core.get_height(surf, d)
-        sample_objects = [rs]
-        mc = IMP.pmi.samplers.MonteCarlo(m, sample_objects, 1.0)
+        mc = IMP.pmi.samplers.MonteCarlo(m, [rs.get_mover()], 1.0)
         for i in range(100):
             mc.optimize(1)
             print(surf.get_coordinates(), surf.get_normal())
