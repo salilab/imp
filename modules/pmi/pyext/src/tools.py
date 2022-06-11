@@ -208,6 +208,7 @@ class SetupSurface(object):
         return self.surface
 
 
+@IMP.deprecated_object("2.18", "Create explicit MonteCarlo Movers instead")
 class ParticleToSampleList(object):
 
     def __init__(self, label="None"):

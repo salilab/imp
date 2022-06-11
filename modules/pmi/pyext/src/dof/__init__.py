@@ -497,12 +497,9 @@ class DegreesOfFreedom(object):
         '''Set up MC run with just flexible beads.
         Optimization works much better when restraints
         are already set up.'''
-        pts = IMP.pmi.tools.ParticleToSampleList()
-        for n, fb in enumerate(self.get_flexible_beads()):
-            pts.add_particle(fb, "Floppy_Bodies", 1.0,
-                             "Flexible_Bead_" + str(n))
-        if len(pts.get_particles_to_sample()) > 0:
-            mc = IMP.pmi.samplers.MonteCarlo(self.model, [pts], temperature)
+        mvs = list(_get_floppy_body_movers(self.get_flexible_beads(), 1.0))
+        if mvs:
+            mc = IMP.pmi.samplers.MonteCarlo(self.model, mvs, temperature)
             print("optimize_flexible_beads: optimizing %i flexible beads"
                   % len(self.get_flexible_beads()))
             mc.optimize(nsteps)
@@ -597,3 +594,20 @@ class DegreesOfFreedom(object):
                 ps, maxtrans = pslist[name]
             if is_sampled:
                 self.create_nuisance_mover(ps[0], maxtrans, name)
+
+
+def _get_floppy_body_movers(fbs, maxtrans):
+    for fb in fbs:
+        # check is that is a rigid body member:
+        if IMP.core.NonRigidMember.get_is_setup(fb):
+            # if so force the particles to move anyway
+            floatkeys = \
+                IMP.core.RigidBodyMember.get_internal_coordinate_keys()
+            for fk in floatkeys:
+                fb.set_is_optimized(fk, True)
+            yield IMP.core.BallMover(fb.get_model(), fb,
+                                     IMP.FloatKeys(floatkeys),
+                                     maxtrans)
+        else:
+            # otherwise use the normal ball mover
+            yield IMP.core.BallMover(fb.get_model(), fb, maxtrans)
