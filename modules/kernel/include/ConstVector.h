@@ -2,7 +2,7 @@
  *  \file IMP/ConstVector.h
  *  \brief Store an array of values of the same type.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include "base_macros.h"
 #include "exception.h"
 #include "Value.h"
-#include <IMP/nullptr.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/hash.h>
 #include <iterator>

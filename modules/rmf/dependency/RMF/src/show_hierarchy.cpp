@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -46,7 +46,7 @@ void show_data(NodeConstHandle n, std::ostream& out,
                const std::vector<ID<Traits> >& ks, std::string prefix) {
   using std::operator<<;
   FileConstHandle f = n.get_file();
-  RMF_FOREACH(ID<Traits> k, ks) {
+  for(ID<Traits> k : ks) {
     if (n.get_file().get_current_frame() != FrameID() &&
         !n.get_frame_value(k).get_is_null()) {
       out << std::endl << prefix << n.get_file().get_name(k) << ": "
@@ -81,7 +81,7 @@ void print_tree(std::ostream& out, RMF::NodeConstHandle start, Show show) {
       {
         NodeConstHandles alts = ad.get_alternatives(GAUSSIAN_PARTICLE);
         std::reverse(alts.begin(), alts.end());
-        RMF_FOREACH(NodeConstHandle cur, alts) {
+        for(NodeConstHandle cur : alts) {
           RMF_INTERNAL_CHECK(cur != n, "Node can't be a gaussian one");
           std::ostringstream oss;
           oss << "[G" << decorator::get_resolution(cur) << "]";
@@ -93,7 +93,7 @@ void print_tree(std::ostream& out, RMF::NodeConstHandle start, Show show) {
         RMF_INTERNAL_CHECK(alts.front() == n,
                            "The node itself is not in front");
         std::reverse(alts.begin(), alts.end());
-        RMF_FOREACH(NodeConstHandle cur, alts) {
+        for(NodeConstHandle cur : alts) {
           if (cur == n) continue;
           std::ostringstream oss;
           oss << "[" << decorator::get_resolution(cur) << "]";
@@ -138,7 +138,7 @@ void show_frames_impl(FileConstHandle fh, FrameID root, std::string prefix,
     out << " + ";
   }
   out << fh.get_name(root) << " [" << fh.get_type(root) << "]" << std::endl;
-  RMF_FOREACH(FrameID id, ch) { show_frames_impl(fh, id, prefix + "   ", out); }
+  for(FrameID id : ch) { show_frames_impl(fh, id, prefix + "   ", out); }
 }
 
 void simple_show_node(NodeConstHandle n, std::string /*prefix*/,
@@ -372,7 +372,7 @@ void show_hierarchy_with_decorators(NodeConstHandle root, bool,
 }
 
 void show_frames(FileConstHandle fh, std::ostream& out) {
-  RMF_FOREACH(FrameID fr, fh.get_root_frames()) {
+  for(FrameID fr : fh.get_root_frames()) {
     show_frames_impl(fh, fr, std::string(), out);
   }
 }

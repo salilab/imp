@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/HarmonicWell.h    \brief Harmonic function.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_HARMONIC_WELL_H
@@ -50,11 +50,11 @@ class HarmonicWell : public UnaryFunction {
   }
 
   virtual DerivativePair evaluate_with_derivative(
-                  double feature) const IMP_OVERRIDE {
+                  double feature) const override {
     return DerivativePair(get_score(feature), get_derivative(feature));
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return get_score(feature);
   }
 

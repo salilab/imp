@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
 #include <IMP/core.h>
@@ -66,7 +66,7 @@ int do_benchmark() {
     // Get a list of all atoms in the protein, and put it in a container
     atom::Hierarchies atoms = get_by_type(prot, ATOM_TYPE);
     // work around added atoms not being marked as optimized
-    IMP_FOREACH(atom::Hierarchy atom, atoms) {
+    for(atom::Hierarchy atom : atoms) {
       core::XYZ(atom).set_coordinates_are_optimized(true);
     }
     IMP_NEW(ListSingletonContainer, cont, (m, IMP::internal::get_index(atoms)));

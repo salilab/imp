@@ -2,7 +2,7 @@
  *  \file IMP/rmf/internal/hierarchy_links_helpers.cpp
  *  \brief
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/rmf/internal/hierarchy_links_helpers.h>
@@ -31,7 +31,7 @@ std::string get_good_name_to_atom_node(Model *m, ParticleIndex h) {
 // object if no children exist
 RMF::NodeConstHandle get_previous_rmf_provenance(RMF::NodeConstHandle node) {
   RMF::NodeConstHandles nchs;
-  IMP_FOREACH(RMF::NodeConstHandle ch, node.get_children()) {
+  for(RMF::NodeConstHandle ch : node.get_children()) {
     if (ch.get_type() == RMF::PROVENANCE) {
       nchs.push_back(ch);
     }

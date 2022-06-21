@@ -2,7 +2,7 @@
  *  \file IMP/statistics/PartitionalClusteringWithCenter.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -46,9 +46,9 @@ class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter
   const algebra::VectorKD &get_cluster_center(unsigned int i) const {
     return centers_[i];
   }
-  unsigned int get_number_of_clusters() const IMP_OVERRIDE;
-  const Ints &get_cluster(unsigned int i) const IMP_OVERRIDE;
-  int get_cluster_representative(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_clusters() const override;
+  const Ints &get_cluster(unsigned int i) const override;
+  int get_cluster_representative(unsigned int i) const override;
 
   IMP_OBJECT_METHODS(PartitionalClusteringWithCenter);
 };

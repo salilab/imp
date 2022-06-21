@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/DistancePairScoreWithCache.h
  *  \brief A Score on the distance between a pair of particles, using cache.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_WITH_CACHE_H
@@ -40,10 +40,10 @@ class DistancePairScoreWithCache : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &pip,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   /**
       return a reference to the functor that is applied on a pair of particles
@@ -55,17 +55,17 @@ class DistancePairScoreWithCache : public PairScore {
   virtual double evaluate_indexes(
        Model *m, const ParticleIndexPairs &p,
        DerivativeAccumulator *da, unsigned int lower_bound,
-       unsigned int upper_bound) const IMP_OVERRIDE;
+       unsigned int upper_bound) const override;
 
   virtual double evaluate_indexes_scores(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        unsigned int lower_bound, unsigned int upper_bound,
-       std::vector<double> &score) const IMP_OVERRIDE;
+       std::vector<double> &score) const override;
 
   virtual double evaluate_indexes_delta(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        const std::vector<unsigned> &indexes,
-       std::vector<double> &score) const IMP_OVERRIDE;
+       std::vector<double> &score) const override;
 
   IMP_OBJECT_METHODS(DistancePairScoreWithCache);
 };
@@ -107,11 +107,10 @@ DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_delta(
        const std::vector<unsigned> &indexes, std::vector<double> &score) const {
   double ret = 0;
   ds_.check_cache_valid(m);
-  for (std::vector<unsigned>::const_iterator it = indexes.begin();
-       it != indexes.end(); ++it) {
-    double s = evaluate_index_with_cache(m, p[*it], da);
-    ret = ret - score[*it] + s;
-    score[*it] = s;
+  for (unsigned it : indexes) {
+    double s = evaluate_index_with_cache(m, p[it], da);
+    ret = ret - score[it] + s;
+    score[it] = s;
   }
   return ret;
 }

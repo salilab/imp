@@ -2,7 +2,7 @@
  *  \file IMP/saxs/RadiusOfGyrationRestraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,8 +37,8 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public Restraint {
                             const double end_q_rg = 1.3);
 
   virtual double unprotected_evaluate(DerivativeAccumulator* accum)
-      const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
 
  private:

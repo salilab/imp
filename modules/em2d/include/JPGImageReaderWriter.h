@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/JPGImageReaderWriter.h
  *  \brief Management of JPG format for EM images
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_JPG_IMAGE_READER_WRITER_H
@@ -20,12 +20,12 @@ class JPGImageReaderWriter : public ImageReaderWriter {
   JPGImageReaderWriter() {}
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const IMP_OVERRIDE {
+            cv::Mat &data) const override {
     this->read_from_ints(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const IMP_OVERRIDE {
+             const cv::Mat &data) const override {
     this->write_to_ints(filename, header, data);
   }
 
@@ -39,7 +39,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
       format. Eg, Spider.
   */
   void read_from_ints(const String &filename, em::ImageHeader &header,
-                      cv::Mat &data) const IMP_OVERRIDE {
+                      cv::Mat &data) const override {
     IMP_LOG_VERBOSE("reading with JPGImageReaderWriter" << std::endl);
     // read
     cv::Mat temp = cv::imread(filename, 0);
@@ -52,10 +52,10 @@ class JPGImageReaderWriter : public ImageReaderWriter {
   }
 
   void write_to_floats(const String &, em::ImageHeader &,
-                       const cv::Mat &) const IMP_OVERRIDE {}
+                       const cv::Mat &) const override {}
 
   void read_from_floats(const String &, em::ImageHeader &,
-                        cv::Mat &) const IMP_OVERRIDE {}
+                        cv::Mat &) const override {}
 
   //! Writes an EM image in JPG format
   /*!
@@ -66,7 +66,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
               You might be discarding float information.
    */
   void write_to_ints(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const IMP_OVERRIDE {
+                     const cv::Mat &data) const override {
     IMP_UNUSED(header);
     // discard header
     IMP_LOG(IMP::WARNING,

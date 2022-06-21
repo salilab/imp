@@ -2,7 +2,7 @@
  *  \file IMP/core/model_statistics.h
  *  \brief Write the scores of the passed restraints to a file.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_MODEL_STATISTICS_H
@@ -31,7 +31,7 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState
                                      TextOutput out);
 
  protected:
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(WriteRestraintScoresOptimizerState);
 };
 

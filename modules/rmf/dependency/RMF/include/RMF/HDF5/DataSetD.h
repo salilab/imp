@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/DataSetD.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,7 +58,7 @@ class DataSetD : public MutableAttributes<ConstDataSetD<TypeTraits, D> > {
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(P::get_data_space(), H5S_SELECT_SET,
                                       ijk.get(), P::get_ones(), P::get_ones(),
-                                      NULL));
+                                      nullptr));
     TypeTraits::write_value_dataset(Object::get_handle(),
                                     P::get_input_data_space().get_hid(),
                                     P::get_data_space(), value);
@@ -77,7 +77,7 @@ class DataSetD : public MutableAttributes<ConstDataSetD<TypeTraits, D> > {
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(P::get_data_space(), H5S_SELECT_SET,
                                       ijk.get(), P::get_ones(), &size[0],
-                                      NULL));
+                                      nullptr));
     TypeTraits::write_values_dataset(Object::get_handle(),
                                      P::get_row_data_space().get_hid(),
                                      P::get_data_space(), value);
@@ -104,9 +104,9 @@ class DataSetD : public MutableAttributes<ConstDataSetD<TypeTraits, D> > {
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(P::get_data_space(), H5S_SELECT_SET,
                                       lb.get(), P::get_ones(), size.get(),
-                                      NULL));
+                                      nullptr));
     hsize_t sz = value.size();
-    RMF_HDF5_HANDLE(input, H5Screate_simple(1, &sz, NULL), &H5Sclose);
+    RMF_HDF5_HANDLE(input, H5Screate_simple(1, &sz, nullptr), &H5Sclose);
     TypeTraits::write_values_dataset(Object::get_handle(), input,
                                      P::get_data_space(), value);
   }

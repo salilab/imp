@@ -16,7 +16,16 @@ standard_unittest_attributes = [
    'setUp', 'setUpClass', 'shortDescription', 'skipTest', 'tearDown',
    'tearDownClass', 'assertLogs', 'subTest', 'addClassCleanup',
    'doClassCleanups', 'assertNoLogs' ]
-exceptions = ["TestCase." + x for x in standard_unittest_attributes] \
+path_attributes = [
+   'absolute', 'as_posix', 'as_uri', 'chmod', 'cwd', 'exists', 'glob', 'group',
+   'is_absolute', 'is_block_device', 'is_char_device', 'is_dir', 'is_fifo',
+   'is_file', 'is_reserved', 'is_socket', 'is_symlink', 'iterdir', 'joinpath',
+   'lchmod', 'lstat', 'match', 'mkdir', 'open', 'owner', 'relative_to',
+   'rename', 'replace', 'resolve', 'rglob', 'rmdir', 'stat', 'symlink_to',
+   'touch', 'unlink', 'with_name', 'with_suffix', 'expanduser', 'hardlink_to',
+   'home', 'is_mount', 'is_relative_to', 'readlink', 'samefile', 'with_stem' ]
+exceptions = ["Path." + x for x in path_attributes] \
+           + ["TestCase." + x for x in standard_unittest_attributes] \
            + ["ApplicationTestCase." + x for x in standard_unittest_attributes]
 
 exceptions.extend([

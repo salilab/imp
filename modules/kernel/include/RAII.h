@@ -2,7 +2,7 @@
  *  \file IMP/RAII.h    \brief Basic types used by IMP.
  *  \brief Temporarily change something; undo the change when object destroyed
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

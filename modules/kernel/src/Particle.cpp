@@ -1,7 +1,7 @@
 /**
  *  \file Particle.cpp   \brief Classes to handle individual model particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -96,9 +96,7 @@ void Particle::show(std::ostream &out) const {
       if (!fks.empty()) {
         preout << "float attributes:" << std::endl;
         preout.set_prefix("  ");
-        for (FloatKeys::const_iterator it = fks.begin(); it != fks.end();
-             ++it) {
-          FloatKey k = *it;
+        for (const FloatKey &k : fks) {
           preout << k << ": ";
 	  preout << get_model()->get_attribute(k, id_, false);
           preout << " (" << get_model()->get_derivative(k, id_, false) << ") ";

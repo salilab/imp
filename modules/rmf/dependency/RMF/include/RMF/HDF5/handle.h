@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/handle.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,7 +49,7 @@ class RMFEXPORT Handle : public boost::noncopyable {
           IOException);
     }
   }
-  Handle() : h_(-1), f_(NULL) {}
+  Handle() : h_(-1), f_(nullptr) {}
   hid_t get_hid() const {
     RMF_USAGE_CHECK(h_ >= 0, "Uninitialized handle used.");
     return h_;

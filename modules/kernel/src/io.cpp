@@ -2,7 +2,7 @@
  *  \file file.cpp
  *  \brief Get directories used by IMP.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -80,10 +80,8 @@ void read_particles_from_buffer(const Vector<char> &buffer,
   read_particles_from_buffer(&buffer.front(), buffer.size() * sizeof(double),
                              particles, keys);
   Model *m = particles[0]->get_model();
-  ParticleIndexes pis = m->get_particle_indexes();
-  for (ParticleIndexes::iterator pi = pis.begin(); pi != pis.end();
-       ++pi) {
-    IMP::check_particle(m, *pi);
+  for (ParticleIndex pi : m->get_particle_indexes()) {
+    IMP::check_particle(m, pi);
   }
 }
 

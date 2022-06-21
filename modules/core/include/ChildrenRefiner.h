@@ -2,7 +2,7 @@
  *  \file IMP/core/ChildrenRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHILDREN_REFINER_H
@@ -32,14 +32,14 @@ class IMPCOREEXPORT ChildrenRefiner : public Refiner {
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(Particle *) const override;
   virtual const ParticlesTemp get_refined(Particle *) const
-      IMP_OVERRIDE;
+      override;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(ChildrenRefiner);
 };
 

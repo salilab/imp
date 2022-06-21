@@ -2,7 +2,7 @@
  *  \file IMP/core/DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
@@ -47,9 +47,9 @@ class GenericDistanceToSingletonScore : public SingletonScore {
  public:
   GenericDistanceToSingletonScore(UF *f, const algebra::Vector3D &pt);
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericDistanceToSingletonScore);
@@ -106,9 +106,9 @@ class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
  public:
   SphereDistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D &pt);
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(SphereDistanceToSingletonScore);

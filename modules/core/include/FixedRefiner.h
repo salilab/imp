@@ -2,7 +2,7 @@
  *  \file IMP/core/FixedRefiner.h
  *  \brief A particle refiner which returns a fixed set of particles
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_FIXED_REFINER_H
@@ -30,14 +30,14 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   //! Store the set of particle indexes from passed model
   FixedRefiner(Model* m, const ParticleIndexes &pis);
 
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE
+  virtual bool get_can_refine(Particle *) const override
   { return true; }
 
   //! Returns the fixed set of particles.
   /** \note the passed Particle is ignored.
    */
   virtual const ParticlesTemp get_refined(Particle *p) const
-    IMP_OVERRIDE;
+    override;
 
   //! Returns the fixed set of particles, as indexes.
   /** @note the passed ParticleIndex is ignored.
@@ -49,7 +49,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
 
    */
   virtual ParticleIndexes get_refined_indexes
-    (Model* m, ParticleIndex) const IMP_OVERRIDE
+    (Model* m, ParticleIndex) const override
   {
     IMP_USAGE_CHECK(m == m_,
                     "mismatching models for refined and coarse particles");
@@ -58,7 +58,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   }
 
   virtual ParticleIndexes const& get_refined_indexes_by_ref
-    (Model *m, ParticleIndex pi) const IMP_OVERRIDE
+    (Model *m, ParticleIndex pi) const override
   {
     IMP_USAGE_CHECK(m == m_,
                     "mismatching models for refined and coarse particles");
@@ -72,7 +72,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   using Refiner::get_refined;
 #endif
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(FixedRefiner);
 };
 

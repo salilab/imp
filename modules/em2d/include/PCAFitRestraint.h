@@ -3,7 +3,7 @@
  * \brief fast scoring of fit between Particles in 3D and 2D class averages
  *
  * \authors Dina Schneidman
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -53,7 +53,7 @@ public:
                   unsigned int n_components = 1);
 
   double unprotected_evaluate(
-                 IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+                 IMP::DerivativeAccumulator *accum) const override;
 
   unsigned int get_projection_number() const { return projection_number_; }
 
@@ -81,12 +81,12 @@ public:
   void write_best_projections(std::string file_name, bool evaluate=false);
 
   //! \return Information for writing to RMF files
-  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+  RestraintInfo *get_static_info() const override;
 
   //! \return Information for writing to RMF files
-  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
+  RestraintInfo *get_dynamic_info() const override;
 
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const override { return ps_; }
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
  private:

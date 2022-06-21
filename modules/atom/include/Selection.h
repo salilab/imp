@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.h
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H
@@ -57,6 +57,10 @@ IMPATOM_BEGIN_NAMESPACE
 
     To actually get the selected particles, call get_selected_particle_indexes()
     or get_selected_particles().
+
+    This class assumes the hierarchies are valid (and if they are not, may not
+    select the correct particles). If in doubt, call
+    IMP::atom::Hierarchy::get_is_valid() on each one first to verify this.
 
     \note The highest resolution representation
     that fits is returned. If you want lower resolution, use the
@@ -353,7 +357,7 @@ class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
  public:
   SelectionGeometry(atom::Selection d, std::string name = "Selection")
       : display::Geometry(name), res_(d) {}
-  display::Geometries get_components() const IMP_OVERRIDE;
+  display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(SelectionGeometry);
 };
 

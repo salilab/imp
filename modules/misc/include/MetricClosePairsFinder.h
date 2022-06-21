@@ -2,7 +2,7 @@
  *  \file IMP/misc/MetricClosePairsFinder.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,7 @@
 #include <IMP/misc/misc_config.h>
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/Pointer.h>
+#include <IMP/random.h>
 #include <IMP/particle_index.h>
 #include <boost/unordered_map.hpp>
 #include <algorithm>
@@ -50,7 +51,11 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   Index get_index(Model *m, ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
     std::random_shuffle(inputs.begin(), inputs.end());
+#else
+    std::shuffle(inputs.begin(), inputs.end(), random_number_generator);
+#endif
     Index ret;
     ParticleIndexes indexes(inputs.begin(),
                                     inputs.begin() + index_size);
@@ -149,18 +154,18 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
       : core::ClosePairsFinder(name), lb_(lb), ub_(ub) {}
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &) const
-      IMP_OVERRIDE {
+      override {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &,
                                    const algebra::BoundingBox3Ds &) const
-      IMP_OVERRIDE {
+      override {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
 
   virtual ParticleIndexPairs get_close_pairs(
-      Model *m, const ParticleIndexes &pc) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pc) const override {
     IMP_OBJECT_LOG;
     if (pc.empty()) return ParticleIndexPairs();
     Index index = get_index(m, pc);
@@ -168,7 +173,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   }
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
-      const ParticleIndexes &pcb) const IMP_OVERRIDE {
+      const ParticleIndexes &pcb) const override {
     IMP_OBJECT_LOG;
     if (pca.empty() || pcb.empty()) return ParticleIndexPairs();
     Index indexa = get_index(m, pca);
@@ -176,7 +181,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     return get_close_pairs_internal(m, indexa, indexb, false);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     // for now assume we just read the particles
     return IMP::get_particles(m, pis);
   }

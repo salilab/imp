@@ -2,7 +2,7 @@
  *  \file RMF/infrastructure_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,12 +17,9 @@
 #include <vector>
 #include <boost/config.hpp>
 #include <boost/version.hpp>
-#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR) || BOOST_VERSION < 105300
-#define RMF_FOREACH(v, r) BOOST_FOREACH(v, r)
-#include <boost/foreach.hpp>  // IWYU pragma: export
-#else
+
+// Deprecated: just use range-based for directly
 #define RMF_FOREACH(v, r) for (v : r)
-#endif
 
 RMF_ENABLE_WARNINGS
 

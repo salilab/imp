@@ -2,7 +2,7 @@
  *  \file IMP/spb/PbcBoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,9 +33,9 @@ class IMPSPBEXPORT PbcBoxedMover : public core::MonteCarloMover {
                 Particle *py, Particle *pz);
 
  protected:
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(PbcBoxedMover);
   IMP_SHOWABLE(PbcBoxedMover);
 

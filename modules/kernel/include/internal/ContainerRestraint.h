@@ -2,7 +2,7 @@
  *  \file core/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,13 +32,13 @@ class ContainerRestraint : public Restraint {
 
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
-      IMP_OVERRIDE;
+      override;
 
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
                 const ParticleIndexes &moved_pis,
-                const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+                const ParticleIndexes &reset_pis) const override;
 
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ContainerRestraint);
   ;
 
@@ -49,10 +49,10 @@ class ContainerRestraint : public Restraint {
 
   Score *get_score() const { return acc_->get_score_object(); }
 
-  Restraints do_create_decomposition() const IMP_OVERRIDE;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_decomposition() const override;
+  Restraints do_create_current_decomposition() const override;
 
-  IMP_IMPLEMENT(double get_last_score() const IMP_OVERRIDE;);
+  IMP_IMPLEMENT(double get_last_score() const override;);
 };
 
 /** Helper to create a ContainerRestraint without specifying the types. Make

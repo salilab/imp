@@ -1,5 +1,6 @@
 # On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
-# subpackage). On older systems, the IMP package uses Python 2 only.
+# subpackage; on RHEL 9 or later, use Python 3 only).
+# On older systems, the IMP package uses Python 2 only.
 %if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
 %define cmake_use_python2 off
@@ -8,6 +9,12 @@
 %define with_python3 0
 %define cmake_use_python2 on
 %define default_python python2
+%endif
+
+%if 0%{?rhel} >= 9
+%define with_python2 0
+%else
+%define with_python2 1
 %endif
 
 # Old RHEL only has a python-devel package, but RHEL8 only has python2-devel
@@ -34,12 +41,20 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
+%if 0%{?with_python2}
+BuildRequires: %{PYTHON2}-devel >= 2.6
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-BuildRequires: %{PYTHON2}-devel >= 2.6, gcc-c++
-BuildRequires: hdf5-devel >= 1.8
-BuildRequires: swig >= 1.3.40
+BuildRequires: gcc-c++, hdf5-devel >= 1.8
+%if 0%{?rhel} == 7
+# The default SWIG package in RHEL7 is SWIG 2, but SWIG 3 is provided
+# (in the CentOS Extras repository)
+BuildRequires: swig3 >= 3.0
+%else
+BuildRequires: swig >= 3.0
+%endif
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl, eigen3-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
@@ -52,39 +67,38 @@ BuildRequires: libTAU-devel
 
 # Need for npctransport module
 BuildRequires: protobuf-devel
-%if 0%{?fedora}
+# No Python protobuf package in RHEL8
+%if 0%{?fedora} || 0%{?rhel} == 9
 Requires: python3-protobuf
 %endif
-# No Python protobuf package in RHEL8
-%if 0%{?rhel} >= 6 && 0%{?rhel} <= 7
+%if 0%{?rhel} == 7
 Requires: protobuf-python
 %endif
 
 BuildRequires: cmake >= 2.8
 BuildRequires: boost-devel >= 1.53
 
-# RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in the base distribution or in EPEL until
-# RHEL7, so disable the em2d module.
-# On Fedora, all of these packages are available; add them as dependencies
+# RHEL doesn't have a CGAL package, so build without CGAL on RHEL.
+# RHEL 7 and 8 have OpenCV, but it was dropped in RHEL 9, so disable the em2d
+# module.
 %if 0%{?fedora}
-BuildRequires: CGAL-devel, opencv-devel
+BuildRequires: CGAL-devel
 %endif
-%if 0%{?rhel} >= 7
+%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 BuildRequires: opencv-devel
 %endif
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom OpenCV (on RHEL6) and CGAL packages
+# invocation. This will pull in our custom CGAL and OpenCV packages
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
 # from https://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-%if 0%{?rhel} < 7
+%if 0%{?rhel} == 9
 BuildRequires: opencv-nogui-devel
 %endif
 BuildRequires: CGAL-nogui-devel
-%if 0%{?rhel} < 7
+%if 0%{?rhel} == 9
 %define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so
 %else
 %define bundled libTAU\\.so\\|libCGAL\\.so
@@ -100,19 +114,12 @@ BuildRequires: CGAL-nogui-devel
 %if 0%{?with_python3}
 BuildRequires: python3-numpy, python3-scipy
 Requires: python3-numpy, python3-scipy
-%if 0%{?fedora} < 34 || 0%{?rhel}
+%if 0%{?with_python2} && (0%{?fedora} < 34 || 0%{?rhel})
 BuildRequires: python2-numpy
 %endif
 %else
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
-%endif
-
-# RHEL 6 ships with Python 2.6, which doesn't have the argparse module,
-# so pull in the extra package that provides it
-%if 0%{?rhel} == 6
-BuildRequires: python-argparse
-Requires: python-argparse
 %endif
 
 %define cmake_opts -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
@@ -122,11 +129,7 @@ Requires: python-argparse
 %define __python3 /usr/bin/python3
 %endif
 
-%if 0%{?rhel} == 6
-%define mpiprefix %{nil}
-%else
 %define mpiprefix mpi/
-%endif
 
 # Don't build debug source packages; they cause the build to fail with
 # error: Empty %files file [...]/debugsourcefiles.list
@@ -175,9 +178,9 @@ Requires:      python3-devel
 Requires:      %{PYTHON2}-devel
 %endif
 %if 0%{?fedora}
-Requires:      CGAL-devel, opencv-devel
+Requires:      CGAL-devel
 %endif
-%if 0%{?rhel} >= 7
+%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
 %endif
 
@@ -185,7 +188,7 @@ Requires:      opencv-devel
 This package contains the include files for building applications that link
 against IMP.
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 %package python2
 Group:         Applications/Engineering
 Summary:       Python wrappers for Python 2
@@ -274,8 +277,8 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 %global __requires_exclude ^libTAU\\.so.*$
 %endif
 %else
-%define reqprog %{_builddir}/find-requires-%{name}
-%define proprog %{_builddir}/find-provides-%{name}
+%define reqprog %{_builddir}/find-requires-IMP
+%define proprog %{_builddir}/find-provides-IMP
 
 cat <<EOF > %{reqprog}
 #!/bin/bash
@@ -341,7 +344,7 @@ module purge
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 # Build Python 2 wrappers
 py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
@@ -390,17 +393,6 @@ for mod in %{MPI_MODULES}; do
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
    && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
 done
-
-# Add MPI-dependent directory to Python search path
-%if 0%{?rhel} == 6
-(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages && cat > imp-mpi.pth <<END)
-# Set MPI implementation-specific Python search path, for IMP.
-# On Fedora this is handled by the python3-mpich package, while in RHEL7
-# the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
-# in RHEL6, so we'll do it ourselves.
-import sys, os; s = os.getenv('MPI_PYTHON_SITEARCH'); s and (s in sys.path or sys.path.append(s))
-END
-%endif
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
@@ -425,13 +417,14 @@ mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-# Bundle OpenCV and CGAL libraries
-%if 0%{?rhel} < 7
-for cvlib in cv cxcore highgui; do
-  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+# Bundle CGAL (and potentially OpenCV) libraries
+%if 0%{?rhel} == 9
+for cvlib in core imgproc highgui imgcodecs; do
+  cp /usr/%{_lib}/libopencv_${cvlib}.so.4.5 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
 %endif
-%if 0%{?rhel} == 8
+
+%if 0%{?rhel} >= 8
 cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %else
 cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
@@ -473,7 +466,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
 %endif
 
-%if 0%{?with_python3}
+%if 0%{?with_python2} && 0%{?with_python3}
 %files python2
 %defattr(-,root,root)
 %{_libdir}/python2*/site-packages/IMP
@@ -496,9 +489,6 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %{_libdir}/%{default_python}*/site-packages/IMP/spb
-%if 0%{?rhel} == 6
-%{_libdir}/%{default_python}*/site-packages/imp-mpi.pth
-%endif
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
@@ -542,6 +532,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Thu Jun 23 2022 Ben Webb <ben@salilab.org>   2.17.0-1
+- 2.17.0 release.
+
 * Thu Dec 16 2021 Ben Webb <ben@salilab.org>   2.16.0-1
 - 2.16.0 release.
 

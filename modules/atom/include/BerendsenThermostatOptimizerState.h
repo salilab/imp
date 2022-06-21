@@ -3,7 +3,7 @@
  *  \brief Maintains temperature during molecular dynamics using a
  *         Berendsen thermostat.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,7 +55,7 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(BerendsenThermostatOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
 
  private:
   Particles pis_;

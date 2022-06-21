@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/scores2D.h
  *  \brief Scoring functions for 2D
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SCORES_2D_H
@@ -85,7 +85,7 @@ class IMPEM2DEXPORT ChiSquaredScore : public ScoreFunction {
 
  private:
   mutable Pointer<Image> variance_;
-  double get_private_score(Image *, Image *) const IMP_OVERRIDE;
+  double get_private_score(Image *, Image *) const override;
   void set_variance_imag_private(Image *var) { variance_ = var; }
 };
 IMP_OBJECTS(ChiSquaredScore, ChiSquaredScores);
@@ -97,7 +97,7 @@ class IMPEM2DEXPORT EM2DScore : public ScoreFunction {
   EM2DScore() : ScoreFunction() {}
 
  private:
-  double get_private_score(Image *image, Image *projection) const IMP_OVERRIDE {
+  double get_private_score(Image *image, Image *projection) const override {
     return 1 - get_cross_correlation_coefficient(image->get_data(),
                                                  projection->get_data());
   }
@@ -110,17 +110,13 @@ class IMPEM2DEXPORT MeanAbsoluteDifference : public ScoreFunction {
   MeanAbsoluteDifference() : ScoreFunction() {}
 
  private:
-  double get_private_score(Image *image, Image *projection) const IMP_OVERRIDE;
+  double get_private_score(Image *image, Image *projection) const override;
 };
 IMP_OBJECTS(MeanAbsoluteDifference, MeanAbsoluteDifferences);
 
 //! Comparison by value of the ccc
 template <class T>
-class HasHigherCCC
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class HasHigherCCC {
  public:
   bool operator()(const T &a, const T &b) const {
     return a.get_ccc() >= b.get_ccc();
@@ -130,11 +126,7 @@ class HasHigherCCC
 
 //! Comparison of pairs by checking the second element
 template <class T>
-class LessPairBySecond
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class LessPairBySecond {
  public:
   bool operator()(const T &a, const T &b) const { return a.second < b.second; }
   void show(std::ostream &) const {}
@@ -142,11 +134,7 @@ class LessPairBySecond
 
 //! Compare two classes that return a score
 template <class T>
-class HasLowerScore
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class HasLowerScore {
  public:
   bool operator()(const T &a, const T &b) const {
     return a.get_score() < b.get_score();

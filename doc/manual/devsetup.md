@@ -11,7 +11,7 @@ tasks, you will need to [work with git](@ref faq_git) and make a copy of the
 used to [build IMP from source](@ref installation_download).
 
  1. Make a copy (fork) of the [IMP repository](https://github.com/salilab/imp).
-    There is an [excellent help page at GitHub](https://help.github.com/articles/fork-a-repo/)
+    There is an [excellent help page at GitHub](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
     that explains this in detail.
 
  2. Build %IMP [as previously described](@ref installation_download) - the only
@@ -22,7 +22,7 @@ used to [build IMP from source](@ref installation_download).
  3. Make your changes to %IMP (described in more detail below).
 
  4. When you are finished with your changes,
-    [open a pull request](https://help.github.com/articles/using-pull-requests/)
+    [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
     to get it incorporated into the main %IMP repository.
 
 \note There are other ways of working with %IMP. For %example, if you are

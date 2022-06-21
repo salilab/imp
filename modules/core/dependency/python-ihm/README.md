@@ -11,6 +11,12 @@ and [BinaryCIF](https://github.com/dsehnal/BinaryCIF) files compliant with the
 [integrative/hybrid modeling (IHM)](http://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Index/)
 extension. It works with Python 2.7 or Python 3.
 
+To handle non-integrative theoretical models (for example, homology models),
+see the [python-modelcif](https://github.com/ihmwg/python-modelcif) package
+which supports files compliant with the
+[ModelCIF](https://mmcif.wwpdb.org/dictionaries/mmcif_ma.dic/Index/)
+extension.
+
 Please [see the documentation](https://python-ihm.readthedocs.org/)
 or some
 [worked examples](https://github.com/ihmwg/python-ihm/tree/main/examples)

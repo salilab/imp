@@ -204,6 +204,19 @@ ENDMDL'''.split("\n")
         self.assertEqual(len(IMP.core.get_leaves(mhtest)),17)
         shutil.rmtree("pdb_test/")
 
+        rex = IMP.pmi.macros.ReplicaExchange0(
+            mdl, root_hier=root_hier,
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=3,
+            monte_carlo_steps=10, number_of_best_scoring_models=3,
+            global_output_directory='mmcif_test/', mmcif=True,
+            replica_exchange_object=rem)
+        rex.execute_macro()
+        for i in range(3):
+            self.assertTrue(os.path.isfile('mmcif_test/pdbs/model.%i.cif' % i))
+        mhtest = IMP.atom.read_mmcif('mmcif_test/pdbs/model.0.cif', mdl)
+        self.assertEqual(len(IMP.core.get_leaves(mhtest)), 17)
+        shutil.rmtree("mmcif_test/")
+
     def test_pdb_multistate(self):
         """Test PDB writing in PMI2 from replica exchange"""
         mdl = IMP.Model()
@@ -245,6 +258,23 @@ ENDMDL'''.split("\n")
         testB = IMP.atom.read_pdb('pdb_test/pdbs/1/model.0.pdb',mdl)
         self.assertEqual(len(IMP.core.get_leaves(testB)),8)
         shutil.rmtree("pdb_test/")
+
+        rex = IMP.pmi.macros.ReplicaExchange0(
+            mdl, root_hier=root_hier,
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=3,
+            monte_carlo_steps=10, number_of_best_scoring_models=3,
+            global_output_directory='mmcif_test/', mmcif=True,
+            replica_exchange_object=rem)
+        rex.execute_macro()
+        for i in range(3):
+            self.assertTrue(os.path.isfile('mmcif_test/pdbs/0/model.%i.cif'%i))
+            self.assertTrue(os.path.isfile('mmcif_test/pdbs/1/model.%i.cif'%i))
+        testA = IMP.atom.read_mmcif('mmcif_test/pdbs/0/model.0.cif', mdl)
+        self.assertEqual(len(IMP.core.get_leaves(testA)), 53)
+        testB = IMP.atom.read_mmcif('mmcif_test/pdbs/1/model.0.cif', mdl)
+        self.assertEqual(len(IMP.core.get_leaves(testB)), 8)
+        shutil.rmtree("mmcif_test/")
+
 
 if __name__ == '__main__':
     IMP.test.main()

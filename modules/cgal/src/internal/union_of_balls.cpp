@@ -3,7 +3,7 @@
  *  \brief computation of molecular volumetrics :
  *   surface and area of an union of balls
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>
@@ -1780,10 +1780,9 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
     A.get_alpha_shape_vertices(std::back_inserter(vertices),
                                Alpha_shape::SINGULAR, 0);
 #endif
-    for (std::list<Vertex_handle>::iterator cit = vertices.begin();
-         cit != vertices.end(); ++cit) {
-      tmpV += spacefill.ball_V((*cit)->point());
-      tmpA += spacefill.ball_A((*cit)->point());
+    for (Vertex_handle &cit : vertices) {
+      tmpV += spacefill.ball_V(cit->point());
+      tmpA += spacefill.ball_A(cit->point());
     }
   }
   volumeAccumulator += tmpV;
@@ -1805,12 +1804,11 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
     A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::SINGULAR,
                             0);
 #endif
-    for (std::list<Edge>::iterator cit = edges.begin(); cit != edges.end();
-         ++cit) {
-      tmpV -= spacefill.ballInter2_V(cit->first->vertex(cit->second)->point(),
-                                     cit->first->vertex(cit->third)->point());
-      tmpA -= spacefill.ballInter2_A(cit->first->vertex(cit->second)->point(),
-                                     cit->first->vertex(cit->third)->point());
+    for (Edge &cit : edges) {
+      tmpV -= spacefill.ballInter2_V(cit.first->vertex(cit.second)->point(),
+                                     cit.first->vertex(cit.third)->point());
+      tmpA -= spacefill.ballInter2_A(cit.first->vertex(cit.second)->point(),
+                                     cit.first->vertex(cit.third)->point());
     }
   }
   volumeAccumulator += tmpV;
@@ -1844,16 +1842,15 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
     A.get_alpha_shape_facets(std::back_inserter(facets), Alpha_shape::SINGULAR,
                              0);
 #endif
-    for (std::list<Facet>::iterator cit = facets.begin(); cit != facets.end();
-         ++cit) {
+    for (Facet &cit : facets) {
       tmpV += spacefill.ballInter3_V(
-          cit->first->vertex((cit->second + 1) & 3)->point(),
-          cit->first->vertex((cit->second + 2) & 3)->point(),
-          cit->first->vertex((cit->second + 3) & 3)->point());
+          cit.first->vertex((cit.second + 1) & 3)->point(),
+          cit.first->vertex((cit.second + 2) & 3)->point(),
+          cit.first->vertex((cit.second + 3) & 3)->point());
       tmpA += spacefill.ballInter3_A(
-          cit->first->vertex((cit->second + 1) & 3)->point(),
-          cit->first->vertex((cit->second + 2) & 3)->point(),
-          cit->first->vertex((cit->second + 3) & 3)->point());
+          cit.first->vertex((cit.second + 1) & 3)->point(),
+          cit.first->vertex((cit.second + 2) & 3)->point(),
+          cit.first->vertex((cit.second + 3) & 3)->point());
     }
     facets.clear();
 #if CGAL_VERSION_NR > 1030701000
@@ -1889,8 +1886,7 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
     A.get_alpha_shape_cells(std::back_inserter(cells), Alpha_shape::INTERIOR,
                             0);
 #endif
-    for (std::list<Cell_handle>::iterator cit = cells.begin();
-         cit != cells.end(); ++cit) {
+    for (Cell_handle &cit : cells) {
       // tmpA-=
       // ballInter4_A((*cit)->vertex(0)->point(),(*cit)->vertex(1)->point(),
       // (*cit)->vertex(2)->point(),(*cit)->vertex(3)->point());
@@ -1898,11 +1894,11 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
       // ballInter4_V((*cit)->vertex(0)->point(),(*cit)->vertex(1)->point(),
       // (*cit)->vertex(2)->point(),(*cit)->vertex(3)->point());
       tmpA -= spacefill.ballInter4and3_A(
-          (*cit)->vertex(0)->point(), (*cit)->vertex(1)->point(),
-          (*cit)->vertex(2)->point(), (*cit)->vertex(3)->point());
+          cit->vertex(0)->point(), cit->vertex(1)->point(),
+          cit->vertex(2)->point(), cit->vertex(3)->point());
       tmpV -= spacefill.ballInter4and3_V(
-          (*cit)->vertex(0)->point(), (*cit)->vertex(1)->point(),
-          (*cit)->vertex(2)->point(), (*cit)->vertex(3)->point());
+          cit->vertex(0)->point(), cit->vertex(1)->point(),
+          cit->vertex(2)->point(), cit->vertex(3)->point());
     }
   }
   volumeAccumulator += tmpV;

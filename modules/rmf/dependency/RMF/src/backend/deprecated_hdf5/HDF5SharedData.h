@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -137,7 +137,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
             kcname, arity, TypeTraits::HDF5Traits::get_name(), true);
         cache_.resize(
             std::max(cache_.size(), static_cast<size_t>(category_index + 1)),
-            NULL);
+            nullptr);
         cache_.replace(category_index, new DS());
         cache_[category_index].set_current_frame(frame_.get_index());
         cache_[category_index].set(file, nm);
@@ -173,7 +173,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
             kcname, arity, TypeTraits::HDF5Traits::get_name(), false);
         cache_.resize(
             std::max(cache_.size(), static_cast<size_t>(category_index + 1)),
-            NULL);
+            nullptr);
         cache_.replace(category_index, new DS());
         cache_[category_index].set(file, nm);
       }
@@ -210,7 +210,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
         cache_[cat.get_index()][pfi]
             .resize(std::max(cache_[cat.get_index()][pfi].size(),
                              static_cast<size_t>(type_index + 1)),
-                    NULL);
+                    nullptr);
         cache_[cat.get_index()][pfi].replace(type_index, new DS());
         cache_[cat.get_index()][pfi][type_index].set(file, nm);
       }
@@ -591,7 +591,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
     std::vector<ID<TypeTraits> > ret;
     typename NameKeyMap::const_iterator oit = name_key_map_.find(cat);
     if (oit == name_key_map_.end()) return ret;
-    RMF_FOREACH(NameKeyInnerMap::const_reference rt, oit->second) {
+    for(NameKeyInnerMap::const_reference rt : oit->second) {
       if (key_data_map_.find(rt.second)->second.type_index ==
           TypeTraits::HDF5Traits::get_index()) {
         ret.push_back(ID<TypeTraits>(rt.second));

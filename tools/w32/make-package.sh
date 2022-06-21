@@ -3,15 +3,15 @@
 # Make a Win32 installer
 
 # First run the following in the binary directory to install files:
-# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/2.7 \
-#       -DSWIG_PYTHON_LIBRARIES=$w32py/2.7/lib/python27.lib \
-#       -DPYTHON_INCLUDE_DIRS=$w32py/2.7/include/ \
-#       -DPYTHON_INCLUDE_PATH=$w32py/2.7/include/ \
-#       -DPYTHON_LIBRARIES=$w32py/2.7/lib/python27.lib
+# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/3.6 \
+#       -DSWIG_PYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib \
+#       -DPYTHON_INCLUDE_DIRS=$w32py/3.6/include/ \
+#       -DPYTHON_INCLUDE_PATH=$w32py/3.6/include/ \
+#       -DPYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (2.7, 3.6, 3.7, 3.8, 3.9, and 3.10
+# Repeat for all desired Python versions (3.6, 3.7, 3.8, 3.9, and 3.10
 # for us)
 #
 # Then run (still in the binary directory)
@@ -55,8 +55,15 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
 mkdir ${ROOT}/python/ihm || exit 1
-mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/IMP ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/2.7/ihm/*.py ${ROOT}/python/ihm || exit 1
+
+# Drop Python 2
+rm -rf ${ROOT}/pylib/2.7/
+
+# Remove .pyc files
+find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
+mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
+mv ${ROOT}/pylib/3.6/ihm/*.py ${ROOT}/python/ihm || exit 1
+
 rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py, ihm/__init__.py, and RMF.py so they can find Python
@@ -80,7 +87,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.7 3.6 3.7 3.8 3.9 3.10"
+PYVERS="3.6 3.7 3.8 3.9 3.10"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
@@ -107,38 +114,39 @@ rm -rf ${ROOT}/bin/imp_example_app.exe \
 # Remove any .svn directories
 rm -rf `find ${ROOT} -name .svn`
 
+PYVERS="36 37 38 39 310"
 if [ "${BITS}" = "32" ]; then
-  PYVERS="27 36 37 38 39 310"
   MAKENSIS="makensis"
-  # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
-  cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
+
+  # Add redist MSVC runtime DLLs
+  cp ${DLLSRC}/msvcp140.dll ${DLLSRC}/concrt140.dll ${DLLSRC}/vcruntime140.dll \
+     ${ROOT}/bin || exit 1
+
   # Add other DLL dependencies
   cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-     ${DLLSRC}/boost_filesystem-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_program_options-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_system-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_date_time-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_graph-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_regex-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_thread-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_random-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_iostreams-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_zlib-vc100-mt-1_53.dll \
-     ${DLLSRC}/CGAL-vc100-mt-4.1.dll \
+     ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_program_options-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_system-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_date_time-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_graph-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_regex-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_thread-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
      ${DLLSRC}/libfftw3-3.dll \
      ${DLLSRC}/libTAU1.dll \
      ${DLLSRC}/zlib1.dll \
-     ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
-     ${DLLSRC}/opencv_ffmpeg220.dll \
-     ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
+     ${DLLSRC}/opencv_core455.dll ${DLLSRC}/opencv_highgui455.dll \
+     ${DLLSRC}/opencv_imgcodecs455.dll ${DLLSRC}/opencv_videoio455.dll \
+     ${DLLSRC}/opencv_imgproc455.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="27 36 37 38 39 310"
   MAKENSIS="makensis -DIMP_64BIT"
-  # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32
+  # Add redist MSVC runtime DLLs
   cp ${DLLSRC}/msvc*110.dll ${ROOT}/bin || exit 1
   # Add other DLL dependencies
   cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
@@ -163,7 +171,6 @@ else
      ${DLLSRC}/opencv_imgproc248.dll ${ROOT}/bin || exit 1
 fi
 
-
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
 dumpbin /DEPENDENTS ${ROOT}/bin/*.exe ${ROOT}/bin/*.dll ${ROOT}/python/*/*.pyd \
@@ -186,6 +193,29 @@ echo "oleaut32.dll" >> w32.dlls
 echo "user32.dll" >> w32.dlls
 echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
+echo "mf.dll" >> w32.dlls
+echo "mfplat.dll" >> w32.dlls
+echo "mfreadwrite.dll" >> w32.dlls
+echo "shlwapi.dll" >> w32.dlls
+
+# Also exclude Universal C runtime and Windows API sets, which
+# should be present on any up to date Windows 7 system (via KB2999226),
+# or by default in Windows 10.
+echo "ucrtbase.dll" >> w32.dlls
+
+for crt in convert environment filesystem heap locale math multibyte \
+           runtime stdio string time utility; do
+  echo "api-ms-win-crt-${crt}-l1-1-0.dll" >> w32.dlls
+done
+for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
+            file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
+            interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
+            memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
+            processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
+            rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
+            sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
+  echo "api-ms-win-core-${core}.dll" >> w32.dlls
+done
 
 # People that want to run MPI-enabled binaries will need their own copy
 # of MS-MPI - we don't bundle it.
@@ -210,5 +240,5 @@ rm -f w32.dlls w32.deps w32.unmet_deps
 
 ${TOOLDIR}/gen-w32instlist w32-inst > w32files.tmp || exit 1
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install || exit 1
-tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's/^SetOutPath/RMDir/' > w32files.uninstall || exit 1
+tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's#^SetOutPath "\(.*\)"#RMDir /r "\1\\__pycache__"\nRMDir "\1"#' > w32files.uninstall || exit 1
 ${MAKENSIS} -DVERSION=${VER} -NOCD ${TOOLDIR}/w32-install.nsi || exit 1

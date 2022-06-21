@@ -2,7 +2,7 @@
  *  \file IMP/SetCheckState.h
  *  \brief Checking and error reporting support.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include "enums.h"
 #include "raii_macros.h"
 #include "value_macros.h"
-#include <IMP/nullptr.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Object;

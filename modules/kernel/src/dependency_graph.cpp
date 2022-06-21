@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -346,8 +346,8 @@ MOVector do_get_dependent(ModelObject *mo) {
   if (r) {
     ret.push_back(r);
   }
-  IMP_FOREACH(ModelObject * cur,
-              mo->get_model()->get_dependency_graph_outputs(mo)) {
+  for(ModelObject * cur :
+      mo->get_model()->get_dependency_graph_outputs(mo)) {
     ret += do_get_dependent<MOType, MOVector>(cur);
   }
   return ret;
@@ -355,15 +355,15 @@ MOVector do_get_dependent(ModelObject *mo) {
 }
 
 RestraintsTemp get_dependent_restraints(Model *m, ParticleIndex pi) {
-  m->set_has_all_dependencies(true);
-  ModelObject *cur = m->get_particle(pi);
-  return do_get_dependent<Restraint, RestraintsTemp>(cur);
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+       2.17, "Use Model::get_dependent_restraints_uncached() instead.")
+  return m->get_dependent_restraints_uncached(pi);
 }
 
 ScoreStatesTemp get_dependent_score_states(Model *m, ParticleIndex pi) {
-  m->set_has_all_dependencies(true);
-  ModelObject *cur = m->get_particle(pi);
-  return do_get_dependent<ScoreState, ScoreStatesTemp>(cur);
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+       2.17, "Use Model::get_dependent_score_states_uncached() instead.")
+  return m->get_dependent_score_states_uncached(pi);
 }
 
 ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
@@ -373,9 +373,9 @@ ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
 }
 
 ParticlesTemp get_dependent_particles(Model *m, ParticleIndex pi) {
-  m->set_has_all_dependencies(true);
-  ModelObject *cur = m->get_particle(pi);
-  return do_get_dependent<Particle, ParticlesTemp>(cur);
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
+       2.17, "Use Model::get_dependent_particles_uncached() instead.")
+  return m->get_dependent_particles_uncached(pi);
 }
 
 IMPKERNEL_END_NAMESPACE

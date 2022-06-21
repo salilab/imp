@@ -2,7 +2,7 @@
  *  \file IMP/isd/vonMisesKappaJeffreysRestraint.h
  *  \brief Jeffreys prior for \f$\kappa\f$ in the von Mises distribution.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,8 +34,8 @@ class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
   vonMisesKappaJeffreysRestraint(Model *m, Particle *kappa);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(vonMisesKappaJeffreysRestraint);
 
   virtual double get_probability() const;

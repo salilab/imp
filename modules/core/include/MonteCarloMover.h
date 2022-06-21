@@ -2,7 +2,7 @@
  *  \file IMP/core/MonteCarloMover.h
  *  \brief The base class for movers for Monte Carlo optimization.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -101,7 +101,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   //! Implement accept_proposed_move(); default implementation is empty
   virtual void do_accept() {}
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     return get_inputs();
   }
 };

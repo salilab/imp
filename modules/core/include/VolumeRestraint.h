@@ -2,7 +2,7 @@
  *  \file IMP/core/VolumeRestraint.h
  *  \brief A restraint that prevents spheres from inter-penetrating
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_VOLUME_RESTRAINT_H
@@ -27,8 +27,8 @@ class IMPCOREEXPORT VolumeRestraint : public Restraint {
   VolumeRestraint(UnaryFunction *f, SingletonContainer *sc, double volume);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(VolumeRestraint);
 };
 #endif

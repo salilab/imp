@@ -89,3 +89,18 @@ swiss_model = ihm.Citation(
              'Tauriello G', 'Gumienny R', 'Heer FT', 'de Beer TAP',
              'Rempfer C', 'Bordoli L', 'Lepore R', 'Schwede T'],
     doi='10.1093/nar/gky427')
+
+
+alphafold2 = ihm.Citation(
+    pmid='34265844',
+    title='Highly accurate protein structure prediction with AlphaFold.',
+    journal='Nature', volume=596, page_range=(583, 589), year=2021,
+    authors=['Jumper J', 'Evans R', 'Pritzel A', 'Green T', 'Figurnov M',
+             'Ronneberger O', 'Tunyasuvunakool K', 'Bates R', 'Zidek A',
+             'Potapenko A', 'Bridgland A', 'Meyer C', 'Kohl SAA', 'Ballard AJ',
+             'Cowie A', 'Romera-Paredes B', 'Nikolov S', 'Jain R', 'Adler J',
+             'Back T', 'Petersen S', 'Reiman D', 'Clancy E', 'Zielinski M',
+             'Steinegger M', 'Pacholska M', 'Berghammer T', 'Bodenstein S',
+             'Silver D', 'Vinyals O', 'Senior AW', 'Kavukcuoglu K', 'Kohli P',
+             'Hassabis D'],
+    doi='10.1038/s41586-021-03819-2')

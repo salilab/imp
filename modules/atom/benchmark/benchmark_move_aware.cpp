@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 #include <IMP/core.h>
 #include <IMP.h>
@@ -87,7 +87,7 @@ Restraint *add_DOPE(Model *, atom::Hierarchy h) {
 }
 #endif
 
-void benchmark_it(std::string name, bool incr, bool nbl) {
+void benchmark_it(std::string name, bool score_moved, bool nbl) {
   IMP_NEW(Model, m, ());
   atom::Hierarchy h = atom::Hierarchy::setup_particle(new Particle(m));
   h->set_name("root");
@@ -98,21 +98,13 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   }
   IMP_NEW(MonteCarlo, mc, (m));
   Restraints rs;
-  if (!incr && nbl) {
+  if (nbl) {
     rs.push_back(create_excluded_volume(h, rbs, 1.0));
   }
   rs.push_back(create_diameter_restraint(m, rbs, 50.0));
-  if (incr) {
-    IMP_NEW(core::IncrementalScoringFunction, sf,
-            (m, IMP::internal::get_index(rbs), rs));
-    if (nbl) {
-      sf->add_close_pair_score(create_pair_score(h, rbs, 1.0), 0, rbs);
-    }
-    mc->set_incremental_scoring_function(sf);
-  } else {
-    IMP_NEW(core::RestraintsScoringFunction, sf, (rs));
-    mc->set_scoring_function(sf);
-  }
+  IMP_NEW(core::RestraintsScoringFunction, sf, (rs));
+  mc->set_scoring_function(sf);
+  mc->set_score_moved(score_moved);
   // add_DOPE(m, h);
   // mc->set_log_level(VERBOSE);
   mc->set_return_best(false);
@@ -136,16 +128,13 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   }
   double runtime, score = 0;
   IMP_TIME(score += mc->optimize(nsteps), runtime);
-  // std::cout << "average: "
-  //<< mc->get_average_number_of_incremental_restraints() << std::endl;
   IMP::benchmark::report(name + " mc", runtime, score);
 }
 }
 
 int main(int argc, char *argv[]) {
-  IMP::setup_from_argv(argc, argv, "Benchmark incremenal evaluation");
-  benchmark_it("incremental nbl", true, true);
-  benchmark_it("non incremental", false, false);
-  benchmark_it("incremental", true, false);
+  IMP::setup_from_argv(argc, argv, "Benchmark move-aware MC");
+  benchmark_it("move-aware", false, true);
+  benchmark_it("non-move-aware", true, true);
   return 0;
 }

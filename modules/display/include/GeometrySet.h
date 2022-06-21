@@ -2,7 +2,7 @@
  *  \file IMP/display/GeometrySet.h
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_SET_H
@@ -25,7 +25,7 @@ class IMPDISPLAYEXPORT GeometrySet : public Geometry {
   GeometrySet(const Geometries &v, const std::string n);
   GeometrySet(const Geometries &v, const Color &c, std::string n);
   Geometries get_geometry() const { return v_; }
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(GeometrySet);
 };
 

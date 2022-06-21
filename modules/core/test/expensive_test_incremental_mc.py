@@ -28,9 +28,10 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+            mc.set_incremental_scoring_function(isf)
         isf.set_log_level(IMP.SILENT)
-        mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
@@ -70,8 +71,9 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.PairsRestraint(hps, cpc)
         # r.set_log_level(IMP.VERBOSE)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
-        mc.set_incremental_scoring_function(isf)
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+            mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], 2) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
@@ -94,7 +96,7 @@ class Tests(IMP.test.TestCase):
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
         print(sf.evaluate(False))
-        self.assert_(sf.evaluate(False) < 3)
+        self.assertLess(sf.evaluate(False), 3)
 
 
 if __name__ == '__main__':

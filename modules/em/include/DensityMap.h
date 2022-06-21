@@ -2,7 +2,7 @@
  *  \file IMP/em/DensityMap.h
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -607,9 +607,9 @@ IMPEMEXPORT DensityMap *binarize(DensityMap *orig_map, float threshold,
                                  bool reverse = false);
 
 //! Return a map with 0 for all voxels below the threshold
-/** \param[in] orig_map the map to binarize
+/** \param[in] orig_map the map to threshold
     \param[in] threshold values below the threshold are set to 0 and
-                         1 otherwise
+                         left unchanged otherwise
  */
 IMPEMEXPORT DensityMap *get_threshold_map(const DensityMap *orig_map,
                                           float threshold);
@@ -665,7 +665,7 @@ inline DensityMap *create_density_map(
   IMP_USAGE_CHECK(arg.get_number_of_voxels(2) ==
                       static_cast<unsigned int>(ret->get_header()->get_nz()),
                   "Z voxels don't match");
-  IMP_FOREACH(typename Grid::Index i, arg.get_all_indexes()) {
+  for(typename Grid::Index i : arg.get_all_indexes()) {
     long vi = ret->xyz_ind2voxel(i[0], i[1], i[2]);
     ret->set_value(vi, arg[vi]);
   }

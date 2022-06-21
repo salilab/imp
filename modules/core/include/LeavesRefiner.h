@@ -2,7 +2,7 @@
  *  \file IMP/core/LeavesRefiner.h
  *  \brief Return the hierarchy leaves under a particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_LEAVES_REFINER_H
@@ -29,11 +29,11 @@ class IMPCOREEXPORT LeavesRefiner : public Refiner {
   //! Create a refiner for a particular type of hierarchy
   LeavesRefiner(HierarchyTraits tr);
 
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(Particle *) const override;
   virtual const ParticlesTemp get_refined(Particle *) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif

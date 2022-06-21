@@ -2,7 +2,7 @@
  *  \file IMP/domino/BranchAndBoundSampler.h
  *  \brief Sample best solutions using BranchAndBound.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,7 +31,7 @@ class IMPDOMINOEXPORT BranchAndBoundSampler : public DiscreteSampler {
   BranchAndBoundSampler(Model *m, ParticleStatesTable *pst,
                         std::string name = "BranchAndBoundSampler %1%");
   Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(BranchAndBoundSampler);
 };
 

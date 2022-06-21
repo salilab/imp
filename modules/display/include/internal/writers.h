@@ -2,7 +2,7 @@
  *  \file writers.h
  *  \brief Base class for writing geometry to a file
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_INTERNAL_WRITERS_H
@@ -28,7 +28,7 @@ template <class Wr>
 class WriterFactoryHelper : public WriterFactory {
  public:
   WriterFactoryHelper() {}
-  Writer *create(std::string name) const IMP_OVERRIDE {
+  Writer *create(std::string name) const override {
     return new Wr(TextOutput(name));
   }
 };

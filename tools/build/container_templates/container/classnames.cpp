@@ -1,7 +1,7 @@
 /**
  *  \file ClassnameContainerStatistics.cpp   \brief Container for classname.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -46,7 +46,7 @@ ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
 
 void ClassnameContainerIndex::build() {
   contents_.clear();
-  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+  for(INDEXTYPE it : container_->get_contents()) {
     contents_.insert(IMP::internal::get_canonical(it));
   }
 }
@@ -82,7 +82,7 @@ ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
 
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     PLURALINDEXTYPE const& cur= c->get_contents();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
@@ -95,7 +95,7 @@ void
 ClassnameContainerSet::get_indexes_in_place
 (PLURALINDEXTYPE& output) const {
   output.clear();
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     PLURALINDEXTYPE const& cur = c->get_contents();
     output.insert(output.end(), cur.begin(), cur.end());
   }
@@ -103,7 +103,7 @@ ClassnameContainerSet::get_indexes_in_place
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
   PLURALINDEXTYPE sum;
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     PLURALINDEXTYPE cur = c->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
@@ -115,7 +115,7 @@ IMP_LIST_IMPL(ClassnameContainerSet, ClassnameContainer,
               ClassnameContainers);
 
 void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     c->apply(sm);
   }
 }
@@ -124,14 +124,14 @@ void ClassnameContainerSet::do_apply_moved(
              const ClassnameModifier *sm,
              const ParticleIndexes &moved_pis,
              const ParticleIndexes &reset_pis) const {
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     c->apply_moved(sm, moved_pis, reset_pis);
   }
 }
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     ret += c->get_all_possible_indexes();
   }
   return ret;
@@ -144,7 +144,7 @@ ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
 
 std::size_t ClassnameContainerSet::do_get_contents_hash() const {
   std::size_t ret = 0;
-  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+  for(ClassnameContainer * c : get_classname_containers()) {
     boost::hash_combine(ret, c->get_contents_hash());
   }
   return ret;
@@ -261,7 +261,7 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   input_version_ = h;
 
   Vector<PLURALINDEXTYPE> output(data_.size());
-  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
+  for(INDEXTYPE it : input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].get<1>()->get_value_index(get_model(), it) ==
           data_[i].get<2>()) {
@@ -298,7 +298,7 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
 void EventClassnamesOptimizerState::update() {
   int met = 0;
   Model *m = get_optimizer()->get_model();
-  IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
+  for(INDEXTYPE it : container_->get_contents()) {
     if (pred_->get_value_index(m, it) == v_) ++met;
   }
   if (met >= min_ && met < max_) {
@@ -359,7 +359,7 @@ ClassnameMinimumMS find_minimal_set_ClassnameMinimum(C *c, F *f,
   IMP_LOG_VERBOSE("Finding Minimum " << n << " of " << c->get_number()
                                      << std::endl);
   ClassnameMinimumMS bestn(n);
-  IMP_FOREACH(INDEXTYPE it, c->get_contents()) {
+  for(INDEXTYPE it : c->get_contents()) {
     double score = f->evaluate_index(c->get_model(), it, nullptr);
     IMP_LOG_VERBOSE("Found " << score << " for " << it << std::endl);
     bestn.insert(score, it);
@@ -513,8 +513,7 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
   // currently ignores all maxima
   // no longer parallizable
   update_lists_if_necessary();
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  IMP_FOREACH(const LP & lp, lists_) {
+  for(const auto &lp : lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
     ClassnameScore* score= get_score_for_predicate(lp.first);
@@ -533,8 +532,7 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   ParticleIndexes all = input_->get_all_possible_indexes();
   ret += predicate_->get_inputs(get_model(), all);
   if(!is_get_inputs_ignores_individual_scores_){
-    typedef std::pair<int, PointerMember<ClassnameScore> > SP;
-    IMP_FOREACH(const SP & sp, scores_) {
+    for(const auto &sp : scores_) {
       ret += sp.second->get_inputs(get_model(), all);
     }
   }
@@ -544,12 +542,11 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
 Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
     const {
   Restraints ret;
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  IMP_FOREACH(const LP & lp, lists_) {
+  for(const auto &lp : lists_) {
     if(lists_.size()>0){
       ClassnameScore* score= get_score_for_predicate(lp.first);
       if(IMP_LIKELY(score != nullptr)){
-        IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
+        for(PASSINDEXTYPE it : lp.second) {
           Restraints r =
             score->create_current_decomposition(get_model(), it);
           ret += r;
@@ -575,16 +572,15 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
     lists_it.value().clear();
   }
 #else
-  typedef std::pair<const int, PLURALINDEXTYPE> LP;
-  IMP_FOREACH(LP & lp, lists_) {
+  for(auto &lp : lists_) {
     lp.second.clear();
   }
 #endif
   predicate_->setup_for_get_value_index_in_batch(get_model());
-  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
+  for(INDEXTYPE it : input_->get_contents()) {
     int bin = predicate_->get_value_index_in_batch(get_model(), it);
     lists_[bin].push_back(it);
-  } // IMP_FOREACH
+  }
 }
 
 

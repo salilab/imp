@@ -2,7 +2,7 @@
  *  \file IMP/spb/MolecularDynamicsWithWte.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -89,9 +89,9 @@ class IMPSPBEXPORT MolecularDynamicsWithWte : public atom::Simulator {
   void rescale_velocities(Float rescale);
 
   // IMP_SIMULATOR(MolecularDynamicsWithWte);
-  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
-  virtual double do_step(const ParticleIndexes &sc, double dt) IMP_OVERRIDE;
-  virtual bool get_is_simulation_particle(ParticleIndex p) const IMP_OVERRIDE;
+  virtual void setup(const ParticleIndexes &ps) override;
+  virtual double do_step(const ParticleIndexes &sc, double dt) override;
+  virtual bool get_is_simulation_particle(ParticleIndex p) const override;
 
  protected:
   void initialize();

@@ -2,7 +2,7 @@
  *  \file IMP/spb/EM2DRestraint.h
  *  \brief A restraint for using EM2D cross-corr in a Bayesian way
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,7 +61,7 @@ class IMPSPBEXPORT EM2DRestraint : public spb::ISDRestraint {
   double get_element(double fmod, double sigma) const;
 
   // get probability
-  double get_probability() const IMP_OVERRIDE;
+  double get_probability() const override;
 
   /** This macro declares the basic needed methods: evaluate and show
    */
@@ -72,8 +72,8 @@ class IMPSPBEXPORT EM2DRestraint : public spb::ISDRestraint {
   // IMP_RESTRAINT( UniformBoundedRestraint);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(EM2DRestraint);
 };

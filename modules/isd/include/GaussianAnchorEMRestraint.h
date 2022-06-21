@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianAnchorEMRestraint.h
  *  \brief Restraint between two sets of anchor points "model" and "EM density"
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -138,13 +138,13 @@ public:
     ParticlesTemp ret =  density_ps_;
     return ret;
   }
-  double get_probability() const IMP_OVERRIDE {
+  double get_probability() const override {
     return exp(-unprotected_evaluate(NULL));
   }
 
   virtual double
-    unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+    unprotected_evaluate(IMP::DerivativeAccumulator *accum) const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(GaussianAnchorEMRestraint);
  protected:
   Particles model_ps_;

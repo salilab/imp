@@ -2,7 +2,7 @@
  *  \file IMP/multifit/DensityDataPoints.h
  *  \brief Handling of data for anchor points segmentation
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,7 +37,7 @@ class IMPMULTIFITEXPORT DensityDataPoints
  public:
   DensityDataPoints(em::DensityMap *dens, float density_threshold);
   DensityDataPoints(const DensGrid &dens, float density_threshold);
-  IMP::statistics::internal::Array1DD sample() const IMP_OVERRIDE;
+  IMP::statistics::internal::Array1DD sample() const override;
 
   //  em::DensityMap* get_density_map() const {return dens_;}
 

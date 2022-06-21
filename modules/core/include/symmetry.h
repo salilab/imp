@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/symmetry.h     \brief Implement various types of symmetry
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -59,11 +59,11 @@ class IMPCOREEXPORT TransformationAndReflectionSymmetry
                                       const algebra::Reflection3D &r);
 
   virtual void apply_index(Model *m, ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationAndReflectionSymmetry);
   IMP_OBJECT_METHODS(TransformationAndReflectionSymmetry);
 };
@@ -103,11 +103,11 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   }
 
   virtual void apply_index(Model *m, ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
   IMP_OBJECT_METHODS(TransformationSymmetry);
 };
@@ -151,9 +151,9 @@ public:
   Float get_maximum_rotation() const { return max_angle_; }
 
 protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(TransformationSymmetryMover);
 };
 

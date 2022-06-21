@@ -3,7 +3,7 @@
  *  \brief Classes to handle individual model particles.
  *         (Note that implementation of inline functions is in internal)
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -136,13 +136,13 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   ParticleIndex get_index() const;
 
 #if !defined(IMP_DOXYGEN)
-  void clear_caches() IMP_OVERRIDE;
+  void clear_caches() override;
 #endif
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE IMP_FINAL {
+  virtual ModelObjectsTemp do_get_inputs() const override final {
     return ModelObjectsTemp();
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
+  virtual ModelObjectsTemp do_get_outputs() const override final {
     return ModelObjectsTemp();
   }
 };

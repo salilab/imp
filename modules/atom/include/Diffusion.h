@@ -2,7 +2,7 @@
  *  \file IMP/atom/Diffusion.h
  *  \brief A decorator for a diffusing particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -99,7 +99,7 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
 
  public:
   IMP_DECORATOR_METHODS(RigidBodyDiffusion, Diffusion);
-  /** All diffusion coefficients are determined from the radius */
+  //! All diffusion coefficients are determined from the radius
   IMP_DECORATOR_SETUP_0(RigidBodyDiffusion);
 
   //! returns the rotational diffusion coefficient in \f$radians^2/fs\f$

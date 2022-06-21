@@ -2,14 +2,14 @@
  *  \file IMP/doxygen_macros.h
  *  \brief Helper macros for writing doxygen documentation
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPKERNEL_DOXYGEN_MACROS_H
 #define IMPKERNEL_DOXYGEN_MACROS_H
 #include <IMP/kernel_config.h>
-// for IMP_OVERRIDE
+// for override
 #include "swig_macros.h"
 
 #ifdef IMP_DOXYGEN
@@ -48,11 +48,11 @@
 #define IMP_IMPLEMENT(signature) signature
 
 #define IMP_IMPLEMENT_INLINE(signature, body) \
-  signature IMP_OVERRIDE { body; }
+  signature override { body; }
 
 #ifndef SWIG
 #define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body) \
-  signature IMP_OVERRIDE { body; }
+  signature override { body; }
 #else
 #define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body)
 
@@ -60,13 +60,13 @@
 
 #define IMP_IMPLEMENTATION_TEMPLATE_1(arg0, signature, body) \
   template <arg0>                                            \
-  signature IMP_OVERRIDE {                                   \
+  signature override {                                       \
     body                                                     \
   }
 
 #define IMP_IMPLEMENTATION_TEMPLATE_2(arg0, arg1, signature, body) \
   template <arg0, arg1>                                            \
-  signature IMP_OVERRIDE {                                         \
+  signature override {                                             \
     body                                                           \
   }
 

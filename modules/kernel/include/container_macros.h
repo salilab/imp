@@ -2,7 +2,7 @@
  *  \file IMP/container_macros.h
  *  \brief Macros to define containers of objects
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -311,7 +311,7 @@
 
 #define IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, tname) \
   IMPKERNEL_DEPRECATED_MACRO(2.2,                                              \
-                             "Use get_contents() and a IMP_FOREACH macro.");   \
+                             "Use get_contents() and a for loop.");            \
   do {                                                                         \
     if (container->get_provides_access()) {                                    \
       const tname ContainerType::ContainedIndexTypes& imp_foreach_indexes =    \

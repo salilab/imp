@@ -2,7 +2,7 @@
  *  \file IMP/core/ExcludedVolumeRestraint.h
  *  \brief Prevent spheres from inter-penetrating
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H
@@ -85,20 +85,20 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
                           double slack = 10,
                           std::string name = "ExcludedVolumeRestraint%1%");
 
-  void clear_caches() IMP_OVERRIDE;
+  void clear_caches() override;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const IMP_OVERRIDE;
+                                      double max) const override;
 #endif
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
   ;
-  Restraints do_create_decomposition() const IMP_OVERRIDE;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_decomposition() const override;
+  Restraints do_create_current_decomposition() const override;
 #ifndef IMP_DOXYGEN
   const ParticleIndexPairs &get_indexes() const { return cur_list_; }
 #endif

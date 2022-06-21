@@ -2,7 +2,7 @@
  *  \file IMP/atom/CHARMMAtom.h
  *  \brief A decorator for an atom that has a defined CHARMM type.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,8 +31,8 @@ class IMPATOMEXPORT CHARMMAtom : public Atom {
 
  public:
   IMP_DECORATOR_METHODS(CHARMMAtom, Atom);
-  /** Create a decorator with the passed CHARMM type.
-      The particle is assumed to already have all atom attributes.
+  //! Create a decorator with the passed CHARMM type.
+  /** The particle is assumed to already have all atom attributes.
    */
   IMP_DECORATOR_SETUP_1(CHARMMAtom, String, charmm_type);
 

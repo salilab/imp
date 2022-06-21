@@ -6,8 +6,10 @@ import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
 import sys
-import os
-import io
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path
 import ihm.format
 import ihm.location
 import ihm.dataset
@@ -16,9 +18,11 @@ if sys.version_info[0] >= 3:
 else:
     from io import BytesIO as StringIO
 
+
 class DummyState(object):
     short_name = None
     long_name = None
+
 
 class DummyRepr(object):
     def __init__(self, short_name, long_name):
@@ -26,12 +30,15 @@ class DummyRepr(object):
         self.state.short_name = short_name
         self.state.long_name = long_name
 
+
 class EmptyObject(object):
     state = DummyState()
+
 
 def get_all_models_group(simo, po):
     state = simo._protocol_output[0][1]
     return state.add_model_group(ihm.model.ModelGroup(name="All models"))
+
 
 class Tests(IMP.test.TestCase):
 
@@ -40,16 +47,18 @@ class Tests(IMP.test.TestCase):
         class DummyObj(object):
             def __init__(self, hashval):
                 self.hashval = hashval
+
             def __eq__(self, other):
                 return self.hashval == other.hashval
+
             def __hash__(self):
                 return self.hashval
         seen_objs = {}
         obj_by_id = []
-        obj1a = DummyObj(42) # obj1a and 1b are identical
+        obj1a = DummyObj(42)  # obj1a and 1b are identical
         obj1b = DummyObj(42)
         obj2 = DummyObj(34)
-        obj3 = DummyObj(23) # obj3 already has an id
+        obj3 = DummyObj(23)  # obj3 already has an id
         obj3.id = 'foo'
         for obj in (obj1a, obj1b, obj2, obj3):
             IMP.pmi.mmcif._assign_id(obj, seen_objs, obj_by_id)
@@ -201,7 +210,7 @@ _ihm_multi_state_model_group_link.model_group_id
         """Test creation of Entity objects"""
         m = IMP.Model()
         simo = IMP.pmi.topology.System(m)
-        st = simo.create_state()
+        simo.create_state()
         po = IMP.pmi.mmcif.ProtocolOutput()
         simo.add_protocol_output(po)
         po.add_component_sequence(po._last_state, 'foo.1@12', 'ACGT')
@@ -230,7 +239,7 @@ _ihm_multi_state_model_group_link.model_group_id
         nup85_2 = st2.create_molecule("Nup85", "SELM", "Z")
         nup85_2.add_representation(resolutions=[1])
 
-        hier = s.build()
+        _ = s.build()
 
         self.assertEqual(len(po.system.asym_units), 2)
         po.system.asym_units[0]._id = 'A'
@@ -265,7 +274,7 @@ _ihm_multi_state_model_group_link.model_group_id
                                   alphabet=IMP.pmi.alphabets.dna)
         dna.add_representation(resolutions=[1])
 
-        hier = s.build()
+        _ = s.build()
         self.assertEqual(len(po.system.entities), 2)
         self.assertEqual(len(po.system.entities[0].sequence), 4)
         for r in po.system.entities[0].sequence:
@@ -321,19 +330,19 @@ _ihm_multi_state_model_group_link.model_group_id
 
         alld = IMP.pmi.mmcif._AllDatasets(s)
 
-        l = ihm.location.InputFileLocation(repo='foo', path='baz')
-        ds1 = ihm.dataset.EM2DClassDataset(l)
-        l = ihm.location.InputFileLocation(repo='foo', path='bar')
-        ds2 = ihm.dataset.CXMSDataset(l)
-        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        ds3 = ihm.dataset.PDBDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo', path='baz')
+        ds1 = ihm.dataset.EM2DClassDataset(loc)
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        ds2 = ihm.dataset.CXMSDataset(loc)
+        loc = ihm.location.PDBLocation('1abc', '1.0', 'test details')
+        ds3 = ihm.dataset.PDBDataset(loc)
 
         g1 = alld.get_all_group(state1)
 
         alld.add(state1, ds1)
         alld.add(state1, ds2)
         g2 = alld.get_all_group(state1)
-        g3 = alld.get_all_group(state1)
+        _ = alld.get_all_group(state1)
 
         alld.add(state1, ds3)
         g4 = alld.get_all_group(state1)
@@ -442,8 +451,8 @@ _ihm_sphere_obj_site.model_id
         asym = po.asym_units['Nup84.0']
         assembly = ihm.Assembly([asym])
         assembly._id = 42
-        s1 = ihm.representation.AtomicSegment(asym(1,2), True)
-        s2 = ihm.representation.FeatureSegment(asym(3,4), True,
+        s1 = ihm.representation.AtomicSegment(asym(1, 2), True)
+        s2 = ihm.representation.FeatureSegment(asym(3, 4), True,
                                                primitive='sphere', count=1)
         representation = ihm.representation.Representation([s1, s2])
         representation._id = 99
@@ -553,10 +562,11 @@ _ihm_sphere_obj_site.model_id
                                      representation)
         group.append(model)
         model.name = 'foo'
-        model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
-                              'Nup84.0')
-        self.assertAlmostEqual(model.get_rmsf('Nup84.0', (1,)), 4.5, delta=1e-4)
-        self.assertRaises(ValueError, model.get_rmsf, 'Nup84.0', (1,2))
+        model.parse_rmsf_file(
+            Path(self.get_input_file_name('test.nup84.rmsf')), 'Nup84.0')
+        self.assertAlmostEqual(model.get_rmsf('Nup84.0', (1,)), 4.5,
+                               delta=1e-4)
+        self.assertRaises(ValueError, model.get_rmsf, 'Nup84.0', (1, 2))
         self.assign_entity_asym_ids(po.system)
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -644,9 +654,9 @@ _ihm_sphere_obj_site.model_id
 
         nup85 = st2.create_molecule("Nup85", "SELM", "B")
         nup85.add_structure(self.get_input_file_name('test.nup85.pdb'), 'A',
-                            res_range=(8,9), offset=-7)
+                            res_range=(8, 9), offset=-7)
         nup85.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         self.assign_entity_asym_ids(po.system)
 
@@ -741,15 +751,13 @@ _ihm_starting_model_coord.ordinal_id
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_rigid_body(nup84)
 
-        mc1 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
-                                 monte_carlo_sample_objects=dof.get_movers(),
-                                 output_objects=[],
-                                 test_mode=True)
+        mc1 = IMP.pmi.macros.ReplicaExchange0(
+            m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
+            output_objects=[], test_mode=True)
         mc1.execute_macro()
-        mc2 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
-                                 monte_carlo_sample_objects=dof.get_movers(),
-                                 output_objects=[],
-                                 test_mode=True)
+        mc2 = IMP.pmi.macros.ReplicaExchange0(
+            m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
+            output_objects=[], test_mode=True)
         mc2.execute_macro()
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -782,11 +790,12 @@ _ihm_modeling_protocol_details.num_models_end
 _ihm_modeling_protocol_details.multi_scale_flag
 _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.ensemble_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 2 1 Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO 1 . .
-2 1 2 2 1 Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO 1 . .
+1 1 1 2 1 Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO YES 1 . .
+2 1 2 2 1 Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO YES 1 . .
 #
 """)
 
@@ -804,18 +813,16 @@ _ihm_modeling_protocol_details.description
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_rigid_body(nup84)
 
-        mc1 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
-                                 monte_carlo_sample_objects=dof.get_movers(),
-                                 output_objects=[],
-                                 test_mode=True,
-                                 monte_carlo_temperature=42.0,
-                                 replica_exchange_minimum_temperature=100.,
-                                 replica_exchange_maximum_temperature=200.)
+        mc1 = IMP.pmi.macros.ReplicaExchange0(
+            m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
+            output_objects=[], test_mode=True, monte_carlo_temperature=42.0,
+            replica_exchange_minimum_temperature=100.,
+            replica_exchange_maximum_temperature=200.)
         mc1.execute_macro()
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
-        ihm.dumper._ProtocolDumper().finalize(po.system) # assign step IDs
+        ihm.dumper._ProtocolDumper().finalize(po.system)  # assign step IDs
         d = IMP.pmi.mmcif._ReplicaExchangeProtocolDumper()
         d.dump(po.system, w)
         out = fh.getvalue()
@@ -946,7 +953,7 @@ _ihm_modeling_post_process.details
         nup84.add_representation(resolutions=[1])
         nup85 = st1.create_molecule("Nup85", "SELM", "Y")
         nup85.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         densities = {'Nup84.0': "foo.mrc"}
         pp = None
@@ -961,11 +968,11 @@ _ihm_modeling_post_process.details
             _number_of_clusters = 2
         d = DummyRex()
         with IMP.test.temporary_directory() as tmpdir:
-            d._outputdir = tmpdir
+            d._outputdir = Path(tmpdir)
             for i in range(d._number_of_clusters):
-                subdir = os.path.join(tmpdir, 'cluster.%d' % i)
-                os.mkdir(subdir)
-                with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+                subdir = Path(tmpdir) / ('cluster.%d' % i)
+                subdir.mkdir()
+                with open(str(subdir / 'stat.out'), 'w') as fh:
                     # 1 model for first cluster, 2 for second cluster
                     for line in range(i + 1):
                         fh.write('#\n')
@@ -979,33 +986,38 @@ _ihm_modeling_post_process.details
         class DummyModel(object):
             def parse_rmsf_file(self, fname, comp):
                 self.comp = comp
+
         class DummyRepresentation(object):
             def set_coordinates_from_rmf(self, comp, fname, frame,
                                          force_rigid_update):
                 pass
+
         class DummySimo(object):
             all_modeled_components = ['Nup84', 'Nup85']
+
         class DummyState(object):
             all_modeled_components = ['Nup84', 'Nup85']
+
         class DummyRex(object):
             _number_of_clusters = 1
+
         class DummyGroup(object):
             name = 'dgroup'
-        comp_to_asym = {'Nup84':None}
+        comp_to_asym = {'Nup84': None}
         with IMP.test.temporary_directory() as tmpdir:
             d = DummyRex()
-            d._outputdir = tmpdir
-            subdir = os.path.join(tmpdir, 'cluster.0')
-            os.mkdir(subdir)
+            d._outputdir = Path(tmpdir)
+            subdir = Path(tmpdir) / 'cluster.0'
+            subdir.mkdir()
             # Two models
-            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+            with open(str(subdir / 'stat.out'), 'w') as fh:
                 fh.write("{'modelnum': 0}\n")
                 fh.write("{'modelnum': 1}\n")
             # Mock localization density file
-            with open(os.path.join(subdir, 'Nup84.mrc'), 'w') as fh:
+            with open(str(subdir / 'Nup84.mrc'), 'w') as fh:
                 pass
             # Mock RMSF file
-            with open(os.path.join(subdir, 'rmsf.Nup84.dat'), 'w') as fh:
+            with open(str(subdir / 'rmsf.Nup84.dat'), 'w') as fh:
                 pass
             pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
             mg = DummyGroup()
@@ -1018,8 +1030,7 @@ _ihm_modeling_post_process.details
             self.assertEqual(e.clustering_feature, 'RMSD')
             self.assertEqual(e.name, 'dgroup')
             self.assertEqual(e.get_rmsf_file('Nup84'),
-                             os.path.join(tmpdir, 'cluster.0',
-                                          'rmsf.Nup84.dat'))
+                             Path(tmpdir) /  'cluster.0' / 'rmsf.Nup84.dat')
             # RMSF that doesn't exist
             e.load_rmsf(None, 'normsf')
             # RMSF that does exist
@@ -1027,7 +1038,7 @@ _ihm_modeling_post_process.details
             e.load_rmsf(dm, 'Nup84')
             self.assertEqual(dm.comp, 'Nup84')
             self.assertEqual(e.get_localization_density_file('Nup84'),
-                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+                             Path(tmpdir) / 'cluster.0' / 'Nup84.mrc')
             self.assertEqual(len(e.densities), 0)
             # Density that doesn't exist
             e.load_localization_density(None, 'noden', [], comp_to_asym)
@@ -1036,16 +1047,18 @@ _ihm_modeling_post_process.details
             po = IMP.pmi.mmcif.ProtocolOutput()
             r = DummyRepr('dummy', 'none')
             state = po._add_state(r)
-            e.load_localization_density(state, 'Nup84', ['Nup84'], comp_to_asym)
+            e.load_localization_density(state, 'Nup84', ['Nup84'],
+                                        comp_to_asym)
             self.assertEqual(e.densities[0].file.path,
-                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
-            self.assertEqual(e.densities[0].file.details,
-                         'Localization density for Nup84 dgroup')
+                             str(Path(tmpdir) / 'cluster.0' / 'Nup84.mrc'))
+            self.assertEqual(
+                e.densities[0].file.details,
+                'Localization density for Nup84 dgroup')
             # No precision available
             self.assertEqual(e._get_precision(), ihm.unknown)
             self.assertEqual(e.precision, ihm.unknown)
             # Make precision available
-            with open(os.path.join(tmpdir, 'precision.0.0.out'), 'w') as fh:
+            with open(str(Path(tmpdir) / 'precision.0.0.out'), 'w') as fh:
                 fh.write("""
 All kmeans_weight_500_2/cluster.0/ average centroid distance 24.3744728893
 All kmeans_weight_500_2/cluster.0/ centroid index 49
@@ -1061,6 +1074,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         """Test add_replica_exchange_analysis"""
         class DummyProtocolStep(object):
             pass
+
         class DummyRex(object):
             _number_of_clusters = 1
         m = IMP.Model()
@@ -1071,15 +1085,15 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
         po_state = st._protocol_output[0][1]
-        hier = s.build()
+        _ = s.build()
 
         with IMP.test.temporary_directory() as tmpdir:
             rex = DummyRex()
-            rex._outputdir = tmpdir
-            subdir = os.path.join(tmpdir, 'cluster.0')
-            os.mkdir(subdir)
+            rex._outputdir = Path(tmpdir)
+            subdir = Path(tmpdir) / 'cluster.0'
+            subdir.mkdir()
             # Two models
-            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+            with open(str(subdir / 'stat.out'), 'w') as fh:
                 fh.write("{'modelnum': 0}\n")
                 fh.write("{'modelnum': 1}\n")
             prot = DummyProtocolStep()
@@ -1095,14 +1109,14 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         s = IMP.pmi.topology.System(m)
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
-        st1 = s.create_state()
+        s.create_state()
 
         pp = DummyPostProcess()
         pp._id = 99
-        e1 = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1,
-                                     {}, None)
-        e2 = po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1,
-                                     {}, None)
+        po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1,
+                                {}, None)
+        po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1,
+                                {}, None)
         loc = ihm.location.InputFileLocation(repo='foo', path='bar')
         po.set_ensemble_file(1, loc)
         loc._id = 42
@@ -1145,14 +1159,14 @@ _ihm_ensemble_info.sub_sampling_type
         st1 = s.create_state()
         nup84 = st1.create_molecule("Nup84", "MELS", "X")
         nup84.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         ensemble = DummyEnsemble()
         ensemble._id = 42
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 97
-        den = ihm.model.LocalizationDensity(file=loc,
-                                asym_unit=po.asym_units['Nup84.0'])
+        den = ihm.model.LocalizationDensity(
+            file=loc, asym_unit=po.asym_units['Nup84.0'])
         ensemble.densities = [den]
         po.system.ensembles.append(ensemble)
 
@@ -1180,6 +1194,7 @@ _ihm_localization_density_files.entity_poly_segment_id
         """Test the CrossLinkDumper"""
         class DummyDataset(object):
             pass
+
         class DummyRestraint(object):
             label = 'foo'
         m = IMP.Model()
@@ -1201,8 +1216,8 @@ _ihm_localization_density_files.entity_poly_segment_id
         xl_group = po.get_cross_link_group(r)
         ex_xl = po.add_experimental_cross_link(1, 'Nup84',
                                                2, 'Nup84', xl_group)
-        ex_xl2 = po.add_experimental_cross_link(1, 'Nup84',
-                                                3, 'Nup84', xl_group)
+        _ = po.add_experimental_cross_link(1, 'Nup84',
+                                           3, 'Nup84', xl_group)
         # Duplicates should be ignored
         po.add_experimental_cross_link(1, 'Nup84', 3, 'Nup84', xl_group)
         # Non-modeled component should be ignored
@@ -1224,7 +1239,7 @@ _ihm_localization_density_files.entity_poly_segment_id
         fh = StringIO()
         self.assign_entity_asym_ids(po.system)
         d = ihm.dumper._ChemDescriptorDumper()
-        d.finalize(po.system) # Assign chemical descriptor IDs
+        d.finalize(po.system)  # Assign chemical descriptor IDs
         w = ihm.format.CifWriter(fh)
         d = ihm.dumper._CrossLinkDumper()
         d.finalize(po.system)
@@ -1286,10 +1301,11 @@ _ihm_cross_link_restraint.pseudo_site_flag
         state = st1._protocol_output[0][1]
         nup84 = st1.create_molecule("Nup84", "MELS", "X")
         nup84.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         class DummyRestraint(object):
             label = 'foo'
+
         class DummyProtocolStep(object):
             pass
         pr = DummyRestraint()
@@ -1301,8 +1317,8 @@ _ihm_cross_link_restraint.pseudo_site_flag
                               micrographs_number=50)
         lp = ihm.location.InputFileLocation(repo='foo', path='baz')
         dp = ihm.dataset.EMMicrographsDataset(lp)
-        l = ihm.location.InputFileLocation(repo='foo', path='bar')
-        d = ihm.dataset.EM2DClassDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        d = ihm.dataset.EM2DClassDataset(loc)
         d._id = 4
         d.parents.append(dp)
         pr.datasets[0] = d
@@ -1364,7 +1380,7 @@ _ihm_2dem_class_average_fitting.tr_vector[1]
 _ihm_2dem_class_average_fitting.tr_vector[2]
 _ihm_2dem_class_average_fitting.tr_vector[3]
 1 1 9 0.873 -0.406503 -0.909500 -0.086975 0.379444 -0.254653 0.889480 -0.831131
-0.328574 0.448622 304.187 219.586 0.000
+0.328574 0.448622 304.187 219.586 0
 #
 """)
 
@@ -1525,13 +1541,13 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         """Test add_membrane_surface_restraint method"""
         self._check_membrane_restraint(
                    'add_membrane_surface_location_restraint',
-                   "'upper bound' 0.500 . 0.000")
+                   "'upper bound' 0.500 . 0")
 
     def test_add_membrane_exclusion_restraint(self):
         """Test add_membrane_exclusion_restraint method"""
         self._check_membrane_restraint(
                    'add_membrane_exclusion_restraint',
-                   "'lower bound' 0.500 0.000 .")
+                   "'lower bound' 0.500 0 .")
 
     def _check_membrane_restraint(self, method_name, expected_dist_rsr):
         class MockObject(object):
@@ -1586,7 +1602,7 @@ _ihm_geometric_object_transformation.tr_vector[1]
 _ihm_geometric_object_transformation.tr_vector[2]
 _ihm_geometric_object_transformation.tr_vector[3]
 1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
-1.000000 0.000 0.000 0.000
+1.000000 0 0 0
 #
 #
 loop_
@@ -1673,17 +1689,17 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
         st1 = s.create_state()
-        state = st1._protocol_output[0][1]
+        # state = st1._protocol_output[0][1]
         nup84 = st1.create_molecule("Nup84", "MELS", "X")
         nup84.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         lp = ihm.location.InputFileLocation(repo='foo', path='baz')
         d = ihm.dataset.SASDataset(lp)
         d._id = 4
         model = DummyModel()
         model._id = 42
-        po._add_foxs_restraint(model, 'Nup84.0', (2,3), d, 3.4, 1.2, 'test')
+        po._add_foxs_restraint(model, 'Nup84.0', (2, 3), d, 3.4, 1.2, 'test')
 
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -1723,8 +1739,10 @@ _ihm_sas_restraint.details
         hier = s.build()
 
         p = IMP.atom.get_by_type(hier, IMP.atom.FRAGMENT_TYPE)[0]
+
         class DummyRestraint(object):
             label = 'foo'
+
         class DummyProtocolStep(object):
             assembly = None
         pr = DummyRestraint()
@@ -1732,8 +1750,8 @@ _ihm_sas_restraint.details
         po.add_em3d_restraint(state, pmi_restraint=pr,
                               target_ps=[None, None], densities=[p])
 
-        l = ihm.location.InputFileLocation(repo='foo', path='bar')
-        d = ihm.dataset.EMDensityDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        d = ihm.dataset.EMDensityDataset(loc)
         d._id = 4
         pr.dataset = d
 
@@ -1781,7 +1799,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         nup84 = st1.create_molecule("Nup84", "MELS", "X")
         nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
         nup84.add_representation(resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         # Create sequence mismatch
         po.system.entities[0].sequence = po.system.entities[0].sequence[1:]
@@ -1790,7 +1808,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         d.finalize(po.system)
-        d.dump_coords(po.system, w) # Needed to populate _seq_dif
+        d.dump_coords(po.system, w)  # Needed to populate _seq_dif
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         d.dump_seq_dif(po.system, w)
@@ -1853,7 +1871,6 @@ _ihm_starting_model_seq_dif.details
 
     def test_beads_fragment(self):
         """Test _BeadsFragment class"""
-        system = ihm.System()
         e = ihm.Entity('A' * 40)
         asym = ihm.AsymUnit(e)
         m = None
@@ -1880,7 +1897,6 @@ _ihm_starting_model_seq_dif.details
     def test_model_repr_dump_add_frag(self):
         """Test ModelRepresentationDumper.add_fragment()"""
         m = None
-        system = ihm.System()
         e = ihm.Entity('A' * 40)
         asym = ihm.AsymUnit(e)
         state1 = 'state1'
@@ -1925,7 +1941,7 @@ _ihm_starting_model_seq_dif.details
         nup84 = state.create_molecule("Nup84", "ME", "A")
         nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
         nup84.add_representation(nup84, resolutions=[1])
-        hier = s.build()
+        _ = s.build()
 
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -1937,7 +1953,7 @@ _ihm_starting_model_seq_dif.details
         d.finalize(po.system)
         d.dump(po.system, w)
         r, = po.system.orphan_representations
-        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1,2)])
+        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1, 2)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1976,7 +1992,7 @@ _ihm_model_representation_details.description
         nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
         nup84.add_representation(nup84.get_non_atomic_residues(),
                                  resolutions=[10])
-        hier = s.build()
+        _ = s.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_rigid_body(nup84.get_atomic_residues())
         fh = StringIO()
@@ -1989,7 +2005,8 @@ _ihm_model_representation_details.description
         d.finalize(po.system)
         d.dump(po.system, w)
         r, = po.system.orphan_representations
-        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1,2), (3,4)])
+        self.assertEqual([f.asym_unit.seq_id_range for f in r],
+                         [(1, 2), (3, 4)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -2125,21 +2142,23 @@ _imp_replica_exchange_protocol.replica_exchange_maximum_temperature
         s = IMP.pmi.topology.System(m)
         s.add_protocol_output(po)
         st1 = s.create_state()
-        m1 = st1.create_molecule("Prot1",sequence="QEALVVKDLL")
+        m1 = st1.create_molecule("Prot1", sequence="QEALVVKDLL")
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A', res_range=(55,63),
+                                      chain_id='A', res_range=(55, 63),
                                       offset=-54)
         fname = self.get_input_file_name("test_gmm.txt")
-        m1.add_representation(atomic_res,resolutions=[1,10],
+        m1.add_representation(atomic_res, resolutions=[1, 10],
                               density_residues_per_component=2,
                               density_voxel_size=3.0,
                               density_prefix=fname[:-4])
         hier = s.build()
-        densities = IMP.atom.Selection(hier,
-               representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        densities = IMP.atom.Selection(
+            hier,
+            representation_type=IMP.atom.DENSITIES).get_selected_particles()
         self.assertEqual(len(densities), 4)
-        gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
-                     target_fn=self.get_input_file_name('prot_gmm.mrc.1.txt'))
+        gem = IMP.pmi.restraints.em.GaussianEMRestraint(
+            densities,
+            target_fn=self.get_input_file_name('prot_gmm.mrc.1.txt'))
         gem.add_to_model()
 
         em3d, = po.system.restraints

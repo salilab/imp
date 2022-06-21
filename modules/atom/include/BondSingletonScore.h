@@ -2,7 +2,7 @@
  *  \file IMP/atom/BondSingletonScore.h
  *  \brief A Score on the distance between a the two particles in a bond.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BOND_SINGLETON_SCORE_H
@@ -32,9 +32,9 @@ class IMPATOMEXPORT BondSingletonScore : public SingletonScore {
   BondSingletonScore(UnaryFunction *f);
   UnaryFunction *get_unary_function() const { return f_; }
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_SCORE_METHODS(BondSingletonScore);
   IMP_OBJECT_METHODS(BondSingletonScore);
 };

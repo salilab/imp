@@ -2,7 +2,7 @@
  *  \file IMP/ConfigurationSet.h
  *  \brief Store a set of configurations of the model.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -54,7 +54,7 @@ class IMPKERNELEXPORT SaveToConfigurationSetOptimizerState
   SaveToConfigurationSetOptimizerState(ConfigurationSet *cs);
 
  protected:
-  virtual void do_update(unsigned int update_number) IMP_OVERRIDE;
+  virtual void do_update(unsigned int update_number) override;
   IMP_OBJECT_METHODS(SaveToConfigurationSetOptimizerState);
 };
 

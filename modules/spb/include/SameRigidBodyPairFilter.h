@@ -2,7 +2,7 @@
  *  \file IMP/spb/SameRigidBodyPairFilter.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_SAME_RIGID_BODY_PAIR_FILTER_H
@@ -22,10 +22,10 @@ class IMPSPBEXPORT SameRigidBodyPairFilter : public PairPredicate {
   SameRigidBodyPairFilter();
 
   virtual int get_value_index(
-      IMP::Model *m, const IMP::ParticleIndexPair &p) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexPair &p) const override;
 
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   IMP_PAIR_PREDICATE_METHODS(SameRigidBodyPairFilter);
   IMP_OBJECT_METHODS(SameRigidBodyPairFilter);

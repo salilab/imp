@@ -3,7 +3,7 @@
  *  \brief A restraint for ambiguous cross-linking MS data and multiple
  *         state approach.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -90,9 +90,8 @@ public:
   //double get_probability() const {return 0.0;}
 
   virtual double
-  unprotected_evaluate(DerivativeAccumulator *accum)
-     const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  unprotected_evaluate(DerivativeAccumulator *accum) const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(CompositeRestraint);
 
   virtual double get_probability() const

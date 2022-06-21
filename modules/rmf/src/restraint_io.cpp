@@ -2,7 +2,7 @@
  *  \file IMP/rmf/restraint_io.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,14 +48,14 @@ class RMFRestraint : public Restraint {
     }
     return info_;
   }
-  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE { return info_; }
-  RestraintInfo *get_static_info() const IMP_OVERRIDE { return info_; }
+  RestraintInfo *get_dynamic_info() const override { return info_; }
+  RestraintInfo *get_static_info() const override { return info_; }
 
 #endif
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+  Restraints do_create_current_decomposition() const override;
   IMP_OBJECT_METHODS(RMFRestraint);
 };
 
@@ -179,7 +179,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringKeys filenameks_;
   RMF::StringsKeys filenamesks_;
 
-  void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) IMP_OVERRIDE {
+  void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) override {
     RMF::NodeConstHandles chs = nh.get_children();
     if (sf_.get_is(nh)) {
       RMF::decorator::ScoreConst d = sf_.get(nh);
@@ -189,23 +189,23 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     } else {
       oi->set_last_score(0);
     }
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::ORGANIZATIONAL) {
         load_restraint_particles(ch);
       }
     }
   }
 
-  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
+  bool get_is(RMF::NodeConstHandle nh) const override {
     return nh.get_type() == RMF::FEATURE;
   }
   using P::do_create;
-  Restraint *do_create(RMF::NodeConstHandle name, Model *m) IMP_OVERRIDE {
+  Restraint *do_create(RMF::NodeConstHandle name, Model *m) override {
     RMF::NodeConstHandles chs = name.get_children();
     Restraints childr;
     ParticlesTemp inputs;
     std::vector<ParticleIndexesData> static_pis, dynamic_pis;
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::FEATURE) {
         childr.push_back(do_create(ch, m));
         add_link(childr.back(), ch);
@@ -214,7 +214,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       }
     }
     if (rf_.get_is(name)) {
-      IMP_FOREACH(RMF::NodeConstHandle an, rf_.get(name).get_representation()) {
+      for(RMF::NodeConstHandle an : rf_.get(name).get_representation()) {
         IMP_LOG_TERSE("Found alias child to " << an.get_name() << " of type "
                                               << an.get_type() << std::endl);
         Particle *p = get_association<Particle>(an);
@@ -248,7 +248,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   }
 
   void load_restraint_particles(RMF::NodeConstHandle parent) {
-    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+    for(RMF::NodeConstHandle ch : parent.get_children()) {
       Particle *p = get_association<Particle>(ch);
       if (p) {
         load_particle(ch, p->get_model(), p->get_index());
@@ -262,10 +262,10 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
      (or its children) */
   void create_restraint_particles(RMF::NodeConstHandle parent, Model *m) {
     RMF::NodeConstHandles chs = parent.get_children();
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::ORGANIZATIONAL) {
         ParticleIndexes pis;
-        IMP_FOREACH(RMF::NodeConstHandle pch, ch.get_children()) {
+        for(RMF::NodeConstHandle pch : ch.get_children()) {
           Pointer<Particle> pi = new IMP::Particle(m, pch.get_name());
           set_association(pch, pi.get(), true);
         }
@@ -280,7 +280,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       std::vector<ParticleIndexesData> &static_pis,
       std::vector<ParticleIndexesData> &dynamic_pis) {
     ParticleIndexes pis;
-    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+    for(RMF::NodeConstHandle ch : parent.get_children()) {
       Particle *p = get_association<Particle>(ch);
       pis.push_back(p->get_index());
       setup_particle(ch, m, p->get_index());
@@ -395,9 +395,8 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         RMF::Strings rvalue = nh.get_value(k);
         // Convert RMF relative paths to absolute
         Strings value;
-        for (RMF::Strings::const_iterator it = rvalue.begin();
-             it != rvalue.end(); ++it) {
-          value.push_back(RMF::internal::get_absolute_path(fh.get_path(), *it));
+        for (const auto &it : rvalue) {
+          value.push_back(RMF::internal::get_absolute_path(fh.get_path(), it));
         }
         r->get_info()->add_filenames(fh.get_name(k), value);
       }
@@ -493,7 +492,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   unsigned int max_terms_;
   boost::unordered_set<Restraint *> no_terms_;
 
-  void do_add(Restraint *r, RMF::NodeHandle nh) IMP_OVERRIDE {
+  void do_add(Restraint *r, RMF::NodeHandle nh) override {
     // handle restraints being in multiple sets
     all_.push_back(r);
     rsf_ = new core::RestraintsScoringFunction(all_);
@@ -516,7 +515,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
     }
   }
-  void do_save_one(Restraint *o, RMF::NodeHandle nh) IMP_OVERRIDE {
+  void do_save_one(Restraint *o, RMF::NodeHandle nh) override {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
@@ -542,43 +541,41 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       if (no_terms_.find(o) != no_terms_.end()) {
         // too big, do nothing
       } else if (!dynamic_cast<RestraintSet *>(o)) {
-        // required to set last score
-        Pointer<Restraint> rd = o->create_current_decomposition();
-        // set all child scores to 0 for this frame, we will over
-        // right below
-        /*RMF::NodeHandles chs = nh.get_children();
-        for (unsigned int i = 0; i < chs.size(); ++i) {
-          if (chs[i].get_type() == RMF::FEATURE) {
-            RMF::Score s = sf_.get(chs[i]);
-            s.set_frame_score(0);
-          }
-          }*/
-        if (rd && rd != o) {
-          rd->set_was_used(true);
-          if (Subset(get_input_particles(rd->get_inputs())) != os) {
-            RestraintsTemp rs =
-                get_restraints(RestraintsTemp(1, rd));
-            if (rs.size() > max_terms_) {
-              no_terms_.insert(o);
-              // delete old children
-            } else {
-              IMP_FOREACH(Restraint * r, rs) {
-                Subset s(get_input_particles(r->get_inputs()));
-                double score = r->get_last_score();
-                r->set_was_used(true);
-                if (score != 0) {
-                  IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
-                                                         << " of " << score
-                                                         << std::endl);
-                  RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
-                  RMF::decorator::Score csd = sf_.get(nnh);
-                  csd.set_frame_score(score);
-                  // csd.set_representation(get_node_ids(nh.get_file(), s));
+        Model *m = o->get_model();
+        // adding the decomposed restraint will update the dependency graph;
+        // restore this again since the restraint is only temporary
+        m->save_dependencies();
+        // make sure rd goes out of scope before we call restore_dependencies
+        {
+          // required to set last score
+          Pointer<Restraint> rd = o->create_current_decomposition();
+          if (rd && rd != o) {
+            rd->set_was_used(true);
+            if (Subset(get_input_particles(rd->get_inputs())) != os) {
+              RestraintsTemp rs =
+                  get_restraints(RestraintsTemp(1, rd));
+              if (rs.size() > max_terms_) {
+                no_terms_.insert(o);
+                // delete old children
+              } else {
+                for(Restraint * r : rs) {
+                  Subset s(get_input_particles(r->get_inputs()));
+                  double score = r->get_last_score();
+                  r->set_was_used(true);
+                  if (score != 0) {
+                    IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
+                                                           << " of " << score
+                                                           << std::endl);
+                    RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
+                    RMF::decorator::Score csd = sf_.get(nnh);
+                    csd.set_frame_score(score);
+                  }
                 }
               }
             }
           }
         }
+        m->restore_dependencies();
       }
     }
   }
@@ -641,9 +638,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
       Strings value = ri->get_filenames_value(i);
       RMF::Strings rvalue;
-      for (Strings::const_iterator it = value.begin();
-           it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
+      for (const auto &it : value) {
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), it));
       }
       nh.set_frame_value(key, rvalue);
     }
@@ -709,9 +705,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
       Strings value = ri->get_filenames_value(i);
       RMF::Strings rvalue;
-      for (Strings::const_iterator it = value.begin();
-           it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
+      for (const auto &it : value) {
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), it));
       }
       nh.set_static_value(key, rvalue);
     }
@@ -748,8 +743,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   }
 
   void save_dynamic_particles(RMF::FileHandle file, ParticlesTemp ps) {
-    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
-      Particle *p = *pit;
+    for (Particle *p : ps) {
       RMF::NodeHandle nh = get_node_from_association(file, p);
       save_node(p->get_model(), p->get_index(), nh);
     }
@@ -758,8 +752,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   void add_static_particles(RMF::NodeHandle parent, ParticlesTemp ps) {
     RMF::FileHandle file = parent.get_file();
     RMF::decorator::AliasFactory af(file);
-    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
-      Particle *p = *pit;
+    for (Particle *p : ps) {
       std::string nicename = RMF::get_as_node_name(p->get_name());
       if (get_has_associated_node(file, p)) {
         RMF::NodeHandle c = parent.add_child(nicename, RMF::ALIAS);
@@ -811,11 +804,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     }
   }
 
-  void do_save(RMF::FileHandle fh) IMP_OVERRIDE {
+  void do_save(RMF::FileHandle fh) override {
     rsf_->evaluate(false);
     P::do_save(fh);
   }
-  RMF::NodeType get_type(Restraint *) const IMP_OVERRIDE {
+  RMF::NodeType get_type(Restraint *) const override {
     return RMF::FEATURE;
   }
 
@@ -853,7 +846,7 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const Restraints &rs) {
   RMF::decorator::BondFactory bf(fh);
   Restraints decomp;
 
-  IMP_FOREACH(Restraint * r, rs) {
+  for(Restraint * r : rs) {
     Pointer<Restraint> rd = r->create_decomposition();
     if (rd == r) {
       decomp.push_back(rd);
@@ -864,12 +857,11 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const Restraints &rs) {
   }
   RMF::NodeHandle bdr =
       fh.get_root_node().add_child("restraint bonds", RMF::ORGANIZATIONAL);
-  IMP_FOREACH(Restraint * bd, decomp) {
+  for(Restraint * bd : decomp) {
     Subset s(get_input_particles(bd->get_inputs()));
     bd->set_was_used(bd);
     RMF::NodeHandles inputs;
-    IMP_FOREACH(Particle * cur,
-                get_input_particles(bd->get_inputs())) {
+    for(Particle * cur : get_input_particles(bd->get_inputs())) {
       RMF::NodeHandle n = get_node_from_association(fh, cur);
       if (n != RMF::NodeHandle()) {
         inputs.push_back(n);

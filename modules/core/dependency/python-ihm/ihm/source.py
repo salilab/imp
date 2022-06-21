@@ -11,7 +11,7 @@ class Source(object):
 
 class Details(object):
     """Identifying information for an entity source.
-       See :class:`Manipulated` or :class:`Natural`.
+       See :class:`Manipulated`, :class:`Natural` or :class:`Synthetic`.
 
        :param ncbi_taxonomy_id: NCBI taxonomy identifier, e.g. "469008"
        :param scientific_name: Scientific name, e.g. "Escherichia coli"

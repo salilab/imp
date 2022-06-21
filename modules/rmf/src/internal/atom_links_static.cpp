@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -380,7 +380,7 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
       atom::create_bond(get_bonded(p0), get_bonded(p1), atom::Bond::SINGLE);
     }
   } else {
-    IMP_FOREACH(RMF::NodeConstHandle c, n.get_children()) {
+    for(RMF::NodeConstHandle c : n.get_children()) {
       setup_bonds(c, m, p);
     }
   }
@@ -391,7 +391,7 @@ atom::Bonds get_rep_bonds(atom::Hierarchy h) {
   IMP_FUNCTION_LOG;
   atom::Bonds ret;
   if (atom::Representation::get_is_setup(h)) {
-    IMP_FOREACH(atom::Hierarchy r,
+    for(atom::Hierarchy r :
                 atom::Representation(h).get_representations(atom::BALLS)) {
       if (r != h) {
         ret += atom::get_internal_bonds(r);
@@ -399,7 +399,7 @@ atom::Bonds get_rep_bonds(atom::Hierarchy h) {
     }
     IMP_LOG_VERBOSE("Found " << ret.size() << " alt bonds" << std::endl);
   } else {
-    IMP_FOREACH(atom::Hierarchy ch, h.get_children()) {
+    for(atom::Hierarchy ch : h.get_children()) {
       ret += get_rep_bonds(ch);
     }
   }

@@ -2,7 +2,7 @@
  *  \file IMP/atom/StereochemistryPairFilter.h
  *  \brief A filter that excludes bonds, angles and dihedrals.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H
@@ -49,9 +49,9 @@ class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate {
 
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_PREDICATE_METHODS(StereochemistryPairFilter);
   IMP_OBJECT_METHODS(StereochemistryPairFilter);
   ;

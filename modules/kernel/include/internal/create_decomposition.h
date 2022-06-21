@@ -2,7 +2,7 @@
  *  \file internal/utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
@@ -23,7 +23,7 @@ Restraints create_current_decomposition(Model *m, Score *score,
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
   Restraints ret;
-  IMP_FOREACH(typename Container::ContainedIndexType i, c->get_contents()) {
+  for(typename Container::ContainedIndexType i : c->get_contents()) {
     double cscore = score->evaluate_index(m, i, nullptr);
     if (cscore != 0) {
       std::ostringstream oss;

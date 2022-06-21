@@ -2,7 +2,7 @@
  *  \file IMP/CreateLogContext.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include <IMP/kernel_config.h>
 #include "raii_macros.h"
 #include "log.h"
-#include <IMP/nullptr.h>
 #include "Object.h"
 #if IMP_KERNEL_HAS_LOG4CXX
 #include <log4cxx/ndc.h>

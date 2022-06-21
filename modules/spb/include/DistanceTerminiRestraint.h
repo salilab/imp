@@ -2,7 +2,7 @@
  *  \file IMP/spb/DistanceTerminiRestraint.h
  *  \brief A distance restraint between protein termini.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_TERMINI_RESTRAINT_H
@@ -38,8 +38,8 @@ class IMPSPBEXPORT DistanceTerminiRestraint : public IMP::Restraint {
   /** This macro declares the basic needed methods: evaluate and show
    */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum) const
-      IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(DistanceTerminiRestraint);
 
  private:

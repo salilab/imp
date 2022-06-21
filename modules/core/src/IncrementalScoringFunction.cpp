@@ -2,7 +2,7 @@
  *  \file IncrementalScoringFunction.cpp
  *  \brief Score model efficiently when a small number of particles are changed.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,6 +28,8 @@ IncrementalScoringFunction::IncrementalScoringFunction(
     Model *m, const ParticleIndexes &ps, const RestraintsTemp &rs,
     double weight, double max, std::string name)
     : ScoringFunction(m, name), weight_(weight), max_(max) {
+  IMPCORE_DEPRECATED_OBJECT_DEF(
+            2.17, "Use IMP::ScoringFunction::evaluate_moved() instead.");
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
@@ -48,7 +50,7 @@ class IncrementalRestraintsScoringFunction
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return get_restraints();
   }
 };
@@ -104,8 +106,8 @@ void IncrementalScoringFunction::create_scoring_functions() {
   }
 
   Vector<RestraintsTemp> crs;
-  IMP_FOREACH(ParticleIndex pi, all_) {
-    RestraintsTemp cr = get_dependent_restraints(get_model(), pi);
+  for(ParticleIndex pi : all_) {
+    RestraintsTemp cr = get_model()->get_dependent_restraints_uncached(pi);
     /* Remove any duplicates in cr (could happen with rigid bodies) */
     std::sort(cr.begin(), cr.end());
     cr.erase(std::unique(cr.begin(), cr.end()), cr.end());

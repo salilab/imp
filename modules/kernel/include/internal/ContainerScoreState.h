@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,21 +25,21 @@ class ContainerScoreState : public ScoreState {
   ContainerScoreState(Container *back)
       : ScoreState(back->get_model(), back->get_name() + "State"),
         back_(back) {}
-  virtual void do_before_evaluate() IMP_OVERRIDE {
+  virtual void do_before_evaluate() override {
     IMP_CHECK_OBJECT(back_);
     return back_->do_score_state_before_evaluate();
   }
 
-  virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {
+  virtual void do_after_evaluate(DerivativeAccumulator *) override {
     back_->do_score_state_after_evaluate();
   }
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     IMP_CHECK_OBJECT(back_);
     return back_->get_score_state_inputs();
   }
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     IMP_CHECK_OBJECT(back_);
     return ModelObjectsTemp(1, back_);
   }

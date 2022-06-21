@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamics.h
  *  \brief Simple Brownian dynamics optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -116,32 +116,30 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   IMP_OBJECT_METHODS(BrownianDynamics);
 
  protected:
-  /** a set of setup operations before a series of simulation steps */
-  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
+  //! a set of setup operations before a series of simulation steps
+  virtual void setup(const ParticleIndexes &ps) override;
 
-  /** Calls do_advance_chunk() to advance ps in chunks
+  //! Calls do_advance_chunk() to advance ps in chunks
+  /** @param sc particles to simulate in this step
+      @param dt_fs step size in femtoseconds
 
-   @param sc particles to simulate in this step
-   @param dt_fs step size in femtoseconds
-
-   @return the time step actually simulated (for this class,
-           it is always equal to the input dt_fs)
-  */
+      @return the time step actually simulated (for this class,
+              it is always equal to the input dt_fs)
+   */
   virtual double do_step(const ParticleIndexes &sc,
-                         double dt_fs) IMP_OVERRIDE;
+                         double dt_fs) override;
 
   virtual bool get_is_simulation_particle(ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
 
  protected:
-  /** advances a chunk of ps from index begin to end
-
-      @param dtfs time step in femtoseconds
+  //! advances a chunk of ps from index begin to end
+  /** @param dtfs time step in femtoseconds
       @param ikt inverse kT for current chunk step
       @param ps particle indexes to advance
       @param begin beginning index of chunk of ps
       @param end end index of chunk of ps
-  */
+   */
   virtual void do_advance_chunk(double dtfs, double ikt,
                              const ParticleIndexes &ps,
                              unsigned int begin, unsigned int end);

@@ -2,7 +2,7 @@
  *  \file IMP/em2d/domino_filter_tables.h
  *  \brief Managing of projection overlap filter
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,11 +40,11 @@ class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
   virtual IMP::domino::SubsetFilter *
       get_subset_filter(const IMP::domino::Subset &s,
                         const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
 
   virtual double get_strength(const IMP::domino::Subset &s,
                               const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
 
   IMP_OBJECT_METHODS(DistanceFilterTable);
 };

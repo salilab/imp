@@ -1,7 +1,7 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,12 +48,12 @@ ParticleIndexPairsAdaptor::ParticleIndexPairsAdaptor(
     : ParticleIndexPairs(get_indexes(ps)) {}
 
 namespace {
-/* Check to make sure that IMP_FOREACH compiles correctly */
+/* Check to make sure that range-based for compiles correctly */
 void foreach_test() IMP_UNUSED_FUNCTION;
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);
-  IMP_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
+  for(ParticleIndex pi : pia) { IMP_UNUSED(pi); }
 }
 }
 IMPKERNEL_END_NAMESPACE

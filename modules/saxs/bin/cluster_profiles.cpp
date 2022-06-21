@@ -5,8 +5,6 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ChiScore.h>
 
-#include <IMP/nullptr_macros.h>
-
 #include <vector>
 #include <string>
 #include <map>
@@ -67,7 +65,7 @@ int main(int argc, char **argv) {
   }
 
   // read the profiles
-  IMP::saxs::Profile *exp_profile = IMP_NULLPTR;
+  IMP::saxs::Profile *exp_profile = nullptr;
   std::map<int, std::pair<std::string, IMP::saxs::Profile *> > fit_profiles;
   bool fit_file = false;
   // open input file with profile file names - mes format

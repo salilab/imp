@@ -2,19 +2,23 @@
  *  \file IMP/pmi/MembraneRestraint.h
  *  \brief Favor configurations where target is in the membrane.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPPMI_MEMBRANE_RESTRAINT_H
 #define IMPPMI_MEMBRANE_RESTRAINT_H
+
 #include <IMP/pmi/pmi_config.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/Particle.h>
 
 IMPPMI_BEGIN_NAMESPACE
+
 //! Membrane Restraint
-/** Favors configurations where target is in the membrane
+/** Favors configurations where target is in the membrane.
+    This is the C++ implementation; for most modeling the Python wrapper
+    is more useful - see IMP.pmi.restraints.basic.MembraneRestraint.
  */
 class IMPPMIEXPORT MembraneRestraint : public isd::ISDRestraint {
   ParticleIndex z_nuisance_;
@@ -43,8 +47,8 @@ public:
   double get_score_inside(double z, double z_slope_center_lower,
                       double z_slope_center_upper) const;
   virtual double unprotected_evaluate(DerivativeAccumulator *) const
-      IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(MembraneRestraint);
 };
 

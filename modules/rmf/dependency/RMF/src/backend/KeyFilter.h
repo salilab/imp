@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,7 +31,7 @@ class KeyFilter : public SharedDataAdaptor<SD> {
  public:
   KeyFilter(SD* sd) : P(sd) {}
   void add_index_key(Category cat, std::string name) {
-    RMF_FOREACH(backward_types::IndexKey k,
+    for(backward_types::IndexKey k :
                 P::sync_->get_keys(cat, backward_types::IndexTraits())) {
       if (P::sync_->get_name(k) == name) {
         index_keys_.push_back(k);
@@ -41,7 +41,7 @@ class KeyFilter : public SharedDataAdaptor<SD> {
     }
   }
   void add_float_key(Category cat, std::string name) {
-    RMF_FOREACH(FloatKey k, P::sync_->get_keys(cat, FloatTraits())) {
+    for(FloatKey k : P::sync_->get_keys(cat, FloatTraits())) {
       if (P::sync_->get_name(k) == name) {
         float_keys_.push_back(k);
         std::sort(float_keys_.begin(), float_keys_.end());
@@ -50,7 +50,7 @@ class KeyFilter : public SharedDataAdaptor<SD> {
     }
   }
   void add_floats_key(Category cat, std::string name) {
-    RMF_FOREACH(FloatsKey k, P::sync_->get_keys(cat, FloatsTraits())) {
+    for(FloatsKey k : P::sync_->get_keys(cat, FloatsTraits())) {
       if (P::sync_->get_name(k) == name) {
         floats_keys_.push_back(k);
         std::sort(floats_keys_.begin(), floats_keys_.end());

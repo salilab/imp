@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,15 +28,9 @@ struct KeyData : public RMF_LARGE_UNORDERED_MAP<NodeID, typename Traits::Type> {
   KeyData() {}
 };
 
-// boost flat_map::operator[] segfaults on Fedora 32+; use std::map instead
 template <class Traits>
-#if __GNUC__ >= 10
-struct TypeData : std::map<ID<Traits>, KeyData<Traits> > {
-  typedef std::map<ID<Traits>, KeyData<Traits> > P;
-#else
 struct TypeData : RMF_SMALL_UNORDERED_MAP<ID<Traits>, KeyData<Traits> > {
   typedef RMF_SMALL_UNORDERED_MAP<ID<Traits>, KeyData<Traits> > P;
-#endif
   // Mac OS 10.8 and earlier clang needs this for some reason
   TypeData() {}
   TypeData(const TypeData& o) : P(o) {}

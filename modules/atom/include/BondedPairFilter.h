@@ -2,7 +2,7 @@
  *  \file IMP/atom/BondedPairFilter.h
  *  \brief A fake container for bonds
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BONDED_PAIR_FILTER_H
@@ -27,9 +27,9 @@ class IMPATOMEXPORT BondedPairFilter : public PairPredicate {
 
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_PREDICATE_METHODS(BondedPairFilter);
   IMP_OBJECT_METHODS(BondedPairFilter);
   ;

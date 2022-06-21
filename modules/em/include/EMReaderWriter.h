@@ -2,7 +2,7 @@
  *  \file IMP/em/EMReaderWriter.h
  *  \brief Classes to read or write density files in EM format.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,7 +28,7 @@ class IMPEMEXPORT EMReaderWriter : public MapReaderWriter {
    \exception IOException in case that the filename was not found
    */
   void read(const char *filename, float **data,
-            DensityHeader &header) IMP_OVERRIDE;
+            DensityHeader &header) override;
 
   //! Writes a density file in EM format with the header information
   /**
@@ -37,7 +37,7 @@ class IMPEMEXPORT EMReaderWriter : public MapReaderWriter {
      \param[in] header DensityHeader() with the header information
   */
   void write(const char *filename, const float *data,
-             const DensityHeader &header) IMP_OVERRIDE;
+             const DensityHeader &header) override;
 #endif
  protected:
   //! Reads the header

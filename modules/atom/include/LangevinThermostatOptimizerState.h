@@ -3,7 +3,7 @@
  *  \brief Maintains temperature during molecular dynamics using
  *         a Langevin thermostat.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,7 +44,7 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(LangevinThermostatOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
 
  private:
   Particles pis_;

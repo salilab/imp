@@ -2,7 +2,7 @@
  *  \file IMP/isd/Nuisance.h
  *  \brief A decorator for nuisance parameters particles
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_NUISANCE_H
@@ -101,10 +101,10 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState {
 
  public:
   friend class Nuisance;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(NuisanceScoreState);
 };
 #endif

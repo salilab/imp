@@ -2,7 +2,7 @@
  *  \file IMP/core/SurfaceTetheredChain.h
  *  \brief Score on surface-to-end distance of chain tethered to impenetrable surface
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_SURFACE_TETHERED_CHAIN_H
@@ -60,7 +60,7 @@ class SurfaceTetheredChain : public UnaryFunction {
     }
 
   virtual DerivativePair evaluate_with_derivative(
-                  double feature) const IMP_OVERRIDE {
+                  double feature) const override {
     if (feature < z_min_) {
       return DerivativePair(z_min_deriv_ * feature + z_min_int_,
                             z_min_deriv_);
@@ -71,7 +71,7 @@ class SurfaceTetheredChain : public UnaryFunction {
     }
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return evaluate_with_derivative(feature).first;
   }
 

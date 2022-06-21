@@ -2,7 +2,7 @@
  *  \file IMP/rmf/simple_links.h
  *  \brief Manage links between IMP objects and RMF nodes.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,7 +35,7 @@ class SimpleLoadLink : public LoadLink {
 
  protected:
   virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
-  void do_load(RMF::FileConstHandle fh) IMP_OVERRIDE {
+  void do_load(RMF::FileConstHandle fh) override {
     IMP_OBJECT_LOG;
     for (unsigned int i = 0; i < os_.size(); ++i) {
       IMP_LOG_VERBOSE("Loading " << fh.get_node(nhs_[i]) << std::endl);
@@ -106,7 +106,7 @@ class SimpleLoadLink : public LoadLink {
     set_was_used(true);
     RMF::NodeConstHandles chs = rt.get_children();
     RMF::NodeConstHandles matching_chs;
-    IMP_FOREACH(RMF::NodeConstHandle ch, rt.get_children()) {
+    for(RMF::NodeConstHandle ch : rt.get_children()) {
       IMP_LOG_VERBOSE("Checking " << ch << std::endl);
       if (get_is(ch)) matching_chs.push_back(ch);
     }
@@ -135,7 +135,7 @@ class SimpleSaveLink : public SaveLink {
 
  protected:
   virtual void do_save_one(O *o, RMF::NodeHandle nh) = 0;
-  void do_save(RMF::FileHandle fh) IMP_OVERRIDE {
+  void do_save(RMF::FileHandle fh) override {
     for (unsigned int i = 0; i < os_.size(); ++i) {
       IMP_LOG_VERBOSE("Saving to " << fh.get_node(nhs_[i]) << std::endl);
 

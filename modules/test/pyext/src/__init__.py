@@ -21,6 +21,11 @@ import datetime
 import pickle
 import contextlib
 import subprocess
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path
+
 
 # Expose some unittest decorators for convenience
 expectedFailure = unittest.expectedFailure
@@ -143,7 +148,7 @@ class TestCase(unittest.TestCase):
 
     def __init__(self, *args, **keys):
         unittest.TestCase.__init__(self, *args, **keys)
-        self._progname = os.path.abspath(sys.argv[0])
+        self._progname = Path(sys.argv[0]).absolute()
 
     def setUp(self):
         self.__check_level = IMP.get_check_level()
@@ -163,17 +168,17 @@ class TestCase(unittest.TestCase):
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
            test directory."""
-        testdir = os.path.dirname(self._progname)
-        if self.__module__ != '__main__':
-            testdir = os.path.dirname(sys.modules[self.__module__].__file__)
-        dirs = testdir.split(os.path.sep)
-        for i in range(len(dirs), 0, -1):
-            input = os.path.sep.join(dirs[:i] + ['input'])
-            if os.path.isdir(input):
-                ret = os.path.join(input, filename)
-                if not os.path.exists(ret):
-                    raise IOError("Test input file "+ret+" does not exist")
-                return ret
+        if self.__module__ == '__main__':
+            testdir = self._progname
+        else:
+            testdir = Path(sys.modules[self.__module__].__file__)
+        for p in testdir.parents:
+            input = p / "input"
+            if input.is_dir():
+                ret = input / filename
+                if not ret.exists():
+                    raise IOError("Test input file %s does not exist" % ret)
+                return str(ret)
         raise IOError("No test input directory found")
 
     def open_input_file(self, filename, mode='rb'):
@@ -187,7 +192,7 @@ class TestCase(unittest.TestCase):
         if not hasattr(self, '_tmpdir'):
             self._tmpdir = _TempDir(os.environ.get('IMP_TMP_DIR'))
         tmpdir = self._tmpdir.tmpdir
-        return os.path.join(tmpdir, filename)
+        return str(Path(tmpdir) / filename)
 
     def get_magnitude(self, vector):
         """Get the magnitude of a list of floats"""
@@ -785,9 +790,9 @@ class _TestResult(unittest.TextTestResult):
 
     def stopTestRun(self):
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
-            fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
-                                 os.path.basename(sys.argv[0]))
-            with open(fname, 'wb') as fh:
+            fname = (Path(os.environ['IMP_TEST_DETAIL_DIR'])
+                     / Path(sys.argv[0]).name)
+            with open(str(fname), 'wb') as fh:
                 pickle.dump(self.all_tests, fh, -1)
         super(_TestResult, self).stopTestRun()
 

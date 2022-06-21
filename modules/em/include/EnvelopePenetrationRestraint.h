@@ -2,7 +2,7 @@
  *  \file IMP/em/EnvelopePenetrationRestraint.h
  *  \brief Score how well a protein is inside its density
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,8 +44,8 @@ class IMPEMEXPORT EnvelopePenetrationRestraint : public Restraint {
                                Float threshold);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(EnvelopePenetrationRestraint);
 
 #ifndef SWIG

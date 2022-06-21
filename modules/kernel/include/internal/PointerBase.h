@@ -2,7 +2,7 @@
  *  \file base/internal/PointerBase.h
  *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,6 @@
 #include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
-#include "../nullptr.h"
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
@@ -285,6 +284,12 @@ inline void swap(PointerBase<Traits>& a, PointerBase<Traits>& b) {
   a.swap_with(b);
 }
 
+#if IMP_COMPILER_HAS_THREE_WAY
+template <class OT, class OTraits>
+inline std::strong_ordering operator<=>(OT* o, const PointerBase<OTraits>& p) {
+  return p <=> o;
+}
+#else
 template <class OT, class OTraits>
 inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
   return p == o;
@@ -309,6 +314,7 @@ template <class OT, class OTraits>
 inline bool operator<=(OT* o, const PointerBase<OTraits>& p) {
   return p >= o;
 }
+#endif
 #endif
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

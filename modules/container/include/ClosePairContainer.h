@@ -2,7 +2,7 @@
  *  \file IMP/container/ClosePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
@@ -120,7 +120,7 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   unsigned int get_number_of_partial_rebuilds() const;
 
  private:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 #endif
   IMP_OBJECT_METHODS(ClosePairContainer);
 };

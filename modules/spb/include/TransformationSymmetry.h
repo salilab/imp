@@ -2,7 +2,7 @@
  *  \file IMP/spb/TransformationSymmetry.h
  *  \brief Implement various types of symmetry
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -39,11 +39,11 @@ class IMPSPBEXPORT TransformationSymmetry : public SingletonModifier {
                          Particle *py, Particle *pz);
 
   virtual void apply_index(IMP::Model *m,
-                           IMP::ParticleIndex p) const IMP_OVERRIDE;
+                           IMP::ParticleIndex p) const override;
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
   virtual IMP::ModelObjectsTemp do_get_outputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
 

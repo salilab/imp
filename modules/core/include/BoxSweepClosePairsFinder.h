@@ -2,7 +2,7 @@
  *  \file IMP/core/BoxSweepClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
@@ -26,17 +26,17 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder {
   BoxSweepClosePairsFinder();
 
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual ParticleIndexPairs get_close_pairs(
-      Model *m, const ParticleIndexes &pc) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pc) const override;
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
-      const ParticleIndexes &pcb) const IMP_OVERRIDE;
+      const ParticleIndexes &pcb) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(BoxSweepClosePairsFinder);
 };
 #endif /* IMP_USE_CGAL */

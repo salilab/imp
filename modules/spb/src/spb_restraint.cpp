@@ -2,10 +2,9 @@
  *  \file spb_restraint.cpp
  *  \brief SPB Restraints
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/nullptr.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
 #include <IMP/container.h>

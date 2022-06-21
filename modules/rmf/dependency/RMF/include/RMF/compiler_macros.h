@@ -2,7 +2,7 @@
  *  \file RMF/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_COMPILER_MACROS_H
@@ -21,35 +21,11 @@
 #endif
 #endif
 
-#ifdef __clang__
-#define RMF_COMPILER_HAS_OVERRIDE 1
-#elif defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define RMF_COMPILER_HAS_OVERRIDE 1
-#else
-#define RMF_COMPILER_HAS_OVERRIDE 0
-#endif
-
-#if RMF_COMPILER_HAS_OVERRIDE
+// Deprecated; just use 'override' keyword instead
 #define RMF_OVERRIDE override
-#else
-#define RMF_OVERRIDE
-#endif
 
-#ifdef __clang__
-#define RMF_COMPILER_HAS_FINAL 1
-#elif defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define RMF_COMPILER_HAS_FINAL 1
-#else
-#define RMF_COMPILER_HAS_FINAL 0
-#endif
-
-#if RMF_COMPILER_HAS_FINAL
+// Deprecated; just use 'final' keyword instead
 #define RMF_FINAL final
-#else
-#define RMF_FINAL
-#endif
 
 #if defined(__GNUC__) && __cplusplus >= 201103L
 #define RMF_HAS_NOEXCEPT 1
@@ -159,7 +135,7 @@
 #define RMF_GCC_PROTOTYPES
 #endif
 
-// Warn about missing RMF_OVERRIDE on virtual methods if gcc is new enough
+// Warn about missing override on virtual methods if gcc is new enough
 #if __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
 #ifdef RMF_SWIG_WRAPPER
 #define RMF_GCC_OVERRIDE

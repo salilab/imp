@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.cpp
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
@@ -31,9 +31,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 namespace {
-  class HasHigherCCCPointer
-  : public std::binary_function<RegistrationResult*, RegistrationResult*, bool>
-  {
+  class HasHigherCCCPointer {
     HasHigherCCC<RegistrationResult> hhccc_;
   public:
     bool operator()(const RegistrationResult *a,

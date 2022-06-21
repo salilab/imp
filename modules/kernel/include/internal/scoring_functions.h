@@ -2,7 +2,7 @@
  *  \file internal/utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SCORING_FUNCTIONS_H
@@ -51,13 +51,13 @@ class RestraintScoringFunction : public ScoringFunction {
   RestraintScoringFunction(RestraintType *r, std::string name)
       : ScoringFunction(IMP::internal::get_model(r), name), r_(r) {}
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
+                                    const ScoreStatesTemp &ss) override;
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
                                     const ParticleIndexes &moved_pis,
                                     const ParticleIndexes &reset_pis,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
-  Restraints create_restraints() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                                    const ScoreStatesTemp &ss) override;
+  Restraints create_restraints() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(RestraintScoringFunction);
 };
 
@@ -108,9 +108,9 @@ class WrappedRestraintScoringFunction : public ScoringFunction {
         weight_(weight),
         max_(max) {}
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
-  Restraints create_restraints() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                                    const ScoreStatesTemp &ss) override;
+  Restraints create_restraints() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(WrappedRestraintScoringFunction);
 };
 

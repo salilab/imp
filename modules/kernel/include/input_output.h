@@ -2,7 +2,7 @@
  *  \file IMP/input_output.h
  *  \brief Utility functions to track input/output particles of model objects.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INPUT_OUTPUT_H

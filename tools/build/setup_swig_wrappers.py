@@ -50,6 +50,13 @@ def build_wrapper(module, finder, sorted, target, source):
         """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
 
+%%pythonbegin %%{
+# This wrapper is part of IMP,
+# Copyright 2007-2022 IMP Inventors. All rights reserved.
+
+from __future__ import print_function, division, absolute_import
+%%}
+
 /* '#' formats in parsing or building Python values
    (e.g. in PyObject_CallFunction) use Py_ssize_t, not int, for lengths
    in Python >= 2.5 */

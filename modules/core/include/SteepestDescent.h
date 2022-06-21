@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,7 +24,7 @@ class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
   SteepestDescent(Model *m, std::string name = "SteepestDescent%1%");
 
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(SteepestDescent);
 
   //! Set the minimum gradient threshold

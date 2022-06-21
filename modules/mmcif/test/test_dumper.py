@@ -503,12 +503,13 @@ _ihm_modeling_protocol_details.num_models_end
 _ihm_modeling_protocol_details.multi_scale_flag
 _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.ensemble_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 2 . Sampling 'Monte Carlo' 0 500 YES NO NO . . .
-2 2 1 2 . Sampling 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
-.
+1 1 1 2 . Sampling 'Monte Carlo' 0 500 YES NO NO YES . . .
+2 2 1 2 . Sampling 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO YES
+. . .
 #
 """)
 
@@ -654,8 +655,8 @@ _ihm_3dem_restraint.cross_correlation_coefficient
     def test_site_dumper_spheres_only(self):
         """Test SiteDumper, spheres only"""
         system = IMP.mmcif.System()
-        h, state = self.make_model(system, [("foo", "A", 'A'),
-                                            ("bar", "AA", "B")])
+        h, state = self.make_model(system, [("foo", "AA", 'A'),
+                                            ("bar", "AAA", "B")])
         m = state.model
 
         # Add coordinates

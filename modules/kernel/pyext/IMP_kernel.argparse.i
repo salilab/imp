@@ -10,11 +10,9 @@ extern IMPKERNELEXPORT Flag<bool> help_advanced;
 
 void get_flag_subset(const boost::program_options::options_description &f,
                      unsigned ntokens, Strings &s) {
-  for (std::vector<boost::shared_ptr<
-       boost::program_options::option_description> >::const_iterator
-       it = f.options().begin(); it != f.options().end(); ++it) {
-    if (it->get()->semantic()->min_tokens() == ntokens) {
-      s.push_back(it->get()->long_name());
+  for (const auto &it : f.options()) {
+    if (it.get()->semantic()->min_tokens() == ntokens) {
+      s.push_back(it.get()->long_name());
     }
   }
 }

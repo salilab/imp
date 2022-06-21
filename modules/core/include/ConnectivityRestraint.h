@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -54,12 +54,12 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const override;
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ConnectivityRestraint);
   ;
 };

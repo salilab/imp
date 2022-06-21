@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,7 +37,7 @@ void HierarchyLoadGaussians::link_particle(RMF::NodeConstHandle n,
 }
 
 void HierarchyLoadGaussians::load(RMF::FileConstHandle fh, Model *m) {
-  IMP_FOREACH(Pair pp, gaussians_) {
+  for(Pair pp : gaussians_) {
     IMP_LOG_VERBOSE("Loading global coordinates for "
                     << m->get_particle_name(pp.second) << std::endl);
     RMF::Vector3 sd =
@@ -61,7 +61,7 @@ void HierarchySaveGaussians::setup_node(Model *m,
 }
 
 void HierarchySaveGaussians::save(Model *m, RMF::FileHandle fh) {
-  IMP_FOREACH(Pair pp, gaussians_) {
+  for(Pair pp : gaussians_) {
     gaussian_factory_.get(fh.get_node(pp.first))
         .set_frame_variances(RMF::Vector3(
              core::Gaussian(m, pp.second).get_gaussian().get_variances()));

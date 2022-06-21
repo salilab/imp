@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/HarmonicLowerBound.h    \brief Harmonic lower bound function.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_HARMONIC_LOWER_BOUND_H
@@ -21,11 +21,11 @@ class HarmonicLowerBound : public Harmonic {
  public:
   /** Create with the given mean and the spring constant k */
   HarmonicLowerBound(Float mean, Float k) : Harmonic(mean, k) {}
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return feature >= Harmonic::get_mean() ? 0.0 : Harmonic::evaluate(feature);
   }
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return feature >= Harmonic::get_mean()
                ? DerivativePair(0.0, 0.0)
                : Harmonic::evaluate_with_derivative(feature);

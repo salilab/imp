@@ -163,7 +163,7 @@
   class PyOutFileAdapter : public IMP::Object
 {
 
-  std::auto_ptr<std::ostream> ostr_;
+  std::unique_ptr<std::ostream> ostr_;
 
   struct StreamBuf:public std::streambuf {
     PyObject *write_method_;
@@ -270,7 +270,7 @@
       Py_XDECREF(write_method_);
     }
   };
-  std::auto_ptr<StreamBuf> stream_buf_;
+  std::unique_ptr<StreamBuf> stream_buf_;
 public:
  PyOutFileAdapter():IMP::Object("PyOutFileAdapter") {
   }
@@ -288,10 +288,10 @@ public:
     if (!wm) {
       return NULL;
     }
-    stream_buf_= std::auto_ptr<StreamBuf>(new StreamBuf(wm));
+    stream_buf_= std::unique_ptr<StreamBuf>(new StreamBuf(wm));
 
     IMP_INTERNAL_CHECK(!ostr_.get(), "Already set the stream.");
-    ostr_ = std::auto_ptr<std::ostream>(new std::ostream(stream_buf_.get()));
+    ostr_ = std::unique_ptr<std::ostream>(new std::ostream(stream_buf_.get()));
     ostr_->exceptions(std::ostream::badbit);
     return ostr_.get();
     fail:
@@ -479,8 +479,8 @@ protected:
 {
   virtual ~PyInFileAdapter(){
   }
-  std::auto_ptr<InAdapter> streambuf_;
-  std::auto_ptr<std::istream> istr_;
+  std::unique_ptr<InAdapter> streambuf_;
+  std::unique_ptr<std::istream> istr_;
 public:
  PyInFileAdapter(): IMP::Object("PyInFileAdapter") {}
   std::string get_type_name() const {return "Python input file";}
@@ -507,7 +507,7 @@ public:
 
 #if PY_VERSION_HEX < 0x03000000
     if (real_file) {
-      streambuf_ = std::auto_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
+      streambuf_ = std::unique_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
     } else 
 #endif
     {
@@ -515,10 +515,10 @@ public:
       if (!(read_method = PyObject_GetAttrString(p, "read"))) {
         return NULL;
       }
-      streambuf_ = std::auto_ptr<InAdapter>(new PyInFilelikeAdapter(read_method));
+      streambuf_ = std::unique_ptr<InAdapter>(new PyInFilelikeAdapter(read_method));
     }
     IMP_INTERNAL_CHECK(!istr_.get(), "Already set the stream.");
-    istr_ = std::auto_ptr<std::istream>(new std::istream(streambuf_.get()));
+    istr_ = std::unique_ptr<std::istream>(new std::istream(streambuf_.get()));
     istr_->exceptions(std::istream::badbit);
     return istr_.get();
   }

@@ -2,7 +2,7 @@
  *  \file IMP/ScoreAccumulator.h   \brief Class for adding scores from
  *                                         restraints to the model.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,6 @@
 #include <IMP/log_macros.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/math.h>
-#include <IMP/nullptr.h>
 #include <IMP/exception.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

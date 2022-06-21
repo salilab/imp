@@ -2,7 +2,7 @@
  *  \file IMP/em2d/domino_filters.h
  *  \brief SubsetFilter for checking overlap between projections and images
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,7 +55,7 @@ class IMPEM2DEXPORT DistanceFilter : public domino::SubsetFilter {
   }
 
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-        IMP_OVERRIDE;
+        override;
 
   IMP_OBJECT_METHODS(DistanceFilter);
 };

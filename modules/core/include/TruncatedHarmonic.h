@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/TruncatedHarmonic.h    \brief Truncated harmonic.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TRUNCATED_HARMONIC_H
@@ -58,14 +58,14 @@ class TruncatedHarmonic : public UnaryFunction {
   TruncatedHarmonic(Float center, Float k, Float threshold)
       : d_(center, k, threshold, k * square(threshold)) {}
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return DerivativePair(evaluate(feature),
                           ((DIRECTION == LOWER && (feature > d_.c_)) ||
                            (DIRECTION == UPPER && (feature < d_.c_)))
                               ? 0
                               : d_.evaluate_with_derivative(feature).second);
   }
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return ((DIRECTION == LOWER && (feature > d_.c_)) ||
             (DIRECTION == UPPER && (feature < d_.c_)))
                ? 0

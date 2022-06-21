@@ -2,7 +2,7 @@
  *  \file IMP/atom/pdb.h
  *  \brief Functions to read PDBs
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -53,7 +53,7 @@ class NonAlternativePDBSelector : public PDBSelector {
   NonAlternativePDBSelector(std::string name = "NonAlternativePDBSelector%1%")
       : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return (internal::atom_alt_loc_indicator(pdb_line) == ' ' ||
             internal::atom_alt_loc_indicator(pdb_line) == 'A');
   }
@@ -66,7 +66,7 @@ class ATOMPDBSelector : public NonAlternativePDBSelector {
   ATOMPDBSelector(std::string name = "ATOMPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return (NonAlternativePDBSelector::get_is_selected(pdb_line) &&
             internal::is_ATOM_rec(pdb_line));
   }
@@ -79,7 +79,7 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
   CAlphaPDBSelector(std::string name = "CAlphaPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
@@ -93,7 +93,7 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
   CBetaPDBSelector(std::string name = "CBetaPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
@@ -115,7 +115,7 @@ class AtomTypePDBSelector : public PDBSelector {
     std::sort(atom_types_.begin(), atom_types_.end());
   }
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     std::string type = internal::atom_type(pdb_line);
     boost::trim(type);
     return std::binary_search(atom_types_.begin(), atom_types_.end(), type);
@@ -137,7 +137,7 @@ class ResidueTypePDBSelector : public PDBSelector {
     std::sort(residue_types_.begin(), residue_types_.end());
   }
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     std::string type = internal::atom_residue_name(pdb_line);
     boost::trim(type);
     return std::binary_search(residue_types_.begin(), residue_types_.end(),
@@ -152,7 +152,7 @@ class CPDBSelector : public NonAlternativePDBSelector {
   CPDBSelector(std::string name = "CPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
@@ -166,7 +166,7 @@ class NPDBSelector : public NonAlternativePDBSelector {
   NPDBSelector(std::string name = "NPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
@@ -179,7 +179,7 @@ class AllPDBSelector : public PDBSelector {
  public:
   AllPDBSelector(std::string name = "AllPDBSelector%1%") : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return (true || pdb_line.empty());
   }
   IMP_OBJECT_METHODS(AllPDBSelector);
@@ -188,7 +188,7 @@ class AllPDBSelector : public PDBSelector {
 //! Select all ATOM and HETATM records with the given chain ids
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -215,7 +215,7 @@ class WaterPDBSelector : public NonAlternativePDBSelector {
   WaterPDBSelector(std::string name = "WaterPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -234,7 +234,7 @@ class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
   HydrogenPDBSelector(std::string name = "HydrogenPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     return is_hydrogen(pdb_line);
   }
@@ -246,7 +246,7 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> ws_, hs_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -268,7 +268,7 @@ class NonHydrogenPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> hs_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -288,7 +288,7 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> ws_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
@@ -308,7 +308,7 @@ class BackbonePDBSelector : public NonWaterNonHydrogenPDBSelector {
   BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%")
       : NonWaterNonHydrogenPDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonWaterNonHydrogenPDBSelector::get_is_selected(pdb_line))
       return false;
     const std::string type = internal::atom_type(pdb_line);
@@ -326,7 +326,7 @@ class PPDBSelector : public NonAlternativePDBSelector {
   PPDBSelector(std::string name = "PPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'P' && type[2] == ' ' && type[3] == ' ');
@@ -349,7 +349,7 @@ class AndPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return a_->get_is_selected(pdb_line) && b_->get_is_selected(pdb_line);
   }
   IMP_OBJECT_METHODS(AndPDBSelector);
@@ -372,7 +372,7 @@ class OrPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return a_->get_is_selected(pdb_line) || b_->get_is_selected(pdb_line);
   }
   IMP_OBJECT_METHODS(OrPDBSelector);
@@ -396,7 +396,7 @@ class XorPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return a_->get_is_selected(pdb_line) != b_->get_is_selected(pdb_line);
   }
   IMP_OBJECT_METHODS(XorPDBSelector);
@@ -419,7 +419,7 @@ class NotPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const IMP_OVERRIDE {
+  bool get_is_selected(const std::string &pdb_line) const override {
     return !a_->get_is_selected(pdb_line);
   }
   IMP_OBJECT_METHODS(NotPDBSelector);
@@ -601,8 +601,8 @@ class IMPATOMEXPORT WritePDBOptimizerState : public OptimizerState {
   WritePDBOptimizerState(const atom::Hierarchies mh, std::string filename);
 
  protected:
-  virtual void do_update(unsigned int call) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_update(unsigned int call) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(WritePDBOptimizerState);
 };
 

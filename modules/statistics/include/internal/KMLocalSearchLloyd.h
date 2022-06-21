@@ -2,7 +2,7 @@
  *  \file KMLocalSearchLloyd.h
  *  \brief Lloyd's algorithm with random restarts
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,31 +41,31 @@ class IMPSTATISTICSEXPORT KMLocalSearchLloyd : public KMLocalSearch {
   double get_accumulated_rdl() {
     return (init_trail_dist_ - curr_->get_distortion()) / init_trail_dist_;
   }
-  void log_stage(std::ostream &out = std::cout) IMP_OVERRIDE;
+  void log_stage(std::ostream &out = std::cout) override;
   void log_run() {
     IMP_LOG_VERBOSE("<Generating new random centers>" << std::endl);
   }
   //! Do base class resetting. Initialize is_new_phase to false and save
   //! the initial run distortion.
-  virtual void reset() IMP_OVERRIDE;
+  virtual void reset() override;
   //! Do base class processing.  If there has been an improvement in distortion,
   //! save the current solution.
-  void end_stage() IMP_OVERRIDE;
+  void end_stage() override;
   //! Checks if the run is done
   /** If the number of stages exceeds the maximum stages (total or per run),
   then we are done.  If this is the first stage of the run, then we are not
   done, and we do beginning of run processing. Otherwise, if the relative
   distortion loss (RDL) is greater than minimum val then we are done (success).
   */
-  virtual bool is_run_done() IMP_OVERRIDE;
+  virtual bool is_run_done() override;
   //! End the run
   /** If the accumulated RDL is smaller that the minimum predefined accumulated
   RDL then the run has ended unsuccessfully and we request the start of a new
   run. Otherwise the run has ended successfully, and we start a new run by
   saving the current run distortion.
   */
-  void end_run() IMP_OVERRIDE;
-  void preform_stage() IMP_OVERRIDE;
+  void end_run() override;
+  void preform_stage() override;
   double init_trail_dist_;  // initial distortion for a trail
   bool is_new_trail_;
 };

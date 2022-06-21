@@ -2,21 +2,14 @@
  *  \file IMP/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_COMPILER_MACROS_H
 #define IMPKERNEL_COMPILER_MACROS_H
 
-#include <boost/config.hpp>
-#include <boost/version.hpp>
-#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR)
-#include <boost/foreach.hpp>
-#define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
-#else
-/** Use C++11 range-based for if available or BOOST_FOREACH if not. */
+// Deprecated: just use C++11 range-based for instead
 #define IMP_FOREACH(v, r) for (v : r)
-#endif
 
 #define IMP_STRINGIFY(x) #x
 
@@ -60,49 +53,25 @@
 #define IMP_RESTRICT
 #endif
 
-#if defined(__clang__) && __clang_major__ >= 5
-#define IMP_COMPILER_HAS_OVERRIDE 1
-#elif !defined(__clang__) && defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define IMP_COMPILER_HAS_OVERRIDE 1
-#else
-#define IMP_COMPILER_HAS_OVERRIDE 0
-#endif
 
+// Deprecated: just use the 'override' keyword directly
 #ifdef IMP_DOXYGEN
-//! Cause a compile error if this method does not override a parent method
-/** This is helpful to catch accidental mismatches of call signatures between
-    the method and the parent method, which would cause the method to be
-    overloaded rather than overridden. Usually this macro should be used
-    whenever implementing a method that is declared virtual in the parent. */
 #define IMP_OVERRIDE
 #else
-#if IMP_COMPILER_HAS_OVERRIDE
 #define IMP_OVERRIDE override
-#else
-#define IMP_OVERRIDE
-#endif
-#endif
-
-#if defined(IMP_SWIG_WRAPPER)
-#define IMP_COMPILER_HAS_FINAL 0
-#elif defined(__clang__)
-#define IMP_COMPILER_HAS_FINAL 1
-#elif defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define IMP_COMPILER_HAS_FINAL 1
-#else
-#define IMP_COMPILER_HAS_FINAL 0
 #endif
 
 #ifdef IMP_DOXYGEN
+#define IMP_FINAL
 //! Have the compiler report an error if anything overrides this method
-#define IMP_FINAL
+#define IMP_SWIG_FINAL
 #else
-#if IMP_COMPILER_HAS_FINAL
+#if defined(IMP_SWIG_WRAPPER) || defined(SWIG)
+#define IMP_FINAL
+#define IMP_SWIG_FINAL
+#else
 #define IMP_FINAL final
-#else
-#define IMP_FINAL
+#define IMP_SWIG_FINAL final
 #endif
 #endif
 

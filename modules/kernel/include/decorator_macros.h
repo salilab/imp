@@ -2,7 +2,7 @@
  *  \file IMP/decorator_macros.h
  *  \brief Helper macros for implementing Decorators
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

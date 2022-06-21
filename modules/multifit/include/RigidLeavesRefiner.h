@@ -2,7 +2,7 @@
  *  \file IMP/multifit/RigidLeavesRefiner.h
  *  \brief Return all rigid body members that are also hierarchy leaves.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,13 +19,13 @@ class IMPMULTIFITEXPORT RigidLeavesRefiner : public Refiner {
  public:
   RigidLeavesRefiner(std::string name = "RigidLeavesRefiner%d")
       : Refiner(name) {}
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(Particle *) const override;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual const ParticlesTemp get_refined(Particle *) const IMP_OVERRIDE;
+  virtual const ParticlesTemp get_refined(Particle *) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(RigidLeavesRefiner);
 };
 

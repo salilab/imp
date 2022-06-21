@@ -1,7 +1,7 @@
 /**
  *  \file MonteCarlo.cpp  \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -201,6 +201,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
 }
 void MonteCarlo::set_incremental_scoring_function(
     IncrementalScoringFunction *isf) {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.17, "Use set_score_moved() instead.")
   isf_ = isf;
   Optimizer::set_scoring_function(isf);
 }

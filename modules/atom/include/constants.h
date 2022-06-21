@@ -1,7 +1,8 @@
 /**
- * \file IMP/atom/constants.h \brief Define the elements used in \imp.
+ * \file IMP/atom/constants.h
+ * \brief Define various useful constants for atomic simulations.
  *
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

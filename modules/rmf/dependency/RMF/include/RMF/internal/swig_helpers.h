@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_SWIG_HELPERS_H
@@ -42,7 +42,7 @@ struct PyPointer : boost::noncopyable {
   PyObject* release() {
     RMF_INTERNAL_CHECK(ptr_->ob_refcnt >= 1, "No refcount");
     PyObject* ret = ptr_;
-    ptr_ = NULL;
+    ptr_ = nullptr;
     return ret;
   }
   ~PyPointer() {

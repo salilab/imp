@@ -2,7 +2,7 @@
  *  \file internal/restraint_evaluation.h
  *  \brief Utility functions to get restraint scores
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H

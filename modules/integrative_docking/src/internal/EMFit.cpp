@@ -1,7 +1,7 @@
 /**
  * \file IMP/integrative_docking/EMFit.cpp \brief
  *
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/EMFit.h>
@@ -17,7 +17,6 @@
 #include <IMP/atom/pdb.h>
 
 #include <IMP/algebra/constants.h>
-#include <IMP/nullptr.h>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 

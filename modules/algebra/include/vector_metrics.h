@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/vector_metrics.h   \brief Functions to generate vectors.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,10 +34,10 @@ IMP_OBJECTS(VectorKDMetric, VectorKDMetrics);
 class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
  public:
   EuclideanVectorKDMetric(std::string name = "EuclideanVectorKDMetric%1%");
-  double get_distance(const VectorKD &a, const VectorKD &b) const IMP_OVERRIDE {
+  double get_distance(const VectorKD &a, const VectorKD &b) const override {
     return get_l2_norm(a - b);
   }
-  VectorKD get_centroid(const VectorKDs &vs) const IMP_OVERRIDE {
+  VectorKD get_centroid(const VectorKDs &vs) const override {
     IMP_USAGE_CHECK(!vs.empty(), "Needs things to have a centroid");
     VectorKD sum = std::accumulate(vs.begin(), vs.end(),
                                    get_zero_vector_kd(vs[0].get_dimension()));
@@ -52,10 +52,10 @@ class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
 class IMPALGEBRAEXPORT MaxVectorKDMetric : public VectorKDMetric {
  public:
   MaxVectorKDMetric(std::string name = "MaxVectorKDMetric%1%");
-  double get_distance(const VectorKD &a, const VectorKD &b) const IMP_OVERRIDE {
+  double get_distance(const VectorKD &a, const VectorKD &b) const override {
     return get_linf_norm(a - b);
   }
-  VectorKD get_centroid(const VectorKDs &vs) const IMP_OVERRIDE {
+  VectorKD get_centroid(const VectorKDs &vs) const override {
     IMP_USAGE_CHECK(!vs.empty(), "Needs things to have a centroid");
     BoundingBoxKD bb = std::accumulate(vs.begin(), vs.end(),
                                        BoundingBoxKD(vs[0].get_dimension()));

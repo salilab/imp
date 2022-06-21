@@ -33,8 +33,11 @@ case ${TARGET_OSX_VER} in
   10.8):
     PYTHONS="2.7"
     ;;
+  10.10):
+    PYTHONS="2.7"
+    ;;
   *):
-    echo "This script currently only works on Mac OS X 10.4, 10.6, or 10.8 machines"
+    echo "This script currently only works on Mac OS X 10.4, 10.6, 10.8, or 10.10 machines"
     exit 1
     ;;
 esac
@@ -164,7 +167,7 @@ if [ "${TARGET_OSX_VER}" != "10.4" ]; then
                 /usr/local/lib/libopencv_core.2.4.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.13.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.dylib \
-                /usr/local/lib/libjpeg.8.dylib \
+                /usr/local/lib/libjpeg.9.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.9.dylib \
@@ -301,6 +304,7 @@ rm -f Info.plist.$$ Description.plist.$$
 
 echo "Making disk image (.dmg)..."
 hdiutil create -fs HFS+ -volname "IMP ${VER} for OS X ${TARGET_OSX_VER}" \
+               -megabytes 300 \
                -srcfolder imp-${VER}-package IMP-${VER}-${TARGET_OSX_VER}.dmg \
         || exit 1
 hdiutil internet-enable -yes IMP-${VER}-${TARGET_OSX_VER}.dmg || exit 1

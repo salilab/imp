@@ -2,7 +2,7 @@
  *  \file IMP/core/SphereDistancePairScore.h
  *  \brief A score on the distance between the surfaces of two spheres.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
@@ -75,9 +75,9 @@ class IMPCOREEXPORT HarmonicUpperBoundSphereDiameterPairScore
   double get_rest_length() const { return x0_; }
   double get_stiffness() const { return k_; }
   double evaluate_index(Model *m, const ParticleIndexPair &p,
-                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+                        DerivativeAccumulator *da) const override;
   ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
   IMP_OBJECT_METHODS(HarmonicUpperBoundSphereDiameterPairScore);
 };
@@ -142,9 +142,9 @@ class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore {
                                     FloatKey radius = FloatKey("radius"));
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(NormalizedSphereDistancePairScore);
   IMP_OBJECT_METHODS(NormalizedSphereDistancePairScore);
   ;
@@ -167,9 +167,9 @@ class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore {
                                   FloatKey radius = FloatKey("radius"));
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(WeightedSphereDistancePairScore);
   IMP_OBJECT_METHODS(WeightedSphereDistancePairScore);
   ;

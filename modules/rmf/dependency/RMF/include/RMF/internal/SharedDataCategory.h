@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -42,7 +42,7 @@ class SharedDataCategory {
   SharedDataCategory() {}
   Categories get_categories() const {
     Categories ret;
-    RMF_FOREACH(const CategoryData::From::value_type & it, data_.from_name) {
+    for(const auto &it : data_.from_name) {
       ret.push_back(it.second);
     }
     return ret;

@@ -2,7 +2,7 @@
  *  \file IMP/em2d/DummyRestraint.h
  *  \brief
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,8 +55,8 @@ class IMPEM2DEXPORT DummyRestraint : public Restraint {
   }
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(DummyRestraint);
 };
 IMP_OBJECTS(DummyRestraint, DummyRestraints);
@@ -84,8 +84,8 @@ class IMPEM2DEXPORT ParticlesDummyRestraint : public Restraint {
   }
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ParticlesDummyRestraint);
 };
 IMP_OBJECTS(ParticlesDummyRestraint, ParticlesDummyRestraints);

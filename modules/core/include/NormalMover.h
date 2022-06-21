@@ -2,7 +2,7 @@
  *  \file IMP/core/NormalMover.h
  *  \brief A modifier which perturbs a point with a normal distribution.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,9 +49,9 @@ class IMPCOREEXPORT NormalMover : public MonteCarloMover {
   Float get_sigma() const { return stddev_; }
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(NormalMover);
 };
 

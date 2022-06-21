@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,8 @@ Model::Model(std::string name)
   first_call_ = true;
   age_counter_ = 1;
   dependencies_age_ = 0;
+  saved_dependencies_age_ = 0;
+  dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
@@ -122,7 +124,7 @@ ParticleIndexes Model::get_particle_indexes() {
 ModelObjectsTemp Model::get_model_objects() const {
   ModelObjectsTemp ret;
   ret.reserve(dependency_graph_.size());
-  IMP_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
+  for(const DependencyGraph::value_type & vt : dependency_graph_) {
     ret.push_back(const_cast<ModelObject *>(vt.first));
   }
   return ret;
@@ -199,7 +201,7 @@ void Model::do_destroy() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Destroying model" << std::endl);
   // make sure we clear their data to free model objects they are keeping alive
-  IMP_FOREACH(Particle * p, particle_index_) {
+  for(Particle * p : particle_index_) {
     if (p) {
       remove_particle(p->get_index());
     }

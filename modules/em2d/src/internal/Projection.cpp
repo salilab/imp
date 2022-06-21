@@ -3,7 +3,7 @@
  *  \brief A class for generation and storage of projections
  *
  *  \authors Dina Schneidman
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -235,9 +235,9 @@ void compute_projections(const Particles& particles,
       rotated_points[point_index] = r * points[point_index];
     }
     // project
-    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, mass,
-                                                pixel_size, resolution,
-                                                axis_size));
+    std::unique_ptr<Projection> p(new Projection(rotated_points, mass,
+                                                 pixel_size, resolution,
+                                                 axis_size));
     p->set_rotation(r);
     p->set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
     p->set_id(i);
@@ -313,7 +313,7 @@ void compute_projections(const Particles& all_particles,
       rotated_ligand_points[p_index] = r * lig_points[p_index];
 
     // project
-    IMP_UNIQUE_PTR<Projection> p(
+    std::unique_ptr<Projection> p(
         new Projection(rotated_points, rotated_ligand_points,
                        lig_mass, pixel_size, resolution, axis_size));
     p->set_rotation(r);

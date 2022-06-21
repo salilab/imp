@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_HELPERS_BASE_H
@@ -16,9 +16,7 @@
 #include "../Vector.h"
 #include "../Array.h"
 #include "../ConstVector.h"
-#include "../nullptr_macros.h"
 #include "IMP/Vector.h"
-#include "IMP/nullptr.h"
 #include <vector>
 #include <cstdio>
 
@@ -84,7 +82,7 @@ struct PyPointer : boost::noncopyable {
   PyObject* release() {
     IMP_INTERNAL_CHECK(ptr_->ob_refcnt >= 1, "No refcount");
     PyObject* ret = ptr_;
-    ptr_ = IMP_NULLPTR;
+    ptr_ = nullptr;
     return ret;
   }
   ~PyPointer() {

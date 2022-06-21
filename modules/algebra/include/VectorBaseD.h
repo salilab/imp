@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/VectorBaseD.h   \brief Simple D vector class.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -77,7 +77,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
                 ValueException);
     }
     IMP_IF_CHECK(USAGE) {
-      IMP_FOREACH(double f, r) {
+      for(double f : r) {
         IMP_UNUSED(f);
         IMP_USAGE_CHECK(!IMP::is_nan(f), "NaN passed to constructor");
       }
@@ -93,7 +93,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
                 ValueException);
     }
     IMP_IF_CHECK(USAGE) {
-      IMP_FOREACH(double f, r) {
+      for(double f : r) {
         IMP_USAGE_CHECK(!IMP::is_nan(f), "NaN passed in equals");
       }
     }

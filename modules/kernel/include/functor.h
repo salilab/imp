@@ -2,7 +2,7 @@
  *  \file IMP/functor.h
  *  \brief Helper functionality for functors.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

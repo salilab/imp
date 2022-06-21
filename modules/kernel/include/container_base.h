@@ -2,7 +2,7 @@
  *  \file IMP/container_base.h
  *  \brief Abstract base class for containers of particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -64,7 +64,7 @@ class IMPKERNELEXPORT Container : public ModelObject {
   std::size_t get_contents_hash() const { return do_get_contents_hash(); }
 
   //! containers don't have outputs
-  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
 

@@ -2,7 +2,7 @@
  *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -253,7 +253,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   //! Check if the particle has the needed attributes for a cast to succeed
   static bool get_is_setup(Model *m, ParticleIndex p) {
-    return H::get_is_setup(m->get_particle(p), get_traits());
+    return H::get_is_setup(m, p, get_traits());
   }
 
   //! Return true if the hierarchy is valid.

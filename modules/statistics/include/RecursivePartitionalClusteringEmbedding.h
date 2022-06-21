@@ -2,7 +2,7 @@
  *  \file IMP/statistics/RecursivePartitionalClusteringEmbedding.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,8 +31,8 @@ class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding
                                           PartitionalClustering *clustering);
   PartitionalClustering *create_full_clustering(
       PartitionalClustering *center_cluster);
-  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  algebra::VectorKD get_point(unsigned int i) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(RecursivePartitionalClusteringEmbedding);
 };
 

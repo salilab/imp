@@ -3,7 +3,7 @@
  * \brief Define and manipulate a kinematic structure over a model.
  * \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_H
@@ -168,7 +168,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   //! update_all_external_coordinates() or update_all_internal_coordinates(),
   //! respectively.
   void transform_safe(IMP::algebra::Transformation3D tr){
-    IMP_FOREACH(KinematicNode root, roots_){
+    for(KinematicNode root : roots_){
       IMP::core::transform(root, tr);
       mark_internal_coordinates_changed(); // technically, roots reference frames is a part of the internal tree coordinates, so external coordinates will need to be updated at some point
     }
@@ -267,7 +267,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   */
   void apply_transform_safely(IMP::algebra::Transformation3D tr)
   {
-    IMP_FOREACH(KinematicNode root, roots_){
+    for(KinematicNode root : roots_){
       IMP::core::transform(root, tr);
       mark_internal_coordinates_changed(); // technically, roots reference frames is a part of the internal tree coordinates, so external coordinates will need to be updated at some point
     }

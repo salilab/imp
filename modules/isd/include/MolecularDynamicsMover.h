@@ -3,7 +3,7 @@
  *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy
  *  MD simulation.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,9 +34,9 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover {
 
  protected:
   // mover-specific function calls
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(MolecularDynamicsMover);
 
  private:

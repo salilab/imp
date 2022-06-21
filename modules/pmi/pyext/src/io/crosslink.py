@@ -728,14 +728,14 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             '''
 
             new_xl_dict = {}
-            f = open(file_name, "r")
             nxl = 0
-            for line in f:
-                xl = FixedFormatParser.get_data(line)
-                if xl:
-                    xl[self.unique_id_key] = str(nxl+1)
-                    new_xl_dict[str(nxl)] = [xl]
-                    nxl += 1
+            with open(file_name, "r") as f:
+                for line in f:
+                    xl = FixedFormatParser.get_data(line)
+                    if xl:
+                        xl[self.unique_id_key] = str(nxl+1)
+                        new_xl_dict[str(nxl)] = [xl]
+                        nxl += 1
 
         self.data_base = new_xl_dict
         self.name = file_name

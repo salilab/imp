@@ -2,7 +2,7 @@
  *  \file IMP/npc/MinimumSphereDistancePairScore.h
  *  \brief Apply a UnaryFunction to the minimum transformed distance
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPNPC_MINIMUM_SPHERE_DISTANCE_PAIR_SCORE_H
@@ -36,9 +36,9 @@ class IMPNPCEXPORT MinimumSphereDistancePairScore : public PairScore {
                  : f_(f), transforms_(transforms) {}
 
   virtual double evaluate_index(Model *m, const ParticleIndexPair &pi,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_PAIR_SCORE_METHODS(MinimumSphereDistancePairScore);

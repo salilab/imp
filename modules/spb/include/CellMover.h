@@ -2,7 +2,7 @@
  *  \file IMP/spb/CellMover.h
  *  \brief A mover that transform a rigid body
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,9 +28,9 @@ class IMPSPBEXPORT CellMover : public core::MonteCarloMover {
 
   // IMP_MOVER(CellMover);
  protected:
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(CellMover);
   IMP_SHOWABLE(CellMover);

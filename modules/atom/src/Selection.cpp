@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.cpp
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -62,19 +62,19 @@ namespace {
                           std::string name = "NotSelectionPredicate%1%")
           : internal::SelectionPredicate(name), predicate_(predicate) {}
 
-    virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+    virtual unsigned get_number_of_children() const override {
       return 1;
     }
-    virtual SelectionPredicate *get_child(unsigned) const IMP_OVERRIDE {
+    virtual SelectionPredicate *get_child(unsigned) const override {
       return predicate_;
     }
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       return new NotSelectionPredicate(predicate_->clone(false));
     }
 
-    virtual int setup_bitset(int index) IMP_OVERRIDE {
+    virtual int setup_bitset(int index) override {
       index = internal::SelectionPredicate::setup_bitset(index);
       /* Set index for subpredicate */
       index = predicate_->setup_bitset(index);
@@ -83,13 +83,13 @@ namespace {
 
     virtual ModelObjectsTemp do_get_inputs(
           Model *m, const ParticleIndexes &pis) const
-          IMP_OVERRIDE {
+          override {
       return IMP::get_particles(m, pis);
     }
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       MatchType v = predicate_->get_value_index(m, pi, bs);
       switch(v) {
       case NO_MATCH:
@@ -116,7 +116,7 @@ namespace {
     AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool toplevel) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool toplevel) override {
       set_was_used(true);
       // If only one predicate and we're not the top level,
       // no need to keep ourself around
@@ -131,13 +131,13 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, cached_match = true;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MISMATCH) {
           return MISMATCH;
@@ -165,7 +165,7 @@ namespace {
     OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
       clone_predicates(a);
@@ -174,13 +174,13 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, no_cached_match = false;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MATCH_WITH_CHILDREN) {
           return MATCH_WITH_CHILDREN;
@@ -208,7 +208,7 @@ namespace {
     XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
       clone_predicates(a);
@@ -217,13 +217,13 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, match = false;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MATCH_WITH_CHILDREN || v == MATCH_SELF_ONLY) {
           match = !match;
@@ -320,10 +320,12 @@ void Selection::set_hierarchies(Model *m,
                                 const ParticleIndexes &pi) {
   m_ = m;
   h_ = pi;
-  for (unsigned int i = 0; i < pi.size(); ++i) {
-    Hierarchy h(m_, pi[i]);
-    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
-                                                       << " is not valid.");
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i = 0; i < pi.size(); ++i) {
+      Hierarchy h(m_, pi[i]);
+      IMP_INTERNAL_CHECK(h.get_is_valid(true),
+                         "Hierarchy " << h << " is not valid.");
+    }
   }
 }
 
@@ -339,12 +341,11 @@ namespace {
     virtual MatchType do_get_value_index(Model *m,                             \
                                    ParticleIndex pi,                           \
                                    boost::dynamic_bitset<> &)                  \
-                                            const IMP_OVERRIDE {               \
+                                            const override {                   \
       check;                                                                   \
     }                                                                          \
     virtual ModelObjectsTemp do_get_inputs(                            \
-        Model *m, const ParticleIndexes &pis) const            \
-        IMP_OVERRIDE {                                                         \
+        Model *m, const ParticleIndexes &pis) const override {                 \
       return IMP::get_particles(m, pis);                                       \
     }                                                                          \
     IMP_OBJECT_METHODS(Name##SelectionPredicate);                              \
@@ -357,11 +358,7 @@ bool get_is_residue_index_match(const Ints &data, Model *m,
                               Residue(m, pi).get_index());
   }
   if (Fragment::get_is_setup(m, pi)) {
-    Ints cur = Fragment(m, pi).get_residue_indexes();
-    Ints si;
-    std::set_intersection(data.begin(), data.end(), cur.begin(), cur.end(),
-                          std::back_inserter(si));
-    return !si.empty();
+    return Fragment(m, pi).get_contains_any_sorted_residue(data);
   } else if (Domain::get_is_setup(m, pi)) {
     IntRange ir = Domain(m, pi).get_index_range();
     return std::lower_bound(data.begin(), data.end(), ir.first) !=
@@ -512,20 +509,17 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   }
 });
 
-IMP_NAMED_TUPLE_2(ExpandResult, ExpandResults, bool, from_rep,
-                  ParticleIndexes, indexes, );
-
-ExpandResult expand_search(Model *m,
-                           ParticleIndex pi,
-                           double resolution,
-                           RepresentationType representation_type) {
+void expand_search_representation(
+        Model *m, ParticleIndex pi, double resolution,
+        RepresentationType representation_type, bool &from_rep,
+	ParticleIndexes &idxs) {
   // to handle representations
-  ParticleIndexes idxs;
-  bool from_rep = false;
+  from_rep = false;
+  idxs.clear();
   if (Representation::get_is_setup(m, pi)) {
     from_rep = true;
     if (resolution == ALL_RESOLUTIONS) {
-      idxs = Representation(m, pi).get_representations(representation_type);
+      idxs += Representation(m, pi).get_representations(representation_type);
     }
     else {
       Hierarchy tmp = Representation(m, pi).get_representation(resolution,
@@ -536,21 +530,8 @@ ExpandResult expand_search(Model *m,
   else {
     idxs.push_back(pi);
   }
-  return ExpandResult(from_rep,idxs);
 }
 
-ExpandResults expand_children_search(Model *m,
-                                     ParticleIndex pi,
-                                     double resolution,
-                                     RepresentationType representation_type) {
-  Hierarchy h(m, pi);
-  ExpandResults ret;
-  IMP_FOREACH(Hierarchy c, h.get_children()) {
-    ExpandResult r = expand_search(m, c, resolution, representation_type);
-    if (r.get_indexes().size()>0) ret.push_back(r);
-  }
-  return ret;
-}
 }
 
 Selection::SearchResult Selection::search(
@@ -573,23 +554,28 @@ Selection::SearchResult Selection::search(
     }
     else return SearchResult(false, ParticleIndexes());
   }
-  Hierarchy cur(m, pi);
   ParticleIndexes children;
-  ExpandResults cur_children =
-    expand_children_search(m, pi, resolution_, representation_type_);
   bool children_covered = true;
   bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
                   || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
-  IMP_FOREACH(ExpandResult chlist, cur_children) {
-    found_rep_node |= chlist.get_from_rep();
-    IMP_FOREACH(ParticleIndex ch, chlist.get_indexes()) {
-      SearchResult curr = search(m, ch, parent, with_representation, found_rep_node);
-      matched |= curr.get_match();
-      if (curr.get_match()) {
-        if (curr.get_indexes().empty()) {
-          children_covered = false;
-        } else {
-          children += curr.get_indexes();
+  ParticleIndexes rep_pis;
+  bool from_rep;
+  Hierarchy cur(m, pi);
+  for (ParticleIndex childpi : cur.get_children_indexes()) {
+    expand_search_representation(
+            m, childpi, resolution_, representation_type_, from_rep, rep_pis);
+    if (rep_pis.size() > 0) {
+      found_rep_node |= from_rep;
+      for (ParticleIndex ch : rep_pis) {
+        SearchResult curr = search(m, ch, parent, with_representation,
+                                   found_rep_node);
+        matched |= curr.get_match();
+        if (curr.get_match()) {
+          if (curr.get_indexes().empty()) {
+            children_covered = false;
+          } else {
+            children += curr.get_indexes();
+          }
         }
       }
     }
@@ -630,11 +616,13 @@ Selection::get_selected_particle_indexes(bool with_representation) const {
   IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
                 << std::endl);
   IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
-  IMP_FOREACH(ParticleIndex pi, h_) {
-    ExpandResult res = expand_search(m_, pi, resolution_,
-                                     representation_type_);
-    IMP_FOREACH(ParticleIndex rpi, res.get_indexes()) {
-      ret += search(m_, rpi, base, with_representation, res.get_from_rep()).get_indexes();
+  ParticleIndexes rep_pis;
+  bool from_rep;
+  for(ParticleIndex pi : h_) {
+    expand_search_representation(
+            m_, pi, resolution_, representation_type_, from_rep, rep_pis);
+    for (ParticleIndex rpi : rep_pis) {
+      ret += search(m_, rpi, base, with_representation, from_rep).get_indexes();
     }
   }
   return ret;
@@ -836,7 +824,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
                                          double k, std::string name) {
   IMP_IF_CHECK(USAGE) {
     boost::unordered_set<ParticleIndex> used;
-    IMP_FOREACH(const Selection & sel, s) {
+    for(const Selection & sel : s) {
       ParticleIndexes cur = sel.get_selected_particle_indexes();
       int old = used.size();
       IMP_UNUSED(old);

@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [2.7, 3.7, 3.8, 3.9]
+        python-version: [2.7, 3.7, 3.8, 3.9, "3.10"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -20,7 +20,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install pytest-flake8 pytest-cov
+        pip install 'pytest-flake8<1.1' pytest-cov
     - name: Test
       run: |
         py.test --cov=. --cov-branch --cov-report=xml -v --flake8 .

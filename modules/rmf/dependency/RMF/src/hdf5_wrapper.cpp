@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -84,7 +84,7 @@ unsigned int ConstGroup::get_number_of_children() const {
 }
 std::string ConstGroup::get_child_name(unsigned int i) const {
   int sz = H5Lget_name_by_idx(get_handle(), ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              (hsize_t)i, NULL, 0, H5P_DEFAULT);
+                              (hsize_t)i, nullptr, 0, H5P_DEFAULT);
   boost::scoped_array<char> buf(new char[sz + 1]);
   RMF_HDF5_CALL(H5Lget_name_by_idx(get_handle(), ".", H5_INDEX_NAME,
                                    H5_ITER_NATIVE, (hsize_t)i, buf.get(),
@@ -166,7 +166,7 @@ herr_t error_function(hid_t, void*) {
 // throws RMF::IOException on error
 File create_file(std::string name) {
   RMF_HDF5_CALL(H5open());
-  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, nullptr));
   RMF_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   RMF_HDF5_NEW_HANDLE(
       h, H5Fcreate(name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist), &H5Fclose);
@@ -175,7 +175,7 @@ File create_file(std::string name) {
 
 File open_file(std::string name) {
   RMF_HDF5_CALL(H5open());
-  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, nullptr));
   RMF_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   RMF_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(), H5F_ACC_RDWR, plist), &H5Fclose);
   return File(h);
@@ -183,7 +183,7 @@ File open_file(std::string name) {
 
 ConstFile open_file_read_only(std::string name) {
   RMF_HDF5_CALL(H5open());
-  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, nullptr));
   RMF_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   RMF_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(), H5F_ACC_RDONLY, plist),
                       &H5Fclose);
@@ -192,7 +192,7 @@ ConstFile open_file_read_only(std::string name) {
 
 File open_file_read_only_returning_nonconst(std::string name) {
   RMF_HDF5_CALL(H5open());
-  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, nullptr));
   RMF_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   RMF_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(), H5F_ACC_RDONLY, plist),
                       &H5Fclose);
@@ -212,13 +212,13 @@ void File::flush() { RMF_HDF5_CALL(H5Fflush(get_handle(), H5F_SCOPE_LOCAL)); }
    }*/
 
 std::string ConstFile::get_name() const {
-  int sz = H5Fget_name(get_handle(), NULL, 0);
+  int sz = H5Fget_name(get_handle(), nullptr, 0);
   boost::scoped_array<char> buf(new char[sz + 1]);
   RMF_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz + 1));
   return std::string(buf.get());
 }
 std::string File::get_name() const {
-  int sz = H5Fget_name(get_handle(), NULL, 0);
+  int sz = H5Fget_name(get_handle(), nullptr, 0);
   boost::scoped_array<char> buf(new char[sz + 1]);
   RMF_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz + 1));
   return std::string(buf.get());
@@ -277,7 +277,7 @@ void StringsTraits::write_value_dataset(hid_t d, hid_t iss, hid_t s,
     }
     data.p = buf.get();
   } else {
-    data.p = NULL;
+    data.p = nullptr;
   }
   RMF_HDF5_CALL(
       H5Dwrite(d, get_hdf5_memory_type(), iss, s, H5P_DEFAULT, &data));
@@ -302,7 +302,7 @@ StringsTraits::Type StringsTraits::read_value_dataset(hid_t d, hid_t iss,
 }
 
 const hvl_t& StringsTraits::get_fill_value() {
-  static hvl_t ret = {0, NULL};
+  static hvl_t ret = {0, nullptr};
   return ret;
 }
 
@@ -340,7 +340,7 @@ void StringTraits::write_value_dataset(hid_t d, hid_t iss, hid_t s,
 
 StringTraits::Type StringTraits::read_value_dataset(hid_t d, hid_t iss,
                                                     hid_t sp) {
-  char* c = NULL;
+  char* c = nullptr;
   RMF_HDF5_HANDLE(mt, internal::create_string_type(), H5Tclose);
   RMF_HDF5_CALL(H5Dread(d, mt, iss, sp, H5P_DEFAULT, &c));
   std::string ret;

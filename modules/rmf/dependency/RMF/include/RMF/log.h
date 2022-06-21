@@ -2,7 +2,7 @@
  *  \file RMF/log.h
  *  \brief Functions and macros for logging.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,7 +16,6 @@
 #include <log4cxx/logger.h>                 // IWYU pragma: export
 #include <log4cxx/ndc.h>                    // IWYU pragma: export
 #include <log4cxx/helpers/messagebuffer.h>  // IWYU pragma: export
-#include <log4cxx/helpers/objectptr.h>      // IWYU pragma: export
 #include <log4cxx/logger.h>                 // IWYU pragma: export
 #endif
 

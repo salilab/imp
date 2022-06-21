@@ -2,7 +2,7 @@
  *  \file IMP/spb/UniformBoundedRestraint.h
  *  \brief A uniform bounded restraint
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,15 +34,15 @@ class IMPSPBEXPORT UniformBoundedRestraint
   UniformBoundedRestraint(Particle *p, FloatKey fk, Particle *a, Particle *b);
 
   /* call for probability */
-  double get_probability() const IMP_OVERRIDE;
+  double get_probability() const override;
 
   /** This macro declares the basic needed methods: evaluate and show
    */
   // IMP_RESTRAINT( UniformBoundedRestraint);
   //
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(UniformBoundedRestraint);
 };

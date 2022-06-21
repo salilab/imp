@@ -4,14 +4,13 @@
  *         as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>
-#include <IMP/nullptr.h>
 #include <IMP/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 

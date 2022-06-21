@@ -2,7 +2,7 @@
  *  \file IMP/isd/NormalSigmaPCRestraint.h
  *  \brief A Penalized Complexity prior on sigma of a normal distribution.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -59,9 +59,9 @@ class IMPISDEXPORT NormalSigmaPCRestraint : public Restraint {
     double get_probability() const { return std::exp(-unprotected_evaluate(nullptr)); }
 
     virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-        const IMP_OVERRIDE;
+        const override;
 
-    virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+    virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
     IMP_OBJECT_METHODS(NormalSigmaPCRestraint);
 };

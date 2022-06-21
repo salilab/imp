@@ -14,6 +14,10 @@ import IMP.rmf
 import IMP.isd
 import IMP.pmi.dof
 import os
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path
 import glob
 from operator import itemgetter
 from collections import defaultdict
@@ -90,6 +94,7 @@ class ReplicaExchange0(object):
                  initial_rmf_name_suffix="initial",
                  stat_file_name_suffix="stat",
                  best_pdb_name_suffix="model",
+                 mmcif=False,
                  do_clean_first=True,
                  do_create_directories=True,
                  global_output_directory="./",
@@ -135,8 +140,14 @@ class ReplicaExchange0(object):
            @param replica_exchange_swap Boolean, enable disable temperature
                   swap (Default=True)
            @param num_sample_rounds        Number of rounds of MC/MD per cycle
-           @param number_of_best_scoring_models Number of top-scoring PDB
-                  models to keep around for analysis
+           @param number_of_best_scoring_models Number of top-scoring PDB/mmCIF
+                  models to keep around for analysis.
+           @param mmcif If True, write best scoring models in mmCIF format;
+                  if False (the default), write in legacy PDB format.
+           @param best_pdb_dir The directory under `global_output_directory`
+                  where best-scoring PDB/mmCIF files are written.
+           @param best_pdb_name_suffix Part of the file name for best-scoring
+                  PDB/mmCIF files.
            @param monte_carlo_steps        Number of MC steps per round
            @param self_adaptive     self adaptive scheme for Monte Carlo movers
            @param molecular_dynamics_steps  Number of MD steps per round
@@ -238,6 +249,7 @@ class ReplicaExchange0(object):
         self.vars["write_initial_rmf"] = write_initial_rmf
         self.vars["initial_rmf_name_suffix"] = initial_rmf_name_suffix
         self.vars["best_pdb_name_suffix"] = best_pdb_name_suffix
+        self.vars["mmcif"] = mmcif
         self.vars["stat_file_name_suffix"] = stat_file_name_suffix
         self.vars["do_clean_first"] = do_clean_first
         self.vars["do_create_directories"] = do_create_directories
@@ -435,11 +447,14 @@ class ReplicaExchange0(object):
                         pdb_dir + "/" + self.vars["best_pdb_name_suffix"],
                         self.root_hier,
                         self.vars["number_of_best_scoring_models"],
-                        replica_exchange=True)
+                        replica_exchange=True,
+                        mmcif=self.vars['mmcif'],
+                        best_score_file=globaldir + "best.scores.rex.py")
+                    pdbext = ".0.cif" if self.vars['mmcif'] else ".0.pdb"
                     output.write_psf(
                         pdb_dir + "/" + "model.psf",
                         pdb_dir + "/" +
-                        self.vars["best_pdb_name_suffix"] + ".0.pdb")
+                        self.vars["best_pdb_name_suffix"] + pdbext)
             else:
                 if self.vars["number_of_best_scoring_models"] > 0:
                     for n in range(self.vars["number_of_states"]):
@@ -448,11 +463,14 @@ class ReplicaExchange0(object):
                             self.vars["best_pdb_name_suffix"],
                             self.root_hiers[n],
                             self.vars["number_of_best_scoring_models"],
-                            replica_exchange=True)
+                            replica_exchange=True,
+                            mmcif=self.vars['mmcif'],
+                            best_score_file=globaldir + "best.scores.rex.py")
+                        pdbext = ".0.cif" if self.vars['mmcif'] else ".0.pdb"
                         output.write_psf(
                             pdb_dir + "/" + str(n) + "/" + "model.psf",
                             pdb_dir + "/" + str(n) + "/" +
-                            self.vars["best_pdb_name_suffix"] + ".0.pdb")
+                            self.vars["best_pdb_name_suffix"] + pdbext)
 # ---------------------------------------------
 
         if self.em_object_for_rmf is not None:
@@ -1078,7 +1096,7 @@ class AnalysisReplicaExchange0(object):
         """
         # Track provenance information to be added to each output model
         prov = []
-        self._outputdir = os.path.abspath(outputdir)
+        self._outputdir = Path(outputdir).absolute()
         self._number_of_clusters = number_of_clusters
         for p, state in self._protocol_output:
             p.add_replica_exchange_analysis(state, self, density_custom_ranges)

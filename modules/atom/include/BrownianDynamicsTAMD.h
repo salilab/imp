@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamicsTAMD.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -89,9 +89,8 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
                        double wave_factor = 1.0);
 
  protected:
-  /** advances a chunk of ps from index begin to end
-
-      @param dtfs time step in femtoseconds
+  //! advances a chunk of ps from index begin to end
+  /** @param dtfs time step in femtoseconds
       @param ikt inverse kT for current chunk step
       @param ps particle indexes to advance
       @param begin beginning index of chunk of ps
@@ -100,7 +99,7 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
   void do_advance_chunk(double dtfs, double ikt,
                         const ParticleIndexes &ps,
                         unsigned int begin, unsigned int end)
-    IMP_OVERRIDE;
+    override;
 
  private:
   void advance_coordinates_1(ParticleIndex pi, unsigned int i,

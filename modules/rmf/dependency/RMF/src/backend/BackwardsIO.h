@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -63,7 +63,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
     template <class Traits, class SDC>
     ID<Traits> get_key_const(Category cat, std::string name, Traits,
                              SDC *sd) const {
-      RMF_FOREACH(ID<Traits> k, sd->get_keys(cat, Traits())) {
+      for(ID<Traits> k : sd->get_keys(cat, Traits())) {
         if (sd->get_name(k) == name) return k;
       }
       return ID<Traits>();
@@ -71,9 +71,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
 
     template <VectorDimension D, class Filter>
     void filter_vector(Filter &filter, Category cat) const {
-      RMF_FOREACH(std::string key_name,
-                  get_vector_names(cat, RMF_VECTOR<D>())) {
-        RMF_FOREACH(std::string subkey_name,
+      for(std::string key_name : get_vector_names(cat, RMF_VECTOR<D>())) {
+        for(std::string subkey_name :
                     get_vector_subkey_names(key_name, RMF_VECTOR<D>())) {
           filter.add_float_key(cat, subkey_name);
           RMF_TRACE("Filtering " << subkey_name);
@@ -83,9 +82,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
 
     template <VectorDimension D, class Filter>
     void filter_vectors(Filter &filter, Category cat) const {
-      RMF_FOREACH(std::string key_name,
-                  get_vectors_names(cat, RMF_VECTOR<D>())) {
-        RMF_FOREACH(std::string subkey_name,
+      for(std::string key_name : get_vectors_names(cat, RMF_VECTOR<D>())) {
+        for(std::string subkey_name :
                     get_vectors_subkey_names(key_name, RMF_VECTOR<D>())) {
           filter.add_floats_key(cat, subkey_name);
           RMF_TRACE("Filtering " << subkey_name);
@@ -142,7 +140,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
         ret = sd_->get_static_value(NodeID(0), key);
       }
       typedef std::pair<std::string, boost::array<std::string, D> > KP;
-      RMF_FOREACH(KP kp, get_vector_names_map(RMF_VECTOR<D>())) {
+      for(KP kp : get_vector_names_map(RMF_VECTOR<D>())) {
         ret.push_back(kp.first);
       }
       std::sort(ret.begin(), ret.end());
@@ -161,7 +159,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
         ret = sd_->get_static_value(NodeID(0), key);
       }
       typedef std::pair<std::string, boost::array<std::string, D> > KP;
-      RMF_FOREACH(KP kp, get_vectors_names_map(RMF_VECTOR<D>())) {
+      for(KP kp : get_vectors_names_map(RMF_VECTOR<D>())) {
         ret.push_back(kp.first);
       }
       std::sort(ret.begin(), ret.end());
@@ -174,7 +172,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       typedef ID<Traits<Vector<D> > > Key;
       typedef boost::tuple<Key, int> Data;
       RMF_LARGE_UNORDERED_MAP<FloatKey, Data> map;
-      RMF_FOREACH(std::string key_name,
+      for(std::string key_name :
                   get_vector_names(category_b, RMF_VECTOR<D>())) {
         boost::array<std::string, D> subkey_names =
             get_vector_subkey_names(key_name, RMF_VECTOR<D>());
@@ -187,9 +185,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
         }
       }
       if (map.empty()) return;
-      typedef std::pair<FloatKey, Data> KP;
-      RMF_FOREACH(KP kp, map) {
-        RMF_FOREACH(NodeID n, internal::get_nodes(sdb)) {
+      for(const auto &kp : map) {
+        for(NodeID n : internal::get_nodes(sdb)) {
           double v = H::get(sdb, n, kp.first);
           if (!FloatTraits::get_is_null_value(v)) {
             RMF_VECTOR<D> &old = H::access(sdb, n, kp.second.template get<0>());
@@ -208,7 +205,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       typedef boost::array<ID<FloatTraits>, D> Data;
       RMF_LARGE_UNORDERED_MAP<VectorKey, Data> map;
       Strings key_names;
-      RMF_FOREACH(VectorKey k, keys) {
+      for(VectorKey k : keys) {
         std::string name = sda->get_name(k);
         key_names.push_back(name);
         boost::array<std::string, D> subkey_names =
@@ -225,9 +222,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
         sdb->set_static_value(NodeID(0), k, key_names);
       }
 
-      typedef std::pair<VectorKey, Data> KP;
-      RMF_FOREACH(KP kp, map) {
-        RMF_FOREACH(NodeID n, internal::get_nodes(sda)) {
+      for(const auto &kp : map) {
+        for(NodeID n : internal::get_nodes(sda)) {
           RMF_VECTOR<D> v = H::get(sda, n, kp.first);
           if (!Traits<Vector<D> >::get_is_null_value(v)) {
             for (unsigned int i = 0; i < D; ++i) {
@@ -243,7 +239,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       typedef Vector3sKey Key;
       typedef boost::tuple<Key, int> Data;
       RMF_LARGE_UNORDERED_MAP<FloatsKey, Data> map;
-      RMF_FOREACH(std::string key_name,
+      for(std::string key_name :
                   get_vectors_names(category_b, RMF_VECTOR<3>())) {
         boost::array<std::string, 3> subkey_names =
             get_vectors_subkey_names(key_name, RMF_VECTOR<3>());
@@ -256,9 +252,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
         }
       }
       if (map.empty()) return;
-      typedef std::pair<FloatsKey, Data> KP;
-      RMF_FOREACH(KP kp, map) {
-        RMF_FOREACH(NodeID n, internal::get_nodes(sdb)) {
+      for(const auto &kp : map) {
+        for(NodeID n : internal::get_nodes(sdb)) {
           Floats v = H::get(sdb, n, kp.first);
           if (!v.empty()) {
             std::vector<RMF_VECTOR<3> > &old =
@@ -281,7 +276,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       typedef boost::array<ID<FloatsTraits>, 3> Data;
       RMF_LARGE_UNORDERED_MAP<VectorKey, Data> map;
       Strings key_names;
-      RMF_FOREACH(VectorKey k, keys) {
+      for(VectorKey k : keys) {
         std::string name = sda->get_name(k);
         key_names.push_back(name);
         boost::array<std::string, 3> subkey_names =
@@ -298,9 +293,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
         sdb->set_static_value(NodeID(0), k, key_names);
       }
 
-      typedef std::pair<VectorKey, Data> KP;
-      RMF_FOREACH(KP kp, map) {
-        RMF_FOREACH(NodeID n, internal::get_nodes(sda)) {
+      for(const auto &kp : map) {
+        for(NodeID n : internal::get_nodes(sda)) {
           std::vector<RMF_VECTOR<3> > v = H::get(sda, n, kp.first);
           if (!v.empty()) {
             for (unsigned int i = 0; i < 3; ++i) {
@@ -318,7 +312,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
     template <class SDA>
     ID<backward_types::NodeIDTraits> get_alias_key(const SDA *a) {
       Category alias_cat;
-      RMF_FOREACH(Category cur_cat, a->get_categories()) {
+      for(Category cur_cat : a->get_categories()) {
         if (a->get_name(cur_cat) == "alias") {
           alias_cat = cur_cat;
         }
@@ -326,7 +320,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       if (alias_cat == Category()) return ID<backward_types::NodeIDTraits>();
 
       ID<backward_types::NodeIDTraits> alias_key;
-      RMF_FOREACH(ID<backward_types::NodeIDTraits> nik_cur,
+      for(ID<backward_types::NodeIDTraits> nik_cur :
                   a->get_keys(alias_cat, backward_types::NodeIDTraits())) {
         if (a->get_name(nik_cur) == "aliased") {
           alias_key = nik_cur;
@@ -347,13 +341,13 @@ RMF_ENABLE_WARNINGS namespace RMF {
       IntsKey rep_key =
           b->get_key(feature_category, "representation", IntsTraits());
 
-      RMF_FOREACH(NodeID n, internal::get_nodes(b)) {
+      for(NodeID n : internal::get_nodes(b)) {
         if (b->get_type(n) == FEATURE) {
           RMF_TRACE("Processing restraint node " << b->get_name(n));
           // make a copy as it can change
           NodeIDs chs = b->get_children(n);
           Ints val;
-          RMF_FOREACH(NodeID ch, chs) {
+          for(NodeID ch : chs) {
             if (b->get_type(ch) == ALIAS) {
               RMF_TRACE("Found alias child " << b->get_name(ch));
               val.push_back(a->get_static_value(ch, alias_key).get_index());
@@ -376,7 +370,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       Category bond_cat = b->get_category("bond");
       IntKey k0 = b->get_key(bond_cat, "bonded 0", IntTraits());
       IntKey k1 = b->get_key(bond_cat, "bonded 1", IntTraits());
-      RMF_FOREACH(NodeID n, internal::get_nodes(a)) {
+      for(NodeID n : internal::get_nodes(a)) {
         if (a->get_type(n) == BOND) {
           NodeIDs ch = a->get_children(n);
           if (ch.size() == 2 && a->get_type(ch[0]) == ALIAS &&
@@ -433,7 +427,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
         if (cidk != backward_types::IndexKey()) {
           StringKey cidsk =
               shared_data->get_key(category, "chain id", StringTraits());
-          RMF_FOREACH(NodeID ni, internal::get_nodes(shared_data)) {
+          for(NodeID ni : internal::get_nodes(shared_data)) {
             int ci = H::get(sd_.get(), ni, cidk);
             if (!backward_types::IndexTraits::get_is_null_value(ci)) {
               H::set(shared_data, ni, cidsk, std::string(1, ci = 'A'));
@@ -449,7 +443,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
         if (rtk != StringKey() && bk != IntKey() && ek != IntKey()) {
           IntKey rik =
               shared_data->get_key(category, "residue index", IntTraits());
-          RMF_FOREACH(NodeID ni, internal::get_nodes(shared_data)) {
+          for(NodeID ni : internal::get_nodes(shared_data)) {
             std::string rt = H::get(shared_data, ni, rtk);
             if (!rt.empty()) {
               int b = H::get(shared_data, ni, bk);
@@ -468,7 +462,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
         FloatKey nbk =
             shared_data->get_key(category, "rgb color blue", FloatTraits());
         if (bk != FloatKey()) {
-          RMF_FOREACH(NodeID ni, internal::get_nodes(shared_data)) {
+          for(NodeID ni : internal::get_nodes(shared_data)) {
             float v = H::get(shared_data, ni, bk);
             if (!FloatTraits::get_is_null_value(v)) {
               H::set(shared_data, ni, nbk, v);
@@ -512,9 +506,8 @@ RMF_ENABLE_WARNINGS namespace RMF {
     virtual ~BackwardsIO() { flush(); }
 
    protected:
-    virtual void load_static_frame(internal::SharedData *shared_data)
-        RMF_OVERRIDE {
-      RMF_FOREACH(Category category, shared_data->get_categories()) {
+    virtual void load_static_frame(internal::SharedData *shared_data) override {
+      for(Category category : shared_data->get_categories()) {
         load_frame_category(category, shared_data, internal::StaticValues());
       }
 
@@ -522,36 +515,33 @@ RMF_ENABLE_WARNINGS namespace RMF {
       load_restraints(sd_.get(), shared_data);
     }
 
-    virtual void save_static_frame(internal::SharedData *shared_data)
-        RMF_OVERRIDE {
-      RMF_FOREACH(Category category, shared_data->get_categories()) {
+    virtual void save_static_frame(internal::SharedData *shared_data) override {
+      for(Category category : shared_data->get_categories()) {
         save_frame_category(category, shared_data, internal::StaticValues());
       }
     }
 
-    virtual void load_file(internal::SharedData *shared_data) RMF_OVERRIDE {
+    virtual void load_file(internal::SharedData *shared_data) override {
       sd_->reload();
       RMF_INFO("Loading file");
       RMF::internal::clone_file(sd_.get(), shared_data);
       shared_data->set_file_type(sd_->get_file_type());
-      RMF_FOREACH(FrameID id, internal::get_frames(sd_.get())) {
+      for(FrameID id : internal::get_frames(sd_.get())) {
         shared_data->add_frame_data(id, "", FRAME);
       }
       RMF_TRACE("Found " << sd_->get_number_of_frames() << " frames.");
-      RMF_FOREACH(Category c, sd_->get_categories()) {
+      for(Category c : sd_->get_categories()) {
         shared_data->get_category(sd_->get_name(c));
       }
     }
 
-    virtual void save_file(const internal::SharedData *shared_data)
-        RMF_OVERRIDE {
+    virtual void save_file(const internal::SharedData *shared_data) override {
       RMF_INFO("Saving file");
       RMF::internal::clone_file(shared_data, sd_.get());
       flush();
     }
 
-    virtual void save_loaded_frame(internal::SharedData *shared_data)
-        RMF_OVERRIDE {
+    virtual void save_loaded_frame(internal::SharedData *shared_data) override {
       RMF_INFO("Saving frame " << shared_data->get_loaded_frame());
       FrameID cur = shared_data->get_loaded_frame();
       RMF_USAGE_CHECK(cur.get_index() == sd_->get_number_of_frames(),
@@ -565,34 +555,32 @@ RMF_ENABLE_WARNINGS namespace RMF {
         RMF_INTERNAL_CHECK(nfid == cur, "Number of frames don't match.");
       }
       sd_->set_loaded_frame(cur);
-      RMF_FOREACH(Category category, shared_data->get_categories()) {
+      for(Category category : shared_data->get_categories()) {
         save_frame_category(category, shared_data, internal::LoadedValues());
       }
     }
 
-    virtual void load_loaded_frame(internal::SharedData *shared_data)
-        RMF_OVERRIDE {
+    virtual void load_loaded_frame(internal::SharedData *shared_data) override {
       RMF_INFO("Loading frame " << shared_data->get_loaded_frame());
       FrameID cur = shared_data->get_loaded_frame();
       sd_->set_loaded_frame(cur);
-      RMF_FOREACH(Category category, sd_->get_categories()) {
+      for(Category category : sd_->get_categories()) {
         load_frame_category(category, shared_data, internal::LoadedValues());
       }
     }
 
-    virtual void load_hierarchy(internal::SharedData *shared_data)
-        RMF_OVERRIDE {
+    virtual void load_hierarchy(internal::SharedData *shared_data) override {
       RMF_INFO("Loading hierarchy");
       RMF::internal::clone_hierarchy(sd_.get(), shared_data);
     }
 
     virtual void save_hierarchy(const internal::SharedData *shared_data)
-        RMF_OVERRIDE {
+        override {
       RMF_INFO("Saving hierarchy");
       RMF::internal::clone_hierarchy(shared_data, sd_.get());
     }
 
-    virtual void flush() RMF_OVERRIDE { sd_->flush(); }
+    virtual void flush() override { sd_->flush(); }
   };
 
   }  // namespace internal

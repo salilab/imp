@@ -2,7 +2,7 @@
  *  \file IMP/object_macros.h
  *  \brief Helper macros for implementing \imp Objects.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,8 +24,8 @@
 */
 #define IMP_OBJECT_METHODS(Name)                                              \
  public:                                                                      \
-  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
-  virtual ::IMP::VersionInfo get_version_info() const IMP_OVERRIDE {    \
+  virtual std::string get_type_name() const override { return #Name; }        \
+  virtual ::IMP::VersionInfo get_version_info() const override {        \
     return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                           \
                                                                               \
@@ -47,6 +47,16 @@
   /** A vector of weak (non reference-counting) pointers to specified objects. \see Name */                          \
   typedef IMP::Vector<IMP::WeakPointer<Name> > PluralName##Temp;
 
+//! Typedefs a default instantiation for a generic (templated) object 
+/**
+ Define type [Name] to be an an instantiation of of Generic[Name] with
+ template targument, and a function create_[lcname]() that generates a
+ newly allocated object of type [Name], taking parameters [crguments]
+ and internally paassing [cparguments] to the constructor.
+
+ @note doxygen documentatio prior to this macro will be applied to the type
+ definition
+ */
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
   typedef Generic##Name<targument> Name;                                     \
   template <class targument>                                                 \

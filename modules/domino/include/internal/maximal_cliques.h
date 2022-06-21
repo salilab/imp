@@ -28,7 +28,6 @@
 
 // STL
 #include <vector>      // storing R, P, X in sorted vectors
-#include <functional>  // binary_function
 #include <iterator>    // back_insert_iterator
 #include <algorithm>   // sort, binary_search, lower_bound, ...
 
@@ -50,10 +49,7 @@ void GX(const Graph& graph, Vector& P, Vector& X,
 // Binary Predicate:  Degree_less
 // For std::max_element in GX
 template <class Graph>
-class Degree_less
-    : public std::binary_function<
-          typename boost::graph_traits<Graph>::vertex_descriptor,
-          typename boost::graph_traits<Graph>::vertex_descriptor, bool> {
+class Degree_less {
  private:
   typedef typename boost::graph_traits<Graph>::vertex_descriptor
       vertex_descriptor;

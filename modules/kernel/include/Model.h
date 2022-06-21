@@ -2,7 +2,7 @@
  *  \file IMP/Model.h
  *  \brief Storage of a model, its restraints, constraints and particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -123,6 +123,14 @@ class IMPKERNELEXPORT Model : public Object
   Vector<unsigned> trigger_age_;
   // time when dependencies were last changed, or 0
   unsigned dependencies_age_;
+
+  // allow skipping updating dependencies_age_ for temporary ModelObjects
+  bool dependencies_saved_;
+  unsigned saved_dependencies_age_;
+  // We don't use ModelObjectsTemp here because these objects might get freed
+  // under us, which would cause WeakPointer to raise an exception
+  std::vector<ModelObject *> mos_added_since_save_, mos_removed_since_save_;
+
   // cache of restraints that are affected by each moved particle,
   // used for evaluate_moved() and related functions
   internal::MovedParticlesRestraintCache moved_particles_restraint_cache_;
@@ -136,6 +144,26 @@ class IMPKERNELEXPORT Model : public Object
     age_counter_++;
     if (age_counter_ == 0) {
       age_counter_ = 1;
+    }
+  }
+
+  template <class MOType, class MOVector>
+  void do_get_dependent(ModelObject *mo, MOVector &ret) {
+    const auto &node = dependency_graph_.find(mo);
+    IMP_INTERNAL_CHECK(mo->get_has_dependencies(),
+                       "Object " << mo->get_name()
+                                 << " does not have dependencies.");
+    IMP_INTERNAL_CHECK(node != dependency_graph_.end(),
+                       "Node not in dependency_graph.");
+    MOType *r = dynamic_cast<MOType *>(mo);
+    if (r) {
+      ret.push_back(r);
+    }
+    for (ModelObject *cur : node->second.get_outputs()) {
+      do_get_dependent<MOType, MOVector>(cur, ret);
+    }
+    for (ModelObject *cur : node->second.get_readers()) {
+      do_get_dependent<MOType, MOVector>(cur, ret);
     }
   }
 
@@ -154,7 +182,7 @@ class IMPKERNELEXPORT Model : public Object
   }
 
   //! Get all particles that depend on the given particle
-  const std::set<ParticleIndex> &get_dependent_particles(ParticleIndex pi) {
+  const ParticleIndexes &get_dependent_particles(ParticleIndex pi) {
     return moved_particles_particle_cache_.get_dependent_particles(pi);
   }
 
@@ -221,6 +249,14 @@ class IMPKERNELEXPORT Model : public Object
 
   //! Add the passed Undecorator to the particle.
   void add_undecorator(ParticleIndex pi, Undecorator *d);
+
+#if !defined(IMP_DOXYGEN)
+  RestraintsTemp get_dependent_restraints_uncached(ParticleIndex pi);
+
+  ParticlesTemp get_dependent_particles_uncached(ParticleIndex pi);
+
+  ScoreStatesTemp get_dependent_score_states_uncached(ParticleIndex pi);
+#endif
 
   /** @name States
 
@@ -422,11 +458,57 @@ class IMPKERNELEXPORT Model : public Object
       help maintain caches that depend on the model's dependency graph. */
   unsigned get_dependencies_updated() { return dependencies_age_; }
 
+  //! Mark a 'restore point' for ModelObject dependencies.
+  /** \see restore_dependencies() */
+  void save_dependencies() {
+    dependencies_saved_ = true;
+    saved_dependencies_age_ = dependencies_age_;
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      mos_added_since_save_.clear();
+      mos_removed_since_save_.clear();
+    }
+  }
+
+  //! Restore ModelObject dependencies to previous restore point.
+  /** This method, when paired with save_dependencies(), can be used to
+      avoid triggering a model dependency update due to a temporary change
+      in the model dependency graph, for example due to adding a temporary
+      restraint, evaluating it, then removing that same restraint. It should
+      only be called in cases where it is known that the dependency graph
+      is the same as when save_dependencies() was called (this is only checked
+      in debug mode). Save/restore call pairs cannot be nested, although it
+      is OK to skip the call to restore_dependencies(), e.g. if an exception
+      occurs.
+
+      \see get_dependencies_updated()
+      \see save_dependencies()
+   */
+  void restore_dependencies() {
+    if (dependencies_saved_) {
+      dependencies_saved_ = false;
+      dependencies_age_ = saved_dependencies_age_;
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        // Need to sort pointers since we may not add/remove in the same order
+        std::sort(mos_added_since_save_.begin(), mos_added_since_save_.end());
+        std::sort(mos_removed_since_save_.begin(),
+                  mos_removed_since_save_.end());
+        IMP_INTERNAL_CHECK(mos_added_since_save_ == mos_removed_since_save_,
+                           "ModelObjects added do not match those removed");
+      }
+    }
+  }
+
+  //! Get an upper bound on the number of particles in the Model.
+  /** This value is guaranteed to be at least the number of particles in
+      the model (there may be fewer particles if any have been removed)
+      and every ParticleIndex will be smaller than this value. */
+  unsigned get_particles_size() const { return particle_index_.size(); }
+
   IMP_OBJECT_METHODS(Model);
 
  public:
 #if !defined(IMP_DOXYGEN)
-  virtual void do_destroy() IMP_OVERRIDE;
+  virtual void do_destroy() override;
 #endif
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/spb/TwoStateGoModelRestraint.h
  *  \brief Two-state Go-Model Restraint
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H
@@ -35,8 +35,8 @@ class IMPSPBEXPORT TwoStateGoModelRestraint : public Restraint {
                            Float Beta, Float Delta, Float Cutoff);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum) const
-      IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   // IMP_RESTRAINT(TwoStateGoModelRestraint);
   IMP_OBJECT_METHODS(TwoStateGoModelRestraint);

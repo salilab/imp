@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Use clang-format and autopep8 when available to clean up the listed source
    files."""

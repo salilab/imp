@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
         IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
     int cur_frame = 0;
-    IMP_FOREACH(RMF::FrameID frame_iteration, rh.get_frames()) {
+    for(RMF::FrameID frame_iteration : rh.get_frames()) {
       w->set_frame(cur_frame++);
       IMP::rmf::load_frame(rh, frame_iteration);
       for (unsigned int i = 0; i < hs.size(); ++i) {

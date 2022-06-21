@@ -1295,7 +1295,7 @@ class TopologyReader(object):
       [Chimera names](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html),
       (e.g. "red"), or R,G,B values as three comma-separated floating point
       numbers from 0 to 1 (e.g. "1.0, 0.0, 0.0") or a 6-digit hex string
-      starting with '#' (e.g. 0xff0000).
+      starting with '#' (e.g. #ff0000).
     - `fasta_fn`: Name of FASTA file containing this component.
     - `fasta_id`: String found in FASTA sequence header line. The sequence read
       from the file is assumed to be a protein sequence. If it should instead

@@ -4,7 +4,7 @@
  *
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -119,7 +119,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   // function required by Sampler
   // TODO: think how to save configurations in internal coords
   // to be more memory efficient
-  IMP::ConfigurationSet* do_sample() const IMP_OVERRIDE {
+  IMP::ConfigurationSet* do_sample() const override {
     const_cast<RRT*>(this)->run();
     return nullptr;
   }

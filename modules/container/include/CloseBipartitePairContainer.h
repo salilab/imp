@@ -2,7 +2,7 @@
  *  \file IMP/container/CloseBipartitePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -77,7 +77,7 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
   ParticleIndexes get_all_possible_indexes() const;
 
  private:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 #endif
   IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };

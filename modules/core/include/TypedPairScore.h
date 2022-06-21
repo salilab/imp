@@ -2,7 +2,7 @@
  *  \file IMP/core/TypedPairScore.h
  *  \brief Delegate to another PairScore depending on particle types.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TYPED_PAIR_SCORE_H
@@ -67,9 +67,9 @@ class IMPCOREEXPORT TypedPairScore : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(TypedPairScore);
   IMP_OBJECT_METHODS(TypedPairScore);
   ;

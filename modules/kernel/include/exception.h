@@ -2,7 +2,7 @@
  *  \file IMP/exception.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include <IMP/kernel_config.h>
 #include "compiler_macros.h"
 #include "enums.h"
-#include "nullptr.h"
 #include "internal/base_static.h"
 #include <string>
 #include <stdexcept>

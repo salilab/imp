@@ -2,7 +2,7 @@
  *  \file IMP/misc/SoftCylinderPairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H
@@ -27,9 +27,9 @@ class IMPMISCEXPORT SoftCylinderPairScore : public PairScore {
   SoftCylinderPairScore(double k);
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(SoftCylinderPairScore);
   IMP_OBJECT_METHODS(SoftCylinderPairScore);
   ;

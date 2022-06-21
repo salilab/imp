@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Constraint.h   \brief A base class for constraints.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -52,8 +52,8 @@ class IMPKERNELEXPORT Constraint : public ScoreState {
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 
-  virtual void do_before_evaluate() IMP_OVERRIDE { do_update_attributes(); }
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
+  virtual void do_before_evaluate() override { do_update_attributes(); }
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override {
     if (da) do_update_derivatives(da);
   }
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);

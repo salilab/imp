@@ -2,7 +2,7 @@
  *  \file IMP/gsl/Simplex.h
  *  \brief The simplex algorithm from GSL.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_SIMPLEX_H
@@ -63,7 +63,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
     min_length_ = d;
   }
   /** @} */
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(Simplex);
 };
 

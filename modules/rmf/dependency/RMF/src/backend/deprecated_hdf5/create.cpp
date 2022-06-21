@@ -2,7 +2,7 @@
  *  \file RMF/paths.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,15 +33,15 @@ namespace {
 typedef backends::BackwardsIO<HDF5SharedData> MIO;
 
 struct HDF5Factory : public RMF::backends::IOFactory {
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     return ".rmf-hdf5";
   }
   virtual boost::shared_ptr<RMF::backends::IO> read_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<MIO>(name, false, true);
   }
   virtual boost::shared_ptr<RMF::backends::IO> create_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<MIO>(name, true, false);
   }
   virtual ~HDF5Factory() {}

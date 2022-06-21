@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 // IWYU pragma: no_include <log4cxx/appender.h>
@@ -41,10 +41,10 @@ struct Configurator {
 
 void do_init() {
   // "%-4r [%t] %-5p %c %x - %m%n"
-  static log4cxx::PatternLayoutPtr layout =
-      new log4cxx::PatternLayout(LOG4CXX_STR("%-6r %-5p %c- %m%n"));
-  static log4cxx::ConsoleAppenderPtr appender =
-      new log4cxx::ConsoleAppender(layout);
+  static log4cxx::PatternLayoutPtr layout(
+      new log4cxx::PatternLayout(LOG4CXX_STR("%-6r %-5p %c- %m%n")));
+  static log4cxx::ConsoleAppenderPtr appender(
+      new log4cxx::ConsoleAppender(layout));
   static Configurator config(appender);
   use(config);
   set_log_level("off");

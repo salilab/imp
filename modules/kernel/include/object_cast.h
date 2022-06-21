@@ -2,7 +2,7 @@
  *  \file IMP/object_cast.h
  *  \brief Up (or down) cast an \imp Object-derived class.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

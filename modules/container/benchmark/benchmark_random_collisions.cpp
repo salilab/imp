@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP.h>
@@ -29,9 +29,9 @@ class ConstPairScore : public PairScore {
  public:
   ConstPairScore() {}
   double evaluate_index(Model *m, const ParticleIndexPair &p,
-                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+                        DerivativeAccumulator *da) const override;
   ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(ConstPairScore);
   IMP_OBJECT_METHODS(ConstPairScore);
   ;

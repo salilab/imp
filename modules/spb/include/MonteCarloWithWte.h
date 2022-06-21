@@ -2,7 +2,7 @@
  *  \file IMP/spb/MonteCarloWithWte.h
  *  \brief An exotic version of MonteCarlo
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H
@@ -34,7 +34,7 @@ class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
 
   void update_bias(double score);
   virtual double do_evaluate(
-                  const ParticleIndexes &moved, bool) const IMP_OVERRIDE;
+                  const ParticleIndexes &moved, bool) const override;
   double get_spline(double score) const;
 
  public:
@@ -66,7 +66,7 @@ class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
   }
 
   // IMP_MONTE_CARLO(MonteCarloWithWte);
-  virtual void do_step() IMP_OVERRIDE;
+  virtual void do_step() override;
 
   IMP_OBJECT_METHODS(MonteCarloWithWte);
 };

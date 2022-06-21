@@ -2,7 +2,7 @@
  *  \file IMP/display/LogOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_LOG_OPTIMIZER_STATE_H
@@ -31,7 +31,7 @@ class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
                   Geometry *, Geometries, , , );
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
   IMP_OBJECT_METHODS(WriteOptimizerState);
 };
 

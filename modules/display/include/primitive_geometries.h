@@ -2,7 +2,7 @@
  *  \file IMP/display/primitive_geometries.h
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PRIMITIVE_GEOMETRIES_H
@@ -77,7 +77,7 @@ class IMPDISPLAYEXPORT LabelGeometry : public Geometry {
   LabelGeometry(const algebra::Vector3D &loc, std::string text);
   std::string get_text() const { return text_; }
   const algebra::Sphere3D &get_location() const { return loc_; }
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(LabelGeometry);
 };
 
@@ -96,7 +96,7 @@ class IMPDISPLAYEXPORT SurfaceMeshGeometry : public Geometry {
   SurfaceMeshGeometry(const algebra::Vector3Ds &vertices, const Ints &faces);
   const algebra::Vector3Ds &get_vertexes() const { return vertices_; }
   const Ints &get_faces() const { return faces_; }
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(SurfaceMeshGeometry);
 };
 
@@ -110,7 +110,7 @@ class IMPDISPLAYEXPORT PlaneGeometry : public Geometry {
 
  public:
   PlaneGeometry(const algebra::Plane3D &loc, const algebra::BoundingBox3D &box);
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(PlaneGeometry);
 };
 

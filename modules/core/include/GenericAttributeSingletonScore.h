@@ -2,7 +2,7 @@
  *  \file IMP/core/GenericAttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H
@@ -29,9 +29,9 @@ class GenericAttributeSingletonScore : public SingletonScore {
   //! Apply function f to attribute k
   GenericAttributeSingletonScore(UF *f, FloatKey k);
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   //! get access to the unary function object used for scoring the attribute

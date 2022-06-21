@@ -2,7 +2,7 @@
  *  \file IMP/spb/BoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,9 +30,9 @@ class IMPSPBEXPORT BoxedMover : public core::MonteCarloMover {
   BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
 
  protected:
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   // IMP_MOVER(BoxedMover);
 

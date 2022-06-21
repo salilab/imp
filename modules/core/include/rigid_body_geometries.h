@@ -2,7 +2,7 @@
  *  \file IMP/core/rigid_body_geometries.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODY_GEOMETRIES_H
@@ -26,7 +26,7 @@ class IMPCOREEXPORT RigidBodyHierarchyGeometry
  public:
   RigidBodyHierarchyGeometry(RigidBody rb,
                              const ParticlesTemp &constituents);
-  display::Geometries get_components() const IMP_OVERRIDE;
+  display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(RigidBodyHierarchyGeometry);
 };
 
@@ -47,7 +47,7 @@ class IMPCOREEXPORT RigidBodyTorque : public display::SegmentGeometry {
 
  public:
   RigidBodyTorque(Particle *p);
-  const algebra::Segment3D &get_geometry() const IMP_OVERRIDE;
+  const algebra::Segment3D &get_geometry() const override;
 };
 
 IMPCORE_END_NAMESPACE

@@ -13,18 +13,17 @@ import IMP.pmi.restraints
 
 
 class ExternalBarrier(IMP.pmi.restraints.RestraintBase):
-
-    """Restraint to keep all structures inside sphere."""
+    """Keeps all structures inside a sphere."""
 
     def __init__(self, hierarchies, radius=10.0, resolution=10, weight=1.0,
                  center=None, label=None):
         """Setup external barrier restraint.
-        @param radius Size of external barrier
         @param hierarchies Can be one of the following inputs: IMP Hierarchy,
                PMI System/State/Molecule/TempResidue, or a list/set of them
+        @param radius Size of external barrier
         @param resolution Select which resolutions to act upon
         @param weight Weight of restraint
-        @param center Center of the external barrier restraint
+        @param center Center of the external barrier
                (IMP.algebra.Vector3D object)
         @param label A unique label to be used in outputs and
                      particle/restraint names.
@@ -57,7 +56,6 @@ class ExternalBarrier(IMP.pmi.restraints.RestraintBase):
 
 
 class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
-
     """A simple distance restraint"""
 
     def __init__(self, root_hier, tuple_selection1, tuple_selection2,
@@ -77,7 +75,7 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
                      particle/restraint names
         @param weight Weight of restraint
         @note Pass the same resnum twice to each tuple_selection. Optionally
-              add a copy number (PMI2 only)
+              add a copy number.
         """
         ts1 = IMP.core.HarmonicUpperBound(distancemax, kappa)
         ts2 = IMP.core.HarmonicLowerBound(distancemin, kappa)
@@ -125,22 +123,24 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class CylinderRestraint(IMP.Restraint):
-    '''
-    PMI2 python restraint. Restrains particles within a
-    Cylinder aligned along the z-axis and
-    centered in x,y=0,0
-    Optionally, one can restrain the cylindrical angle
-    '''
+    """Restrain particles within (or outside) a cylinder.
+       The cylinder is aligned along the z-axis and with center x=y=0.
+       Optionally, one can restrain the cylindrical angle
+    """
     import math
 
     def __init__(self, m, objects, resolution, radius, mintheta=None,
                  maxtheta=None, repulsive=False, label='None'):
         '''
-        @param objects PMI2 objects
+        @param objects PMI2 objects to restrain
         @param resolution the resolution you want the restraint to be applied
         @param radius the radius of the cylinder
         @param mintheta minimum cylindrical angle in degrees
         @param maxtheta maximum cylindrical angle in degrees
+        @param repulsive If True, restrain the particles to be outside
+               of the cylinder instead of inside
+        @param label A unique label to be used in outputs and
+               particle/restraint names
         '''
         IMP.Restraint.__init__(self, m, "CylinderRestraint %1%")
         self.radius = radius
@@ -201,8 +201,7 @@ class CylinderRestraint(IMP.Restraint):
 
 
 class BiStableDistanceRestraint(IMP.Restraint):
-    '''
-    a python restraint with bistable potential
+    '''Distance restraint with bistable potential
     Authors: G. Bouvier, R. Pellarin. Pasteur Institute.
     '''
     import numpy as np
@@ -211,7 +210,7 @@ class BiStableDistanceRestraint(IMP.Restraint):
     def __init__(self, m, p1, p2, dist1, dist2, sigma1, sigma2, weight1,
                  weight2):
         '''
-        input twp oarticles, the two equilibrium distances, their amplitudes,
+        input two particles, the two equilibrium distances, their amplitudes,
         and their weights (populations)
         '''
         IMP.Restraint.__init__(self, m, "BiStableDistanceRestraint %1%")
@@ -246,8 +245,7 @@ class BiStableDistanceRestraint(IMP.Restraint):
 
 
 class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
-
-    """Restraint for anchoring a particle to a specific coordinate."""
+    """Anchor a particle to a specific coordinate."""
 
     def __init__(self, root_hier, tuple_selection,
                  anchor_point=IMP.algebra.Vector3D(0, 0, 0),
@@ -260,13 +258,13 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
         @param anchor_point Point to which to restrain particle
                (IMP.algebra.Vector3D object)
         @param radius Size of the tolerance length
-        @param kappa The harmonic parameter
+        @param kappa Strength of the harmonic restraint
         @param resolution For selecting a particle
         @param weight Weight of restraint
         @param label A unique label to be used in outputs and
                      particle/restraint names
         @note Pass the same resnum twice to each tuple_selection. Optionally
-              add a copy number (PMI2 only)
+              add a copy number
         """
         model = root_hier.get_model()
         copy_num1 = 0
@@ -306,13 +304,17 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
+    """Restrain particles to be above, below, or inside a planar membrane.
+       The membrane is defined to lie on the xy plane with a given z
+       coordinate and thickness, and particles are restrained (by their
+       z coordinates) with a simple sigmoid score.
+    """
+
     def __init__(self, hier, objects_above=None, objects_inside=None,
                  objects_below=None, center=0.0, thickness=30.0,
                  softness=3.0, plateau=0.0000000001, resolution=1,
                  weight=1.0, label=None):
-        """ Setup Membrane restraint
-
-        Simple sigmoid score calculated for particles above,
+        """Setup the restraint.
 
         @param objects_inside list or tuples of objects in membrane
                (e.g. ['p1', (10, 30,'p2')])
@@ -325,8 +327,6 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
         @param weight Weight of restraint
         @param label A unique label to be used in outputs and
                      particle/restraint names.
-        input a list of particles, the slope and theta of the sigmoid potential
-        theta is the cutoff distance for a protein-protein contact
         """
 
         self.hier = hier
@@ -411,12 +411,7 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
         return particles
 
     def create_membrane_density(self, file_out='membrane_localization.mrc'):
-
-        '''
-        Just for visualization purposes.
-        Writes density of membrane localization
-        '''
-
+        """Create an MRC density file to visualize the membrane."""
         offset = 5.0 * self.thickness
         apix = 3.0
         resolution = 5.0

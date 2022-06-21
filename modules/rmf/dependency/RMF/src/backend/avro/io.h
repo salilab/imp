@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,20 +40,15 @@ struct Avro2IO : public backends::IO {
  public:
   template <class T>
   Avro2IO(T t);
-  virtual void save_loaded_frame(internal::SharedData *shared_data)
-      RMF_OVERRIDE;
-  virtual void load_loaded_frame(internal::SharedData *shared_data)
-      RMF_OVERRIDE;
-  virtual void save_static_frame(internal::SharedData *shared_data)
-      RMF_OVERRIDE;
-  virtual void load_static_frame(internal::SharedData *shared_data)
-      RMF_OVERRIDE;
-  virtual void load_file(internal::SharedData *shared_data) RMF_OVERRIDE;
-  virtual void save_file(const internal::SharedData *shared_data) RMF_OVERRIDE;
-  virtual void load_hierarchy(internal::SharedData *shared_data) RMF_OVERRIDE;
-  virtual void save_hierarchy(const internal::SharedData *shared_data)
-      RMF_OVERRIDE;
-  virtual void flush() RMF_OVERRIDE;
+  virtual void save_loaded_frame(internal::SharedData *shared_data) override;
+  virtual void load_loaded_frame(internal::SharedData *shared_data) override;
+  virtual void save_static_frame(internal::SharedData *shared_data) override;
+  virtual void load_static_frame(internal::SharedData *shared_data) override;
+  virtual void load_file(internal::SharedData *shared_data) override;
+  virtual void save_file(const internal::SharedData *shared_data) override;
+  virtual void load_hierarchy(internal::SharedData *shared_data) override;
+  virtual void save_hierarchy(const internal::SharedData *shared_data) override;
+  virtual void flush() override;
   virtual ~Avro2IO();
 };
 
@@ -63,7 +58,7 @@ template <class Traits, class Loader>
 void load(internal::SharedData *shared_data, const KeyMaps<Traits> &keys,
           internal::TypeData<Traits> &data, Loader) {
   typedef std::pair<ID<Traits>, Category> KKP;
-  RMF_FOREACH(KKP kp, keys.category) {
+  for(KKP kp : keys.category) {
     shared_data->ensure_key(kp.second, kp.first,
                             keys.name.find(kp.first)->second, Traits());
   }
@@ -76,10 +71,10 @@ void load(internal::SharedData *shared_data, const KeyMaps<Traits> &keys,
 template <class Traits, class Loader>
 bool save(KeyType key_type, internal::SharedData *shared_data,
           KeyMaps<Traits> &keys, std::vector<KeyInfo> *keys_changed,
-          internal::TypeData<Traits> &data,
-          internal::TypeData<Traits> *change_data, Loader) {
+          internal::TypeData<Traits> &data, Loader,
+          internal::TypeData<Traits> *change_data = nullptr) {
   bool ret = false;
-  RMF_FOREACH(ID<Traits> k, shared_data->get_keys(Traits())) {
+  for(ID<Traits> k : shared_data->get_keys(Traits())) {
     if (keys.category.find(k) == keys.category.end()) {
       ret = true;
       std::string name = shared_data->get_name(k);
@@ -100,14 +95,14 @@ bool save(KeyType key_type, internal::SharedData *shared_data,
   }
 
   if (change_data) {
-    RMF_FOREACH(typename internal::TypeData<Traits>::const_reference kpd,
+    for(typename internal::TypeData<Traits>::const_reference kpd :
                 Loader::get_data(shared_data, Traits())) {
       if (data.find(kpd.first) == data.end() && !kpd.second.empty()) {
         ret = true;
         change_data->operator[](kpd.first) = kpd.second;
         data[kpd.first] = kpd.second;
       } else {
-        RMF_FOREACH(typename internal::KeyData<Traits>::const_reference npd,
+        for(typename internal::KeyData<Traits>::const_reference npd :
                     kpd.second) {
           if (data[kpd.first].find(npd.first) == data[kpd.first].end()) {
             ret = true;
@@ -128,8 +123,7 @@ template <class Loader>
 void load_all(const std::vector<std::pair<Category, std::string> > &categories,
               internal::SharedData *shared_data, const KeyData &keys,
               DataTypes &data, Loader) {
-  typedef std::pair<Category, std::string> CP;
-  RMF_FOREACH(CP cp, categories) {
+  for(const auto &cp : categories) {
     shared_data->ensure_category(cp.first, cp.second);
   }
   load(shared_data, keys.float_keys, data.float_data, Loader());
@@ -158,43 +152,57 @@ bool save_all(FileData &file_data, FileDataChanges &file_data_changes,
     file_data_changes.categories.push_back(file_data.categories.back());
   }
 
-  ret = save(FLOAT, shared_data, file_data.keys.float_keys,
-             &file_data_changes.keys, data.float_data,
-             data_changes ? &data_changes->float_data : NULL, Loader()) ||
-        ret;
-  ret = save(INT, shared_data, file_data.keys.int_keys, &file_data_changes.keys,
-             data.int_data, data_changes ? &data_changes->int_data : NULL,
-             Loader()) ||
-        ret;
-  ret = save(STRING, shared_data, file_data.keys.string_keys,
-             &file_data_changes.keys, data.string_data,
-             data_changes ? &data_changes->string_data : NULL, Loader()) ||
-        ret;
-  ret = save(FLOATS, shared_data, file_data.keys.floats_keys,
-             &file_data_changes.keys, data.floats_data,
-             data_changes ? &data_changes->floats_data : NULL, Loader()) ||
-        ret;
-  ret = save(INTS, shared_data, file_data.keys.ints_keys,
-             &file_data_changes.keys, data.ints_data,
-             data_changes ? &data_changes->ints_data : NULL, Loader()) ||
-        ret;
-  ret = save(STRINGS, shared_data, file_data.keys.strings_keys,
-             &file_data_changes.keys, data.strings_data,
-             data_changes ? &data_changes->strings_data : NULL, Loader()) ||
-        ret;
-
-  ret = save(VECTOR3, shared_data, file_data.keys.vector3_keys,
-             &file_data_changes.keys, data.vector3_data,
-             data_changes ? &data_changes->vector3_data : NULL, Loader()) ||
-        ret;
-  ret = save(VECTOR4, shared_data, file_data.keys.vector4_keys,
-             &file_data_changes.keys, data.vector4_data,
-             data_changes ? &data_changes->vector4_data : NULL, Loader()) ||
-        ret;
-  ret = save(VECTOR3S, shared_data, file_data.keys.vector3s_keys,
-             &file_data_changes.keys, data.vector3s_data,
-             data_changes ? &data_changes->vector3s_data : NULL, Loader()) ||
-        ret;
+  // This duplication is quite ugly but works around a (compiler?) bug;
+  // although nullptr was passed for change_data to save(), it tried to
+  // dereference it anyway and caused a segfault
+  if (data_changes) {
+    ret = save(FLOAT, shared_data, file_data.keys.float_keys,
+               &file_data_changes.keys, data.float_data, Loader(),
+               &data_changes->float_data) || ret;
+    ret = save(INT, shared_data, file_data.keys.int_keys,
+               &file_data_changes.keys, data.int_data, Loader(),
+               &data_changes->int_data) || ret;
+    ret = save(STRING, shared_data, file_data.keys.string_keys,
+               &file_data_changes.keys, data.string_data, Loader(),
+               &data_changes->string_data) || ret;
+    ret = save(FLOATS, shared_data, file_data.keys.floats_keys,
+               &file_data_changes.keys, data.floats_data, Loader(),
+               &data_changes->floats_data) || ret;
+    ret = save(INTS, shared_data, file_data.keys.ints_keys,
+               &file_data_changes.keys, data.ints_data, Loader(),
+               &data_changes->ints_data) || ret;
+    ret = save(STRINGS, shared_data, file_data.keys.strings_keys,
+               &file_data_changes.keys, data.strings_data, Loader(),
+               &data_changes->strings_data) || ret;
+    ret = save(VECTOR3, shared_data, file_data.keys.vector3_keys,
+               &file_data_changes.keys, data.vector3_data, Loader(),
+               &data_changes->vector3_data) || ret;
+    ret = save(VECTOR4, shared_data, file_data.keys.vector4_keys,
+               &file_data_changes.keys, data.vector4_data, Loader(),
+               &data_changes->vector4_data) || ret;
+    ret = save(VECTOR3S, shared_data, file_data.keys.vector3s_keys,
+               &file_data_changes.keys, data.vector3s_data, Loader(),
+               &data_changes->vector3s_data) || ret;
+  } else {
+    ret = save(FLOAT, shared_data, file_data.keys.float_keys,
+               &file_data_changes.keys, data.float_data, Loader()) || ret;
+    ret = save(INT, shared_data, file_data.keys.int_keys,
+               &file_data_changes.keys, data.int_data, Loader()) || ret;
+    ret = save(STRING, shared_data, file_data.keys.string_keys,
+               &file_data_changes.keys, data.string_data, Loader()) || ret;
+    ret = save(FLOATS, shared_data, file_data.keys.floats_keys,
+               &file_data_changes.keys, data.floats_data, Loader()) || ret;
+    ret = save(INTS, shared_data, file_data.keys.ints_keys,
+               &file_data_changes.keys, data.ints_data, Loader()) || ret;
+    ret = save(STRINGS, shared_data, file_data.keys.strings_keys,
+               &file_data_changes.keys, data.strings_data, Loader()) || ret;
+    ret = save(VECTOR3, shared_data, file_data.keys.vector3_keys,
+               &file_data_changes.keys, data.vector3_data, Loader()) || ret;
+    ret = save(VECTOR4, shared_data, file_data.keys.vector4_keys,
+               &file_data_changes.keys, data.vector4_data, Loader()) || ret;
+    ret = save(VECTOR3S, shared_data, file_data.keys.vector3s_keys,
+               &file_data_changes.keys, data.vector3s_data, Loader()) || ret;
+  }
 
   return ret;
 }
@@ -231,7 +239,7 @@ void Avro2IO<RW>::save_loaded_frame(internal::SharedData *shared_data) {
   frame_.parents = FrameIDs(fd.parents.begin(), fd.parents.end());
   frame_.type = fd.type;
   frame_.name = fd.name;
-  save_all(file_data_, file_data_changes_, shared_data, frame_.data, NULL,
+  save_all(file_data_, file_data_changes_, shared_data, frame_.data, nullptr,
            internal::LoadedValues());
 }
 
@@ -266,16 +274,16 @@ void Avro2IO<RW>::load_file(internal::SharedData *shared_data) {
   shared_data->set_description(file_data_.description);
   shared_data->set_producer(file_data_.producer);
   typedef std::pair<FrameID, internal::FrameData> FDP;
-  RMF_FOREACH(FDP fdp, file_data_.frames) {
+  for(FDP fdp : file_data_.frames) {
     shared_data->add_frame_data(fdp.first, fdp.second.name, fdp.second.type);
-    RMF_FOREACH(FrameID p, fdp.second.parents) {
+    for(FrameID p : fdp.second.parents) {
       shared_data->add_child_frame(p, fdp.first);
     }
   }
   shared_data->set_file_type("rmf3");
 
   typedef std::pair<Category, std::string> CP;
-  RMF_FOREACH(CP cp, file_data_.categories) {
+  for(CP cp : file_data_.categories) {
     shared_data->ensure_category(cp.first, cp.second);
   }
 }
@@ -302,7 +310,7 @@ void Avro2IO<RW>::load_hierarchy(internal::SharedData *shared_data) {
 
 template <class RW>
 void Avro2IO<RW>::save_hierarchy(const internal::SharedData *shared_data) {
-  RMF_FOREACH(NodeID n, get_nodes(shared_data)) {
+  for(NodeID n : get_nodes(shared_data)) {
     HierarchyNode cur;
     cur.id = n;
     bool cur_dirty = false;

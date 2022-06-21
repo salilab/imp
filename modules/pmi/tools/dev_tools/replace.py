@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Replace all instances of argv[1] with argv[2], only updating the file if
    changes were made. """

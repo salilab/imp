@@ -1,7 +1,7 @@
 /**
  *  \file Sigmoid.h    \brief Sigmoid function.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_SIGMOID_H
@@ -24,13 +24,13 @@ class Sigmoid : public UnaryFunction {
   Sigmoid(Float E0, Float Zmid, Float n) : E0_(E0), Zmid_(Zmid), n_(n) {}
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return DerivativePair(evaluate(feature),
                           -E0_ * n_ * pow(feature / Zmid_, n_) /
                               (feature * (1.0 + pow(feature / Zmid_, n_)) *
                                (1.0 + pow(feature / Zmid_, n_))));
   }
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return E0_ / (1.0 + std::pow(feature / Zmid_, n_));
   }
   IMP_OBJECT_METHODS(Sigmoid);

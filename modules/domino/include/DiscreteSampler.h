@@ -2,7 +2,7 @@
  *  \file IMP/domino/DiscreteSampler.h
  *  \brief A base class for discrete samplers.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,7 +60,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
   AssignmentsTable *get_assignments_table_to_use(
       const SubsetFilterTables &sfts,
       unsigned int max = std::numeric_limits<int>::max()) const;
-  virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
+  virtual ConfigurationSet *do_sample() const override;
   virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
 
   RestraintsTemp get_restraints() const {

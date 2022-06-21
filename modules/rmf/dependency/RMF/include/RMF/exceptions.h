@@ -2,7 +2,7 @@
  *  \file RMF/exceptions.h
  *  \brief Declarations of the various exception types.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,7 +31,7 @@ class RMFEXPORT Exception : public virtual std::exception,
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception();
-  const char* what() const RMF_NOEXCEPT RMF_OVERRIDE;
+  const char* what() const RMF_NOEXCEPT override;
   virtual ~Exception() RMF_NOEXCEPT;
 };
 

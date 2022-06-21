@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Transform.h     \brief Transform a particle
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,11 +28,11 @@ class IMPCOREEXPORT Transform : public SingletonModifier {
   Transform(const algebra::Transformation3D &t, bool ignore_non_xyz = false);
 
   virtual void apply_index(Model *m, ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(Transform);
   IMP_OBJECT_METHODS(Transform);
   ;

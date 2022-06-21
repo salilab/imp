@@ -2,7 +2,7 @@
  *  \file IMP/ScoringFunction.h
  *  \brief Represents a scoring function on the model.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -86,7 +86,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
  public:
   ScoringFunction(Model *m, std::string name);
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
 
@@ -103,6 +103,8 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   //! Score when some particles have moved.
   /** This should behave identically to evaluate() but may be more
       efficient if it can skip restraint terms that involve unchanged particles.
+
+      \see IMP::core::MonteCarlo::set_score_moved
 
       \param moved_pis Particles that have moved since the last
              scoring function evaluation.

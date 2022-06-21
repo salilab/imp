@@ -3,7 +3,7 @@
  *  \brief Particles states for a rigid body that is going to be
  *projected
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,9 +58,9 @@ class IMPEM2DEXPORT GridStates : public domino::ParticleStates {
   //! Returns the orientation corresponding to the state i
   algebra::Rotation3D get_orientation(unsigned int i) const;
 
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
 
   IMP_OBJECT_METHODS(GridStates);
 };
@@ -99,9 +99,9 @@ class IMPEM2DEXPORT ProjectionStates : public GridStates {
   //! Returns the projection corresponding to the state i;
   Image *get_projection(unsigned int i) const;
 
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
 
   IMP_OBJECT_METHODS(ProjectionStates);
 };

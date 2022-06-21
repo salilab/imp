@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Cosine.h    \brief Cosine function.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_COSINE_H
@@ -32,9 +32,9 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
         phase_(phase) {}
 
   virtual DerivativePair evaluate_with_derivative(
-                  double feature) const IMP_OVERRIDE;
+                  double feature) const override;
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE;
+  virtual double evaluate(double feature) const override;
 
   IMP_OBJECT_METHODS(Cosine);
 

@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/check_macros.h>
 #include <boost/utility/enable_if.hpp>
+#include <boost/dynamic_bitset.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -29,15 +30,21 @@ template<typename Score> inline
 typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
                            std::vector<unsigned> >::type
 get_container_indexes(
+            Model *m,
             const Vector<typename Score::IndexArgument> &contents,
-            const std::set<ParticleIndex> &ps) {
+            const ParticleIndexes &ps) {
+  boost::dynamic_bitset<> bps(m->get_particles_size());
+  for (ParticleIndex pi : ps) {
+    bps[pi.get_index()] = true;
+  }
+
   std::vector<unsigned> ret;
   unsigned i = 0;
   for (typename Vector<typename Score::IndexArgument>::const_iterator
        cit = contents.begin(); cit != contents.end(); ++cit, ++i) {
     for (typename Score::IndexArgument::const_iterator pit = cit->begin();
          pit != cit->end(); ++pit) {
-      if (ps.find(*pit) != ps.end()) {
+      if (bps[pit->get_index()]) {
         ret.push_back(i);
         break;
       }
@@ -52,13 +59,19 @@ template<typename Score> inline
 typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
                           std::vector<unsigned> >::type
 get_container_indexes(
+            Model *m,
             const Vector<typename Score::IndexArgument> &contents,
-            const std::set<ParticleIndex> &ps) {
+            const ParticleIndexes &ps) {
+  boost::dynamic_bitset<> bps(m->get_particles_size());
+  for (ParticleIndex pi : ps) {
+    bps[pi.get_index()] = true;
+  }
+
   std::vector<unsigned> ret;
   unsigned i = 0;
   for (Vector<ParticleIndex>::const_iterator cit = contents.begin();
        cit != contents.end(); ++cit, ++i) {
-    if (ps.find(*cit) != ps.end()) {
+    if (bps[cit->get_index()]) {
       ret.push_back(i);
     }
   }
@@ -85,7 +98,7 @@ public:
     CacheMap::const_iterator it = cache_.find(pi);
     if (it == cache_.end()) {
       cache_[pi] = get_container_indexes<Score>(
-                      container_->get_contents(),
+                      m, container_->get_contents(),
                       m->get_dependent_particles(pi));
       it = cache_.find(pi);
     }
@@ -157,7 +170,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const
-      IMP_OVERRIDE {
+      override {
     double score =
         (ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));
     IMP_OMP_PRAGMA(atomic)
@@ -167,7 +180,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
 
   virtual void apply_indexes(
       Model *m, const Vector<typename Score::IndexArgument> &a,
-      unsigned int lower_bound, unsigned int upper_bound) const IMP_OVERRIDE {
+      unsigned int lower_bound, unsigned int upper_bound) const override {
     double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
                                          lower_bound, upper_bound);
     IMP_OMP_PRAGMA(atomic)
@@ -179,7 +192,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
       Model *m, const Vector<typename Score::IndexArgument> &a,
       unsigned int lower_bound, unsigned int upper_bound,
       const ParticleIndexes &moved_pis,
-      const ParticleIndexes &reset_pis) const IMP_OVERRIDE {
+      const ParticleIndexes &reset_pis) const override {
     // Only support moved speedups when evaluating the entire container,
     // and without derivatives, for now
     if (lower_bound != 0 || upper_bound != a.size()
@@ -271,13 +284,13 @@ class AccumulatorScoreModifier : public Score::Modifier {
 
   virtual ModelObjectsTemp do_get_inputs(Model *m,
                                          const ParticleIndexes &pis) const
-      IMP_OVERRIDE {
+      override {
     return ss_->get_inputs(m, pis);
   }
 
   virtual ModelObjectsTemp do_get_outputs(Model *,
                                           const ParticleIndexes &) const
-      IMP_OVERRIDE {
+      override {
     return ModelObjectsTemp();
   }
 

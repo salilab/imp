@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/ProjectionParameters.h
  *  \brief Decorator for projection parameters
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_PARAMETERS_H
@@ -110,10 +110,10 @@ class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
       : ScoreState(p->get_model(), "ProjectionParametersScoreState%1%") {
     proj_params_ = p;
   }
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(ProjectionParametersScoreState);
 
  private:

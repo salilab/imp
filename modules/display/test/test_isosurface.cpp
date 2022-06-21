@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
   typedef IMP::algebra::DenseGrid3D<double> G;
   G g(2.5, IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-10, -10, -10),
                                        IMP::algebra::Vector3D(10, 10, 10)));
-  IMP_FOREACH(G::Index i, g.get_all_indexes()) {
+  for(G::Index i : g.get_all_indexes()) {
     double m = g.get_center(i).get_magnitude();
     g[i] = 100 - m;
   }

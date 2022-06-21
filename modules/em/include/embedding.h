@@ -2,7 +2,7 @@
  *  \file IMP/em/embedding.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,8 +23,8 @@ class IMPEMEXPORT HighDensityEmbedding : public statistics::Embedding {
 
  public:
   HighDensityEmbedding(DensityMap *dm, double threshold);
-  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  algebra::VectorKD get_point(unsigned int i) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(HighDensityEmbedding);
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/particle_io.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,10 +29,9 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
       map[ks[i]] = ik;
       IMP_LOG_TERSE("Found " << ks[i] << " with " << ik << std::endl);
     }
-    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
-         it != map.end(); ++it) {
-      IMP_LOG_TERSE("Added key assoc " << fh.get_name(it->first) << " with "
-                                       << it->second << std::endl);
+    for (const auto &item : map) {
+      IMP_LOG_TERSE("Added key assoc " << fh.get_name(item.first) << " with "
+                                       << item.second << std::endl);
     }
   }
   template <class IK, class RK>
@@ -42,33 +41,32 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
     load_keys(nh.get_file(), cat, map);
     /*RMF::show_hierarchy_with_values(nh,
       frame);*/
-    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
-         it != map.end(); ++it) {
-      if (nh.get_has_value(it->first)) {
-        IK ik = it->second;
+    for (const auto &it : map) {
+      if (nh.get_has_value(it.first)) {
+        IK ik = it.second;
         if (o->has_attribute(ik)) {
-          o->set_value(ik, nh.get_value(it->first));
+          o->set_value(ik, nh.get_value(it.first));
         } else {
-          o->add_attribute(ik, nh.get_value(it->first));
+          o->add_attribute(ik, nh.get_value(it.first));
         }
       } else {
-        if (o->has_attribute(it->second)) {
-          o->remove_attribute(it->second);
+        if (o->has_attribute(it.second)) {
+          o->remove_attribute(it.second);
         }
       }
     }
   }
-  void do_load_one(RMF::NodeConstHandle nh, Particle *o) IMP_OVERRIDE {
+  void do_load_one(RMF::NodeConstHandle nh, Particle *o) override {
     RMF::Category cat = nh.get_file().get_category("IMP");
     load_one<IMP::FloatKey, RMF::FloatKey>(o, nh, cat);
     load_one<IMP::IntKey, RMF::IntKey>(o, nh, cat);
     load_one<IMP::StringKey, RMF::StringKey>(o, nh, cat);
   }
-  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
+  bool get_is(RMF::NodeConstHandle nh) const override {
     return nh.get_type() == RMF::CUSTOM;
   }
   using P::do_create;
-  Particle *do_create(RMF::NodeConstHandle name, Model *m) IMP_OVERRIDE {
+  Particle *do_create(RMF::NodeConstHandle name, Model *m) override {
     return new Particle(m, name.get_name());
   }
 
@@ -96,12 +94,12 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
     }
   }
 
-  void do_save_one(Particle *o, RMF::NodeHandle nh) IMP_OVERRIDE {
+  void do_save_one(Particle *o, RMF::NodeHandle nh) override {
     save_one(o, o->get_float_keys(), nh, float_);
     save_one(o, o->get_int_keys(), nh, int_);
     save_one(o, o->get_string_keys(), nh, string_);
   }
-  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE { return RMF::CUSTOM; }
+  RMF::NodeType get_type(Particle *) const override { return RMF::CUSTOM; }
 
  public:
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {

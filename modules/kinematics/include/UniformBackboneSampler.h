@@ -3,7 +3,7 @@
  \brief A class for uniform sampling of backbone angles
 
  \authors Dina Schneidman, Barak Raveh
- Copyright 2007-2021 IMP Inventors. All rights reserved.
+ Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_UNIFORM_BACKBONE_SAMPLER_H
@@ -32,13 +32,13 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
    */
   UniformBackboneSampler(DihedralAngleRevoluteJoints joints, DOFs dofs);
 
-  virtual void apply(const DOFValues& values) IMP_OVERRIDE;
+  virtual void apply(const DOFValues& values) override;
   virtual void apply_floats(const Floats& values);
 
   DihedralAngleRevoluteJoints get_joints() { return joints_; }
 
  protected:
-  virtual DOFValues do_get_sample() const IMP_OVERRIDE;
+  virtual DOFValues do_get_sample() const override;
 
  private:
   //  boost::mt19937 rng_; // init random number generator

@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_storages.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -341,9 +341,8 @@ class SparseGridStorageD : public Base {
 
   template <class Functor, class Grid>
   Functor apply(const Grid &g, Functor f) const {
-    for (typename Data::const_iterator it = data_.begin(); it != data_.end();
-         ++it) {
-      f(g, it->first, g.get_center(it->first));
+    for (const auto &it : data_) {
+      f(g, it.first, g.get_center(it.first));
     }
     return f;
   }
@@ -353,10 +352,9 @@ class SparseGridStorageD : public Base {
     IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
     GridIndexD<D> reti = data_.begin()->first;
     ExtendedGridIndexD<D> ret(reti.begin(), reti.end());
-    for (typename Data::const_iterator it = data_.begin(); it != data_.end();
-         ++it) {
+    for (const auto &it : data_) {
       for (unsigned int i = 0; i < ret.get_dimension(); ++i) {
-        ret.access_data().get_data()[i] = std::min(ret[i], it->first[i]);
+        ret.access_data().get_data()[i] = std::min(ret[i], it.first[i]);
       }
     }
     return ret;
@@ -366,10 +364,9 @@ class SparseGridStorageD : public Base {
     IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
     GridIndexD<D> reti = data_.begin()->first;
     ExtendedGridIndexD<D> ret(reti.begin(), reti.end());
-    for (typename Data::const_iterator it = data_.begin(); it != data_.end();
-         ++it) {
+    for (const auto &it : data_) {
       for (unsigned int i = 0; i < ret.get_dimension(); ++i) {
-        ret.access_data().get_data()[i] = std::min(ret[i], it->first[i]);
+        ret.access_data().get_data()[i] = std::min(ret[i], it.first[i]);
       }
     }
     return ret;

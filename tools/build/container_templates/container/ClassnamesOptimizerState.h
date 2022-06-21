@@ -3,7 +3,7 @@
  *  \brief Use a ClassnameModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAMES_OPTIMIZER_STATE_H
@@ -38,7 +38,7 @@ class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
   ClassnamesOptimizerState(ClassnameContainerAdaptor c, ClassnameModifier *gf,
                            std::string name = "ClassnamesOptimizerState %1%");
 
-  virtual void update() IMP_OVERRIDE;
+  virtual void update() override;
   IMP_OBJECT_METHODS(ClassnamesOptimizerState);
 };
 

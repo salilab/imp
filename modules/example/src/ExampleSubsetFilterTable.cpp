@@ -2,7 +2,7 @@
  *  \file ExampleSubsetFilterTable.cpp
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/example/ExampleSubsetFilterTable.h>
@@ -21,7 +21,7 @@ class ExampleSubsetFilter : public domino::SubsetFilter {
         indices_(indices),
         max_(max) {}
   virtual bool get_is_ok(const IMP::domino::Assignment& assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(ExampleSubsetFilter);
 };
 

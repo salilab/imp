@@ -2,7 +2,7 @@
  *  \file IMP/atom/Fragment.h
  *  \brief A decorator for associating a Hierarchy piece
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_FRAGMENT_H
@@ -58,6 +58,10 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   //! Return true if this fragment contains a given residue
   /** This could be made more efficient. */
   bool get_contains_residue(int rindex) const;
+
+  //! Return true if this fragment contains any of the sorted residues
+  /** The input list of residue indexes must be sorted. */
+  bool get_contains_any_sorted_residue(const Ints &rinds) const;
 
   IMP_DECORATOR_METHODS(Fragment, Hierarchy);
   IMP_DECORATOR_SETUP_0(Fragment);

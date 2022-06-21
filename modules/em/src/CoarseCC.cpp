@@ -2,7 +2,7 @@
  *  \file CoarseCC.cpp
  *  \brief Perform coarse fitting between two density objects.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -414,45 +414,6 @@ algebra::Vector3Ds get_coarse_cc_derivatives(const DensityMap *em_map,
 
   }  // particles
   return dv_out;
-}
-
-float CoarseCC::calc_score(DensityMap *em_map, SampledDensityMap *model_map,
-                           float scalefac, bool recalc_rms, bool resample,
-                           FloatPair norm_factors) {
-  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_score() instead");
-  return get_coarse_cc_score(em_map, model_map, scalefac, recalc_rms,
-                             resample, norm_factors);
-}
-
-double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
-                                               const DensityMap *grid2,
-                                               float grid2_voxel_data_threshold,
-                                               bool allow_padding,
-                                               FloatPair norm_factors) {
-  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_coefficient() instead");
-  return get_coarse_cc_coefficient(grid1, grid2, grid2_voxel_data_threshold,
-                                   allow_padding, norm_factors);
-}
-
-float CoarseCC::local_cross_correlation_coefficient(
-    const DensityMap *em_map, DensityMap *model_map,
-    float voxel_data_threshold) {
-  IMPEM_DEPRECATED_METHOD_DEF(2.15,
-                  "Use get_coarse_cc_local_coefficient() instead");
-  return get_coarse_cc_local_coefficient(em_map, model_map,
-                                         voxel_data_threshold);
-}
-
-algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
-                                              const DensityMap *model_map,
-                                              const Particles &model_ps,
-                                              const FloatKey &w_key,
-                                              KernelParameters *kernel_params,
-                                              const float &scalefac,
-                                              const algebra::Vector3Ds &dv) {
-  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_derivatives() instead");
-  return get_coarse_cc_derivatives(em_map, model_map, model_ps, w_key,
-                                   kernel_params, scalefac, dv);
 }
 
 IMPEM_END_NAMESPACE

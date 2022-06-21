@@ -23,6 +23,8 @@ class Tests(unittest.TestCase):
 
     @unittest.skipIf('APPVEYOR' in os.environ,
                      "AppVeyor environments have old SSL certs")
+    @unittest.skipIf('GITHUB_ACTIONS' in os.environ,
+                     "Example is slow and fails when PDB-Dev is down")
     def test_validator_example(self):
         """Test validator example"""
         subprocess.check_call([sys.executable,
@@ -39,7 +41,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 314)
+            self.assertEqual(len(contents), 317)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -53,7 +55,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 68)
+        self.assertEqual(len(contents), 70)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)
@@ -68,7 +70,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 160)
+        self.assertEqual(len(contents), 251)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         # Make sure that resulting Python objects are picklable
@@ -90,7 +92,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 64)
+        self.assertEqual(len(contents), 66)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)

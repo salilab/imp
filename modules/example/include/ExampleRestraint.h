@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,8 +33,8 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint {
    */
   ExampleRestraint(Model *m, ParticleIndex p, double k);
   void do_add_score_and_derivatives(ScoreAccumulator sa) const
-      IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 

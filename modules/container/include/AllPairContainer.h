@@ -2,7 +2,7 @@
  *  \file IMP/container/AllPairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_ALL_PAIR_CONTAINER_H
@@ -25,7 +25,7 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   IMP::PointerMember<SingletonContainer> c_;
 
  protected:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     return c_->get_contents_hash();
   }
 
@@ -43,10 +43,10 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
                    std::string name = "AllPairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
   IMP_PAIR_CONTAINER_METHODS(AllPairContainer);
   IMP_OBJECT_METHODS(AllPairContainer);
 };

@@ -2,7 +2,7 @@
  *  \file IMP/spb/ChiSquareMetric.h
  *  \brief Contact Map Metric
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_CHI_SQUARE_METRIC_H
@@ -41,8 +41,8 @@ class IMPSPBEXPORT ChiSquareMetric : public statistics::Metric {
 
   double get_chisquare_exp(unsigned i) const;
 
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(ChiSquareMetric);
 
   // IMP_METRIC(ChiSquareMetric);

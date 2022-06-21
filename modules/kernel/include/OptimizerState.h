@@ -1,7 +1,7 @@
 /**
  *  \file IMP/OptimizerState.h   \brief Shared optimizer state.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -121,10 +121,10 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
 
   virtual void do_set_is_optimizing(bool) {}
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp();
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
+  virtual ModelObjectsTemp do_get_outputs() const override IMP_SWIG_FINAL {
     return ModelObjectsTemp();
   }
 

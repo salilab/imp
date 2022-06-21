@@ -1,6 +1,28 @@
 ChangeLog {#changelog}
 =========
 
+# 2.17.0 - 2022-06-23 # {#changelog_2_17_0}
+- IMP::atom::Selection no longer checks that the passed hierarchies are valid,
+  as this can be quite computationally expensive. If in doubt, call
+  IMP::atom::Hierarchy::get_is_valid() on each one first.
+- The IMP::em::CoarseCC class has been removed. Use similarly-named free
+  functions instead to calculate coarse cross correlation.
+- The Windows .exe installer no longer supports Python 2 (it works with
+  Python 3.6 through 3.10).
+- Binary packages are now provided for Ubuntu 22.04 LTS, Jammy Jellyfish
+  and RedHat Enterprise Linux 9 (and variants, such as Rocky or Alma).
+- IMP now requires a C++11 compiler and SWIG 3 (or later) to build. Most
+  recent compilers should support C++11, such as gcc, clang
+  or MS Visual Studio 2012 or later. Various IMP macro and header workarounds
+  for pre-C++11 environments are thus no longer needed and are deprecated:
+  `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
+  `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+- The IMP::core::IncrementalScoringFunction class is now deprecated. Use
+  IMP::core::MonteCarlo::set_score_moved or
+  IMP::ScoringFunction::evaluate_moved instead.
+- A new application of IMP is now available:
+  - [Integrative modeling of nanobody binding modes to the SARS-CoV-2 Spike protein](https://integrativemodeling.org/systems/nbspike)
+
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to
   be consistent with ClosedCubicSpline (previously it threw ModelException).

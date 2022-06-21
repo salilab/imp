@@ -2,7 +2,7 @@
  *  \file IMP/atom/CoverBond.h
  *  \brief Cover a bond with a sphere
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_COVER_BOND_H
@@ -26,11 +26,11 @@ class IMPATOMEXPORT CoverBond : public SingletonModifier {
   CoverBond();
 
   virtual void apply_index(Model *m, ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(CoverBond);
   IMP_OBJECT_METHODS(CoverBond);
   ;

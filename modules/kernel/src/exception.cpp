@@ -1,7 +1,7 @@
 /**
  *  \file exception.cpp   \brief Check handling.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,24 +14,24 @@ void handle_error(const char *message) {
   // this method is just here to provide a place to break in the debugger
 }
 
-Exception::~Exception() throw() {}
+Exception::~Exception() IMP_NOEXCEPT {}
 
 Exception::Exception(const char *message) : std::runtime_error(message) {}
 
-InternalException::~InternalException() throw() {}
+InternalException::~InternalException() IMP_NOEXCEPT {}
 
-UsageException::~UsageException() throw() {}
+UsageException::~UsageException() IMP_NOEXCEPT {}
 
-IndexException::~IndexException() throw() {}
+IndexException::~IndexException() IMP_NOEXCEPT {}
 
-ValueException::~ValueException() throw() {}
+ValueException::~ValueException() IMP_NOEXCEPT {}
 
-ModelException::~ModelException() throw() {}
+ModelException::~ModelException() IMP_NOEXCEPT {}
 
-EventException::~EventException() throw() {}
+EventException::~EventException() IMP_NOEXCEPT {}
 
-IOException::~IOException() throw() {}
+IOException::~IOException() IMP_NOEXCEPT {}
 
-TypeException::~TypeException() throw() {}
+TypeException::~TypeException() IMP_NOEXCEPT {}
 
 IMPKERNEL_END_NAMESPACE

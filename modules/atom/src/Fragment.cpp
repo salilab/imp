@@ -2,7 +2,7 @@
  *  \file Fragment.cpp
  *  \brief A decorator to associate a particle with a part of a protein/DNA/RNA.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,6 +51,19 @@ bool Fragment::get_contains_residue(int ri) const {
   IntPairs all = get_residue_index_ranges();
   for (unsigned int i = 0; i < all.size(); ++i) {
     if (ri >= all[i].first && ri < all[i].second) return true;
+  }
+  return false;
+}
+
+bool Fragment::get_contains_any_sorted_residue(const Ints &rinds) const {
+  IMP_INTERNAL_CHECK(std::is_sorted(rinds.begin(), rinds.end()),
+                     "The residue list is not sorted.");
+  IntPairs all = get_residue_index_ranges();
+  for (const IntPair &p : all) {
+    if (std::lower_bound(rinds.begin(), rinds.end(), p.first) !=
+        std::lower_bound(rinds.begin(), rinds.end(), p.second)) {
+      return true;
+    }
   }
   return false;
 }

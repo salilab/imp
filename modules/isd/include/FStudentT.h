@@ -2,7 +2,7 @@
  *  \file IMP/isd/FStudentT.h
  *  \brief Joint Student's t-distribution of Function
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_F_STUDENT_T_H
@@ -60,10 +60,10 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
   protected:
-    virtual void do_update_sufficient_statistics(Floats FXs) IMP_OVERRIDE;
+    virtual void do_update_sufficient_statistics(Floats FXs) override;
     virtual void do_update_sufficient_statistics(Floats FXs, Floats JXs);
-    virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE;
-    virtual double do_evaluate() const IMP_OVERRIDE;
+    virtual Floats do_get_sufficient_statistics() const override;
+    virtual double do_evaluate() const override;
 
   public:
     //! Create from observations vectors.

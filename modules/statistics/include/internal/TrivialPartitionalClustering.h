@@ -2,7 +2,7 @@
  *  \file IMP/statistics/internal/TrivialPartitionalClustering.h
  *  \brief Partitional clustering with a static list of cluster assignments.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,9 +40,9 @@ class TrivialPartitionalClustering : public PartitionalClustering {
       }
     }
   }
-  unsigned int get_number_of_clusters() const IMP_OVERRIDE;
-  const Ints &get_cluster(unsigned int i) const IMP_OVERRIDE;
-  int get_cluster_representative(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_clusters() const override;
+  const Ints &get_cluster(unsigned int i) const override;
+  int get_cluster_representative(unsigned int i) const override;
   IMP_OBJECT_METHODS(TrivialPartitionalClustering);
 };
 

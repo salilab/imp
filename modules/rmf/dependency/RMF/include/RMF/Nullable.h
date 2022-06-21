@@ -2,7 +2,7 @@
  *  \file RMF/Nullable.h
  *  \brief A helper class for allowing nice return of possibly null values.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,7 +58,7 @@ class Nullable {
   /** For python since it nicely becomes None. */
   const T* get_ptr() const {
     if (get_is_null())
-      return NULL;
+      return nullptr;
     else
       return &v_;
   }

@@ -1,7 +1,7 @@
 /**
  *  \file Optimizer.cpp   \brief Base class for all optimizers.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,7 +32,7 @@ Optimizer::~Optimizer() {}
 
 void Optimizer::update_states() const {
   IMP_LOG_VERBOSE("Updating OptimizerStates " << std::flush);
-  IMP_FOREACH(ScoreState * ss, get_required_score_states()) {
+  for(ScoreState * ss : get_required_score_states()) {
     ss->before_evaluate();
   }
   for (OptimizerStateConstIterator it = optimizer_states_begin();

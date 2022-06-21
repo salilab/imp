@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/ChecksScoreState.h    \brief Turn checks on and off.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHECKS_SCORE_STATE_H
@@ -25,10 +25,10 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
 
   unsigned int get_number_of_checked() const { return num_checked_; }
 
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ChecksScoreState);
 };
 

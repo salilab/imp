@@ -2,7 +2,7 @@
  *  \file container/include/internal/CloseBipartitePairContainer.h
  *  \brief Internal class of close bipartite pair container
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -89,12 +89,12 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer
     set_has_dependencies(false);
   }, );
   /**@}*/
-  void clear_caches() IMP_OVERRIDE { reset_ = true; }
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  void clear_caches() override { reset_ = true; }
+  virtual ParticleIndexes get_all_possible_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const override;
   IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };
 

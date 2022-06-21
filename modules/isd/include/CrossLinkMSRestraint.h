@@ -3,7 +3,7 @@
  *  \brief A pmf based likelihood function
  *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -89,8 +89,8 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
     unsigned int get_number_of_contributions() const { return ppis_.size(); }
 
     virtual double unprotected_evaluate(
-        IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
-    virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+        IMP::DerivativeAccumulator* accum) const override;
+    virtual IMP::ModelObjectsTemp do_get_inputs() const override;
     IMP_OBJECT_METHODS(CrossLinkMSRestraint);
 };
 

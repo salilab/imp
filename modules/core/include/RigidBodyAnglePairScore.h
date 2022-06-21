@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidBodyAnglePairScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODY_ANGLE_PAIR_SCORE_H
@@ -26,9 +26,9 @@ public:
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &pi,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(RigidBodyAnglePairScore);
   IMP_OBJECT_METHODS(RigidBodyAnglePairScore);
 };

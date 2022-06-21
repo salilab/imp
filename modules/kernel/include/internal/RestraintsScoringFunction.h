@@ -2,7 +2,7 @@
  *  \file IMP/internal/RestraintsScoringFunction.h
  *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -46,7 +46,7 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
         restraints_(rs.begin(), rs.end()) {}
 
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE {
+                                    const ScoreStatesTemp &ss) override {
     IMP_OBJECT_LOG;
     protected_evaluate(sa, restraints_, ss, get_model());
   }
@@ -54,20 +54,20 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
                                     const ParticleIndexes &moved_pis,
                                     const ParticleIndexes &reset_pis,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE {
+                                    const ScoreStatesTemp &ss) override {
     IMP_OBJECT_LOG;
     protected_evaluate_moved(sa, restraints_, moved_pis, reset_pis,
                              ss, get_model());
   }
 
-  Restraints create_restraints() const IMP_OVERRIDE {
+  Restraints create_restraints() const override {
     IMP_OBJECT_LOG;
     IMP_NEW(RestraintSet, rs, (get_model(), weight_, get_name() + " wrapper"));
     rs->set_maximum_score(max_);
     rs->add_restraints(restraints_);
     return Restraints(1, rs);
   }
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return restraints_; }
+  ModelObjectsTemp do_get_inputs() const override { return restraints_; }
   const Storage &get_restraints() const { return restraints_; }
   void set_restraints(const RestraintsTemp &s) {
     set_has_dependencies(false);

@@ -2,7 +2,7 @@
  *  \file IMP/misc/LogPairScore.h
  *  \brief Track the particles pairs passed to the pair score.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_LOG_PAIR_SCORE_H
@@ -26,9 +26,9 @@ class LogPairScore : public PairScore {
   LogPairScore() {}
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *, const ParticleIndexes &) const IMP_OVERRIDE {
+      Model *, const ParticleIndexes &) const override {
     return ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(LogPairScore);

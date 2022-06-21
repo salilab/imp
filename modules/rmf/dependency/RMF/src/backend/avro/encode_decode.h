@@ -1,6 +1,6 @@
 /**
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -562,7 +562,7 @@ struct codec_traits<RMF::avro2::FileData> {
     }
     std::vector<RMF::avro2::HierarchyNode> nodes;
     internal_avro::decode(d, nodes);
-    RMF_FOREACH(const RMF::avro2::HierarchyNode & hn, nodes) {
+    for(const RMF::avro2::HierarchyNode & hn : nodes) {
       v.nodes.resize(
           std::max<std::size_t>(v.nodes.size(), hn.id.get_index() + 1));
       v.nodes[hn.id.get_index()].name = hn.name;
@@ -570,7 +570,7 @@ struct codec_traits<RMF::avro2::FileData> {
       v.nodes[hn.id.get_index()]
           .parents.insert(v.nodes[hn.id.get_index()].parents.end(),
                           hn.parents.begin(), hn.parents.end());
-      RMF_FOREACH(RMF::NodeID ch, hn.parents) {
+      for(RMF::NodeID ch : hn.parents) {
         v.nodes.resize(
             std::max<std::size_t>(v.nodes.size(), ch.get_index() + 1));
         v.nodes[ch.get_index()].children.push_back(hn.id);

@@ -2,7 +2,7 @@
  *  \file IMP/core/IncrementalScoringFunction.h
  *  \brief Score model efficiently when a small number of particles are changed.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,6 +35,8 @@ class NBLScoring;
 
     To ensure proper evaluation, the ScoringFunction is divided into a number
     of sub scoring functions, one for each possibly moved particle.
+
+    \deprecated_at{2.17} Use IMP::ScoringFunction::evaluate_moved instead.
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   struct Data {
@@ -87,6 +89,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                  can be ignored for most purposes
       @param name The name template to use for the scoring function.
 */
+  IMPCORE_DEPRECATED_OBJECT_DECL(2.17)
   IncrementalScoringFunction(Model *m,
 		             const ParticleIndexes &to_move,
                              const RestraintsTemp &rs,
@@ -114,10 +117,10 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void clear_close_pair_scores();
   ParticleIndexes get_movable_indexes() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
-  virtual Restraints create_restraints() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual void handle_set_has_required_score_states(bool) IMP_OVERRIDE;
+                                    const ScoreStatesTemp &ss) override;
+  virtual Restraints create_restraints() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual void handle_set_has_required_score_states(bool) override;
   IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleSubsetFilterTable.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_SUBSET_FILTER_TABLE_H
@@ -34,10 +34,10 @@ class IMPEXAMPLEEXPORT ExampleSubsetFilterTable
 
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
   virtual double get_strength(const IMP::domino::Subset &s,
                               const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(ExampleSubsetFilterTable);
 };
 

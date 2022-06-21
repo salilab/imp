@@ -2,7 +2,7 @@
  *  \file RMF/validate.h
  *  \brief Support for validating the data in a file.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,7 +32,7 @@ bool validate_impl(NodeConstHandle cur, decorator::ParticleFactory pcf,
       ret = false;
     }
   }
-  RMF_FOREACH(NodeConstHandle c, ch) {
+  for(NodeConstHandle c : ch) {
     ret = ret && validate_impl(c, pcf, rcf, acf);
   }
   return ret;

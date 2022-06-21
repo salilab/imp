@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -135,10 +135,10 @@ class DummyConstraint : public Constraint {
  public:
   DummyConstraint(Particle *in, const ParticlesTemp &out)
       : Constraint(in->get_model(), "DummyConstraint%1%"), in_(in), out_(out) {}
-  virtual void do_update_attributes() IMP_OVERRIDE;
-  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_update_attributes() override;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(DummyConstraint);
 };
 void DummyConstraint::do_update_attributes() {}
@@ -173,6 +173,7 @@ void RecursiveStates::load_particle_state(unsigned int i,
   }
 }
 
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
 namespace {
 struct RandomWrapper {
   int operator()(int i) {
@@ -183,6 +184,7 @@ struct RandomWrapper {
   }
 };
 }
+#endif
 
 PermutationStates::PermutationStates(ParticleStates *inner)
     : ParticleStates("PermutationStates %1%"),
@@ -191,8 +193,13 @@ PermutationStates::PermutationStates(ParticleStates *inner)
   for (unsigned int i = 0; i < permutation_.size(); ++i) {
     permutation_[i] = i;
   }
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
   RandomWrapper rr;
   std::random_shuffle(permutation_.begin(), permutation_.end(), rr);
+#else
+  std::shuffle(permutation_.begin(), permutation_.end(),
+               random_number_generator);
+#endif
 }
 
 IMPDOMINO_END_NAMESPACE

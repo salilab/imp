@@ -2,7 +2,7 @@
  *  \file IMP/isd/Weight.h
  *  \brief Add weights constrained to the unit simplex to a particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -156,10 +156,10 @@ class IMPISDEXPORT WeightSimplexConstraint : public IMP::Constraint {
 
   public:
     friend class Weight;
-    virtual void do_update_attributes() IMP_OVERRIDE;
-    virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+    virtual void do_update_attributes() override;
+    virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+    virtual ModelObjectsTemp do_get_inputs() const override;
+    virtual ModelObjectsTemp do_get_outputs() const override;
     IMP_OBJECT_METHODS(WeightSimplexConstraint);
 };
 #endif

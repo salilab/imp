@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -56,12 +56,12 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   void set_is_optimizing_states(bool tf) const;
 #endif
   ModelObjectsTemp get_optimizer_state_inputs() const;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return get_optimizer_state_inputs();
   }
 
   //! don't return anything here to avoid pointless dependencies
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
 

@@ -2,7 +2,7 @@
  *  \file IMP/cache.h
  *  \brief Helper classes for various types of caching
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/math.h
  *  \brief Helper functions to check for NaN or infinity
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_BASE_MATH_H

@@ -2,7 +2,7 @@
  *  \file IMP/isd/MolecularDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,23 +28,23 @@ class IMPISDEXPORT MolecularDynamics : public atom::MolecularDynamics {
   MolecularDynamics(Model *m = nullptr);
 
   //! Return the current kinetic energy of the system, in kcal/mol
-  Float get_kinetic_energy() const IMP_OVERRIDE;
+  Float get_kinetic_energy() const override;
 
   //! Assign velocities representative of the given temperature
-  void assign_velocities(Float temperature) IMP_OVERRIDE;
+  void assign_velocities(Float temperature) override;
 
  protected:
-  bool get_is_simulation_particle(ParticleIndex pi) const IMP_OVERRIDE;
+  bool get_is_simulation_particle(ParticleIndex pi) const override;
 
-  void setup_degrees_of_freedom(const ParticleIndexes &ps) IMP_OVERRIDE;
+  void setup_degrees_of_freedom(const ParticleIndexes &ps) override;
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
   void propagate_coordinates(const ParticleIndexes &ps,
-                             double step_size) IMP_OVERRIDE;
+                             double step_size) override;
 
   //! Second part of velocity Verlet (update velocity)
   void propagate_velocities(const ParticleIndexes &ps,
-                            double step_size) IMP_OVERRIDE;
+                            double step_size) override;
 
   //! Keys of the xyz velocities
   FloatKey vnuis_;

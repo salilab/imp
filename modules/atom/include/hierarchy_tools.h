@@ -2,7 +2,7 @@
  *  \file IMP/atom/hierarchy_tools.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_HIERARCHY_TOOLS_H
@@ -185,7 +185,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = 0)
       : SingletonGeometry(d), res_(resolution) {}
-  display::Geometries get_components() const IMP_OVERRIDE {
+  display::Geometries get_components() const override {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
@@ -210,9 +210,9 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
       : SingletonsGeometry(sc), res_(resolution) {}
-  display::Geometries get_components() const IMP_OVERRIDE {
+  display::Geometries get_components() const override {
     display::Geometries ret;
-    IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {
+    for(ParticleIndex pi : get_container()->get_contents()) {
       Model *m = get_container()->get_model();
       if (components_.find(pi) == components_.end()) {
         IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, pi), res_));

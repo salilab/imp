@@ -225,23 +225,23 @@ class IMPKMEANSEXPORT KCleaf : public KCnode {
   virtual void makeSums(  // compute sums
       int &n,             // number of points (returned)
       KMpoint &theSum,    // sum (returned)
-      double &theSumSq) IMP_OVERRIDE;  // sum of squares (returned)
+      double &theSumSq) override;  // sum of squares (returned)
 
   virtual void getNeighbors(  // compute neighbors for centers
       KMctrIdxArray cands,    // candidate centers
-      int kCands) IMP_OVERRIDE;            // number of centers
+      int kCands) override;            // number of centers
 
   virtual void getAssignments(  // get assignments for leaf node
       KMctrIdxArray cands,      // candidate centers
       int kCands,               // number of centers
       KMctrIdxArray closeCtr,   // closest center per point
-      double *sqDist) IMP_OVERRIDE;          // sq'd distance to center
+      double *sqDist) override;          // sq'd distance to center
 
   // sample a center point c
-  virtual void sampleCtr(KMpoint c, KMorthRect &bb) IMP_OVERRIDE;
+  virtual void sampleCtr(KMpoint c, KMorthRect &bb) override;
 
   // print node
-  virtual void print(int level) IMP_OVERRIDE;
+  virtual void print(int level) override;
 };
 
 //----------------------------------------------------------------------
@@ -288,23 +288,23 @@ class IMPKMEANSEXPORT KCsplit : public KCnode {
   virtual void makeSums(  // compute sums
       int &n,             // number of points (returned)
       KMpoint &theSum,    // sum (returned)
-      double &theSumSq) IMP_OVERRIDE;  // sum of squares (returned)
+      double &theSumSq) override;  // sum of squares (returned)
 
   virtual void getNeighbors(  // compute neighbors for centers
       KMctrIdxArray cands,    // candidate centers
-      int kCands) IMP_OVERRIDE;            // number of centers
+      int kCands) override;            // number of centers
 
   virtual void getAssignments(  // get assignments for leaf node
       KMctrIdxArray cands,      // candidate centers
       int kCands,               // number of centers
       KMctrIdxArray closeCtr,   // closest center per point
-      double *sqDist) IMP_OVERRIDE;          // sq'd distance to center
+      double *sqDist) override;          // sq'd distance to center
 
   // sample a center point c
-  virtual void sampleCtr(KMpoint c, KMorthRect &bb) IMP_OVERRIDE;
+  virtual void sampleCtr(KMpoint c, KMorthRect &bb) override;
 
   // print node
-  virtual void print(int level) IMP_OVERRIDE;
+  virtual void print(int level) override;
 };
 
 //----------------------------------------------------------------------

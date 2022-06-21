@@ -4,7 +4,7 @@
  *
  *  Restrict max distance between every pair of particle
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,8 +36,8 @@ class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint {
   RadiusOfGyrationRestraint(Particles ps, int num_residues,
                             Float scale = 1.);
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
   //! Set the predicted radius of gyration used in the restraint
   void set_radius_of_gyration(Float r) {

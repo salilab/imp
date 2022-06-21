@@ -1,7 +1,7 @@
 /**
  *  \file Profile.cpp   \brief A class for profile storing and computation
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Profile.h>
@@ -18,7 +18,6 @@
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
 #include <IMP/random.h>
-#include <IMP/nullptr_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
@@ -45,7 +44,7 @@ Profile::Profile(double qmin, double qmax, double delta)
       average_radius_(1.58),
       average_volume_(17.5),
       id_(0),
-      beam_profile_(IMP_NULLPTR) {
+      beam_profile_(nullptr) {
   set_was_used(true);
   ff_table_ = get_default_form_factor_table();
 }
@@ -55,7 +54,7 @@ Profile::Profile(const std::string& file_name, bool fit_file, double max_q, int 
       experimental_(true),
       name_(file_name),
       id_(0),
-      beam_profile_(IMP_NULLPTR) {
+      beam_profile_(nullptr) {
   set_was_used(true);
   if (fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file, max_q, units);
@@ -841,7 +840,7 @@ void Profile::squared_distribution_2_profile(
   }
 
   bool use_beam_profile = false;
-  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+  if (beam_profile_ != nullptr && beam_profile_->size() > 0)
     use_beam_profile = true;
 
   // iterate over intensity profile
@@ -891,7 +890,7 @@ void Profile::squared_distributions_2_partial_profiles(
   }
 
   bool use_beam_profile = false;
-  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+  if (beam_profile_ != nullptr && beam_profile_->size() > 0)
     use_beam_profile = true;
 
   // iterate over intensity profile

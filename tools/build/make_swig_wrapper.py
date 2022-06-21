@@ -66,19 +66,11 @@ def run_swig(outputdir, options):
 
 def patch_py_wrapper(infile, outfile, module):
     """Patch Python wrappers.
-       Work around SWIG bugs. Also add custom header; this is more properly
-       done by SWIG's %pythonbegin directive, but only very recent versions
-       of SWIG understand that."""
+       Work around SWIG bugs."""
     # outfile might be a symlink
     if os.path.exists(outfile):
         os.unlink(outfile)
     outfh = open(outfile, "w")
-    in_initial_comment = True
-    header = """# This wrapper is part of IMP,
-# Copyright 2007-2021 IMP Inventors. All rights reserved.
-
-from __future__ import print_function, division, absolute_import
-"""
     with open(infile) as infh:
         for line in infh:
             if module == 'kernel':
@@ -86,11 +78,6 @@ from __future__ import print_function, division, absolute_import
                 # https://github.com/swig/swig/issues/583
                 line = line.replace('except Exception:', 'except:')
             outfh.write(line)
-            if in_initial_comment and not line.startswith('#'):
-                in_initial_comment = False
-                outfh.write(header)
-        if in_initial_comment:
-            raise IOError("Empty SWIG wrapper file")
     outfh.close()
 
 

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/types.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include "value_macros.h"
 #include "object_macros.h"
 #include <IMP/hash.h>
-#include <IMP/nullptr.h>
 
 // IMPKERNEL_BEGIN_NAMESPACE
 namespace IMP {

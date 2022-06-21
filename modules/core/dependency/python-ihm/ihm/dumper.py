@@ -2,6 +2,7 @@
 
 import re
 import os
+import collections
 import operator
 import itertools
 import ihm.format
@@ -71,7 +72,7 @@ def _get_transform(rot_matrix, tr_vector):
 class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
-        writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
+        writer.start_block(re.subn('[^0-9a-zA-z_-]', '', system.id)[0])
         with writer.category("_entry") as lp:
             lp.write(id=system.id)
 
@@ -83,14 +84,17 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.09",
-                     dict_location=self.URL % "b4fe8af")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.17",
+                     dict_location=self.URL % "f15a6bb")
 
 
 class _StructDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_struct") as lp:
-            lp.write(title=system.title, entry_id=system.id)
+            mth = system.structure_determination_methodology
+            lp.write(title=system.title, entry_id=system.id,
+                     pdbx_structure_determination_methodology=mth,
+                     pdbx_model_details=system.model_details)
 
 
 class _CommentDumper(Dumper):
@@ -125,13 +129,25 @@ class _SoftwareDumper(Dumper):
 
 class _CitationDumper(Dumper):
     def finalize(self, system):
-        for nc, c in enumerate(system._all_citations()):
+        primaries = []
+        non_primaries = []
+        for c in system._all_citations():
+            (primaries if c.is_primary else non_primaries).append(c)
+        # Put primary citations first in list
+        self._all_citations = primaries + non_primaries
+        for nc, c in enumerate(self._all_citations):
             c._id = nc + 1
+        if primaries:
+            if len(primaries) > 1:
+                raise ValueError(
+                    "Multiple Citations with is_primary=True; only one can "
+                    "be primary: %s" % primaries)
+            else:
+                primaries[0]._id = 'primary'
 
     def dump(self, system, writer):
-        citations = list(system._all_citations())
-        self.dump_citations(citations, writer)
-        self.dump_authors(citations, writer)
+        self.dump_citations(self._all_citations, writer)
+        self.dump_authors(self._all_citations, writer)
 
     def dump_citations(self, citations, writer):
         with writer.loop("_citation",
@@ -287,6 +303,9 @@ class _EntitySrcGenDumper(Dumper):
 
     def _dump_source(self, lp, e):
         s = e.source
+        # Skip output if all fields are blank
+        if s.gene is None and s.host is None:
+            return
         lp.write(entity_id=e._id, pdbx_src_id=s._id,
                  pdbx_gene_src_ncbi_taxonomy_id=s.gene.ncbi_taxonomy_id
                  if s.gene else None,
@@ -534,11 +553,10 @@ class _EntityPolyDumper(Dumper):
             return self._seq_type_map.get(all_types, 'other')
 
     def dump(self, system, writer):
-        # Get the first asym unit (if any) for each entity
-        strand = {}
+        # Get all asym units (if any) for each entity
+        strands = collections.defaultdict(list)
         for asym in system.asym_units:
-            if asym.entity._id not in strand:
-                strand[asym.entity._id] = asym.strand_id
+            strands[asym.entity._id].append(asym.strand_id)
         with writer.loop("_entity_poly",
                          ["entity_id", "type", "nstd_linkage",
                           "nstd_monomer", "pdbx_strand_id",
@@ -547,9 +565,13 @@ class _EntityPolyDumper(Dumper):
             for entity in system.entities:
                 if not entity.is_polymeric():
                     continue
+                nstd = any(isinstance(x, ihm.NonPolymerChemComp)
+                           for x in entity.sequence)
+                sids = strands[entity._id]
                 lp.write(entity_id=entity._id, type=self._get_seq_type(entity),
-                         nstd_linkage='no', nstd_monomer='no',
-                         pdbx_strand_id=strand.get(entity._id, None),
+                         nstd_linkage='no',
+                         nstd_monomer='yes' if nstd else 'no',
+                         pdbx_strand_id=",".join(sids) if sids else None,
                          pdbx_seq_one_letter_code=self._get_sequence(entity),
                          pdbx_seq_one_letter_code_can=self._get_canon(entity))
 
@@ -645,8 +667,8 @@ class _NonPolySchemeDumper(Dumper):
        For now we assume we're using auth_seq_num==pdb_seq_num."""
     def dump(self, system, writer):
         with writer.loop("_pdbx_nonpoly_scheme",
-                         ["asym_id", "entity_id", "mon_id",
-                          "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
+                         ["asym_id", "entity_id", "mon_id", "ndb_seq_num",
+                          "pdb_seq_num", "auth_seq_num",
                           "auth_mon_id", "pdb_strand_id",
                           "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
@@ -656,11 +678,16 @@ class _NonPolySchemeDumper(Dumper):
                 # todo: handle multiple waters
                 for num, comp in enumerate(entity.sequence):
                     auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    # ndb_seq_num is described as the "NDB/RCSB residue
+                    # number". We don't have one of those but real PDBs
+                    # usually seem to just count sequentially from 1, so
+                    # we'll do that too.
                     lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
+                             ndb_seq_num=num + 1,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
-                             mon_id=comp.id, pdb_mon_id=comp.id,
+                             mon_id=comp.id,
                              auth_mon_id=comp.id, pdb_ins_code=ins)
 
 
@@ -711,7 +738,7 @@ class _StructAsymDumper(Dumper):
                          details=asym.details)
 
 
-class _AssemblyDumper(Dumper):
+class _AssemblyDumperBase(Dumper):
     def finalize(self, system):
         # Sort each assembly by entity id/asym id/range
         def component_key(comp):
@@ -749,6 +776,8 @@ class _AssemblyDumper(Dumper):
         for a in all_assemblies:
             a.description = description_by_id[a._id]
 
+
+class _AssemblyDumper(_AssemblyDumperBase):
     def dump(self, system, writer):
         self.dump_summary(system, writer)
         self.dump_details(system, writer)
@@ -1202,10 +1231,14 @@ class _ProtocolDumper(Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
-                          "software_id", "script_file_id",
+                          "ensemble_flag", "software_id", "script_file_id",
                           "description"]) as lp:
             for p in system._all_protocols():
                 for s in p.steps:
+                    if s.ensemble == 'default':
+                        ensemble = len(system.ensembles) > 0
+                    else:
+                        ensemble = s.ensemble
                     lp.write(
                         id=next(ordinal), protocol_id=p._id,
                         step_id=s._id,
@@ -1218,6 +1251,7 @@ class _ProtocolDumper(Dumper):
                         multi_state_flag=s.multi_state,
                         ordered_flag=s.ordered,
                         multi_scale_flag=s.multi_scale,
+                        ensemble_flag=ensemble,
                         software_id=s.software._id if s.software else None,
                         script_file_id=s.script_file._id
                         if s.script_file else None,
@@ -1271,6 +1305,7 @@ class _RangeChecker(object):
     def __init__(self, model):
         self._setup_representation(model)
         self._setup_assembly(model)
+        self._seen_atoms = set()
 
     def _setup_representation(self, model):
         """Make map from asym_id to representation segments for that ID"""
@@ -1328,8 +1363,18 @@ class _RangeChecker(object):
         else:
             type_check = self._type_check_atom
             seq_id_range = (obj.seq_id, obj.seq_id)
+            self._check_duplicate_atom(obj)
         self._check_assembly(obj, asym, seq_id_range)
         self._check_representation(obj, asym, type_check, seq_id_range)
+
+    def _check_duplicate_atom(self, atom):
+        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
+        if k in self._seen_atoms:
+            raise ValueError(
+                "Multiple atoms with same atom_id (%s) and seq_id (%d) "
+                "found in asym ID %s"
+                % (atom.atom_id, atom.seq_id, atom.asym_unit._id))
+        self._seen_atoms.add(k)
 
     def _check_assembly(self, obj, asym, seq_id_range):
         # Check last match first
@@ -1405,7 +1450,7 @@ class _RangeChecker(object):
                              for x in self.repr_asym_ids[asym._id])))
 
 
-class _ModelDumper(Dumper):
+class _ModelDumperBase(Dumper):
 
     def finalize(self, system):
         # Remove any existing ID
@@ -1429,41 +1474,6 @@ class _ModelDumper(Dumper):
                                  "OrderedProcess. ModelGroups should be "
                                  "stored in State objects." % g)
 
-    def dump(self, system, writer):
-        self.dump_model_list(system, writer)
-        self.dump_model_groups(system, writer)
-        seen_types = self.dump_atoms(system, writer)
-        self.dump_spheres(system, writer)
-        self.dump_atom_type(seen_types, system, writer)
-
-    def dump_model_list(self, system, writer):
-        with writer.loop("_ihm_model_list",
-                         ["model_id", "model_name", "assembly_id",
-                          "protocol_id", "representation_id"]) as lp:
-            for group, model in system._all_models():
-                lp.write(model_id=model._id,
-                         model_name=model.name,
-                         assembly_id=model.assembly._id,
-                         protocol_id=model.protocol._id
-                         if model.protocol else None,
-                         representation_id=model.representation._id)
-
-    def dump_model_groups(self, system, writer):
-        self.dump_model_group_summary(system, writer)
-        self.dump_model_group_link(system, writer)
-
-    def dump_model_group_summary(self, system, writer):
-        with writer.loop("_ihm_model_group", ["id", "name", "details"]) as lp:
-            for group in system._all_model_groups():
-                lp.write(id=group._id, name=group.name)
-
-    def dump_model_group_link(self, system, writer):
-        with writer.loop("_ihm_model_group_link",
-                         ["group_id", "model_id"]) as lp:
-            for group in system._all_model_groups():
-                for model_id in sorted(set(model._id for model in group)):
-                    lp.write(model_id=model_id, group_id=group._id)
-
     def dump_atom_type(self, seen_types, system, writer):
         """Output the atom_type table with a list of elements used in atom_site.
            This table is needed by atom_site. Note that we output it *after*
@@ -1474,18 +1484,17 @@ class _ModelDumper(Dumper):
             for element in elements:
                 lp.write(symbol=element)
 
-    def dump_atoms(self, system, writer):
+    def dump_atoms(self, system, writer, add_ihm=True):
         seen_types = {}
         ordinal = itertools.count(1)
-        with writer.loop("_atom_site",
-                         ["group_PDB", "id", "type_symbol",
-                          "label_atom_id", "label_alt_id", "label_comp_id",
-                          "label_seq_id", "auth_seq_id", "pdbx_PDB_ins_code",
-                          "label_asym_id", "Cartn_x",
-                          "Cartn_y", "Cartn_z", "occupancy", "label_entity_id",
-                          "auth_asym_id",
-                          "B_iso_or_equiv", "pdbx_PDB_model_num",
-                          "ihm_model_id"]) as lp:
+        it = ["group_PDB", "id", "type_symbol", "label_atom_id",
+              "label_alt_id", "label_comp_id", "label_seq_id", "auth_seq_id",
+              "pdbx_PDB_ins_code", "label_asym_id", "Cartn_x", "Cartn_y",
+              "Cartn_z", "occupancy", "label_entity_id", "auth_asym_id",
+              "B_iso_or_equiv", "pdbx_PDB_model_num"]
+        if add_ihm:
+            it.append("ihm_model_id")
+        with writer.loop("_atom_site", it) as lp:
             for group, model in system._all_models():
                 rngcheck = _RangeChecker(model)
                 for atom in model.get_atoms():
@@ -1512,6 +1521,43 @@ class _ModelDumper(Dumper):
                              pdbx_PDB_model_num=model._id,
                              ihm_model_id=model._id)
         return seen_types
+
+
+class _ModelDumper(_ModelDumperBase):
+    def dump(self, system, writer):
+        self.dump_model_list(system, writer)
+        self.dump_model_groups(system, writer)
+        seen_types = self.dump_atoms(system, writer)
+        self.dump_spheres(system, writer)
+        self.dump_atom_type(seen_types, system, writer)
+
+    def dump_model_groups(self, system, writer):
+        self.dump_model_group_summary(system, writer)
+        self.dump_model_group_link(system, writer)
+
+    def dump_model_list(self, system, writer):
+        with writer.loop("_ihm_model_list",
+                         ["model_id", "model_name", "assembly_id",
+                          "protocol_id", "representation_id"]) as lp:
+            for group, model in system._all_models():
+                lp.write(model_id=model._id,
+                         model_name=model.name,
+                         assembly_id=model.assembly._id,
+                         protocol_id=model.protocol._id
+                         if model.protocol else None,
+                         representation_id=model.representation._id)
+
+    def dump_model_group_summary(self, system, writer):
+        with writer.loop("_ihm_model_group", ["id", "name", "details"]) as lp:
+            for group in system._all_model_groups():
+                lp.write(id=group._id, name=group.name)
+
+    def dump_model_group_link(self, system, writer):
+        with writer.loop("_ihm_model_group_link",
+                         ["group_id", "model_id"]) as lp:
+            for group in system._all_model_groups():
+                for model_id in sorted(set(model._id for model in group)):
+                    lp.write(model_id=model_id, group_id=group._id)
 
     def dump_spheres(self, system, writer):
         ordinal = itertools.count(1)
@@ -3091,26 +3137,129 @@ class _FLRFPSMPPModelingDumper(Dumper):
                     mpp_atom_position_group_id=x.mpp_atom_position_group._id)
 
 
-def _init_restraint_groups(system):
-    """Initialize all RestraintGroups by removing any assigned ID"""
-    for g in system.restraint_groups:
-        util._remove_id(g)
+_flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
+                _FLR_ExpConditionDumper, _FLRInstrumentDumper,
+                _FLREntityAssemblyDumper, _FLRSampleConditionDumper,
+                _FLRSampleDumper, _FLRProbeDumper,
+                _FLRSampleProbeDetailsDumper, _FLRPolyProbePositionDumper,
+                _FLRConjugateDumper, _FLRForsterRadiusDumper,
+                _FLRCalibrationParametersDumper, _FLRLifetimeFitModelDumper,
+                _FLRRefMeasurementDumper, _FLRAnalysisDumper,
+                _FLRPeakAssignmentDumper, _FLRDistanceRestraintDumper,
+                _FLRModelQualityDumper, _FLRModelDistanceDumper,
+                _FLRFPSModelingDumper, _FLRFPSAVModelingDumper,
+                _FLRFPSMPPModelingDumper]
 
 
-def _check_restraint_groups(system):
-    """Check that all RestraintGroups were successfully dumped"""
-    for g in system.restraint_groups:
-        if len(g) > 0 and not hasattr(g, '_id'):
-            raise TypeError(
-                "RestraintGroup(%s) contains an unsupported combination of "
-                "Restraints. Due to limitations of the underlying dictionary, "
-                "all objects in a RestraintGroup must be of the same type, "
-                "and only certain types (currently only "
-                "DerivedDistanceRestraint or PredictedContactRestraint) "
-                "can be grouped." % g)
+class _NullLoopCategoryWriter(object):
+    """A do-nothing replacement for format._CifLoopWriter
+       or format._CifCategoryWriter"""
+    def write(self, *args, **keys):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
 
-def write(fh, systems, format='mmCIF', dumpers=[]):
+class _IgnoreWriter(object):
+    """Utility class which normally just passes through to the default
+       ``base_writer``, but ignores selected categories."""
+    def __init__(self, base_writer, ignores):
+        self._base_writer = base_writer
+        # Allow for categories with or without leading underscore
+        self._ignore_category = frozenset('_' + c.lstrip('_').lower()
+                                          for c in ignores)
+
+    def category(self, category):
+        if category in self._ignore_category:
+            return _NullLoopCategoryWriter()
+        else:
+            return self._base_writer.category(category)
+
+    def loop(self, category, keys):
+        if category in self._ignore_category:
+            return _NullLoopCategoryWriter()
+        else:
+            return self._base_writer.loop(category, keys)
+
+    # Pass through other methods to base_writer
+    def flush(self):
+        return self._base_writer.flush()
+
+    def end_block(self):
+        return self._base_writer.end_block()
+
+    def start_block(self, name):
+        return self._base_writer.start_block(name)
+
+    def write_comment(self, comment):
+        return self._base_writer.write_comment(comment)
+
+
+class Variant(object):
+    """Utility class to select the type of file to output by :func:`write`."""
+
+    def get_dumpers(self):
+        """Get the :class:`Dumper` objects to use to write output.
+
+           :return: a list of :class:`Dumper` objects.
+        """
+        pass
+
+    def get_system_writer(self, system, writer_class, writer):
+        """Get a writer tailored to the given system.
+           By default, this just returns the ``writer`` unchanged."""
+        return writer
+
+
+class IHMVariant(Variant):
+    """Used to select typical PDBx/IHM file output. See :func:`write`."""
+    _dumpers = [
+        _EntryDumper,  # must be first
+        _StructDumper, _CommentDumper, _AuditConformDumper, _CitationDumper,
+        _SoftwareDumper, _AuditAuthorDumper, _GrantDumper, _ChemCompDumper,
+        _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
+        _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
+        _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,
+        _EntityPolySegmentDumper, _StructAsymDumper, _PolySeqSchemeDumper,
+        _NonPolySchemeDumper, _AssemblyDumper, _ExternalReferenceDumper,
+        _DatasetDumper, _ModelRepresentationDumper, _StartingModelDumper,
+        _ProtocolDumper, _PostProcessDumper, _PseudoSiteDumper,
+        _GeometricObjectDumper, _FeatureDumper, _CrossLinkDumper,
+        _GeometricRestraintDumper, _DerivedDistanceRestraintDumper,
+        _PredictedContactRestraintDumper, _EM3DDumper, _EM2DDumper, _SASDumper,
+        _ModelDumper, _EnsembleDumper, _DensityDumper, _MultiStateDumper,
+        _OrderedDumper]
+
+    def get_dumpers(self):
+        return [d() for d in self._dumpers + _flr_dumpers]
+
+
+class IgnoreVariant(IHMVariant):
+    """Exclude selected CIF categories from output.
+
+       This generates the same PDBx/IHM output as :class:`IHMVariant`,
+       but explicitly listed CIF categories are discarded, for example::
+
+           ihm.dumper.write(fh, systems,
+                            variant=IgnoreVariant(['_audit_conform']))
+
+       This is intended for advanced users that have a working knowledge
+       of the PDBx and IHM CIF dictionaries.
+
+       :param sequence ignores: A list or tuple of CIF categories to exclude.
+    """
+    def __init__(self, ignores):
+        self._ignores = ignores
+
+    def get_system_writer(self, system, writer_class, writer):
+        return _IgnoreWriter(writer, self._ignores)
+
+
+def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
     """Write out all `systems` to the file handle `fh`.
        Files can be written in either the text-based mmCIF format or the
        BinaryCIF format. The BinaryCIF writer needs the msgpack Python
@@ -3130,64 +3279,28 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
               default) for the (text-based) mmCIF format or 'BCIF' for
               BinaryCIF.
        :param list dumpers: A list of :class:`Dumper` classes (not objects).
-              These can be used to add extra categories to the file."""
-    dumpers = [_EntryDumper(),  # must be first
-               _StructDumper(), _CommentDumper(),
-               _AuditConformDumper(), _CitationDumper(), _SoftwareDumper(),
-               _AuditAuthorDumper(), _GrantDumper(),
-               _ChemCompDumper(), _ChemDescriptorDumper(),
-               _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),
-               _EntitySrcSynDumper(), _StructRefDumper(),
-               _EntityPolyDumper(),
-               _EntityNonPolyDumper(),
-               _EntityPolySeqDumper(), _EntityPolySegmentDumper(),
-               _StructAsymDumper(),
-               _PolySeqSchemeDumper(),
-               _NonPolySchemeDumper(),
-               _AssemblyDumper(),
-               _ExternalReferenceDumper(),
-               _DatasetDumper(),
-               _ModelRepresentationDumper(),
-               _StartingModelDumper(),
-               _ProtocolDumper(),
-               _PostProcessDumper(),
-               _PseudoSiteDumper(),
-               _GeometricObjectDumper(), _FeatureDumper(),
-               _CrossLinkDumper(), _GeometricRestraintDumper(),
-               _DerivedDistanceRestraintDumper(),
-               _PredictedContactRestraintDumper(),
-               _EM3DDumper(),
-               _EM2DDumper(),
-               _SASDumper(),
-               _ModelDumper(),
-               _EnsembleDumper(),
-               _DensityDumper(),
-               _MultiStateDumper(), _OrderedDumper(),
-               _FLRExperimentDumper(), _FLRInstSettingDumper(),
-               _FLR_ExpConditionDumper(),
-               _FLRInstrumentDumper(), _FLREntityAssemblyDumper(),
-               _FLRSampleConditionDumper(), _FLRSampleDumper(),
-               _FLRProbeDumper(), _FLRSampleProbeDetailsDumper(),
-               _FLRPolyProbePositionDumper(), _FLRConjugateDumper(),
-               _FLRForsterRadiusDumper(), _FLRCalibrationParametersDumper(),
-               _FLRLifetimeFitModelDumper(), _FLRRefMeasurementDumper(),
-               _FLRAnalysisDumper(), _FLRPeakAssignmentDumper(),
-               _FLRDistanceRestraintDumper(), _FLRModelQualityDumper(),
-               _FLRModelDistanceDumper(), _FLRFPSModelingDumper(),
-               _FLRFPSAVModelingDumper(),
-               _FLRFPSMPPModelingDumper()] + [d() for d in dumpers]
+              These can be used to add extra categories to the file.
+       :param variant: A class or object that selects the type of file to
+              output. This primarily controls the set of tables that are
+              written to the file. In most cases the default
+              :class:`IHMVariant` should be used.
+       :type variant: :class:`Variant`
+    """
+    if isinstance(variant, type):
+        variant = variant()
+    dumpers = variant.get_dumpers() + [d() for d in dumpers]
     writer_map = {'mmCIF': ihm.format.CifWriter,
                   'BCIF': ihm.format_bcif.BinaryCifWriter}
 
     writer = writer_map[format](fh)
     for system in systems:
-        _init_restraint_groups(system)
-        # Fill in complete assembly
-        system._make_complete_assembly()
+        w = variant.get_system_writer(system, writer_map[format], writer)
+        system._before_write()
 
         for d in dumpers:
             d.finalize(system)
-        _check_restraint_groups(system)
+        system._check_after_write()
         for d in dumpers:
-            d.dump(system, writer)
+            d.dump(system, w)
+        w.end_block()  # start_block is called by EntryDumper
     writer.flush()

@@ -43,3 +43,7 @@ The :mod:`ihm.citations` Python module
 .. data:: swiss_model
 
    SWISS-MODEL: homology modeling of protein structures and complexes.
+
+.. data:: alphafold2
+
+   AlphaFold: ab-initio modeling of protein structures.

@@ -18,7 +18,6 @@
 #include <IMP/object_macros.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/flags.h>
-#include <IMP/nullptr_macros.h>
 
 namespace {
 const double dope_threshold = 16;
@@ -85,7 +84,7 @@ int main(int argc, char *argv[]) {
 
     for (unsigned int i = 0; i < pips.size(); ++i) {
       std::cout << "Score is " << score->evaluate_index(
-                                      model, pips[i], IMP_NULLPTR) << std::endl;
+                                      model, pips[i], nullptr) << std::endl;
     }
     return 0;
   }

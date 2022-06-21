@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleComplexRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H
@@ -47,8 +47,8 @@ class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
                           std::string name = "ExampleComplexRestraint%1%");
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ExampleComplexRestraint);
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/core/direction.h
  *  \brief Decorators for directions and the angle between them.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -151,10 +151,10 @@ class IMPCOREEXPORT DirectionUnitConstraint : public IMP::Constraint {
 
   public:
     friend class Direction;
-    virtual void do_update_attributes() IMP_OVERRIDE;
-    virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+    virtual void do_update_attributes() override;
+    virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+    virtual ModelObjectsTemp do_get_inputs() const override;
+    virtual ModelObjectsTemp do_get_outputs() const override;
     IMP_OBJECT_METHODS(DirectionUnitConstraint);
 };
 
@@ -170,10 +170,10 @@ class IMPCOREEXPORT DirectionAngleConstraint : public IMP::Constraint {
 
   public:
     friend class DirectionAngle;
-    virtual void do_update_attributes() IMP_OVERRIDE;
-    virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+    virtual void do_update_attributes() override;
+    virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+    virtual ModelObjectsTemp do_get_inputs() const override;
+    virtual ModelObjectsTemp do_get_outputs() const override;
     IMP_OBJECT_METHODS(DirectionAngleConstraint);
 };
 

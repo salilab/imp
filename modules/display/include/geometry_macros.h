@@ -2,7 +2,7 @@
  *  \file IMP/display/geometry_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_MACROS_H
@@ -38,7 +38,7 @@
     Name(const Type &v, const display::Color &c, std::string n);          \
     virtual const Type &get_geometry() const { return v_; }               \
     void set_geometry(const Type &v) { v_ = v; }                          \
-    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    virtual IMP::display::Geometries get_components() const override;     \
     IMP_OBJECT_METHODS(Name);                                             \
   };                                                                      \
   /** Create a Geometry with the passed primitive.*/                      \
@@ -56,7 +56,7 @@
     Name(const Type &v, const display::Color &c, std::string n);          \
     virtual const Type &get_geometry() const { return v_; }               \
     void set_geometry(const Type &v) { v_ = v; }                          \
-    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    virtual IMP::display::Geometries get_components() const override;     \
     IMP_OBJECT_METHODS(Name);                                             \
   };                                                                      \
   /** Create a Geometry with the passed primitive.*/                      \
@@ -80,7 +80,7 @@
     Name(const Type &v, const display::Color &c, std::string n);          \
     virtual const Type &get_geometry() const { return v_; }               \
     void set_geometry(const Type &v) { v_ = v; }                          \
-    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    virtual IMP::display::Geometries get_components() const override;     \
     IMP_OBJECT_METHODS(Name);                                             \
   };                                                                      \
   inline Name *create_geometry(                                           \
@@ -102,7 +102,7 @@
     Name(const Type &v, const display::Color &c, std::string n);          \
     virtual const Type &get_geometry() const { return v_; }               \
     void set_geometry(const Type &v) { v_ = v; }                          \
-    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    virtual IMP::display::Geometries get_components() const override;     \
     IMP_OBJECT_METHODS(Name);                                             \
   };                                                                      \
   inline Name *create_geometry(                                           \
@@ -147,9 +147,9 @@
    public:                                                                 \
     Name##sGeometry(SingletonContainer *sc)                                \
         : display::SingletonsGeometry(sc) {}                               \
-    display::Geometries get_components() const IMP_OVERRIDE {              \
+    display::Geometries get_components() const override {                  \
       display::Geometries ret;                                             \
-      IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {     \
+      for(ParticleIndex pi : get_container()->get_contents()) {            \
         Decorator d(get_container()->get_model(), pi);                     \
         action;                                                            \
       }                                                                    \
@@ -164,7 +164,7 @@
    public:                                                             \
     Name##Geometry(const ParticlePair &pp)                     \
         : display::PairGeometry(pp) {}                                 \
-    display::Geometries get_components() const IMP_OVERRIDE {          \
+    display::Geometries get_components() const override {              \
       display::Geometries ret;                                         \
       Decorator d0(get_particle_pair()[0]);                            \
       Decorator d1(get_particle_pair()[1]);                            \
@@ -177,10 +177,9 @@
   class Name##sGeometry : public display::PairsGeometry {              \
    public:                                                             \
     Name##sGeometry(PairContainer *sc) : display::PairsGeometry(sc) {} \
-    display::Geometries get_components() const IMP_OVERRIDE {          \
+    display::Geometries get_components() const override {              \
       display::Geometries ret;                                         \
-      IMP_FOREACH(ParticleIndexPair pip,                       \
-                  get_container()->get_contents()) {                   \
+      for(ParticleIndexPair pip : get_container()->get_contents()) {   \
         Decorator d0(get_container()->get_model(), pip[0]);            \
         Decorator d1(get_container()->get_model(), pip[1]);            \
         action;                                                        \

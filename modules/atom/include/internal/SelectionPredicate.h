@@ -2,7 +2,7 @@
  *  \file IMP/atom/internal/SelectionPredicate.h
  *  \brief Predicates for selecting a subset of a hierarchy.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_PREDICATE_H
@@ -107,17 +107,17 @@ protected:
   SelectionPredicates predicates_;
   void clone_predicates(ListSelectionPredicate *s) {
     s->predicates_.reserve(predicates_.size());
-    IMP_FOREACH(SelectionPredicate *p, predicates_) {
+    for(SelectionPredicate *p : predicates_) {
       s->predicates_.push_back(p->clone(false));
     }
   }
 public:
   ListSelectionPredicate(std::string name) : SelectionPredicate(name) {}
 
-  virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+  virtual unsigned get_number_of_children() const override {
     return predicates_.size();
   }
-  virtual SelectionPredicate *get_child(unsigned i) const IMP_OVERRIDE {
+  virtual SelectionPredicate *get_child(unsigned i) const override {
     return predicates_[i];
   }
 
@@ -126,10 +126,10 @@ public:
     predicates_.push_back(p);
   }
 
-  virtual int setup_bitset(int index) IMP_OVERRIDE {
+  virtual int setup_bitset(int index) override {
     index = SelectionPredicate::setup_bitset(index);
     /* Set indexes for subpredicates */
-    IMP_FOREACH(SelectionPredicate *p, predicates_) {
+    for(SelectionPredicate *p : predicates_) {
       index = p->setup_bitset(index);
     }
     return index;
@@ -137,7 +137,7 @@ public:
 
   virtual ModelObjectsTemp do_get_inputs(
         Model *m, const ParticleIndexes &pis) const
-        IMP_OVERRIDE {
+        override {
     return IMP::get_particles(m, pis);
   }
 };

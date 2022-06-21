@@ -3,7 +3,7 @@
  *  \brief Cache ModelObjects that change when a Particle moves
 
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_MOVED_PARTICLES_CACHE_H
@@ -41,7 +41,7 @@ public:
 //! Cache Particles that change when a Particle moves
 class MovedParticlesParticleCache {
   Model *m_;
-  typedef std::map<ParticleIndex, std::set<ParticleIndex> > CacheMap;
+  typedef std::map<ParticleIndex, ParticleIndexes> CacheMap;
   CacheMap cache_;
 
 public:
@@ -51,7 +51,7 @@ public:
   /** The result is cached; the cache should be cleared whenever the
       dependency graph changes.
     */
-  const std::set<ParticleIndex> &get_dependent_particles(ParticleIndex pi);
+  const ParticleIndexes &get_dependent_particles(ParticleIndex pi);
 
   // clear when dependency graph changes, and/or
   // particles/restraints added/removed

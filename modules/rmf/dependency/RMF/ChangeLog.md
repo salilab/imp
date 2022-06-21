@@ -1,6 +1,14 @@
 Change Log {#changelog}
 ==========
 
+# 1.4 - 2022-03-10 # {#changelog_1_4}
+- RMF now requires a C++11 compiler and SWIG 3 (or later) to build. Most
+  recent compilers should support C++11, such as gcc, clang
+  or MS Visual Studio 2012 or later. Various macro and header workarounds
+  for pre-C++11 environments are thus no longer needed and are deprecated:
+  `RMF_FINAL`, `RMF_OVERRIDE`, and `RMF_FOREACH`.
+- Build fixes for latest log4cxx, in C++17 mode, or with newer versions of gcc.
+
 # 1.3.1 - 2021-12-01 # {#changelog_1_3_1}
 - Various build fixes for newer versions of gcc and clang.
 - Build fixes for Fedora 33 or later.

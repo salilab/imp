@@ -3,7 +3,7 @@
  \brief
 
  \authors Dina Schneidman, Barak Raveh
- Copyright 2007-2021 IMP Inventors. All rights reserved.
+ Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_SCORE_STATE_H
@@ -50,17 +50,17 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
         atoms_(atoms) {}
 
   // functions that ScoreState requires
-  void do_before_evaluate() IMP_OVERRIDE {
+  void do_before_evaluate() override {
     kf_->update_all_external_coordinates();
   }
 
-  void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
+  void do_after_evaluate(DerivativeAccumulator *da) override {
     IMP_UNUSED(da);
   }
 
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const override;
 
-  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_outputs() const override;
 
  private:
   KinematicForest *kf_;

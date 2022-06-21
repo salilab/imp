@@ -11,8 +11,11 @@ When the graph changes, it must be updated. This is done by simply invalidating 
 - a new IMP::ModelObject is created that has a non-empty IMP::ModelObject::get_outputs().
 - when IMP::Model::set_has_dependencies(false) is called to deliberately invalidate all dependencies
 
-Each IMP::ModelObject has a bit for whether it's dependencies are valid (IMP::ModelObject::get_has_dependencies()). Its dependencies will be updated any time they are needed (particularly when its IMP::ModelObject::get_required_score_states() method is called. This occurs by having the IMP::Model create the dependency graph if needed and then for each input
+Each IMP::ModelObject has a bit for whether its dependencies are valid (IMP::ModelObject::get_has_dependencies()). Its dependencies will be updated any time they are needed (particularly when its IMP::ModelObject::get_required_score_states() method is called. This occurs by having the IMP::Model create the dependency graph if needed and then for each input
 - add its IMP::ModelObject::get_required_score_state() to the list
 - if it is an IMP::ScoreState, add it to the list.
 
-As a special case, the IMP::core::IncrementalScoringFunction has to take action after its dependencies are updated. This is because it keeps track of which restraints depend on which of the IMP::Particle instances that it is keeping track of. To do this, the IMP::ModelObject::do_set_has_dependencies() is called after dependencies are set up. IMP::core::IncrementalScoringFunction uses that function to compute its dependencies.
+Code can often be made more efficient by caching any data structures that are
+derived from the dependency graph, since this graph rarely changes in many
+common workflows. To aid in this, use the IMP::Model::get_dependencies_updated()
+method, which returns the model age when the graph was last updated.

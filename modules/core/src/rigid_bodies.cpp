@@ -2,7 +2,7 @@
  *  \file rigid_bodies.cpp
  *  \brief Support for rigid bodies.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -100,11 +100,11 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
                                      "AccumulateRigidBodyDerivatives%1%")
       : SingletonDerivativeModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
   IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
@@ -125,11 +125,11 @@ class UpdateRigidBodyMembers : public SingletonModifier {
   UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
       : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
   IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
 };
@@ -140,14 +140,14 @@ class NormalizeRotation : public SingletonModifier {
   NormalizeRotation(std::string name = "NormalizeRotation%1%")
       : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual void apply_indexes(
       Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
-      unsigned int upper_bound) const IMP_OVERRIDE IMP_FINAL;
+      unsigned int upper_bound) const override final;
   //  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
   IMP_OBJECT_METHODS(NormalizeRotation);
 };
@@ -158,11 +158,11 @@ class NullSDM : public SingletonDerivativeModifier {
   NullSDM(std::string name = "NullModifier%1%")
       : SingletonDerivativeModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
   IMP_OBJECT_METHODS(NullSDM);
 };
@@ -546,14 +546,14 @@ void RigidBody::teardown_particle(RigidBody rb) {
   rb.on_change();
   {
     const ParticleIndexes &members = rb.get_member_particle_indexes();
-    IMP_FOREACH(ParticleIndex pi, members) {
+    for(ParticleIndex pi : members) {
       internal::remove_required_attributes_for_member(rb.get_model(), pi);
     }
   }
   {
     const ParticleIndexes &members =
         rb.get_body_member_particle_indexes();
-    IMP_FOREACH(ParticleIndex pi, members) {
+    for(ParticleIndex pi : members) {
       internal::remove_required_attributes_for_body_member(rb.get_model(), pi);
     }
   }
@@ -569,7 +569,7 @@ void RigidBody::set_reference_frame_from_members(
                   "Can't initialize a rigid body reference frame "
                       << "with < 3 particles.");
   Model *m = get_model();
-  IMP_FOREACH(ParticleIndex pi, rms) {
+  for(ParticleIndex pi : rms) {
     local.push_back(RigidMember(m, pi).get_internal_coordinates());
     global.push_back(RigidMember(m, pi).get_coordinates());
   }
@@ -577,7 +577,7 @@ void RigidBody::set_reference_frame_from_members(
       algebra::get_transformation_aligning_first_to_second(local, global);
   set_reference_frame_lazy(algebra::ReferenceFrame3D(t3));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    IMP_FOREACH(ParticleIndex pi, rms) {
+    for(ParticleIndex pi : rms) {
       algebra::Vector3D local =
           RigidBodyMember(m, pi).get_internal_coordinates();
       algebra::Vector3D back = t3.get_transformed(local);
@@ -1082,7 +1082,7 @@ void show_rigid_body_hierarchy(RigidBody rb, TextOutput out) {
     if (core::RigidBody::get_is_setup(m, pi)) {
       out.get_stream() << " + " << m->get_particle_name(pi) << std::endl;
       core::RigidBody rb(m, pi);
-      IMP_FOREACH(ParticleIndex ch,
+      for(ParticleIndex ch :
                   rb.get_member_particle_indexes() +
                       rb.get_body_member_particle_indexes()) {
         queue.push_back(boost::make_tuple(prefix1 + " ", prefix1 + " ", ch));

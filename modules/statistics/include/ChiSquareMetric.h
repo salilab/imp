@@ -2,7 +2,7 @@
  *  \file IMP/statistics/ChiSquareMetric.h
  *  \brief Chi2 Metric
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSTATISTICS_CHI_SQUARE_METRIC_H
@@ -51,12 +51,12 @@ class IMPSTATISTICSEXPORT ChiSquareMetric : public Metric {
   //! get the list of standard deviations for the i-th configuration
   Floats get_standard_deviation(unsigned i) const;
   //! get the weight for the i-th configuration
-  double do_get_weight(unsigned i) const IMP_OVERRIDE;
+  double do_get_weight(unsigned i) const override;
   //! get chi2 from experimental data for the i-th configuration
   double get_chi_square_experimental(unsigned i) const;
 
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
 
   IMP_OBJECT_METHODS(ChiSquareMetric);
 };

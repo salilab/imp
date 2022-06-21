@@ -3,7 +3,7 @@
  *  \brief a prismatic joint between rigid bodies as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H
@@ -69,7 +69,7 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
      @note It is assumed that external coordinates are updated before
            calling this function.
   */
-  virtual void update_joint_from_cartesian_witnesses() IMP_OVERRIDE;
+  virtual void update_joint_from_cartesian_witnesses() override;
 
  private:
   IMP::core::XYZ a_;  // prismatic joint from point, associated with parent

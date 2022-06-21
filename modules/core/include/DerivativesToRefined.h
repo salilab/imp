@@ -2,7 +2,7 @@
  *  \file IMP/core/DerivativesToRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_TO_REFINED_H
@@ -35,11 +35,11 @@ class IMPCOREEXPORT DerivativesToRefined : public SingletonDerivativeModifier {
   DerivativesToRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
 
   virtual void apply_index(Model *m, ParticleIndex a) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(DerivativesToRefined);
   IMP_OBJECT_METHODS(DerivativesToRefined);
 };

@@ -2,7 +2,7 @@
  *  \file IMP/isd/WeightRestraint.h
  *  \brief Put description here
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,8 +27,8 @@ class IMPISDEXPORT WeightRestraint : public Restraint {
   WeightRestraint(Particle *w, Float wmin, Float wmax, Float kappa);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(WeightRestraint);
 };
 

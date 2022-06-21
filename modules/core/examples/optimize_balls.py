@@ -1,6 +1,6 @@
 ## \example core/optimize_balls.py
 # This example optimizes a set of a balls to form 100 chains packed into a
-# box. It illustrates using Monte Carlo (incremental) and conjugate
+# box. It illustrates using Monte Carlo  and conjugate
 # gradients in conjunction in a non-trivial optimization.
 
 import IMP.core
@@ -84,15 +84,6 @@ mc = IMP.core.MonteCarlo(m)
 mc.set_name("MC")
 sm = IMP.core.SerialMover(movers)
 mc.add_mover(sm)
-# we are special casing the nbl term
-isf = IMP.core.IncrementalScoringFunction(m, aps, restraints)
-isf.set_name("I")
-# use special incremental support for the non-bonded part
-# apply the pair score sps to all touching ball pairs from the list
-# of particles aps, using the filters to remove undersired pairs
-# this is equivalent to the nbl construction above but optimized for
-# incremental
-isf.add_close_pair_score(sps, 0, aps, filters)
 
 # create a scoring function for conjugate gradients that includes the
 # ExcludedVolumeRestraint
@@ -100,11 +91,11 @@ nbl = IMP.core.ExcludedVolumeRestraint(aps, k, 1)
 nbl.set_pair_filters(filters)
 sf = IMP.core.RestraintsScoringFunction(restraints + [nbl], "RSF")
 
-if True:
-    mc.set_incremental_scoring_function(isf)
-else:
-    # we could, instead do non-incremental scoring
-    mc.set_scoring_function(sf)
+mc.set_scoring_function(sf)
+
+# Speed up the optimization by only rescoring terms involving particles
+# that moved at each MC step
+mc.set_score_moved(True)
 
 # first relax the bonds a bit
 rs = []

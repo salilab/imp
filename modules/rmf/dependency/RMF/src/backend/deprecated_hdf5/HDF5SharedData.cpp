@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -93,7 +93,7 @@ void HDF5SharedData::open_things(bool create, bool read_only) {
 
 void HDF5SharedData::initialize_keys(int) {
   Categories cats = get_categories();
-  RMF_FOREACH(Category cat, cats) { RMF_FOREACH_BACKWARDS_TYPE(RMF_LIST_KEYS); }
+  for(Category cat : cats) { RMF_FOREACH_BACKWARDS_TYPE(RMF_LIST_KEYS); }
   initialize_keys(get_category("link"), "nodeid", NodeIDTraits());
 }
 

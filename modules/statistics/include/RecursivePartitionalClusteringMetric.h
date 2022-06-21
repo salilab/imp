@@ -2,7 +2,7 @@
  *  \file IMP/statistics/RecursivePartitionalClusteringMetric.h
  *  \brief Metric for clustering data that has already been clustered once.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,8 +31,8 @@ class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric : public Metric {
                                        PartitionalClustering *clustering);
   PartitionalClustering *create_full_clustering(
       PartitionalClustering *center_cluster);
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(RecursivePartitionalClusteringMetric);
 };
 

@@ -103,7 +103,7 @@ spheres = [('B', 1, 2, 1., 2., 3., 1.2),
 
 # Rather than storing another copy of the coordinates in the IHM library
 # (which could use a lot of memory), we need to provide a mechanism to
-# translate them into the IHM data model. We do this straighforwardly by
+# translate them into the IHM data model. We do this straightforwardly by
 # subclassing the IHM Model class and overriding the get_atoms
 # and get_spheres methods:
 class MyModel(ihm.model.Model):

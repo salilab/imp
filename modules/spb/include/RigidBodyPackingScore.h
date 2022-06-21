@@ -2,7 +2,7 @@
  *  \file IMP/spb/RigidBodyPackingScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_RIGID_BODY_PACKING_SCORE_H
@@ -27,10 +27,10 @@ class IMPSPBEXPORT RigidBodyPackingScore : public PairScore {
                         Floats ddb, Floats dde, double kappa);
 
   virtual double evaluate_index(IMP::Model *m, const IMP::ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   //  void show(std::ostream &out) const ;
 

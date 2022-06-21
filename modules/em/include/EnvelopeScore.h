@@ -2,7 +2,7 @@
  * \file IMP/em/EnvelopeScore.h
  * \brief class for envelope based scoring using MapDistanceTransform
  *
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,7 +60,7 @@ class IMPEMEXPORT EnvelopeScore : public IMP::Object {
                const IMP::algebra::Transformation3D& trans) const;
 
   // methods required by Object
-  IMP::VersionInfo get_version_info() const IMP_OVERRIDE {
+  IMP::VersionInfo get_version_info() const override {
     return IMP::VersionInfo(get_module_name(), get_module_version());
   }
 

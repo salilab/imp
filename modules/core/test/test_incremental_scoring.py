@@ -36,7 +36,8 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r, rnb])
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition(),
                                                   rnb.create_decomposition()])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         isf.add_close_pair_score(nbps, 0, IMP.get_particles(m, ps), [f])
         print("iscore")
         iscore = isf.evaluate(False)
@@ -95,7 +96,8 @@ class Tests(IMP.test.TestCase):
         rnb.set_name("NB")
         sf = IMP.core.RestraintsScoringFunction([rnb])
         dsf = IMP.core.RestraintsScoringFunction([rnb.create_decomposition()])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [])
         isf.add_close_pair_score(nbps, 0, IMP.get_particles(m, ps), [])
         print("iscore")
         iscore = isf.evaluate(False)
@@ -154,7 +156,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.PairsRestraint(hps, cpc)
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition()])
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         # isf.set_log_level(IMP.VERBOSE)
         print('initial test')
         iscore = isf.evaluate(False)
@@ -272,8 +275,9 @@ class Tests(IMP.test.TestCase):
                                                   rnb.create_decomposition()],
                                                  1.0, IMP.NO_MAX,
                                                  "D")
-        isf = IMP.core.IncrementalScoringFunction(
-            m, rbs, [r], 1.0, IMP.NO_MAX, "I")
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(
+                m, rbs, [r], 1.0, IMP.NO_MAX, "I")
         isf.add_close_pair_score(nbps, 0, ps, [f])
         # isf.set_log_level(IMP.VERBOSE)
         iscore = isf.evaluate(False)

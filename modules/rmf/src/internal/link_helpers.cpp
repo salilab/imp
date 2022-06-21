@@ -2,7 +2,7 @@
  *  \file IMP/rmf/link_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/rmf/internal/link_helpers.h>
@@ -37,7 +37,7 @@ unsigned int get_save_linker_index(std::string st) {
 LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
   LoadLinks ret;
   typedef std::pair<std::string, int> P;
-  IMP_FOREACH(P kl, known_load_linkers) {
+  for(P kl : known_load_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<LoadLinkAssociationType>(kl.second));
     }
@@ -49,7 +49,7 @@ LoadLinks get_load_linkers(RMF::FileConstHandle fh) {
 SaveLinks get_save_linkers(RMF::FileHandle fh) {
   SaveLinks ret;
   typedef std::pair<std::string, int> P;
-  IMP_FOREACH(P kl, known_save_linkers) {
+  for(P kl : known_save_linkers) {
     if (fh.get_has_associated_data(kl.second)) {
       ret.push_back(fh.get_associated_data<SaveLinkAssociationType>(kl.second));
     }

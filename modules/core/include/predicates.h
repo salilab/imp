@@ -2,7 +2,7 @@
  *  \file IMP/core/predicates.h
  *  \brief Score particles based on a bounding box
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_PREDICATES_H
@@ -24,11 +24,11 @@ class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
                                         "InBoundingBox3DSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
   virtual int get_value_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE {
+      override {
     return bb_.get_contains(XYZ(m, pi).get_coordinates()) ? 1 : 0;
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pi) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pi) const override {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -46,11 +46,11 @@ class AttributeSingletonPredicate : public SingletonPredicate {
                                              "AttributeSingletonPredicate%1%")
       : SingletonPredicate(name), bb_(bb) {}
   virtual int get_value_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE {
+      override {
     return m->get_attribute(bb_, pi);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pi) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pi) const override {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -66,7 +66,7 @@ class IsCollisionPairPredicate : public PairPredicate {
       : PairPredicate(name) {}
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &pi) const
-      IMP_OVERRIDE {
+      override {
     Float sr =
         m->get_sphere(pi[0]).get_radius() + m->get_sphere(pi[1]).get_radius();
 #if IMP_HAS_CHECKS > 1
@@ -89,7 +89,7 @@ class IsCollisionPairPredicate : public PairPredicate {
   }
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pi) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pi) const override {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
@@ -124,9 +124,9 @@ class PredicateSingletonScore : public SingletonScore {
     scores_[val] = score;
   }
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_SCORE_METHODS(PredicateSingletonScore);
   IMP_OBJECT_METHODS(PredicateSingletonScore);
 };

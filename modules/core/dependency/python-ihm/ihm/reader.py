@@ -17,6 +17,7 @@ import ihm.cross_linkers
 import ihm.flr
 import inspect
 import warnings
+import collections
 try:
     from . import _format
 except ImportError:
@@ -417,6 +418,12 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.source.Synthetic` objects
         self.src_syns = IDMapper(None, ihm.source.Synthetic)
 
+        #: Mapping from ID to :class:`ihm.AsymUnit` objects
+        self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
+
+        #: Mapping from ID to :class:`ihm.ChemComp` objects
+        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
+
         #: Mapping from ID to :class:`ihm.reference.Alignment` objects
         self.alignments = IDMapper(None, ihm.reference.Alignment)
 
@@ -426,12 +433,6 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.ChemDescriptor` objects
         self.chem_descriptors = IDMapper(self.system.orphan_chem_descriptors,
                                          ihm.ChemDescriptor, None)
-
-        #: Mapping from ID to :class:`ihm.AsymUnit` objects
-        self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
-
-        #: Mapping from ID to :class:`ihm.ChemComp` objects
-        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.Assembly` objects
         self.assemblies = IDMapper(self.system.orphan_assemblies, ihm.Assembly)
@@ -873,9 +874,10 @@ class Handler(object):
 class _StructHandler(Handler):
     category = '_struct'
 
-    def __call__(self, title, entry_id):
+    def __call__(self, title, entry_id, pdbx_model_details):
         self.copy_if_present(self.system, locals(), keys=('title',),
-                             mapkeys={'entry_id': 'id'})
+                             mapkeys={'entry_id': 'id',
+                                      'pdbx_model_details': 'model_details'})
 
 
 class _AuditConformHandler(Handler):
@@ -916,6 +918,7 @@ class _CitationHandler(Handler):
                  journal_abbrev, journal_volume, pdbx_database_id_doi,
                  page_first, page_last):
         s = self.sysr.citations.get_by_id(id)
+        s.is_primary = (id == 'primary')
         self.copy_if_present(
             s, locals(), keys=('title', 'year'),
             mapkeys={'pdbx_database_id_pubmed': 'pmid',
@@ -1008,6 +1011,10 @@ class _EntityHandler(Handler):
             source_cls = self.src_map.get(src_method.lower(), None)
             if source_cls and s.source is None:
                 s.source = source_cls()
+        # Force polymer if _entity.type says so, even if it doesn't look like
+        # one (e.g. just a single amino acid)
+        if type and type.lower() == 'polymer':
+            s._force_polymer = True
 
 
 class _EntitySrcNatHandler(Handler):
@@ -1056,10 +1063,10 @@ class _StructRefHandler(Handler):
         e = self.sysr.entities.get_by_id(entity_id)
         typ = self.type_map.get(db_name.lower())
         ref = self.sysr.references.get_by_id(id, typ)
-        # Strip newlines if code is split over multiple lines
+        # Strip newlines and whitespace from code
         if pdbx_seq_one_letter_code not in (None, ihm.unknown):
             pdbx_seq_one_letter_code \
-                = pdbx_seq_one_letter_code.replace('\n', '')
+                = pdbx_seq_one_letter_code.replace('\n', '').replace(' ', '')
         self.copy_if_present(
             ref, locals(), keys=('db_name', 'db_code', 'details'),
             mapkeys={'pdbx_db_accession': 'accession',
@@ -1555,14 +1562,15 @@ class _ProtocolDetailsHandler(Handler):
 
     def __call__(self, protocol_id, step_id, num_models_begin,
                  num_models_end, multi_scale_flag, multi_state_flag,
-                 ordered_flag, struct_assembly_id, dataset_group_id,
-                 software_id, script_file_id, step_name, step_method,
-                 description):
+                 ordered_flag, ensemble_flag, struct_assembly_id,
+                 dataset_group_id, software_id, script_file_id, step_name,
+                 step_method, description):
         p = self.sysr.protocols.get_by_id(protocol_id)
         nbegin = self.get_int(num_models_begin)
         nend = self.get_int(num_models_end)
         mscale = self.get_bool(multi_scale_flag)
         mstate = self.get_bool(multi_state_flag)
+        ensemble = self.get_bool(ensemble_flag)
         ordered = self.get_bool(ordered_flag)
         assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
@@ -1573,8 +1581,8 @@ class _ProtocolDetailsHandler(Handler):
                               method=None, num_models_begin=nbegin,
                               num_models_end=nend, multi_scale=mscale,
                               multi_state=mstate, ordered=ordered,
-                              software=software, script_file=script,
-                              description=description)
+                              ensemble=ensemble, software=software,
+                              script_file=script, description=description)
         s._id = step_id
         self.copy_if_present(
             s, locals(),
@@ -1886,17 +1894,29 @@ class _SphereObjSiteHandler(Handler):
 class _AtomSiteHandler(Handler):
     category = '_atom_site'
 
+    def __init__(self, *args):
+        super(_AtomSiteHandler, self).__init__(*args)
+        self._missing_sequence = collections.defaultdict(dict)
+
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
                  cartn_z, occupancy, group_pdb, auth_seq_id,
-                 pdbx_pdb_ins_code):
-        # todo: handle fields other than those output by us
-        model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
-        asym = self.sysr.asym_units.get_by_id(label_asym_id)
-        biso = self.get_float(b_iso_or_equiv)
-        occupancy = self.get_float(occupancy)
+                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id):
         # seq_id can be None for non-polymers (HETATM)
         seq_id = self.get_int(label_seq_id)
+        # todo: handle fields other than those output by us
+        model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
+        if label_asym_id is None:
+            # If no asym_id is provided (e.g. minimal PyMOL output) then
+            # use the author-provided ID instead
+            asym = self.sysr.asym_units.get_by_id(auth_asym_id)
+            # Chances are the entity_poly table is missing too, so remember
+            # the comp_id to help us construct missing sequence info
+            self._missing_sequence[asym][seq_id] = label_comp_id
+        else:
+            asym = self.sysr.asym_units.get_by_id(label_asym_id)
+        biso = self.get_float(b_iso_or_equiv)
+        occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=seq_id, atom_id=label_atom_id,
@@ -1913,6 +1933,25 @@ class _AtomSiteHandler(Handler):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
             asym.auth_seq_id_map[seq_id] = auth_seq_id, pdbx_pdb_ins_code
+
+    def finalize(self):
+        # Fill in missing Entity information from comp_ids
+        entity_from_seq = {}
+        for asym, comp_from_seq_id in self._missing_sequence.items():
+            if asym.entity is None:
+                # Fill in gaps in seq_id with UNK residues
+                seq_len = max(comp_from_seq_id.keys())
+                unk = ihm.LPeptideAlphabet()['UNK']
+                seq = [unk] * seq_len
+                for seq_id, comp_id in comp_from_seq_id.items():
+                    seq[seq_id - 1] = self.sysr.chem_comps.get_by_id(comp_id)
+                seq = tuple(seq)  # Lists are not hashable
+                if seq in entity_from_seq:
+                    asym.entity = entity_from_seq[seq]
+                else:
+                    asym.entity = ihm.Entity(seq)
+                    entity_from_seq[seq] = asym.entity
+                    self.system.entities.append(asym.entity)
 
 
 class _StartingModelCoordHandler(Handler):
@@ -2809,7 +2848,7 @@ class _FLRFretAnalysisLifetimeHandler(Handler):
                  details):
         f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
         f.type = 'lifetime-based'
-        f.reference_measurement_group \
+        f.ref_measurement_group \
             = self.sysr.flr_ref_measurement_groups.get_by_id(
                 reference_measurement_group_id)
         f.lifetime_fit_model = self.sysr.flr_lifetime_fit_models.get_by_id(
@@ -3060,11 +3099,105 @@ class _FLRFPSMPPModelingHandler(Handler):
                 mpp_atom_position_group_id)
 
 
+_flr_handlers = [_FLRChemDescriptorHandler, _FLRInstSettingHandler,
+                 _FLRExpConditionHandler, _FLRInstrumentHandler,
+                 _FLRSampleConditionHandler, _FLREntityAssemblyHandler,
+                 _FLRSampleHandler, _FLRExperimentHandler,
+                 _FLRProbeListHandler, _FLRProbeDescriptorHandler,
+                 _FLRPolyProbePositionHandler,
+                 _FLRPolyProbePositionModifiedHandler,
+                 _FLRPolyProbePositionMutatedHandler,
+                 _FLRSampleProbeDetailsHandler, _FLRPolyProbeConjugateHandler,
+                 _FLRFretForsterRadiusHandler,
+                 _FLRFretCalibrationParametersHandler, _FLRFretAnalysisHandler,
+                 _FLRFretAnalysisIntensityHandler,
+                 _FLRFretAnalysisLifetimeHandler, _FLRLifetimeFitModelHandler,
+                 _FLRRefMeasurementHandler, _FLRRefMeasurementGroupHandler,
+                 _FLRRefMeasurementGroupLinkHandler,
+                 _FLRRefMeasurementLifetimeHandler, _FLRPeakAssignmentHandler,
+                 _FLRFretDistanceRestraintHandler, _FLRFretModelQualityHandler,
+                 _FLRFretModelDistanceHandler, _FLRFPSGlobalParameterHandler,
+                 _FLRFPSModelingHandler, _FLRFPSAVParameterHandler,
+                 _FLRFPSAVModelingHandler, _FLRFPSMPPHandler,
+                 _FLRFPSMPPAtomPositionHandler, _FLRFPSMPPModelingHandler]
+
+
+class Variant(object):
+    """Utility class to select the type of file to read with :func:`read`."""
+
+    #: Class to track global file information, e.g. :class:`SystemReader`
+    system_reader = None
+
+    def get_handlers(self, sysr):
+        """Get the :class:`Handler` objects to use to parse input.
+
+           :param sysr: class to track global file information.
+           :type sysr: :class:`SystemReader`
+           :return: a list of :class:`Handler` objects.
+        """
+        pass
+
+    def get_audit_conform_handler(self, sysr):
+        """Get a :class:`Handler` to check the audit_conform table.
+           If :func:`read` is called with ``reject_old_file=True``, this
+           handler is used to check the audit_conform table and reject the
+           file if it is deemed to be too old.
+
+           :param sysr: class to track global file information.
+           :type sysr: :class:`SystemReader`
+           :return: a suitable handler.
+           :rtype: :class:`Handler`
+        """
+        pass
+
+
+class IHMVariant(Variant):
+    """Used to select typical PDBx/IHM file input. See :func:`read`."""
+    system_reader = SystemReader
+
+    _handlers = [
+        _StructHandler, _SoftwareHandler, _CitationHandler,
+        _AuditAuthorHandler, _GrantHandler, _CitationAuthorHandler,
+        _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
+        _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,
+        _StructRefHandler, _StructRefSeqHandler, _StructRefSeqDifHandler,
+        _EntityPolyHandler, _EntityPolySeqHandler, _EntityNonPolyHandler,
+        _EntityPolySegmentHandler, _StructAsymHandler, _AssemblyDetailsHandler,
+        _AssemblyHandler, _ExtRefHandler, _ExtFileHandler, _DatasetListHandler,
+        _DatasetGroupHandler, _DatasetGroupLinkHandler, _DatasetExtRefHandler,
+        _DatasetDBRefHandler, _DataTransformationHandler,
+        _RelatedDatasetsHandler, _ModelRepresentationHandler,
+        _ModelRepresentationDetailsHandler, _StartingModelDetailsHandler,
+        _StartingComputationalModelsHandler, _StartingComparativeModelsHandler,
+        _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
+        _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
+        _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
+        _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,
+        _EM2DRestraintHandler, _EM2DFittingHandler, _SASRestraintHandler,
+        _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
+        _PolyResidueFeatureHandler, _PolyAtomFeatureHandler,
+        _NonPolyFeatureHandler, _PseudoSiteFeatureHandler, _PseudoSiteHandler,
+        _DerivedDistanceRestraintHandler, _PredictedContactRestraintHandler,
+        _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
+        _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
+        _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,
+        _NonPolySchemeHandler, _CrossLinkListHandler,
+        _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
+        _CrossLinkResultHandler, _StartingModelSeqDifHandler,
+        _OrderedEnsembleHandler]
+
+    def get_handlers(self, sysr):
+        return [h(sysr) for h in self._handlers + _flr_handlers]
+
+    def get_audit_conform_handler(self, sysr):
+        return _AuditConformHandler(sysr)
+
+
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
          warn_unknown_category=False, warn_unknown_keyword=False,
          read_starting_model_coord=True,
          starting_model_class=ihm.startmodel.StartingModel,
-         reject_old_file=False):
+         reject_old_file=False, variant=IHMVariant):
     """Read data from the file handle `fh`.
 
        Note that the reader currently expects to see a file compliant
@@ -3132,8 +3265,15 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               :exc:`ihm.reader.OldFileError` if the file conforms to an
               older version of the dictionary than this library supports
               (by default the library will read what it can from the file).
+       :param variant: A class or object that selects the type of file to
+              read. This primarily controls the set of tables that are
+              read from the file. In most cases the default
+              :class:`IHMVariant` should be used.
+       :type variant: :class:`Variant`
        :return: A list of :class:`ihm.System` objects.
     """
+    if isinstance(variant, type):
+        variant = variant()
     systems = []
     reader_map = {'mmCIF': ihm.format.CifReader,
                   'BCIF': ihm.format_bcif.BinaryCifReader}
@@ -3144,88 +3284,10 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
     r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
                            unknown_keyword_handler=ukhandler)
     while True:
-        s = SystemReader(model_class, starting_model_class)
-        hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
-              _AuditAuthorHandler(s), _GrantHandler(s),
-              _CitationAuthorHandler(s), _ChemCompHandler(s),
-              _ChemDescriptorHandler(s), _EntityHandler(s),
-              _EntitySrcNatHandler(s), _EntitySrcGenHandler(s),
-              _EntitySrcSynHandler(s), _StructRefHandler(s),
-              _StructRefSeqHandler(s), _StructRefSeqDifHandler(s),
-              _EntityPolyHandler(s),
-              _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
-              _EntityPolySegmentHandler(s),
-              _StructAsymHandler(s), _AssemblyDetailsHandler(s),
-              _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
-              _DatasetListHandler(s), _DatasetGroupHandler(s),
-              _DatasetGroupLinkHandler(s),
-              _DatasetExtRefHandler(s), _DatasetDBRefHandler(s),
-              _DataTransformationHandler(s),
-              _RelatedDatasetsHandler(s), _ModelRepresentationHandler(s),
-              _ModelRepresentationDetailsHandler(s),
-              _StartingModelDetailsHandler(s),
-              _StartingComputationalModelsHandler(s),
-              _StartingComparativeModelsHandler(s),
-              _ProtocolHandler(s), _ProtocolDetailsHandler(s),
-              _PostProcessHandler(s), _ModelListHandler(s),
-              _ModelGroupHandler(s), _ModelGroupLinkHandler(s),
-              _MultiStateHandler(s), _MultiStateLinkHandler(s),
-              _EnsembleHandler(s), _DensityHandler(s),
-              _SubsampleHandler(s),
-              _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
-              _EM2DFittingHandler(s), _SASRestraintHandler(s),
-              _SphereObjSiteHandler(s), _AtomSiteHandler(s),
-              _FeatureListHandler(s),
-              _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
-              _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
-              _PseudoSiteHandler(s),
-              _DerivedDistanceRestraintHandler(s),
-              _PredictedContactRestraintHandler(s), _CenterHandler(s),
-              _TransformationHandler(s), _GeometricObjectHandler(s),
-              _SphereHandler(s), _TorusHandler(s), _HalfTorusHandler(s),
-              _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
-              _PolySeqSchemeHandler(s), _NonPolySchemeHandler(s),
-              _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
-              _CrossLinkPseudoSiteHandler(s),
-              _CrossLinkResultHandler(s), _StartingModelSeqDifHandler(s),
-              _OrderedEnsembleHandler(s), _FLRChemDescriptorHandler(s),
-              _FLRInstSettingHandler(s),
-              _FLRExpConditionHandler(s),
-              _FLRInstrumentHandler(s),
-              _FLRSampleConditionHandler(s),
-              _FLREntityAssemblyHandler(s),
-              _FLRSampleHandler(s),
-              _FLRExperimentHandler(s),
-              _FLRProbeListHandler(s),
-              _FLRProbeDescriptorHandler(s),
-              _FLRPolyProbePositionHandler(s),
-              _FLRPolyProbePositionModifiedHandler(s),
-              _FLRPolyProbePositionMutatedHandler(s),
-              _FLRSampleProbeDetailsHandler(s),
-              _FLRPolyProbeConjugateHandler(s),
-              _FLRFretForsterRadiusHandler(s),
-              _FLRFretCalibrationParametersHandler(s),
-              _FLRFretAnalysisHandler(s),
-              _FLRFretAnalysisIntensityHandler(s),
-              _FLRFretAnalysisLifetimeHandler(s),
-              _FLRLifetimeFitModelHandler(s),
-              _FLRRefMeasurementHandler(s),
-              _FLRRefMeasurementGroupHandler(s),
-              _FLRRefMeasurementGroupLinkHandler(s),
-              _FLRRefMeasurementLifetimeHandler(s),
-              _FLRPeakAssignmentHandler(s),
-              _FLRFretDistanceRestraintHandler(s),
-              _FLRFretModelQualityHandler(s),
-              _FLRFretModelDistanceHandler(s),
-              _FLRFPSGlobalParameterHandler(s),
-              _FLRFPSModelingHandler(s),
-              _FLRFPSAVParameterHandler(s),
-              _FLRFPSAVModelingHandler(s),
-              _FLRFPSMPPHandler(s),
-              _FLRFPSMPPAtomPositionHandler(s),
-              _FLRFPSMPPModelingHandler(s)] + [h(s) for h in handlers]
+        s = variant.system_reader(model_class, starting_model_class)
+        hs = variant.get_handlers(s) + [h(s) for h in handlers]
         if reject_old_file:
-            hs.append(_AuditConformHandler(s))
+            hs.append(variant.get_audit_conform_handler(s))
         if read_starting_model_coord:
             hs.append(_StartingModelCoordHandler(s))
         if uchandler:

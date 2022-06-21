@@ -1,7 +1,7 @@
 /**
  *  \file exception.cpp   \brief Check handling.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,7 +27,7 @@ InputOutputException::InputOutputException(std::string container_name,
       operation_(operation),
       entity_(NO_ENTITY) {}
 
-InputOutputException::~InputOutputException() throw() {}
+InputOutputException::~InputOutputException() IMP_NOEXCEPT {}
 
 std::string InputOutputException::get_message(ModelObject *o) const {
   std::ostringstream oss;

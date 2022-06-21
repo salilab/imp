@@ -5,7 +5,7 @@
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -93,8 +93,8 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
   unsigned get_number_of_contributions() const;
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(CysteineCrossLinkRestraint);
 };
 

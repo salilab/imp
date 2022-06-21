@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #include <exception>
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
         RMF::clone_static_frame(rh, orh);
       }
       orh.set_description(orh.get_description() + "\n" + rh.get_description());
-      RMF_FOREACH(RMF::FrameID ni, rh.get_frames()) {
+      for(RMF::FrameID ni : rh.get_frames()) {
         rh.set_current_frame(ni);
         orh.add_frame(rh.get_name(ni), rh.get_type(ni));
         RMF::clone_loaded_frame(rh, orh);

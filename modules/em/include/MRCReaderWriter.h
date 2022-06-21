@@ -2,7 +2,7 @@
  *  \file IMP/em/MRCReaderWriter.h
  *  \brief Classes to read or write MRC files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,11 +28,11 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
   MRCReaderWriter(std::string fn) { filename = fn; }
 #if !defined(DOXYGEN) && !defined(SWIG)
   //! Reads an MRC file and translates the header to the general DensityHeader
-  void read(const char *fn_in, float **data, DensityHeader &head) IMP_OVERRIDE;
+  void read(const char *fn_in, float **data, DensityHeader &head) override;
 
   //! Writes an MRC file from the data and the general DensityHeader
   void write(const char *fn_out, const float *data,
-             const DensityHeader &head) IMP_OVERRIDE;
+             const DensityHeader &head) override;
 #endif
 
  private:

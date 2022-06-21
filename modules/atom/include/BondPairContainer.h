@@ -2,7 +2,7 @@
  *  \file IMP/atom/BondPairContainer.h
  *  \brief A fake container for bonds
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BOND_PAIR_CONTAINER_H
@@ -30,14 +30,14 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT BondPairContainer : public PairContainer {
   IMP::PointerMember<SingletonContainer> sc_;
 
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     return sc_->get_contents_hash();
   }
 
  public:
   template <class F>
   void apply_generic(F* f) const {
-    IMP_FOREACH(ParticleIndex pi, sc_->get_contents()) {
+    for(ParticleIndex pi : sc_->get_contents()) {
       Bond bp(get_model(), pi);
       f->apply_index(get_model(), ParticleIndexPair(
                                       bp.get_bonded(0).get_particle_index(),
@@ -48,12 +48,12 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
   //! The container containing the bonds
   BondPairContainer(SingletonContainer* sc);
 
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ParticleIndexPairs get_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjects(1, sc_);
   }
-  ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  ParticleIndexes get_all_possible_indexes() const override;
   IMP_PAIR_CONTAINER_METHODS(BondPairContainer);
   IMP_OBJECT_METHODS(BondPairContainer);
 };

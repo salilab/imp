@@ -2,7 +2,7 @@
  *  \file IMP/core/BoundingBox3DSingletonScore.h
  *  \brief Score particles based on a bounding box
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H
@@ -35,9 +35,9 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingBox3DSingletonScore);
@@ -91,6 +91,9 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
 
 #endif
 
+//! Score particles based on how far outside a box they are by
+//! applying f to the distance.
+//! \see GenericBoundingBox3DSingletonScore
 IMP_GENERIC_OBJECT(BoundingBox3DSingletonScore, bounding_box_3d_singleton_score,
                    UnaryFunction,
                    (UnaryFunction *f, const algebra::BoundingBoxD<3> &bb),
@@ -99,3 +102,4 @@ IMP_GENERIC_OBJECT(BoundingBox3DSingletonScore, bounding_box_3d_singleton_score,
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H */
+

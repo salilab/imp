@@ -2,7 +2,7 @@
  *  \file RMF/paths.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -45,30 +45,30 @@ typedef backends::BackwardsIO<avro_backend::AvroSharedData<
     avro_backend::MultipleAvroFileReader> > AvroReaderShareData;
 
 struct SingleTextAvroFactory : public RMF::backends::IOFactory {
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     return ".rmf-text";
   }
   virtual boost::shared_ptr<RMF::backends::IO> read_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<SingleAvroShareData>(name, false, true);
   }
   virtual boost::shared_ptr<RMF::backends::IO> create_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<SingleAvroShareData>(name, true, false);
   }
   virtual ~SingleTextAvroFactory() {}
 };
 
 struct SingleAvroFactory : public SingleTextAvroFactory {
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     return ".rmfa";
   }
   /*virtual boost::shared_ptr<RMF::backends::IO> create_buffer(
-      BufferHandle buffer) const RMF_OVERRIDE {
+      BufferHandle buffer) const override {
     return boost::make_shared<SingleAvroShareData>(buffer);
     }*/
   virtual boost::shared_ptr<RMF::backends::IO> read_buffer(
-      BufferConstHandle buffer) const RMF_OVERRIDE {
+      BufferConstHandle buffer) const override {
     try {
       return boost::make_shared<SingleAvroShareData>(buffer);
     }
@@ -81,15 +81,15 @@ struct SingleAvroFactory : public SingleTextAvroFactory {
 };
 
 struct MultipleAvroFactory : public RMF::backends::IOFactory {
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     return ".rmf-avro";
   }
   virtual boost::shared_ptr<RMF::backends::IO> read_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<AvroReaderShareData>(name, false, true);
   }
   virtual boost::shared_ptr<RMF::backends::IO> create_file(
-      const std::string& name) const RMF_OVERRIDE {
+      const std::string& name) const override {
     return boost::make_shared<AvroWriterShareData>(name, true, false);
   }
   virtual ~MultipleAvroFactory() {}

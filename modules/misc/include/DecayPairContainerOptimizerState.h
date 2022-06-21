@@ -2,7 +2,7 @@
  *  \file IMP/misc/DecayPairContainerOptimizerState.h
  *  \brief A pair container with a decaying list of pairs.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H
@@ -38,7 +38,7 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState
       std::string name = "DecayPairContainerOptimizerState%1%");
 
   PairContainer *get_output_container() const { return output_; }
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);
 };
 

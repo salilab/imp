@@ -2,7 +2,7 @@
  *  \file IMP/em2d/Em2DRestraint.h
   *  \brief A restraint to score the fitness of a model to a set of EM images
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -133,8 +133,8 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint {
   }
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(Em2DRestraint);
 };
 

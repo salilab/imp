@@ -3,7 +3,7 @@
  *  \brief Keep track of the maximum change of a set of attributes
  *         for e.g., incremental updateing of close pair containers.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_MOVED_SINGLETON_CONTAINER_H
@@ -35,11 +35,11 @@ class IMPCOREEXPORT MovedSingletonContainer
   std::size_t pc_version_;
   PointerMember<ScoreState> score_state_;
 
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
 
-  virtual ParticleIndexes get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_range_indexes() const override;
 
   IMP_OBJECT_METHODS(MovedSingletonContainer);
 
@@ -105,20 +105,20 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer
 
   //! return any particles whose center
   //! may have moved by more than get_threshold()
-  virtual ParticleIndexes do_get_moved() IMP_OVERRIDE;
+  virtual ParticleIndexes do_get_moved() override;
 
-  virtual void do_reset_all() IMP_OVERRIDE;
+  virtual void do_reset_all() override;
 
-  virtual void do_reset_moved() IMP_OVERRIDE;
+  virtual void do_reset_moved() override;
 
-  virtual ParticleIndexes do_initialize() IMP_OVERRIDE;
+  virtual ParticleIndexes do_initialize() override;
 
-  ModelObjectsTemp get_extra_inputs() const IMP_OVERRIDE {
+  ModelObjectsTemp get_extra_inputs() const override {
     return ModelObjectsTemp();
   }
 
  public:
-  virtual void validate() const IMP_OVERRIDE;
+  virtual void validate() const override;
 
   //! Track the changes of contained particles, such that at least all
   //! particles that moved by threshold are tracked
@@ -146,18 +146,18 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
 
   //! return all rigid body members that may have moved
   //! by more than get_threshold() (since last reset?)
-  virtual ParticleIndexes do_get_moved() IMP_OVERRIDE;
+  virtual ParticleIndexes do_get_moved() override;
 
   //! update backup_ with the current reference frames of all
   //! bodies_, clear moved_
-  virtual void do_reset_all() IMP_OVERRIDE;
+  virtual void do_reset_all() override;
 
   //! update backup_ only for moved_ bodies, clear moved_
-  virtual void do_reset_moved() IMP_OVERRIDE;
+  virtual void do_reset_moved() override;
 
-  virtual ParticleIndexes do_initialize() IMP_OVERRIDE;
+  virtual ParticleIndexes do_initialize() override;
   void do_initialize_particle(ParticleIndex pi);
-  virtual void validate() const IMP_OVERRIDE;
+  virtual void validate() const override;
 
   /**
      If internal checks are on, compare the global cartesian coordinates of all members of
@@ -191,7 +191,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
                                 .get_rotation());
     }
   }
-  ModelObjectsTemp get_extra_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp get_extra_inputs() const override;
 
  public:
   //! Track the changes with the specified keys.

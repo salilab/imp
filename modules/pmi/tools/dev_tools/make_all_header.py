@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Make a header that lists other headers.
 usage: make_all_header.py header_name.h include_prefix headers
@@ -31,7 +31,7 @@ output = ["""/**
  *  \\file %s
  *  \\brief Include all non-deprecated headers in %s.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 """ % (includepath, includepath[:-2].replace('/', '.'))]
 guard = includepath.replace(

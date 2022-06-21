@@ -3,7 +3,7 @@
  *  \brief A pmf based likelihood function
  *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -62,8 +62,8 @@ public:
   ParticleIndex get_psi() const { return psi_; }
 
   virtual double unprotected_evaluate(
-        IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+        IMP::DerivativeAccumulator* accum) const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   void show(std::ostream &out) const { out << "Atomic XL restraint with "
                                            <<get_number_of_contributions()
                                            <<" contributions"; }

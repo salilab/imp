@@ -2,7 +2,7 @@
  *  \file IMP/core/SubsetMover.h
  *  \brief  A mover that applies a random subset of movers
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -38,10 +38,10 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
   unsigned int get_subset_size() const { return n_; }
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
-  virtual void do_accept() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
+  virtual void do_accept() override;
   IMP_OBJECT_METHODS(SubsetMover);
 };
 

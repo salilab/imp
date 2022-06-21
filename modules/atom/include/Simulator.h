@@ -1,8 +1,8 @@
 /**
  *  \file IMP/atom/Simulator.h
- *  \brief Simple molecular dynamics optimizer.
+ *  \brief Base class for "simulators", such as molecular dynamics.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -167,7 +167,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
  protected:
   /** @} */
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
+  virtual Float do_optimize(unsigned int max_steps) override IMP_SWIG_FINAL;
 
   /** Perform any setup operations needed before running a series
       of simulation steps

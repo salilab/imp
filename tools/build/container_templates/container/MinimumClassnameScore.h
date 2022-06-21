@@ -2,7 +2,7 @@
  *  \file IMP/container/MinimumClassnameScore.h
  *  \brief Define ClassnameScore.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H
@@ -26,15 +26,15 @@ class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore {
   MinimumClassnameScore(const ClassnameScoresTemp &scores, unsigned int n = 1,
                         std::string name = "ClassnameScore %1%");
   virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_CLASSNAME_SCORE_METHODS(MinimumClassnameScore);
   IMP_OBJECT_METHODS(MinimumClassnameScore);
 
   Restraints do_create_current_decomposition(Model *m,
                                              PASSINDEXTYPE vt) const
-      IMP_OVERRIDE;
+      override;
 };
 
 IMP_OBJECTS(MinimumClassnameScore, MinimumClassnameScores);

@@ -2,7 +2,6 @@
 
 [![Build Status](https://github.com/salilab/pmi/workflows/build/badge.svg?branch=develop)](https://github.com/salilab/pmi/actions?query=workflow%3Abuild)
 [![codecov](https://codecov.io/gh/salilab/pmi/branch/develop/graph/badge.svg)](https://codecov.io/gh/salilab/pmi)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bcced071b3f541449d723a774ea09026)](https://www.codacy.com/app/salilab/pmi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=salilab/pmi&amp;utm_campaign=Badge_Grade)
 
 This module contains a variety of high-level Python
 classes to simplify the construction of a modeling protocol in IMP. One recent

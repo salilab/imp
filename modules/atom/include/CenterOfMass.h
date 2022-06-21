@@ -2,7 +2,7 @@
  *  \file IMP/atom/CenterOfMass.h
  *  \brief A decorator for particles with mass
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_CENTER_OF_MASS_H
@@ -33,8 +33,8 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
   IMP_CONSTRAINT_DECORATOR_DECL(CenterOfMass);
  private:
-  /** Sets up CenterOfMass over particles in pis.
-      pi is decorated with core::XYZ and atom::Mass decorators, its
+  //! Sets up CenterOfMass over particles in pis.
+  /** pi is decorated with core::XYZ and atom::Mass decorators, its
       coordinates are set to the current center of mass of pis, and
       its mass is set to the sum of their masses.
    */

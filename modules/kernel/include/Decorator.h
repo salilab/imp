@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -151,6 +151,8 @@ class IMPKERNELEXPORT Decorator : public Value {
   bool __ge__(Object* o) const { return operator>=(o); }
   bool __le__(Object* o) const { return operator<=(o); }
 #ifndef SWIG
+  bool operator==(Decorator d) const { return (compare(d) == 0); }
+
   bool operator==(Object* o) const { return (compare(o) == 0); }
   bool operator!=(Object* o) const { return (compare(o) != 0); }
   bool operator<(Object* o) const { return (compare(o) < 0); }

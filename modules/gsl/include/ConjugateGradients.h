@@ -2,7 +2,7 @@
  *  \file IMP/gsl/ConjugateGradients.h
  *  \brief A conjugate gradients optimizer from GSL
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_CONJUGATE_GRADIENTS_H
@@ -26,7 +26,7 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
 
   //! Set the gradient threshold
   void set_threshold(double mg) { min_gradient_ = mg; }
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(ConjugateGradients);
 };
 

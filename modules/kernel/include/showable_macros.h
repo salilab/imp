@@ -2,7 +2,7 @@
  *  \file IMP/showable_macros.h
  *  \brief Macros to help with objects that can be printed to a stream.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -82,16 +82,14 @@ class SharedDataKeys {
     }
     std::vector<ID<Traits> > ret;
     ret.reserve(data_.category_keys.find(cat)->second.size());
-    RMF_FOREACH(typename Keys<Traits>::KeyInfo::value_type it,
-                data_.category_keys.find(cat)->second) {
+    for(auto it : data_.category_keys.find(cat)->second) {
       ret.push_back(it.second);
     }
     return ret;
   }
   std::vector<ID<Traits> > get_keys(Traits) const {
     std::vector<ID<Traits> > ret;
-    typedef std::pair<ID<Traits>, Category> KP;
-    RMF_FOREACH(KP kp, data_.key_categories) { ret.push_back(kp.first); }
+    for(const auto &kp : data_.key_categories) { ret.push_back(kp.first); }
     return ret;
   }
 

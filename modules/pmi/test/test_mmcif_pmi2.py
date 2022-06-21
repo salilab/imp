@@ -42,7 +42,8 @@ class Tests(IMP.test.TestCase):
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
         state = s.create_state()
-        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        # Should be OK with a multi-character chain ID
+        nup84 = state.create_molecule("Nup84", "MELS", "AA")
         nup84.add_representation(resolutions=[1])
         hier = s.build()
         c = IMP.pmi.mmcif._ComponentMapper(hier)
@@ -91,9 +92,22 @@ class Tests(IMP.test.TestCase):
         po.finalize()
         fh = StringIO()
         ihm.dumper.write(fh, [po.system])
-        self.assertEqual(fh.getvalue().split('\n')[:4],
-                         ['data_model', '_entry.id model',
-                          '_struct.entry_id model', '_struct.title .'])
+        val = fh.getvalue()
+        # Work with both latest stable ihm and that bundled with IMP
+        if '_struct.pdbx_model_details' in val:
+            self.assertEqual(
+                val.split('\n')[:5],
+                ['data_model', '_entry.id model', '_struct.entry_id model',
+                 '_struct.pdbx_model_details .',
+                 '_struct.pdbx_structure_determination_methodology '
+                 'integrative'])
+        else:
+            self.assertEqual(
+                val.split('\n')[:5],
+                ['data_model', '_entry.id model', '_struct.entry_id model',
+                 '_struct.pdbx_structure_determination_methodology '
+                 'integrative',
+                 '_struct.title .'])
 
     def test_finalize_write_bcif(self):
         """Test ProtocolOutput.finalize() and BinaryCIF output"""

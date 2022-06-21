@@ -53,7 +53,7 @@ int rrt_sample(int argc, char **argv)
   po::options_description desc(
       "Usage: <pdb_file> <rotatable_angles_file>\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
       "Options");
   desc.add_options()
     ("help", "Show command line arguments and exit.")

@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,11 +36,11 @@ class TupleRestraint : public Restraint {
   }
 
  public:
-  double unprotected_evaluate(DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  double unprotected_evaluate(DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(TupleRestraint);
   ;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const override;
 };
 
 template <class Score>

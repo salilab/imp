@@ -1,6 +1,6 @@
 /**
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,7 +25,7 @@ inline void sort_key(const KeyInfo& ki, KeyMaps<Traits>& maps) {
 }
 
 inline void sort_keys(const std::vector<KeyInfo>& in, KeyData& out) {
-  RMF_FOREACH(const KeyInfo & k, in) {
+  for(const KeyInfo & k : in) {
     switch (k.type) {
       case INT:
         sort_key(k, out.int_keys);

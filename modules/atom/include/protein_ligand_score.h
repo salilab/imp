@@ -1,8 +1,8 @@
 /**
  *  \file IMP/atom/protein_ligand_score.h
- *  \brief Functions to read mol2s
+ *  \brief Functions to score protein-ligand interactions
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnameContainerStatistics.h
  *  \brief A container for Classnames.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H
@@ -35,10 +35,10 @@ class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
       expensive, so it is not done by default.
   */
   void set_track_unique(bool tf);
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(ClassnameContainerStatistics);
 };
 

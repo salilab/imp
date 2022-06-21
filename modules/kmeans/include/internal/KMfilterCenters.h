@@ -197,7 +197,7 @@ class IMPKMEANSEXPORT KMfilterCenters : public KMcenters {
      @param[in] fancy Dummy variable to support fancy printing in child
                       classes
   */
-  virtual void print(bool fancy = true) IMP_OVERRIDE;
+  virtual void print(bool fancy = true) override;
 
   /**
      print centers to specified output stream

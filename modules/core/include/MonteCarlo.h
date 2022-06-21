@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/MonteCarlo.h    \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,7 +48,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
  protected:
   ParticleIndexes reset_pis_;
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
   /** By default, the optimizer returns the lowest scoring state
@@ -63,6 +63,8 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       move the system, then the score can potentially be calculated
       more quickly by caching the scores on parts of the system that
       don't move. This is still experimental.
+
+      \see IMP::ScoringFunction::evaluate_moved
 
       \note Some MonteCarlo subclasses do local optimization after each
             move, which can move more particles than the Movers touched.
@@ -146,20 +148,20 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
                   MonteCarloMovers, {}, {}, {});
   /** @} */
 
-  /** \name Incremental
-      Efficient evaluation of non-bonded list based restraints is
-      a bit tricky with incremental evaluation.
-      @{
-  */
   /** Set whether to use incremental evaluate or evaluate all restraints
       each time. This cannot be changed during optimization.
+
+      \deprecated_at{2.17} Use set_score_moved() instead
   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.17)
   void set_incremental_scoring_function(IncrementalScoringFunction *isf);
+
   bool get_use_incremental_scoring_function() const { return isf_; }
+
   IncrementalScoringFunction *get_incremental_scoring_function() const {
     return isf_;
   }
-  /** @} */
+
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
@@ -244,7 +246,7 @@ class IMPCOREEXPORT MonteCarloWithLocalOptimization : public MonteCarlo {
   Optimizer *get_local_optimizer() const { return opt_; }
 
  protected:
-  virtual void do_step() IMP_OVERRIDE;
+  virtual void do_step() override;
   IMP_OBJECT_METHODS(MonteCarloWithLocalOptimization);
 };
 
@@ -262,7 +264,7 @@ class IMPCOREEXPORT MonteCarloWithBasinHopping
   MonteCarloWithBasinHopping(Optimizer *opt, unsigned int ns);
 
  protected:
-  virtual void do_step() IMP_OVERRIDE;
+  virtual void do_step() override;
   IMP_OBJECT_METHODS(MonteCarloWithBasinHopping);
 };
 

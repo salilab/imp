@@ -2,7 +2,7 @@
  *  \file IMP/isd/AmbiguousRestraint.h
  *  \brief An implementation of the d-norm to make an ambiguous restraint.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,8 +41,8 @@ class IMPISDEXPORT AmbiguousRestraint : public Restraint {
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(AmbiguousRestraint);
 };
 

@@ -177,11 +177,16 @@ class Tests(unittest.TestCase):
 
     def test_struct_handler(self):
         """Test StructHandler"""
-        cif = "_struct.entry_id eid\n_struct.title 'Test title'"
+        cif = """
+_struct.entry_id eid
+_struct.title 'Test title'
+_struct.pdbx_model_details 'Test details'
+"""
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'eid')
             self.assertEqual(s.title, 'Test title')
+            self.assertEqual(s.model_details, 'Test details')
 
     def test_multiple_systems(self):
         """Test multiple systems from data blocks"""
@@ -192,12 +197,17 @@ data_id2
 _struct.entry_id id2
 data_id3
 _struct.entry_id id3
+data_long-entry$#<>
+_struct.entry_id id4
 """
         for fh in cif_file_handles(cif):
-            s1, s2, s3 = ihm.reader.read(fh)
+            s1, s2, s3, s4 = ihm.reader.read(fh)
             self.assertEqual(s1.id, 'id1')
             self.assertEqual(s2.id, 'id2')
             self.assertEqual(s3.id, 'id3')
+            # Should not be tripped up by odd characters in data_ block,
+            # and the system ID should match entry_id
+            self.assertEqual(s4.id, 'id4')
 
     def test_software_handler(self):
         """Test SoftwareHandler"""
@@ -284,7 +294,7 @@ _citation.page_last
 _citation.year
 _citation.pdbx_database_id_PubMed
 _citation.pdbx_database_id_DOI
-2 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
+primary 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
 3 'Mol Cell Proteomics' 9 2943 2946 2014 1234 1.2.3.4
 4 'Mol Cell Proteomics' 9 . . 2014 1234 1.2.3.4
 #
@@ -301,18 +311,21 @@ _citation_author.ordinal
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             citation1, citation2, citation3, citation4 = s.citations
-            self.assertEqual(citation1._id, '2')
+            self.assertEqual(citation1._id, 'primary')
+            self.assertTrue(citation1.is_primary)
             self.assertEqual(citation1.page_range, '2943')
             self.assertEqual(citation1.authors, [])
             self.assertEqual(citation1.pmid, '1234')
             self.assertIsNone(citation1.doi)
 
             self.assertEqual(citation2._id, '3')
+            self.assertFalse(citation2.is_primary)
             self.assertEqual(citation2.page_range, ('2943', '2946'))
             self.assertEqual(citation2.authors, ['Foo A', 'Bar C'])
             self.assertEqual(citation2.doi, '1.2.3.4')
 
             self.assertEqual(citation3._id, '4')
+            self.assertFalse(citation3.is_primary)
             self.assertEqual(citation3.authors, [])
             self.assertIsNone(citation3.page_range)
 
@@ -487,12 +500,25 @@ _entity.details
             s, = ihm.reader.read(fh)
             e1, e2, e3, e4 = s.entities
             self.assertEqual(e1.description, 'Nup84')
+            self.assertTrue(e1._force_polymer)
             self.assertEqual(
                 e1.number_of_molecules, '2')  # todo: coerce to int
             self.assertEqual(e1.source.src_method, 'nat')
             self.assertEqual(e2.source.src_method, 'syn')
             self.assertIsNone(e3.source)
             self.assertIsNone(e4.source)
+
+    def test_entity_handler_minimal(self):
+        """Test EntityHandler with minimal entity category"""
+        cif = """
+loop_
+_entity.id
+1
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            e1, = s.entities
+            self.assertIsNone(e1.description)
 
     def test_entity_src_gen_handler(self):
         """Test EntitySrcGenHandler"""
@@ -754,7 +780,9 @@ _entity_poly_seq.entity_id
 _entity_poly_seq.num
 _entity_poly_seq.mon_id
 1 1 ALA
+1 2 ALA
 2 1 ALA
+2 2 ALA
 #
 loop_
 _ihm_entity_poly_segment.id
@@ -763,9 +791,9 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 1 1 1 726
 2 2 1 744
-3 1 1 1
+3 1 1 2
 4 2 1 50
-5 2 1 1
+5 2 1 2
 #
 loop_
 _struct_asym.id
@@ -1237,11 +1265,12 @@ _ihm_modeling_protocol_details.num_models_end
 _ihm_modeling_protocol_details.multi_scale_flag
 _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.ensemble_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO . . .
-2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO 401 501 'test step'
+1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO NO . . .
+2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO YES 401 501 'test step'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1257,6 +1286,7 @@ _ihm_modeling_protocol_details.description
             self.assertEqual(p1.steps[0].multi_scale, True)
             self.assertEqual(p1.steps[0].multi_state, False)
             self.assertEqual(p1.steps[0].ordered, False)
+            self.assertEqual(p1.steps[0].ensemble, False)
             self.assertIsNone(p1.steps[0].software)
             self.assertIsNone(p1.steps[0].script_file)
             self.assertIsNone(p1.steps[0].description)
@@ -1264,6 +1294,7 @@ _ihm_modeling_protocol_details.description
             self.assertEqual(p1.steps[1].multi_scale, True)
             self.assertIsNone(p1.steps[1].multi_state)
             self.assertEqual(p1.steps[1].ordered, False)
+            self.assertEqual(p1.steps[1].ensemble, True)
             self.assertEqual(p1.steps[1].software._id, '401')
             self.assertEqual(p1.steps[1].script_file._id, '501')
             self.assertEqual(p1.steps[1].description, 'test step')
@@ -1916,6 +1947,73 @@ ATOM 3 N N . SER 3 3 . A 54.401 -49.984 -35.287 1 A . 1 1
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, {1: (2, 'A'), 2: ('20A', None)})
+
+    def test_atom_site_handler_no_asym_id(self):
+        """Test AtomSiteHandler with missing asym_id"""
+        fh = StringIO("""
+loop_
+_entity_poly_seq.entity_id
+_entity_poly_seq.num
+_entity_poly_seq.mon_id
+_entity_poly_seq.hetero
+5 1 MET .
+5 2 CYS .
+5 3 MET .
+5 4 SER .
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+D 5 foo
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_asym_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1  C CA  . MET . . 1 ?  1.000 1.000 1.000 1.00   2.95 0 A 1
+ATOM   2  C CA  . ASP . . 2 ?  2.000 2.000 2.000 1.00   0.95 0 A 1
+ATOM   3  C CA  . CYS . . 3 ?  3.000 3.000 3.000 1.00   0.95 0 A 1
+ATOM   4  C CA  . MET . . 1 ?  1.000 1.000 1.000 1.00   2.95 0 B 1
+ATOM   5  C CA  . ASP . . 2 ?  2.000 2.000 2.000 1.00   0.95 0 B 1
+ATOM   6  C CA  . CYS . . 3 ?  3.000 3.000 3.000 1.00   0.95 0 B 1
+ATOM   7  C CA  . CYS . . 2 ?  1.000 1.000 1.000 1.00   0.95 0 C 1
+ATOM   8  C CA  . CYS . . 5 ?  3.000 3.000 3.000 1.00   0.95 0 C 1
+ATOM   9  C CA  . MET . . 1 ?  3.000 3.000 3.000 1.00   0.95 0 D 1
+""")
+        s, = ihm.reader.read(fh)
+        # No asym_id, so use auth_asym_id
+        a1, a2, a3, a4 = s.asym_units
+        self.assertEqual(a1._id, 'D')
+        self.assertEqual(a2._id, 'A')
+        self.assertEqual(a3._id, 'B')
+        self.assertEqual(a4._id, 'C')
+        # A and B should have same sequence, thus same entity
+        self.assertIs(a2.entity, a3.entity)
+        # Sequence should have been populated from comp_ids
+        self.assertEqual("".join(c.code for c in a2.entity.sequence), "MDC")
+        # C has different entity and sequence, with gaps
+        self.assertEqual("".join(c.code_canonical for c in a4.entity.sequence),
+                         "XCXXC")
+        # D is defined in struct_asym and entity_poly so should use that
+        # sequence
+        self.assertEqual("".join(c.code_canonical for c in a1.entity.sequence),
+                         "MCMS")
 
     def test_derived_distance_restraint_handler(self):
         """Test DerivedDistanceRestraintHandler"""
@@ -3540,9 +3638,9 @@ _flr_fret_analysis_lifetime.details
         flr, = s.flr_data
         a = flr._collection_flr_fret_analysis['2']
         self.assertEqual(a.type, 'lifetime-based')
-        self.assertIsInstance(a.reference_measurement_group,
+        self.assertIsInstance(a.ref_measurement_group,
                               ihm.flr.RefMeasurementGroup)
-        self.assertEqual(a.reference_measurement_group._id, '19')
+        self.assertEqual(a.ref_measurement_group._id, '19')
         self.assertIsInstance(a.lifetime_fit_model, ihm.flr.LifetimeFitModel)
         self.assertEqual(a.lifetime_fit_model._id, '23')
         self.assertAlmostEqual(a.donor_only_fraction, 0.3, delta=0.1)
@@ -4019,6 +4117,19 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
         self.assertIsInstance(m.mpp_atom_position_group,
                               ihm.flr.FPSMPPAtomPositionGroup)
         self.assertEqual(m.mpp_atom_position_group._id, '5')
+
+    def test_variant_base(self):
+        """Test Variant base class"""
+        v = ihm.reader.Variant()
+        self.assertIsNone(v.get_handlers(None))
+        self.assertIsNone(v.get_audit_conform_handler(None))
+
+    def test_write_variant(self):
+        """Test write() function with Variant object"""
+        cif = "data_model\n_struct.entry_id testid\n"
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh, variant=ihm.reader.IHMVariant())
+            self.assertEqual(s.id, 'testid')
 
 
 if __name__ == '__main__':

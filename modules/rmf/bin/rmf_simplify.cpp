@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/atom/Chain.h>
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     IMP::atom::add_bonds(hr);
   }
 
-  IMP_FOREACH(IMP::atom::Hierarchy c,
+  for(IMP::atom::Hierarchy c :
               IMP::atom::get_by_type(hr, IMP::atom::CHAIN_TYPE)) {
     IMP::atom::Hierarchy cur =
         create_simplified_assembly_from_volume(c, resolution);

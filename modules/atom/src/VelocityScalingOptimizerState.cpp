@@ -2,7 +2,7 @@
  *  \file VelocityScalingOptimizerState.cpp
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@ VelocityScalingOptimizerState::VelocityScalingOptimizerState(
     Model *m, ParticleIndexesAdaptor pis, double temp)
     : OptimizerState(m, "VelocityScalingOptimizerState%1%"),
       temperature_(temp) {
-  IMP_FOREACH(ParticleIndex pi, pis) {
+  for(ParticleIndex pi : pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }

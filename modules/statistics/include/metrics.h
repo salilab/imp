@@ -2,7 +2,7 @@
  *  \file IMP/statistics/metrics.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,8 +25,8 @@ class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
 
  public:
   EuclideanMetric(Embedding *em);
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(EuclideanMetric);
 };
 
@@ -52,8 +52,8 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
    */
   ConfigurationSetRMSDMetric(ConfigurationSet *cs, SingletonContainer *sc,
                              bool align = false);
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(ConfigurationSetRMSDMetric);
 };
 

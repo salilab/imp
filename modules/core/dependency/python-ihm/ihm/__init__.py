@@ -18,8 +18,9 @@ try:
 except ImportError:
     import urllib2
 import json
+from . import util
 
-__version__ = '0.25'
+__version__ = '0.32'
 
 
 class __UnknownValue(object):
@@ -71,11 +72,16 @@ class System(object):
 
        :param str title: Title (longer text description) of the system.
        :param str id: Unique identifier for this system in the mmCIF file.
+       :param str model_details: Detailed description of the system, like an
+                                 abstract.
     """
 
-    def __init__(self, title=None, id='model'):
+    structure_determination_methodology = "integrative"
+
+    def __init__(self, title=None, id='model', model_details=None):
         self.id = id
         self.title = title
+        self.model_details = model_details
 
         #: List of plain text comments. These will be added to the top of
         #: the mmCIF file.
@@ -86,7 +92,7 @@ class System(object):
 
         #: List of all authors of this system, as a list of strings (last name
         #: followed by initials, e.g. "Smith AJ"). When writing out a file,
-        #: if this is list is empty, the set of all citation authors (see
+        #: if this list is empty, the set of all citation authors (see
         #: :attr:`Citation.authors`) is used instead.
         self.authors = []
 
@@ -211,6 +217,26 @@ class System(object):
         #: See :class:`~ihm.flr.FLRData`.
         self.flr_data = []
 
+    def _make_complete_assembly(self):
+        """Fill in the complete assembly with all asym units"""
+        # Clear out any existing components
+        self.complete_assembly[:] = []
+
+        # Include all asym units
+        for asym in self.asym_units:
+            self.complete_assembly.append(asym)
+
+    def _all_models(self):
+        """Iterate over all Models in the system"""
+        # todo: raise an error if a model is present in multiple groups
+        for group in self._all_model_groups():
+            seen_models = {}
+            for model in group:
+                if model in seen_models:
+                    continue
+                seen_models[model] = None
+                yield group, model
+
     def update_locations_in_repositories(self, repos):
         """Update all :class:`Location` objects in the system that lie within
            a checked-out :class:`Repository` to point to that repository.
@@ -282,17 +308,6 @@ class System(object):
                     for edge in step:
                         yield edge.group_begin
                         yield edge.group_end
-
-    def _all_models(self):
-        """Iterate over all Models in the system"""
-        # todo: raise an error if a model is present in multiple groups
-        for group in self._all_model_groups():
-            seen_models = {}
-            for model in group:
-                if model in seen_models:
-                    continue
-                seen_models[model] = None
-                yield group, model
 
     def _all_representations(self):
         """Iterate over all Representations in the system.
@@ -529,14 +544,26 @@ class System(object):
                 for comp in f._all_entities_or_asyms()),
             (d.asym_unit for d in self._all_densities())))
 
-    def _make_complete_assembly(self):
-        """Fill in the complete assembly with all asym units"""
-        # Clear out any existing components
-        self.complete_assembly[:] = []
+    def _before_write(self):
+        """Do any setup necessary before writing out to a file"""
+        # Here, we initialize all RestraintGroups by removing any assigned ID
+        for g in self.restraint_groups:
+            util._remove_id(g)
+        # Fill in complete assembly
+        self._make_complete_assembly()
 
-        # Include all asym units
-        for asym in self.asym_units:
-            self.complete_assembly.append(asym)
+    def _check_after_write(self):
+        """Make sure everything was successfully written"""
+        # Here, we check that all RestraintGroups were successfully dumped"""
+        for g in self.restraint_groups:
+            if len(g) > 0 and not hasattr(g, '_id'):
+                raise TypeError(
+                    "RestraintGroup(%s) contains an unsupported combination "
+                    "of Restraints. Due to limitations of the underlying "
+                    "dictionary, all objects in a RestraintGroup must be of "
+                    "the same type, and only certain types (currently only "
+                    "DerivedDistanceRestraint or PredictedContactRestraint) "
+                    "can be grouped." % g)
 
 
 class Software(object):
@@ -607,20 +634,27 @@ class Citation(object):
        :param str pmid: The PubMed ID.
        :param str title: Full title of the publication.
        :param str journal: Abbreviated journal name.
-       :param int volume: Journal volume number.
+       :param volume: Journal volume as int for a plain number or str for
+                      journals adding a label to the number (e.g. "46(W1)" for
+                      a web server issue).
        :param page_range: The page (int) or page range (as a 2-element
-              int tuple).
+              int tuple). Using str also works for labelled page numbers.
        :param int year: Year of publication.
        :param authors: All authors in order, as a list of strings (last name
               followed by initials, e.g. "Smith AJ").
        :param str doi: Digital Object Identifier of the publication.
+       :param bool is_primary: Denotes the most pertinent publication for the
+              modeling itself (as opposed to a method or piece of software used
+              in the protocol). Only one such publication is allowed, and it
+              is assigned the ID "primary" in the mmCIF file.
     """
     def __init__(self, pmid, title, journal, volume, page_range, year, authors,
-                 doi):
+                 doi, is_primary=False):
         self.title, self.journal, self.volume = title, journal, volume
         self.page_range, self.year = page_range, year
         self.pmid, self.doi = pmid, doi
         self.authors = authors if authors is not None else []
+        self.is_primary = is_primary
 
     @classmethod
     def from_pubmed_id(cls, pubmed_id):
@@ -789,19 +823,22 @@ class RNAChemComp(ChemComp):
 
 
 class NonPolymerChemComp(ChemComp):
-    """A non-polymer chemical component, such as a ligand
-       (for crystal waters, use :class:`WaterChemComp`).
+    """A non-polymer chemical component, such as a ligand or a non-standard
+       residue (for crystal waters, use :class:`WaterChemComp`).
 
        :param str id: A globally unique identifier for this component.
+       :param str code_canonical: Canonical one-letter identifier. This is
+              used for non-standard residues and should be the one-letter code
+              of the closest standard residue (or by default, 'X').
        :param str name: A longer human-readable name for the component.
        :param str formula: The chemical formula. See :class:`ChemComp` for
               more details.
     """
     type = "non-polymer"
 
-    def __init__(self, id, name=None, formula=None):
-        super(NonPolymerChemComp, self).__init__(id, id, id, name=name,
-                                                 formula=formula)
+    def __init__(self, id, code_canonical='X', name=None, formula=None):
+        super(NonPolymerChemComp, self).__init__(id, id, code_canonical,
+                                                 name=name, formula=formula)
 
 
 class WaterChemComp(NonPolymerChemComp):
@@ -1068,6 +1105,7 @@ class Entity(object):
     """  # noqa: E501
 
     number_of_molecules = 1
+    _force_polymer = None
 
     def __get_type(self):
         if self.is_polymeric():
@@ -1123,8 +1161,11 @@ class Entity(object):
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an
            amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
-        return len(self.sequence) != 1 or not isinstance(self.sequence[0],
-                                                         NonPolymerChemComp)
+        return (self._force_polymer or
+                len(self.sequence) == 0 or
+                len(self.sequence) > 1
+                and any(isinstance(x, (PeptideChemComp, DNAChemComp,
+                                       RNAChemComp)) for x in self.sequence))
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
@@ -1178,6 +1219,22 @@ class AsymUnitRange(object):
     _id = property(lambda self: self.asym._id)
     _ordinal = property(lambda self: self.asym._ordinal)
     entity = property(lambda self: self.asym.entity)
+
+
+class AsymUnitSegment(object):
+    """An aligned part of an asymmetric unit.
+
+       Usually these objects are created from
+       an :class:`AsymUnit`, e.g. to get a segment covering residues 1 through
+       3 in `asym` use::
+
+           asym = ihm.AsymUnit(entity)
+           seg = asym.segment('--ACG', 1, 3)
+    """
+    def __init__(self, asym, gapped_sequence, seq_id_begin, seq_id_end):
+        self.asym = asym
+        self.gapped_sequence = gapped_sequence
+        self.seq_id_range = (seq_id_begin, seq_id_end)
 
 
 class AsymUnit(object):
@@ -1239,6 +1296,16 @@ class AsymUnit(object):
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(asym=self, seq_id=seq_id)
+
+    def segment(self, gapped_sequence, seq_id_begin, seq_id_end):
+        """Get an object representing the alignment of part of this sequence.
+
+           :param str gapped_sequence: Sequence of the segment, including gaps.
+           :param int seq_id_begin: Start of the segment.
+           :param int seq_id_end: End of the segment.
+        """
+        # todo: cache so we return the same object for same parameters
+        return AsymUnitSegment(self, gapped_sequence, seq_id_begin, seq_id_end)
 
     seq_id_range = property(lambda self: self.entity.seq_id_range,
                             doc="Sequence range")

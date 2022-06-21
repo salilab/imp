@@ -2,7 +2,7 @@
  *  \file IMP/atom/RemoveTranslationOptimizerState.h
  *  \brief Remove rigid translation during optimization.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,7 +34,7 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(RemoveTranslationOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call) override;
 
  private:
   Particles pis_;

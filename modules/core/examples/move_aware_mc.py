@@ -1,6 +1,6 @@
-## \example core/incremental_mc.py
-# This example shows how to do incremental scoring with Monte Carlo.
-# Incremental scoring can be significantly faster than non-incremental
+## \example core/move_aware_mc.py
+# This example shows how to do move-aware scoring with Monte Carlo.
+# Move-aware scoring can be significantly faster than regular
 # scoring when using moves that only move a few particles at a time.
 
 import IMP.core
@@ -36,17 +36,23 @@ rb = IMP.container.SingletonsRestraint(
         IMP.core.HarmonicUpperBound(0, 1), bb),
     psl)
 mc = IMP.core.MonteCarlo(m)
-isf = IMP.core.IncrementalScoringFunction(m, ps, [r, rb])
-mc.set_incremental_scoring_function(isf)
+sf = IMP.core.RestraintsScoringFunction([r, rb])
+mc.set_scoring_function(sf)
+
+# Turn on move-aware scoring.
+# At each MC step, only the scoring function terms that involve at least
+# one particle moved by a Mover will be rescored; the remaining terms will
+# be cached.
+mc.set_score_moved(True)
 
 mvs = [IMP.core.BallMover(m, p, 5) for p in ps]
 sm = IMP.core.SerialMover(mvs)
 mc.add_mover(sm)
 IMP.set_log_level(IMP.SILENT)
-print("initial", isf.evaluate(False))
+print("initial", sf.evaluate(False))
 after = mc.optimize(num_mc_steps)
 print("final", after)
-name = IMP.create_temporary_file_name("incremental_mc", ".pym")
+name = IMP.create_temporary_file_name("move_aware_mc", ".pym")
 w = IMP.display.PymolWriter(name)
 for p in ps:
     g = IMP.core.XYZRGeometry(p)

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/SaveOptimizerState.h
  *  \brief Dump the state of all associated objects into the RMF file.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -52,7 +52,7 @@ class IMPRMFEXPORT SaveOptimizerState : public OptimizerState {
   void update_always(std::string name);
   // to prevent it from being hidden
   void update_always() { OptimizerState::update_always(); }
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(SaveOptimizerState);
 };
 

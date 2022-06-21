@@ -2,7 +2,7 @@
  *  \file IMP/FloatIndex.h
  *  \brief A FloatIndex identifies an optimized attribute in a model.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

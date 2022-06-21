@@ -2,7 +2,7 @@
  *  \file ExcludedVolumeRestraint.cpp
  *  \brief Prevent spheres from inter-penetrating.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -166,7 +166,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
   }
   IMP_UNUSED(recomputed);
   double ret = 0;
-  IMP_FOREACH(ParticleIndexPair pi, cur_list_) {
+  for(ParticleIndexPair pi : cur_list_) {
     ret += ssps_->evaluate_index(get_model(), pi, da);
   }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL

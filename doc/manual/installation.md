@@ -22,6 +22,8 @@ to see if the code is currently stable enough for your purposes.
 
 In order to build %IMP from source, you will need:
 
+- A C++ compiler that supports the C++11 standard, such as gcc, clang,
+  or Microsoft Visual Studio 2012 or later.
 - [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
@@ -29,8 +31,7 @@ In order to build %IMP from source, you will need:
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
   should also work)
 - [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
-- [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
-  if you want to use Python 3)
+- [SWIG](http://www.swig.org) (3 or later)
 
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
@@ -58,7 +59,7 @@ will not build, and some will not function optimally.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
-- The [scipy](http://www.scipy.org/scipylib/download.html),
+- The [scipy](https://scipy.org/download/),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   and [matplotlib](http://matplotlib.org/downloads.html)
   Python libraries are also recommended.

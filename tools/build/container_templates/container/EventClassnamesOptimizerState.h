@@ -2,7 +2,7 @@
  *  \file IMP/container/EventClassnamesOptimizerState.h
  *  \brief Define some predicates.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_EVENT_CLASSNAMES_OPTIMIZER_STATE_H
@@ -32,7 +32,7 @@ class IMPCONTAINEREXPORT EventClassnamesOptimizerState : public OptimizerState {
                                 int min_count, int max_count,
                                 std::string name =
                                     "ConstClassnamePredicate%1%");
-  virtual void update() IMP_OVERRIDE;
+  virtual void update() override;
   IMP_OBJECT_METHODS(EventClassnamesOptimizerState);
 };
 

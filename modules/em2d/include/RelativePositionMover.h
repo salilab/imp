@@ -2,7 +2,7 @@
  *  \file IMP/em2d/RelativePositionMover.h
  *  \brief Mover for Rigid Bodies moving respect to each other
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,8 +58,8 @@ class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {
   void set_random_move_probability(Float p) { probability_of_random_move_ = p; }
 
  protected:
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(RelativePositionMover);
 };
 

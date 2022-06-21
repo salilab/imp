@@ -4,7 +4,7 @@
  *         to its refined set of particles using weights
  *         indicated by a weight key.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_DERIVATIVES_TO_REFINED_H
@@ -62,13 +62,13 @@ public SingletonDerivativeModifier {
      @param pi the coarse grained particle
   */
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   IMP_SINGLETON_MODIFIER_METHODS(WeightedDerivativesToRefined);
 

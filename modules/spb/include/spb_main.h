@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_main.h
  *  \brief SPB MonteCarlo
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

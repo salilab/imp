@@ -2,7 +2,7 @@
  *  \file IMP/flags.h
  *  \brief Support for shared command line flags.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

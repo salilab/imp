@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianEMRestraint.h
  *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -103,15 +103,15 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   //! Get restraint slope
   Float get_slope(){return slope_;}
   virtual double
-    unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+    unprotected_evaluate(IMP::DerivativeAccumulator *accum) const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   void show(std::ostream &out) const { out << "GEM restraint"; }
 
   //! \return Information for writing to RMF files
-  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+  RestraintInfo *get_static_info() const override;
 
   //! \return Information for writing to RMF files
-  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
+  RestraintInfo *get_dynamic_info() const override;
 
   IMP_OBJECT_METHODS(GaussianEMRestraint);
 

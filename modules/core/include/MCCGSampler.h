@@ -2,7 +2,7 @@
  *  \file IMP/core/MCCGSampler.h
  *  \brief A Monte Carlo/Conjugate Gradients based sampler.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -116,7 +116,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
   IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState *,
            OptimizerStates);
 
-  virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
+  virtual ConfigurationSet *do_sample() const override;
   IMP_OBJECT_METHODS(MCCGSampler);
 };
 

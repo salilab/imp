@@ -2,7 +2,7 @@
  *  \file IMP/container/InContainerClassnameFilter.h
  *  \brief A filter for Classnames.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_IN_CONTAINER_CLASSNAME_FILTER_H
@@ -36,11 +36,11 @@ class IMPCONTAINEREXPORT InContainerClassnameFilter
                              std::string name = "ClassnameFilter %1%");
 
   virtual int get_value_index(Model *, PASSINDEXTYPE vt) const
-      IMP_OVERRIDE {
+      override {
     return c_->get_contains(vt);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pi) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pi) const override {
     ModelObjectsTemp ret = IMP::get_particles(m, pi);
     ret.push_back(c_);
     return ret;

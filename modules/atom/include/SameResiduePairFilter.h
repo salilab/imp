@@ -1,8 +1,8 @@
 /**
  *  \file IMP/atom/SameResiduePairFilter.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \brief Filter out atoms that belong to the same residue.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SAME_RESIDUE_PAIR_FILTER_H
@@ -24,9 +24,9 @@ class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate {
   SameResiduePairFilter();
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_PREDICATE_METHODS(SameResiduePairFilter);
   IMP_OBJECT_METHODS(SameResiduePairFilter);
   ;

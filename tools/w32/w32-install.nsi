@@ -81,7 +81,6 @@ Section ""
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" 1
 
-  WriteRegStr HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.8${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
@@ -115,7 +114,6 @@ Section "Uninstall"
 
   DeleteRegKey /ifempty HKLM "Software\${PRODVER}"
   DeleteRegKey HKLM "${UNINST_KEY}"
-  DeleteRegKey HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.8${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
@@ -129,27 +127,12 @@ Function .onInit
   SetRegView 64
 !endif
 
-!ifdef IMP_64BIT
-  ${If} ${AtLeastWinVista}
-    Goto version_check_done
-  ${Else}
-    MessageBox MB_OK \
-        "IMP (64 bit) can only be installed on Windows Vista or later. \
-         Use the 32 bit version on older versions of Windows." /SD IDOK
-    Quit
-  ${EndIf}
-!else
-  ${If} ${IsWinXP}
-  ${AndIf} ${AtLeastServicePack} 2
-  ${OrIf} ${AtLeastWin2003}
-    Goto version_check_done
-  ${Else}
-    MessageBox MB_OK \
-        "IMP can only be installed on Windows XP Service Pack 2 or later." \
-        /SD IDOK
-    Quit
-  ${EndIf}
-!endif
+${If} ${AtLeastWin7}
+  Goto version_check_done
+${Else}
+  MessageBox MB_OK "IMP can only be installed on Windows 7 or later." /SD IDOK
+  Quit
+${EndIf}
 
   version_check_done:
 FunctionEnd

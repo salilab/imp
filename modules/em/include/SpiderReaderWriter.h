@@ -2,7 +2,7 @@
  *  \file IMP/em/SpiderReaderWriter.h
  *  \brief Management of Spider Headers Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM_SPIDER_READER_WRITER_H
@@ -72,7 +72,7 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  from the header.
    */
   void read(const char *filename, float **data,
-            DensityHeader &header) IMP_OVERRIDE;
+            DensityHeader &header) override;
 
   //! Writes a map in Spider format from data and header.
   /**
@@ -82,7 +82,7 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  data from the header.
    */
   void write(const char *filename, const float *data,
-             const DensityHeader &header) IMP_OVERRIDE;
+             const DensityHeader &header) override;
 #endif
   IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };

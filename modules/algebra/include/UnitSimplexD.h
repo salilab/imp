@@ -2,7 +2,7 @@
  *  \file IMP/algebra/UnitSimplexD.h
  *  \brief Simple unit simplex class.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -71,7 +71,7 @@ class UnitSimplexD : public UnitSimplexBaseD<D> {
   UnitSimplexD() { IMP_USAGE_CHECK(D > 0, "Dimension must be positive."); }
 
   //! Get dimension D of embedded real space.
-  int get_dimension() const IMP_OVERRIDE { return D; }
+  int get_dimension() const override { return D; }
 
   IMP_SHOWABLE_INLINE(UnitSimplexD<D>, { out << "UnitSimplex" << D << "D"; });
 };
@@ -89,7 +89,7 @@ class UnitSimplexD<-1> : public UnitSimplexBaseD<-1> {
   }
 
   //! Get dimension of embedded real space.
-  int get_dimension() const IMP_OVERRIDE { return d_; }
+  int get_dimension() const override { return d_; }
 
   // FIXME: SWIG doesn't seem to use this.
   IMP_SHOWABLE_INLINE(UnitSimplexD<-1>,

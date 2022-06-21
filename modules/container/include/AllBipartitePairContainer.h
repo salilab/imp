@@ -2,7 +2,7 @@
  *  \file IMP/container/AllBipartitePairContainer.h
  *  \brief Return all bipartite pairs between two containers
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H
@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::PointerMember<SingletonContainer> a_, b_;
 
  protected:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     std::size_t ret = a_->get_contents_hash();
     boost::hash_combine(ret, b_->get_contents_hash());
     return ret;
@@ -43,8 +43,8 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
     // needed.
     validate_readable();
     ParticleIndexPairs pips;
-    IMP_FOREACH(ParticleIndex pa, a_->get_contents()) {
-      IMP_FOREACH(ParticleIndex pb, b_->get_contents()) {
+    for(ParticleIndex pa : a_->get_contents()) {
+      for(ParticleIndex pb : b_->get_contents()) {
         pips.push_back(ParticleIndexPair(pa, pb));
       }
     }
@@ -54,10 +54,10 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
                             std::string name = "AllBipartitePairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
   IMP_PAIR_CONTAINER_METHODS(AllBipartitePairContainer);
   IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };

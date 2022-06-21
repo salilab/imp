@@ -2,7 +2,7 @@
  * \file IMP/kinematics/local_planners.h
  * \brief Planners
  *
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -70,7 +70,7 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
       found closest to q_rand (inclusive)
   */
   virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand,
-                                      ScoringFunction *sf) IMP_OVERRIDE;
+                                      ScoringFunction *sf) override;
 
  private:
   PointerMember<DirectionalDOF> d_;

@@ -2,7 +2,7 @@
  *  \file IMP/gsl/QuasiNewton.h
  *  \brief A GSL-based Quasi-Newton optimizer
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_QUASI_NEWTON_H
@@ -45,7 +45,7 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
     IMP_USAGE_CHECK(d > 0 && d <= 1, "The minimum gradient is relative.");
     min_gradient_ = d;
   }
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(QuasiNewton);
 };
 

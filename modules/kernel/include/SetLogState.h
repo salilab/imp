@@ -1,7 +1,7 @@
 /**
  *  \file IMP/SetLogState.h     \brief A class to change and restore log state
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include "enums.h"
 #include "raii_macros.h"
 #include "value_macros.h"
-#include <IMP/nullptr.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Object;

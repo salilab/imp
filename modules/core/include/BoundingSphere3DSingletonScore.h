@@ -4,7 +4,7 @@
  *         increase as particles are exiting the sphere boundaries, and must
  *         be zero within the sphere and positive outside of it.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_SPHERE_3D_SINGLETON_SCORE_H
@@ -36,9 +36,9 @@ class GenericBoundingSphere3DSingletonScore : public SingletonScore {
   GenericBoundingSphere3DSingletonScore(UF *f, const algebra::Sphere3D &sphere);
 
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingSphere3DSingletonScore);
@@ -89,6 +89,10 @@ double GenericBoundingSphere3DSingletonScore<UF>::evaluate_index(
 
 #endif
 
+
+//! Score particles based on how far outside a sphere they are by
+//! applying f to the distance.
+//! \see GenericBoundingSphere3DSingletonScore
 IMP_GENERIC_OBJECT(BoundingSphere3DSingletonScore, bounding_sphere_3d_singleton_score,
                    UnaryFunction,
                    (UnaryFunction *f, const algebra::Sphere3D &sphere),
