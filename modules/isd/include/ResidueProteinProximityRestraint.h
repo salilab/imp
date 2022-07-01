@@ -1,6 +1,6 @@
 /**
  *  \file IMP/isd/ResidueProteinProximityRestraint.h
- *  \brief Restraint a selection of particles (eg. a residue or 
+ *  \brief Restrain a selection of particles (eg. a residue or 
  *  segment) to be within  a certain distance of a second 
  *  selection of particles (eg. a protein). 
  *  Use to model data from mutagenesis experiments that disrupt
@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef IMPISD_RESIDUE_BINDING_RESTRAINT_H
-#define IMPISD_RESIDUE_BINDING_RESTRAINT_H
+#ifndef IMPISD_RESIDUE_PROTEIN_PROXIMITY_RESTRAINT_H
+#define IMPISD_RESIDUE_PROTEIN_PROXIMITY_RESTRAINT_H
 #include "isd_config.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
@@ -27,10 +27,10 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT ResidueProteinProximityRestraint : public Restraint {
 public:
   //! Create the restraint.
- ResidueProteinProximityRestraint(IMP::Model *m,
-                                  Float cutoff = 6.0,
-                                  Float sigma = 3.0,
-                                  Float xi = 0.5,
+ ResidueProteinProximityRestraint(Model *m,
+                                  double cutoff = 6.0,
+                                  double sigma = 3.0,
+                                  double xi = 0.5,
                                   bool part_of_log_score=false,
                                   std::string name = "ResidueProteinProximityRestraint_%1%"); 
  
@@ -47,27 +47,30 @@ public:
   //! Get number of contributions added to the restraint
   unsigned get_number_of_contributions() const { return ppis_.size(); }
 
-  void set_sigma(Float sigma) { sigma_=sigma; }
+  void set_sigma(double sigma) { sigma_=sigma; }
   
-  void set_cutoff(Float cutoff) { cutoff_=cutoff; }
+  void set_cutoff(double cutoff) { cutoff_=cutoff; }
 
-  void set_max_score(Float max_score) { max_score_=max_score; }
-  void set_yi(Float yi) { yi_=yi; }
-  void set_interpolation_factor(Float interpolation_factor) { interpolation_factor_=interpolation_factor; }
+  void set_max_score(double max_score) { max_score_=max_score; }
+  
+  void set_yi(double yi) { yi_=yi; }
+  
+  void set_interpolation_factor(double interpolation_factor) { interpolation_factor_=interpolation_factor; }
  
   void set_part_of_log_score(bool hey) { part_of_log_score_=hey; }
 
-  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   
   IMP_OBJECT_METHODS(ResidueProteinProximityRestraint);
  private:
-  Float cutoff_;
-  Float sigma_;
-  Float xi_;
-  Float yi_;
-  Float interpolation_factor_;
-  Float max_score_;
+  double cutoff_;
+  double sigma_;
+  double xi_;
+  double yi_;
+  double interpolation_factor_;
+  double max_score_;
   bool part_of_log_score_;
   PairContainers contribs_;
   ParticleIndexes ppis_;
@@ -80,4 +83,3 @@ public:
 IMPISD_END_NAMESPACE
 
 #endif /* IMPISD_RESIDUE_PROTEIN_PROXIMITY_RESTRAINT_H */
-

@@ -1,6 +1,6 @@
 /**
  *  \file isd/ResidueProteinProximityRestraint.h
- *  \brief Restraint a selection of particles (eg. a residue or 
+ *  \brief Restrain a selection of particles (eg. a residue or 
  *  segment) to be within  a certain distance of a second 
  *  selection of particles (eg. a protein). 
  *  Use to model data from mutagenesis experiments that disrupt
@@ -23,11 +23,11 @@
 IMPISD_BEGIN_NAMESPACE
 
 ResidueProteinProximityRestraint::ResidueProteinProximityRestraint(Model* m,
-						 Float cutoff,
-						 Float sigma,
-                                                 Float xi,
-						 bool part_of_log_score,
-						 std::string name):
+                                                                   double cutoff,
+                                                                   double sigma,
+                                                                   double xi,
+                                                                   bool part_of_log_score,
+                                                                   std::string name):
   Restraint(m,name),
   cutoff_(cutoff),
   sigma_(sigma),
@@ -39,11 +39,11 @@ ResidueProteinProximityRestraint::ResidueProteinProximityRestraint(Model* m,
 // add a contribution: general case
 void ResidueProteinProximityRestraint::add_pairs_container(PairContainer *pc) {
   contribs_.push_back(pc);
-  default_range_.push_back((int)default_range_.size());
+  default_range_.push_back(static_cast<int>(default_range_.size()));
 }
 
 void ResidueProteinProximityRestraint::add_contribution_particles(const ParticleIndexes ppis1,
-                                                         const ParticleIndexes ppis2){
+                                                                  const ParticleIndexes ppis2){
 
   ParticlesTemp pps1;
   ParticlesTemp pps2;
@@ -73,14 +73,12 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
   double score_tot = 0.0;
   double score = 0.0;
   //! Loop over the contributions and score things
-  for (Ints::const_iterator nit=c.begin();nit!=c.end();++nit){
-    int n = *nit;
+  for (int n : c){
 
     //! Get COM
     algebra::Vector3D centroid1 = core::get_centroid(coms1_[n]);
     algebra::Vector3D centroid2 = core::get_centroid(coms2_[n]);
-    Float dist = IMP::algebra::get_distance(centroid1, centroid2);
-    
+    double dist = IMP::algebra::get_distance(centroid1, centroid2);
    
     //! Compute distances. Loop elements of close pair
     Vector<double> dists_;
@@ -94,14 +92,13 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
 	//! Get particles indexes
 	ParticleIndex pi1 = get_model()->get_particle(_1[0])->get_index();
 	ParticleIndex pi2 = get_model()->get_particle(_1[1])->get_index();
-	
       });
 
     if(!dists_.empty()) {
       double lowest_dist = *min_element(dists_.begin(), dists_.end());
       if (lowest_dist <= cutoff_/2.) {
-        Float prior_prob = std::exp(-xi_*lowest_dist);
-        Float prior_score = -log(prior_prob);
+        double prior_prob = std::exp(-xi_*lowest_dist);
+        double prior_score = -log(prior_prob);
 	score = prior_score;  
       }
       else if (lowest_dist > cutoff_/2. && lowest_dist <= cutoff_) {
@@ -109,7 +106,7 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
         score = -log(interpolation_prob) - interpolation_factor_;
       }
       else {
-        Float prior_prob = std::exp(-xi_*lowest_dist);
+        double prior_prob = std::exp(-xi_*lowest_dist);
 	double sig2 = sigma_*sigma_;
         double ld2 = lowest_dist*lowest_dist;
         double prob = std::exp(-ld2/(2*sig2))/(sq2Pi*sigma_);
@@ -119,8 +116,8 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
       score_tot +=  score;
     }
     else {
-      Float prior_prob = std::exp(-xi_*dist);
-      Float prior_score = -log(prior_prob);
+      double prior_prob = std::exp(-xi_*dist);
+      double prior_score = -log(prior_prob);
       score_tot +=  max_score_ + prior_score;
     }
   }
@@ -130,7 +127,7 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
 double ResidueProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   const {
 
-  Float output_score = evaluate_for_contributions(default_range_);
+  double output_score = evaluate_for_contributions(default_range_);
   return output_score;
 }
 
@@ -143,16 +140,6 @@ ModelObjectsTemp ResidueProteinProximityRestraint::do_get_inputs() const {
 }
 
 IMPISD_END_NAMESPACE
-
-
-
-
-
-
-
-
-
-
 
 
 
