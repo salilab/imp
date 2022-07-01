@@ -57,7 +57,7 @@ add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
 add_library(IMP.%(name)s-python MODULE ${source})
 # Apple linkers complain by default if there are undefined symbols
 if(APPLE)
-  set_target_properties(IMP.%(name)s-python PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
+  set_target_properties(IMP.%(name)s-python PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
 set_target_properties(IMP.%(name)s-python PROPERTIES PREFIX ""
