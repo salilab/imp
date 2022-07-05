@@ -59,7 +59,7 @@ class _RMFRestraints(object):
             raise IndexError("Out of range")
 
 
-class ReplicaExchange0(object):
+class ReplicaExchange(object):
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
     Produces trajectory RMF files, best PDB structures,
@@ -70,7 +70,6 @@ class ReplicaExchange0(object):
                  molecular_dynamics_sample_objects=None,
                  output_objects=[],
                  rmf_output_objects=None,
-                 crosslink_restraints=None,  # DEPRECATED
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
                  simulated_annealing_minimum_temperature=1.0,
@@ -196,11 +195,6 @@ class ReplicaExchange0(object):
         else:
             raise TypeError("Must provide System hierarchy (root_hier)")
 
-        if crosslink_restraints:
-            IMP.handle_use_deprecated(
-                    "crosslink_restraints is deprecated and is ignored; "
-                    "all cross-link restraints should be automatically "
-                    "added to output RMF files")
         self._rmf_restraints = _RMFRestraints(model, None)
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
@@ -571,6 +565,11 @@ class ReplicaExchange0(object):
         if not self.test_mode:
             print("closing production rmf files")
             output.close_rmf(rmfname)
+
+
+@IMP.deprecated_object("2.18", "Use ReplicaExchange instead")
+class ReplicaExchange0(ReplicaExchange):
+    pass
 
 
 class BuildSystem(object):

@@ -64,8 +64,6 @@ md_ps = dof.setup_md(gcp2)
 rex = IMP.pmi.macros.ReplicaExchange0(
     mdl,
     root_hier=hier,
-    # for visualizing SSEs in RMF
-    crosslink_restraints=all_rs,
     molecular_dynamics_sample_objects=md_ps,
     molecular_dynamics_steps=5,
     # set >0 to store best PDB files (but this is slow to do online)

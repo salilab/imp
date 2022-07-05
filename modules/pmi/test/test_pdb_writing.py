@@ -189,14 +189,13 @@ ENDMDL'''.split("\n")
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb_movers = dof.create_rigid_body([molA,molB,molC],
                                           name="test RB")
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=root_hier,
-                                              monte_carlo_sample_objects = dof.get_movers(),
-                                              number_of_frames=3,
-                                              monte_carlo_steps=10,
-                                              number_of_best_scoring_models=3,
-                                              global_output_directory='pdb_test/',
-                                              replica_exchange_object = rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=root_hier,
+            monte_carlo_sample_objects=dof.get_movers(),
+            number_of_frames=3, monte_carlo_steps=10,
+            number_of_best_scoring_models=3,
+            global_output_directory='pdb_test/',
+            replica_exchange_object=rem)
         rex.execute_macro()
         for i in range(3):
             self.assertTrue(os.path.isfile('pdb_test/pdbs/model.%i.pdb'%i))
@@ -204,7 +203,7 @@ ENDMDL'''.split("\n")
         self.assertEqual(len(IMP.core.get_leaves(mhtest)),17)
         shutil.rmtree("pdb_test/")
 
-        rex = IMP.pmi.macros.ReplicaExchange0(
+        rex = IMP.pmi.macros.ReplicaExchange(
             mdl, root_hier=root_hier,
             monte_carlo_sample_objects=dof.get_movers(), number_of_frames=3,
             monte_carlo_steps=10, number_of_best_scoring_models=3,
@@ -241,14 +240,13 @@ ENDMDL'''.split("\n")
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         dof.create_rigid_body(molA,name="rbA")
         dof.create_rigid_body(molB,name="rbB")
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=root_hier,
-                                              monte_carlo_sample_objects = dof.get_movers(),
-                                              number_of_frames=3,
-                                              monte_carlo_steps=10,
-                                              number_of_best_scoring_models=3,
-                                              global_output_directory='pdb_test/',
-                                              replica_exchange_object = rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=root_hier,
+            monte_carlo_sample_objects=dof.get_movers(),
+            number_of_frames=3, monte_carlo_steps=10,
+            number_of_best_scoring_models=3,
+            global_output_directory='pdb_test/',
+            replica_exchange_object=rem)
         rex.execute_macro()
         for i in range(3):
             self.assertTrue(os.path.isfile('pdb_test/pdbs/0/model.%i.pdb'%i))
@@ -259,7 +257,7 @@ ENDMDL'''.split("\n")
         self.assertEqual(len(IMP.core.get_leaves(testB)),8)
         shutil.rmtree("pdb_test/")
 
-        rex = IMP.pmi.macros.ReplicaExchange0(
+        rex = IMP.pmi.macros.ReplicaExchange(
             mdl, root_hier=root_hier,
             monte_carlo_sample_objects=dof.get_movers(), number_of_frames=3,
             monte_carlo_steps=10, number_of_best_scoring_models=3,

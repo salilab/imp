@@ -1070,11 +1070,10 @@ class Tests(IMP.test.TestCase):
         m2.add_representation(atomic_res,resolutions=0)
         root_hier = s.build()
 
-        rex = IMP.pmi.macros.ReplicaExchange0(model,
-                                              root_hier=root_hier,
-                                              number_of_frames=0,
-                                              number_of_best_scoring_models=0,
-                                              global_output_directory='multistate_test/')
+        rex = IMP.pmi.macros.ReplicaExchange(
+            model, root_hier=root_hier, number_of_frames=0,
+            number_of_best_scoring_models=0,
+            global_output_directory='multistate_test/')
         rex.execute_macro()
 
         rh2 = RMF.open_rmf_file_read_only('multistate_test/initial.0.rmf3')

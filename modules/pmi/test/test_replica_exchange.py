@@ -6,7 +6,7 @@ class MockSampler(object):
     def get_number_of_replicas(self):
         return 3
 
-class MockREX(IMP.pmi.macros.ReplicaExchange0):
+class MockREX(IMP.pmi.macros.ReplicaExchange):
     # Override the slow init from the base class
     def __init__(self, model):
         self.model = model

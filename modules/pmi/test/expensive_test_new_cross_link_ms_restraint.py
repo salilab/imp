@@ -219,12 +219,9 @@ class Tests(IMP.test.TestCase):
         log_wrapper_score=rs.unprotected_evaluate(None)
         test_log_wrapper_score=log_evaluate(restraints)
         self.assertAlmostEqual(log_wrapper_score, test_log_wrapper_score, delta=0.00001)
-        rex = IMP.pmi.macros.ReplicaExchange0(m,
-                                              root_hier=rcomplex,
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object = rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=rcomplex, monte_carlo_sample_objects=dof.get_movers(),
+            number_of_frames=2, test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
         for output in ['excluded.None.xl.db',
                        'expensive_test_new_cross_link_ms_restraint.dat',
@@ -284,12 +281,9 @@ class Tests(IMP.test.TestCase):
                 prob=cross_link_dict[xlid][5]
 
                 self.assertAlmostEqual(test_prob,prob, delta=0.0001)
-        rex = IMP.pmi.macros.ReplicaExchange0(m,
-                                              root_hier=rbeads,
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object = rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=rbeads, monte_carlo_sample_objects=dof.get_movers(),
+            number_of_frames=2, test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
         for output in ['excluded.None.xl.db',
                        'included.None.xl.db', 'missing.None.xl.db']:

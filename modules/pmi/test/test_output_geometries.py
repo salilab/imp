@@ -48,12 +48,10 @@ class Tests(IMP.test.TestCase):
         root_hier = s.build()
 
         with IMP.test.temporary_directory() as tmpdir:
-            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=root_hier,
-                                              number_of_frames=1,
-                                              monte_carlo_steps=1,
-                                              number_of_best_scoring_models=0,
-                                              global_output_directory=tmpdir)
+            rex = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=root_hier, number_of_frames=1,
+                monte_carlo_steps=1, number_of_best_scoring_models=0,
+                global_output_directory=tmpdir)
             geo = IMP.display.SphereGeometry(
                        IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4.))
             rex.add_geometries([geo])
