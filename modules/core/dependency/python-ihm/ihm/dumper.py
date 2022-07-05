@@ -1368,6 +1368,9 @@ class _RangeChecker(object):
         self._check_representation(obj, asym, type_check, seq_id_range)
 
     def _check_duplicate_atom(self, atom):
+        # e.g. multiple bulk water oxygen atoms can have "same" seq_id (None)
+        if atom.seq_id is None:
+            return
         k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
         if k in self._seen_atoms:
             raise ValueError(

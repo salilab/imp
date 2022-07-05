@@ -1,3 +1,10 @@
+0.33 - 2022-06-27
+=================
+  - Improve reading of mmCIF files with incomplete data (#86, #87) or with
+    categories in an unexpected order (#85).
+  - Bugfix: fix sanity check for multiple atoms with the same atom_id and
+    seq_id to handle bulk water (where such duplicates are OK) (#88).
+
 0.32 - 2022-05-31
 =================
   - :class:`ihm.protocol.Step` now takes an ``ensemble`` flag, to indicate

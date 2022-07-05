@@ -30,5 +30,5 @@ with open('mini.cif') as fh:
 
     # Read the first data block in mini.cif
     # (This will return True as long as there are more blocks, so it can
-    # be put in a while loop.)
+    # be put in a while loop instead if you want to read all data blocks.)
     c.read_file()

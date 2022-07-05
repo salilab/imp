@@ -1499,15 +1499,26 @@ class _StartingModelDetailsHandler(Handler):
                  dataset_list_id, starting_model_auth_asym_id,
                  starting_model_sequence_offset, description):
         m = self.sysr.starting_models.get_by_id(starting_model_id)
-        asym = self.sysr.ranges.get(
-            self.sysr.asym_units.get_by_id(asym_id), entity_poly_segment_id)
-        m.asym_unit = asym
+        # We might not have a suitable range yet for this ID, so fill this
+        # in at finalize time
+        m.asym_unit = (asym_id, entity_poly_segment_id)
         m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
         self.copy_if_present(
             m, locals(), keys=('description',),
             mapkeys={'starting_model_auth_asym_id': 'asym_id'})
         if starting_model_sequence_offset is not None:
             m.offset = int(starting_model_sequence_offset)
+
+    def finalize(self):
+        for m in self.sysr.system.orphan_starting_models:
+            # Skip any auto-generated models without range info
+            if m.asym_unit is None:
+                continue
+            # Replace tuple with real Asym/Entity range object
+            (asym_id, entity_poly_segment_id) = m.asym_unit
+            m.asym_unit = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(asym_id),
+                entity_poly_segment_id)
 
 
 class _StartingComputationalModelsHandler(Handler):
@@ -1537,8 +1548,8 @@ class _StartingComparativeModelsHandler(Handler):
         asym_id = template_auth_asym_id
         seq_id_range = (int(starting_model_seq_id_begin),
                         int(starting_model_seq_id_end))
-        template_seq_id_range = (int(template_seq_id_begin),
-                                 int(template_seq_id_end))
+        template_seq_id_range = (self.get_int(template_seq_id_begin),
+                                 self.get_int(template_seq_id_end))
         identity = ihm.startmodel.SequenceIdentity(
             self.get_float(template_sequence_identity),
             self.get_int(template_sequence_identity_denominator))
@@ -2081,11 +2092,15 @@ def _make_lower_upper_bound(low, up, _get_float):
         distance_lower_limit=low, distance_upper_limit=up)
 
 
-# todo: add a handler for an unknown restraint_type
+def _make_unknown_distance(low, up, _get_float):
+    return ihm.restraint.DistanceRestraint()
+
+
 _handle_distance = {'harmonic': _make_harmonic,
                     'upper bound': _make_upper_bound,
                     'lower bound': _make_lower_bound,
-                    'lower and upper bound': _make_lower_upper_bound}
+                    'lower and upper bound': _make_lower_upper_bound,
+                    None: _make_unknown_distance}
 
 
 class _DerivedDistanceRestraintHandler(Handler):

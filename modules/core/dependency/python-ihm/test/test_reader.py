@@ -1143,14 +1143,15 @@ _ihm_model_representation_details.description
 
     def test_starting_model_details_handler(self):
         """Test StartingModelDetailsHandler"""
-        cif = """
+        ps_cif = """
 loop_
 _ihm_entity_poly_segment.id
 _ihm_entity_poly_segment.entity_id
 _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 1 1 7 483
-#
+"""
+        sm_cif = """
 loop_
 _ihm_starting_model_details.starting_model_id
 _ihm_starting_model_details.entity_id
@@ -1165,21 +1166,23 @@ _ihm_starting_model_details.description
 1 1 Nup84 A 1 'comparative model' Q 8 4 .
 2 1 Nup84 A . 'comparative model' X . 6 'test desc'
 """
-        for fh in cif_file_handles(cif):
-            s, = ihm.reader.read(fh)
-            m1, m2 = s.orphan_starting_models
-            self.assertEqual(m1.asym_unit._id, 'A')
-            self.assertEqual(m1.asym_unit.seq_id_range, (7, 483))
-            self.assertEqual(m1.asym_id, 'Q')
-            self.assertEqual(m1.offset, 8)
-            self.assertEqual(m1.dataset._id, '4')
-            self.assertIsNone(m1.description)
+        # Order of the two categories shouldn't matter
+        for cif in ps_cif + sm_cif, sm_cif + ps_cif:
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                m1, m2 = s.orphan_starting_models
+                self.assertEqual(m1.asym_unit._id, 'A')
+                self.assertEqual(m1.asym_unit.seq_id_range, (7, 483))
+                self.assertEqual(m1.asym_id, 'Q')
+                self.assertEqual(m1.offset, 8)
+                self.assertEqual(m1.dataset._id, '4')
+                self.assertIsNone(m1.description)
 
-            self.assertEqual(m2.asym_unit._id, 'A')
-            self.assertEqual(m2.asym_id, 'X')
-            self.assertEqual(m2.offset, 0)
-            self.assertEqual(m2.dataset._id, '6')
-            self.assertEqual(m2.description, 'test desc')
+                self.assertEqual(m2.asym_unit._id, 'A')
+                self.assertEqual(m2.asym_id, 'X')
+                self.assertEqual(m2.offset, 0)
+                self.assertEqual(m2.dataset._id, '6')
+                self.assertEqual(m2.description, 'test desc')
 
     def test_starting_computational_models_handler(self):
         """Test StartingComputationModelsHandler"""
@@ -1217,11 +1220,12 @@ _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
 1 1 A 7 436 C 9 438 90.000 1 3 2
 2 1 A 33 424 C 33 424 100.000 1 1 .
+3 1 A 33 424 C . ? 100.000 1 1 .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             m1, = s.orphan_starting_models
-            t1, t2 = m1.templates
+            t1, t2, t3 = m1.templates
             self.assertEqual(t1.dataset._id, '3')
             self.assertEqual(t1.asym_id, 'C')
             self.assertEqual(t1.seq_id_range, (7, 436))
@@ -1231,6 +1235,7 @@ _ihm_starting_comparative_models.alignment_file_id
             self.assertEqual(t1.sequence_identity.denominator, 1)
             self.assertEqual(t1.alignment_file._id, '2')
             self.assertIsNone(t2.alignment_file)
+            self.assertEqual(t3.template_seq_id_range, (None, ihm.unknown))
 
     def test_protocol_handler(self):
         """Test ProtocolHandler"""
@@ -2095,6 +2100,7 @@ _ihm_derived_distance_restraint.dataset_list_id
 2 . 1 4 'upper bound' . 45.000 0.800 . ALL 98
 3 1 1 2 'lower and upper bound' 22.000 45.000 0.800 . ANY 99
 4 1 5 3 'harmonic' 35.000 35.000 0.800 . ALL .
+5 . 5 3 . ? ? ? . ALL .
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known
@@ -2102,7 +2108,7 @@ _ihm_derived_distance_restraint.dataset_list_id
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             self.assertEqual(len(s.orphan_features), 5)
-            r1, r2, r3, r4 = s.restraints
+            r1, r2, r3, r4, r5 = s.restraints
             rg1, = s.restraint_groups
             self.assertEqual([r for r in rg1], [r3, r4])
             self.assertEqual(r1.dataset._id, '97')
