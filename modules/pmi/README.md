@@ -24,7 +24,7 @@ The typical flow of a PMI modeling script is as follows:
  - [Topology](@ref IMP::pmi::topology): create a [System](@ref IMP::pmi::topology::System), [States](@ref IMP::pmi::topology::State), [Molecules](@ref IMP::pmi::topology::Molecule), add structure and representation
  - [DegreesOfFreedom](@ref IMP::pmi::dof): setup rigid bodies, flexible beads, and other constraints.
  - [Restraints](@ref IMP::pmi::restraints): restrain your system with theoretical or experimental data
- - [Sample](@ref IMP::pmi::macros::ReplicaExchange0) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
+ - [Sample](@ref IMP::pmi::macros::ReplicaExchange) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
 
 Here are some examples to get you started
 - Basics: [selection in PMI](https://integrativemodeling.org/nightly/doc/ref/pmi_2selection_8py-example.html), [EM modeling with densities](https://integrativemodeling.org/nightly/doc/ref/pmi_2em_8py-example.html), [ideal helices](https://integrativemodeling.org/nightly/doc/ref/pmi_2ideal_helix_8py-example.html), [symmetry](https://integrativemodeling.org/nightly/doc/ref/pmi_2symmetry_8py-example.html)

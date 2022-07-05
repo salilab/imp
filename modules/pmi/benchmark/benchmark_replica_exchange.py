@@ -46,7 +46,7 @@ dr.add_to_model()
 
 start_time = process_time()
 
-rex=IMP.pmi.macros.ReplicaExchange0(m,
+rex=IMP.pmi.macros.ReplicaExchange(m,
                 root_hier=hier,
                 monte_carlo_sample_objects=dof.get_movers(),
                 output_objects=[dr],

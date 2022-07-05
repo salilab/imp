@@ -255,7 +255,7 @@ class ReplicaExchange(object):
             self.vars["geometries"].extend(geometries)
 
     def show_info(self):
-        print("ReplicaExchange0: it generates initial.*.rmf3, stat.*.out, "
+        print("ReplicaExchange: it generates initial.*.rmf3, stat.*.out, "
               "rmfs/*.rmf3 for each replica ")
         print("--- it stores the best scoring pdb models in pdbs/")
         print("--- the stat.*.out and rmfs/*.rmf3 are saved only at the "

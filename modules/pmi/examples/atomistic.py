@@ -61,7 +61,7 @@ for sse in sses['helix']+sses['beta']:
 # setup MD and run
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 md_ps = dof.setup_md(gcp2)
-rex = IMP.pmi.macros.ReplicaExchange0(
+rex = IMP.pmi.macros.ReplicaExchange(
     mdl,
     root_hier=hier,
     molecular_dynamics_sample_objects=md_ps,

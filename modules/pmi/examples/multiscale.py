@@ -107,7 +107,7 @@ IMP.pmi.tools.shuffle_configuration(root_hier, max_translation=30)
 dof.optimize_flexible_beads(100)
 
 # Run replica exchange Monte Carlo sampling
-rex = IMP.pmi.macros.ReplicaExchange0(
+rex = IMP.pmi.macros.ReplicaExchange(
     mdl,
     # pass the root hierarchy
     root_hier=root_hier,

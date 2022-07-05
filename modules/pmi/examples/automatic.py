@@ -94,7 +94,7 @@ IMP.pmi.tools.shuffle_configuration(hier)
 # Quickly move all flexible beads into place
 dof.optimize_flexible_beads(100)
 
-rex = IMP.pmi.macros.ReplicaExchange0(
+rex = IMP.pmi.macros.ReplicaExchange(
     mdl, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
     global_output_directory='auto_output/', output_objects=output_objects,
     monte_carlo_steps=10, number_of_best_scoring_models=0, number_of_frames=5)

@@ -50,11 +50,11 @@ class DegreesOfFreedom(object):
          DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid,
          or flexible beads, pass the movers to the `monte_carlo_sample_objects`
          argument of
-         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
+         [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange).
        * If you are running MD, you have to separately pass the particles
          (also returned from DegreesOfFreedom.setup_md()) to the
          `molecular_dynamics_sample_objects` argument of
-         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check
+         [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange). Check
          out an [MD example here](pmi_2atomistic_8py-example.html).
     """  # noqa: E501
     def __init__(self, model):
@@ -383,7 +383,7 @@ class DegreesOfFreedom(object):
 
     def setup_md(self, hspec):
         """Setup particles for MD simulation. Returns all particles, just
-        pass this to molecular_dynamics_sample_objects in ReplicaExchange0.
+        pass this to molecular_dynamics_sample_objects in ReplicaExchange.
         @param hspec Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue,
                or a list/set (of list/set) of them.
