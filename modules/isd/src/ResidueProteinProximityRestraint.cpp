@@ -20,6 +20,11 @@
 #include <boost/tuple/tuple.hpp>
 #include <math.h>
 
+namespace {
+  // sqrt(2*PI)
+  static const double SQ2PI = 2.5066282746310002;
+}
+
 IMPISD_BEGIN_NAMESPACE
 
 ResidueProteinProximityRestraint::ResidueProteinProximityRestraint(Model* m,
@@ -90,8 +95,8 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
 	dists_.push_back(dist);
 	
 	//! Get particles indexes
-	ParticleIndex pi1 = get_model()->get_particle(_1[0])->get_index();
-	ParticleIndex pi2 = get_model()->get_particle(_1[1])->get_index();
+	// ParticleIndex pi1 = get_model()->get_particle(_1[0])->get_index();
+	// ParticleIndex pi2 = get_model()->get_particle(_1[1])->get_index();
       });
 
     if(!dists_.empty()) {
@@ -109,7 +114,7 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
         double prior_prob = std::exp(-xi_*lowest_dist);
 	double sig2 = sigma_*sigma_;
         double ld2 = lowest_dist*lowest_dist;
-        double prob = std::exp(-ld2/(2*sig2))/(sq2Pi*sigma_);
+        double prob = std::exp(-ld2/(2*sig2))/(SQ2PI*sigma_);
         score = -log(prior_prob*prob);
       }
       score_tot +=  score;
@@ -123,7 +128,7 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
   return score_tot;
 }
 
-double ResidueProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
+double ResidueProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *)
   const {
 
   double output_score = evaluate_for_contributions(default_range_);

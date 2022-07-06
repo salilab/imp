@@ -17,6 +17,8 @@
 #include <IMP/container_macros.h>
 #include <IMP/PairContainer.h>
 #include <IMP/Restraint.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/core/utility.h>
 #include <boost/unordered_map.hpp>
 
 IMPISD_BEGIN_NAMESPACE
