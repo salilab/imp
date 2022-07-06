@@ -100,9 +100,10 @@ found). To fix issues like this, check the CMake error log in
 `CMakeFiles/CMakeError.log` to see what failed. In some cases this can be
 fixed by modifying the flags passed to the C or C++ compiler. For example,
 recent versions of [Protobuf](https://developers.google.com/protocol-buffers/)
-fail on some systems because they require C++11 support, and this can be
-fixed by adding to your CMake invocation
-`-DCMAKE_CXX_FLAGS="-std=c++11"`
+or [CGAL](https://www.cgal.org/)
+fail on some systems because they require C++17 support, and this
+can be fixed by adding to your CMake invocation
+`-DCMAKE_CXX_FLAGS="-std=c++17"`
 
 ## Wrong version of helper binaries found {#cmake_path}
 
