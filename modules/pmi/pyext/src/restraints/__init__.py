@@ -50,7 +50,8 @@ class RestraintBase(object):
         @param label Label
         """
         if self._label_is_set:
-            raise ValueError("Label has already been set.")
+            raise ValueError("Label has already been set, or restraint has "
+                             "already been added to model.")
         if not label:
             self._label = ""
             self._label_suffix = ""

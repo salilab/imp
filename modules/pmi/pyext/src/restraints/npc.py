@@ -1,14 +1,28 @@
+"""@namespace IMP.pmi.restraints.npc
+Specialized restraints for modeling the Nuclear Pore Complex.
+
+These restraints have been used to model the Nuclear Pore Complex (NPC)
+but may be useful for other applications too. They model the NPC as lying
+in the xy plane, centered at the origin. (Transport through the pore
+corresponds to movement along the z axis.) The surface of the nuclear
+membrane is represented as the surface of a half torus, also lying in
+the xy plane and centered at the origin. Individual proteins
+(or parts of proteins, such as the N- or C- termini) are then localized to
+different regions of the complex (e.g. near the membrane or pore, or on
+the nuclear or cytoplasmic side) by simple restraints on ther Cartesian
+coordinates.
+"""
+
 import IMP.npc
 
 
 class XYRadialPositionRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create XYRadial Position Restraint
+    """Restrain a protein's distance from the z axis to within a given range.
     """
     def __init__(self, hier, protein, lower_bound=0.0, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, term='C', label=None,
                  weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(XYRadialPositionRestraint, self).__init__(
@@ -30,16 +44,21 @@ class XYRadialPositionRestraint(IMP.pmi.restraints.RestraintBase):
             for residue in residues:
                 # print (residue, type(residue))
                 xyr.add_particle(residue)
+
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            p.add_xyradial_restraint(state, residues, lower_bound,
+                                     upper_bound, sigma, self)
+
         self.rs.add_restraint(xyr)
 
 
 class XYRadialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create XYRadial Position Lower restraints
+    """Restrain a protein's distance from the z axis to above a lower bound.
     """
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(XYRadialPositionLowerRestraint, self).__init__(
@@ -56,12 +75,11 @@ class XYRadialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class XYRadialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create XYRadial Position Upper restraints
+    """Restrain a protein's distance from the z axis to below an upper bound.
     """
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(XYRadialPositionUpperRestraint, self).__init__(
@@ -78,13 +96,12 @@ class XYRadialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class ZAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Z-Axial Position restraints
+    """Restrain a protein's z coordinate to within a given range.
     """
     def __init__(self, hier, protein, lower_bound=0.0,
                  upper_bound=0.0, consider_radius=False, sigma=1.0, term='C',
                  label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(ZAxialPositionRestraint, self).__init__(
@@ -106,16 +123,21 @@ class ZAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
             for residue in residues:
                 # print (residue, type(residue))
                 zax.add_particle(residue)
+
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            p.add_zaxial_restraint(state, residues, lower_bound,
+                                   upper_bound, sigma, self)
+
         self.rs.add_restraint(zax)
 
 
 class ZAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Z-Axial Position Lower restraints
+    """Restrain a protein's z coordinate to above a lower bound.
     """
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(ZAxialPositionLowerRestraint, self).__init__(
@@ -132,12 +154,11 @@ class ZAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class ZAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Z-Axial Position Upper restraints
+    """Restrain a protein's z coordinate to below an upper bound.
     """
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(ZAxialPositionUpperRestraint, self).__init__(
@@ -154,13 +175,12 @@ class ZAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class YAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Y-Axial Position restraints
+    """Restrain a protein's y coordinate to within a given range.
     """
     def __init__(self, hier, protein, lower_bound=0.0,
                  upper_bound=0.0, consider_radius=False, sigma=1.0, term='C',
                  label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(YAxialPositionRestraint, self).__init__(
@@ -182,16 +202,21 @@ class YAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
             for residue in residues:
                 # print (residue, type(residue))
                 yax.add_particle(residue)
+
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            p.add_yaxial_restraint(state, residues, lower_bound,
+                                   upper_bound, sigma, self)
+
         self.rs.add_restraint(yax)
 
 
 class YAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Y-Axial Position Lower restraints
+    """Restrain a protein's y coordinate to above a lower bound.
     """
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(YAxialPositionLowerRestraint, self).__init__(
@@ -208,12 +233,11 @@ class YAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class YAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Y-Axial Position Upper restraints
+    """Restrain a protein's y coordinate to below an upper bound.
     """
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(YAxialPositionUpperRestraint, self).__init__(
@@ -230,13 +254,12 @@ class YAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class MembraneSurfaceLocationRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Membrane Surface Location Restraint
+    """Localize protein on the surface of a half torus in the xy plane.
     """
     def __init__(self, hier, protein,
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(MembraneSurfaceLocationRestraint, self).__init__(
@@ -249,12 +272,20 @@ class MembraneSurfaceLocationRestraint(IMP.pmi.restraints.RestraintBase):
         for residue in residues:
             # print (residue, type(residue))
             msl.add_particle(residue)
+
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            p.add_membrane_surface_location_restraint(
+                state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(msl)
 
 
 class MembraneSurfaceLocationConditionalRestraint(
         IMP.pmi.restraints.RestraintBase):
-    """Create Membrane Surface Location CONDITIONAL Restraint
+    """Localize one protein on the surface of a half torus in the xy plane.
+
+       Create Membrane Surface Location CONDITIONAL Restraint
        for Nup120 ALPS Motifs - Mutually Exclusive from (135,152,'Nup120')
        and (197,216,'Nup120').
        It returns a minimum penalty score from two potential ALPS motifs.
@@ -263,7 +294,6 @@ class MembraneSurfaceLocationConditionalRestraint(
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(MembraneSurfaceLocationConditionalRestraint, self).__init__(
@@ -281,17 +311,24 @@ class MembraneSurfaceLocationConditionalRestraint(
         for residue in residues2:
             # print (residue, type(residue))
             msl.add_particle2(residue)
+
+        # Approximate as two membrane restraints
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            for residues in residues1, residues2:
+                p.add_membrane_surface_location_restraint(
+                    state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(msl)
 
 
 class MembraneExclusionRestraint(IMP.pmi.restraints.RestraintBase):
-    """Create Membrane Exclusion Restraint
+    """Keep protein away from a half torus in the xy plane.
     """
     def __init__(self, hier, protein=None,
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):
         """Constructor
-        @param representation representation
         """
 
         super(MembraneExclusionRestraint, self).__init__(
@@ -303,4 +340,10 @@ class MembraneExclusionRestraint(IMP.pmi.restraints.RestraintBase):
             hier, protein, resolution=resolution)
         for residue in residues:
             mex.add_particle(residue)
+
+        self.dataset = None
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            p.add_membrane_exclusion_restraint(
+                state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(mex)
