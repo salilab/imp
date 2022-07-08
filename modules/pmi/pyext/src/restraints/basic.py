@@ -445,16 +445,15 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
 
 
 class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
-
-    """ Restraint residue/residues to bind to unknown location in a target"""
+    """Restrain residue/residues to bind to unknown location in a target"""
 
     def __init__(self, hier, selection, cutoff=6., sigma=3., xi=0.01,
                  resolution=1.0, weight=1.0, label=None):
         """
         Constructor
         @param hier        Hierarchy of the system
-        @param section     Selection of residues and target
-                           syntax is (prot, r1, r2, target_prot)  or
+        @param section     Selection of residues and target;
+                           syntax is (prot, r1, r2, target_prot) or
                            (prot1, r1, r2, target_prot, target_r1, target_r2)
         @param cutoff      Distance cutoff between selected segment and target
                            protein
@@ -462,7 +461,7 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
         @param xi          Slope of a distance-linear scoring function that
                            funnels the score when the particles are too
                            far away
-        @param resolution  Resolution at which apply restraint
+        @param resolution  Resolution at which to apply restraint
         @param weight      Weight of the restraint
         @param label       Extra text to label the restraint so that it is
                            searchable in the output
