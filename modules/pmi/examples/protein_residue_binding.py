@@ -1,6 +1,6 @@
 ## \example pmi/protein_residue_binding.py
 """
-This script shows how to simulate residue–protein
+This script shows how to simulate residue-protein
 binding contacts inferred from mutagenesis studies.
 This example shows protein A binding to protein B
 through a set of residues predicted to be required
@@ -22,7 +22,7 @@ import tempfile
 import os
 import sys
 
-IMP.setup_from_argv(sys.argv, "Simulate residue–protein binding contacts")
+IMP.setup_from_argv(sys.argv, "Simulate residue-protein binding contacts")
 
 topology = '''
 |molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
