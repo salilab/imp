@@ -23,6 +23,10 @@ import os
 import sys
 
 IMP.setup_from_argv(sys.argv, "Simulate residue-protein binding contacts")
+if IMP.get_is_quick_test():
+    print("This example is too slow to test in debug mode - run without")
+    print("internal tests enabled, or without the --run-quick-test flag")
+    sys.exit(0)
 
 topology = '''
 |molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
