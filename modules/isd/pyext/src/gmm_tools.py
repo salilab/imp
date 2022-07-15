@@ -74,12 +74,7 @@ def write_gmm_to_text(ps,out_fn, comments=[]):
             covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
             mean=list(shape.get_center())
             fm=[ng,weight]+mean+covar
-            try:
-                #python 2.7 format
-                outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
-            except ValueError:
-                #python 2.6 and below
-                outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
+            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
 
 def gmm2map(to_draw,voxel_size,bounding_box=None,origin=None, fast=False, factor=2.5):
     if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
