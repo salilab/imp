@@ -42,7 +42,7 @@ Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 %if 0%{?with_python2}
-BuildRequires: %{PYTHON2}-devel >= 2.6
+BuildRequires: %{PYTHON2}-devel >= 2.7
 %endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
