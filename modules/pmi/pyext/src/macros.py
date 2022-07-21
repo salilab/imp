@@ -934,7 +934,7 @@ class AnalysisReplicaExchange0(object):
         self._protocol_output.append((p, p._last_state))
 
     def get_modeling_trajectory(self,
-                                score_key="SimplifiedModel_Total_Score_None",
+                                score_key="Total_Score",
                                 rmf_file_key="rmf_file",
                                 rmf_file_frame_key="rmf_frame_index",
                                 outputdir="./",
@@ -1018,7 +1018,7 @@ class AnalysisReplicaExchange0(object):
         return newdict
 
     def clustering(self,
-                   score_key="SimplifiedModel_Total_Score_None",
+                   score_key="Total_Score",
                    rmf_file_key="rmf_file",
                    rmf_file_frame_key="rmf_frame_index",
                    state_number=0,
@@ -1048,7 +1048,6 @@ class AnalysisReplicaExchange0(object):
         If you don't pass a specific copy number
 
         @param score_key              The score for ranking models.
-               Use "Total_Score" instead of default for PMI2.
         @param rmf_file_key           Key pointing to RMF filename
         @param rmf_file_frame_key     Key pointing to RMF frame number
         @param state_number           State number to analyze
@@ -1109,17 +1108,7 @@ class AnalysisReplicaExchange0(object):
                 self.stat_files, self.number_of_processes)[self.rank]
 
             # read ahead to check if you need the PMI2 score key instead
-            po = IMP.pmi.output.ProcessOutput(my_stat_files[0])
-            orig_score_key = score_key
-            if score_key not in po.get_keys():
-                if 'Total_Score' in po.get_keys():
-                    score_key = 'Total_Score'
-                    warnings.warn(
-                        "Using 'Total_Score' instead of "
-                        "'SimplifiedModel_Total_Score_None' for the score key",
-                        IMP.pmi.ParameterWarning)
-            for k in [orig_score_key, score_key, rmf_file_key,
-                      rmf_file_frame_key]:
+            for k in (score_key, rmf_file_key, rmf_file_frame_key):
                 if k in feature_keys:
                     warnings.warn(
                             "no need to pass " + k + " to feature_keys.",
