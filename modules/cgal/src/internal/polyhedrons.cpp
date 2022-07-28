@@ -171,7 +171,7 @@ std::pair<algebra::Vector3Ds, Ints> get_indexed_facets(
 }
 
 template <class K>
-CGAL::Nef_polyhedron_3<K> create_cube(const algebra::BoundingBoxD<3> &bb) {
+CGAL::Polyhedron_3<K> create_cube(const algebra::BoundingBoxD<3> &bb) {
   typename CGAL::Polyhedron_3<K> p;
   // appends a cube of size [0,1]^3 to the polyhedron P.
   CGAL_precondition(p.is_valid());
