@@ -321,7 +321,7 @@ class PeptideDocker:
                 flexParticle = self.namesToParticles[flexPname]
                 flexXyzDecorator = IMP.core.XYZ(flexParticle)
                 print("processing position for pname %s" % flexPname)
-                while(goodPosition == 0):
+                while goodPosition == 0:
                     goodPosition = 1
                     flexXyzDecorator.set_coordinates(
                         IMP.algebra.get_random_vector_in(bsBoundingBox))
