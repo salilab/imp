@@ -774,7 +774,7 @@ _ihm_struct_assembly.description
 
     def test_assembly_details_handler(self):
         """Test AssemblyDetailsHandler"""
-        cif = """
+        entity_cif = """
 loop_
 _entity_poly_seq.entity_id
 _entity_poly_seq.num
@@ -794,13 +794,23 @@ _ihm_entity_poly_segment.seq_id_end
 3 1 1 2
 4 2 1 50
 5 2 1 2
-#
+"""
+        assembly_cif = """
 loop_
 _struct_asym.id
 _struct_asym.entity_id
 _struct_asym.details
 A 1 Nup84
 B 2 Nup85
+#
+loop_
+_ihm_struct_assembly.id
+_ihm_struct_assembly.name
+_ihm_struct_assembly.description
+1 . .
+2 . .
+3 . .
+4 'user-provided name' 'user-provided desc'
 #
 loop_
 _ihm_struct_assembly_details.id
@@ -817,36 +827,51 @@ _ihm_struct_assembly_details.entity_poly_segment_id
 5 2 1 Nup85 2 . 5
 6 3 1 Nup84 1 A .
 7 3 1 Nup85 2 . .
+7 4 1 Nup84 1 A .
+8 4 1 Nup85 2 B .
 """
-        for fh in cif_file_handles(cif):
-            s, = ihm.reader.read(fh)
-            a1, a2, a3 = s.orphan_assemblies
-            self.assertEqual(a1._id, '1')
-            self.assertIsNone(a1.parent)
-            self.assertEqual(len(a1), 3)
-            # AsymUnitRange
-            self.assertIsInstance(a1[0], ihm.AsymUnitRange)
-            self.assertEqual(a1[0]._id, 'A')
-            self.assertEqual(a1[0].seq_id_range, (1, 726))
-            self.assertEqual(a1[1]._id, 'B')
-            self.assertEqual(a1[1].seq_id_range, (1, 744))
+        # Order of categories should not matter
+        for cif in (entity_cif + assembly_cif, assembly_cif + entity_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                a1, a2, a3, a4 = s.orphan_assemblies
+                self.assertEqual(a1._id, '1')
+                self.assertIsNone(a1.parent)
+                self.assertEqual(len(a1), 3)
+                # AsymUnitRange
+                self.assertIsInstance(a1[0], ihm.AsymUnitRange)
+                self.assertEqual(a1[0]._id, 'A')
+                self.assertEqual(a1[0].seq_id_range, (1, 726))
+                self.assertEqual(a1[1]._id, 'B')
+                self.assertEqual(a1[1].seq_id_range, (1, 744))
 
-            self.assertEqual(a2._id, '2')
-            self.assertEqual(a2.parent, a1)
-            # AsymUnit
-            self.assertIsInstance(a1[2], ihm.AsymUnit)
-            # EntityRange
-            self.assertEqual(len(a2), 2)
-            self.assertIsInstance(a2[0], ihm.EntityRange)
-            self.assertEqual(a2[0]._id, '2')
-            self.assertEqual(a2[0].seq_id_range, (1, 50))
-            # Entity
-            self.assertIsInstance(a2[1], ihm.Entity)
+                self.assertEqual(a2._id, '2')
+                self.assertEqual(a2.parent, a1)
+                # AsymUnit
+                self.assertIsInstance(a1[2], ihm.AsymUnit)
+                # EntityRange
+                self.assertEqual(len(a2), 2)
+                self.assertIsInstance(a2[0], ihm.EntityRange)
+                self.assertEqual(a2[0]._id, '2')
+                self.assertEqual(a2[0].seq_id_range, (1, 50))
+                # Entity
+                self.assertIsInstance(a2[1], ihm.Entity)
 
-            # Assembly with no ranges given
-            self.assertEqual(len(a3), 2)
-            self.assertIsInstance(a3[0], ihm.AsymUnit)
-            self.assertIsInstance(a3[1], ihm.Entity)
+                # Assembly with no ranges given
+                self.assertEqual(len(a3), 2)
+                self.assertIsInstance(a3[0], ihm.AsymUnit)
+                self.assertIsInstance(a3[1], ihm.Entity)
+
+                # "Complete" assembly that covers all AsymUnits
+                self.assertEqual(len(a4), 2)
+                self.assertIsInstance(a4[0], ihm.AsymUnit)
+                self.assertIsInstance(a4[1], ihm.AsymUnit)
+                self.assertEqual(a4.name, 'user-provided name')
+                self.assertEqual(a4.description, 'user-provided desc')
+                # Should set name, description of system.complete_assembly
+                self.assertEqual(s.complete_assembly.name, a4.name)
+                self.assertEqual(s.complete_assembly.description,
+                                 a4.description)
 
     def test_external_file_handler(self):
         """Test ExtRef and ExtFileHandler"""
@@ -1084,7 +1109,7 @@ _ihm_model_representation.details
 
     def test_model_representation_details_handler(self):
         """Test ModelRepresentationDetailsHandler"""
-        cif = """
+        range_cif = """
 loop_
 _ihm_entity_poly_segment.id
 _ihm_entity_poly_segment.entity_id
@@ -1092,7 +1117,8 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 1 1 1 6
 2 1 7 20
-#
+"""
+        repr_cif = """
 loop_
 _ihm_model_representation_details.id
 _ihm_model_representation_details.representation_id
@@ -1111,35 +1137,40 @@ _ihm_model_representation_details.description
 3 2 1 Nup84 A . atomistic . flexible by-atom . .
 4 3 2 Nup85 B . sphere . . multi-residue . .
 """
-        for fh in cif_file_handles(cif):
-            s, = ihm.reader.read(fh)
-            r1, r2, r3 = s.orphan_representations
-            self.assertEqual(len(r1), 2)
-            s1, s2 = r1
-            self.assertEqual(s1.__class__, ihm.representation.FeatureSegment)
-            self.assertEqual(s1.primitive, 'sphere')
-            self.assertEqual(s1.count, 1)
-            self.assertEqual(s1.rigid, False)
-            self.assertIsNone(s1.starting_model)
-            self.assertEqual(s1.asym_unit.seq_id_range, (1, 6))
-            self.assertEqual(s1.description, 'test segment')
+        # Order of categories should not matter
+        for cif in (range_cif + repr_cif, repr_cif + range_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                r1, r2, r3 = s.orphan_representations
+                self.assertEqual(len(r1), 2)
+                s1, s2 = r1
+                self.assertEqual(s1.__class__,
+                                 ihm.representation.FeatureSegment)
+                self.assertEqual(s1.primitive, 'sphere')
+                self.assertEqual(s1.count, 1)
+                self.assertEqual(s1.rigid, False)
+                self.assertIsNone(s1.starting_model)
+                self.assertEqual(s1.asym_unit.seq_id_range, (1, 6))
+                self.assertEqual(s1.description, 'test segment')
 
-            self.assertEqual(s2.__class__, ihm.representation.ResidueSegment)
-            self.assertEqual(s2.primitive, 'sphere')
-            self.assertIsNone(s2.count)
-            self.assertEqual(s2.rigid, True)
-            self.assertEqual(s2.starting_model._id, '1')
-            self.assertEqual(s2.asym_unit.seq_id_range, (7, 20))
-            self.assertIsNone(s2.description)
+                self.assertEqual(s2.__class__,
+                                 ihm.representation.ResidueSegment)
+                self.assertEqual(s2.primitive, 'sphere')
+                self.assertIsNone(s2.count)
+                self.assertEqual(s2.rigid, True)
+                self.assertEqual(s2.starting_model._id, '1')
+                self.assertEqual(s2.asym_unit.seq_id_range, (7, 20))
+                self.assertIsNone(s2.description)
 
-            self.assertEqual(len(r2), 1)
-            s1, = r2
-            self.assertEqual(s1.__class__, ihm.representation.AtomicSegment)
+                self.assertEqual(len(r2), 1)
+                s1, = r2
+                self.assertEqual(s1.__class__,
+                                 ihm.representation.AtomicSegment)
 
-            self.assertEqual(len(r3), 1)
-            s1, = r3
-            self.assertEqual(s1.__class__,
-                             ihm.representation.MultiResidueSegment)
+                self.assertEqual(len(r3), 1)
+                s1, = r3
+                self.assertEqual(s1.__class__,
+                                 ihm.representation.MultiResidueSegment)
 
     def test_starting_model_details_handler(self):
         """Test StartingModelDetailsHandler"""
@@ -1507,6 +1538,7 @@ _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
 1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9 . . .
 2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9 'cluster details' YES independent
+3 'Cluster 3' . . invalid_cluster invalid_feature 1 1 15.400 9 . . .
 #
 #
 loop_
@@ -1523,7 +1555,7 @@ _ihm_ensemble_sub_sample.file_id
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            e, e2 = s.ensembles
+            e, e2, e3 = s.ensembles
             self.assertEqual(e.model_group._id, '3')
             self.assertEqual(e.num_models, 1257)
             self.assertEqual(e.post_process._id, '2')
@@ -1546,17 +1578,21 @@ _ihm_ensemble_sub_sample.file_id
             self.assertEqual(s2.model_group._id, '42')
             self.assertEqual(s2.file._id, '3')
             self.assertIsInstance(s2, ihm.model.IndependentSubsample)
+            # invalid cluster/feature should be mapped to default
+            self.assertEqual(e3.clustering_method, 'Other')
+            self.assertEqual(e3.clustering_feature, 'other')
 
     def test_density_handler(self):
         """Test DensityHandler"""
-        cif = """
+        segment_cif = """
 loop_
 _ihm_entity_poly_segment.id
 _ihm_entity_poly_segment.entity_id
 _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 1 1 1 726
-#
+"""
+        density_cif = """
 loop_
 _ihm_localization_density_files.id
 _ihm_localization_density_files.file_id
@@ -1567,17 +1603,19 @@ _ihm_localization_density_files.entity_poly_segment_id
 1 22 9 1 A 1
 2 23 9 2 B .
 """
-        for fh in cif_file_handles(cif):
-            s, = ihm.reader.read(fh)
-            e, = s.ensembles
-            self.assertEqual(e._id, '9')
-            d1, d2 = e.densities
-            self.assertEqual(d1._id, '1')
-            self.assertEqual(d1.file._id, '22')
-            self.assertEqual(d1.asym_unit.__class__, ihm.AsymUnitRange)
-            self.assertEqual(d1.asym_unit.seq_id_range, (1, 726))
-            self.assertEqual(d2._id, '2')
-            self.assertEqual(d2.asym_unit.__class__, ihm.AsymUnit)
+        # Order should not matter
+        for cif in (segment_cif + density_cif, density_cif + segment_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                e, = s.ensembles
+                self.assertEqual(e._id, '9')
+                d1, d2 = e.densities
+                self.assertEqual(d1._id, '1')
+                self.assertEqual(d1.file._id, '22')
+                self.assertEqual(d1.asym_unit.__class__, ihm.AsymUnitRange)
+                self.assertEqual(d1.asym_unit.seq_id_range, (1, 726))
+                self.assertEqual(d2._id, '2')
+                self.assertEqual(d2.asym_unit.__class__, ihm.AsymUnit)
 
     def test_em3d_restraint_handler(self):
         """Test EM3DRestraintHandler"""
@@ -2673,6 +2711,44 @@ _ihm_cross_link_list.dataset_list_id
         self.assertIsNone(r2.linker.chemical_name)
         self.assertEqual(r3.linker.auth_name, 'DSS')
         self.assertEqual(r3.linker.chemical_name, 'disuccinimidyl suberate')
+
+    def test_cross_link_list_handler_empty_descriptor(self):
+        """Test CrossLinkListHandler with empty descriptor name"""
+        fh = StringIO("""
+loop_
+_ihm_chemical_component_descriptor.id
+_ihm_chemical_component_descriptor.auth_name
+1 DSS
+2 .
+3 .
+#
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_chem_comp_descriptor_id
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS 1 NOTDSS 97
+2 2 foo 1 2 THR bar 2 3 PHE 2 EDC 97
+3 2 foo 1 2 THR bar 2 3 PHE 3 . 97
+""")
+        s, = ihm.reader.read(fh)
+        d1, d2, d3 = s.orphan_chem_descriptors
+        # Descriptor name (DSS) should take precedence over
+        # linker_type (NOTDSS)
+        self.assertEqual(d1.auth_name, 'DSS')
+        # If descriptor name is empty, fill it in using linker_type
+        self.assertEqual(d2.auth_name, 'EDC')
+        # If both names are empty, name is None
+        self.assertIsNone(d3.auth_name)
 
     def test_cross_link_restraint_handler(self):
         """Test CrossLinkRestraintHandler"""

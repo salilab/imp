@@ -4,6 +4,7 @@
 
 import struct
 import itertools
+import ihm
 
 
 class Sphere(object):
@@ -177,6 +178,23 @@ class StateGroup(list):
         super(StateGroup, self).__init__(elements)
 
 
+def _text_choice_property(attr, choices, doc=None):
+    schoices = frozenset(choices)
+
+    def getfunc(obj):
+        return getattr(obj, "_" + attr)
+
+    def setfunc(obj, val):
+        if val is not None and val is not ihm.unknown and val not in schoices:
+            raise ValueError(
+                "Invalid choice %s for %s; valid values are %s, "
+                "None, ihm.unknown"
+                % (repr(val), attr, ", ".join(repr(x) for x in choices)))
+        setattr(obj, "_" + attr, val)
+
+    return property(getfunc, setfunc, doc=doc)
+
+
 class Ensemble(object):
     """Details about a model cluster or ensemble.
        See :attr:`ihm.System.ensembles`.
@@ -223,6 +241,15 @@ class Ensemble(object):
     num_models_deposited = property(lambda self: len(self.model_group),
                                     doc="Number of models in this ensemble "
                                         "that are in the mmCIF file")
+
+    clustering_method = _text_choice_property(
+        "clustering_method",
+        ["Hierarchical", "Other", "Partitioning (k-means)"],
+        doc="The clustering method used to obtain the ensemble, if applicable")
+
+    clustering_feature = _text_choice_property(
+        "clustering_feature", ["RMSD", "dRMSD", "other"],
+        doc="The feature used for clustering the models, if applicable")
 
 
 class OrderedProcess(object):

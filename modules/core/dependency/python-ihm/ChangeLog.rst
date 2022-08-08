@@ -1,3 +1,25 @@
+HEAD
+====
+  - Author names now use PDB style ("Lastname, A.B.") by default rather
+    than PubMed style ("Lastname AB") (#95).
+
+0.34 - 2022-08-03
+=================
+  - Strings that start with STAR reserved words such as ``stop_`` are now
+    quoted to help some readers such as the GEMMI library
+    (ihmwg/python-modelcif#25).
+  - If an input file defines a chemical descriptor with an empty name
+    but also defines ``linker_type``, use that to fill in the name (#91).
+  - :class:`ihm.ChemComp` now allows for chemical components to be defined
+    in a chemical component dictionary (CCD) outside of the wwPDB CCD. This
+    is not used in python-ihm itself but can be used in python-modelcif.
+  - Bugfix: if a read mmCIF file defines a complete assembly, do not overwrite
+    its name and description on output (#92).
+  - Bugfix: only allow clustering methods/features that are supported by
+    the underlying IHM dictionary for :class:`ihm.model.Ensemble` (#94).
+  - Bugfix: categories such as ``_struct`` that are not typically looped
+    now support multi-line strings (ihmwg/python-modelcif#27).
+
 0.33 - 2022-06-27
 =================
   - Improve reading of mmCIF files with incomplete data (#86, #87) or with

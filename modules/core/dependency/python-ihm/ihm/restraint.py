@@ -370,7 +370,8 @@ class CrossLinkPseudoSite(object):
 
 
 class ResidueCrossLink(CrossLink):
-    """A cross-link used in the modeling, applied to residue alpha carbon atoms.
+    """A cross-link used in the modeling, applied to residue
+       alpha carbon atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified
               by experiment. Multiple cross-links can map to a single

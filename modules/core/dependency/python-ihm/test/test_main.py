@@ -312,7 +312,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.pmid, 29539637)
         self.assertEqual(c.doi, '10.1038/nature26003')
         self.assertEqual(len(c.authors), 32)
-        self.assertEqual(c.authors[0], 'Kim SJ')
+        self.assertEqual(c.authors[0], 'Kim, S.J.')
 
     def test_citation_from_pubmed_id_one_page(self):
         """Test Citation.from_pubmed_id() with page rather than range"""

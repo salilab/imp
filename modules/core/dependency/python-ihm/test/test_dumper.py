@@ -700,6 +700,18 @@ THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
 #
 """)
 
+    def test_chem_comp_ccd_descriptors(self):
+        """Test ChemCompDumper with ccd or descriptors"""
+        system = ihm.System()
+
+        comp1 = ihm.NonPolymerChemComp("C1", name='C1', ccd='MA')
+        comp2 = ihm.NonPolymerChemComp("C2", name='C2',
+                                       descriptors=['foo', 'bar'])
+        system.entities.append(ihm.Entity([comp1, comp2]))
+        dumper = ihm.dumper._ChemCompDumper()
+        # Cannot output ChemComp with ccd or descriptors to IHM files
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+
     def test_chem_descriptor_dumper(self):
         """Test ChemDescriptorDumper"""
         system = ihm.System()

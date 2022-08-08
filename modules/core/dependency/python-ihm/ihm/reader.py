@@ -832,13 +832,13 @@ class Handler(object):
     def get_bool(self, val):
         """Convert val to bool and return, or leave as is if None
            or ihm.unknown"""
-        return(self._boolmap.get(val.upper(), None)
-               if val is not None and val is not ihm.unknown else val)
+        return (self._boolmap.get(val.upper(), None)
+                if val is not None and val is not ihm.unknown else val)
 
     def get_lower(self, val):
         """Return lowercase string val or leave as is if None or ihm.unknown"""
-        return(val.lower()
-               if val is not None and val is not ihm.unknown else val)
+        return (val.lower()
+                if val is not None and val is not ihm.unknown else val)
 
     def finalize(self):
         """Called at the end of each data block."""
@@ -1235,9 +1235,12 @@ class _AssemblyHandler(Handler):
 
 
 class _AssemblyDetailsHandler(Handler):
-    # todo: figure out how to populate System.complete_assembly
     category = '_ihm_struct_assembly_details'
     ignored_keywords = ['ordinal_id', 'entity_description']
+
+    def __init__(self, *args):
+        super(_AssemblyDetailsHandler, self).__init__(*args)
+        self._read_args = []
 
     def __call__(self, assembly_id, parent_assembly_id, entity_poly_segment_id,
                  asym_id, entity_id):
@@ -1250,13 +1253,26 @@ class _AssemblyDetailsHandler(Handler):
             obj = self.sysr.asym_units.get_by_id(asym_id)
         else:
             obj = self.sysr.entities.get_by_id(entity_id)
-        a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
+        # Postpone filling in range until finalize time, as we may not have
+        # read segments yet
+        self._read_args.append((a, obj, entity_poly_segment_id))
 
     def finalize(self):
-        # Any EntityRange or AsymUnitRange which covers an entire entity,
-        # replace with Entity or AsymUnit object
+        for (a, obj, entity_poly_segment_id) in self._read_args:
+            a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
+
+        self.system._make_complete_assembly()
+        tup_complete = tuple(self.system.complete_assembly)
+
         for a in self.system.orphan_assemblies:
+            # Any EntityRange or AsymUnitRange which covers an entire entity,
+            # replace with Entity or AsymUnit object
             a[:] = [self._handle_component(x) for x in a]
+            # If the input file defines the complete assembly, transfer
+            # user-provided info to system.complete_assembly
+            if tuple(a) == tup_complete:
+                self.system.complete_assembly.name = a.name
+                self.system.complete_assembly.description = a.description
 
     def _handle_component(self, comp):
         if isinstance(comp, ihm.EntityRange) \
@@ -1471,23 +1487,39 @@ class _ModelRepresentationDetailsHandler(Handler):
                         'multi-residue': _make_multi_residue_segment,
                         'by-feature': _make_feature_segment}
 
+    def __init__(self, *args):
+        super(_ModelRepresentationDetailsHandler, self).__init__(*args)
+        self._read_args = []
+
     def __call__(self, entity_asym_id, entity_poly_segment_id,
                  representation_id, starting_model_id, model_object_primitive,
                  model_granularity, model_object_count, model_mode,
                  description):
-        asym = self.sysr.ranges.get(
-            self.sysr.asym_units.get_by_id(entity_asym_id),
-            entity_poly_segment_id)
-        rep = self.sysr.representations.get_by_id(representation_id)
-        smodel = self.sysr.starting_models.get_by_id_or_none(starting_model_id)
-        primitive = self.get_lower(model_object_primitive)
-        gran = self.get_lower(model_granularity)
-        primitive = self.get_lower(model_object_primitive)
-        count = self.get_int(model_object_count)
-        rigid = self._rigid_map[self.get_lower(model_mode)]
-        segment = self._segment_factory[gran](asym, rigid, primitive,
-                                              count, smodel, description)
-        rep.append(segment)
+        # Postpone until finalize time as we may not have segments yet
+        self._read_args.append(
+            (entity_asym_id, entity_poly_segment_id,
+             representation_id, starting_model_id, model_object_primitive,
+             model_granularity, model_object_count, model_mode, description))
+
+    def finalize(self):
+        for (entity_asym_id, entity_poly_segment_id,
+             representation_id, starting_model_id, model_object_primitive,
+             model_granularity, model_object_count, model_mode,
+             description) in self._read_args:
+            asym = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(entity_asym_id),
+                entity_poly_segment_id)
+            rep = self.sysr.representations.get_by_id(representation_id)
+            smodel = self.sysr.starting_models.get_by_id_or_none(
+                starting_model_id)
+            primitive = self.get_lower(model_object_primitive)
+            gran = self.get_lower(model_granularity)
+            primitive = self.get_lower(model_object_primitive)
+            count = self.get_int(model_object_count)
+            rigid = self._rigid_map[self.get_lower(model_mode)]
+            segment = self._segment_factory[gran](
+                asym, rigid, primitive, count, smodel, description)
+            rep.append(segment)
 
 
 # todo: support user subclass of StartingModel, pass it coordinates, seqdif
@@ -1756,11 +1788,18 @@ class _EnsembleHandler(Handler):
         ensemble.post_process = pp
         ensemble.file = f
         ensemble.details = details
+        # Default to "other" if invalid method/feature read
+        try:
+            ensemble.clustering_method = ensemble_clustering_method
+        except ValueError:
+            ensemble.clustering_method = "Other"
+        try:
+            ensemble.clustering_feature = ensemble_clustering_feature
+        except ValueError:
+            ensemble.clustering_feature = "other"
         self.copy_if_present(
             ensemble, locals(),
-            mapkeys={'ensemble_name': 'name',
-                     'ensemble_clustering_method': 'clustering_method',
-                     'ensemble_clustering_feature': 'clustering_feature'})
+            mapkeys={'ensemble_name': 'name'})
 
     def finalize(self):
         for e in self.sysr.system.ensembles:
@@ -1791,17 +1830,30 @@ class _SubsampleHandler(Handler):
 class _DensityHandler(Handler):
     category = '_ihm_localization_density_files'
 
+    def __init__(self, *args):
+        super(_DensityHandler, self).__init__(*args)
+        self._read_args = []
+
     def __call__(self, id, ensemble_id, file_id, asym_id,
                  entity_poly_segment_id):
-        density = self.sysr.densities.get_by_id(id)
-        ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
-        f = self.sysr.external_files.get_by_id(file_id)
+        # Postpone handling until finalize time, since we might not have
+        # ranges to resolve entity_poly_segment_id yet
+        self._read_args.append((id, ensemble_id, file_id, asym_id,
+                                entity_poly_segment_id))
 
-        asym = self.sysr.ranges.get(self.sysr.asym_units.get_by_id(asym_id),
-                                    entity_poly_segment_id)
-        density.asym_unit = asym
-        density.file = f
-        ensemble.densities.append(density)
+    def finalize(self):
+        for (id, ensemble_id, file_id, asym_id,
+                entity_poly_segment_id) in self._read_args:
+            density = self.sysr.densities.get_by_id(id)
+            ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
+            f = self.sysr.external_files.get_by_id(file_id)
+
+            asym = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(asym_id),
+                entity_poly_segment_id)
+            density.asym_unit = asym
+            density.file = f
+            ensemble.densities.append(density)
 
 
 class _EM3DRestraintHandler(Handler):
@@ -2396,6 +2448,7 @@ class _CrossLinkListHandler(Handler):
     def __init__(self, *args):
         super(_CrossLinkListHandler, self).__init__(*args)
         self._seen_group_ids = set()
+        self._linker_type = {}
 
     def _get_linker_by_name(self, name):
         """Look up old-style linker, by name rather than descriptor"""
@@ -2417,6 +2470,8 @@ class _CrossLinkListHandler(Handler):
         else:
             linker = self.sysr.chem_descriptors.get_by_id(
                 linker_chem_comp_descriptor_id)
+            if linker_type:
+                self._linker_type[linker] = linker_type
         # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
         r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
@@ -2435,6 +2490,12 @@ class _CrossLinkListHandler(Handler):
     def _get_entity_residue(self, entity_id, seq_id):
         entity = self.sysr.entities.get_by_id(entity_id)
         return entity.residue(int(seq_id))
+
+    def finalize(self):
+        # If any ChemDescriptor has an empty name, fill it in using linker_type
+        for d in self.system.orphan_chem_descriptors:
+            if d.auth_name is None:
+                d.auth_name = self._linker_type.get(d)
 
 
 class _CrossLinkRestraintHandler(Handler):

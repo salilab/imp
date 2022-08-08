@@ -216,6 +216,10 @@ class _ChemCompDumper(Dumper):
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as lp:
             for comp in sorted(comps, key=operator.attrgetter('id')):
+                if comp.ccd or comp.descriptors:
+                    raise ValueError(
+                        "Non-default values for 'ccd' or 'descriptors' are "
+                        "not supported by the IHM dictionary for %s" % comp)
                 lp.write(id=comp.id, type=comp.type, name=comp.name,
                          formula=comp.formula,
                          formula_weight=comp.formula_weight)
@@ -1478,10 +1482,10 @@ class _ModelDumperBase(Dumper):
                                  "stored in State objects." % g)
 
     def dump_atom_type(self, seen_types, system, writer):
-        """Output the atom_type table with a list of elements used in atom_site.
-           This table is needed by atom_site. Note that we output it *after*
-           atom_site (otherwise we would need to iterate through all atoms in
-           the system twice)."""
+        """Output the atom_type table with a list of elements used
+           in atom_site. This table is needed by atom_site. Note that we
+           output it *after* atom_site (otherwise we would need to iterate
+           through all atoms in the system twice)."""
         elements = [x for x in sorted(seen_types.keys()) if x is not None]
         with writer.loop("_atom_type", ["symbol"]) as lp:
             for element in elements:

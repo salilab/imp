@@ -31,6 +31,14 @@ else:
     _long_type = long   # noqa: F821
 
 
+def _write_multiline(val, fh):
+    fh.write("\n;")
+    fh.write(val)
+    if not val.endswith('\n'):
+        fh.write("\n")
+    fh.write(";\n")
+
+
 class _LineWriter(object):
     def __init__(self, writer, line_len=80):
         self.writer = writer
@@ -39,11 +47,7 @@ class _LineWriter(object):
 
     def write(self, val):
         if isinstance(val, str) and '\n' in val:
-            self.writer.fh.write("\n;")
-            self.writer.fh.write(val)
-            if not val.endswith('\n'):
-                self.writer.fh.write("\n")
-            self.writer.fh.write(";\n")
+            _write_multiline(val, self.writer.fh)
             self.column = 0
             return
         val = '.' if val is None else self.writer._repr(val)
@@ -183,18 +187,22 @@ class CifWriter(_Writer):
 
     def _write(self, category, kwargs):
         for key, val in sorted(kwargs.items(), key=operator.itemgetter(0)):
-            self.fh.write("%s.%s %s\n" % (category, key,
-                                          self.omitted if val is None
-                                          else self._repr(val)))
+            if isinstance(val, str) and '\n' in val:
+                self.fh.write("%s.%s" % (category, key))
+                _write_multiline(val, self.fh)
+            else:
+                self.fh.write("%s.%s %s\n" % (category, key,
+                                              self.omitted if val is None
+                                              else self._repr(val)))
 
     def _repr(self, obj):
         if isinstance(obj, str) and '"' not in obj \
            and "'" not in obj and " " not in obj \
            and len(obj) > 0 \
            and not obj.startswith('_') \
-           and not obj.startswith('data_') \
+           and not obj.startswith('global_') \
            and not obj.startswith('[') \
-           and obj not in ('save_', 'loop_', 'stop_', 'global_', '?', '.'):
+           and obj[:5] not in ('data_', 'save_', 'loop_', 'stop_', '?', '.'):
             return obj
         elif isinstance(obj, float):
             if abs(obj) < 1e-3:

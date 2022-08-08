@@ -47,3 +47,7 @@ The :mod:`ihm.citations` Python module
 .. data:: alphafold2
 
    AlphaFold: ab-initio modeling of protein structures.
+
+.. data:: colabfold
+
+   ColabFold: accessible AlphaFold pipeline.

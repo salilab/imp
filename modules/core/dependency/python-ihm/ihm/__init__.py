@@ -20,7 +20,7 @@ except ImportError:
 import json
 from . import util
 
-__version__ = '0.33'
+__version__ = '0.34'
 
 
 class __UnknownValue(object):
@@ -91,7 +91,7 @@ class System(object):
         self.software = []
 
         #: List of all authors of this system, as a list of strings (last name
-        #: followed by initials, e.g. "Smith AJ"). When writing out a file,
+        #: followed by initials, e.g. "Smith, A.J."). When writing out a file,
         #: if this list is empty, the set of all citation authors (see
         #: :attr:`Citation.authors`) is used instead.
         self.authors = []
@@ -641,7 +641,7 @@ class Citation(object):
               int tuple). Using str also works for labelled page numbers.
        :param int year: Year of publication.
        :param authors: All authors in order, as a list of strings (last name
-              followed by initials, e.g. "Smith AJ").
+              followed by initials, e.g. "Smith, A.J.").
        :param str doi: Digital Object Identifier of the publication.
        :param bool is_primary: Denotes the most pertinent publication for the
               modeling itself (as opposed to a method or piece of software used
@@ -699,6 +699,15 @@ class Citation(object):
         authors = [enc(x['name']) for x in ref['authors']
                    if x['authtype'] == 'Author']
 
+        # PubMed authors are usually of the form "Lastname AB" but PDB uses
+        # "Lastname, A.B." so map one to the other if possible
+        r = re.compile(r'(^\w+.*?)\s+(\w+)$')
+
+        def auth_sub(m):
+            return m.group(1) + ", " + "".join(initial + "."
+                                               for initial in m.group(2))
+        authors = [r.sub(auth_sub, auth) for auth in authors]
+
         return cls(pmid=pubmed_id, title=enc(ref['title']),
                    journal=enc(ref['source']),
                    volume=enc(ref['volume']) or None,
@@ -731,6 +740,18 @@ class ChemComp(object):
               in which case C and H precede the rest of the elements. For
               example, water would be "H2 O" and arginine (with +1 formal
               charge) "C6 H15 N4 O2 1".
+       :param str ccd: The chemical component dictionary (CCD) where
+              this component is defined. Can be "core" for the wwPDB CCD
+              (https://www.wwpdb.org/data/ccd), "ma" for the ModelArchive CCD,
+              or "local" for a novel component that is defined in the mmCIF
+              file itself. If unspecified, defaults to "core" unless
+              ``descriptors`` is given in which case it defaults to "local".
+              This information is essentially ignored by python-ihm (since
+              the IHM dictionary has no support for custom CCDs) but is used
+              by python-modelcif.
+       :param list descriptors: When ``ccd`` is "local", this can be one or
+              more descriptor objects that describe the chemistry. python-ihm
+              does not define any, but python-modelcif does.
 
        For example, glycine would have
        ``id='GLY', code='G', code_canonical='G'`` while selenomethionine would
@@ -744,10 +765,12 @@ class ChemComp(object):
     _element_mass = {'H': 1.008, 'C': 12.011, 'N': 14.007, 'O': 15.999,
                      'P': 30.974, 'S': 32.060, 'Se': 78.971, 'Fe': 55.845}
 
-    def __init__(self, id, code, code_canonical, name=None, formula=None):
+    def __init__(self, id, code, code_canonical, name=None, formula=None,
+                 ccd=None, descriptors=None):
         self.id = id
         self.code, self.code_canonical, self.name = code, code_canonical, name
         self.formula = formula
+        self.ccd, self.descriptors = ccd, descriptors
 
     def __str__(self):
         return ('<%s.%s(%s)>'
@@ -833,12 +856,19 @@ class NonPolymerChemComp(ChemComp):
        :param str name: A longer human-readable name for the component.
        :param str formula: The chemical formula. See :class:`ChemComp` for
               more details.
+       :param str ccd: The chemical component dictionary (CCD) where
+              this component is defined. See :class:`ChemComp` for
+              more details.
+       :param list descriptors: Information on the component's chemistry.
+              See :class:`ChemComp` for more details.
     """
     type = "non-polymer"
 
-    def __init__(self, id, code_canonical='X', name=None, formula=None):
-        super(NonPolymerChemComp, self).__init__(id, id, code_canonical,
-                                                 name=name, formula=formula)
+    def __init__(self, id, code_canonical='X', name=None, formula=None,
+                 ccd=None, descriptors=None):
+        super(NonPolymerChemComp, self).__init__(
+            id, id, code_canonical, name=name, formula=formula,
+            ccd=ccd, descriptors=descriptors)
 
 
 class WaterChemComp(NonPolymerChemComp):
@@ -1173,7 +1203,7 @@ class Entity(object):
 
     # Entities are considered identical if they have the same sequence
     def __eq__(self, other):
-        return self.sequence == other.sequence
+        return isinstance(other, Entity) and self.sequence == other.sequence
 
     def __hash__(self):
         return hash(self.sequence)
@@ -1345,11 +1375,11 @@ class Assembly(list):
 
 
 class ChemDescriptor(object):
-    """Description of a non-polymeric chemical component used in the experiment.
-       For example, this might be a fluorescent probe or cross-linking agent.
-       This class describes the chemical structure of the component, for
-       example with a SMILES or INCHI descriptor, so that it is uniquely
-       defined. A descriptor is typically assigned to a
+    """Description of a non-polymeric chemical component used in the
+       experiment. For example, this might be a fluorescent probe or
+       cross-linking agent. This class describes the chemical structure of
+       the component, for example with a SMILES or INCHI descriptor, so that
+       it is uniquely defined. A descriptor is typically assigned to a
        :class:`ihm.restraint.CrossLinkRestraint`.
 
        See :mod:`ihm.cross_linkers` for chemical descriptors of some
