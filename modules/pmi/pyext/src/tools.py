@@ -314,9 +314,9 @@ def get_grid(gmin, gmax, ngrid, boundaries):
     grid = []
     dx = (gmax - gmin) / float(ngrid)
     for i in range(0, ngrid + 1):
-        if(not boundaries and i == 0):
+        if not boundaries and i == 0:
             continue
-        if(not boundaries and i == ngrid):
+        if not boundaries and i == ngrid:
             continue
         grid.append(gmin + float(i) * dx)
     return grid

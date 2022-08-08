@@ -341,7 +341,7 @@ class _RepresentationHandler(object):
             pdb = self._get_pdb(h)
             self.last_index = pi
             if pdb:
-                assert(IMP.atom.Fragment.get_is_setup(h.get_parent()))
+                assert IMP.atom.Fragment.get_is_setup(h.get_parent())
                 frag = IMP.atom.Fragment(h.get_parent())
                 fragi = frag.get_particle_index()
                 # Do nothing if we already saw this PDB fragment
