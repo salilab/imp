@@ -31,8 +31,14 @@ def setup_system(coords, use_container):
         rs = IMP.container.SingletonsRestraint(sps, lsc)
     else:
         prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
+        # Split restraints between two RestraintSets
+        rs1 = IMP.RestraintSet(m)
+        rs1.add_restraints(prs[:2])
+        rs2 = IMP.RestraintSet(m)
+        rs2.add_restraints(prs[2:])
+        # Test scoring of nested RestraintSets
         rs = IMP.RestraintSet(m)
-        rs.add_restraints(prs)
+        rs.add_restraints([rs1, rs2])
     mc.set_scoring_function(rs)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))

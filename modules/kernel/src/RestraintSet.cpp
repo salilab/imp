@@ -161,14 +161,6 @@ double RestraintSet::get_last_score() const {
   return ret;
 }
 
-double RestraintSet::get_last_last_score() const {
-  double ret = 0;
-  for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
-    ret += get_restraint(i)->get_last_last_score();
-  }
-  return ret;
-}
-
 std::pair<RestraintsTemp, RestraintSetsTemp>
 RestraintSet::get_non_sets_and_sets() const {
   std::pair<RestraintsTemp, RestraintSetsTemp> ret;
@@ -196,7 +188,13 @@ void RestraintSet::on_add(Restraint *obj) {
   obj->set_was_used(true);
   IMP_USAGE_CHECK(obj != this, "Cannot add a restraint set to itself");
 }
-void RestraintSet::on_change() { set_has_dependencies(false); }
+
+void RestraintSet::on_change() {
+  set_has_dependencies(false);
+  // last-last score isn't just the sum of each restraint's last-last score,
+  // so just invalidate it when we add/remove restraints to force recalculation
+  set_last_last_score(BAD_SCORE);
+}
 
 ModelObjectsTemp RestraintSet::do_get_inputs() const {
   return ModelObjectsTemp(restraints_begin(), restraints_end());
