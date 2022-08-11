@@ -38,7 +38,11 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
                                           const MonteCarloMoverResult &moved) {
   bool ok = false;
   double proposal_ratio = moved.get_proposal_ratio();
-  if (score < last) {
+  // If score is exactly the same as last (e.g. no-op mover) add a small delta
+  // to always treat as an uphill move, so we get consistent trajectories
+  // for score_moved=True vs False (depending on machine floating point
+  // precision, x<y may return true when x==y).
+  if (score + 1e-9 < last) {
     ++stat_downward_steps_taken_;
     ok = true;
     if (score < best_energy_ && return_best_) {

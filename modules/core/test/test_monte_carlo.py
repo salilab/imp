@@ -36,6 +36,8 @@ def setup_system(coords, use_container):
     mc.set_scoring_function(rs)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
+    # No restraints on ps[9], so this should not change the score
+    ms.append(IMP.core.BallMover(m, ps[9], 0.05))
     mv = IMP.core.SerialMover(ms)
     mc.add_mover(mv)
     # Always reject upwards moves
