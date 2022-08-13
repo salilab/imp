@@ -65,6 +65,12 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sf.evaluate(False), 2)
         print(rs)
 
+    def test_aggregate(self):
+        """Test get_is_aggregate()"""
+        m, rs, r0, r1, r2 = self._make_stuff()
+        self.assertFalse(r1.get_is_aggregate())
+        self.assertTrue(rs.get_is_aggregate())
+
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
         (m, rs, r0, r1, r2) = self._make_stuff()

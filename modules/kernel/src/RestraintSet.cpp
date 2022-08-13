@@ -23,11 +23,13 @@ RestraintSet::RestraintSet(Model *m, double weight,
                            const std::string &name)
     : Restraint(m, name) {
   set_weight(weight);
+  is_aggregate_ = true;
 }
 
 RestraintSet::RestraintSet(Model *m, const std::string &name)
     : Restraint(m, name) {
   set_weight(1.0);
+  is_aggregate_ = true;
 }
 
 RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
@@ -35,6 +37,7 @@ RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
     : Restraint(internal::get_model(rs), name) {
   set_weight(weight);
   set_restraints(rs);
+  is_aggregate_ = true;
 }
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint *, Restraints);
