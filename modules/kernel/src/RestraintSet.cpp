@@ -129,14 +129,20 @@ void RestraintSet::do_add_score_and_derivatives_moved(
           r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
         }
       } else if (reset_set.find(r) != reset_set.end()) {
-        // If reset, we can use the last-but-one score
-        double score = r->get_last_last_score();
-        add_last_score_restraint(r, sa,
+        // If reset, we can use the last-but-one score, unless it is an
+        // aggregate restraint (e.g. another RestraintSet), in which case
+        // have the restraint itself figure out what to return
+        if (r->get_is_aggregate()) {
+          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+        } else {
+          double score = r->get_last_last_score();
+          add_last_score_restraint(r, sa,
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-                                 moved_pis, reset_pis,
+                                   moved_pis, reset_pis,
 #endif
-                                 score);
-        r->set_last_score(score);
+                                   score);
+          r->set_last_score(score);
+        }
       } else {
         // If not moved, we can use the last score
         add_last_score_restraint(r, sa,
