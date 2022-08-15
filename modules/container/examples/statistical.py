@@ -2,6 +2,7 @@
 # This example shows how to create a simple statistical potential using
 # the PredicatePairsRestraint.
 
+from __future__ import division
 import IMP
 import IMP.core
 import IMP.atom
@@ -38,7 +39,7 @@ class PairTypePredicate(IMP.PairPredicate):
             return -1
         # Particle types 0,0 map to unique index 0; 1,0 or 0,1 to 1; 1,1 to 2
         ts = sorted(m.get_attribute(ik, pi) for pi in pis)
-        ind = (ts[1] * ts[1]+1)/2 + ts[0]
+        ind = (ts[1] * ts[1]+1) // 2 + ts[0]
         print("particle pair %s types %s map to %d" % (pis, ts, ind))
         return ind
 
