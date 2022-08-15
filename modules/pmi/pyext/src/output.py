@@ -1798,9 +1798,14 @@ def plot_field_histogram(name, values_lists, valuename=None, bins=40,
             label = leg_names[nv]
         else:
             label = str(nv)
-        plt.hist(
-            [float(y) for y in values], bins=bins, color=col,
-            density=normalized, histtype='step', lw=4, label=label)
+        try:
+            plt.hist(
+                [float(y) for y in values], bins=bins, color=col,
+                density=normalized, histtype='step', lw=4, label=label)
+        except AttributeError:
+            plt.hist(
+                [float(y) for y in values], bins=bins, color=col,
+                normed=normalized, histtype='step', lw=4, label=label)
 
     # plt.title(name,size="xx-large")
     plt.tick_params(labelsize=12, pad=10)
