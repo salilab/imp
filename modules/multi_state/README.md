@@ -11,6 +11,11 @@ will therefore fail - two models need to be constructed.
 Command line tool to enumerate multi-state models with SAXS profiles.
 See also IMP::foxs for the similar FoXS command line tool.
 
+# multi_foxs_combination {#multi_foxs_combination_bin}
+Command line tool to enumerate additions (such as glycans or ions) to a model with SAXS profiles.
+See also IMP::foxs for the similar FoXS command line tool.
+
+
 # Info
 
 _Author(s)_: Dina Schneidman

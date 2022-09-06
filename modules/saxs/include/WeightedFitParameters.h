@@ -23,8 +23,11 @@ class WeightedFitParameters : public FitParameters {
   WeightedFitParameters() : FitParameters() {}
 
   WeightedFitParameters(double chi_square, double c1, double c2,
-                        const Vector<double>& weights)
+                        const Vector<double>& weights = Vector<double>())
       : FitParameters(chi_square, c1, c2), weights_(weights) {}
+
+  WeightedFitParameters(const FitParameters& fp) :
+    FitParameters(fp) {}
 
   const Vector<double>& get_weights() const { return weights_; }
 
