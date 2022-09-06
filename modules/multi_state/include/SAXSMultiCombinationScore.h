@@ -220,6 +220,7 @@ void SAXSMultiCombinationScore<ScoringFunctionT>::write_fit_file(MultiStateModel
                                         const saxs::WeightedFitParameters& fp,
                                         const std::string fit_file_name) const {
 
+  IMP_UNUSED(fp);
   const Vector<unsigned int>& states = m.get_states();
 
   IMP_NEW(saxs::Profile, combined_profile,(main_profile_->get_min_q(),
