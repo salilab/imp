@@ -30,6 +30,7 @@ class Tests(IMP.test.ApplicationTestCase):
             for e in expected:
                 os.unlink(e)
 
+    @IMP.test.expectedFailure
     def test_multi_foxs_combination(self):
         """Test multi_foxs with RNA example"""
         cmds = ["multi_foxs_combination --help",
