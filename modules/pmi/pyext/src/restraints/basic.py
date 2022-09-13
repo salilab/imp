@@ -258,8 +258,10 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
                copy number (=0))
         @param anchor_point Point to which to restrain particle
                (IMP.algebra.Vector3D object)
-        @param radius Size of the tolerance length
-        @param kappa Strength of the harmonic restraint
+        @param radius Maximum distance the particle can move from the
+               fixed point before it is restrained
+        @param kappa Strength of the harmonic restraint for point-particle
+               distance greater than the radius
         @param resolution For selecting a particle
         @param weight Weight of restraint
         @param label A unique label to be used in outputs and
