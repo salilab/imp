@@ -48,7 +48,7 @@ class Tests(unittest.TestCase):
         cc = ihm.ChemComp('X', 'X', 'X', formula='C90H')
         self.assertRaises(ValueError, lambda x: x.formula_weight, cc)
         # Formula with unknown element
-        cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Y')
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Es')
         self.assertIsNone(cc.formula_weight)
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
@@ -343,6 +343,23 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.entity, e)
         self.assertIsNone(r.asym)
         self.assertEqual(r.seq_id, 3)
+
+    def test_water_asym(self):
+        """Test WaterAsymUnit class"""
+        e = ihm.Entity('AHCDAH')
+        water = ihm.Entity([ihm.WaterChemComp()])
+        a = ihm.AsymUnit(e)
+        self.assertEqual(a.seq_id_range, (1, 6))
+        self.assertEqual(len(a.sequence), 6)
+        self.assertEqual(a.number_of_molecules, 1)
+
+        a = ihm.WaterAsymUnit(water, number=3)
+        self.assertEqual(a.seq_id_range, (1, 3))
+        self.assertEqual(len(a.sequence), 3)
+        self.assertEqual(a.number_of_molecules, 3)
+
+        self.assertRaises(TypeError, ihm.AsymUnit, water)
+        self.assertRaises(TypeError, ihm.WaterAsymUnit, e)
 
     def test_asym_unit_residue(self):
         """Test Residue derived from an AsymUnit"""

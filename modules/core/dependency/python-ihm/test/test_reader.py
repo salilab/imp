@@ -2058,6 +2058,58 @@ ATOM   9  C CA  . MET . . 1 ?  3.000 3.000 3.000 1.00   0.95 0 D 1
         self.assertEqual("".join(c.code_canonical for c in a1.entity.sequence),
                          "MCMS")
 
+    def test_atom_site_handler_water(self):
+        """Test AtomSiteHandler reading water molecules"""
+        fh = StringIO("""
+loop_
+_entity.id
+_entity.type
+1 water
+#
+loop_
+_pdbx_nonpoly_scheme.asym_id
+_pdbx_nonpoly_scheme.entity_id
+_pdbx_nonpoly_scheme.mon_id
+_pdbx_nonpoly_scheme.ndb_seq_num
+_pdbx_nonpoly_scheme.pdb_seq_num
+_pdbx_nonpoly_scheme.auth_seq_num
+_pdbx_nonpoly_scheme.auth_mon_id
+_pdbx_nonpoly_scheme.pdb_strand_id
+_pdbx_nonpoly_scheme.pdb_ins_code
+A 1 HOH 1 6 6 HOH A .
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.label_entity_id
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+HETATM 1 O O . HOH . 6 ? A 10.000 10.000 10.000 . 1 A . 1 1
+HETATM 2 O O . HOH . 7 . A 20.000 20.000 20.000 . 1 A . 1 1
+""")
+        s, = ihm.reader.read(fh)
+        m = s.state_groups[0][0][0][0]
+        a1, a2 = m._atoms
+        # First atom is in pdbx_nonpoly_scheme with
+        # ndb_seq_num=1, pdb_seq_num=6
+        self.assertEqual(a1.seq_id, 1)
+        # Second atom is not in pdbx_nonpoly_scheme, so we keep auth_seq_id
+        self.assertEqual(a2.seq_id, 7)
+
     def test_derived_distance_restraint_handler(self):
         """Test DerivedDistanceRestraintHandler"""
         feats = """

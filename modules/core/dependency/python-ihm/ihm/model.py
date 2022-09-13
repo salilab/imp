@@ -42,8 +42,9 @@ class Atom(object):
 
        :param asym_unit: The asymmetric unit that this atom represents
        :type asym_unit: :class:`ihm.AsymUnit`
-       :param int seq_id: The residue index represented by this atom
-              (can be None for HETATM sites)
+       :param int seq_id: The sequence ID of the residue represented by this
+              atom. This should generally be a number starting at 1 for any
+              polymer chain or water, or None for a ligand.
        :param str atom_id: The name of the atom in the residue
        :param str type_symbol: Element name
        :param float x: x coordinate of the atom

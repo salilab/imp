@@ -763,7 +763,27 @@ class ChemComp(object):
     type = 'other'
 
     _element_mass = {'H': 1.008, 'C': 12.011, 'N': 14.007, 'O': 15.999,
-                     'P': 30.974, 'S': 32.060, 'Se': 78.971, 'Fe': 55.845}
+                     'P': 30.974, 'S': 32.060, 'Se': 78.971, 'Fe': 55.845,
+                     'Ac': 227.028, 'Ag': 107.868, 'Al': 26.982, 'Ar': 39.948,
+                     'As': 74.922, 'Au': 196.966, 'B': 10.81, 'Ba': 137.327,
+                     'Be': 9.012, 'Bi': 208.98, 'Br': 79.904, 'Ca': 40.078,
+                     'Cd': 112.414, 'Ce': 140.116, 'Cl': 35.453, 'Co': 58.933,
+                     'Cr': 51.996, 'Cs': 132.905, 'Cu': 63.546, 'Dy': 162.5,
+                     'Er': 167.259, 'Eu': 151.964, 'F': 18.998, 'Ga': 69.723,
+                     'Gd': 157.25, 'Ge': 72.53, 'He': 4.003, 'Hf': 178.486,
+                     'Hg': 200.592, 'Ho': 164.93, 'I': 126.904, 'In': 114.818,
+                     'Ir': 192.217, 'K': 39.098, 'Kr': 83.798, 'La': 138.905,
+                     'Li': 6.938, 'Lu': 174.967, 'Mg': 24.305, 'Mn': 54.938,
+                     'Mo': 95.95, 'Na': 22.99, 'Nb': 92.906, 'Nd': 144.242,
+                     'Ne': 20.180, 'Ni': 58.693, 'Np': 237.0, 'Os': 190.23,
+                     'Pa': 231.036, 'Pb': 207.2, 'Pd': 106.42, 'Pr': 140.908,
+                     'Pt': 195.084, 'Ra': 226.025, 'Rb': 85.468, 'Re': 186.207,
+                     'Rh': 102.906, 'Ru': 101.07, 'Sb': 121.760, 'Sc': 44.956,
+                     'Si': 28.086, 'Sm': 150.36, 'Sn': 118.710, 'Sr': 87.62,
+                     'Ta': 180.948, 'Tb': 158.925, 'Te': 127.6, 'Th': 232.038,
+                     'Ti': 47.867, 'Tl': 204.383, 'Tm': 168.934, 'U': 238.029,
+                     'V': 50.942, 'W': 183.84, 'Xe': 131.293, 'Y': 88.906,
+                     'Yb': 173.045, 'Zn': 65.38, 'Zr': 91.224}
 
     def __init__(self, id, code, code_canonical, name=None, formula=None,
                  ccd=None, descriptors=None):
@@ -1134,7 +1154,6 @@ class Entity(object):
        see :attr:`System.entities`.
     """  # noqa: E501
 
-    number_of_molecules = 1
     _force_polymer = None
 
     def __get_type(self):
@@ -1271,6 +1290,9 @@ class AsymUnit(object):
     """An asymmetric unit, i.e. a unique instance of an Entity that
        was modeled.
 
+       Note that this class should not be used to describe crystal waters;
+       for that, see :class:`WaterAsymUnit`.
+
        :param entity: The unique sequence of this asymmetric unit.
        :type entity: :class:`Entity`
        :param str details: Longer text description of this unit.
@@ -1300,8 +1322,13 @@ class AsymUnit(object):
        See :attr:`System.asym_units`.
     """
 
+    number_of_molecules = 1
+
     def __init__(self, entity, details=None, auth_seq_id_map=0, id=None,
                  strand_id=None):
+        if (entity is not None and entity.type == 'water'
+                and not isinstance(self, WaterAsymUnit)):
+            raise TypeError("Use WaterAsymUnit instead for creating waters")
         self.entity, self.details = entity, details
         self.auth_seq_id_map = auth_seq_id_map
         self.id = id
@@ -1340,8 +1367,42 @@ class AsymUnit(object):
     seq_id_range = property(lambda self: self.entity.seq_id_range,
                             doc="Sequence range")
 
+    sequence = property(lambda self: self.entity.sequence,
+                        doc="Primary sequence")
+
     strand_id = property(lambda self: self._strand_id or self._id,
                          doc="PDB or author-provided strand/chain ID")
+
+
+class WaterAsymUnit(AsymUnit):
+    """A collection of crystal waters, all with the same "chain" ID.
+
+       :param int number: The number of water molecules in this unit.
+
+       For more information on this class and the rest of the parameters,
+       see :class:`AsymUnit`.
+
+    """
+
+    def __init__(self, entity, number, details=None, auth_seq_id_map=0,
+                 id=None, strand_id=None):
+        if entity.type != 'water':
+            raise TypeError(
+                "WaterAsymUnit can only be used for water entities")
+        super(WaterAsymUnit, self).__init__(
+            entity, details=details, auth_seq_id_map=auth_seq_id_map,
+            id=id, strand_id=strand_id)
+        self.number = number
+        self._water_sequence = [entity.sequence[0]] * number
+
+    seq_id_range = property(lambda self: (1, self.number),
+                            doc="Sequence range")
+
+    sequence = property(lambda self: self._water_sequence,
+                        doc="Primary sequence")
+
+    number_of_molecules = property(lambda self: self.number,
+                                   doc="Number of molecules")
 
 
 class Assembly(list):

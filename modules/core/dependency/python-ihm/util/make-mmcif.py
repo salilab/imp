@@ -12,7 +12,7 @@ then writing it out again, so
   a) any data in the input file that is not understood by python-ihm
      will be lost on output; and
   b) input files that aren't compliant with the PDBx dictionary, or that
-     contain syntax errors or other problems may crash or otherwise confuse
+     contain syntax errors or other problems, may crash or otherwise confuse
      python-ihm.
 """
 

@@ -381,12 +381,19 @@ NSF 'United States' bar 2
     def test_entity_dumper(self):
         """Test EntityDumper"""
         system = ihm.System()
-        system.entities.append(ihm.Entity('AHC', description='foo',
-                                          source=ihm.source.Manipulated()))
-        system.entities.append(ihm.Entity('AHCD', description='baz',
-                                          source=ihm.source.Natural()))
-        system.entities.append(ihm.Entity('AHD', description='bar',
-                                          source=ihm.source.Synthetic()))
+        e1 = ihm.Entity('AHC', description='foo',
+                        source=ihm.source.Manipulated())
+        e2 = ihm.Entity('AHCD', description='baz',
+                        source=ihm.source.Natural())
+        e3 = ihm.Entity('AHD', description='bar',
+                        source=ihm.source.Synthetic())
+        water = ihm.Entity([ihm.WaterChemComp()])
+        system.entities.extend((e1, e2, e3, water))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'bar'))
+        system.asym_units.append(ihm.AsymUnit(e3, 'baz1'))
+        system.asym_units.append(ihm.AsymUnit(e3, 'baz2'))
+        system.asym_units.append(ihm.WaterAsymUnit(water, number=10))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
@@ -401,7 +408,8 @@ _entity.pdbx_number_of_molecules
 _entity.details
 1 polymer man foo 366.413 1 .
 2 polymer nat baz 499.516 1 .
-3 polymer syn bar 378.362 1 .
+3 polymer syn bar 378.362 2 .
+4 water nat . 18.015 10 .
 #
 """)
 
@@ -1838,12 +1846,15 @@ _ihm_model_group_link.model_id
         state = ihm.model.State()
         system.state_groups.append(ihm.model.StateGroup([state]))
         if water:
-            e1 = ihm.Entity([ihm.WaterChemComp()] * 3)
+            e1 = ihm.Entity([ihm.WaterChemComp()])
         else:
             e1 = ihm.Entity('ACGT')
         e1._id = 9
         system.entities.append(e1)
-        asym = ihm.AsymUnit(e1, 'foo')
+        if water:
+            asym = ihm.WaterAsymUnit(e1, number=3, details='foo')
+        else:
+            asym = ihm.AsymUnit(e1, 'foo')
         asym._id = 'X'
         system.asym_units.append(asym)
         protocol = MockObject()
@@ -1973,12 +1984,15 @@ _ihm_model_group_link.model_id
         model.representation.append(s)
 
         rngcheck = ihm.dumper._RangeChecker(model)
-        atom = ihm.model.Atom(asym_unit=asym, seq_id=None, atom_id='O',
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='O',
                               type_symbol='O', x=1.0, y=2.0, z=3.0, het=True)
         rngcheck(atom)
-        atom = ihm.model.Atom(asym_unit=asym, seq_id=None, atom_id='O',
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='O',
                               type_symbol='O', x=1.0, y=2.0, z=3.0, het=True)
         rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='O',
+                              type_symbol='O', x=1.0, y=2.0, z=3.0, het=True)
+        self.assertRaises(ValueError, rngcheck, atom)
 
     def test_range_checker_repr_asym(self):
         """Test RangeChecker class checking representation asym ID match"""
@@ -2335,6 +2349,39 @@ N
             ["ATOM 1 C C . ALA 1 42 ? X 1.000 2.000 3.000 . 9 X . 1 1",
              "ATOM 3 N N . CYS 2 99 ? X 4.000 5.000 6.000 "
              "0.200 9 X 42.000 1 1"])
+
+    def test_model_dumper_water_atoms(self):
+        """Test ModelDumper with water atoms"""
+        system, model, asym = self._make_test_model(water=True)
+
+        # Replace test model's residue representation with atomic
+        s = ihm.representation.AtomicSegment(asym, rigid=False)
+        r = ihm.representation.Representation([s])
+        r._id = 32
+        model.representation = r
+
+        # No mapping for third water, so will get auth_seq_id=3
+        asym.auth_seq_id_map = {1: 42, 2: 99}
+
+        model._atoms = [ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='O',
+                                       type_symbol='O', het=True,
+                                       x=1.0, y=2.0, z=3.0),
+                        ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='O',
+                                       type_symbol='O', het=True,
+                                       x=4.0, y=5.0, z=6.0),
+                        ihm.model.Atom(asym_unit=asym, seq_id=3, atom_id='O',
+                                       type_symbol='O', het=True,
+                                       x=7.0, y=8.0, z=9.0)]
+
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system)  # assign model/group IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(
+            out.split('\n')[43:46],
+            ['HETATM 1 O O . HOH . 42 ? X 1.000 2.000 3.000 . 9 X . 1 1',
+             'HETATM 2 O O . HOH . 99 ? X 4.000 5.000 6.000 . 9 X . 1 1',
+             'HETATM 3 O O . HOH . 3 ? X 7.000 8.000 9.000 . 9 X . 1 1'])
 
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""

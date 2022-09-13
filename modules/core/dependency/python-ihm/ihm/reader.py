@@ -1960,6 +1960,23 @@ class _AtomSiteHandler(Handler):
     def __init__(self, *args):
         super(_AtomSiteHandler, self).__init__(*args)
         self._missing_sequence = collections.defaultdict(dict)
+        self._seq_id_map = {}
+
+    def _get_water_seq_id(self, auth_seq_id, pdbx_pdb_ins_code, asym):
+        """Get an internal seq_id for a water, given author-provided info"""
+        if asym._id not in self._seq_id_map:
+            m = {}
+            # Make reverse mapping from author-provided info to seq_id
+            if isinstance(asym.auth_seq_id_map, dict):
+                for key, val in asym.auth_seq_id_map.items():
+                    m[val] = key
+            self._seq_id_map[asym._id] = m
+        m = self._seq_id_map[asym._id]
+        # Treat ? and . missing insertion codes equivalently
+        if pdbx_pdb_ins_code is ihm.unknown:
+            pdbx_pdb_ins_code = None
+        # If no match, use the author-provided numbering as-is
+        return m.get((auth_seq_id, pdbx_pdb_ins_code), auth_seq_id)
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
@@ -1978,6 +1995,12 @@ class _AtomSiteHandler(Handler):
             self._missing_sequence[asym][seq_id] = label_comp_id
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
+        auth_seq_id = self.get_int_or_string(auth_seq_id)
+        water = isinstance(asym, ihm.WaterAsymUnit)
+        if water:
+            # Fill in our internal seq_id if possible
+            seq_id = self._get_water_seq_id(auth_seq_id, pdbx_pdb_ins_code,
+                                            asym)
         biso = self.get_float(b_iso_or_equiv)
         occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
@@ -1988,9 +2011,8 @@ class _AtomSiteHandler(Handler):
             occupancy=occupancy)
         model.add_atom(a)
 
-        auth_seq_id = self.get_int_or_string(auth_seq_id)
         # Note any residues that have different seq_id and auth_seq_id
-        if (auth_seq_id is not None and
+        if (auth_seq_id is not None and not water and
                 (seq_id != auth_seq_id
                  or pdbx_pdb_ins_code not in (None, ihm.unknown))):
             if asym.auth_seq_id_map == 0:
@@ -2417,7 +2439,7 @@ class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
     def __call__(self, asym_id, entity_id, auth_seq_num, mon_id, pdb_ins_code,
-                 pdb_strand_id):
+                 pdb_strand_id, ndb_seq_num):
         entity = self.sysr.entities.get_by_id(entity_id)
         # nonpolymer entities generally have information on their chemical
         # component in pdbx_entity_nonpoly, but if that's missing, at least
@@ -2431,12 +2453,28 @@ class _NonPolySchemeHandler(Handler):
                     mon_id, name=entity.description)
             entity.sequence.append(s)
         asym = self.sysr.asym_units.get_by_id(asym_id)
+        if entity.type == 'water' and not isinstance(asym, ihm.WaterAsymUnit):
+            # Replace AsymUnit with WaterAsymUnit if necessary
+            asym.__class__ = ihm.WaterAsymUnit
+            asym._water_sequence = [entity.sequence[0]]
+            asym.number = 1
         if pdb_strand_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_strand_id
-        # todo: handle multiple instances (e.g. water)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
         if auth_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
-            asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
+            if entity.type == 'water':
+                # For waters, assume ndb_seq_num counts starting from 1,
+                # so use as our internal seq_id. Make sure the WaterAsymUnit
+                # is long enough to handle all ids
+                seq_id = self.get_int(ndb_seq_num)
+                asym.number = max(asym.number, seq_id)
+                asym._water_sequence = [entity.sequence[0]] * asym.number
+                if asym.auth_seq_id_map == 0:
+                    asym.auth_seq_id_map = {}
+                asym.auth_seq_id_map[seq_id] = (auth_seq_num, pdb_ins_code)
+            else:
+                # For nonpolymers, assume a single ChemComp with seq_id=1
+                asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
 
 
 class _CrossLinkListHandler(Handler):

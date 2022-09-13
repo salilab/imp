@@ -51,3 +51,7 @@ The :mod:`ihm.citations` Python module
 .. data:: colabfold
 
    ColabFold: accessible AlphaFold pipeline.
+
+.. data: qmeandisco
+
+   QMEANDisCo: model quality estimation with distance constraints.
