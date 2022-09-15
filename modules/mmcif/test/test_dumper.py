@@ -215,7 +215,7 @@ _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
 1 polymer man foo 267.282 1 .
-2 polymer man bar 178.188 1 .
+2 polymer man bar 178.188 0 .
 #
 """)
         d = ihm.dumper._EntityPolySegmentDumper()
