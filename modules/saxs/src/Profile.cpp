@@ -947,6 +947,8 @@ void Profile::add(const Vector<Profile*>& profiles,
 }
 
 void Profile::add_partial_profiles(const Profile* other_profile, double weight) {
+  if(size() == 0) init(size(), other_profile->partial_profiles_.size());
+
   if (other_profile->partial_profiles_.size() > 0 &&
       partial_profiles_.size() == 0) {
     partial_profiles_.insert(partial_profiles_.begin(),
