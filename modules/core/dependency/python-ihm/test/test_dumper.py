@@ -98,7 +98,7 @@ class Tests(unittest.TestCase):
 
     def test_entry_dumper_data_chars(self):
         """Test allowed characters in data_ block with EntryDumper"""
-        system = ihm.System(id='foo99-bar94_ABC $#% x')
+        system = ihm.System(id='foo99-bar94_ABC $#^% x')
         dumper = ihm.dumper._EntryDumper()
         out = _get_dumper_output(dumper, system).split('\n')[0]
         # Whitespace and special characters (except - _) should be removed

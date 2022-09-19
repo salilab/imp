@@ -105,12 +105,15 @@ class IDMapper(object):
             return obj
         else:
             newobj = self._make_new_object(newcls)
-            if self.id_attr is not None:
-                setattr(newobj, self.id_attr, objid)
+            self._set_object_id(newobj, objid)
             self._obj_by_id[objid] = newobj
             if self.system_list is not None:
                 self.system_list.append(newobj)
             return newobj
+
+    def _set_object_id(self, obj, objid):
+        if self.id_attr is not None:
+            setattr(obj, self.id_attr, objid)
 
     def get_by_id_or_none(self, objid, newcls=None):
         """Get the object with given ID, creating it if it doesn't already
@@ -193,6 +196,15 @@ class RangeIDMapper(object):
 
 
 class _AnalysisIDMapper(IDMapper):
+    """Add extra handling to IDMapper for Analysis objects"""
+    def _set_object_id(self, obj, objid):
+        # Analysis objects are referenced by (protocol_id, analysis_id) but
+        # we only want to store analysis_id in the Analysis object itself
+        if self.id_attr is not None:
+            setattr(obj, self.id_attr, objid[1])
+
+
+class _AnalysisStepIDMapper(IDMapper):
     """Add extra handling to IDMapper for the post processing category"""
 
     def _make_new_object(self, newcls=None):
@@ -475,11 +487,11 @@ class SystemReader(object):
                                   ihm.protocol.Protocol)
 
         #: Mapping from ID to :class:`ihm.analysis.Step` objects
-        self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
-                                                *(None,) * 3)
+        self.analysis_steps = _AnalysisStepIDMapper(None, ihm.analysis.Step,
+                                                    *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.analysis.Analysis` objects
-        self.analyses = IDMapper(None, ihm.analysis.Analysis)
+        self.analyses = _AnalysisIDMapper(None, ihm.analysis.Analysis)
 
         #: Mapping from ID to :class:`ihm.model.Model` objects
         self.models = IDMapper(None, model_class, *(None,) * 3)
@@ -1650,7 +1662,7 @@ class _PostProcessHandler(Handler):
                  num_models_end, struct_assembly_id, dataset_group_id,
                  software_id, script_file_id, feature, details):
         protocol = self.sysr.protocols.get_by_id(protocol_id)
-        analysis = self.sysr.analyses.get_by_id(analysis_id)
+        analysis = self.sysr.analyses.get_by_id((protocol_id, analysis_id))
         if analysis._id not in [a._id for a in protocol.analyses]:
             protocol.analyses.append(analysis)
 

@@ -1,7 +1,16 @@
-HEAD
-====
+0.35 - 2022-09-16
+=================
   - Author names now use PDB style ("Lastname, A.B.") by default rather
     than PubMed style ("Lastname AB") (#95).
+  - Asyms containing multiple water molecules should now be correctly
+    handled (previously every water molecule in the output ``atom_site``
+    table  was given the same ``auth_seq_id``). Use the new
+    :class:`ihm.WaterAsymUnit` to create an asym containing waters (#98).
+  - Masses for all elements are now included, so that
+    ``_entity.formula_weight`` can be correctly populated for ligands (#99).
+  - Bugfix: :class:`ihm.analysis.Analysis` objects are now read correctly
+    from input files when two objects share the same ID but are part
+    of different protocols (#101).
 
 0.34 - 2022-08-03
 =================

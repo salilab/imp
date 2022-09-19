@@ -72,7 +72,7 @@ def _get_transform(rot_matrix, tr_vector):
 class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
-        writer.start_block(re.subn('[^0-9a-zA-z_-]', '', system.id)[0])
+        writer.start_block(re.subn('[^0-9a-zA-Z_-]', '', system.id)[0])
         with writer.category("_entry") as lp:
             lp.write(id=system.id)
 
