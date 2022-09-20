@@ -12,7 +12,8 @@ class EMToolsApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        lines = open('mini.cmm').readlines()
+        with open('mini.cmm') as fh:
+            lines = fh.readlines()
         markers = [x for x in lines if 'marker id=' in x]
         links = [x for x in lines if 'link id1=' in x]
         self.assertEqual(len(markers), 6)
@@ -28,7 +29,8 @@ class EMToolsApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        lines = open('mini.cmm').readlines()
+        with open('mini.cmm') as fh:
+            lines = fh.readlines()
         markers = [x for x in lines if 'marker id=' in x]
         links = [x for x in lines if 'link id1=' in x]
         self.assertEqual(len(markers), 6)
