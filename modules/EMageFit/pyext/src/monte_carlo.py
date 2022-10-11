@@ -36,7 +36,7 @@ def set_random_seed(index):
         log.debug("Seed for the random number generator: %s", index)
         IMP.random_number_generator.seed(index)
     else:
-        IMP.random_number_generator.seed(time.time())
+        IMP.random_number_generator.seed(int(time.time()))
 
 
 class MonteCarloRelativeMoves:
