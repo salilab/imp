@@ -11,13 +11,13 @@ class Tests(IMP.test.ApplicationTestCase):
            install HEXDOCK."""
         os.environ['PATH'] = os.getcwd() + os.pathsep + os.environ['PATH']
         with open('hex', 'w') as fh:
-            fh.write("""#!/usr/bin/env python
+            fh.write("""#!%s
 import sys, shutil
 for line in sys.stdin.readlines():
     spl = line.rstrip('\\r\\n').split()
     if len(spl) == 2 and spl[0] == 'save_transform':
         shutil.copy('%s/' + spl[1], spl[1])
-""" % input_file_dir)
+""" % (sys.executable, input_file_dir))
         os.chmod('hex', 0o755)
 
     def test_3sfd(self):
