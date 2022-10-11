@@ -61,7 +61,7 @@ public:
    on each call.
 
 This generator can be used by the
-[Boost.Random](http://www.boost.org/doc/libs/1_39_0/libs/random/index.html)
+[Boost.Random](https://www.boost.org/doc/libs/1_80_0/doc/html/boost_random.html)
 distributions.
  */
 extern IMPKERNELEXPORT RandomNumberGenerator random_number_generator;
