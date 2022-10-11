@@ -1401,6 +1401,7 @@ def shuffle_configuration(objects,
                           collision_excluded_idxs
                 other_idxs = all_idxs - rb_idxs
 
+            debug.append([rb, other_idxs if avoidcollision_rb else set()])
             # iterate, trying to avoid collisions
             niter = 0
             while niter < niterations:
@@ -1423,7 +1424,6 @@ def shuffle_configuration(objects,
                         IMP.algebra.get_random_local_transformation(
                             rbxyz, max_translation, max_rotation)
 
-                debug.append([rb, other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
 
                 # check collisions
@@ -1485,7 +1485,9 @@ def shuffle_configuration(objects,
                 else:
                     xyz_transformed = transformation.get_transformed(xyz)
                     memb.set_internal_coordinates(xyz_transformed)
-                debug.append([xyz, other_idxs if avoidcollision_fb else set()])
+                if niter == 0:
+                    debug.append(
+                        [xyz, other_idxs if avoidcollision_fb else set()])
             else:
                 d = IMP.core.XYZ(fb)
                 if bounding_box:
@@ -1497,7 +1499,9 @@ def shuffle_configuration(objects,
                     else:
                         IMP.core.transform(d, -d.get_coordinates())
                     d = IMP.core.XYZ(fb)
-                debug.append([d, other_idxs if avoidcollision_fb else set()])
+                if niter == 0:
+                    debug.append(
+                        [d, other_idxs if avoidcollision_fb else set()])
                 if IMP.core.RigidBody.get_is_setup(fb.get_particle()):
                     IMP.core.transform(
                         IMP.core.RigidBody(fb.get_particle()), transformation)
