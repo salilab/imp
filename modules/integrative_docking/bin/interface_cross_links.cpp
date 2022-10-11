@@ -31,13 +31,9 @@ using namespace IMP::integrative_docking::internal;
 namespace {
 void select_cross_links(const std::vector<CrossLink>& cross_links,
                         std::vector<CrossLink>& selected_cross_links) {
-  // init random number generator
-  typedef boost::mt19937 base_generator_type;
-  base_generator_type rng;
-
   boost::uniform_real<> uni_dist(0, 1);
-  boost::variate_generator<base_generator_type&, boost::uniform_real<> > uni(
-      rng, uni_dist);
+  boost::variate_generator<IMP::RandomNumberGenerator&,
+        boost::uniform_real<> > uni(IMP::random_number_generator, uni_dist);
 
   for (unsigned int i = 0; i < cross_links.size(); i++) {
     if (cross_links[i].get_actual_distance() <= 15.0)

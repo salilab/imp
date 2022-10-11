@@ -6,6 +6,7 @@
  */
 
 #include <IMP/saxs/ChiFreeScore.h>
+#include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
 #include <algorithm>
 
@@ -28,13 +29,9 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
   }
 
   const_cast<ChiFreeScore*>(this)->last_scale_updated_ = false;
-  // init random number generator
-  typedef boost::mt19937 base_generator_type;
-  base_generator_type rng;
-
   boost::uniform_real<> uni_dist(0, 1);
-  boost::variate_generator<base_generator_type&, boost::uniform_real<> > uni(
-      rng, uni_dist);
+  boost::variate_generator<IMP::RandomNumberGenerator&,
+       boost::uniform_real<> > uni(IMP::random_number_generator, uni_dist);
 
   Vector<std::pair<double, double> > chis(K_);
   unsigned int bin_size = std::floor((double)exp_profile->size()) / ns_;

@@ -14,6 +14,7 @@
 #include "IMP/exception.h"
 #include "IMP/macros.h"
 #include "IMP/base_types.h"
+#include "IMP/random.h"
 #include "boost/random.hpp"
 #include "boost/version.hpp"
 #include <list>
@@ -489,21 +490,17 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 void add_noise(cv::Mat &v, double op1, double op2, const String &mode,
                double /*df*/) {
   IMP_LOG_TERSE("Adding noise: mean " << op1 << " Stddev " << op2 << std::endl);
-  // Generator
-  typedef boost::mt19937 base_generator_type;
-  base_generator_type generator;
-  generator.seed(static_cast<unsigned long>(time(nullptr)));
   // Distribution types
   typedef boost::uniform_real<> unif_distribution;
   typedef boost::normal_distribution<> norm_distribution;
   // Variate generators (put generator and distributions together)
-  typedef boost::variate_generator<base_generator_type &, unif_distribution>
-      unif_var_generator;
-  typedef boost::variate_generator<base_generator_type &, norm_distribution>
-      norm_var_generator;
+  typedef boost::variate_generator<IMP::RandomNumberGenerator&,
+                                   unif_distribution> unif_var_generator;
+  typedef boost::variate_generator<IMP::RandomNumberGenerator&,
+                                   norm_distribution> norm_var_generator;
   if (mode == "uniform") {
     unif_distribution dist(op1, op2);
-    unif_var_generator random_var(generator, dist);
+    unif_var_generator random_var(IMP::random_number_generator, dist);
     // Add the random numbers
     for (cvDoubleMatIterator it = v.begin<double>(); it != v.end<double>();
          ++it) {
@@ -511,7 +508,7 @@ void add_noise(cv::Mat &v, double op1, double op2, const String &mode,
     }
   } else if (mode == "gaussian") {
     norm_distribution dist(op1, op2);
-    norm_var_generator random_var(generator, dist);
+    norm_var_generator random_var(IMP::random_number_generator, dist);
     // Add the random numbers
     for (cvDoubleMatIterator it = v.begin<double>(); it != v.end<double>();
          ++it) {
