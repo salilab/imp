@@ -66,13 +66,17 @@ namespace IMPcuda {
     void get_random_numbers_uniform_cuda(double* p_random_array,
                                          unsigned int n);
 
-    /** initialized the cuda rng with specified seed, if not initialized already
+    /** Initialize the cuda rng, if not initialized already.
+        Also, set the seed if necessary
 
      @param seed random seed
+     @param seed_counter the time when the non-GPU seed was last changed
+     @param last_seeded the time when the CUDA rng seed was last set
 
      @return true if successful, false if rng has already been initialized
     */
-      bool init_gpu_rng_once(unsigned long long seed);
+      bool init_gpu_rng_once(unsigned long long seed,
+                             unsigned seed_counter, unsigned &last_seeded);
 
       /** destroys the cuda gpu object */
       void destroy_gpu_rng();

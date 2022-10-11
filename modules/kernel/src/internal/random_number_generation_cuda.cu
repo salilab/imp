@@ -77,7 +77,7 @@ IMPcuda::kernel::internal::get_random_numbers_uniform_cuda
 }
 
 bool IMPcuda::kernel::internal::init_gpu_rng_once
-(unsigned long long seed)
+(unsigned long long seed, unsigned seed_counter, unsigned &last_seeded)
 {
   static bool initialized(false); // is prngGPU initialized
   if(!initialized)
@@ -85,8 +85,17 @@ bool IMPcuda::kernel::internal::init_gpu_rng_once
       IMP_checkCudaErrors(curandCreateGenerator
                           (&prngGPU, CURAND_RNG_PSEUDO_MTGP32));
       IMP_checkCudaErrors(curandSetPseudoRandomGeneratorSeed(prngGPU, seed));
+      last_seeded = seed_counter;
       initialized=true;
       return true; // success
+    } else if (last_seeded != seed_counter) {
+      // Simply setting the seed does not reset all internal state, so destroy
+      // and recreate instead
+      IMP_checkCudaErrors(curandDestroyGenerator(prngGPU));
+      IMP_checkCudaErrors(curandCreateGenerator
+                          (&prngGPU, CURAND_RNG_PSEUDO_MTGP32));
+      IMP_checkCudaErrors(curandSetPseudoRandomGeneratorSeed(prngGPU, seed));
+      last_seeded = seed_counter;
     }
   return false; // was already initialized
 }

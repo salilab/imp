@@ -25,6 +25,26 @@ class Tests(IMP.test.TestCase):
         self.assertNotEqual(a1, a5)
         self.assertNotEqual(a2, a6)
 
+    def test_random_number_generator_cuda(self):
+        """Test the random number generator with functions that may use CUDA"""
+        IMP.random_number_generator.seed(24)
+        a1 = IMP.get_random_float_uniform()
+        a2 = IMP.get_random_float_uniform()
+        # In principle these values could be the same, I suppose, but it is
+        # rather unlikely!
+        self.assertNotEqual(a1, a2)
+        # Reseeding should give a predictable sequence
+        IMP.random_number_generator.seed(24)
+        a3 = IMP.get_random_float_uniform()
+        a4 = IMP.get_random_float_uniform()
+        self.assertEqual(a1, a3)
+        self.assertEqual(a2, a4)
+        IMP.random_number_generator.seed(27)
+        a5 = IMP.get_random_float_uniform()
+        a6 = IMP.get_random_float_uniform()
+        self.assertNotEqual(a1, a5)
+        self.assertNotEqual(a2, a6)
+
     def test_cached_random_number_generator_normal(self):
         """Test the cached random number generator for normal dist"""
         R = IMP.get_random_doubles_normal(2500000, 0.0, 1.0)
