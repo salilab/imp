@@ -39,6 +39,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(hash(cc1), hash(cc2))
         self.assertNotEqual(cc1, cc3)
 
+    def test_chem_comp_id_5(self):
+        """Test new-style 5-character CCD IDs in ChemComp"""
+        cc1 = ihm.ChemComp(id='MYGLY', code='G', code_canonical='G')
+        self.assertEqual(cc1.id, 'MYGLY')
+        self.assertEqual(cc1.code, 'G')
+        self.assertEqual(cc1.code_canonical, 'G')
+        self.assertEqual(cc1.type, 'other')
+
     def test_chem_comp_weight(self):
         """Test ChemComp.formula_weight"""
         # No formula

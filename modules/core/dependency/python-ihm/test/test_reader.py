@@ -895,11 +895,12 @@ _ihm_external_files.id
 _ihm_external_files.reference_id
 _ihm_external_files.file_path
 _ihm_external_files.content_type
+_ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 scripts/test.py 'Modeling workflow or script' 'Test script'
-2 2 foo/bar.txt 'Input data or restraints' 'Test text'
-3 3 . 'Modeling or post-processing output' 'Ensemble structures'
-4 3 . . .
+1 1 scripts/test.py 'Modeling workflow or script' 180 'Test script'
+2 2 foo/bar.txt 'Input data or restraints' . 'Test text'
+3 3 . 'Modeling or post-processing output' . 'Ensemble structures'
+4 3 . . . .
 """
         # Order of the categories shouldn't matter
         cif1 = ext_ref_cat + ext_file_cat
@@ -911,6 +912,7 @@ _ihm_external_files.details
                 self.assertEqual(l1.path, 'scripts/test.py')
                 self.assertEqual(l1.details, 'Test script')
                 self.assertEqual(l1.repo.doi, '10.5281/zenodo.1218053')
+                self.assertEqual(l1.file_size, 180)
                 self.assertEqual(l1.repo.details, 'test repo')
                 self.assertEqual(l1.__class__,
                                  ihm.location.WorkflowFileLocation)
@@ -918,14 +920,17 @@ _ihm_external_files.details
                 self.assertEqual(l2.path, 'foo/bar.txt')
                 self.assertEqual(l2.details, 'Test text')
                 self.assertIsNone(l2.repo)
+                self.assertIsNone(l2.file_size)
                 self.assertEqual(l2.__class__, ihm.location.InputFileLocation)
 
                 self.assertEqual(l3.path, '.')
                 self.assertEqual(l3.details, 'Ensemble structures')
+                self.assertIsNone(l3.file_size)
                 self.assertEqual(l3.repo.doi, '10.5281/zenodo.1218058')
                 self.assertEqual(l3.__class__, ihm.location.OutputFileLocation)
 
                 self.assertEqual(l4.path, '.')
+                self.assertIsNone(l4.file_size)
                 self.assertIsNone(l4.details)
                 self.assertEqual(l4.repo.doi, '10.5281/zenodo.1218058')
                 # Type is unspecified

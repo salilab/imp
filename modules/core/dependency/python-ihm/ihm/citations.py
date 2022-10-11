@@ -129,3 +129,14 @@ qmeandisco = ihm.Citation(
     authors=['Studer, G.', 'Rempfer, C.', 'Waterhouse, A.M.', 'Gumienny, R.',
              'Haas, J.', 'Schwede, T.'],
     doi='10.1093/bioinformatics/btz828')
+
+mmseqs2 = ihm.Citation(
+    pmid='30615063',
+    title='MMseqs2 desktop and local web server app for fast, interactive '
+          'sequence searches.',
+    journal='Bioinformatics',
+    volume=35,
+    page_range=(2856, 2858),
+    year=2019,
+    authors=['Mirdita, M.', 'Steinegger, M.', 'Soeding, J.'],
+    doi='10.1093/bioinformatics/bty1057')

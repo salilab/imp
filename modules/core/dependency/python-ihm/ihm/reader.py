@@ -1345,11 +1345,13 @@ class _ExtFileHandler(Handler):
             if issubclass(x[1], ihm.location.FileLocation)
             and x[1] is not ihm.location.FileLocation)
 
-    def __call__(self, content_type, id, reference_id, details, file_path):
+    def __call__(self, content_type, id, reference_id, details, file_path,
+                 file_size_bytes):
         typ = None if content_type is None else content_type.lower()
         f = self.sysr.external_files.get_by_id(
             id, self.type_map.get(typ, ihm.location.FileLocation))
         f.repo = self.sysr.repos.get_by_id(reference_id)
+        f.file_size = self.get_int(file_size_bytes)
         self.copy_if_present(
             f, locals(), keys=['details'], mapkeys={'file_path': 'path'})
         # Handle DOI that is itself a file
