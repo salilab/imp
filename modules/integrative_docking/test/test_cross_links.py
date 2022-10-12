@@ -78,6 +78,13 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
 
         os.unlink('complex.pdb')
 
+    def test_cross_links_single_score_version(self):
+        """Test --version of cross_links_single_score"""
+        p = self.run_application('cross_links_single_score', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
     def test_simple_score(self):
         """Simple test of cross linking score application"""
         p = self.run_application('cross_links_score',
