@@ -253,9 +253,9 @@ class TestSymmetryMC(IMP.test.TestCase):
                 rbt.set_initial()
 
             for a,b in itertools.combinations(trans_list,2):
-                self.assertAlmostEqual(a,b,places=7)
+                self.assertAlmostEqual(a, b, delta=1e-6)
             for a,b in itertools.combinations(rot_list,2):
-                self.assertAlmostEqual(a,b,places=7)
+                self.assertAlmostEqual(a, b, delta=1e-6)
 
             #second store the pairwise transformations
             for i,(rb,rbpt) in enumerate(rb_rbpt.items()):
