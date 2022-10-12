@@ -50,6 +50,13 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('cxms2.dat')
         os.unlink('cxms_all.dat')
 
+    def test_interface_version(self):
+        """Test --version of interface cross links generation application"""
+        p = self.run_application('interface_cross_links', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
     def test_simple_single_structure_score(self):
         """Simple test of interface cross links single structure score
            application"""

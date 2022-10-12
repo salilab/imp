@@ -56,29 +56,45 @@ void select_cross_links(const std::vector<CrossLink>& cross_links,
 }
 
 int main(int argc, char** argv) {
-  // print command
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   // input parsing
   std::string out_file_name;
   bool use_nter = true;
-  po::options_description desc("Usage: <mol1> <mol2> <thr>");
-  desc.add_options()("help",
-                     "returns lys-lys cross links for the two molecules.")(
-      "input-files", po::value<std::vector<std::string> >(), "input PDBs")(
-      "n-ter,n", "use n-termini for cross linking (default = true)")(
-      "output_file,o",
+  po::options_description desc(
+      "Usage: <mol1> <mol2> <thr>\n"
+      "\nReturns Lys-Lys cross links for the two molecules below the\n"
+      "given threshold.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
+  desc.add_options()
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
+    ("n-ter,n", "use n-termini for cross linking (default = true)")
+    ("output_file,o",
       po::value<std::string>(&out_file_name)->default_value("cross_links.dat"),
       "output file name, default name cross_links.dat");
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input PDBs");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                    .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
 
   // parse filenames
   std::string receptor_pdb, ligand_pdb;
