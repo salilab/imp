@@ -57,10 +57,12 @@ class RigidBodyPairTransformation(object):
 
 def get_angle_and_axis(q):
     '''get angle and axis from quaternion'''
-    try:
+    # q[0] can be very slightly larger than 1.0; math.acos would throw
+    # a math domain error
+    if 1.0 < q[0] < 1.001:
+        angle = 0.
+    else:
         angle = 2 * acos(q[0])
-    except:
-        return (None,None)
     if angle != 0:
         x = q[1] / sqrt(1-q[0]*q[0])
         y = q[2] / sqrt(1-q[0]*q[0])
