@@ -27,8 +27,10 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
                  "1 |  0.000 |  -  | 0.000 |   -3.0 0.9 -0.4 36.8 -11.2 27.7",
                  "2 |  0.000 |  -  | 0.000 |   -3.0 0.9 -0.4 36.8 -11.2 27.7",
                  "3 |  0.000 |  -  | 0.000 |   -3.0 0.9 -0.4 36.8 -11.2 27.7"]
-        open('test1', 'w').write("\n".join(lines) + "\n")
-        open('test2', 'w').write("\n".join(lines[:3]) + "\n")
+        with open('test1', 'w') as fh:
+            fh.write("\n".join(lines) + "\n")
+        with open('test2', 'w') as fh:
+            fh.write("\n".join(lines[:3]) + "\n")
         p = self.run_application('combine_scores',
                                  ['test1', '1.0', 'test2', '1.0'])
         out, err = p.communicate()
