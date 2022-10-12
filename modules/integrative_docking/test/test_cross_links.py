@@ -104,6 +104,13 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         self.assertEqual(number_of_lines, 15)
         os.unlink('cxms_score.res')
 
+    def test_cross_links_score_version(self):
+        """Test --version of cross_links_score"""
+        p = self.run_application('cross_links_score', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
 
 if __name__ == '__main__':
     IMP.test.main()
