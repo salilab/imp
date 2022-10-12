@@ -65,7 +65,7 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Score\s+=\s+([\d\.]+)\r?', err)
+        m = re.search(r'Score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
         self.assertAlmostEqual(float(m.group(1)), 0.267, delta=0.01)
 
@@ -89,6 +89,7 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 15)
         os.unlink('cxms_score.res')
+
 
 if __name__ == '__main__':
     IMP.test.main()
