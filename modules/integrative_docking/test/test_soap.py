@@ -61,6 +61,13 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('soap_score.res')
         os.unlink('filenames.txt')
 
+    def test_soap_score_version(self):
+        """Test --version of soap_score"""
+        p = self.run_application('soap_score', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
 
 if __name__ == '__main__':
     IMP.test.main()

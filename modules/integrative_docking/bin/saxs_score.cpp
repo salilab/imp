@@ -29,10 +29,6 @@ using namespace IMP::integrative_docking::internal;
 using namespace IMP::saxs;
 
 int main(int argc, char **argv) {
-  // print command
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   // input parsing
   int profile_size = 200;
   float max_q = 0.5;
@@ -55,11 +51,14 @@ int main(int argc, char **argv) {
   bool vr_score = false;
 
   po::options_description desc(
-      "Usage: <pdb1> <pdb2> <trans file> <exp profile file> ");
-  desc.add_options()(
-      "help", "Program for scoring of docking models with SAXS profile.")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input PDB, transformation and profile files")(
+      "Usage: <pdb1> <pdb2> <trans file> <exp profile file>\n"
+      "\nProgram for scoring of docking models with SAXS profile.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
+  desc.add_options()
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")(
       "rg_only,g", "only compute rg, no chi scoring (default = false)")(
       "max_q,q", po::value<float>(&max_q)->default_value(0.5),
       "maximal q value (default = 0.5)")(
@@ -94,13 +93,29 @@ recommended q value is 0.2")("offset,f",
       po::value<std::string>(&out_file_name)->default_value("saxs_score.res"),
       "output file name, default name saxs_score.res");
 
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+      ("input-files", po::value<std::vector<std::string> >(),
+       "input PDB, transformation and profile files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                   .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
 
   // parse filenames
   std::string static_pdb, transformed_pdb, trans_file, dat_file;

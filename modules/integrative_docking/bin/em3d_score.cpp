@@ -21,9 +21,6 @@ namespace po = boost::program_options;
 using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
-  // print program call
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
   // parse input options
   float dist_thr = 10.0;
   float resolution = 20.0;
@@ -31,11 +28,15 @@ int main(int argc, char **argv) {
   bool cc_score = false;
   std::string rec_file_name, lig_file_name, map_file_name, trans_file_name;
   std::string out_file_name = "em3d_score.res";
-  po::options_description desc("Usage: <pdb1> <pdb2> <trans file> <em map>");
-  desc.add_options()(
-      "help", "Program for scoring of docking models with EM density map")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input PDB, feature points and density map files")(
+  po::options_description desc(
+      "Usage: <pdb1> <pdb2> <trans file> <em map>\n"
+      "\nProgram for scoring of docking models with EM density map\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
+  desc.add_options()
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")(
       "resolution,r", po::value<float>(&resolution)->default_value(20.0),
       "map resolution (default = 20.0)")("score,s",
                                          "use envelope score (default = true), \
@@ -47,13 +48,29 @@ otherwise use cross correlation")(
       "output_file,o",
       po::value<std::string>(&out_file_name)->default_value("em3d_score.res"),
       "output file name, default name em3d_score.res");
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+     ("input-files", po::value<std::vector<std::string> >(),
+      "input PDB, feature points and density map files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                     .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
+
   // read options
   std::vector<std::string> files;
   if (vm.count("input-files"))

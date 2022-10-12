@@ -31,6 +31,13 @@ class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('ligand_rare4.txt')
         os.unlink('ligand_ecoli.txt')
 
+    def test_interface_rtc_version(self):
+        """Test --version of interface_rtc"""
+        p = self.run_application('interface_rtc', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
     def test_simple_score(self):
         """Simple test of nmr_rtc_score application"""
         p = self.run_application('nmr_rtc_score',
@@ -50,6 +57,14 @@ class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 16)
         os.unlink('nmr_rtc_score.res')
+
+    def test_nmr_rtc_score_version(self):
+        """Test --version of nmr_rtc_score"""
+        p = self.run_application('nmr_rtc_score', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
 
 if __name__ == '__main__':
     IMP.test.main()
