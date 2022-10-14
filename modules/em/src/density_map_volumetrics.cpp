@@ -36,7 +36,9 @@ Float get_threshold_for_approximate_volume(DensityMap* d,
     data[l] = (d->get_value(l));
   }
   std::sort(data.begin(), data.end());
-  emreal threshold = data[mapSizeInVoxels - numVoxelsNeeded];
+  // If the volume is bigger than the map, just use the lowest density
+  // voxel as the threshold
+  emreal threshold = data[std::max(mapSizeInVoxels - numVoxelsNeeded, 0L)];
   return static_cast<Float>(threshold);
 }
 
