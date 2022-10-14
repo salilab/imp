@@ -52,17 +52,12 @@ def show_altgraph(g):
 
 
 def show_graphviz(g):
+    import subprocess
     tfn = create_temporary_file_name("graph", ".dot")
     tfon = create_temporary_file_name("graph", ".pdf")
     st = g.get_graphviz_string()
     with open(tfn, "w") as fh:
         fh.write(st)
-    try:
-        import subprocess
-    except ImportError:
-        import sys
-        sys.stderr.write("Cannot run dot on Python 2.3 systems.\n")
-        return
     try:
         print("running dot")
         sp = subprocess.Popen(["dot", "-Tpdf", tfn, "-o" + tfon])
