@@ -55,7 +55,8 @@ def show_graphviz(g):
     tfn = create_temporary_file_name("graph", ".dot")
     tfon = create_temporary_file_name("graph", ".pdf")
     st = g.get_graphviz_string()
-    open(tfn, "w").write(st)
+    with open(tfn, "w") as fh:
+        fh.write(st)
     try:
         import subprocess
     except ImportError:
