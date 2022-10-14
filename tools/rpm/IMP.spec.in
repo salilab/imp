@@ -323,7 +323,7 @@ export CGAL_DIR=/usr/share/cmake/CGAL
 # Workaround gcc -frounding-math bug; see
 # https://bugzilla.redhat.com/show_bug.cgi?id=2085189
 %if 0%{?fedora} >= 36
-CXXFLAGS="$CXXFLAGS --std=c++20"
+CXXFLAGS="$CXXFLAGS -std=c++20"
 %endif
 
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
