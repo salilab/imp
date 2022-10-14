@@ -319,13 +319,17 @@ export CGAL_DIR=/usr/share/CGAL/cmake
 %if 0%{?fedora} >= 33
 export CGAL_DIR=/usr/share/cmake/CGAL
 %endif
+
+# Workaround gcc -frounding-math bug; see
+# https://bugzilla.redhat.com/show_bug.cgi?id=2085189
+%if 0%{?fedora} >= 36
+CXXFLAGS="$CXXFLAGS --std=c++20"
+%endif
+
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
              -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=%{cmake_use_python2} \
-%if 0%{?fedora} >= 36
-             -CMAKE_CXX_FLAGS="--std=c++20" \
-%endif
              -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
