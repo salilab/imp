@@ -23,22 +23,29 @@ def setup_system(coords, use_container):
     if use_container == 'pair':
         lpc = IMP.container.ListPairContainer(m, pairs)
         rs = IMP.container.PairsRestraint(hps, lpc)
+        rs.set_weight(0.7)
     elif use_container == 'singleton':
         sps = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), (0, 0, 0))
         singles = [item for subl in pairs for item in subl]
         lsc = IMP.container.ListSingletonContainer(m, singles)
         rs = IMP.container.SingletonsRestraint(sps, lsc)
+        rs.set_weight(0.8)
     else:
         prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
+        prs[0].set_weight(0.1)
+        prs[1].set_weight(0.2)
         # Split restraints between two RestraintSets
         rs1 = IMP.RestraintSet(m)
+        rs1.set_weight(2.3)
         rs1.add_restraints(prs[:2])
         rs2 = IMP.RestraintSet(m)
+        rs2.set_weight(1.4)
         rs2.add_restraints(prs[2:])
         # Test scoring of nested RestraintSets
         rs = IMP.RestraintSet(m)
         rs.add_restraints([rs1, rs2])
+        rs.set_weight(0.8)
     mc.set_scoring_function(rs)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
@@ -74,7 +81,10 @@ def setup_rigid_body_system(coords):
     hps = IMP.core.HarmonicDistancePairScore(1, 100)
     pairs = ((ps1[0], ps2[0]), (ps1[1], ps2[1]), (ps1[2], ps1[3]))
     prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
+    prs[0].set_weight(0.1)
+    prs[1].set_weight(0.2)
     rs = IMP.RestraintSet(m)
+    rs.set_weight(0.9)
     rs.add_restraints(prs)
     mc.set_scoring_function(rs)
 
