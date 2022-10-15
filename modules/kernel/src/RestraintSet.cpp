@@ -97,7 +97,7 @@ void RestraintSet::do_add_score_and_derivatives_moved(
            = get_model()->get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
-      if (rsset.find(r) != rsset.end()) {
+      if (r->get_is_aggregate() || rsset.find(r) != rsset.end()) {
         r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
       } else {
         add_last_score_restraint(r, sa,
@@ -117,9 +117,13 @@ void RestraintSet::do_add_score_and_derivatives_moved(
            = get_model()->get_dependent_restraints(reset_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
-      // must check moved first, since if a given restraint is affected by
-      // *both* moved and reset particles, we need to recalculate it
-      if (moved_set.find(r) != moved_set.end()) {
+      if (r->get_is_aggregate()) {
+        // aggregate restraints (e.g. RestraintSets) don't have reliable
+        // last-score or last-last-score, so just delegate to them
+        r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+      } else if (moved_set.find(r) != moved_set.end()) {
+        // must check moved first, since if a given restraint is affected by
+        // *both* moved and reset particles, we need to recalculate it
         // preserve last-last score if reset
         if (reset_set.find(r) != reset_set.end()) {
           double last_last_score = r->get_last_last_score();
@@ -129,20 +133,14 @@ void RestraintSet::do_add_score_and_derivatives_moved(
           r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
         }
       } else if (reset_set.find(r) != reset_set.end()) {
-        // If reset, we can use the last-but-one score, unless it is an
-        // aggregate restraint (e.g. another RestraintSet), in which case
-        // have the restraint itself figure out what to return
-        if (r->get_is_aggregate()) {
-          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
-        } else {
-          double score = r->get_last_last_score();
-          add_last_score_restraint(r, sa,
+        // If reset, we can use the last-but-one score
+        double score = r->get_last_last_score();
+        add_last_score_restraint(r, sa,
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-                                   moved_pis, reset_pis,
+                                 moved_pis, reset_pis,
 #endif
-                                   score);
-          r->set_last_score(score);
-        }
+                                 score);
+        r->set_last_score(score);
       } else {
         // If not moved, we can use the last score
         add_last_score_restraint(r, sa,
