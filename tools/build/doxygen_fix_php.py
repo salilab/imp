@@ -4,6 +4,11 @@
 
    - the <script> tag is no longer used for PHP code; replace with <?php
 
+   Additional fixes for PHP 8:
+
+   - $word{x} is no longer valid; replace with $word[x]
+   - The each() function no longer exists
+
    Call this script with a single argument - the
    directory containing the documentation HTML files.
 """
@@ -29,5 +34,10 @@ for f in glob.glob('%s/*.php' % sys.argv[1]):
                     out = "?>\n"
                 else:
                     out = line
+                out = out.replace('$word{0}', '$word[0]')
+                out = out.replace('$word{1}', '$word[1]')
+                out = out.replace(
+                    'while (list ($key, $val) = each ($docs))',
+                    'foreach ($docs as $key => $val)')
                 out_f.write(out)
     os.rename(f + '.out', f)
