@@ -1557,8 +1557,8 @@ _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
 _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
-1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9 . . .
-2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9 'cluster details' YES independent
+1 'Cluster 1' 2 3 . dRMSD 1257 10 15.400 9 . . .
+2 'Cluster 2' 2 . . dRMSD 1257 10 15.400 9 'cluster details' YES independent
 3 'Cluster 3' . . invalid_cluster invalid_feature 1 1 15.400 9 . . .
 #
 #
@@ -1579,6 +1579,8 @@ _ihm_ensemble_sub_sample.file_id
             e, e2, e3 = s.ensembles
             self.assertEqual(e.model_group._id, '3')
             self.assertEqual(e.num_models, 1257)
+            # model_group is empty
+            self.assertEqual(e.num_models_deposited, 0)
             self.assertEqual(e.post_process._id, '2')
             self.assertIsNone(e.clustering_method)
             self.assertEqual(e.clustering_feature, 'dRMSD')
@@ -1587,6 +1589,7 @@ _ihm_ensemble_sub_sample.file_id
             self.assertAlmostEqual(e.precision, 15.4, delta=0.1)
             self.assertEqual(e.file._id, '9')
             self.assertIsNone(e2.model_group)
+            self.assertEqual(e2.num_models_deposited, 10)
             self.assertEqual(e2.details, 'cluster details')
             s1, s2 = e2.subsamples
             self.assertEqual(s1.name, 'ss1')

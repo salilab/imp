@@ -221,6 +221,9 @@ class Ensemble(object):
        :type file: :class:`ihm.location.OutputFileLocation`
        :param str details: Additional text describing this ensemble
     """
+
+    _num_deposited = None
+
     def __init__(self, model_group, num_models, post_process=None,
                  clustering_method=None, clustering_feature=None, name=None,
                  precision=None, file=None, details=None):
@@ -239,7 +242,16 @@ class Ensemble(object):
         #: as :class:`Subsample` objects
         self.subsamples = []
 
-    num_models_deposited = property(lambda self: len(self.model_group),
+    def _get_num_deposited(self):
+        # Generally we require an associated model_group; however, it is not
+        # required by the dictionary and so input files may not have one,
+        # but use any provided value of num_model_deposited in this case.
+        if self.model_group is None:
+            return self._num_deposited
+        else:
+            return len(self.model_group)
+
+    num_models_deposited = property(_get_num_deposited,
                                     doc="Number of models in this ensemble "
                                         "that are in the mmCIF file")
 

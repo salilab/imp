@@ -1786,7 +1786,7 @@ class _EnsembleHandler(Handler):
                  ensemble_file_id, num_ensemble_models,
                  ensemble_precision_value, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature,
-                 details, sub_sampling_type):
+                 details, sub_sampling_type, num_ensemble_models_deposited):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -1794,6 +1794,7 @@ class _EnsembleHandler(Handler):
 
         ensemble.model_group = mg
         ensemble.num_models = self.get_int(num_ensemble_models)
+        ensemble._num_deposited = self.get_int(num_ensemble_models_deposited)
         ensemble.precision = self.get_float(ensemble_precision_value)
         if sub_sampling_type:
             ensemble._sub_sampling_type = sub_sampling_type.lower()
