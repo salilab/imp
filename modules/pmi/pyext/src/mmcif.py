@@ -1476,7 +1476,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         else:
             cls = _FeatureCrossLink
         xl = cls(ex_xl, asym1=asym[p1], asym2=asym[p2], distance=d,
-                 restrain_all=True)
+                 restrain_all=False)
         # Needed to look up fits later
         xl.psi_p, xl.sigma1_p, xl.sigma2_p = psi_p, sigma1_p, sigma2_p
         rsr.cross_links.append(xl)
