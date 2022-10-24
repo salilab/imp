@@ -8,6 +8,7 @@
 
    - $word{x} is no longer valid; replace with $word[x]
    - The each() function no longer exists
+   - Incorrect usage of array_key_exists now causes an exception
 
    Call this script with a single argument - the
    directory containing the documentation HTML files.
@@ -39,5 +40,8 @@ for f in glob.glob('%s/*.php' % sys.argv[1]):
                 out = out.replace(
                     'while (list ($key, $val) = each ($docs))',
                     'foreach ($docs as $key => $val)')
+                out = out.replace(
+                    "if (array_key_exists($word, $qs_results))",
+                    "if (array_key_exists($word['match'], $qs_results))")
                 out_f.write(out)
     os.rename(f + '.out', f)
