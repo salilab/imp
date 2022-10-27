@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         idx = IMP.get_vertex_index(dg)
         ss = IMP.get_required_score_states(cr, [], dg, idx)
         print("ss", ss)
-        self.assert_(len(ss) > 0)
+        self.assertGreater(len(ss), 0)
         crsf = IMP.core.RestraintsScoringFunction([cr])
         crsf.set_has_required_score_states(True)
         print(crsf.get_required_score_states())

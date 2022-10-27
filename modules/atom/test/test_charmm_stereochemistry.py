@@ -30,8 +30,7 @@ class Tests(IMP.test.TestCase):
         return r, m, pdb
 
     def assertContainsPair(self, pf, atoms, a1, a2):
-        self.assertEquals(pf.get_value([atoms[a1], atoms[a2]]),
-                          True)
+        self.assertEqual(pf.get_value([atoms[a1], atoms[a2]]), True)
 
     def test_score(self):
         """Test CHARMMStereochemistryRestraint::evaluate()"""
@@ -79,11 +78,9 @@ class SelectionTests(IMP.test.TestCase):
         return r, m, pdb
 
     def assertContainsPair(self, pf, atoms, a1, a2):
-        self.assertEquals(pf.get_value([atoms[a1], atoms[a2]]),
-                          True)
+        self.assertEqual(pf.get_value([atoms[a1], atoms[a2]]), True)
     def assertDoesNotContainsPair(self, pf, atoms, a1, a2):
-        self.assertEquals(pf.get_value([atoms[a1], atoms[a2]]),
-                          False)
+        self.assertEqual(pf.get_value([atoms[a1], atoms[a2]]), False)
 
     def test_limited_pair_filter(self):
         """Test CHARMMStereochemistryRestraint pair filter"""

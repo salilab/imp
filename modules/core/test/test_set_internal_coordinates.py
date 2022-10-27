@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         new = IMP.core.RigidMember(pm).get_internal_coordinates()
         print(IMP.core.XYZ(pm).get_coordinates(), end=' ')
         print(IMP.core.RigidMember(pm).get_internal_coordinates())
-        self.assert_((new - old).get_magnitude() > 0)
+        self.assertGreater((new - old).get_magnitude(), 0)
 
 
 if __name__ == '__main__':

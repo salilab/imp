@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(aslc), len(ps))
         score = cache.get_score(rsb[0], aslc)
         print(score)
-        self.assert_(score > 1000)
+        self.assertGreater(score, 1000)
 
     def test_decomposition_4(self):
         """Test cache with decomposition with nested sets"""
@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
         aslc = slc.get_sliced(IMP.domino.Assignment(range(len(ps))))
         self.assertEqual(len(aslc), len(ps))
         score = cache.get_score(rsb[0], aslc)
-        self.assert_(score > 1000)
+        self.assertGreater(score, 1000)
 
     def test_decomposition_5(self):
         """Test cache with simple restraint"""
@@ -115,7 +115,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(aslc), 1)
         score = cache.get_score(rsb[0], aslc)
         print(score)
-        self.assert_(score > 1000)
+        self.assertGreater(score, 1000)
+
 
 if __name__ == '__main__':
     IMP.test.main()

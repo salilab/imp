@@ -18,7 +18,8 @@ class Tests(IMP.test.TestCase):
         for (o, b) in zip(IMP.atom.get_leaves(hs), IMP.atom.get_leaves(back)):
             co = IMP.core.XYZ(o).get_coordinates()
             cb = IMP.core.XYZ(b).get_coordinates()
-            self.assert_(IMP.algebra.get_distance(co, cb) < .1)
+            self.assertLess(IMP.algebra.get_distance(co, cb), .1)
+
 
 if __name__ == '__main__':
     IMP.test.main()
