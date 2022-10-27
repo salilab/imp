@@ -27,6 +27,12 @@ import warnings
 import math
 
 
+class _MockMPIValues(object):
+    """Replace samplers.MPI_values when in test mode"""
+    def get_percentile(self, name):
+        return 0.
+
+
 class _RMFRestraints(object):
     """All restraints that are written out to the RMF file"""
     def __init__(self, model, user_restraints):
@@ -482,6 +488,8 @@ class ReplicaExchange(object):
 
         if not self.test_mode:
             mpivs = IMP.pmi.samplers.MPI_values(self.replica_exchange_object)
+        else:
+            mpivs = _MockMPIValues()
 
         self._add_provenance(sampler_md, sampler_mc)
 

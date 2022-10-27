@@ -65,5 +65,23 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(prov.get_number_of_iterations(), iterations)
         self.assertEqual(prov.get_number_of_replicas(), 3)
 
+    def test_test_save_coordinates_mode(self):
+        """Test ReplicaExchange test_mode with save_coordinates_mode"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_flexible_beads(nup84)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=hier,
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=2,
+            test_mode=True, save_coordinates_mode="25th_score")
+        rex.execute_macro()
+
+
 if __name__ == '__main__':
     IMP.test.main()
