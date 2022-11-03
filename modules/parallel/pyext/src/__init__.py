@@ -4,7 +4,7 @@ import sys
 import os
 import re
 import random
-import xdrlib
+import struct
 try:
     import cPickle as pickle
 except ImportError:
@@ -61,19 +61,16 @@ class RemoteError(Error):
 class _Communicator(object):
     """Simple support for sending Python pickled objects over the network"""
 
+    # Number of bytes used to pack the length of a string
+    _slen_size = struct.calcsize('!i')
+
     def __init__(self):
         self._socket = None
         self._ibuffer = b''
 
     def _send(self, obj):
-        p = xdrlib.Packer()
-        try:
-            p.pack_string(pickle.dumps(obj, -1))
-        # Python < 2.5 can fail trying to send Inf or NaN floats in binary
-        # mode, so fall back to the old protocol in this case:
-        except SystemError:
-            p.pack_string(pickle.dumps(obj, 0))
-        self._socket.sendall(p.get_buffer())
+        s = pickle.dumps(obj, -1)
+        self._socket.sendall(struct.pack('!i', len(s)) + s)
 
     def get_data_pending(self):
         return len(self._ibuffer) > 0
@@ -98,9 +95,13 @@ class _Communicator(object):
                     raise NetworkError("%s closed connection" % str(self))
 
     def _unpickle(self, ibuffer):
-        p = xdrlib.Unpacker(ibuffer)
-        obj = p.unpack_string()
-        return (pickle.loads(obj), ibuffer[p.get_position():])
+        if len(ibuffer) < self._slen_size:
+            raise IndexError()
+        slen, = struct.unpack_from('!i', ibuffer)
+        if self._slen_size + slen > len(ibuffer):
+            raise IndexError()
+        return (pickle.loads(ibuffer[self._slen_size: self._slen_size + slen]),
+                ibuffer[self._slen_size + slen:])
 
 
 class Worker(_Communicator):
