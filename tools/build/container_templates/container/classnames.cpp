@@ -210,7 +210,7 @@ ClassnamesOptimizerState::ClassnamesOptimizerState(ClassnameContainerAdaptor c,
   f_ = gm;
 }
 
-void ClassnamesOptimizerState::update() {
+void ClassnamesOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
   if (!f_) return;
   IMP_LOG_TERSE("Begin ClassnamesOptimizerState::update" << std::endl);
@@ -295,7 +295,7 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
       min_(min_count),
       max_(max_count) {}
 
-void EventClassnamesOptimizerState::update() {
+void EventClassnamesOptimizerState::do_update(unsigned int) {
   int met = 0;
   Model *m = get_optimizer()->get_model();
   for(INDEXTYPE it : container_->get_contents()) {

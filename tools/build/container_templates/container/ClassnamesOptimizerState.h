@@ -38,7 +38,7 @@ class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
   ClassnamesOptimizerState(ClassnameContainerAdaptor c, ClassnameModifier *gf,
                            std::string name = "ClassnamesOptimizerState %1%");
 
-  virtual void update() override;
+  virtual void do_update(unsigned int call) override;
   IMP_OBJECT_METHODS(ClassnamesOptimizerState);
 };
 
