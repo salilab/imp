@@ -35,11 +35,6 @@ class NoMoreWorkersError(Error):
     pass
 
 
-@IMP.deprecated_object("2.14", "Use NoMoreWorkersError instead")
-class NoMoreSlavesError(NoMoreWorkersError):
-    pass
-
-
 class NetworkError(Error):
     """Error raised if a problem occurs with the network"""
     pass
@@ -182,11 +177,6 @@ class Worker(_Communicator):
                and self._context == context
 
 
-@IMP.deprecated_object("2.14", "Use Worker instead")
-class Slave(Worker):
-    pass
-
-
 class WorkerArray(object):
     """Representation of an array of workers.
        This is similar to Worker, except that it represents a collection of
@@ -204,11 +194,6 @@ class WorkerArray(object):
         pass
 
 
-@IMP.deprecated_object("2.14", "Use WorkerArray instead")
-class SlaveArray(WorkerArray):
-    pass
-
-
 class LocalWorker(Worker):
     """A worker running on the same machine as the manager."""
 
@@ -219,11 +204,6 @@ class LocalWorker(Worker):
 
     def __repr__(self):
         return "<LocalWorker>"
-
-
-@IMP.deprecated_object("2.14", "Use LocalWorker instead")
-class LocalSlave(LocalWorker):
-    pass
 
 
 class _SGEQsubWorker(Worker):
@@ -306,11 +286,6 @@ class SGEQsubWorkerArray(WorkerArray):
                     worker[2]._jobid = "%d.%d" % (self._jobid, num+1)
 
 
-@IMP.deprecated_object("2.14", "Use SGEQsubWorkerArray instead")
-class SGEQsubSlaveArray(SGEQsubWorkerArray):
-    pass
-
-
 class _SGEPEWorker(Worker):
     def __init__(self, host):
         Worker.__init__(self)
@@ -353,11 +328,6 @@ class SGEPEWorkerArray(WorkerArray):
         if len(workers) > 0:
             workers[0] = LocalWorker()
         return workers
-
-
-@IMP.deprecated_object("2.14", "Use SGEPEWorkerArray instead")
-class SGEPESlaveArray(SGEPEWorkerArray):
-    pass
 
 
 class Context(object):

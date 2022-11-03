@@ -72,8 +72,6 @@ class Tests(IMP.test.TestCase):
                                   'node3 2 short.q\n')
         os.environ['PE_HOSTFILE'] = hostfile
 
-        with IMP.allow_deprecated():
-            s = IMP.parallel.SGEPESlaveArray()
         s = IMP.parallel.SGEPEWorkerArray()
         workers = s._get_workers()
         self.assertEqual(len(workers), 4)

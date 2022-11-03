@@ -23,8 +23,6 @@ class Tests(IMP.test.TestCase):
     def test_raise_exceptions(self):
         """Test that exceptions raised by a task are propagated"""
         m = _util.Manager(output='raiseexc%d.out')
-        with IMP.allow_deprecated():
-            s = IMP.parallel.LocalSlave()
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         c.add_task(_tasks.error_task)
