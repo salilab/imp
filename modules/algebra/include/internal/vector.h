@@ -9,6 +9,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/exception.h>
+#include <boost/serialization/access.hpp>
 #include <limits>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -31,6 +32,13 @@ inline int get_null_value() {
 template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
+
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int) {
+    ar & storage_;
+  }
 
  public:
   unsigned int get_dimension() const { return D; }
