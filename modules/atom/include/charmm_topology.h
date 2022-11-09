@@ -328,6 +328,12 @@ IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
     CHARMMAtomTopology objects with add_atom()). However, they are more
     commonly populated automatically by reading a CHARMM topology file
     (CHARMMParameters::get_residue_topology()).
+
+    An ideal topology is intended to be created just once for each residue type.
+    To actually use a topology, create a CHARMMResidueTopology object, which
+    can be modified if necessary by adding/removing individual atoms, or
+    applying patches to, for example, modify terminal residues or
+    create disulfide bridges.
  */
 class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {

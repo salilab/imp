@@ -21,9 +21,10 @@ IMPATOM_BEGIN_NAMESPACE
 /** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
 class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::Object {
-  /** @name Residues
+  /** @name Residue topologies
 
-      The segment contains a chain of residues.
+      The segment contains a chain of residue topologies,
+      as CHARMMResidueTopology objects.
    */
   /**@{*/
   IMP_LIST_ACTION(public, CHARMMResidueTopology, CHARMMResidueTopologies,
