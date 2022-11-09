@@ -1,3 +1,7 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
 
 %define IMP_ALGEBRA_VECTOR(D)
 /* Provide our own implementations for some operators */
@@ -34,6 +38,31 @@ namespace IMP {
  }
 }
 
+/* Python-level support for (un-)pickle */
+namespace IMP {
+ namespace algebra {
+  %feature("shadow") VectorD<D>::__getstate__ %{
+    def __getstate__(self):
+        p = $action(self)
+        if len(self.__dict__) > 1:
+            d = self.__dict__.copy()
+            del d['this']
+            p = (d, p)
+        return p
+  %}
+
+  %feature("shadow") VectorD<D>::__setstate__(PyObject *) %{
+    def __setstate__(self, p):
+        if not hasattr(self, 'this'):
+            self.__init__()
+        if isinstance(p, tuple):
+            d, p = p
+            self.__dict__.update(d)
+        return $action(self, p)
+  %}
+  }
+}
+
 %feature("python:maybecall", "0") IMP::algebra::VectorD<D>::__cmp__;
 %feature("python:maybecall", "0") IMP::algebra::VectorD<D>::__eq__;
 %extend IMP::algebra::VectorD<D> {
@@ -57,6 +86,33 @@ namespace IMP {
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::ValueException);
   }
+
+  /* Allow for (un-)pickling */
+  PyObject *__getstate__() const {
+    std::ostringstream oss;
+    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
+    ba << *self;
+    std::string s = oss.str();
+    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
+    if (p) {
+      return p;
+    } else {
+      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
+    }
+  }
+
+  void __setstate__(PyObject *p) {
+    char *buf;
+    Py_ssize_t len;
+    if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
+      throw IMP::IndexException("PyBytes_AsStringAndSize failed");
+    }
+    std::string s(buf, len);
+    std::istringstream iss(s);
+    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
+    ba >> *self;
+  }
+
   /* Support new-style "true" division */
   %pythoncode %{
   __truediv__ = __div__
