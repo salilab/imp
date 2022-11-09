@@ -231,7 +231,8 @@ include_directories("${CMAKE_BINARY_DIR}/include")
 # Keep track of all variables relating to dependencies
 set(IMP_ALL_DEPENDS_VARS BOOST.FILESYSTEM_LIBRARIES BOOST.SYSTEM_LIBRARIES
     BOOST.THREAD_LIBRARIES BOOST.PROGRAMOPTIONS_LIBRARIES BOOST.REGEX_LIBRARIES
-    BOOST.GRAPH_LIBRARIES BOOST.RANDOM_LIBRARIES CACHE INTERNAL "" FORCE)
+    BOOST.GRAPH_LIBRARIES BOOST.RANDOM_LIBRARIES
+    BOOST.SERIALIZATION_LIBRARIES CACHE INTERNAL "" FORCE)
 
 imp_execute_process("setup" ${CMAKE_BINARY_DIR}
                     COMMAND ${PYTHON_EXECUTABLE}
@@ -268,7 +269,7 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options REQUIRED)
+find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options serialization REQUIRED)
 if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
   message(FATAL_ERROR "Boost is required to build IMP.")
 endif()
@@ -310,6 +311,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 set(BOOST.FILESYSTEM_LIBRARIES ${Boost_FILESYSTEM_LIBRARY_RELEASE})
 set(BOOST.SYSTEM_LIBRARIES ${Boost_SYSTEM_LIBRARY_RELEASE})
 set(BOOST.THREAD_LIBRARIES ${Boost_THREAD_LIBRARY_RELEASE})
+set(BOOST.SERIALIZATION_LIBRARIES ${Boost_SERIALIZATION_LIBRARY_RELEASE})
 set(BOOST.PROGRAMOPTIONS_LIBRARIES ${Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE})
 set(BOOST.REGEX_LIBRARIES ${Boost_REGEX_LIBRARY_RELEASE})
 set(BOOST.GRAPH_LIBRARIES ${Boost_GRAPH_LIBRARY_RELEASE})
@@ -317,6 +319,7 @@ set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY_RELEASE})
 
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.ProgramOptions" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Serialization" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.System" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Thread" "ok=True")
 
