@@ -1,8 +1,3 @@
-%{
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-%}
-
 %define IMP_ALGEBRA_VECTOR(D)
 /* Provide our own implementations for some operators */
 %ignore IMP::algebra::VectorD<D>::operator[];
@@ -62,58 +57,14 @@ namespace IMP {
               IMP::ValueException);
   }
 
-  /* Get contents as a binary blob (for serialization) */
-  PyObject *_get_as_binary() const {
-    std::ostringstream oss;
-    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
-    ba << *self;
-    std::string s = oss.str();
-    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
-    if (p) {
-      return p;
-    } else {
-      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
-    }
-  }
-
-  /* Set contents from a binary blob (for unserialization) */
-  void _set_from_binary(PyObject *p) {
-    char *buf;
-    Py_ssize_t len;
-    if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
-      throw IMP::IndexException("PyBytes_AsStringAndSize failed");
-    }
-    std::string s(buf, len);
-    std::istringstream iss(s);
-    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
-    ba >> *self;
-  }
-
   /* Support new-style "true" division */
   %pythoncode %{
   __truediv__ = __div__
   __itruediv__ = __idiv__
   %}
-
-  /* Allow (un-)pickling both C++ and Python contents */
-  %pythoncode %{
-  def __getstate__(self):
-      p = self._get_as_binary()
-      if len(self.__dict__) > 1:
-          d = self.__dict__.copy()
-          del d['this']
-          p = (d, p)
-      return p
-
-  def __setstate__(self, p):
-      if not hasattr(self, 'this'):
-          self.__init__()
-      if isinstance(p, tuple):
-          d, p = p
-          self.__dict__.update(d)
-      return self._set_from_binary(p)
-  %}
 };
+
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, VectorD<D>);
 %enddef
 
 %define IMP_ALGEBRA_FIXED_SIZE_VECTOR(D)

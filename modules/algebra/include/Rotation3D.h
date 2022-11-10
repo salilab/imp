@@ -13,6 +13,8 @@
 #include "utility.h"
 #include "constants.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <Eigen/Dense>
 
 #include <IMP/log.h>
@@ -52,6 +54,22 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   VectorD<4> v_;
   mutable bool has_cache_;
   mutable Vector3D matrix_[3];
+
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void save(Archive &ar, const unsigned int) const {
+    ar << v_;
+  }
+
+  template<class Archive>
+  void load(Archive &ar, const unsigned int) {
+    ar >> v_;
+    has_cache_ = false;
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {

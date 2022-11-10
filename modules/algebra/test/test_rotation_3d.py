@@ -5,6 +5,7 @@ import IMP.algebra
 import numpy as np
 import random
 import math
+import pickle
 
 
 class TransformFunct:
@@ -312,6 +313,21 @@ class Tests(IMP.test.TestCase):
         t = IMP.algebra.get_rotation_about_point(v, r0)
         # Rotating a point about itself should not move it
         self.assertLess(IMP.algebra.get_distance(v, t * v), 1e-6)
+
+    def test_pickle(self):
+        """Check that rotations can be (un-)pickled"""
+        t1 = IMP.algebra.get_random_rotation_3d()
+        t2 = IMP.algebra.get_random_rotation_3d()
+        t2.foo = 'bar'
+        tdump = pickle.dumps((t1, t2))
+
+        newt1, newt2 = pickle.loads(tdump)
+        self.assertAlmostEqual(
+            IMP.algebra.get_distance(t1, newt1), 0, delta=.05)
+        self.assertAlmostEqual(
+            IMP.algebra.get_distance(t2, newt2), 0, delta=.05)
+        self.assertEqual(newt2.foo, 'bar')
+
 
 if __name__ == '__main__':
     IMP.test.main()
