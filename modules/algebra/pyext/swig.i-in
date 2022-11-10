@@ -41,6 +41,7 @@ IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
 
 // Currently only some objects can be serialized
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation2D);
 IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation3D);
 
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);

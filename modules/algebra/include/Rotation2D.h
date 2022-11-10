@@ -15,6 +15,8 @@
 #include "constants.h"
 #include <IMP/random.h>
 #include <boost/random/uniform_01.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <cmath>
 //#include <stdlib.h>
 
@@ -80,10 +82,26 @@ class Rotation2D : public GeometricPrimitiveD<2> {
   //! Print the angle
   IMP_SHOWABLE_INLINE(Rotation2D, out << "Rotation2D (radians): " << angle_;);
 
- private:
+private:
   double angle_;  // angle
   double c_;      // cosine of the angle
   double s_;      // sine of the angle
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    ar << angle_;
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    double a;
+    ar >> a;
+    set_angle(a);
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
 };
 
 //! Build an identity rotation in 2D

@@ -3,6 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 import io
+import pickle
 
 class Tests(IMP.test.TestCase):
 
@@ -51,6 +52,24 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.Rotation2D(math.pi / 2.)
         sio = io.BytesIO()
         r.show(sio)
+
+    def test_pickle(self):
+        """Check that rotations can be (un-)pickled"""
+        r1 = IMP.algebra.get_random_rotation_2d()
+        r2 = IMP.algebra.get_random_rotation_2d()
+        r2.foo = 'bar'
+        rdump = pickle.dumps((r1, r2))
+
+        newr1, newr2 = pickle.loads(rdump)
+        self.assertAlmostEqual(newr1.get_angle(), r1.get_angle(), delta=1e-4)
+        self.assertAlmostEqual(newr2.get_angle(), r2.get_angle(), delta=1e-4)
+        self.assertEqual(newr2.foo, 'bar')
+
+        # Make sure that sin/cos were correctly restored
+        v = r1.get_rotated(1, 2)
+        newv = newr1.get_rotated(1, 2)
+        self.assertLess(IMP.algebra.get_distance(v, newv), 1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()
