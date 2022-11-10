@@ -110,8 +110,11 @@ private:
   /** The hierarchy contains chains, residues and atoms as defined in the
       topology. Note, however, that none of the generated atoms is given
       coordinates.
-      Chains are labeled 'A', 'B' etc. Residues are numbered from 1 within
-      each chain.
+      Chains are labeled 'A', 'B' etc. If more than 26 chains are present,
+      two-letter chain IDs are then used: 'AA' through 'AZ', then 'BA'
+      through 'BZ', through to 'ZZ'. This continues with longer chain IDs
+      as necessary.
+      Residues are numbered sequentially starting from 1 within each chain.
       \see add_coordinates.
    */
   Hierarchy create_hierarchy(Model *model) const;
