@@ -123,7 +123,7 @@
     \param[in] OnAdd Code to modify the passed in object. The object is obj
     and its index index.
     \param[in] OnChanged Code to get executed when the container changes.
-    \param[in] OnRemoved Code to get executed when the an object is removed.
+    \param[in] OnRemoved Code to get executed when an object is removed.
 */
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data,    \
                         PluralData, OnAdd, OnChanged, OnRemoved)               \
