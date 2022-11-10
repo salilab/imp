@@ -40,10 +40,42 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(t.get_segment(0).get_number_of_residues(), 3)
         self.assertEqual(t.get_segment(1).get_number_of_residues(), 2)
 
+        # Should add three non-empty segments
+        t = IMP.atom.CHARMMTopology(ff)
+        t.add_sequence('ACG/(ADE)(CYT)(GUA)/(DADE)(DGUA)')
+        self.assertEqual(t.get_number_of_segments(), 3)
+        self.assertEqual(t.get_segment(0).get_number_of_residues(), 3)
+        self.assertEqual(t.get_segment(1).get_number_of_residues(), 3)
+        self.assertEqual(t.get_segment(2).get_number_of_residues(), 2)
+        self.assertEqual(
+            [r.get_type() for r in t.get_segment(0).get_residues()],
+            ['ALA', 'CYS', 'GLY'])
+        self.assertEqual(
+            [r.get_type() for r in t.get_segment(1).get_residues()],
+            ['A', 'C', 'G'])
+        self.assertEqual(
+            [r.get_type() for r in t.get_segment(2).get_residues()],
+            ['DA', 'DG'])
+
         # Invalid one-letter codes should cause an exception and add no
         # segments
         t = IMP.atom.CHARMMTopology(ff)
         self.assertRaises(ValueError, t.add_sequence, 'a')
+        self.assertEqual(t.get_number_of_segments(), 0)
+
+        # Invalid three-letter codes should cause an exception and add no
+        # segments
+        t = IMP.atom.CHARMMTopology(ff)
+        self.assertRaises(ValueError, t.add_sequence, '(aaa)')
+        self.assertEqual(t.get_number_of_segments(), 0)
+
+        # Unterminated three-letter codes should cause an exception and add no
+        # segments
+        t = IMP.atom.CHARMMTopology(ff)
+        self.assertRaises(IndexError, t.add_sequence, '(ADE')
+        self.assertEqual(t.get_number_of_segments(), 0)
+        t = IMP.atom.CHARMMTopology(ff)
+        self.assertRaises(IndexError, t.add_sequence, '(ADE/')
         self.assertEqual(t.get_number_of_segments(), 0)
 
 

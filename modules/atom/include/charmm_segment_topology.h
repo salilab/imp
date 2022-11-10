@@ -91,11 +91,16 @@ private:
 
   const CHARMMParameters *get_parameters() { return force_field_; }
 
-  //! Add a sequence (as a string of one-letter codes) to the topology.
-  /** The sequence can contain amino-acid one-letter codes and '/' characters
-      to denote the start of a new segment. The empty string simply adds a new
-      segment that contains no residues.
-      \exception ValueException if an invalid one-letter code is passed.
+  //! Add a sequence (as a string of codes and/or names) to the topology.
+  /** The sequence can contain amino-acid one-letter codes, full residue names
+      in parentheses (e.g. (ALA), (DADE)), and '/' characters to denote the
+      start of a new segment. The empty string simply adds a new
+      segment that contains no residues. For example,
+      'ACG/(ADE)(CYT)(GUA)/(DADE)(DGUA)' adds three segments, the first
+      containing three amino acids, the second three RNA bases, and the third
+      two DNA bases.
+      \exception ValueException if an invalid residue code or name is passed.
+      \exception IndexException if a name in parentheses is not terminated.
    */
   void add_sequence(std::string sequence);
 

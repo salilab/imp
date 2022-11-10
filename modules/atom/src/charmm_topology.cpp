@@ -485,6 +485,24 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff) {
   }
 }
 
+namespace {
+  ResidueType get_sequence_long_residue_type(
+       std::string::const_iterator &it, std::string::const_iterator end) {
+    std::string::const_iterator start_it = it + 1;
+    for (++it; it != end && *it != '/'; ++it) {
+      if (*it == ')') {
+        std::string resnam(start_it, it);
+        if (ResidueType::get_key_exists(resnam)) {
+          return ResidueType(resnam);
+        } else {
+          IMP_THROW("Unknown residue type " << resnam, ValueException);
+        }
+      }
+    }
+    IMP_THROW("Unterminated residue name in sequence", IndexException);
+  }
+}
+
 void CHARMMTopology::add_sequence(std::string sequence) {
   IMP_NEW(CHARMMSegmentTopology, seg, ());
 
@@ -494,7 +512,12 @@ void CHARMMTopology::add_sequence(std::string sequence) {
       add_segment(seg);
       seg = new CHARMMSegmentTopology();
     } else {
-      ResidueType restyp = get_residue_type(*it);
+      ResidueType restyp;
+      if (*it == '(') {
+        restyp = get_sequence_long_residue_type(it, sequence.end());
+      } else {
+        restyp = get_residue_type(*it);
+      }
       IMP_NEW(CHARMMResidueTopology, res,
               (force_field_->get_residue_topology(restyp)));
       seg->add_residue(res);
