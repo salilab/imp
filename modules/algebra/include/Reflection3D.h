@@ -11,12 +11,19 @@
 #include <IMP/algebra/algebra_config.h>
 #include "Plane3D.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Reflect about a plane in 3D
 class Reflection3D : public GeometricPrimitiveD<3> {
   Plane3D pl_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & pl_;
+  }
 
  public:
   Reflection3D() {}

@@ -2,6 +2,8 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
+import pickle
+
 
 class Tests(IMP.test.TestCase):
 
@@ -107,6 +109,31 @@ class Tests(IMP.test.TestCase):
                                delta=.01)
         self.assertAlmostEqual(shift_applied[1], T.get_translation()[1],
                                delta=.01)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Transformation2D"""
+        t1 = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 4.),
+                                          IMP.algebra.Vector2D(1,2))
+        t2 = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 2.),
+                                          IMP.algebra.Vector2D(4,3))
+        t2.foo = 'bar'
+        tdump = pickle.dumps((t1, t2))
+
+        newt1, newt2 = pickle.loads(tdump)
+        self.assertLess(
+            IMP.algebra.get_distance(t1.get_translation(),
+                                     newt1.get_translation()), 1e-4)
+        self.assertAlmostEqual(t1.get_rotation().get_angle(),
+                               newt1.get_rotation().get_angle(),
+                               delta=.01)
+        self.assertLess(
+            IMP.algebra.get_distance(t2.get_translation(),
+                                     newt2.get_translation()), 1e-4)
+        self.assertAlmostEqual(t2.get_rotation().get_angle(),
+                               newt2.get_rotation().get_angle(),
+                               delta=.01)
+        self.assertEqual(newt2.foo, 'bar')
+
 
 if __name__ == '__main__':
     IMP.test.main()

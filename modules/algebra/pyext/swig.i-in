@@ -40,10 +40,6 @@ IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
 
-// Currently only some objects can be serialized
-IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation2D);
-IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation3D);
-
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
@@ -52,6 +48,16 @@ IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
+
+// Currently only some objects can be serialized
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation2D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation3D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Plane3D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Reflection3D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, SphericalVector3D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Transformation2D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Transformation3D);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Triangle3D);
 
 // we seem to need the non-typedefed name, at least for the first argument
 IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra, Sphere);

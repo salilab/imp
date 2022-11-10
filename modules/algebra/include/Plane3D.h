@@ -12,6 +12,7 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -53,9 +54,16 @@ class Plane3D : public GeometricPrimitiveD<3> {
   Plane3D get_opposite() const { return Plane3D(-distance_, -normal_); }
   double get_distance_from_origin() const { return distance_; }
 
- private:
+private:
   double distance_;
   Vector3D normal_;  // normal to plane
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & distance_ & normal_;
+  }
+
 };
 
 //! Return the distance between a plane and a point in 3D

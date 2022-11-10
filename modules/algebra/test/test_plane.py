@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
+import pickle
 from io import BytesIO
 
 class Tests(IMP.test.TestCase):
@@ -44,6 +45,29 @@ class Tests(IMP.test.TestCase):
         ref = IMP.algebra.get_reflected(p, IMP.algebra.Vector3D(0., 1., 40.))
         self.assertLess(IMP.algebra.get_distance(ref,
                                 IMP.algebra.Vector3D(0., 9., 40.)), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Plane3D"""
+        p1 = IMP.algebra.Plane3D(5.0, IMP.algebra.Vector3D(0.0, 1.0, 0.0))
+        p2 = IMP.algebra.Plane3D(3.0, IMP.algebra.Vector3D(1.0, 0.0, 0.0))
+        p2.foo = 'bar'
+        pdump = pickle.dumps((p1, p2))
+
+        newp1, newp2 = pickle.loads(pdump)
+        self.assertLess(
+            IMP.algebra.get_distance(p1.get_point_on_plane(),
+                                     newp1.get_point_on_plane()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(p1.get_normal(),
+                                     newp1.get_normal()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(p2.get_point_on_plane(),
+                                     newp2.get_point_on_plane()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(p2.get_normal(),
+                                     newp2.get_normal()), 1e-4)
+        self.assertEqual(newp2.foo, 'bar')
+
 
 if __name__ == '__main__':
     IMP.test.main()

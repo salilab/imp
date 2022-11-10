@@ -14,6 +14,7 @@
 #include "constants.h"
 #include <IMP/showable_macros.h>
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -70,9 +71,15 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
   IMP_SHOWABLE_INLINE(SphericalVector3D, out << v_[0] << " , " << v_[1] << " , "
                                              << v_[2]);
 
- private:
+private:
   void set_cartesian_coordinates(const Vector3D& v);
   double v_[3];
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & v_[0] & v_[1] & v_[2];
+  }
 };
 
 IMP_VALUES(SphericalVector3D, SphericalVector3Ds);
