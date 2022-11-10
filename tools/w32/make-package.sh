@@ -135,6 +135,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
      ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
      ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_serialization-vc140-mt-x${BITS}-1_72.dll \
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
      ${DLLSRC}/libfftw3-3.dll \
@@ -161,6 +162,7 @@ else
      ${DLLSRC}/boost_iostreams-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_zlib-vc110-mt-1_55.dll \
      ${DLLSRC}/boost_chrono-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_serialization-vc110-mt-1_55.dll \
      ${DLLSRC}/CGAL-vc110-mt-4.4.dll \
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
