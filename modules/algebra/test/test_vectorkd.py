@@ -143,7 +143,7 @@ class Tests(IMP.test.TestCase):
         self.assertLess(IMP.algebra.get_distance(v2, newv2), 1e-4)
         self.assertEqual(newv2.foo, 'bar')
 
-        self.assertRaises(TypeError, v1.__setstate__, 42)
+        self.assertRaises(TypeError, v1._set_from_binary, 42)
 
 
 if __name__ == '__main__':
