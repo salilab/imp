@@ -78,6 +78,28 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(IndexError, t.add_sequence, '(ADE/')
         self.assertEqual(t.get_number_of_segments(), 0)
 
+    def test_segments_python_list(self):
+        """Test the Python list-like CHARMMTopology.segments member"""
+        ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
+        t = IMP.atom.CHARMMTopology(ff)
+        t.add_sequence('C/C/C/C/C')
+        self.assertEqual(len(t.segments), 5)
+        r = repr(t.segments)
+
+        st = IMP.atom.CHARMMSegmentTopology()
+        t.segments.append(st)
+        self.assertEqual(len(t.segments), 6)
+
+        del t.segments
+        t.segments = [st]
+        self.assertEqual(len(t.segments), 1)
+        t.segments.clear()
+        self.assertEqual(len(t.segments), 0)
+        t.segments.extend([st])
+        self.assertEqual(len(t.segments), 1)
+
+        self.assertRaises(IndexError, lambda: t.segments[42])
+
 
 if __name__ == '__main__':
     IMP.test.main()
