@@ -95,15 +95,15 @@ IMP::Pointer<IMP::Model> build_model_pdb(
   IMP::ParticlesTemp ps = get_by_type(mhd, IMP::atom::ATOM_TYPE);
   for (unsigned int i = 0; i < ps.size(); i++) {
     ps[i]->add_attribute(radius_key, 1.5);
-    std::cout << IMP::core::XYZ(ps[i]).get_coordinates() << std::endl;
+//  std::cout << IMP::core::XYZ(ps[i]).get_coordinates() << std::endl;
   }
 
-  std::cerr << hr.size() << " residues were read from pdb file with "
-            << ps.size() << " atoms" << std::endl;
+//std::cerr << hr.size() << " residues were read from pdb file with "
+//          << ps.size() << " atoms" << std::endl;
 
   for (unsigned int i = 0; i < hr.size(); i++) {
     rbs.push_back(IMP::atom::create_rigid_body(IMP::atom::Hierarchy(hr[i])));
-    std::cout << "Rigid body number " << i << " is " << rbs[i] << std::endl;
+//  std::cout << "Rigid body number " << i << " is " << rbs[i] << std::endl;
   }
 
   return m;
@@ -115,7 +115,7 @@ void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
                    "Must have at least 5 rigid bodies but only got "
                        << rbs.size(),
                    IMP::ValueException);
-  std::cout << "initial coords residues";
+/*std::cout << "initial coords residues";
   for (unsigned int i = 0; i < rbs.size(); i++) {
     std::cout << rbs[i].get_coordinates() << ", ";
   }
@@ -130,7 +130,7 @@ void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
     }
     std::cout << std::endl;
   }
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 
   IMP_NEW(
       IMP::kinematics::DihedralAngleRevoluteJoint, phi1,
@@ -156,28 +156,28 @@ void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
   kf->add_edge(phi4);
   double phi1_init = phi1->get_angle();
   double phi3_init = phi3->get_angle();
-  std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
+/*std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
   std::cout << "Phi2 " << IMP_RAD_2_DEG(phi2->get_angle()) << " transformation "
             << phi2->get_transformation_child_to_parent() << std::endl;
-  std::cout << "Phi3 " << IMP_RAD_2_DEG(phi3->get_angle()) << std::endl;
+  std::cout << "Phi3 " << IMP_RAD_2_DEG(phi3->get_angle()) << std::endl;*/
   phi1->set_angle(IMP_DEG_2_RAD(150.0));
   phi3->set_angle(IMP_DEG_2_RAD(240.0));
 
   kf->update_all_external_coordinates();
-  std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
+/*std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
   std::cout << "Phi2 " << IMP_RAD_2_DEG(phi2->get_angle()) << " transformation "
             << phi2->get_transformation_child_to_parent() << std::endl;
-  std::cout << "Phi3 " << IMP_RAD_2_DEG(phi3->get_angle()) << std::endl;
-  IMP::atom::write_pdb(mhd, "./after_set_phi1_to_120deg.pdb");
+  std::cout << "Phi3 " << IMP_RAD_2_DEG(phi3->get_angle()) << std::endl;*/
+//IMP::atom::write_pdb(mhd, "./after_set_phi1_to_120deg.pdb");
   phi1->set_angle(phi1_init);
   phi3->set_angle(phi3_init);
   kf->update_all_external_coordinates();
-  std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
+/*std::cout << "Phi1 " << IMP_RAD_2_DEG(phi1->get_angle()) << std::endl;
   std::cout << "Phi2 " << IMP_RAD_2_DEG(phi2->get_angle()) << " transformation "
             << phi2->get_transformation_child_to_parent() << std::endl;
   std::cout << "Phi3 " << IMP_RAD_2_DEG(phi3->get_angle()) << std::endl;
 
-  IMP::atom::write_pdb(mhd, "./after_set_phi1_back.pdb");
+  IMP::atom::write_pdb(mhd, "./after_set_phi1_back.pdb");*/
 }
 
 void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
@@ -187,8 +187,8 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
                        << rbs.size(),
                    IMP::ValueException)
 
-  std::cout << "initial coords " << rbs[0].get_coordinates() << ", "
-            << rbs[1].get_coordinates() << std::endl;
+/*std::cout << "initial coords " << rbs[0].get_coordinates() << ", "
+            << rbs[1].get_coordinates() << std::endl;*/
 
   IMP_NEW(IMP::kinematics::PrismaticJoint, pj, (rbs[0], rbs[1]));
   IMP_NEW(IMP::kinematics::TransformationJoint, tj, (rbs[1], rbs[2]));
@@ -197,7 +197,7 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   kf->add_edge(pj);
   kf->add_edge(tj);
 
-  std::cout << "coords after KinematicForest ctr "
+/*std::cout << "coords after KinematicForest ctr "
             << kf->get_coordinates_safe(rbs[0]) << ", "
             << kf->get_coordinates_safe(rbs[1]) << ", "
             << kf->get_coordinates_safe(rbs[2]) << std::endl;
@@ -215,10 +215,10 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   std::cout << "trans 1-2 = " << tj->get_transformation_child_to_parent()
             << std::endl;
 
-  std::cout << "Setting length to 10.0: " << std::endl;
+  std::cout << "Setting length to 10.0: " << std::endl;*/
 
   pj->set_length(10.0);
-  std::cerr << "coords after set_length(10.0) " << std::endl;
+/*std::cerr << "coords after set_length(10.0) " << std::endl;
   std::cerr << kf->get_coordinates_safe(rbs[0]) << ", "
             << kf->get_coordinates_safe(rbs[1]) << ", "
             << kf->get_coordinates_safe(rbs[2]) << std::endl;
@@ -235,50 +235,50 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   std::cout << "trans 0-1 = " << pj->get_transformation_child_to_parent()
             << std::endl;
   std::cout << "trans 1-2 = " << tj->get_transformation_child_to_parent()
-            << std::endl;
+            << std::endl;*/
 
   // IMP::atom::write_pdb
   //  (mhd, "./after_set_length_10_and_get_coords_safe.pdb");
 
   //
-  std::cout << "Setting length to 20.0: " << std::endl;
+//std::cout << "Setting length to 20.0: " << std::endl;
   pj->set_length(20.0);
   kf->update_all_external_coordinates();
-  std::cerr << "Distance 0-1: "
+/*std::cerr << "Distance 0-1: "
             << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[0]),
                                           kf->get_coordinates_safe(rbs[1]))
             << std::endl;
   std::cerr << "Distance 1-2: "
             << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[1]),
                                           kf->get_coordinates_safe(rbs[2]))
-            << std::endl;
+            << std::endl;*/
 
   if (print_hierarchy) {
     IMP::atom::write_pdb(mhd,
                          "./after_set_length_20_and_update_all_external.pdb");
   }
 
-  std::cout << "length 0-1 = " << pj->get_length() << std::endl;
+/*std::cout << "length 0-1 = " << pj->get_length() << std::endl;
   std::cout << "trans 0-1 = " << pj->get_transformation_child_to_parent()
             << std::endl;
   std::cout << "trans 1-2 = " << tj->get_transformation_child_to_parent()
-            << std::endl;
+            << std::endl;*/
 
   // test that set_coords safe works
-  std::cout << "setting rbs[0] coords to 0,0,3" << std::endl;
+//std::cout << "setting rbs[0] coords to 0,0,3" << std::endl;
   kf->set_coordinates_safe(rbs[0], IMP::algebra::Vector3D(0, 0, 3));
-  std::cout << "rb[0] coords after set_coords_safe "
+/*std::cout << "rb[0] coords after set_coords_safe "
             << kf->get_coordinates_safe(rbs[0]) << std::endl;
   std::cout << "rb[1] coords " << kf->get_coordinates_safe(rbs[1]) << std::endl;
   std::cout << "rb[2] coords " << kf->get_coordinates_safe(rbs[2]) << std::endl;
-  std::cout << "hello" << std::endl;
+  std::cout << "hello" << std::endl;*/
   if (print_hierarchy) {
     std::cout << "hi" << std::endl;
     IMP::atom::write_pdb(mhd, "./after_set_coords_safe_rb0__0_0_3.pdb");
   }
-  std::cout << "ho" << std::endl;
+/*std::cout << "ho" << std::endl;
   std::cout << "updated length 0-1 = " << std::endl;
-  ;
+
   std::cout << pj->get_length() << std::endl;
   std::cout << "updated trans 0-1 = "
             << pj->get_transformation_child_to_parent() << std::endl;
@@ -291,19 +291,19 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   std::cerr << "Distance 1-2: "
             << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[1]),
                                           kf->get_coordinates_safe(rbs[2]))
-            << std::endl;
+            << std::endl;*/
 
   // test that set_coords safe works
-  std::cout << "setting rbs[1] coords to 0,0,0" << std::endl;
+//std::cout << "setting rbs[1] coords to 0,0,0" << std::endl;
   kf->set_coordinates_safe(rbs[1], IMP::algebra::Vector3D(0, 0, 0));
-  std::cout << "rb[0] coords after set_coords_safe "
+/*std::cout << "rb[0] coords after set_coords_safe "
             << kf->get_coordinates_safe(rbs[0]) << std::endl;
   std::cout << "rb[1] coords " << kf->get_coordinates_safe(rbs[1]) << std::endl;
-  std::cout << "rb[2] coords " << kf->get_coordinates_safe(rbs[2]) << std::endl;
+  std::cout << "rb[2] coords " << kf->get_coordinates_safe(rbs[2]) << std::endl;*/
   if (print_hierarchy) {
     IMP::atom::write_pdb(mhd, "./after_set_coords_safe_rb1__0_0_0.pdb");
   }
-  std::cout << "updated length 0-1 = " << pj->get_length() << std::endl;
+/*std::cout << "updated length 0-1 = " << pj->get_length() << std::endl;
   std::cout << "updated trans 0-1 = "
             << pj->get_transformation_child_to_parent() << std::endl;
   std::cout << "updated trans 1-2 = "
@@ -315,24 +315,24 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   std::cerr << "Distance 1-2: "
             << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[1]),
                                           kf->get_coordinates_safe(rbs[2]))
-            << std::endl;
+            << std::endl;*/
 }
 
 void print_transformation(IMP::algebra::Transformation3D T,
                           std::string description) {
   std::pair<IMP::algebra::Vector3D, double> aa =
       IMP::algebra::get_axis_and_angle(T.get_rotation());
-  std::cout << "trans " << description << ": "
+/*std::cout << "trans " << description << ": "
             << "axis = " << aa.first
             << "; angle = " << aa.second * 180.0 / 3.141256 << " deg"
-            << "; translation = " << T.get_translation() << std::endl;
+            << "; translation = " << T.get_translation() << std::endl;*/
 }
 
 void print_info(KinematicForest* kf, IMP::core::RigidBodies& rbs,
                 PrismaticJoint* pj0, DihedralAngleRevoluteJoint* dj1,
                 DihedralAngleRevoluteJoint* dj2, PrismaticJoint* pj3,
                 std::string action_desc) {
-  std::cout << std::endl << "******** After " << action_desc << " ********"
+/*std::cout << std::endl << "******** After " << action_desc << " ********"
             << std::endl;
 
   std::cout << "Coords: " << kf->get_coordinates_safe(rbs[0]) << ", "
@@ -363,7 +363,7 @@ void print_info(KinematicForest* kf, IMP::core::RigidBodies& rbs,
   std::cout << "angle 2-3 = " << dj2->get_angle() * 180 / 3.141256 << std::endl;
   print_transformation(dj2->get_transformation_child_to_parent(), "2-3");
   std::cout << "length 3-4 = " << pj3->get_length() << std::endl;
-  print_transformation(pj3->get_transformation_child_to_parent(), "3-4");
+  print_transformation(pj3->get_transformation_child_to_parent(), "3-4");*/
 }
 
 void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {

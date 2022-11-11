@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   // read in the input protein
   IMP::Model* model = new IMP::Model();
-  std::cerr << "Starting reading pdb file " << fname << std::endl;
+//std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       // new IMP::atom::ATOMPDBSelector(),
@@ -55,21 +55,21 @@ int main(int argc, char *argv[]) {
   IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
 
   IMP_NEW(ProteinKinematics, pk, (mhd, true, false));
-  std::cerr << "ProteinKinematics done" << std::endl;
+//std::cerr << "ProteinKinematics done" << std::endl;
 
   IMP::Particles residue_particles =
       IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
-  std::cerr << "Psi of the first residue "
+/*std::cerr << "Psi of the first residue "
             << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
-            << std::endl;
+            << std::endl;*/
   pk->set_psi(IMP::atom::Residue(residue_particles[0]), 3.14);
 
-  std::cerr << "Psi of the first residue after change"
+/*std::cerr << "Psi of the first residue after change"
             << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
-            << std::endl;
+            << std::endl;*/
 
-  IMP::atom::write_pdb(mhd, "./after_set_psi1_to_180deg.pdb");
+//IMP::atom::write_pdb(mhd, "./after_set_psi1_to_180deg.pdb");
 
   return 0;
 }
