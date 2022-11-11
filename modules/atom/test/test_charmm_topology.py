@@ -85,12 +85,14 @@ class Tests(IMP.test.TestCase):
         t.add_sequence('C/C/C/C/C')
         self.assertEqual(len(t.segments), 5)
         r = repr(t.segments)
+        self.assertEqual(t.segments[3], t.segments[-2])
 
         st = IMP.atom.CHARMMSegmentTopology()
         t.segments.append(st)
         self.assertEqual(len(t.segments), 6)
         del t.segments[3]
-        self.assertEqual(len(t.segments), 5)
+        del t.segments[-1]
+        self.assertEqual(len(t.segments), 4)
         def _delfunc():
             del t.segments[42]
         self.assertRaises(IndexError, _delfunc)
@@ -104,6 +106,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(t.segments), 1)
 
         self.assertRaises(IndexError, lambda: t.segments[42])
+        self.assertRaises(IndexError, lambda: t.segments[-42])
 
 
 if __name__ == '__main__':

@@ -45,11 +45,15 @@ class VarList(object):
         return str(self)
 
     def __getitem__(self, indx):
+        if indx < 0:
+            indx += len(self)
         if indx < 0 or indx >= len(self):
             raise IndexError("list index out of range")
         return self.__getfunc(indx)
 
     def __delitem__(self, indx):
+        if indx < 0:
+            indx += len(self)
         if indx < 0 or indx >= len(self):
             raise IndexError("list assignment index out of range")
         return self.__erasefunc(indx)
