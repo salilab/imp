@@ -60,6 +60,7 @@
      - get_foo
      - set_foo
      - set_foos
+     - erase_foo
      - foos_begin, foos_end
      - remove_foo
      - remove_foos
@@ -107,6 +108,7 @@
   bool get_has_##lcnames();                                                 \
   Data get_##lcname(unsigned int i) const;                                  \
   PluralData get_##lcnames() const;                                         \
+  void erase_##lcname(unsigned int i);                                      \
   void reserve_##lcnames(unsigned int sz)
 
 #else
@@ -144,6 +146,13 @@
     IMP_UNUSED(found);                                                         \
     IMP_USAGE_CHECK(found, d << " not found in container: "                    \
                              << get_as<PluralData>(lcname##_vector_));         \
+    lcname##_handle_change();                                                  \
+  }                                                                            \
+  /** \brief Remove the ith element in the container */                        \
+  void erase_##lcname(unsigned int i) {                                        \
+    Ucname##Iterator it = lcnames##_begin() + i;                               \
+    lcname##_handle_remove(*it);                                               \
+    lcname##_vector_.erase(it);                                                \
     lcname##_handle_change();                                                  \
   }                                                                            \
   /** \brief Remove any occurrences for which f is true */                     \

@@ -89,6 +89,11 @@ class Tests(IMP.test.TestCase):
         st = IMP.atom.CHARMMSegmentTopology()
         t.segments.append(st)
         self.assertEqual(len(t.segments), 6)
+        del t.segments[3]
+        self.assertEqual(len(t.segments), 5)
+        def _delfunc():
+            del t.segments[42]
+        self.assertRaises(IndexError, _delfunc)
 
         del t.segments
         t.segments = [st]

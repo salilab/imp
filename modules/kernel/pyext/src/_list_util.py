@@ -14,9 +14,11 @@ class VarListIterator(object):
 
 class VarList(object):
     """A list-like object that wraps IMP C++ object accessor methods"""
-    def __init__(self, getdimfunc, getfunc, appendfunc, extendfunc, clearfunc):
+    def __init__(self, getdimfunc, getfunc, erasefunc, appendfunc, extendfunc,
+                 clearfunc):
         self.__getdimfunc = getdimfunc
         self.__getfunc = getfunc
+        self.__erasefunc = erasefunc
         self.__appendfunc = appendfunc
         self.__extendfunc = extendfunc
         self.__clearfunc = clearfunc
@@ -46,6 +48,11 @@ class VarList(object):
         if indx < 0 or indx >= len(self):
             raise IndexError("list index out of range")
         return self.__getfunc(indx)
+
+    def __delitem__(self, indx):
+        if indx < 0 or indx >= len(self):
+            raise IndexError("list assignment index out of range")
+        return self.__erasefunc(indx)
 
 
 def set_varlist(lst, obj):
