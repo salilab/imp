@@ -11,6 +11,9 @@ class VarListIterator(object):
             raise StopIteration
         return self.__getfunc(self.__n)
 
+    # Python 2
+    next = __next__
+
 
 class VarList(object):
     """A list-like object that wraps IMP C++ object accessor methods"""
