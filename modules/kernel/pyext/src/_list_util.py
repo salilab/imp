@@ -58,6 +58,17 @@ class VarList(object):
             raise IndexError("list assignment index out of range")
         return self.__erasefunc(indx)
 
+    def pop(self, indx=-1):
+        if len(self) == 0:
+            raise IndexError("pop from empty list")
+        if indx < 0:
+            indx += len(self)
+        if indx < 0 or indx >= len(self):
+            raise IndexError("pop index out of range")
+        x = self[indx]
+        del self[indx]
+        return x
+
 
 def set_varlist(lst, obj):
     """Helper function to set members that are VarList objects"""

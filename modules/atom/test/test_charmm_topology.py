@@ -93,11 +93,16 @@ class Tests(IMP.test.TestCase):
         del t.segments[3]
         del t.segments[-1]
         self.assertEqual(len(t.segments), 4)
+        name = t.segments[3].get_name()
+        s = t.segments.pop()
+        self.assertEqual(s.get_name(), name)
+        self.assertEqual(len(t.segments), 3)
         def _delfunc():
             del t.segments[42]
         self.assertRaises(IndexError, _delfunc)
 
         del t.segments
+        self.assertRaises(IndexError, t.segments.pop)
         t.segments = [st]
         self.assertEqual(len(t.segments), 1)
         t.segments.clear()
