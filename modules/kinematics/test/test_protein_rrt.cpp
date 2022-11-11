@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
   // create dofs
   DOFs dofs;
   for (unsigned int i = 0; i < joints.size(); i++) {
-    std::cerr << "Angle = " << joints[i]->get_angle() << std::endl;
+//  std::cerr << "Angle = " << joints[i]->get_angle() << std::endl;
     IMP_NEW(DOF, dof, (joints[i]->get_angle(), -IMP::algebra::PI,
                        IMP::algebra::PI, IMP::algebra::PI / 360));
     dofs.push_back(dof);
@@ -154,9 +154,9 @@ int main(int argc, char *argv[]) {
   for (unsigned int i = 0; i < dof_values.size(); i++) {
     sampler->apply(dof_values[i]);
     kfss->do_before_evaluate();
-    std::string filename =
+/*  std::string filename =
         "node" + std::string(boost::lexical_cast<std::string>(i + 1)) + ".pdb";
-    IMP::atom::write_pdb(mhd, filename);
+    IMP::atom::write_pdb(mhd, filename);*/
   }
   return 0;
 }
