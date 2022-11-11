@@ -54,10 +54,17 @@ int main(int argc, char *argv[]) {
   IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
+      fname, model, new IMP::atom::ChainPDBSelector("A"),
       // new IMP::atom::ATOMPDBSelector(),
       // don't add radii
       true, true);
+  /* Speed up test by only reading 10 residues from the A chain */
+  assert(mhd.get_number_of_children() == 1);
+  IMP::atom::Hierarchy chain = mhd.get_child(0);
+  for (unsigned int i = chain.get_number_of_children() - 1; i >= 10; --i) {
+    chain.remove_child(i);
+  }
+
   const std::string topology_file_name = IMP::atom::get_data_path("top_heav.lib");
   const std::string parameter_file_name = IMP::atom::get_data_path("par.lib");
   std::ifstream test(topology_file_name.c_str());
