@@ -407,19 +407,8 @@ void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test kinematic PDB.");
-  return 0;
-  // TODO: fix this test
 
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " pdb " << std::endl;
-    exit(1);
-  }
-  std::string fname(argv[1]);
-  std::cout << fname << std::endl;
+  std::string fname = IMP::kinematics::get_example_path("antibody/1igt.pdb");
 
   IMP::core::RigidBodies rbs1;
   IMP::Pointer<IMP::Model> m1 = build_model_no_pdb(rbs1);

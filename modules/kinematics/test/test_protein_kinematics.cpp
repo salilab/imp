@@ -19,18 +19,8 @@ using namespace IMP::kinematics;
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test protein kinematics.");
-  return 0;
 
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " pdb " << std::endl;
-    exit(1);
-  }
-  std::string fname(argv[1]);
-  std::cout << fname << std::endl;
+  std::string fname = IMP::kinematics::get_example_path("antibody/1igt.pdb");
 
   // read in the input protein
   IMP::Model* model = new IMP::Model();
@@ -40,8 +30,8 @@ int main(int argc, char *argv[]) {
       // new IMP::atom::ATOMPDBSelector(),
       // don't add radii
       true, true);
-  const std::string topology_file_name = "top_heav.lib";
-  const std::string parameter_file_name = "par.lib";
+  const std::string topology_file_name = IMP::atom::get_data_path("top_heav.lib");
+  const std::string parameter_file_name = IMP::atom::get_data_path("par.lib");
   std::ifstream test(topology_file_name.c_str());
   if (!test) {
     std::cerr << "Please provide topology file " << topology_file_name
