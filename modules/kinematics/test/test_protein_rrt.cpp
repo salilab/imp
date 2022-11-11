@@ -129,14 +129,14 @@ int main(int argc, char *argv[]) {
                        IMP::algebra::PI, IMP::algebra::PI / 360));
     dofs.push_back(dof);
   }
-  UniformBackboneSampler sampler(joints, dofs);
+  IMP_NEW(UniformBackboneSampler, sampler, (joints, dofs));
   DOFValues val(dofs);
   std::cerr << "DOFs done" << std::endl;
 
   IMP_NEW(DirectionalDOF, dd, (dofs));
-  PathLocalPlanner planner(model, &sampler, dd, 10);
+  IMP_NEW(PathLocalPlanner, planner, (model, sampler, dd, 10));
   std::cerr << "Start RRT" << std::endl;
-  IMP_NEW(RRT, rrt, (model, &sampler, &planner, dofs));
+  IMP_NEW(RRT, rrt, (model, sampler, planner, dofs));
   rrt->set_scoring_function(pr);
   std::cerr << "Start RRT run" << std::endl;
   rrt->run();
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
   // output PDBs
   DOFValuesList dof_values = rrt->get_DOFValuesList();
   for (unsigned int i = 0; i < dof_values.size(); i++) {
-    sampler.apply(dof_values[i]);
+    sampler->apply(dof_values[i]);
     kfss->do_before_evaluate();
     std::string filename =
         "node" + std::string(boost::lexical_cast<std::string>(i + 1)) + ".pdb";
