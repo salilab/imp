@@ -130,7 +130,7 @@
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data,    \
                         PluralData, OnAdd, OnChanged, OnRemoved)               \
   IMP_PROTECTION(protection)                                                   \
-      /** \brief Remove any occurences of d from the container. */             \
+      /** \brief Remove first occurence of d from the container. */            \
       void remove_##lcname(Data d) {                                           \
     IMP_OBJECT_LOG;                                                            \
     bool found = false;                                                        \
