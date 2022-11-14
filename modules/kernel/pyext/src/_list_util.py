@@ -32,14 +32,14 @@ class VarListIterator(object):
 class VarList(object):
     """A list-like object that wraps IMP C++ object accessor methods"""
     def __init__(self, getdimfunc, getfunc, erasefunc, appendfunc, extendfunc,
-                 clearfunc, removefunc):
+                 clearfunc, indexfunc):
         self.__getdimfunc = getdimfunc
         self.__getfunc = getfunc
         self.__erasefunc = erasefunc
         self.__appendfunc = appendfunc
         self.__extendfunc = extendfunc
         self.__clearfunc = clearfunc
-        self.__removefunc = removefunc
+        self.__indexfunc = indexfunc
 
     def __iter__(self):
         return VarListIterator(self, self.__getfunc)
@@ -77,8 +77,14 @@ class VarList(object):
             for i in sorted(ret, reverse=True):
                 del self[i]
 
+    def index(self, obj, start=0, stop=2**30):
+        # 2**30 *should* be large enough to be larger than any list we use,
+        # but not large enough to have to worry about overflow
+        # (Python uses 2**63)
+        return self.__indexfunc(obj, start, stop)
+
     def remove(self, obj):
-        return self.__removefunc(obj)
+        del self[self.index(obj)]
 
     def pop(self, indx=-1):
         if len(self) == 0:

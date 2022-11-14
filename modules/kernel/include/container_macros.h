@@ -98,7 +98,8 @@
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
  public:                                                                    \
   void remove_##lcname(Data d);                                             \
-  void _python_remove_##lcname(Data d);                                     \
+  unsigned int _python_index_##lcname(Data d, unsigned int start,           \
+                                      unsigned int stop);                   \
   void remove_##lcnames(const PluralData& d);                               \
   void set_##lcnames(const PluralData& ps);                                 \
   void set_##lcnames##_order(const PluralData& objs);                       \
@@ -149,22 +150,22 @@
                              << get_as<PluralData>(lcname##_vector_));         \
     lcname##_handle_change();                                                  \
   }                                                                            \
-  void _python_remove_##lcname(Data d) {                                       \
-    IMP_OBJECT_LOG;                                                            \
+  unsigned int _python_index_##lcname(Data d, unsigned int start,              \
+                                      unsigned int stop) {                     \
     bool found = false;                                                        \
-    for (Ucname##Iterator it = lcnames##_begin(); it != lcnames##_end();       \
-         ++it) {                                                               \
+    unsigned int indx = start;                                                 \
+    for (Ucname##Iterator it = lcnames##_begin() + start;                      \
+         it < lcnames##_end() && it < lcnames##_begin() + stop;                \
+         ++it, ++indx) {                                                       \
       if (*it == d) {                                                          \
-        lcname##_handle_remove(*it);                                           \
         found = true;                                                          \
-        lcname##_vector_.erase(it);                                            \
         break;                                                                 \
       }                                                                        \
     }                                                                          \
     if (!found) {                                                              \
-      IMP_THROW("list.remove(x): x not in list", ValueException);              \
+      IMP_THROW(d << " is not in list", ValueException);                       \
     }                                                                          \
-    lcname##_handle_change();                                                  \
+    return indx;                                                               \
   }                                                                            \
   /** \brief Remove the ith element in the container */                        \
   void erase_##lcname(unsigned int i) {                                        \

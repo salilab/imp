@@ -156,7 +156,7 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
           appendfunc=self.add_segment,
           extendfunc=self.add_segments,
           clearfunc=self.clear_segments,
-          removefunc=self._python_remove_segment)
+          indexfunc=self._python_index_segment)
 
   def __set_segments(self, obj):
       IMP._list_util.set_varlist(self.segments, obj)
