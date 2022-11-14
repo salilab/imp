@@ -15,7 +15,6 @@ radius_by_element_id = {
     21869: 1.7,
     21856: 1.7
 }
-RMF_FNAME = "dialanine.rmf"
 BD_CYCLES = 100
 
 
@@ -34,12 +33,6 @@ def create_dialanine_topology():
 #    st.add_residue(C_terminal_res)
     t = IMP.atom.CHARMMTopology(ff)
     t.add_segment(st)
-    Debug = True
-    if Debug:
-        # Make a Hierarchy using this topology
-        m = IMP.Model()
-        h = t.create_hierarchy(m)
-        IMP.atom.show(h)
     return t
 
 def get_scoring_function(protein, topology, is_non_bonded=True):
@@ -82,20 +75,7 @@ class Tests(IMP.test.TestCase):
         bd = IMP.atom.BrownianDynamics(model)
         bd.set_maximum_time_step(1)
         bd.set_scoring_function(sf)
-        rmf_fname = self.get_tmp_file_name(RMF_FNAME)
-        print(f"RMF file: {rmf_fname"})
-        rmf = RMF.create_rmf_file(rmf_fname)
-        IMP.rmf.add_hierarchy(rmf, protein.get_children()[0])
-        os = IMP.rmf.SaveOptimizerState(model, rmf)
-        os.set_period(10)
-        bd.add_optimizer_state(os)
-        print(atoms)
-        print(sf.evaluate(False))
-        print("Optimizing")
         bd.optimize(BD_CYCLES)
-        print("Atoms after optimizing for %d cycles:" % BD_CYCLES)
-        print(atoms)
-        print("Final score = %.2f" % sf.evaluate(False))
         assertAlmostEqual(sf.evaluate(False), 9.85)
     
 
