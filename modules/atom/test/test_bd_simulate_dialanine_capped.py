@@ -18,17 +18,8 @@ radius_by_element_id = {
 RMF_FNAME = "dialanine.rmf"
 BD_CYCLES = 100
 
-def add_atom_types_for_capped_amino_acids():
-    # Add atom types referenced by ACE and CT3 patches that IMP
-    # doesn't know about
-    elements = IMP.atom.get_element_table()
-    IMP.atom.add_atom_type('CAY', elements.get_element('C'))
-    IMP.atom.add_atom_type('CY', elements.get_element('C'))
-    IMP.atom.add_atom_type('OY', elements.get_element('O'))
-    IMP.atom.add_atom_type('CAT', elements.get_element('C'))
 
 def create_dialanine_topology():
-    add_atom_types_for_capped_amino_acids()
     ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
     st = IMP.atom.CHARMMSegmentTopology()
     ideal_ala = ff.get_residue_topology(IMP.atom.ALA)
