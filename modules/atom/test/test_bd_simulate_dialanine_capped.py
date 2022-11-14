@@ -2,6 +2,7 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.rmf
+import IMP.test
 import RMF
 
 # Radii by atomic weight of various elements
