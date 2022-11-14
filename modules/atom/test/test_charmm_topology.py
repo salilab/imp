@@ -82,10 +82,12 @@ class Tests(IMP.test.TestCase):
         """Test the Python list-like CHARMMTopology.segments member"""
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         t = IMP.atom.CHARMMTopology(ff)
-        t.add_sequence('C/C/C/C/C')
-        self.assertEqual(len(t.segments), 5)
+        t.add_sequence('C/C/C/C/C/C/C/C')
+        self.assertEqual(len(t.segments), 8)
         r = repr(t.segments)
-        self.assertEqual(t.segments[3], t.segments[-2])
+        self.assertEqual(t.segments[6], t.segments[-2])
+        self.assertEqual(t.segments[1:10:4], [t.segments[1], t.segments[5]])
+        del t.segments[2::2]
 
         st = IMP.atom.CHARMMSegmentTopology()
         t.segments.append(st)

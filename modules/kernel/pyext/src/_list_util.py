@@ -1,3 +1,17 @@
+def _handle_seq_indx(seqtype, indx):
+    if isinstance(indx, int):
+        if indx < 0:
+            indx += len(seqtype)
+        if indx < 0 or indx >= len(seqtype):
+            raise IndexError("list index out of range")
+        else:
+            return indx
+    elif isinstance(indx, slice):
+        return range(*indx.indices(len(seqtype)))
+    else:
+        raise TypeError("expecting an integer index")
+
+
 class VarListIterator(object):
     def __init__(self, varlist, getfunc):
         self.__varlist = varlist
@@ -48,18 +62,19 @@ class VarList(object):
         return str(self)
 
     def __getitem__(self, indx):
-        if indx < 0:
-            indx += len(self)
-        if indx < 0 or indx >= len(self):
-            raise IndexError("list index out of range")
-        return self.__getfunc(indx)
+        ret = _handle_seq_indx(self, indx)
+        if isinstance(ret, int):
+            return self.__getfunc(ret)
+        else:
+            return [self[i] for i in ret]
 
     def __delitem__(self, indx):
-        if indx < 0:
-            indx += len(self)
-        if indx < 0 or indx >= len(self):
-            raise IndexError("list assignment index out of range")
-        return self.__erasefunc(indx)
+        ret = _handle_seq_indx(self, indx)
+        if isinstance(ret, int):
+            return self.__erasefunc(ret)
+        else:
+            for i in sorted(ret, reverse=True):
+                del self[i]
 
     def pop(self, indx=-1):
         if len(self) == 0:
