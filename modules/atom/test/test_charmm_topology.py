@@ -90,6 +90,12 @@ class Tests(IMP.test.TestCase):
         del t.segments[2::2]
 
         st = IMP.atom.CHARMMSegmentTopology()
+        st_not_in = IMP.atom.CHARMMSegmentTopology()
+        t.segments.append(st)
+        self.assertIn(st, t.segments)
+        self.assertNotIn(st_not_in, t.segments)
+        t.segments.remove(st)
+        self.assertRaises(ValueError, t.segments.remove, st_not_in)
         t.segments.append(st)
         self.assertEqual(len(t.segments), 6)
         del t.segments[3]

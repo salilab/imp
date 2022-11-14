@@ -98,6 +98,7 @@
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
  public:                                                                    \
   void remove_##lcname(Data d);                                             \
+  void _python_remove_##lcname(Data d);                                     \
   void remove_##lcnames(const PluralData& d);                               \
   void set_##lcnames(const PluralData& ps);                                 \
   void set_##lcnames##_order(const PluralData& objs);                       \
@@ -146,6 +147,23 @@
     IMP_UNUSED(found);                                                         \
     IMP_USAGE_CHECK(found, d << " not found in container: "                    \
                              << get_as<PluralData>(lcname##_vector_));         \
+    lcname##_handle_change();                                                  \
+  }                                                                            \
+  void _python_remove_##lcname(Data d) {                                       \
+    IMP_OBJECT_LOG;                                                            \
+    bool found = false;                                                        \
+    for (Ucname##Iterator it = lcnames##_begin(); it != lcnames##_end();       \
+         ++it) {                                                               \
+      if (*it == d) {                                                          \
+        lcname##_handle_remove(*it);                                           \
+        found = true;                                                          \
+        lcname##_vector_.erase(it);                                            \
+        break;                                                                 \
+      }                                                                        \
+    }                                                                          \
+    if (!found) {                                                              \
+      IMP_THROW("list.remove(x): x not in list", ValueException);              \
+    }                                                                          \
     lcname##_handle_change();                                                  \
   }                                                                            \
   /** \brief Remove the ith element in the container */                        \
