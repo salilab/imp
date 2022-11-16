@@ -153,10 +153,12 @@
   unsigned int _python_index_##lcname(Data d, unsigned int start,              \
                                       unsigned int stop) {                     \
     bool found = false;                                                        \
+    unsigned int num_of = get_number_of_##lcnames();                           \
+    start = std::min(start, num_of);                                           \
+    stop = std::min(stop, num_of);                                             \
     unsigned int indx = start;                                                 \
     for (Ucname##Iterator it = lcnames##_begin() + start;                      \
-         it < lcnames##_end() && it < lcnames##_begin() + stop;                \
-         ++it, ++indx) {                                                       \
+         it != lcnames##_end(); ++it, ++indx) {                                \
       if (*it == d) {                                                          \
         found = true;                                                          \
         break;                                                                 \
