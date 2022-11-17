@@ -15,7 +15,7 @@ standard_unittest_attributes = [
    'failUnlessAlmostEqual', 'failUnlessEqual', 'failUnlessRaises', 'id',
    'setUp', 'setUpClass', 'shortDescription', 'skipTest', 'tearDown',
    'tearDownClass', 'assertLogs', 'subTest', 'addClassCleanup',
-   'doClassCleanups', 'assertNoLogs' ]
+   'doClassCleanups', 'assertNoLogs', 'enterClassContext', 'enterContext' ]
 path_attributes = [
    'absolute', 'as_posix', 'as_uri', 'chmod', 'cwd', 'exists', 'glob', 'group',
    'is_absolute', 'is_block_device', 'is_char_device', 'is_dir', 'is_fifo',
