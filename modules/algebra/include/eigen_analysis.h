@@ -15,6 +15,7 @@
 #include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/log.h>
 #include <IMP/log_macros.h>
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -64,6 +65,12 @@ class PrincipalComponentAnalysisD : public GeometricPrimitiveD<D> {
   Vector<VectorD<D> > eigen_vecs_;
   VectorD<D> eigen_values_;
   VectorD<D> centroid_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & eigen_vecs_ & eigen_values_ & centroid_;
+  }
 };
 
 #ifndef IMP_DOXYGEN

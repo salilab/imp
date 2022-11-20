@@ -13,6 +13,7 @@
 #include "internal/utility.h"
 #include "algebra_macros.h"
 #include <IMP/exception.h>
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -157,6 +158,12 @@ class BoundingBoxD {
 
  private:
   VectorD<D> b_[2];
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & b_[0] & b_[1];
+  }
 };
 //! See BoundingBoxD
 template <int D>
