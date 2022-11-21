@@ -748,11 +748,7 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
-// A value that is serializable/picklable
-// Modules that use these must link against Boost.Serialization and
-// include boost/archive/binary_iarchive.hpp and
-// boost/archive/binary_oarchive.hpp in their SWIG interface
-%define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name)
+%define IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
 %extend Namespace::Name {
   /* Get contents as a binary blob (for serialization) */
   PyObject *_get_as_binary() const {
@@ -800,6 +796,15 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
       return self._set_from_binary(p)
   %}
 }
+%enddef
+
+// A value that is serializable/picklable
+// Modules that use these must link against Boost.Serialization and
+// include boost/archive/binary_iarchive.hpp and
+// boost/archive/binary_oarchive.hpp in their SWIG interface
+%define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
 %enddef
 
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)

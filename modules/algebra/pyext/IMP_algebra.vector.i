@@ -64,7 +64,7 @@ namespace IMP {
   %}
 };
 
-IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, VectorD<D>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(IMP::algebra, VectorD<D>);
 %enddef
 
 %define IMP_ALGEBRA_FIXED_SIZE_VECTOR(D)

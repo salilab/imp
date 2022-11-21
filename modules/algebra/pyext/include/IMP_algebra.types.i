@@ -53,13 +53,13 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace
 
 %define IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(Namespace, Namebase)
 IMP_SWIG_ALGEBRA_VALUE_D(Namespace, Namebase);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<1>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<2>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<3>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<4>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<5>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<6>);
-IMP_SWIG_VALUE_SERIALIZE(Namespace, Namebase##D<-1>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<1>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<2>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<3>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<4>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<5>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<6>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<-1>);
 %enddef
 
 %define IMP_SWIG_ALGEBRA_VALUE(Namespace, Name, PluralName)
