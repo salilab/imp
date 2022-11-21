@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -66,6 +67,33 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(pts), 10)
         for p in pts:
             self.assertTrue(cone.get_contains(p))
+
+    def _assert_equal(self, a, b):
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_tip(), b.get_tip()), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_direction(), b.get_direction()), 1e-4)
+        self.assertAlmostEqual(a.get_height(), b.get_height(), delta=1e-4)
+        self.assertAlmostEqual(a.get_angle(), b.get_angle(), delta=1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Cone3D"""
+        s1 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+        cone1 = IMP.algebra.Cone3D(s1, 4.0)
+        s2 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+        cone2 = IMP.algebra.Cone3D(s2, 6.0)
+        cone2.foo = 'bar'
+        dump = pickle.dumps((cone1, cone2))
+
+        newcone1, newcone2 = pickle.loads(dump)
+        self._assert_equal(cone1, newcone1)
+        self._assert_equal(cone2, newcone2)
+        self.assertEqual(newcone2.foo, 'bar')
+
+        self.assertRaises(TypeError, cone1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

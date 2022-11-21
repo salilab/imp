@@ -328,6 +328,26 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.get_distance(t2, newt2), 0, delta=.05)
         self.assertEqual(newt2.foo, 'bar')
 
+        self.assertRaises(TypeError, t1._set_from_binary, 42)
+
+    def test_fixed_xyz_pickle(self):
+        """Check that FixedXYZ objects can be (un-)pickled"""
+        f1 = IMP.algebra.FixedXYZ(1., 2., 3.)
+        f2 = IMP.algebra.FixedXYZ(4., 5., 6.)
+        f2.foo = 'bar'
+        dump = pickle.dumps((f1, f2))
+
+        newf1, newf2 = pickle.loads(dump)
+        self.assertAlmostEqual(f1.get_x(), newf1.get_x(), delta=1e-4)
+        self.assertAlmostEqual(f1.get_y(), newf1.get_y(), delta=1e-4)
+        self.assertAlmostEqual(f1.get_z(), newf1.get_z(), delta=1e-4)
+        self.assertAlmostEqual(f2.get_x(), newf2.get_x(), delta=1e-4)
+        self.assertAlmostEqual(f2.get_y(), newf2.get_y(), delta=1e-4)
+        self.assertAlmostEqual(f2.get_z(), newf2.get_z(), delta=1e-4)
+        self.assertEqual(newf2.foo, 'bar')
+
+        self.assertRaises(TypeError, f1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

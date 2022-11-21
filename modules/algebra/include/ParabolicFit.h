@@ -11,6 +11,7 @@
 
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 #include <vector>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -18,6 +19,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate parabola that fits best the input data points
 class IMPALGEBRAEXPORT ParabolicFit2D : public GeometricPrimitiveD<2> {
  public:
+  ParabolicFit2D() {}
+
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
@@ -49,6 +52,12 @@ class IMPALGEBRAEXPORT ParabolicFit2D : public GeometricPrimitiveD<2> {
  private:
   double a_, b_, c_;
   double error_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & a_ & b_ & c_ & error_;
+  }
 };
 
 IMP_VALUES(ParabolicFit2D, ParabolicFit2Ds);

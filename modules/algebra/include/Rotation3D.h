@@ -595,6 +595,12 @@ IMPALGEBRAEXPORT Rotation3D
 class FixedXYZ : public GeometricPrimitiveD<3> {
   double v_[3];
 
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & v_[0] & v_[1] & v_[2];
+  }
+
  public:
   FixedXYZ() {}
   FixedXYZ(double x, double y, double z) {

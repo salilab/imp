@@ -1,6 +1,8 @@
 import IMP
 import IMP.test
 import IMP.algebra
+import pickle
+
 
 class Tests(IMP.test.TestCase):
     def test_constructor(self):
@@ -49,6 +51,29 @@ class Tests(IMP.test.TestCase):
                         1e-4)
         self.assertLess(IMP.algebra.get_distance(s2.get_point(1), V(4,0,0)),
                         1e-4)
+
+    def _assert_equal(self, a, b):
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_point(0), b.get_point(0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_point(1), b.get_point(1)), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Segment3D"""
+        s1 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, -4.0),
+                                   IMP.algebra.Vector3D(0.0, 0.0, 4.0))
+        s2 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0),
+                                   IMP.algebra.Vector3D(0.0, 0.0, 4.0))
+        s2.foo = 'bar'
+        dump = pickle.dumps((s1, s2))
+
+        news1, news2 = pickle.loads(dump)
+        self._assert_equal(s1, news1)
+        self._assert_equal(s2, news2)
+        self.assertEqual(news2.foo, 'bar')
+
+        self.assertRaises(TypeError, s1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()
