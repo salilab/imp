@@ -1,3 +1,7 @@
+%pythoncode %{
+from . import _list_util
+%}
+
 %extend IMP::Object {
   bool __eq__(const Object *o) const {
      return self ==o;

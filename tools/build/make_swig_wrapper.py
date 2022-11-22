@@ -77,6 +77,9 @@ def patch_py_wrapper(infile, outfile, module):
                 # Work around SWIG 3.0.8 bug
                 # https://github.com/swig/swig/issues/583
                 line = line.replace('except Exception:', 'except:')
+                # List wrappers use IMP._list_util for all modules
+                # *except* kernel
+                line = line.replace('IMP._list_util', '_list_util')
             outfh.write(line)
     outfh.close()
 

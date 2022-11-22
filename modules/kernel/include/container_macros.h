@@ -51,6 +51,34 @@
 #define IMP_FORCE_EXPORT(x) x
 #endif
 
+/* Provide Python list-like object for IMP_LIST, below */
+/* This is a bit ugly here and in the output Python code because everything
+   in one %pythoncode ends up on a single line */
+#ifdef SWIG
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)                       \
+%pythoncode %{                                                               \
+  def __get_##lcnames(self): \
+return IMP._list_util.VarList(getdimfunc=self.get_number_of_##lcnames, \
+getfunc=self.get_##lcname, erasefunc=self.erase_##lcname, \
+appendfunc=self.add_##lcname, extendfunc=self.add_##lcnames, \
+clearfunc=self.clear_##lcnames, indexfunc=self._python_index_##lcname) \
+%}                                                                           \
+%pythoncode %{                                                               \
+  def __set_##lcnames(self, obj):\
+IMP._list_util.set_varlist(self.##lcnames, obj) \
+%}                                                                           \
+%pythoncode %{                                                               \
+  def __del_##lcnames(self): IMP._list_util.del_varlist(self.##lcnames)      \
+%}                                                                           \
+%pythoncode %{                                                               \
+  ##lcnames = property(__get_##lcnames, __set_##lcnames, __del_##lcnames,\
+doc="List of ##ucnames") \
+%}
+
+#else
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)
+#endif
+
 /**  \brief  A macro to provide a uniform interface for storing lists of
      objects.
 
@@ -64,7 +92,9 @@
      - foos_begin, foos_end
      - remove_foo
      - remove_foos
-     etc. where foo is the lcname provided.
+     etc. where foo is the lcname provided. In Python, a 'foos' member
+     is also provided, which acts like a regular Python list (the above
+     methods can also be used if desired).
 
      \param[in] protection The level of protection for the container
      (public, private).
@@ -96,7 +126,11 @@
 
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data, \
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
+  IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)                            \
  public:                                                                    \
+  /** \brief A Python list of ##ucnames                                     \
+      @pythononlymember */                                                  \
+  list ##lcnames;                                                           \
   void remove_##lcname(Data d);                                             \
   unsigned int _python_index_##lcname(Data d, unsigned int start,           \
                                       unsigned int stop);                   \

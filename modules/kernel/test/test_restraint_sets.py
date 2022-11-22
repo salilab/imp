@@ -78,6 +78,11 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rsrs.count(r0), 1)
         self.assertEqual(rsrs.count(r1), 1)
         self.assertEqual(rsrs.count(r2), 0)
+        # Use Python listlike object
+        self.assertEqual(len(rs.restraints), 2)
+        self.assertEqual(rs.restraints.index(r0), 0)
+        self.assertEqual(rs.restraints.index(r1), 1)
+        self.assertRaises(ValueError, rs.restraints.index, r2)
 
     def test_restraints_weights(self):
         """Check weights on restraints"""

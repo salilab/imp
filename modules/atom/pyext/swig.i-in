@@ -4,10 +4,6 @@ namespace atom {
 }
 }
 
-%pythoncode %{
-  import IMP._list_util
-%}
-
 IMP_SWIG_GRAPH(IMP::atom, HierarchyTree, HierarchyTree, IMP::atom::Hierarchy);
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
@@ -143,30 +139,6 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
       return NotPDBSelector(self)
   def __sub__(self, s):
       return AndPDBSelector(self, NotPDBSelector(s))
-%}
-}
-
-%extend IMP::atom::CHARMMTopology {
-%pythoncode %{
-  def __get_segments(self):
-      return IMP._list_util.VarList(
-          getdimfunc=self.get_number_of_segments,
-          getfunc=self.get_segment,
-          erasefunc=self.erase_segment,
-          appendfunc=self.add_segment,
-          extendfunc=self.add_segments,
-          clearfunc=self.clear_segments,
-          indexfunc=self._python_index_segment)
-
-  def __set_segments(self, obj):
-      IMP._list_util.set_varlist(self.segments, obj)
-
-  def __del_segments(self):
-      IMP._list_util.del_varlist(self.segments)
-
-  segments = property(__get_segments, __set_segments, __del_segments,
-                      doc="List of CHARMMSegmentTopology")
-
 %}
 }
 
