@@ -1,3 +1,8 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
+
 %pythoncode %{
 from . import _list_util
 %}
@@ -34,7 +39,7 @@ IMP_SWIG_RAII(IMP, SetCheckState);
 IMP_SWIG_OBJECT(IMP, Object, Objects);
 IMP_SWIG_OBJECT(IMP::internal, _TestObject, _TestObjects);
 IMP_SWIG_DIRECTOR(IMP, Object);
-IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
+IMP_SWIG_VALUE_SERIALIZE(IMP, VersionInfo, VersionInfos);
 /*IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
 IMP_SWIG_VALUE(IMP, TextInput, TextInputs);*/
 IMP_SWIG_RAII(IMP, CreateLogContext)
