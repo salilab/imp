@@ -1,3 +1,8 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
+
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
@@ -165,7 +170,7 @@ IMP_SWIG_DECORATOR(IMP::core, ScriptProvenance, ScriptProvenances);
 IMP_SWIG_DECORATOR(IMP::core, SoftwareProvenance, SoftwareProvenances);
 IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 
-IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
+IMP_SWIG_VALUE_SERIALIZE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
 
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, TruncatedHarmonicBounds);
@@ -195,7 +200,7 @@ IMP_SWIG_OBJECT(IMP::core, AttributeSingletonPredicate, AttributeSingletonPredic
 IMP_SWIG_OBJECT(IMP::core, InBoundingBox3DSingletonPredicate, InBoundingBox3DSingletonPredicates);
 IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 
-IMP_SWIG_VALUE(IMP::core, BinormalTerm, BinormalTermList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::core, BinormalTerm, BinormalTermList);
 IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints);
 
 
