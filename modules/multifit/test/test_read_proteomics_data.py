@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.multifit
 import os
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -28,6 +29,12 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(list(prot_data.get_interaction(1)), [0, 1, 2])
         self.assertEqual(prot_data.get_protein_name(0), 'A')
         self.assertEqual(prot_data.find('A'), 0)
+
+    def test_pickle(self):
+        """Test (un-)pickle of ProteinRecordData"""
+        p1 = IMP.multifit.ProteinRecordData("testname", "testfn")
+        dump = pickle.dumps(p1)
+        newp1 = pickle.loads(dump)
 
     def test_bad_protein_line(self):
         """Check incorrectly formatted protein lines in proteomics files"""

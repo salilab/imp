@@ -15,6 +15,8 @@
 #include <IMP/core/Hierarchy.h>
 #include <IMP/file.h>
 #include <IMP/multifit/multifit_config.h>
+#include <boost/serialization/access.hpp>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 class ProteinRecordData {
  public:
@@ -63,6 +65,14 @@ class ProteinRecordData {
   std::string filename_;
   std::string surface_filename_;
   std::string ref_filename_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & name_ & start_res_ & end_res_ & filename_ & surface_filename_
+       & ref_filename_;
+  }
 };
 
 IMP_VALUES(ProteinRecordData, ProteinRecordDataList);

@@ -1,6 +1,8 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 %}
 
 IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,
@@ -10,19 +12,19 @@ IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestraints);
-IMP_SWIG_VALUE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
-IMP_SWIG_VALUE(IMP::multifit, FittingSolutionRecord, FittingSolutionRecords);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, FittingSolutionRecord, FittingSolutionRecords);
 IMP_SWIG_VALUE(IMP::multifit, AnchorsData, AnchorsDataList);
-IMP_SWIG_VALUE(IMP::multifit, DominoParams, DominoParamsList);
-IMP_SWIG_VALUE(IMP::multifit, ComplementarityParams, ComplementarityParamsList);
-IMP_SWIG_VALUE(IMP::multifit, XlinkParams, XlinkParamsList);
-IMP_SWIG_VALUE(IMP::multifit, ConnectivityParams, ConnectivityParamsList);
-IMP_SWIG_VALUE(IMP::multifit, FragmentsParams, FragmentsParamsList);
-IMP_SWIG_VALUE(IMP::multifit, RogParams, RogParamsList);
-IMP_SWIG_VALUE(IMP::multifit, EVParams, EVParamsList);
-IMP_SWIG_VALUE(IMP::multifit, FiltersParams, FiltersParamsList);
-IMP_SWIG_VALUE(IMP::multifit, AlignmentParams, AlignmentParamsList);
-IMP_SWIG_VALUE(IMP::multifit, FittingParams, FittingParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, DominoParams, DominoParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, ComplementarityParams, ComplementarityParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, XlinkParams, XlinkParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, ConnectivityParams, ConnectivityParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, FragmentsParams, FragmentsParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, RogParams, RogParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, EVParams, EVParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, FiltersParams, FiltersParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, AlignmentParams, AlignmentParamsList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::multifit, FittingParams, FittingParamsList);
 IMP_SWIG_VALUE(IMP::multifit, ProteinsAnchorsSamplingSpace, ProteinsAnchorsSamplingSpaces);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFitting, FFTFittings);
