@@ -1,5 +1,3 @@
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -66,6 +64,7 @@ class Tests(IMP.test.TestCase):
                 best_rmsd = rmsd
             IMP.core.transform(self.rb, fit_t_inv)
         self.assertLess(best_rmsd, 3.5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

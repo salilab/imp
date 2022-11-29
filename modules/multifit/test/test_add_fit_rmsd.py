@@ -36,5 +36,6 @@ class Tests(IMP.test.TestCase):
                                2.45, delta=0.01)
         os.unlink(out_fn)
 
+
 if __name__ == '__main__':
     IMP.test.main()

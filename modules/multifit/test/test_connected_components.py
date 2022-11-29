@@ -1,5 +1,3 @@
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -35,8 +33,8 @@ class Tests(IMP.test.TestCase):
                     p = IMP.Particle(mdl)
                     center = IMP.algebra.get_random_vector_in(bb) \
                              + IMP.algebra.Vector3D(j * 20, j * 20, j * 20)
-                    IMP.core.XYZR.setup_particle(p,
-                                             IMP.algebra.Sphere3D(center, 2))
+                    IMP.core.XYZR.setup_particle(
+                        p, IMP.algebra.Sphere3D(center, 2))
                     IMP.atom.Mass.setup_particle(p, 1)
                     ps.append(p)
             dmap = IMP.em.particles2density(ps, 10, 1)

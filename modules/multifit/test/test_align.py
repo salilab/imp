@@ -43,15 +43,13 @@ class Tests(IMP.test.TestCase):
                 return []
         try:
             IMP.multifit.ProteomicsEMAlignmentAtomic = DummyAlignment
-            self.assertRaises(SystemExit, self.run_python_module, align,
-                              ['-m', '5', self.get_input_file_name('align.asmb.input'),
-                               self.get_input_file_name(
-                                   'align.proteomics.input'),
-                                  self.get_input_file_name(
-                                      'align.indexes.input'),
-                                  self.get_input_file_name(
-                                      'align.alignment.param'),
-                                  'combinations.output', 'scores.output'])
+            self.assertRaises(
+                SystemExit, self.run_python_module, align,
+                ['-m', '5', self.get_input_file_name('align.asmb.input'),
+                 self.get_input_file_name('align.proteomics.input'),
+                 self.get_input_file_name('align.indexes.input'),
+                 self.get_input_file_name('align.alignment.param'),
+                 'combinations.output', 'scores.output'])
             os.unlink('combinations.output')
         finally:
             IMP.multifit.ProteomicsEMAlignmentAtomic = old_align
@@ -99,9 +97,9 @@ class Tests(IMP.test.TestCase):
             IMP.em.FitRestraint = DummyFitRestraint
             IMP.multifit.Ensemble = DummyEnsemble
 
-            align.report_solutions(asmb, mdl, mhs, IMP.RestraintSet(mdl),
-                                   None, mapping_data,
-                                   combs, 'test.comb.out', 'test.scores.out', 3)
+            align.report_solutions(
+                asmb, mdl, mhs, IMP.RestraintSet(mdl), None, mapping_data,
+                combs, 'test.comb.out', 'test.scores.out', 3)
         finally:
             IMP.em.FitRestraint = old_fitr
             IMP.multifit.Ensemble = old_ensmb
@@ -113,6 +111,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lines, ['|2 0 |1.0|', '|0 0 |0.8|', '|1 0 |0.5|'])
         os.unlink('test.comb.out')
         os.unlink('test.scores.out')
+
 
 if __name__ == '__main__':
     IMP.test.main()

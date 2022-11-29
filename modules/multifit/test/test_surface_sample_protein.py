@@ -1,9 +1,7 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import IMP.multifit
-import os
 
 
 class Tests(IMP.test.TestCase):

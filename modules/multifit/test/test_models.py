@@ -32,18 +32,17 @@ class Tests(IMP.test.TestCase):
                                 'models.asmb'])
         for i in range(3):
             os.unlink('models.asmb.%d.pdb' % i)
-        self.run_python_module(models,
-                               ['-m', '2', self.get_input_file_name('models.asmb.input'),
-                                self.get_input_file_name(
-                                    'models.proteomics.input'),
-                                self.get_input_file_name(
-                                    'models.indexes.input'),
-                                self.get_input_file_name(
-                                    'models.combinations'),
-                                'models.asmb'])
+        self.run_python_module(
+            models,
+            ['-m', '2', self.get_input_file_name('models.asmb.input'),
+             self.get_input_file_name('models.proteomics.input'),
+             self.get_input_file_name('models.indexes.input'),
+             self.get_input_file_name('models.combinations'),
+             'models.asmb'])
         for i in range(2):
             os.unlink('models.asmb.%d.pdb' % i)
         self.assertFalse(os.path.exists('models.asmb.2.pdb'))
+
 
 if __name__ == '__main__':
     IMP.test.main()

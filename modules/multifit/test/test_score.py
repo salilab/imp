@@ -35,5 +35,6 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(os.path.exists('model.3.pdb'))
         os.unlink('scores.asmb')
 
+
 if __name__ == '__main__':
     IMP.test.main()

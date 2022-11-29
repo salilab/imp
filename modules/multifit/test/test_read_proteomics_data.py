@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
         """Test (un-)pickle of ProteinRecordData"""
         p1 = IMP.multifit.ProteinRecordData("testname", "testfn")
         dump = pickle.dumps(p1)
-        newp1 = pickle.loads(dump)
+        _ = pickle.loads(dump)
 
     def test_bad_protein_line(self):
         """Check incorrectly formatted protein lines in proteomics files"""
@@ -116,6 +116,7 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
+
 
 if __name__ == '__main__':
     IMP.test.main()
