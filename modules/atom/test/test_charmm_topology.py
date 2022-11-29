@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 import string
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -124,6 +125,76 @@ class Tests(IMP.test.TestCase):
 
         self.assertRaises(IndexError, lambda: t.segments[42])
         self.assertRaises(IndexError, lambda: t.segments[-42])
+
+    def test_charmm_atom_topology_pickle(self):
+        """Test (un-)pickle of CHARMMAtomTopology"""
+        a1 = IMP.atom.CHARMMAtomTopology("name1")
+        a1.set_charmm_type("ct1")
+        a1.set_charge(1.0)
+        a2 = IMP.atom.CHARMMAtomTopology("name2")
+        a2.set_charmm_type("ct2")
+        a2.set_charge(2.0)
+        a2.foo = 'bar'
+        dump = pickle.dumps((a1, a2))
+
+        newa1, newa2 = pickle.loads(dump)
+        self.assertEqual(a1.get_name(), newa1.get_name())
+        self.assertEqual(a1.get_charmm_type(), newa1.get_charmm_type())
+        self.assertAlmostEqual(a1.get_charge(), newa1.get_charge(), delta=1e-4)
+        self.assertEqual(a2.get_name(), newa2.get_name())
+        self.assertEqual(a2.get_charmm_type(), newa2.get_charmm_type())
+        self.assertAlmostEqual(a2.get_charge(), newa2.get_charge(), delta=1e-4)
+        self.assertEqual(newa2.foo, 'bar')
+
+        self.assertRaises(TypeError, a1._set_from_binary, 42)
+
+    def test_charmm_bond_parameters_pickle(self):
+        """Test (un-)pickle of CHARMMBondParameters"""
+        p1 = IMP.atom.CHARMMBondParameters()
+        p1.force_constant = 1.0
+        p1.ideal = 2.0
+        p2 = IMP.atom.CHARMMBondParameters()
+        p2.force_constant = 3.0
+        p2.ideal = 4.0
+        p2.foo = 'bar'
+        dump = pickle.dumps((p1, p2))
+
+        newp1, newp2 = pickle.loads(dump)
+        self.assertAlmostEqual(p1.force_constant, newp1.force_constant,
+                               delta=1e-4)
+        self.assertAlmostEqual(p1.ideal, newp1.ideal, delta=1e-4)
+        self.assertAlmostEqual(p2.force_constant, newp2.force_constant,
+                               delta=1e-4)
+        self.assertAlmostEqual(p2.ideal, newp2.ideal, delta=1e-4)
+        self.assertEqual(newp2.foo, 'bar')
+
+        self.assertRaises(TypeError, p1._set_from_binary, 42)
+
+    def test_charmm_dihedral_parameters_pickle(self):
+        """Test (un-)pickle of CHARMMDihedralParameters"""
+        p1 = IMP.atom.CHARMMDihedralParameters()
+        p1.force_constant = 1.0
+        p1.multiplicity = 2
+        p1.ideal = 3.0
+        p2 = IMP.atom.CHARMMDihedralParameters()
+        p2.force_constant = 4.0
+        p2.multiplicity = 5
+        p2.ideal = 6.0
+        p2.foo = 'bar'
+        dump = pickle.dumps((p1, p2))
+
+        newp1, newp2 = pickle.loads(dump)
+        self.assertAlmostEqual(p1.force_constant, newp1.force_constant,
+                               delta=1e-4)
+        self.assertEqual(p1.multiplicity, newp1.multiplicity)
+        self.assertAlmostEqual(p1.ideal, newp1.ideal, delta=1e-4)
+        self.assertAlmostEqual(p2.force_constant, newp2.force_constant,
+                               delta=1e-4)
+        self.assertEqual(p2.multiplicity, newp2.multiplicity)
+        self.assertAlmostEqual(p2.ideal, newp2.ideal, delta=1e-4)
+        self.assertEqual(newp2.foo, 'bar')
+
+        self.assertRaises(TypeError, p1._set_from_binary, 42)
 
 
 if __name__ == '__main__':

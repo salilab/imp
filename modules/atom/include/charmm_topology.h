@@ -13,6 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include <IMP/atom/atom_config.h>
+#include <boost/serialization/access.hpp>
 
 #include <string>
 #include <vector>
@@ -30,7 +31,15 @@ class CHARMMAtomTopology {
   std::string charmm_type_;
   double charge_;
 
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & name_ & charmm_type_ & charge_;
+  }
+
  public:
+  CHARMMAtomTopology() {}
+
   CHARMMAtomTopology(std::string name) : name_(name) {}
 
   CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)

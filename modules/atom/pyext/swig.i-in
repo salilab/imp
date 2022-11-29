@@ -1,3 +1,8 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
+
 namespace IMP {
 namespace atom {
 %warnfilter(403) ForceFieldParameters;
@@ -92,10 +97,10 @@ IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimiz
 IMP_SWIG_OBJECT(IMP::atom, WaterPDBSelector,WaterPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, AtomType, AtomType, AtomTypes);
-IMP_SWIG_VALUE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);
+IMP_SWIG_VALUE_SERIALIZE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMBondEndpoint, CHARMMBondEndpoints);
-IMP_SWIG_VALUE(IMP::atom, CHARMMBondParameters, CHARMMBondParametersList);
-IMP_SWIG_VALUE(IMP::atom, CHARMMDihedralParameters, CHARMMDihedralParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::atom, CHARMMBondParameters, CHARMMBondParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::atom, CHARMMDihedralParameters, CHARMMDihedralParametersList);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMInternalCoordinate, CHARMMInternalCoordinates);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMPatch, CHARMMPatches);
