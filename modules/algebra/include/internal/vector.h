@@ -30,6 +30,18 @@ inline int get_null_value() {
   return std::numeric_limits<int>::max();
 }
 
+template <class T>
+inline bool get_is_null_value(const T &val) {
+  return val == get_null_value<T>();
+}
+
+// Can't use default implementation for double, since NaN never compares
+// equal to anything - even itself
+template <>
+inline bool get_is_null_value(const double &val) {
+  return val != val;
+}
+
 template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
@@ -76,7 +88,7 @@ class VectorData {
   }
 #endif
 
-  bool get_is_null() const { return storage_[0] >= get_null_value<T>(); }
+  bool get_is_null() const { return get_is_null_value<T>(storage_[0]); }
   ~VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i = 0; i < D; ++i) {

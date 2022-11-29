@@ -16,6 +16,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v.get_squared_magnitude(), 14.0)
         self.assertAlmostEqual(v.get_magnitude(), math.sqrt(14.0), places=1)
 
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_uninit(self):
+        """Check use of uninitialized Vector3D"""
+        v = IMP.algebra.Vector3D()
+        self.assertRaises(IMP.UsageException, v.__getitem__, 0)
+
     def test_from_floats(self):
         """Check Vector3D from floats"""
         v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
