@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import io
-import os
 import math
 import sys
 import pickle
@@ -25,7 +24,7 @@ class Tests(IMP.test.TestCase):
 
     def test_from_floats(self):
         """Check Vector3D from floats"""
-        v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
+        _ = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
 
     def test_compare(self):
         """Test that vectors can't be compared"""
@@ -74,6 +73,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v[2], 30.0)
         self.assertRaises(IndexError, lambda: v[3])
         self.assertRaises(IndexError, lambda: v[-4])
+
         def test_set(ind):
             v[ind] = 0.
         self.assertRaises(IndexError, test_set, 3)
@@ -82,11 +82,11 @@ class Tests(IMP.test.TestCase):
     def test_to_list(self):
         """Check conversion of Vector3D to list"""
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
-        l = list(v)
-        self.assertEqual(len(l), 3)
-        self.assertAlmostEqual(l[0], 1.0, delta=1e-6)
-        self.assertAlmostEqual(l[1], 2.0, delta=1e-6)
-        self.assertAlmostEqual(l[2], 3.0, delta=1e-6)
+        ls = list(v)
+        self.assertEqual(len(ls), 3)
+        self.assertAlmostEqual(ls[0], 1.0, delta=1e-6)
+        self.assertAlmostEqual(ls[1], 2.0, delta=1e-6)
+        self.assertAlmostEqual(ls[2], 3.0, delta=1e-6)
 
     def test_len(self):
         """Check Vector3D length"""
@@ -209,16 +209,16 @@ class Tests(IMP.test.TestCase):
     def test_generators(self):
         """Check the Vector3D generators"""
         # test calling since it is a bit non-trivial in SWIG
-        v = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
-        v = IMP.algebra.get_random_vector_in(
+        _ = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
+        _ = IMP.algebra.get_random_vector_in(
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
 
     def test_orth_vector(self):
         """Check get_orthogonal_vector()"""
         v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
         v2 = IMP.algebra.get_orthogonal_vector(v1)
-        self.assertLess(IMP.algebra.get_distance(v2,
-                                       IMP.algebra.Vector3D(1,1,-1)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            v2, IMP.algebra.Vector3D(1, 1, -1)), 1e-4)
         v1 = IMP.algebra.Vector3D(0, 0, 0)
         v2 = IMP.algebra.get_orthogonal_vector(v1)
         self.assertLess(IMP.algebra.get_distance(v2, v1), 1e-4)
