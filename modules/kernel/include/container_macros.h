@@ -55,7 +55,7 @@
 /* This is a bit ugly here and in the output Python code because everything
    in one %pythoncode ends up on a single line */
 #ifdef SWIG
-#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)                       \
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)              \
 %pythoncode %{                                                               \
   def __get_##lcnames(self): \
 return IMP._list_util.VarList(getdimfunc=self.get_number_of_##lcnames, \
@@ -75,8 +75,14 @@ IMP._list_util.set_varlist(self.##lcnames, obj) \
 doc="List of ##ucnames") \
 %}
 
+#elif defined(IMP_DOXYGEN)
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)             \
+public:                                                                     \
+  /** \brief A Python list of Ucnames                                       \
+      @pythononlymember */                                                  \
+  list lcnames;
 #else
-#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)
 #endif
 
 /**  \brief  A macro to provide a uniform interface for storing lists of
@@ -126,11 +132,8 @@ doc="List of ##ucnames") \
 
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data, \
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
-  IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)                            \
+  IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)                   \
  public:                                                                    \
-  /** \brief A Python list of Ucnames                                       \
-      @pythononlymember */                                                  \
-  list lcnames;                                                             \
   void remove_##lcname(Data d);                                             \
   unsigned int _python_index_##lcname(Data d, unsigned int start,           \
                                       unsigned int stop);                   \
