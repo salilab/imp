@@ -128,9 +128,9 @@ doc="List of ##ucnames") \
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
   IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames)                            \
  public:                                                                    \
-  /** \brief A Python list of ##ucnames                                     \
+  /** \brief A Python list of Ucnames                                       \
       @pythononlymember */                                                  \
-  list ##lcnames;                                                           \
+  list lcnames;                                                             \
   void remove_##lcname(Data d);                                             \
   unsigned int _python_index_##lcname(Data d, unsigned int start,           \
                                       unsigned int stop);                   \
