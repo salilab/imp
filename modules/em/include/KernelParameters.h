@@ -21,6 +21,8 @@
 #include <vector>
 #include <limits>
 #include <IMP/em/internal/RadiusDependentKernelParameters.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -82,6 +84,7 @@ class IMPEMEXPORT KernelParameters {
   IMP_SHOWABLE_INLINE(KernelParameters, out << "rsig: " << rsig_ << std::endl;);
 
  protected:
+  float resolution_;
   float timessig_; // 3.0 is used by default
   float rsig_, rsigsq_, inv_rsigsq_; // resolution dependent sigma
   float sq2pi3_, rnormfac_;
@@ -92,6 +95,24 @@ class IMPEMEXPORT KernelParameters {
   KernelMap radii2params_;
 
   void init(float resolution);
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    ar << resolution_;
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    float resolution;
+    ar >> resolution;
+    init(resolution);
+    initialized_ = true;
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
+
 };
 
 IMP_VALUES(KernelParameters, KernelParametersList);

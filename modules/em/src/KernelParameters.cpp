@@ -20,6 +20,7 @@ KernelParameters::~KernelParameters() {
 }
 
 void KernelParameters::init(float resolution) {
+  resolution_ = resolution;
   // the number of sigmas used - 3 means that 99% of density is considered.
   timessig_ = 3.;
 
