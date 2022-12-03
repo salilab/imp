@@ -13,6 +13,7 @@
 #include "IMP/exception.h"
 #include "IMP/log.h"
 #include "IMP/log_macros.h"
+#include <boost/serialization/access.hpp>
 #include <IMP/constants.h>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -182,6 +183,15 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   unsigned int n_rings_, n_angles_, matrix_rows_, matrix_cols_;
   bool parameters_set_;
   double radius_step_, angle_step_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & polar_map_ & map_16SC2_ & map_16UC1_ & starting_radius_
+       & ending_radius_ & n_rings_ & n_angles_ & matrix_rows_ & matrix_cols_
+       & parameters_set_ & radius_step_ & angle_step_;
+  }
 };
 
 IMP_VALUES(PolarResamplingParameters, PolarResamplingParametersList);

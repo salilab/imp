@@ -1,10 +1,13 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <IMP/em2d/opencv_interface.h>
 %}
 
-IMP_SWIG_VALUE(IMP::em2d, PolarResamplingParameters,
-                                          PolarResamplingParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, PolarResamplingParameters,
+                                    PolarResamplingParametersList);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
