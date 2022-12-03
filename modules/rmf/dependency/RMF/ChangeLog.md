@@ -1,6 +1,11 @@
 Change Log {#changelog}
 ==========
 
+# 1.4.1 - 2022-11-21 # {#changelog_1_4_1}
+- Build fixes to work with SWIG 4.1.
+- Various internal build scripts now use 'python3' rather than
+  unversioned 'python'.
+
 # 1.4 - 2022-03-10 # {#changelog_1_4}
 - RMF now requires a C++11 compiler and SWIG 3 (or later) to build. Most
   recent compilers should support C++11, such as gcc, clang

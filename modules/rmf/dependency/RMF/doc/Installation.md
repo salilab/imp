@@ -10,6 +10,10 @@ Standalone: if you are using [Anaconda Python](https://www.anaconda.com/), insta
 
     conda install -c conda-forge rmf
 
+or on a Mac with [Homebrew](https://brew.sh/), install with
+
+    brew tap salilab/salilab; brew install rmf
+
 IMP: Download an IMP binary (which includes RMF) from the
 [IMP download page](https://integrativemodeling.org/download.html).
 
