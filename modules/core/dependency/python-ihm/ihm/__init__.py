@@ -954,7 +954,8 @@ class LPeptideAlphabet(Alphabet):
                   ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
                   ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3'),
                   ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2'),
-                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2')])
+                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2'),
+                  ('U', 'SEC', 'SELENOCYSTEINE', 'C3 H7 N O2 Se')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")
 

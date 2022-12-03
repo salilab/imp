@@ -124,10 +124,10 @@ class Tests(unittest.TestCase):
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 24)
-        self.assertEqual(len(a.values), 24)
+        self.assertEqual(len(a.keys), 25)
+        self.assertEqual(len(a.values), 25)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 24)
+        self.assertEqual(len(a.items), 25)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
