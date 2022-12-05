@@ -8,20 +8,20 @@
 
 IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, PolarResamplingParameters,
                                     PolarResamplingParametersList);
-IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
-IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
-IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, ProjectionMask, ProjectionMasks);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, MasksManager ,MasksManagers);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, RegistrationResult, RegistrationResults);
 
-IMP_SWIG_VALUE(IMP::em2d, ClusterSet, ClusterSets);
-IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
-IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
-IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, ClusterSet, ClusterSets);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, SingleLinkage, SingleLinkages);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, CompleteLinkage, CompleteLinkages);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 
-IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
-IMP_SWIG_VALUE(IMP::em2d, MatchTemplateResult, MatchTemplateResults);
-IMP_SWIG_VALUE(IMP::em2d, ProjectingParameters, ProjectingParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, MatchTemplateResult, MatchTemplateResults);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, ProjectingParameters, ProjectingParametersList);
 IMP_SWIG_VALUE(IMP::em2d, ProjectingOptions, ProjectingOptionsList);
-IMP_SWIG_VALUE(IMP::em2d, Em2DRestraintParameters, Em2DRestraintParametersList);
+IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, Em2DRestraintParameters, Em2DRestraintParametersList);
 
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionFinder, ProjectionFinders);

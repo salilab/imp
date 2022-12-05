@@ -4,6 +4,7 @@ import IMP.algebra
 import IMP.core
 import IMP.em
 import IMP.em2d
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -58,6 +59,17 @@ class Tests(IMP.test.TestCase):
                 self.assertAlmostEqual(q1[i], q2[i], delta=0.001,
                                        msg="Error in generation of evenly distributed "
                                        "RegistrationResults")
+
+    def test_pickle(self):
+        """Test (un-)pickle of RegistrationResult"""
+        shift = IMP.algebra.Vector2D(-1, 3)
+        rot = IMP.algebra.get_rotation_from_fixed_zyz(0.5, 0.2, 0.1)
+        r = IMP.em2d.RegistrationResult(rot, shift)
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        self.assertAlmostEqual(newr.get_phi(), r.get_phi(), delta=1e-4)
+        self.assertAlmostEqual(newr.get_psi(), r.get_psi(), delta=1e-4)
+        self.assertAlmostEqual(newr.get_theta(), r.get_theta(), delta=1e-4)
 
 
 if __name__ == '__main__':

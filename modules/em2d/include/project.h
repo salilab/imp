@@ -23,11 +23,19 @@
 #include <complex>
 #include <algorithm>
 #include <fstream>
+#include <boost/serialization/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Parameters needed for the core projection routine
 class IMPEM2DEXPORT ProjectingParameters {
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & pixel_size & resolution;
+  }
+
  public:
   double pixel_size, resolution;
 

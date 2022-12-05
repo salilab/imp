@@ -17,6 +17,7 @@
 #include "IMP/algebra/Transformation2D.h"
 #include "IMP/Pointer.h"
 #include <string>
+#include <boost/serialization/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -151,6 +152,14 @@ class IMPEM2DEXPORT RegistrationResult {
   double phi_, theta_, psi_;
   algebra::Rotation3D R_;
   bool is_optimized_result_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & shift_ & ccc_ & Score_ & name_ & projection_index_ & image_index_
+       & phi_ & theta_ & psi_ & R_ & is_optimized_result_;
+  }
 };
 IMP_VALUES(RegistrationResult, RegistrationResults);
 

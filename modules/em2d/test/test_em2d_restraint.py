@@ -6,6 +6,7 @@ import IMP.atom
 import IMP.em2d as em2d
 import os
 from math import *
+import pickle
 
 
 class WriteStatisticsOptimizerScore(IMP.OptimizerState):
@@ -145,6 +146,18 @@ class Tests(IMP.test.TestCase):
         #    s.optimize(optimization_steps)
         # IMP.atom.write_pdb(prot,"solution.pdb")
         self.assertTrue(True)
+
+    def test_pickle_restraint_parameters(self):
+        """Test (un-)pickle of Em2DRestraintParameters"""
+        p = em2d.Em2DRestraintParameters(1.5, 1, 20)
+        p.save_match_images = False
+        p.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
+        dump = pickle.dumps(p)
+        newp = pickle.loads(dump)
+        self.assertEqual(newp.n_projections, 20)
+        self.assertFalse(newp.save_match_images)
+        self.assertEqual(newp.coarse_registration_method,
+                         em2d.ALIGN2D_PREPROCESSING)
 
 
 if __name__ == '__main__':

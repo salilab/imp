@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <limits>
 #include <functional>
+#include <boost/serialization/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -33,6 +34,8 @@ void print_vector(const std::vector<T> &v) {
 //! A class to store the clusters generated during hierarchical clustering
 class IMPEM2DEXPORT ClusterSet {
  public:
+  ClusterSet() : steps_(0), n_elements_(0) {}
+
   /**
     \param[in] N Number of elements to be clustered
   */
@@ -104,6 +107,14 @@ class IMPEM2DEXPORT ClusterSet {
   // each element of the outermost vector is a vector with all the elements
   // in a cluster
   IntsList clusters_elements_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & steps_ & n_elements_ & joined_ids1_ & joined_ids2_
+       & cluster_distances_ & clusters_elements_;
+  }
 };
 IMP_VALUES(ClusterSet, ClusterSets);
 
@@ -129,6 +140,10 @@ class IMPEM2DEXPORT SingleLinkage {
   void show(std::ostream &out) const {
     out << "SingleLinkage";
   };
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &, const unsigned int) {}
 };
 IMP_VALUES(SingleLinkage, SingleLinkages);
 
@@ -148,6 +163,10 @@ class IMPEM2DEXPORT CompleteLinkage {
   void show(std::ostream &out) const {
     out << "CompleteLinkage";
   };
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &, const unsigned int) {}
 };
 IMP_VALUES(CompleteLinkage, CompleteLinkages);
 
@@ -166,6 +185,10 @@ class IMPEM2DEXPORT AverageDistanceLinkage {
   void show(std::ostream &out) const {
     out << "AverageDistanceLinkage";
   };
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &, const unsigned int) {}
 };
 IMP_VALUES(AverageDistanceLinkage, AverageDistanceLinkages);
 

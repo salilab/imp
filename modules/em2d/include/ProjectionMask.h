@@ -22,6 +22,8 @@
 #include "IMP/exception.h"
 #include <complex>
 #include <boost/shared_ptr.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_free.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -34,10 +36,8 @@ typedef boost::shared_ptr<MasksManager> MasksManagerPtr;
 //! Mask that contains the projection of a given particles. This matrices
 //! speed up projecting because the only have to be computed once for a model
 class IMPEM2DEXPORT ProjectionMask {
-#ifdef SWIG
-  ProjectionMask() {}
-#endif
  public:
+  ProjectionMask() {}
 #if !defined(DOXYGEN) && !defined(SWIG)
   ProjectionMask(const em::KernelParameters& kparams,
                  double voxelsize, double mass = 1.0);
@@ -66,9 +66,55 @@ class IMPEM2DEXPORT ProjectionMask {
   int dim_;              // dimension of the mask
   double sq_pixelsize_;  // Used to save multiplications
   cv::Mat data_;         // actual matrix with the mask
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & dim_ & sq_pixelsize_ & data_;
+  }
 };
 
 IMP_VALUES(ProjectionMask, ProjectionMasks);
+
+IMPEM2D_END_NAMESPACE
+
+namespace boost {
+  namespace serialization {
+    template<class Archive> inline void save(
+         Archive &ar, const std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
+         const unsigned int) {
+      size_t sz = m.size();
+      ar << sz;
+      for (const auto &p : m) {
+        ar << p.first;
+        ar << *(p.second);
+      }
+    }
+
+    template<class Archive> inline void load(
+         Archive &ar, std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
+         const unsigned int) {
+      m.clear();
+      size_t sz;
+      ar >> sz;
+      for (size_t i = 0; i < sz; ++i) {
+        double mass;
+        IMP::em2d::ProjectionMaskPtr ptr(new IMP::em2d::ProjectionMask());
+        ar >> mass;
+        ar >> *ptr;
+        m[mass] = ptr;
+      }
+    }
+
+    template<class Archive> inline void serialize(
+         Archive &ar, std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
+         const unsigned int version) {
+      boost::serialization::split_free(ar, m, version);
+    }
+  }
+}
+
+IMPEM2D_BEGIN_NAMESPACE
 
 // Place a matrix in another
 // Very ugly but very fast projecting function
@@ -173,6 +219,14 @@ class IMPEM2DEXPORT MasksManager {
   // Pixel size for the masks
   double pixelsize_;
   bool is_setup_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & mass2mask_ & kernel_params_ & pixelsize_ & is_setup_;
+  }
+
 };
 
 IMP_VALUES(MasksManager, MasksManagers);
