@@ -160,7 +160,6 @@ class Tests(IMP.test.TestCase):
                                        delta=1e-8)
             self.assertAlmostEqual(result, scores_intervals[i][0], delta=1e-8)
 
-    @IMP.test.expectedFailure
     def test_correlation_of_added_maps(self):
         mrw = IMP.em.MRCReaderWriter()
         ic_mrc = IMP.em.read_map(self.get_input_file_name("inv_crop_map.mrc"), mrw)
@@ -168,6 +167,7 @@ class Tests(IMP.test.TestCase):
         mrc = IMP.em.read_map(self.get_input_file_name("1mbn.6.eman.mrc"), mrw)
 
         ic_mrc.add(c_mrc)
+        ic_mrc.calcRMS()
         ccc =  IMP.em.get_coarse_cc_coefficient(mrc, ic_mrc, 0)
 
         self.assertLess(ccc, 1.00001)

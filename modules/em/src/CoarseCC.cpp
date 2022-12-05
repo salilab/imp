@@ -41,6 +41,10 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
                                               const DensityMap *grid2,
                                               float grid2_voxel_data_threshold,
                                               FloatPair norm_factors) {
+  IMP_USAGE_CHECK(grid1->get_rms_calculated(),
+                  "Call grid1.calcRMS() first to get RMS and density mean");
+  IMP_USAGE_CHECK(grid2->get_rms_calculated(),
+                  "Call grid2.calcRMS() first to get RMS and density mean");
 
   const DensityHeader *grid2_header = grid2->get_header();
   const DensityHeader *grid1_header = grid1->get_header();

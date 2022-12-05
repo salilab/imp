@@ -610,12 +610,14 @@ void DensityMap::add(const DensityMap *other) {
       }
     }
   }
+  rms_calculated_ = false; // because RMS is no longer accurate!
 }
 
 void DensityMap::add(Float d){
   for (long l = 0; l < get_number_of_voxels(); l++) {
     set_value(l,get_value(l)+d);
   }
+  rms_calculated_ = false; // because RMS is no longer accurate!
 }
 
 void DensityMap::pick_max(const DensityMap *other) {
