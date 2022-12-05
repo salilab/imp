@@ -89,7 +89,7 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   void set_neighbor_mask();
   float surface_val_;
   std::vector<long> neighbor_shift_;
-  std::vector<emreal> neighbor_dist_;
+  std::vector<double> neighbor_dist_;
   int num_shells_;
 };
 

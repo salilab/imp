@@ -78,8 +78,8 @@ void convolve_kernel_inside_erode(em::DensityMap *dmap, double *kernel,
   int nz = dmap->get_header()->get_nz();
   int margin = (kernel_size - 1) / 2;
   dmap->reset_data(0.);
-  em::emreal *data = dmap->get_data();
-  em::emreal *copy_data = copy_map->get_data();
+  double *data = dmap->get_data();
+  double *copy_data = copy_map->get_data();
 
   for (int indz = margin; indz < nz - margin; indz++)
     for (int indy = margin; indy < ny - margin; indy++)
@@ -127,7 +127,7 @@ void relax_laplacian(em::DensityMap *dmap, unsigned ignored[3], double radius) {
   // allocate phi mask
   unsigned long nvox = extx * exty * extz;
   char *mask = (char *)malloc(nvox * sizeof(char));
-  em::emreal *data = dmap->get_data();
+  double *data = dmap->get_data();
   IMP_INTERNAL_CHECK(mask != nullptr, "bad vector allocation\n");
   unsigned long indv;
   for (indv = 0; indv < nvox; indv++) *(mask + indv) = 1;
@@ -165,7 +165,7 @@ void relax_laplacian(em::DensityMap *dmap, unsigned ignored[3], double radius) {
   Pointer<em::DensityMap> copy_map = em::create_density_map(dmap);
   copy_map->set_was_used(true);
   double diff;
-  em::emreal *copy_data = copy_map->get_data();
+  double *copy_data = copy_map->get_data();
   do {
     copy_map->convolute_kernel(dmap, average, 3);
     diff = 0.0;

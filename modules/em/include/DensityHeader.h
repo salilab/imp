@@ -38,7 +38,7 @@ class IMPEMEXPORT DensityHeader {
   /** \param[in] ind The dimension index x:=0,y:=1,z:=2
       \return the coordinate value in angstroms
    */
-  emreal get_top(int ind) const {
+  double get_top(int ind) const {
     IMP_USAGE_CHECK(top_calculated_,
                     " DensityHeader::get_top  the top coordinates of the map "
                         << "have not been setup yet " << std::endl);

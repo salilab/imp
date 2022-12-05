@@ -3,6 +3,7 @@ ChangeLog {#changelog}
 
 # HEAD
 - The Windows .exe installer now supports Python 3.11.
+- The IMP::em::emreal type is deprecated; use plain `double` instead.
 
 # 2.17.0 - 2022-06-23 # {#changelog_2_17_0}
 - IMP::atom::Selection no longer checks that the passed hierarchies are valid,

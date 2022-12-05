@@ -24,7 +24,7 @@ double get_coarse_cc_score(DensityMap *em_map, SampledDensityMap *model_map,
     model_map->calcRMS();  // This function adequately computes the dmin value,
                            // the safest value for the threshold
   }
-  emreal voxel_data_threshold = model_map->get_header()->dmin - EPS;
+  double voxel_data_threshold = model_map->get_header()->dmin - EPS;
   // rmss have already been calculated
   double escore = get_coarse_cc_coefficient(
       em_map, model_map, voxel_data_threshold, false, norm_factors);
@@ -49,12 +49,12 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
   const DensityHeader *grid2_header = grid2->get_header();
   const DensityHeader *grid1_header = grid1->get_header();
 
-  const emreal *grid1_data = grid1->get_data();
-  const emreal *grid2_data = grid2->get_data();
+  const double *grid1_data = grid1->get_data();
+  const double *grid2_data = grid2->get_data();
 
   bool same_origin = grid1->same_origin(grid2);
   long nvox = grid1_header->get_number_of_voxels();
-  emreal ccc = 0.0;
+  double ccc = 0.0;
   long num_elements = 0;
   if (same_origin) {  // Fastest version
     IMP_LOG_VERBOSE("calc CC with the same origin" << std::endl);
@@ -217,8 +217,8 @@ double get_coarse_cc_local_coefficient(
   const DensityHeader *model_header = model_map->get_header();
   const DensityHeader *em_header = em_map->get_header();
 
-  const emreal *em_data = em_map->get_data();
-  const emreal *model_data = model_map->get_data();
+  const double *em_data = em_map->get_data();
+  const double *model_data = model_map->get_data();
 
   // validity checks
   IMP_USAGE_CHECK(
@@ -235,11 +235,11 @@ double get_coarse_cc_local_coefficient(
   }
 
   long nvox = em_header->get_number_of_voxels();
-  emreal ccc = 0.0;
-  emreal model_mean = 0.;
-  emreal em_mean = 0.;
-  emreal model_rms = 0.;
-  emreal em_rms = 0.;
+  double ccc = 0.0;
+  double model_mean = 0.;
+  double em_mean = 0.;
+  double model_rms = 0.;
+  double em_rms = 0.;
   IMP_LOG_VERBOSE("calc local CC with different origins" << std::endl);
   model_map->get_header_writable()->compute_xyz_top();
 
@@ -329,7 +329,7 @@ algebra::Vector3Ds get_coarse_cc_derivatives(const DensityMap *em_map,
                          << "the number of particles in the model map\n");
   core::XYZRs model_xyzr = core::XYZRs(model_ps);
   // this would go away once we have XYZRW decorator
-  const emreal *em_data = em_map->get_data();
+  const double *em_data = em_map->get_data();
   float lim = kernel_params->get_lim();
   long ivox;
   // validate that the model and em maps are not empty

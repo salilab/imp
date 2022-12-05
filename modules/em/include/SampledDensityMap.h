@@ -52,8 +52,8 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
                       in the sampling procedure.
       \param[in] kt Type of kernel to use.
    */
-  SampledDensityMap(const ParticlesTemp &ps, emreal resolution,
-                    emreal voxel_size,
+  SampledDensityMap(const ParticlesTemp &ps, double resolution,
+                    double voxel_size,
                     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
                     int sig_cutoff = 3, KernelType kt = GAUSSIAN);
 
@@ -114,11 +114,11 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
 
   //! Determine the size of the grid as a function of the particles
   //! and the resolution.
-  void determine_grid_size(emreal resolution, emreal voxel_size,
+  void determine_grid_size(double resolution, double voxel_size,
                            int sig_cutoff);
   void set_header(const algebra::Vector3D &lower_bound,
-                  const algebra::Vector3D &upper_bound, emreal maxradius,
-                  emreal resolution, emreal voxel_size, int sig_offset);
+                  const algebra::Vector3D &upper_bound, double maxradius,
+                  double resolution, double voxel_size, int sig_offset);
 
  protected:
   void set_neighbor_mask(float radius);

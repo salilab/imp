@@ -9,8 +9,8 @@
 #include <IMP/Pointer.h>
 IMPEM_BEGIN_NAMESPACE
 DensityMap *mask_and_norm(em::DensityMap *dmap, em::DensityMap *mask) {
-  em::emreal *dmap_data = dmap->get_data();
-  em::emreal *mask_data = mask->get_data();
+  double *dmap_data = dmap->get_data();
+  double *mask_data = mask->get_data();
   IMP_USAGE_CHECK(dmap->same_dimensions(mask),
                   "The maps should be of the same dimension\n");
   IMP_USAGE_CHECK(dmap->same_voxel_size(mask),
@@ -18,7 +18,7 @@ DensityMap *mask_and_norm(em::DensityMap *dmap, em::DensityMap *mask) {
   // create a new map
   const em::DensityHeader *h = dmap->get_header();
   Pointer<DensityMap> ret(new DensityMap(*h));
-  em::emreal *ret_data = ret->get_data();
+  double *ret_data = ret->get_data();
   float meanval = 0.;
   float stdval = 0.;
   long mask_nvox_ = 0;

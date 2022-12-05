@@ -13,7 +13,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 void DensityDataPoints::set_density(em::DensityMap *dmap) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
   dens_.reset(new DensGrid(dmap->get_spacing(), bb));
-  em::emreal *d_data = dmap->get_data();
+  double *d_data = dmap->get_data();
   algebra::Vector3D loc;
   for (long l = 0; l < dmap->get_number_of_voxels(); l++) {
     loc = dmap->get_location_by_voxel(l);
