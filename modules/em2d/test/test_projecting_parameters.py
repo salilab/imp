@@ -12,8 +12,8 @@ class Tests(IMP.test.TestCase):
         pp = IMP.em2d.ProjectingParameters(1.5, 40.0)
         dump = pickle.dumps(pp)
         newpp = pickle.loads(dump)
-        self.assertAlmostEqual(pp.pixel_size, 1.5, delta=1e-4)
-        self.assertAlmostEqual(pp.resolution, 40.0, delta=1e-4)
+        self.assertAlmostEqual(newpp.pixel_size, 1.5, delta=1e-4)
+        self.assertAlmostEqual(newpp.resolution, 40.0, delta=1e-4)
 
 
 if __name__ == '__main__':
