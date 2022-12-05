@@ -168,7 +168,7 @@ class Tests(IMP.test.TestCase):
         mrc = IMP.em.read_map(self.get_input_file_name("1mbn.6.eman.mrc"), mrw)
 
         ic_mrc.add(c_mrc)
-        ccc =  IMP.em.CoarseCC.cross_correlation_coefficient(mrc, ic_mrc, 0)
+        ccc =  IMP.em.get_coarse_cc_coefficient(mrc, ic_mrc, 0)
 
         self.assertLess(ccc, 1.00001)
 
