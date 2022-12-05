@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         # Limited access from Python, so use default constructor
         p = IMP.em2d.ProjectionMask()
         dump = pickle.dumps(p)
-        newp = pickle.loads(dump)
+        _ = pickle.loads(dump)
 
 
 if __name__ == '__main__':

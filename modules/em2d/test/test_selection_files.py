@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.em2d
-import os
 
 
 class Tests(IMP.test.TestCase):
@@ -15,7 +14,9 @@ class Tests(IMP.test.TestCase):
         names = ["file1", "file4", "file5", "file6", "file9"]
         for i in range(0, len(names)):
             self.assertEqual(names[i], selection[i],
-                             "file %s does not match %s" % (names[i], selection[i]))
+                             "file %s does not match %s"
+                             % (names[i], selection[i]))
+
 
 if __name__ == '__main__':
     IMP.test.main()

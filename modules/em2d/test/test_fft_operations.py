@@ -4,7 +4,6 @@ import IMP.core
 import IMP.atom
 import IMP.em2d
 import IMP.em
-import os
 
 
 class Tests(IMP.test.TestCase):

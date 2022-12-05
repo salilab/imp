@@ -3,6 +3,7 @@ import IMP.test
 import IMP.em2d
 import pickle
 
+
 class Tests(IMP.test.TestCase):
 
     def test_pickle(self):

@@ -6,11 +6,6 @@ import IMP.em2d as em2d
 import IMP.em
 import os
 
-#- test generation of projections
-#- even projections
-#- noise
-#
-
 
 class Tests(IMP.test.TestCase):
 
@@ -62,8 +57,8 @@ class Tests(IMP.test.TestCase):
         registration_values = em2d.get_evenly_distributed_registration_results(
             n_projections)
         options = em2d.ProjectingOptions(apix, resolution)
-        projections = em2d.get_projections(particles,
-                                           registration_values, rows, cols, options)
+        projections = em2d.get_projections(
+            particles, registration_values, rows, cols, options)
 
         # Read the stored projections
         stored_projection_names = em2d.create_filenames(
@@ -76,9 +71,10 @@ class Tests(IMP.test.TestCase):
         for n in range(0, n_projections):
             for i in range(0, rows):
                 for j in range(0, cols):
-                    self.assertAlmostEqual(projections[n](i, j),
-                                           stored_projections[n](i, j), delta=0.001,
-                                           msg="Projections generated and stored are different")
+                    self.assertAlmostEqual(
+                        projections[n](i, j),
+                        stored_projections[n](i, j), delta=0.001,
+                        msg="Projections generated and stored are different")
 
     def test_noisy_projections(self):
         """ Test the generation of noisy projections"""
@@ -118,9 +114,11 @@ class Tests(IMP.test.TestCase):
         for n in range(0, n_projections):
             ccc = em2d.get_cross_correlation_coefficient(projections[n],
                                                          stored_images[n])
-             # allow 3% difference in cross-correlation
-            self.assertAlmostEqual(theoretical_ccc, ccc, delta=0.03,
-                                   msg="Noisy projections generated and stored are different")
+            # allow 3% difference in cross-correlation
+            self.assertAlmostEqual(
+                theoretical_ccc, ccc, delta=0.03,
+                msg="Noisy projections generated and stored are different")
+
 
 if __name__ == '__main__':
     IMP.test.main()

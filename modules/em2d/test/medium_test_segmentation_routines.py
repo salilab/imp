@@ -1,9 +1,6 @@
 import IMP
 import IMP.test
 import IMP.em2d
-import os
-from math import *
-import random
 
 
 class Tests(IMP.test.TestCase):
@@ -21,19 +18,15 @@ class Tests(IMP.test.TestCase):
         beta = 45
         time_steps = 400
         IMP.em2d.apply_diffusion_filter(
-            img,
-            filtered,
-            beta,
-            pixelsize,
-            time_steps)
+            img, filtered, beta, pixelsize, time_steps)
         rows = int(img.get_header().get_number_of_rows())
         cols = int(img.get_header().get_number_of_columns())
         for i in range(0, rows):
             for j in range(0, cols):
                 self.assertAlmostEqual(
                     filtered(i, j), stored(i, j), delta=0.001,
-                    msg="Diffusion filtering test: filteredis different from stored"
-                    " row %d col %d" % (i, j))
+                    msg="Diffusion filtering test: filteredis different "
+                        "from stored row %d col %d" % (i, j))
 
     def test_fill_holes(self):
         """ test the do_fill_holes_routine """
@@ -60,8 +53,8 @@ class Tests(IMP.test.TestCase):
             for j in range(0, cols):
                 self.assertAlmostEqual(
                     filtered(i, j), stored(i, j), delta=0.001,
-                    msg="Fill holes and treshold: filtered is different from stored"
-                    " row %d col %d" % (i, j))
+                    msg="Fill holes and treshold: filtered is different from "
+                        "stored row %d col %d" % (i, j))
 
     def test_removing_small_objects(self):
         """ test the labeling function"""
@@ -79,9 +72,10 @@ class Tests(IMP.test.TestCase):
         cols = int(img.get_header().get_number_of_columns())
         for i in range(0, rows):
             for j in range(0, cols):
-                self.assertAlmostEqual(img(i, j), stored(i, j), delta=0.001,
-                                       msg="Remove objects test: filtered is different "
-                                       "from stored row %d col %d" % (i, j))
+                self.assertAlmostEqual(
+                    img(i, j), stored(i, j), delta=0.001,
+                    msg="Remove objects test: filtered is different "
+                        "from stored row %d col %d" % (i, j))
 
     def test_segmentation(self):
         """ test the segmentation of particles from negative stained classes"""

@@ -29,8 +29,9 @@ class Tests(IMP.test.TestCase):
 
         for i in range(0, rows):
             for j in range(0, cols):
-                self.assertAlmostEqual(img(i, j), img2(i, j), delta=0.001,
-                                       msg="Generated image is different from stored")
+                self.assertAlmostEqual(
+                    img(i, j), img2(i, j), delta=0.001,
+                    msg="Generated image is different from stored")
 
         os.remove(temp)
 
@@ -59,7 +60,6 @@ class Tests(IMP.test.TestCase):
 
     def test_substract(self):
         """Test subtracting images"""
-        srw = em2d.SpiderImageReaderWriter()
         rows = int(10)
         cols = int(5)
         img1 = em2d.Image(rows, cols)
@@ -90,9 +90,10 @@ class Tests(IMP.test.TestCase):
         cols = int(polar.get_header().get_number_of_columns())
         for i in range(0, rows):
             for j in range(0, cols):
-                self.assertAlmostEqual(saved(i, j), polar(i, j), delta=0.001,
-                                       msg="Generated polar image is different from stored"
-                                       " row %d col %d" % (i, j))
+                self.assertAlmostEqual(
+                    saved(i, j), polar(i, j), delta=0.001,
+                    msg="Generated polar image is different from stored"
+                        " row %d col %d" % (i, j))
 
     def test_read_jpg(self):
         """Test of JPGReaderWriter reading"""
@@ -162,7 +163,6 @@ class Tests(IMP.test.TestCase):
     def test_write_tiff(self):
         """Test of TIFFReaderWriter writing"""
         trw = em2d.TIFFImageReaderWriter()
-        srw = em2d.SpiderImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1 = em2d.Image(fn_img1, trw)
         fn_img2 = "temp.tif"
@@ -201,12 +201,14 @@ class Tests(IMP.test.TestCase):
                          "Border columns are not extended properly")
         for i in range(0, rows2):
             for j in range(0, cols2):
-                if(i < border or i > (rows2 - border)):
-                    self.assertAlmostEqual(img2(i, j), 0, delta=0.001,
-                                           msg="Borders are not zero at row %d col %d" % (i, j))
-                if(j < border or i > (cols2 - border)):
-                    self.assertAlmostEqual(img2(i, j), 0, delta=0.001,
-                                           msg="Borders are not zero at row %d col %d" % (i, j))
+                if i < border or i > (rows2 - border):
+                    self.assertAlmostEqual(
+                        img2(i, j), 0, delta=0.001,
+                        msg="Borders are not zero at row %d col %d" % (i, j))
+                if j < border or i > (cols2 - border):
+                    self.assertAlmostEqual(
+                        img2(i, j), 0, delta=0.001,
+                        msg="Borders are not zero at row %d col %d" % (i, j))
 
     def test_get_overlap_percentage(self):
         """ Test that the function returns > 0 when there is overlap, and 0
@@ -220,7 +222,6 @@ class Tests(IMP.test.TestCase):
         em2d.crop(img, [10, 10], 10)
         self.assertEqual(img.get_header().get_number_of_rows(), 10,
                          "Crop size is incorrect")
-        #em2d.crop(img,[10,10], 20);
 
     def test_fill_outside_circle(self):
         img = em2d.Image()

@@ -6,7 +6,6 @@ import IMP.atom
 import IMP.em2d as em2d
 import IMP.em
 import os
-from math import *
 
 
 class Tests(IMP.test.TestCase):
@@ -84,15 +83,16 @@ class Tests(IMP.test.TestCase):
             em2d.get_projection(imgx, particles,
                                 registration_parameters[i], options)
             ccc = em2d.get_cross_correlation_coefficient(
-                subjects[i].get_data(),
-                imgx.get_data())
+                subjects[i].get_data(), imgx.get_data())
             print(i, "ccc", ccc)
             snr = 0.5
             theoretical_ccc = (snr / (1. + snr)) ** .5
-            self.assertAlmostEqual(ccc, theoretical_ccc, delta=0.02,
-                                   msg="Error in registration of subject %d: ccc %8.3f "
-                                   "theoretical_ccc %8.3f " % (i, ccc, theoretical_ccc))
+            self.assertAlmostEqual(
+                ccc, theoretical_ccc, delta=0.02,
+                msg="Error in registration of subject %d: ccc %8.3f "
+                    "theoretical_ccc %8.3f " % (i, ccc, theoretical_ccc))
         os.remove(fn_registration_results)
+
 
 if __name__ == '__main__':
     IMP.test.main()

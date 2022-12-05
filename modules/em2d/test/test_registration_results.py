@@ -32,7 +32,6 @@ class Tests(IMP.test.TestCase):
     def test_registration_quaternion(self):
         """ test back a forth of the Rotation in RegistrationResult class"""
         import random
-        import math
         random.seed()
         R1 = IMP.algebra.get_random_rotation_3d()
         reg = IMP.em2d.RegistrationResult()
@@ -44,8 +43,9 @@ class Tests(IMP.test.TestCase):
         q1 = R1.get_quaternion()
         q2 = R2.get_quaternion()
         for i in range(0, 4):
-            self.assertAlmostEqual(q1[i], q2[i], delta=0.001,
-                                   msg="Error in Registration rotation back and forth")
+            self.assertAlmostEqual(
+                q1[i], q2[i], delta=0.001,
+                msg="Error in Registration rotation back and forth")
 
     def test_even_registration_results(self):
         """ Test the generation of evenly distributed RegistrationResults"""
@@ -56,9 +56,10 @@ class Tests(IMP.test.TestCase):
             q1 = Regs1[j].get_rotation().get_quaternion()
             q2 = Regs2[j].get_rotation().get_quaternion()
             for i in range(0, 4):
-                self.assertAlmostEqual(q1[i], q2[i], delta=0.001,
-                                       msg="Error in generation of evenly distributed "
-                                       "RegistrationResults")
+                self.assertAlmostEqual(
+                    q1[i], q2[i], delta=0.001,
+                    msg="Error in generation of evenly distributed "
+                        "RegistrationResults")
 
     def test_pickle(self):
         """Test (un-)pickle of RegistrationResult"""

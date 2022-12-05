@@ -5,9 +5,6 @@ import IMP.em2d as em2d
 import IMP.algebra as alg
 import IMP.core as core
 import IMP.domino as domino
-import os
-from math import *
-import random
 
 
 class Tests(IMP.test.TestCase):
@@ -35,8 +32,7 @@ class Tests(IMP.test.TestCase):
         all_restraints = [r1, r3]
         ig = domino.get_interaction_graph(all_restraints, states_table)
         # generate a junction tree from the interaction graph
-        jt = domino.get_junction_tree(ig)
-        # print jt.show_graphviz()
+        _ = domino.get_junction_tree(ig)
 
         # Filters
         maximum_distance = 21
