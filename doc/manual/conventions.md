@@ -44,7 +44,7 @@ As is conventional in C++, IMP classes are divided into broad, exclusive types
 
 - *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor.
 
-- *RAII classes* control some particular resource using the [RAII idiom](http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization).
+- *RAII classes* control some particular resource using the [RAII idiom](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization).
 They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
 
 All types in %IMP, with a few documented exceptions, can be
