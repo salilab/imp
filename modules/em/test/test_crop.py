@@ -127,10 +127,11 @@ class Tests(IMP.test.TestCase):
 
         # Addition of the two cropped maps should be almost identical to the original
         inv_cropped_map.add(cropped_map)
+        inv_cropped_map.calcRMS()
 
-        # This evaluates to greater than 1.0 for unknown reasons - bug in CCC?
         ccc = IMP.em.get_coarse_cc_coefficient(inv_cropped_map, mrc, 0)
         self.assertGreater(ccc, 0.99)
+        self.assertLess(ccc, 1.01)
 
         # Test the keep_em_size flag
         cropped_map_keep = mrc.get_cropped(ps, 5.0, False, True)
