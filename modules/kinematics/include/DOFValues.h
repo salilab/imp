@@ -13,6 +13,9 @@
 
 #include "DOF.h"
 #include <IMP/algebra/constants.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -80,6 +83,13 @@ class IMPKINEMATICSEXPORT DOFValues : public std::vector<double> {
     }
     out << "]";
   });
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<std::vector<double> >(*this);
+  }
 };
 
 IMP_VALUES(DOFValues, DOFValuesList);

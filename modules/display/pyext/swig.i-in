@@ -1,3 +1,7 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
 
 
 IMP_SWIG_BASE_OBJECT(IMP::display, Writer, Writers);
@@ -21,7 +25,7 @@ IMP_SWIG_OBJECT(IMP::display, RestraintGeometry, RestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintSetGeometry, RestraintSetGeometries);
 IMP_SWIG_OBJECT(IMP::display, GeometrySet, GeometrySets);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
-IMP_SWIG_VALUE(IMP::display, Color, Colors);
+IMP_SWIG_VALUE_SERIALIZE(IMP::display, Color, Colors);
 IMP_SWIG_VALUE(IMP::display, WriterAdaptor, WriterAdaptors);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);

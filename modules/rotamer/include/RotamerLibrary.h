@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <boost/range/iterator_range.hpp>
+#include <boost/serialization/access.hpp>
 #include <IMP/Object.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/rotamer/rotamer_config.h>
@@ -61,6 +62,12 @@ class IMPROTAMEREXPORT RotamerAngleTuple {
   float chi3_;
   float chi4_;
   float probability_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & chi1_ & chi2_ & chi3_ & chi4_ & probability_;
+  }
 };
 
 IMP_VALUES(RotamerAngleTuple, RotamerAngleTuples);
