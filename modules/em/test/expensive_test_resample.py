@@ -1,7 +1,5 @@
 import IMP.test
 import IMP.em
-import os
-import random
 
 
 class Tests(IMP.test.TestCase):
@@ -33,6 +31,7 @@ class Tests(IMP.test.TestCase):
         ret = IMP.em.get_resampled(m, .5)
         IMP.em.write_map(ret, self.get_tmp_file_name("up_scaled.mrc"), mrw)
         self._test_min_max(m, ret)
+
 
 if __name__ == '__main__':
     IMP.test.main()

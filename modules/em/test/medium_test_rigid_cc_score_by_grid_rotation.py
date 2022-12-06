@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -51,7 +49,6 @@ class Tests(IMP.test.TestCase):
         # move the particles to be way outside of the density initially
         # IMP.set_log_level(IMP.VERBOSE)
         mp_xyz = IMP.core.XYZs(IMP.core.get_leaves(self.mp))
-        displacement = IMP.algebra.Vector3D(100, 100, 100)
         displacement_t = IMP.algebra.Transformation3D(
             IMP.algebra.get_identity_rotation_3d(),
             IMP.algebra.Vector3D(100, 100, 100))
@@ -113,6 +110,7 @@ class Tests(IMP.test.TestCase):
                 best_score = [i, score, rmsd]
         print("best score:", best_score)
         self.assertLess(best_score[2], 5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -17,11 +16,10 @@ class Tests(IMP.test.TestCase):
             scene.get_header_writable().set_resolution(res)
             r = IMP.em.FitRestraint(self.particles, scene)
             score = r.evaluate(False)
-            print("EM score (1-CC) = " + str(score), " filename:", fn, " res:", res)
+            print("EM score (1-CC) = " + str(score), " filename:",
+                  fn, " res:", res)
             self.assertLess(
-                score,
-                thr,
-                "the correlation score is not correct")
+                score, thr, "the correlation score is not correct")
 
     def test_compare_fit_score_to_eman2_generated_maps(self):
         # eman2 generated maps
@@ -38,12 +36,13 @@ class Tests(IMP.test.TestCase):
         self.imp_model = IMP.Model()
         name = self.get_input_file_name("1UBI.pdb")
         print(name)
-        self.mh = IMP.atom.read_pdb(name,
-                                    self.imp_model, IMP.atom.NonWaterNonHydrogenPDBSelector())
+        self.mh = IMP.atom.read_pdb(
+            name, self.imp_model, IMP.atom.NonWaterNonHydrogenPDBSelector())
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)
         self.particles = []
         self.particles += IMP.core.get_leaves(self.mh)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -69,7 +69,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score1, score2, 2)
 
     def test_origin_translation(self):
-        """ test that translating either the map or the particles does not change the cc score"""
+        """Test that translating either the map or the particles does not
+           change the cc score"""
 
         # test_correlation_function
         # compute correlation translating the origin of the model map
@@ -91,18 +92,19 @@ class Tests(IMP.test.TestCase):
         # compute correlation translating the particles
         self.model_map.set_origin(self.xo, self.yo, self.zo)
         for atom in self.atoms:
-            IMP.core.XYZ(atom.get_particle()).set_coordinates(
-                translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
-        interval = 1
+            p = atom.get_particle()
+            IMP.core.XYZ(p).set_coordinates(
+                translation.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         score = IMP.em.get_coarse_cc_score(self.EM_map, self.model_map, 1.0)
         score2 = 1. - score
         self.assertAlmostEqual(score1, score2, delta=.05 * (score1 + score2))
 
-    # Here we change the origin of the model map ( but not the particles position). We then resample the particles,
+    # Here we change the origin of the model map ( but not the particles
+    # position). We then resample the particles,
     # we made sure that all information is inside the translated map. Here we
     # test that the correlation value does not change.
     def test_corr_consistency(self):
-        """ test that two maps that sample the same particles have cc score of 1 """
+        "test that two maps that sample the same particles have cc score of 1"
 
         simple_score = self.calc_simple_correlation()
 
@@ -111,7 +113,6 @@ class Tests(IMP.test.TestCase):
         zm = 0
 
         self.model_map.set_origin(self.xo - xm, self.yo - ym, self.zo - zm)
-        interval = 1
         score = IMP.em.get_coarse_cc_score(self.EM_map, self.model_map, 1.0)
         score = 1. - score
         self.assertAlmostEqual(simple_score, score, 2)
@@ -153,7 +154,7 @@ class Tests(IMP.test.TestCase):
             # check that the scores are equal when they have to be due to the
             # function skipping computations
         for i in range(0, times):
-            if(i % interval == 0):
+            if i % interval == 0:
                 result = scores_intervals[i][0]
                 self.assertAlmostEqual(scores_wo_intervals[i],
                                        scores_intervals[i][0],
@@ -162,15 +163,17 @@ class Tests(IMP.test.TestCase):
 
     def test_correlation_of_added_maps(self):
         mrw = IMP.em.MRCReaderWriter()
-        ic_mrc = IMP.em.read_map(self.get_input_file_name("inv_crop_map.mrc"), mrw)
+        ic_mrc = IMP.em.read_map(
+            self.get_input_file_name("inv_crop_map.mrc"), mrw)
         c_mrc = IMP.em.read_map(self.get_input_file_name("crop_map.mrc"), mrw)
         mrc = IMP.em.read_map(self.get_input_file_name("1mbn.6.eman.mrc"), mrw)
 
         ic_mrc.add(c_mrc)
         ic_mrc.calcRMS()
-        ccc =  IMP.em.get_coarse_cc_coefficient(mrc, ic_mrc, 0)
+        ccc = IMP.em.get_coarse_cc_coefficient(mrc, ic_mrc, 0)
 
         self.assertLess(ccc, 1.00001)
+
 
 if __name__ == '__main__':
     IMP.test.main()

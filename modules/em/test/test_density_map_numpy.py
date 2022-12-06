@@ -45,9 +45,9 @@ class Tests(IMP.test.TestCase):
         if IMP.IMP_KERNEL_HAS_NUMPY:
             data = m.get_data()
             self.assertEqual(data.shape, (27, 28, 26))
-            self.assertAlmostEqual(data[17,14,10], 1.006, delta=1e-3)
-            data[17,14,10] = 2.0
-            self.assertAlmostEqual(data[17,14,10], 2.000, delta=1e-3)
+            self.assertAlmostEqual(data[17, 14, 10], 1.006, delta=1e-3)
+            data[17, 14, 10] = 2.0
+            self.assertAlmostEqual(data[17, 14, 10], 2.000, delta=1e-3)
             # DensityMap should not be freed until all views are
             del m
             self.assertIsNotNone(p())

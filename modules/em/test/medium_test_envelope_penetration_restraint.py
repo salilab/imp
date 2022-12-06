@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -14,8 +13,9 @@ class Tests(IMP.test.TestCase):
         self.dmap = IMP.em.particles2density(self.ps,
                                              res, apix)
         self.dmap.show()
+        nr = len(IMP.atom.get_by_type(self.mh, IMP.atom.RESIDUE_TYPE))
         self.thr = IMP.em.get_threshold_for_approximate_mass(
-            self.dmap, 2 * IMP.atom.get_mass_from_number_of_residues(len(IMP.atom.get_by_type(self.mh, IMP.atom.RESIDUE_TYPE))))
+            self.dmap, 2 * IMP.atom.get_mass_from_number_of_residues(nr))
         print("threshold:", self.thr)
 
     def _load_particles(self):
@@ -50,6 +50,7 @@ class Tests(IMP.test.TestCase):
             x.set_coordinates(t.get_transformed(x.get_coordinates()))
         score = self.sf.evaluate(False)
         self.assertAlmostEqual(score, 59.0, delta=1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

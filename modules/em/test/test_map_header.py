@@ -14,8 +14,8 @@ class Tests(IMP.test.TestCase):
     def make_map(self, voxel_size):
         m = IMP.Model()
         ps = [IMP.Particle(m)]
-        IMP.core.XYZR.setup_particle(ps[0],
-                                     IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.core.XYZR.setup_particle(
+            ps[0], IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(ps[0], 1.0)
         dmap = IMP.em.SampledDensityMap(ps, 10.0, voxel_size)
         return m, dmap
@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
         # invalid memory access. The Python wrappers should ensure that
         # hr and hw keep a reference to m to prevent this from occurring.
         for h in hr, hw:
-            a, b = h.alpha, h.beta
+            _, _ = h.alpha, h.beta
             h.alpha, h.beta = 45., 90.
 
 

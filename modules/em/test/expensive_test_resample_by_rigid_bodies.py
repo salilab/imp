@@ -4,7 +4,8 @@ from __future__ import print_function
 # Generate density maps for each
 # Create a fit restraint from the density maps
 # Use evaluate() (either in model or in whatever)
-# Do this in three ways: 1) as just a bunch of particles (get_leaves on all of them)
+# Do this in three ways: 1) as just a bunch of particles (get_leaves on all
+#                           of them)
 #                        2) as three rigid bodies
 #                        3) as a mix
 # In all three combos, check to make sure resulting RMSD is the same.
@@ -33,7 +34,8 @@ class Tests(IMP.test.TestCase):
                 self.mhs.append(IMP.atom.read_pdb(fh, self.imp_model, sel))
             self.mhs[-1].set_name("mol" + str(n))
             with self.open_input_file(fn) as fh:
-                self.mhs_copy.append(IMP.atom.read_pdb(fh, self.imp_model, sel))
+                self.mhs_copy.append(
+                    IMP.atom.read_pdb(fh, self.imp_model, sel))
             self.mhs_copy[-1].set_name("mol" + str(n))
             IMP.atom.add_radii(self.mhs[n])
             self.all_ps_copy += IMP.core.get_leaves(self.mhs_copy[-1])
@@ -61,15 +63,10 @@ class Tests(IMP.test.TestCase):
         map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         map.calcRMS()
         self.restr_ps_all = IMP.em.FitRestraint(
-            self.ps_all,
-            map,
-            [0.,
-             0.],
-            IMP.atom.Mass.get_mass_key(),
-            1,
-            False)
+            self.ps_all, map, [0., 0.], IMP.atom.Mass.get_mass_key(), 1, False)
         self.restr_rb_all_fast = IMP.em.FitRestraint(
-            self.all_ps_copy, map, [0., 0.], IMP.atom.Mass.get_mass_key(), 1, True)
+            self.all_ps_copy, map, [0., 0.], IMP.atom.Mass.get_mass_key(),
+            1, True)
         score1 = self.restr_ps_all.evaluate(False)
         score2 = self.restr_rb_all_fast.evaluate(False)
         self.assertAlmostEqual(score1, score2, delta=0.05)
@@ -93,12 +90,11 @@ class Tests(IMP.test.TestCase):
             print("evaluate rb_all after transform fast: ", j, " : ", score2)
             self.assertAlmostEqual(score1, score2, delta=0.1)
             for i in range(3):
+                inv = rand_t[i].get_inverse()
                 for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
                     x.set_coordinates(
-                        rand_t[i].get_inverse().get_transformed(x.get_coordinates()))
-                IMP.core.transform(
-                    self.rbs_of_copy[i],
-                    rand_t[i].get_inverse())
+                       inv.get_transformed(x.get_coordinates()))
+                IMP.core.transform(self.rbs_of_copy[i], inv)
 
     def _test_resampling_derivatives(self):
         """Test derivatives with and without rigid bodies"""
@@ -126,7 +122,6 @@ class Tests(IMP.test.TestCase):
             self.ps_all += self.pss[n]
         d_map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         d_map.calcRMS()
-        fnames = ["1atiB01.pdb", "1arsA01.pdb", "1ab4A02.pdb"]
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.mhs = []  # 3 molecular hierarchies
@@ -155,5 +150,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score_after, score_before, delta=0.05)
         self.assertGreater(fs.get_number_of_solutions(), 0)
         print(fs.get_score(0))
+
+
 if __name__ == '__main__':
     IMP.test.main()

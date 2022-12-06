@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -54,7 +52,8 @@ class Tests(IMP.test.TestCase):
             self.mhs, "temp_%03d.pdb")
 
     def test_cc_derivaties_using_rigid_body_fast_mode(self):
-        """Test that multiple rigid bodies are correctly pulled into the density"""
+        """Test that multiple rigid bodies are correctly pulled into
+           the density"""
         print(self.leaves_ref.get_can_refine(self.mhs[0]))
         fit_r = IMP.em.FitRestraint(self.ps,
                                     self.scene)
@@ -80,6 +79,7 @@ class Tests(IMP.test.TestCase):
         print("after optimization")
         # IMP.atom.write_pdb(self.mhs,"aa.pdb")
         self.assertGreater(start_score + .01, end_score)
+
 
 if __name__ == '__main__':
     IMP.test.main()

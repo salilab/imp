@@ -1,9 +1,7 @@
 from __future__ import print_function
 import IMP
 import IMP.test
-import sys
 import IMP.em
-import os
 
 
 class Tests(IMP.test.TestCase):
@@ -49,6 +47,7 @@ class Tests(IMP.test.TestCase):
         for p in self.particles:
             val = model_map.get_value(IMP.core.XYZ(p).get_coordinates())
             self.assertAlmostEqual(val, 10.0, delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

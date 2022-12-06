@@ -14,10 +14,12 @@ class Tests(IMP.test.TestCase):
         # with swig 1.3.33 if more than one module defines vector wrappers.
         # See SWIG bug #1863647 at
         # http://sf.net/tracker/?func=detail&atid=101645&aid=1863647&group_id=1645
-        # For now (r675) our workaround is to #define PySwigIterator to a unique
-        # name in each module that uses vector classes, in the SWIG .i file.
+        # For now (r675) our workaround is to #define PySwigIterator to a
+        # unique name in each module that uses vector classes, in the
+        # SWIG .i file.
         for p in []:
             print(p)
+
 
 if __name__ == '__main__':
     IMP.test.main()

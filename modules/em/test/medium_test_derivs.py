@@ -9,7 +9,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
-import sys
 import IMP.em
 import os
 
@@ -56,7 +55,9 @@ class Tests(IMP.test.TestCase):
         prot_key = IMP.IntKey("protein")
         id_key = IMP.IntKey("id")
 
-        for i, p_data in enumerate([[9.0, 9.0, 9.0, rad, wei, 1], [12.0, 3.0, 3.0, rad, wei, 1], [3.0, 12.0, 12.0, rad, wei, 1]]):
+        for i, p_data in enumerate([[9.0, 9.0, 9.0, rad, wei, 1],
+                                    [12.0, 3.0, 3.0, rad, wei, 1],
+                                    [3.0, 12.0, 12.0, rad, wei, 1]]):
             p = self.particles[i]
             center = IMP.algebra.Vector3D(*p_data[0:3])
             sphere = IMP.algebra.Sphere3D(center, p_data[3])
@@ -118,7 +119,7 @@ class Tests(IMP.test.TestCase):
         print(" derivs done ...")
 
     def test_deriv_to_pull_particles_into_density(self):
-        """Test if the derivatives can pull the particles back into the density"""
+        "Test if the derivatives can pull the particles back into the density"
         """Test calculated derivatives for a distorted model's map"""
         if modeller is None:
             self.skipTest("modeller module unavailable")
@@ -145,7 +146,9 @@ class Tests(IMP.test.TestCase):
         prot_key = IMP.IntKey("protein")
         id_key = IMP.IntKey("id")
 
-        for i, p_data in enumerate([[9.0, 9.0, 9.0, rad, wei, 1], [12.0, 3.0, 3.0, rad, wei, 1], [3.0, 12.0, 12.0, rad, wei, 1]]):
+        for i, p_data in enumerate([[9.0, 9.0, 9.0, rad, wei, 1],
+                                    [12.0, 3.0, 3.0, rad, wei, 1],
+                                    [3.0, 12.0, 12.0, rad, wei, 1]]):
             p = self.particles[i]
             center = IMP.algebra.Vector3D(*p_data[0:3])
             sphere = IMP.algebra.Sphere3D(center, p_data[3])
@@ -214,7 +217,6 @@ class Tests(IMP.test.TestCase):
 
     def test_fr_deriv(self):
         """Testing FitRestraint derivative magnitudes"""
-        use_rigid_bodies = True
         bd = 10
         radius = 10
         m = IMP.Model()
@@ -223,7 +225,6 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZR.setup_particle(p)
         d.set_radius(radius)
         fp = d
-        to_move = d
         d.set_coordinates_are_optimized(True)
         bb = IMP.algebra.BoundingBox3D(
             IMP.algebra.Vector3D(-bd - radius, -bd - radius, -bd - radius),

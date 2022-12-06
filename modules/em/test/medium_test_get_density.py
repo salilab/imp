@@ -1,7 +1,6 @@
 from __future__ import print_function
 import IMP.test
 import IMP.em
-import os
 import random
 
 
@@ -27,65 +26,31 @@ class Tests(IMP.test.TestCase):
                     if i % 4 == 0 and j % 4 == 0 and k % 4 == 0:
                         print(i, j, k, v, val, mval)
                     self.assertAlmostEqual(
-                        val,
-                        mval,
-                        delta=(val + mval) * .1 + .1)
+                        val, mval, delta=(val + mval) * .1 + .1)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(wid[0],
-                                                                                     0,
-                                                                                     0)),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(wid[0], 0, 0)), 0)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(0,
-                                                                                     wid[1],
-                                                                                     0)),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(0, wid[1], 0)), 0)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(0,
-                                                                                     0,
-                                                                                     wid[2])),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(0, 0, wid[2])), 0)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(-wid[0],
-                                                                                     0,
-                                                                                     0)),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(-wid[0], 0, 0)), 0)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(0,
-                                                                                     -
-                                                                                     wid[1],
-                                                                                     0)),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(0, -wid[1], 0)), 0)
                     self.assertEqual(
-                        IMP.em.get_density(m,
-                                           self.get_center(m,
-                                                           i,
-                                                           j,
-                                                           k) + IMP.algebra.Vector3D(0,
-                                                                                     0,
-                                                                                     -wid[
-                                                                                         2])),
-                        0)
+                        IMP.em.get_density(
+                            m, self.get_center(m, i, j, k)
+                            + IMP.algebra.Vector3D(0, 0, -wid[2])), 0)
 
         indexes = [random.randint(0, m.get_header().get_nx()),
                    random.randint(0, m.get_header().get_ny()),
@@ -117,7 +82,9 @@ class Tests(IMP.test.TestCase):
         # Tolerate the density exceeding the bounds by 1e-6 to allow for
         # limited machine precision
         self.assertTrue(val <= ub + 1e-6 and val >= lb - 1e-6,
-                        "Density %g is not within bounds %g to %g" % (val, lb, ub))
+                        "Density %g is not within bounds %g to %g"
+                        % (val, lb, ub))
+
 
 if __name__ == '__main__':
     IMP.test.main()

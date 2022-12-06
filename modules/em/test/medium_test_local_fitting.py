@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -66,6 +64,7 @@ class Tests(IMP.test.TestCase):
         print("fast:", fr_fast.get_score(0), " slow:", fr_slow.get_score(0))
         self.assertAlmostEqual(fr_fast.get_score(0), fr_slow.get_score(0),
                                delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

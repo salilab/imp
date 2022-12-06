@@ -34,8 +34,7 @@ class Tests(IMP.test.TestCase):
 
     def test_good_geo_comp(self):
         """Check good geometric complementarity score"""
-        erw = IMP.em.EMReaderWriter()
-         # fix map dimensions
+        # fix map dimensions
         h1 = self.mh1_shell_map.get_header()
         h2 = self.good_mh2_shell_map.get_header()
         nx = max(h1.get_nx(), h2.get_nx())
@@ -53,7 +52,6 @@ class Tests(IMP.test.TestCase):
 
     def test_bad_geo_comp(self):
         """Check bad geometric complementarity score"""
-        erw = IMP.em.EMReaderWriter()
         #        self.prot1_shell_map.Write("prot1_shell.em",erw)
         #        self.prot2_shell_map.Write("prot2_shell.em",erw)
         # fix map dimensions
@@ -68,9 +66,10 @@ class Tests(IMP.test.TestCase):
         self.mh1_shell_map.calcRMS()
         self.bad_mh2_shell_map.calcRMS()
         score = IMP.em.get_coarse_cc_coefficient(self.mh1_shell_map,
-                                                   self.bad_mh2_shell_map,
-                                                   0.0, False)
+                                                 self.bad_mh2_shell_map,
+                                                 0.0, False)
         print("SCORE BAD : " + str(score))
+
 
 if __name__ == '__main__':
     IMP.test.main()
