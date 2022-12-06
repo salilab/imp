@@ -21,7 +21,7 @@ and interface conventions.
    - `load_` and `save_` or `read_` and `write_` move data between files and memory
    - `link_` create a connection between something and an IMP::Object
    - `update_` change the internal state of an IMP::Object
-   - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
+   - `do_` is a virtual method as part of a \external{https://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
    - `handle_` take action when an event occurs
    - `validate_` check the state of data and print messages and throw exceptions if something is corrupted
    - `setup_` and `teardown_` create or destroy some type of invariant (e.g. the constraints for a rigid body)

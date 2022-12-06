@@ -19,7 +19,7 @@
     You should think very hard before implementing a class which
     requires a custom copy constructor as it is easy to get wrong
     and you can easily wrap most resources with RAII objects
-    (\external{http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
+    (\external{https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     Wikipedia entry}).
 */
 #define IMP_COPY_CONSTRUCTOR(Name, Base)         \

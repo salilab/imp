@@ -36,7 +36,7 @@ IMP_GRAPH(InteractionGraph, undirected, Particle *,
 IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
 
 /** Compute the exact
-    \external{http://en.wikipedia.org/wiki/Junction_tree,junction tree}
+    \external{https://en.wikipedia.org/wiki/Junction_tree,junction tree}
     for an interaction graph. The resulting graph has the junction tree
     properties
     - it is a tree

@@ -39,7 +39,7 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
     copy of the rotation matrix. The quaternion allows for fast and
     stable composition and the cached rotation matrix means that
     rotations are performed quickly. See
-    http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation for
+    https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation for
     a comparison of different implementations of rotations.
 
     Currently the rotation can be initialized from either:
@@ -403,7 +403,7 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
    \param[in] axis_norm the normalized rotation axis passing through (0,0,0)
    \param[in] angle the rotation angle in radians in the
    clockwise direction
-   \note http://en.wikipedia.org/wiki/Rotation_matrix
+   \note https://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
    \see Rotation3D
@@ -429,7 +429,7 @@ get_rotation_about_normalized_axis
    \param[in] axis the rotation axis passes through (0,0,0)
    \param[in] angle the rotation angle in radians in the
    clockwise direction
-   \note http://en.wikipedia.org/wiki/Rotation_matrix
+   \note https://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
    \see Rotation3D
@@ -543,7 +543,7 @@ compose_adjoint(const Rotation3D &A, const Rotation3D &B, const Rotation3DAdjoin
     of which of the x,y,z axis to use in what order and whether the rotation
     axis is in the body frame (and hence affected by previous rotations) or in
     in a fixed frame. See
-    http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+    https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
     for a general description.
 
     - All Euler angles are specified in radians.
@@ -647,7 +647,7 @@ IMPALGEBRAEXPORT Rotation3D
 //! Decompose a Rotation3D object into a rotation around an axis
 /** For all identity rotations, returns the axis [1,0,0] and the angle 0.0.
 
-   \note http://en.wikipedia.org/wiki/Rotation_matrix
+   \note https://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
    \see Rotation3D
