@@ -4,6 +4,38 @@ ChangeLog {#changelog}
 # HEAD
 - The Windows .exe installer now supports Python 3.11.
 - The IMP::em::emreal type is deprecated; use plain `double` instead.
+- Most IMP Value types (e.g. IMP::algebra::Vector3D) now support serialization,
+  so can be written to or read from a stream in C++ using the
+  Boost.Serialization library, or pickled in Python.
+- IMP::atom::CHARMMTopology::add_sequence() now allows for full residue names
+  to be specified, to simplify construction of structures of DNA or RNA.
+- IMP::atom::CHARMMTopology::create_hierarchy() now supports construction of
+  more than 26 chains, assigning them multi-character chain IDs.
+- Objects that contain lists of other objects now provide a list-like object
+  in Python to simplify management of the list (e.g. IMP::RestraintSet now
+  contains a `restraints` member in Python which is a list of the IMP::Restraint
+  objects in the set).
+- The NPC-specific PMI restraints in the IMP.npc.npc_restraints module (which
+  only work with PMI1) are now provided in IMP.pmi.restraints.npc (for current
+  PMI) and IMP.pmi1.restraints.npc (for the old PMI1). IMP.npc.npc_restraints
+  itself is deprecated.
+- IMP.pmi.macros.ReplicaExchange0 has been renamed to
+  IMP.pmi.macros.ReplicaExchange; the old name is still present but deprecated.
+- The obsolete `sample_objects` and `crosslink_restraints` arguments to
+  IMP.pmi.macros.ReplicaExchange have been removed.
+- Passing anything other than Monte Carlo movers in the
+  `monte_carlo_sample_objects` argument to IMP.pmi.macros.ReplicaExchange
+  is now deprecated.
+- The IMP.sampcon module can now provide inputs for the PrISM method, and has
+  improved support for symmetry groups (requires pyRMSD 4.3.2 or later).
+- Bugfix: move-aware scoring (see IMP::core::MonteCarlo::set_score_moved())
+  should now work correctly with nested RestraintSets and/or non-default
+  weights.
+- Bugfix: IMP::em::DensityMap::add() now invalidates any previously-calculated
+  RMS, so that followup calculations (e.g. of cross correlation) now work
+  correctly.
+- Bugfix: all C++ code now uses the same IMP random number generator, so
+  that resetting the seed now yields a consistent sequence of random numbers.
 
 # 2.17.0 - 2022-06-23 # {#changelog_2_17_0}
 - IMP::atom::Selection no longer checks that the passed hierarchies are valid,
