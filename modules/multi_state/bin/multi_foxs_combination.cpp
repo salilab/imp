@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2021 IMP Inventors. All rights reserved.
+ * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
       "Usage: <experimental_profile> <main_pdb_file> <pdb_file1> <pdb_file2> ... or <pdbs_filename>\n\n"
       "Any number of input pdbs is supported.\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
       "Options");
   desc.add_options()
     ("help", "Show command line arguments and exit.")
