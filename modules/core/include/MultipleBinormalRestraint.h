@@ -13,6 +13,7 @@
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
+#include <boost/serialization/access.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -55,6 +56,13 @@ class IMPCOREEXPORT MultipleBinormalRestraint : public Restraint {
 class BinormalTerm {
   double correlation_, weight_;
   std::pair<double, double> means_, stdevs_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & correlation_ & weight_ & means_.first & means_.second
+       & stdevs_.first & stdevs_.second;
+  }
 
   double evaluate(const double dihedral[2], double &sin1, double &sin2,
                   double &cos1, double &cos2, double &rho) const;

@@ -1,4 +1,3 @@
-
 %define IMP_ALGEBRA_VECTOR(D)
 /* Provide our own implementations for some operators */
 %ignore IMP::algebra::VectorD<D>::operator[];
@@ -57,12 +56,15 @@ namespace IMP {
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::ValueException);
   }
+
   /* Support new-style "true" division */
   %pythoncode %{
   __truediv__ = __div__
   __itruediv__ = __idiv__
   %}
 };
+
+IMP_SWIG_VALUE_SERIALIZE_IMPL(IMP::algebra, VectorD<D>);
 %enddef
 
 %define IMP_ALGEBRA_FIXED_SIZE_VECTOR(D)

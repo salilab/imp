@@ -27,30 +27,44 @@ namespace po = boost::program_options;
 using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
-  // print command
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   // input parsing
   std::string out_file_name;
-  po::options_description desc("Usage: <pdb> <cross_links_file>");
-  desc.add_options()("help",
-                     "static and transformed molecules from docking with \
-transformation file. \
-Each docked complex will be compared against cross links in cross_links_file.")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input PDB, transformation and profile files")(
-      "output_file,o",
+  po::options_description desc(
+      "Usage: <pdb> <cross_links_file>\n"
+      "\nScore a PDB structure against the given cross links.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
+
+  desc.add_options()
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
+    ("output_file,o",
       po::value<std::string>(&out_file_name)->default_value("cxms_score.res"),
       "output file name, default name cxms_score.res");
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(),
+      "input PDB, transformation and profile files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
 
   // parse filenames
   std::string pdb;

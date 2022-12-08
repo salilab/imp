@@ -5,6 +5,7 @@ import IMP.algebra
 import numpy as np
 import math
 import random
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -156,6 +157,35 @@ class Tests(IMP.test.TestCase):
                           V(13, 22, 26)), 1e-4)
         self.assertLess(IMP.algebra.get_distance(nbb.get_corner(1),
                           V(16, 25, 29)), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Transformation3D"""
+        t1 = IMP.algebra.Transformation3D(
+            IMP.algebra.get_random_rotation_3d(),
+            IMP.algebra.get_random_vector_in(
+                IMP.algebra.get_unit_bounding_box_3d()))
+        t2 = IMP.algebra.Transformation3D(
+            IMP.algebra.get_random_rotation_3d(),
+            IMP.algebra.get_random_vector_in(
+                IMP.algebra.get_unit_bounding_box_3d()))
+        t2.foo = 'bar'
+        tdump = pickle.dumps((t1, t2))
+
+        newt1, newt2 = pickle.loads(tdump)
+        self.assertLess(
+            IMP.algebra.get_distance(t1.get_rotation(),
+                                     newt1.get_rotation()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(t1.get_translation(),
+                                     newt1.get_translation()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(t2.get_rotation(),
+                                     newt2.get_rotation()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(t2.get_translation(),
+                                     newt2.get_translation()), 1e-4)
+        self.assertEqual(newt2.foo, 'bar')
+
 
 if __name__ == '__main__':
     IMP.test.main()

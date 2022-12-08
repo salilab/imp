@@ -158,7 +158,7 @@ em::DensityMap *FFTFitting::crop_margin(em::DensityMap *in_map) {
   int in_nx = in_map->get_header()->get_nx();
   int in_ny = in_map->get_header()->get_ny();
   int in_nz = in_map->get_header()->get_nz();
-  em::emreal *in_data = in_map->get_data();
+  double *in_data = in_map->get_data();
   int minx, miny, minz, maxx, maxy, maxz;
   minx = in_nx - 1;
   miny = in_ny - 1;
@@ -210,7 +210,7 @@ em::DensityMap *FFTFitting::crop_margin(em::DensityMap *in_map) {
                   in_map->get_spacing() *
                       algebra::Vector3D(margin[0], margin[2], margin[4]));
   // copy data
-  em::emreal *ret_data = ret->get_data();
+  double *ret_data = ret->get_data();
   for (int iz = margin[4]; iz < in_nz - margin[5]; iz++)
     for (int iy = margin[2]; iy < in_ny - margin[3]; iy++)
       for (int ix = margin[0]; ix < in_nx - margin[1]; ix++) {
@@ -685,7 +685,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
         em::create_density_map(nx_ + 2, ny_ + 2, nz_ + 2, spacing_);
     gpeak->set_was_used(true);
     gpeak->reset_data(0.);
-    em::emreal *gpeak_data = gpeak->get_data();
+    double *gpeak_data = gpeak->get_data();
     long box_ind;
     for (unsigned long i = 0; i < inside_num_flipped_; i++) {
       wz = fft_scores_flipped_[i].iz;
@@ -713,7 +713,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
         em::create_density_map(nx_ + 2, ny_ + 2, nz_ + 2, spacing_);
     lpeak->set_was_used(true);
     lpeak->reset_data(0.);
-    em::emreal *lpeak_data = lpeak->get_data();
+    double *lpeak_data = lpeak->get_data();
     // laplacian gpeak
     //  std::cout<<"==============3===top"<<std::endl;
     for (unsigned long i = 0; i < inside_num_flipped_; i++) {
@@ -921,7 +921,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
 
 void FFTFitting::prepare_poslist_flipped(em::DensityMap *dmap) {
   Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
-  em::emreal *mdata2 = mask_inside2->get_data();
+  double *mdata2 = mask_inside2->get_data();
   inside_num_flipped_ = 0;
   for (long i = 0; i < mask_inside2->get_number_of_voxels(); i++) {
     if (mdata2[i] > 0.9) {
@@ -932,7 +932,7 @@ void FFTFitting::prepare_poslist_flipped(em::DensityMap *dmap) {
   Pointer<em::DensityMap> mask_inside3 =
       em::create_density_map(mask_inside2);
   mask_inside3->set_was_used(true);
-  em::emreal *mdata3 = mask_inside3->get_data();
+  double *mdata3 = mask_inside3->get_data();
   mask_inside3->reset_data(0.);
   for (unsigned int iz = 0; iz < nz_; iz++)
     for (unsigned int iy = 0; iy < ny_; iy++)
@@ -1009,7 +1009,7 @@ void FFTFitting::get_unwrapped_index(int wx, int wy, int wz, int &x, int &y,
 
 void FFTFitting::prepare_poslist(em::DensityMap *dmap) {
   Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
-  em::emreal *mdata2 = mask_inside2->get_data();
+  double *mdata2 = mask_inside2->get_data();
   inside_num_ = 0;
   for (long i = 0; i < mask_inside2->get_number_of_voxels(); i++) {
     if (mdata2[i] > 0.9) {

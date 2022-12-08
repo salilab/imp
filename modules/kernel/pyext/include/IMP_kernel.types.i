@@ -748,6 +748,64 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
+%define IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
+%extend Namespace::Name {
+  /* Get contents as a binary blob (for serialization) */
+  PyObject *_get_as_binary() const {
+    std::ostringstream oss;
+    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
+    ba << *self;
+    std::string s = oss.str();
+    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
+    if (p) {
+      return p;
+    } else {
+      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
+    }
+  }
+
+  /* Set contents from a binary blob (for unserialization) */
+  void _set_from_binary(PyObject *p) {
+    char *buf;
+    Py_ssize_t len;
+    if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
+      throw IMP::IndexException("PyBytes_AsStringAndSize failed");
+    }
+    std::string s(buf, len);
+    std::istringstream iss(s);
+    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
+    ba >> *self;
+  }
+
+  /* Allow (un-)pickling both C++ and Python contents */
+  %pythoncode %{
+  def __getstate__(self):
+      p = self._get_as_binary()
+      if len(self.__dict__) > 1:
+          d = self.__dict__.copy()
+          del d['this']
+          p = (d, p)
+      return p
+
+  def __setstate__(self, p):
+      if not hasattr(self, 'this'):
+          self.__init__()
+      if isinstance(p, tuple):
+          d, p = p
+          self.__dict__.update(d)
+      return self._set_from_binary(p)
+  %}
+}
+%enddef
+
+// A value that is serializable/picklable
+// Modules that use these must link against Boost.Serialization and
+// include boost/archive/binary_iarchive.hpp and
+// boost/archive/binary_oarchive.hpp in their SWIG interface
+%define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
+%enddef
 
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)
 %template(Name) Namespace::Generic##Name<argument>;

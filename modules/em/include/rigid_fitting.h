@@ -21,6 +21,19 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/ScoreState.h>
 #include <algorithm>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+
+namespace boost {
+  namespace serialization {
+    template<class Archive> void serialize(Archive &ar,
+          std::pair<IMP::algebra::Transformation3D, IMP::Float> &g,
+          const unsigned int) {
+      ar & g.first & g.second;
+    }
+  }
+}
+
 IMPEM_BEGIN_NAMESPACE
 
 //! A simple list of fitting solutions.
@@ -99,6 +112,13 @@ class IMPEMEXPORT FittingSolutions {
 
  protected:
   std::vector<FittingSolution> fs_;
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & fs_;
+  }
 };
 IMP_VALUES(FittingSolutions, FittingSolutionsList);
 

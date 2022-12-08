@@ -4,6 +4,7 @@ import IMP.test
 import IMP.multifit
 import os
 import sys
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -50,6 +51,17 @@ class Tests(IMP.test.TestCase):
         """Check AlignmentParams()"""
         p = IMP.multifit.AlignmentParams(
             self.get_input_file_name("test.align.param"))
+        self._check_alignment_params(p)
+
+    def test_pickle(self):
+        """Check (un-)pickle of AlignmentParams"""
+        p = IMP.multifit.AlignmentParams(
+            self.get_input_file_name("test.align.param"))
+        dump = pickle.dumps(p)
+        newp = pickle.loads(dump)
+        self._check_alignment_params(newp)
+
+    def _check_alignment_params(self, p):
         d = p.get_domino_params()
         self.assertAlmostEqual(d.max_value_threshold_, 10000., delta=1e-6)
         self.assertEqual(d.max_num_states_for_subset_, 1000)

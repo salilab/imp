@@ -11,6 +11,7 @@ except ImportError:
 import IMP
 import IMP.test
 import IMP.algebra
+import pickle
 
 
 class UnitSimplexDTests(IMP.test.TestCase):
@@ -162,6 +163,22 @@ class UnitSimplexDTests(IMP.test.TestCase):
                 )
                 for i in range(d):
                     self.assertLessEqual(mean_bary_vs[i], mean_thresh)
+
+    def pickle(self):
+        """Test (un-)pickle of UnitSimplexD"""
+        for d, st, args, vt in self.types:
+            s1 = st(*args)
+            s2 = st(*args)
+            s2.foo = 'bar'
+            dump = pickle.dumps((s1, s2))
+            news1, news2 = pickle.loads(dump)
+            self.assertLess(IMP.algebra.get_distance(
+                s1.get_barycenter(), news1.get_barycenter()), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(
+                s2.get_barycenter(), news2.get_barycenter()), 1e-4)
+            self.assertEqual(news2.foo, 'bar')
+
+            self.assertRaises(TypeError, s1._set_from_binary, 42)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,11 @@
 #ifndef RMF_CONFIG_H
 #define RMF_CONFIG_H
 
+/* Protect against RMFEXPORT being defined already */
+#ifdef RMFEXPORT
+#undef RMFEXPORT
+#endif
+
 #ifdef _MSC_VER
 
 #ifdef RMF_EXPORTS

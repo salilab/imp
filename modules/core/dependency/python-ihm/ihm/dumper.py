@@ -72,7 +72,7 @@ def _get_transform(rot_matrix, tr_vector):
 class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
-        writer.start_block(re.subn('[^0-9a-zA-z_-]', '', system.id)[0])
+        writer.start_block(re.subn('[^0-9a-zA-Z_-]', '', system.id)[0])
         with writer.category("_entry") as lp:
             lp.write(id=system.id)
 
@@ -216,6 +216,10 @@ class _ChemCompDumper(Dumper):
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as lp:
             for comp in sorted(comps, key=operator.attrgetter('id')):
+                if comp.ccd or comp.descriptors:
+                    raise ValueError(
+                        "Non-default values for 'ccd' or 'descriptors' are "
+                        "not supported by the IHM dictionary for %s" % comp)
                 lp.write(id=comp.id, type=comp.type, name=comp.name,
                          formula=comp.formula,
                          formula_weight=comp.formula_weight)
@@ -258,6 +262,10 @@ class _EntityDumper(Dumper):
             seen[entity] = None
 
     def dump(self, system, writer):
+        # Count all molecules (if any) for each entity
+        num_molecules = collections.defaultdict(lambda: 0)
+        for asym in system.asym_units:
+            num_molecules[asym.entity._id] += asym.number_of_molecules
         with writer.loop("_entity",
                          ["id", "type", "src_method", "pdbx_description",
                           "formula_weight", "pdbx_number_of_molecules",
@@ -267,7 +275,7 @@ class _EntityDumper(Dumper):
                          src_method=entity.src_method,
                          pdbx_description=entity.description,
                          formula_weight=entity.formula_weight,
-                         pdbx_number_of_molecules=entity.number_of_molecules,
+                         pdbx_number_of_molecules=num_molecules[entity._id],
                          details=entity.details)
 
 
@@ -675,8 +683,7 @@ class _NonPolySchemeDumper(Dumper):
                 entity = asym.entity
                 if entity.is_polymeric():
                     continue
-                # todo: handle multiple waters
-                for num, comp in enumerate(entity.sequence):
+                for num, comp in enumerate(asym.sequence):
                     auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
                     # ndb_seq_num is described as the "NDB/RCSB residue
                     # number". We don't have one of those but real PDBs
@@ -1368,6 +1375,9 @@ class _RangeChecker(object):
         self._check_representation(obj, asym, type_check, seq_id_range)
 
     def _check_duplicate_atom(self, atom):
+        # e.g. multiple bulk water oxygen atoms can have "same" seq_id (None)
+        if atom.seq_id is None:
+            return
         k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
         if k in self._seen_atoms:
             raise ValueError(
@@ -1475,10 +1485,10 @@ class _ModelDumperBase(Dumper):
                                  "stored in State objects." % g)
 
     def dump_atom_type(self, seen_types, system, writer):
-        """Output the atom_type table with a list of elements used in atom_site.
-           This table is needed by atom_site. Note that we output it *after*
-           atom_site (otherwise we would need to iterate through all atoms in
-           the system twice)."""
+        """Output the atom_type table with a list of elements used
+           in atom_site. This table is needed by atom_site. Note that we
+           output it *after* atom_site (otherwise we would need to iterate
+           through all atoms in the system twice)."""
         elements = [x for x in sorted(seen_types.keys()) if x is not None]
         with writer.loop("_atom_type", ["symbol"]) as lp:
             for element in elements:
@@ -1500,7 +1510,8 @@ class _ModelDumperBase(Dumper):
                 for atom in model.get_atoms():
                     rngcheck(atom)
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
-                    comp = atom.asym_unit.entity.sequence[seq_id - 1]
+                    comp = atom.asym_unit.sequence[seq_id - 1]
+                    water = isinstance(atom.asym_unit, ihm.WaterAsymUnit)
                     seen_types[atom.type_symbol] = None
                     auth_seq_id, ins = \
                         atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
@@ -1511,7 +1522,7 @@ class _ModelDumperBase(Dumper):
                              label_comp_id=comp.id,
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
-                             label_seq_id=atom.seq_id,
+                             label_seq_id=None if water else atom.seq_id,
                              auth_seq_id=auth_seq_id,
                              pdbx_PDB_ins_code=ins or ihm.unknown,
                              auth_asym_id=atom.asym_unit.strand_id,

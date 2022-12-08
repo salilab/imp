@@ -87,14 +87,12 @@ class Tests(IMP.test.TestCase):
         dr.add_to_model()
 
         with IMP.allow_deprecated():
-            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              output_objects=[dr],
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=10,
-                                              number_of_best_scoring_models=0,
-                                              global_output_directory = \
-                                              self.get_input_file_name("pmi2_sample_0/"))
+            rex = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=hier, output_objects=[dr],
+                monte_carlo_sample_objects=dof.get_movers(),
+                number_of_frames=10, number_of_best_scoring_models=0,
+                global_output_directory = \
+                self.get_input_file_name("pmi2_sample_0/"))
         rex.execute_macro()
 
         trans = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(10,10,10))
@@ -102,15 +100,13 @@ class Tests(IMP.test.TestCase):
             IMP.core.transform(rb,trans)
 
         with IMP.allow_deprecated():
-            rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                               root_hier=hier,
-                                               output_objects=[dr],
-                                               monte_carlo_sample_objects=dof.get_movers(),
-                                               number_of_frames=10,
-                                               number_of_best_scoring_models=0,
-                                               global_output_directory = \
-                                               self.get_input_file_name("pmi2_sample_1/"),
-                                               replica_exchange_object = rex.get_replica_exchange_object())
+            rex2 = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=hier, output_objects=[dr],
+                monte_carlo_sample_objects=dof.get_movers(),
+                number_of_frames=10, number_of_best_scoring_models=0,
+                global_output_directory = \
+                self.get_input_file_name("pmi2_sample_1/"),
+                replica_exchange_object=rex.get_replica_exchange_object())
         rex2.execute_macro()
 
     def init_res5(self,mdl):
@@ -145,14 +141,12 @@ class Tests(IMP.test.TestCase):
         dr.add_to_model()
 
         with IMP.allow_deprecated():
-            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              output_objects=[dr],
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=10,
-                                              number_of_best_scoring_models=0,
-                                              global_output_directory = \
-                                              self.get_input_file_name("pmi2_sample_res5/"))
+            rex = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=hier, output_objects=[dr],
+                monte_carlo_sample_objects=dof.get_movers(),
+                number_of_frames=10, number_of_best_scoring_models=0,
+                global_output_directory = \
+                self.get_input_file_name("pmi2_sample_res5/"))
         rex.execute_macro()
 
     def init_with_copies(self,mdl):
@@ -184,13 +178,12 @@ class Tests(IMP.test.TestCase):
         ps1 = IMP.atom.Selection(hier,molecule='Prot1',copy_index=1).get_selected_particles()
 
         with IMP.allow_deprecated():
-            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=1,
-                                              number_of_best_scoring_models=0,
-                                              global_output_directory = \
-                                              self.get_input_file_name("pmi2_copies_0/"))
+            rex = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=hier,
+                monte_carlo_sample_objects=dof.get_movers(),
+                number_of_frames=1, number_of_best_scoring_models=0,
+                global_output_directory = \
+                self.get_input_file_name("pmi2_copies_0/"))
         rex.execute_macro()
 
         coords0A = [IMP.core.XYZ(p).get_coordinates() for p in ps0]
@@ -201,14 +194,13 @@ class Tests(IMP.test.TestCase):
         IMP.core.transform(rb1,trans)
 
         with IMP.allow_deprecated():
-            rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                               root_hier=hier,
-                                               monte_carlo_sample_objects=dof.get_movers(),
-                                               number_of_frames=1,
-                                               number_of_best_scoring_models=0,
-                                               global_output_directory = \
-                                               self.get_input_file_name("pmi2_copies_1/"),
-                                               replica_exchange_object = rex.get_replica_exchange_object())
+            rex2 = IMP.pmi.macros.ReplicaExchange(
+                mdl, root_hier=hier,
+                monte_carlo_sample_objects=dof.get_movers(),
+                number_of_frames=1, number_of_best_scoring_models=0,
+                global_output_directory = \
+                self.get_input_file_name("pmi2_copies_1/"),
+                replica_exchange_object=rex.get_replica_exchange_object())
         rex2.execute_macro()
 
         coords0B = [IMP.core.XYZ(p).get_coordinates() for p in ps0]

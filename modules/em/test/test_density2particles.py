@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -91,6 +90,7 @@ class Tests(IMP.test.TestCase):
         map_centroid = dmap.get_centroid()
         self.assertLess(IMP.algebra.get_distance(ps_centroid, map_centroid),
                         0.07)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -4,7 +4,6 @@ import IMP.algebra
 import IMP.em
 import random
 import math
-from IMP.algebra import *
 
 
 class Tests(IMP.test.TestCase):
@@ -12,7 +11,6 @@ class Tests(IMP.test.TestCase):
     def test_transform(self):
         """Check transforming a density map"""
         m = IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
-        #tr= Transformation3D(get_random_rotation_3d(), Vector3D(0,0,0))
         axis = IMP.algebra.get_random_vector_on(
             IMP.algebra.get_unit_sphere_3d())
         rand_angle = random.uniform(-15. / 180 * math.pi, 15. / 180 * math.pi)
@@ -39,9 +37,10 @@ class Tests(IMP.test.TestCase):
         print(IMP.em.get_bounding_box(mtit))
         errors = 0
         for v in range(m.get_number_of_voxels()):
-            pt = Vector3D(m.get_location_in_dim_by_voxel(v, 0),
-                          m.get_location_in_dim_by_voxel(v, 1),
-                          m.get_location_in_dim_by_voxel(v, 2))
+            pt = IMP.algebra.Vector3D(
+                m.get_location_in_dim_by_voxel(v, 0),
+                m.get_location_in_dim_by_voxel(v, 1),
+                m.get_location_in_dim_by_voxel(v, 2))
             oval = IMP.em.get_density(m, pt)
             nval = IMP.em.get_density(mtit, pt)
             if abs(oval - nval) > (oval + nval + 1) * .3:

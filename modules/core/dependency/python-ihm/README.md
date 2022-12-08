@@ -22,12 +22,18 @@ or some
 [worked examples](https://github.com/ihmwg/python-ihm/tree/main/examples)
 for more details.
 
-# Installation with conda or pip
+# Installation with conda, Homebrew or pip
 
 If you are using [Anaconda Python](https://www.anaconda.com/), install with
 
 ```
 conda install -c conda-forge ihm
+```
+
+On a Mac with [Homebrew](https://brew.sh/), install with
+
+```
+brew tap salilab/salilab; brew install ihm
 ```
 
 Alternatively, install with pip:

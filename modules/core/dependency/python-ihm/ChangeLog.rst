@@ -1,3 +1,41 @@
+0.35 - 2022-09-16
+=================
+  - Author names now use PDB style ("Lastname, A.B.") by default rather
+    than PubMed style ("Lastname AB") (#95).
+  - Asyms containing multiple water molecules should now be correctly
+    handled (previously every water molecule in the output ``atom_site``
+    table  was given the same ``auth_seq_id``). Use the new
+    :class:`ihm.WaterAsymUnit` to create an asym containing waters (#98).
+  - Masses for all elements are now included, so that
+    ``_entity.formula_weight`` can be correctly populated for ligands (#99).
+  - Bugfix: :class:`ihm.analysis.Analysis` objects are now read correctly
+    from input files when two objects share the same ID but are part
+    of different protocols (#101).
+
+0.34 - 2022-08-03
+=================
+  - Strings that start with STAR reserved words such as ``stop_`` are now
+    quoted to help some readers such as the GEMMI library
+    (ihmwg/python-modelcif#25).
+  - If an input file defines a chemical descriptor with an empty name
+    but also defines ``linker_type``, use that to fill in the name (#91).
+  - :class:`ihm.ChemComp` now allows for chemical components to be defined
+    in a chemical component dictionary (CCD) outside of the wwPDB CCD. This
+    is not used in python-ihm itself but can be used in python-modelcif.
+  - Bugfix: if a read mmCIF file defines a complete assembly, do not overwrite
+    its name and description on output (#92).
+  - Bugfix: only allow clustering methods/features that are supported by
+    the underlying IHM dictionary for :class:`ihm.model.Ensemble` (#94).
+  - Bugfix: categories such as ``_struct`` that are not typically looped
+    now support multi-line strings (ihmwg/python-modelcif#27).
+
+0.33 - 2022-06-27
+=================
+  - Improve reading of mmCIF files with incomplete data (#86, #87) or with
+    categories in an unexpected order (#85).
+  - Bugfix: fix sanity check for multiple atoms with the same atom_id and
+    seq_id to handle bulk water (where such duplicates are OK) (#88).
+
 0.32 - 2022-05-31
 =================
   - :class:`ihm.protocol.Step` now takes an ``ensemble`` flag, to indicate

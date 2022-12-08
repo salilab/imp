@@ -16,5 +16,12 @@ class Tests(IMP.test.TestCase):
         m.update()
         sf.evaluate(False)
 
+    def test_aggregate(self):
+        """Test get_is_aggregate()"""
+        m = IMP.Model()
+        cr = IMP._ConstRestraint(m, [], 1)
+        self.assertFalse(cr.get_is_aggregate())
+
+
 if __name__ == '__main__':
     IMP.test.main()

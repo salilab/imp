@@ -114,9 +114,9 @@ inline double get_kd
                  (negative = default IMP temperature of 297.15K)
 
     See
-    \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
+    \external{https://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
     wikipedia} for a reference and
-    \external{http://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
+    \external{https://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
     for the values of the viscosity of water used.*/
 IMPATOMEXPORT double get_einstein_diffusion_coefficient
 ( double r,

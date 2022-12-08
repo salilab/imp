@@ -485,6 +485,24 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff) {
   }
 }
 
+namespace {
+  ResidueType get_sequence_long_residue_type(
+       std::string::const_iterator &it, std::string::const_iterator end) {
+    std::string::const_iterator start_it = it + 1;
+    for (++it; it != end && *it != '/'; ++it) {
+      if (*it == ')') {
+        std::string resnam(start_it, it);
+        if (ResidueType::get_key_exists(resnam)) {
+          return ResidueType(resnam);
+        } else {
+          IMP_THROW("Unknown residue type " << resnam, ValueException);
+        }
+      }
+    }
+    IMP_THROW("Unterminated residue name in sequence", IndexException);
+  }
+}
+
 void CHARMMTopology::add_sequence(std::string sequence) {
   IMP_NEW(CHARMMSegmentTopology, seg, ());
 
@@ -494,7 +512,12 @@ void CHARMMTopology::add_sequence(std::string sequence) {
       add_segment(seg);
       seg = new CHARMMSegmentTopology();
     } else {
-      ResidueType restyp = get_residue_type(*it);
+      ResidueType restyp;
+      if (*it == '(') {
+        restyp = get_sequence_long_residue_type(it, sequence.end());
+      } else {
+        restyp = get_residue_type(*it);
+      }
       IMP_NEW(CHARMMResidueTopology, res,
               (force_field_->get_residue_topology(restyp)));
       seg->add_residue(res);
@@ -1060,15 +1083,34 @@ Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
   return ps;
 }
 
+namespace {
+  // Map indices to multi-character chain IDs.
+  // We label the first 26 chains A-Z, then we move to two-letter
+  // chain IDs: AA through AZ, then BA through BZ, through to ZZ.
+  // This continues with longer chain IDs.
+  std::string get_chain_id(unsigned int ind) {
+    static const unsigned lc = 26;
+    std::string chain_id;
+
+    while (ind >= lc) {
+      chain_id.push_back('A' + ind % lc);
+      ind = ind / lc - 1;
+    }
+    chain_id.push_back('A' + ind);
+    std::reverse(chain_id.begin(), chain_id.end());
+    return chain_id;
+  }
+}
+
 Hierarchy CHARMMTopology::create_hierarchy(Model *model) const {
-  char chain_id = 'A';
+  unsigned int ci = 0;
   Hierarchy root = Hierarchy::setup_particle(new Particle(model));
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
-       segit != segments_end(); ++segit) {
+       segit != segments_end(); ++segit, ++ci) {
     int residue_index = 1;
     const CHARMMSegmentTopology *seg = *segit;
     Chain chain =
-        Chain::setup_particle(new Particle(model), chain_id++);
+        Chain::setup_particle(new Particle(model), get_chain_id(ci));
     root.add_child(chain);
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *res = seg->get_residue(nres);

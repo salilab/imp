@@ -4,19 +4,17 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.em2d as em2d
-import os
-from math import *
+import pickle
 
 
 class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
-    """ An Optimizer score to get the values of the statistics after a given set
-    of evaluations """
-    count = 0
+    """An Optimizer score to get the values of the statistics after a
+       given set of evaluations"""
 
     def __init__(self, m):
         IMP.OptimizerState.__init__(self, m, "WriteStats")
-        count = 0
+        self.count = 0
 
     def update(self):
         if (self.count != 10):
@@ -33,7 +31,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
         #    print "restraint",r.get_name(),"value",r.evaluate(False)
 
     def do_show(self, stream):
-        print(ps, file=stream)
+        pass
 
 
 class Tests(IMP.test.TestCase):
@@ -59,8 +57,6 @@ class Tests(IMP.test.TestCase):
             4,
             "Problem generating rigid bodies")
 
-        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-25, -40, -60),
-                                       IMP.algebra.Vector3D(25, 40, 60))
         # set distance restraints
         d01 = IMP.algebra.get_distance(native_chain_centers[0],
                                        native_chain_centers[1])
@@ -91,8 +87,9 @@ class Tests(IMP.test.TestCase):
         # set em2D restraint
         srw = em2d.SpiderImageReaderWriter()
         selection_file = self.get_input_file_name("all-1z5s-projections.sel")
-        images_to_read_names = [IMP.get_relative_path(selection_file, x)
-                                for x in em2d.read_selection_file(selection_file)]
+        images_to_read_names = [
+            IMP.get_relative_path(selection_file, x)
+            for x in em2d.read_selection_file(selection_file)]
         em_images = em2d.read_images(images_to_read_names, srw)
 
         self.assertEqual(len(em_images), 3, "Incorrect number images read")
@@ -109,8 +106,8 @@ class Tests(IMP.test.TestCase):
         em2d_restraint.setup(score_function, params)
         em2d_restraint.set_images(em_images)
         em2d_restraint.set_name("em2d restraint")
-        container = IMP.container.ListSingletonContainer(m,
-                                            IMP.core.get_leaves(prot))
+        container = IMP.container.ListSingletonContainer(
+            m, IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
         em2d_restraints_set = IMP.RestraintSet(m)
         em2d_restraints_set.add_restraint(em2d_restraint)
@@ -138,13 +135,17 @@ class Tests(IMP.test.TestCase):
         ostate2 = WriteStatisticsOptimizerScore(m)
         s.add_optimizer_state(ostate2)
 
-        # Perform optimization
-        temperatures = [200, 100, 60, 40, 20, 5]
-        optimization_steps = 200
-        # for temp in temperatures:
-        #    s.optimize(optimization_steps)
-        # IMP.atom.write_pdb(prot,"solution.pdb")
-        self.assertTrue(True)
+    def test_pickle_restraint_parameters(self):
+        """Test (un-)pickle of Em2DRestraintParameters"""
+        p = em2d.Em2DRestraintParameters(1.5, 1, 20)
+        p.save_match_images = False
+        p.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
+        dump = pickle.dumps(p)
+        newp = pickle.loads(dump)
+        self.assertEqual(newp.n_projections, 20)
+        self.assertFalse(newp.save_match_images)
+        self.assertEqual(newp.coarse_registration_method,
+                         em2d.ALIGN2D_PREPROCESSING)
 
 
 if __name__ == '__main__':

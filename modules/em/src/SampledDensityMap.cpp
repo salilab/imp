@@ -35,8 +35,8 @@ IMP::algebra::BoundingBox3D SampledDensityMap::calculate_particles_bounding_box(
 
 void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
                                    const algebra::Vector3D &upper_bound,
-                                   emreal maxradius, emreal resolution,
-                                   emreal voxel_size, int sig_cutoff) {
+                                   double maxradius, double resolution,
+                                   double voxel_size, int sig_cutoff) {
   // set the map header
   header_ = DensityHeader();
   header_.set_resolution(resolution);
@@ -70,7 +70,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
   header_.update_cell_dimensions();
 }
 SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
-                                     emreal resolution, emreal voxel_size,
+                                     double resolution, double voxel_size,
                                      IMP::FloatKey mass_key, int sig_cutoff,
                                      KernelType kt)
     : kt_(kt) {
@@ -183,7 +183,7 @@ class GaussianKernel {
 
 template <class F>
 void internal_resample(em::DensityMap *dmap, Particles ps, const F &f) {
-  emreal *data = dmap->get_data();
+  double *data = dmap->get_data();
   IMP_LOG_VERBOSE("going to resample particles " << std::endl);
   // check that the particles bounding box is within the density bounding box
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -341,8 +341,8 @@ void SampledDensityMap::project(const ParticlesTemp &ps, int x_margin,
   }
 }
 
-void SampledDensityMap::determine_grid_size(emreal resolution,
-                                            emreal voxel_size, int sig_cutoff) {
+void SampledDensityMap::determine_grid_size(double resolution,
+                                            double voxel_size, int sig_cutoff) {
   algebra::Vector3Ds all_points;
   float max_radius = -1;
   for (core::XYZRs::const_iterator it = xyzr_.begin(); it != xyzr_.end();
@@ -361,7 +361,7 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
   }
   set_header(bb.get_corner(0), bb.get_corner(1), max_radius, resolution,
              voxel_size, sig_cutoff);
-  data_.reset(new emreal[header_.get_number_of_voxels()]);
+  data_.reset(new double[header_.get_number_of_voxels()]);
 }
 float SampledDensityMap::get_minimum_resampled_value() {
   float min_weight = INT_MAX;

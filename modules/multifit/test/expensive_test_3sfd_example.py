@@ -18,5 +18,6 @@ class Tests(IMP.test.ApplicationTestCase):
             for i in range(5):
                 os.unlink('model.%d.pdb' % i)
 
+
 if __name__ == '__main__':
     IMP.test.main()

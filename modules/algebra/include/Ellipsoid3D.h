@@ -14,6 +14,7 @@
 #include "Transformation3D.h"
 #include "ReferenceFrame3D.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -33,6 +34,12 @@ class IMPALGEBRAEXPORT Ellipsoid3D : public GeometricPrimitiveD<3> {
  private:
   ReferenceFrame3D rf_;
   Vector3D radii_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & rf_ & radii_;
+  }
 };
 
 IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D, ellipsoid_3d, IMP_UNUSED(g);

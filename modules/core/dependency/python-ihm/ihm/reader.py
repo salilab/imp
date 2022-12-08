@@ -105,12 +105,15 @@ class IDMapper(object):
             return obj
         else:
             newobj = self._make_new_object(newcls)
-            if self.id_attr is not None:
-                setattr(newobj, self.id_attr, objid)
+            self._set_object_id(newobj, objid)
             self._obj_by_id[objid] = newobj
             if self.system_list is not None:
                 self.system_list.append(newobj)
             return newobj
+
+    def _set_object_id(self, obj, objid):
+        if self.id_attr is not None:
+            setattr(obj, self.id_attr, objid)
 
     def get_by_id_or_none(self, objid, newcls=None):
         """Get the object with given ID, creating it if it doesn't already
@@ -193,6 +196,15 @@ class RangeIDMapper(object):
 
 
 class _AnalysisIDMapper(IDMapper):
+    """Add extra handling to IDMapper for Analysis objects"""
+    def _set_object_id(self, obj, objid):
+        # Analysis objects are referenced by (protocol_id, analysis_id) but
+        # we only want to store analysis_id in the Analysis object itself
+        if self.id_attr is not None:
+            setattr(obj, self.id_attr, objid[1])
+
+
+class _AnalysisStepIDMapper(IDMapper):
     """Add extra handling to IDMapper for the post processing category"""
 
     def _make_new_object(self, newcls=None):
@@ -475,11 +487,11 @@ class SystemReader(object):
                                   ihm.protocol.Protocol)
 
         #: Mapping from ID to :class:`ihm.analysis.Step` objects
-        self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
-                                                *(None,) * 3)
+        self.analysis_steps = _AnalysisStepIDMapper(None, ihm.analysis.Step,
+                                                    *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.analysis.Analysis` objects
-        self.analyses = IDMapper(None, ihm.analysis.Analysis)
+        self.analyses = _AnalysisIDMapper(None, ihm.analysis.Analysis)
 
         #: Mapping from ID to :class:`ihm.model.Model` objects
         self.models = IDMapper(None, model_class, *(None,) * 3)
@@ -832,13 +844,13 @@ class Handler(object):
     def get_bool(self, val):
         """Convert val to bool and return, or leave as is if None
            or ihm.unknown"""
-        return(self._boolmap.get(val.upper(), None)
-               if val is not None and val is not ihm.unknown else val)
+        return (self._boolmap.get(val.upper(), None)
+                if val is not None and val is not ihm.unknown else val)
 
     def get_lower(self, val):
         """Return lowercase string val or leave as is if None or ihm.unknown"""
-        return(val.lower()
-               if val is not None and val is not ihm.unknown else val)
+        return (val.lower()
+                if val is not None and val is not ihm.unknown else val)
 
     def finalize(self):
         """Called at the end of each data block."""
@@ -1235,9 +1247,12 @@ class _AssemblyHandler(Handler):
 
 
 class _AssemblyDetailsHandler(Handler):
-    # todo: figure out how to populate System.complete_assembly
     category = '_ihm_struct_assembly_details'
     ignored_keywords = ['ordinal_id', 'entity_description']
+
+    def __init__(self, *args):
+        super(_AssemblyDetailsHandler, self).__init__(*args)
+        self._read_args = []
 
     def __call__(self, assembly_id, parent_assembly_id, entity_poly_segment_id,
                  asym_id, entity_id):
@@ -1250,13 +1265,26 @@ class _AssemblyDetailsHandler(Handler):
             obj = self.sysr.asym_units.get_by_id(asym_id)
         else:
             obj = self.sysr.entities.get_by_id(entity_id)
-        a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
+        # Postpone filling in range until finalize time, as we may not have
+        # read segments yet
+        self._read_args.append((a, obj, entity_poly_segment_id))
 
     def finalize(self):
-        # Any EntityRange or AsymUnitRange which covers an entire entity,
-        # replace with Entity or AsymUnit object
+        for (a, obj, entity_poly_segment_id) in self._read_args:
+            a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
+
+        self.system._make_complete_assembly()
+        tup_complete = tuple(self.system.complete_assembly)
+
         for a in self.system.orphan_assemblies:
+            # Any EntityRange or AsymUnitRange which covers an entire entity,
+            # replace with Entity or AsymUnit object
             a[:] = [self._handle_component(x) for x in a]
+            # If the input file defines the complete assembly, transfer
+            # user-provided info to system.complete_assembly
+            if tuple(a) == tup_complete:
+                self.system.complete_assembly.name = a.name
+                self.system.complete_assembly.description = a.description
 
     def _handle_component(self, comp):
         if isinstance(comp, ihm.EntityRange) \
@@ -1317,11 +1345,13 @@ class _ExtFileHandler(Handler):
             if issubclass(x[1], ihm.location.FileLocation)
             and x[1] is not ihm.location.FileLocation)
 
-    def __call__(self, content_type, id, reference_id, details, file_path):
+    def __call__(self, content_type, id, reference_id, details, file_path,
+                 file_size_bytes):
         typ = None if content_type is None else content_type.lower()
         f = self.sysr.external_files.get_by_id(
             id, self.type_map.get(typ, ihm.location.FileLocation))
         f.repo = self.sysr.repos.get_by_id(reference_id)
+        f.file_size = self.get_int(file_size_bytes)
         self.copy_if_present(
             f, locals(), keys=['details'], mapkeys={'file_path': 'path'})
         # Handle DOI that is itself a file
@@ -1471,23 +1501,39 @@ class _ModelRepresentationDetailsHandler(Handler):
                         'multi-residue': _make_multi_residue_segment,
                         'by-feature': _make_feature_segment}
 
+    def __init__(self, *args):
+        super(_ModelRepresentationDetailsHandler, self).__init__(*args)
+        self._read_args = []
+
     def __call__(self, entity_asym_id, entity_poly_segment_id,
                  representation_id, starting_model_id, model_object_primitive,
                  model_granularity, model_object_count, model_mode,
                  description):
-        asym = self.sysr.ranges.get(
-            self.sysr.asym_units.get_by_id(entity_asym_id),
-            entity_poly_segment_id)
-        rep = self.sysr.representations.get_by_id(representation_id)
-        smodel = self.sysr.starting_models.get_by_id_or_none(starting_model_id)
-        primitive = self.get_lower(model_object_primitive)
-        gran = self.get_lower(model_granularity)
-        primitive = self.get_lower(model_object_primitive)
-        count = self.get_int(model_object_count)
-        rigid = self._rigid_map[self.get_lower(model_mode)]
-        segment = self._segment_factory[gran](asym, rigid, primitive,
-                                              count, smodel, description)
-        rep.append(segment)
+        # Postpone until finalize time as we may not have segments yet
+        self._read_args.append(
+            (entity_asym_id, entity_poly_segment_id,
+             representation_id, starting_model_id, model_object_primitive,
+             model_granularity, model_object_count, model_mode, description))
+
+    def finalize(self):
+        for (entity_asym_id, entity_poly_segment_id,
+             representation_id, starting_model_id, model_object_primitive,
+             model_granularity, model_object_count, model_mode,
+             description) in self._read_args:
+            asym = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(entity_asym_id),
+                entity_poly_segment_id)
+            rep = self.sysr.representations.get_by_id(representation_id)
+            smodel = self.sysr.starting_models.get_by_id_or_none(
+                starting_model_id)
+            primitive = self.get_lower(model_object_primitive)
+            gran = self.get_lower(model_granularity)
+            primitive = self.get_lower(model_object_primitive)
+            count = self.get_int(model_object_count)
+            rigid = self._rigid_map[self.get_lower(model_mode)]
+            segment = self._segment_factory[gran](
+                asym, rigid, primitive, count, smodel, description)
+            rep.append(segment)
 
 
 # todo: support user subclass of StartingModel, pass it coordinates, seqdif
@@ -1499,15 +1545,26 @@ class _StartingModelDetailsHandler(Handler):
                  dataset_list_id, starting_model_auth_asym_id,
                  starting_model_sequence_offset, description):
         m = self.sysr.starting_models.get_by_id(starting_model_id)
-        asym = self.sysr.ranges.get(
-            self.sysr.asym_units.get_by_id(asym_id), entity_poly_segment_id)
-        m.asym_unit = asym
+        # We might not have a suitable range yet for this ID, so fill this
+        # in at finalize time
+        m.asym_unit = (asym_id, entity_poly_segment_id)
         m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
         self.copy_if_present(
             m, locals(), keys=('description',),
             mapkeys={'starting_model_auth_asym_id': 'asym_id'})
         if starting_model_sequence_offset is not None:
             m.offset = int(starting_model_sequence_offset)
+
+    def finalize(self):
+        for m in self.sysr.system.orphan_starting_models:
+            # Skip any auto-generated models without range info
+            if m.asym_unit is None:
+                continue
+            # Replace tuple with real Asym/Entity range object
+            (asym_id, entity_poly_segment_id) = m.asym_unit
+            m.asym_unit = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(asym_id),
+                entity_poly_segment_id)
 
 
 class _StartingComputationalModelsHandler(Handler):
@@ -1537,8 +1594,8 @@ class _StartingComparativeModelsHandler(Handler):
         asym_id = template_auth_asym_id
         seq_id_range = (int(starting_model_seq_id_begin),
                         int(starting_model_seq_id_end))
-        template_seq_id_range = (int(template_seq_id_begin),
-                                 int(template_seq_id_end))
+        template_seq_id_range = (self.get_int(template_seq_id_begin),
+                                 self.get_int(template_seq_id_end))
         identity = ihm.startmodel.SequenceIdentity(
             self.get_float(template_sequence_identity),
             self.get_int(template_sequence_identity_denominator))
@@ -1607,7 +1664,7 @@ class _PostProcessHandler(Handler):
                  num_models_end, struct_assembly_id, dataset_group_id,
                  software_id, script_file_id, feature, details):
         protocol = self.sysr.protocols.get_by_id(protocol_id)
-        analysis = self.sysr.analyses.get_by_id(analysis_id)
+        analysis = self.sysr.analyses.get_by_id((protocol_id, analysis_id))
         if analysis._id not in [a._id for a in protocol.analyses]:
             protocol.analyses.append(analysis)
 
@@ -1729,7 +1786,7 @@ class _EnsembleHandler(Handler):
                  ensemble_file_id, num_ensemble_models,
                  ensemble_precision_value, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature,
-                 details, sub_sampling_type):
+                 details, sub_sampling_type, num_ensemble_models_deposited):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -1737,6 +1794,7 @@ class _EnsembleHandler(Handler):
 
         ensemble.model_group = mg
         ensemble.num_models = self.get_int(num_ensemble_models)
+        ensemble._num_deposited = self.get_int(num_ensemble_models_deposited)
         ensemble.precision = self.get_float(ensemble_precision_value)
         if sub_sampling_type:
             ensemble._sub_sampling_type = sub_sampling_type.lower()
@@ -1745,11 +1803,18 @@ class _EnsembleHandler(Handler):
         ensemble.post_process = pp
         ensemble.file = f
         ensemble.details = details
+        # Default to "other" if invalid method/feature read
+        try:
+            ensemble.clustering_method = ensemble_clustering_method
+        except ValueError:
+            ensemble.clustering_method = "Other"
+        try:
+            ensemble.clustering_feature = ensemble_clustering_feature
+        except ValueError:
+            ensemble.clustering_feature = "other"
         self.copy_if_present(
             ensemble, locals(),
-            mapkeys={'ensemble_name': 'name',
-                     'ensemble_clustering_method': 'clustering_method',
-                     'ensemble_clustering_feature': 'clustering_feature'})
+            mapkeys={'ensemble_name': 'name'})
 
     def finalize(self):
         for e in self.sysr.system.ensembles:
@@ -1780,17 +1845,30 @@ class _SubsampleHandler(Handler):
 class _DensityHandler(Handler):
     category = '_ihm_localization_density_files'
 
+    def __init__(self, *args):
+        super(_DensityHandler, self).__init__(*args)
+        self._read_args = []
+
     def __call__(self, id, ensemble_id, file_id, asym_id,
                  entity_poly_segment_id):
-        density = self.sysr.densities.get_by_id(id)
-        ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
-        f = self.sysr.external_files.get_by_id(file_id)
+        # Postpone handling until finalize time, since we might not have
+        # ranges to resolve entity_poly_segment_id yet
+        self._read_args.append((id, ensemble_id, file_id, asym_id,
+                                entity_poly_segment_id))
 
-        asym = self.sysr.ranges.get(self.sysr.asym_units.get_by_id(asym_id),
-                                    entity_poly_segment_id)
-        density.asym_unit = asym
-        density.file = f
-        ensemble.densities.append(density)
+    def finalize(self):
+        for (id, ensemble_id, file_id, asym_id,
+                entity_poly_segment_id) in self._read_args:
+            density = self.sysr.densities.get_by_id(id)
+            ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
+            f = self.sysr.external_files.get_by_id(file_id)
+
+            asym = self.sysr.ranges.get(
+                self.sysr.asym_units.get_by_id(asym_id),
+                entity_poly_segment_id)
+            density.asym_unit = asym
+            density.file = f
+            ensemble.densities.append(density)
 
 
 class _EM3DRestraintHandler(Handler):
@@ -1897,6 +1975,23 @@ class _AtomSiteHandler(Handler):
     def __init__(self, *args):
         super(_AtomSiteHandler, self).__init__(*args)
         self._missing_sequence = collections.defaultdict(dict)
+        self._seq_id_map = {}
+
+    def _get_water_seq_id(self, auth_seq_id, pdbx_pdb_ins_code, asym):
+        """Get an internal seq_id for a water, given author-provided info"""
+        if asym._id not in self._seq_id_map:
+            m = {}
+            # Make reverse mapping from author-provided info to seq_id
+            if isinstance(asym.auth_seq_id_map, dict):
+                for key, val in asym.auth_seq_id_map.items():
+                    m[val] = key
+            self._seq_id_map[asym._id] = m
+        m = self._seq_id_map[asym._id]
+        # Treat ? and . missing insertion codes equivalently
+        if pdbx_pdb_ins_code is ihm.unknown:
+            pdbx_pdb_ins_code = None
+        # If no match, use the author-provided numbering as-is
+        return m.get((auth_seq_id, pdbx_pdb_ins_code), auth_seq_id)
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
@@ -1915,6 +2010,12 @@ class _AtomSiteHandler(Handler):
             self._missing_sequence[asym][seq_id] = label_comp_id
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
+        auth_seq_id = self.get_int_or_string(auth_seq_id)
+        water = isinstance(asym, ihm.WaterAsymUnit)
+        if water:
+            # Fill in our internal seq_id if possible
+            seq_id = self._get_water_seq_id(auth_seq_id, pdbx_pdb_ins_code,
+                                            asym)
         biso = self.get_float(b_iso_or_equiv)
         occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
@@ -1925,9 +2026,8 @@ class _AtomSiteHandler(Handler):
             occupancy=occupancy)
         model.add_atom(a)
 
-        auth_seq_id = self.get_int_or_string(auth_seq_id)
         # Note any residues that have different seq_id and auth_seq_id
-        if (auth_seq_id is not None and
+        if (auth_seq_id is not None and not water and
                 (seq_id != auth_seq_id
                  or pdbx_pdb_ins_code not in (None, ihm.unknown))):
             if asym.auth_seq_id_map == 0:
@@ -2081,11 +2181,15 @@ def _make_lower_upper_bound(low, up, _get_float):
         distance_lower_limit=low, distance_upper_limit=up)
 
 
-# todo: add a handler for an unknown restraint_type
+def _make_unknown_distance(low, up, _get_float):
+    return ihm.restraint.DistanceRestraint()
+
+
 _handle_distance = {'harmonic': _make_harmonic,
                     'upper bound': _make_upper_bound,
                     'lower bound': _make_lower_bound,
-                    'lower and upper bound': _make_lower_upper_bound}
+                    'lower and upper bound': _make_lower_upper_bound,
+                    None: _make_unknown_distance}
 
 
 class _DerivedDistanceRestraintHandler(Handler):
@@ -2350,7 +2454,7 @@ class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
     def __call__(self, asym_id, entity_id, auth_seq_num, mon_id, pdb_ins_code,
-                 pdb_strand_id):
+                 pdb_strand_id, ndb_seq_num):
         entity = self.sysr.entities.get_by_id(entity_id)
         # nonpolymer entities generally have information on their chemical
         # component in pdbx_entity_nonpoly, but if that's missing, at least
@@ -2364,12 +2468,28 @@ class _NonPolySchemeHandler(Handler):
                     mon_id, name=entity.description)
             entity.sequence.append(s)
         asym = self.sysr.asym_units.get_by_id(asym_id)
+        if entity.type == 'water' and not isinstance(asym, ihm.WaterAsymUnit):
+            # Replace AsymUnit with WaterAsymUnit if necessary
+            asym.__class__ = ihm.WaterAsymUnit
+            asym._water_sequence = [entity.sequence[0]]
+            asym.number = 1
         if pdb_strand_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_strand_id
-        # todo: handle multiple instances (e.g. water)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
         if auth_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
-            asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
+            if entity.type == 'water':
+                # For waters, assume ndb_seq_num counts starting from 1,
+                # so use as our internal seq_id. Make sure the WaterAsymUnit
+                # is long enough to handle all ids
+                seq_id = self.get_int(ndb_seq_num)
+                asym.number = max(asym.number, seq_id)
+                asym._water_sequence = [entity.sequence[0]] * asym.number
+                if asym.auth_seq_id_map == 0:
+                    asym.auth_seq_id_map = {}
+                asym.auth_seq_id_map[seq_id] = (auth_seq_num, pdb_ins_code)
+            else:
+                # For nonpolymers, assume a single ChemComp with seq_id=1
+                asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
 
 
 class _CrossLinkListHandler(Handler):
@@ -2381,6 +2501,7 @@ class _CrossLinkListHandler(Handler):
     def __init__(self, *args):
         super(_CrossLinkListHandler, self).__init__(*args)
         self._seen_group_ids = set()
+        self._linker_type = {}
 
     def _get_linker_by_name(self, name):
         """Look up old-style linker, by name rather than descriptor"""
@@ -2402,6 +2523,8 @@ class _CrossLinkListHandler(Handler):
         else:
             linker = self.sysr.chem_descriptors.get_by_id(
                 linker_chem_comp_descriptor_id)
+            if linker_type:
+                self._linker_type[linker] = linker_type
         # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
         r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
@@ -2420,6 +2543,12 @@ class _CrossLinkListHandler(Handler):
     def _get_entity_residue(self, entity_id, seq_id):
         entity = self.sysr.entities.get_by_id(entity_id)
         return entity.residue(int(seq_id))
+
+    def finalize(self):
+        # If any ChemDescriptor has an empty name, fill it in using linker_type
+        for d in self.system.orphan_chem_descriptors:
+            if d.auth_name is None:
+                d.auth_name = self._linker_type.get(d)
 
 
 class _CrossLinkRestraintHandler(Handler):

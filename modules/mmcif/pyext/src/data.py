@@ -242,7 +242,7 @@ class _StartingModelAtomHandler(object):
                 # a crystal structure as the source (a
                 # comparative model would use MET in
                 # the sequence)
-                assert(len(self.templates) == 0)
+                assert len(self.templates) == 0
                 self._seq_dif.append(ihm.startmodel.MSESeqDif(
                             res.get_index(), seq_id))
         elif res_name != comp_id:

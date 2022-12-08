@@ -13,6 +13,8 @@
 #include "Showable.h"
 #include "Value.h"
 #include <sstream>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include "hash.h"
 
 #if defined(_MSC_VER) && _MSC_VER == 1500
@@ -53,6 +55,32 @@ class Vector : public Value
 #else
   typedef std::vector<T> V;
 #endif
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    size_t sz = V::size();
+    ar << sz;
+    auto it = V::begin();
+    while(sz-- > 0) {
+      ar << *it++;
+    }
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    size_t sz;
+    ar >> sz;
+    V::resize(sz);
+    auto it = V::begin();
+    while(sz-- > 0) {
+      ar >> *it++;
+    }
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
+
  public:
   Vector() {}
   explicit Vector(unsigned int sz, const T &t = T()) : V(sz, t) {}

@@ -55,9 +55,25 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
 
  public:
   IMP_DECORATOR_METHODS(Diffusion, IMP::core::XYZ);
+  /** 
+      Decorates the particle as a Diffusion particle with a
+      diffusion coefficient D.
+  */
   IMP_DECORATOR_SETUP_1(Diffusion, Float, D);
+  /** 
+      Decorates the particle as a core::XYZ particle with 
+      coordinates v and as a Diffusion particle with a
+      diffusion coefficient D.
+  */
   IMP_DECORATOR_SETUP_2(Diffusion, algebra::Vector3D, v, Float, D);
-  /** Assume particle is already a core::XYZR particle. */
+  /** 
+      Decorates the particle as a Diffusion particle with the 
+      diffusion coefficient of a particle with a stokes radius
+      of core::XYZR(m, pi).get_radius() at the default IMP 
+      temperature (297.15K).
+      
+      \Note: It assumed particle is already a core::XYZR particle. 
+  */
   IMP_DECORATOR_SETUP_0(Diffusion);
 
   //! Return true if the particle is an instance of Diffusion

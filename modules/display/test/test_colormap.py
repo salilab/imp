@@ -5,6 +5,7 @@ import IMP.core
 import IMP.display
 import io
 import re
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -27,6 +28,13 @@ class Tests(IMP.test.TestCase):
             self.assertRaisesUsageException(IMP.display.Color, *rgb)
             rgb[bad] = 2.0
             self.assertRaisesUsageException(IMP.display.Color, *rgb)
+
+    def test_color_pickle(self):
+        """Test (un-)pickle of Color class"""
+        c = IMP.display.Color(0.1, 0.2, 0.3)
+        dump = pickle.dumps(c)
+        newc = pickle.loads(dump)
+        self.assertColorEqual(newc, 0.1, 0.2, 0.3)
 
     def test_get_interpolated_rgb(self):
         """Test get_interpolated_rgb()"""

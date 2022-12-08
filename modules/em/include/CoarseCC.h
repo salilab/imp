@@ -76,7 +76,7 @@ algebra::Vector3Ds get_coarse_cc_derivatives(const DensityMap *em_map,
     \f$\frac{\sum_{i=1}^{N}{{td}_i}{{md}_i}-{N}
     {{mean}_{td}}
     {{mean}_{md}}}
-    {N\sigma_{{td}}\sigma_{{md}}}\f$, such that \f$N\f$ is the number of
+    {N\sigma_{{td}}\sigma_{{md}}}\f$, where \f$N\f$ is the number of
     voxels, \f${td}\f$ is the target density,
     \f${tm}\f$ is the model density,
     \param[in] grid1  The first 3D grid
@@ -84,7 +84,7 @@ algebra::Vector3Ds get_coarse_cc_derivatives(const DensityMap *em_map,
     \param[in] grid2_voxel_data_threshold voxels with value lower
                than threshold
                in grid2 are not summed (avoid calculating correlation on
-               voxels below the threshold
+               voxels below the threshold)
     \param[in] allow_padding determines whether the two maps should be padded
                to have the same size before the calculation is performed.
                If set to false  and the grids are not of the same size,

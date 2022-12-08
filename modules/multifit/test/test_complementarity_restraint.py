@@ -65,5 +65,6 @@ class Tests(IMP.test.TestCase):
         self._set_separation(rb0, 26.0)
         self.assertAlmostEqual(r.evaluate(False), 390625., delta=1000.)
 
+
 if __name__ == '__main__':
     IMP.test.main()

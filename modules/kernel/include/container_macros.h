@@ -51,6 +51,40 @@
 #define IMP_FORCE_EXPORT(x) x
 #endif
 
+/* Provide Python list-like object for IMP_LIST, below */
+/* This is a bit ugly here and in the output Python code because everything
+   in one %pythoncode ends up on a single line */
+#ifdef SWIG
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)              \
+%pythoncode %{                                                               \
+  def __get_##lcnames(self): \
+return IMP._list_util.VarList(getdimfunc=self.get_number_of_##lcnames, \
+getfunc=self.get_##lcname, erasefunc=self.erase_##lcname, \
+appendfunc=self.add_##lcname, extendfunc=self.add_##lcnames, \
+clearfunc=self.clear_##lcnames, indexfunc=self._python_index_##lcname) \
+%}                                                                           \
+%pythoncode %{                                                               \
+  def __set_##lcnames(self, obj):\
+IMP._list_util.set_varlist(self.##lcnames, obj) \
+%}                                                                           \
+%pythoncode %{                                                               \
+  def __del_##lcnames(self): IMP._list_util.del_varlist(self.##lcnames)      \
+%}                                                                           \
+%pythoncode %{                                                               \
+  ##lcnames = property(__get_##lcnames, __set_##lcnames, __del_##lcnames,\
+doc="List of ##ucnames") \
+%}
+
+#elif defined(IMP_DOXYGEN)
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)             \
+public:                                                                     \
+  /** \brief A Python list of Ucnames                                       \
+      @pythononlymember */                                                  \
+  list lcnames;
+#else
+#define IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)
+#endif
+
 /**  \brief  A macro to provide a uniform interface for storing lists of
      objects.
 
@@ -60,10 +94,13 @@
      - get_foo
      - set_foo
      - set_foos
+     - erase_foo
      - foos_begin, foos_end
      - remove_foo
      - remove_foos
-     etc. where foo is the lcname provided.
+     etc. where foo is the lcname provided. In Python, a 'foos' member
+     is also provided, which acts like a regular Python list (the above
+     methods can also be used if desired).
 
      \param[in] protection The level of protection for the container
      (public, private).
@@ -95,8 +132,11 @@
 
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data, \
                         PluralData, OnAdd, OnChanged, OnRemoved)            \
+  IMP_LIST_PYTHON_IMPL(lcname, lcnames, ucnames, Ucnames)                   \
  public:                                                                    \
   void remove_##lcname(Data d);                                             \
+  unsigned int _python_index_##lcname(Data d, unsigned int start,           \
+                                      unsigned int stop);                   \
   void remove_##lcnames(const PluralData& d);                               \
   void set_##lcnames(const PluralData& ps);                                 \
   void set_##lcnames##_order(const PluralData& objs);                       \
@@ -107,6 +147,7 @@
   bool get_has_##lcnames();                                                 \
   Data get_##lcname(unsigned int i) const;                                  \
   PluralData get_##lcnames() const;                                         \
+  void erase_##lcname(unsigned int i);                                      \
   void reserve_##lcnames(unsigned int sz)
 
 #else
@@ -123,12 +164,12 @@
     \param[in] OnAdd Code to modify the passed in object. The object is obj
     and its index index.
     \param[in] OnChanged Code to get executed when the container changes.
-    \param[in] OnRemoved Code to get executed when the an object is removed.
+    \param[in] OnRemoved Code to get executed when an object is removed.
 */
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data,    \
                         PluralData, OnAdd, OnChanged, OnRemoved)               \
   IMP_PROTECTION(protection)                                                   \
-      /** \brief Remove any occurences of d from the container. */             \
+      /** \brief Remove first occurence of d from the container. */            \
       void remove_##lcname(Data d) {                                           \
     IMP_OBJECT_LOG;                                                            \
     bool found = false;                                                        \
@@ -144,6 +185,32 @@
     IMP_UNUSED(found);                                                         \
     IMP_USAGE_CHECK(found, d << " not found in container: "                    \
                              << get_as<PluralData>(lcname##_vector_));         \
+    lcname##_handle_change();                                                  \
+  }                                                                            \
+  unsigned int _python_index_##lcname(Data d, unsigned int start,              \
+                                      unsigned int stop) {                     \
+    bool found = false;                                                        \
+    unsigned int num_of = get_number_of_##lcnames();                           \
+    start = std::min(start, num_of);                                           \
+    stop = std::min(stop, num_of);                                             \
+    unsigned int indx = start;                                                 \
+    for (Ucname##Iterator it = lcnames##_begin() + start;                      \
+         it != lcnames##_end(); ++it, ++indx) {                                \
+      if (*it == d) {                                                          \
+        found = true;                                                          \
+        break;                                                                 \
+      }                                                                        \
+    }                                                                          \
+    if (!found) {                                                              \
+      IMP_THROW(d << " is not in list", ValueException);                       \
+    }                                                                          \
+    return indx;                                                               \
+  }                                                                            \
+  /** \brief Remove the ith element in the container */                        \
+  void erase_##lcname(unsigned int i) {                                        \
+    Ucname##Iterator it = lcnames##_begin() + i;                               \
+    lcname##_handle_remove(*it);                                               \
+    lcname##_vector_.erase(it);                                                \
     lcname##_handle_change();                                                  \
   }                                                                            \
   /** \brief Remove any occurrences for which f is true */                     \

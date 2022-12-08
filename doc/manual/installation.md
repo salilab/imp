@@ -76,6 +76,13 @@ requested otherwise (see [CMake](@ref cmake_config) for more information):
 - [python-ihm](https://github.com/ihmwg/python-ihm) for handling mmCIF and
   BinaryCIF files.
 
+(Note that if you build a stable release of %IMP from source code, using
+versions of dependencies that were released _after_ that %IMP release
+(e.g. a brand new version of Python), you may run into build issues.
+Either use older versions of the dependencies, or look at the
+[patches we've applied to the conda package](https://github.com/conda-forge/imp-feedstock/blob/main/recipe/meta.yaml)
+and apply them to your source code checkout.)
+
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the

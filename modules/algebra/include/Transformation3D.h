@@ -15,6 +15,7 @@
 #include "Rotation3D.h"
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -114,9 +115,16 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     return rot_.get_is_valid();
   }
 
- private:
+private:
   Vector3D trans_;  // translation
   Rotation3D rot_;  // rotation
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & trans_ & rot_;
+  }
+
 };
 
 IMP_VALUES(Transformation3D, Transformation3Ds);

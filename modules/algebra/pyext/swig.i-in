@@ -1,5 +1,7 @@
 %{
 #include <IMP/internal/range.h>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 %}
 
 %include "IMP/algebra/geometric_primitive_macros.h"
@@ -30,41 +32,41 @@ IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics)
 IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, DynamicNearestNeighbor3D, DynamicNearestNeighbor3Ds);
 
-IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
-IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
-IMP_SWIG_VALUE(IMP::algebra, Reflection3D, Reflection3Ds);
-IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
-IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
-IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
-IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation2D, Rotation2Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation3D, Rotation3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Reflection3D, Reflection3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Transformation2D, Transformation2Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Transformation3D, Transformation3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Triangle3D, Triangle3Ds);
 
-IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Line3D, Line3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Cone3D, Cone3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Line3D, Line3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Plane3D, Plane3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  Segment3D, Segment3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
 
 // we seem to need the non-typedefed name, at least for the first argument
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Sphere);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  UnitSimplex);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundingBox);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  PrincipalComponentAnalysis);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra, Sphere);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  UnitSimplex);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  BoundingBox);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
-IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
-IMP_SWIG_VALUE(IMP::algebra, Gaussian3D, Gaussian3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Gaussian3D, Gaussian3Ds);
 
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  DefaultEmbedding);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  LogEmbedding);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  GridIndex);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  ExtendedGridIndex);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundedGridRange);
-IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  UnboundedGridRange);
-IMP_SWIG_VALUE(IMP::algebra, LinearFit2D, LinearFit2Ds);
-IMP_SWIG_VALUE(IMP::algebra, ParabolicFit2D, ParabolicFit2Ds);
-IMP_SWIG_VALUE(IMP::algebra, FixedXYZ, FixedXYZs);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  DefaultEmbedding);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  LogEmbedding);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  GridIndex);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  ExtendedGridIndex);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  BoundedGridRange);
+IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(IMP::algebra,  UnboundedGridRange);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, LinearFit2D, LinearFit2Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, ParabolicFit2D, ParabolicFit2Ds);
+IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, FixedXYZ, FixedXYZs);
 
 namespace boost {
 template <class T, int D> class multi_array{};

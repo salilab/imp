@@ -36,5 +36,6 @@ class Tests(IMP.test.TestCase):
         os.unlink('test.mrc')
         os.unlink('test.xmp')
 
+
 if __name__ == '__main__':
     IMP.test.main()

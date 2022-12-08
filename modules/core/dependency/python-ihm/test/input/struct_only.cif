@@ -1,0 +1,4 @@
+data_PDBDEV_00000025
+_entry.id PDBDEV_00000025
+_struct.entry_id PDBDEV_00000025
+_struct.title 'Architecture of Pol II(G) and molecular mechanism of transcription regulation by Gdown1'

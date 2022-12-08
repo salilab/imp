@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -38,10 +36,6 @@ class Tests(IMP.test.TestCase):
         self.sample_density_map()
         mhs = IMP.atom.Hierarchies()
         mhs.append(self.mh)
-        self.fast_pdb_opt_state = IMP.atom.WritePDBOptimizerState(
-            mhs, "fast_temp_%03d.pdb")
-        self.slow_pdb_opt_state = IMP.atom.WritePDBOptimizerState(
-            mhs, "slow_temp_%03d.pdb")
 
     def test_fast_vs_slow_local_fitting(self):
         """Check that fast and slow local fitting converge to the same score"""
@@ -54,22 +48,23 @@ class Tests(IMP.test.TestCase):
         IMP.core.transform(self.rb, rt)
         refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         print("calculate fast")
-        num_mc = 3
+        num_mc = 6
         num_cg = 10
         fr_fast = IMP.em.local_rigid_fitting(
             self.mh,
             refiner,
             self.weight_key,
-            self.scene, [self.fast_pdb_opt_state], 1, num_mc, num_cg, 2., .3, True)
+            self.scene, [], 1, num_mc, num_cg, 2., .3, True)
         print("calculate slow")
         fr_slow = IMP.em.local_rigid_fitting(
             self.mh,
             refiner,
             self.weight_key,
-            self.scene, [self.slow_pdb_opt_state], 1, num_mc, num_cg, 2., .3, False)
+            self.scene, [], 1, num_mc, num_cg, 2., .3, False)
         print("fast:", fr_fast.get_score(0), " slow:", fr_slow.get_score(0))
         self.assertAlmostEqual(fr_fast.get_score(0), fr_slow.get_score(0),
                                delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -4,6 +4,7 @@
 
 import struct
 import itertools
+import ihm
 
 
 class Sphere(object):
@@ -41,8 +42,9 @@ class Atom(object):
 
        :param asym_unit: The asymmetric unit that this atom represents
        :type asym_unit: :class:`ihm.AsymUnit`
-       :param int seq_id: The residue index represented by this atom
-              (can be None for HETATM sites)
+       :param int seq_id: The sequence ID of the residue represented by this
+              atom. This should generally be a number starting at 1 for any
+              polymer chain or water, or None for a ligand.
        :param str atom_id: The name of the atom in the residue
        :param str type_symbol: Element name
        :param float x: x coordinate of the atom
@@ -177,6 +179,23 @@ class StateGroup(list):
         super(StateGroup, self).__init__(elements)
 
 
+def _text_choice_property(attr, choices, doc=None):
+    schoices = frozenset(choices)
+
+    def getfunc(obj):
+        return getattr(obj, "_" + attr)
+
+    def setfunc(obj, val):
+        if val is not None and val is not ihm.unknown and val not in schoices:
+            raise ValueError(
+                "Invalid choice %s for %s; valid values are %s, "
+                "None, ihm.unknown"
+                % (repr(val), attr, ", ".join(repr(x) for x in choices)))
+        setattr(obj, "_" + attr, val)
+
+    return property(getfunc, setfunc, doc=doc)
+
+
 class Ensemble(object):
     """Details about a model cluster or ensemble.
        See :attr:`ihm.System.ensembles`.
@@ -202,6 +221,9 @@ class Ensemble(object):
        :type file: :class:`ihm.location.OutputFileLocation`
        :param str details: Additional text describing this ensemble
     """
+
+    _num_deposited = None
+
     def __init__(self, model_group, num_models, post_process=None,
                  clustering_method=None, clustering_feature=None, name=None,
                  precision=None, file=None, details=None):
@@ -220,9 +242,27 @@ class Ensemble(object):
         #: as :class:`Subsample` objects
         self.subsamples = []
 
-    num_models_deposited = property(lambda self: len(self.model_group),
+    def _get_num_deposited(self):
+        # Generally we require an associated model_group; however, it is not
+        # required by the dictionary and so input files may not have one,
+        # but use any provided value of num_model_deposited in this case.
+        if self.model_group is None:
+            return self._num_deposited
+        else:
+            return len(self.model_group)
+
+    num_models_deposited = property(_get_num_deposited,
                                     doc="Number of models in this ensemble "
                                         "that are in the mmCIF file")
+
+    clustering_method = _text_choice_property(
+        "clustering_method",
+        ["Hierarchical", "Other", "Partitioning (k-means)"],
+        doc="The clustering method used to obtain the ensemble, if applicable")
+
+    clustering_feature = _text_choice_property(
+        "clustering_feature", ["RMSD", "dRMSD", "other"],
+        doc="The feature used for clustering the models, if applicable")
 
 
 class OrderedProcess(object):

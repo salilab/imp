@@ -4,6 +4,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 from IMP.algebra import Vector3D as V3
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -133,6 +134,26 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(
             IMP.algebra.get_distance(bb.get_corner(1), V3(1, 0, 0)), 0,
             delta=1e-6)
+
+    def _assert_equal(self, a, b):
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_direction(), b.get_direction()), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_moment(), b.get_moment()), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Line3D"""
+        s1 = IMP.algebra.Line3D(V3(-3, 1, 2), V3(.5, 3, 4))
+        s2 = IMP.algebra.Line3D(V3(3, 2, 2), V3(5, 2, 3))
+        s2.foo = 'bar'
+        dump = pickle.dumps((s1, s2))
+
+        news1, news2 = pickle.loads(dump)
+        self._assert_equal(s1, news1)
+        self._assert_equal(s2, news2)
+        self.assertEqual(news2.foo, 'bar')
+
+        self.assertRaises(TypeError, s1._set_from_binary, 42)
 
 
 if __name__ == '__main__':

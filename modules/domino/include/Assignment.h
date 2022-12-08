@@ -16,6 +16,9 @@
 #include <IMP/Value.h>
 #include <IMP/ConstVector.h>
 #include <IMP/macros.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -31,6 +34,12 @@ IMPDOMINO_BEGIN_NAMESPACE
 */
 class IMPDOMINOEXPORT Assignment : public ConstVector<int> {
   typedef ConstVector<int> P;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<P>(*this);
+  }
 
  public:
   Assignment() {}

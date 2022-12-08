@@ -4,6 +4,7 @@ import IMP.multifit
 import IMP.algebra
 import IMP.atom
 import IMP.core
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -47,6 +48,19 @@ class Tests(IMP.test.TestCase):
 
         hits = IMP.multifit.create_hit_map(rb, ref, [bad_fit], scene)
         self.assertAlmostEqual(hits.get_max_value(), 0.0, delta=1e-4)
+
+    def test_fsr_pickle(self):
+        """Test (un-)pickle of FittingSolutionRecord"""
+        fsr = IMP.multifit.FittingSolutionRecord()
+        fsr.set_index(42)
+        fsr.set_solution_filename("foo")
+        fsr.set_match_size(16)
+        dump = pickle.dumps(fsr)
+        newfsr = pickle.loads(dump)
+        self.assertEqual(newfsr.get_index(), 42)
+        self.assertEqual(newfsr.get_solution_filename(), "foo")
+        self.assertEqual(newfsr.get_match_size(), 16)
+
 
 if __name__ == '__main__':
     IMP.test.main()

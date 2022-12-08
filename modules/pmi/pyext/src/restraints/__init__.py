@@ -4,7 +4,7 @@
 PMI restraints generally wrap IMP restraints. Typical features in PMI restraints are:
  - Easy setup: for example, you can usually create one with a PMI [Molecule](@ref IMP::pmi::topology::Molecule) or a slice from one.
  - Fast setup from data files. For example you can set up the [CrossLinkingMassSpectrometryRestraint](@ref IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint) by reading in a cross-link file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase).
- - Useful output: reporting functions which are put into log files when running [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange0).
+ - Useful output: reporting functions which are put into log files when running [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange).
 """   # noqa: E501
 
 import IMP
@@ -50,7 +50,8 @@ class RestraintBase(object):
         @param label Label
         """
         if self._label_is_set:
-            raise ValueError("Label has already been set.")
+            raise ValueError("Label has already been set, or restraint has "
+                             "already been added to model.")
         if not label:
             self._label = ""
             self._label_suffix = ""

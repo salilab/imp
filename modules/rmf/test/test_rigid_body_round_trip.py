@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
-            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
+            self.assertTrue(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
                 print("loading", i)
                 # if i != 0:
@@ -320,7 +320,7 @@ class Tests(IMP.test.TestCase):
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
-            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
+            self.assertTrue(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
                 print("loading", i)
                 # if i != 0:
@@ -461,7 +461,7 @@ class Tests(IMP.test.TestCase):
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
-            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
+            self.assertTrue(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
                 print("loading", i)
                 # if i != 0:
@@ -561,7 +561,8 @@ class Tests(IMP.test.TestCase):
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidBodyMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
-            self.assert_(IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
+            self.assertTrue(
+                IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
                 print("loading", i)
                 # if i != 0:

@@ -16,6 +16,7 @@
 #include "GeometricPrimitiveD.h"
 #include <IMP/showable_macros.h>
 #include <IMP/warning_macros.h>
+#include <boost/serialization/access.hpp>
 #include <iostream>
 #include "constants.h"
 
@@ -56,6 +57,12 @@ class IMPALGEBRAEXPORT Cone3D : public GeometricPrimitiveD<3> {
  private:
   Segment3D seg_;
   double radius_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & seg_ & radius_;
+  }
 };
 
 IMP_VOLUME_GEOMETRY_METHODS(Cone3D, cone_3d, IMP_UNUSED(g);

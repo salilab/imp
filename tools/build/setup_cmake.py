@@ -95,9 +95,9 @@ def make_dependency_check(descr_path, module):
         descr["body"] = tools.quote(descr["body"])
         if len(descr["cmake"]) > 0:
             descr["path"] = os.path.splitext(descr_path)[0]
-            descr["on_failure"] = """set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)
-        %(cmake)s
-""" % descr
+            descr["on_failure"] = \
+                'set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)\n' \
+                '        %(cmake)s\n\n' % descr
             descr["on_setup"] = """if(DEFINED %(PKGNAME)s_INTERNAL)
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)""" % descr

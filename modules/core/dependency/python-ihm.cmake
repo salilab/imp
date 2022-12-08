@@ -85,7 +85,7 @@ add_library(ihm-python MODULE ${wrap_c} ${ext_c})
 # Apple linkers complain by default if there are undefined symbols
 if(APPLE)
   set_target_properties(ihm-python
-                 PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
+                 PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
 target_link_libraries(ihm-python ${IMP_SWIG_LIBRARIES})

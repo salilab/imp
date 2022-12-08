@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.multifit
 import os
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -29,14 +30,22 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(prot_data.get_protein_name(0), 'A')
         self.assertEqual(prot_data.find('A'), 0)
 
+    def test_pickle(self):
+        """Test (un-)pickle of ProteinRecordData"""
+        p1 = IMP.multifit.ProteinRecordData("testname", "testfn")
+        dump = pickle.dumps(p1)
+        _ = pickle.loads(dump)
+
     def test_bad_protein_line(self):
         """Check incorrectly formatted protein lines in proteomics files"""
         # Not enough fields
-        open('test.input', 'w').write('|proteins|\n|A|1|\n')
+        with open('test.input', 'w') as fh:
+            fh.write('|proteins|\n|A|1|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         # Fields of wrong type
-        open('test.input', 'w').write('|proteins|\n|A|x|100|nn|\n')
+        with open('test.input', 'w') as fh:
+            fh.write('|proteins|\n|A|x|100|nn|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
@@ -45,11 +54,13 @@ class Tests(IMP.test.TestCase):
         """Check incorrectly formatted cross link lines in proteomics files"""
         header = '|proteins|\n|interactions|1|\n|residue-xlink|3|\n'
         # Wrong number of fields
-        open('test.input', 'w').write(header + '|0|A|30|B|50|\n')
+        with open('test.input', 'w') as fh:
+            fh.write(header + '|0|A|30|B|50|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         # Fields of wrong type
-        open('test.input', 'w').write(header + '|0|A|x|B|50|10|\n')
+        with open('test.input', 'w') as fh:
+            fh.write(header + '|0|A|x|B|50|10|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
@@ -59,7 +70,8 @@ class Tests(IMP.test.TestCase):
         header = '|proteins|\n|interactions|1|\n|residue-xlink|3|\n' \
                  + '|ev-pairs|2|\n'
         # Wrong number of fields
-        open('test.input', 'w').write(header + '|A|\n')
+        with open('test.input', 'w') as fh:
+            fh.write(header + '|A|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
@@ -68,37 +80,43 @@ class Tests(IMP.test.TestCase):
         """Check incorrectly formatted interaction lines in proteomics files"""
         header = '|proteins|\n|interactions|1|\n'
         # Wrong number of fields
-        open('test.input', 'w').write(header + '|1|A|B|10|authors|\n')
+        with open('test.input', 'w') as fh:
+            fh.write(header + '|1|A|B|10|authors|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         # Fields of wrong type
-        open('test.input', 'w').write(header + '|x|A|B|10|authors|type|\n')
+        with open('test.input', 'w') as fh:
+            fh.write(header + '|x|A|B|10|authors|type|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
 
     def test_bad_interaction_header(self):
         """Check incorrectly formatted interaction header in proteomics files"""
-        open('test.input', 'w').write('|proteins|\n|interactions|x|\n')
+        with open('test.input', 'w') as fh:
+            fh.write('|proteins|\n|interactions|x|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
 
     def test_bad_xlink_header(self):
         """Check incorrectly formatted cross link header in proteomics files"""
-        open('test.input', 'w').write('|proteins|\n|interactions|1|\n' +
-                                      '|residue-xlink|x|\n')
+        with open('test.input', 'w') as fh:
+            fh.write('|proteins|\n|interactions|1|\n' +
+                     '|residue-xlink|x|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
 
     def test_bad_ev_header(self):
         "Check incorrectly formatted excluded volume header in proteomics files"
-        open('test.input', 'w').write('|proteins|\n|interactions|1|\n' +
-                                      '|residue-xlink|3|\n|ev-pairs|x|\n')
+        with open('test.input', 'w') as fh:
+            fh.write('|proteins|\n|interactions|1|\n' +
+                     '|residue-xlink|3|\n|ev-pairs|x|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         os.unlink('test.input')
+
 
 if __name__ == '__main__':
     IMP.test.main()

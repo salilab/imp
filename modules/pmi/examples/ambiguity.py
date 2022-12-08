@@ -131,7 +131,7 @@ for fb in IMP.core.get_leaves(m2A.get_hierarchy()) + \
     IMP.core.transform(IMP.core.XYZ(fb), trans)
 
 # Run replica exchange Monte Carlo sampling
-rex = IMP.pmi.macros.ReplicaExchange0(
+rex = IMP.pmi.macros.ReplicaExchange(
     mdl,
     root_hier=root_hier,                          # pass the root hierarchy
     monte_carlo_sample_objects=dof.get_movers(),  # pass MC movers

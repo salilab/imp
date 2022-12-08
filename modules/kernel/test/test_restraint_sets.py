@@ -65,6 +65,12 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sf.evaluate(False), 2)
         print(rs)
 
+    def test_aggregate(self):
+        """Test get_is_aggregate()"""
+        m, rs, r0, r1, r2 = self._make_stuff()
+        self.assertFalse(r1.get_is_aggregate())
+        self.assertTrue(rs.get_is_aggregate())
+
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
         (m, rs, r0, r1, r2) = self._make_stuff()
@@ -72,6 +78,11 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rsrs.count(r0), 1)
         self.assertEqual(rsrs.count(r1), 1)
         self.assertEqual(rsrs.count(r2), 0)
+        # Use Python listlike object
+        self.assertEqual(len(rs.restraints), 2)
+        self.assertEqual(rs.restraints.index(r0), 0)
+        self.assertEqual(rs.restraints.index(r1), 1)
+        self.assertRaises(ValueError, rs.restraints.index, r2)
 
     def test_restraints_weights(self):
         """Check weights on restraints"""

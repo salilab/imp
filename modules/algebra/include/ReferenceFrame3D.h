@@ -10,6 +10,8 @@
 #define IMPALGEBRA_REFERENCE_FRAME_3D_H
 
 #include <IMP/algebra/algebra_config.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include "Transformation3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -22,6 +24,22 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   Transformation3D tr_;
   mutable bool has_inverse_;
   mutable Transformation3D tri_;
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    ar << tr_;
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    ar >> tr_;
+    has_inverse_ = false;
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
+
   const Transformation3D &get_inverse() const {
     if (!has_inverse_) {
       tri_ = tr_.get_inverse();

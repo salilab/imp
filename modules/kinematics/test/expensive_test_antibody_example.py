@@ -1,7 +1,5 @@
 import IMP.test
-import sys
 import os
-import re
 
 
 class Tests(IMP.test.ApplicationTestCase):
@@ -16,6 +14,7 @@ class Tests(IMP.test.ApplicationTestCase):
             expected = ['node_begin.pdb', 'nodes1.pdb']
             for e in expected:
                 os.unlink(e)
+
 
 if __name__ == '__main__':
     IMP.test.main()

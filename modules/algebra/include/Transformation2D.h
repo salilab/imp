@@ -13,6 +13,7 @@
 #include "Vector2D.h"
 #include "Rotation2D.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -110,9 +111,16 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
   //! Return the inverse transformation
   Transformation2D get_inverse() const;
 
- private:
+private:
   Vector2D trans_;  // translation
   Rotation2D rot_;  // rotation
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & trans_ & rot_;
+  }
+
 };
 
 IMP_VALUES(Transformation2D, Transformation2Ds);

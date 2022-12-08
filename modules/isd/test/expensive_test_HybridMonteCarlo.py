@@ -15,7 +15,6 @@ from IMP.isd import Scale, HybridMonteCarlo
 # unit testing framework
 import IMP.test
 
-vel_keys_xyz = [IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
 vel_key_nuisance = IMP.FloatKey("vel")
 kB = 1.381 * 6.02214 / 4184.0
 
@@ -76,8 +75,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
     def get_xyz_coordinates(self):
         a = [[i.get_value(fl) for fl in IMP.core.XYZ.get_xyz_keys()]
              for i in self.xyzs]
-        b = [[i.get_value(fl) for fl in vel_keys_xyz]
-             for i in self.xyzs]
+        b = [IMP.atom.LinearVelocity(i).get_velocity() for i in self.xyzs]
         return a + b
 
     def test_move(self):

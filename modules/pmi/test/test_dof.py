@@ -167,12 +167,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(num_nonrigid,3)
         #                                   r0  r1  r10
         self.assertEqual(len(rigid_members),57 + 7 + 2)
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=s.get_hierarchy(),
-                                              monte_carlo_sample_objects = dof.get_movers(),
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object=rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=s.get_hierarchy(),
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=2,
+            test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
 
     def test_mc_rigid_body_disable(self):
@@ -231,12 +229,10 @@ class Tests(IMP.test.TestCase):
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=s.get_hierarchy(),
-                                              monte_carlo_sample_objects = dof.get_movers(),
-                                              number_of_frames=1,
-                                              test_mode=True,
-                                              replica_exchange_object=rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=s.get_hierarchy(),
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=1,
+            test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
 
     def test_big_rigid_body(self):
@@ -446,12 +442,10 @@ class Tests(IMP.test.TestCase):
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
         self.assertEqual(len(fb_movers),3)
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=s.get_hierarchy(),
-                                              monte_carlo_sample_objects = dof.get_movers(),
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object=rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=s.get_hierarchy(),
+            monte_carlo_sample_objects=dof.get_movers(), number_of_frames=2,
+            test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
 
     def test_mc_flexible_beads_disable(self):
@@ -580,12 +574,9 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         md_ps = dof.setup_md(m1)
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              molecular_dynamics_sample_objects=md_ps,
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object=rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=hier, molecular_dynamics_sample_objects=md_ps,
+            number_of_frames=2, test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
 
     def test_gaussian_rb(self):
@@ -636,13 +627,11 @@ class Tests(IMP.test.TestCase):
         dof.create_rigid_body(m1,nonrigid_parts = atomic_res)
         dof.create_rigid_body(m2,nonrigid_parts = atomic_res2)
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              monte_carlo_sample_objects=dof.get_movers(),
-                                              number_of_frames=2,
-                                              test_mode=True,
-                                              replica_exchange_object=rem)
+        rex = IMP.pmi.macros.ReplicaExchange(
+            mdl, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
+            number_of_frames=2, test_mode=True, replica_exchange_object=rem)
         rex.execute_macro()
+
 
 if __name__ == '__main__':
     IMP.test.main()

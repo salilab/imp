@@ -84,6 +84,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(e.num_models_deposited, 3)
         self.assertEqual(e.densities, [])
 
+    def test_ensemble_invalid(self):
+        """Test Ensemble class with invalid feaure/method"""
+        self.assertRaises(ValueError, ihm.model.Ensemble,
+                          model_group=['m1', 'm2', 'm3'],
+                          num_models=10, name='bar',
+                          clustering_method="invalid")
+        self.assertRaises(ValueError, ihm.model.Ensemble,
+                          model_group=['m1', 'm2', 'm3'],
+                          num_models=10, name='bar',
+                          clustering_feature="invalid")
+
     def test_density(self):
         """Test LocalizationDensity class"""
         e = ihm.model.LocalizationDensity(file='foo', asym_unit='bar')

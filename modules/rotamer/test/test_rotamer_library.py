@@ -44,5 +44,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(v[0].get_chi1(), 175.8, delta=1e-4)
         self.assertAlmostEqual(v[0].get_probability(), 0.550887, delta=1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

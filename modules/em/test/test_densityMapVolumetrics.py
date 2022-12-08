@@ -23,12 +23,12 @@ class Tests(IMP.test.TestCase):
             IMP.em.get_threshold_for_approximate_mass(dmap, weight_In_kD)
         mass = IMP.em.get_molecular_mass_at_threshold(dmap, threshold)
 
-        self.assertTrue(abs(weight_In_kD - mass) < allowedMassDelta,
+        self.assertTrue(
+            abs(weight_In_kD - mass) < allowedMassDelta,
             """asked threshold t to attein mass M1,
                and mass M2 was computed at threshold t;
                 though M1 and M2 are different : """ +
-                        str(weight_In_kD) + " != " + str(mass)
-                        )
+            str(weight_In_kD) + " != " + str(mass))
 
 
 if __name__ == '__main__':

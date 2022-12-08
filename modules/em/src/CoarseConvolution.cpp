@@ -15,8 +15,8 @@ float CoarseConvolution::convolution(const DensityMap *f, DensityMap *g,
                                      float voxel_data_threshold, bool) {
   const DensityHeader *f_header = f->get_header();
   const DensityHeader *g_header = g->get_header();
-  const emreal *f_data = f->get_data();
-  const emreal *g_data = g->get_data();
+  const double *f_data = f->get_data();
+  const double *g_data = g->get_data();
 
   // validity checks
   IMP_USAGE_CHECK(
@@ -33,7 +33,7 @@ float CoarseConvolution::convolution(const DensityMap *f, DensityMap *g,
           << "; Second map pixelsize: " << g_header->get_spacing());
   bool same_origin = f->same_origin(g);
   int nvox = f_header->get_number_of_voxels();
-  emreal conv = 0.0;
+  double conv = 0.0;
 
   if (same_origin) {  // Fastest version
     for (int i = 0; i < nvox; i++) {

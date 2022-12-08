@@ -21,7 +21,7 @@ and interface conventions.
    - `load_` and `save_` or `read_` and `write_` move data between files and memory
    - `link_` create a connection between something and an IMP::Object
    - `update_` change the internal state of an IMP::Object
-   - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
+   - `do_` is a virtual method as part of a \external{https://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
    - `handle_` take action when an event occurs
    - `validate_` check the state of data and print messages and throw exceptions if something is corrupted
    - `setup_` and `teardown_` create or destroy some type of invariant (e.g. the constraints for a rigid body)
@@ -42,9 +42,9 @@ The Boost.Graph interface cannot be easily exported to Python so we instead prov
 As is conventional in C++, IMP classes are divided into broad, exclusive types
 - *Object classes*: They inherit from IMP::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::Pointer in C++ (in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
 
-- *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor.
+- *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor. Most Values can also be serialized using the [Boost.Serialization](https://www.boost.org/doc/libs/1_78_0/libs/serialization/doc/) library in C++, or [pickled](https://docs.python.org/3/library/pickle.html) in Python.
 
-- *RAII classes* control some particular resource using the [RAII idiom](http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization).
+- *RAII classes* control some particular resource using the [RAII idiom](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization).
 They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
 
 All types in %IMP, with a few documented exceptions, can be

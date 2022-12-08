@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -48,12 +46,13 @@ class Tests(IMP.test.TestCase):
             print("score for spacing:", spacings[i], " is:", score)
         for ind in [0, 1, 2, 4, 5, 6]:
             self.assertGreater(
-                scores[i],
-                scores[0],
-                "wrong spacing:" + str(spacings[ind]) + " has better value than spacing=1.7")
+                scores[i], scores[0],
+                "wrong spacing:" + str(spacings[ind])
+                + " has better value than spacing=1.7")
         for i in range(6):
             self.assertAlmostEqual(scores[i], scores[i + 1], delta=0.3,
                                    msg="scores should be similar")
+
 
 if __name__ == '__main__':
     IMP.test.main()

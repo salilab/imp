@@ -38,8 +38,8 @@ compute distances between particles.
 \code
 d0= IMP.core.XYZ(p0)
 d1= IMP.core.XYZ(p1)
-print IMP.core.distance(d0,d1)
-print d0.get_coordinates()
+print(IMP.core.distance(d0,d1))
+print(d0.get_coordinates())
 \endcode
 
 \par Decorator basics

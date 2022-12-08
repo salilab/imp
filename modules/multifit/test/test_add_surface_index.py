@@ -1,5 +1,3 @@
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.multifit
@@ -40,5 +38,7 @@ class Tests(IMP.test.TestCase):
                 ps_3.append(p)
         self.assertGreater(len(ps_3), 130,
                            "wrong surface index assignment to particles")
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -45,30 +45,28 @@ using namespace IMP::kinematics;
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test protein RRT.");
-  return 0;
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
 
-  if (argc != 2 && argc != 3) {
-    std::cerr << "Usage: " << argv[0] << " pdb [radii_scale]" << std::endl;
-    exit(1);
-  }
-  std::string fname(argv[1]);
+  std::string fname = IMP::kinematics::get_example_path("antibody/1igt.pdb");
   std::cout << fname << std::endl;
-  double scale = 0.7;
-  if (argc == 3) scale = atof(argv[2]);
+  double scale = 0.5;
 
   // read in the input protein
   IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
+      fname, model, new IMP::atom::ChainPDBSelector("A"),
       // new IMP::atom::ATOMPDBSelector(),
       // don't add radii
       true, true);
-  const std::string topology_file_name = "top_heav.lib";
-  const std::string parameter_file_name = "par.lib";
+  /* Speed up test by only reading 10 residues from the A chain */
+  assert(mhd.get_number_of_children() == 1);
+  IMP::atom::Hierarchy chain = mhd.get_child(0);
+  for (unsigned int i = chain.get_number_of_children() - 1; i >= 10; --i) {
+    chain.remove_child(i);
+  }
+
+  const std::string topology_file_name = IMP::atom::get_data_path("top_heav.lib");
+  const std::string parameter_file_name = IMP::atom::get_data_path("par.lib");
   std::ifstream test(topology_file_name.c_str());
   if (!test) {
     std::cerr << "Please provide topology file " << topology_file_name
@@ -133,19 +131,19 @@ int main(int argc, char *argv[]) {
   // create dofs
   DOFs dofs;
   for (unsigned int i = 0; i < joints.size(); i++) {
-    std::cerr << "Angle = " << joints[i]->get_angle() << std::endl;
+//  std::cerr << "Angle = " << joints[i]->get_angle() << std::endl;
     IMP_NEW(DOF, dof, (joints[i]->get_angle(), -IMP::algebra::PI,
                        IMP::algebra::PI, IMP::algebra::PI / 360));
     dofs.push_back(dof);
   }
-  UniformBackboneSampler sampler(joints, dofs);
+  IMP_NEW(UniformBackboneSampler, sampler, (joints, dofs));
   DOFValues val(dofs);
   std::cerr << "DOFs done" << std::endl;
 
   IMP_NEW(DirectionalDOF, dd, (dofs));
-  PathLocalPlanner planner(model, &sampler, dd, 10);
+  IMP_NEW(PathLocalPlanner, planner, (model, sampler, dd, 10));
   std::cerr << "Start RRT" << std::endl;
-  IMP_NEW(RRT, rrt, (model, &sampler, &planner, dofs));
+  IMP_NEW(RRT, rrt, (model, sampler, planner, dofs));
   rrt->set_scoring_function(pr);
   std::cerr << "Start RRT run" << std::endl;
   rrt->run();
@@ -154,11 +152,11 @@ int main(int argc, char *argv[]) {
   // output PDBs
   DOFValuesList dof_values = rrt->get_DOFValuesList();
   for (unsigned int i = 0; i < dof_values.size(); i++) {
-    sampler.apply(dof_values[i]);
+    sampler->apply(dof_values[i]);
     kfss->do_before_evaluate();
-    std::string filename =
+/*  std::string filename =
         "node" + std::string(boost::lexical_cast<std::string>(i + 1)) + ".pdb";
-    IMP::atom::write_pdb(mhd, filename);
+    IMP::atom::write_pdb(mhd, filename);*/
   }
   return 0;
 }

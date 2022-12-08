@@ -3,9 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.em2d
-import os
 import csv
-# from math import *
 import sys
 
 
@@ -16,14 +14,11 @@ def get_columns(fn, cols=[], delimiter=" ", comment="#"):
         lines starting with the comment character are ignored """
     columns = [[] for i in cols]
     # get a reader for the file
-    reader = csv.reader(
-        open(fn,
-             "r"),
-        delimiter=delimiter,
-        skipinitialspace=True)
+    reader = csv.reader(open(fn, "r"), delimiter=delimiter,
+                        skipinitialspace=True)
     for row in reader:
-        if(row != [] and row[0][0] != comment):  # not empty or comment row
-            if(cols == []):
+        if row != [] and row[0][0] != comment:  # not empty or comment row
+            if cols == []:
                 for i in range(0, len(row)):
                     columns[i].append(row[i])
             else:
@@ -39,13 +34,10 @@ def get_rows(fn, delimiter=" ", comment="#"):
         lines starting with the comment character are ignored """
     rows = []
     # get a reader for the file
-    reader = csv.reader(
-        open(fn,
-             "r"),
-        delimiter=delimiter,
-        skipinitialspace=True)
+    reader = csv.reader(open(fn, "r"), delimiter=delimiter,
+                        skipinitialspace=True)
     for row in reader:
-        if(row != [] and row[0][0] != comment):  # not empty or comment row
+        if row != [] and row[0][0] != comment:  # not empty or comment row
             rows.append(row)
     return rows
 
@@ -71,15 +63,14 @@ class Tests(IMP.test.TestCase):
             xyz = IMP.core.XYZs(IMP.atom.get_leaves(h))
             coords.append([x.get_coordinates() for x in xyz])
         # compute rmsds
-        x = [0.0 for i in range(0, n_models)]
+        _ = [0.0 for i in range(0, n_models)]
         rmsds = [[0.0 for i in range(0, n_models)]
                  for n in range(0, n_models)]
         for i in range(0, n_models):
             for j in range(i + 1, n_models):
-                if(i != j):
+                if i != j:
                     t = IMP.algebra.get_transformation_aligning_first_to_second(
-                        coords[i],
-                        coords[j])
+                        coords[i], coords[j])
                     temp = [t.get_transformed(v) for v in coords[i]]
                     rmsds[i][j] = IMP.algebra.get_rmsd(temp, coords[j])
                     rmsds[j][i] = rmsds[i][j]
@@ -121,9 +112,6 @@ class Tests(IMP.test.TestCase):
                      for x in filenames]
 
         for i in range(0, len(linkage_mats)):
-#            print "checking linkage matrix"
-#            for m in linkage_mats[i]:
-#                 print m
             rows = get_rows(filenames[i])
             stored_mat = [[float(col) for col in row] for row in rows]
             mat = linkage_mats[i]

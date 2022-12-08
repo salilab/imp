@@ -2,12 +2,6 @@ import IMP
 import IMP.test
 import IMP.em2d as em2d
 import IMP.atom as atom
-import IMP.algebra as alg
-import IMP.core as core
-import IMP.domino as domino
-import os
-from math import *
-import random
 
 
 class Tests(IMP.test.TestCase):
@@ -37,6 +31,7 @@ class Tests(IMP.test.TestCase):
             ccs_calculated,
             ccs_value,
             delta=ccs_value * 0.02)
+
 
 if __name__ == '__main__':
     IMP.test.main()

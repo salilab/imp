@@ -9,6 +9,8 @@
 #include <IMP/algebra/algebra_config.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/exception.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <limits>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -28,9 +30,30 @@ inline int get_null_value() {
   return std::numeric_limits<int>::max();
 }
 
+template <class T>
+inline bool get_is_null_value(const T &val) {
+  return val == get_null_value<T>();
+}
+
+// Can't use default implementation for double, since NaN never compares
+// equal to anything - even itself
+template <>
+inline bool get_is_null_value(const double &val) {
+  return val != val;
+}
+
 template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
+
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int) {
+    for (auto &i: storage_) {
+      ar & i;
+    }
+  }
 
  public:
   unsigned int get_dimension() const { return D; }
@@ -65,7 +88,7 @@ class VectorData {
   }
 #endif
 
-  bool get_is_null() const { return storage_[0] >= get_null_value<T>(); }
+  bool get_is_null() const { return get_is_null_value<T>(storage_[0]); }
   ~VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i = 0; i < D; ++i) {
@@ -79,6 +102,28 @@ template <class T, bool KNOWN_DEFAULT>
 class VectorData<T, -1, KNOWN_DEFAULT> {
   boost::scoped_array<T> storage_;
   unsigned int d_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void save(Archive &ar, const unsigned int) const {
+    ar << d_;
+    for (unsigned i = 0; i < d_; ++i) {
+      ar << storage_[i];
+    }
+  }
+
+  template<class Archive>
+  void load(Archive &ar, const unsigned int) {
+    ar >> d_;
+    storage_.reset(new T[d_]);
+    T *data = get_data();
+    for (unsigned i = 0; i < d_; ++i) {
+      ar >> *(data + i);
+    }
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
  public:
   VectorData(int d) : storage_(new T[d]), d_(d) {}

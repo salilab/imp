@@ -157,6 +157,7 @@ if [ "${TARGET_OSX_VER}" != "10.4" ]; then
                 /usr/local/lib/libboost_graph-mt.dylib \
                 /usr/local/lib/libboost_atomic-mt.dylib \
                 /usr/local/lib/libboost_date_time-mt.dylib \
+                /usr/local/lib/libboost_serialization-mt.dylib \
                 /usr/local/lib/libfftw3.3.dylib \
                 /usr/local/lib/libgsl.0.dylib \
                 /usr/local/lib/libgslcblas.0.dylib \

@@ -15,6 +15,7 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/showable_macros.h>
 #include <boost/math/special_functions/gamma.hpp>
+#include <boost/serialization/access.hpp>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -67,6 +68,10 @@ class UnitSimplexBaseD : public GeometricPrimitiveD<D> {
  */
 template <int D>
 class UnitSimplexD : public UnitSimplexBaseD<D> {
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {}
+
  public:
   UnitSimplexD() { IMP_USAGE_CHECK(D > 0, "Dimension must be positive."); }
 
@@ -82,6 +87,12 @@ class UnitSimplexD : public UnitSimplexBaseD<D> {
  */
 template <>
 class UnitSimplexD<-1> : public UnitSimplexBaseD<-1> {
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & d_;
+  }
+
  public:
   //! Construct from dimension d of embedded real space.
   UnitSimplexD(int d = 1) : d_(d) {

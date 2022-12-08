@@ -21,6 +21,8 @@
 #endif
 
 #include <iostream>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/binary_object.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -53,5 +55,39 @@ void show(const cv::Mat_<T> &m, std::ostream &out = std::cout) {
 }
 
 IMPEM2D_END_NAMESPACE
+
+namespace boost {
+  namespace serialization {
+    template<class Archive>
+    inline void serialize(Archive &ar, cv::Mat &m, const unsigned int) {
+      int rows, cols, type;
+      bool continuous;
+
+      if (Archive::is_saving::value) {
+        rows = m.rows;
+        cols = m.cols;
+        type = m.type();
+        continuous = m.isContinuous();
+      }
+      ar & rows & cols & type & continuous;
+
+      if (Archive::is_loading::value) {
+        m.create(rows, cols, type);
+      }
+
+      if (continuous) {
+        size_t data_size = rows * cols * m.elemSize();
+        boost::serialization::binary_object mat_data(m.data, data_size);
+        ar & mat_data;
+      } else {
+        size_t row_size = cols * m.elemSize();
+        for (int i = 0; i < rows; ++i) {
+          boost::serialization::binary_object row_data(m.ptr(i), row_size);
+          ar & row_data;
+        }
+      }
+    }
+  }
+}
 
 #endif /* IMPEM2D_OPENCV_INTERFACE_H */

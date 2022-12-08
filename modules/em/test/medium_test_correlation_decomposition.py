@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -85,7 +83,8 @@ class Tests(IMP.test.TestCase):
                     IMP.algebra.get_random_vector_in(
                         IMP.algebra.get_unit_bounding_box_3d())
                 rand_rot = IMP.algebra.get_rotation_about_axis(
-                    IMP.algebra.get_random_vector_in(sphere), random.uniform(-0.3, 0.3))
+                    IMP.algebra.get_random_vector_in(sphere),
+                    random.uniform(-0.3, 0.3))
                 t.append(
                     IMP.algebra.Transformation3D(
                         rand_rot,
@@ -105,7 +104,8 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(rms[i], rms[i + 1], 2)
 
     def test_correction_vs_decompose_correlation(self):
-        """Test that correlation and decomposed correlation return the same score"""
+        """Test that correlation and decomposed correlation return
+           the same score"""
         # generate all density maps:
         sampled_maps = []
         for mh in self.mhs:
@@ -128,7 +128,7 @@ class Tests(IMP.test.TestCase):
             2)
 
     def test_fit_restraint_decomposition(self):
-        """Test that the full and decomposed fit restraint return the same score"""
+        "Test that the full and decomposed fit restraint return the same score"
         # generate all density maps:
         sampled_maps = []
         for mh in self.mhs:
@@ -140,7 +140,8 @@ class Tests(IMP.test.TestCase):
         # full sampled map
         decomposed_score = 0.
         for i in range(len(self.mhs)):
-            print("iindex:", i, "mol size", len(IMP.core.get_leaves(self.mhs[i])))
+            print("iindex:", i, "mol size",
+                  len(IMP.core.get_leaves(self.mhs[i])))
             r = IMP.em.FitRestraint(
                 IMP.core.get_leaves(self.mhs[i]), self.scene,
                 self.norm_factors,
@@ -160,6 +161,7 @@ class Tests(IMP.test.TestCase):
             decomposed_score - (len(self.mhs) - 1),
             full_score,
             1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -51,6 +51,17 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace
 IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace::Namebase##D< -1 > >,const&);
 %enddef
 
+%define IMP_SWIG_ALGEBRA_VALUE_D_SERIALIZE(Namespace, Namebase)
+IMP_SWIG_ALGEBRA_VALUE_D(Namespace, Namebase);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<1>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<2>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<3>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<4>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<5>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<6>);
+IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Namebase##D<-1>);
+%enddef
+
 %define IMP_SWIG_ALGEBRA_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE(Namespace, Name, PluralName);
 %feature("python:maybecall", "0") Namespace::Name::__cmp__;

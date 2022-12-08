@@ -1,10 +1,8 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import IMP.multifit
 import os
-import time
 
 
 class Tests(IMP.test.TestCase):
@@ -19,9 +17,6 @@ class Tests(IMP.test.TestCase):
             self.get_input_file_name("1z5s_D.pdb")]
         self.fitting_solutions_fns = [
             self.get_input_file_name("1z5s_A_fitting_solutions.txt")]
-            # self.get_input_file_name("1z5s_B_fitting_solutions.txt"),
-            # self.get_input_file_name("1z5s_C_fitting_solutions.txt"),
-            # self.get_input_file_name("1z5s_D_fitting_solutions.txt")]
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -63,5 +58,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sols[2].get_rmsd_to_reference(), 2.98,
                                delta=0.01)
         os.unlink("temp.txt")
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -3,8 +3,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
-import os
-import sys
 
 
 class Tests(IMP.test.TestCase):
@@ -15,7 +13,6 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         in_filename = self.get_input_file_name("three_particles_in.em")
 
-        mrw = IMP.em.MRCReaderWriter()
         erw = IMP.em.EMReaderWriter()
         self.scene = IMP.em.read_map(in_filename, erw)
 
@@ -25,7 +22,8 @@ class Tests(IMP.test.TestCase):
         self.particles = []
         mdl = IMP.Model()
         self.mass_key = IMP.atom.Mass.get_mass_key()
-        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.], [4., 5., 5., 1., 1.]]:
+        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.],
+                    [4., 5., 5., 1., 1.]]:
             p = IMP.Particle(mdl)
             IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(
                 IMP.algebra.Vector3D(val[0], val[1], val[2]), val[3]))
@@ -46,17 +44,18 @@ class Tests(IMP.test.TestCase):
 
         cc = IMP.em.CoarseCC()
         self.scene.get_header_writable().compute_xyz_top()
-        print("em_origin: " + str(self.scene.get_header().get_xorigin()) + '  ' + str(self.scene.get_header().get_yorigin()) + '  ' + str(self.scene.get_header().get_zorigin()) + '\n')
-        print("model_origin: " + str(self.particles_sampling.get_header().get_xorigin()) + '  ' + str(self.particles_sampling.get_header().get_yorigin()) + '  ' + str(self.particles_sampling.get_header().get_zorigin()) + '\n')
+        print("em_origin: " + str(self.scene.get_header().get_xorigin())
+              + '  ' + str(self.scene.get_header().get_yorigin()) + '  '
+              + str(self.scene.get_header().get_zorigin()) + '\n')
+        print("model_origin: "
+              + str(self.particles_sampling.get_header().get_xorigin())
+              + '  ' + str(self.particles_sampling.get_header().get_yorigin())
+              + '  ' + str(self.particles_sampling.get_header().get_zorigin())
+              + '\n')
 
         score = cc.evaluate(
-            self.scene,
-            self.particles_sampling,
-            self.particles,
-            dvx, dvy, dvz,
-            1.0,
-            0
-        )
+            self.scene, self.particles_sampling, self.particles,
+            dvx, dvy, dvz, 1.0, 0)
         print('test_sample ' + str(score))
         self.assertLess(score, 0.1, "unexpected cross correlation score")
 

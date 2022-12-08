@@ -18,6 +18,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/range.hpp>
+#include <boost/serialization/access.hpp>
 #include "internal/vector.h"
 
 #include <limits>
@@ -48,6 +49,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <int D>
 class VectorBaseD : public GeometricPrimitiveD<D> {
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int) {
+    ar & data_;
+  }
+
   void check_vector() const {
     IMP_USAGE_CHECK(!data_.get_is_null(),
                     "Attempt to use uninitialized vector.");

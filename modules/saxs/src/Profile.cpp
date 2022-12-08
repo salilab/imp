@@ -211,17 +211,13 @@ void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double
 }
 
 void Profile::add_errors() {
-  // init random number generator
-  typedef boost::mt19937 base_generator_type;
-  base_generator_type rng;
-  // rng.seed(static_cast<unsigned int>(std::time(0)));
-
   // init distribution
   typedef boost::poisson_distribution<> poisson;
   poisson poisson_dist(10.0);
-  typedef boost::variate_generator<base_generator_type&, poisson>
+  typedef boost::variate_generator<IMP::RandomNumberGenerator&, poisson>
       poisson_generator_type;
-  poisson_generator_type poisson_rng(rng, poisson_dist);
+  poisson_generator_type poisson_rng(IMP::random_number_generator,
+                                     poisson_dist);
 
   for (unsigned int i = 0; i < size(); i++) {
     double ra = std::abs(poisson_rng() / 10.0 - 1.0) + 1.0;
@@ -233,16 +229,13 @@ void Profile::add_errors() {
 }
 
 void Profile::add_noise(double percentage) {
-  // init random number generator
-  typedef boost::mt19937 base_generator_type;
-  base_generator_type rng;
-
   // init distribution
   typedef boost::poisson_distribution<> poisson;
   poisson poisson_dist(10.0);
-  typedef boost::variate_generator<base_generator_type&, poisson>
+  typedef boost::variate_generator<IMP::RandomNumberGenerator&, poisson>
       poisson_generator_type;
-  poisson_generator_type poisson_rng(rng, poisson_dist);
+  poisson_generator_type poisson_rng(IMP::random_number_generator,
+                                     poisson_dist);
 
   for (unsigned int i = 0; i < size(); i++) {
     double random_number = poisson_rng() / 10.0 - 1.0;
@@ -947,6 +940,8 @@ void Profile::add(const Vector<Profile*>& profiles,
 }
 
 void Profile::add_partial_profiles(const Profile* other_profile, double weight) {
+  if(size() == 0) init(size(), other_profile->partial_profiles_.size());
+
   if (other_profile->partial_profiles_.size() > 0 &&
       partial_profiles_.size() == 0) {
     partial_profiles_.insert(partial_profiles_.begin(),

@@ -17,7 +17,6 @@ class Tests(IMP.test.TestCase):
         sel = IMP.atom.CAlphaPDBSelector()
         mh = IMP.atom.read_pdb(self.get_input_file_name('3points.pdb'), m, sel)
         IMP.atom.add_radii(mh)
-        ps = IMP.core.get_leaves(mh)
         IMP.atom.create_rigid_body(mh)
 
         refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
@@ -27,6 +26,7 @@ class Tests(IMP.test.TestCase):
             IMP.atom.Mass.get_mass_key(),
             dmap, [], 1, 10, 100)
         self.assertEqual(fitting_sols.get_number_of_solutions(), 1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

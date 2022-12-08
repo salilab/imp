@@ -224,6 +224,10 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_O1B;
 /** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_O2B;
 /** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_O3B;
+/** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_CAY;
+/** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_CY;
+/** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_OY;
+/** \see AtomType */ IMPATOMEXPORT extern const AtomType AT_CAT;
 #endif
 
 //! A decorator for a particle representing an atom.

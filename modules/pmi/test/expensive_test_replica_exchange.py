@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
             root_hier=hier, tuple_selection1=(1,1,"A"),
             tuple_selection2=(2,2,"A"), distancemin=10, distancemax=10)
         dr.add_to_model()
-        rex=IMP.pmi.macros.ReplicaExchange0(m,
+        rex=IMP.pmi.macros.ReplicaExchange(m,
                       root_hier=hier,
                       monte_carlo_sample_objects=dof.get_movers(),
                       output_objects=[dr],
@@ -180,30 +180,24 @@ class Tests(IMP.test.TestCase):
             tuple_selection2=(2,2,"A"), distancemin=10, distancemax=10)
 
         dr.add_to_model()
-        rex=IMP.pmi.macros.ReplicaExchange0(m,
-                      root_hier=hier,
-                      monte_carlo_sample_objects=dof.get_movers(),
-                      output_objects=None,
-                      rmf_output_objects=[dr],
-                      monte_carlo_temperature=1.0,
-                      replica_exchange_minimum_temperature=1.0,
-                      replica_exchange_maximum_temperature=2.5,
-                      number_of_best_scoring_models=10,
-                      monte_carlo_steps=10,
-                      number_of_frames=100,
-                      write_initial_rmf=True,
-                      initial_rmf_name_suffix="initial",
-                      stat_file_name_suffix="stat",
-                      best_pdb_name_suffix="model",
-                      do_clean_first=True,
-                      do_create_directories=True,
-                      global_output_directory="./test_replica_exchange_macro_output",
-                      rmf_dir="rmfs/",
-                      best_pdb_dir="pdbs/",
-                      replica_stat_file_suffix="stat_replica",
-                      em_object_for_rmf=None,
-                      replica_exchange_object=None,
-                      score_moved=True)
+        # Test old ReplicaExchange0 class
+        with IMP.allow_deprecated():
+            rex = IMP.pmi.macros.ReplicaExchange0(
+                m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
+                output_objects=None, rmf_output_objects=[dr],
+                monte_carlo_temperature=1.0,
+                replica_exchange_minimum_temperature=1.0,
+                replica_exchange_maximum_temperature=2.5,
+                number_of_best_scoring_models=10, monte_carlo_steps=10,
+                number_of_frames=100, write_initial_rmf=True,
+                initial_rmf_name_suffix="initial",
+                stat_file_name_suffix="stat", best_pdb_name_suffix="model",
+                do_clean_first=True, do_create_directories=True,
+                global_output_directory="./test_replica_exchange_macro_output",
+                rmf_dir="rmfs/", best_pdb_dir="pdbs/",
+                replica_stat_file_suffix="stat_replica",
+                em_object_for_rmf=None, replica_exchange_object=None,
+                score_moved=True)
 
         # check whether the directory is existing, in case remove it
         try:

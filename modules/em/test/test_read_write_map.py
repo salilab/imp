@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
-import sys
 import os
 
 
@@ -16,7 +15,8 @@ class Tests(IMP.test.TestCase):
         self.particles = []
         mdl = IMP.Model()
         self.weight_key = IMP.FloatKey("mass")
-        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.], [4., 5., 5., 1., 1.]]:
+        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.],
+                    [4., 5., 5., 1., 1.]]:
             p = IMP.Particle(mdl)
             IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(
                 IMP.algebra.Vector3D(val[0], val[1], val[2]), val[3]))
@@ -91,9 +91,9 @@ class Tests(IMP.test.TestCase):
 
     def test_read_from_name(self):
         """Test create_reader_writer_from_name"""
-        d1 = IMP.em.read_map(self.get_input_file_name('mini.mrc'))
-        d2 = IMP.em.read_map(self.get_input_file_name('mini.map'))
-        d3 = IMP.em.read_map(self.get_input_file_name('cube.em'))
+        _ = IMP.em.read_map(self.get_input_file_name('mini.mrc'))
+        _ = IMP.em.read_map(self.get_input_file_name('mini.map'))
+        _ = IMP.em.read_map(self.get_input_file_name('cube.em'))
         self.assertRaises(IOError,  IMP.em.read_map,
                           self.get_input_file_name('mini.pdb'))
 
@@ -102,7 +102,6 @@ class Tests(IMP.test.TestCase):
         in_filename = self.get_input_file_name("cube.em")
         print("read in " + in_filename + " ...")
         print("here -------------")
-        #scene = IMP.em.DensityMap()
         print("here --------11111111111111-----")
         '''
         em_rw = IMP.em.EMReaderWriter()
@@ -116,6 +115,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(300., scene.get_header().voltage, delta=0.0001)
         print "here -------------"
         '''
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -44,10 +42,10 @@ class Tests(IMP.test.TestCase):
         self.load_protein("1z5s_A.pdb")
 
     def test_cc_after_grid_rotation(self):
-        """Check that CC score does not change after grid and protein rotation"""
+        "Check that CC score does not change after grid and protein rotation"
         mrw = IMP.em.MRCReaderWriter()
         # create a rigid body
-        rb_p = IMP.Particle(self.imp_model)
+        _ = IMP.Particle(self.imp_model)
         # sample density map
         sampled_density_map = IMP.em.SampledDensityMap(self.scene.get_header())
         sampled_density_map.set_particles(self.particles)
@@ -162,5 +160,7 @@ class Tests(IMP.test.TestCase):
                 t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         print("scores:", score1, ":", score2)
         self.assertAlmostEqual(score1, score2, delta=0.055)
+
+
 if __name__ == '__main__':
     IMP.test.main()

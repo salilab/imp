@@ -16,6 +16,8 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 #include <IMP/Vector.h>
 #include <IMP/check_macros.h>
 #include <IMP/exception.h>
@@ -31,6 +33,23 @@ class DefaultEmbeddingD {
   VectorD<D> unit_cell_;
   // inverse
   VectorD<D> inverse_unit_cell_;
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    ar << origin_ << unit_cell_;
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    ar >> origin_;
+    ar >> unit_cell_;
+    set_unit_cell(unit_cell_);  // sets inverse
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
+
   template <class O>
   VectorD<D> get_elementwise_product(VectorD<D> v0, const O &v1) const {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
@@ -174,6 +193,13 @@ class LogEmbeddingD {
   VectorD<D> origin_;
   VectorD<D> unit_cell_;
   VectorD<D> base_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & origin_ & unit_cell_ & base_;
+  }
+
   template <class O>
   VectorD<D> get_coordinates(const O &index) const {
     VectorD<D> ret = origin_;

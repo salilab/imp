@@ -123,6 +123,14 @@ class Tests(unittest.TestCase):
             loc.write(bar='?')
         self.assertEqual(fh.getvalue(), "foo.bar '?'\n")
 
+    def test_category_multiline(self):
+        """Test CategoryWriter class with multiline value"""
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        with writer.category('foo') as loc:
+            loc.write(bar='line1\nline2')
+        self.assertEqual(fh.getvalue(), "foo.bar\n;line1\nline2\n;\n")
+
     def test_empty_loop(self):
         """Test LoopWriter class with no values"""
         fh = StringIO()
@@ -197,9 +205,9 @@ x
         self.assertEqual(w._repr('_foo'), "'_foo'")
         # Empty string must be quoted
         self.assertEqual(w._repr(""), "''")
-        # Reserved words must be quoted (but just a prefix is OK)
+        # Reserved words cannot start a nonquoted string
         for word in ('save', 'loop', 'stop', 'global'):
-            self.assertEqual(w._repr('%s_foo' % word), '%s_foo' % word)
+            self.assertEqual(w._repr('%s_foo' % word), "'%s_foo'" % word)
             self.assertEqual(w._repr('%s_' % word), "'%s_'" % word)
         # Literal ? must be quoted to distinguish from the unknown value
         self.assertEqual(w._repr('?foo'), "?foo")

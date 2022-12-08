@@ -11,6 +11,7 @@
 
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"
+#include <boost/serialization/access.hpp>
 #include <vector>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -18,6 +19,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate line that fits best the input data points (Linear least squares)
 class IMPALGEBRAEXPORT LinearFit2D : public GeometricPrimitiveD<2> {
  public:
+  LinearFit2D() {}
+
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
@@ -47,6 +50,12 @@ class IMPALGEBRAEXPORT LinearFit2D : public GeometricPrimitiveD<2> {
   void evaluate_error(const Vector2Ds& data, const Floats& errors);
   double a_, b_;
   double error_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & a_ & b_ & error_;
+  }
 };
 
 IMP_VALUES(LinearFit2D, LinearFit2Ds);

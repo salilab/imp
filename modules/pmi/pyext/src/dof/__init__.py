@@ -50,11 +50,11 @@ class DegreesOfFreedom(object):
          DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid,
          or flexible beads, pass the movers to the `monte_carlo_sample_objects`
          argument of
-         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
+         [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange).
        * If you are running MD, you have to separately pass the particles
          (also returned from DegreesOfFreedom.setup_md()) to the
          `molecular_dynamics_sample_objects` argument of
-         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check
+         [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange). Check
          out an [MD example here](pmi_2atomistic_8py-example.html).
     """  # noqa: E501
     def __init__(self, model):
@@ -383,7 +383,7 @@ class DegreesOfFreedom(object):
 
     def setup_md(self, hspec):
         """Setup particles for MD simulation. Returns all particles, just
-        pass this to molecular_dynamics_sample_objects in ReplicaExchange0.
+        pass this to molecular_dynamics_sample_objects in ReplicaExchange.
         @param hspec Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue,
                or a list/set (of list/set) of them.
@@ -497,12 +497,9 @@ class DegreesOfFreedom(object):
         '''Set up MC run with just flexible beads.
         Optimization works much better when restraints
         are already set up.'''
-        pts = IMP.pmi.tools.ParticleToSampleList()
-        for n, fb in enumerate(self.get_flexible_beads()):
-            pts.add_particle(fb, "Floppy_Bodies", 1.0,
-                             "Flexible_Bead_" + str(n))
-        if len(pts.get_particles_to_sample()) > 0:
-            mc = IMP.pmi.samplers.MonteCarlo(self.model, [pts], temperature)
+        mvs = list(_get_floppy_body_movers(self.get_flexible_beads(), 1.0))
+        if mvs:
+            mc = IMP.pmi.samplers.MonteCarlo(self.model, mvs, temperature)
             print("optimize_flexible_beads: optimizing %i flexible beads"
                   % len(self.get_flexible_beads()))
             mc.optimize(nsteps)
@@ -597,3 +594,20 @@ class DegreesOfFreedom(object):
                 ps, maxtrans = pslist[name]
             if is_sampled:
                 self.create_nuisance_mover(ps[0], maxtrans, name)
+
+
+def _get_floppy_body_movers(fbs, maxtrans):
+    for fb in fbs:
+        # check is that is a rigid body member:
+        if IMP.core.NonRigidMember.get_is_setup(fb):
+            # if so force the particles to move anyway
+            floatkeys = \
+                IMP.core.RigidBodyMember.get_internal_coordinate_keys()
+            for fk in floatkeys:
+                fb.set_is_optimized(fk, True)
+            yield IMP.core.BallMover(fb.get_model(), fb,
+                                     IMP.FloatKeys(floatkeys),
+                                     maxtrans)
+        else:
+            # otherwise use the normal ball mover
+            yield IMP.core.BallMover(fb.get_model(), fb, maxtrans)

@@ -1,0 +1,3 @@
+data_PDBDEV_00000025
+_entry.id PDBDEV_00000025
+_struct.entry_id PDBDEV_00000025

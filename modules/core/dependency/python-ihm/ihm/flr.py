@@ -282,9 +282,9 @@ class Experiment(object):
         self.details_list.append(details)
 
     def get_entry_by_index(self, index):
-        """Returns the combination of :class:`Instrument`, :class:`InstSetting`,
-           :class:`ExpCondition`, :class:`Sample`, and details for a given
-           index.
+        """Returns the combination of :class:`Instrument`,
+           :class:`InstSetting`, :class:`ExpCondition`, :class:`Sample`,
+           and details for a given index.
         """
         return (self.instrument_list[index],
                 self.inst_setting_list[index],

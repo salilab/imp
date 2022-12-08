@@ -1242,7 +1242,8 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                              'should be between 0 and 1')
         nspectra = self.get_number_of_xlid()
         nrandom_spectra = int(nspectra*percentage)
-        random_keys = random.sample(self.data_base.keys(), nrandom_spectra)
+        random_keys = random.sample(sorted(self.data_base.keys()),
+                                    nrandom_spectra)
         new_data_base = {}
         for k in random_keys:
             new_data_base[k] = self.data_base[k]

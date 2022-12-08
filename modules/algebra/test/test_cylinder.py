@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -140,6 +141,32 @@ class Tests(IMP.test.TestCase):
         expected_p = get_volume(inner_box) / get_volume(c)
         observed_p = float(n) / float(m)
         self.assertAlmostEqual(observed_p, expected_p, delta=.01)
+
+    def _assert_equal(self, a, b):
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_segment().get_point(0), b.get_segment().get_point(0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            a.get_segment().get_point(1), b.get_segment().get_point(1)), 1e-4)
+        self.assertAlmostEqual(a.get_radius(), b.get_radius(), delta=1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Cylinder3D"""
+        c1 = IMP.algebra.Cylinder3D(
+            IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, -4.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 4.0)), 5.0)
+        c2 = IMP.algebra.Cylinder3D(
+            IMP.algebra.Segment3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 4.0)), 3.0)
+        c2.foo = 'bar'
+        dump = pickle.dumps((c1, c2))
+
+        newc1, newc2 = pickle.loads(dump)
+        self._assert_equal(c1, newc1)
+        self._assert_equal(c2, newc2)
+        self.assertEqual(newc2.foo, 'bar')
+
+        self.assertRaises(TypeError, c1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

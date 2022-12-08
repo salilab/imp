@@ -57,10 +57,12 @@ class RigidBodyPairTransformation(object):
 
 def get_angle_and_axis(q):
     '''get angle and axis from quaternion'''
-    try:
+    # q[0] can be very slightly larger than 1.0; math.acos would throw
+    # a math domain error
+    if 1.0 < q[0] < 1.001:
+        angle = 0.
+    else:
         angle = 2 * acos(q[0])
-    except:
-        return (None,None)
     if angle != 0:
         x = q[1] / sqrt(1-q[0]*q[0])
         y = q[2] / sqrt(1-q[0]*q[0])
@@ -251,9 +253,9 @@ class TestSymmetryMC(IMP.test.TestCase):
                 rbt.set_initial()
 
             for a,b in itertools.combinations(trans_list,2):
-                self.assertAlmostEqual(a,b,places=7)
+                self.assertAlmostEqual(a, b, delta=1e-6)
             for a,b in itertools.combinations(rot_list,2):
-                self.assertAlmostEqual(a,b,places=7)
+                self.assertAlmostEqual(a, b, delta=1e-6)
 
             #second store the pairwise transformations
             for i,(rb,rbpt) in enumerate(rb_rbpt.items()):

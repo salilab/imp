@@ -226,8 +226,8 @@ em::DensityMap *get_segment_by_indexes(em::DensityMap *dmap, Ints inds) {
   const em::DensityHeader *h = dmap->get_header();
   Pointer<em::DensityMap> ret(new em::DensityMap(*h));
   ret->reset_data(0.);
-  em::emreal *ret_data = ret->get_data();
-  em::emreal *dmap_data = dmap->get_data();
+  double *ret_data = ret->get_data();
+  double *dmap_data = dmap->get_data();
   for (int i = 0; i < (int)inds.size(); i++) {
     ret_data[inds[i]] = dmap_data[inds[i]];
   }

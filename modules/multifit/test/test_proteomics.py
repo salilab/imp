@@ -47,5 +47,6 @@ class Tests(IMP.test.TestCase):
         d.set_was_used(True)
         os.unlink("autoprot.out")
 
+
 if __name__ == '__main__':
     IMP.test.main()

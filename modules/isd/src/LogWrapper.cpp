@@ -133,14 +133,23 @@ double LogWrapper::unprotected_evaluate_moved(
         }
         prob *= rsrval;
       } else if (reset_set.find(r) != reset_set.end()) {
-        // If reset, we can use the last-but-one score
-        double score = r->get_last_last_score();
-        add_last_score_restraint(r, accum,
+        // If reset, we can use the last-but-one score, unless it is an
+        // aggregate restraint (e.g. a RestraintSet), in which case
+        // have the restraint itself figure out what to return
+        if (r->get_is_aggregate()) {
+          double rsrval = r->unprotected_evaluate_moved(
+                          accum, moved_pis, reset_pis);
+          r->set_last_score(rsrval);
+          prob *= rsrval;
+        } else {
+          double score = r->get_last_last_score();
+          add_last_score_restraint(r, accum,
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-                                 moved_pis, reset_pis,
+                                   moved_pis, reset_pis,
 #endif
-                                 prob, score);
-        r->set_last_score(score);
+                                   prob, score);
+          r->set_last_score(score);
+        }
       } else {
         // If not moved, we can use the last score
         add_last_score_restraint(r, accum,

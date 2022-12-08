@@ -19,29 +19,27 @@ using namespace IMP::kinematics;
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test protein kinematics.");
-  return 0;
 
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " pdb " << std::endl;
-    exit(1);
-  }
-  std::string fname(argv[1]);
-  std::cout << fname << std::endl;
+  std::string fname = IMP::kinematics::get_example_path("antibody/1igt.pdb");
 
   // read in the input protein
   IMP::Model* model = new IMP::Model();
-  std::cerr << "Starting reading pdb file " << fname << std::endl;
+//std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
+      fname, model, new IMP::atom::ChainPDBSelector("A"),
       // new IMP::atom::ATOMPDBSelector(),
       // don't add radii
       true, true);
-  const std::string topology_file_name = "top_heav.lib";
-  const std::string parameter_file_name = "par.lib";
+
+  /* Speed up test by only reading 10 residues from the A chain */
+  assert(mhd.get_number_of_children() == 1);
+  IMP::atom::Hierarchy chain = mhd.get_child(0);
+  for (unsigned int i = chain.get_number_of_children() - 1; i >= 10; --i) {
+    chain.remove_child(i);
+  }
+
+  const std::string topology_file_name = IMP::atom::get_data_path("top_heav.lib");
+  const std::string parameter_file_name = IMP::atom::get_data_path("par.lib");
   std::ifstream test(topology_file_name.c_str());
   if (!test) {
     std::cerr << "Please provide topology file " << topology_file_name
@@ -65,21 +63,21 @@ int main(int argc, char *argv[]) {
   IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
 
   IMP_NEW(ProteinKinematics, pk, (mhd, true, false));
-  std::cerr << "ProteinKinematics done" << std::endl;
+//std::cerr << "ProteinKinematics done" << std::endl;
 
   IMP::Particles residue_particles =
       IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
-  std::cerr << "Psi of the first residue "
+/*std::cerr << "Psi of the first residue "
             << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
-            << std::endl;
+            << std::endl;*/
   pk->set_psi(IMP::atom::Residue(residue_particles[0]), 3.14);
 
-  std::cerr << "Psi of the first residue after change"
+/*std::cerr << "Psi of the first residue after change"
             << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
-            << std::endl;
+            << std::endl;*/
 
-  IMP::atom::write_pdb(mhd, "./after_set_psi1_to_180deg.pdb");
+//IMP::atom::write_pdb(mhd, "./after_set_psi1_to_180deg.pdb");
 
   return 0;
 }

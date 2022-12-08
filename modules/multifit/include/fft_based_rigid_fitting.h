@@ -183,7 +183,7 @@ class IMPMULTIFITEXPORT FFTFitting : public Object {
 \param[in] mol2fit a rigid body molecule to fit
 \param[in] dmap the map to fit into
 \param[in] density_threshold ignore density below this value
-\param[in] angle_sampling_interval_rad sampling internal in radians
+\param[in] angle_sampling_interval_rad sampling interval in radians
  */
 IMPMULTIFITEXPORT
 multifit::FittingSolutionRecords fft_based_rigid_fitting(

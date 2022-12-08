@@ -23,11 +23,13 @@ RestraintSet::RestraintSet(Model *m, double weight,
                            const std::string &name)
     : Restraint(m, name) {
   set_weight(weight);
+  is_aggregate_ = true;
 }
 
 RestraintSet::RestraintSet(Model *m, const std::string &name)
     : Restraint(m, name) {
   set_weight(1.0);
+  is_aggregate_ = true;
 }
 
 RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
@@ -35,6 +37,7 @@ RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
     : Restraint(internal::get_model(rs), name) {
   set_weight(weight);
   set_restraints(rs);
+  is_aggregate_ = true;
 }
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint *, Restraints);
@@ -94,7 +97,7 @@ void RestraintSet::do_add_score_and_derivatives_moved(
            = get_model()->get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
-      if (rsset.find(r) != rsset.end()) {
+      if (r->get_is_aggregate() || rsset.find(r) != rsset.end()) {
         r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
       } else {
         add_last_score_restraint(r, sa,
@@ -114,9 +117,13 @@ void RestraintSet::do_add_score_and_derivatives_moved(
            = get_model()->get_dependent_restraints(reset_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
-      // must check moved first, since if a given restraint is affected by
-      // *both* moved and reset particles, we need to recalculate it
-      if (moved_set.find(r) != moved_set.end()) {
+      if (r->get_is_aggregate()) {
+        // aggregate restraints (e.g. RestraintSets) don't have reliable
+        // last-score or last-last-score, so just delegate to them
+        r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+      } else if (moved_set.find(r) != moved_set.end()) {
+        // must check moved first, since if a given restraint is affected by
+        // *both* moved and reset particles, we need to recalculate it
         // preserve last-last score if reset
         if (reset_set.find(r) != reset_set.end()) {
           double last_last_score = r->get_last_last_score();
@@ -161,14 +168,6 @@ double RestraintSet::get_last_score() const {
   return ret;
 }
 
-double RestraintSet::get_last_last_score() const {
-  double ret = 0;
-  for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
-    ret += get_restraint(i)->get_last_last_score();
-  }
-  return ret;
-}
-
 std::pair<RestraintsTemp, RestraintSetsTemp>
 RestraintSet::get_non_sets_and_sets() const {
   std::pair<RestraintsTemp, RestraintSetsTemp> ret;
@@ -196,7 +195,13 @@ void RestraintSet::on_add(Restraint *obj) {
   obj->set_was_used(true);
   IMP_USAGE_CHECK(obj != this, "Cannot add a restraint set to itself");
 }
-void RestraintSet::on_change() { set_has_dependencies(false); }
+
+void RestraintSet::on_change() {
+  set_has_dependencies(false);
+  // last-last score isn't just the sum of each restraint's last-last score,
+  // so just invalidate it when we add/remove restraints to force recalculation
+  set_last_last_score(BAD_SCORE);
+}
 
 ModelObjectsTemp RestraintSet::do_get_inputs() const {
   return ModelObjectsTemp(restraints_begin(), restraints_end());

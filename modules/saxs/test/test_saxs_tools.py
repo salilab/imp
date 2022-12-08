@@ -18,10 +18,10 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('lyzexp.dat Rg= ([\d\.]+)', out)
+        m = re.search(r'lyzexp.dat Rg= ([\d\.]+)', out)
         self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 15.14, delta=0.1)
-        m = re.search('6lyz.pdb Rg= ([\d\.]+)', out)
+        m = re.search(r'6lyz.pdb Rg= ([\d\.]+)', out)
         self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 13.966, delta=0.1)
 
@@ -33,10 +33,10 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('lyzexp.dat Rg= ([\d\.]+)', out)
+        m = re.search(r'lyzexp.dat Rg= ([\d\.]+)', out)
         self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 15.14, delta=0.1)
-        m = re.search('6lyz.cif Rg= ([\d\.]+)', out)
+        m = re.search(r'6lyz.cif Rg= ([\d\.]+)', out)
         self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 13.966, delta=0.1)
 
@@ -50,7 +50,7 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('6lyz.pdb.dat chi=([\d\.]+)', out)
+        m = re.search(r'6lyz.pdb.dat chi=([\d\.]+)', out)
         self.assertIsNotNone(
             m,
             msg="chi value output not found in " + str(out))
@@ -66,7 +66,7 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('6lyz.pdb.dat vr=([\d\.]+)', out)
+        m = re.search(r'6lyz.pdb.dat vr=([\d\.]+)', out)
         self.assertIsNotNone(
             m,
             msg="vr value output not found in " + str(out))

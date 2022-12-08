@@ -15,6 +15,7 @@
 #include <IMP/types.h>
 #include <IMP/Value.h>
 #include <IMP/exception.h>
+#include <boost/serialization/access.hpp>
 // for swig wrappers
 #include <IMP/internal/range.h>
 
@@ -29,6 +30,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <int D>
 class ExtendedGridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & data_;
+  }
+
   int compare(const ExtendedGridIndexD<D>& o) const {
     if (D == -1) {
       if (data_.get_dimension() == 0 && o.data_.get_dimension() == 0) {
@@ -161,6 +169,13 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D>& ind) {
 template <int D>
 class GridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & data_;
+  }
+
   int compare(const GridIndexD<D>& o) const {
     if (D == -1) {
       if (data_.get_dimension() == 0 && o.data_.get_dimension() == 0) {

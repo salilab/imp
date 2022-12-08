@@ -1,8 +1,6 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
-import os
 
 
 class Tests(IMP.test.TestCase):
@@ -14,8 +12,9 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # init IMP model ( the environment)
         self.mdl = IMP.Model()
-        self.mh = IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
-                                    self.mdl, IMP.atom.NonWaterNonHydrogenPDBSelector())
+        self.mh = IMP.atom.read_pdb(
+            self.get_input_file_name("1z5s_A.pdb"),
+            self.mdl, IMP.atom.NonWaterNonHydrogenPDBSelector())
         self.particles = IMP.core.get_leaves(self.mh)
 
     def test_sample_map(self):
@@ -29,7 +28,6 @@ class Tests(IMP.test.TestCase):
                 0.99,
                 "map was not sampled correctly")
 
-        erw = IMP.em.MRCReaderWriter()
 
 if __name__ == '__main__':
     IMP.test.main()

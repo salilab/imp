@@ -3,7 +3,6 @@ import IMP.atom
 import IMP.core
 import IMP.algebra
 import IMP.multifit
-import os
 
 
 def read_surface(fname):

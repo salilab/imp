@@ -39,6 +39,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(hash(cc1), hash(cc2))
         self.assertNotEqual(cc1, cc3)
 
+    def test_chem_comp_id_5(self):
+        """Test new-style 5-character CCD IDs in ChemComp"""
+        cc1 = ihm.ChemComp(id='MYGLY', code='G', code_canonical='G')
+        self.assertEqual(cc1.id, 'MYGLY')
+        self.assertEqual(cc1.code, 'G')
+        self.assertEqual(cc1.code_canonical, 'G')
+        self.assertEqual(cc1.type, 'other')
+
     def test_chem_comp_weight(self):
         """Test ChemComp.formula_weight"""
         # No formula
@@ -48,7 +56,7 @@ class Tests(unittest.TestCase):
         cc = ihm.ChemComp('X', 'X', 'X', formula='C90H')
         self.assertRaises(ValueError, lambda x: x.formula_weight, cc)
         # Formula with unknown element
-        cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Y')
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Es')
         self.assertIsNone(cc.formula_weight)
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
@@ -116,10 +124,10 @@ class Tests(unittest.TestCase):
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 24)
-        self.assertEqual(len(a.values), 24)
+        self.assertEqual(len(a.keys), 25)
+        self.assertEqual(len(a.values), 25)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 24)
+        self.assertEqual(len(a.items), 25)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
@@ -312,7 +320,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.pmid, 29539637)
         self.assertEqual(c.doi, '10.1038/nature26003')
         self.assertEqual(len(c.authors), 32)
-        self.assertEqual(c.authors[0], 'Kim SJ')
+        self.assertEqual(c.authors[0], 'Kim, S.J.')
 
     def test_citation_from_pubmed_id_one_page(self):
         """Test Citation.from_pubmed_id() with page rather than range"""
@@ -343,6 +351,23 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.entity, e)
         self.assertIsNone(r.asym)
         self.assertEqual(r.seq_id, 3)
+
+    def test_water_asym(self):
+        """Test WaterAsymUnit class"""
+        e = ihm.Entity('AHCDAH')
+        water = ihm.Entity([ihm.WaterChemComp()])
+        a = ihm.AsymUnit(e)
+        self.assertEqual(a.seq_id_range, (1, 6))
+        self.assertEqual(len(a.sequence), 6)
+        self.assertEqual(a.number_of_molecules, 1)
+
+        a = ihm.WaterAsymUnit(water, number=3)
+        self.assertEqual(a.seq_id_range, (1, 3))
+        self.assertEqual(len(a.sequence), 3)
+        self.assertEqual(a.number_of_molecules, 3)
+
+        self.assertRaises(TypeError, ihm.AsymUnit, water)
+        self.assertRaises(TypeError, ihm.WaterAsymUnit, e)
 
     def test_asym_unit_residue(self):
         """Test Residue derived from an AsymUnit"""

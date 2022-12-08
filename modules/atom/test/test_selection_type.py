@@ -107,7 +107,7 @@ class Tests(IMP.test.TestCase):
         for c in ris:
             r = IMP.atom.Residue(IMP.atom.Atom(m, c).get_parent())
             rind = r.get_index()
-            self.assert_(rind in [436, 437])
+            self.assertIn(rind, [436, 437])
 
     def test_residue_type(self):
         """Test selection of residue type"""
@@ -171,7 +171,7 @@ class Tests(IMP.test.TestCase):
         d0.set_radius(10)
         d2 = IMP.core.XYZR.setup_particle(c2)
         d2.set_radius(1)
-        self.assert_(h.get_is_valid(True))
+        self.assertTrue(h.get_is_valid(True))
         s = IMP.atom.Selection([h])
         ps = s.get_selected_particle_indexes()
         self.assertEqual(ps, [c2.get_particle_index()])

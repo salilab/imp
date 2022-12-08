@@ -4,7 +4,7 @@ import sys
 import os
 import re
 import random
-import xdrlib
+import struct
 try:
     import cPickle as pickle
 except ImportError:
@@ -35,11 +35,6 @@ class NoMoreWorkersError(Error):
     pass
 
 
-@IMP.deprecated_object("2.14", "Use NoMoreWorkersError instead")
-class NoMoreSlavesError(NoMoreWorkersError):
-    pass
-
-
 class NetworkError(Error):
     """Error raised if a problem occurs with the network"""
     pass
@@ -61,19 +56,16 @@ class RemoteError(Error):
 class _Communicator(object):
     """Simple support for sending Python pickled objects over the network"""
 
+    # Number of bytes used to pack the length of a string
+    _slen_size = struct.calcsize('!i')
+
     def __init__(self):
         self._socket = None
         self._ibuffer = b''
 
     def _send(self, obj):
-        p = xdrlib.Packer()
-        try:
-            p.pack_string(pickle.dumps(obj, -1))
-        # Python < 2.5 can fail trying to send Inf or NaN floats in binary
-        # mode, so fall back to the old protocol in this case:
-        except SystemError:
-            p.pack_string(pickle.dumps(obj, 0))
-        self._socket.sendall(p.get_buffer())
+        s = pickle.dumps(obj, -1)
+        self._socket.sendall(struct.pack('!i', len(s)) + s)
 
     def get_data_pending(self):
         return len(self._ibuffer) > 0
@@ -98,9 +90,13 @@ class _Communicator(object):
                     raise NetworkError("%s closed connection" % str(self))
 
     def _unpickle(self, ibuffer):
-        p = xdrlib.Unpacker(ibuffer)
-        obj = p.unpack_string()
-        return (pickle.loads(obj), ibuffer[p.get_position():])
+        if len(ibuffer) < self._slen_size:
+            raise IndexError()
+        slen, = struct.unpack_from('!i', ibuffer)
+        if self._slen_size + slen > len(ibuffer):
+            raise IndexError()
+        return (pickle.loads(ibuffer[self._slen_size: self._slen_size + slen]),
+                ibuffer[self._slen_size + slen:])
 
 
 class Worker(_Communicator):
@@ -181,11 +177,6 @@ class Worker(_Communicator):
                and self._context == context
 
 
-@IMP.deprecated_object("2.14", "Use Worker instead")
-class Slave(Worker):
-    pass
-
-
 class WorkerArray(object):
     """Representation of an array of workers.
        This is similar to Worker, except that it represents a collection of
@@ -203,11 +194,6 @@ class WorkerArray(object):
         pass
 
 
-@IMP.deprecated_object("2.14", "Use WorkerArray instead")
-class SlaveArray(WorkerArray):
-    pass
-
-
 class LocalWorker(Worker):
     """A worker running on the same machine as the manager."""
 
@@ -218,11 +204,6 @@ class LocalWorker(Worker):
 
     def __repr__(self):
         return "<LocalWorker>"
-
-
-@IMP.deprecated_object("2.14", "Use LocalWorker instead")
-class LocalSlave(LocalWorker):
-    pass
 
 
 class _SGEQsubWorker(Worker):
@@ -305,11 +286,6 @@ class SGEQsubWorkerArray(WorkerArray):
                     worker[2]._jobid = "%d.%d" % (self._jobid, num+1)
 
 
-@IMP.deprecated_object("2.14", "Use SGEQsubWorkerArray instead")
-class SGEQsubSlaveArray(SGEQsubWorkerArray):
-    pass
-
-
 class _SGEPEWorker(Worker):
     def __init__(self, host):
         Worker.__init__(self)
@@ -352,11 +328,6 @@ class SGEPEWorkerArray(WorkerArray):
         if len(workers) > 0:
             workers[0] = LocalWorker()
         return workers
-
-
-@IMP.deprecated_object("2.14", "Use SGEPEWorkerArray instead")
-class SGEPESlaveArray(SGEPEWorkerArray):
-    pass
 
 
 class Context(object):

@@ -18,7 +18,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
@@ -33,7 +33,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
         for out in ('6lyz.cif.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt',
@@ -51,7 +51,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp_nm.dat', '6lyz_lyzexp_nm.plt', '6lyz.plt'):
@@ -68,7 +68,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.289, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
@@ -85,7 +85,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.67, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
@@ -102,7 +102,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):

@@ -1,4 +1,3 @@
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -33,7 +32,6 @@ class Tests(IMP.test.TestCase):
 
     def test_convert_to_vectors(self):
         self.load_density_map()
-        mdl = IMP.Model()
         vecs = IMP.em.density2vectors(self.scene, self.scene_threshold)
         vecs_mean = IMP.algebra.Vector3D(0., 0., 0.)
         for v in vecs:
@@ -42,6 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_distance(
             vecs_mean,
             self.scene_centroid), 0., delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

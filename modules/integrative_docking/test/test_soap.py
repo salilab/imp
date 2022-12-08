@@ -16,7 +16,8 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        lines = open('soap_score.res', 'r').readlines()
+        with open('soap_score.res', 'r') as fh:
+            lines = fh.readlines()
         last_line = lines[-1]
         words = last_line.split('|')
         self.assertAlmostEqual(float(words[1]), -1541.274, delta=0.01)
@@ -54,12 +55,20 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        lines = open('soap_score.res', 'r').readlines()
+        with open('soap_score.res', 'r') as fh:
+            lines = fh.readlines()
         last_line = lines[-1]
         words = last_line.split('|')
         self.assertAlmostEqual(float(words[1]), -1541.274, delta=0.01)
         os.unlink('soap_score.res')
         os.unlink('filenames.txt')
+
+    def test_soap_score_version(self):
+        """Test --version of soap_score"""
+        p = self.run_application('soap_score', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
 
 
 if __name__ == '__main__':

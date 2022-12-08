@@ -1,3 +1,8 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
+
 %include "IMP_domino.hdf5.i"
 %include "IMP/domino/domino_macros.h"
 namespace IMP {
@@ -65,9 +70,9 @@ IMP_SWIG_OBJECT(IMP::domino, WriteAssignmentContainer, WriteAssignmentContainers
 IMP_SWIG_OBJECT(IMP::domino, CappedAssignmentContainer, CappedAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, RestraintCache, RestraintCaches);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
-IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
-IMP_SWIG_VALUE(IMP::domino, Slice, Slices);
-IMP_SWIG_VALUE(IMP::domino, Order, Orders);
+IMP_SWIG_VALUE_SERIALIZE(IMP::domino, Assignment, Assignments);
+IMP_SWIG_VALUE_SERIALIZE(IMP::domino, Slice, Slices);
+IMP_SWIG_VALUE_SERIALIZE(IMP::domino, Order, Orders);
 %template(_IntArray) IMP::ConstVector<int>;
 %template(_UIntArray) IMP::ConstVector<unsigned int>;
 %template(_ParticleArray) IMP::ConstVector<IMP::WeakPointer<Particle>, Particle* >;

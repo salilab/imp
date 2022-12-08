@@ -31,7 +31,8 @@ class Tests(IMP.test.TestCase):
             self.rbs.append(IMP.atom.create_rigid_body(mh))
         self.trans = []
         self.trans.append(IMP.algebra.Transformation3D(
-            IMP.algebra.Rotation3D(1., 0., 0., 0.), IMP.algebra.Vector3D(0., 0., 0.)))
+            IMP.algebra.Rotation3D(1., 0., 0., 0.),
+            IMP.algebra.Vector3D(0., 0., 0.)))
         self.trans.append(
             IMP.algebra.Transformation3D(
                 IMP.algebra.Rotation3D(

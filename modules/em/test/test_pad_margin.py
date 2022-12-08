@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -31,9 +30,9 @@ class Tests(IMP.test.TestCase):
         self.scene.calcRMS()
         scene_padded.calcRMS()
         # test that the centers are the same
-        padded_h = scene_padded.get_header()
+        _ = scene_padded.get_header()
         h = self.scene.get_header()
-        apix = h.get_spacing()
+        _ = h.get_spacing()
 
         scene_center = self.scene.get_centroid(0.1)
         padded_scene_center = scene_padded.get_centroid(0.1)
@@ -42,10 +41,8 @@ class Tests(IMP.test.TestCase):
         print(IMP.algebra.get_distance(padded_scene_center, scene_center))
 
         self.assertAlmostEqual(
-            IMP.algebra.get_distance(
-                padded_scene_center,
-                scene_center),
-            0,
-            1)
+            IMP.algebra.get_distance(padded_scene_center, scene_center), 0, 1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

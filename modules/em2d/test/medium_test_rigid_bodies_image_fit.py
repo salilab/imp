@@ -6,6 +6,7 @@ import IMP.atom
 import IMP.em2d
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
 
     def test_rigid_body_image_fit_restraint(self):
@@ -45,8 +46,10 @@ class Tests(IMP.test.TestCase):
         for rb in components_rbs:
             # set as the only possible orientation the one that the rigid
             # body already has
-            rb_fit.set_orientations(rb,
-                                    [rb.get_reference_frame().get_transformation_to().get_rotation()])
+            rb_ref = rb.get_reference_frame()
+            rb_fit.set_orientations(
+                rb,
+                [rb_ref.get_transformation_to().get_rotation()])
             self.assertEqual(rb_fit.get_number_of_masks(rb), n_masks,
                              "Incorrect number rigid body masks")
 

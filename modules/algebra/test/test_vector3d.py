@@ -2,9 +2,10 @@ from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import io
-import os
 import math
 import sys
+import pickle
+
 
 class Tests(IMP.test.TestCase):
 
@@ -14,9 +15,16 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v.get_squared_magnitude(), 14.0)
         self.assertAlmostEqual(v.get_magnitude(), math.sqrt(14.0), places=1)
 
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_uninit(self):
+        """Check use of uninitialized Vector3D"""
+        v = IMP.algebra.Vector3D()
+        self.assertRaises(IMP.UsageException, v.__getitem__, 0)
+
     def test_from_floats(self):
         """Check Vector3D from floats"""
-        v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
+        _ = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
 
     def test_compare(self):
         """Test that vectors can't be compared"""
@@ -65,6 +73,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v[2], 30.0)
         self.assertRaises(IndexError, lambda: v[3])
         self.assertRaises(IndexError, lambda: v[-4])
+
         def test_set(ind):
             v[ind] = 0.
         self.assertRaises(IndexError, test_set, 3)
@@ -73,11 +82,11 @@ class Tests(IMP.test.TestCase):
     def test_to_list(self):
         """Check conversion of Vector3D to list"""
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
-        l = list(v)
-        self.assertEqual(len(l), 3)
-        self.assertAlmostEqual(l[0], 1.0, delta=1e-6)
-        self.assertAlmostEqual(l[1], 2.0, delta=1e-6)
-        self.assertAlmostEqual(l[2], 3.0, delta=1e-6)
+        ls = list(v)
+        self.assertEqual(len(ls), 3)
+        self.assertAlmostEqual(ls[0], 1.0, delta=1e-6)
+        self.assertAlmostEqual(ls[1], 2.0, delta=1e-6)
+        self.assertAlmostEqual(ls[2], 3.0, delta=1e-6)
 
     def test_len(self):
         """Check Vector3D length"""
@@ -200,19 +209,34 @@ class Tests(IMP.test.TestCase):
     def test_generators(self):
         """Check the Vector3D generators"""
         # test calling since it is a bit non-trivial in SWIG
-        v = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
-        v = IMP.algebra.get_random_vector_in(
+        _ = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
+        _ = IMP.algebra.get_random_vector_in(
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
 
     def test_orth_vector(self):
         """Check get_orthogonal_vector()"""
         v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
         v2 = IMP.algebra.get_orthogonal_vector(v1)
-        self.assertLess(IMP.algebra.get_distance(v2,
-                                       IMP.algebra.Vector3D(1,1,-1)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            v2, IMP.algebra.Vector3D(1, 1, -1)), 1e-4)
         v1 = IMP.algebra.Vector3D(0, 0, 0)
         v2 = IMP.algebra.get_orthogonal_vector(v1)
         self.assertLess(IMP.algebra.get_distance(v2, v1), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Vector3D"""
+        v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
+        v2 = IMP.algebra.Vector3D(1., 2., 3.)
+        v2.foo = 'bar'
+        vdump = pickle.dumps((v1, v2))
+
+        newv1, newv2 = pickle.loads(vdump)
+        self.assertLess(IMP.algebra.get_distance(v1, newv1), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(v2, newv2), 1e-4)
+        self.assertEqual(newv2.foo, 'bar')
+
+        self.assertRaises(TypeError, v1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

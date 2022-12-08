@@ -72,6 +72,9 @@ The :mod:`ihm` Python module
 .. autoclass:: AsymUnitRange
    :members:
 
+.. autoclass:: WaterAsymUnit
+   :members:
+
 .. autoclass:: Atom
    :members:
 

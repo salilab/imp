@@ -14,6 +14,7 @@
 #include "algebra_macros.h"
 #include "GeometricPrimitiveD.h"
 #include <iostream>
+#include <boost/serialization/access.hpp>
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -39,6 +40,12 @@ class IMPALGEBRAEXPORT Segment3D : public GeometricPrimitiveD<3> {
 
  private:
   Vector3D p_[2];
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & p_[0] & p_[1];
+  }
 };
 
 IMP_LINEAR_GEOMETRY_METHODS(Segment3D, segment_3d,

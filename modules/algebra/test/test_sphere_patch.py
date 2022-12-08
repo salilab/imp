@@ -3,6 +3,8 @@ import IMP.test
 import IMP.algebra
 import math
 from io import BytesIO
+import pickle
+
 
 class Tests(IMP.test.TestCase):
 
@@ -65,6 +67,40 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(
             (sampled_centroid - expected_sampled_centroid).get_magnitude(), 0,
             delta=4 * radius / numpts ** .5)
+
+    def _assert_equal(self, a, b):
+        spherea = a.get_sphere()
+        sphereb = b.get_sphere()
+        self.assertLess(IMP.algebra.get_distance(
+            spherea.get_center(), sphereb.get_center()), 1e-4)
+        self.assertAlmostEqual(spherea.get_radius(), sphereb.get_radius(),
+                               delta=1e-4)
+        planea = a.get_plane()
+        planeb = b.get_plane()
+        self.assertLess(IMP.algebra.get_distance(
+            planea.get_normal(), planeb.get_normal()), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            planea.get_point_on_plane(), planeb.get_point_on_plane()), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of SpherePatch3D"""
+        sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 5.0)
+        plane = IMP.algebra.Plane3D(
+            IMP.algebra.Vector3D(0., 0., 0.), IMP.algebra.Vector3D(0., 1., 0.))
+        p1 = IMP.algebra.SpherePatch3D(sph, plane)
+        sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(4.0, 5.0, 6.0), 5.0)
+        plane = IMP.algebra.Plane3D(
+            IMP.algebra.Vector3D(0., 0., 0.), IMP.algebra.Vector3D(1., 0., 0.))
+        p2 = IMP.algebra.SpherePatch3D(sph, plane)
+        p2.foo = 'bar'
+        dump = pickle.dumps((p1, p2))
+
+        newp1, newp2 = pickle.loads(dump)
+        self._assert_equal(p1, newp1)
+        self._assert_equal(p2, newp2)
+        self.assertEqual(newp2.foo, 'bar')
+
+        self.assertRaises(TypeError, p1._set_from_binary, 42)
 
 
 if __name__ == '__main__':

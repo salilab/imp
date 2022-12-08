@@ -54,7 +54,8 @@ class Tests(IMP.test.TestCase):
 
     def test_particle_to_sample_list(self):
         """Test ParticleToSampleList"""
-        p = IMP.pmi.tools.ParticleToSampleList()
+        with IMP.allow_deprecated():
+            p = IMP.pmi.tools.ParticleToSampleList()
         self.assertEqual(p.label, 'None')
         self.assertRaises(TypeError, p.add_particle, 'P0', 'bad_type', 1, 'foo')
 

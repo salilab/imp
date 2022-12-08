@@ -60,23 +60,23 @@ void read_input_file(
 }
 
 int main(int argc, char** argv) {
-  // print command
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   // input parsing
   std::string out_file_name;
   bool oriented_potentials = false;
   bool normalize = false;
   std::string potentials_file, receptor_potentials_file, ligand_potentials_file;
   po::options_description desc(
-      "Usage: <pdb1> <pdb2> [trans_file] OR <filenames.txt>");
+      "Usage: <pdb1> <pdb2> [trans_file] OR <filenames.txt>\n"
+      "\nOption 1: compute the SOAP score of the interface between pdb1\n"
+      "and pdb2 for a set of transformations in the trans_file.\n\n"
+      "Option 2: compute SOAP scores for each pair of PDB file names in\n"
+      "the input file filenames.txt.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
   desc.add_options()
-    ("help",
-     "Option 1: compute the SOAP score of the interface between pdb1 and pdb2 \
-for a set of transformations in the trans_file.\n Option 2: compute SOAP scores for \
-each pair of PDB file names in the input file filenames.txt.")
-    ("input-files", po::value<std::vector<std::string> >(), "input PDBs")
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("oriented_potentials,r", "use orientation dependent potentials \
 (default = false). Please provide potentials file.")
     ("potentials_file,f", po::value<std::string>(&potentials_file), "potentials file")
@@ -87,14 +87,28 @@ each pair of PDB file names in the input file filenames.txt.")
      po::value<std::string>(&out_file_name)->default_value("soap_score.res"),
      "output file name, default name soap_score.res")
     ;
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input PDBs");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                 .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
 
   // parse filenames
   std::vector<std::string> files;

@@ -14,7 +14,8 @@ class Tests(IMP.test.TestCase):
                 a = IMP.atom.Atom(m, p)
                 r = IMP.atom.Residue(a.get_parent())
                 rind = r.get_index()
-                self.assert_(a.get_atom_type() == IMP.atom.AT_CG or rind == 433)
+                self.assertTrue(
+                    a.get_atom_type() == IMP.atom.AT_CG or rind == 433)
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:
@@ -38,8 +39,8 @@ class Tests(IMP.test.TestCase):
                 at = a.get_atom_type()
                 r = IMP.atom.Residue(a.get_parent())
                 rind = r.get_index()
-                self.assert_(at == IMP.atom.AT_CG or at == IMP.atom.AT_CG1
-                             or rind == 433)
+                self.assertTrue(at == IMP.atom.AT_CG or at == IMP.atom.AT_CG1
+                                or rind == 433)
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:
@@ -64,8 +65,8 @@ class Tests(IMP.test.TestCase):
                 a = IMP.atom.Atom(m, p)
                 r = IMP.atom.Residue(a.get_parent())
                 rind = r.get_index()
-                self.assert_(a.get_atom_type() == IMP.atom.AT_CG \
-                             and rind == 433)
+                self.assertTrue(a.get_atom_type() == IMP.atom.AT_CG
+                                and rind == 433)
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:
@@ -88,8 +89,8 @@ class Tests(IMP.test.TestCase):
                 a = IMP.atom.Atom(m, p)
                 r = IMP.atom.Residue(a.get_parent())
                 rind = r.get_index()
-                self.assert_((a.get_atom_type() == IMP.atom.AT_CG) \
-                             ^ (rind == 433))
+                self.assertTrue((a.get_atom_type() == IMP.atom.AT_CG)
+                                ^ (rind == 433))
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:
@@ -112,8 +113,8 @@ class Tests(IMP.test.TestCase):
                 a = IMP.atom.Atom(m, p)
                 r = IMP.atom.Residue(a.get_parent())
                 rind = r.get_index()
-                self.assert_(a.get_atom_type() != IMP.atom.AT_CG
-                             and rind == 433)
+                self.assertTrue(a.get_atom_type() != IMP.atom.AT_CG
+                                and rind == 433)
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:
@@ -144,9 +145,9 @@ class Tests(IMP.test.TestCase):
             r = IMP.atom.Residue(a.get_parent())
             rind = r.get_index()
             at = a.get_atom_type()
-            self.assert_(at != IMP.atom.AT_CG
-                         and (rind == 437 or rind == 440)
-                         and not (rind == 440 and at == IMP.atom.AT_C))
+            self.assertTrue(at != IMP.atom.AT_CG
+                            and (rind == 437 or rind == 440)
+                            and not (rind == 440 and at == IMP.atom.AT_C))
 
     def test_modify_after(self):
         """Modifying a selection after set op should not affect the result"""
@@ -156,7 +157,7 @@ class Tests(IMP.test.TestCase):
             for p in ps:
                 a = IMP.atom.Atom(m, p)
                 at = a.get_atom_type()
-                self.assert_(at == IMP.atom.AT_CG)
+                self.assertEqual(at, IMP.atom.AT_CG)
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         with self.open_input_file("mini.pdb") as fh:

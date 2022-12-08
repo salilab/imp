@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import pickle
 
 class TestVisitor(IMP.core.HierarchyVisitor):
     def __init__(self, descend=True):
@@ -84,6 +85,23 @@ class Tests(IMP.test.TestCase):
         v = IMP.core.HierarchyCounter()
         IMP.core.visit_depth_first(ppd, v)
         self.assertEqual(v.get_count(), 9)
+
+    def test_hierarchy_counter_pickle(self):
+        """Test (un-)pickle of HierarchyCounter"""
+        v1 = IMP.core.HierarchyCounter()
+        v1(IMP.core.Hierarchy())
+        self.assertEqual(v1.get_count(), 1)
+        v2 = IMP.core.HierarchyCounter()
+        self.assertEqual(v2.get_count(), 0)
+        v2.foo = 'bar'
+        dump = pickle.dumps((v1, v2))
+
+        newv1, newv2 = pickle.loads(dump)
+        self.assertEqual(v1.get_count(), newv1.get_count())
+        self.assertEqual(v2.get_count(), newv2.get_count())
+        self.assertEqual(newv2.foo, 'bar')
+
+        self.assertRaises(TypeError, v1._set_from_binary, 42)
 
     def test_breadth_visit_count(self):
         """Check breadth-first hierarchy traversal"""

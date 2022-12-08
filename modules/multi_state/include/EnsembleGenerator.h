@@ -24,7 +24,7 @@ public:
   EnsembleGenerator(unsigned int population_size,
                     unsigned int best_k,
                     Vector<MultiStateModelScore*>& scorers,
-                    double min_weight_threshold);
+                    double min_weight_threshold=0.05);
 
   void generate(unsigned int multi_state_model_size);
 

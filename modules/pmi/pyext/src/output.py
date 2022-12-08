@@ -1798,9 +1798,14 @@ def plot_field_histogram(name, values_lists, valuename=None, bins=40,
             label = leg_names[nv]
         else:
             label = str(nv)
-        plt.hist(
-            [float(y) for y in values], bins=bins, color=col,
-            density=normalized, histtype='step', lw=4, label=label)
+        try:
+            plt.hist(
+                [float(y) for y in values], bins=bins, color=col,
+                density=normalized, histtype='step', lw=4, label=label)
+        except AttributeError:
+            plt.hist(
+                [float(y) for y in values], bins=bins, color=col,
+                normed=normalized, histtype='step', lw=4, label=label)
 
     # plt.title(name,size="xx-large")
     plt.tick_params(labelsize=12, pad=10)
@@ -1842,7 +1847,7 @@ def plot_fields_box_plots(name, values, positions, frequencies=None,
 
     bps = []
     fig = plt.figure(figsize=(float(len(positions))*scale_plot_length, 5.0))
-    fig.canvas.set_window_title(name)
+    fig.canvas.manager.set_window_title(name)
 
     ax1 = fig.add_subplot(111)
 
@@ -1880,7 +1885,7 @@ def plot_xy_data(x, y, title=None, out_fn=None, display=True,
     fig, ax = plt.subplots(nrows=1)
     fig.set_size_inches(8, 4.5)
     if title is not None:
-        fig.canvas.set_window_title(title)
+        fig.canvas.manager.set_window_title(title)
 
     ax.plot(x, y, color='r')
     if set_plot_yaxis_range is not None:

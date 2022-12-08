@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -39,6 +40,37 @@ class Tests(IMP.test.TestCase):
         er = r / rot
         for c, exp_c in zip(er.get_quaternion(), [1., 0., 0., 0.]):
             self.assertAlmostEqual(c, exp_c, delta=1e-6)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Ellipsoid3D"""
+        r1 = IMP.algebra.get_rotation_about_axis(
+                 IMP.algebra.Vector3D(0., 0., 0.), .1)
+        e1 = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(0.0, 1.0, 2.0),
+                                     5.0, 8.0, 10.0, r1)
+        r2 = IMP.algebra.get_rotation_about_axis(
+                 IMP.algebra.Vector3D(0., 1., 0.), .1)
+        e2 = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(1.0, 2.0, 0.0),
+                                     6.0, 9.0, 11.0, r2)
+        e2.foo = 'bar'
+        dump = pickle.dumps((e1, e2))
+
+        newe1, newe2 = pickle.loads(dump)
+        self._assert_equal(e1, newe1)
+        self._assert_equal(e2, newe2)
+        self.assertEqual(newe2.foo, 'bar')
+
+    def _assert_equal(self, a, b):
+        ta = a.get_reference_frame().get_transformation_to()
+        tb = b.get_reference_frame().get_transformation_to()
+        self.assertLess(
+            IMP.algebra.get_distance(ta.get_rotation(),
+                                     tb.get_rotation()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(ta.get_translation(),
+                                     tb.get_translation()), 1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(a.get_radii(), b.get_radii()), 1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

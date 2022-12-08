@@ -23,19 +23,81 @@ def setup_system(coords, use_container):
     if use_container == 'pair':
         lpc = IMP.container.ListPairContainer(m, pairs)
         rs = IMP.container.PairsRestraint(hps, lpc)
+        rs.set_weight(0.7)
     elif use_container == 'singleton':
         sps = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), (0, 0, 0))
         singles = [item for subl in pairs for item in subl]
         lsc = IMP.container.ListSingletonContainer(m, singles)
         rs = IMP.container.SingletonsRestraint(sps, lsc)
+        rs.set_weight(0.8)
     else:
         prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
+        prs[0].set_weight(0.1)
+        prs[1].set_weight(0.2)
+        # Split restraints between two RestraintSets
+        rs1 = IMP.RestraintSet(m)
+        rs1.set_weight(2.3)
+        rs1.add_restraints(prs[:2])
+        rs2 = IMP.RestraintSet(m)
+        rs2.set_weight(1.4)
+        rs2.add_restraints(prs[2:])
+        # Test scoring of nested RestraintSets
         rs = IMP.RestraintSet(m)
-        rs.add_restraints(prs)
+        rs.add_restraints([rs1, rs2])
+        rs.set_weight(0.8)
     mc.set_scoring_function(rs)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
+    # No restraints on ps[9], so this should not change the score
+    ms.append(IMP.core.BallMover(m, ps[9], 0.05))
+    mv = IMP.core.SerialMover(ms)
+    mc.add_mover(mv)
+    # Always reject upwards moves
+    mc.set_kt(0.)
+    mc.set_return_best(False)
+    return m, mc
+
+
+def setup_rigid_body_system(coords):
+    # Similar to setup_system, but group the particles into rigid bodies
+    m = IMP.Model()
+    mc = IMP.core.MonteCarlo(m)
+    ps = []
+    for i in range(len(coords)):
+        p = IMP.Particle(m)
+        d = IMP.core.XYZR.setup_particle(p)
+        ps.append(d)
+        d.set_coordinates(coords[i])
+        d.set_radius(.1)
+    # Split system into two rigid bodies
+    ps1, ps2 = ps[:len(ps)//2], ps[len(ps)//2:]
+    rb1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps1)
+    rb1.set_coordinates_are_optimized(True)
+    rb2 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps2)
+    rb2.set_coordinates_are_optimized(True)
+
+    # Create both inter- and intra-body distance restraints
+    hps = IMP.core.HarmonicDistancePairScore(1, 100)
+    pairs = ((ps1[0], ps2[0]), (ps1[1], ps2[1]), (ps1[2], ps1[3]))
+    prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
+    prs[0].set_weight(0.1)
+    prs[1].set_weight(0.2)
+    rs = IMP.RestraintSet(m)
+    rs.set_weight(0.9)
+    rs.add_restraints(prs)
+    mc.set_scoring_function(rs)
+
+    # Also test with non-rigid members
+    rb1.set_is_rigid_member(ps1[0], False)
+    rb2.set_is_rigid_member(ps2[0], False)
+    ps1[0].set_coordinates_are_optimized(True)
+    ps2[0].set_coordinates_are_optimized(True)
+
+    # Move the two rigid bodies and the two rigid members
+    ms = [IMP.core.BallMover(m, x, 0.05) for x in (ps1[0], ps2[0])]
+    ms.append(IMP.core.RigidBodyMover(m, rb1, 0.05, 0.05))
+    ms.append(IMP.core.RigidBodyMover(m, rb2, 0.05, 0.05))
     mv = IMP.core.SerialMover(ms)
     mc.add_mover(mv)
     # Always reject upwards moves
@@ -122,6 +184,24 @@ class Tests(IMP.test.TestCase):
         coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
         m1, mc1 = setup_system(coords, use_container='singleton')
         m2, mc2 = setup_system(coords, use_container='singleton')
+
+        # Same seeed, same system, so we should get identical trajectories
+        IMP.random_number_generator.seed(99)
+        mc1_score = mc1.optimize(100)
+
+        mc2.set_score_moved(True)
+        IMP.random_number_generator.seed(99)
+        mc2_score = mc2.optimize(100)
+
+        self.assertAlmostEqual(mc1_score, mc2_score, delta=1e-2)
+
+    def test_rigid_body_moved_same_trajectory(self):
+        """MonteCarlo trajectory should not be changed by set_score_moved()
+           when using rigid bodies"""
+        bb = IMP.algebra.get_unit_bounding_box_3d()
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
+        m1, mc1 = setup_rigid_body_system(coords)
+        m2, mc2 = setup_rigid_body_system(coords)
 
         # Same seeed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)

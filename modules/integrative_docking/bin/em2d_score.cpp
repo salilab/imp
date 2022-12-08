@@ -29,8 +29,6 @@ using namespace IMP::integrative_docking::internal;
 #include <fstream>
 
 int main(int argc, char** argv) {
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
   // input parameters
   float resolution = 10.0;
   int projection_number = 40;
@@ -40,11 +38,13 @@ int main(int argc, char** argv) {
   std::vector<std::string> image_files;
   std::string rpdb, lpdb, trans_file, out_file_name;
   po::options_description desc(
-      "Usage: <pdb1> <pdb2> <trans file> <image1> \
-<image2>...");
-  desc.add_options()("help", "produce help message")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input PDB and image files")(
+      "Usage: <pdb1> <pdb2> <trans file> <image1> <image2>...\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
+      "Options");
+  desc.add_options()
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")(
       "resolution,r", po::value<float>(&resolution)->default_value(10.0),
       "image resolution (default = 10.0)")(
       "pixel-size,s", po::value<float>(&pixel_size)->default_value(2.2),
@@ -61,13 +61,30 @@ CA atoms only (default = false)")(
       "output_file,o",
       po::value<std::string>(&out_file_name)->default_value("em2d_score.res"),
       "output file name, default name em2d_score.res");
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+     ("input-files", po::value<std::vector<std::string> >(),
+      "input PDB and image files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv)
+                  .options(cmdline_options).positional(p).run(),
       vm);
   po::notify(vm);
+
+  if (vm.count("version")) {
+    std::cerr << "Version: \""
+              << IMP::integrative_docking::get_module_version() << "\""
+              << std::endl;
+    return 0;
+  }
+
   if (vm.count("help")) {
     std::cout << desc << "\n";
     return 0;

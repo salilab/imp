@@ -289,7 +289,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   //! Get the unweighted score from the last-but-one time it was evaluated
   /** \see get_last_score
     */
-  virtual double get_last_last_score() const { return last_last_score_; }
+  double get_last_last_score() const { return last_last_score_; }
+
+  //! Return whether this restraint wraps a number of other restraints
+  bool get_is_aggregate() const { return is_aggregate_; }
 
   /** Return whether this restraint violated its maximum last time it was
       evaluated.
@@ -327,6 +330,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
+
+ protected:
+  bool is_aggregate_;
 
  private:
   ScoringFunction *create_internal_scoring_function() const;

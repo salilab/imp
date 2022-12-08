@@ -27,6 +27,12 @@ import warnings
 import math
 
 
+class _MockMPIValues(object):
+    """Replace samplers.MPI_values when in test mode"""
+    def get_percentile(self, name):
+        return 0.
+
+
 class _RMFRestraints(object):
     """All restraints that are written out to the RMF file"""
     def __init__(self, model, user_restraints):
@@ -59,19 +65,17 @@ class _RMFRestraints(object):
             raise IndexError("Out of range")
 
 
-class ReplicaExchange0(object):
+class ReplicaExchange(object):
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
     Produces trajectory RMF files, best PDB structures,
     and output stat files.
     """
     def __init__(self, model, root_hier,
-                 sample_objects=None,  # DEPRECATED
                  monte_carlo_sample_objects=None,
                  molecular_dynamics_sample_objects=None,
                  output_objects=[],
                  rmf_output_objects=None,
-                 crosslink_restraints=None,  # DEPRECATED
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
                  simulated_annealing_minimum_temperature=1.0,
@@ -109,13 +113,11 @@ class ReplicaExchange0(object):
         """Constructor.
            @param model The IMP model
            @param root_hier Top-level (System)hierarchy
-           @param monte_carlo_sample_objects Objects for MC sampling; a list of
-                  structural components (generally the representation) that
-                  will be moved and restraints with parameters that need to
-                  be sampled.
-                  For PMI2: just pass flat list of movers
-           @param molecular_dynamics_sample_objects Objects for MD sampling
-                  For PMI2: just pass flat list of particles
+           @param monte_carlo_sample_objects Objects for MC sampling, which
+                  should generally be a simple list of Mover objects, e.g.
+                  from DegreesOfFreedom.get_movers().
+           @param molecular_dynamics_sample_objects Objects for MD sampling,
+                  which should generally be a simple list of particles.
            @param output_objects A list of structural objects and restraints
                   that will be included in output (ie, statistics "stat"
                   files). Any object that provides a get_output() method
@@ -199,20 +201,10 @@ class ReplicaExchange0(object):
         else:
             raise TypeError("Must provide System hierarchy (root_hier)")
 
-        if crosslink_restraints:
-            IMP.handle_use_deprecated(
-                    "crosslink_restraints is deprecated and is ignored; "
-                    "all cross-link restraints should be automatically "
-                    "added to output RMF files")
         self._rmf_restraints = _RMFRestraints(model, None)
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
         self.vars["self_adaptive"] = self_adaptive
-        if sample_objects is not None:
-            IMP.handle_use_deprecated(
-                "sample_objects is deprecated; use monte_carlo_sample_objects "
-                "(or molecular_dynamics_sample_objects) instead")
-            self.monte_carlo_sample_objects += sample_objects
         self.molecular_dynamics_sample_objects = \
             molecular_dynamics_sample_objects
         self.replica_exchange_object = replica_exchange_object
@@ -269,7 +261,7 @@ class ReplicaExchange0(object):
             self.vars["geometries"].extend(geometries)
 
     def show_info(self):
-        print("ReplicaExchange0: it generates initial.*.rmf3, stat.*.out, "
+        print("ReplicaExchange: it generates initial.*.rmf3, stat.*.out, "
               "rmfs/*.rmf3 for each replica ")
         print("--- it stores the best scoring pdb models in pdbs/")
         print("--- the stat.*.out and rmfs/*.rmf3 are saved only at the "
@@ -496,6 +488,8 @@ class ReplicaExchange0(object):
 
         if not self.test_mode:
             mpivs = IMP.pmi.samplers.MPI_values(self.replica_exchange_object)
+        else:
+            mpivs = _MockMPIValues()
 
         self._add_provenance(sampler_md, sampler_mc)
 
@@ -579,6 +573,11 @@ class ReplicaExchange0(object):
         if not self.test_mode:
             print("closing production rmf files")
             output.close_rmf(rmfname)
+
+
+@IMP.deprecated_object("2.18", "Use ReplicaExchange instead")
+class ReplicaExchange0(ReplicaExchange):
+    pass
 
 
 class BuildSystem(object):
@@ -943,7 +942,7 @@ class AnalysisReplicaExchange0(object):
         self._protocol_output.append((p, p._last_state))
 
     def get_modeling_trajectory(self,
-                                score_key="SimplifiedModel_Total_Score_None",
+                                score_key="Total_Score",
                                 rmf_file_key="rmf_file",
                                 rmf_file_frame_key="rmf_frame_index",
                                 outputdir="./",
@@ -1027,7 +1026,7 @@ class AnalysisReplicaExchange0(object):
         return newdict
 
     def clustering(self,
-                   score_key="SimplifiedModel_Total_Score_None",
+                   score_key="Total_Score",
                    rmf_file_key="rmf_file",
                    rmf_file_frame_key="rmf_frame_index",
                    state_number=0,
@@ -1057,7 +1056,6 @@ class AnalysisReplicaExchange0(object):
         If you don't pass a specific copy number
 
         @param score_key              The score for ranking models.
-               Use "Total_Score" instead of default for PMI2.
         @param rmf_file_key           Key pointing to RMF filename
         @param rmf_file_frame_key     Key pointing to RMF frame number
         @param state_number           State number to analyze
@@ -1118,17 +1116,7 @@ class AnalysisReplicaExchange0(object):
                 self.stat_files, self.number_of_processes)[self.rank]
 
             # read ahead to check if you need the PMI2 score key instead
-            po = IMP.pmi.output.ProcessOutput(my_stat_files[0])
-            orig_score_key = score_key
-            if score_key not in po.get_keys():
-                if 'Total_Score' in po.get_keys():
-                    score_key = 'Total_Score'
-                    warnings.warn(
-                        "Using 'Total_Score' instead of "
-                        "'SimplifiedModel_Total_Score_None' for the score key",
-                        IMP.pmi.ParameterWarning)
-            for k in [orig_score_key, score_key, rmf_file_key,
-                      rmf_file_frame_key]:
+            for k in (score_key, rmf_file_key, rmf_file_frame_key):
                 if k in feature_keys:
                     warnings.warn(
                             "no need to pass " + k + " to feature_keys.",

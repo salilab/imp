@@ -55,7 +55,11 @@ void get_random_numbers_normal
   //struct timeval t_time; // DEBUG
   //gettimeofday(&start_time, 0); // DEBUG
 #ifdef IMP_KERNEL_CUDA_LIB
-  IMPcuda::kernel::internal::init_gpu_rng_once(get_random_seed());
+  static unsigned last_seeded = 0;
+  IMPcuda::kernel::internal::init_gpu_rng_once(
+    random_number_generator.get_last_seed(),
+    random_number_generator.get_seed_counter(),
+    last_seeded);
   IMPcuda::kernel::internal::get_random_numbers_normal_cuda
     (&v[0], n, mean, stddev);
 #else
@@ -89,7 +93,11 @@ void get_random_numbers_uniform
   if(n>v.size())
     v.resize(n);
 #ifdef IMP_KERNEL_CUDA_LIB
-  IMPcuda::kernel::internal::init_gpu_rng_once(get_random_seed());
+  static unsigned last_seeded = 0;
+  IMPcuda::kernel::internal::init_gpu_rng_once(
+    random_number_generator.get_last_seed(),
+    random_number_generator.get_seed_counter(),
+    last_seeded);
   IMPcuda::kernel::internal::get_random_numbers_uniform_cuda (&v[0], n);
 #else
   internal::get_random_numbers_uniform_boost(&v[0], n);
@@ -134,7 +142,10 @@ get_random_float_uniform()
   const static unsigned int cache_n=20000000;
   static IMP::Vector<float> cache;
   static unsigned int i=0;
-  if(i>=cache.size()){
+  static unsigned last_seeded = 0;
+  if (i >= cache.size()
+      || last_seeded != random_number_generator.get_seed_counter()) {
+    last_seeded = random_number_generator.get_seed_counter();
     get_random_numbers_uniform(cache, cache_n);
     i=0;
   }
@@ -165,7 +176,10 @@ get_random_double_uniform()
   const static unsigned int cache_n=2000000;
   static IMP::Vector<double> cache;
   static unsigned int i=0;
-  if(i>=cache.size()){
+  static unsigned last_seeded = 0;
+  if (i >= cache.size()
+      || last_seeded != random_number_generator.get_seed_counter()) {
+    last_seeded = random_number_generator.get_seed_counter();
     get_random_numbers_uniform(cache, cache_n);
     i=0;
   }

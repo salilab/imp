@@ -15,6 +15,7 @@
 #include "showable_macros.h"
 #include "value_macros.h"
 #include "Value.h"
+#include <boost/serialization/access.hpp>
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -44,6 +45,11 @@ class IMPKERNELEXPORT VersionInfo : public Value {
 
  private:
   std::string module_, version_;
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & module_ & version_;
+  }
 };
 IMP_VALUES(VersionInfo, VersionInfos);
 

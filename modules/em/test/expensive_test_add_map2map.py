@@ -2,8 +2,6 @@
 
 import IMP.em
 import IMP.test
-import os
-import sys
 
 
 class Tests(IMP.test.TestCase):
@@ -17,7 +15,8 @@ class Tests(IMP.test.TestCase):
         self.particles_p = []
         self.rad_key = IMP.core.XYZR.get_radius_key()
         self.mass_key = IMP.FloatKey("mass")
-        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.], [4., 5., 5., 1., 1.]]:
+        for val in [[9., 5., 5., 1., 1.], [12., 9., 4., 1., 1.],
+                    [4., 5., 5., 1., 1.]]:
             p = IMP.Particle(self.mdl)
             IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(
                 IMP.algebra.Vector3D(val[0], val[1], val[2]), val[3]))
@@ -71,5 +70,7 @@ class Tests(IMP.test.TestCase):
                 expected_val += grid2.get_value(loc)
             self.assertAlmostEqual(expected_val, merged_grid.get_value(i),
                                    delta=0.001)
+
+
 if __name__ == '__main__':
     IMP.test.main()

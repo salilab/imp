@@ -33,6 +33,13 @@ struct CHARMMBondParameters {
   IMP_SHOWABLE_INLINE(CHARMMBondParameters, {
     out << "force constant: " << force_constant << "; ideal value: " << ideal;
   });
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & force_constant & ideal;
+  }
 };
 
 IMP_VALUES(CHARMMBondParameters, CHARMMBondParametersList);
@@ -47,6 +54,13 @@ struct CHARMMDihedralParameters {
     out << "force constant: " << force_constant
         << "; multiplicity: " << multiplicity << "; ideal value: " << ideal;
   });
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & force_constant & multiplicity & ideal;
+  }
 };
 
 IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);

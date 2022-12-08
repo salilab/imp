@@ -23,7 +23,7 @@ IMPMULTISTATE_BEGIN_NAMESPACE
 EnsembleGenerator::EnsembleGenerator(unsigned int population_size,
                                      unsigned int best_k,
                                      Vector<MultiStateModelScore*>& scorers,
-                                     double min_weight_threshold = 0.05) :
+                                     double min_weight_threshold) :
   N_(population_size), K_(best_k), scorers_(scorers),
   min_weight_threshold_(min_weight_threshold) {
 }

@@ -89,6 +89,12 @@ by telling CMake where the Homebrew Python headers and library
 are, by adding to your CMake invocation something like
 `-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
 
+## Wrong version of Python found {#cmake_pyver}
+
+CMake will attempt to use the newest version of Python available on your
+machine. If you want to use an older version, one way to do this is to set
+the Python executable you want to use, e.g. `-DPython3_EXECUTABLE=/usr/local/bin/python3`.
+
 ## CMake reports that it found a dependency but then reports failed {#cmake_compile}
 
 For each dependency CMake will first try to find the header and library
@@ -100,9 +106,10 @@ found). To fix issues like this, check the CMake error log in
 `CMakeFiles/CMakeError.log` to see what failed. In some cases this can be
 fixed by modifying the flags passed to the C or C++ compiler. For example,
 recent versions of [Protobuf](https://developers.google.com/protocol-buffers/)
-fail on some systems because they require C++11 support, and this can be
-fixed by adding to your CMake invocation
-`-DCMAKE_CXX_FLAGS="-std=c++11"`
+or [CGAL](https://www.cgal.org/)
+fail on some systems because they require C++17 support, and this
+can be fixed by adding to your CMake invocation
+`-DCMAKE_CXX_FLAGS="-std=c++17"`
 
 ## Wrong version of helper binaries found {#cmake_path}
 

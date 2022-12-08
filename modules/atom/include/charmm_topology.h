@@ -13,6 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include <IMP/atom/atom_config.h>
+#include <boost/serialization/access.hpp>
 
 #include <string>
 #include <vector>
@@ -30,7 +31,15 @@ class CHARMMAtomTopology {
   std::string charmm_type_;
   double charge_;
 
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & name_ & charmm_type_ & charge_;
+  }
+
  public:
+  CHARMMAtomTopology() {}
+
   CHARMMAtomTopology(std::string name) : name_(name) {}
 
   CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)
@@ -328,6 +337,12 @@ IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
     CHARMMAtomTopology objects with add_atom()). However, they are more
     commonly populated automatically by reading a CHARMM topology file
     (CHARMMParameters::get_residue_topology()).
+
+    An ideal topology is intended to be created just once for each residue type.
+    To actually use a topology, create a CHARMMResidueTopology object, which
+    can be modified if necessary by adding/removing individual atoms, or
+    applying patches to, for example, modify terminal residues or
+    create disulfide bridges.
  */
 class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {

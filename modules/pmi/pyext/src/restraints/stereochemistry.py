@@ -13,7 +13,7 @@ from operator import itemgetter
 import math
 
 
-class ConnectivityRestraint(object):
+class ConnectivityRestraint(IMP.pmi.restraints.RestraintBase):
     """Create a restraint between consecutive TempResidue objects
        or an entire PMI Molecule object."""
 
@@ -23,7 +23,7 @@ class ConnectivityRestraint(object):
                  disorderedlength=False,
                  upperharmonic=True,
                  resolution=1,
-                 label="None"):
+                 label=None):
         """
         @param objects - a list of hierarchies, PMI TempResidues OR a
                single Molecule
@@ -42,19 +42,17 @@ class ConnectivityRestraint(object):
         @param label - A string to identify this restraint in the
                output/stat file
         """
-        self.label = label
-        self.weight = 1.0
 
         hiers = IMP.pmi.tools.input_adaptor(objects, resolution)
         if len(hiers) > 1:
             raise Exception("ConnectivityRestraint: only pass stuff from "
                             "one Molecule, please")
         hiers = hiers[0]
+        m = list(hiers)[0].get_model()
+        super(ConnectivityRestraint, self).__init__(m, label=label)
 
         self.kappa = 10  # spring constant used for the harmonic restraints
-        self.m = list(hiers)[0].get_model()
         SortedSegments = []
-        self.rs = IMP.RestraintSet(self.m, "connectivity_restraint")
         for h in hiers:
             try:
                 start = IMP.atom.Hierarchy(h).get_children()[0]
@@ -127,35 +125,12 @@ class ConnectivityRestraint(object):
                 pt1 = first.get_particle()
                 self.particle_pairs.append((pt0, pt1))
                 r = IMP.core.PairRestraint(
-                    self.m, dps, (pt0.get_index(), pt1.get_index()))
+                    self.model, dps, (pt0.get_index(), pt1.get_index()))
 
                 print("Adding sequence connectivity restraint between",
                       pt0.get_name(), " and ", pt1.get_name(), 'of distance',
                       optdist)
                 self.rs.add_restraint(r)
-
-    def set_label(self, label):
-        self.label = label
-
-    def get_weight(self):
-        return self.weight
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
-
-    def get_output(self):
-        output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["ConnectivityRestraint_" + self.label] = str(score)
-        return output
 
     def get_num_restraints(self):
         """ Returns number of connectivity restraints """
@@ -165,17 +140,15 @@ class ConnectivityRestraint(object):
         """ Returns the list of connected particles pairs """
         return self.particle_pairs
 
-    def evaluate(self):
-        return self.weight * self.rs.unprotected_evaluate(None)
 
-
-class ExcludedVolumeSphere(object):
+class ExcludedVolumeSphere(IMP.pmi.restraints.RestraintBase):
     """A class to create an excluded volume restraint for a set of particles
        at a given resolution.
     Can be initialized as a bipartite restraint between two sets of particles.
     # Potential additional function: Variable resolution for each PMI object.
     Perhaps passing selection_tuples with (PMI_object, resolution)
     """
+    _include_in_rmf = True
 
     def __init__(self,
                  included_objects,
@@ -196,9 +169,7 @@ class ExcludedVolumeSphere(object):
         @param kappa Restraint strength
         """
 
-        self.weight = 1.0
         self.kappa = kappa
-        self.label = "None"
         self.cpc = None
         bipartite = False
 
@@ -217,15 +188,16 @@ class ExcludedVolumeSphere(object):
         # perform selection
         if hierarchies is None:
             raise Exception("Must at least pass included objects")
-        self.mdl = hierarchies[0].get_model()
+        mdl = hierarchies[0].get_model()
+        super(ExcludedVolumeSphere, self).__init__(mdl)
+
         included_ps = [h.get_particle() for h in hierarchies]
         if bipartite:
             other_ps = [h.get_particle() for h in other_hierarchies]
 
         # setup score
-        self.rs = IMP.RestraintSet(self.mdl, 'excluded_volume')
         ssps = IMP.core.SoftSpherePairScore(self.kappa)
-        lsa = IMP.container.ListSingletonContainer(self.mdl)
+        lsa = IMP.container.ListSingletonContainer(self.model)
         lsa.add(IMP.get_indexes(included_ps))
 
         # setup close pair container
@@ -234,7 +206,7 @@ class ExcludedVolumeSphere(object):
             self.cpc = IMP.container.ClosePairContainer(lsa, 0.0, rbcpf, 10.0)
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
         else:
-            other_lsa = IMP.container.ListSingletonContainer(self.mdl)
+            other_lsa = IMP.container.ListSingletonContainer(self.model)
             other_lsa.add(IMP.get_indexes(other_ps))
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
@@ -248,54 +220,28 @@ class ExcludedVolumeSphere(object):
     def add_excluded_particle_pairs(self, excluded_particle_pairs):
         # add pairs to be filtered when calculating the score
         inverted = [(p1, p0) for p0, p1 in excluded_particle_pairs]
-        lpc = IMP.container.ListPairContainer(self.mdl)
+        lpc = IMP.container.ListPairContainer(self.model)
         lpc.add(IMP.get_indexes(excluded_particle_pairs))
         lpc.add(IMP.get_indexes(inverted))
         icpf = IMP.container.InContainerPairFilter(lpc)
         self.cpc.add_pair_filter(icpf)
 
-    def set_label(self, label):
-        self.label = label
 
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs,
-                                             add_to_rmf=True)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
-
-    def get_output(self):
-        output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["ExcludedVolumeSphere_" + self.label] = str(score)
-        return output
-
-    def evaluate(self):
-        return self.weight * self.rs.unprotected_evaluate(None)
-
-
-class HelixRestraint(object):
+class HelixRestraint(IMP.pmi.restraints.RestraintBase):
     """Enforce ideal Helix dihedrals and bonds for a selection
        at resolution 0"""
     def __init__(self,
                  hierarchy,
                  selection_tuple,
                  weight=1.0,
-                 label=''):
+                 label=None):
         """Constructor
         @param hierarchy the root node
         @param selection_tuple (start, stop, molname, copynum=0)
         @param weight
         """
-        self.mdl = hierarchy.get_model()
-        self.rs = IMP.RestraintSet(self.mdl)
-        self.weight = weight
-        self.label = label
+        m = hierarchy.get_model()
+        super(HelixRestraint, self).__init__(m, weight=weight)
         start = selection_tuple[0]
         stop = selection_tuple[1]
         mol = selection_tuple[2]
@@ -308,28 +254,11 @@ class HelixRestraint(object):
             residue_indexes=range(start, stop+1))
         ps = sel.get_selected_particles(with_representation=False)
         res = [IMP.atom.Residue(p) for p in ps]
-        self.rs = IMP.RestraintSet(self.mdl, self.weight)
         self.r = IMP.atom.HelixRestraint(res)
         self.rs.add_restraint(self.r)
         print('Created helix %s.%i.%i-%i with %i dihedrals and %i bonds'
               % (mol, copy_index, start, stop, self.get_number_of_bonds(),
                  self.get_number_of_dihedrals()))
-
-    def set_label(self, label):
-        self.label = label
-
-    def get_weight(self):
-        return self.weight
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
 
     def get_number_of_bonds(self):
         return self.r.get_number_of_bonds()
@@ -337,18 +266,8 @@ class HelixRestraint(object):
     def get_number_of_dihedrals(self):
         return self.r.get_number_of_dihedrals()
 
-    def evaluate(self):
-        return self.weight * self.rs.unprotected_evaluate(None)
 
-    def get_output(self):
-        output = {}
-        score = self.evaluate()
-        output["_TotalScore"] = str(score)
-        output["HelixRestraint_" + self.label] = str(score)
-        return output
-
-
-class ResidueBondRestraint(object):
+class ResidueBondRestraint(IMP.pmi.restraints.RestraintBase):
     """ Add bond restraint between pair of consecutive
     residues/beads to enforce the stereochemistry.
     """
@@ -362,11 +281,9 @@ class ResidueBondRestraint(object):
         """
 
         particles = IMP.pmi.tools.input_adaptor(objects, 1, flatten=True)
-        self.m = particles[0].get_model()
+        m = particles[0].get_model()
+        super(ResidueBondRestraint, self).__init__(m)
 
-        self.rs = IMP.RestraintSet(self.m, "Bonds")
-        self.weight = 1
-        self.label = "None"
         self.pairslist = []
 
         if not jitter:
@@ -387,49 +304,24 @@ class ResidueBondRestraint(object):
             print("ResidueBondRestraint: adding a restraint between %s %s"
                   % (pair[0].get_name(), pair[1].get_name()))
             self.rs.add_restraint(
-                IMP.core.DistanceRestraint(self.m, ts, pair[0], pair[1]))
+                IMP.core.DistanceRestraint(self.model, ts, pair[0], pair[1]))
             self.pairslist.append(IMP.ParticlePair(pair[0], pair[1]))
             self.pairslist.append(IMP.ParticlePair(pair[1], pair[0]))
-
-    def set_label(self, label):
-        self.label = label
-        self.rs.set_name(label)
-        for r in self.rs.get_restraints():
-            r.set_name(label)
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
 
     def get_excluded_pairs(self):
         return self.pairslist
 
-    def get_output(self):
-        output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["ResidueBondRestraint_" + self.label] = str(score)
-        return output
 
-
-class ResidueAngleRestraint(object):
+class ResidueAngleRestraint(IMP.pmi.restraints.RestraintBase):
     """Add angular restraint between triplets of consecutive
     residues/beads to enforce the stereochemistry.
     """
     def __init__(self, objects, anglemin=100.0, anglemax=140.0, strength=10.0):
 
         particles = IMP.pmi.tools.input_adaptor(objects, 1, flatten=True)
-        self.m = particles[0].get_model()
+        m = particles[0].get_model()
+        super(ResidueAngleRestraint, self).__init__(m)
 
-        self.rs = IMP.RestraintSet(self.m, "Angles")
-        self.weight = 1
-        self.label = "None"
         self.pairslist = []
 
         ts = IMP.core.HarmonicWell(
@@ -457,34 +349,11 @@ class ResidueAngleRestraint(object):
             self.pairslist.append(IMP.ParticlePair(triplet[0], triplet[2]))
             self.pairslist.append(IMP.ParticlePair(triplet[2], triplet[0]))
 
-    def set_label(self, label):
-        self.label = label
-        self.rs.set_name(label)
-        for r in self.rs.get_restraints():
-            r.set_name(label)
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
-
     def get_excluded_pairs(self):
         return self.pairslist
 
-    def get_output(self):
-        output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["ResidueAngleRestraint_" + self.label] = str(score)
-        return output
 
-
-class ResidueDihedralRestraint(object):
+class ResidueDihedralRestraint(IMP.pmi.restraints.RestraintBase):
     """Add dihedral restraints between quadruplet of consecutive
     residues/beads to enforce the stereochemistry.
     Give as input a string of "C" and "T", meaning cys (0+-40)
@@ -494,11 +363,9 @@ class ResidueDihedralRestraint(object):
     def __init__(self, objects, stringsequence=None, strength=10.0):
 
         particles = IMP.pmi.tools.input_adaptor(objects, 1, flatten=True)
-        self.m = particles[0].get_model()
+        m = particles[0].get_model()
+        super(ResidueDihedralRestraint, self).__init__(m)
 
-        self.rs = IMP.RestraintSet(self.m, "Angles")
-        self.weight = 1
-        self.label = "None"
         self.pairslist = []
 
         if stringsequence is None:
@@ -539,7 +406,7 @@ class ResidueDihedralRestraint(object):
                          quadruplet[1].get_name(), quadruplet[2].get_name(),
                          quadruplet[3].get_name()))
             self.rs.add_restraint(
-                IMP.core.DihedralRestraint(self.m, ts,
+                IMP.core.DihedralRestraint(self.model, ts,
                                            quadruplet[0],
                                            quadruplet[1],
                                            quadruplet[2],
@@ -548,32 +415,6 @@ class ResidueDihedralRestraint(object):
                 IMP.ParticlePair(quadruplet[0], quadruplet[3]))
             self.pairslist.append(
                 IMP.ParticlePair(quadruplet[3], quadruplet[0]))
-
-    def set_label(self, label):
-        self.label = label
-        self.rs.set_name(label)
-        for r in self.rs.get_restraints():
-            r.set_name(label)
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-
-    def get_restraint(self):
-        return self.rs
-
-    def set_weight(self, weight):
-        self.weight = weight
-        self.rs.set_weight(weight)
-
-    def get_excluded_pairs(self):
-        return self.pairslist
-
-    def get_output(self):
-        output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["ResidueDihedralRestraint_" + self.label] = str(score)
-        return output
 
 
 class ElasticNetworkRestraint(object):

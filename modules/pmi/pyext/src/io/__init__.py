@@ -15,6 +15,10 @@ import RMF
 import os
 import numpy as np
 from collections import defaultdict
+try:
+    from pathlib import Path
+except ImportError:  # Use bundled pathlib on Python 2 without pathlib
+    from IMP._compat_pathlib import Path
 
 
 def parse_dssp(dssp_fn, limit_to_chains='', name_map=None):
@@ -157,17 +161,16 @@ def save_best_models(model, out_dir, stat_files,
         stat_files, number_of_processes)[rank]
 
     # filenames
-    out_stat_fn = os.path.join(
-        out_dir, "top_" + str(number_of_best_scoring_models) + ".out")
-    out_rmf_fn = os.path.join(
-        out_dir, "top_" + str(number_of_best_scoring_models) + ".rmf3")
+    out_dir = Path(out_dir)
+    out_stat_fn = out_dir / ("top_%d.out" % number_of_best_scoring_models)
+    out_rmf_fn = out_dir / ("top_%d.rmf3" % number_of_best_scoring_models)
 
     # extract all the models
     all_fields = []
     for nsf, sf in enumerate(my_stat_files):
 
         # get list of keywords
-        root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
+        root_directory_of_stat_file = Path(sf).parent.parent
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
         all_keys = [score_key,
@@ -218,23 +221,21 @@ def save_best_models(model, out_dir, stat_files,
                        key=lambda i: float(all_fields[score_key][i]))
 
         # write the stat and RMF files
-        stat = open(out_stat_fn, 'w')
+        stat = open(str(out_stat_fn), 'w')
         rh0 = RMF.open_rmf_file_read_only(
-            os.path.join(root_directory_of_stat_file,
-                         all_fields[rmf_file_key][0]))
+            str(root_directory_of_stat_file / all_fields[rmf_file_key][0]))
         prots = IMP.rmf.create_hierarchies(rh0, model)
         del rh0
-        outf = RMF.create_rmf_file(out_rmf_fn)
+        outf = RMF.create_rmf_file(str(out_rmf_fn))
         IMP.rmf.add_hierarchies(outf, prots)
         for nm, i in enumerate(order[:number_of_best_scoring_models]):
             dline = dict((k, all_fields[k][i]) for k in all_fields)
             dline['orig_rmf_file'] = dline[rmf_file_key]
             dline['orig_rmf_frame_index'] = dline[rmf_file_frame_key]
-            dline[rmf_file_key] = out_rmf_fn
+            dline[rmf_file_key] = str(out_rmf_fn)
             dline[rmf_file_frame_key] = nm
             rh = RMF.open_rmf_file_read_only(
-                os.path.join(root_directory_of_stat_file,
-                             all_fields[rmf_file_key][i]))
+                str(root_directory_of_stat_file / all_fields[rmf_file_key][i]))
             IMP.rmf.link_hierarchies(rh, prots)
             IMP.rmf.load_frame(rh,
                                RMF.FrameID(all_fields[rmf_file_frame_key][i]))
@@ -403,7 +404,7 @@ def get_trajectory_models(stat_files,
     rmf_file_frame_list = []        # best RMF frames
     score_list = []                 # best scores
     for sf in stat_files:
-        root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
+        root_directory_of_stat_file = Path(sf).parent.parent
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
 
@@ -427,8 +428,7 @@ def get_trajectory_models(stat_files,
         # append to the lists
         score_list += fields[score_key]
         for rmf in fields[rmf_file_key]:
-            rmf_file_list.append(os.path.join(root_directory_of_stat_file,
-                                              rmf))
+            rmf_file_list.append(str(root_directory_of_stat_file / rmf))
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 

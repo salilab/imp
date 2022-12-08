@@ -1,6 +1,7 @@
 import IMP.algebra
 import IMP.test
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -127,6 +128,23 @@ class Tests(IMP.test.TestCase):
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
             self.assertEqual(v1[i], expected_prod[i])
+
+    def test_pickle(self):
+        """Test (un-)pickle of VectorKD"""
+        v1 = IMP.algebra.VectorKD([3.0, 6.0, 9.0, 12.0])
+        v2 = IMP.algebra.VectorKD([1., 2., 3.])
+        v2.foo = 'bar'
+        vdump = pickle.dumps((v1, v2))
+
+        newv1, newv2 = pickle.loads(vdump)
+        self.assertEqual(len(newv1), 4)
+        self.assertEqual(len(newv2), 3)
+        self.assertLess(IMP.algebra.get_distance(v1, newv1), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(v2, newv2), 1e-4)
+        self.assertEqual(newv2.foo, 'bar')
+
+        self.assertRaises(TypeError, v1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

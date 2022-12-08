@@ -111,7 +111,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   //! Calculates RMSD and mean of a map values as stored in the header.
   /** The header stores whether the map is normalized.
    */
-  emreal calcRMS();
+  double calcRMS();
 
   //! Normalize the density voxels according to standard deviation (stdv).
   /** The mean is subtracted from the map, which is then divided by the stdv.
@@ -200,24 +200,24 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
       \note the value is not interpolated between this and neighboring
             voxels. For that, see get_density().
    */
-  emreal get_value(float x, float y, float z) const;
-  emreal get_value(const algebra::Vector3D &point) const {
+  double get_value(float x, float y, float z) const;
+  double get_value(const algebra::Vector3D &point) const {
     return get_value(point[0], point[1], point[2]);
   }
 
   //! Gets the value of the voxel at a given index
   /** \param[in] index voxel number in physical sense, NOT logical
    */
-  emreal get_value(long index) const;
+  double get_value(long index) const;
 
   //! Set the value of the voxel at a given index
   /** \param[in] index voxel number in physical sense, NOT logical
       \param[in] value value
    */
-  void set_value(long index, emreal value);
+  void set_value(long index, double value);
 
   //! Set the value of the voxel at given coordinates
-  void set_value(float x, float y, float z, emreal value);
+  void set_value(float x, float y, float z, double value);
 
   //! Sets the origin of the header
   /** \param x the new x (angstroms)
@@ -274,7 +274,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
     return z_loc_.get();
   }
 
-  emreal *get_data() const { return data_.get(); }
+  double *get_data() const { return data_.get(); }
 #endif
 
   //! Checks if two maps have the same origin
@@ -297,11 +297,11 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   //! Get the centroid of all voxels with density above a given threshold
   /** \param[in] threshold the input threshold
   */
-  algebra::Vector3D get_centroid(emreal threshold = 0.0) const;
+  algebra::Vector3D get_centroid(double threshold = 0.0) const;
   //! Returns the value of the voxel with the highest density.
-  emreal get_max_value() const;
+  double get_max_value() const;
   //! Returns the value of the voxel with the lowest density.
-  emreal get_min_value() const;
+  double get_min_value() const;
 
   //! Sums two grids; the result is kept in the map.
   /** \param[in] other the other map
@@ -449,8 +449,8 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
     cmap = static_cast<DensityMap *>(nullptr);
   }
 #endif
-  int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
-  int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
+  int lower_voxel_shift(double loc, double kdist, double orig, int ndim) const;
+  int upper_voxel_shift(double loc, double kdist, double orig, int ndim) const;
   inline bool get_rms_calculated() const { return rms_calculated_; }
   int get_dim_index_by_location(float loc_val, int ind) const;
 
@@ -460,11 +460,11 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   void reset_all_voxel2loc();
 
   void allocated_data();
-  void float2real(float *f_data, boost::scoped_array<emreal> &r_data);
-  void real2float(emreal *r_data, boost::scoped_array<float> &f_data);
+  void float2real(float *f_data, boost::scoped_array<double> &r_data);
+  void real2float(double *r_data, boost::scoped_array<float> &f_data);
 
   DensityHeader header_;              // holds all the info about the map
-  boost::scoped_array<emreal> data_;  // the order is ZYX (Z-slowest)
+  boost::scoped_array<double> data_;  // the order is ZYX (Z-slowest)
   bool data_allocated_;
 
   //! Locations (centers) for each of the voxels of the map (they are

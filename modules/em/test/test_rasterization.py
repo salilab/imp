@@ -4,6 +4,7 @@ import IMP.algebra
 import IMP.em
 from io import BytesIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_rasterization(self):
@@ -16,6 +17,7 @@ class Tests(IMP.test.TestCase):
         g = IMP.algebra.Gaussian3D(rf, var)
         sio = BytesIO()
         g.show(sio)
+
         def check_gauss(g):
             g_rf = g.get_reference_frame()
             self.assertLess(IMP.algebra.get_distance(
@@ -34,14 +36,15 @@ class Tests(IMP.test.TestCase):
         # Make sure that the returned grids are usable in Python
         self.assertLess((grid_fast.get_origin() - t).get_magnitude(), 1e-4)
         self.assertLess((grid_slow.get_origin() - t).get_magnitude(), 1e-4)
-        d_slow=IMP.em.create_density_map(grid_slow)
-        d_fast=IMP.em.create_density_map(grid_fast)
+        d_slow = IMP.em.create_density_map(grid_slow)
+        d_fast = IMP.em.create_density_map(grid_fast)
         # Check returned density maps
         d_origin = IMP.algebra.Vector3D(1.5, 2.5, 3.5)
         self.assertLess((d_fast.get_origin() - d_origin).get_magnitude(), 1e-4)
         self.assertLess((d_slow.get_origin() - d_origin).get_magnitude(), 1e-4)
         self.assertAlmostEqual(d_fast.get_spacing(), 1.0, delta=1e-4)
         self.assertAlmostEqual(d_slow.get_spacing(), 1.0, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

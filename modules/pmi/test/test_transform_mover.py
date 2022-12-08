@@ -223,27 +223,21 @@ class Tests(IMP.test.TestCase):
         outputobjects.append(ev)
 
 
-        mc2=IMP.pmi.macros.ReplicaExchange0(m,
-                                    root_hier=root_hier,
-                                    monte_carlo_sample_objects=dof.get_movers(),
-                                    output_objects=outputobjects,
-                                    monte_carlo_temperature=1.0,
-                                    replica_exchange_minimum_temperature=1.0,
-                                    replica_exchange_maximum_temperature=2.5,
-                                    number_of_best_scoring_models=0,
-                                    monte_carlo_steps=1,
-                                    number_of_frames=10,
-                                    write_initial_rmf=True,
-                                    initial_rmf_name_suffix="initial",
-                                    stat_file_name_suffix="stat",
-                                    best_pdb_name_suffix="model",
-                                    do_clean_first=True,
-                                    do_create_directories=True,
-                                    global_output_directory="test_transform_mover_output_2",
-                                    rmf_dir="rmfs/",
-                                    best_pdb_dir="pdbs/",
-                                    replica_stat_file_suffix="stat_replica",
-                                    replica_exchange_object=rem)
+        mc2 = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=root_hier,
+            monte_carlo_sample_objects=dof.get_movers(),
+            output_objects=outputobjects, monte_carlo_temperature=1.0,
+            replica_exchange_minimum_temperature=1.0,
+            replica_exchange_maximum_temperature=2.5,
+            number_of_best_scoring_models=0, monte_carlo_steps=1,
+            number_of_frames=10, write_initial_rmf=True,
+            initial_rmf_name_suffix="initial", stat_file_name_suffix="stat",
+            best_pdb_name_suffix="model", do_clean_first=True,
+            do_create_directories=True,
+            global_output_directory="test_transform_mover_output_2",
+            rmf_dir="rmfs/", best_pdb_dir="pdbs/",
+            replica_stat_file_suffix="stat_replica",
+            replica_exchange_object=rem)
         mc2.execute_macro()
         #shutil.rmtree("test_transform_mover_output_2")
 

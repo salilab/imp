@@ -78,7 +78,6 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
       double max = std::numeric_limits<double>::max()) const override;
 #endif
   double get_last_score() const override;
-  double get_last_last_score() const override;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
   Restraints do_create_decomposition() const override;

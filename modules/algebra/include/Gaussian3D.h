@@ -14,6 +14,7 @@
 #include "ReferenceFrame3D.h"
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/standard_grids.h>
+#include <boost/serialization/access.hpp>
 #include <Eigen/Dense>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -24,6 +25,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class Gaussian3D : public GeometricPrimitiveD<3> {
   ReferenceFrame3D tr_;
   Vector3D variances_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & tr_ & variances_;
+  }
 
 public:
   Gaussian3D() {

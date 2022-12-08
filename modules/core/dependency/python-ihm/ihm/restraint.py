@@ -249,7 +249,7 @@ class ExperimentalCrossLink(object):
 
 
 class DistanceRestraint(object):
-    """Abstract base class for all distance restraints. These are typically
+    """Base class for all distance restraints. These are typically
        used in a :class:`DerivedDistanceRestraint`.
 
        Do not use this class directly but instead use a derived class
@@ -258,6 +258,7 @@ class DistanceRestraint(object):
        :class:`LowerBoundDistanceRestraint`,
        or :class:`LowerUpperBoundDistanceRestraint`.
     """
+    restraint_type = None
 
     #: The minimum distance allowed for this restraint,
     #: or None if unconstrained
@@ -369,7 +370,8 @@ class CrossLinkPseudoSite(object):
 
 
 class ResidueCrossLink(CrossLink):
-    """A cross-link used in the modeling, applied to residue alpha carbon atoms.
+    """A cross-link used in the modeling, applied to residue
+       alpha carbon atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified
               by experiment. Multiple cross-links can map to a single

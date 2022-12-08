@@ -751,11 +751,11 @@ _ihm_starting_model_coord.ordinal_id
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_rigid_body(nup84)
 
-        mc1 = IMP.pmi.macros.ReplicaExchange0(
+        mc1 = IMP.pmi.macros.ReplicaExchange(
             m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
             output_objects=[], test_mode=True)
         mc1.execute_macro()
-        mc2 = IMP.pmi.macros.ReplicaExchange0(
+        mc2 = IMP.pmi.macros.ReplicaExchange(
             m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
             output_objects=[], test_mode=True)
         mc2.execute_macro()
@@ -813,7 +813,7 @@ _ihm_modeling_protocol_details.description
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_rigid_body(nup84)
 
-        mc1 = IMP.pmi.macros.ReplicaExchange0(
+        mc1 = IMP.pmi.macros.ReplicaExchange(
             m, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
             output_objects=[], test_mode=True, monte_carlo_temperature=42.0,
             replica_exchange_minimum_temperature=100.,
@@ -1286,7 +1286,7 @@ _ihm_cross_link_restraint.psi
 _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
 _ihm_cross_link_restraint.pseudo_site_flag
-1 1 1 A 1 MET 1 A 2 GLU . . 'upper bound' ALL by-residue 42.000 0.800 1.000
+1 1 1 A 1 MET 1 A 2 GLU . . 'upper bound' ANY by-residue 42.000 0.800 1.000
 0.500 NO
 #
 """)

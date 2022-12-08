@@ -56,8 +56,8 @@ double get_percentage_of_voxels_covered_by_particles(
     const IMP::algebra::Transformation3D &t, float thr) {
   IMP_NEW(DensityMap, dmap_ind, (*(dmap->get_header())));
   dmap_ind->reset_data();
-  emreal *data = dmap->get_data();
-  emreal *new_data = dmap_ind->get_data();
+  double *data = dmap->get_data();
+  double *new_data = dmap_ind->get_data();
   IMP_LOG_VERBOSE("START get_percentage_of_voxels_covered_by_particles"
                   << std::endl);
   int iminx, iminy, iminz, imaxx, imaxy, imaxz, ivoxz, ivoxy, ivoxx, znxny,

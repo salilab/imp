@@ -21,9 +21,10 @@ IMPATOM_BEGIN_NAMESPACE
 /** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
 class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::Object {
-  /** @name Residues
+  /** @name Residue topologies
 
-      The segment contains a chain of residues.
+      The segment contains a chain of residue topologies,
+      as CHARMMResidueTopology objects.
    */
   /**@{*/
   IMP_LIST_ACTION(public, CHARMMResidueTopology, CHARMMResidueTopologies,
@@ -90,11 +91,16 @@ private:
 
   const CHARMMParameters *get_parameters() { return force_field_; }
 
-  //! Add a sequence (as a string of one-letter codes) to the topology.
-  /** The sequence can contain amino-acid one-letter codes and '/' characters
-      to denote the start of a new segment. The empty string simply adds a new
-      segment that contains no residues.
-      \exception ValueException if an invalid one-letter code is passed.
+  //! Add a sequence (as a string of codes and/or names) to the topology.
+  /** The sequence can contain amino-acid one-letter codes, full residue names
+      in parentheses (e.g. (ALA), (DADE)), and '/' characters to denote the
+      start of a new segment. The empty string simply adds a new
+      segment that contains no residues. For example,
+      'ACG/(ADE)(CYT)(GUA)/(DADE)(DGUA)' adds three segments, the first
+      containing three amino acids, the second three RNA bases, and the third
+      two DNA bases.
+      \exception ValueException if an invalid residue code or name is passed.
+      \exception IndexException if a name in parentheses is not terminated.
    */
   void add_sequence(std::string sequence);
 
@@ -109,8 +115,11 @@ private:
   /** The hierarchy contains chains, residues and atoms as defined in the
       topology. Note, however, that none of the generated atoms is given
       coordinates.
-      Chains are labeled 'A', 'B' etc. Residues are numbered from 1 within
-      each chain.
+      Chains are labeled 'A', 'B' etc. If more than 26 chains are present,
+      two-letter chain IDs are then used: 'AA' through 'AZ', then 'BA'
+      through 'BZ', through to 'ZZ'. This continues with longer chain IDs
+      as necessary.
+      Residues are numbered sequentially starting from 1 within each chain.
       \see add_coordinates.
    */
   Hierarchy create_hierarchy(Model *model) const;

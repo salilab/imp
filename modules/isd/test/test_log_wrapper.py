@@ -105,6 +105,17 @@ class Tests(IMP.test.TestCase):
         assert_restraint_evaluate(r3)
         assert_restraint_evaluate_moved(r4)
 
+    def test_aggregate(self):
+        """Test get_is_aggregate()"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        r1 = LogRestraint(m, [p1], 100.0)
+        r2 = LogRestraint(m, [p2], 10.0)
+        lw = IMP.isd.LogWrapper([r1, r2], 1.0)
+        self.assertFalse(r1.get_is_aggregate())
+        self.assertTrue(lw.get_is_aggregate())
+
 
 if __name__ == '__main__':
     IMP.test.main()

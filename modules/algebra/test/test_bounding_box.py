@@ -3,6 +3,8 @@ import IMP.test
 import IMP.algebra
 import math
 import io
+import pickle
+
 
 class Tests(IMP.test.TestCase):
 
@@ -146,6 +148,24 @@ class Tests(IMP.test.TestCase):
             self.assertLess(IMP.algebra.get_distance(b.get_corner(0), v1), 1e-4)
             sio = io.BytesIO()
             b.show(sio)
+
+    def test_pickle(self):
+        """Test (un-)pickle of BoundingBox3D"""
+        b1 = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 2, 3),
+                                       IMP.algebra.Vector3D(9, 9, 9))
+        b2 = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(2, 2, 2),
+                                       IMP.algebra.Vector3D(5, 6, 7))
+        b2.foo = 'bar'
+        dump = pickle.dumps((b1, b2))
+        newb1, newb2 = pickle.loads(dump)
+        self.assertLess(IMP.algebra.get_distance(
+            b1.get_corner(0), newb1.get_corner(0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            b2.get_corner(0), newb2.get_corner(0)), 1e-4)
+        self.assertEqual(newb2.foo, 'bar')
+
+        self.assertRaises(TypeError, b1._set_from_binary, 42)
+
 
 if __name__ == '__main__':
     IMP.test.main()

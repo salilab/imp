@@ -14,6 +14,7 @@
 #include "algebra_macros.h"
 #include "GeometricPrimitiveD.h"
 #include <iostream>
+#include <boost/serialization/access.hpp>
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -34,8 +35,14 @@ class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
                                       << p_[2] << ")");
   Floats get_edge_lengths() const;
 
- private:
+private:
   Vector3D p_[3];
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & p_[0] & p_[1] & p_[2];
+  }
 };
 
 IMP_VALUES(Triangle3D, Triangle3Ds);

@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         cpc = IMP.container.ConsecutivePairContainer(m, ps)
         hdps = IMP.core.HarmonicDistancePairScore(0, 1)
         r = IMP.container.PairsRestraint(hdps, cpc)
-        self.assert_(r.evaluate(False) > 0)
+        self.assertGreater(r.evaluate(False), 0)
         rd = r.create_decomposition()
         rds = IMP.get_restraints([rd])
         self.assertEqual(len(rds), len(ps) - 1)
@@ -42,9 +42,9 @@ class Tests(IMP.test.TestCase):
         ecpc = IMP.container.ExclusiveConsecutivePairContainer(m, ps)
         ef = IMP.container.ExclusiveConsecutivePairFilter()
         for i in range(1, len(ps)):
-            self.assertEquals(ef.get_value((ps[i - 1], ps[i])), 1)
+            self.assertEqual(ef.get_value((ps[i - 1], ps[i])), 1)
         for i in range(2, len(ps)):
-            self.assertEquals(ef.get_value((ps[i - 2], ps[i])), 0)
+            self.assertEqual(ef.get_value((ps[i - 2], ps[i])), 0)
 
 
 if __name__ == '__main__':

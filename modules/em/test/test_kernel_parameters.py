@@ -1,10 +1,10 @@
 from __future__ import print_function
-import os
 import math
 import IMP
 import IMP.em
 import IMP.test
 import IMP.core
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -34,5 +34,15 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.VERBOSE)
         self.kp = IMP.em.KernelParameters(10.)
+
+    def test_pickle(self):
+        """Test (un-)pickle of KernelParameters"""
+        k = IMP.em.KernelParameters(10.)
+        dump = pickle.dumps(k)
+        newk = pickle.loads(dump)
+        self.assertAlmostEqual(k.get_rsig(), newk.get_rsig(), delta=1e-4)
+        self.assertAlmostEqual(k.get_sq2pi3(), newk.get_sq2pi3(), delta=1e-4)
+
+
 if __name__ == '__main__':
     IMP.test.main()

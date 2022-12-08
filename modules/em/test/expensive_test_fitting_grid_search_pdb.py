@@ -1,6 +1,4 @@
 from __future__ import print_function
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test
@@ -53,8 +51,8 @@ class Tests(IMP.test.TestCase):
             self.scene,
             2, 1, 0.174, 3)
         print("end")
-        # test that if you apply the transformation on the original configuration you get the same result
-        # (in rmsd and score)
+        # test that if you apply the transformation on the original
+        # configuration you get the same result (in rmsd and score)
 
         # second, test that the optimization gets you close.
         print(fr.get_number_of_solutions())
@@ -65,6 +63,7 @@ class Tests(IMP.test.TestCase):
         for i in range(fr.get_number_of_solutions()):
             print("score", fr.get_score(i))
             self.assertLess(fr.get_score(i), 1.0, "wrong CC values")
+
 
 if __name__ == '__main__':
     IMP.test.main()
