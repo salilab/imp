@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.18.0 - 2022-12-15 # {#changelog_2_18_0}
 - The Windows .exe installer now supports Python 3.11.
 - The IMP::em::emreal type is deprecated; use plain `double` instead.
 - Most IMP Value types (e.g. IMP::algebra::Vector3D) now support serialization,
