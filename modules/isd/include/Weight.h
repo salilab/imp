@@ -54,9 +54,6 @@ class IMPISDEXPORT Weight : public Decorator {
   //! Set up Weight from the provided weight vector.
   IMP_DECORATOR_SETUP_1(Weight, const algebra::VectorKD&, w);
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.12)
-  static IntKey get_nstates_key();
-
   //! Get number of weights key
   static IntKey get_number_of_weights_key();
 
