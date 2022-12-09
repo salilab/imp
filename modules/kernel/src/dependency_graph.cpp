@@ -354,28 +354,10 @@ MOVector do_get_dependent(ModelObject *mo) {
 }
 }
 
-RestraintsTemp get_dependent_restraints(Model *m, ParticleIndex pi) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-       2.17, "Use Model::get_dependent_restraints_uncached() instead.")
-  return m->get_dependent_restraints_uncached(pi);
-}
-
-ScoreStatesTemp get_dependent_score_states(Model *m, ParticleIndex pi) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-       2.17, "Use Model::get_dependent_score_states_uncached() instead.")
-  return m->get_dependent_score_states_uncached(pi);
-}
-
 ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
   Particle *p = m->get_particle(pi);
   p->set_has_required_score_states(true);
   return p->get_required_score_states();
-}
-
-ParticlesTemp get_dependent_particles(Model *m, ParticleIndex pi) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-       2.17, "Use Model::get_dependent_particles_uncached() instead.")
-  return m->get_dependent_particles_uncached(pi);
 }
 
 IMPKERNEL_END_NAMESPACE
