@@ -8,9 +8,6 @@
 #ifndef IMPKERNEL_COMPILER_MACROS_H
 #define IMPKERNEL_COMPILER_MACROS_H
 
-// Deprecated: just use C++11 range-based for instead
-#define IMP_FOREACH(v, r) for (v : r)
-
 #define IMP_STRINGIFY(x) #x
 
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
@@ -54,23 +51,13 @@
 #endif
 
 
-// Deprecated: just use the 'override' keyword directly
 #ifdef IMP_DOXYGEN
-#define IMP_OVERRIDE
-#else
-#define IMP_OVERRIDE override
-#endif
-
-#ifdef IMP_DOXYGEN
-#define IMP_FINAL
 //! Have the compiler report an error if anything overrides this method
 #define IMP_SWIG_FINAL
 #else
 #if defined(IMP_SWIG_WRAPPER) || defined(SWIG)
-#define IMP_FINAL
 #define IMP_SWIG_FINAL
 #else
-#define IMP_FINAL final
 #define IMP_SWIG_FINAL final
 #endif
 #endif
@@ -170,7 +157,7 @@
 #define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
-// Warn about missing IMP_OVERRIDE on virtual methods if gcc is new enough
+// Warn about missing override on virtual methods if gcc is new enough
 #if __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
 #ifdef IMP_SWIG_WRAPPER
 #define IMP_GCC_OVERRIDE

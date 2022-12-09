@@ -1,6 +1,11 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The following pre-C++11 compatibility macros and headers are removed:
+  `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
+  `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+
 # 2.18.0 - 2022-12-15 # {#changelog_2_18_0}
 - The Windows .exe installer now supports Python 3.11.
 - The IMP::em::emreal type is deprecated; use plain `double` instead.
