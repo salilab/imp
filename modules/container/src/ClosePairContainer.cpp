@@ -185,16 +185,4 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
   return datas[opt_i].slack;
 }
 
-double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
-                          double step, const RestraintsTemp &restraints,
-                          bool derivatives, Optimizer *opt,
-                          ClosePairContainer *cpc) {
-  IMPCONTAINER_DEPRECATED_FUNCTION_DEF(
-        2.16, "Use the index-based function instead");
-  Model *m = ps[0]->get_model();
-  return get_slack_estimate(m, IMP::internal::get_index(ps),
-                            upper_bound, step, restraints, derivatives,
-                            opt, cpc);
-}
-
 IMPCONTAINER_END_NAMESPACE

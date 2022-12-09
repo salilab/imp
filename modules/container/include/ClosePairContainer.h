@@ -143,12 +143,6 @@ IMPCONTAINEREXPORT double get_slack_estimate(
     const RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
     ClosePairContainer *cpc);
 
-IMPCONTAINER_DEPRECATED_METHOD_DECL(2.16)
-IMPCONTAINEREXPORT double get_slack_estimate(
-    const ParticlesTemp &ps, double upper_bound, double step,
-    const RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
-    ClosePairContainer *cpc);
-
 IMPCONTAINER_END_NAMESPACE
 
 #endif /* IMPCONTAINER_CLOSE_PAIR_CONTAINER_H */
