@@ -31,7 +31,7 @@ In order to build %IMP from source, you will need:
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
   should also work)
 - [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
-- [SWIG](http://www.swig.org) (3 or later)
+- [SWIG](https://www.swig.org/) (3 or later)
 
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
@@ -39,8 +39,8 @@ will not build, and some will not function optimally.
 - The [NumPy](https://numpy.org/) library is strongly recommended; if %IMP
   is built with NumPy, many operations that transfer data between C++ and Python
   become more efficient.
-- [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
-  and [Graphviz](http://www.graphviz.org/): required for building
+- [Doxygen](https://www.doxygen.nl/) (only exactly version 1.8.6 is supported)
+  and [Graphviz](https://www.graphviz.org/): required for building
   documentation.
 - [Modeller](\ref modeller): needed to use the IMP.modeller module.
 - [CGAL](\ref CGAL): enables faster geometric operations, such as
@@ -59,9 +59,9 @@ will not build, and some will not function optimally.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
-- The [scipy](https://scipy.org/download/),
-  [scikit-learn](http://scikit-learn.org/stable/install.html),
-  and [matplotlib](http://matplotlib.org/downloads.html)
+- The [scipy](https://scipy.org/install/),
+  [scikit-learn](https://scikit-learn.org/stable/install.html),
+  and [matplotlib](https://matplotlib.org/stable/users/installing/index.html)
   Python libraries are also recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) or
   [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) are recommended
