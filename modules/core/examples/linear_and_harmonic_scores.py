@@ -13,6 +13,11 @@ import IMP.algebra
 import IMP.core
 import matplotlib.pyplot
 import numpy
+import sys
+
+
+IMP.setup_from_argv(sys.argv, "linear or harmonic score example")
+
 
 DEFAULT_RADIUS = 2.0 # radius of particles
 LINEAR_OFFSET = 4.0 # distance at which the function is zero (note this is not the Y-axis intercept!)
