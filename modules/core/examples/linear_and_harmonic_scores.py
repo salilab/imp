@@ -11,7 +11,10 @@
 import IMP
 import IMP.algebra
 import IMP.core
-import matplotlib.pyplot
+try:
+    import matplotlib.pyplot
+except ImportError:
+    matplotlib = None
 import numpy
 import sys
 
@@ -72,12 +75,18 @@ def plot_score(pair_score, caption,
     for i,x in enumerate(X):
         xyzrs[0].set_coordinates([x,0,0])
         Y[i] = restraint.get_score()
-    matplotlib.pyplot.plot(X,Y,'-')
-    matplotlib.pyplot.title(caption)
-    matplotlib.pyplot.xlabel(r"$X_2$ [$\AA$]")
-    matplotlib.pyplot.ylabel("Energy [$kcal \cdot mol^{-1}$]")
-    matplotlib.pyplot.gca().spines['bottom'].set_position(('data', 0))
-    matplotlib.pyplot.show()
+    if not matplotlib:
+        print("Not showing plot; matplotlib is not installed "
+              "or could not be imported")
+    elif IMP.get_is_quick_test():
+        print("Not showing plot, as we are running test cases")
+    else:
+        matplotlib.pyplot.plot(X,Y,'-')
+        matplotlib.pyplot.title(caption)
+        matplotlib.pyplot.xlabel(r"$X_2$ [$\AA$]")
+        matplotlib.pyplot.ylabel("Energy [$kcal \cdot mol^{-1}$]")
+        matplotlib.pyplot.gca().spines['bottom'].set_position(('data', 0))
+        matplotlib.pyplot.show()
 
 if __name__ == "__main__":
     # NOTE: sphere distance is not distance!
