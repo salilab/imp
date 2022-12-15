@@ -5,6 +5,7 @@ ChangeLog {#changelog}
 - The following pre-C++11 compatibility macros and headers are removed:
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
   `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+- The deprecated IMP::em::emreal type has been removed.
 - The deprecated IMP::isd::Weight::get_nstates_key() method has been removed.
 
 # 2.18.0 - 2022-12-15 # {#changelog_2_18_0}
