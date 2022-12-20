@@ -117,10 +117,10 @@ such as
 
 - [Conda](https://anaconda.org/) Once you installed miniconda or anaconda, do 
 
-        conda create -n IMP_BUILD_test -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libprotobuf protobuf libopencv eigen fftw gsl libcblas cgal-cpp gmp mpfr mpich numpy
+        conda create -n IMP_BUILD_test -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libprotobuf protobuf libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy
 
-  As in brew and Macports, some of these packages may be optional and eg python or doxygen versions might need adjustment in future - as package dependency depends on conda, it might change with time). If the build fails, you may need to add the flag -DCMAKE_CXX_FLAGS="-std=c++17" when calling cmake as a quick fix, e.g.
-        cmake -DCMAKE_CXX_FLAGS="-std=c++17" ../repository/.
+  As in brew and Macports, some of these packages may be optional. In addition, cgal may not be identified by cmake. IMP will still run just fine. Either way, a solution could be to add a CGAL_DIR environment variable pointing at the <conda environment folder>/lib/cmake/CGAL/ or add a -DCGAL_DIR=<folder> flag to the cmake command line.
+	
 
 - or [Fink](http://www.finkproject.org/) (not supported)
 
