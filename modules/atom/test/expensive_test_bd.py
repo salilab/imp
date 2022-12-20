@@ -12,22 +12,22 @@ except:
     use_sympy = False
 
 import math
-nreps = 1000
+NREPS = 1000
 if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
-    nreps = nreps / 100
-nsteps = 500
-timestep = 1000
+    NREPS = NREPS // 100
+NSTEPS = 500
+TIMESTEP = 1000
 D = .0002
 k = .01
 f = .1
-temperature = 297.15
-kt_silly = IMP.atom.get_kt(temperature)  # (273.)
+T = 297.15
+kt_silly = IMP.atom.get_kt(T)
 print("KT", kt_silly)
-t = timestep * nsteps
+t = TIMESTEP * NSTEPS
 
 if use_sympy:
-    timestep_u = timestep * femto * second
-    t_u = timestep_u * nsteps
+    timestep_u = TIMESTEP * femto * second
+    t_u = timestep_u * NSTEPS
     angstrom = sympy.Rational(1, 10) * nano * meter
     D_u = .0002 * angstrom * angstrom / (femto * second)
     k_u = IMP.atom.get_spring_constant_in_femto_newtons_per_angstrom(
@@ -51,8 +51,8 @@ class Tests(IMP.test.TestCase):
         d.set_diffusion_coefficient(D)
         IMP.set_check_level(IMP.NONE)
         bd = IMP.atom.BrownianDynamics(m)
-        bd.set_maximum_time_step(float(timestep))
-        bd.set_temperature(temperature)
+        bd.set_maximum_time_step(float(TIMESTEP))
+        bd.set_temperature(T)
         xyzr.set_coordinates_are_optimized(True)
         return (m, xyzr, d, bd)
 
@@ -61,9 +61,9 @@ class Tests(IMP.test.TestCase):
         # was .1
         h = IMP.statistics.Histogram3D(.3, IMP.algebra.BoundingBox3D(-ub, ub))
         # IMP.benchmark.set_is_profiling(True)
-        for i in range(0, nreps):
+        for i in range(0, NREPS):
             xyzr.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
-            bd.optimize(nsteps)
+            bd.optimize(NSTEPS)
             h.add(xyzr.get_coordinates())
             if i % 1000 == 0:
                 print(i, xyzr.get_coordinates())
@@ -73,16 +73,16 @@ class Tests(IMP.test.TestCase):
         std = h.get_standard_deviation(mn)
         print(mn, std)
         # IMP.benchmark.set_is_profiling(False)
-        return (mn, std, nreps)
+        return (mn, std, NREPS)
 
     def _get_sigma_error(self, sigma, n):
         return 2.0 * sigma ** 4 / n
     # def _measure_x(self, m, xyzr, bd):
     #    ub= IMP.algebra.Vector1D(50)
     #    h = IMP.statistics.Histogram1D(.1, IMP.algebra.BoundingBox1D(-ub, ub))
-    #   for i in range(0,nreps):
+    #   for i in range(0,NREPS):
     #        xyzr.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-    #        bd.optimize(nsteps)
+    #        bd.optimize(NSTEPS)
     #        h.add(IMP.algebra.Vector1D(xyzr.get_coordinates()[0]))
     #        if i%1000==0:
     #            print i, xyzr.get_coordinates()
@@ -189,10 +189,10 @@ class Tests(IMP.test.TestCase):
         print("free sigma is", sigma)
         r = IMP.RestraintSet(m) # "Empty" restraint
         bd.set_scoring_function([r])
-        (mn, std, nreps) = self._measure(m, xyzr, bd)
+        (mn, std, NREPS) = self._measure(m, xyzr, bd)
         print(mn, std)
         self._check(mn, std, [0 * angstrom, 0 * angstrom, 0 * angstrom],
-                    [sigma, sigma, sigma], nreps)
+                    [sigma, sigma, sigma], NREPS)
 
     def test_linear(self):
         """Test brownian linear diffusion"""
@@ -216,9 +216,9 @@ class Tests(IMP.test.TestCase):
         r = IMP.core.SingletonRestraint(m, dss, xyzr)
         bd.set_scoring_function([r])
         sigma = self._get_sigma_1_free()
-        mn, std, nreps = self._measure(m, xyzr, bd)
+        mn, std, NREPS = self._measure(m, xyzr, bd)
         self._check(mn, std, [mean, 0 * angstrom, 0 * angstrom],
-                    [sigma, sigma, sigma], nreps)
+                    [sigma, sigma, sigma], NREPS)
 
     def test_harmonic(self):
         """Test a brownian harmonic"""
@@ -237,7 +237,7 @@ class Tests(IMP.test.TestCase):
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(m, dss, xyzr)
         bd.set_scoring_function([r])
-        mn, std, nreps = self._measure(m, xyzr, bd)
+        mn, std, NREPS = self._measure(m, xyzr, bd)
         print("Mean / std / sigma / sigmaf / sigmass")
         print(mn)
         print(std)
@@ -245,7 +245,7 @@ class Tests(IMP.test.TestCase):
         print(sigmaf)
         print(sigmass)
         self._check(mn, std, [0 * angstrom, 0 * angstrom, 0 * angstrom],
-                    [sigma, sigmaf, sigmaf], nreps)
+                    [sigma, sigmaf, sigmaf], NREPS)
 
 if __name__ == '__main__':
     IMP.test.main()
