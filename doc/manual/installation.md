@@ -117,8 +117,9 @@ such as
 
 - [Conda](https://anaconda.org/) Once you installed miniconda or anaconda, do 
 
-        conda create -n IMP_py38 -c conda-forge ann boost cgal cmake doxygen eigen fftw gmp gperftools graphviz gsl hdf5 libtau matplotlib mpfr mpi ninja numpy opencv protobuf python scipy swig
-  (as in brew and Macports, some of these packages may be optional and eg python or doxygen versions might need adjustment in future - as package dependency depends on conda, it might change with time). If the build fails, you may need to add the flag -DCMAKE_CXX_FLAGS="-std=c++17" when calling cmake as a quick fix, e.g.
+        conda create -n IMP_BUILD_test -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja python numpy rmf ihm boost-cpp hdf5 libprotobuf libopencv eigen fftw gsl libcblas cgal-cpp gmp mpfr mpich numpy
+
+  As in brew and Macports, some of these packages may be optional and eg python or doxygen versions might need adjustment in future - as package dependency depends on conda, it might change with time). If the build fails, you may need to add the flag -DCMAKE_CXX_FLAGS="-std=c++17" when calling cmake as a quick fix, e.g.
         cmake -DCMAKE_CXX_FLAGS="-std=c++17" ../repository/.
 
 - or [Fink](http://www.finkproject.org/) (not supported)
