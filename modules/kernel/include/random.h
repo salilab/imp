@@ -10,14 +10,14 @@
 
 #include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
-#include <boost/random/mersenne_twister.hpp>
+#include <random>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
 #ifndef SWIG // the RNG is defined explicitly in pyext/IMP_kernel.random.i
 
-class RandomNumberGenerator : public ::boost::mt19937 {
-  typedef ::boost::mt19937 T;
+class RandomNumberGenerator : public std::mt19937 {
+  typedef std::mt19937 T;
   T::result_type last_seed_;
   unsigned seed_counter_;
 
