@@ -115,6 +115,12 @@ such as
         sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
+- [Conda](https://anaconda.org/) Once you installed miniconda or anaconda, do 
+
+        conda create -n IMP_py38 -c conda-forge ann boost cgal cmake doxygen eigen fftw gmp gperftools graphviz gsl hdf5 libtau matplotlib mpfr mpi ninja numpy opencv protobuf python scipy swig
+  (as in brew and Macports, some of these packages may be optional and eg python or doxygen versions might need adjustment in future - as package dependency depends on conda, it might change with time). If the build fails, you may need to add the flag -DCMAKE_CXX_FLAGS="-std=c++17" when calling cmake as a quick fix, e.g.
+        cmake -DCMAKE_CXX_FLAGS="-std=c++17" ../repository/.
+
 - or [Fink](http://www.finkproject.org/) (not supported)
 
 ### Getting prerequisites on Windows {#installation_prereqs_windows}
