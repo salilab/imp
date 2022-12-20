@@ -90,9 +90,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
     return ModelObjectsTemp();
   }
 
-  double evaluate_if_good(bool derivatives);
-
-  //! Evaluate and return the score
+  //! Evaluate and return the score for the current state of the model.
   /** \return the resulting score
 
       @param derivatives if true, updates the derivatives of the
@@ -100,12 +98,21 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   */
   double evaluate(bool derivatives);
 
+  double evaluate_if_good(bool derivatives);
+
+  double evaluate_if_below(bool derivatives, double max);
+
   //! Score when some particles have moved.
-  /** This should behave identically to evaluate() but may be more
-      efficient if it can skip restraint terms that involve unchanged particles.
+  /** No particles in the model other those listed should have been
+      changed (e.g. by Monte Carlo movers) since the last evaluation (although
+      ScoreStates may have moved particles not in this list, as a function of
+      particles that *are* in the list). This should behave identically to
+      evaluate() but may be more efficient if it can skip restraint terms
+      that involve unchanged particles.
 
       \see IMP::core::MonteCarlo::set_score_moved
 
+      \param calc_derivs Whether to calculate first derivatives.
       \param moved_pis Particles that have moved since the last
              scoring function evaluation.
       \param reset_pis Particles that have moved, but back to the
@@ -124,8 +131,6 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   double evaluate_moved_if_good(
              bool derivatives, const ParticleIndexes &moved_pis,
              const ParticleIndexes &reset_pis);
-
-  double evaluate_if_below(bool derivatives, double max);
 
   /** Return true if the last evaluate satisfied all the restraint
       thresholds.*/
