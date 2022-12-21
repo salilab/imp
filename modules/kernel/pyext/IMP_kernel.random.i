@@ -1,5 +1,4 @@
 // Simple wrapper to give read-only access to IMP's random number generator
-%include <stdint.i>
 
 %{
 #include <boost/static_assert.hpp>
@@ -8,18 +7,11 @@ BOOST_STATIC_ASSERT(sizeof(int) == sizeof(boost::int32_t));
 
 %}
 
-
-//namespace boost {
-//  typedef int int32_t;
-//  typedef unsigned long int uint64_t;
-//};
-
-
 namespace IMP {
   class RandomNumberGenerator {
   public:
     //! Set the random number generator seed
-    void seed(std::uint_fast32_t x);
+    void seed(int x);
 
     //! Get the next random value from the generator
     int operator()();
