@@ -31,8 +31,9 @@ MovedParticlesParticleCache::get_dependent_particles(ParticleIndex pi) {
   if (it == cache_.end()) {
     ParticlesTemp ps = m_->get_dependent_particles_uncached(pi);
     ParticleIndexes pis;
-    for (ParticlesTemp::const_iterator pi = ps.begin(); pi != ps.end(); ++pi) {
-      pis.push_back((*pi)->get_index());
+    for (ParticlesTemp::const_iterator pit = ps.begin();
+         pit != ps.end(); ++pit) {
+      pis.push_back((*pit)->get_index());
     }
     cache_[pi] = pis;
     it = cache_.find(pi);
