@@ -16,16 +16,16 @@ NREPS = 10000
 if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
     NREPS = NREPS // 1000
 NSTEPS = 50
-TIMESTEP = 1000
+TIMESTEP = 10000
 D = .0002
 K_HARMONIC = .02 # harmonic force coefficient in kcal/mol/A^2
 F_LINEAR = .1 # constant linear force in kcal/mol/A
 T = 297.15
 KT_SILLY = IMP.atom.get_kt(T)
-print("KT={} kcal/mol".format(KT_SILLY))
+print("KT=%f kcal/mol" % KT_SILLY)
 t = TIMESTEP * NSTEPS
-print("NREPS={} NSTEPS={} dT={} fs time-per-simulation={} fs"
-      .format(NREPS, NSTEPS, TIMESTEP, t))
+print("NREPS=%d NSTEPS=%d} dT=%d fs time-per-simulation=%d fs"
+      % (NREPS, NSTEPS, TIMESTEP, t))
 
 if use_sympy:
     timestep_u = TIMESTEP * femto * second
@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
         # was .1
         h = IMP.statistics.Histogram3D(.3, IMP.algebra.BoundingBox3D(-ub, ub))
         # IMP.benchmark.set_is_profiling(True)
-        print("Computing mean and std from {} simulations".format(NREPS))
+        print("Computing mean and std from %d simulations" % NREPS)
         for i in range(0, NREPS):
             xyzr.set_coordinates(IMP.algebra.Vector3D(default_coords))
             bd.optimize(NSTEPS)
@@ -83,8 +83,7 @@ class Tests(IMP.test.TestCase):
                 print(i, xyzr.get_coordinates())
         mn = h.get_mean()
         std = h.get_standard_deviation(mn)
-        print("mean={:.2f},{:.2f},{:.2f} ; std={:.2f},{:.2f},{:.2f}"
-              .format(*[x for x in mn], *[x for x in std]))
+        print("mean=%s, std=%s" % (mn, std))
         # IMP.benchmark.set_is_profiling(False)
         return (mn, std, NREPS)
 
@@ -118,8 +117,8 @@ class Tests(IMP.test.TestCase):
             return sigma
         else:
             sigma= math.sqrt(2 * t * D)
-            print("Theoretical sigma per d.o.f. for D={} A^2/fs and t={} fs FREE sigma={:.2f} A"
-                  .format(D, t, sigma))
+            print("Theoretical sigma per d.o.f. for D=%d A^2/fs and t=%d fs "
+                  "FREE sigma=%.2f A" % (D, t, sigma))
             return sigma
 
     def _get_sigma_harmonic(self):
@@ -148,8 +147,8 @@ class Tests(IMP.test.TestCase):
             tau = t / taut # number of times relaxed
             sigma2 = delta2 * (1 - math.exp(-4 * tau))
             sigma = math.sqrt(sigma2)
-            print("CALCULATED SIGMA {:.2f} A TAU={:.3f} TAUT={:.1f} RELAXATION={:.3f}"
-                  .format(sigma, tau, taut, 1-math.exp(-4*tau)))
+            print("CALCULATED SIGMA %.2f A TAU=%.3f TAUT=%.1f RELAXATION=%.3f"
+                  % (sigma, tau, taut, 1-math.exp(-4*tau)))
             return sigma
 
     def _get_sigma_limit_harmonic(self):
@@ -159,7 +158,7 @@ class Tests(IMP.test.TestCase):
             return sigmass ** sympy.Rational(1, 2)
         else:
             sigmass = math.sqrt(KT_SILLY / K_HARMONIC) # when the spring energy is 0.5*kB*T
-            print("CALCULATED SIGMA STEADY STATE {:.2f} A".format(sigmass))
+            print("CALCULATED SIGMA STEADY STATE %.2f A" % sigmass)
             return sigmass
 
     def _check(self, simulated_mn, simulated_std, theoretical_mn, theoretical_std, n):
@@ -170,8 +169,8 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 3):
             mn_max_error = 2.0 * simulated_std[i] * 2 / n ** .5  # 2 x s.e.m. estimator from empricial std TODO: x2 for 95% interval, but why multiply by 2 twice?
             sigma_max_error = 2.0 * 2.0 * self._get_sigma_stderr(simulated_std[i], n) # I am multiplying by 4 instead of 2 just to make it work - should see why it's practically large
-            print("Max allowed error mean={:.2f} A, sigma={:.2f} A"
-                  .format(mn_max_error, sigma_max_error))
+            print("Max allowed error mean=%.2f A, sigma=%.2f A"
+                  % (mn_max_error, sigma_max_error))
 
             if use_sympy:
                 self.assertAlmostEqual(
@@ -198,8 +197,7 @@ class Tests(IMP.test.TestCase):
         #self.skipTest("too expensive")
         (m, xyzr, d, bd) = self._setup()
         sigma = self._get_sigma_i_free()
-        print("theoretical free sigma per d.o.f. is {:.2f} A^2/fs"
-              .format(sigma))
+        print("theoretical free sigma per d.o.f. is %.2f A^2/fs" % sigma)
         r = IMP.RestraintSet(m) # "Empty" restraint
         bd.set_scoring_function([r])
         (mn, std, NREPS) = self._measure_stats(m, xyzr, bd)
@@ -221,8 +219,7 @@ class Tests(IMP.test.TestCase):
         else:
 # mean=-18 # -18 is wrong - was made for the wrong simulation temperature
             mean = -D * F_LINEAR * t / KT_SILLY
-        print("Theoretical mean x-coordinate: {:.2f} A"
-              .format(mean))
+        print("Theoretical mean x-coordinate: %.2f A" % mean)
         h = IMP.core.Linear(0, F_LINEAR)
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
@@ -244,7 +241,7 @@ class Tests(IMP.test.TestCase):
         print()
         (m, xyzr, d, bd) = self._setup()
         sigmah = self._get_sigma_harmonic()
-        print("harmonic sigma={:.2f} A".format(sigmah))
+        print("harmonic sigma=%.2f A" % sigmah)
         sigmaf = self._get_sigma_i_free()
         sigmass = self._get_sigma_limit_harmonic()
         X_EQUILIBRIUM_A = 20
