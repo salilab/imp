@@ -212,6 +212,9 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
 void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
+  // Note - 6*dr*dtfs*N(0,1) for sigma is an approximation. the real angle should be 2*X where
+  // X is a random variable drawn from the Chi2 distribution with 3 dofs
+  // (corresponding to each of the 3 rotational dofs)
   double sigma = get_rotational_sigma_total(get_model(), pi, dtfs);
   double angle = get_sample(sigma);
   algebra::Transformation3D nt =
