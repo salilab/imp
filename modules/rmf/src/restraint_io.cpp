@@ -102,6 +102,11 @@ class Subset : public ConstVector<WeakPointer<Particle>, Particle *> {
   }
 };
 
+inline std::size_t hash_value(const Subset &t) {
+  return t.__hash__();
+}
+
+
 IMP_VALUES(Subset, Subsets);
 
 template <class C>

@@ -141,6 +141,13 @@ class Array : public Value {
   }
 };
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <unsigned int D, class Data, class SwigData>
+inline std::size_t hash_value(const Array<D, Data, SwigData> &t) {
+  return t.__hash__();
+}
+#endif
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_ARRAY_H */
