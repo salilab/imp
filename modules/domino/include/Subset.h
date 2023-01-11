@@ -103,10 +103,12 @@ inline Subset get_difference(const Subset &a, const Subset &b) {
 
 IMPDOMINO_END_NAMESPACE
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace IMP {
   inline std::size_t hash_value(const domino::Subset &t) {
     return t.__hash__();
   }
 }
+#endif
 
 #endif /* IMPDOMINO_SUBSET_H */
