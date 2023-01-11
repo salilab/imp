@@ -33,4 +33,8 @@ std::string get_unique_name(std::string name) {
   }
 }
 
+std::string get_copyright() {
+  return "Copyright 2007-2023 IMP Inventors";
+}
+
 IMPKERNEL_END_NAMESPACE

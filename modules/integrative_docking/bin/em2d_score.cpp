@@ -37,11 +37,13 @@ int main(int argc, char** argv) {
   bool residue_level = false;
   std::vector<std::string> image_files;
   std::string rpdb, lpdb, trans_file, out_file_name;
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <pdb1> <pdb2> <trans file> <image1> <image2>...\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
+
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")(
