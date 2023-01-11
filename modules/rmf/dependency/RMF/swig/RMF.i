@@ -94,7 +94,8 @@
 %inline %{
 std::string _get_rmf_version() {
   std::ostringstream oss;
-  oss << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR;
+  oss << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR
+       << "." << RMF_VERSION_MICRO;
   return oss.str();
 }
 %}

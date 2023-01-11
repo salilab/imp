@@ -1,8 +1,7 @@
 To make a new release:
 
 - Update ChangeLog.md with release date and features.
-- Add version number as RMF_VERSION_MAJOR and RMF_VERSION_MINOR
-  to CMakeLists.txt.
+- Add version number as RMF_VERSION_(MAJOR,MINOR,MICRO) to CMakeLists.txt.
 - git push origin develop
 - Make sure all CI passes
 - Merge into main:
