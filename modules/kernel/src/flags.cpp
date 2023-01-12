@@ -9,6 +9,7 @@
 #include <IMP/file.h>
 #include <IMP/types.h>
 #include <IMP/log_macros.h>
+#include <IMP/base_utility.h>
 #include <IMP/internal/base_static.h>
 #include <IMP/internal/directories.h>
 #include <IMP/internal/log.h>
@@ -152,7 +153,7 @@ void write_help(std::ostream &out) {
   }
   out << "This program is part of IMP, the Integrative Modeling Platform,"
       << std::endl;
-  out << "which is Copyright 2007-2022 IMP Inventors." << std::endl;
+  out << "which is " << get_copyright() << "." << std::endl;
   out << "For additional information about IMP, "
       << "see <https://integrativemodeling.org>." << std::endl;
 }
