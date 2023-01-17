@@ -90,6 +90,26 @@ class Tests(IMP.test.TestCase):
                 success = success + 1
         self.assertGreater(success, count / 2.0)
 
+    def test_remove_member(self):
+        """Test RigidBody.remove_member()"""
+        m = IMP.Model()
+        member = IMP.core.RigidMember.setup_particle(IMP.Particle(m))
+        body = IMP.core.RigidBody.setup_particle(
+                     IMP.core.RigidMember.setup_particle(
+                           IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
+
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [member, body])
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 1)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 1)
+        rb.remove_member(member)
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 1)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 0)
+        rb.remove_member(body)
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 0)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 0)
+        self.assertRaisesUsageException(rb.remove_member, member)
+        self.assertRaisesUsageException(rb.remove_member, body)
+
     def test_get_members(self):
         """Test rigid body get_member* functions"""
         m = IMP.Model()

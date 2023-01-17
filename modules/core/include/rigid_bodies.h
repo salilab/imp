@@ -120,6 +120,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   // add a member associated with a reference frame
   void add_rigid_body_member(ParticleIndex pi);
 
+  // remove a member associated with xyz coords
+  void remove_point_member(ParticleIndex pi);
+
+  // remove a member associated with a reference frame
+  void remove_rigid_body_member(ParticleIndex pi);
+
  public:
   RigidMembers get_rigid_members() const;
 
@@ -581,6 +587,16 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      The radius of the rigid body is updated to reflect this change.
   */
   void set_is_rigid_member(ParticleIndex pi, bool tf);
+
+  //! Remove the member from this rigid body.
+  /** Remove the member (which can be either a rigid body member or a point
+      member, either rigid ot non-rigid) from this rigid body.
+
+     The radius of the rigid body is updated to reflect the removed member.
+
+     \throw UsageException if the given particle is not a member of this body.
+    */
+  void remove_member(ParticleIndexAdaptor p);
 };
 
 #ifndef IMP_DOXYGEN

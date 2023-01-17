@@ -845,6 +845,65 @@ void RigidBody::add_non_rigid_member(ParticleIndexAdaptor pi) {
   set_is_rigid_member(pi, false);
 }
 
+void RigidBody::remove_member(ParticleIndexAdaptor pi) {
+  IMP_FUNCTION_LOG;
+  if (RigidBody::get_is_setup(get_model(), pi)) {
+    remove_rigid_body_member(pi);
+  } else {
+    remove_point_member(pi);
+  }
+  setup_score_states();
+  on_change();
+}
+
+void RigidBody::remove_point_member(ParticleIndex pi) {
+  ParticleIndexes members;
+  if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
+                                     get_particle_index())) {
+    members = get_model()->get_attribute(
+        internal::rigid_body_data().members_, get_particle_index());
+  }
+
+  auto r = std::remove(members.begin(), members.end(), pi);
+  IMP_CHECK_VARIABLE(r);
+  IMP_USAGE_CHECK(r != members.end(),
+                  "Particle is not a member of this rigid body");
+  members.erase(r, members.end());
+
+  if (members.empty()) {
+    get_model()->remove_attribute(internal::rigid_body_data().members_,
+                                  get_particle_index());
+  } else {
+    get_model()->set_attribute(internal::rigid_body_data().members_,
+                               get_particle_index(), members);
+  }
+  internal::remove_required_attributes_for_member(get_model(), pi);
+}
+
+void RigidBody::remove_rigid_body_member(ParticleIndex pi) {
+  ParticleIndexes members;
+  if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
+                                     get_particle_index())) {
+    members = get_model()->get_attribute(
+        internal::rigid_body_data().body_members_, get_particle_index());
+  }
+
+  auto r = std::remove(members.begin(), members.end(), pi);
+  IMP_CHECK_VARIABLE(r);
+  IMP_USAGE_CHECK(r != members.end(),
+                  "Particle is not a member of this rigid body");
+  members.erase(r, members.end());
+
+  if (members.empty()) {
+    get_model()->remove_attribute(internal::rigid_body_data().body_members_,
+                                  get_particle_index());
+  } else {
+    get_model()->set_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(), members);
+  }
+  internal::remove_required_attributes_for_body_member(get_model(), pi);
+}
+
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
   algebra::VectorD<4> v(get_particle()->get_derivative(
                             internal::rigid_body_data().quaternion_[0]),
