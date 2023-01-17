@@ -21,14 +21,16 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for a diffusing particle with a diffusion coefficient.
-/** \ingroup helper
+/** Diffusion is used to decorate a particle with XYZ coordinates (since it
+    inhertis from XYZ) and a translational diffusion coefficient D.
+    D is specified in units of \f$A^2/fs\f$, and it is used by eg 
+    IMP's Brownian dynamics simulator.
+
+    \ingroup helper
     \ingroup decorators
-    \see BrownianDynamics
-
-    Diffusion is used to decorate a diffusing particle with a diffusion
-    coefficient D. D is assumed to be in units of \f$A^2/fs\f$.
-
+    \include Diffusion_decorator.py
     \see RigidBodyDiffusion
+    \see BrownianDynamics
  */
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static void do_setup_particle(Model *m, ParticleIndex pi,
