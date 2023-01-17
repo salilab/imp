@@ -35,13 +35,22 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float D) {
-    IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
-                    "Particle must already be an XYZ particle");
+    if(!XYZ:get_is_setup(m,pi))
+      {
+	XYZ::setup_particle(m, pi, algebra::Vector3D(0,0,0));
+      }
     m->add_attribute(get_diffusion_coefficient_key(), pi, D);
   }
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Vector3D &v, Float D) {
-    XYZ::setup_particle(m, pi, v);
+    if(XYZ:get_is_setup(m,pi))
+      {
+	XYZ(m,pi).set_coordinates(v);
+      }
+    else
+      {
+	XYZ::setup_particle(m, pi, v);
+      }
     do_setup_particle(m, pi, D);
   }
 
@@ -57,24 +66,28 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
 
  public:
   IMP_DECORATOR_METHODS(Diffusion, IMP::core::XYZ);
-  /** 
-      Decorates the particle as a Diffusion particle with a
-      diffusion coefficient D.
-  */
+  //! Setup the particle with the specified diffusion coefficient
+  /**
+     Sets the diffusion coefficient to D. If the particle does not have
+     coordinates, it is decorated as XYZ and its coordinates are set to
+     [0,0,0], otherwise the coordinates remain the same.
+   */
   IMP_DECORATOR_SETUP_1(Diffusion, Float, D);
-  /** 
-      Decorates the particle as a core::XYZ particle with 
-      coordinates v and as a Diffusion particle with a
-      diffusion coefficient D.
+  //! Setup the particle with the specified coordinates and diffusion coefficient
+  /**
+      Sets the XYZ coordinates of this particle to v and the diffusion
+      coefficient to D.
   */
   IMP_DECORATOR_SETUP_2(Diffusion, algebra::Vector3D, v, Float, D);
+  //! Setup the particle with a diffusion coefficient automatically
+  //! inferred from its radius using the Stokes-Einstein equation
   /** 
-      Decorates the particle as a Diffusion particle with the 
-      diffusion coefficient of a particle with a stokes radius
-      of core::XYZR(m, pi).get_radius() at the default IMP 
-      temperature (297.15K).
+      Setup this particle with an automaticall-computed diffusion coefficient,
+      computed using the Stokes-Einstein equation for a Stokes radius
+      of core::XYZR(m, pi).get_radius()  at the default IMP temperature (297.15K).
+      Note this default must change for different temperatures.
       
-      \Note: It assumed particle is already a core::XYZR particle. 
+      \Note: The particle must have been decorated with core::XYZR. 
   */
   IMP_DECORATOR_SETUP_0(Diffusion);
 
