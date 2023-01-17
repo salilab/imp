@@ -90,8 +90,11 @@ public:
   }
 };
 
-//! Simple molecular dynamics optimizer.
-/** The particles to be optimized must have optimizable x,y,z attributes
+//! Simple molecular dynamics simulator.
+/** 
+    A simple molecular dynamics simulator.
+    
+    The particles to be optimized must have optimizable x,y,z attributes
     and a non-optimizable mass attribute; this optimizer assumes the score
     to be energy in kcal/mol, the xyz coordinates to be in angstroms, and
     the mass to be in AMU (g/mol).
