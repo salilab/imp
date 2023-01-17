@@ -472,6 +472,10 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
     removed from the Model. If this particle has a parent, it is
     removed from the parent. Any provenance information for this
     Hierarchy is also removed.
+
+    If any particle in the Hierarchy is a rigid body member, it is
+    removed from the rigid body. (This is currently slow; if possible,
+    destroy the rigid bodies first.)
     \relates Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);

@@ -44,5 +44,19 @@ class Tests(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 67)
 
+    def test_destroy_rigid_body_member(self):
+        """Destroy of a member should update the rigid body"""
+        m = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
+        residues = IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)
+        atoms = IMP.atom.get_by_type(residues[0], IMP.atom.ATOM_TYPE)
+        rb = IMP.atom.create_rigid_body(residues[0])
+        self.assertEqual(len(rb.get_member_particle_indexes()), 6)
+        IMP.atom.destroy(atoms[0])
+        self.assertEqual(len(rb.get_member_particle_indexes()), 5)
+        # Used to fail with "Invalid particle requested"
+        m.update()
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -550,6 +550,11 @@ void destroy(Hierarchy d) {
         prov = previous;
       }
     }
+    if (core::RigidMember::get_is_setup(all[i])) {
+      core::RigidBody rb = core::RigidMember(all[i]).get_rigid_body();
+      rb.remove_member(all[i]);
+    }
+
     Hierarchy hc(all[i]);
     while (hc.get_number_of_children() > 0) {
       hc.remove_child(hc.get_child(hc.get_number_of_children() - 1));
