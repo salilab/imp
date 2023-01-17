@@ -1,6 +1,6 @@
-## \example atom/Difffusion_decorator.py
-# This is a simple example using the Diffusion  decorator to set the coordinates
-# and translational diffusion coeffieicent of some particles
+## \example atom/Diffusion_decorator.py
+# This is a simple example using the Diffusion decorator to set the coordinates
+# and translational diffusion coefficient of some particles
 
 import IMP
 import IMP.core
