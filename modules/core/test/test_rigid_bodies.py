@@ -99,6 +99,8 @@ class Tests(IMP.test.TestCase):
                            IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
 
         rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [member, body])
+        self.assertTrue(IMP.core.RigidMember.get_is_setup(member))
+        self.assertTrue(IMP.core.RigidMember.get_is_setup(body))
         self.assertEqual(len(rb.get_body_member_particle_indexes()), 1)
         self.assertEqual(len(rb.get_member_particle_indexes()), 1)
         rb.remove_member(member)
@@ -107,6 +109,8 @@ class Tests(IMP.test.TestCase):
         rb.remove_member(body)
         self.assertEqual(len(rb.get_body_member_particle_indexes()), 0)
         self.assertEqual(len(rb.get_member_particle_indexes()), 0)
+        self.assertFalse(IMP.core.RigidMember.get_is_setup(member))
+        self.assertFalse(IMP.core.RigidMember.get_is_setup(body))
         self.assertRaisesUsageException(rb.remove_member, member)
         self.assertRaisesUsageException(rb.remove_member, body)
 
