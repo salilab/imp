@@ -97,6 +97,7 @@ class Tests(IMP.test.TestCase):
         self.assertNotIn(st_not_in, t.segments)
         self.assertEqual(t.segments.index(st), 5)
         self.assertRaises(ValueError, t.segments.index, st, start=6)
+        self.assertRaises(ValueError, t.segments.index, st, start=0, stop=0)
         self.assertRaises(ValueError, t.segments.index, st_not_in)
         t.segments.remove(st)
         self.assertRaises(ValueError, t.segments.index, st)

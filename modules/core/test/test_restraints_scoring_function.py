@@ -121,6 +121,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sf.restraints.index(r1), 0)
         self.assertEqual(sf.restraints.index(r2), 1)
         self.assertRaises(ValueError, sf.restraints.index, r1, start=6)
+        self.assertRaises(ValueError, sf.restraints.index, r1, start=0, stop=0)
         self.assertEqual(sf.restraints[0], r1)
         self.assertEqual(sf.restraints[1], r2)
         self.assertRaises(IndexError, lambda: sf.restraints[42])

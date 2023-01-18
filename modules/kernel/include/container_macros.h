@@ -195,7 +195,7 @@ public:                                                                     \
     stop = std::min(stop, num_of);                                             \
     unsigned int indx = start;                                                 \
     for (Ucname##Iterator it = lcnames##_begin() + start;                      \
-         it != lcnames##_end(); ++it, ++indx) {                                \
+         indx < stop; ++it, ++indx) {                                          \
       if (*it == d) {                                                          \
         found = true;                                                          \
         break;                                                                 \

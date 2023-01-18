@@ -116,8 +116,7 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
     start = std::min(start, num_of);
     stop = std::min(stop, num_of);
     unsigned int indx = start;
-    for (auto it = restraints_.begin() + start; it != restraints_.end();
-         ++it, ++indx) {
+    for (auto it = restraints_.begin() + start; indx < stop; ++it, ++indx) {
       if (*it == r) {
         found = true;
         break;
