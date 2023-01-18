@@ -108,6 +108,11 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.evaluate(False), 0., delta=1e-6)
 
         sf.restraints = [r1, r2]
+        self.assertEqual(sf.restraints, [r1, r2])
+        self.assertNotEqual(sf.restraints, (r1, r2))
+        self.assertNotEqual(sf.restraints, [r1])
+        othersf = IMP.core.RestraintsScoringFunction([r1, r2])
+        self.assertEqual(sf.restraints, othersf.restraints)
         self.assertAlmostEqual(sf.evaluate(False), 141., delta=1e-6)
         sf.restraints.pop()
         self.assertAlmostEqual(sf.evaluate(False), 42., delta=1e-6)
