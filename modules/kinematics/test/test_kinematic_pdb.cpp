@@ -31,21 +31,11 @@ IMP::Pointer<IMP::Model> build_model_pdb(
     std::string pdb_fname, IMP::core::RigidBodies& rbs,
     IMP::atom::Hierarchy& mhd);
 
-void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
-                    bool print_hierarchy,
-                    IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy());
+void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs);
 
 void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
                          bool print_hierarchy,
                          IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy());
-
-void print_transformation(IMP::algebra::Transformation3D T,
-                          std::string description);
-
-void print_info(KinematicForest* kf, IMP::core::RigidBodies& rbs,
-                PrismaticJoint* pj0, DihedralAngleRevoluteJoint* dj1,
-                DihedralAngleRevoluteJoint* dj2, PrismaticJoint* pj3,
-                std::string action_desc);
 
 void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs);
 
@@ -109,8 +99,7 @@ IMP::Pointer<IMP::Model> build_model_pdb(
   return m;
 }
 
-void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
-                    bool /*print_hierarchy*/, IMP::atom::Hierarchy mhd) {
+void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs) {
   IMP_ALWAYS_CHECK(rbs.size() >= 5,
                    "Must have at least 5 rigid bodies but only got "
                        << rbs.size(),
@@ -318,54 +307,6 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
             << std::endl;*/
 }
 
-void print_transformation(IMP::algebra::Transformation3D T,
-                          std::string description) {
-  std::pair<IMP::algebra::Vector3D, double> aa =
-      IMP::algebra::get_axis_and_angle(T.get_rotation());
-/*std::cout << "trans " << description << ": "
-            << "axis = " << aa.first
-            << "; angle = " << aa.second * 180.0 / 3.141256 << " deg"
-            << "; translation = " << T.get_translation() << std::endl;*/
-}
-
-void print_info(KinematicForest* kf, IMP::core::RigidBodies& rbs,
-                PrismaticJoint* pj0, DihedralAngleRevoluteJoint* dj1,
-                DihedralAngleRevoluteJoint* dj2, PrismaticJoint* pj3,
-                std::string action_desc) {
-/*std::cout << std::endl << "******** After " << action_desc << " ********"
-            << std::endl;
-
-  std::cout << "Coords: " << kf->get_coordinates_safe(rbs[0]) << ", "
-            << kf->get_coordinates_safe(rbs[1]) << ", "
-            << kf->get_coordinates_safe(rbs[2]) << ", "
-            << kf->get_coordinates_safe(rbs[3]) << ", "
-            << kf->get_coordinates_safe(rbs[4]) << std::endl;
-  std::cout << "Distance 0-1: "
-            << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[0]),
-                                          kf->get_coordinates_safe(rbs[1]))
-            << std::endl;
-  std::cout << "Distance 1-2: "
-            << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[1]),
-                                          kf->get_coordinates_safe(rbs[2]))
-            << std::endl;
-  std::cout << "Distance 2-3: "
-            << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[2]),
-                                          kf->get_coordinates_safe(rbs[3]))
-            << std::endl;
-  std::cout << "Distance 3-4: "
-            << IMP::algebra::get_distance(kf->get_coordinates_safe(rbs[3]),
-                                          kf->get_coordinates_safe(rbs[4]))
-            << std::endl;
-  std::cout << "length 0-1 = " << pj0->get_length() << std::endl;
-  print_transformation(pj0->get_transformation_child_to_parent(), "0-1");
-  std::cout << "angle 1-2 = " << dj1->get_angle() * 180 / 3.141256 << std::endl;
-  print_transformation(dj1->get_transformation_child_to_parent(), "1-2");
-  std::cout << "angle 2-3 = " << dj2->get_angle() * 180 / 3.141256 << std::endl;
-  print_transformation(dj2->get_transformation_child_to_parent(), "2-3");
-  std::cout << "length 3-4 = " << pj3->get_length() << std::endl;
-  print_transformation(pj3->get_transformation_child_to_parent(), "3-4");*/
-}
-
 void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {
   IMP_ALWAYS_CHECK(rbs.size() >= 5,
                    "Must have at least 5 rigid bodies but only got "
@@ -386,23 +327,15 @@ void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {
   kf->add_edge(dj2);
   kf->add_edge(pj3);
 
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "KinematicForest ctr");
   dj1->set_angle(0.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle dj1 0 deg");
   //  dj1->set_angle(45.0 * 3.141259265358973/180);
   // print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle 45 deg");
   dj1->set_angle(180.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle dj1 180 deg");
   dj2->set_angle(0.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle dj2 0 deg");
   dj1->set_angle(0.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle dj1 0 deg");
   kf->set_coordinates_safe(rbs[1], IMP::algebra::Vector3D(0, 0, 1));
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle set_rbs[1] = 0,0,1");
   dj1->set_angle(0.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle 0 deg");
   dj1->set_angle(180.0 * 3.141259265358973 / 180);
-  print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle 180 deg");
 }
 
 int main(int argc, char *argv[]) {
@@ -419,7 +352,7 @@ int main(int argc, char *argv[]) {
   IMP::atom::Hierarchy mhd2;
   IMP::Pointer<IMP::Model> m2 =
       build_model_pdb(fname, rbs2, mhd2);
-  test_pdb_model(m2, rbs2, true, mhd2);
+  test_pdb_model(m2, rbs2);
   // test_model_with_rbs(m2, rbs2, true, mhd);
   // test_dihedral(m2, rbs2);
 }
