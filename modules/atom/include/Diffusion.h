@@ -35,7 +35,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float D) {
-    if(!XYZ:get_is_setup(m,pi))
+    if(!XYZ::get_is_setup(m,pi))
       {
 	XYZ::setup_particle(m, pi, algebra::Vector3D(0,0,0));
       }
@@ -43,7 +43,7 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   }
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Vector3D &v, Float D) {
-    if(XYZ:get_is_setup(m,pi))
+    if(XYZ::get_is_setup(m,pi))
       {
 	XYZ(m,pi).set_coordinates(v);
       }
