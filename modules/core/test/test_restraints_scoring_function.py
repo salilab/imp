@@ -90,6 +90,47 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(r1.moved_pis, IMP.get_indexes([p]))
         self.assertEqual(len(r1.reset_pis), 0)
 
+    def test_python_list(self):
+        """Test Python list-like access to restraints"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = TestMovedRestraint(m, [p], value=42.)
+        r2 = TestMovedRestraint(m, [p], value=99.)
+        sf = IMP.core.RestraintsScoringFunction([r1])
+        self.assertAlmostEqual(sf.evaluate(False), 42., delta=1e-6)
+
+        self.assertEqual(len(sf.restraints), 1)
+        self.assertIn(r1, sf.restraints)
+        self.assertNotIn(r2, sf.restraints)
+
+        del sf.restraints
+        self.assertEqual(len(sf.restraints), 0)
+        self.assertAlmostEqual(sf.evaluate(False), 0., delta=1e-6)
+
+        sf.restraints = [r1, r2]
+        self.assertAlmostEqual(sf.evaluate(False), 141., delta=1e-6)
+        sf.restraints.pop()
+        self.assertAlmostEqual(sf.evaluate(False), 42., delta=1e-6)
+        sf.restraints.pop()
+        self.assertAlmostEqual(sf.evaluate(False), 0., delta=1e-6)
+        self.assertRaises(IndexError, sf.restraints.pop)
+
+        sf.restraints.append(r1)
+        sf.restraints.extend([r2])
+        self.assertAlmostEqual(sf.evaluate(False), 141., delta=1e-6)
+        self.assertEqual(sf.restraints.index(r1), 0)
+        self.assertEqual(sf.restraints.index(r2), 1)
+        self.assertRaises(ValueError, sf.restraints.index, r1, start=6)
+        self.assertEqual(sf.restraints[0], r1)
+        self.assertEqual(sf.restraints[1], r2)
+        self.assertRaises(IndexError, lambda: sf.restraints[42])
+        self.assertRaises(IndexError, lambda: sf.restraints[-42])
+        del sf.restraints[1]
+        def _delfunc():
+            del sf.restraints[42]
+        self.assertRaises(IndexError, _delfunc)
+        self.assertRaises(ValueError, sf.restraints.index, r2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -68,11 +68,67 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
     return Restraints(1, rs);
   }
   ModelObjectsTemp do_get_inputs() const override { return restraints_; }
+
+  /* Provide methods to get/set the restraints in this scoring function.
+     Note that we can't use the IMP_LIST macro here since this class
+     is templated. */
   const Storage &get_restraints() const { return restraints_; }
+
   void set_restraints(const RestraintsTemp &s) {
     set_has_dependencies(false);
     restraints_ = s;
   }
+
+  unsigned int get_number_of_restraints() const {
+    return restraints_.size();
+  }
+
+  void clear_restraints() {
+    set_has_dependencies(false);
+    restraints_.clear();
+  }
+
+  Restraint *get_restraint(unsigned int i) const {
+    return restraints_[i];
+  }
+
+  void erase_restraint(unsigned int i) {
+    set_has_dependencies(false);
+    restraints_.erase(restraints_.begin() + i);
+  }
+
+  unsigned int add_restraint(Restraint *r) {
+    set_has_dependencies(false);
+    unsigned int index = restraints_.size();
+    restraints_.push_back(r);
+    return index;
+  }
+
+  void add_restraints(const Storage &r) {
+    set_has_dependencies(false);
+    restraints_.insert(restraints_.end(), r.begin(), r.end());
+  }
+
+  unsigned int _python_index_restraint(Restraint *r, unsigned int start,
+                                       unsigned int stop) {
+    bool found = false;
+    unsigned int num_of = get_number_of_restraints();
+    start = std::min(start, num_of);
+    stop = std::min(stop, num_of);
+    unsigned int indx = start;
+    for (auto it = restraints_.begin() + start; it != restraints_.end();
+         ++it, ++indx) {
+      if (*it == r) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      IMP_THROW(r << " is not in list", ValueException);
+    }
+    return indx;
+  }
+
   IMP_OBJECT_METHODS(GenericRestraintsScoringFunction);
 };
 

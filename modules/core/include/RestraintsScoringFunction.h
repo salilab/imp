@@ -43,7 +43,22 @@ class RestraintsScoringFunction :
 
   virtual Restraints create_restraints() const override;
   virtual ModelObjectsTemp do_get_inputs() const override;
+
+  // Expose methods to access the list of restraints from Python
+  Restraints get_restraints() const;
+  void set_restraints(const Restraints& d);
+  unsigned int get_number_of_restraints() const;
+  void clear_restraints();
+  Restraint *get_restraint(unsigned int i) const;
+  void erase_restraint(unsigned int i);
+  unsigned int add_restraint(Restraint *d);
+  void add_restraints(const Restraints& d);
+  unsigned int _python_index_restraint(Restraint *r, unsigned int start,
+                                       unsigned int stop);
+  IMP_LIST_PYTHON_IMPL(restraint, restraints, Restraints, Restraints)
+
   IMP_OBJECT_METHODS(RestraintsScoringFunction);
+
 #endif
 };
 
