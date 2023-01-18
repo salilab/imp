@@ -82,9 +82,10 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   //! Setup the particle with a diffusion coefficient automatically
   //! inferred from its radius using the Stokes-Einstein equation
   /** 
-      Setup this particle with an automaticall-computed diffusion coefficient,
+      Setup this particle with an automatically-computed diffusion coefficient,
       computed using the Stokes-Einstein equation for a Stokes radius
-      of core::XYZR(m, pi).get_radius()  at the default IMP temperature (297.15K).
+      of core::XYZR(m, pi).get_radius() at the default
+      IMP temperature (297.15K).
       Note this default must change for different temperatures.
       
       \Note: The particle must have been decorated with core::XYZR. 
