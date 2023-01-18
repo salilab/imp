@@ -542,6 +542,10 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
 
 void RigidBody::teardown_particle(RigidBody rb) {
   IMP_FUNCTION_LOG;
+  IMP_USAGE_CHECK(!RigidMember::get_is_setup(rb),
+                  "This body is a member of another rigid body. "
+                  "Remove it first.");
+
   // clear caches
   rb.on_change();
   {

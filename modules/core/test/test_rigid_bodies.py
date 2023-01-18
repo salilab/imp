@@ -197,9 +197,17 @@ class Tests(IMP.test.TestCase):
         rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1 = IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         IMP.core.RigidBody.teardown_particle(rb1)
+        IMP.core.RigidBody.teardown_particle(rb0)
         print("setting up again")
+        rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1 = IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         print("tearing down")
+        # Cannot teardown body that is a member of another body;
+        # must remove it first
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.assertRaises(IMP.UsageException,
+                              IMP.core.RigidBody.teardown_particle, rb0)
+        rb1.remove_member(rb0)
         IMP.core.RigidBody.teardown_particle(rb0)
         print("again")
         IMP.core.RigidBody.teardown_particle(rb1)

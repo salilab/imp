@@ -186,6 +186,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_DECORATOR_SETUP_1(RigidBody, algebra::ReferenceFrame3D, rf);
 
   //! Make the rigid body no longer rigid.
+  /** If this rigid body has been added as a member of another rigid body,
+      it must be removed first. */
   static void teardown_particle(RigidBody rb);
 
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
