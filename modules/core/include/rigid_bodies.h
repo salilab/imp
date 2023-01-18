@@ -591,12 +591,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void set_is_rigid_member(ParticleIndex pi, bool tf);
 
   //! Remove the member from this rigid body.
-  /** Remove the member (which can be either a rigid body member or a point
-      member, either rigid ot non-rigid) from this rigid body.
+  /** The member can be either a rigid body member or a point
+      member, either rigid ot non-rigid.
 
-     The radius of the rigid body is updated to reflect the removed member.
+      The radius of the rigid body is updated to reflect the removed member.
 
-     \throw UsageException if the given particle is not a member of this body.
+      \throw UsageException if the given particle is not a member of this body.
     */
   void remove_member(ParticleIndexAdaptor p);
 };
