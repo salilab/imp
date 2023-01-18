@@ -115,7 +115,7 @@ such as
         sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
-- [Conda](https://anaconda.org/) Once you installed miniconda or anaconda, do 
+- [Conda](https://docs.conda.io/en/latest/) Once you installed conda (typically via the Miniconda or Anaconda distributions), do 
 
         conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libprotobuf protobuf libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy
 	conda activate IMP_BUILD
