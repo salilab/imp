@@ -107,8 +107,10 @@
     defined.
 */
 #define IMP_DECORATOR_SETUP_0(Name)                                    \
-  /** Setup the particle so it can be used with this decorator. */     \
-  static Name setup_particle(Model *m, ParticleIndex pi) {     \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
+  static Name setup_particle(Model *m, ParticleIndex pi) {             \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                              \
                     "Particle " << m->get_particle_name(pi)            \
                                 << " already set up as " << #Name);    \
@@ -122,8 +124,10 @@
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_1(Name, FirstArgumentType, first_argument_name) \
-  /** Setup the particle so that it can be used with this decorator */  \
-  static Name setup_particle(Model *m, ParticleIndex pi,        \
+  /**								        \
+     @return a Name object that decortes particle pi                    \
+  */							                \
+  static Name setup_particle(Model *m, ParticleIndex pi,                \
                              FirstArgumentType first_argument_name) {   \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                               \
                     "Particle " << m->get_particle_name(pi)             \
@@ -142,7 +146,9 @@
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_2(Name, FirstArgumentType, first_argument_name,    \
                               SecondArgumentType, second_argument_name)        \
-  /** Setup the particle so it can be used with this decorator. */             \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
   static Name setup_particle(Model *m, ParticleIndex pi,		       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name) {        \
@@ -164,7 +170,9 @@
 #define IMP_DECORATOR_SETUP_3(Name, FirstArgumentType, first_argument_name,    \
                               SecondArgumentType, second_argument_name,        \
                               ThirdArgumentType, third_argument_name)          \
-  /** Setup the particle so it can be used with this decorator. */             \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
   static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
@@ -191,7 +199,9 @@
                               SecondArgumentType, second_argument_name,        \
                               ThirdArgumentType, third_argument_name,          \
                               FourthArgumentType, fourth_argument_name)        \
-  /** Setup the particle so it can be used with this decorator. */             \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
   static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
@@ -224,7 +234,9 @@
                               ThirdArgumentType, third_argument_name,          \
                               FourthArgumentType, fourth_argument_name,        \
                               FifthArgumentType, fifth_argument_name)          \
-  /** Setup the particle so it can be used with this decorator. */             \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
   static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
@@ -260,7 +272,9 @@
     defined. But any docs needed before the macro invocation.
 */
 #define IMP_DECORATOR_TRAITS_SETUP_0(Name)                         \
-  /** Setup the particle so it can be used with this decorator. */ \
+  /**								       \
+     @return a Name object that decortes particle pi                   \
+  */							               \
   static Name setup_particle(                                      \
       Model *m, ParticleIndex pi,                          \
       DecoratorTraits tr = get_default_decorator_traits()) {       \
