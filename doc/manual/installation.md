@@ -18,7 +18,7 @@ to see if the code is currently stable enough for your purposes.
 
 # Google Colab {#installation_colab}
 
-To experiment with IMP on [Google colaboratory](https://colab.research.google.com), use the following code snippet:
+To experiment with IMP on [Google Colaboratory](https://colab.research.google.com), use the following code snippet:
 
 \code{.unparsed}
 !echo "deb https://integrativemodeling.org/latest/download $(lsb_release -cs)/" > /etc/apt/sources.list.d/salilab.list
