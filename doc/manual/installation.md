@@ -16,6 +16,19 @@ Binaries are [also available for our latest nightly builds](https://integrativem
 please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
 to see if the code is currently stable enough for your purposes.
 
+# Google Colab {#installation_colab}
+
+To experiment with IMP on [Google colaboratory](https://colab.research.google.com), use the following code snippet:
+
+\code{.unparsed}
+!echo "deb https://integrativemodeling.org/latest/download $(lsb_release -cs)/" > /etc/apt/sources.list.d/salilab.list
+!wget -O /etc/apt/trusted.gpg.d/salilab.asc https://salilab.org/~ben/pubkey256.asc
+!apt update
+!apt install imp
+import sys
+sys.path.append('/usr/lib/python3.6/dist-packages')
+\endcode
+
 # Source code installation {#installation_source}
 
 ## Prerequisites {#installation_prereqs}
