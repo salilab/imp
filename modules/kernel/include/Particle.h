@@ -150,14 +150,20 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 // for swig
 class Decorator;
 
-/** Take Decorator or Particle. */
+/** An adaptor that enable to implicitly pass particles to other
+    functions or constructors by passing either the particle itself
+    (in Python), a decorator to the particle, or a raw/smart IMP
+    pointer to the particle (in C++)
+*/
 class IMPKERNELEXPORT ParticleAdaptor : public InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
 
  public:
   ParticleAdaptor() : m_(nullptr), pi_() {}
+  //! convert p to itself
   ParticleAdaptor(Particle *p) : m_(p->get_model()), pi_(p->get_index()) {}
+  //! convert d to the particle it decorates
   ParticleAdaptor(const Decorator &d);
 #ifndef SWIG
   ParticleAdaptor(IMP::Pointer<Particle> p)
