@@ -163,9 +163,10 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
                                      d);
   }
 
-  //! Return true if the particle is an instance of an Diffusion
+  //! Return true if the particle is an instance of an RigidBodyDiffusion
   static bool get_is_setup(Model *m, ParticleIndex p) {
-    return m->get_has_attribute(get_rotational_diffusion_coefficient_key(), p);
+    return m->get_has_attribute(get_rotational_diffusion_coefficient_key(), p) &&
+      Diffusion::get_is_setup(m, p);
   }
 
   //! Get the D key
