@@ -263,6 +263,7 @@ IMP_SWIG_OBJECT(IMP, RestraintInfo, RestraintInfos);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP, Model);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
 
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);

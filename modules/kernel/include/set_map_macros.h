@@ -67,10 +67,41 @@
 #else
 #include <boost/container/flat_set.hpp>  // IWYU pragma: export
 #include <boost/container/flat_map.hpp>  // IWYU pragma: export
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/set.hpp>
+#include <boost/serialization/split_free.hpp>
 #define IMP_KERNEL_SMALL_ORDERED_SET boost::container::flat_set
 #define IMP_KERNEL_SMALL_ORDERED_MAP boost::container::flat_map
 #define IMP_KERNEL_SMALL_UNORDERED_SET boost::container::flat_set
 #define IMP_KERNEL_SMALL_UNORDERED_MAP boost::container::flat_map
+
+// Allow serialization of boost::container::flat_set
+namespace boost {
+  namespace serialization {
+    template<class Archive, typename Key, typename Compare, typename Allocator>
+    inline void save(Archive &ar,
+                     boost::container::flat_set<Key, Compare, Allocator> const &t,
+                     const unsigned int) {
+      boost::serialization::stl::save_collection<
+        Archive, boost::container::flat_set<Key, Compare, Allocator> >(ar, t);
+    }
+
+    template<class Archive, typename Key, typename Compare, typename Allocator>
+    inline void load(Archive &ar,
+                     boost::container::flat_set<Key, Compare, Allocator> &t,
+                     const unsigned int) {
+      boost::serialization::load_set_collection(ar, t);
+    }
+
+    template<class Archive, typename Key, typename Compare, typename Allocator>
+    inline void serialize(Archive &ar,
+                     boost::container::flat_set<Key, Compare, Allocator> &t,
+                     const unsigned int file_version) {
+      boost::serialization::split_free(ar, t, file_version);
+    }
+  }
+}
+
 #endif
 #endif
 

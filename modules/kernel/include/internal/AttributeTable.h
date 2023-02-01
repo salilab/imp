@@ -15,8 +15,42 @@
 #include <IMP/Pointer.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
+#include <boost/serialization/split_free.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 #include <limits>
+
+// Add serialization support for boost::dynamic_bitset
+namespace boost {
+  namespace serialization {
+    template <class Archive, typename Block, typename Allocator>
+    inline void save(Archive &ar,
+                     boost::dynamic_bitset<Block, Allocator> const &t,
+                     const unsigned int) {
+      std::string bits;
+      boost::to_string(t, bits);
+      ar << bits;
+    }
+
+    template <class Archive, typename Block, typename Allocator>
+    inline void load(Archive &ar,
+                     boost::dynamic_bitset<Block, Allocator> &t,
+                     const unsigned int) {
+      std::string bits;
+      ar >> bits;
+      t = boost::dynamic_bitset<Block, Allocator>(bits);
+    }
+
+    template <class Archive, typename Block, typename Allocator>
+    inline void serialize(Archive &ar,
+                          boost::dynamic_bitset<Block, Allocator> &t,
+                          const unsigned int version) {
+      boost::serialization::split_free(ar, t, version);
+    }
+  }
+}
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -181,6 +215,12 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
   struct Container : public boost::dynamic_bitset<> {
+    friend class boost::serialization::access;
+
+    template<class Archive> void serialize(Archive &ar, const unsigned int) {
+      ar & boost::serialization::base_object<boost::dynamic_bitset<> >(*this);
+    }
+
     typedef boost::dynamic_bitset<> P;
     P::reference operator[](Index<ParticleIndexTag> i) {
       return P::operator[](get_as_unsigned_int(i));

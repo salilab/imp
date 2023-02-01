@@ -29,6 +29,7 @@
 #include <IMP/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
+#include <boost/serialization/access.hpp>
 
 #include <limits>
 
@@ -138,6 +139,23 @@ class IMPKERNELEXPORT Model : public Object
   internal::MovedParticlesParticleCache moved_particles_particle_cache_;
   // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<internal::FloatAttributeTable>(*this)
+       & boost::serialization::base_object<internal::StringAttributeTable>(*this)
+       & boost::serialization::base_object<internal::IntAttributeTable>(*this)
+       & boost::serialization::base_object<internal::IntsAttributeTable>(*this)
+       & boost::serialization::base_object<internal::FloatsAttributeTable>(*this);
+    if (Archive::is_loading::value) {
+      age_counter_ = 1;
+      dependencies_age_ = 0;
+      saved_dependencies_age_ = 0;
+      dependencies_saved_ = false;
+      moved_particles_cache_age_ = 0;
+    }
+  }
 
   // update model age (can never be zero, even if it wraps)
   void increase_age() {

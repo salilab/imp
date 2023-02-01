@@ -16,6 +16,7 @@
 #include <IMP/log_macros.h>
 #include <IMP/thread_macros.h>
 #include <IMP/Value.h>
+#include <boost/serialization/access.hpp>
 #include <vector>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -57,6 +58,13 @@ class Key : public Value {
 
  private:
   int str_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & str_;
+  }
+
   static const internal::KeyData::Map& get_map() {
     return get_key_data().get_map();
   }

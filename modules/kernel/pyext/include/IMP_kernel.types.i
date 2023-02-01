@@ -798,6 +798,38 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 }
 %enddef
 
+// Not yet complete for Objects, so don't implement pickle
+%define IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)
+%extend Namespace::Name {
+  /* Get contents as a binary blob (for serialization) */
+  PyObject *_get_as_binary() const {
+    std::ostringstream oss;
+    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
+    ba << *self;
+    std::string s = oss.str();
+    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
+    if (p) {
+      return p;
+    } else {
+      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
+    }
+  }
+
+  /* Set contents from a binary blob (for unserialization) */
+  void _set_from_binary(PyObject *p) {
+    char *buf;
+    Py_ssize_t len;
+    if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
+      throw IMP::IndexException("PyBytes_AsStringAndSize failed");
+    }
+    std::string s(buf, len);
+    std::istringstream iss(s);
+    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
+    ba >> *self;
+  }
+}
+%enddef
+
 // A value that is serializable/picklable
 // Modules that use these must link against Boost.Serialization and
 // include boost/archive/binary_iarchive.hpp and
