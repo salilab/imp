@@ -82,15 +82,30 @@ namespace boost {
     inline void save(Archive &ar,
                      boost::container::flat_set<Key, Compare, Allocator> const &t,
                      const unsigned int) {
-      boost::serialization::stl::save_collection<
-        Archive, boost::container::flat_set<Key, Compare, Allocator> >(ar, t);
+      auto count = t.size();
+      ar << count;
+      typename boost::container::flat_set<
+              Key, Compare, Allocator>::const_iterator it = t.begin();
+      while(count-- > 0) {
+        ar << *it++;
+      }
     }
 
     template<class Archive, typename Key, typename Compare, typename Allocator>
     inline void load(Archive &ar,
                      boost::container::flat_set<Key, Compare, Allocator> &t,
                      const unsigned int) {
-      boost::serialization::load_set_collection(ar, t);
+      typedef typename boost::container::flat_set<Key, Compare, Allocator>::iterator iterator;
+      typedef typename boost::container::flat_set<Key, Compare, Allocator>::value_type value_type;
+      t.clear();
+      typename boost::container::flat_set<Key, Compare, Allocator>::size_type count;
+      ar >> count;
+      iterator hint = t.begin();
+      while(count-- > 0) {
+        value_type key;
+        ar >> key;
+        hint = t.insert(hint, key);
+      }
     }
 
     template<class Archive, typename Key, typename Compare, typename Allocator>
