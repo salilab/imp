@@ -68,7 +68,6 @@
 #include <boost/container/flat_set.hpp>  // IWYU pragma: export
 #include <boost/container/flat_map.hpp>  // IWYU pragma: export
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/set.hpp>
 #include <boost/serialization/split_free.hpp>
 #define IMP_KERNEL_SMALL_ORDERED_SET boost::container::flat_set
 #define IMP_KERNEL_SMALL_ORDERED_MAP boost::container::flat_map
