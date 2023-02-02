@@ -13,6 +13,7 @@
 #include "bracket_macros.h"
 #include "showable_macros.h"
 #include "Value.h"
+#include <boost/serialization/access.hpp>
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -24,6 +25,12 @@ IMPKERNEL_BEGIN_NAMESPACE
 template <class Tag>
 class Index : public Value {
   int i_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & i_;
+  }
 
  public:
   explicit Index(int i) : i_(i) {}

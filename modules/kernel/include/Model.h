@@ -143,11 +143,42 @@ class IMPKERNELEXPORT Model : public Object
   friend class boost::serialization::access;
 
   template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<internal::FloatAttributeTable>(*this)
+    ar & boost::serialization::base_object<Object>(*this)
+       & boost::serialization::base_object<internal::FloatAttributeTable>(*this)
        & boost::serialization::base_object<internal::StringAttributeTable>(*this)
        & boost::serialization::base_object<internal::IntAttributeTable>(*this)
        & boost::serialization::base_object<internal::IntsAttributeTable>(*this)
-       & boost::serialization::base_object<internal::FloatsAttributeTable>(*this);
+       & boost::serialization::base_object<internal::FloatsAttributeTable>(*this)
+       & free_particles_;
+
+    if (Archive::is_loading::value) {
+      size_t count;
+      free_particles_.clear();
+      ar & count;
+      particle_index_.clear();
+      while(count-- > 0) {
+        std::string name;
+        ar & name;
+        add_particle(name);
+      }
+      ParticleIndexes to_free;
+      ar & to_free;
+      for (auto pi : to_free) {
+        remove_particle(pi);
+      }
+    } else {
+      size_t count = particle_index_.size();
+      ar & count;
+      for (size_t i = 0; i < count; ++i) {
+        std::string name;
+        if (get_has_particle(ParticleIndex(i))) {
+          name = get_particle_name(ParticleIndex(i));
+        }
+        ar & name;
+      }
+      ar & free_particles_;
+    }
+
     if (Archive::is_loading::value) {
       age_counter_ = 1;
       dependencies_age_ = 0;

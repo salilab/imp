@@ -103,7 +103,11 @@ void Object::set_log_level(LogLevel l) {
 }
 
 void Object::set_name(std::string in_name) {
-  name_ = get_unique_name(in_name);
+  set_name_internal(get_unique_name(in_name));
+}
+
+void Object::set_name_internal(std::string in_name) {
+  name_ = in_name;
   quoted_name_.reset(new char[name_.size() + 3]);
   quoted_name_[0] = '"';
   std::copy(name_.begin(), name_.end(), quoted_name_.get() + 1);

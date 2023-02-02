@@ -306,6 +306,64 @@ class Tests(IMP.test.TestCase):
         # (as p2 was added)
         self.assertRaisesInternalException(m.restore_dependencies)
 
+    def test_serialize_object(self):
+        """Check that Object properties are (de-)serialized"""
+        m = IMP.Model("test model")
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(m2.get_name(), "test model")
+
+    def test_serialize_int_attributes(self):
+        """Check that Model int attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(ik, p.get_index(), 42)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
+
+    def test_serialize_float_attributes(self):
+        """Check that Model float attributes are (de-)serialized"""
+        m = IMP.Model()
+        fk = IMP.FloatKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(fk, p.get_index(), 5.4)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
+                               delta=0.1)
+
+    def test_serialize_string_attributes(self):
+        """Check that Model string attributes are (de-)serialized"""
+        m = IMP.Model()
+        sk = IMP.StringKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(sk, p.get_index(), "test attribute")
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(m2.get_attribute(sk, p.get_index()), "test attribute")
+
+    def test_serialize_particles(self):
+        """Check that Model particles are (de-)serialized"""
+        m = IMP.Model()
+        p1 = m.add_particle("first")
+        p2 = m.add_particle("second")
+        p3 = m.add_particle("third")
+        m.remove_particle(p2)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(0)), "first")
+        self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(2)), "third")
+        self.assertFalse(m2.get_has_particle(IMP.ParticleIndex(1)))
+        p4 = m2.add_particle("fourth")
+        # p2 was deleted, so new particle should use this index
+        self.assertEqual(p4, p2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

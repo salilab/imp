@@ -24,6 +24,7 @@
 #include <IMP/hash.h>
 #include "hash.h"
 #include <boost/scoped_array.hpp>
+#include <boost/serialization/access.hpp>
 
 #if !defined(IMP_HAS_CHECKS)
 #error "IMP_HAS_CHECKS not defined, something is broken"
@@ -124,6 +125,24 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   static void add_live_object(Object* o);
   static void remove_live_object(Object* o);
 #endif
+
+ friend class boost::serialization::access;
+
+ template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & name_;
+#if IMP_HAS_LOG != IMP_NONE
+    ar & log_level_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
+    ar & check_level_ & was_owned_ & check_value_;
+#endif
+    if (Archive::is_loading::value) {
+      // set quoted_name from name
+      set_name_internal(name_);
+    }
+  }
+
+  void set_name_internal(std::string name);
 
   void initialize(std::string name);
 
