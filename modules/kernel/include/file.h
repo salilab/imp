@@ -19,7 +19,7 @@
 #include "InputAdaptor.h"
 #include "value_macros.h"
 #include "check_macros.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <fstream>
 #include <iostream>
 
@@ -48,7 +48,7 @@ struct TextProxy {
     \see TextInput
 */
 class IMPKERNELEXPORT TextOutput : public InputAdaptor {
-  boost::shared_ptr<internal::IOStorage<std::ostream> > out_;
+  std::shared_ptr<internal::IOStorage<std::ostream> > out_;
 
  public:
 #ifndef IMP_DOXYGEN
@@ -87,7 +87,7 @@ class IMPKERNELEXPORT TextOutput : public InputAdaptor {
     \see TextOutput
 */
 class IMPKERNELEXPORT TextInput : public InputAdaptor {
-  boost::shared_ptr<internal::IOStorage<std::istream> > in_;
+  std::shared_ptr<internal::IOStorage<std::istream> > in_;
 
  public:
 #ifndef IMP_DOXYGEN

@@ -10,9 +10,9 @@
 #include <IMP/display/internal/writers.h>
 
 IMPDISPLAY_BEGIN_INTERNAL_NAMESPACE
-std::map<std::string, boost::shared_ptr<WriterFactory> >&
+std::map<std::string, std::shared_ptr<WriterFactory> >&
 get_writer_factory_table() {
-  static std::map<std::string, boost::shared_ptr<WriterFactory> > table;
+  static std::map<std::string, std::shared_ptr<WriterFactory> > table;
   return table;
 }
 

@@ -8,8 +8,7 @@
 #ifndef IMPDISPLAY_WRITER_MACROS_H
 #define IMPDISPLAY_WRITER_MACROS_H
 #include "Writer.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 //! Define information for an TextWriter object
 /** This macro declares the methods do_open, do_close, add_geometry
@@ -46,7 +45,7 @@
 #define IMP_REGISTER_WRITER(Name, suffix)                                  \
   namespace {                                                              \
   internal::WriterFactoryRegistrar Name##registrar(                        \
-      suffix, boost::make_shared<internal::WriterFactoryHelper<Name> >()); \
+      suffix, std::make_shared<internal::WriterFactoryHelper<Name> >()); \
   }
 #endif
 

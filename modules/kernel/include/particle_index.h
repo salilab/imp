@@ -11,7 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 
 //! Take Decorator, Particle or ParticleIndex.
 class IMPKERNELEXPORT ParticleIndexesAdaptor : public InputAdaptor {
-  boost::shared_ptr<ParticleIndexes> tmp_;
+  std::shared_ptr<ParticleIndexes> tmp_;
   const ParticleIndexes *val_;
 
  public:

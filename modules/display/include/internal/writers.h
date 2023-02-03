@@ -10,7 +10,7 @@
 
 #include <IMP/display/display_config.h>
 #include <IMP/file.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 IMPDISPLAY_BEGIN_NAMESPACE
 class Writer;
 IMPDISPLAY_END_NAMESPACE
@@ -33,12 +33,12 @@ class WriterFactoryHelper : public WriterFactory {
   }
 };
 
-std::map<std::string, boost::shared_ptr<WriterFactory> > &
+std::map<std::string, std::shared_ptr<WriterFactory> > &
     get_writer_factory_table();
 
 struct WriterFactoryRegistrar {
   WriterFactoryRegistrar(std::string suffix,
-                         boost::shared_ptr<WriterFactory> wf) {
+                         std::shared_ptr<WriterFactory> wf) {
     get_writer_factory_table()[suffix] = wf;
   }
 };

@@ -56,7 +56,7 @@ void TextWriter::do_set_frame() {
 }
 
 Writer *create_writer(std::string name) {
-  typedef std::pair<std::string, boost::shared_ptr<internal::WriterFactory> >
+  typedef std::pair<std::string, std::shared_ptr<internal::WriterFactory> >
       MP;
   for(MP mp : internal::get_writer_factory_table()) {
     if (boost::algorithm::ends_with(name, mp.first)) {

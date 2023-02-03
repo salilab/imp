@@ -19,7 +19,7 @@
 #include <IMP/Sampler.h>
 #include <IMP/ConfigurationSet.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -173,7 +173,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   PointerMember<DOFsSampler> dofs_sampler_;
   PointerMember<LocalPlanner> local_planner_;
-  typedef boost::shared_ptr<RRTNode> RRTNodePtr;
+  typedef std::shared_ptr<RRTNode> RRTNodePtr;
   typedef std::vector<RRTNodePtr> RRTTree;
   RRTTree tree_;
   DOFs cspace_dofs_;               // configuration space dofs

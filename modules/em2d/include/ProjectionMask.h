@@ -21,7 +21,7 @@
 #include "IMP/Particle.h"
 #include "IMP/exception.h"
 #include <complex>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_free.hpp>
 
@@ -30,8 +30,8 @@ IMPEM2D_BEGIN_NAMESPACE
 class ProjectionMask;
 class MasksManager;
 
-typedef boost::shared_ptr<ProjectionMask> ProjectionMaskPtr;
-typedef boost::shared_ptr<MasksManager> MasksManagerPtr;
+typedef std::shared_ptr<ProjectionMask> ProjectionMaskPtr;
+typedef std::shared_ptr<MasksManager> MasksManagerPtr;
 
 //! Mask that contains the projection of a given particles. This matrices
 //! speed up projecting because the only have to be computed once for a model
