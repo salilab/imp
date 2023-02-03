@@ -21,7 +21,7 @@ namespace RMF {
 namespace avro_backend {
 
 void show(const RMF_avro_backend::Data& data, std::ostream& out) {
-  boost::shared_ptr< ::internal_avro::OutputStream> os =
+  std::shared_ptr< ::internal_avro::OutputStream> os =
       internal_avro::ostreamOutputStream(out);
   ::internal_avro::EncoderPtr encoder =
       internal_avro::jsonEncoder(internal_avro::compileJsonSchemaFromString(

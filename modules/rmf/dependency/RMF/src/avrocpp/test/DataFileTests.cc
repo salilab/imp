@@ -19,7 +19,6 @@
 #include <boost/test/included/unit_test_framework.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
 #include <sstream>
 
 #include "DataFile.hh"
@@ -27,7 +26,7 @@
 #include "Stream.hh"
 #include "Compiler.hh"
 
-using boost::shared_ptr;
+using std::shared_ptr;
 using std::string;
 using std::pair;
 using std::vector;
@@ -36,7 +35,7 @@ using std::istringstream;
 using std::ostringstream;
 
 using boost::array;
-using boost::shared_ptr;
+using std::shared_ptr;
 using boost::unit_test::test_suite;
 
 using internal_avro::ValidSchema;
@@ -323,7 +322,7 @@ class DataFileTest {
    * Constructs the DataFileReader in two steps.
    */
   void testReadDoubleTwoStep() {
-    boost::shared_ptr<internal_avro::DataFileReaderBase> base(
+    std::shared_ptr<internal_avro::DataFileReaderBase> base(
         new internal_avro::DataFileReaderBase(filename));
     internal_avro::DataFileReader<ComplexDouble> df(base);
     BOOST_CHECK_EQUAL(toString(writerSchema), toString(df.readerSchema()));
@@ -347,7 +346,7 @@ class DataFileTest {
    * reader schema.
    */
   void testReadDoubleTwoStepProject() {
-    boost::shared_ptr<internal_avro::DataFileReaderBase> base(
+    std::shared_ptr<internal_avro::DataFileReaderBase> base(
         new internal_avro::DataFileReaderBase(filename));
     internal_avro::DataFileReader<Double> df(base, readerSchema);
 
@@ -375,7 +374,7 @@ class DataFileTest {
     // first create a large file
     ValidSchema dschema = internal_avro::compileJsonSchemaFromString(prsch);
     {
-      boost::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer(
+      std::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer(
           new internal_avro::DataFileWriter<PaddedRecord>(filename, dschema));
 
       for (size_t i = 0; i < number_of_objects; ++i) {
@@ -392,7 +391,7 @@ class DataFileTest {
 
     // check seeking to the start and end
     {
-      boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
+      std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
           new internal_avro::DataFileReader<PaddedRecord>(filename));
       BOOST_REQUIRE_NE(reader->sizeBytes(), -1);
       // test that seek to the start gets the first element
@@ -410,7 +409,7 @@ class DataFileTest {
     {
       std::vector<int> dividers;
       {
-        boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
+        std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
             new internal_avro::DataFileReader<PaddedRecord>(filename));
         int size = reader->sizeBytes();
         dividers.push_back(reader->blockOffsetBytes());
@@ -424,7 +423,7 @@ class DataFileTest {
       }
       std::vector<int> found;
       for (size_t i = 1; i < dividers.size(); ++i) {
-        boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
+        std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
             new internal_avro::DataFileReader<PaddedRecord>(filename));
         reader->seekBlockBytes(dividers[i - 1]);
         block_offsets.insert(reader->blockOffsetBytes());
@@ -446,7 +445,7 @@ class DataFileTest {
     {
       for (std::set<size_t>::const_iterator it = block_offsets.begin();
            it != block_offsets.end(); ++it) {
-        boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
+        std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader(
             new internal_avro::DataFileReader<PaddedRecord>(filename));
         reader->seekBlockBytes(*it);
         BOOST_CHECK_EQUAL(reader->blockOffsetBytes(), *it);
@@ -462,11 +461,11 @@ class DataFileTest {
     const size_t number_of_objects = 100;
     // first create a large file
     ValidSchema dschema = internal_avro::compileJsonSchemaFromString(prsch);
-    boost::shared_ptr<internal_avro::OutputStream> buf =
+    std::shared_ptr<internal_avro::OutputStream> buf =
         internal_avro::memoryOutputStream();
     {
-      boost::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer =
-          boost::make_shared<internal_avro::DataFileWriter<PaddedRecord> >(
+      std::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer =
+          std::make_shared<internal_avro::DataFileWriter<PaddedRecord> >(
               buf, dschema);
 
       for (size_t i = 0; i < number_of_objects; ++i) {
@@ -482,10 +481,10 @@ class DataFileTest {
     }
     {
       {
-        boost::shared_ptr<internal_avro::InputStream> inbuf =
+        std::shared_ptr<internal_avro::InputStream> inbuf =
             internal_avro::memoryInputStream(*buf);
-        boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader =
-            boost::make_shared<internal_avro::DataFileReader<PaddedRecord> >(
+        std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader =
+            std::make_shared<internal_avro::DataFileReader<PaddedRecord> >(
                 inbuf);
         std::vector<int> found;
         PaddedRecord record;
@@ -509,8 +508,8 @@ class DataFileTest {
     // first create a large file
     ValidSchema dschema = internal_avro::compileJsonSchemaFromString(prsch);
     {
-      boost::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer =
-          boost::make_shared<internal_avro::DataFileWriter<PaddedRecord> >(
+      std::shared_ptr<internal_avro::DataFileWriter<PaddedRecord> > writer =
+          std::make_shared<internal_avro::DataFileWriter<PaddedRecord> >(
               filename, dschema, 16 * 1024, internal_avro::DEFLATE_CODEC);
 
       for (size_t i = 0; i < number_of_objects; ++i) {
@@ -526,8 +525,8 @@ class DataFileTest {
     }
     {
       {
-        boost::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader =
-            boost::make_shared<internal_avro::DataFileReader<PaddedRecord> >(
+        std::shared_ptr<internal_avro::DataFileReader<PaddedRecord> > reader =
+            std::make_shared<internal_avro::DataFileReader<PaddedRecord> >(
                 filename, dschema);
         std::vector<int> found;
         PaddedRecord record;

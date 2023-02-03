@@ -27,7 +27,7 @@ namespace HDF5 {
 class RMFEXPORT ConstFile : public ConstGroup {
  public:
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  ConstFile(boost::shared_ptr<SharedHandle> h);
+  ConstFile(std::shared_ptr<SharedHandle> h);
 #endif
   ConstFile(File f);
   ConstFile() {}

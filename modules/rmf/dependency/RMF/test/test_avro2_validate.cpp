@@ -6,7 +6,7 @@
 
 #include <avrocpp/api/Compiler.hh>
 #include <avrocpp/api/Encoder.hh>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <generated/embed_jsons.h>
 #include <algorithm>
 #include <string>
@@ -54,7 +54,7 @@ void validate_one(Tout fr, Tin) {
   fr.nodes.back().id = NodeID(1);
   fr.nodes.back().type = ROOT;
   fr.nodes.back().parents.push_back(NodeID(1));
-  boost::shared_ptr<internal_avro::OutputStream> out_stream =
+  std::shared_ptr<internal_avro::OutputStream> out_stream =
       internal_avro::memoryOutputStream();
   {
     internal_avro::EncoderPtr encoder = internal_avro::binaryEncoder();
@@ -65,7 +65,7 @@ void validate_one(Tout fr, Tin) {
     internal_avro::encode(*ve, fr);
   }
   {
-    boost::shared_ptr<internal_avro::InputStream> in_stream =
+    std::shared_ptr<internal_avro::InputStream> in_stream =
         internal_avro::memoryInputStream(*out_stream);
     internal_avro::DecoderPtr decoder = internal_avro::binaryDecoder();
     decoder->init(*in_stream);
@@ -78,7 +78,7 @@ void validate_one(Tout fr, Tin) {
 }
 template <class T>
 void validate_raw(T fr) {
-  boost::shared_ptr<internal_avro::OutputStream> out_stream =
+  std::shared_ptr<internal_avro::OutputStream> out_stream =
       internal_avro::memoryOutputStream();
   {
     internal_avro::EncoderPtr encoder = internal_avro::binaryEncoder();
@@ -89,7 +89,7 @@ void validate_raw(T fr) {
     internal_avro::encode(*ve, fr);
   }
   {
-    boost::shared_ptr<internal_avro::InputStream> in_stream =
+    std::shared_ptr<internal_avro::InputStream> in_stream =
         internal_avro::memoryInputStream(*out_stream);
     internal_avro::DecoderPtr decoder = internal_avro::binaryDecoder();
     decoder->init(*in_stream);

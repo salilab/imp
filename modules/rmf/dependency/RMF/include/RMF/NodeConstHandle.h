@@ -11,7 +11,7 @@
 
 #include <boost/any.hpp>
 #include <boost/current_function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -110,7 +110,7 @@ class RMFEXPORT NodeConstHandle
 
  protected:
   NodeID node_;
-  boost::shared_ptr<internal::SharedData> shared_;
+  std::shared_ptr<internal::SharedData> shared_;
   // for error messages
   std::string get_file_name() const;
   // for error messages
@@ -118,12 +118,12 @@ class RMFEXPORT NodeConstHandle
 
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
  public:
-  NodeConstHandle(NodeID node, boost::shared_ptr<internal::SharedData> shared);
+  NodeConstHandle(NodeID node, std::shared_ptr<internal::SharedData> shared);
 #endif
 
  public:
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  boost::shared_ptr<internal::SharedData> get_shared_data() const {
+  std::shared_ptr<internal::SharedData> get_shared_data() const {
     return shared_;
   }
 #endif
@@ -175,7 +175,7 @@ class RMFEXPORT NodeConstHandle
       the passed type and returns a \c void* pointer in
       the namespace where the type is declared (so it is
       found via Koenig lookup). Support has already been
-      added for boost::shared_ptr.
+      added for std::shared_ptr.
 
       Either the association must not have been set before
       or overwrite must be true. If overwrite is true,

@@ -28,7 +28,7 @@
 #include <boost/iostreams/filter/zlib.hpp>
 
 namespace internal_avro {
-using boost::shared_ptr;
+using std::shared_ptr;
 using std::ostringstream;
 using std::istringstream;
 using std::vector;
@@ -77,7 +77,7 @@ DataFileWriterBase::DataFileWriterBase(const char* filename,
   setup();
 }
 
-DataFileWriterBase::DataFileWriterBase(boost::shared_ptr<OutputStream> stream,
+DataFileWriterBase::DataFileWriterBase(std::shared_ptr<OutputStream> stream,
                                        const ValidSchema& schema,
                                        size_t syncInterval,
                                        Codec codec)
@@ -133,7 +133,7 @@ void DataFileWriterBase::sync() {
     int64_t byteCount = buffer_->byteCount();
     internal_avro::encode(*encoderPtr_, byteCount);
     encoderPtr_->flush();
-    boost::shared_ptr<InputStream> in = memoryInputStream(*buffer_);
+    std::shared_ptr<InputStream> in = memoryInputStream(*buffer_);
     copy(*in, *stream_);
   } else {
     std::vector<char> buf;
@@ -146,12 +146,12 @@ void DataFileWriterBase::sync() {
       const uint8_t* data;
       size_t len;
 
-      boost::shared_ptr<InputStream> input = memoryInputStream(*buffer_);
+      std::shared_ptr<InputStream> input = memoryInputStream(*buffer_);
       while (input->next(&data, &len)) {
         boost::iostreams::write(os, reinterpret_cast<const char*>(data), len);
       }
     }
-    boost::shared_ptr<InputStream> in = memoryInputStream(
+    std::shared_ptr<InputStream> in = memoryInputStream(
         reinterpret_cast<const uint8_t*>(&buf[0]), buf.size());
     int64_t byteCount = buf.size();
     internal_avro::encode(*encoderPtr_, byteCount);
@@ -213,7 +213,7 @@ DataFileReaderBase::DataFileReaderBase(const char* filename)
   readHeader();
 }
 
-DataFileReaderBase::DataFileReaderBase(boost::shared_ptr<InputStream> stream)
+DataFileReaderBase::DataFileReaderBase(std::shared_ptr<InputStream> stream)
     : filename_("stream"),
       stream_(stream),
       decoder_(binaryDecoder()),
@@ -311,9 +311,9 @@ class BoundedInputStream : public InputStream {
   BoundedInputStream(InputStream& in, size_t limit) : in_(in), limit_(limit) {}
 };
 
-boost::shared_ptr<InputStream> boundedInputStream(InputStream& in,
+std::shared_ptr<InputStream> boundedInputStream(InputStream& in,
                                                   size_t limit) {
-  return boost::shared_ptr<InputStream>(new BoundedInputStream(in, limit));
+  return std::shared_ptr<InputStream>(new BoundedInputStream(in, limit));
 }
 
 bool DataFileReaderBase::readDataBlock() {
@@ -330,7 +330,7 @@ bool DataFileReaderBase::readDataBlock() {
   internal_avro::decode(*decoder_, byteCount);
   decoder_->init(*stream_);
 
-  boost::shared_ptr<InputStream> st =
+  std::shared_ptr<InputStream> st =
       boundedInputStream(*stream_, static_cast<size_t>(byteCount));
   if (codec_ == NULL_CODEC) {
     dataDecoder_->init(*st);
@@ -350,7 +350,7 @@ bool DataFileReaderBase::readDataBlock() {
     os_->push(boost::iostreams::basic_array_source<char>(&compressed_[0],
                                                          compressed_.size()));
 
-    boost::shared_ptr<InputStream> in = istreamInputStream(*os_);
+    std::shared_ptr<InputStream> in = istreamInputStream(*os_);
     dataDecoder_->init(*in);
     dataStream_ = in;
   }

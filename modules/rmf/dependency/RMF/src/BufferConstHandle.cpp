@@ -8,8 +8,7 @@
 
 #include "RMF/BufferConstHandle.h"
 #include "RMF/log.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <fstream>
 
 RMF_ENABLE_WARNINGS
@@ -21,8 +20,8 @@ BufferConstHandle read_buffer(std::string file_name) {
                       std::ios::in | std::ios::binary | std::ios::ate);
   unsigned int size = szstr.tellg();
   std::ifstream in(file_name.c_str(), std::ios::in | std::ios::binary);
-  boost::shared_ptr<std::vector<char> > data =
-      boost::make_shared<std::vector<char> >(size);
+  std::shared_ptr<std::vector<char> > data =
+      std::make_shared<std::vector<char> >(size);
   RMF_TRACE("Found buffer of size " << data->size());
   in.read(&(*data)[0], data->size());
   return BufferConstHandle(data);

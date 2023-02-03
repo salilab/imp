@@ -217,8 +217,8 @@ static NodePtr makeNode(const Entity& e, const map<string, Entity>& m,
       result = NodePtr(new NodeRecord());
       st[nm] = result;
       NodePtr r = makeRecordNode(e, nm, m, st, nm.ns());
-      (boost::dynamic_pointer_cast<NodeRecord>(r))
-          ->swap(*boost::dynamic_pointer_cast<NodeRecord>(result));
+      (std::dynamic_pointer_cast<NodeRecord>(r))
+          ->swap(*std::dynamic_pointer_cast<NodeRecord>(result));
     } else {
       result =
           (type == "enum") ? makeEnumNode(e, nm, m) : makeFixedNode(e, nm, m);
@@ -278,7 +278,7 @@ ValidSchema compileJsonSchemaFromString(const std::string& input) {
 }
 
 static ValidSchema compile(std::istream& is) {
-  boost::shared_ptr<InputStream> in = istreamInputStream(is);
+  std::shared_ptr<InputStream> in = istreamInputStream(is);
   return compileJsonSchemaFromStream(*in);
 }
 

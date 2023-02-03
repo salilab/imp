@@ -8,7 +8,7 @@
 
 #include "RMF/utility.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <algorithm>
 #include <iostream>
 #include <string>

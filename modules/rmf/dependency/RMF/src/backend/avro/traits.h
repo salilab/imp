@@ -16,8 +16,7 @@
 #include "avrocpp/api/Compiler.hh"
 #include "data_file.h"
 #include "generated/embed_jsons.h"
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -33,7 +32,7 @@ internal_avro::ValidSchema get_schema() {
 }
 
 struct FileWriterTraitsBase {
-  boost::shared_ptr<internal_avro::DataFileWriterBase> writer_;
+  std::shared_ptr<internal_avro::DataFileWriterBase> writer_;
   std::string path_;
   FileWriterTraitsBase(std::string path) : path_(path) {}
   template <class T>
@@ -57,7 +56,7 @@ struct FileWriterTraitsBase {
 template <class Base>
 struct ReaderTraits {
   Base base_file_data_, base_frame_;
-  boost::shared_ptr<internal_avro::DataFileReader<Frame> > reader_;
+  std::shared_ptr<internal_avro::DataFileReader<Frame> > reader_;
 
   template <class T>
   ReaderTraits(T path)
@@ -94,7 +93,7 @@ struct ReaderTraits {
   }
   void load_file_data(FileData &fd) {
     RMF_INFO("Loading file data");
-    boost::shared_ptr<internal_avro::DataFileReader<FileData> > reader =
+    std::shared_ptr<internal_avro::DataFileReader<FileData> > reader =
         base_file_data_.template get_reader<FileData>();
     avro2::load_file_data(*reader, fd);
   }
@@ -117,20 +116,20 @@ struct FileReaderBase {
 
   FileReaderBase(std::string path) : path_(path) { get_reader<Frame>(); }
   template <class T>
-  boost::shared_ptr<internal_avro::DataFileReader<T> > get_reader() {
-    return boost::make_shared<internal_avro::DataFileReader<T> >(path_.c_str(),
+  std::shared_ptr<internal_avro::DataFileReader<T> > get_reader() {
+    return std::make_shared<internal_avro::DataFileReader<T> >(path_.c_str(),
                                                                  get_schema());
   }
 };
 
 RMFEXPORT void flush_buffer(
-    boost::shared_ptr<internal_avro::DataFileWriterBase> writer,
-    boost::shared_ptr<internal_avro::OutputStream> stream, BufferHandle buffer);
+    std::shared_ptr<internal_avro::DataFileWriterBase> writer,
+    std::shared_ptr<internal_avro::OutputStream> stream, BufferHandle buffer);
 
 struct BufferWriterTraits {
-  boost::shared_ptr<internal_avro::DataFileWriterBase> writer_;
+  std::shared_ptr<internal_avro::DataFileWriterBase> writer_;
   BufferHandle buffer_;
-  boost::shared_ptr<internal_avro::OutputStream> stream_;
+  std::shared_ptr<internal_avro::OutputStream> stream_;
   BufferWriterTraits(BufferHandle buffer) : buffer_(buffer) {
     stream_ = internal_avro::memoryOutputStream();
     writer_.reset(new internal_avro::DataFileWriterBase(
@@ -165,11 +164,11 @@ struct BufferReaderBase {
     }
   }
   template <class T>
-  boost::shared_ptr<internal_avro::DataFileReader<T> > get_reader() {
-    boost::shared_ptr<internal_avro::InputStream> stream =
+  std::shared_ptr<internal_avro::DataFileReader<T> > get_reader() {
+    std::shared_ptr<internal_avro::InputStream> stream =
         internal_avro::memoryInputStream(buffer_.get_uint8_t().first,
                                          buffer_.get_uint8_t().second);
-    return boost::make_shared<internal_avro::DataFileReader<T> >(stream,
+    return std::make_shared<internal_avro::DataFileReader<T> >(stream,
                                                                  get_schema());
   }
 };

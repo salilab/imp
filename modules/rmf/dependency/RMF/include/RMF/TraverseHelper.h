@@ -16,7 +16,7 @@
 #include <RMF/decorator/sequence.h>
 #include <RMF/decorator/shape.h>
 #include <RMF/decorator/alternatives.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -38,7 +38,7 @@ typedef std::vector<TraverseHelper> TraverseHelpers;
  */
 class RMFEXPORT TraverseHelper : public NodeConstHandle {
   struct Index : public RMF_LARGE_UNORDERED_MAP<NodeID, unsigned int> {};
-  boost::shared_ptr<Index> active_;
+  std::shared_ptr<Index> active_;
   struct Data {
     decorator::ChainFactory chain_factory_;
     decorator::ResidueFactory residue_factory_;
@@ -60,7 +60,7 @@ class RMFEXPORT TraverseHelper : public NodeConstHandle {
     Data(NodeConstHandle root, std::string molecule_name, double resolution,
          int state_filter);
   };
-  boost::shared_ptr<Data> data_;
+  std::shared_ptr<Data> data_;
 
   void visit_impl(NodeConstHandle n);
 

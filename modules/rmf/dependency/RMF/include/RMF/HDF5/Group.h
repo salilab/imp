@@ -38,7 +38,7 @@ class RMFEXPORT Group : public MutableAttributes<ConstGroup> {
   }
 #ifndef SWIG
  protected:
-  Group(boost::shared_ptr<SharedHandle> h);
+  Group(std::shared_ptr<SharedHandle> h);
 #endif
  public:
   Group() {}

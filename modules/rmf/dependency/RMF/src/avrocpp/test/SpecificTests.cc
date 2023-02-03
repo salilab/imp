@@ -60,7 +60,7 @@ struct codec_traits<C> {
 namespace specific {
 
 class Test {
-  boost::shared_ptr<OutputStream> os;
+  std::shared_ptr<OutputStream> os;
   EncoderPtr e;
   DecoderPtr d;
 
@@ -77,7 +77,7 @@ class Test {
 
   template <typename T>
   void decode(T& t) {
-    boost::shared_ptr<InputStream> is = memoryInputStream(*os);
+    std::shared_ptr<InputStream> is = memoryInputStream(*os);
     d->init(*is);
     internal_avro::decode(*d, t);
   }

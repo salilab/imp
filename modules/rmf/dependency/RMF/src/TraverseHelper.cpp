@@ -7,7 +7,6 @@
  */
 
 #include "RMF/TraverseHelper.h"
-#include <boost/make_shared.hpp>
 
 RMF_ENABLE_WARNINGS
 
@@ -33,8 +32,8 @@ TraverseHelper::Data::Data(NodeConstHandle root, std::string molecule_name,
 
 TraverseHelper::TraverseHelper(NodeConstHandle root, std::string molecule_name,
                                double resolution, int state_filter)
-    : active_(boost::make_shared<Index>()),
-      data_(boost::make_shared<Data>(root, molecule_name, resolution,
+    : active_(std::make_shared<Index>()),
+      data_(std::make_shared<Data>(root, molecule_name, resolution,
                                      state_filter)) {
   visit_impl(root);
 }
@@ -76,7 +75,7 @@ void TraverseHelper::visit_impl(NodeConstHandle n) {
 
 TraverseHelper TraverseHelper::visit(NodeConstHandle n) const {
   TraverseHelper ret;
-  ret.data_ = boost::make_shared<Data>(*data_);
+  ret.data_ = std::make_shared<Data>(*data_);
   ret.active_ = active_;
   ret.visit_impl(n);
   return ret;

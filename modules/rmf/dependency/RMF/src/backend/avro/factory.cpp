@@ -6,8 +6,7 @@
  *
  */
 
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 #include "RMF/BufferConstHandle.h"
@@ -39,13 +38,13 @@ class Avro2IOFileFactory : public backends::IOFactory {
     else
       return ".rmf";
   }
-  virtual boost::shared_ptr<backends::IO> read_file(const std::string &name)
+  virtual std::shared_ptr<backends::IO> read_file(const std::string &name)
       const override {
-    return boost::make_shared<Avro2IO<ReaderTraits<FileReaderBase> > >(name);
+    return std::make_shared<Avro2IO<ReaderTraits<FileReaderBase> > >(name);
   }
-  virtual boost::shared_ptr<backends::IO> create_file(const std::string &name)
+  virtual std::shared_ptr<backends::IO> create_file(const std::string &name)
       const override {
-    return boost::make_shared<Avro2IO<FileWriterTraits<GZIP> > >(name);
+    return std::make_shared<Avro2IO<FileWriterTraits<GZIP> > >(name);
   }
 };
 
@@ -54,29 +53,29 @@ class Avro2IOBufferFactory : public backends::IOFactory {
   virtual std::string get_file_extension() const override {
     return ".none";
   }
-  virtual boost::shared_ptr<backends::IO> read_buffer(BufferConstHandle buffer)
+  virtual std::shared_ptr<backends::IO> read_buffer(BufferConstHandle buffer)
       const override {
     try {
-      return boost::make_shared<Avro2IO<ReaderTraits<BufferReaderBase> > >(
+      return std::make_shared<Avro2IO<ReaderTraits<BufferReaderBase> > >(
           buffer);
     }
     catch (const std::exception &e) {
       RMF_INFO("Avro2 reader can't read buffer: " << e.what());
-      return boost::shared_ptr<backends::IO>();
+      return std::shared_ptr<backends::IO>();
     }
   }
-  virtual boost::shared_ptr<backends::IO> create_buffer(BufferHandle buffer)
+  virtual std::shared_ptr<backends::IO> create_buffer(BufferHandle buffer)
       const override {
-    return boost::make_shared<Avro2IO<BufferWriterTraits> >(buffer);
+    return std::make_shared<Avro2IO<BufferWriterTraits> >(buffer);
   }
 };
 
-std::vector<boost::shared_ptr<backends::IOFactory> > get_factories() {
-  std::vector<boost::shared_ptr<backends::IOFactory> > ret;
-  ret.push_back(boost::make_shared<Avro2IOFileFactory<false, false> >());
-  ret.push_back(boost::make_shared<Avro2IOFileFactory<true, false> >());
-  ret.push_back(boost::make_shared<Avro2IOFileFactory<false, true> >());
-  ret.push_back(boost::make_shared<Avro2IOBufferFactory>());
+std::vector<std::shared_ptr<backends::IOFactory> > get_factories() {
+  std::vector<std::shared_ptr<backends::IOFactory> > ret;
+  ret.push_back(std::make_shared<Avro2IOFileFactory<false, false> >());
+  ret.push_back(std::make_shared<Avro2IOFileFactory<true, false> >());
+  ret.push_back(std::make_shared<Avro2IOFileFactory<false, true> >());
+  ret.push_back(std::make_shared<Avro2IOBufferFactory>());
   return ret;
 }
 

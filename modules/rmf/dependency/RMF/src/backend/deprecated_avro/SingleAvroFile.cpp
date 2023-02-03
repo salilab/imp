@@ -50,7 +50,7 @@ SingleAvroFile::SingleAvroFile(std::string path, bool create,
   null_static_frame_data_.frame = -1;
 }
 
-SingleAvroFile::SingleAvroFile(boost::shared_ptr<std::vector<char> > buffer,
+SingleAvroFile::SingleAvroFile(std::shared_ptr<std::vector<char> > buffer,
                                bool create, bool)
     : AvroKeysAndCategories("buffer"),
       dirty_(false),
@@ -104,9 +104,9 @@ void SingleAvroFile::flush() {
   } else {
     buffer_->clear();
     std::ostringstream oss(std::ios_base::binary);
-    boost::shared_ptr<internal_avro::OutputStream> os =
+    std::shared_ptr<internal_avro::OutputStream> os =
         internal_avro::ostreamOutputStream(oss);
-    boost::shared_ptr<internal_avro::Encoder> encoder =
+    std::shared_ptr<internal_avro::Encoder> encoder =
         internal_avro::binaryEncoder();
     encoder->init(*os);
     internal_avro::encode(*encoder, all_);
@@ -135,10 +135,10 @@ void SingleAvroFile::reload() {
       RMF_THROW(Message("Can't read input file on reload"), IOException);
     }
   } else if (!buffer_ && text_) {
-    boost::shared_ptr<internal_avro::Decoder> decoder =
+    std::shared_ptr<internal_avro::Decoder> decoder =
         internal_avro::jsonDecoder(internal_avro::compileJsonSchemaFromString(
             data_deprecated_avro::all_json));
-    boost::shared_ptr<internal_avro::InputStream> stream =
+    std::shared_ptr<internal_avro::InputStream> stream =
         internal_avro::fileInputStream(get_file_path().c_str());
     decoder->init(*stream);
     bool success = false;
@@ -153,10 +153,10 @@ void SingleAvroFile::reload() {
       RMF_THROW(Message("Can't read input file on reload"), IOException);
     }
   } else {
-    boost::shared_ptr<internal_avro::InputStream> is =
+    std::shared_ptr<internal_avro::InputStream> is =
         internal_avro::memoryInputStream(
             reinterpret_cast<uint8_t*>(&(*buffer_)[0]), buffer_->size());
-    boost::shared_ptr<internal_avro::Decoder> decoder =
+    std::shared_ptr<internal_avro::Decoder> decoder =
         internal_avro::binaryDecoder();
     decoder->init(*is);
     internal_avro::decode(*decoder, all_);

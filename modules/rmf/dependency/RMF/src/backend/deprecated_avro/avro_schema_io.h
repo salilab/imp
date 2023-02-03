@@ -10,7 +10,7 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/version.hpp>
 #include <cstdio>
 #include <exception>
@@ -90,9 +90,9 @@ void write_text(const Data& data, internal_avro::ValidSchema schema,
                 std::string path) {
   std::string temppath = path + ".new";
   {
-    boost::shared_ptr<internal_avro::Encoder> encoder =
+    std::shared_ptr<internal_avro::Encoder> encoder =
         internal_avro::jsonEncoder(schema);
-    boost::shared_ptr<internal_avro::OutputStream> stream =
+    std::shared_ptr<internal_avro::OutputStream> stream =
         internal_avro::fileOutputStream(temppath.c_str());
     encoder->init(*stream);
     try {

@@ -14,7 +14,7 @@
 #include "handle.h"
 #include "infrastructure_macros.h"
 #include <hdf5.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -28,14 +28,14 @@ class File;
     the HDF5 manual} for more information.
  */
 class RMFEXPORT Object {
-  boost::shared_ptr<SharedHandle> h_;
+  std::shared_ptr<SharedHandle> h_;
 #ifndef SWIG
  protected:
-  Object(boost::shared_ptr<SharedHandle> h);
+  Object(std::shared_ptr<SharedHandle> h);
   // silliness
   friend class Group;
-  boost::shared_ptr<SharedHandle> get_shared_handle() const { return h_; }
-  void open(boost::shared_ptr<SharedHandle> h) { h_ = h; }
+  std::shared_ptr<SharedHandle> get_shared_handle() const { return h_; }
+  void open(std::shared_ptr<SharedHandle> h) { h_ = h; }
   Object() {}
 #else
  private:

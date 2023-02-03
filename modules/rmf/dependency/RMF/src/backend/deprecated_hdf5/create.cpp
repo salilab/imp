@@ -8,8 +8,7 @@
 
 #include "factory.h"
 
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -36,21 +35,21 @@ struct HDF5Factory : public RMF::backends::IOFactory {
   virtual std::string get_file_extension() const override {
     return ".rmf-hdf5";
   }
-  virtual boost::shared_ptr<RMF::backends::IO> read_file(
+  virtual std::shared_ptr<RMF::backends::IO> read_file(
       const std::string& name) const override {
-    return boost::make_shared<MIO>(name, false, true);
+    return std::make_shared<MIO>(name, false, true);
   }
-  virtual boost::shared_ptr<RMF::backends::IO> create_file(
+  virtual std::shared_ptr<RMF::backends::IO> create_file(
       const std::string& name) const override {
-    return boost::make_shared<MIO>(name, true, false);
+    return std::make_shared<MIO>(name, true, false);
   }
   virtual ~HDF5Factory() {}
 };
 
 }  // namespace
-std::vector<boost::shared_ptr<backends::IOFactory> > get_factories() {
-  return std::vector<boost::shared_ptr<backends::IOFactory> >(
-      1, boost::make_shared<HDF5Factory>());
+std::vector<std::shared_ptr<backends::IOFactory> > get_factories() {
+  return std::vector<std::shared_ptr<backends::IOFactory> >(
+      1, std::make_shared<HDF5Factory>());
 }
 }  // namespace avro_backend
 }  // namespace RMF

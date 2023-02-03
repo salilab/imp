@@ -11,7 +11,6 @@
 
 #include <H5public.h>
 #include <boost/array.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <hdf5.h>
 #include <stddef.h>

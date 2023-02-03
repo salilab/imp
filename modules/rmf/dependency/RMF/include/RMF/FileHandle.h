@@ -9,8 +9,7 @@
 #ifndef RMF_FILE_HANDLE_H
 #define RMF_FILE_HANDLE_H
 
-#include <boost/shared_ptr.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -54,17 +53,20 @@ class BufferHandle;
  */
 class RMFEXPORT FileHandle : public FileConstHandle {
   friend class NodeHandle;
-  friend class boost::shared_ptr<internal::SharedData>;
+  friend class std::shared_ptr<internal::SharedData>;
 
  public:
   //! Empty file handle, no open file.
   FileHandle() {}
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  FileHandle(boost::shared_ptr<internal::SharedData> shared_);
+  FileHandle(std::shared_ptr<internal::SharedData> shared_);
 #endif
 
   //! Return the root of the hierarchy stored in the file.
-  NodeHandle get_root_node() const { return NodeHandle(NodeID(0), shared_); }
+  NodeHandle get_root_node() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
+    return NodeHandle(NodeID(0), shared_);
+  }
 
   //! Add a frame and make it the current frame.
   FrameID add_frame(std::string name, FrameType t = FRAME) const;

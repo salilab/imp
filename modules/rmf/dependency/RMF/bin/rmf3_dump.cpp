@@ -2,7 +2,7 @@
  * Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <stddef.h>
 #include <exception>
 #include <iostream>
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         if (variables_map.count("verbose")) {
           internal_avro::EncoderPtr encoder =
               internal_avro::jsonEncoder(schema);
-          boost::shared_ptr<internal_avro::OutputStream> os =
+          std::shared_ptr<internal_avro::OutputStream> os =
               internal_avro::ostreamOutputStream(std::cout);
           encoder->init(*os);
           internal_avro::encode(*encoder, frame);

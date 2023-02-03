@@ -9,7 +9,7 @@
 #ifndef RMF_INTERNAL_IO_H
 #define RMF_INTERNAL_IO_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 #include "RMF/BufferConstHandle.h"
@@ -59,10 +59,10 @@ struct IO {
   virtual ~IO() {}
 };
 
-RMFEXPORT boost::shared_ptr<IO> create_file(const std::string &name);
-RMFEXPORT boost::shared_ptr<IO> create_buffer(BufferHandle buffer);
-RMFEXPORT boost::shared_ptr<IO> read_file(const std::string &name);
-RMFEXPORT boost::shared_ptr<IO> read_buffer(BufferConstHandle buffer);
+RMFEXPORT std::shared_ptr<IO> create_file(const std::string &name);
+RMFEXPORT std::shared_ptr<IO> create_buffer(BufferHandle buffer);
+RMFEXPORT std::shared_ptr<IO> read_file(const std::string &name);
+RMFEXPORT std::shared_ptr<IO> read_buffer(BufferConstHandle buffer);
 
 }  // namespace internal
 } /* namespace RMF */

@@ -6,7 +6,7 @@
  *
  */
 #include <assert.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <stdio.h>
 #include <exception>
 #include <iostream>
@@ -44,11 +44,11 @@ void test(const char* fname) {
   assert(c0.get_association<int*>() == &a0);
 
   RMF::NodeHandle c2 = fh.get_root_node().add_child("c2", RMF::GEOMETRY);
-  boost::shared_ptr<int> si(new int(3));
+  std::shared_ptr<int> si(new int(3));
   c2.set_association(si);
   RMF::NodeHandle c2b = fh.get_node_from_association(si);
   assert(c2 == c2b);
-  boost::shared_ptr<int> sib = c2.get_association<boost::shared_ptr<int> >();
+  std::shared_ptr<int> sib = c2.get_association<std::shared_ptr<int> >();
   assert(sib == si);
 
   RMF::NodeHandle c3 = fh.get_root_node().add_child("c3", RMF::GEOMETRY);

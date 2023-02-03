@@ -43,7 +43,7 @@ namespace internal_avro {
 /*
 void dump(const OutputStream& os)
 {
-    boost::shared_ptr<InputStream> in = memoryInputStream(os);
+    std::shared_ptr<InputStream> in = memoryInputStream(os);
     const char *b;
     size_t n;
     std::cout << os.byteCount() << std::endl;
@@ -221,11 +221,11 @@ static vector<string> randomValues(const char* calls) {
   return result;
 }
 
-static boost::shared_ptr<OutputStream> generate(Encoder& e, const char* calls,
+static std::shared_ptr<OutputStream> generate(Encoder& e, const char* calls,
                                                 const vector<string>& values) {
   Scanner sc(calls);
   vector<string>::const_iterator it = values.begin();
-  boost::shared_ptr<OutputStream> ob = memoryOutputStream();
+  std::shared_ptr<OutputStream> ob = memoryOutputStream();
   e.init(*ob);
 
   while (!sc.isDone()) {
@@ -501,7 +501,7 @@ ValidSchema makeValidSchema(const char* schema) {
 }
 
 void testEncoder(const EncoderPtr& e, const char* writerCalls,
-                 vector<string>& v, boost::shared_ptr<OutputStream>& p) {
+                 vector<string>& v, std::shared_ptr<OutputStream>& p) {
   v = randomValues(writerCalls);
   p = generate(*e, writerCalls, v);
 }
@@ -577,7 +577,7 @@ void testCodec(const TestData& td) {
 
   for (unsigned int i = 0; i < count; ++i) {
     vector<string> v;
-    boost::shared_ptr<OutputStream> p;
+    std::shared_ptr<OutputStream> p;
     testEncoder(CodecFactory::newEncoder(vs), td.calls, v, p);
     // dump(*p);
 
@@ -592,7 +592,7 @@ void testCodec(const TestData& td) {
       BOOST_TEST_CHECKPOINT("Test: " << testNo << ' ' << " schema: "
                                      << td.schema << " calls: " << td.calls
                                      << " skip-level: " << skipLevel);
-      boost::shared_ptr<InputStream> in = memoryInputStream(*p);
+      std::shared_ptr<InputStream> in = memoryInputStream(*p);
       testDecoder(CodecFactory::newDecoder(vs), v, *in, td.calls, skipLevel);
     }
   }
@@ -613,7 +613,7 @@ void testCodecResolving(const TestData3& td) {
 
   for (unsigned int i = 0; i < count; ++i) {
     vector<string> v;
-    boost::shared_ptr<OutputStream> p;
+    std::shared_ptr<OutputStream> p;
     testEncoder(CodecFactory::newEncoder(vs), td.writerCalls, v, p);
     // dump(*p);
 
@@ -626,7 +626,7 @@ void testCodecResolving(const TestData3& td) {
                                      << " reader schema: " << td.readerSchema
                                      << " reader calls: " << td.readerCalls
                                      << " skip-level: " << skipLevel);
-      boost::shared_ptr<InputStream> in = memoryInputStream(*p);
+      std::shared_ptr<InputStream> in = memoryInputStream(*p);
       testDecoder(CodecFactory::newDecoder(vs, rvs), v, *in, td.readerCalls,
                   skipLevel);
     }
@@ -655,7 +655,7 @@ void testCodecResolving2(const TestData4& td) {
   ValidSchema vs = makeValidSchema(td.writerSchema);
 
   vector<string> wd = mkValues(td.writerValues);
-  boost::shared_ptr<OutputStream> p =
+  std::shared_ptr<OutputStream> p =
       generate(*CodecFactory::newEncoder(vs), td.writerCalls, wd);
   // dump(*p);
 
@@ -669,7 +669,7 @@ void testCodecResolving2(const TestData4& td) {
                                    << " reader schema: " << td.readerSchema
                                    << " reader calls: " << td.readerCalls
                                    << " skip-level: " << skipLevel);
-    boost::shared_ptr<InputStream> in = memoryInputStream(*p);
+    std::shared_ptr<InputStream> in = memoryInputStream(*p);
     testDecoder(CodecFactory::newDecoder(vs, rvs), rd, *in, td.readerCalls,
                 skipLevel);
   }
@@ -686,9 +686,9 @@ void testReaderFail(const TestData2& td) {
   ValidSchema vs = makeValidSchema(td.schema);
 
   vector<string> v;
-  boost::shared_ptr<OutputStream> p;
+  std::shared_ptr<OutputStream> p;
   testEncoder(CodecFactory::newEncoder(vs), td.correctCalls, v, p);
-  boost::shared_ptr<InputStream> in = memoryInputStream(*p);
+  std::shared_ptr<InputStream> in = memoryInputStream(*p);
   BOOST_CHECK_THROW(testDecoder(CodecFactory::newDecoder(vs), v, *in,
                                 td.incorrectCalls, td.depth),
                     Exception);
@@ -703,7 +703,7 @@ void testWriterFail(const TestData2& td) {
   ValidSchema vs = makeValidSchema(td.schema);
 
   vector<string> v;
-  boost::shared_ptr<OutputStream> p;
+  std::shared_ptr<OutputStream> p;
   BOOST_CHECK_THROW(
       testEncoder(CodecFactory::newEncoder(vs), td.incorrectCalls, v, p),
       Exception);
@@ -718,17 +718,17 @@ void testGeneric(const TestData& td) {
 
   for (unsigned int i = 0; i < count; ++i) {
     vector<string> v;
-    boost::shared_ptr<OutputStream> p;
+    std::shared_ptr<OutputStream> p;
     testEncoder(CodecFactory::newEncoder(vs), td.calls, v, p);
     // dump(*p);
     DecoderPtr d1 = CodecFactory::newDecoder(vs);
-    boost::shared_ptr<InputStream> in1 = memoryInputStream(*p);
+    std::shared_ptr<InputStream> in1 = memoryInputStream(*p);
     d1->init(*in1);
     GenericDatum datum(vs);
     internal_avro::decode(*d1, datum);
 
     EncoderPtr e2 = CodecFactory::newEncoder(vs);
-    boost::shared_ptr<OutputStream> ob = memoryOutputStream();
+    std::shared_ptr<OutputStream> ob = memoryOutputStream();
     e2->init(*ob);
 
     internal_avro::encode(*e2, datum);
@@ -736,7 +736,7 @@ void testGeneric(const TestData& td) {
 
     BOOST_TEST_CHECKPOINT("Test: " << testNo << ' ' << " schema: " << td.schema
                                    << " calls: " << td.calls);
-    boost::shared_ptr<InputStream> in2 = memoryInputStream(*ob);
+    std::shared_ptr<InputStream> in2 = memoryInputStream(*ob);
     testDecoder(CodecFactory::newDecoder(vs), v, *in2, td.calls, td.depth);
   }
 }
@@ -757,11 +757,11 @@ void testGenericResolving(const TestData3& td) {
 
   for (unsigned int i = 0; i < count; ++i) {
     vector<string> v;
-    boost::shared_ptr<OutputStream> p;
+    std::shared_ptr<OutputStream> p;
     testEncoder(CodecFactory::newEncoder(wvs), td.writerCalls, v, p);
     // dump(*p);
     DecoderPtr d1 = CodecFactory::newDecoder(wvs);
-    boost::shared_ptr<InputStream> in1 = memoryInputStream(*p);
+    std::shared_ptr<InputStream> in1 = memoryInputStream(*p);
     d1->init(*in1);
 
     GenericReader gr(wvs, rvs, d1);
@@ -769,7 +769,7 @@ void testGenericResolving(const TestData3& td) {
     gr.read(datum);
 
     EncoderPtr e2 = CodecFactory::newEncoder(rvs);
-    boost::shared_ptr<OutputStream> ob = memoryOutputStream();
+    std::shared_ptr<OutputStream> ob = memoryOutputStream();
     e2->init(*ob);
     internal_avro::encode(*e2, datum);
     e2->flush();
@@ -779,7 +779,7 @@ void testGenericResolving(const TestData3& td) {
                                    << " writer-calls: " << td.writerCalls
                                    << " reader-schema: " << td.readerSchema
                                    << " calls: " << td.readerCalls);
-    boost::shared_ptr<InputStream> in2 = memoryInputStream(*ob);
+    std::shared_ptr<InputStream> in2 = memoryInputStream(*ob);
     testDecoder(CodecFactory::newDecoder(rvs), v, *in2, td.readerCalls,
                 td.depth);
   }
@@ -801,11 +801,11 @@ void testGenericResolving2(const TestData4& td) {
 
   const vector<string> wd = mkValues(td.writerValues);
 
-  boost::shared_ptr<OutputStream> p =
+  std::shared_ptr<OutputStream> p =
       generate(*CodecFactory::newEncoder(wvs), td.writerCalls, wd);
   // dump(*p);
   DecoderPtr d1 = CodecFactory::newDecoder(wvs);
-  boost::shared_ptr<InputStream> in1 = memoryInputStream(*p);
+  std::shared_ptr<InputStream> in1 = memoryInputStream(*p);
   d1->init(*in1);
 
   GenericReader gr(wvs, rvs, d1);
@@ -813,7 +813,7 @@ void testGenericResolving2(const TestData4& td) {
   gr.read(datum);
 
   EncoderPtr e2 = CodecFactory::newEncoder(rvs);
-  boost::shared_ptr<OutputStream> ob = memoryOutputStream();
+  std::shared_ptr<OutputStream> ob = memoryOutputStream();
   e2->init(*ob);
   internal_avro::encode(*e2, datum);
   e2->flush();
@@ -1384,7 +1384,7 @@ void add_tests(boost::unit_test::test_suite& ts) {
 static void testStreamLifetimes() {
   EncoderPtr e = binaryEncoder();
   {
-    boost::shared_ptr<OutputStream> s1 = memoryOutputStream();
+    std::shared_ptr<OutputStream> s1 = memoryOutputStream();
     e->init(*s1);
     e->encodeInt(100);
     e->encodeDouble(4.73);
@@ -1392,7 +1392,7 @@ static void testStreamLifetimes() {
   }
 
   {
-    boost::shared_ptr<OutputStream> s2 = memoryOutputStream();
+    std::shared_ptr<OutputStream> s2 = memoryOutputStream();
     e->init(*s2);
     e->encodeDouble(3.14);
     e->flush();
@@ -1400,7 +1400,7 @@ static void testStreamLifetimes() {
 }
 
 static void testLimits(const EncoderPtr& e, const DecoderPtr& d) {
-  boost::shared_ptr<OutputStream> s1 = memoryOutputStream();
+  std::shared_ptr<OutputStream> s1 = memoryOutputStream();
   {
     e->init(*s1);
     e->encodeDouble(std::numeric_limits<double>::infinity());
@@ -1413,7 +1413,7 @@ static void testLimits(const EncoderPtr& e, const DecoderPtr& d) {
   }
 
   {
-    boost::shared_ptr<InputStream> s2 = memoryInputStream(*s1);
+    std::shared_ptr<InputStream> s2 = memoryInputStream(*s1);
     d->init(*s2);
     BOOST_CHECK_EQUAL(d->decodeDouble(),
                       std::numeric_limits<double>::infinity());

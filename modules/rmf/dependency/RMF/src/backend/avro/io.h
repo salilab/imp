@@ -19,8 +19,7 @@
 #include "RMF/internal/SharedData.h"
 #include "RMF/internal/shared_data_ranges.h"
 #include <avrocpp/api/Compiler.hh>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 

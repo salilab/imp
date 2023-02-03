@@ -9,7 +9,7 @@ RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace hdf5_backend {
-RMFEXPORT std::vector<boost::shared_ptr<backends::IOFactory> > get_factories();
+RMFEXPORT std::vector<std::shared_ptr<backends::IOFactory> > get_factories();
 }
 }
 

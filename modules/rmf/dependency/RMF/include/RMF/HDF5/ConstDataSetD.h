@@ -18,8 +18,7 @@
 #include "DataSetCreationPropertiesD.h"
 #include "infrastructure_macros.h"
 #include <algorithm>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -50,7 +49,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     DataSetIndexD<D> size_;
   };
 
-  boost::shared_ptr<Data> data_;
+  std::shared_ptr<Data> data_;
   int compare(const ConstDataSetD<TypeTraits, D>& o) const {
     // not great, but...
     if (data_ && !o.data_)
@@ -85,7 +84,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
   typedef DataSetCreationPropertiesD<TypeTraits, D> CreationProperties;
   typedef DataSetAccessPropertiesD<TypeTraits, D> AccessProperties;
 
-  ConstDataSetD(boost::shared_ptr<SharedHandle> parent, std::string name,
+  ConstDataSetD(std::shared_ptr<SharedHandle> parent, std::string name,
                 CreationProperties props)
       : data_(new Data()) {
     // std::cout << "Creating data set " << name << std::endl;
@@ -97,7 +96,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     std::fill(maxs, maxs + D, H5S_UNLIMITED);
     RMF_HDF5_HANDLE(ds, H5Screate_simple(D, dims, maxs), &H5Sclose);
     // std::cout << "creating..." << name << std::endl;
-    P::open(boost::make_shared<SharedHandle>(
+    P::open(std::make_shared<SharedHandle>(
         H5Dcreate2(parent->get_hid(), name.c_str(),
                    TypeTraits::get_hdf5_disk_type(), ds, H5P_DEFAULT,
                    props.get_handle(), H5P_DEFAULT),
@@ -105,13 +104,13 @@ class ConstDataSetD : public ConstDataSetAttributes {
     initialize();
     // std::cout << "done..." << std::endl;
   }
-  ConstDataSetD(boost::shared_ptr<SharedHandle> parent, std::string name,
+  ConstDataSetD(std::shared_ptr<SharedHandle> parent, std::string name,
                 AccessProperties props)
       : data_(new Data()) {
     RMF_USAGE_CHECK(
         H5Lexists(parent->get_hid(), name.c_str(), H5P_DEFAULT),
         RMF::internal::get_error_message("Data set ", name, " does not exist"));
-    P::open(boost::make_shared<SharedHandle>(
+    P::open(std::make_shared<SharedHandle>(
         H5Dopen2(parent->get_hid(), name.c_str(), props.get_handle()),
         &H5Dclose, name));
     // RMF_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
@@ -160,7 +159,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     RMF_USAGE_CHECK(
         H5Lexists(file, name.c_str(), H5P_DEFAULT),
         RMF::internal::get_error_message("Data set ", name, " does not exist"));
-    P::open(boost::make_shared<SharedHandle>(
+    P::open(std::make_shared<SharedHandle>(
         H5Dopen2(file, name.c_str(), H5P_DEFAULT), &H5Dclose, name));
     // RMF_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
     RMF_HDF5_HANDLE(sel, H5Dget_space(Object::get_handle()), &H5Sclose);

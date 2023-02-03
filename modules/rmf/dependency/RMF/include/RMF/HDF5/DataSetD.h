@@ -38,10 +38,10 @@ class DataSetD : public MutableAttributes<ConstDataSetD<TypeTraits, D> > {
   typedef DataSetCreationPropertiesD<TypeTraits, D> CreationProperties;
   typedef DataSetAccessPropertiesD<TypeTraits, D> AccessProperties;
 
-  DataSetD(boost::shared_ptr<SharedHandle> parent, std::string name,
+  DataSetD(std::shared_ptr<SharedHandle> parent, std::string name,
            CreationProperties props)
       : P(parent, name, props) {}
-  DataSetD(boost::shared_ptr<SharedHandle> parent, std::string name,
+  DataSetD(std::shared_ptr<SharedHandle> parent, std::string name,
            AccessProperties props)
       : P(parent, name, props) {}
 

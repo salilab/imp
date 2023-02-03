@@ -9,7 +9,7 @@
 #ifndef RMF_INTERNAL_SHARED_DATA_H
 #define RMF_INTERNAL_SHARED_DATA_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 #include "RMF/ID.h"
@@ -61,7 +61,7 @@ class RMFEXPORT SharedData
       RMF_FOREACH_TYPE(RMF_SHARED_DATA_PARENT) public SharedDataFrames {
   std::string path_;
   bool write_;
-  boost::shared_ptr<backends::IO> io_;
+  std::shared_ptr<backends::IO> io_;
   FrameID loaded_frame_;
 
  public:
@@ -73,7 +73,7 @@ class RMFEXPORT SharedData
 
   RMF_FOREACH_TYPE(RMF_HOIST);
 
-  SharedData(boost::shared_ptr<backends::IO> io, std::string name, bool write,
+  SharedData(std::shared_ptr<backends::IO> io, std::string name, bool write,
              bool created);
   void set_loaded_frame(FrameID frame);
   FrameID add_frame(std::string name, FrameType type);

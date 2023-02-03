@@ -15,7 +15,7 @@
 #include "internal/SharedData.h"
 #include "NodeConstHandle.h"
 #include "NodeHandle.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 namespace RMF {
@@ -29,7 +29,7 @@ namespace RMF {
 class Decorator {
  private:
   NodeID id_;
-  boost::shared_ptr<internal::SharedData> data_;
+  std::shared_ptr<internal::SharedData> data_;
 
  protected:
   Decorator(NodeConstHandle handle)

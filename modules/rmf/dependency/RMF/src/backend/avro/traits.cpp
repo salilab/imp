@@ -455,14 +455,14 @@ struct codec_traits<BackwardsFrame> {
 namespace RMF {
 namespace avro2 {
 
-void flush_buffer(boost::shared_ptr<internal_avro::DataFileWriterBase> writer,
-                  boost::shared_ptr<internal_avro::OutputStream> stream,
+void flush_buffer(std::shared_ptr<internal_avro::DataFileWriterBase> writer,
+                  std::shared_ptr<internal_avro::OutputStream> stream,
                   BufferHandle buffer) {
   RMF_INFO("Flushing to buffer");
   // avoid rewriting later
   writer->flush();
   buffer.access_buffer().clear();
-  boost::shared_ptr<internal_avro::InputStream> input_stream =
+  std::shared_ptr<internal_avro::InputStream> input_stream =
       internal_avro::memoryInputStream(*stream);
   const uint8_t* data;
   size_t len;
@@ -473,23 +473,23 @@ void flush_buffer(boost::shared_ptr<internal_avro::DataFileWriterBase> writer,
 }
 
 BufferConstHandle try_convert(BufferConstHandle buffer, std::string message) {
-  boost::shared_ptr<internal_avro::InputStream> stream =
+  std::shared_ptr<internal_avro::InputStream> stream =
       internal_avro::memoryInputStream(buffer.get_uint8_t().first,
                                        buffer.get_uint8_t().second);
 
-  boost::shared_ptr<internal_avro::DataFileReader<BackwardsFrame> > reader;
+  std::shared_ptr<internal_avro::DataFileReader<BackwardsFrame> > reader;
   try {
-    reader = boost::make_shared<internal_avro::DataFileReader<BackwardsFrame> >(
+    reader = std::make_shared<internal_avro::DataFileReader<BackwardsFrame> >(
         stream, valid_backwards_schema);
   }
   catch (const std::exception &e) {
     RMF_THROW(Message(message + " and " + e.what()), IOException);
   }
 
-  boost::shared_ptr<internal_avro::OutputStream> out_stream =
+  std::shared_ptr<internal_avro::OutputStream> out_stream =
       internal_avro::memoryOutputStream();
-  boost::shared_ptr<internal_avro::DataFileWriterBase> writer =
-      boost::make_shared<internal_avro::DataFileWriterBase>(
+  std::shared_ptr<internal_avro::DataFileWriterBase> writer =
+      std::make_shared<internal_avro::DataFileWriterBase>(
           out_stream, internal_avro::compileJsonSchemaFromString(
                           RMF::data_avro::frame_json),
           16 * 1024, internal_avro::DEFLATE_CODEC);

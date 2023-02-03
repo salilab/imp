@@ -154,21 +154,21 @@ class MemoryOutputStream : public OutputStream {
   void flush() {}
 };
 
-boost::shared_ptr<OutputStream> memoryOutputStream(size_t chunkSize) {
-  return boost::shared_ptr<OutputStream>(new MemoryOutputStream(chunkSize));
+std::shared_ptr<OutputStream> memoryOutputStream(size_t chunkSize) {
+  return std::shared_ptr<OutputStream>(new MemoryOutputStream(chunkSize));
 }
 
-boost::shared_ptr<InputStream> memoryInputStream(const uint8_t* data,
+std::shared_ptr<InputStream> memoryInputStream(const uint8_t* data,
                                                  size_t len) {
-  return boost::shared_ptr<InputStream>(new MemoryInputStream2(data, len));
+  return std::shared_ptr<InputStream>(new MemoryInputStream2(data, len));
 }
 
-boost::shared_ptr<InputStream> memoryInputStream(const OutputStream& source) {
+std::shared_ptr<InputStream> memoryInputStream(const OutputStream& source) {
   const MemoryOutputStream& mos =
       dynamic_cast<const MemoryOutputStream&>(source);
   return (mos.data_.empty())
-             ? boost::shared_ptr<InputStream>(new MemoryInputStream2(0, 0))
-             : boost::shared_ptr<InputStream>(
+             ? std::shared_ptr<InputStream>(new MemoryInputStream2(0, 0))
+             : std::shared_ptr<InputStream>(
                    new MemoryInputStream(mos.data_, mos.chunkSize_,
                                          (mos.chunkSize_ - mos.available_)));
 }

@@ -6,7 +6,7 @@
  *
  */
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 #include "RMF/BufferHandle.h"
@@ -23,7 +23,7 @@ RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
-FileHandle::FileHandle(boost::shared_ptr<internal::SharedData> shared)
+FileHandle::FileHandle(std::shared_ptr<internal::SharedData> shared)
     : FileConstHandle(shared) {}
 
 NodeHandle FileHandle::get_node(NodeID id) const {
@@ -31,6 +31,7 @@ NodeHandle FileHandle::get_node(NodeID id) const {
 }
 
 void FileHandle::flush() const {
+  RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
   try {
     shared_->flush();
   }
@@ -38,20 +39,24 @@ void FileHandle::flush() const {
 }
 
 void FileHandle::set_description(std::string descr) const {
+  RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
   shared_->set_description(descr);
 }
 
 void FileHandle::set_producer(std::string descr) const {
+  RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
   shared_->set_producer(descr);
 }
 
 FrameID FileHandle::add_frame(std::string name, FrameType t) const {
+  RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
   FrameID ret = shared_->add_frame(name, t);
   return ret;
 }
 
 FrameID FileHandle::add_frame(std::string name, FrameID parent,
                               FrameType t) const {
+  RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
   FrameID ret = shared_->add_frame(name, parent, t);
   return ret;
 }

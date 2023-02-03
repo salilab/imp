@@ -23,11 +23,10 @@
 #include "Exception.hh"
 
 #include <boost/array.hpp>
-#include <boost/make_shared.hpp>
 
 namespace internal_avro {
 
-using boost::make_shared;
+using std::make_shared;
 
 class BinaryDecoder : public Decoder {
   StreamReader in_;

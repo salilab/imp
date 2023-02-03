@@ -38,7 +38,7 @@ int main() {
   internal_avro::ValidSchema cpxSchema = load("cpx.json");
   internal_avro::ValidSchema imaginarySchema = load("imaginary.json");
 
-  boost::shared_ptr<internal_avro::OutputStream> out =
+  std::shared_ptr<internal_avro::OutputStream> out =
       internal_avro::memoryOutputStream();
   internal_avro::EncoderPtr e = internal_avro::binaryEncoder();
   e->init(*out);
@@ -47,7 +47,7 @@ int main() {
   c1.im = 105.77;
   internal_avro::encode(*e, c1);
 
-  boost::shared_ptr<internal_avro::InputStream> in =
+  std::shared_ptr<internal_avro::InputStream> in =
       internal_avro::memoryInputStream(*out);
   internal_avro::DecoderPtr d = internal_avro::resolvingDecoder(
       cpxSchema, imaginarySchema, internal_avro::binaryDecoder());

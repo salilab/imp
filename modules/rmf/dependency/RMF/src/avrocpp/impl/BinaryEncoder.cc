@@ -19,12 +19,11 @@
 #include "Encoder.hh"
 #include "Zigzag.hh"
 #include <boost/array.hpp>
-#include <boost/make_shared.hpp>
 
 namespace internal_avro {
 
-using boost::make_shared;
-using boost::shared_ptr;
+using std::make_shared;
+using std::shared_ptr;
 
 class BinaryEncoder : public Encoder {
   StreamWriter out_;

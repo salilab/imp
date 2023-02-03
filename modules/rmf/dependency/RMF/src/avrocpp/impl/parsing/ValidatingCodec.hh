@@ -21,7 +21,6 @@
 
 #include <map>
 #include <vector>
-#include "boost/make_shared.hpp"
 
 #include "Symbol.hh"
 #include "ValidSchema.hh"
@@ -34,13 +33,13 @@ class ValidatingGrammarGenerator {
  protected:
   template <typename T>
   static void doFixup(Production& p,
-                      const std::map<T, boost::shared_ptr<Production> >& m);
+                      const std::map<T, std::shared_ptr<Production> >& m);
 
   template <typename T>
   static void doFixup(Symbol& s,
-                      const std::map<T, boost::shared_ptr<Production> >& m);
+                      const std::map<T, std::shared_ptr<Production> >& m);
   virtual Production doGenerate(
-      const NodePtr& n, std::map<NodePtr, boost::shared_ptr<Production> >& m);
+      const NodePtr& n, std::map<NodePtr, std::shared_ptr<Production> >& m);
 
   Production generate(const NodePtr& schema);
 
