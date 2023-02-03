@@ -350,7 +350,11 @@ class _DictionaryReader(object):
             self._reset_keyword()
         if self.category_good:
             c = self.category
-            self.dictionary.categories[c.name] = c
+            if c.name in self.dictionary.categories:
+                # Handle case where keywords were defined before category
+                self.dictionary.categories[c.name]._update(c)
+            else:
+                self.dictionary.categories[c.name] = c
             self._reset_category()
 
 

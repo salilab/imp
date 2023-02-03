@@ -80,6 +80,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_jpost_location(self):
+        """Test JPOSTLocation class"""
+        d = ihm.location.JPOSTLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'jPOSTrepo')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_empiar_location(self):
         """Test EMPIARLocation class"""
         d = ihm.location.EMPIARLocation('abc', version=1, details='foo')

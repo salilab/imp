@@ -1,3 +1,22 @@
+0.37 - 2023-02-03
+=================
+  - Convenience classes are added to describe ensemble FRET datasets
+    (:class:`ihm.dataset.EnsembleFRETDataset`) and datasets stored in
+    the jPOSTrepo repository (:class:`ihm.location.JPOSTLocation`).
+  - Related depositions can now be grouped using the :class:`ihm.Collection`
+    class (#108).
+  - The :class:`ihm.model.Ensemble` class has a new ``superimposed`` attribute
+    to indicate whether the grouped models are structurally aligned.
+
+0.36 - 2023-01-25
+=================
+  - When reading a file that references external files, preserve any
+    information on the size of those files (#104).
+  - When reading a file containing models not in a model group, preserve
+    any information on the number of models deposited (#105).
+  - Bugfix: :func:`ihm.dictionary.read` now correctly handles dictionaries
+    that define a category after data items in that category (#107).
+
 0.35 - 2022-09-16
 =================
   - Author names now use PDB style ("Lastname, A.B.") by default rather

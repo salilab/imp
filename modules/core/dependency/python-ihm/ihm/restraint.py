@@ -237,6 +237,9 @@ class CrossLinkRestraint(Restraint):
 class ExperimentalCrossLink(object):
     """A cross-link identified in the experiment.
 
+       These objects, once created, should be added to
+       the :attr:`CrossLinkRestraint.experimental_cross_links` list.
+
        :param residue1: The first residue linked by the cross-link.
        :type residue1: :class:`ihm.Residue`
        :param residue2: The second residue linked by the cross-link.
@@ -373,6 +376,9 @@ class ResidueCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to residue
        alpha carbon atoms.
 
+       These objects, once created, should be added to
+       the :attr:`CrossLinkRestraint.cross_links` list.
+
        :param experimental_cross_link: The corresponding cross-link identified
               by experiment. Multiple cross-links can map to a single
               experimental identification.
@@ -408,7 +414,7 @@ class ResidueCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link
+        #: Information about the fit of each model to this cross-link.
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
         #: objects and values are :class:`CrossLinkFit` objects.
         self.fits = {}
@@ -417,6 +423,9 @@ class ResidueCrossLink(CrossLink):
 class FeatureCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the closest primitive
        object with the highest resolution.
+
+       These objects, once created, should be added to
+       the :attr:`CrossLinkRestraint.cross_links` list.
 
        :param experimental_cross_link: The corresponding cross-link identified
               by experiment. Multiple cross-links can map to a single
@@ -453,7 +462,7 @@ class FeatureCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link
+        #: Information about the fit of each model to this cross-link.
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
         #: objects and values are :class:`CrossLinkFit` objects.
         self.fits = {}
@@ -461,6 +470,9 @@ class FeatureCrossLink(CrossLink):
 
 class AtomCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the specified atoms.
+
+       These objects, once created, should be added to
+       the :attr:`CrossLinkRestraint.cross_links` list.
 
        :param experimental_cross_link: The corresponding cross-link identified
               by experiment. Multiple cross-links can map to a single
@@ -499,7 +511,7 @@ class AtomCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link
+        #: Information about the fit of each model to this cross-link.
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
         #: objects and values are :class:`CrossLinkFit` objects.
         self.fits = {}

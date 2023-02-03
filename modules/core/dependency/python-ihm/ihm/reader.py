@@ -883,6 +883,14 @@ class Handler(object):
                       doc="The :class:`ihm.System` object to read into")
 
 
+class _CollectionHandler(Handler):
+    category = '_ihm_entry_collection'
+
+    def __call__(self, id, name, details):
+        c = ihm.Collection(id=id, name=name, details=details)
+        self.system.collections.append(c)
+
+
 class _StructHandler(Handler):
     category = '_struct'
 
@@ -1786,7 +1794,8 @@ class _EnsembleHandler(Handler):
                  ensemble_file_id, num_ensemble_models,
                  ensemble_precision_value, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature,
-                 details, sub_sampling_type, num_ensemble_models_deposited):
+                 details, sub_sampling_type, num_ensemble_models_deposited,
+                 model_group_superimposed_flag):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -1803,6 +1812,7 @@ class _EnsembleHandler(Handler):
         ensemble.post_process = pp
         ensemble.file = f
         ensemble.details = details
+        ensemble.superimposed = self.get_bool(model_group_superimposed_flag)
         # Default to "other" if invalid method/feature read
         try:
             ensemble.clustering_method = ensemble_clustering_method
@@ -3285,7 +3295,7 @@ class IHMVariant(Variant):
     system_reader = SystemReader
 
     _handlers = [
-        _StructHandler, _SoftwareHandler, _CitationHandler,
+        _CollectionHandler, _StructHandler, _SoftwareHandler, _CitationHandler,
         _AuditAuthorHandler, _GrantHandler, _CitationAuthorHandler,
         _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
         _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,

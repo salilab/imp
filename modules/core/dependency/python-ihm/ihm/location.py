@@ -165,6 +165,17 @@ class PRIDELocation(DatabaseLocation):
                                             details)
 
 
+class JPOSTLocation(DatabaseLocation):
+    """Something stored in the JPOST database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'jPOSTrepo'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(JPOSTLocation, self).__init__(self._db_name, db_code, version,
+                                            details)
+
+
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
        See :class:`DatabaseLocation` for a description of the parameters

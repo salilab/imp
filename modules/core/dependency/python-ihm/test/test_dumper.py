@@ -932,6 +932,22 @@ C 3 ZN 1 6 6 ZN C .
 #
 """)
 
+    def test_collection_dumper(self):
+        """Test CollectionDumper"""
+        system = ihm.System()
+        c = ihm.Collection('foo', name='bar', details='more text')
+        system.collections.append(c)
+        dumper = ihm.dumper._CollectionDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_entry_collection.id
+_ihm_entry_collection.name
+_ihm_entry_collection.details
+foo bar 'more text'
+#
+""")
+
     def test_struct_asym_dumper(self):
         """Test StructAsymDumper"""
         system = ihm.System()
@@ -2399,7 +2415,7 @@ N
                                 post_process=pp, name='cluster1',
                                 clustering_method='Hierarchical',
                                 clustering_feature='RMSD',
-                                precision=4.2)
+                                precision=4.2, superimposed=True)
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 3
         e2 = ihm.model.Ensemble(model_group=group, num_models=10,
@@ -2433,10 +2449,11 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
+_ihm_ensemble_info.model_group_superimposed_flag
 _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
-1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . . NO .
-2 . . 42 . . 10 2 . 3 'test details' YES independent
+1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . . YES NO .
+2 . . 42 . . 10 2 . 3 'test details' . YES independent
 #
 #
 loop_

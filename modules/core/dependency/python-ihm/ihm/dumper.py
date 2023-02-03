@@ -77,6 +77,14 @@ class _EntryDumper(Dumper):
             lp.write(id=system.id)
 
 
+class _CollectionDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_ihm_entry_collection",
+                         ["id", "name", "details"]) as lp:
+            for c in system.collections:
+                lp.write(id=c.id, name=c.name, details=c.details)
+
+
 class _AuditConformDumper(Dumper):
     URL = ("https://raw.githubusercontent.com/" +
            "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
@@ -84,8 +92,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.17",
-                     dict_location=self.URL % "f15a6bb")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.19",
+                     dict_location=self.URL % "2419956")
 
 
 class _StructDumper(Dumper):
@@ -1610,6 +1618,7 @@ class _EnsembleDumper(Dumper):
                           "num_ensemble_models_deposited",
                           "ensemble_precision_value",
                           "ensemble_file_id", "details",
+                          "model_group_superimposed_flag",
                           "sub_sample_flag", "sub_sampling_type"]) as lp:
             for e in system.ensembles:
                 if e.subsamples:
@@ -1627,6 +1636,7 @@ class _EnsembleDumper(Dumper):
                          ensemble_precision_value=e.precision,
                          ensemble_file_id=e.file._id if e.file else None,
                          details=e.details,
+                         model_group_superimposed_flag=e.superimposed,
                          sub_sample_flag=len(e.subsamples) > 0,
                          sub_sampling_type=sstype)
 
@@ -3230,6 +3240,7 @@ class IHMVariant(Variant):
     """Used to select typical PDBx/IHM file output. See :func:`write`."""
     _dumpers = [
         _EntryDumper,  # must be first
+        _CollectionDumper,
         _StructDumper, _CommentDumper, _AuditConformDumper, _CitationDumper,
         _SoftwareDumper, _AuditAuthorDumper, _GrantDumper, _ChemCompDumper,
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,

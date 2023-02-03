@@ -220,19 +220,22 @@ class Ensemble(object):
               (see :class:`DCDWriter`). See also :attr:`subsamples`.
        :type file: :class:`ihm.location.OutputFileLocation`
        :param str details: Additional text describing this ensemble
+       :param bool superimposed: True if the models in the group are
+              structurally aligned.
     """
 
     _num_deposited = None
 
     def __init__(self, model_group, num_models, post_process=None,
                  clustering_method=None, clustering_feature=None, name=None,
-                 precision=None, file=None, details=None):
+                 precision=None, file=None, details=None, superimposed=None):
         self.model_group, self.num_models = model_group, num_models
         self.post_process = post_process
         self.clustering_method = clustering_method
         self.clustering_feature = clustering_feature
         self.name, self.precision, self.file = name, precision, file
         self.details = details
+        self.superimposed = superimposed
 
         #: All localization densities for this ensemble, as
         #: :class:`LocalizationDensity` objects
@@ -257,7 +260,8 @@ class Ensemble(object):
 
     clustering_method = _text_choice_property(
         "clustering_method",
-        ["Hierarchical", "Other", "Partitioning (k-means)"],
+        ["Hierarchical", "Other", "Partitioning (k-means)",
+         "Density based threshold-clustering"],
         doc="The clustering method used to obtain the ensemble, if applicable")
 
     clustering_feature = _text_choice_property(

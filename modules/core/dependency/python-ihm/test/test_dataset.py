@@ -170,6 +170,12 @@ class Tests(unittest.TestCase):
         d = ihm.dataset.FRETDataset(loc)
         self.assertEqual(d.data_type, 'Single molecule FRET data')
 
+    def test_ensemble_fret_dataset(self):
+        """Test EnsembleFRETDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.EnsembleFRETDataset(loc)
+        self.assertEqual(d.data_type, 'Ensemble FRET data')
+
     def test_y2h_dataset(self):
         """Test YeastTwoHybridDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')

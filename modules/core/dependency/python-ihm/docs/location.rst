@@ -37,6 +37,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: PRIDELocation
    :members:
 
+.. autoclass:: JPOSTLocation
+   :members:
+
 .. autoclass:: BioGRIDLocation
    :members:
 
