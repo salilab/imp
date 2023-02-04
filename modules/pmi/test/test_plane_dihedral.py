@@ -51,7 +51,8 @@ class Tests(IMP.test.TestCase):
         rb2.set_coordinates_are_optimized(True)
 
         for i in range(10):
-            target_angle = random.uniform(-math.pi, math.pi)
+            # Avoid issues comparing target to actual dihedral near +/- pi
+            target_angle = random.uniform(-math.pi + 0.02, math.pi - 0.02)
             r = IMP.pmi.restraints.stereochemistry.PlaneDihedralRestraint(
                     [ps1, ps2], angle=target_angle * 180 / math.pi, k=1.)
             sf = IMP.core.RestraintsScoringFunction(r.rs)
