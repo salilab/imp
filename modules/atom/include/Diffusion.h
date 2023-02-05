@@ -24,7 +24,8 @@ IMPATOM_BEGIN_NAMESPACE
 /** Diffusion is used to decorate a particle with XYZ coordinates (since it
     inhertis from XYZ) and a translational diffusion coefficient D.
     D is specified in units of \f$A^2/fs\f$, and it is used by eg 
-    IMP's Brownian dynamics simulator.
+    IMP's Brownian dynamics simulator. It can be set explicitly or inferred
+    implicitly from the radius.
 
     \ingroup helper
     \ingroup decorators
@@ -78,15 +79,17 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   //! Setup the particle with a diffusion coefficient automatically
   //! inferred from its radius using the Stokes-Einstein equation.
   /** 
-      The diffusion coefficient is computed using
-      core::XYZR::get_radius() for the Stokes radius and the default
-      IMP temperature of 297.15K.
+      The diffusion coefficient is computed implicitly using the
+      Stokes-Einstein equation by calling
+      IMP::atom::get_einstein_diffusion_coefficient(R), where the
+      Stokes radius R is core::XYZR::get_radius() and the temperature
+      is the default IMP temperature of 297.15K.
 
       \note If the simulation temperature or particle radius change,
       the diffusion coefficient must be changed explicity e.g., using
       set_diffusion_coefficient()
-      \note The particle must have been decorated with core::XYZR
-            for this constructor to be used
+      \note This constructor can be used only on particles that have
+            a radius field, e.g. decorated as IMP::core::XYZR.
   */
   IMP_DECORATOR_SETUP_0(Diffusion);
 
@@ -126,6 +129,9 @@ IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 
     Note that different translational and rotational coefficients should probably 
     be set manually if the temperature is not the default IMP temperature.
+
+    \see Diffusion
+    \see BrownianDynamics
 */
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   static void do_setup_particle(Model *m, ParticleIndex pi);
@@ -145,7 +151,8 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
       \note The particle must have been decorated with core::XYZR
             for this constructor to be used
      The diffusion coefficients are inferred automatically from the particle's radius
-
+     using IMP::atom::get_einstein_diffusion_coefficient(radius) and
+     IMP::atom::get_einstein_rotational_diffusion_coefficient(radius).
   */
   IMP_DECORATOR_SETUP_0(RigidBodyDiffusion);
 
