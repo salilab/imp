@@ -120,7 +120,7 @@ class Tests(unittest.TestCase):
             self.assertEqual(f.get_number_of_frames(), 1)
             f.close()
             self.assertTrue(f.get_is_closed())
-            self.assertRaises(OSError, f.get_number_of_frames)
+            self.assertRaises(IOError, f.get_number_of_frames)
             f2 = RMF.open_rmf_file_read_only(path)
             self.assertEqual(f2.get_number_of_frames(), 1)
 
@@ -134,7 +134,7 @@ class Tests(unittest.TestCase):
                 f.add_frame("hi", RMF.FRAME)
                 self.assertEqual(f.get_number_of_frames(), 1)
             self.assertTrue(f.get_is_closed())
-            self.assertRaises(OSError, f.get_number_of_frames)
+            self.assertRaises(IOError, f.get_number_of_frames)
             with RMF.open_rmf_file_read_only(path) as f2:
                 self.assertEqual(f2.get_number_of_frames(), 1)
             self.assertTrue(f2.get_is_closed())
