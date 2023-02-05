@@ -70,7 +70,13 @@ class RMFEXPORT Handle : public boost::noncopyable {
     }
     h_ = -1;
   }
+// Older clang does not like exception specification in combination
+// with std::shared_ptr
+#if defined(__clang__) && __clang_major__ <= 7
+  ~Handle() {
+#else
   ~Handle() RMF_CANEXCEPT {
+#endif
     if (h_ != -1) {
       RMF_HDF5_CALL(f_(h_));
     }
