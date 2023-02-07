@@ -196,7 +196,7 @@ class TestCase(unittest.TestCase):
 
     def get_magnitude(self, vector):
         """Get the magnitude of a list of floats"""
-        return sum([x*x for x in vector], 0)**.5
+        return sum(x*x for x in vector)**.5
 
     def assertRaisesUsageException(self, c, *args, **keys):
         """Assert that the given callable object raises UsageException.
