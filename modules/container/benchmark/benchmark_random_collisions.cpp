@@ -6,7 +6,6 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
-#include <boost/timer.hpp>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/flags.h>
 #include <IMP/container.h>

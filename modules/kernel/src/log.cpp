@@ -10,6 +10,7 @@
 #include "IMP/file.h"
 #include "IMP/Object.h"
 #include "internal/base_static.h"
+#include <IMP/internal/SimpleTimer.h>
 #include "IMP/thread_macros.h"
 #ifdef _OPENMP
 #include <omp.h>
@@ -138,7 +139,7 @@ void reset_log_timer() {
 #if IMP_KERNEL_HAS_LOG4CXX
 
 #else
-  internal::log_timer = boost::timer();
+  internal::log_timer = internal::SimpleTimer();
 #endif
 }
 
@@ -209,7 +210,7 @@ void set_progress_display(std::string description, unsigned int steps) {
   if (get_log_level() == PROGRESS) {
     IMP_USAGE_CHECK(!internal::progress, "There is already a progress bar.");
     std::cout << description << std::endl;
-    internal::progress.reset(new boost::progress_display(steps));
+    internal::progress.reset(new boost::timer::progress_display(steps));
   }
 }
 

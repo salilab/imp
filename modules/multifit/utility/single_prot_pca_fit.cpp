@@ -11,8 +11,6 @@
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
 // imp
 #include <IMP/log.h>
 #include <IMP/em/DensityMap.h>

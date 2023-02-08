@@ -13,17 +13,17 @@
 
 #include "../file.h"
 #include "base_static.h"
+#include "SimpleTimer.h"
 #include <istream>
 #include <sstream>
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/operations.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
-#include <boost/timer.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 namespace internal {
 
-IMPKERNELEXPORT extern boost::timer log_timer;
+IMPKERNELEXPORT extern SimpleTimer log_timer;
 
 class LogStream
     : public boost::iostreams::filtering_stream<boost::iostreams::output>,

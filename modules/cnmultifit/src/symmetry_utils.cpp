@@ -18,7 +18,6 @@
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/converters.h>
 #include <IMP/atom/distance.h>
-#include <boost/progress.hpp>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 

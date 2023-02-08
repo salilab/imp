@@ -32,7 +32,7 @@
 
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/timer.hpp>
+#include <IMP/internal/SimpleTimer.h>
 #include <iostream>
 #include <cmath>
 
@@ -214,7 +214,7 @@ int main(int argc, char **argv) {
 
   // Deal with the generation of projections
   digest_parameter("projs", vm, opt);
-  boost::timer project_timer;
+  IMP::internal::SimpleTimer project_timer;
   if (opt[0] == "model") {
     if (check_parameters(vm, "np") == false) {
       std::cerr << "Error: The --np parameter is missing" << std::endl;
@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
   // Prepare finder
   IMP::set_log_level(IMP::VERBOSE);
 
-  boost::timer registration_timer;
+  IMP::internal::SimpleTimer registration_timer;
 
   IMP_NEW(em2d::EM2DScore, score_function, ());
   IMP_NEW(em2d::ProjectionFinder, finder, ());
