@@ -24,6 +24,7 @@
 #include "internal/moved_particles_cache.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
+#include <IMP/internal/IDGenerator.h>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <IMP/tuple_macros.h>
@@ -108,6 +109,20 @@ class IMPKERNELEXPORT Model : public Object
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
   Vector<PointerMember<Object> > model_data_;
+
+  // Map unique ID to Model*
+  class ModelMap {
+    std::map<uint32_t, Model*> map_;
+    internal::IDGenerator id_gen_;
+  public:
+    ModelMap() {}
+    uint32_t add_new_model(Model *m);
+    void remove_model(Model *m);
+    Model *get(uint32_t id) const;
+  };
+
+  static ModelMap model_map_;
+  uint32_t unique_id_;
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
@@ -552,6 +567,19 @@ class IMPKERNELEXPORT Model : public Object
       the model (there may be fewer particles if any have been removed)
       and every ParticleIndex will be smaller than this value. */
   unsigned get_particles_size() const { return particle_index_.size(); }
+
+  //! Get the unique ID of this Model.
+  /** When multiple Models exist simultaneously, each has a different unique ID.
+    */
+  uint32_t get_unique_id() const {
+    return unique_id_;
+  }
+
+  //! Return the Model with the given unique ID.
+  /** If no Model with this ID exists, nullptr is returned. */
+  static Model* get_by_unique_id(uint32_t id) {
+    return model_map_.get(id);
+  }
 
   IMP_OBJECT_METHODS(Model);
 

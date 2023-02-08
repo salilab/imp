@@ -306,6 +306,18 @@ class Tests(IMP.test.TestCase):
         # (as p2 was added)
         self.assertRaisesInternalException(m.restore_dependencies)
 
+    def test_unique_id(self):
+        """Each Model should get a unique ID"""
+        m1 = IMP.Model()
+        m2 = IMP.Model()
+        self.assertNotEqual(m1.get_unique_id(), m2.get_unique_id())
+        self.assertIsInstance(m1.get_unique_id(), int)
+
+        m1id = m1.get_unique_id()
+        self.assertEqual(IMP.Model.get_by_unique_id(m1id), m1)
+        del m1
+        self.assertIsNone(IMP.Model.get_by_unique_id(m1id))
+
     def test_serialize_object(self):
         """Check that Object properties are (de-)serialized"""
         m = IMP.Model("test model")

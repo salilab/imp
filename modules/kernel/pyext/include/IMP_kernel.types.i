@@ -1058,3 +1058,5 @@ _value_types.append(#Name)
 %}
 %rename(_##Type##VertexIndex) Type##VertexIndex;
 %enddef
+
+typedef unsigned int uint32_t;

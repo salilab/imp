@@ -24,6 +24,7 @@ Model::Model(std::string name)
   saved_dependencies_age_ = 0;
   dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
+  unique_id_ = model_map_.add_new_model(this);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
       &this->Masks::read_mask_, &this->Masks::write_mask_,
@@ -56,6 +57,30 @@ Model::Model(std::string name)
 #endif
 }
 
+Model::ModelMap Model::model_map_;
+
+uint32_t Model::ModelMap::add_new_model(Model *m) {
+  uint32_t id;
+  // Chance of collision is very small, but not zero
+  do {
+    id = id_gen_();
+  } while (map_.find(id) != map_.end());
+  map_[id] = m;
+  return id;
+}
+
+void Model::ModelMap::remove_model(Model *m) {
+  map_.erase(m->get_unique_id());
+}
+
+Model* Model::ModelMap::get(uint32_t id) const {
+  auto p = map_.find(id);
+  if (p == map_.end()) {
+    return nullptr;
+  } else {
+    return p->second;
+  }
+}
 
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
@@ -212,6 +237,7 @@ void Model::do_destroy() {
     IMP_CHECK_OBJECT(mo);
     mo->set_model(nullptr);
   }
+  model_map_.remove_model(this);
 }
 
 IMPKERNEL_END_NAMESPACE
