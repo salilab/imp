@@ -35,7 +35,8 @@ class IMPKERNELEXPORT ModelObject : public Object {
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
     ar << boost::serialization::base_object<Object>(*this);
-    ar << get_model_id();
+    uint32_t model_id = get_model_id();
+    ar << model_id;
   }
 
   template<class Archive> void load(Archive &ar, const unsigned int) {
