@@ -399,7 +399,7 @@ struct ConvertSequence {};
 template <class T, class ConvertT>
 struct ConvertSequence<std::pair<T, T>, ConvertT> {
   static const int converter = 6;
-  typedef boost::array<T, 2> Intermediate;
+  typedef std::array<T, 2> Intermediate;
   typedef ConvertSequenceHelper<Intermediate, T, ConvertT> Helper;
   typedef typename ValueOrObject<T>::type VT;
   template <class SwigData>

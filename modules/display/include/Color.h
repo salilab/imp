@@ -14,7 +14,7 @@
 #include <IMP/comparison_macros.h>
 #include <IMP/check_macros.h>
 #include <IMP/value_macros.h>
-#include <boost/array.hpp>
+#include <array>
 #include <boost/serialization/access.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /**
  */
 class IMPDISPLAYEXPORT Color : public Value {
-  boost::array<double, 3> c_;
+  std::array<double, 3> c_;
 
   friend class boost::serialization::access;
 
@@ -75,7 +75,7 @@ class IMPDISPLAYEXPORT Color : public Value {
   typedef const double *ComponentIterator;
   ComponentIterator components_begin() const { return c_.begin(); }
   ComponentIterator components_end() const { return c_.end(); }
-  const boost::array<double, 3> &get_rgb() const { return c_; }
+  const std::array<double, 3> &get_rgb() const { return c_; }
 #endif
   //!@}
 

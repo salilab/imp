@@ -15,9 +15,9 @@
 #include "hash_macros.h"
 #include "check_macros.h"
 #include "showable_macros.h"
-#include <boost/array.hpp>
+#include <array>
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/boost_array.hpp>
+#include <boost/serialization/array.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -33,7 +33,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     */
 template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
-  typedef boost::array<Data, D> Storage;
+  typedef std::array<Data, D> Storage;
   Storage d_;
 
   friend class boost::serialization::access;
