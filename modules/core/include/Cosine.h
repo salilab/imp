@@ -9,6 +9,8 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -31,6 +33,8 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
         periodicity_(periodicity),
         phase_(phase) {}
 
+  Cosine() {}
+
   virtual DerivativePair evaluate_with_derivative(
                   double feature) const override;
 
@@ -44,6 +48,13 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
   Float force_constant_;
   int periodicity_;
   Float phase_;
+
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<UnaryFunction>(*this)
+       & force_constant_ & periodicity_ & phase_;
+  }    
 };
 
 IMPCORE_END_NAMESPACE

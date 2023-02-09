@@ -10,6 +10,8 @@
 #include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/Object.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -51,6 +53,13 @@ class IMPKERNELEXPORT UnaryFunction : public IMP::Object {
   }
 
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
+
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<Object>(*this);
+  }
 };
 
 IMP_OBJECTS(UnaryFunction, UnaryFunctions);

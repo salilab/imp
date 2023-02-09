@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import math
 import io
+import pickle
 
 
 def _cosfunc(val, force_constant, periodicity, phase):
@@ -33,6 +34,18 @@ class Tests(IMP.test.TestCase):
                         self.assertAlmostEqual(score, scoreonly, delta=1e-4)
                         self.assertAlmostEqual(expscore, score, delta=0.1)
                         self.assertAlmostEqual(expderiv, deriv, delta=0.1)
+
+    def test_pickle(self):
+        """Test (un-)pickle of Cosine"""
+        func = IMP.core.Cosine(10.0, 2, 0.0)
+        func.set_name('foo')
+        self.assertAlmostEqual(func.evaluate(4.0), 11.455, delta=0.01)
+        dump = pickle.dumps(func)
+        del func
+        f = pickle.loads(dump)
+        self.assertEqual(f.get_name(), 'foo')
+        self.assertAlmostEqual(f.evaluate(4.0), 11.455, delta=0.01)
+
 
 if __name__ == '__main__':
     IMP.test.main()
