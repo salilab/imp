@@ -72,7 +72,7 @@ class IMPDISPLAYEXPORT Color : public Value {
   double get_green() const { return c_[1]; }
   double get_blue() const { return c_[2]; }
 #ifndef SWIG
-  typedef const double *ComponentIterator;
+  typedef std::array<double, 3>::const_iterator ComponentIterator;
   ComponentIterator components_begin() const { return c_.begin(); }
   ComponentIterator components_end() const { return c_.end(); }
   const std::array<double, 3> &get_rgb() const { return c_; }
