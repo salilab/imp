@@ -18,6 +18,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
+#include <boost/serialization/access.hpp>
 #include <iostream>
 #include <iomanip>
 #include <IMP/algebra/standard_grids.h>
@@ -476,6 +477,27 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
 
   bool normalized_;
   bool rms_calculated_;
+private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & header_ & data_allocated_ & loc_calculated_ & normalized_
+       & rms_calculated_;
+    long size = get_number_of_voxels();
+
+    if (Archive::is_loading::value) {
+      data_.reset(new double[size]);
+      if (loc_calculated_) {
+        // force recalculation of loc arrays
+        loc_calculated_ = false;
+        calc_all_voxel2loc();
+      }
+    }
+
+    for (long i = 0; i < size; ++i) {
+      ar & data_[i];
+    }
+  }
 };
 
 inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
