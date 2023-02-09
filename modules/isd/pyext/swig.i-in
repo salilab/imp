@@ -1,3 +1,8 @@
+%{
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+%}
+
 /* Tell swig how to treat various types when moving them to and from python. Among other
    things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
    into python lists and back.
@@ -8,6 +13,7 @@
   */
 IMP_SWIG_BASE_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT(IMP::isd, CrossLinkMSRestraint, CrossLinkMSRestraints);
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::isd, CrossLinkMSRestraint);
 IMP_SWIG_OBJECT(IMP::isd, LogWrapper, LogWrappers);
 IMP_SWIG_OBJECT(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);

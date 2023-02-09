@@ -12,6 +12,9 @@
 #include "base_types.h"
 #include <IMP/ref_counted_macros.h>
 #include <IMP/utility_macros.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -26,6 +29,27 @@ class Model;
 class IMPKERNELEXPORT ModelObject : public Object {
   friend class Model;
   WeakPointer<Model> model_;
+
+#ifndef SWIG
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    ar << boost::serialization::base_object<Object>(*this);
+    ar << get_model_id();
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    uint32_t model_id;
+    ar >> boost::serialization::base_object<Object>(*this);
+    ar >> model_id;
+    set_model_from_id(model_id);
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+  void set_model_from_id(uint32_t model_id);
+  uint32_t get_model_id() const;
+#endif
 
   // for cleanup
   void set_model(Model *m);

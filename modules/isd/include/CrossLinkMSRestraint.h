@@ -9,10 +9,13 @@
 
 #ifndef IMPISD_CROSS_LINK_MSRESTRAINT_H
 #define IMPISD_CROSS_LINK_MSRESTRAINT_H
+
 #include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/particle_index.h>
 #include <IMP/isd/Scale.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -30,6 +33,14 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
     double slope_;
     int constr_;
     bool get_log_prob_;
+
+    friend class boost::serialization::access;
+
+    template<class Archive> void serialize(Archive &ar, const unsigned int) {
+      ar & boost::serialization::base_object<Restraint>(*this)
+         & ppis_ & sigmass_ & lengthi_ & psis_ & length_ & slope_
+         & constr_ & get_log_prob_;
+    }
 
     double sphere_cap(float r1, float r2, float d) const;
 

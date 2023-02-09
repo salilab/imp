@@ -160,6 +160,56 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         self.assertAlmostEqual(score,scoretest,places=4)
                         self.assertAlmostEqual(score_lp,scoretest,places=4)
 
+    def test_serialize(self):
+        """Test (un-)serialize of CrossLinkMSRestraint"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+
+        slope = 0.01
+        length = 10
+
+        xyz1 = IMP.core.XYZ.setup_particle(p1)
+        xyz2 = IMP.core.XYZ.setup_particle(p2)
+
+        xyz1.set_coordinates((0, 0, 0))
+        xyz2.set_coordinates((0, 0, 0))
+
+        sigma1 = setupnuisance(m, 5, 0, 100, False)
+        sigma2 = setupnuisance(m, 5, 0, 100, False)
+        psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
+
+        dr = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+        dr.set_weight(0.10)
+        dr.set_name("test restraint")
+        dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
+
+        binr = dr._get_as_binary()
+        del dr
+
+        # Hack to make "empty" CrossLinkMSRestraint object
+        newdr = IMP.isd.CrossLinkMSRestraint(m,0,0)
+        # Should be able to restore restraint parameters
+        newdr._set_from_binary(binr)
+        self.assertAlmostEqual(newdr.get_weight(), 0.10, 0.01)
+        self.assertEqual(newdr.get_name(), "test restraint")
+        self.assertEqual(newdr.get_number_of_contributions(), 1)
+        self.assertEqual(newdr.get_contribution_particle_indexes(0),
+                         (p1.get_index(), p2.get_index()))
+        self.assertEqual(newdr.get_contribution_psi_index(0),
+                         psi.get_particle_index())
+        self.assertEqual(newdr.get_contribution_sigma_indexes(0),
+                         (sigma1.get_particle_index(),
+                          sigma2.get_particle_index()))
+        self.assertAlmostEqual(newdr.get_slope(), 0.01, delta=1e-4)
+        self.assertAlmostEqual(newdr.get_length(), 10.0, delta=1e-4)
+
+        del newdr
+        m2 = IMP.Model()
+        del m
+        newdr = IMP.isd.CrossLinkMSRestraint(m2,0,0)
+        # Cannot restore a Restraint if the Model it acts on is gone
+        self.assertRaises(ValueError, newdr._set_from_binary, binr)
 
     def test_score_multiple_restraints(self):
         """Intensive random test, it tests manifold ambiguity, sameparticle, particle positions

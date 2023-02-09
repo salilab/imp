@@ -16,6 +16,8 @@
 #include "check_macros.h"
 #include "showable_macros.h"
 #include <boost/array.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/boost_array.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -33,6 +35,12 @@ template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
   typedef boost::array<Data, D> Storage;
   Storage d_;
+
+  friend class boost::serialization::access;
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & d_;
+  }
+
   int compare(const Array<D, Data, SwigData>& o) const {
     for (unsigned int i = 0; i < D; ++i) {
       if (d_[i] < o[i])

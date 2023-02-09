@@ -18,6 +18,8 @@
 #include <IMP/InputAdaptor.h>
 #include <IMP/deprecation_macros.h>
 #include <IMP/RestraintInfo.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -332,6 +334,19 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   mutable double last_last_score_;
   // cannot be released outside the class
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
+
+ friend class boost::serialization::access;
+
+ template<class Archive> void serialize(Archive &ar, const unsigned int) {
+   ar & boost::serialization::base_object<ModelObject>(*this);
+   ar & weight_ & max_;
+   // Clear caches
+   if (Archive::is_loading::value) {
+     last_score_ = last_last_score_ = BAD_SCORE;
+     cached_internal_scoring_function_ = nullptr;
+   }
+ }
+
 };
 
 //! Provide a consistent interface for things that take Restraints as arguments.
