@@ -19,6 +19,7 @@
 #include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 #include <iostream>
 #include <iomanip>
 #include <IMP/algebra/standard_grids.h>
@@ -481,7 +482,8 @@ private:
   friend class boost::serialization::access;
 
   template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & header_ & data_allocated_ & loc_calculated_ & normalized_
+    ar & boost::serialization::base_object<Object>(*this)
+       & header_ & data_allocated_ & loc_calculated_ & normalized_
        & rms_calculated_;
     long size = get_number_of_voxels();
 
