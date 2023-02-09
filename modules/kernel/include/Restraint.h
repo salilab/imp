@@ -57,6 +57,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   //! Create a restraint and register it with the model.
   Restraint(Model *m, std::string name);
 
+  //! Default constructor.
+  /** Default-constructed restraints cannot be evaluated. */
+  Restraint();
+
   /** Compute and return the current score for the restraint.
    */
   double get_score() const;

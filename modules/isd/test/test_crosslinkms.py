@@ -3,6 +3,7 @@ import IMP
 import IMP.core
 import IMP.isd
 import IMP.test
+import pickle
 from random import sample
 from math import pi, log, exp
 
@@ -90,6 +91,11 @@ class CrossLinkMS(object):
 
 
 class TestXLRestraintSimple(IMP.test.TestCase):
+    def test_default(self):
+        """Test default-constructed restraint"""
+        dr = IMP.isd.CrossLinkMSRestraint()
+        self.assertRaisesUsageException(dr.evaluate, False)
+
     def test_score_simple(self):
         """
         Test the straight pairwise restraint
@@ -184,13 +190,11 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         dr.set_name("test restraint")
         dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
 
-        binr = dr._get_as_binary()
+        dump = pickle.dumps(dr)
         del dr
 
-        # Hack to make "empty" CrossLinkMSRestraint object
-        newdr = IMP.isd.CrossLinkMSRestraint(m,0,0)
         # Should be able to restore restraint parameters
-        newdr._set_from_binary(binr)
+        newdr = pickle.loads(dump)
         self.assertAlmostEqual(newdr.get_weight(), 0.10, 0.01)
         self.assertEqual(newdr.get_name(), "test restraint")
         self.assertEqual(newdr.get_number_of_contributions(), 1)
@@ -207,9 +211,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         del newdr
         m2 = IMP.Model()
         del m
-        newdr = IMP.isd.CrossLinkMSRestraint(m2,0,0)
         # Cannot restore a Restraint if the Model it acts on is gone
-        self.assertRaises(ValueError, newdr._set_from_binary, binr)
+        self.assertRaises(ValueError, pickle.loads, dump)
 
     def test_score_multiple_restraints(self):
         """Intensive random test, it tests manifold ambiguity, sameparticle, particle positions

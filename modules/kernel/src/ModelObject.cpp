@@ -21,6 +21,9 @@ ModelObject::ModelObject(Model *m, std::string name)
   m->do_add_model_object(this);
 }
 
+ModelObject::ModelObject() : Object("") {
+}
+
 uint32_t ModelObject::get_model_id() const {
   return model_->get_unique_id();
 }

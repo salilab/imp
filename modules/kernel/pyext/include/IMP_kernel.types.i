@@ -830,6 +830,29 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 }
 %enddef
 
+%define IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name)
+%extend Namespace::Name {
+  /* Allow (un-)pickling both C++ and Python contents */
+  %pythoncode %{
+  def __getstate__(self):
+      p = self._get_as_binary()
+      if len(self.__dict__) > 1:
+          d = self.__dict__.copy()
+          del d['this']
+          p = (d, p)
+      return p
+
+  def __setstate__(self, p):
+      if not hasattr(self, 'this'):
+          self.__init__()
+      if isinstance(p, tuple):
+          d, p = p
+          self.__dict__.update(d)
+      return self._set_from_binary(p)
+  %}
+}
+%enddef
+
 // A value that is serializable/picklable
 // Modules that use these must link against Boost.Serialization and
 // include boost/archive/binary_iarchive.hpp and
@@ -837,6 +860,16 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
+%enddef
+
+// An Object that is serializable/picklable
+// Modules that use these must link against Boost.Serialization and
+// include boost/archive/binary_iarchive.hpp and
+// boost/archive/binary_oarchive.hpp in their SWIG interface
+%define IMP_SWIG_OBJECT_SERIALIZE(Namespace, Name, PluralName)
+IMP_SWIG_OBJECT(Namespace, Name, PluralName)
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name)
 %enddef
 
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)

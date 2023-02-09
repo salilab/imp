@@ -61,6 +61,7 @@ class IMPKERNELEXPORT ModelObject : public Object {
 #endif
 
   ModelObject(Model *m, std::string name);
+  ModelObject();
   ~ModelObject();
 
   Model *get_model() const { return model_; }

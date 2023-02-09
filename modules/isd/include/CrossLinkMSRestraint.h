@@ -59,6 +59,8 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
                          bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
 
+    CrossLinkMSRestraint() {}
+
     void add_contribution(const IMP::ParticleIndexPair& pps,
                           const IMP::ParticleIndexPair& sigmas,
                           IMP::ParticleIndex psi) {
