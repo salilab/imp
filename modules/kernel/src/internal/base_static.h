@@ -16,7 +16,7 @@
 #include <boost/program_options.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
-#include <boost/timer/progress_display.hpp>
+#include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -62,7 +62,7 @@ extern IMPKERNELEXPORT AdvancedFlag<boost::int64_t, IMP_KERNEL_HAS_OPENMP>
     number_of_threads;
 
 extern IMPKERNELEXPORT boost::scoped_ptr<
-                           boost::timer::progress_display> progress;
+                           boost::progress_display> progress;
 
 extern IMPKERNELEXPORT AdvancedFlag<bool> no_print_deprecation_messages;
 extern IMPKERNELEXPORT AdvancedFlag<bool> exceptions_on_deprecation;

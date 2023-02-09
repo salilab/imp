@@ -17,7 +17,7 @@
 #include <libTAU/CnResult.h>
 #include <libTAU/SymmAssembly.h>
 #include <libTAU/Parameters.h>
-#include <boost/timer/progress_display.hpp>
+#include <boost/progress.hpp>
 
 #include <fstream>
 
@@ -156,7 +156,7 @@ multifit::FittingSolutionRecords fit_models_to_density(
   int recs_size = recs.size();
   multifit::FittingSolutionRecords return_sols;
   float max_allowed_diff = params.get_pca_matching_threshold();
-  boost::timer::progress_display show_progress(num_sols_to_fit + 1);
+  boost::progress_display show_progress(num_sols_to_fit + 1);
   for (int i = 0; i < recs_size && j < num_sols_to_fit; ++i) {
     if (!(is_valid_transformation(recs[i].get_dock_transformation()) &&
           is_valid_transformation(recs[i].get_fit_transformation())))

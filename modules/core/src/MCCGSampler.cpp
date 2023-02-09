@@ -21,7 +21,7 @@
 #include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <IMP/log.h>
-#include <boost/timer/progress_display.hpp>
+#include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/vector_property_map.h>
 
@@ -361,9 +361,9 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   }
   IMP_CHECK_OBJECT(sc);
   int failures = 0;
-  boost::scoped_ptr<boost::timer::progress_display> progress;
+  boost::scoped_ptr<boost::progress_display> progress;
   if (IMP::get_log_level() == PROGRESS) {
-    progress.reset(new boost::timer::progress_display(pms.attempts_));
+    progress.reset(new boost::progress_display(pms.attempts_));
   }
   for (unsigned int i = 0; i < pms.attempts_; ++i) {
     ret->load_configuration(-1);
