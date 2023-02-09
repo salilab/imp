@@ -19,7 +19,7 @@
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/array.hpp>
+#include <array>
 #include <vector>
 #include <stdexcept>
 
@@ -219,7 +219,7 @@ template <class T, class ConvertT>
 struct ConvertSequence<
     T, ConvertT,
     typename enable_if<is_base_of<
-        boost::array<typename T::value_type, T::static_size>, T> >::type> {
+        std::array<typename T::value_type, T::static_size>, T> >::type> {
   static const int converter = 5;
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject<typename T::value_type>::type VT;
@@ -254,7 +254,7 @@ struct ConvertSequence<
 template <class T, class ConvertT>
 struct ConvertSequence<std::pair<T, T>, ConvertT> {
   static const int converter = 6;
-  typedef boost::array<T, 2> Intermediate;
+  typedef std::array<T, 2> Intermediate;
   typedef ConvertSequenceHelper<Intermediate, T, ConvertT> Helper;
   typedef typename ValueOrObject<T>::type VT;
   template <class SwigData>

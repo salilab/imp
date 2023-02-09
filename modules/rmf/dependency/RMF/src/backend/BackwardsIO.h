@@ -9,7 +9,7 @@
 #ifndef RMF_INTERNAL_BACKWARDS_IO_H
 #define RMF_INTERNAL_BACKWARDS_IO_H
 
-#include <boost/array.hpp>
+#include <array>
 #include <boost/filesystem.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -41,11 +41,11 @@ RMF_ENABLE_WARNINGS namespace RMF {
 
   namespace backends {
 
-  typedef RMF_LARGE_UNORDERED_MAP<std::string, boost::array<std::string, 3> >
+  typedef RMF_LARGE_UNORDERED_MAP<std::string, std::array<std::string, 3> >
       V3N;
   extern V3N vector_3_names_map;
   extern V3N vectors_3_names_map;
-  typedef RMF_LARGE_UNORDERED_MAP<std::string, boost::array<std::string, 4> >
+  typedef RMF_LARGE_UNORDERED_MAP<std::string, std::array<std::string, 4> >
       V4N;
   extern V4N vector_4_names_map;
 
@@ -92,13 +92,13 @@ RMF_ENABLE_WARNINGS namespace RMF {
     }
 
     template <VectorDimension D>
-    inline boost::array<std::string, D> get_vector_subkey_names(
+    inline std::array<std::string, D> get_vector_subkey_names(
         std::string key_name, RMF_VECTOR<D>) const {
       typename RMF_LARGE_UNORDERED_MAP<
-          std::string, boost::array<std::string, D> >::const_iterator it =
+          std::string, std::array<std::string, D> >::const_iterator it =
           get_vector_names_map(RMF_VECTOR<D>()).find(key_name);
       if (it == get_vector_names_map(RMF_VECTOR<D>()).end()) {
-        boost::array<std::string, D> ret;
+        std::array<std::string, D> ret;
         for (unsigned int i = 0; i < D; ++i) {
           std::ostringstream ossk;
           ossk << "_" << key_name << "_" << i;
@@ -111,13 +111,13 @@ RMF_ENABLE_WARNINGS namespace RMF {
     }
 
     template <VectorDimension D>
-    inline boost::array<std::string, D> get_vectors_subkey_names(
+    inline std::array<std::string, D> get_vectors_subkey_names(
         std::string key_name, RMF_VECTOR<D>) const {
       typename RMF_LARGE_UNORDERED_MAP<
-          std::string, boost::array<std::string, D> >::const_iterator it =
+          std::string, std::array<std::string, D> >::const_iterator it =
           get_vectors_names_map(RMF_VECTOR<D>()).find(key_name);
       if (it == get_vectors_names_map(RMF_VECTOR<D>()).end()) {
-        boost::array<std::string, D> ret;
+        std::array<std::string, D> ret;
         for (unsigned int i = 0; i < D; ++i) {
           std::ostringstream ossk;
           ossk << "_" << key_name << "_" << i;
@@ -139,7 +139,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       if (key != StringsKey()) {
         ret = sd_->get_static_value(NodeID(0), key);
       }
-      typedef std::pair<std::string, boost::array<std::string, D> > KP;
+      typedef std::pair<std::string, std::array<std::string, D> > KP;
       for(KP kp : get_vector_names_map(RMF_VECTOR<D>())) {
         ret.push_back(kp.first);
       }
@@ -158,7 +158,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       if (key != StringsKey()) {
         ret = sd_->get_static_value(NodeID(0), key);
       }
-      typedef std::pair<std::string, boost::array<std::string, D> > KP;
+      typedef std::pair<std::string, std::array<std::string, D> > KP;
       for(KP kp : get_vectors_names_map(RMF_VECTOR<D>())) {
         ret.push_back(kp.first);
       }
@@ -174,7 +174,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       RMF_LARGE_UNORDERED_MAP<FloatKey, Data> map;
       for(std::string key_name :
                   get_vector_names(category_b, RMF_VECTOR<D>())) {
-        boost::array<std::string, D> subkey_names =
+        std::array<std::string, D> subkey_names =
             get_vector_subkey_names(key_name, RMF_VECTOR<D>());
         for (unsigned int i = 0; i < D; ++i) {
           FloatKey cur_key =
@@ -202,13 +202,13 @@ RMF_ENABLE_WARNINGS namespace RMF {
       typedef ID<Traits<Vector<D> > > VectorKey;
       std::vector<VectorKey> keys =
           sda->get_keys(category_a, Traits<Vector<D> >());
-      typedef boost::array<ID<FloatTraits>, D> Data;
+      typedef std::array<ID<FloatTraits>, D> Data;
       RMF_LARGE_UNORDERED_MAP<VectorKey, Data> map;
       Strings key_names;
       for(VectorKey k : keys) {
         std::string name = sda->get_name(k);
         key_names.push_back(name);
-        boost::array<std::string, D> subkey_names =
+        std::array<std::string, D> subkey_names =
             get_vector_subkey_names(name, RMF_VECTOR<D>());
         for (unsigned int i = 0; i < D; ++i) {
           map[k][i] = sdb->get_key(category_b, subkey_names[i], FloatTraits());
@@ -241,7 +241,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       RMF_LARGE_UNORDERED_MAP<FloatsKey, Data> map;
       for(std::string key_name :
                   get_vectors_names(category_b, RMF_VECTOR<3>())) {
-        boost::array<std::string, 3> subkey_names =
+        std::array<std::string, 3> subkey_names =
             get_vectors_subkey_names(key_name, RMF_VECTOR<3>());
         for (unsigned int i = 0; i < 3; ++i) {
           FloatsKey cur_key =
@@ -273,13 +273,13 @@ RMF_ENABLE_WARNINGS namespace RMF {
                       Category category_b, H) {
       typedef Vector3sKey VectorKey;
       std::vector<VectorKey> keys = sda->get_keys(category_a, Vector3sTraits());
-      typedef boost::array<ID<FloatsTraits>, 3> Data;
+      typedef std::array<ID<FloatsTraits>, 3> Data;
       RMF_LARGE_UNORDERED_MAP<VectorKey, Data> map;
       Strings key_names;
       for(VectorKey k : keys) {
         std::string name = sda->get_name(k);
         key_names.push_back(name);
-        boost::array<std::string, 3> subkey_names =
+        std::array<std::string, 3> subkey_names =
             get_vectors_subkey_names(name, RMF_VECTOR<3>());
         for (unsigned int i = 0; i < 3; ++i) {
           map[k][i] = sdb->get_key(category_b, subkey_names[i], FloatsTraits());

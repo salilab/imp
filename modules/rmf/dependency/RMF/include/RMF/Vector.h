@@ -16,7 +16,7 @@
 #include <boost/range/end.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/mpl/not.hpp>
-#include <boost/array.hpp>
+#include <array>
 #include <boost/static_assert.hpp>
 #include <algorithm>
 
@@ -27,29 +27,28 @@ namespace RMF {
 #ifndef SWIG
 /** \brief Represent a point in some dimension.
 
-    [boost::array](http://www.boost.org/doc/libs/1_55_0/doc/html/array.html)
-    provides `operator[]()` and `begin()`/`end()` in C++.
+    std::array provides `operator[]()` and `begin()`/`end()` in C++.
  */
 template <unsigned int D>
 class Vector
-    : public boost::array<float, D>
+    : public std::array<float, D>
       {
-  typedef boost::array<float, D> P;
+  typedef std::array<float, D> P;
   // work around swig
   template <class R, class Enabled = void>
   struct Convert {};
 
   template <class R>
   struct Convert<R, typename boost::enable_if<boost::is_convertible<
-                        R, boost::array<float, D> > >::type> {
-    static void convert(const R& r, boost::array<float, D>& d) { d = r; }
+                        R, std::array<float, D> > >::type> {
+    static void convert(const R& r, std::array<float, D>& d) { d = r; }
   };
 
   template <class R>
   struct Convert<
       R, typename boost::enable_if<boost::mpl::not_<
-             boost::is_convertible<R, boost::array<float, D> > > >::type> {
-    static void convert(const R& r, boost::array<float, D>& d) {
+             boost::is_convertible<R, std::array<float, D> > > >::type> {
+    static void convert(const R& r, std::array<float, D>& d) {
       std::copy(boost::begin(r), boost::end(r), d.begin());
     }
   };

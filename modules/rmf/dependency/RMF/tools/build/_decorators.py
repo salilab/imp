@@ -211,7 +211,7 @@ class OptionalPathAttribute(Attribute):
 class AttributePair(Base):
 
     def __init__(self, name, data_type, return_type, begin, end):
-        Base.__init__(self, name, "boost::array<%sKey, 2>" %
+        Base.__init__(self, name, "std::array<%sKey, 2>" %
                       data_type, return_type)
         self.helpers = """  template <class H> DATA get_NAME_keys(H fh) const {
      DATA ret;
@@ -556,7 +556,7 @@ def make_header(name, infos, deps):
 #include <RMF/constants.h>
 #include <RMF/Vector.h>
 #include <RMF/internal/paths.h>
-#include <boost/array.hpp>
+#include <array>
 #include <boost/lexical_cast.hpp>
 """ % {"name": name, "NAME": name.upper()})
     for d in deps:

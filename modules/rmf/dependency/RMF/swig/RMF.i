@@ -68,7 +68,7 @@
   // hack, I don't understand what swig is doing
   typedef RMF::Vector<3U> Vector3;
   typedef RMF::Vector<4U> Vector4;
-  typedef boost::array<int,2> IntRange;
+  typedef std::array<int,2> IntRange;
 %}
 
 %include "RMF.range.i"

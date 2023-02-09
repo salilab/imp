@@ -35,7 +35,7 @@ using std::vector;
 using std::copy;
 using std::string;
 
-using boost::array;
+using std::array;
 
 const string AVRO_SCHEMA_KEY("avro.schema");
 const string AVRO_CODEC_KEY("avro.codec");
@@ -396,7 +396,7 @@ void DataFileReaderBase::seekBlockBytes(int64_t offset) {
     objectCount_ = 0;
 
     // if we have leftover data from a previous iteration
-    boost::array<uint8_t, 16> old_data;
+    std::array<uint8_t, 16> old_data;
     const uint8_t *p = 0;
     size_t n = 0;
 

@@ -53,11 +53,11 @@ Data::Data(std::string name, int *num_atoms)
 
   bodies_.push_back(Body());
 
-  boost::array<char, 2> default_chain = {{0}};
-  boost::array<char, 8> default_resname = {{0}};
-  boost::array<char, 2> default_altid = {{0}};
-  boost::array<char, 8> default_segment = {{0}};
-  boost::array<int, 2> na =
+  std::array<char, 2> default_chain = {{0}};
+  std::array<char, 8> default_resname = {{0}};
+  std::array<char, 2> default_altid = {{0}};
+  std::array<char, 8> default_segment = {{0}};
+  std::array<int, 2> na =
       fill_bodies(file_.get_root_node(), 0, default_chain, -1, default_resname,
                   default_altid, default_segment, resolution_);
   fill_index();
@@ -143,13 +143,13 @@ int Data::handle_state(int body, RMF::NodeConstHandle cur) {
   }
 }
 
-boost::tuple<RMF::NodeConstHandle, boost::array<char, 2>, boost::array<int, 2> >
+boost::tuple<RMF::NodeConstHandle, std::array<char, 2>, std::array<int, 2> >
 Data::handle_alternative(RMF::NodeConstHandle cur, int body,
-                         boost::array<char, 2> chain, int resid,
-                         boost::array<char, 8> resname,
-                         boost::array<char, 2> altid,
-                         boost::array<char, 8> segment, double resolution) {
-  boost::array<int, 2> count = {{0}};
+                         std::array<char, 2> chain, int resid,
+                         std::array<char, 8> resname,
+                         std::array<char, 2> altid,
+                         std::array<char, 8> segment, double resolution) {
+  std::array<int, 2> count = {{0}};
   if (resolution >= 0) {
     RMF::NodeConstHandle alt =
         altf_.get(cur).get_alternative(RMF::PARTICLE, resolution);
@@ -160,7 +160,7 @@ Data::handle_alternative(RMF::NodeConstHandle cur, int body,
     for(RMF::NodeConstHandle c :
                 boost::make_iterator_range(alts.begin() + 1, alts.end())) {
       altid[0] = 'A' + alt;
-      boost::array<int, 2> cur = fill_bodies(c, body, chain, resid, resname,
+      std::array<int, 2> cur = fill_bodies(c, body, chain, resid, resname,
                                              altid, segment, resolution);
       for (unsigned int i = 0; i < 2; ++i) {
         count[i] += cur[i];
@@ -172,13 +172,13 @@ Data::handle_alternative(RMF::NodeConstHandle cur, int body,
   }
 }
 
-boost::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
-                                       boost::array<char, 2> chain, int resid,
-                                       boost::array<char, 8> resname,
-                                       boost::array<char, 2> altid,
-                                       boost::array<char, 8> segment,
+std::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
+                                       std::array<char, 2> chain, int resid,
+                                       std::array<char, 8> resname,
+                                       std::array<char, 2> altid,
+                                       std::array<char, 8> segment,
                                        double resolution) {
-  boost::array<int, 2> ret = {{0}};
+  std::array<int, 2> ret = {{0}};
   // must be firest due to ret
   if (altf_.get_is(cur))
     boost::tie(cur, altid, ret) = handle_alternative(
@@ -203,7 +203,7 @@ boost::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
   }
 
   for(RMF::NodeConstHandle c : cur.get_children()) {
-    boost::array<int, 2> count =
+    std::array<int, 2> count =
         fill_bodies(c, body, chain, resid, resname, altid, segment, resolution);
     for (unsigned int i = 0; i < 2; ++i) {
       ret[i] += count[i];

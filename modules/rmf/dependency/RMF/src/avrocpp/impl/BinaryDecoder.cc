@@ -22,7 +22,7 @@
 #include "Zigzag.hh"
 #include "Exception.hh"
 
-#include <boost/array.hpp>
+#include <array>
 
 namespace internal_avro {
 

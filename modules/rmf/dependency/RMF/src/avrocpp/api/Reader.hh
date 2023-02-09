@@ -110,7 +110,7 @@ class ReaderImpl : private boost::noncopyable {
   }
 
   template <size_t N>
-  void readFixed(boost::array<uint8_t, N> &val) {
+  void readFixed(std::array<uint8_t, N> &val) {
     this->readFixed(val.c_array(), N);
   }
 

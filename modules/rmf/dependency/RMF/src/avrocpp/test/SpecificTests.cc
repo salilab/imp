@@ -25,7 +25,7 @@
 using std::string;
 using std::vector;
 using std::map;
-using boost::array;
+using std::array;
 
 namespace internal_avro {
 

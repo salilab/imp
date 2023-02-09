@@ -105,7 +105,7 @@ void test_throw_exception() {
 
 namespace {
 void handle_vector(const CoordinateTransformer &tr, const Vector3 &v, float r,
-                   boost::array<RMF::Vector3, 2> &bb) {
+                   std::array<RMF::Vector3, 2> &bb) {
   Vector3 trv = tr.get_global_coordinates(v);
   for (unsigned int i = 0; i < 3; ++i) {
     bb[0][i] = std::min(trv[i] - r, bb[0][i]);
@@ -119,7 +119,7 @@ void get_bounding_box_impl(NodeConstHandle root, CoordinateTransformer tr,
                            decorator::CylinderFactory cf,
                            decorator::GaussianParticleFactory gpf,
                            decorator::ReferenceFrameFactory rff,
-                           boost::array<RMF::Vector3, 2> &bb) {
+                           std::array<RMF::Vector3, 2> &bb) {
   if (rff.get_is(root)) {
     tr = CoordinateTransformer(tr, rff.get(root));
   }
@@ -150,8 +150,8 @@ void get_bounding_box_impl(NodeConstHandle root, CoordinateTransformer tr,
 }
 }
 
-boost::array<RMF::Vector3, 2> get_bounding_box(NodeConstHandle root) {
-  boost::array<RMF::Vector3, 2> ret;
+std::array<RMF::Vector3, 2> get_bounding_box(NodeConstHandle root) {
+  std::array<RMF::Vector3, 2> ret;
   float v = std::numeric_limits<float>::max();
   ret[0] = RMF::Vector3(v, v, v);
   ret[1] = RMF::Vector3(-v, -v, -v);
@@ -165,7 +165,7 @@ boost::array<RMF::Vector3, 2> get_bounding_box(NodeConstHandle root) {
 }
 
 float get_diameter(NodeConstHandle root) {
-  boost::array<RMF::Vector3, 2> bb = get_bounding_box(root);
+  std::array<RMF::Vector3, 2> bb = get_bounding_box(root);
   float max = 0;
   for (unsigned int i = 0; i < 3; ++i) {
     max = std::max(bb[1][i] - bb[0][i], max);

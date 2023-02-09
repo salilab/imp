@@ -34,7 +34,7 @@ using std::map;
 using std::istringstream;
 using std::ostringstream;
 
-using boost::array;
+using std::array;
 using std::shared_ptr;
 using boost::unit_test::test_suite;
 
