@@ -16,7 +16,13 @@
 #include "check_macros.h"
 #include "showable_macros.h"
 #include <array>
+#include <boost/version.hpp>
 #include <boost/serialization/access.hpp>
+// Boost Serialization only supports std::array in 1.56 or later;
+// use boost::array instead if we have older Boost
+#if BOOST_VERSION < 105600
+#include <boost/array.hpp>
+#endif
 #include <boost/serialization/array.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -33,7 +39,11 @@ IMPKERNEL_BEGIN_NAMESPACE
     */
 template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
+#if BOOST_VERSION < 105600
+  typedef boost::array<Data, D> Storage;
+#else
   typedef std::array<Data, D> Storage;
+#endif
   Storage d_;
 
   friend class boost::serialization::access;
