@@ -11,6 +11,8 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/singleton_macros.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -36,7 +38,13 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
       Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_SCORE_METHODS(DihedralSingletonScore);
   IMP_OBJECT_METHODS(DihedralSingletonScore);
-  ;
+
+ private:
+  friend class boost::serialization::access;
+
+  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+    ar & boost::serialization::base_object<SingletonScore>(*this);
+  }
 };
 
 IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);
