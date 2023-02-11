@@ -1,0 +1,33 @@
+import IMP
+import IMP.test
+import IMP.core
+import pickle
+
+
+class Tests(IMP.test.TestCase):
+
+    def test_pickle(self):
+        """Test (un-)pickle of AngleTripletScore"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0,0,0))
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(0,1,0))
+        d3 = IMP.core.XYZ.setup_particle(p3, IMP.algebra.Vector3D(1,0,0))
+
+        uf = IMP.core.Cosine(10.0, 2, 0.0)
+        ats = IMP.core.AngleTripletScore(uf)
+        ats.set_name('foo')
+        self.assertAlmostEqual(ats.evaluate_index(m, [p1, p2, p3], None),
+                               10.0, delta=1e-2)
+
+        dump = pickle.dumps(ats)
+        newats = pickle.loads(dump)
+        self.assertEqual(ats.get_name(), 'foo')
+        self.assertAlmostEqual(newats.evaluate_index(m, [p1, p2, p3], None),
+                               10.0, delta=1e-2)
+
+
+if __name__ == '__main__':
+    IMP.test.main()

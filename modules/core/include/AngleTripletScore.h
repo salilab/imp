@@ -14,6 +14,9 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/triplet_macros.h>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/serialization/base_object.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,9 +25,27 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   IMP::PointerMember<UnaryFunction> f_;
 
+  friend class boost::serialization::access;
+
+  template<class Archive> void save(Archive &ar, const unsigned int) const {
+    UnaryFunction *f = f_;
+    ar << boost::serialization::base_object<TripletScore>(*this) << f;
+  }
+
+  template<class Archive> void load(Archive &ar, const unsigned int) {
+    UnaryFunction *f;
+    ar >> boost::serialization::base_object<TripletScore>(*this) >> f;
+    f_ = f;
+  }
+
+#ifndef SWIG
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+#endif
+
  public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
+  AngleTripletScore() {}
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexTriplet &pi,
                                 DerivativeAccumulator *da) const override;

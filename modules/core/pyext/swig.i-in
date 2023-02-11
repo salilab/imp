@@ -12,7 +12,7 @@ IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
-IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
