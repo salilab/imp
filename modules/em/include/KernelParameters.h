@@ -96,7 +96,6 @@ class IMPEMEXPORT KernelParameters {
 
   void init(float resolution);
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -111,7 +110,6 @@ class IMPEMEXPORT KernelParameters {
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
 };
 

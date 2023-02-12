@@ -38,9 +38,7 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
     f_ = f;
   }
 
-#ifndef SWIG
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
  public:
   //! Score the angle (in radians) using f

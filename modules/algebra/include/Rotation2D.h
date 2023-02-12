@@ -87,7 +87,6 @@ private:
   double c_;      // cosine of the angle
   double s_;      // sine of the angle
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -101,7 +100,6 @@ private:
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 };
 
 //! Build an identity rotation in 2D

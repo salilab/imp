@@ -56,7 +56,6 @@ class Vector : public Value
   typedef std::vector<T> V;
 #endif
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -79,7 +78,6 @@ class Vector : public Value
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
  public:
   Vector() {}

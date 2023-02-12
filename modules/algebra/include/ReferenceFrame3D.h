@@ -25,7 +25,6 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   mutable bool has_inverse_;
   mutable Transformation3D tri_;
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -38,7 +37,6 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
   const Transformation3D &get_inverse() const {
     if (!has_inverse_) {

@@ -34,6 +34,4 @@ IMPCORE_END_NAMESPACE
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
-#ifndef SWIG
 BOOST_CLASS_EXPORT_GUID(IMP::core::Cosine, "core.Cosine")
-#endif

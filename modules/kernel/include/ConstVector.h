@@ -55,7 +55,6 @@ class ConstVector : public Value {
     std::copy(b, e, v_.get());
   }
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -74,7 +73,6 @@ class ConstVector : public Value {
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
  public:
   ~ConstVector() {}

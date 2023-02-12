@@ -34,7 +34,6 @@ class DefaultEmbeddingD {
   // inverse
   VectorD<D> inverse_unit_cell_;
 
-#ifndef SWIG
   friend class boost::serialization::access;
 
   template<class Archive> void save(Archive &ar, const unsigned int) const {
@@ -48,7 +47,6 @@ class DefaultEmbeddingD {
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
   template <class O>
   VectorD<D> get_elementwise_product(VectorD<D> v0, const O &v1) const {
