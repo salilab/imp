@@ -9,6 +9,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
+#include <boost/version.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
 
@@ -51,8 +52,10 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
 
   friend class boost::serialization::access;
 
+#if BOOST_VERSION >= 106500 && BOOST_VERSION <= 106600
   template<class T>
   friend struct boost::archive::detail::heap_allocation;
+#endif
 
   template<class Archive> void serialize(Archive &ar, const unsigned int) {
     ar & boost::serialization::base_object<UnaryFunction>(*this)

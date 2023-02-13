@@ -10,6 +10,7 @@
 #include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/Object.h>
+#include <boost/version.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
 
@@ -57,8 +58,10 @@ class IMPKERNELEXPORT UnaryFunction : public IMP::Object {
 private:
   friend class boost::serialization::access;
 
+#if BOOST_VERSION >= 106500 && BOOST_VERSION <= 106600
   template<class T>
   friend struct boost::archive::detail::heap_allocation;
+#endif
 
   template<class Archive> void serialize(Archive &ar, const unsigned int) {
     ar & boost::serialization::base_object<Object>(*this);
