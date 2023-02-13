@@ -51,6 +51,9 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
 
   friend class boost::serialization::access;
 
+  template<class T>
+  friend struct boost::archive::detail::heap_allocation;
+
   template<class Archive> void serialize(Archive &ar, const unsigned int) {
     ar & boost::serialization::base_object<UnaryFunction>(*this)
        & force_constant_ & periodicity_ & phase_;
