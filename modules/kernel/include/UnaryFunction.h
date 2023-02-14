@@ -14,6 +14,16 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
 
+#if BOOST_VERSION >= 106500 && BOOST_VERSION <= 106600
+namespace boost {
+  namespace archive {
+    namespace detail {
+      template<class T> struct heap_allocation;
+    }
+  }
+}
+#endif
+
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract single variable functor class for score functions.
