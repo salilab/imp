@@ -1,6 +1,11 @@
 Change Log {#changelog}
 ==========
 
+# HEAD
+- Windows builds now require MS Visual Studio 2015 or later (for full C++11
+  support). The following macros for pre-C++11 environments are no longer
+  needed and are deprecated: `RMF_NOEXCEPT`, `RMF_CANEXCEPT`.
+
 # 1.4.1 - 2022-11-21 # {#changelog_1_4_1}
 - Build fixes to work with SWIG 4.1.
 - Various internal build scripts now use 'python3' rather than

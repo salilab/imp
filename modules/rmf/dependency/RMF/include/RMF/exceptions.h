@@ -31,8 +31,8 @@ class RMFEXPORT Exception : public virtual std::exception,
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception();
-  const char* what() const RMF_NOEXCEPT override;
-  virtual ~Exception() RMF_NOEXCEPT;
+  const char* what() const noexcept override;
+  virtual ~Exception() noexcept;
 };
 
 /** Use this instead of the more standard what() to get the
@@ -49,7 +49,7 @@ class RMFEXPORT UsageException : public Exception {
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(UsageException);
   UsageException();
-  ~UsageException() RMF_NOEXCEPT;
+  ~UsageException() noexcept;
 };
 
 /** IOExceptions are thrown when some operation on a disk file fails.
@@ -58,7 +58,7 @@ class RMFEXPORT IOException : public Exception {
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(IOException);
   IOException();
-  ~IOException() RMF_NOEXCEPT;
+  ~IOException() noexcept;
 };
 
 /** Internal exceptions are thrown when the library discovers that some
@@ -69,7 +69,7 @@ class RMFEXPORT InternalException : public Exception {
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(InternalException);
   InternalException();
-  ~InternalException() RMF_NOEXCEPT;
+  ~InternalException() noexcept;
 };
 
 /** IndexExceptions are thrown when you walk off the end of something.
@@ -78,7 +78,7 @@ class RMFEXPORT IndexException : public Exception {
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(IndexException);
   IndexException();
-  ~IndexException() RMF_NOEXCEPT;
+  ~IndexException() noexcept;
 };
 }
 

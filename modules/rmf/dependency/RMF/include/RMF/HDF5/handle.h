@@ -75,7 +75,7 @@ class RMFEXPORT Handle : public boost::noncopyable {
 #if defined(__clang__) && __clang_major__ <= 7
   ~Handle() {
 #else
-  ~Handle() RMF_CANEXCEPT {
+  ~Handle() noexcept(false) {
 #endif
     if (h_ != -1) {
       RMF_HDF5_CALL(f_(h_));
