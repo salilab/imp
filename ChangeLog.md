@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- Windows builds now require MS Visual Studio 2015 or later (for full C++11
+  support). The following macro for pre-C++11 environments is no longer
+  needed and is deprecated: `IMP_NOEXCEPT`.
 - The following pre-C++11 compatibility macros and headers are removed:
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
   `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
