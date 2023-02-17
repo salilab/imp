@@ -42,7 +42,7 @@ In order to build %IMP from source, you will need:
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later)
-  should also work)
+- [cereal](https://uscilab.github.io/cereal/)
 - [Python](https://www.python.org) (3.6 or later, or 2.7)
 - [SWIG](https://www.swig.org/) (3 or later)
 

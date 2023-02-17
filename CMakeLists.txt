@@ -340,6 +340,9 @@ find_package(Eigen3 3.0 REQUIRED)
 # b) we're not going to fix, since Eigen isn't our code.
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
+find_package(cereal REQUIRED)
+include_directories(SYSTEM ${CEREAL_INCLUDE_DIRS})
+
 add_custom_target("IMP-version"
                   COMMAND ${PYTHON_EXECUTABLE}
                           ${CMAKE_SOURCE_DIR}/tools/build/make_version.py
