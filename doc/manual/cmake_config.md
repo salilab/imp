@@ -101,7 +101,7 @@ For each dependency CMake will first try to find the header and library
 files for that dependency, reporting success if it finds them. Next, it will
 often try to build a small C or C++ test program that uses those headers
 and libraries. If this fails the dependency cannot be used (and CMake will,
-somewhat confusing, report that the dependency was first found and then not
+somewhat confusingly, report that the dependency was first found and then not
 found). To fix issues like this, check the CMake error log in
 `CMakeFiles/CMakeError.log` to see what failed. In some cases this can be
 fixed by modifying the flags passed to the C or C++ compiler. For example,
