@@ -10,6 +10,10 @@
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/archives/binary.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,6 +29,7 @@ class Harmonic : public UnaryFunction {
  public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
+  Harmonic() {}
 
   virtual DerivativePair evaluate_with_derivative(
                                  double feature) const override {
@@ -69,8 +74,16 @@ class Harmonic : public UnaryFunction {
  private:
   Float mean_;
   Float k_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<UnaryFunction>(this), mean_, k_);
+  }
 };
 
 IMPCORE_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE_WITH_NAME(IMP::core::Harmonic, "core.Harmonic");
 
 #endif /* IMPCORE_HARMONIC_H */

@@ -45,7 +45,7 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSinglet
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
 IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
-IMP_SWIG_OBJECT( IMP::core, Harmonic, Harmonics);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Harmonic, Harmonics);
 IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
 IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
@@ -60,7 +60,7 @@ IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials)
 IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
-IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Linear, Linears);
 IMP_SWIG_OBJECT( IMP::core, LogNormalMover, LogNormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
 IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);

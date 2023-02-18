@@ -8,6 +8,7 @@
 #ifndef IMPCORE_ANGLE_TRIPLET_SCORE_H
 #define IMPCORE_ANGLE_TRIPLET_SCORE_H
 
+#include <memory>
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include <IMP/TripletScore.h>
@@ -26,14 +27,16 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
 
   friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar) {
-    //std::unique_ptr<UnaryFunction> f(f_.get());
-    //ar(cereal::base_class<TripletScore>(this), f_);
-    //f.release();
+  template<class Archive> void save(Archive &ar) const {
+    std::unique_ptr<UnaryFunction> f(f_.get());
+    ar(cereal::base_class<TripletScore>(this), f);
+    f.release();
+  }
 
-    //std::unique_ptr<UnaryFunction> f;
-    //ar(cereal::base_class<TripletScore>(this), f_);
-    //f_ = f.release();
+  template<class Archive> void load(Archive &ar) {
+    std::unique_ptr<UnaryFunction> f;
+    ar(cereal::base_class<TripletScore>(this), f);
+    f_ = f.release();
   }
 
  public:
@@ -50,5 +53,8 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
 };
 
 IMPCORE_END_NAMESPACE
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+      IMP::core::AngleTripletScore, cereal::specialization::member_load_save);
 
 #endif /* IMPCORE_ANGLE_TRIPLET_SCORE_H */

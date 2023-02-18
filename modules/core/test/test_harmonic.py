@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import pickle
 
 
 def _harmonicfunc(val, mean, force_constant):
@@ -48,6 +49,18 @@ class Tests(IMP.test.TestCase):
                      IMP.core.HarmonicUpperBound(10.0, 1.0)):
             func.set_was_used(True)
             func.show()
+
+    def test_pickle(self):
+        """Test (un-)pickle of Harmonic"""
+        func = IMP.core.Harmonic(1.0, 4.0)
+        func.set_name('foo')
+        self.assertAlmostEqual(func.evaluate(4.0), 18.0, delta=0.01)
+        dump = pickle.dumps(func)
+        del func
+        f = pickle.loads(dump)
+        self.assertEqual(f.get_name(), 'foo')
+        self.assertAlmostEqual(f.evaluate(4.0), 18.0, delta=0.01)
+
 
 if __name__ == '__main__':
     IMP.test.main()
