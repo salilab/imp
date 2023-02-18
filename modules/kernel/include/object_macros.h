@@ -20,7 +20,7 @@
 /** This defines
     - IMP::Object::get_version_info()
     - IMP::Object::get_type_name()
-    - a protected destructor
+    - a virtual destructor
 */
 #define IMP_OBJECT_METHODS(Name)                                              \
  public:                                                                      \
@@ -29,7 +29,7 @@
     return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                           \
                                                                               \
- protected:                                                                   \
+ public:                                                                      \
   virtual ~Name() { IMP::Object::_on_destruction(); }                   \
                                                                               \
  public:
