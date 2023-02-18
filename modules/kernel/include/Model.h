@@ -31,6 +31,7 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <cereal/access.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <limits>
 
@@ -158,7 +159,7 @@ class IMPKERNELEXPORT Model : public Object
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-/*  ar(cereal::base_class<Object>(this),
+    ar(cereal::base_class<Object>(this),
        cereal::base_class<internal::FloatAttributeTable>(this),
        cereal::base_class<internal::StringAttributeTable>(this),
        cereal::base_class<internal::IntAttributeTable>(this),
@@ -200,7 +201,7 @@ class IMPKERNELEXPORT Model : public Object
       saved_dependencies_age_ = 0;
       dependencies_saved_ = false;
       moved_particles_cache_age_ = 0;
-    }*/
+    }
   }
 
   // update model age (can never be zero, even if it wraps)

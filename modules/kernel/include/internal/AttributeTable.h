@@ -266,4 +266,8 @@ inline int use_xyz_to_disable_warning() {
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+        IMP::internal::BoolAttributeTableTraits::Container,
+        cereal::specialization::member_serialize);
+
 #endif /* IMPKERNEL_ATTRIBUTE_TABLE_H */
