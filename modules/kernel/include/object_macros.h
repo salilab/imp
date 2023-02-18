@@ -49,12 +49,12 @@
 
 //! Typedefs a default instantiation for a generic (templated) object 
 /**
- Define type [Name] to be an an instantiation of of Generic[Name] with
+ Define type [Name] to be an instantiation of Generic[Name] with
  template targument, and a function create_[lcname]() that generates a
- newly allocated object of type [Name], taking parameters [crguments]
+ newly allocated object of type [Name], taking parameters [carguments]
  and internally paassing [cparguments] to the constructor.
 
- @note doxygen documentatio prior to this macro will be applied to the type
+ @note doxygen documentation prior to this macro will be applied to the type
  definition
  */
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
