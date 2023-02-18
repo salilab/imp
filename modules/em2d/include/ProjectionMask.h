@@ -22,8 +22,7 @@
 #include "IMP/exception.h"
 #include <complex>
 #include <memory>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_free.hpp>
+#include <cereal/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -67,10 +66,10 @@ class IMPEM2DEXPORT ProjectionMask {
   double sq_pixelsize_;  // Used to save multiplications
   cv::Mat data_;         // actual matrix with the mask
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & dim_ & sq_pixelsize_ & data_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(dim_, sq_pixelsize_, data_);
   }
 };
 
@@ -78,38 +77,29 @@ IMP_VALUES(ProjectionMask, ProjectionMasks);
 
 IMPEM2D_END_NAMESPACE
 
-namespace boost {
-  namespace serialization {
-    template<class Archive> inline void save(
-         Archive &ar, const std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
-         const unsigned int) {
-      size_t sz = m.size();
-      ar << sz;
-      for (const auto &p : m) {
-        ar << p.first;
-        ar << *(p.second);
-      }
+namespace cereal {
+  template<class Archive> inline void save(
+       Archive &ar, const std::map<double,
+                               IMP::em2d::ProjectionMaskPtr> &m) {
+    size_t sz = m.size();
+    ar(sz);
+    for (const auto &p : m) {
+      ar(p.first);
+      ar(*(p.second));
     }
+  }
 
-    template<class Archive> inline void load(
-         Archive &ar, std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
-         const unsigned int) {
-      m.clear();
-      size_t sz;
-      ar >> sz;
-      for (size_t i = 0; i < sz; ++i) {
-        double mass;
-        IMP::em2d::ProjectionMaskPtr ptr(new IMP::em2d::ProjectionMask());
-        ar >> mass;
-        ar >> *ptr;
-        m[mass] = ptr;
-      }
-    }
-
-    template<class Archive> inline void serialize(
-         Archive &ar, std::map<double, IMP::em2d::ProjectionMaskPtr> &m,
-         const unsigned int version) {
-      boost::serialization::split_free(ar, m, version);
+  template<class Archive> inline void load(
+       Archive &ar, std::map<double, IMP::em2d::ProjectionMaskPtr> &m) {
+    m.clear();
+    size_t sz;
+    ar(sz);
+    for (size_t i = 0; i < sz; ++i) {
+      double mass;
+      IMP::em2d::ProjectionMaskPtr ptr(new IMP::em2d::ProjectionMask());
+      ar(mass);
+      ar(*ptr);
+      m[mass] = ptr;
     }
   }
 }
@@ -221,10 +211,10 @@ class IMPEM2DEXPORT MasksManager {
   bool is_setup_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & mass2mask_ & kernel_params_ & pixelsize_ & is_setup_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(mass2mask_, kernel_params_, pixelsize_, is_setup_);
   }
 
 };

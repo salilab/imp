@@ -24,8 +24,8 @@
 #include "IMP/Pointer.h"
 #include "IMP/Particle.h"
 #include <string>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -37,12 +37,12 @@ const unsigned int ALIGN2D_WITH_CENTERS = 2;
 //! Parameters used by Em2DRestraint and ProjectionFinder.
 class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<ProjectingParameters>(*this);
-    ar & n_projections & coarse_registration_method & save_match_images
-       & optimization_steps & simplex_initial_length & simplex_minimum_size;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ProjectingParameters>(this));
+    ar(n_projections, coarse_registration_method, save_match_images,
+       optimization_steps, simplex_initial_length, simplex_minimum_size);
   }
 
   void init_defaults() {

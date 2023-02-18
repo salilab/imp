@@ -15,40 +15,28 @@
 #include <IMP/Pointer.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
-#include <boost/serialization/split_free.hpp>
-#include <boost/serialization/string.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
 
 #include <limits>
 
 // Add serialization support for boost::dynamic_bitset
-namespace boost {
-  namespace serialization {
-    template <class Archive, typename Block, typename Allocator>
-    inline void save(Archive &ar,
-                     boost::dynamic_bitset<Block, Allocator> const &t,
-                     const unsigned int) {
-      std::string bits;
-      boost::to_string(t, bits);
-      ar << bits;
-    }
+namespace cereal {
+  template <class Archive, typename Block, typename Allocator>
+  inline void save(Archive &ar,
+                   boost::dynamic_bitset<Block, Allocator> const &t) {
+    std::string bits;
+    boost::to_string(t, bits);
+    ar(bits);
+  }
 
-    template <class Archive, typename Block, typename Allocator>
-    inline void load(Archive &ar,
-                     boost::dynamic_bitset<Block, Allocator> &t,
-                     const unsigned int) {
-      std::string bits;
-      ar >> bits;
-      t = boost::dynamic_bitset<Block, Allocator>(bits);
-    }
-
-    template <class Archive, typename Block, typename Allocator>
-    inline void serialize(Archive &ar,
-                          boost::dynamic_bitset<Block, Allocator> &t,
-                          const unsigned int version) {
-      boost::serialization::split_free(ar, t, version);
-    }
+  template <class Archive, typename Block, typename Allocator>
+  inline void load(Archive &ar,
+                   boost::dynamic_bitset<Block, Allocator> &t) {
+    std::string bits;
+    ar(bits);
+    t = boost::dynamic_bitset<Block, Allocator>(bits);
   }
 }
 
@@ -215,10 +203,10 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
   struct Container : public boost::dynamic_bitset<> {
-    friend class boost::serialization::access;
+    friend class cereal::access;
 
-    template<class Archive> void serialize(Archive &ar, const unsigned int) {
-      ar & boost::serialization::base_object<boost::dynamic_bitset<> >(*this);
+    template<class Archive> void serialize(Archive &ar) {
+      ar(cereal::base_class<boost::dynamic_bitset<> >(this));
     }
 
     typedef boost::dynamic_bitset<> P;

@@ -13,6 +13,7 @@
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
 #include "atom_macros.h"
+#include <cereal/access.hpp>
 #include <IMP/file.h>
 
 #include <string>
@@ -35,10 +36,10 @@ struct CHARMMBondParameters {
   });
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & force_constant & ideal;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(force_constant, ideal);
   }
 };
 
@@ -56,10 +57,10 @@ struct CHARMMDihedralParameters {
   });
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & force_constant & multiplicity & ideal;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(force_constant, multiplicity, ideal);
   }
 };
 

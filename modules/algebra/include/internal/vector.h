@@ -9,8 +9,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/exception.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
+#include <cereal/access.hpp>
 #include <limits>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -46,12 +45,12 @@ template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int) {
+  void serialize(Archive &ar) {
     for (auto &i: storage_) {
-      ar & i;
+      ar(i);
     }
   }
 
@@ -103,27 +102,25 @@ class VectorData<T, -1, KNOWN_DEFAULT> {
   boost::scoped_array<T> storage_;
   unsigned int d_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
-  void save(Archive &ar, const unsigned int) const {
-    ar << d_;
+  void save(Archive &ar) const {
+    ar(d_);
     for (unsigned i = 0; i < d_; ++i) {
-      ar << storage_[i];
+      ar(storage_[i]);
     }
   }
 
   template<class Archive>
-  void load(Archive &ar, const unsigned int) {
-    ar >> d_;
+  void load(Archive &ar) {
+    ar(d_);
     storage_.reset(new T[d_]);
     T *data = get_data();
     for (unsigned i = 0; i < d_; ++i) {
-      ar >> *(data + i);
+      ar(*(data + i));
     }
   }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
  public:
   VectorData(int d) : storage_(new T[d]), d_(d) {}

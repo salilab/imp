@@ -13,7 +13,7 @@
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/value_macros.h>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <iostream>
 #include <stdio.h>
 
@@ -47,11 +47,11 @@ struct DominoParams {
   int cache_size_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & max_value_threshold_ & max_num_states_for_subset_
-       & max_anchor_penetration_ & heap_size_ & cache_size_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(max_value_threshold_, max_num_states_for_subset_,
+       max_anchor_penetration_, heap_size_, cache_size_);
   }
 };
 IMP_VALUES(DominoParams, DominoParamsList);
@@ -79,10 +79,10 @@ struct XlinkParams {
   bool treat_between_residues_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & upper_bound_ & k_ & max_xlink_val_ & treat_between_residues_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(upper_bound_, k_, max_xlink_val_, treat_between_residues_);
   }
 };
 IMP_VALUES(XlinkParams, XlinkParamsList);
@@ -109,10 +109,10 @@ struct ConnectivityParams {
   float max_conn_rest_val_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & upper_bound_ & k_ & max_conn_rest_val_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(upper_bound_, k_, max_conn_rest_val_);
   }
 };
 IMP_VALUES(ConnectivityParams, ConnectivityParamsList);
@@ -143,10 +143,10 @@ struct FragmentsParams {
   // true if the subunits are rigid
   bool subunit_rigid_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & frag_len_ & bead_radius_scale_ & load_atomic_ & subunit_rigid_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(frag_len_, bead_radius_scale_, load_atomic_, subunit_rigid_);
   }
 };
 IMP_VALUES(FragmentsParams, FragmentsParamsList);
@@ -168,10 +168,10 @@ struct RogParams {
  private:
   // maximum score
   float max_score_, scale_;
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & max_score_ & scale_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(max_score_, scale_);
   }
 };
 IMP_VALUES(RogParams, RogParamsList);
@@ -217,12 +217,12 @@ struct EVParams {
                       // 1 means EV between all pairs is calculated
                       // 2 means EV only between selected pairs is calculated
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & pair_distance_ & pair_slack_ & hlb_mean_ & hlb_k_
-       & maximum_ev_score_for_pair_ & allowed_percentage_of_bad_pairs_
-       & scoring_mode_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(pair_distance_, pair_slack_, hlb_mean_, hlb_k_,
+       maximum_ev_score_for_pair_, allowed_percentage_of_bad_pairs_,
+       scoring_mode_);
   }
 };
 IMP_VALUES(EVParams, EVParamsList);
@@ -248,11 +248,11 @@ struct FiltersParams {
   int max_num_violated_xlink_, max_num_violated_conn_;
   int max_num_violated_ev_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & max_num_violated_xlink_ & max_num_violated_conn_
-       & max_num_violated_ev_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(max_num_violated_xlink_, max_num_violated_conn_,
+       max_num_violated_ev_);
   }
 };
 IMP_VALUES(FiltersParams, FiltersParamsList);
@@ -281,11 +281,11 @@ struct FittingParams {
   float pca_max_angle_diff_, pca_max_size_diff_;
   float pca_max_cent_dist_diff_, max_asmb_fit_score_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & pca_max_angle_diff_ & pca_max_size_diff_ & pca_max_cent_dist_diff_
-       & max_asmb_fit_score_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(pca_max_angle_diff_, pca_max_size_diff_, pca_max_cent_dist_diff_,
+       max_asmb_fit_score_);
   }
 };
 IMP_VALUES(FittingParams, FittingParamsList);
@@ -322,11 +322,11 @@ struct ComplementarityParams {
   float interior_layer_thickness_;
   float boundary_coef_, comp_coef_, penetration_coef_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & max_score_ & max_penetration_ & interior_layer_thickness_
-       & boundary_coef_ & comp_coef_ & penetration_coef_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(max_score_, max_penetration_, interior_layer_thickness_,
+       boundary_coef_, comp_coef_, penetration_coef_);
   }
 };
 IMP_VALUES(ComplementarityParams, ComplementarityParamsList);
@@ -384,12 +384,12 @@ class IMPMULTIFITEXPORT AlignmentParams {
   FiltersParams filters_params_;
   EVParams ev_params_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & domino_params_ & fitting_params_ & complementarity_params_
-       & xlink_params_ & conn_params_ & fragments_params_ & rog_params_
-       & filters_params_ & ev_params_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(domino_params_, fitting_params_, complementarity_params_,
+       xlink_params_, conn_params_, fragments_params_, rog_params_,
+       filters_params_, ev_params_);
   }
 };
 IMP_VALUES(AlignmentParams, AlignmentParamsList);

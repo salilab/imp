@@ -13,9 +13,9 @@
 
 #include "DOF.h"
 #include <IMP/algebra/constants.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -85,15 +85,20 @@ class IMPKINEMATICSEXPORT DOFValues : public std::vector<double> {
   });
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<std::vector<double> >(*this);
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<std::vector<double> >(this));
   }
 };
 
 IMP_VALUES(DOFValues, DOFValuesList);
 
 IMPKINEMATICS_END_NAMESPACE
+
+// std::vector may serialize with load/save methods instead; force
+// cereal to use our 'serialize' method
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+    IMP::kinematics::DOFValues, cereal::specialization::member_serialize);
 
 #endif /* IMPKINEMATICS_DOF_VALUES_H */

@@ -11,8 +11,7 @@
 #include <IMP/core/Cosine.h>
 #include <IMP/core/AngleTripletScore.h>
 #include <IMP/flags.h>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+#include <cereal/archives/binary.hpp>
 
 int main(int argc, char* argv[]) {
   IMP::setup_from_argv(argc, argv, "Test serialize");
@@ -20,15 +19,15 @@ int main(int argc, char* argv[]) {
   IMP_NEW(IMP::core::AngleTripletScore, ats, (uf));
 
   std::ostringstream oss;
-  boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
-  ba << *ats;
+  cereal::BinaryOutputArchive ba(oss);
+  ba(*ats);
   std::string s = oss.str();
   std::cerr << "serialize done, written " << s.size() << " bytes" << std::endl;
 
   std::istringstream iss(s);
-  boost::archive::binary_iarchive iba(iss, boost::archive::no_header);
+  cereal::BinaryInputArchive iba(iss);
   IMP_NEW(IMP::core::AngleTripletScore, newats, ());
-  iba >> *newats;
+  iba(*newats);
   std::cerr << "deserialize done, read in " << *newats << std::endl;
   return 0;
 }

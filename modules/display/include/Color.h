@@ -15,7 +15,7 @@
 #include <IMP/check_macros.h>
 #include <IMP/value_macros.h>
 #include <array>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -25,10 +25,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Color : public Value {
   std::array<double, 3> c_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & c_[0] & c_[1] & c_[2];
+  template<class Archive> void serialize(Archive &ar) {
+    ar(c_[0], c_[1], c_[2]);
   }
 
   int compare(double a, double b) const {

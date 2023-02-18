@@ -28,10 +28,3 @@ void Cosine::do_show(std::ostream &out) const {
 }
 
 IMPCORE_END_NAMESPACE
-
-// Allow polymorphic serialization of Cosine to/from binary archives
-#include <boost/serialization/export.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-
-BOOST_CLASS_EXPORT_GUID(IMP::core::Cosine, "core.Cosine")

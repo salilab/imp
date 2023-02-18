@@ -18,8 +18,8 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include <iostream>
 #include <iomanip>
 #include <IMP/algebra/standard_grids.h>
@@ -479,15 +479,15 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   bool normalized_;
   bool rms_calculated_;
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<Object>(*this)
-       & header_ & data_allocated_ & loc_calculated_ & normalized_
-       & rms_calculated_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this),
+       header_, data_allocated_, loc_calculated_, normalized_,
+       rms_calculated_);
     long size = get_number_of_voxels();
 
-    if (Archive::is_loading::value) {
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       data_.reset(new double[size]);
       if (loc_calculated_) {
         // force recalculation of loc arrays
@@ -497,7 +497,7 @@ private:
     }
 
     for (long i = 0; i < size; ++i) {
-      ar & data_[i];
+      ar(data_[i]);
     }
   }
 };

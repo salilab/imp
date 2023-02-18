@@ -12,9 +12,8 @@
 #include "base_types.h"
 #include <IMP/ref_counted_macros.h>
 #include <IMP/utility_macros.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -31,22 +30,19 @@ class IMPKERNELEXPORT ModelObject : public Object {
   WeakPointer<Model> model_;
 
 #ifndef SWIG
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
-    ar << boost::serialization::base_object<Object>(*this);
-    uint32_t model_id = get_model_id();
-    ar << model_id;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      uint32_t model_id = get_model_id();
+      ar(model_id);
+    } else {
+      uint32_t model_id;
+      ar(model_id);
+      set_model_from_id(model_id);
+    }
   }
-
-  template<class Archive> void load(Archive &ar, const unsigned int) {
-    uint32_t model_id;
-    ar >> boost::serialization::base_object<Object>(*this);
-    ar >> model_id;
-    set_model_from_id(model_id);
-  }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
   void set_model_from_id(uint32_t model_id);
   uint32_t get_model_id() const;

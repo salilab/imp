@@ -24,7 +24,7 @@
 #include <IMP/hash.h>
 #include "hash.h"
 #include <boost/scoped_array.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 #if !defined(IMP_HAS_CHECKS)
 #error "IMP_HAS_CHECKS not defined, something is broken"
@@ -126,17 +126,17 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   static void remove_live_object(Object* o);
 #endif
 
- friend class boost::serialization::access;
+ friend class cereal::access;
 
- template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & name_;
+ template<class Archive> void serialize(Archive &ar) {
+    ar(name_);
 #if IMP_HAS_LOG != IMP_NONE
-    ar & log_level_;
+    ar(log_level_);
 #endif
 #if IMP_HAS_CHECKS >= IMP_USAGE
-    ar & check_level_ & was_owned_ & check_value_;
+    ar(check_level_, was_owned_, check_value_);
 #endif
-    if (Archive::is_loading::value) {
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       // set quoted_name from name
       set_name_internal(name_);
     }

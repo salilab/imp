@@ -753,8 +753,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
   /* Get contents as a binary blob (for serialization) */
   PyObject *_get_as_binary() const {
     std::ostringstream oss;
-    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
-    ba << *self;
+    cereal::BinaryOutputArchive ba(oss);
+    ba(*self);
     std::string s = oss.str();
     PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
     if (p) {
@@ -773,8 +773,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
     }
     std::string s(buf, len);
     std::istringstream iss(s);
-    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
-    ba >> *self;
+    cereal::BinaryInputArchive ba(iss);
+    ba(*self);
   }
 
   /* Allow (un-)pickling both C++ and Python contents */
@@ -804,8 +804,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
   /* Get contents as a binary blob (for serialization) */
   PyObject *_get_as_binary() const {
     std::ostringstream oss;
-    boost::archive::binary_oarchive ba(oss, boost::archive::no_header);
-    ba << *self;
+    cereal::BinaryOutputArchive ba(oss);
+    ba(*self);
     std::string s = oss.str();
     PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
     if (p) {
@@ -824,8 +824,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
     }
     std::string s(buf, len);
     std::istringstream iss(s);
-    boost::archive::binary_iarchive ba(iss, boost::archive::no_header);
-    ba >> *self;
+    cereal::BinaryInputArchive ba(iss);
+    ba(*self);
   }
 }
 %enddef
@@ -854,18 +854,16 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 // A value that is serializable/picklable
-// Modules that use these must link against Boost.Serialization and
-// include boost/archive/binary_iarchive.hpp and
-// boost/archive/binary_oarchive.hpp in their SWIG interface
+// Modules that use these must include <cereal/archives/binary.hpp>
+// in their SWIG interface
 %define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
 %enddef
 
 // An Object that is serializable/picklable
-// Modules that use these must link against Boost.Serialization and
-// include boost/archive/binary_iarchive.hpp and
-// boost/archive/binary_oarchive.hpp in their SWIG interface
+// Modules that use these must include <cereal/archives/binary.hpp>
+// in their SWIG interface
 %define IMP_SWIG_OBJECT_SERIALIZE(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)

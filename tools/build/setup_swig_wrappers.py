@@ -106,9 +106,8 @@ SWIG_init();
 %include "std_string.i"
 %include "std_pair.i"
 
-// Help SWIG with Boost.Serialization macros
-#define BOOST_CLASS_EXPORT_GUID(x, y)
-#define BOOST_SERIALIZATION_SPLIT_MEMBER()
+// Help SWIG with cereal macros
+#define CEREAL_REGISTER_TYPE_WITH_NAME(x, y)
 
 %pythoncode %{
 _value_types=[]

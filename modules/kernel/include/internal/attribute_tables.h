@@ -11,7 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include "../Key.h"
 #include "../utility.h"
 #include "../FloatIndex.h"
@@ -77,11 +77,11 @@ class BasicAttributeTable {
 #endif
   IMP_KERNEL_SMALL_UNORDERED_SET<Key> caches_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+  template<class Archive> void serialize(Archive &ar) {
     // Note that we don't serialize masks; they are handled by Model
-    ar & data_ & caches_;
+    ar(data_, caches_);
   }
 
   void do_add_attribute(Key k, ParticleIndex particle,
@@ -298,12 +298,12 @@ class FloatAttributeTable {
       *write_derivatives_mask_;
 #endif
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+  template<class Archive> void serialize(Archive &ar) {
     // Note that we don't serialize masks; they are handled by Model
-    ar & spheres_ & sphere_derivatives_ & internal_coordinates_
-       & internal_coordinate_derivatives_ & data_ & derivatives_ & optimizeds_;
+    ar(spheres_, sphere_derivatives_, internal_coordinates_);
+    ar(internal_coordinate_derivatives_, data_, derivatives_, optimizeds_);
   }
 
   algebra::Sphere3D get_invalid_sphere() const {

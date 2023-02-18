@@ -15,7 +15,7 @@
 #include <IMP/types.h>
 #include <IMP/Value.h>
 #include <IMP/exception.h>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 // for swig wrappers
 #include <IMP/internal/range.h>
 
@@ -31,10 +31,10 @@ template <int D>
 class ExtendedGridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & data_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(data_);
   }
 
   int compare(const ExtendedGridIndexD<D>& o) const {
@@ -170,10 +170,10 @@ template <int D>
 class GridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & data_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(data_);
   }
 
   int compare(const GridIndexD<D>& o) const {

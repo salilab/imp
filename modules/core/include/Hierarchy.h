@@ -21,7 +21,7 @@
 #include <IMP/Pointer.h>
 
 #include <boost/tuple/tuple.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 #include <limits>
 #include <vector>
@@ -433,10 +433,10 @@ struct HierarchyCounter : public HierarchyVisitor {
 
  private:
   unsigned int ct_;
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & ct_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(ct_);
   }
 };
 

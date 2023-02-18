@@ -11,7 +11,7 @@
 
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <vector>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -51,10 +51,10 @@ class IMPALGEBRAEXPORT LinearFit2D : public GeometricPrimitiveD<2> {
   double a_, b_;
   double error_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & a_ & b_ & error_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(a_, b_, error_);
   }
 };
 

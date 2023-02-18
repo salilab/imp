@@ -30,7 +30,7 @@
 #include <IMP/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 #include <limits>
 
@@ -155,52 +155,52 @@ class IMPKERNELEXPORT Model : public Object
   // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<Object>(*this)
-       & boost::serialization::base_object<internal::FloatAttributeTable>(*this)
-       & boost::serialization::base_object<internal::StringAttributeTable>(*this)
-       & boost::serialization::base_object<internal::IntAttributeTable>(*this)
-       & boost::serialization::base_object<internal::IntsAttributeTable>(*this)
-       & boost::serialization::base_object<internal::FloatsAttributeTable>(*this)
-       & free_particles_;
+  template<class Archive> void serialize(Archive &ar) {
+/*  ar(cereal::base_class<Object>(this),
+       cereal::base_class<internal::FloatAttributeTable>(this),
+       cereal::base_class<internal::StringAttributeTable>(this),
+       cereal::base_class<internal::IntAttributeTable>(this),
+       cereal::base_class<internal::IntsAttributeTable>(this),
+       cereal::base_class<internal::FloatsAttributeTable>(this),
+       free_particles_);
 
-    if (Archive::is_loading::value) {
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
       free_particles_.clear();
-      ar & count;
+      ar(count);
       particle_index_.clear();
       while(count-- > 0) {
         std::string name;
-        ar & name;
+        ar(name);
         add_particle(name);
       }
       ParticleIndexes to_free;
-      ar & to_free;
+      ar(to_free);
       for (auto pi : to_free) {
         remove_particle(pi);
       }
     } else {
       size_t count = particle_index_.size();
-      ar & count;
+      ar(count);
       for (size_t i = 0; i < count; ++i) {
         std::string name;
         if (get_has_particle(ParticleIndex(i))) {
           name = get_particle_name(ParticleIndex(i));
         }
-        ar & name;
+        ar(name);
       }
-      ar & free_particles_;
+      ar(free_particles_);
     }
 
-    if (Archive::is_loading::value) {
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       age_counter_ = 1;
       dependencies_age_ = 0;
       saved_dependencies_age_ = 0;
       dependencies_saved_ = false;
       moved_particles_cache_age_ = 0;
-    }
+    }*/
   }
 
   // update model age (can never be zero, even if it wraps)
@@ -590,6 +590,9 @@ class IMPKERNELEXPORT Model : public Object
 };
 
 IMPKERNEL_END_NAMESPACE
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+            IMP::Model, cereal::specialization::member_serialize);
 
 // This is needed for per cpp compilations, a not even sure why
 // (perhaps cause Model returns ParticleIterator here and there?)

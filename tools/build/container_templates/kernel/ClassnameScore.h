@@ -13,8 +13,8 @@
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include <IMP/utility_macros.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -137,11 +137,11 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   IMP_REF_COUNTED_DESTRUCTOR(ClassnameScore);
 
  private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
+  template<class Archive> void serialize(Archive &ar) {
     // Neither we nor ParticleInputs stores data, but Object does
-    ar & boost::serialization::base_object<Object>(*this);
+    ar(cereal::base_class<Object>(this));
   }
 };
 

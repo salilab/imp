@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include <IMP/atom/atom_config.h>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 #include <string>
 #include <vector>
@@ -31,10 +31,10 @@ class CHARMMAtomTopology {
   std::string charmm_type_;
   double charge_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & name_ & charmm_type_ & charge_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(name_, charmm_type_, charge_);
   }
 
  public:

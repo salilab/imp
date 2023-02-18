@@ -1,6 +1,5 @@
 %{
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+#include <cereal/archives/binary.hpp>
 %}
 
 /* Tell swig how to treat various types when moving them to and from python. Among other

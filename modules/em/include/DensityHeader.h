@@ -213,19 +213,19 @@ class IMPEMEXPORT DensityHeader {
   int data_type_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & nxstart & nystart & nzstart & mx & my & mz & xlen & ylen & zlen
-       & alpha & beta & gamma & mapc & mapr & maps & dmin & dmax & dmean
-       & ispg & nsymbt & user & map & machinestamp & rms & nlabl & comments
-       & magic & voltage & Cs & Aperture & Magnification & Postmagnification
-       & Exposuretime & Microscope & Pixelsize & CCDArea & Defocus
-       & Astigmatism & AstigmatismAngle & FocusIncrement & CountsPerElectron
-       & Intensity & EnergySlitwidth & EnergyOffset & Tiltangle & Tiltaxis
-       & MarkerX & MarkerY & lswap & Objectpixelsize_ & xtop_ & ytop_ & ztop_
-       & xorigin_ & yorigin_ & zorigin_ & top_calculated_ & resolution_
-       & is_resolution_set_ & nx_ & ny_ & nz_ & data_type_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(nxstart, nystart, nzstart, mx, my, mz, xlen, ylen, zlen,
+       alpha, beta, gamma, mapc, mapr, maps, dmin, dmax, dmean,
+       ispg, nsymbt, user, map, machinestamp, rms, nlabl, comments,
+       magic, voltage, Cs, Aperture, Magnification, Postmagnification,
+       Exposuretime, Microscope, Pixelsize, CCDArea, Defocus,
+       Astigmatism, AstigmatismAngle, FocusIncrement, CountsPerElectron,
+       Intensity, EnergySlitwidth, EnergyOffset, Tiltangle, Tiltaxis,
+       MarkerX, MarkerY, lswap, Objectpixelsize_, xtop_, ytop_, ztop_,
+       xorigin_, yorigin_, zorigin_, top_calculated_, resolution_,
+       is_resolution_set_, nx_, ny_, nz_, data_type_);
   }
 };
 

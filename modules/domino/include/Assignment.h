@@ -16,9 +16,9 @@
 #include <IMP/Value.h>
 #include <IMP/ConstVector.h>
 #include <IMP/macros.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -35,10 +35,10 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT Assignment : public ConstVector<int> {
   typedef ConstVector<int> P;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<P>(*this);
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
   }
 
  public:

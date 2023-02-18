@@ -9,19 +9,10 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
-#include <boost/version.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
-
-#if BOOST_VERSION >= 106500 && BOOST_VERSION <= 106600
-namespace boost {
-  namespace archive {
-    namespace detail {
-      template<class T> struct heap_allocation;
-    }
-  }
-}
-#endif
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/archives/binary.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -60,16 +51,11 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
   int periodicity_;
   Float phase_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-#if BOOST_VERSION >= 106500 && BOOST_VERSION <= 106600
-  template<class T>
-  friend struct boost::archive::detail::heap_allocation;
-#endif
-
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & boost::serialization::base_object<UnaryFunction>(*this)
-       & force_constant_ & periodicity_ & phase_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<UnaryFunction>(this),
+       force_constant_, periodicity_, phase_);
   }    
 };
 

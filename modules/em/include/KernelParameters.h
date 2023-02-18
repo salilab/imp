@@ -21,8 +21,7 @@
 #include <vector>
 #include <limits>
 #include <IMP/em/internal/RadiusDependentKernelParameters.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
+#include <cereal/access.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -96,20 +95,18 @@ class IMPEMEXPORT KernelParameters {
 
   void init(float resolution);
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
-    ar << resolution_;
+  template<class Archive> void save(Archive &ar) const {
+    ar(resolution_);
   }
 
-  template<class Archive> void load(Archive &ar, const unsigned int) {
+  template<class Archive> void load(Archive &ar) {
     float resolution;
-    ar >> resolution;
+    ar(resolution);
     init(resolution);
     initialized_ = true;
   }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 };
 

@@ -18,8 +18,9 @@
 #include <IMP/InputAdaptor.h>
 #include <IMP/deprecation_macros.h>
 #include <IMP/RestraintInfo.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <type_traits>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -339,13 +340,13 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   // cannot be released outside the class
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 
- friend class boost::serialization::access;
+ friend class cereal::access;
 
- template<class Archive> void serialize(Archive &ar, const unsigned int) {
-   ar & boost::serialization::base_object<ModelObject>(*this);
-   ar & weight_ & max_;
+ template<class Archive> void serialize(Archive &ar) {
+   ar(cereal::base_class<ModelObject>(this));
+   ar(weight_, max_);
    // Clear caches
-   if (Archive::is_loading::value) {
+   if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
      last_score_ = last_last_score_ = BAD_SCORE;
      cached_internal_scoring_function_ = nullptr;
    }

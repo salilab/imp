@@ -67,51 +67,39 @@
 #else
 #include <boost/container/flat_set.hpp>  // IWYU pragma: export
 #include <boost/container/flat_map.hpp>  // IWYU pragma: export
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_free.hpp>
+#include <cereal/access.hpp>
 #define IMP_KERNEL_SMALL_ORDERED_SET boost::container::flat_set
 #define IMP_KERNEL_SMALL_ORDERED_MAP boost::container::flat_map
 #define IMP_KERNEL_SMALL_UNORDERED_SET boost::container::flat_set
 #define IMP_KERNEL_SMALL_UNORDERED_MAP boost::container::flat_map
 
 // Allow serialization of boost::container::flat_set
-namespace boost {
-  namespace serialization {
-    template<class Archive, typename Key, typename Compare, typename Allocator>
-    inline void save(Archive &ar,
-                     boost::container::flat_set<Key, Compare, Allocator> const &t,
-                     const unsigned int) {
-      auto count = t.size();
-      ar << count;
-      typename boost::container::flat_set<
-              Key, Compare, Allocator>::const_iterator it = t.begin();
-      while(count-- > 0) {
-        ar << *it++;
-      }
+namespace cereal {
+  template<class Archive, typename Key, typename Compare, typename Allocator>
+  inline void save(Archive &ar,
+               boost::container::flat_set<Key, Compare, Allocator> const &t) {
+    auto count = t.size();
+    ar(count);
+    typename boost::container::flat_set<
+            Key, Compare, Allocator>::const_iterator it = t.begin();
+    while(count-- > 0) {
+      ar(*it++);
     }
+  }
 
-    template<class Archive, typename Key, typename Compare, typename Allocator>
-    inline void load(Archive &ar,
-                     boost::container::flat_set<Key, Compare, Allocator> &t,
-                     const unsigned int) {
-      typedef typename boost::container::flat_set<Key, Compare, Allocator>::iterator iterator;
-      typedef typename boost::container::flat_set<Key, Compare, Allocator>::value_type value_type;
-      t.clear();
-      typename boost::container::flat_set<Key, Compare, Allocator>::size_type count;
-      ar >> count;
-      iterator hint = t.begin();
-      while(count-- > 0) {
-        value_type key;
-        ar >> key;
-        hint = t.insert(hint, key);
-      }
-    }
-
-    template<class Archive, typename Key, typename Compare, typename Allocator>
-    inline void serialize(Archive &ar,
-                     boost::container::flat_set<Key, Compare, Allocator> &t,
-                     const unsigned int file_version) {
-      boost::serialization::split_free(ar, t, file_version);
+  template<class Archive, typename Key, typename Compare, typename Allocator>
+  inline void load(Archive &ar,
+                   boost::container::flat_set<Key, Compare, Allocator> &t) {
+    typedef typename boost::container::flat_set<Key, Compare, Allocator>::iterator iterator;
+    typedef typename boost::container::flat_set<Key, Compare, Allocator>::value_type value_type;
+    t.clear();
+    typename boost::container::flat_set<Key, Compare, Allocator>::size_type count;
+    ar(count);
+    iterator hint = t.begin();
+    while(count-- > 0) {
+      value_type key;
+      ar(key);
+      hint = t.insert(hint, key);
     }
   }
 }

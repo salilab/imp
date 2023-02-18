@@ -14,9 +14,8 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/triplet_macros.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
-#include <boost/serialization/base_object.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,20 +24,17 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   IMP::PointerMember<UnaryFunction> f_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
-    UnaryFunction *f = f_;
-    ar << boost::serialization::base_object<TripletScore>(*this) << f;
+  template<class Archive> void serialize(Archive &ar) {
+    //std::unique_ptr<UnaryFunction> f(f_.get());
+    //ar(cereal::base_class<TripletScore>(this), f_);
+    //f.release();
+
+    //std::unique_ptr<UnaryFunction> f;
+    //ar(cereal::base_class<TripletScore>(this), f_);
+    //f_ = f.release();
   }
-
-  template<class Archive> void load(Archive &ar, const unsigned int) {
-    UnaryFunction *f;
-    ar >> boost::serialization::base_object<TripletScore>(*this) >> f;
-    f_ = f;
-  }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
  public:
   //! Score the angle (in radians) using f

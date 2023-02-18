@@ -15,8 +15,7 @@
 #include "constants.h"
 #include <IMP/random.h>
 #include <boost/random/uniform_01.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
+#include <cereal/access.hpp>
 #include <cmath>
 //#include <stdlib.h>
 
@@ -87,19 +86,17 @@ private:
   double c_;      // cosine of the angle
   double s_;      // sine of the angle
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
-    ar << angle_;
+  template<class Archive> void save(Archive &ar) const {
+    ar(angle_);
   }
 
-  template<class Archive> void load(Archive &ar, const unsigned int) {
+  template<class Archive> void load(Archive &ar) {
     double a;
-    ar >> a;
+    ar(a);
     set_angle(a);
   }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 //! Build an identity rotation in 2D
