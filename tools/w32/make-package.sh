@@ -94,10 +94,10 @@ for PYVER in ${PYVERS}; do
   echo "pass" > ${ROOT}/python/python${PYVER}/_ihm_pyd/__init__.py || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/ihm/*.pyd ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
-  rmdir ${ROOT}/pylib/${PYVER}/ihm || (ls -a ${ROOT}/pylib/${PYVER}/ihm; exit 1)
-  rmdir ${ROOT}/pylib/${PYVER} || (ls -a ${ROOT}/pylib/${PYVER}; exit 1)
+  rmdir ${ROOT}/pylib/${PYVER}/ihm || exit 1
+  rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
-rmdir ${ROOT}/pylib || (ls -a ${ROOT}/pylib; exit 1)
+rmdir ${ROOT}/pylib || exit 1
 
 # Patch ihm to find _format.pyd
 perl -pi -e 's/from \. import _format/from _ihm_pyd import _format/' \
