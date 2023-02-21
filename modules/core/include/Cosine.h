@@ -35,7 +35,9 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
         periodicity_(periodicity),
         phase_(phase) {}
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Cosine() {}
+#endif
 
   virtual DerivativePair evaluate_with_derivative(
                   double feature) const override;

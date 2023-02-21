@@ -29,7 +29,10 @@ class Harmonic : public UnaryFunction {
  public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Harmonic() {}
+#endif
 
   virtual DerivativePair evaluate_with_derivative(
                                  double feature) const override {

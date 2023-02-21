@@ -24,7 +24,9 @@ class Linear : public UnaryFunction {
  public:
   //! Create with the given offset and slope.
   Linear(double offset, double slope) : slope_(slope), offset_(offset) {}
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Linear() {}
+#endif
 
   void set_slope(double f) { slope_ = f; }
 
