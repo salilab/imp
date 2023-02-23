@@ -13,12 +13,7 @@
 #include "RMF/infrastructure_macros.h"
 #include "RMF/exceptions.h"
 #include <boost/utility.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_pointer.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/not.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <array>
 #include <vector>
 #include <stdexcept>
@@ -63,12 +58,10 @@ typedef PyPointer<false> PyOwnerPointer;
     }                                                                          \
   }
 
-using boost::enable_if;
-using boost::mpl::and_;
-using boost::mpl::not_;
-using boost::is_convertible;
-using boost::is_base_of;
-using boost::is_pointer;
+using std::enable_if;
+using std::is_convertible;
+using std::is_base_of;
+using std::is_pointer;
 // using namespace boost;
 // using namespace boost::mpl;
 
@@ -219,7 +212,7 @@ template <class T, class ConvertT>
 struct ConvertSequence<
     T, ConvertT,
     typename enable_if<is_base_of<
-        std::array<typename T::value_type, T::static_size>, T> >::type> {
+        std::array<typename T::value_type, T::static_size>, T>::value >::type> {
   static const int converter = 5;
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject<typename T::value_type>::type VT;
