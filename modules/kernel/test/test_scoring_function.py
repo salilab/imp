@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Test scoring function linkage"""
         m = IMP.Model("scoring function linkage")
         ps = [IMP.Particle(m) for i in range(0, 10)]
-        r = IMP._ConstRestraint(1, ps)
+        r = IMP._ConstRestraint(m, ps, 1)
         r.create_scoring_function()
         self.assertEqual(r.evaluate(False), 1)
 
@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         """Test scoring function reweighting"""
         m = IMP.Model("scoring function linkage")
         ps = [IMP.Particle(m) for i in range(0, 10)]
-        r = IMP._ConstRestraint(1, ps)
+        r = IMP._ConstRestraint(m, ps, 1)
         rs = IMP.RestraintSet(m, 1.0, "rs")
         rs.add_restraint(r)
         rsf = rs.create_scoring_function()

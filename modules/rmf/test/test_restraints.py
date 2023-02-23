@@ -9,9 +9,9 @@ from IMP.algebra import *
 
 class MockRestraint(IMP.Restraint):
 
-    def __init__(self, val, ps):
+    def __init__(self, m, ps, val):
         self.ps = ps
-        IMP.Restraint.__init__(self, ps[0].get_model(), "MockRestraint %1%")
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         return 0.
@@ -77,7 +77,7 @@ class Tests(IMP.test.TestCase):
             scale.set_lower(0.0)
             scale.set_upper(10.0)
             ps.extend([p1, p2, p3, p4])
-        r = cls(1, ps)
+        r = cls(m, ps, 1)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))

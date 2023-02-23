@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         """Test that restraints decompose ok"""
         m = IMP.Model()
         p = IMP.Particle(m)
-        r = IMP._ConstRestraint(1, [p])
+        r = IMP._ConstRestraint(m, [p], 1)
         rd = r.create_decomposition()
         self.assertEqual(r.evaluate(False), rd.evaluate(False))
         ra = IMP.get_restraints([r])

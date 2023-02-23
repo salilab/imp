@@ -14,15 +14,16 @@ double _ConstRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
 }
 
 ModelObjectsTemp _ConstRestraint::do_get_inputs() const {
-  return ModelObjectsTemp(ps_.begin(), ps_.end());
+  return get_particles(get_model(), pis_);
 }
 
 Restraints _ConstRestraint::do_create_decomposition() const {
   Restraints ret;
-  for (unsigned int i = 0; i < ps_.size(); ++i) {
+  Model *m = get_model();
+  for (unsigned int i = 0; i < pis_.size(); ++i) {
     ret.push_back(
-        new _ConstRestraint(v_ / ps_.size(), ParticlesTemp(1, ps_[i])));
-    ret.back()->set_last_score(v_ / ps_.size());
+        new _ConstRestraint(m, ParticleIndexes(1, pis_[i]), v_ / pis_.size()));
+    ret.back()->set_last_score(v_ / pis_.size());
   }
   return ret;
 }

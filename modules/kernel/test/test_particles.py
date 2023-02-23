@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
         # clear derivatives
         print(model.get_ref_count())
-        r = IMP._ConstRestraint(1, particles)
+        r = IMP._ConstRestraint(model, particles, 1)
         r.evaluate(True)
         print(model.get_ref_count())
         return (model, particles)

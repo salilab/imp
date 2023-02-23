@@ -28,15 +28,12 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 // probably not legal C++, but for python
 class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   double v_;
-  const ParticlesTemp ps_;
+  ParticleIndexes pis_;
 
  public:
-  _ConstRestraint(double v, const ParticlesTemp ps)
-      : Restraint(internal::get_model(ps), "ConstRestraint%1%"),
-        v_(v),
-        ps_(ps) {}
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
-      : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
+      : Restraint(m, "ConstRestraint%1%"), v_(v), pis_(pis) {}
+
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const override;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
