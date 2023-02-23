@@ -20,6 +20,8 @@
 #include <boost/unordered_map.hpp>
 #include <IMP/internal/swig_base.h>
 #include <IMP/deprecation_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -30,9 +32,16 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   double v_;
   ParticleIndexes pis_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), v_, pis_);
+  }
+
  public:
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), pis_(pis) {}
+  _ConstRestraint() {}
 
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const override;
