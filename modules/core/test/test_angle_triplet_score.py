@@ -65,6 +65,17 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(newats.evaluate_index(m, [p1, p2, p3], None),
                                0.2303, delta=1e-2)
 
+    def test_pickle_unregistered(self):
+        """Test (un-)pickle of AngleTripletScore with unregistered class"""
+        m, p1, p2, p3, d1, d2, d3 = _make_model()
+
+        uf = IMP.core.OpenCubicSpline([1.,2.,3.], 0., 1.)
+        ats = IMP.core.AngleTripletScore(uf)
+        # OpenCubicSpline is (currently) unregistered, so this should fail
+        # with a "trying to save an unregistered polymorphic type"
+        # cereal::Exception (which should show up as RuntimeError in Python)
+        self.assertRaises(RuntimeError, pickle.dumps, ats)
+
 
 if __name__ == '__main__':
     IMP.test.main()

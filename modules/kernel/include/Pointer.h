@@ -120,7 +120,14 @@ struct Pointer
   // wrap our raw pointer in a std::unique_ptr
   template<class Archive> void save(Archive &ar) const {
     std::unique_ptr<O> f(P::get());
-    ar(f);
+    try {
+      ar(f);
+    } catch(...) {
+      // don't let ~unique_ptr free our pointer, as that will result
+      // in a double free and a segfault
+      f.release();
+      throw;
+    }
     f.release();
   }
 
@@ -195,7 +202,14 @@ struct PointerMember
   // wrap our raw pointer in a std::unique_ptr
   template<class Archive> void save(Archive &ar) const {
     std::unique_ptr<O> f(P::get());
-    ar(f);
+    try {
+      ar(f);
+    } catch(...) {
+      // don't let ~unique_ptr free our pointer, as that will result
+      // in a double free and a segfault
+      f.release();
+      throw;
+    }
     f.release();
   }
 
