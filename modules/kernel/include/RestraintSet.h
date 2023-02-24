@@ -15,6 +15,7 @@
 #include <string>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -134,5 +135,7 @@ inline RestraintsTemp get_restraints(It b, It e) {
 }
 
 IMPKERNEL_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::RestraintSet);
 
 #endif /* IMPKERNEL_RESTRAINT_SET_H */

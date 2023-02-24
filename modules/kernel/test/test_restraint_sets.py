@@ -86,6 +86,18 @@ class Tests(IMP.test.TestCase):
                          ["bar", "baz"])
         self.assertEqual(newrs.evaluate(False), 1)
 
+    def test_pickle_polymorphic(self):
+        """Test that RestraintSet can be (un-)pickled via polymorphic pointer"""
+        m = IMP.Model()
+        rs1 = IMP.RestraintSet(m, 2.0)
+        rs1.restraints.append(IMP._ConstRestraint(m, [], 1))
+        rs2 = IMP.RestraintSet(m, 12.0)
+        rs2.restraints.append(rs1)
+        self.assertEqual(rs2.evaluate(False), 24.)
+        dump = pickle.dumps(rs2)
+        newrs2 = pickle.loads(dump)
+        self.assertEqual(newrs2.evaluate(False), 24.)
+
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
         (m, rs, r0, r1, r2) = self._make_stuff()
