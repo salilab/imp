@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import pickle
 
 
 class TestMovedRestraint(IMP.Restraint):
@@ -136,6 +137,23 @@ class Tests(IMP.test.TestCase):
             del sf.restraints[42]
         self.assertRaises(IndexError, _delfunc)
         self.assertRaises(ValueError, sf.restraints.index, r2)
+
+    def test_pickle(self):
+        """Test (un-)pickle of RestraintsScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r = IMP._ConstRestraint(m, [p], 42)
+        r.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.set_name("bar")
+        self.assertEqual(sf.evaluate(False), 42)
+
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        self.assertEqual(newsf.get_name(), "bar")
+        newr, = newsf.restraints
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertEqual(newsf.evaluate(False), 42)
 
 
 if __name__ == '__main__':

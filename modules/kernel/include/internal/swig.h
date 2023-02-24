@@ -22,6 +22,8 @@
 #include <IMP/deprecation_macros.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/archives/binary.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -245,5 +247,8 @@ IMPKERNELEXPORT ParticleIndexes
     _take_particle_indexes_adaptor(ParticleIndexesAdaptor pa);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
+
+CEREAL_REGISTER_TYPE_WITH_NAME(
+              IMP::internal::_ConstRestraint, "internal._ConstRestraint");
 
 #endif /* IMPKERNEL_INTERNAL_SWIG_H */

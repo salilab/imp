@@ -17,7 +17,8 @@
 #include "internal/moved_particles_cache.h"
 #include <IMP/InputAdaptor.h>
 #include <IMP/Pointer.h>
-
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include <limits>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -45,6 +46,17 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   internal::MovedParticlesScoreStateCache moved_particles_cache_;
   // time when moved_particles_cache_ was last updated, or 0
   unsigned moved_particles_cache_age_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), es_);
+    // clear caches
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      moved_particles_cache_.clear();
+      moved_particles_cache_age_ = 0;
+    }
+  }
 
   ScoreStatesTemp get_moved_required_score_states(
                                const ParticleIndexes &moved_pis,
@@ -85,6 +97,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
 
  public:
   ScoringFunction(Model *m, std::string name);
+  ScoringFunction();
 
   virtual ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();

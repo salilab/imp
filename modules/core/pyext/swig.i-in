@@ -77,7 +77,7 @@ IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
 IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
 IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RefinedPairsPairScore, RefinedPairsPairScores);
-IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyAnglePairScore, RigidBodyAnglePairScores);

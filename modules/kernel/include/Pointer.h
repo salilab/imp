@@ -115,6 +115,22 @@ struct Pointer
     return *this;
   }
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // cereal does not handle raw pointers or IMP smart pointers, so temporarily
+  // wrap our raw pointer in a std::unique_ptr
+  template<class Archive> void save(Archive &ar) const {
+    std::unique_ptr<O> f(P::get());
+    ar(f);
+    f.release();
+  }
+
+  template<class Archive> void load(Archive &ar) {
+    std::unique_ptr<O> f;
+    ar(f);
+    P::operator=(f.release());
+  }
+#endif
+
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the Pointer
   /** Use this to safely return objects allocated within functions.

@@ -14,6 +14,8 @@
 #include "../container_macros.h"
 #include "restraint_evaluation.h"
 #include "container_helpers.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -27,6 +29,12 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   double weight_;
   double max_;
   Storage restraints_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ScoringFunction>(this), weight_, max_, restraints_);
+  }
 
  protected:
   GenericRestraintsScoringFunction(Model *m, double weight = 1.0,
@@ -44,6 +52,8 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
         weight_(weight),
         max_(max),
         restraints_(rs.begin(), rs.end()) {}
+
+  GenericRestraintsScoringFunction() {}
 
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) override {

@@ -19,6 +19,7 @@
 #include <IMP/tuple_macros.h>
 #include <IMP/math.h>
 #include <IMP/exception.h>
+#include <cereal/access.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -31,6 +32,13 @@ struct EvaluationState {
   EvaluationState(double oscore, bool ogood) : score(oscore), good(ogood) {}
   EvaluationState() : score(BAD_SCORE), good(false) {}
   IMP_SHOWABLE_INLINE(EvaluationState, out << score << " " << good;);
+
+private:
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(score, good);
+  }
 };
 IMP_VALUES(EvaluationState, EvaluationStates);
 

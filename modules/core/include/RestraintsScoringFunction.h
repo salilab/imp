@@ -13,6 +13,8 @@
 #include <IMP/ScoringFunction.h>
 #include <IMP/Restraint.h>
 #include <IMP/internal/RestraintsScoringFunction.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -23,7 +25,13 @@ class RestraintsScoringFunction :
 #else
     public IMP::internal::RestraintsScoringFunction
 #endif
-    {
+{
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<IMP::internal::RestraintsScoringFunction>(this));
+  }
+
  public:
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             double weight = 1.0, double max = NO_MAX,
@@ -32,6 +40,8 @@ class RestraintsScoringFunction :
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             std::string name)
       : IMP::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name) {}
+
+  RestraintsScoringFunction() {}
 #if defined(SWIG)
   void do_add_score_and_derivatives(
            ScoreAccumulator sa, const ScoreStatesTemp &ss) override;
