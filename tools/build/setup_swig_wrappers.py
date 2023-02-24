@@ -107,7 +107,7 @@ SWIG_init();
 %include "std_pair.i"
 
 // Help SWIG with cereal macros
-#define CEREAL_REGISTER_TYPE_WITH_NAME(x, y)
+#define CEREAL_REGISTER_TYPE(x)
 
 %pythoncode %{
 _value_types=[]

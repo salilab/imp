@@ -61,6 +61,6 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
 
 IMPCORE_END_NAMESPACE
 
-CEREAL_REGISTER_TYPE_WITH_NAME(IMP::core::Cosine, "core.Cosine");
+CEREAL_REGISTER_TYPE(IMP::core::Cosine);
 
 #endif /* IMPCORE_COSINE_H */

@@ -54,6 +54,6 @@ class Linear : public UnaryFunction {
 
 IMPCORE_END_NAMESPACE
 
-CEREAL_REGISTER_TYPE_WITH_NAME(IMP::core::Linear, "core.Linear");
+CEREAL_REGISTER_TYPE(IMP::core::Linear);
 
 #endif /* IMPCORE_LINEAR_H */

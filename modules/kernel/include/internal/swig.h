@@ -248,7 +248,6 @@ IMPKERNELEXPORT ParticleIndexes
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-CEREAL_REGISTER_TYPE_WITH_NAME(
-              IMP::internal::_ConstRestraint, "internal._ConstRestraint");
+CEREAL_REGISTER_TYPE(IMP::internal::_ConstRestraint);
 
 #endif /* IMPKERNEL_INTERNAL_SWIG_H */

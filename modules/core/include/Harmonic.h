@@ -84,6 +84,6 @@ class Harmonic : public UnaryFunction {
 
 IMPCORE_END_NAMESPACE
 
-CEREAL_REGISTER_TYPE_WITH_NAME(IMP::core::Harmonic, "core.Harmonic");
+CEREAL_REGISTER_TYPE(IMP::core::Harmonic);
 
 #endif /* IMPCORE_HARMONIC_H */
