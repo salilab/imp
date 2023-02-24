@@ -1,7 +1,3 @@
-%{
-#include <cereal/archives/binary.hpp>
-%}
-
 %include "IMP_domino.hdf5.i"
 %include "IMP/domino/domino_macros.h"
 namespace IMP {

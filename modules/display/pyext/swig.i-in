@@ -1,8 +1,3 @@
-%{
-#include <cereal/archives/binary.hpp>
-%}
-
-
 IMP_SWIG_BASE_OBJECT(IMP::display, Writer, Writers);
 IMP_SWIG_BASE_OBJECT(IMP::display, TextWriter, TextWriters);
 IMP_SWIG_BASE_OBJECT(IMP::display, Geometry, Geometries);

@@ -1,7 +1,6 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
-#include <cereal/archives/binary.hpp>
 #include <IMP/em2d/opencv_interface.h>
 %}
 

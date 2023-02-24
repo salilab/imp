@@ -1,7 +1,3 @@
-%{
-#include <cereal/archives/binary.hpp>
-%}
-
 %pythoncode %{
 from . import _list_util
 %}

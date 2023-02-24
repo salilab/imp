@@ -1,7 +1,3 @@
-%{
-#include <cereal/archives/binary.hpp>
-%}
-
 namespace IMP {
 namespace atom {
 %warnfilter(403) ForceFieldParameters;

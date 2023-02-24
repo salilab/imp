@@ -854,16 +854,12 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 // A value that is serializable/picklable
-// Modules that use these must include <cereal/archives/binary.hpp>
-// in their SWIG interface
 %define IMP_SWIG_VALUE_SERIALIZE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
 %enddef
 
 // An Object that is serializable/picklable
-// Modules that use these must include <cereal/archives/binary.hpp>
-// in their SWIG interface
 %define IMP_SWIG_OBJECT_SERIALIZE(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)

@@ -1,7 +1,3 @@
-%{
-#include <cereal/archives/binary.hpp>
-%}
-
 /* Ignore things to prevent SWIG warning about them */
 namespace IMP {
   namespace em {
