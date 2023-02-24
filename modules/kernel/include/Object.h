@@ -26,6 +26,10 @@
 #include <boost/scoped_array.hpp>
 #include <cereal/access.hpp>
 
+// Make sure that binary archives are registered with cereal
+// before any Object subclass that uses CEREAL_REGISTER_TYPE
+#include <cereal/archives/binary.hpp>
+
 #if !defined(IMP_HAS_CHECKS)
 #error "IMP_HAS_CHECKS not defined, something is broken"
 #endif

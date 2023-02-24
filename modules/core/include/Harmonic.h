@@ -13,7 +13,6 @@
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/polymorphic.hpp>
-#include <cereal/archives/binary.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
