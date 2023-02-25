@@ -136,6 +136,15 @@ inline RestraintsTemp get_restraints(It b, It e) {
 
 IMPKERNEL_END_NAMESPACE
 
+// Help cereal to find serialize methods (use load/save methods we
+// provide for IMP::Vector, not the serialize method it provides for
+// the underlying std::vector)
+namespace cereal {
+  template <class Archive>
+  struct specialize<Archive, IMP::RestraintSet::RestraintDataWrapper,
+                    cereal::specialization::member_load_save> {};
+}
+
 CEREAL_REGISTER_TYPE(IMP::RestraintSet);
 
 #endif /* IMPKERNEL_RESTRAINT_SET_H */
