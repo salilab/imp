@@ -45,7 +45,6 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
-  Pointer<Model> my_model_;
   bool stop_on_good_score_;
   Pointer<ScoringFunction> scoring_function_;
 
