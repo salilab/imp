@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+import pickle
 
 
 class Test(IMP.test.TestCase):
@@ -74,6 +75,18 @@ class Test(IMP.test.TestCase):
         subset_mvr.reject()
         num_moved = self.count_moved(self.ps)
         self.assertEqual(num_moved, 0)
+
+    def test_pickle(self):
+        """Test (un-)pickle of SubsetMover"""
+        self.make_system()
+        mvr = IMP.core.SubsetMover(self.mvs, 5)
+        mvr.set_name("foo")
+        dump = pickle.dumps(mvr)
+
+        newmvr = pickle.loads(dump)
+        self.assertEqual(newmvr.get_name(), "foo")
+        self.assertEqual(len(newmvr.get_movers()), 10)
+        self.assertEqual(newmvr.get_subset_size(), 5)
 
 
 if __name__ == '__main__':

@@ -14,4 +14,9 @@ MonteCarloMover::MonteCarloMover(Model *m, std::string name)
   reset_statistics();
 }
 
+MonteCarloMover::MonteCarloMover()
+    : has_move_(false) {
+  reset_statistics();
+}
+
 IMPCORE_END_NAMESPACE

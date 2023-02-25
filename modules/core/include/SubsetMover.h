@@ -2,7 +2,7 @@
  *  \file IMP/core/SubsetMover.h
  *  \brief  A mover that applies a random subset of movers
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,10 @@
 #include <IMP/core/core_config.h>
 #include "MonteCarlo.h"
 #include "MonteCarloMover.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,6 +29,13 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
   unsigned int n_;
   std::vector<unsigned int> subset_inds_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<MonteCarloMover>(this),
+       movers_, n_, subset_inds_);
+  }
+
  public:
   /** Constructor.
       \param[in] mvs list of movers
@@ -32,6 +43,8 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
                    of moves
    */
   SubsetMover(const MonteCarloMoversTemp& mvs, unsigned int n);
+
+  SubsetMover() {}
 
   const MonteCarloMovers& get_movers() const { return movers_; }
 
@@ -46,5 +59,7 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
 };
 
 IMPCORE_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::core::SubsetMover);
 
 #endif /* IMPCORE_SUBSET_MOVER_H */

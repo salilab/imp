@@ -2,7 +2,7 @@
  *  \file IMP/core/BallMover.h
  *  \brief A modifier which variables within a ball.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,9 @@
 #include <IMP/base_types.h>
 #include <IMP/exception.h>
 #include "MonteCarloMover.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,6 +28,13 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   FloatKeys keys_;
   double radius_;
   algebra::VectorKDs originals_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<MonteCarloMover>(this),
+       pis_, keys_, radius_, originals_);
+  }
 
   void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
 
@@ -56,6 +66,8 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
    */
   BallMover(Model *m, const ParticleIndexes &pis, Float radius);
 
+  BallMover() {}
+
   void set_radius(Float radius) {
     IMP_ALWAYS_CHECK(radius > 0, "The radius must be positive",
                      IMP::ValueException);
@@ -76,5 +88,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
 };
 
 IMPCORE_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::core::BallMover);
 
 #endif /* IMPCORE_BALL_MOVER_H */
