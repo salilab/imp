@@ -17,6 +17,7 @@
 #include "hash.h"
 
 #if defined(_MSC_VER) && _MSC_VER == 1500
+# include <type_traits>
 # include <boost/type_traits.hpp>
 # include <boost/utility.hpp>
 #endif
@@ -82,7 +83,7 @@ class Vector : public Value
 #if defined(_MSC_VER) && _MSC_VER == 1500
   template <class It>
   Vector(It b, It e,
-         typename boost::disable_if<boost::is_integral<It> >::type *t=0) {
+         typename boost::disable_if<std::is_integral<It>::value>::type *t=0) {
     for (It it = b; it != e; ++it) {
       push_back(T(*it));
     }

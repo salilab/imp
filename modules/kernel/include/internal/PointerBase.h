@@ -14,6 +14,7 @@
 #include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
+#include <type_traits>
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
@@ -78,7 +79,7 @@ struct GetPointer {
 template <class O, class OO>
 struct GetPointer<O, OO,
                   typename boost::enable_if<boost::mpl::and_<
-                      boost::mpl::not_<boost::is_integral<OO> >,
+                      boost::mpl::not_<std::is_integral<OO>::value>,
                       boost::mpl::not_<std::is_pointer<OO>::value> > >::type> {
   static O* get_pointer(const OO& o) { return o; }
   static const O* get_const_pointer(const OO& o) { return o; }
@@ -92,7 +93,7 @@ struct GetPointer<O, OO*,
 
 template <class O, class OO>
 struct GetPointer<O, OO,
-                  typename boost::enable_if<boost::is_integral<OO> >::type> {
+                typename boost::enable_if<std::is_integral<OO>::value>::type> {
   static O* get_pointer(const OO& o) {
     IMP_INTERNAL_CHECK_VARIABLE(o)
     IMP_INTERNAL_CHECK(o == 0, "Non-zero pointer constant found.");
