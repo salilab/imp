@@ -18,6 +18,12 @@ OptimizerState::OptimizerState(Model* m, std::string name)
   set_period(1);
 }
 
+OptimizerState::OptimizerState() {
+  is_optimizing_ = false;
+  reset();
+  set_period(1);
+}
+
 void OptimizerState::set_optimizer(Optimizer* optimizer) {
   optimizer_ = optimizer;
 }

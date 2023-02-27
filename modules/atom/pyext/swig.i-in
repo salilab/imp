@@ -90,7 +90,7 @@ IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, WaterPDBSelector,WaterPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, AtomType, AtomType, AtomTypes);
 IMP_SWIG_VALUE_SERIALIZE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMBondEndpoint, CHARMMBondEndpoints);

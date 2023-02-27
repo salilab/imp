@@ -20,6 +20,8 @@
 #include <IMP/Vector.h>
 #include <limits>
 #include <cmath>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -44,9 +46,20 @@ IMPKERNEL_BEGIN_NAMESPACE
     \see Sampler
 */
 class IMPKERNELEXPORT Optimizer : public ModelObject {
-  mutable Floats widths_;
   bool stop_on_good_score_;
   Pointer<ScoringFunction> scoring_function_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), stop_on_good_score_,
+       scoring_function_, mutable_access_optimizer_states());
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      for (auto &obj : mutable_access_optimizer_states()) {
+        set_optimizer_state_optimizer(obj, this);
+      }
+    }
+  }
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
 
@@ -66,6 +79,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
 
  public:
   Optimizer(Model *m, std::string name = "Optimizer %1%");
+  Optimizer() {}
 
   //! Optimize the model for up to max_steps iterations
   /** Optimize the model

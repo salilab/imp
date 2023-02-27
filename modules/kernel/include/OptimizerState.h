@@ -12,7 +12,8 @@
 #include "ModelObject.h"
 #include <IMP/WeakPointer.h>
 #include <IMP/Object.h>
-
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -45,6 +46,16 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   friend class Optimizer;
   unsigned int period_, call_number_, update_number_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), period_, call_number_,
+       update_number_, is_optimizing_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      optimizer_ = nullptr;
+    }
+  }
+
   void set_optimizer(Optimizer* optimizer);
 
  public:
@@ -59,6 +70,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
             method.
   */
   OptimizerState(Model* m, std::string name);
+  OptimizerState();
 
   //! Called when the Optimizer accepts a new conformation
   /**

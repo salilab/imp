@@ -134,8 +134,15 @@ IMP_DECORATORS_WITH_TRAITS(_TrivialTraitsDecorator, _TrivialTraitsDecorators,
                            Particles);
 
 class IMPKERNELEXPORT _ConstOptimizer : public Optimizer {
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Optimizer>(this));
+  }
+
  public:
   _ConstOptimizer(Model *m) : Optimizer(m, "ConstOptimizer%1%") {}
+  _ConstOptimizer() {}
   virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(_ConstOptimizer);
 };
