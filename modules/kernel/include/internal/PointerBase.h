@@ -79,13 +79,13 @@ template <class O, class OO>
 struct GetPointer<O, OO,
                   typename boost::enable_if<boost::mpl::and_<
                       boost::mpl::not_<boost::is_integral<OO> >,
-                      boost::mpl::not_<boost::is_pointer<OO> > > >::type> {
+                      boost::mpl::not_<std::is_pointer<OO>::value> > >::type> {
   static O* get_pointer(const OO& o) { return o; }
   static const O* get_const_pointer(const OO& o) { return o; }
 };
 template <class O, class OO>
 struct GetPointer<O, OO*,
-                  typename boost::enable_if<boost::is_pointer<OO*> >::type> {
+                typename boost::enable_if<std::is_pointer<OO*>::value>::type> {
   static O* get_pointer(OO* o) { return o; }
   static const O* get_const_pointer(const OO* o) { return o; }
 };

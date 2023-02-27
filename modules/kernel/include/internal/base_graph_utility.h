@@ -13,6 +13,7 @@
 #include <cctype>
 #include <algorithm>
 #include <sstream>
+#include <type_traits>
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
@@ -29,7 +30,7 @@ using boost::mpl::and_;
 using boost::mpl::not_;
 using boost::is_convertible;
 using boost::is_base_of;
-using boost::is_pointer;
+using std::is_pointer;
 
 template <class Graph, class ShowFunction>
 class ObjectNameWriter {

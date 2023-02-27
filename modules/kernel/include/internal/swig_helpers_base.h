@@ -211,7 +211,7 @@ inline std::string get_convert_error(const char *err, const char *symname,
 
 template <class T>
 struct ConvertAllBase {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
     void* vp;
@@ -222,7 +222,7 @@ struct ConvertAllBase {
 
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   BOOST_STATIC_ASSERT(!(boost::is_base_of<Object, T>::value));
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
@@ -250,7 +250,7 @@ struct ConvertValueBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertObjectBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   BOOST_STATIC_ASSERT((boost::is_base_of<Object, T>::value) ||
                       (boost::is_same<Object, T>::value));
   template <class SwigData>
@@ -283,7 +283,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertRAII : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -355,7 +355,7 @@ struct Convert<T*, typename enable_if<boost::is_base_of<
 template <class T, class VT, class ConvertVT>
 struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
