@@ -341,7 +341,7 @@ find_package(Eigen3 3.0 REQUIRED)
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 find_package(cereal REQUIRED)
-include_directories(SYSTEM ${CEREAL_INCLUDE_DIRS})
+include_directories(SYSTEM ${cereal_INCLUDE_DIRS})
 
 add_custom_target("IMP-version"
                   COMMAND ${PYTHON_EXECUTABLE}
@@ -487,7 +487,7 @@ foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
   foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
               IMP_MAX_LOG IMP_SWIG_LIBRARIES EIGEN3_INCLUDE_DIR
-              CEREAL_INCLUDE_DIRS Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
+              cereal_INCLUDE_DIRS Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
     file(APPEND "${cmakefile}"
          "SET(${var} \"${${var}}\" CACHE INTERNAL \"\" FORCE)\n")
   endforeach()
