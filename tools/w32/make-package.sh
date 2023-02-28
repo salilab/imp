@@ -139,7 +139,6 @@ cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
    ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
    ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_serialization-vc140-mt-x${BITS}-1_72.dll \
    ${DLLSRC}/libgmp-10.dll \
    ${DLLSRC}/libmpfr-4.dll \
    ${DLLSRC}/libfftw3-3.dll \
