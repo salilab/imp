@@ -40,6 +40,7 @@ function(imp_build_module sourcedir)
   # Add include directories of mandatory IMP dependencies
   include_directories(SYSTEM ${Boost_INCLUDE_DIR})
   include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+  include_directories(SYSTEM ${CEREAL_INCLUDE_DIRS})
 
   imp_find_python()
 

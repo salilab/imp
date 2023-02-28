@@ -487,7 +487,7 @@ foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
   foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
               IMP_MAX_LOG IMP_SWIG_LIBRARIES EIGEN3_INCLUDE_DIR
-              Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
+              CEREAL_INCLUDE_DIRS Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
     file(APPEND "${cmakefile}"
          "SET(${var} \"${${var}}\" CACHE INTERNAL \"\" FORCE)\n")
   endforeach()
