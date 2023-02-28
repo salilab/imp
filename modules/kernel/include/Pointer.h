@@ -119,7 +119,8 @@ struct Pointer
   // cereal does not handle raw pointers or IMP smart pointers, so temporarily
   // wrap our raw pointer in a std::unique_ptr
   template<class Archive> void save(Archive &ar) const {
-    std::unique_ptr<O> f(P::get());
+    O* rawptr = *this;
+    std::unique_ptr<O> f(rawptr);
     try {
       ar(f);
     } catch(...) {
@@ -201,7 +202,8 @@ struct PointerMember
   // cereal does not handle raw pointers or IMP smart pointers, so temporarily
   // wrap our raw pointer in a std::unique_ptr
   template<class Archive> void save(Archive &ar) const {
-    std::unique_ptr<O> f(P::get());
+    O* rawptr = *this;
+    std::unique_ptr<O> f(rawptr);
     try {
       ar(f);
     } catch(...) {
