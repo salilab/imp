@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import io
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -73,6 +74,28 @@ class Tests(IMP.test.TestCase):
         rsr.show(s)
         # no reason to check the show value
         #self.assertEqual(s.getvalue().split('\n')[0], "angle restraint:")
+
+    def test_pickle(self):
+        """Test (un-)pickle of AngleRestraint"""
+        model, rsr, sf, ps = self._setup_particles(0., math.pi / 2.0)
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 72.801, delta=1e-3)
+        dump = pickle.dumps(rsr)
+        newrsr = pickle.loads(dump)
+        self.assertEqual(newrsr.get_name(), "foo")
+        self.assertAlmostEqual(newrsr.evaluate(False), 72.801, delta=1e-3)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of AngleRestraint via polymorphic pointer"""
+        model, rsr, sf, ps = self._setup_particles(0., math.pi / 2.0)
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 72.801, delta=1e-3)
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newrsr = newsf.restraints[-1]
+        self.assertEqual(newrsr.get_name(), "foo")
+        self.assertAlmostEqual(newrsr.evaluate(False), 72.801, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

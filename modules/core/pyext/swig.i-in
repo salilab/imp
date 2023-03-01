@@ -6,7 +6,7 @@ IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
-IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, BallMover, BallMovers);
@@ -36,7 +36,7 @@ IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
-IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistanceRestraint, DistanceRestraints);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);

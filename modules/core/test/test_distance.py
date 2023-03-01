@@ -2,6 +2,7 @@ import IMP
 import IMP.core
 import IMP.test
 import io
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -129,6 +130,34 @@ class Tests(IMP.test.TestCase):
             self.rsrs[0].evaluate(False) == self.rsrs[
                 2].evaluate(False) == 0.0,
             "unexpected distance score")
+
+    def test_pickle(self):
+        """Test (un-)pickle of DistanceRestraint"""
+        uf = IMP.core.Harmonic(1.0, 0.1)
+        rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
+                                         self.particles[0], self.particles[1])
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 0.2, delta=1e-3)
+        dump = pickle.dumps(rsr)
+        newrsr = pickle.loads(dump)
+        self.assertEqual(newrsr.get_name(), "foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 0.2, delta=1e-3)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of DistanceRestraint via polymorphic pointer"""
+        uf = IMP.core.Harmonic(1.0, 0.1)
+        rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
+                                         self.particles[0], self.particles[1])
+        rsr.set_name("foo")
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 0.2, delta=1e-3)
+        sf = IMP.core.RestraintsScoringFunction([rsr])
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newrsr = newsf.restraints[-1]
+        self.assertEqual(newrsr.get_name(), "foo")
+        self.assertAlmostEqual(newrsr.evaluate(False), 0.2, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

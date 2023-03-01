@@ -45,4 +45,6 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
 
 IMPCORE_END_NAMESPACE
 
+CEREAL_REGISTER_TYPE(IMP::core::AngleTripletScore);
+
 #endif /* IMPCORE_ANGLE_TRIPLET_SCORE_H */

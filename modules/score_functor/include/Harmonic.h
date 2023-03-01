@@ -22,6 +22,7 @@ class Harmonic : public Score {
 
  public:
   Harmonic(double k) : k_(k) {}
+  Harmonic() {}
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

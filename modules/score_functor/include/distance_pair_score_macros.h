@@ -44,6 +44,7 @@
                                                                        \
    public:                                                             \
     Name Args : P(Functor PassArgs, name) {}                           \
+    Name() {}                                                          \
   }
 #endif
 

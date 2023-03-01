@@ -14,6 +14,8 @@
 #include "container_helpers.h"
 #include <IMP/Pointer.h>
 #include "../constants.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -22,6 +24,12 @@ class TupleRestraint : public Restraint {
   IMP::PointerMember<Score> ss_;
   typename Score::IndexArgument v_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), ss_, v_);
+  }
+
  public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -29,6 +37,7 @@ class TupleRestraint : public Restraint {
   */
   TupleRestraint(Score *ss, Model *m, const typename Score::IndexArgument &vt,
                  std::string name = "TupleRestraint %1%");
+  TupleRestraint() {}
 
   Score *get_score() const { return ss_; }
   typename Score::Argument get_argument() const {

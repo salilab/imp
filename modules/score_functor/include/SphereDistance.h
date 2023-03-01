@@ -32,6 +32,7 @@ class SphereDistance : public BaseDistanceScore {
 
  public:
   SphereDistance(BaseDistanceScore base) : P(base) {}
+  SphereDistance() {}
   double get_score(Model *m, const ParticleIndexPair &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - get_rsum(m, pi));

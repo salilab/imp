@@ -13,14 +13,23 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/value_macros.h>
 #include <IMP/Pointer.h>
+#include <cereal/access.hpp>
+
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A DistanceScore that uses a UnaryFunction.*/
 class UnaryFunctionEvaluate : public Score {
   IMP::PointerMember<IMP::UnaryFunction> uf_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(uf_);
+  }
+
  public:
   UnaryFunctionEvaluate(IMP::UnaryFunction *uf) : uf_(uf) {}
+  UnaryFunctionEvaluate() {}
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

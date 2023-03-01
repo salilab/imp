@@ -11,6 +11,8 @@
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -29,6 +31,12 @@ template <class DistanceScoreT>
 class DistancePairScore : public PairScore {
   DistanceScoreT ds_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<PairScore>(this), ds_);
+  }
+
  public:
   typedef DistanceScoreT DistanceScore;
 
@@ -36,6 +44,7 @@ class DistancePairScore : public PairScore {
   DistancePairScore(const DistanceScore &t0,
                     std::string name = "FunctorDistancePairScore %1%")
       : PairScore(name), ds_(t0) {}
+  DistancePairScore() {}
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &pip,
