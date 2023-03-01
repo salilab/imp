@@ -13,6 +13,7 @@
 #include <IMP/singleton_macros.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -50,5 +51,7 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
 IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);
 
 IMPATOM_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::atom::DihedralSingletonScore);
 
 #endif /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */
