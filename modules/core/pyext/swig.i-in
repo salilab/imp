@@ -26,7 +26,7 @@ IMP_SWIG_OBJECT( IMP::core, ChildrenRefiner, ChildrenRefiners);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsFinder, ClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsPairScore, ClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, ClosedCubicSpline, ClosedCubicSplines);
-IMP_SWIG_OBJECT( IMP::core, ConjugateGradients, ConjugateGradientsList);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConjugateGradients, ConjugateGradientsList);
 IMP_SWIG_OBJECT( IMP::core, ConnectivityRestraint, ConnectivityRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantRestraint, ConstantRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Cosine, Cosines);

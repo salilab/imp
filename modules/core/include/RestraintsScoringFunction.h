@@ -15,6 +15,7 @@
 #include <IMP/internal/RestraintsScoringFunction.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -73,5 +74,7 @@ class RestraintsScoringFunction :
 };
 
 IMPCORE_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::core::RestraintsScoringFunction);
 
 #endif /* IMPCORE_RESTRAINTS_SCORING_FUNCTION_H */

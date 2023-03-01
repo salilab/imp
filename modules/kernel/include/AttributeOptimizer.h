@@ -11,6 +11,8 @@
 
 #include <IMP/kernel_config.h>
 #include "Optimizer.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -22,6 +24,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
  public:
   AttributeOptimizer(Model *m, std::string name = "Optimizer %1%");
+  AttributeOptimizer() {}
 
  protected:
   /** @name Methods for getting and setting optimized attributes
@@ -95,6 +98,15 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
   //!@}
  private:
   mutable Floats widths_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Optimizer>(this));
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      clear_range_cache();
+    }
+  }
 };
 
 IMP_OBJECTS(AttributeOptimizer, AttributeOptimizers);
