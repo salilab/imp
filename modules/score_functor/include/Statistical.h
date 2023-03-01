@@ -82,6 +82,8 @@ class Statistical : public Score {
                     "Constructor can only be used for bipartite scores.");
   }
 
+  Statistical() {}
+
   // depend on get_is_trivially_zero
   double get_score(Model *m, const ParticleIndexPair &pp,
                    double distance) const {
