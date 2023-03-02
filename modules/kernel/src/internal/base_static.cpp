@@ -91,7 +91,7 @@ void init_logger() {
 
 #endif
 
-boost::scoped_ptr<boost::progress_display> progress;
+boost::scoped_ptr<IMP::internal::BoostProgressDisplay> progress;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 IMPKERNEL_BEGIN_NAMESPACE

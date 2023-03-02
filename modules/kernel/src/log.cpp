@@ -210,7 +210,7 @@ void set_progress_display(std::string description, unsigned int steps) {
   if (get_log_level() == PROGRESS) {
     IMP_USAGE_CHECK(!internal::progress, "There is already a progress bar.");
     std::cout << description << std::endl;
-    internal::progress.reset(new boost::progress_display(steps));
+    internal::progress.reset(new IMP::internal::BoostProgressDisplay(steps));
   }
 }
 

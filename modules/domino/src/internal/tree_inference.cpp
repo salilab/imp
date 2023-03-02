@@ -11,10 +11,10 @@
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/Particle.h>
 #include <IMP/log.h>
+#include <IMP/internal/BoostProgressDisplay.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
@@ -53,7 +53,7 @@ void load_best_conformations_internal(
     const MergeTree &jt, unsigned int root, const Subset &all,
     const AssignmentsTable *states, const SubsetFilterTables &filters,
     ListSubsetFilterTable *lsft, InferenceStatistics *stats, unsigned int max,
-    boost::progress_display *progress, AssignmentContainer *out) {
+    IMP::internal::BoostProgressDisplay *progress, AssignmentContainer *out) {
   Pointer<AssignmentContainer> outp(out);
   typedef boost::property_map<MergeTree, boost::vertex_name_t>::const_type
       SubsetMap;
@@ -96,9 +96,10 @@ void load_best_conformations(const MergeTree &mt, int root,
                              InferenceStatistics *stats, unsigned int max,
                              AssignmentContainer *out) {
   Pointer<AssignmentContainer> outp(out);
-  boost::scoped_ptr<boost::progress_display> progress;
+  boost::scoped_ptr<IMP::internal::BoostProgressDisplay> progress;
   if (get_log_level() == PROGRESS) {
-    progress.reset(new boost::progress_display(boost::num_vertices(mt)));
+    progress.reset(
+         new IMP::internal::BoostProgressDisplay(boost::num_vertices(mt)));
   }
   return load_best_conformations_internal(mt, root, all_particles, states,
                                           filters, lsft, stats, max,
