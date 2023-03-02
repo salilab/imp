@@ -1,4 +1,4 @@
-include_directories(%(includepath)s)
+include_directories(SYSTEM %(includepath)s)
 link_directories(%(libpath)s)
 
 include(Files.cmake)

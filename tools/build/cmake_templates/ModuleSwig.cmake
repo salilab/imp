@@ -18,13 +18,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   endif()
 endif()
 
-include_directories(%(python_includepath)s)
+include_directories(SYSTEM %(python_includepath)s)
 link_directories(%(libpath)s)
 
 GET_DIRECTORY_PROPERTY(includes INCLUDE_DIRECTORIES)
 
 # SWIG doesn't need Python.h in its own include path
-include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
 
 # this is needed for some reason that I don't understand
 set(swig_path %(swigpath)s)

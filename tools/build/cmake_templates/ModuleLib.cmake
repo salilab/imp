@@ -4,7 +4,7 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${CMAKE_BINARY_DIR}/include/%(subdir)s/*.h")
 
-include_directories(%(includepath)s)
+include_directories(SYSTEM %(includepath)s)
 link_directories(%(libpath)s)
 add_definitions("-DIMP%(CPPNAME)s_EXPORTS")
 
