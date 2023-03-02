@@ -15,7 +15,7 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
   /* Note that attribute tables are C-style contiguous so no special strides or
      other flags need to be passed to NumPy */
   PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, NULL,
-                              data, 0, NPY_WRITEABLE, NULL);
+                              data, 0, NPY_ARRAY_WRITEABLE, NULL);
   if (!obj) {
     return NULL;
   }
@@ -23,7 +23,11 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
   /* Ensure that the Model is kept around as long as the numpy object
      is alive. */
   Py_INCREF(m_pyobj);
-  PyArray_BASE(obj) = m_pyobj;
+  if (PyArray_SetBaseObject((PyArrayObject *)obj, m_pyobj) != 0) {
+    Py_DECREF(m_pyobj);
+    Py_DECREF(obj);
+    return NULL;
+  }
 
   return obj;
 #else
@@ -46,7 +50,7 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
   /* Note that attribute tables are C-style contiguous so no special strides or
      other flags need to be passed to NumPy */
   PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_INT32, NULL,
-                              data, 0, NPY_WRITEABLE, NULL);
+                              data, 0, NPY_ARRAY_WRITEABLE, NULL);
   if (!obj) {
     return NULL;
   }
@@ -54,7 +58,11 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
   /* Ensure that the Model is kept around as long as the numpy object
      is alive. */
   Py_INCREF(m_pyobj);
-  PyArray_BASE(obj) = m_pyobj;
+  if (PyArray_SetBaseObject((PyArrayObject *)obj, m_pyobj) != 0) {
+    Py_DECREF(m_pyobj);
+    Py_DECREF(obj);
+    return NULL;
+  }
 
   return obj;
 #else
@@ -70,7 +78,7 @@ PyObject *_add_spheres_component(void *data, int nd, npy_intp *dims,
                                  PyObject *tuple, Py_ssize_t pos)
 {
   PyObject *obj = PyArray_New(&PyArray_Type, nd, dims, NPY_DOUBLE, strides,
-                              data, 0, NPY_WRITEABLE, NULL);
+                              data, 0, NPY_ARRAY_WRITEABLE, NULL);
   if (!obj) {
     Py_DECREF(tuple);
     return NULL;
@@ -80,7 +88,12 @@ PyObject *_add_spheres_component(void *data, int nd, npy_intp *dims,
     /* Ensure that the Model is kept around as long as the numpy object
        is alive. */
     Py_INCREF(m_pyobj);
-    PyArray_BASE(obj) = m_pyobj;
+    if (PyArray_SetBaseObject((PyArrayObject *)obj, m_pyobj) != 0) {
+      Py_DECREF(m_pyobj);
+      Py_DECREF(obj);
+      Py_DECREF(tuple);
+      return NULL;
+    }
     return obj;
   } else {
     Py_DECREF(obj);

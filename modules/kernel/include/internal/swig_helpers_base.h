@@ -21,6 +21,8 @@
 #include <cstdio>
 
 #if IMP_KERNEL_HAS_NUMPY
+// Silence warnings about old NumPy API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 // This should be defined in the including module's SWIG wrapper
 extern int numpy_import_retval;
@@ -573,7 +575,8 @@ struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+        memcpy(PyArray_DATA((PyArrayObject*)obj), &t[0],
+               t.size() * sizeof(int));
       }
       return ret.release();
     } else {
@@ -619,7 +622,8 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_DOUBLE));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+        memcpy(PyArray_DATA((PyArrayObject*)obj),
+               &t[0], t.size() * sizeof(double));
       }
       return ret.release();
     } else {
@@ -672,7 +676,8 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+        memcpy(PyArray_DATA((PyArrayObject*)obj),
+               &t[0], t.size() * sizeof(int));
       }
       return ret.release();
     } else {
@@ -689,7 +694,7 @@ static IndexArray create_index_array_cpp(PyObject *o) {
 
   IndexArray arr(sz);
   if (sz > 0) {
-    char *data = (char *)PyArray_DATA(o);
+    char *data = (char *)PyArray_DATA(a);
     for (size_t i = 0; i < sz; ++i) {
       memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
     }
@@ -706,7 +711,7 @@ static PyObject* create_index_array_numpy(const IndexArray &t) {
   PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
   if (t.size() > 0) {
     PyObject *obj = ret;
-    char *data = (char *)PyArray_DATA(obj);
+    char *data = (char *)PyArray_DATA((PyArrayObject*)obj);
     for (size_t i = 0; i < t.size(); ++i) {
       memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
     }

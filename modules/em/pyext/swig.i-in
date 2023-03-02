@@ -47,7 +47,11 @@ PyObject *_get_float_view_numpy(PyObject *pyobj, unsigned sz, float *data)
   /* Ensure that the DensityMap is kept around as long as the numpy object
      is alive. */
   Py_INCREF(pyobj);
-  PyArray_BASE(obj) = pyobj;
+  if (PyArray_SetBaseObject((PyArrayObject *)obj, pyobj) != 0) {
+    Py_DECREF(pyobj);
+    Py_DECREF(obj);
+    return NULL;
+  }
 
   return obj;
 #else
@@ -87,7 +91,7 @@ PyObject *_get_float_view_numpy(PyObject *pyobj, unsigned sz, float *data)
     dims[2] = header->get_nx();
 
     PyObject *obj = PyArray_New(&PyArray_Type, 3, dims, NPY_DOUBLE, NULL,
-                                m->get_data(), 0, NPY_WRITEABLE, NULL);
+                                m->get_data(), 0, NPY_ARRAY_WRITEABLE, NULL);
     if (!obj) {
       return NULL;
     }
@@ -95,7 +99,11 @@ PyObject *_get_float_view_numpy(PyObject *pyobj, unsigned sz, float *data)
     /* Ensure that the DensityMap is kept around as long as the numpy object
        is alive. */
     Py_INCREF(pyobj);
-    PyArray_BASE(obj) = pyobj;
+    if (PyArray_SetBaseObject((PyArrayObject *)obj, pyobj) != 0) {
+      Py_DECREF(pyobj);
+      Py_DECREF(obj);
+      return NULL;
+    }
 
     return obj;
 #else
