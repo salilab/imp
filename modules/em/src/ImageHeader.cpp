@@ -141,7 +141,7 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   f.seekg(current_position, std::ios::beg);
 
   // Check if it is an "aberrant" image
-  if (spider_header_.fIform == IMG_IMPEM) {
+  if ((int)spider_header_.fIform == IMG_IMPEM) {
     if ((usfNcol * usfNrow * sizeof(float)) == file_size) {
       usfNrow = (unsigned long)(--spider_header_.fNrow);
       --spider_header_.fNrec;

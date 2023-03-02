@@ -116,7 +116,7 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
 
   int counter, densNum;
   bool keep;
-  char dens[12];
+  char dens[13];
   float density;
 
   while (!XPLORstream.eof()) {
@@ -132,7 +132,8 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
       densNum = strlen(line) / 12;
 
       while ((counter < densNum) && keep) {
-        strncpy(dens, line + (counter * 12), 12);
+        memcpy(dens, line + (counter * 12), 12);
+        dens[12] = '\0';
         counter++;
         density = atof(dens);
         data[x + y * header.extent[0] +
