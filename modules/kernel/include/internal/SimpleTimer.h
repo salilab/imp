@@ -17,6 +17,10 @@ class SimpleTimer {
   std::chrono::steady_clock::time_point start_time_;
 public:
   SimpleTimer() {
+    restart();
+  }
+
+  void restart() {
     start_time_ = std::chrono::steady_clock::now();
   }
 
