@@ -111,6 +111,7 @@ class IMPKERNELEXPORT Model : public Object
 
   Vector<PointerMember<Object> > model_data_;
 
+#if !defined(IMP_DOXYGEN)
   // Map unique ID to Model*
   class ModelMap {
     std::map<uint32_t, Model*> map_;
@@ -124,6 +125,7 @@ class IMPKERNELEXPORT Model : public Object
 
   static ModelMap model_map_;
   uint32_t unique_id_;
+#endif
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
