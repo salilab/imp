@@ -154,7 +154,8 @@ class ExcludedVolumeSphere(IMP.pmi.restraints.RestraintBase):
                  included_objects,
                  other_objects=None,
                  resolution=1000,
-                 kappa=1.0):
+                 kappa=1.0,
+                 label=None):
         """Constructor.
         @param included_objects Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue,
@@ -189,7 +190,7 @@ class ExcludedVolumeSphere(IMP.pmi.restraints.RestraintBase):
         if hierarchies is None:
             raise Exception("Must at least pass included objects")
         mdl = hierarchies[0].get_model()
-        super(ExcludedVolumeSphere, self).__init__(mdl)
+        super(ExcludedVolumeSphere, self).__init__(mdl, label=label)
 
         included_ps = [h.get_particle() for h in hierarchies]
         if bipartite:
