@@ -785,6 +785,7 @@ class BuildSystem(object):
         self._domain_res.append(these_domain_res)
         self._domains.append(these_domains)
         print('BuildSystem.add_state: State', len(self.system.states), 'added')
+        return state
 
     def get_molecules(self):
         """Return list of all molecules grouped by state.

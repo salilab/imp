@@ -130,7 +130,8 @@ class Tests(IMP.test.TestCase):
                                             fasta_dir=input_dir,
                                             gmm_dir=input_dir)
         bs = IMP.pmi.macros.BuildSystem(mdl)
-        bs.add_state(t, chain_ids='0123456789')
+        state = bs.add_state(t, chain_ids='0123456789')
+        self.assertEqual(state.short_name, "State_0")
         root_hier, dof = bs.execute_macro()
         chains = IMP.atom.get_by_type(root_hier, IMP.atom.CHAIN_TYPE)
         self.assertEqual([IMP.atom.Chain(c).get_id() for c in chains], ['0'])

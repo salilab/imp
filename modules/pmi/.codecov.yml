@@ -1,2 +1,4 @@
 ignore:
   - test
+  - setup_git.py
+  - dependencies.py
