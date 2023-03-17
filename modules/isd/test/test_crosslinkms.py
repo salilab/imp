@@ -21,6 +21,31 @@ def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
     return nuisance
 
 
+def make_test_restraint():
+    m = IMP.Model()
+    p1 = IMP.Particle(m)
+    p2 = IMP.Particle(m)
+
+    slope = 0.01
+    length = 10
+
+    xyz1 = IMP.core.XYZ.setup_particle(p1)
+    xyz2 = IMP.core.XYZ.setup_particle(p2)
+
+    xyz1.set_coordinates((0, 0, 0))
+    xyz2.set_coordinates((0, 0, 0))
+
+    sigma1 = setupnuisance(m, 5, 0, 100, False)
+    sigma2 = setupnuisance(m, 5, 0, 100, False)
+    psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
+
+    dr = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+    dr.set_weight(0.10)
+    dr.set_name("test restraint")
+    dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
+    return m, p1, p2, sigma1, sigma2, psi, dr
+
+
 class CrossLinkMS(object):
     """Defining a dummy python restraint
     with the same interface as the one that has to be tested
@@ -168,28 +193,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
-        m = IMP.Model()
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
-
-        slope = 0.01
-        length = 10
-
-        xyz1 = IMP.core.XYZ.setup_particle(p1)
-        xyz2 = IMP.core.XYZ.setup_particle(p2)
-
-        xyz1.set_coordinates((0, 0, 0))
-        xyz2.set_coordinates((0, 0, 0))
-
-        sigma1 = setupnuisance(m, 5, 0, 100, False)
-        sigma2 = setupnuisance(m, 5, 0, 100, False)
-        psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
-
-        dr = IMP.isd.CrossLinkMSRestraint(m, length, slope)
-        dr.set_weight(0.10)
-        dr.set_name("test restraint")
-        dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
-
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
         dump = pickle.dumps(dr)
         del dr
 
@@ -213,6 +217,17 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         del m
         # Cannot restore a Restraint if the Model it acts on is gone
         self.assertRaises(ValueError, pickle.loads, dump)
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of CrossLinkMSRestraint via polymorphic
+           pointer"""
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        sf = IMP.core.RestraintsScoringFunction([dr])
+        dump = pickle.dumps(sf)
+
+        newsf = pickle.loads(dump)
+        newdr, = newsf.restraints
+        self.assertEqual(newdr.get_name(), "test restraint")
 
     def test_score_multiple_restraints(self):
         """Intensive random test, it tests manifold ambiguity, sameparticle, particle positions

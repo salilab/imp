@@ -16,6 +16,7 @@
 #include <IMP/isd/Scale.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -108,5 +109,7 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 };
 
 IMPISD_END_NAMESPACE
+
+CEREAL_REGISTER_TYPE(IMP::isd::CrossLinkMSRestraint);
 
 #endif /* IMPISD_CROSS_LINK_MSRESTRAINT_H */
