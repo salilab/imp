@@ -96,6 +96,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(newrsr.get_name(), "foo")
         self.assertAlmostEqual(newrsr.evaluate(False), 72.801, delta=1e-3)
 
+    def test_pickle_polymorphic_diff_module(self):
+        """Test pickle via polymorphic ptr with parent class in other module"""
+        model, rsr, sf, ps = self._setup_particles(0., math.pi / 2.0)
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 72.801, delta=1e-3)
+        opt = IMP._ConstOptimizer(model)
+        opt.set_scoring_function(sf)
+        dump = pickle.dumps(opt)
+        newopt = pickle.loads(dump)
+        newsf = newopt.get_scoring_function()
+        self.assertAlmostEqual(newsf.evaluate(False), 72.801, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()
