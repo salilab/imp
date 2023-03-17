@@ -695,7 +695,7 @@ static IndexArray create_index_array_cpp(PyObject *o) {
   IndexArray arr(sz);
   if (sz > 0) {
     char *data = (char *)PyArray_DATA(a);
-    for (size_t i = 0; i < sz; ++i) {
+    for (npy_intp i = 0; i < sz; ++i) {
       memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
     }
   }
