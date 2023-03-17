@@ -9,6 +9,12 @@ void handle_imp_exception(void) {
       // for windows where there may be multiple std::exceptions
       // the order  is to avoid warnings about redundancy
       PyErr_SetString(PyExc_IOError, e.what());
+    } catch (const std::domain_error &e) {
+      PyErr_SetString(PyExc_ValueError, e.what());
+    } catch (const std::runtime_error &e) {
+      PyErr_SetString(PyExc_RuntimeError, e.what());
+    } catch (const std::invalid_argument &e) {
+      PyErr_SetString(PyExc_TypeError, e.what());
     } catch (const std::exception &e) {
       PyErr_SetString(PyExc_IOError, e.what());
     } catch (...) {

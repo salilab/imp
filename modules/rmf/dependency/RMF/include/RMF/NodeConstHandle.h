@@ -1,6 +1,6 @@
 /**
  *  \file RMF/NodeConstHandle.h
- *  \brief Declaration of NodeConstHandlke.
+ *  \brief Declaration of NodeConstHandle.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

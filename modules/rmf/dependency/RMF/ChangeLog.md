@@ -5,6 +5,13 @@ Change Log {#changelog}
 - Windows builds now require MS Visual Studio 2015 or later (for full C++11
   support). The following macros for pre-C++11 environments are no longer
   needed and are deprecated: `RMF_NOEXCEPT`, `RMF_CANEXCEPT`.
+- All RMF binaries now report the full version (including micro version)
+  when the --version flag is used (e.g. "1.4.1", not "1.4").
+- If built with NumPy, some Python-specific functions are now provided to
+  allow direct access to RMF data via NumPy arrays.
+- File handles can now be explicitly closed (via a `close` method). Most IO
+  operations on a closed handle will now raise an error. In Python file handles
+  now support the context manager protocol so can be used in 'with' blocks.
 
 # 1.4.1 - 2022-11-21 # {#changelog_1_4_1}
 - Build fixes to work with SWIG 4.1.

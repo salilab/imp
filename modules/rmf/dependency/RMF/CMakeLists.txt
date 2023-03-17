@@ -119,6 +119,11 @@ else()
   link_directories(${Log4CXX_LIBRARY_DIR})
 endif()
 
+if(${PYTHON_NUMPY_FOUND})
+  set(RMF_HAS_NUMPY "1" CACHE BOOL "Whether to include numpy support" FORCE)
+else()
+  set(RMF_HAS_NUMPY "0" CACHE BOOL "Whether to include numpy support" FORCE)
+endif()
 
 include(GNUInstallDirs)
 

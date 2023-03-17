@@ -9,6 +9,10 @@ include_directories(${HDF5_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 
+if(${PYTHON_NUMPY_FOUND})
+  include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+endif()
+
 FILE(GLOB rmf_headers "${PROJECT_SOURCE_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}/include/RMF/decorator/*.h")
 FILE(GLOB SWIG_INCLUDES "${PROJECT_SOURCE_DIR}/swig/RMF.*.i")
 

@@ -14,8 +14,7 @@
 #include "exceptions.h"
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/not.hpp>
+#include <type_traits>
 #include <array>
 #include <boost/static_assert.hpp>
 #include <algorithm>
@@ -39,15 +38,14 @@ class Vector
   struct Convert {};
 
   template <class R>
-  struct Convert<R, typename boost::enable_if<boost::is_convertible<
-                        R, std::array<float, D> > >::type> {
+  struct Convert<R, typename std::enable_if<std::is_convertible<
+                        R, std::array<float, D> >::value>::type> {
     static void convert(const R& r, std::array<float, D>& d) { d = r; }
   };
 
   template <class R>
-  struct Convert<
-      R, typename boost::enable_if<boost::mpl::not_<
-             boost::is_convertible<R, std::array<float, D> > > >::type> {
+  struct Convert<R, typename std::enable_if<!std::is_convertible<
+                        R, std::array<float, D> >::value>::type> {
     static void convert(const R& r, std::array<float, D>& d) {
       std::copy(boost::begin(r), boost::end(r), d.begin());
     }

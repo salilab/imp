@@ -34,6 +34,7 @@
 #include <boost/exception/exception.hpp>
 
 #include <exception>
+#include <stdexcept>
 
 #include "RMF/internal/swig_helpers.h"
 #include "RMF.h"
@@ -162,3 +163,4 @@ RMF_SWIG_VECTOR(RMF, TraverseHelper)
 
 
 %include "RMF.python.i"
+%include "RMF.numpy.i"

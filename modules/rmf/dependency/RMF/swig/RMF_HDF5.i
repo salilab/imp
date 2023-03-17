@@ -14,8 +14,7 @@ RMF_VC_PRAGMA(warning( disable: 4503 ))
 #include <boost/version.hpp>
 #include <boost/exception/all.hpp>
 
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <exception>
 
 #include "RMF/internal/swig_helpers.h"
