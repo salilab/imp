@@ -57,11 +57,37 @@ void test_scoring_function() {
   std::cerr << "deserialize done, read in " << *newsf << std::endl;
 }
 
+void test_optimizer() {
+  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::Particle, p, (m));
+  IMP::ParticleIndexes pis;
+  pis.push_back(p->get_index());
+  IMP_NEW(IMP::internal::_ConstRestraint, cr, (m, pis, 1.0));
+  IMP::RestraintsTemp rt;
+  rt.push_back(cr);
+  IMP_NEW(IMP::core::RestraintsScoringFunction, sf, (rt));
+  IMP_NEW(IMP::internal::_ConstOptimizer, opt, (m));
+  opt->set_scoring_function(sf);
+
+  std::ostringstream oss;
+  cereal::BinaryOutputArchive ba(oss);
+  ba(*opt);
+  std::string s = oss.str();
+  std::cerr << "serialize done, written " << s.size() << " bytes" << std::endl;
+
+  std::istringstream iss(s);
+  cereal::BinaryInputArchive iba(iss);
+  IMP_NEW(IMP::internal::_ConstOptimizer, newopt, ());
+  iba(*newopt);
+  std::cerr << "deserialize done, read in " << *newopt << std::endl;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
   IMP::setup_from_argv(argc, argv, "Test serialize");
   test_triplet_score();
   test_scoring_function();
+  test_optimizer();
   return 0;
 }
