@@ -48,7 +48,7 @@ we employed is as follows:
     (make sure you get the
     32-bit version if you're going to build %IMP for 32-bit Windows).
   - Get and install the
-    [zlib package](http://gnuwin32.sourceforge.net/packages/zlib.htm)
+    [zlib package](https://gnuwin32.sourceforge.net/packages/zlib.htm)
     (both the "complete package, except sources" and the "sources" installers).
      - The package without sources can be installed anywhere; we chose the
        default location of `C:\Program Files\GnuWin32`. The sources, however,
@@ -79,7 +79,7 @@ we employed is as follows:
     Visual Studio.
      - Copy `libfftw3-3.lib` to `fftw3.lib` and `libfftw3-3.dll` to `fftw3.dll` to help cmake find it
   - (Optional) Get the
-    [GSL source code](http://gnuwin32.sourceforge.net/packages/gsl.htm)
+    [GSL source code](https://gnuwin32.sourceforge.net/packages/gsl.htm)
     and build it:
      - Open the libgsl project file in the `src\gsl\1.8\gsl-1.8\VC8`
        subdirectory
@@ -95,7 +95,7 @@ we employed is as follows:
   - (Optional) Get and install
     [libTAU](https://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
-  - (Optional) Get the [OpenCV source code](http://opencv.org/)
+  - (Optional) Get the [OpenCV source code](https://opencv.org/)
     and build it by [following these instructions](https://docs.opencv.org/3.4.15/d3/d52/tutorial_windows_install.html#tutorial_windows_install_build)
      - Copy each `opencv_*.lib` to a similar file without the version extension
        (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
