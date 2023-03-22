@@ -1,7 +1,7 @@
 Change Log {#changelog}
 ==========
 
-# HEAD
+# 1.5.0 - 2023-03-22 # {#changelog_1_5_0}
 - Windows builds now require MS Visual Studio 2015 or later (for full C++11
   support). The following macros for pre-C++11 environments are no longer
   needed and are deprecated: `RMF_NOEXCEPT`, `RMF_CANEXCEPT`.
