@@ -120,13 +120,10 @@ struct Pointer
     P::operator=(o);
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
   Pointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
-#endif
   Pointer<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;
@@ -135,28 +132,33 @@ struct Pointer
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    if (typeid(*rawptr) == typeid(O)) {
-      char polymorphic = 0;
-      ar(polymorphic);
+    if (rawptr == nullptr) {
+      char ptr_type = 0; // null pointer
+      ar(ptr_type);
+    } else if (typeid(*rawptr) == typeid(O)) {
+      char ptr_type = 1; // non-polymorphic pointer
+      ar(ptr_type);
       ar(*rawptr);
     } else {
-      char polymorphic = 1;
-      ar(polymorphic);
+      char ptr_type = 2; // polymorphic pointer
+      ar(ptr_type);
       rawptr->poly_serialize(ar);
     }
   }
 
   void serialize(cereal::BinaryInputArchive &ar) {
-    char polymorphic;
-    ar(polymorphic);
-    if (polymorphic) {
-      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-      P::operator=(rawptr);
-    } else {
+    char ptr_type;
+    ar(ptr_type);
+    if (ptr_type == 0) { // null pointer
+      P::operator=(nullptr);
+    } else if (ptr_type == 1) { // non-polymorphic pointer
       std::unique_ptr<O> ptr(make_empty_object<O>());
       ar(*ptr);
       P::operator=(ptr.release());
+    } else { // polymorphic pointer
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      P::operator=(rawptr);
     }
   }
 #endif
@@ -208,13 +210,10 @@ struct PointerMember
     P::operator=(o);
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
   PointerMember<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
-#endif
   PointerMember<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;
@@ -223,28 +222,33 @@ struct PointerMember
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    if (typeid(*rawptr) == typeid(O)) {
-      char polymorphic = 0;
-      ar(polymorphic);
+    if (rawptr == nullptr) {
+      char ptr_type = 0; // null pointer
+      ar(ptr_type);
+    } else if (typeid(*rawptr) == typeid(O)) {
+      char ptr_type = 1; // non-polymorphic pointer
+      ar(ptr_type);
       ar(*rawptr);
     } else {
-      char polymorphic = 1;
-      ar(polymorphic);
+      char ptr_type = 2; // polymorphic pointer
+      ar(ptr_type);
       rawptr->poly_serialize(ar);
     }
   }
 
   void serialize(cereal::BinaryInputArchive &ar) {
-    char polymorphic;
-    ar(polymorphic);
-    if (polymorphic) {
-      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-      P::operator=(rawptr);
-    } else {
+    char ptr_type;
+    ar(ptr_type);
+    if (ptr_type == 0) { // null pointer
+      P::operator=(nullptr);
+    } else if (ptr_type == 1) { // non-polymorphic pointer
       std::unique_ptr<O> ptr(make_empty_object<O>());
       ar(*ptr);
       P::operator=(ptr.release());
+    } else { // polymorphic pointer
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      P::operator=(rawptr);
     }
   }
 #endif

@@ -249,13 +249,10 @@ class PointerBase {
     }
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
   PointerBase<Traits>& operator=(nullptr_t) {
     set_pointer(nullptr);
     return *this;
   }
-#endif
   PointerBase<Traits>& operator=(const PointerBase<Traits>& o) {
     set_pointer(o.o_);
     return *this;
