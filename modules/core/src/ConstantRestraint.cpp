@@ -20,4 +20,6 @@ ModelObjectsTemp ConstantRestraint::do_get_inputs() const {
   return ModelObjectsTemp();
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ConstantRestraint);
+
 IMPCORE_END_NAMESPACE

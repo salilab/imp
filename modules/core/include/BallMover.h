@@ -35,6 +35,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
     ar(cereal::base_class<MonteCarloMover>(this),
        pis_, keys_, radius_, originals_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(BallMover);
 
   void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
 
@@ -88,7 +89,5 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::BallMover);
 
 #endif /* IMPCORE_BALL_MOVER_H */

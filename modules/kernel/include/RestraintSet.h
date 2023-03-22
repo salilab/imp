@@ -49,6 +49,8 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
     ar(cereal::base_class<Restraint>(this), mutable_access_restraints());
   }
 
+  IMP_OBJECT_SERIALIZE_DECL(RestraintSet);
+
  public:
   //! Create an empty set that is registered with the model
   RestraintSet(Model *m, double weight,
@@ -135,7 +137,5 @@ inline RestraintsTemp get_restraints(It b, It e) {
 }
 
 IMPKERNEL_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::RestraintSet);
 
 #endif /* IMPKERNEL_RESTRAINT_SET_H */

@@ -79,10 +79,11 @@ class Harmonic : public UnaryFunction {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<UnaryFunction>(this), mean_, k_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(Harmonic);
 };
 
-IMPCORE_END_NAMESPACE
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Harmonic);
 
-CEREAL_REGISTER_TYPE(IMP::core::Harmonic);
+IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_HARMONIC_H */

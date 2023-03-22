@@ -34,6 +34,7 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
     ar(cereal::base_class<MonteCarloMover>(this),
        imov_, movers_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(SerialMover);
 
  public:
   /** Constructor.
@@ -54,7 +55,5 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::SerialMover);
 
 #endif /* IMPCORE_SERIAL_MOVER_H */

@@ -32,6 +32,7 @@ class IMPCOREEXPORT ConstantRestraint : public Restraint {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<Restraint>(this), v_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(ConstantRestraint);
 
  public:
   //! Add v to the total score.
@@ -45,7 +46,5 @@ class IMPCOREEXPORT ConstantRestraint : public Restraint {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::ConstantRestraint);
 
 #endif /* IMPCORE_CONSTANT_RESTRAINT_H */

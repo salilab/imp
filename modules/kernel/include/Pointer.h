@@ -14,6 +14,7 @@
 #include <IMP/kernel_config.h>
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
+#include "Object.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -116,26 +117,15 @@ struct Pointer
   }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  // cereal does not handle raw pointers or IMP smart pointers, so temporarily
-  // wrap our raw pointer in a std::unique_ptr
-  template<class Archive> void save(Archive &ar) const {
+  void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    std::unique_ptr<O> f(rawptr);
-    try {
-      ar(f);
-    } catch(...) {
-      // don't let ~unique_ptr free our pointer, as that will result
-      // in a double free and a segfault
-      f.release();
-      throw;
-    }
-    f.release();
+    rawptr->poly_serialize(ar);
   }
 
-  template<class Archive> void load(Archive &ar) {
-    std::unique_ptr<O> f;
-    ar(f);
-    P::operator=(f.release());
+  void serialize(cereal::BinaryInputArchive &ar) {
+    O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+    IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+    P::operator=(rawptr);
   }
 #endif
 
@@ -199,26 +189,15 @@ struct PointerMember
   }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  // cereal does not handle raw pointers or IMP smart pointers, so temporarily
-  // wrap our raw pointer in a std::unique_ptr
-  template<class Archive> void save(Archive &ar) const {
+  void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    std::unique_ptr<O> f(rawptr);
-    try {
-      ar(f);
-    } catch(...) {
-      // don't let ~unique_ptr free our pointer, as that will result
-      // in a double free and a segfault
-      f.release();
-      throw;
-    }
-    f.release();
+    rawptr->poly_serialize(ar);
   }
 
-  template<class Archive> void load(Archive &ar) {
-    std::unique_ptr<O> f;
-    ar(f);
-    P::operator=(f.release());
+  void serialize(cereal::BinaryInputArchive &ar) {
+    O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+    IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+    P::operator=(rawptr);
   }
 #endif
 

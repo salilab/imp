@@ -32,6 +32,7 @@ class RestraintsScoringFunction :
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<IMP::internal::RestraintsScoringFunction>(this));
   }
+  IMP_OBJECT_SERIALIZE_DECL(RestraintsScoringFunction);
 
  public:
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
@@ -74,7 +75,5 @@ class RestraintsScoringFunction :
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::RestraintsScoringFunction);
 
 #endif /* IMPCORE_RESTRAINTS_SCORING_FUNCTION_H */

@@ -191,4 +191,6 @@ void _TrivialDecorator::do_setup_particle(Model *m, ParticleIndex pi) {
   m->add_attribute(IntKey("trivial_attribute"), pi, 1);
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::_ConstRestraint);
+
 IMPKERNEL_END_INTERNAL_NAMESPACE

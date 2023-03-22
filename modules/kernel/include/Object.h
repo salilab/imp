@@ -159,6 +159,16 @@ class IMPKERNELEXPORT Object : public NonCopyable {
       return 0;
   }
 
+  typedef std::function<void(Object *, cereal::BinaryOutputArchive &)> SaveFunc;
+  typedef std::function<Object*(cereal::BinaryInputArchive &)> LoadFunc;
+  struct OutputSerializer {
+    std::string class_name;
+    SaveFunc save_func;
+  };
+
+  static std::map<std::string, OutputSerializer> &get_output_serializers();
+  static std::map<std::string, LoadFunc> &get_input_serializers();
+
  protected:
   //! Construct an object with the given name
   /** An instance of "%1%" in the string will be replaced by a unique
@@ -231,6 +241,16 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   void unref() const;
   void release() const;
   const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
+
+  /** \see IMP_OBJECT_SERIALIZE_DECL */
+  static bool register_serialize(const std::type_info &t, std::string name,
+                                 SaveFunc save_func, LoadFunc load_func);
+
+  //! Save the most-derived Object subclass to the given binary archive
+  void poly_serialize(cereal::BinaryOutputArchive &ar);
+
+  //! Create most-derived Object subclass from the given binary archive
+  static Object *poly_unserialize(cereal::BinaryInputArchive &ar);
 #endif
 
   void _on_destruction();

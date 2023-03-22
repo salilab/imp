@@ -49,10 +49,11 @@ class Linear : public UnaryFunction {
     ar(cereal::base_class<UnaryFunction>(this),
        slope_, offset_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(Linear);
 };
 
-IMPCORE_END_NAMESPACE
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Linear);
 
-CEREAL_REGISTER_TYPE(IMP::core::Linear);
+IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_LINEAR_H */

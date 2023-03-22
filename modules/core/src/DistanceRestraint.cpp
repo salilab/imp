@@ -23,4 +23,6 @@ DistanceRestraint::DistanceRestraint(Model *m, UnaryFunction* score_func,
           new DistancePairScore(score_func), m,
           ParticleIndexPair(p1, p2), name) {}
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::DistanceRestraint);
+
 IMPCORE_END_NAMESPACE

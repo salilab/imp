@@ -531,4 +531,6 @@ ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::atom::WritePDBOptimizerState);
+
 IMPATOM_END_NAMESPACE

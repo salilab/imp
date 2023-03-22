@@ -11,6 +11,8 @@
 #include "IMP/log_macros.h"
 #include "IMP/exception.h"
 #include "IMP/base_utility.h"
+#include "IMP/internal/utility.h"
+#include <cereal/types/string.hpp>
 #include <exception>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -134,6 +136,63 @@ void Object::release() const {
   --count_;
   IMP_LOG_MEMORY("Releasing object \"" << get_name() << "\" (" << count_
                                        << ") {" << this << "}" << std::endl);
+}
+
+std::map<std::string, Object::OutputSerializer> &
+Object::get_output_serializers() {
+  static std::map<std::string, OutputSerializer> m;
+  return m;
+}
+
+std::map<std::string, Object::LoadFunc> &
+Object::get_input_serializers() {
+  static std::map<std::string, LoadFunc> m;
+  return m;
+}
+
+bool Object::register_serialize(const std::type_info &t, std::string name,
+                                SaveFunc save_func, LoadFunc load_func) {
+  if (name.substr(0, 5) != "IMP::") {
+    IMP_THROW("Class name for register_serialize is not fully qualified ("
+              << name << "); should start with IMP::", ValueException);
+  }
+  OutputSerializer os;
+  os.class_name = name;
+  os.save_func = save_func;
+  get_output_serializers()[t.name()] = os;
+  get_input_serializers()[name] = load_func;
+  return true;
+}
+
+void Object::poly_serialize(cereal::BinaryOutputArchive &ar) {
+  const std::type_info &oi = typeid(*this);
+  std::map<std::string, OutputSerializer>
+          &ti_to_name = get_output_serializers();
+  auto f = ti_to_name.find(oi.name());
+  if (f == ti_to_name.end()) {
+    IMP_THROW("Trying to save an unregistered polymorphic type ("
+              << internal::demangle_cxx(oi.name())
+              << "), probably a missing IMP_OBJECT_SERIALIZE_IMPL.",
+              TypeException);
+  } else {
+    ar(f->second.class_name);
+    f->second.save_func(this, ar);
+  }
+}
+
+Object *Object::poly_unserialize(cereal::BinaryInputArchive &ar) {
+  std::string class_name;
+  ar(class_name);
+  std::map<std::string, LoadFunc> &ti_to_f = get_input_serializers();
+  auto f = ti_to_f.find(class_name);
+  if (f == ti_to_f.end()) {
+    IMP_THROW("Trying to load an unregistered polymorphic type ("
+              << class_name <<
+              "), perhaps because its module has not been loaded yet.",
+              TypeException);
+  } else {
+    return f->second(ar);
+  }
 }
 
 IMPKERNEL_END_NAMESPACE

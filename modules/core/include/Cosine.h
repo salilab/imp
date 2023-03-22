@@ -56,10 +56,9 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
     ar(cereal::base_class<UnaryFunction>(this),
        force_constant_, periodicity_, phase_);
   }    
+  IMP_OBJECT_SERIALIZE_DECL(Cosine);
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::Cosine);
 
 #endif /* IMPCORE_COSINE_H */

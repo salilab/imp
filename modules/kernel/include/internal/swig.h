@@ -39,6 +39,8 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
     ar(cereal::base_class<Restraint>(this), v_, pis_);
   }
 
+  IMP_OBJECT_SERIALIZE_DECL(_ConstRestraint);
+
  public:
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), pis_(pis) {}
@@ -253,7 +255,5 @@ IMPKERNELEXPORT ParticleIndexes
     _take_particle_indexes_adaptor(ParticleIndexesAdaptor pa);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::internal::_ConstRestraint);
 
 #endif /* IMPKERNEL_INTERNAL_SWIG_H */

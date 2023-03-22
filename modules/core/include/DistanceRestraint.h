@@ -45,6 +45,7 @@ class IMPCOREEXPORT DistanceRestraint :
     ar(cereal::base_class<
                   IMP::internal::TupleRestraint<DistancePairScore> >(this));
   }
+  IMP_OBJECT_SERIALIZE_DECL(DistanceRestraint);
 
  public:
   //! Create the distance restraint.
@@ -69,7 +70,5 @@ class IMPCOREEXPORT DistanceRestraint :
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::DistanceRestraint);
 
 #endif /* IMPCORE_DISTANCE_RESTRAINT_H */

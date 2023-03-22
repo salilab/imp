@@ -45,6 +45,8 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     double sphere_cap(float r1, float r2, float d) const;
 
+    IMP_OBJECT_SERIALIZE_DECL(CrossLinkMSRestraint);
+
    public:
     //! Create the restraint.
     CrossLinkMSRestraint(IMP::Model* m, double length,
@@ -109,7 +111,5 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 };
 
 IMPISD_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::isd::CrossLinkMSRestraint);
 
 #endif /* IMPISD_CROSS_LINK_MSRESTRAINT_H */

@@ -27,4 +27,6 @@ void Cosine::do_show(std::ostream &out) const {
       << "\nphase " << phase_ << std::endl;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Cosine);
+
 IMPCORE_END_NAMESPACE

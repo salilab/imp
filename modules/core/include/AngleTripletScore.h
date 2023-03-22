@@ -29,6 +29,7 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<TripletScore>(this), f_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(AngleTripletScore);
 
  public:
   //! Score the angle (in radians) using f
@@ -44,7 +45,5 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::AngleTripletScore);
 
 #endif /* IMPCORE_ANGLE_TRIPLET_SCORE_H */

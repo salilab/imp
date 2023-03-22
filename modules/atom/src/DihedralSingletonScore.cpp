@@ -66,4 +66,6 @@ ModelObjectsTemp DihedralSingletonScore::do_get_inputs(
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::atom::DihedralSingletonScore);
+
 IMPATOM_END_NAMESPACE

@@ -35,6 +35,7 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
     ar(cereal::base_class<MonteCarloMover>(this),
        movers_, n_, subset_inds_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(SubsetMover);
 
  public:
   /** Constructor.
@@ -59,7 +60,5 @@ class IMPCOREEXPORT SubsetMover : public MonteCarloMover {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::SubsetMover);
 
 #endif /* IMPCORE_SUBSET_MOVER_H */

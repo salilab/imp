@@ -36,4 +36,6 @@ ModelObjectsTemp SerialMover::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::SerialMover);
+
 IMPCORE_END_NAMESPACE

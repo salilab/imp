@@ -13,6 +13,12 @@
 #include <boost/dynamic_bitset.hpp>
 #include <boost/format.hpp>
 #include <sstream>
+#include <typeinfo>
+#include <string>
+#ifndef _MSC_VER
+#include <cxxabi.h>
+#include <cstdlib>
+#endif
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -94,6 +100,19 @@ struct SFResetBitset {
 };
 
 IMPKERNELEXPORT void show_dg_node(ModelObject *mo, TextOutput to);
+
+//! Transform a C++ ABI ID (from typeid) to C++ source identifier
+inline std::string demangle_cxx(std::string const &name) {
+#ifdef _MSC_VER
+  return name;
+#else  // clang or gcc
+  int status;
+  char *realname = abi::__cxa_demangle(name.c_str(), 0, 0, &status);
+  std::string dname(realname);
+  free(realname);
+  return dname;
+#endif
+}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

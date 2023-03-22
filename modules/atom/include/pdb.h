@@ -602,6 +602,7 @@ class IMPATOMEXPORT WritePDBOptimizerState : public OptimizerState {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<OptimizerState>(this), filename_, pis_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(WritePDBOptimizerState);
 
  public:
   WritePDBOptimizerState(Model *m,
@@ -617,7 +618,5 @@ class IMPATOMEXPORT WritePDBOptimizerState : public OptimizerState {
 };
 
 IMPATOM_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::atom::WritePDBOptimizerState);
 
 #endif /* IMPATOM_PDB_H */

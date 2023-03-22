@@ -46,12 +46,11 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<SingletonScore>(this));
   }
+  IMP_OBJECT_SERIALIZE_DECL(DihedralSingletonScore);
 };
 
 IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);
 
 IMPATOM_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::atom::DihedralSingletonScore);
 
 #endif /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */

@@ -16,4 +16,6 @@ AngleRestraint::AngleRestraint(Model *m, UnaryFunction* score_func,
     : TripletRestraint(m, new AngleTripletScore(score_func),
                        ParticleIndexTriplet(p1, p2, p3)) {}
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::AngleRestraint);
+
 IMPCORE_END_NAMESPACE

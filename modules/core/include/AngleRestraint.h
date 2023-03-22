@@ -30,6 +30,9 @@ class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<TripletRestraint>(this));
   }
+
+  IMP_OBJECT_SERIALIZE_DECL(AngleRestraint);
+
  public:
   //! Create the angle restraint.
   /** \param[in] m Model.
@@ -46,7 +49,5 @@ class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
 };
 
 IMPCORE_END_NAMESPACE
-
-CEREAL_REGISTER_TYPE(IMP::core::AngleRestraint);
 
 #endif /* IMPCORE_ANGLE_RESTRAINT_H */
