@@ -18,6 +18,22 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+template<typename O>
+std::enable_if<std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  return new O;
+}
+
+template<typename O>
+std::enable_if<!std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  IMP_THROW("Cannot load non-default-constructible object", TypeException);
+}
+}
+#endif
+
 //! A smart pointer to a reference counted object
 /** Any time you store an Object in a C++ program, you should use a
         Pointer, rather than a raw C++ pointer (or PointerMember, if the pointer
@@ -119,13 +135,29 @@ struct Pointer
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    rawptr->poly_serialize(ar);
+    if (typeid(*rawptr) == typeid(O)) {
+      char polymorphic = 0;
+      ar(polymorphic);
+      ar(*rawptr);
+    } else {
+      char polymorphic = 1;
+      ar(polymorphic);
+      rawptr->poly_serialize(ar);
+    }
   }
 
   void serialize(cereal::BinaryInputArchive &ar) {
-    O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-    IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-    P::operator=(rawptr);
+    char polymorphic;
+    ar(polymorphic);
+    if (polymorphic) {
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      P::operator=(rawptr);
+    } else {
+      std::unique_ptr<O> ptr(make_empty_object<O>());
+      ar(*ptr);
+      P::operator=(ptr.release());
+    }
   }
 #endif
 
@@ -191,13 +223,29 @@ struct PointerMember
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void serialize(cereal::BinaryOutputArchive &ar) {
     O* rawptr = *this;
-    rawptr->poly_serialize(ar);
+    if (typeid(*rawptr) == typeid(O)) {
+      char polymorphic = 0;
+      ar(polymorphic);
+      ar(*rawptr);
+    } else {
+      char polymorphic = 1;
+      ar(polymorphic);
+      rawptr->poly_serialize(ar);
+    }
   }
 
   void serialize(cereal::BinaryInputArchive &ar) {
-    O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-    IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-    P::operator=(rawptr);
+    char polymorphic;
+    ar(polymorphic);
+    if (polymorphic) {
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      P::operator=(rawptr);
+    } else {
+      std::unique_ptr<O> ptr(make_empty_object<O>());
+      ar(*ptr);
+      P::operator=(ptr.release());
+    }
   }
 #endif
 
