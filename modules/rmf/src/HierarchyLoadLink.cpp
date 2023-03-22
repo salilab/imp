@@ -23,7 +23,6 @@
 #include <RMF/decorator/alternatives.h>
 #include <algorithm>
 #include <RMF/utility.h>
-#include <boost/make_shared.hpp>
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -196,7 +195,7 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle node,
                                        Model *m) {
   IMP_FUNCTION_LOG;
   ParticleIndex ret = m->add_particle(node.get_name());
-  data_.insert(std::make_pair(ret, boost::make_shared<Data>(node.get_file())));
+  data_.insert(std::make_pair(ret, std::make_shared<Data>(node.get_file())));
   create_recursive(m, ret, ret, node, ParticleIndexes(), *data_[ret]);
   data_.find(ret)->second->load_bonds.setup_bonds(node, m, ret);
   if (!atom::Hierarchy(m, ret).get_is_valid(true)) {
@@ -286,7 +285,7 @@ void HierarchyLoadLink::do_add_link(Particle *o,
                                     RMF::NodeConstHandle node) {
   IMP_FUNCTION_LOG;
   data_.insert(std::make_pair(o->get_index(),
-                              boost::make_shared<Data>(node.get_file())));
+                              std::make_shared<Data>(node.get_file())));
   add_link_recursive(o->get_model(), o->get_index(), o->get_index(), node,
                      ParticleIndexes(),
                      *data_.find(o->get_index())->second);

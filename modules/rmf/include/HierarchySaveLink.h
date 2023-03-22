@@ -28,6 +28,8 @@
 #include <IMP/tuple_macros.h>
 #include <RMF/decorators.h>
 #include <boost/unordered_map.hpp>
+#include <memory>
+
 IMPRMF_BEGIN_NAMESPACE
 
 /** Manage the save link between an RMF file and an atom::Hierarchy.
@@ -49,7 +51,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
           save_gaussians(h),
           save_rigid_bodies(h) {}
   };
-  typedef boost::unordered_map<ParticleIndex, boost::shared_ptr<Data> >
+  typedef boost::unordered_map<ParticleIndex, std::shared_ptr<Data> >
       DM;
   DM data_;
   RMF::decorator::AlternativesFactory af_;
