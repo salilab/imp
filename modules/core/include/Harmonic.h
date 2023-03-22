@@ -82,8 +82,6 @@ class Harmonic : public UnaryFunction {
   IMP_OBJECT_SERIALIZE_DECL(Harmonic);
 };
 
-IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Harmonic);
-
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_HARMONIC_H */
