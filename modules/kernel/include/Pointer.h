@@ -21,13 +21,13 @@ IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
 template<typename O>
-std::enable_if<std::is_default_constructible<O>::value, O*>::type
+typename std::enable_if<std::is_default_constructible<O>::value, O*>::type
 make_empty_object() {
   return new O;
 }
 
 template<typename O>
-std::enable_if<!std::is_default_constructible<O>::value, O*>::type
+typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
 make_empty_object() {
   IMP_THROW("Cannot load non-default-constructible object", TypeException);
 }
