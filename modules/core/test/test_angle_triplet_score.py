@@ -72,9 +72,8 @@ class Tests(IMP.test.TestCase):
         uf = IMP.core.OpenCubicSpline([1.,2.,3.], 0., 1.)
         ats = IMP.core.AngleTripletScore(uf)
         # OpenCubicSpline is (currently) unregistered, so this should fail
-        # with a "trying to save an unregistered polymorphic type"
-        # cereal::Exception (which should show up as RuntimeError in Python)
-        self.assertRaises(RuntimeError, pickle.dumps, ats)
+        # with a "trying to save an unregistered polymorphic type" error
+        self.assertRaises(TypeError, pickle.dumps, ats)
 
 
 if __name__ == '__main__':
