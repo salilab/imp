@@ -52,8 +52,6 @@ class Linear : public UnaryFunction {
   IMP_OBJECT_SERIALIZE_DECL(Linear);
 };
 
-IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Linear);
-
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_LINEAR_H */
