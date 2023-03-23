@@ -120,7 +120,7 @@ struct Pointer
     P::operator=(o);
     return *this;
   }
-  Pointer<O>& operator=(nullptr_t o) {
+  Pointer<O>& operator=(std::nullptr_t o) {
     P::operator=(o);
     return *this;
   }
@@ -210,7 +210,7 @@ struct PointerMember
     P::operator=(o);
     return *this;
   }
-  PointerMember<O>& operator=(nullptr_t o) {
+  PointerMember<O>& operator=(std::nullptr_t o) {
     P::operator=(o);
     return *this;
   }

@@ -106,9 +106,11 @@ struct GetPointer<O, OO,
   }
 };
 template <class O>
-struct GetPointer<O, nullptr_t> {
-  static O* get_pointer(const nullptr_t&) { return static_cast<O*>(nullptr); }
-  static const O* get_const_pointer(const nullptr_t&) {
+struct GetPointer<O, std::nullptr_t> {
+  static O* get_pointer(const std::nullptr_t&) {
+    return static_cast<O*>(nullptr);
+  }
+  static const O* get_const_pointer(const std::nullptr_t&) {
     return static_cast<O*>(nullptr);
   }
 };
@@ -249,7 +251,7 @@ class PointerBase {
     }
     return *this;
   }
-  PointerBase<Traits>& operator=(nullptr_t) {
+  PointerBase<Traits>& operator=(std::nullptr_t) {
     set_pointer(nullptr);
     return *this;
   }
