@@ -35,6 +35,7 @@ public:
                              ParticleIndex psi, Float slope = 0.0,
                              bool part_of_log_score=false,
                              std::string name = "AtomicCrossLinkMSRestraint%1%");
+  AtomicCrossLinkMSRestraint() {}
 
   //! Add a contribution to this xlink
   /**
@@ -79,6 +80,15 @@ public:
   ParticleIndexPairs ppis_;
   ParticleIndexPairs sigmass_;
   Ints default_range_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), xlen_, psi_, slope_,
+       part_of_log_score_, ppis_, sigmass_, default_range_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(AtomicCrossLinkMSRestraint);
 };
 
 IMPISD_END_NAMESPACE

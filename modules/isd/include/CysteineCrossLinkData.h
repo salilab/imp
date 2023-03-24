@@ -12,6 +12,8 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -26,12 +28,21 @@ class IMPISDEXPORT CysteineCrossLinkData : public Object {
   int prior_type_;
   Floats omega_grid_;
   std::vector<Floats> grid_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this), omega0_grid_, fmod_grid_, fexp_,
+       prior_type_, omega_grid_, grid_);
+  }
+
   double get_element(double fexp, double fmod, double omega) const;
   double get_omega_prior(double omega, double omega0) const;
 
  public:
   CysteineCrossLinkData(double fexp, Floats fmod_grid, Floats omega_grid,
                         Floats omega0_grid, int prior_type = 3);
+  CysteineCrossLinkData() : Object("") {}
 
   int get_closest(std::vector<double> const& vec, double value) const;
   Floats get_omegas(Floats fmods, double omega0) const;

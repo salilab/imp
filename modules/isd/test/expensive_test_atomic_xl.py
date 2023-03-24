@@ -3,6 +3,8 @@ import IMP.core
 import IMP.isd
 import IMP.algebra
 import IMP.test
+import pickle
+
 
 def score_1state(p0, p1):
     pass
@@ -68,6 +70,25 @@ class TestAtomicXL_1State(IMP.test.TestCase):
                 self.d1,
                 tolerance=1e-2,
                 percentage=3.0)
+
+    def test_serialize(self):
+        """Test (un-)serialize of AtomicCrossLinkMSRestraint"""
+        self.assertAlmostEqual(self.xl.evaluate(False), 0.22314, delta=1e-4)
+        self.xl.set_name("foo")
+        dump = pickle.dumps(self.xl)
+        newxl = pickle.loads(dump)
+        self.assertEqual(newxl.get_name(), "foo")
+        self.assertAlmostEqual(newxl.evaluate(False), 0.22314, delta=1e-4)
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of AtomicCrossLinkMSRestraint via polymorphic
+           pointer"""
+        self.xl.set_name("foo")
+        dump = pickle.dumps(self.sf)
+        newsf = pickle.loads(dump)
+        newxl, = newsf.restraints
+        self.assertEqual(newxl.get_name(), "foo")
+        self.assertAlmostEqual(newxl.evaluate(False), 0.22314, delta=1e-4)
 
 
 class TestAtomicXL_ManyState(IMP.test.TestCase):

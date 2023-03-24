@@ -12,6 +12,8 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -29,6 +31,14 @@ class IMPISDEXPORT CrossLinkData : public Object {
   int prior_type_;
   bool bias_;
   std::vector<Floats> grid_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this), lexp_, dist_grid_, sigma_grid_,
+       omega_grid_, pot_x_grid_, pot_value_grid_, prior_type_, bias_, grid_);
+  }
+
   double get_unbiased_element(double dist, double sigmai) const;
   double get_biased_element(double dist, double sigmai) const;
 
@@ -42,6 +52,7 @@ class IMPISDEXPORT CrossLinkData : public Object {
                 double don = std::numeric_limits<double>::max(),
                 double doff = std::numeric_limits<double>::max(),
                 int prior_type = 0);
+  CrossLinkData() : Object("") {}
   int get_closest(std::vector<double> const& vec, double value) const;
   Floats get_omegas(double sigma, Floats dists) const;
   double get_omega_prior(double omega, double omega0) const;

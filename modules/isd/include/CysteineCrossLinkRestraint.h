@@ -15,6 +15,8 @@
 #include <IMP/Restraint.h>
 #include <IMP/isd/CrossLinkData.h>
 #include <IMP/isd/CysteineCrossLinkData.h>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 //! A restraint for cysteine cross-linking data.
@@ -56,6 +58,16 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
   double fexp_;
   bool use_CA_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), ps1_, ps2_, pslist1_, pslist2_,
+       beta_, sigma_, epsilon_, weight_, data_, ccldata_, constr_type_,
+       fexp_, use_CA_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(CysteineCrossLinkRestraint);
+
  public:
   //! Create the restraint.
   CysteineCrossLinkRestraint(Model *m, ParticleIndexAdaptor beta,
@@ -69,6 +81,8 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
                              ParticleIndexAdaptor epsilon,
                              ParticleIndexAdaptor weight, CrossLinkData *data,
                              CysteineCrossLinkData *ccldata);
+
+  CysteineCrossLinkRestraint() {}
 
   /* call for probability */
   double get_probability() const;
