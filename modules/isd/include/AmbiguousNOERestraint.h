@@ -28,11 +28,22 @@ class IMPISDEXPORT AmbiguousNOERestraint : public Restraint {
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       pc_, sigma_, gamma_, Vexp_, chi_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(AmbiguousNOERestraint);
+
  public:
   //! Create the restraint.
   AmbiguousNOERestraint(Model *m, PairContainer *pc,
                         ParticleIndexAdaptor sigma, ParticleIndexAdaptor gamma,
                         double Iexp);
+
+  AmbiguousNOERestraint() {}
 
   /* call for probability */
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
