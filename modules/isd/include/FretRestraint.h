@@ -21,20 +21,20 @@ IMPISD_BEGIN_NAMESPACE
  */
 
 class IMPISDEXPORT FretRestraint : public Restraint {
-  Particles pd_;
-  Particles pa_;
-  Pointer<Particle> prd_;
+  ParticleIndexes pd_;
+  ParticleIndexes pa_;
+  ParticleIndex prd_;
   algebra::Vector3D GMMterd_;
   algebra::Vector3Ds GMMctrd_;
-  Pointer<Particle> pra_;
+  ParticleIndex pra_;
   algebra::Vector3D GMMtera_;
   algebra::Vector3Ds GMMctra_;
-  Pointer<Particle> kda_;
-  Pointer<Particle> Ida_;
-  Pointer<Particle> R0_;
-  Pointer<Particle> sumFi_;
-  Pointer<Particle> sigma0_;
-  Pointer<Particle> Pbl_;
+  ParticleIndex kda_;
+  ParticleIndex Ida_;
+  ParticleIndex R0_;
+  ParticleIndex sumFi_;
+  ParticleIndex sigma0_;
+  ParticleIndex Pbl_;
   PointerMember<FretData> data_;
   double fexp_;
   double multi_d_;
@@ -50,7 +50,7 @@ class IMPISDEXPORT FretRestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  FretRestraint(Particles pd, Particles pa,
+  FretRestraint(ParticlesTemp pd, ParticlesTemp pa,
                 Particle *kda, Particle *Ida,
                 Particle *R0, Particle *sigma0,
                 Particle *Pbl, double fexp, double m_d = 1.0,
@@ -99,10 +99,10 @@ class IMPISDEXPORT FretRestraint : public Restraint {
  private:
   double get_model_fretr_type_0() const;
   double get_model_fretr_type_1() const;
-  algebra::Vector3Ds get_current_centers(Particle *p,
+  algebra::Vector3Ds get_current_centers(ParticleIndex p,
                                          const algebra::Vector3Ds &ctrs) const;
 
-  algebra::Vector3D get_current_center(Particle *p,
+  algebra::Vector3D get_current_center(ParticleIndex p,
                                        const algebra::Vector3D &ctr) const;
 };
 
