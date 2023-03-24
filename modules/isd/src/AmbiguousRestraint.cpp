@@ -56,4 +56,6 @@ ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::AmbiguousRestraint);
+
 IMPISD_END_NAMESPACE

@@ -36,7 +36,7 @@ IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalHBondRestraint, AmbigousHBondRestraints);
 IMP_SWIG_OBJECT(IMP::isd, TALOSRestraint, TALOSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
-IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, UnivariateFunction, UnivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Linear1DFunction, Linear1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, GeneralizedGuinierPorodFunction, GeneralizedGuinierPorodFunctions);
