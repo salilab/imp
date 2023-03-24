@@ -16,6 +16,8 @@
 #include "container_helpers.h"
 #include <IMP/thread_macros.h>
 #include <algorithm>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -29,6 +31,16 @@ class ListLikeContainer : public Base {
     return version_;
   }
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Base>(this), data_);
+    // reset version (cache)
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      version_ = 0;
+    }
+  }
+
  protected:
   //! swap internal data_ with data in cur - effectively make the container contain cur
   void swap(typename Base::ContainedIndexTypes &cur) {
@@ -38,6 +50,8 @@ class ListLikeContainer : public Base {
 
   ListLikeContainer(Model *m, std::string name)
       : Base(m, name), version_(0) {}
+
+  ListLikeContainer() {}
 
  public:
   //! apply f->apply_indexes to data_. Use parallel mode using IMP_TASK

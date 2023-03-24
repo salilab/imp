@@ -22,6 +22,8 @@
 #include <IMP/utility_macros.h>
 #include <IMP/deprecation_macros.h>
 #include <algorithm>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class ClassnameModifier;
@@ -119,6 +121,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
  protected:
   ClassnameContainer(Model *m,
                      std::string name = "ClassnameContainer %1%");
+  ClassnameContainer() {}
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual void do_apply_moved(const ClassnameModifier *sm,
@@ -145,6 +148,18 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   mutable std::size_t contents_hash_;
   mutable PLURALINDEXTYPE contents_cache_;
   mutable bool cache_initialized_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Container>(this));
+    // clear cache on read
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      contents_hash_ = -1;
+      cache_initialized_ = false;
+    }
+  }
+
 };
 
 /** This class allows either a list or a container to be

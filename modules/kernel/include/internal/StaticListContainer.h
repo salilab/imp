@@ -13,6 +13,8 @@
 #include "ListLikeContainer.h"
 #include "container_helpers.h"
 #include <IMP/object_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -20,8 +22,15 @@ template <class Base>
 class StaticListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
+  }
+
  public:
   StaticListContainer(Model *m, std::string name) : P(m, name) {}
+  StaticListContainer() {}
   void add(typename Base::PassContainedIndexType vt) {
     Base::set_has_dependencies(false);
     typename Base::ContainedIndexTypes cur;

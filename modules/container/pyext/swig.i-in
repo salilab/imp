@@ -7,10 +7,10 @@ IMP_SWIG_OBJECT(IMP::container, ConsecutivePairContainer, ConsecutivePairContain
 IMP_SWIG_OBJECT(IMP::container, ExclusiveConsecutivePairContainer, ExclusiveConsecutivePairContainers);
 IMP_SWIG_OBJECT(IMP::container, ExclusiveConsecutivePairFilter, ExclusiveConsecutivePairFilters);
 IMP_SWIG_OBJECT(IMP::container, ConsecutivePairFilter, ConsecutivePairFilters);
-IMP_SWIG_OBJECT(IMP::container, ListPairContainer, ListPairContainers);
-IMP_SWIG_OBJECT(IMP::container, ListQuadContainer, ListQuadContainers);
-IMP_SWIG_OBJECT(IMP::container, ListSingletonContainer, ListSingletonContainers);
-IMP_SWIG_OBJECT(IMP::container, ListTripletContainer, ListTripletContainers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::container, ListPairContainer, ListPairContainers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::container, ListQuadContainer, ListQuadContainers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::container, ListSingletonContainer, ListSingletonContainers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::container, ListTripletContainer, ListTripletContainers);
 IMP_SWIG_OBJECT(IMP::container, DynamicListPairContainer, DynamicListPairContainers);
 IMP_SWIG_OBJECT(IMP::container, DynamicListQuadContainer, DynamicListQuadContainers);
 IMP_SWIG_OBJECT(IMP::container, DynamicListSingletonContainer, DynamicListSingletonContainers);

@@ -14,6 +14,8 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/base_types.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -43,6 +45,7 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
   ListClassnameContainer(Model *m, const char *name);
+  ListClassnameContainer() {}
 
 #endif
 #if defined(SWIG) || defined(IMP_DOXYGEN)
@@ -73,6 +76,13 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   std::size_t do_get_contents_hash() const;
 #endif
   IMP_OBJECT_METHODS(ListClassnameContainer);
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ListClassnameContainer);
 };
 
 IMP_OBJECTS(ListClassnameContainer, ListClassnameContainers);

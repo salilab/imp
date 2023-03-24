@@ -2,7 +2,7 @@
  *  \file IMP/container_base.h
  *  \brief Abstract base class for containers of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,8 @@
 #include <IMP/ref_counted_macros.h>
 #include <IMP/Object.h>
 #include <IMP/WeakPointer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Particle;
@@ -46,8 +48,20 @@ class IMPKERNELEXPORT Container : public ModelObject {
   bool readable_;
   bool writeable_;
 #endif
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+#if IMP_HAS_CHECKS < IMP_INTERNAL
+    // serialize the same data regardless of the check level, so we are portable
+    bool readable_ = true, writeable_ = true;
+#endif
+    ar(cereal::base_class<ModelObject>(this), readable_, writeable_);
+  }
+
  protected:
   Container(Model *m, std::string name = "Container %1%");
+  Container() {}
 
   virtual std::size_t do_get_contents_hash() const = 0;
 
