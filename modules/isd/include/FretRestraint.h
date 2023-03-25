@@ -12,6 +12,8 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/FretData.h>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for using in-vivo ensemble FRET data.
@@ -45,6 +47,17 @@ class IMPISDEXPORT FretRestraint : public Restraint {
   mutable Floats power6_;
   std::vector<std::vector<unsigned> > states_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), pd_, pa_, prd_, GMMterd_,
+       GMMctrd_, pra_, GMMtera_, GMMctra_, kda_, Ida_, R0_, sumFi_, sigma0_,
+       Pbl_, data_, fexp_, multi_d_, constr_type_, GMMsig_, GMMw_, Na_,
+       power6_, states_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(FretRestraint);
+
   double get_sumFi(double Pbleach) const;
   std::vector<unsigned> get_indices(unsigned index, int dimension) const;
 
@@ -67,6 +80,8 @@ class IMPISDEXPORT FretRestraint : public Restraint {
                 Particle *kda, Particle *Ida,
                 Particle *sigma0, Particle *Pbl, FretData *data,
                 double fexp);
+
+  FretRestraint() {}
 
   // get sumFi
   double get_sumFi() const;

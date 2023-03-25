@@ -12,6 +12,8 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -28,6 +30,13 @@ class IMPISDEXPORT FretData : public Object {
   Floats grid_;
   Floats norm_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this), d_term_, d_center_, s_grid_, nbin_,
+       dimension_, grid_, norm_);
+  }
+
   unsigned get_index(unsigned indices[3]) const;
   void init_grids(const Floats& d_grid_int, Float R0, Float Rmin, Float Rmax,
                   bool do_limit);
@@ -35,6 +44,7 @@ class IMPISDEXPORT FretData : public Object {
  public:
   FretData(Floats d_term, Floats d_center, Floats d_int, Floats s_grid,
            Float R0, Float Rmin, Float Rmax, bool do_limit = true);
+  FretData() : Object("") {}
 
   int get_closest(std::vector<double> const& vec, double value) const;
 

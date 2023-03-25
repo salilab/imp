@@ -47,8 +47,8 @@ IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraint, GaussianProcess
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamics, MolecularDynamicss);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
-IMP_SWIG_OBJECT(IMP::isd, FretData, FretDatas);
-IMP_SWIG_OBJECT(IMP::isd, FretRestraint, FretRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, FretData, FretDatas);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, FretRestraint, FretRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CrossLinkData, CrossLinkDatas);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CysteineCrossLinkData, CysteineCrossLinkDatas);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CysteineCrossLinkRestraint, CysteineCrossLinkRestraints);

@@ -365,4 +365,6 @@ ModelObjectsTemp FretRestraint::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::FretRestraint);
+
 IMPISD_END_NAMESPACE
