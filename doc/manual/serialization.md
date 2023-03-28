@@ -14,10 +14,11 @@ build %IMP.
 To add serialization to a new class, simply add a suitable serialization
 function, as per the
 [cereal docs](https://uscilab.github.io/cereal/serialization_functions.html).
-Most %IMP classes define a `serialize` private method. If the class is visible
-to Python, make sure pickle support is enabled by using the
-`IMP_SWIG_OBJECT_SERIALIZE` or `IMP_SWIG_VALUE_SERIALIZE` macros in the SWIG
-interface.
+Most %IMP classes define a `serialize` private method. The class will also
+need a default constructor (i.e. one that takes no arguments) if it does not
+already have one. If the class is visible to Python, make sure pickle support
+is enabled by using the `IMP_SWIG_OBJECT_SERIALIZE` or
+`IMP_SWIG_VALUE_SERIALIZE` macros in the SWIG interface.
 
 If a class is polymorphic - i.e. it is a subclass that is referenced somewhere
 by a base class pointer, such as a `Restraint` subclass - then the
