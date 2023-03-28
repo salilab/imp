@@ -16,7 +16,7 @@ IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleUnaryFunction, ExampleUnaryFuncti
 IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
-IMP_SWIG_OBJECT(IMP::example, ExampleConstraint, ExampleConstraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleConstraint, ExampleConstraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleObject, ExampleObjects);
 IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD);

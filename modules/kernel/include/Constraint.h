@@ -49,6 +49,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT Constraint : public ScoreState {
  public:
   Constraint(Model *m, std::string name = "Constraint %1%");
+  Constraint() {}
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 

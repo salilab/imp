@@ -14,6 +14,7 @@
 #include <IMP/Constraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
+#include <cereal/access.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -21,11 +22,12 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 /**
 */
 class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
-  Pointer<Particle> p_;
+  ParticleIndex p_;
   IntKey k_;
 
  public:
   ExampleConstraint(Particle *p);
+  ExampleConstraint() {}
 
   virtual void do_update_attributes() override;
   virtual void do_update_derivatives(DerivativeAccumulator *da) override;
@@ -34,6 +36,18 @@ class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
 
   static IntKey get_key();
   IMP_OBJECT_METHODS(ExampleConstraint);
+
+ private:
+  // Serialization support
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Constraint>(this), p_);
+    // There is no need to serialize the IntKey - just recreate it on load:
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      k_ = get_key();
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ExampleConstraint);
 };
 
 IMPEXAMPLE_END_NAMESPACE
