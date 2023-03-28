@@ -21,7 +21,7 @@ IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders)
 #endif
 IMP_SWIG_OBJECT( IMP::core, NearestNeighborsClosePairsFinder, NearestNeighborsClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, CentroidOfRefined, CentroidOfRefineds);
-IMP_SWIG_OBJECT( IMP::core, ChecksScoreState, ChecksScoreStates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ChecksScoreState, ChecksScoreStates);
 IMP_SWIG_OBJECT( IMP::core, ChildrenRefiner, ChildrenRefiners);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsFinder, ClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsPairScore, ClosePairsPairScores);

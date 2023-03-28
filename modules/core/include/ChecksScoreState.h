@@ -11,6 +11,8 @@
 #include <IMP/macros.h>
 #include <IMP/Particle.h>
 #include <IMP/ScoreState.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -20,8 +22,14 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   double probability_;
   unsigned int num_checked_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ScoreState>(this), probability_, num_checked_);
+  }
+
  public:
   ChecksScoreState(Model *m, double probability);
+  ChecksScoreState() {}
 
   unsigned int get_number_of_checked() const { return num_checked_; }
 
