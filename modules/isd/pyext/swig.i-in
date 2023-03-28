@@ -55,7 +55,7 @@ IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CysteineCrossLinkRestraint, CysteineCrossLin
 IMP_SWIG_OBJECT(IMP::isd, WeightMover, WeightMovers);
 IMP_SWIG_OBJECT(IMP::isd, WeightRestraint, WeightRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, AtomicCrossLinkMSRestraint, AtomicCrossLinkMSRestraints);
-IMP_SWIG_OBJECT(IMP::isd, GaussianEMRestraint, GaussianEMRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, GaussianEMRestraint, GaussianEMRestraints);
 IMP_SWIG_OBJECT(IMP::isd, GaussianAnchorEMRestraint, GaussianAnchorEMRestraints);
 IMP_SWIG_OBJECT(IMP::isd, GammaPrior, GammaPriors);
 IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProximityRestraints);

@@ -85,14 +85,7 @@ GaussianEMRestraint::GaussianEMRestraint(
                       "Density particles must have Mass");
     }
 
-    //Set up md container
-    md_container_ = new container::CloseBipartitePairContainer(
-         new container::ListSingletonContainer(mdl,model_ps),
-         new container::ListSingletonContainer(mdl,density_ps),density_cutoff_dist);
-
-    mm_container_ = new container::ClosePairContainer(
-         new container::ListSingletonContainer(mdl,model_ps),model_cutoff_dist);
-
+    create_containers();
     compute_initial_scores();
 
     if (backbone_slope){
@@ -109,6 +102,19 @@ GaussianEMRestraint::GaussianEMRestraint(
     }
     else slope_ps_ = model_ps_;
   }
+
+void GaussianEMRestraint::create_containers() {
+  Model *mdl = get_model();
+  //Set up md container
+  md_container_ = new container::CloseBipartitePairContainer(
+         new container::ListSingletonContainer(mdl,model_ps_),
+         new container::ListSingletonContainer(mdl,density_ps_),
+         density_cutoff_dist_);
+
+  mm_container_ = new container::ClosePairContainer(
+         new container::ListSingletonContainer(mdl,model_ps_),
+         model_cutoff_dist_);
+}
 
 void GaussianEMRestraint::compute_initial_scores() {
 
@@ -260,5 +266,7 @@ RestraintInfo *GaussianEMRestraint::get_dynamic_info() const {
   ri->add_float("cross correlation", get_cross_correlation_coefficient());
   return ri.release();
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::GaussianEMRestraint);
 
 IMPISD_END_NAMESPACE
