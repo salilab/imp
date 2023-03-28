@@ -12,6 +12,8 @@
 #include <IMP/example/example_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -19,11 +21,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 /** This one happens to be a harmonic.
     The source code is as follows:
     \include ExampleUnaryFunction.h
-
-    \note The class does not have an IMPEXAMPLEEXPORT
-    since it is all defined in a header.
  */
-class ExampleUnaryFunction : public UnaryFunction {
+class IMPEXAMPLEEXPORT ExampleUnaryFunction : public UnaryFunction {
   Float center_;
   Float k_;
 
@@ -35,6 +34,8 @@ class ExampleUnaryFunction : public UnaryFunction {
     IMP_USAGE_CHECK(k > 0, "The spring constant must be positive.");
   }
 
+  ExampleUnaryFunction() {}
+
   virtual DerivativePair evaluate_with_derivative(double feature) const
       override {
     return DerivativePair(evaluate(feature), k_ * (feature - center_));
@@ -43,6 +44,13 @@ class ExampleUnaryFunction : public UnaryFunction {
     return .5 * k_ * algebra::get_squared(feature - center_);
   }
   IMP_OBJECT_METHODS(ExampleUnaryFunction);
+
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<UnaryFunction>(this), center_, k_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ExampleUnaryFunction);
 };
 
 IMPEXAMPLE_END_NAMESPACE

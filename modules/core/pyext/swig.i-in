@@ -173,7 +173,7 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmo
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistancePairScore, DistancePairScores);
 
 
 IMP_SWIG_OBJECT(IMP::core, XYZRGeometry, XYZRGeometries);

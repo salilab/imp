@@ -29,6 +29,7 @@
                                                                        \
    public:                                                             \
     Name Args;                                                         \
+    Name() {}                                                          \
     double evaluate_index(Model *m,                            \
                           const ParticleIndexPair &pip,        \
                           DerivativeAccumulator *da) const;            \

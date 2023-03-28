@@ -45,4 +45,6 @@ ModelObjectsTemp ExamplePairScore::do_get_inputs(
   return IMP::get_particles(m, pis);
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::example::ExamplePairScore);
+
 IMPEXAMPLE_END_NAMESPACE
