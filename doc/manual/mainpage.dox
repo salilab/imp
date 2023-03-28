@@ -77,6 +77,7 @@ complex might want to skip ahead to
    - [Debugging and testing your code](@ref testing)
    - [Writing examples](@ref write_examples)
    - [Exporting C++ code to Python](@ref swig)
+   - [Serialization](@ref serialization)
    - [Code coverage](@ref coverage)
    - [Profiling your code](@ref profiling)
    - [Deprecation](@ref deprecation)
