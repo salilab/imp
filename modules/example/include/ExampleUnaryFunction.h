@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleUnaryFunction.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,8 +12,10 @@
 #include <IMP/example/example_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
+#include <IMP/algebra/utility.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
