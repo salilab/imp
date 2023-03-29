@@ -330,7 +330,7 @@ class IMPKERNELEXPORT Model : public Object
       ScoreStates maintain invariants in the Model (see ScoreState
       for more information.)
 
-      ScoreStates do not need to be explictly added to the Model, but they
+      ScoreStates do not need to be explicitly added to the Model, but they
       can be if desired in order to keep them alive as long as the model is
       alive.
 
