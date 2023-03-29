@@ -12,6 +12,10 @@ ChangeLog {#changelog}
 - The deprecated IMP::isd::Weight::get_nstates_key() method has been removed.
 - The deprecated IMP.npc.npc_restraints module has been removed. Use
   IMP.pmi.restraints.npc or IMP.pmi1.restraints.npc instead.
+- The deprecated IMP::core::{Singleton,Pair,Triplet,Quad}Constraint constructors
+  that take Particle/ParticlePair/ParticleTriplet/ParticleQuad have been
+  removed. Use the constructors that take a Model and ParticleIndex (etc.)
+  instead.
 
 # 2.18.0 - 2022-12-15 # {#changelog_2_18_0}
 - The Windows .exe installer now supports Python 3.11.
