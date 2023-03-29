@@ -42,4 +42,6 @@ ModelObjectsTemp ExampleSingletonModifier::do_get_outputs(
   return do_get_inputs(m, pis);
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::example::ExampleSingletonModifier);
+
 IMPEXAMPLE_END_NAMESPACE

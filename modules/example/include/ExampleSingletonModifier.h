@@ -13,6 +13,8 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/singleton_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -33,8 +35,15 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonModifier>(this), bb_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ExampleSingletonModifier);
+
  public:
   ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
+  ExampleSingletonModifier() {}
 
   // note, Doxygen wants a semicolon at the end of macro lines
   virtual void apply_index(Model *m, ParticleIndex p) const

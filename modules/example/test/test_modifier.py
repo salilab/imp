@@ -4,6 +4,18 @@ import IMP.test
 import IMP.algebra
 import IMP.core
 import IMP.example
+import pickle
+
+
+def make_modifier():
+    m = IMP.Model()
+    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                   IMP.algebra.Vector3D(10, 10, 10))
+    p = m.add_particle("p1")
+    d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(-4, 13, 28))
+    s = IMP.example.ExampleSingletonModifier(bb)
+    return m, p, d, s
+
 
 class Tests(IMP.test.TestCase):
 
@@ -42,6 +54,26 @@ class Tests(IMP.test.TestCase):
             m.update()
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),
                                            IMP.algebra.Vector3D(6,3,8)), 1e-4)
+
+    def test_pickle(self):
+        """Test (un-)pickle of ExampleSingletonModifier"""
+        m, p, d, s = make_modifier()
+        dump = pickle.dumps(s)
+        news = pickle.loads(dump)
+        news.apply_index(m, p)
+        self.assertLess(IMP.algebra.get_distance(
+            d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of ExampleSingletonModifier via polymorphic ptr"""
+        m, p, d, s = make_modifier()
+        c = IMP.core.SingletonConstraint(s, None, m, p)
+        dump = pickle.dumps(c)
+        newc = pickle.loads(dump)
+        newc.before_evaluate()
+        self.assertLess(IMP.algebra.get_distance(
+            d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

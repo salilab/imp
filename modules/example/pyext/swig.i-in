@@ -13,7 +13,7 @@
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleRestraint, ExampleRestraints);
 IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
-IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleConstraint, ExampleConstraints);

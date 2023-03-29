@@ -12,6 +12,8 @@
 #include "../Constraint.h"
 #include "container_helpers.h"
 #include <IMP/Pointer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -20,6 +22,11 @@ class TupleConstraint : public Constraint {
   IMP::PointerMember<Before> f_;
   IMP::PointerMember<After> af_;
   typename Before::IndexArgument v_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Constraint>(this), f_, af_, v_);
+  }
 
  public:
   TupleConstraint(Before *before, After *after,
@@ -31,6 +38,8 @@ class TupleConstraint : public Constraint {
                   const typename Before::IndexArgument &vt,
                   std::string name = "TupleConstraint %1%",
                   bool can_skip=false);
+
+  TupleConstraint() {}
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }

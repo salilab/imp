@@ -55,6 +55,8 @@ class ClassnameConstraint :
                                                             vt, name,
                                                             can_skip) {}
 
+  ClassnameConstraint() {}
+
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:
   void do_update_attributes();
