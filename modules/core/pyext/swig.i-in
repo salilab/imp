@@ -43,8 +43,8 @@ IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
 IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Harmonic, Harmonics);
 IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
-IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
-IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
@@ -397,6 +397,8 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_att
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingSphere3DSingletonScore, bounding_sphere_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 
 %pythoncode %{
 

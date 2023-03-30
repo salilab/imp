@@ -18,6 +18,8 @@
 #include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <boost/lambda/lambda.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -44,8 +46,16 @@ class GenericDistanceToSingletonScore : public SingletonScore {
     }
   };
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonScore>(this), f_, pt_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(GenericDistanceToSingletonScore);
+
  public:
   GenericDistanceToSingletonScore(UF *f, const algebra::Vector3D &pt);
+  GenericDistanceToSingletonScore() {}
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(

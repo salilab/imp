@@ -61,6 +61,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(f.get_name(), 'foo')
         self.assertAlmostEqual(f.evaluate(4.0), 18.0, delta=0.01)
 
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of Harmonic via polymorphic pointer"""
+        m = IMP.Model()
+        func = IMP.core.Harmonic(1.0, 4.0)
+        s = IMP.core.DistanceToSingletonScore(func, IMP.algebra.Vector3D(0,0,0))
+        p = IMP.Particle(m)
+        IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(4,0,0))
+        self.assertAlmostEqual(s.evaluate_index(m, p, None), 18.0, delta=0.01)
+        dump = pickle.dumps(s)
+        news = pickle.loads(dump)
+        self.assertAlmostEqual(news.evaluate_index(m, p, None),
+                               18.0, delta=0.01)
+
 
 if __name__ == '__main__':
     IMP.test.main()

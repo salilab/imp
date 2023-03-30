@@ -28,4 +28,8 @@ Float SphereDistanceToSingletonScore::evaluate_index(
   return v;
 }
 
+template <>
+IMP_OBJECT_SERIALIZE_IMPL(
+               IMP::core::GenericDistanceToSingletonScore<IMP::UnaryFunction>);
+
 IMPCORE_END_NAMESPACE
