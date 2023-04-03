@@ -85,7 +85,19 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
       }
     }
 
+    //! Return true iff the length is variable (stored in a Scale)
+    bool get_is_length_variable() const {
+      return constr_ == 1;
+    }
+
+    //! Return true iff the restraint has a slope
+    bool get_has_slope() const {
+      return constr_ == 2;
+    }
+
     double get_slope() const { return slope_; }
+
+    bool get_log_prob() const { return get_log_prob_; }
 
     //! Get the sigma particle indexes from a contribution
     ParticleIndexPair get_contribution_sigma_indexes(int i) const {

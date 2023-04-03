@@ -60,6 +60,113 @@ IMP_SWIG_OBJECT(IMP::isd, GaussianAnchorEMRestraint, GaussianAnchorEMRestraints)
 IMP_SWIG_OBJECT(IMP::isd, GammaPrior, GammaPriors);
 IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProximityRestraints);
 
+%extend IMP::isd::CrossLinkMSRestraint {
+  %pythoncode %{
+    def _get_contributions_sigma_numpy(self):
+        import numpy
+        n = self.get_number_of_contributions()
+        ret = numpy.empty((n, 2), int)
+        for i in range(n):
+            ret[i] = self.get_contribution_sigma_indexes(i)
+        return ret
+
+    def _get_contributions_psi_numpy(self):
+        import numpy
+        n = self.get_number_of_contributions()
+        ret = numpy.empty(n, int)
+        for i in range(n):
+            ret[i] = self.get_contribution_psi_index(i)
+        return ret
+
+    def _get_contributions_particles_numpy(self):
+        import numpy
+        n = self.get_number_of_contributions()
+        ret = numpy.empty((n, 2), int)
+        for i in range(n):
+            ret[i] = self.get_contribution_particle_indexes(i)
+        return ret
+
+    def _get_python_evaluate(self):
+        from numba import njit
+        import numpy.linalg
+        import math
+
+        @njit
+        def sphere_cap(r1, r2, d):
+            sc = 0.
+            if d <= max(r1, r2) - min(r1, r2):
+                sc = min(4.0 / 3.0 * math.pi * r1 * r1 * r1,
+                         4.0 / 3.0 * math.pi * r2 * r2 * r2)
+            elif d >= r1 + r2:
+                sc = 0.
+            else:
+                sc = ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
+                      (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
+                       + 6 * r1 * r2 - 3 * r2 * r2))
+            return sc
+
+        @njit
+        def get_probability(xyz, scale, ps, ncontrib, sigma, psi, length,
+                            slope):
+            onemprob = 1.0
+            for k in range(ncontrib):
+                dist = numpy.linalg.norm(xyz[ps[k, 0]] - xyz[ps[k, 1]])
+                if dist < 0.0001:
+                    dist = 0.0001
+                psik = scale[psi[k]]
+                sigmai = scale[sigma[k, 0]]
+                sigmaj = scale[sigma[k, 1]]
+
+                voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
+                volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+
+                if dist < sigmai + sigmaj:
+                    xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
+                             * (length / 2.) * (length / 2))
+                    fi = min(voli, xlvol)
+                    fj = min(volj, xlvol)
+                else:
+                    di = dist - sigmaj - length / 2.
+                    dj = dist - sigmai - length / 2.
+                    fi = sphere_cap(sigmai, length / 2., abs(di))
+                    fj = sphere_cap(sigmaj, length / 2., abs(dj))
+
+                pofr = fi * fj / voli / volj
+                if slope is not None:
+                    prior = math.exp(slope * dist)
+                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
+                                           + pofr * (1 - psik)) * prior)
+                else:
+                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
+                                           + pofr * (1 - psik)))
+            return 1.0 - onemprob
+
+        if self.get_is_length_variable():
+            raise NotImplementedError("Only implemented for fixed-length")
+        m = self.get_model()
+        xyz, radius = m.get_spheres_numpy()
+        scale = m.get_floats_numpy(IMP.isd.Scale.get_scale_key())
+        sigma = self._get_contributions_sigma_numpy()
+        psi = self._get_contributions_psi_numpy()
+        pis = self._get_contributions_particles_numpy()
+        get_log_prob = self.get_log_prob()
+        length = self.get_length()
+        ncontrib = len(sigma)
+        slope = self.get_slope() if self.get_has_slope() else None
+
+        @njit
+        def scorefunc():
+            prob = get_probability(xyz, scale, pis, ncontrib, sigma, psi,
+                                   length, slope)
+            if get_log_prob:
+                return -math.log(prob)
+            else:
+                return prob
+
+        return scorefunc
+  %}
+}
+
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
 %pythoncode %{
