@@ -1,8 +1,8 @@
 /**
- *  \file core/generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file ContainerConstraint.h
+ *  \brief Templated and more efficient constraint implementation.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,8 +15,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-/** Create a constraint tied to particular modifiers and contains. This
-    functionality, which is only available in C++ can result in faster
+/** Create a constraint tied to particular modifiers and containers. This
+    functionality, which is only available in C++, can result in faster
     evaluates.
 */
 template <class Before, class After, class Container>
