@@ -443,7 +443,7 @@ void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
   computed.insert(mo);
   IMP_OBJECT_LOG;
   if (tf) {
-    ScoreStates all;
+    ScoreStatesTemp all;
     for(ModelObject * input : dependency_graph_.find(mo)->second.get_inputs()) {
       do_set_has_required_score_states(input, true);
       all += required_score_states_.find(input)->second;
