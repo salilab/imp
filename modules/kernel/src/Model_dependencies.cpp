@@ -443,19 +443,21 @@ void Model::do_set_has_required_score_states(ModelObject *mo, bool tf) {
   computed.insert(mo);
   IMP_OBJECT_LOG;
   if (tf) {
-    ScoreStatesTemp all;
+    std::set<ScoreState *> all;
     for(ModelObject * input : dependency_graph_.find(mo)->second.get_inputs()) {
       do_set_has_required_score_states(input, true);
-      all += required_score_states_.find(input)->second;
+      const auto &childss = required_score_states_.find(input)->second;
+      all.insert(childss.begin(), childss.end());
       ScoreState *ss = dynamic_cast<ScoreState *>(input);
-      if (ss) all.push_back(ss);
+      if (ss) all.insert(ss);
     }
     for(ModelObject * input :
                     dependency_graph_.find(mo)->second.get_writers()) {
       do_set_has_required_score_states(input, true);
-      all += required_score_states_.find(input)->second;
+      const auto &childss = required_score_states_.find(input)->second;
+      all.insert(childss.begin(), childss.end());
       ScoreState *ss = dynamic_cast<ScoreState *>(input);
-      if (ss) all.push_back(ss);
+      if (ss) all.insert(ss);
     }
     required_score_states_[mo] = get_update_order(all);
     IMP_LOG_VERBOSE("Score states for " << get_name() << " are "

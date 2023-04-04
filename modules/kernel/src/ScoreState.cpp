@@ -55,6 +55,15 @@ ScoreStatesTemp get_update_order(ScoreStatesTemp in) {
   return in;
 }
 
+ScoreStatesTemp get_update_order(std::set<ScoreState*> in) {
+  IMP_FUNCTION_LOG;
+  ScoreStatesTemp ret(in.begin(), in.end());
+  if (ret.empty()) return ret;
+  std::sort(ret.begin(), ret.end(), CompOrder());
+  IMP_LOG_TERSE("Order: " << ret << std::endl);
+  return ret;
+}
+
 void ScoreState::handle_set_has_required_score_states(bool tf) {
   if (tf) {
     IMP_USAGE_CHECK(update_order_ == -1, "Already had update order");

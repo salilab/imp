@@ -121,6 +121,12 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
     the score states in. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 
+#ifndef SWIG
+/** Return an appropriate (topologically sorted) order to update
+    the score states in. */
+IMPKERNELEXPORT ScoreStatesTemp get_update_order(std::set<ScoreState*> input);
+#endif
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_SCORE_STATE_H */
