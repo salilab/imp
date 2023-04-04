@@ -12,6 +12,8 @@
 #include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -25,10 +27,17 @@ class ContainerConstraint : public Constraint {
   IMP::PointerMember<After> af_;
   IMP::PointerMember<Container> c_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Constraint>(this), f_, af_, c_);
+  }
+
  public:
   ContainerConstraint(Before *before, After *after, Container *c,
                       std::string name="ContainerConstraint %1%",
                       bool can_skip=false);
+
+  ContainerConstraint() {}
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }

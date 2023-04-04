@@ -3,7 +3,7 @@
  *  \brief Use a ClassnameModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAMES_CONSTRAINT_H
@@ -15,6 +15,8 @@
 #include <IMP/Constraint.h>
 #include <IMP/object_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 // for swig
@@ -32,7 +34,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::ClassnameConstraint
  */
-class ClassnamesConstraint :
+class IMPCONTAINEREXPORT ClassnamesConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
     public Constraint
 #else
@@ -42,6 +44,13 @@ class ClassnamesConstraint :
     {
   typedef IMP::internal::ContainerConstraint<
       ClassnameModifier, ClassnameModifier, ClassnameContainer> P;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(ClassnamesConstraint);
 
  public:
   /** \param[in] c The Container to hold the elements to process
@@ -55,6 +64,9 @@ class ClassnamesConstraint :
                        ClassnameContainerAdaptor c,
                        std::string name = "ClassnamesConstraint %1%")
       : P(before, after, c, name) {}
+
+  ClassnamesConstraint() {}
+
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:
   void do_update_attributes();
