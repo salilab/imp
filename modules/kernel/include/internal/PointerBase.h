@@ -284,12 +284,8 @@ inline void swap(PointerBase<Traits>& a, PointerBase<Traits>& b) {
   a.swap_with(b);
 }
 
-#if IMP_COMPILER_HAS_THREE_WAY
-template <class OT, class OTraits>
-inline std::strong_ordering operator<=>(OT* o, const PointerBase<OTraits>& p) {
-  return p <=> o;
-}
-#else
+// Reversed operators are not needed in C++20
+#ifndef IMP_COMPILER_HAS_THREE_WAY
 template <class OT, class OTraits>
 inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
   return p == o;
