@@ -26,14 +26,18 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/static_assert.hpp>
 
-#if IMP_HAS_CHECKS >= IMP_USAGE
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_ALGEBRA_VECTOR_CHECK check_vector()
+#else
+#define IMP_ALGEBRA_VECTOR_CHECK
+#endif
+
+#if IMP_HAS_CHECKS >= IMP_USAGE
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
   check_compatible_vector(o);                  \
   o.check_vector()
 #else
-#define IMP_ALGEBRA_VECTOR_CHECK
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o)
 #endif
