@@ -23,14 +23,13 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 //! A class to store a fixed array of same-typed values.
 /** Only the constructor with the correct number of arguments for the
-        dimensionality can be used.
+    dimensionality can be used.
 
-        \note These are mapped to/from Python tuples, so there is
-        no need to use types that are typedefs of this on the Python
-        side.
+    \note These are mapped to/from Python tuples, so there is
+    no need to use types that are typedefs of this on the Python side.
 
-        \see ConstVector
-    */
+    \see ConstVector
+ */
 template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
   typedef std::array<Data, D> Storage;
