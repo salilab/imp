@@ -16,6 +16,7 @@
 #include "check_macros.h"
 #include "showable_macros.h"
 #include <array>
+#include <type_traits>
 #include <cereal/access.hpp>
 #include <cereal/types/array.hpp>
 
@@ -42,9 +43,9 @@ class Array : public Value {
 
   int compare(const Array<D, Data, SwigData>& o) const {
     for (unsigned int i = 0; i < D; ++i) {
-      if (d_[i] < o[i])
+      if (d_[i] < o.get(i))
         return -1;
-      else if (d_[i] > o[i])
+      else if (d_[i] > o.get(i))
         return 1;
     }
     return 0;
@@ -58,28 +59,30 @@ class Array : public Value {
     return D;
   };
   Array() {}
+
+  template<int DT=D, typename std::enable_if<DT == 2>::type* = nullptr>
   Array(SwigData x, SwigData y) {
-    IMP_USAGE_CHECK(D == 2, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
   }
+
+  template<int DT=D, typename std::enable_if<DT == 3>::type* = nullptr>
   Array(SwigData x, SwigData y, SwigData z) {
-    IMP_USAGE_CHECK(D == 3, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
     d_[2] = z;
   }
+
+  template<int DT=D, typename std::enable_if<DT == 4>::type* = nullptr>
   Array(SwigData x0, SwigData x1, SwigData x2, SwigData x3) {
-    IMP_USAGE_CHECK(D == 4, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x0;
     d_[1] = x1;
     d_[2] = x2;
     d_[3] = x3;
   }
+
   SwigData get(unsigned int i) const { return d_[i]; }
+
   IMP_HASHABLE_INLINE(Array, std::size_t seed = 0;
                       for (unsigned int i = 0; i < D; ++i) {
                              boost::hash_combine(seed, d_[i]);
