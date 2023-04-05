@@ -37,7 +37,7 @@ class IMPISDEXPORT Nuisance : public Decorator {
 
   static FloatKey get_nuisance_key();
   Float get_nuisance() const {
-    return get_particle()->get_value(get_nuisance_key());
+    return get_model()->get_attribute(get_nuisance_key(), get_particle_index());
   }
   void set_nuisance(Float d);
 

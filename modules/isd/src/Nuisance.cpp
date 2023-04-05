@@ -25,7 +25,6 @@ FloatKey Nuisance::get_nuisance_key() {
 }
 void Nuisance::set_nuisance(Float d) {
   Float d_ = d;
-  Particle *p = get_particle();
   if (get_has_lower()) {
     Float lo = get_lower();
     if (d < lo) d_ = lo;
@@ -34,7 +33,7 @@ void Nuisance::set_nuisance(Float d) {
     Float up = get_upper();
     if (d > up) d_ = up;
   }
-  p->set_value(get_nuisance_key(), d_);
+  get_model()->set_attribute(get_nuisance_key(), get_particle_index(), d_);
 }
 
 bool Nuisance::get_has_lower() const {
