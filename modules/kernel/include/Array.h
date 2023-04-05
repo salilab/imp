@@ -21,7 +21,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! A class to store an fixed array of same-typed values.
+//! A class to store a fixed array of same-typed values.
 /** Only the constructor with the correct number of arguments for the
         dimensionality can be used.
 
