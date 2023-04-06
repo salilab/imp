@@ -2,8 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import random
-import math
 
 
 class Tests(IMP.test.TestCase):
@@ -28,12 +26,11 @@ class Tests(IMP.test.TestCase):
             r0 = r.get_rotated(pts[0])
             r1 = r.get_rotated(pts[1])
             print(".color red")
-            print(".sphere " + str(r0[0]) + " " + str(r0[1]) + " " + str(r0[2])\
-                + " .1")
+            print(".sphere " + str(r0[0]) + " " + str(r0[1]) + " " + str(r0[2])
+                  + " .1")
             print(".color blue")
-            print(".sphere " + str(.5 * r1[0]) + " " + str(.5 * r1[1]) + " " \
-                + str(.5 * r1[2])\
-                + " .1")
+            print(".sphere " + str(.5 * r1[0]) + " " + str(.5 * r1[1]) + " "
+                  + str(.5 * r1[2]) + " .1")
 
         c0 = IMP.algebra.get_zero_vector_3d()
         c1 = c0

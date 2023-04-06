@@ -15,8 +15,8 @@ class Tests(IMP.test.TestCase):
         sio = io.BytesIO()
         r.show(sio)
         v = r.get_reflected(IMP.algebra.Vector3D(20., 0., 0.))
-        self.assertLess(IMP.algebra.get_distance(v,
-                                       IMP.algebra.Vector3D(20,10,0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            v, IMP.algebra.Vector3D(20, 10, 0)), 1e-4)
 
     def test_pickle(self):
         """Test (un-)pickle of Reflection3D"""

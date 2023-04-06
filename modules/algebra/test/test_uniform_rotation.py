@@ -26,8 +26,8 @@ class Tests(IMP.test.TestCase):
             theta1 = eu_angles.get_theta()
             rot1 = IMP.algebra.get_rotation_from_fixed_zxz(phi1, theta1, psi1)
             print("Test #%3d:" % i, end=' ')
-            print("phi %5.2f / %5.2f theta %5.2f / %5.2f psi %5.2f / %5.2f" \
-                % (phi, phi1, theta, theta1, psi, psi1))
+            print("phi %5.2f / %5.2f theta %5.2f / %5.2f psi %5.2f / %5.2f"
+                  % (phi, phi1, theta, theta1, psi, psi1))
             self.assertAlmostEqual(IMP.algebra.get_distance(rot, rot1), 0, 3)
         print()
 
@@ -35,6 +35,7 @@ class Tests(IMP.test.TestCase):
         rots = IMP.algebra.get_uniformly_sampled_rotations(math.radians(30))
         print("number of rots", len(rots))
         self.assertEqual(552, len(rots))
+
 
 if __name__ == '__main__':
     IMP.test.main()

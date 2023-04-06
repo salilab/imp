@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 
 
 class Tests(IMP.test.TestCase):
@@ -39,19 +38,19 @@ class Tests(IMP.test.TestCase):
         sa = S(V(0, 0, 0), V(0, 0, 0))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
-        self.assertLess(IMP.algebra.get_distance(ssab.get_point(0), V(0,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssab.get_point(0), V(0, 0, 0)),
                         1e-3)
-        self.assertLess(IMP.algebra.get_distance(ssab.get_point(1), V(1,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssab.get_point(1), V(1, 0, 0)),
                         1e-3)
         ssba = ss(sb, sa)
-        self.assertLess(IMP.algebra.get_distance(ssba.get_point(0), V(1,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssba.get_point(0), V(1, 0, 0)),
                         1e-3)
-        self.assertLess(IMP.algebra.get_distance(ssba.get_point(1), V(0,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssba.get_point(1), V(0, 0, 0)),
                         1e-3)
         ssaa = ss(sa, S(V(1, 0, 0), V(1, 0, 0)))
-        self.assertLess(IMP.algebra.get_distance(ssaa.get_point(0), V(0,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssaa.get_point(0), V(0, 0, 0)),
                         1e-3)
-        self.assertLess(IMP.algebra.get_distance(ssaa.get_point(1), V(1,0,0)),
+        self.assertLess(IMP.algebra.get_distance(ssaa.get_point(1), V(1, 0, 0)),
                         1e-3)
 
     def test_non_parallel(self):
@@ -62,9 +61,9 @@ class Tests(IMP.test.TestCase):
         sa = S(V(0, 0, 0), V(0, 0, 10))
         sb = S(V(3, 0, 4), V(10, 0, 4))
         ssab = ss(sa, sb)
-        self.assertLess(IMP.algebra.get_distance(ssab.get_point(0), V(0,0,4)),
+        self.assertLess(IMP.algebra.get_distance(ssab.get_point(0), V(0, 0, 4)),
                         1e-3)
-        self.assertLess(IMP.algebra.get_distance(ssab.get_point(1), V(3,0,4)),
+        self.assertLess(IMP.algebra.get_distance(ssab.get_point(1), V(3, 0, 4)),
                         1e-3)
 
     def test_parallel_no_overlap(self):
@@ -76,6 +75,7 @@ class Tests(IMP.test.TestCase):
         sb = S(V(0, 0, 20), V(0, 0, 30))
         ssab = ss(sa, sb)
         self.assertAlmostEqual(ssab.get_length(), 10, delta=.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

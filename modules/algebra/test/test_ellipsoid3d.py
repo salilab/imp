@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 import pickle
 
 
@@ -32,7 +31,7 @@ class Tests(IMP.test.TestCase):
     def test_construction(self):
         """Check Ellipsoid construction"""
         r = IMP.algebra.get_rotation_about_axis(
-                 IMP.algebra.Vector3D(0., 0., 0.), .1)
+            IMP.algebra.Vector3D(0., 0., 0.), .1)
         e = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(0.0, 1.0, 2.0),
                                     5.0, 8.0, 10.0, r)
         self.assertEqual([x for x in e.get_radii()], [5., 8., 10.])
@@ -44,11 +43,11 @@ class Tests(IMP.test.TestCase):
     def test_pickle(self):
         """Test (un-)pickle of Ellipsoid3D"""
         r1 = IMP.algebra.get_rotation_about_axis(
-                 IMP.algebra.Vector3D(0., 0., 0.), .1)
+            IMP.algebra.Vector3D(0., 0., 0.), .1)
         e1 = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(0.0, 1.0, 2.0),
                                      5.0, 8.0, 10.0, r1)
         r2 = IMP.algebra.get_rotation_about_axis(
-                 IMP.algebra.Vector3D(0., 1., 0.), .1)
+            IMP.algebra.Vector3D(0., 1., 0.), .1)
         e2 = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(1.0, 2.0, 0.0),
                                      6.0, 9.0, 11.0, r2)
         e2.foo = 'bar'

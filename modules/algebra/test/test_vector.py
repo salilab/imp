@@ -1,14 +1,14 @@
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 import io
+
 
 class Tests(IMP.test.TestCase):
 
     def test_vector_nd(self):
         """Test VectorD<N> operations for unusual N"""
-        for N in (-1,1,2,4,5,6):
+        for N in (-1, 1, 2, 4, 5, 6):
             if N == -1:
                 clsdim = 'K'
                 dim = 5
@@ -35,6 +35,7 @@ class Tests(IMP.test.TestCase):
             v2 = v * v
             sio = io.BytesIO()
             v.show(sio)
+
 
 if __name__ == '__main__':
     IMP.test.main()

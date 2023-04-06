@@ -3,7 +3,6 @@ import IMP.test
 import IMP.atom
 import IMP.core
 import IMP.algebra
-import os
 
 
 class Tests(IMP.test.TestCase):
@@ -48,6 +47,7 @@ class Tests(IMP.test.TestCase):
 
         sps_area = sum([s.get_area() for s in sps])
         self.assertAlmostEqual(sps_area, 5478.68, delta=.2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

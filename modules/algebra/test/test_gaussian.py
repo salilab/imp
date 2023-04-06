@@ -17,10 +17,11 @@ class Tests(IMP.test.TestCase):
         g = IMP.algebra.Gaussian3D(rf, var)
         sio = BytesIO()
         g.show(sio)
+
         def check_gauss(g):
             g_rf = g.get_reference_frame()
             self.assertLess(IMP.algebra.get_distance(
-                      g_rf.get_transformation_to().get_translation(), t), 1e-4)
+                g_rf.get_transformation_to().get_translation(), t), 1e-4)
             self.assertLess(IMP.algebra.get_distance(g.get_variances(), var),
                             1e-4)
             self.assertLess(IMP.algebra.get_distance(g.get_center(), t), 1e-4)

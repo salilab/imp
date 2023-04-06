@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 import pickle
 
 
@@ -34,13 +33,13 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(cone.get_height(), 5.0, delta=1e-4)
         p = cone.get_base_plane()
         self.assertAlmostEqual(p.get_height(cone.get_tip()), 5.0, delta=1e-5)
-        self.assertLess((cone.get_direction() - IMP.algebra.Vector3D(0,0,1)).get_magnitude(), 0.01)
+        self.assertLess((cone.get_direction() - IMP.algebra.Vector3D(0, 0, 1)).get_magnitude(), 0.01)
         self.assertLess((cone.get_tip() - s.get_point(0)).get_magnitude(), 0.01)
         self.assertTrue(cone.get_contains(IMP.algebra.Vector3D(0.0, 0.0, 3.0)))
         self.assertTrue(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 3.0)))
         self.assertFalse(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 0.0)))
         self.assertFalse(
-                  cone.get_contains(IMP.algebra.Vector3D(1.0, 1.0, -3.0)))
+            cone.get_contains(IMP.algebra.Vector3D(1.0, 1.0, -3.0)))
         print(cone)
 
     def test_sphere_patch2(self):
@@ -79,10 +78,10 @@ class Tests(IMP.test.TestCase):
     def test_pickle(self):
         """Test (un-)pickle of Cone3D"""
         s1 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
-                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+                                   IMP.algebra.Vector3D(0.0, 0.0, 5.0))
         cone1 = IMP.algebra.Cone3D(s1, 4.0)
         s2 = IMP.algebra.Segment3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0),
-                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+                                   IMP.algebra.Vector3D(0.0, 0.0, 5.0))
         cone2 = IMP.algebra.Cone3D(s2, 6.0)
         cone2.foo = 'bar'
         dump = pickle.dumps((cone1, cone2))

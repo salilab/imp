@@ -1,7 +1,6 @@
 from __future__ import print_function
 import IMP.test
 import IMP.algebra
-import math
 
 
 def in_box(lb, ub, pt):
@@ -35,6 +34,7 @@ class Tests(IMP.test.TestCase):
             for i in range(0, 3):
                 self.assertTrue(in_box(olb, oub, rv))
                 self.assertFalse(in_box(ilb, iub, rv))
+
 
 if __name__ == '__main__':
     IMP.test.main()

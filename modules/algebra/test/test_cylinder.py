@@ -134,7 +134,7 @@ class Tests(IMP.test.TestCase):
         m = 100000
         for i in range(m):
             v = IMP.algebra.get_random_vector_in(c)
-            if(inner_box.get_contains(v)):
+            if inner_box.get_contains(v):
                 n = n + 1
         # assert probabilistically (using Chernoff bound, m is good enough)
         from IMP.algebra import get_volume

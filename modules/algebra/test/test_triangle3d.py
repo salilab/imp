@@ -1,8 +1,8 @@
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 import io
+
 
 class Tests(IMP.test.TestCase):
 
@@ -56,12 +56,13 @@ class Tests(IMP.test.TestCase):
                                     V(0.4, 0.0, 5.0))
         t = IMP.algebra.get_transformation_from_first_triangle_to_second(t1, t2)
         v = t.get_translation()
-        self.assertLess(IMP.algebra.get_distance(v, V(0.4,0,0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(v, V(0.4, 0, 0)), 1e-4)
         r = t.get_rotation().get_quaternion()
         self.assertAlmostEqual(r[0], 0.5, delta=1e-5)
         self.assertAlmostEqual(r[1], 0.5, delta=1e-5)
         self.assertAlmostEqual(r[2], 0.5, delta=1e-5)
         self.assertAlmostEqual(r[3], 0.5, delta=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()
