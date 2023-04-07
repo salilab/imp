@@ -55,6 +55,15 @@ enum Stage {
 
 class Model;
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+// This is needed as NodeInfo (below) needs to be showable, and Edges are not
+inline std::ostream &operator<<(
+              std::ostream &out, const std::set<ModelObject *> &) {
+  out << "(set of ModelObject)";
+  return out;
+}
+#endif
+
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
     ScoreState and Restraint object types.
@@ -91,7 +100,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::ParticlesAttributeTable
 #endif
                               {
-  typedef Vector<ModelObject *> Edges;
+  typedef std::set<ModelObject *> Edges;
   // must be up top
   // we don't want any liveness checks
   IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, Edges, inputs, Edges, input_outputs,
