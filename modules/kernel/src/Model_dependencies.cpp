@@ -55,8 +55,10 @@ ScoreStatesTemp Model::get_descendent_score_states(const ModelObject *mo)
   return ret;
 }
 
-void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
+void Model::do_check_inputs_and_outputs(const ModelObject *cmo) const {
+  ModelObject *mo = const_cast<ModelObject *>(cmo);
   IMP_UNUSED(mo);  // for fast builds
+  IMP_UNUSED(cmo);  // for fast builds
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for(ModelObject * i :
         dependency_graph_.find(mo)->second.get_inputs()) {
@@ -83,7 +85,8 @@ void Model::do_check_inputs_and_outputs(const ModelObject *mo) const {
   }
 }
 
-void Model::do_check_readers_and_writers(const ModelObject *mo) const {
+void Model::do_check_readers_and_writers(const ModelObject *cmo) const {
+  ModelObject *mo = const_cast<ModelObject *>(cmo);
   {
     const std::set<ModelObject *> &readers
                  = dependency_graph_.find(mo)->second.get_readers();
@@ -144,8 +147,10 @@ void Model::do_check_update_order(const ScoreState *ss) const {
   }
 }
 
-void Model::do_check_not_in_readers_and_writers(const ModelObject *mo) const {
+void Model::do_check_not_in_readers_and_writers(const ModelObject *cmo) const {
+  ModelObject *mo = const_cast<ModelObject *>(cmo);
   IMP_UNUSED(mo);  // for fast builds
+  IMP_UNUSED(cmo);  // for fast builds
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for(DependencyGraph::value_type vt : dependency_graph_) {
       const std::set<ModelObject *> &readers = vt.second.get_readers();
