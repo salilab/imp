@@ -26,7 +26,7 @@ To experiment with IMP on [Google Colaboratory](https://colab.research.google.co
 !apt update
 !apt install imp
 import sys
-sys.path.append('/usr/lib/python3.6/dist-packages')
+sys.path.append('/usr/lib/python3.8/dist-packages')
 \endcode
 
 # Source code installation {#installation_source}
