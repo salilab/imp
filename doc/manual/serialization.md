@@ -3,9 +3,9 @@ Serialization {#serialization}
 
 Most %IMP types can be serialized - that is, the internal state of an object,
 such as the values of its member variables, can be written to or read in from
-a file or string. This allows for individual objects or an entire %IMP run
-to be saved and later restored. In Python, the objects can be loaded or
-saved using the `pickle` module.
+a file, string or stream. This allows for individual objects or an entire %IMP
+run to be saved and later restored, or to be sent from one machine to another.
+In Python, the objects can be loaded or saved using the `pickle` module.
 
 Serialization relies on the excellent
 [cereal](https://uscilab.github.io/cereal/) library, which is required to
