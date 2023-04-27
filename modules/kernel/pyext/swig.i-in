@@ -2,6 +2,13 @@
 from . import _list_util
 %}
 
+// Provide catch-all implementations in base classes so
+// that pickle fails with a more informative error than
+// "TypeError: cannot pickle 'SwigPyObject' object"
+IMP_NOT_SERIALIZABLE(IMP::Object);
+IMP_NOT_SERIALIZABLE(IMP::Value);
+IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
+
 %extend IMP::Object {
   bool __eq__(const Object *o) const {
      return self ==o;

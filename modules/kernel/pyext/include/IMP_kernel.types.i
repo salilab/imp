@@ -1087,3 +1087,13 @@ _value_types.append(#Name)
 %enddef
 
 typedef unsigned int uint32_t;
+
+%define IMP_NOT_SERIALIZABLE(Name)
+%extend Name {
+  %pythoncode %{
+    def __getstate__(self):
+        raise NotImplementedError(str(self.__class__)
+                                  + " does not support serialization")
+  %}
+}
+%enddef
