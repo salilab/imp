@@ -88,6 +88,18 @@ class Test(IMP.test.TestCase):
         self.assertEqual(len(newmvr.get_movers()), 10)
         self.assertEqual(newmvr.get_subset_size(), 5)
 
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of SubsetMover via polymorphic pointer"""
+        self.make_system()
+        mvr = IMP.core.SubsetMover(self.mvs, 5)
+        mvr.set_name("foo")
+        sm = IMP.core.SerialMover([mvr])
+        dump = pickle.dumps(sm)
+
+        newsm = pickle.loads(dump)
+        newmvr, = newsm.get_movers()
+        self.assertEqual(newmvr.get_name(), "foo")
+
 
 if __name__ == '__main__':
     IMP.test.main()
