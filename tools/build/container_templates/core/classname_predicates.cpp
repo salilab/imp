@@ -5,6 +5,7 @@
  */
 
 #include <IMP/core/HELPERNAME_predicates.h>
+#include <IMP/core/ClassnameRestraint.h>
 #include <IMP/random.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -25,5 +26,7 @@ AllSameClassnamePredicate::AllSameClassnamePredicate(std::string name)
 CoinFlipClassnamePredicate::CoinFlipClassnamePredicate(double p,
                                                        std::string name)
     : ClassnamePredicate(name), p_(p), rng_(0., 1.) {}
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ClassnameRestraint);
 
 IMPCORE_END_NAMESPACE

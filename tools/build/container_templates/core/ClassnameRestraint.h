@@ -2,7 +2,7 @@
  *  \file IMP/core/ClassnameRestraint.h
  *  \brief Apply a ClassnameScore to a Classname.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,6 +37,7 @@ class ClassnameRestraint :
     ar(cereal::base_class<
                     IMP::internal::TupleRestraint<ClassnameScore> >(this));
   }
+  IMP_OBJECT_SERIALIZE_DECL(ClassnameRestraint);
  public:
   //! Create the restraint.
   /** This function takes the function to apply to the
