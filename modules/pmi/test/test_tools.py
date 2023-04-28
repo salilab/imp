@@ -52,33 +52,6 @@ class MockMPI4Py(object):
 
 class Tests(IMP.test.TestCase):
 
-    def test_particle_to_sample_list(self):
-        """Test ParticleToSampleList"""
-        with IMP.allow_deprecated():
-            p = IMP.pmi.tools.ParticleToSampleList()
-        self.assertEqual(p.label, 'None')
-        self.assertRaises(TypeError, p.add_particle, 'P0', 'bad_type', 1, 'foo')
-
-        p.add_particle('RB1', 'Rigid_Bodies', (1., 2.), 'myRB1')
-        # Test bad rigid body transformation
-        self.assertRaises(TypeError, p.add_particle,
-                          'RB1', 'Rigid_Bodies', [1., 2.], 'myRB1')
-
-        p.add_particle('S1', 'Surfaces', (1., 2., 3.), 'myS1')
-        self.assertRaises(TypeError, p.add_particle,
-                          'S1', 'Surfaces', [1., 2.], 'myS1')
-
-        p.add_particle('F1', 'Floppy_Bodies', 1., 'myF1')
-        self.assertRaises(TypeError, p.add_particle,
-                          'F1', 'Floppy_Bodies', 'badtransform', 'myF1')
-
-        self.assertEqual(p.get_particles_to_sample(),
-                {'SurfacesParticleToSampleList_myS1_None':
-                        (['S1'], (1.0, 2.0, 3.0)),
-                 'Rigid_BodiesParticleToSampleList_myRB1_None':
-                        (['RB1'], (1.0, 2.0)),
-                 'Floppy_BodiesParticleToSampleList_myF1_None': (['F1'], 1.0)})
-
     def test_shuffle(self):
         """Test moving rbs, fbs"""
         mdl = IMP.Model()

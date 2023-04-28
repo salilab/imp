@@ -575,11 +575,6 @@ class ReplicaExchange(object):
             output.close_rmf(rmfname)
 
 
-@IMP.deprecated_object("2.18", "Use ReplicaExchange instead")
-class ReplicaExchange0(ReplicaExchange):
-    pass
-
-
 class BuildSystem(object):
     """A macro to build a IMP::pmi::topology::System based on a
        TopologyReader object.
