@@ -16,6 +16,9 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
@@ -31,6 +34,13 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   Float max_angle_;
   ParticleIndex pi_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<MonteCarloMover>(this),
+       last_transformation_, max_translation_, max_angle_, pi_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyMover);
+
  public:
   //! Constructor. The given rigid body is rotated and translated.
   /** \param[in] m the Model
@@ -40,6 +50,8 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
    */
   RigidBodyMover(Model *m, ParticleIndex pi,
                  Float max_translation, Float max_rotation);
+
+  RigidBodyMover() {}
 
   void set_maximum_translation(Float mt) {
     IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");

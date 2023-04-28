@@ -3,8 +3,9 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.algebra
-
+import pickle
 from math import *
+
 
 def get_axis_and_angle(q):
     angle = 2 * acos(q[0])
@@ -108,6 +109,28 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertLessEqual(abs(get_axis_and_angle(q)[0]),1.0)
         self.assertLessEqual(transm,1.0)
 
+    def test_pickle(self):
+        """Test (un-)pickle of RigidBodyMover"""
+        m = IMP.Model()
+        mol = IMP.atom.Hierarchy(IMP.Particle(m))
+        for c in [(100, 100, 100), (5, 100, 100), (10, 5, 100)]:
+            p = IMP.Particle(m)
+            dr = IMP.core.XYZR.setup_particle(p)
+            dr.set_coordinates(c)
+            dr.set_radius(1.0)
+            IMP.atom.Mass.setup_particle(p, 1.0)
+            h = IMP.atom.Hierarchy(p)
+            mol.add_child(h)
+        rb = IMP.atom.create_rigid_body(IMP.atom.get_leaves(mol))
+        rb_mover = IMP.core.RigidBodyMover(m, rb, 1.0, 2.0)
+        rb_mover.set_name("foo")
+        dump = pickle.dumps(rb_mover)
+
+        newmvr = pickle.loads(dump)
+        self.assertEqual(newmvr.get_name(), "foo")
+        self.assertAlmostEqual(newmvr.get_maximum_translation(),
+                               1.0, delta=1e-5)
+        self.assertAlmostEqual(newmvr.get_maximum_rotation(), 2.0, delta=1e-5)
 
 
 if __name__ == '__main__':

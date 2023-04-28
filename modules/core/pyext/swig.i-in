@@ -77,7 +77,7 @@ IMP_SWIG_OBJECT_SERIALIZE(IMP::core, RestraintsScoringFunction, RestraintsScorin
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyAnglePairScore, RigidBodyAnglePairScores);
-IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, RigidBodyMover, RigidBodyMovers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyUmbrella, RigidBodyUmbrellas);
 IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);

@@ -69,4 +69,6 @@ ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
   return ModelObjectsTemp(1, get_model()->get_particle(pi_));
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyMover);
+
 IMPCORE_END_NAMESPACE
