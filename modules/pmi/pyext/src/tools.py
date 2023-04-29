@@ -473,10 +473,15 @@ def select_by_tuple_2(hier, tuple_selection, resolution):
     return s.get_selected_particles()
 
 
-def get_db_from_csv(csvfilename):
+def get_db_from_csv(csvfilename, encoding=None):
+    if sys.version_info[0] == 2:
+        def open_with_encoding(fname, encoding):
+            return open(fname)
+    else:
+        open_with_encoding = open
     import csv
     outputlist = []
-    with open(csvfilename) as fh:
+    with open_with_encoding(csvfilename, encoding=encoding) as fh:
         csvr = csv.DictReader(fh)
         for ls in csvr:
             outputlist.append(ls)

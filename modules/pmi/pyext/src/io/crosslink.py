@@ -614,7 +614,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         return len(self.data_base)
 
     def create_set_from_file(self, file_name, converter=None,
-                             FixedFormatParser=None):
+                             FixedFormatParser=None, encoding=None):
         '''
         if FixedFormatParser is not specified, the file is
         comma-separated-values
@@ -622,9 +622,11 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         @param file_name a txt file to be parsed
         @param converter an instance of CrossLinkDataBaseKeywordsConverter
         @param FixedFormatParser a parser for a fixed format
+        @param encoding the encoding of the file, if not the locale
+               default (usually UTF-8)
         '''
         if not FixedFormatParser:
-            xl_list = IMP.pmi.tools.get_db_from_csv(file_name)
+            xl_list = IMP.pmi.tools.get_db_from_csv(file_name, encoding)
 
             if converter is not None:
                 self.cldbkc = converter
@@ -726,10 +728,15 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             '''
             if FixedFormatParser  is defined
             '''
+            if sys.version_info[0] == 2:
+                def open_with_encoding(fname, mode, encoding):
+                    return open(fname, mode)
+            else:
+                open_with_encoding = open
 
             new_xl_dict = {}
             nxl = 0
-            with open(file_name, "r") as f:
+            with open_with_encoding(file_name, "r", encoding=encoding) as f:
                 for line in f:
                     xl = FixedFormatParser.get_data(line)
                     if xl:

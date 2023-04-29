@@ -6,6 +6,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import os
+import sys
 
 import IMP.pmi.io.crosslink
 
@@ -90,7 +91,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(c,expected_converter)
         self.assertEqual(bc,expected_backward_converter)
 
-    def setup_cldb(self,input_data_set):
+    def setup_cldb(self, input_data_set, encoding=None):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("prot1")
         cldbkc.set_protein2_key("prot2")
@@ -99,8 +100,14 @@ class Tests(IMP.test.TestCase):
         cldbkc.set_unique_id_key("id")
         cldbkc.set_id_score_key("score")
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
-        cldb.create_set_from_file(self.get_input_file_name(input_data_set))
+        cldb.create_set_from_file(self.get_input_file_name(input_data_set),
+                                  encoding=encoding)
         return cldb
+
+    @IMP.test.skipIf(sys.version_info[0] == 2, "Only works with Python 3")
+    def test_encoding(self):
+        """Test create_set_from_file with non-standard encoding"""
+        cldb = self.setup_cldb("xl_dataset_test_utf16.dat", encoding='utf-16')
 
     def test_setup_cldb(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
