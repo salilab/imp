@@ -85,7 +85,7 @@ IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonConstraint, SingletonConstraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonRestraint, SingletonRestraints);
 IMP_SWIG_OBJECT( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
-IMP_SWIG_OBJECT( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSubSurfacePairScore, SoftSubSurfacePairScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSuperSurfacePairScore, SoftSuperSurfacePairScores);

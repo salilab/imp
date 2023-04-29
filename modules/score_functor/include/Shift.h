@@ -12,6 +12,9 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/Model.h>
 #include <IMP/particle_index.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A shift the distance by subtracting x0 and pass it to the base
@@ -20,6 +23,11 @@ template <class BaseDistanceScore>
 class Shift : public BaseDistanceScore {
   typedef BaseDistanceScore P;
   double x0_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<BaseDistanceScore>(this), x0_);
+  }
 
  public:
   Shift(double x0, BaseDistanceScore base) : P(base), x0_(x0) {}

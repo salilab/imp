@@ -69,4 +69,6 @@ ModelObjectsTemp WeightedSphereDistancePairScore::do_get_inputs(
   return IMP::get_particles(m, pis);
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::SphereDistancePairScore);
+
 IMPCORE_END_NAMESPACE
