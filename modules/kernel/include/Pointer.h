@@ -10,6 +10,7 @@
 #define IMPKERNEL_POINTER_H
 
 #include <memory>
+#include <typeinfo>
 #include <cereal/access.hpp>
 #include <IMP/kernel_config.h>
 #include "internal/PointerBase.h"
@@ -29,7 +30,9 @@ make_empty_object() {
 template<typename O>
 typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
 make_empty_object() {
-  IMP_THROW("Cannot load non-default-constructible object", TypeException);
+  const std::type_info &oi = typeid(O);
+  IMP_THROW("Cannot load non-default-constructible object " << oi.name(),
+            TypeException);
 }
 }
 #endif
