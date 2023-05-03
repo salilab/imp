@@ -15,6 +15,8 @@
 #include "create_decomposition.h"
 #include "AccumulatorScoreModifier.h"
 #include "functors.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 /** When programming in C++, you can use ContainerRestraint instead
@@ -24,11 +26,25 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Container>
 class ContainerRestraint : public Restraint {
   IMP::PointerMember<Container> pc_;
+  IMP::Pointer<Score> ss_;
   IMP::Pointer<AccumulatorScoreModifier<Score, Container> > acc_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), pc_, ss_);
+
+    // recreate the AccumulatorScoreModifier
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      acc_ = create_accumulator_score_modifier(ss_.get(), pc_.get());
+    }
+  }
 
  public:
   ContainerRestraint(Score *ss, Container *pc,
                      std::string name = "GroupnamesRestraint %1%");
+
+  ContainerRestraint() {}
 
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
@@ -74,6 +90,7 @@ ContainerRestraint<Score, C>::ContainerRestraint(Score *ss, C *pc,
                                                  std::string name)
     : Restraint(pc->get_model(), name),
       pc_(pc),
+      ss_(ss),
       acc_(create_accumulator_score_modifier(ss, pc)) {}
 
 template <class Score, class C>

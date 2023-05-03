@@ -14,6 +14,7 @@
 #include "IMP/container/ClassnameContainerStatistics.h"
 #include "IMP/container/ClassnamesOptimizerState.h"
 #include "IMP/container/ClassnamesConstraint.h"
+#include "IMP/container/ClassnamesRestraint.h"
 #include "IMP/container/DistributeClassnamesScoreState.h"
 #include "IMP/container/DynamicListClassnameContainer.h"
 #include "IMP/container/InContainerClassnameFilter.h"
@@ -606,5 +607,6 @@ void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
 
 IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ListClassnameContainer);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesConstraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesRestraint);
 
 IMPCONTAINER_END_NAMESPACE
