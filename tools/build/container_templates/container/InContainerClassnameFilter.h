@@ -19,11 +19,11 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! A filter which returns true if a container containers the Classname
+//! A filter which returns true if a container contains the Classname
 /** This predicate returns 1 if the passed tuple is in the container.
     \note Use the handle_permutations parameter to the constructor to
-    determine whether only exact matchers, or matches under permutation
-    are considered matching. By default they are are.
+    determine whether only exact matches, or matches under permutation
+    are considered matching. By default permutations are allowed.
  */
 class IMPCONTAINEREXPORT InContainerClassnameFilter
     : public ClassnamePredicate {
