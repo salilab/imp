@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidClosePairsFinder.h
  *  \brief Handle rigid bodies by looking at their members
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
@@ -11,6 +11,8 @@
 #include "ClosePairsFinder.h"
 #include "rigid_bodies.h"
 #include <IMP/Refiner.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -59,6 +61,18 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
   mutable IMP::PointerMember<ClosePairsFinder> cpf_;
   ObjectKey k_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClosePairsFinder>(this), cpf_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      k_ = get_hierarchy_key();
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidClosePairsFinder);
+
+  ObjectKey get_hierarchy_key() const;
 
  public:
   RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);

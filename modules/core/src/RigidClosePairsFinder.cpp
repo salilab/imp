@@ -24,14 +24,18 @@ IMPCORE_BEGIN_NAMESPACE
 
 RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
     : ClosePairsFinder("RigidCPF") {
-  std::ostringstream oss;
-  oss << "RigidClosePairsFinderHiearchy " << this;
-  k_ = ObjectKey(oss.str());
+  k_ = get_hierarchy_key();
   if (cpf) {
     cpf_ = cpf;
   } else {
     cpf_ = Pointer<ClosePairsFinder>(new GridClosePairsFinder());
   }
+}
+
+ObjectKey RigidClosePairsFinder::get_hierarchy_key() const {
+  std::ostringstream oss;
+  oss << "RigidClosePairsFinderHiearchy " << this;
+  return ObjectKey(oss.str());
 }
 
 namespace {
@@ -269,5 +273,7 @@ RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
                                                      double threshold) const {
   return new internal::RigidMovedSingletonContainer(in, threshold);
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidClosePairsFinder);
 
 IMPCORE_END_NAMESPACE

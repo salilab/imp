@@ -15,6 +15,8 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/model_object_helpers.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
@@ -36,8 +38,15 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
                                        public IMP::Object {
   double distance_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<IMP::Object>(this), distance_,
+       mutable_access_pair_filters());
+  }
+
  public:
   ClosePairsFinder(std::string name);
+  ClosePairsFinder() : IMP::Object("") {}
   ~ClosePairsFinder();
 
   //! return all close pairs among pc in model m

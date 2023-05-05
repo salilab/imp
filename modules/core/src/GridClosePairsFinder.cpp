@@ -77,4 +77,6 @@ ModelObjectsTemp GridClosePairsFinder::do_get_inputs(
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::GridClosePairsFinder);
+
 IMPCORE_END_NAMESPACE

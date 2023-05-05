@@ -11,6 +11,8 @@
 #include "ClosePairsFinder.h"
 #include <IMP/object_macros.h>
 #include <IMP/core/core_config.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,6 +21,11 @@ IMPCORE_BEGIN_NAMESPACE
    \see ClosePairsScoreState
  */
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClosePairsFinder>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(GridClosePairsFinder);
  public:
   GridClosePairsFinder();
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
