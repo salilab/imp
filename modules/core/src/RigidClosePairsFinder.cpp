@@ -34,7 +34,7 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
 
 ObjectKey RigidClosePairsFinder::get_hierarchy_key() const {
   std::ostringstream oss;
-  oss << "RigidClosePairsFinderHiearchy " << this;
+  oss << "RigidClosePairsFinderHierarchy " << this;
   return ObjectKey(oss.str());
 }
 
