@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         cps = newgpf.get_close_pairs(m, ([p1, p2, p3]))
         if IMP.IMP_KERNEL_HAS_NUMPY:
             cps = [tuple(p) for p in cps]
-        self.assertEqual(cps, [(1, 0)])
+        self.assertEqual(cps, [(p2.get_index(), p1.get_index())])
 
     def test_rigid_pickle(self):
         """Test (un-)pickle of RigidClosePairsFinder"""
@@ -63,7 +63,7 @@ class Tests(IMP.test.TestCase):
         cps = newrpf.get_close_pairs(m, ([p1, p2, p3]))
         if IMP.IMP_KERNEL_HAS_NUMPY:
             cps = [tuple(p) for p in cps]
-        self.assertEqual(cps, [(1, 0)])
+        self.assertEqual(cps, [(p2.get_index(), p1.get_index())])
 
 
 if __name__ == '__main__':
