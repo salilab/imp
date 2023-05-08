@@ -185,4 +185,6 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
   return datas[opt_i].slack;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClosePairContainer);
+
 IMPCONTAINER_END_NAMESPACE

@@ -2,7 +2,7 @@
  *  \file IMP/container/ClosePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
@@ -11,6 +11,8 @@
 #include <IMP/container/container_config.h>
 #include "internal/ClosePairContainer.h"
 #include <IMP/Optimizer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -70,6 +72,14 @@ class IMPCONTAINEREXPORT ClosePairContainer :
     {
   typedef internal::ClosePairContainer P;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(ClosePairContainer);
+
  public:
   //! Get the individual particles from the passed SingletonContainer
   /**
@@ -89,6 +99,8 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      core::ClosePairsFinder *cpf, double slack = 1,
                      std::string name = "ClosePairContainer%1%");
+
+  ClosePairContainer() {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   /** @name Methods to control the set of filters
