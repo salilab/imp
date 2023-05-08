@@ -16,17 +16,15 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-//! Decorator for a cv::Mat to use coordinates respect to a point
-//! Almost always that point is the center
+//! Decorator for a cv::Mat to use coordinates with respect to a point
+/** Almost always that point is the center */
 class CenteredMat {
 
  public:
-  /**
-   * Creates and CenteredMat for the matrix
-   * @param m The matrix
-   * @note The center pixel is not provided. It is assumed
-   * to be the center of the matrix
-   */
+  //! Creates a CenteredMat for the matrix
+  /** @param m The matrix
+      @note The center pixel is not provided. It is assumed
+            to be the center of the matrix. */
   CenteredMat(cv::Mat &m) {
     // m is not copied, just a reference is added.
 
@@ -38,12 +36,10 @@ class CenteredMat {
     set_starts_and_ends();
   }
 
-  /**
-   * Creates a CenteredMat for the matrix
-   * @param m The matrix
-   * @param center_row - The row for the point used as center of CenteredMat
-   * @param center_col - The column for the point used as center of CenteredMat
-   * @return
+  //! Creates a CenteredMat for the matrix
+  /** @param m The matrix
+      @param center_row - The row for the point used as center of CenteredMat
+      @param center_col - The column for the point used as center of CenteredMat
    */
   CenteredMat(cv::Mat &m, int center_row, int center_col) {
     centered_ = m;
@@ -57,29 +53,26 @@ class CenteredMat {
     set_starts_and_ends();
   }
 
-  /**
-   * get the starting value for a  dimension.
-  //! For example, in a matrix of 5x5 centered at the origin (2,2), the
-  //! starting point will be (-2,2)
-   * @param i The dimension to use (0 - rows, 1 - columns)
-   * @return The starting point in the given dimension
+  //! get the starting value for a  dimension.
+  /** For example, in a matrix of 5x5 centered at the origin (2,2), the
+      starting point will be (-2,2)
+      @param i The dimension to use (0 - rows, 1 - columns)
+      @return The starting point in the given dimension
    */
   int get_start(int i) const { return start_[i]; }
 
-  /**
-   * See get_start() function help. In the example of the 5x5 matrix,
-   * the end values would be (2,2)
-   * @param i The dimension to use (0 - rows, 1 - columns)
-   * @return The end point in the given dimension
+  //! See get_start() function help.
+  /** In the example of the 5x5 matrix, the end values would be (2,2)
+      @param i The dimension to use (0 - rows, 1 - columns)
+      @return The end point in the given dimension
    */
   int get_end(int i) const { return end_[i]; }
 
   //! Returns true if the indices are in the matrix.
-  /** Remember that the indices
-     are those respect to the center of CenteredMat
-     @param i Row
-     @param j Column
-     @return whether all the indices are in the matrix.
+  /** Remember that the indices are those respect to the center of CenteredMat
+      @param i Row
+      @param j Column
+      @return whether all the indices are in the matrix.
    */
   bool get_is_in_range(int i, int j) const {
     if (i < get_start(0) || i > get_end(0)) return false;
@@ -88,12 +81,11 @@ class CenteredMat {
   }
 
   //! Returns the element (i,j) RELATIVE to the center.
-  /** Remember then that
-   * the indices can be negative. For performance the indices out of range
-   * are NOT checked
-   * @param i row
-   * @param j column
-   * @return the value of the matrix at row i and column j
+  /** Remember that the indices can be negative. For performance the
+      indices are NOT checked for out of range.
+      @param i row
+      @param j column
+      @return the value of the matrix at row i and column j
    */
   double &operator()(int i, int j) {
     //    if (!get_is_in_range(i,j)) {
