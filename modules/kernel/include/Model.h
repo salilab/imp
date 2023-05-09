@@ -174,8 +174,13 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::FloatAttributeTable>(this),
        cereal::base_class<internal::StringAttributeTable>(this),
        cereal::base_class<internal::IntAttributeTable>(this),
+       cereal::base_class<internal::ObjectAttributeTable>(this),
+//     cereal::base_class<internal::WeakObjectAttributeTable>(this),
        cereal::base_class<internal::IntsAttributeTable>(this),
        cereal::base_class<internal::FloatsAttributeTable>(this),
+       cereal::base_class<internal::ObjectsAttributeTable>(this),
+       cereal::base_class<internal::ParticleAttributeTable>(this),
+       cereal::base_class<internal::ParticlesAttributeTable>(this),
        free_particles_);
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {

@@ -336,6 +336,17 @@ class Tests(IMP.test.TestCase):
         m2._set_from_binary(m._get_as_binary())
         self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
 
+    def test_serialize_ints_attributes(self):
+        """Check that Model ints attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntsKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(ik, p.get_index(), [1, 2, 42])
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(list(m2.get_attribute(ik, p.get_index())), [1, 2, 42])
+
     def test_serialize_cache_int_attributes(self):
         """Check that Model cache int attributes are (de-)serialized"""
         m = IMP.Model()
@@ -359,6 +370,21 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
                                delta=0.1)
 
+    def test_serialize_floats_attributes(self):
+        """Check that Model floats attributes are (de-)serialized"""
+        m = IMP.Model()
+        fk = IMP.FloatsKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(fk, p.get_index(), [1.0, 3.2, 5.4])
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        att = list(m2.get_attribute(fk, p.get_index()))
+        self.assertEqual(len(att), 3)
+        self.assertAlmostEqual(att[0], 1.0, delta=0.1)
+        self.assertAlmostEqual(att[1], 3.2, delta=0.1)
+        self.assertAlmostEqual(att[2], 5.4, delta=0.1)
+
     def test_serialize_string_attributes(self):
         """Check that Model string attributes are (de-)serialized"""
         m = IMP.Model()
@@ -369,6 +395,48 @@ class Tests(IMP.test.TestCase):
         m2 = IMP.Model()
         m2._set_from_binary(m._get_as_binary())
         self.assertEqual(m2.get_attribute(sk, p.get_index()), "test attribute")
+
+    def test_serialize_object_attributes(self):
+        """Check that Model object attributes are (de-)serialized"""
+        m = IMP.Model()
+        ok = IMP.ObjectKey("hi")
+        p = IMP.Particle(m)
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_attribute(ok, p.get_index(), t)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        newt = m2.get_attribute(ok, p.get_index())
+        self.assertEqual(newt.get_name(), "testobj")
+
+    def test_serialize_particle_attributes(self):
+        """Check that Model particle attributes are (de-)serialized"""
+        m = IMP.Model()
+        pk = IMP.ParticleIndexKey("hi")
+        p = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(pk, p.get_index(), p2)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        newp2 = m2.get_attribute(pk, p.get_index())
+        self.assertEqual(newp2, p2.get_index())
+
+    def test_serialize_particles_attributes(self):
+        """Check that Model particles attributes are (de-)serialized"""
+        m = IMP.Model()
+        pk = IMP.ParticleIndexesKey("hi")
+        p = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+        m.add_attribute(pk, p.get_index(), [p2, p3])
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        newp2, newp3 = m2.get_attribute(pk, p.get_index())
+        self.assertEqual(newp2, p2.get_index())
+        self.assertEqual(newp3, p3.get_index())
 
     def test_serialize_particles(self):
         """Check that Model particles are (de-)serialized"""
