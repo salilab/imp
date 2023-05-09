@@ -175,7 +175,7 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::StringAttributeTable>(this),
        cereal::base_class<internal::IntAttributeTable>(this),
        cereal::base_class<internal::ObjectAttributeTable>(this),
-//     cereal::base_class<internal::WeakObjectAttributeTable>(this),
+       cereal::base_class<internal::WeakObjectAttributeTable>(this),
        cereal::base_class<internal::IntsAttributeTable>(this),
        cereal::base_class<internal::FloatsAttributeTable>(this),
        cereal::base_class<internal::ObjectsAttributeTable>(this),

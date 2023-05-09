@@ -19,24 +19,6 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace {
-template<typename O>
-typename std::enable_if<std::is_default_constructible<O>::value, O*>::type
-make_empty_object() {
-  return new O;
-}
-
-template<typename O>
-typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
-make_empty_object() {
-  const std::type_info &oi = typeid(O);
-  IMP_THROW("Cannot load non-default-constructible object " << oi.name(),
-            TypeException);
-}
-}
-#endif
-
 //! A smart pointer to a reference counted object
 /** Any time you store an Object in a C++ program, you should use a
         Pointer, rather than a raw C++ pointer (or PointerMember, if the pointer

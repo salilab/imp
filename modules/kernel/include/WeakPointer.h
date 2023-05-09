@@ -8,10 +8,29 @@
 
 #ifndef IMPKERNEL_WEAK_POINTER_H
 #define IMPKERNEL_WEAK_POINTER_H
+
 #include <IMP/kernel_config.h>
+#include <cereal/access.hpp>
+#include "Object.h"
 #include "internal/PointerBase.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+template<typename O>
+typename std::enable_if<std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  return new O;
+}
+
+template<typename O>
+typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  IMP_THROW("Cannot load non-default-constructible object", TypeException);
+}
+}
+#endif
 
 //! A weak pointer to an Object or RefCountedObject.
 /** WeakPointers do not do reference counting and do not claim ownership
@@ -101,6 +120,40 @@ struct WeakPointer
     P::operator=(o);
     return *this;
   }
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  void serialize(cereal::BinaryOutputArchive &ar) {
+    O* rawptr = *this;
+    if (rawptr == nullptr) {
+      char ptr_type = 0; // null pointer
+      ar(ptr_type);
+    } else if (typeid(*rawptr) == typeid(O)) {
+      char ptr_type = 1; // non-polymorphic pointer
+      ar(ptr_type);
+      ar(*rawptr);
+    } else {
+      char ptr_type = 2; // polymorphic pointer
+      ar(ptr_type);
+      rawptr->poly_serialize(ar);
+    }
+  }
+
+  void serialize(cereal::BinaryInputArchive &ar) {
+    char ptr_type;
+    ar(ptr_type);
+    if (ptr_type == 0) { // null pointer
+      P::operator=(nullptr);
+    } else if (ptr_type == 1) { // non-polymorphic pointer
+      std::unique_ptr<O> ptr(make_empty_object<O>());
+      ar(*ptr);
+      P::operator=(ptr.release());
+    } else { // polymorphic pointer
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      P::operator=(rawptr);
+    }
+  }
+#endif
 };
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
