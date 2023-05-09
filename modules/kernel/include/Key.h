@@ -62,7 +62,15 @@ class Key : public Value {
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(str_);
+    // Serialize Keys by string, not the internal index, which could change
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      std::string name = get_string();
+      ar(name);
+    } else {
+      std::string name;
+      ar(name);
+      str_ = find_or_add_index(name);
+    }
   }
 
   static const internal::KeyData::Map& get_map() {
