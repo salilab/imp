@@ -336,6 +336,17 @@ class Tests(IMP.test.TestCase):
         m2._set_from_binary(m._get_as_binary())
         self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
 
+    def test_serialize_cache_int_attributes(self):
+        """Check that Model cache int attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntKey("hi")
+        p = IMP.Particle(m)
+        m.add_cache_attribute(ik, p.get_index(), 42)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
+
     def test_serialize_float_attributes(self):
         """Check that Model float attributes are (de-)serialized"""
         m = IMP.Model()
