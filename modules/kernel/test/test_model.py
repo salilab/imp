@@ -486,6 +486,35 @@ class Tests(IMP.test.TestCase):
         newt = m2.get_data(mk)
         self.assertEqual(newt.get_name(), "testobj")
 
+    def test_serialize_track_polymorphic(self):
+        """Check that serialization tracks polymorphic pointers"""
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key1")
+        mk2 = IMP.ModelKey("data_key2")
+        mk3 = IMP.ModelKey("data_key3")
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_data(mk, t)
+        m.add_data(mk2, t)
+        t3 = IMP._TestObject()
+        t3.set_name("testobj3")
+        m.add_data(mk3, t3)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertTrue(m2.get_has_data(mk))
+        self.assertTrue(m2.get_has_data(mk2))
+        newt = m2.get_data(mk)
+        self.assertEqual(newt.get_name(), "testobj")
+        newt2 = m2.get_data(mk2)
+        self.assertEqual(newt2.get_name(), "testobj")
+        newt3 = m2.get_data(mk3)
+        self.assertEqual(newt3.get_name(), "testobj3")
+        # newt and newt2 should point to the same underlying C++ object
+        self.assertEqual(newt, newt2)
+        # They should be distinct from the objects in the original model though
+        self.assertNotEqual(t, newt)
+
 
 if __name__ == '__main__':
     IMP.test.main()
