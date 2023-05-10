@@ -182,7 +182,7 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::ObjectsAttributeTable>(this),
        cereal::base_class<internal::ParticleAttributeTable>(this),
        cereal::base_class<internal::ParticlesAttributeTable>(this),
-       free_particles_, model_data_);
+       free_particles_, model_data_, mutable_access_score_states());
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;

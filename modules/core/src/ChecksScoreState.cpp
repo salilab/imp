@@ -40,4 +40,6 @@ ModelObjectsTemp ChecksScoreState::do_get_outputs() const {
   return ModelObjectsTemp();
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ChecksScoreState);
+
 IMPCORE_END_NAMESPACE

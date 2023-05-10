@@ -26,6 +26,7 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<ScoreState>(this), probability_, num_checked_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(ChecksScoreState);
 
  public:
   ChecksScoreState(Model *m, double probability);

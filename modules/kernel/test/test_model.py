@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import io
 import random
+import IMP.core
 
 
 class DummyRestraint(IMP.Restraint):
@@ -514,6 +515,15 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(newt, newt2)
         # They should be distinct from the objects in the original model though
         self.assertNotEqual(t, newt)
+
+    def test_serialize_score_states(self):
+        """Check that Model ScoreStates are (de-)serialized"""
+        m = IMP.Model()
+        m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        self.assertEqual(len(m2.score_states), 1)
 
 
 if __name__ == '__main__':
