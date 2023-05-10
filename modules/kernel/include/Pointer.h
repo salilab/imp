@@ -9,13 +9,9 @@
 #ifndef IMPKERNEL_POINTER_H
 #define IMPKERNEL_POINTER_H
 
-#include <memory>
-#include <typeinfo>
-#include <cereal/access.hpp>
 #include <IMP/kernel_config.h>
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
-#include "Object.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -114,40 +110,6 @@ struct Pointer
     return *this;
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void serialize(cereal::BinaryOutputArchive &ar) {
-    O* rawptr = *this;
-    if (rawptr == nullptr) {
-      char ptr_type = 0; // null pointer
-      ar(ptr_type);
-    } else if (typeid(*rawptr) == typeid(O)) {
-      char ptr_type = 1; // non-polymorphic pointer
-      ar(ptr_type);
-      ar(*rawptr);
-    } else {
-      char ptr_type = 2; // polymorphic pointer
-      ar(ptr_type);
-      rawptr->poly_serialize(ar);
-    }
-  }
-
-  void serialize(cereal::BinaryInputArchive &ar) {
-    char ptr_type;
-    ar(ptr_type);
-    if (ptr_type == 0) { // null pointer
-      P::operator=(nullptr);
-    } else if (ptr_type == 1) { // non-polymorphic pointer
-      std::unique_ptr<O> ptr(make_empty_object<O>());
-      ar(*ptr);
-      P::operator=(ptr.release());
-    } else { // polymorphic pointer
-      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-      P::operator=(rawptr);
-    }
-  }
-#endif
-
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the Pointer
   /** Use this to safely return objects allocated within functions.
@@ -203,41 +165,6 @@ struct PointerMember
     P::operator=(o);
     return *this;
   }
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void serialize(cereal::BinaryOutputArchive &ar) {
-    O* rawptr = *this;
-    if (rawptr == nullptr) {
-      char ptr_type = 0; // null pointer
-      ar(ptr_type);
-    } else if (typeid(*rawptr) == typeid(O)) {
-      char ptr_type = 1; // non-polymorphic pointer
-      ar(ptr_type);
-      ar(*rawptr);
-    } else {
-      char ptr_type = 2; // polymorphic pointer
-      ar(ptr_type);
-      rawptr->poly_serialize(ar);
-    }
-  }
-
-  void serialize(cereal::BinaryInputArchive &ar) {
-    char ptr_type;
-    ar(ptr_type);
-    if (ptr_type == 0) { // null pointer
-      P::operator=(nullptr);
-    } else if (ptr_type == 1) { // non-polymorphic pointer
-      std::unique_ptr<O> ptr(make_empty_object<O>());
-      ar(*ptr);
-      P::operator=(ptr.release());
-    } else { // polymorphic pointer
-      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
-      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
-      P::operator=(rawptr);
-    }
-  }
-#endif
-
 
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the PointerMember

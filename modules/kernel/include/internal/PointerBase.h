@@ -2,7 +2,7 @@
  *  \file base/internal/PointerBase.h
  *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,6 +14,10 @@
 #include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
+#include "../Object.h"
+#include <typeinfo>
+#include <memory>
+#include <cereal/access.hpp>
 #include <type_traits>
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
@@ -24,6 +28,23 @@
 #endif
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+template<typename O>
+typename std::enable_if<std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  return new O;
+}
+
+template<typename O>
+typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  IMP_THROW("Cannot load non-default-constructible object", TypeException);
+}
+}
+#endif
+
 template <class TT>
 struct RefCountedPointerTraits {
   typedef TT Type;
@@ -157,6 +178,40 @@ class PointerBase {
   }
 
   struct UnusedClass {};
+
+ friend class cereal::access;
+
+ void serialize(cereal::BinaryOutputArchive &ar) {
+    O* rawptr = o_;
+    if (rawptr == nullptr) {
+      char ptr_type = 0; // null pointer
+      ar(ptr_type);
+    } else if (typeid(*rawptr) == typeid(O)) {
+      char ptr_type = 1; // non-polymorphic pointer
+      ar(ptr_type);
+      ar(*rawptr);
+    } else {
+      char ptr_type = 2; // polymorphic pointer
+      ar(ptr_type);
+      rawptr->poly_serialize(ar);
+    }
+  }
+
+  void serialize(cereal::BinaryInputArchive &ar) {
+    char ptr_type;
+    ar(ptr_type);
+    if (ptr_type == 0) { // null pointer
+      set_pointer(nullptr);
+    } else if (ptr_type == 1) { // non-polymorphic pointer
+      std::unique_ptr<O> ptr(make_empty_object<O>());
+      ar(*ptr);
+      set_pointer(ptr.release());
+    } else { // polymorphic pointer
+      O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+      IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+      set_pointer(rawptr);
+    }
+  }
 
  public:
   //! initialize to nullptr
