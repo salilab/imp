@@ -212,7 +212,9 @@ class IMPKERNELEXPORT Model : public Object
     }
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // clear caches
       age_counter_ = 1;
+      trigger_age_.clear();
       dependencies_age_ = 0;
       saved_dependencies_age_ = 0;
       dependencies_saved_ = false;

@@ -455,6 +455,23 @@ class Tests(IMP.test.TestCase):
         # p2 was deleted, so new particle should use this index
         self.assertEqual(p4, p2)
 
+    def test_serialize_triggers(self):
+        """Check that Model triggers are correctly handled by serialization"""
+        m = IMP.Model()
+        tk = IMP.TriggerKey("test_trigger")
+        self.assertEqual(m.get_age(), 1)
+        m.update()
+        m.set_trigger_updated(tk)
+        self.assertEqual(m.get_age(), 2)
+        self.assertEqual(m.get_trigger_last_updated(tk), 2)
+
+        m2 = IMP.Model()
+        m2._set_from_binary(m._get_as_binary())
+        # Model age should be reset
+        self.assertEqual(m2.get_age(), 1)
+        # All triggers should be reset
+        self.assertEqual(m2.get_trigger_last_updated(tk), 0)
+
 
 if __name__ == '__main__':
     IMP.test.main()
