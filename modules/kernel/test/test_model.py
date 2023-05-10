@@ -481,7 +481,6 @@ class Tests(IMP.test.TestCase):
         m.add_data(mk, t)
 
         m2 = IMP.Model()
-        print(m._get_as_binary())
         m2._set_from_binary(m._get_as_binary())
         self.assertTrue(m2.get_has_data(mk))
         newt = m2.get_data(mk)
