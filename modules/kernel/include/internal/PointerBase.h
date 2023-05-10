@@ -18,6 +18,7 @@
 #include <typeinfo>
 #include <memory>
 #include <cereal/access.hpp>
+#include <cereal/version.hpp>
 #include <type_traits>
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
@@ -197,12 +198,17 @@ class PointerBase {
       char ptr_type = 0; // null pointer
       ar(ptr_type);
     } else {
-      // cereal wants a shared_ptr, but we manage the storage for Object
-      // ourselves, so provide a null deleter. This will potentially make
-      // multiple shared_ptr objects pointing to the same Object*, but that's
-      // OK here because cereal only uses the underlying pointer anyway.
+#if CEREAL_VERSION >= 10301
+      // cereal 1.3.1 or later wants a shared_ptr instead of a null pointer,
+      // but we manage the storage for Object ourselves, so provide a null
+      // deleter. This will potentially make multiple shared_ptr objects
+      // pointing to the same Object*, but that's OK here because cereal only
+      // uses the underlying pointer anyway.
       std::shared_ptr<Object> shared_rawptr(rawptr, null_deleter);
       uint32_t id = ar.registerSharedPointer(shared_rawptr);
+#else
+      uint32_t id = ar.registerSharedPointer(rawptr);
+#endif
       if (typeid(*rawptr) == typeid(O)) {
         char ptr_type = 1; // non-polymorphic pointer
         ar(ptr_type);
