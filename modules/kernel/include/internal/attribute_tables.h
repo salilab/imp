@@ -16,6 +16,7 @@
 #include "../utility.h"
 #include "../FloatIndex.h"
 #include "input_output_exception.h"
+#include "KeyVector.h"
 #include <IMP/exception.h>
 #include <IMP/check_macros.h>
 #include <IMP/log.h>
@@ -71,7 +72,7 @@ class BasicAttributeTable {
   typedef typename Traits::Key Key;
 
  private:
-  Vector<typename Traits::Container> data_;
+  KeyVector<typename Traits::Key, typename Traits::Container> data_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
@@ -81,30 +82,7 @@ class BasicAttributeTable {
 
   template<class Archive> void serialize(Archive &ar) {
     // Note that we don't serialize masks; they are handled by Model
-    ar(caches_);
-    // Don't just write the raw vector, since it is indexed by the Key
-    // indexes, which may change; we must write the Keys themselves
-    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
-      ar(data_.size());
-      for (unsigned int i = 0; i < data_.size(); ++i) {
-        Key k(i);
-        ar(k);
-        ar(data_[i]);
-      }
-    } else {
-      size_t sz;
-      ar(sz);
-      data_.clear();
-      for (unsigned int i = 0; i < sz; ++i) {
-        Key k;
-        ar(k);
-        unsigned int kindex = k.get_index();
-        if (data_.size() <= kindex) {
-          data_.resize(kindex + 1);
-        }
-        ar(data_[kindex]);
-      }
-    }
+    ar(caches_, data_);
   }
 
   void do_add_attribute(Key k, ParticleIndex particle,

@@ -22,6 +22,7 @@
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
 #include "internal/moved_particles_cache.h"
+#include "internal/KeyVector.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <IMP/internal/IDGenerator.h>
@@ -118,7 +119,7 @@ class IMPKERNELEXPORT Model : public Object
   IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
-  Vector<PointerMember<Object> > model_data_;
+  internal::KeyVector<ModelKey, PointerMember<Object> > model_data_;
 
 #if !defined(IMP_DOXYGEN)
   // Map unique ID to Model*
@@ -181,7 +182,7 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::ObjectsAttributeTable>(this),
        cereal::base_class<internal::ParticleAttributeTable>(this),
        cereal::base_class<internal::ParticlesAttributeTable>(this),
-       free_particles_);
+       free_particles_, model_data_);
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
@@ -209,30 +210,6 @@ class IMPKERNELEXPORT Model : public Object
         ar(name);
       }
       ar(free_particles_);
-    }
-
-    // Don't write the raw model_data_ vector, since it is indexed by ModelKey
-    // indexes, which may change; we must write the Keys themselves
-    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
-      ar(model_data_.size());
-      for (unsigned int i = 0; i < model_data_.size(); ++i) {
-        ModelKey k(i);
-        ar(k);
-        ar(model_data_[i]);
-      }
-    } else {
-      size_t sz;
-      ar(sz);
-      model_data_.clear();
-      for (unsigned int i = 0; i < sz; ++i) {
-        ModelKey k;
-        ar(k);
-        unsigned int kindex = k.get_index();
-        if (model_data_.size() <= kindex) {
-          model_data_.resize(kindex + 1);
-        }
-        ar(model_data_[kindex]);
-      }
     }
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
