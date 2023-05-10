@@ -472,6 +472,21 @@ class Tests(IMP.test.TestCase):
         # All triggers should be reset
         self.assertEqual(m2.get_trigger_last_updated(tk), 0)
 
+    def test_serialize_data(self):
+        """Check that Model data are (de-)serialized"""
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key")
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_data(mk, t)
+
+        m2 = IMP.Model()
+        print(m._get_as_binary())
+        m2._set_from_binary(m._get_as_binary())
+        self.assertTrue(m2.get_has_data(mk))
+        newt = m2.get_data(mk)
+        self.assertEqual(newt.get_name(), "testobj")
+
 
 if __name__ == '__main__':
     IMP.test.main()

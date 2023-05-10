@@ -211,6 +211,30 @@ class IMPKERNELEXPORT Model : public Object
       ar(free_particles_);
     }
 
+    // Don't write the raw model_data_ vector, since it is indexed by ModelKey
+    // indexes, which may change; we must write the Keys themselves
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      ar(model_data_.size());
+      for (unsigned int i = 0; i < model_data_.size(); ++i) {
+        ModelKey k(i);
+        ar(k);
+        ar(model_data_[i]);
+      }
+    } else {
+      size_t sz;
+      ar(sz);
+      model_data_.clear();
+      for (unsigned int i = 0; i < sz; ++i) {
+        ModelKey k;
+        ar(k);
+        unsigned int kindex = k.get_index();
+        if (model_data_.size() <= kindex) {
+          model_data_.resize(kindex + 1);
+        }
+        ar(model_data_[kindex]);
+      }
+    }
+
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       // clear caches
       age_counter_ = 1;
