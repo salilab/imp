@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.cpp
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
@@ -11,7 +11,7 @@
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/project.h"
-#include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/internal/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/TIFFImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
@@ -344,7 +344,7 @@ void ProjectionFinder::get_complete_registration() {
 
   // Set optimizer
   IMP_NEW(Model, scoring_model, ());
-  IMP_NEW(Fine2DRegistrationRestraint, fine2d, (scoring_model));
+  IMP_NEW(internal::Fine2DRegistrationRestraint, fine2d, (scoring_model));
   IMP_NEW(IMP::gsl::Simplex, simplex_optimizer, (scoring_model));
 
   IMP_LOG_TERSE("ProjectionFinder: Setting Fine2DRegistrationRestraint "
