@@ -194,6 +194,10 @@ class TestXLRestraintSimple(IMP.test.TestCase):
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
         m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        dr.set_source_residue1(1)
+        dr.set_source_residue2(4)
+        dr.set_source_protein1("r1")
+        dr.set_source_protein2("r2")
         dump = pickle.dumps(dr)
         del dr
 
@@ -211,6 +215,11 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                           sigma2.get_particle_index()))
         self.assertAlmostEqual(newdr.get_slope(), 0.01, delta=1e-4)
         self.assertAlmostEqual(newdr.get_length(), 10.0, delta=1e-4)
+
+        self.assertEqual(newdr.get_source_residue1(), 1)
+        self.assertEqual(newdr.get_source_residue2(), 4)
+        self.assertEqual(newdr.get_source_protein1(), "r1")
+        self.assertEqual(newdr.get_source_protein2(), "r2")
 
         del newdr
         m2 = IMP.Model()
@@ -425,6 +434,27 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             score_lp = dr_lp.unprotected_evaluate(None)
                             self.assertAlmostEqual(score,scoretest,places=4)
                             self.assertAlmostEqual(score_lp,scoretest,places=4)
+
+    def test_static_info(self):
+        """Test restraint static info"""
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        self.assertIsNone(dr.get_static_info())
+        dr.set_source_residue1(1)
+        dr.set_source_residue2(4)
+        dr.set_source_protein1("foo")
+        dr.set_source_protein2("bar")
+        s = dr.get_static_info()
+        self.assertEqual(s.get_number_of_string(), 2)
+        self.assertEqual(s.get_string_key(0), "protein1")
+        self.assertEqual(s.get_string_value(0), "foo")
+        self.assertEqual(s.get_string_key(1), "protein2")
+        self.assertEqual(s.get_string_value(1), "bar")
+        self.assertEqual(s.get_number_of_int(), 2)
+        self.assertEqual(s.get_int_key(0), "residue1")
+        self.assertEqual(s.get_int_value(0), 1)
+        self.assertEqual(s.get_int_key(1), "residue2")
+        self.assertEqual(s.get_int_value(1), 4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

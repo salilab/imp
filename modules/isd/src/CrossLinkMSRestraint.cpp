@@ -179,6 +179,19 @@ ModelObjectsTemp CrossLinkMSRestraint::do_get_inputs() const {
     return ret;
 }
 
+RestraintInfo *CrossLinkMSRestraint::get_static_info() const {
+  if (protein1_.empty() || protein2_.empty()) {
+    return nullptr;
+  } else {
+    IMP_NEW(RestraintInfo, ri, ());
+    ri->add_string("protein1", protein1_);
+    ri->add_string("protein2", protein2_);
+    ri->add_int("residue1", residue1_);
+    ri->add_int("residue2", residue2_);
+    return ri.release();
+  }
+}
+
 IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::CrossLinkMSRestraint);
 
 IMPISD_END_NAMESPACE
