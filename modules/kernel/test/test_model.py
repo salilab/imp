@@ -4,6 +4,7 @@ import IMP.test
 import io
 import random
 import IMP.core
+import pickle
 
 
 class DummyRestraint(IMP.Restraint):
@@ -322,8 +323,9 @@ class Tests(IMP.test.TestCase):
     def test_serialize_object(self):
         """Check that Object properties are (de-)serialized"""
         m = IMP.Model("test model")
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(m2.get_name(), "test model")
 
     def test_serialize_int_attributes(self):
@@ -333,8 +335,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_attribute(ik, p.get_index(), 42)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
 
     def test_serialize_ints_attributes(self):
@@ -344,8 +346,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_attribute(ik, p.get_index(), [1, 2, 42])
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(list(m2.get_attribute(ik, p.get_index())), [1, 2, 42])
 
     def test_serialize_cache_int_attributes(self):
@@ -355,8 +357,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_cache_attribute(ik, p.get_index(), 42)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
 
     def test_serialize_float_attributes(self):
@@ -366,8 +368,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_attribute(fk, p.get_index(), 5.4)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
                                delta=0.1)
 
@@ -378,8 +380,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_attribute(fk, p.get_index(), [1.0, 3.2, 5.4])
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         att = list(m2.get_attribute(fk, p.get_index()))
         self.assertEqual(len(att), 3)
         self.assertAlmostEqual(att[0], 1.0, delta=0.1)
@@ -393,8 +395,8 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         m.add_attribute(sk, p.get_index(), "test attribute")
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(m2.get_attribute(sk, p.get_index()), "test attribute")
 
     def test_serialize_object_attributes(self):
@@ -406,8 +408,8 @@ class Tests(IMP.test.TestCase):
         t.set_name("testobj")
         m.add_attribute(ok, p.get_index(), t)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         newt = m2.get_attribute(ok, p.get_index())
         self.assertEqual(newt.get_name(), "testobj")
 
@@ -419,8 +421,8 @@ class Tests(IMP.test.TestCase):
         p2 = IMP.Particle(m)
         m.add_attribute(pk, p.get_index(), p2)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         newp2 = m2.get_attribute(pk, p.get_index())
         self.assertEqual(newp2, p2.get_index())
 
@@ -433,8 +435,8 @@ class Tests(IMP.test.TestCase):
         p3 = IMP.Particle(m)
         m.add_attribute(pk, p.get_index(), [p2, p3])
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         newp2, newp3 = m2.get_attribute(pk, p.get_index())
         self.assertEqual(newp2, p2.get_index())
         self.assertEqual(newp3, p3.get_index())
@@ -447,8 +449,8 @@ class Tests(IMP.test.TestCase):
         p3 = m.add_particle("third")
         m.remove_particle(p2)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(0)), "first")
         self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(2)), "third")
         self.assertFalse(m2.get_has_particle(IMP.ParticleIndex(1)))
@@ -466,8 +468,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_age(), 2)
         self.assertEqual(m.get_trigger_last_updated(tk), 2)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         # Model age should be reset
         self.assertEqual(m2.get_age(), 1)
         # All triggers should be reset
@@ -481,8 +483,8 @@ class Tests(IMP.test.TestCase):
         t.set_name("testobj")
         m.add_data(mk, t)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertTrue(m2.get_has_data(mk))
         newt = m2.get_data(mk)
         self.assertEqual(newt.get_name(), "testobj")
@@ -501,8 +503,8 @@ class Tests(IMP.test.TestCase):
         t3.set_name("testobj3")
         m.add_data(mk3, t3)
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertTrue(m2.get_has_data(mk))
         self.assertTrue(m2.get_has_data(mk2))
         newt = m2.get_data(mk)
@@ -521,8 +523,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
 
-        m2 = IMP.Model()
-        m2._set_from_binary(m._get_as_binary())
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
         self.assertEqual(len(m2.score_states), 1)
 
 
