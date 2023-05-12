@@ -48,6 +48,17 @@ class MockRestraint(IMP.Restraint):
         return i
 
 
+class MockRestraintSet(IMP.RestraintSet):
+
+    def __init__(self, m, ps, val):
+        IMP.RestraintSet.__init__(self, m, "MockRestraintSet %1%")
+
+    def get_dynamic_info(self):
+        i = IMP.RestraintInfo()
+        i.add_int("test int", 99)
+        return i
+
+
 class Tests(IMP.test.TestCase):
 
     def _write_restraint(self, name, cls=IMP._ConstRestraint, extra_ps=0):
@@ -85,7 +96,7 @@ class Tests(IMP.test.TestCase):
             scale.set_scale(0.5)
             IMP.rmf.save_frame(f, str(1))
 
-    def _read_restraint(self, name, extra_ps=0):
+    def _read_restraint(self, name, extra_ps=0, inputs=True):
         IMP.add_to_log(IMP.TERSE, "Starting reading back\n")
         f = RMF.open_rmf_file_read_only(name)
         m = IMP.Model()
@@ -95,7 +106,8 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.load_frame(f, RMF.FrameID(0))
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
-        self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
+        if inputs:
+            self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
         return m, r, f
 
     def test_0(self):
@@ -242,6 +254,17 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(info.get_number_of_filenames(), 1)
             self.assertEqual(info.get_filenames_key(0), "test filenames")
             self.assertEqual(len(info.get_filenames_value(0)), 2)
+
+    def test_dynamic_info_restraint_set(self):
+        """Test dynamic RestraintSet info"""
+        for suffix in IMP.rmf.suffixes:
+            name = self.get_tmp_file_name("dynamic_info_set" + suffix)
+            self._write_restraint(name, cls=MockRestraintSet)
+            m, r, rmf = self._read_restraint(name, inputs=False)
+            info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_int(), 1)
+            self.assertEqual(info.get_int_key(0), "test int")
+            self.assertEqual(info.get_int_value(0), 99)
 
     def test_associated_particles(self):
         """Test handling of restraint associated particles"""

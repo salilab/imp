@@ -80,6 +80,30 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
 RMFRestraint::RMFRestraint(Model *m, std::string name)
     : Restraint(m, name) {}
 
+class RMFRestraintSet;
+IMP_OBJECTS(RMFRestraintSet, RMFRestraintSets);
+/** A dummy restraint object to represent restraint sets loaded from
+    an RMF file.*/
+class RMFRestraintSet : public RestraintSet {
+  PointerMember<RestraintInfo> info_;
+
+ public:
+  RMFRestraintSet(const RestraintsTemp &rs, double weight,
+                  const std::string &name) : RestraintSet(rs, weight, name) {}
+
+#ifndef IMP_DOXYGEN
+  RestraintInfo *get_info() {
+    if (!info_) {
+      info_ = new RestraintInfo();
+    }
+    return info_;
+  }
+  RestraintInfo *get_dynamic_info() const override { return info_; }
+  RestraintInfo *get_static_info() const override { return info_; }
+#endif
+  IMP_OBJECT_METHODS(RMFRestraintSet);
+};
+
 class Subset : public ConstVector<WeakPointer<Particle>, Particle *> {
   typedef ConstVector<WeakPointer<Particle>, Particle *> P;
   static ParticlesTemp get_sorted(ParticlesTemp ps) {
@@ -239,12 +263,14 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     }
     Pointer<Restraint> ret;
     if (!childr.empty()) {
-      ret = new RestraintSet(childr, 1.0, name.get_name());
+      IMP_NEW(RMFRestraintSet, r, (childr, 1.0, name.get_name()));
+      ret = r;
+      load_restraint_info(r->get_info(), name, static_pis, dynamic_pis);
     } else {
       IMP_NEW(RMFRestraint, r, (m, name.get_name()));
       ret = r;
       r->set_particles(inputs);
-      load_restraint_info(r, name, static_pis, dynamic_pis);
+      load_restraint_info(r->get_info(), name, static_pis, dynamic_pis);
     }
     if (name.get_has_value(weight_key_)) {
       ret->set_weight(name.get_value(weight_key_));
@@ -345,29 +371,29 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     }
   }
 
-  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh,
+  void load_restraint_info(RestraintInfo *info, RMF::NodeConstHandle nh,
                            std::vector<ParticleIndexesData> &static_pis,
                            std::vector<ParticleIndexesData> &dynamic_pis) {
     RMF::FileConstHandle fh = nh.get_file();
     RMF_FOREACH(RMF::IntKey k, iks_) {
       if (!nh.get_value(k).get_is_null()) {
-        r->get_info()->add_int(fh.get_name(k), nh.get_value(k));
+        info->add_int(fh.get_name(k), nh.get_value(k));
       }
     }
     RMF_FOREACH(RMF::FloatKey k, fks_) {
       if (!nh.get_value(k).get_is_null()) {
-        r->get_info()->add_float(fh.get_name(k), nh.get_value(k));
+        info->add_float(fh.get_name(k), nh.get_value(k));
       }
     }
     RMF_FOREACH(RMF::StringKey k, sks_) {
       if (!nh.get_value(k).get_is_null()) {
-        r->get_info()->add_string(fh.get_name(k), nh.get_value(k));
+        info->add_string(fh.get_name(k), nh.get_value(k));
       }
     }
     RMF_FOREACH(RMF::StringKey k, filenameks_) {
       if (!nh.get_value(k).get_is_null()) {
-        r->get_info()->add_filename(fh.get_name(k),
-                                    RMF::internal::get_absolute_path(
+        info->add_filename(fh.get_name(k),
+                           RMF::internal::get_absolute_path(
                                             fh.get_path(), nh.get_value(k)));
       }
     }
@@ -376,7 +402,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         // No automatic conversion from RMF::Floats to IMP::Floats
         RMF::Floats rvalue = nh.get_value(k);
         Floats value(rvalue.begin(), rvalue.end());
-        r->get_info()->add_floats(fh.get_name(k), value);
+        info->add_floats(fh.get_name(k), value);
       }
     }
     RMF_FOREACH(RMF::IntsKey k, isks_) {
@@ -384,7 +410,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         // No automatic conversion from RMF::Ints to IMP::Ints
         RMF::Ints rvalue = nh.get_value(k);
         Ints value(rvalue.begin(), rvalue.end());
-        r->get_info()->add_ints(fh.get_name(k), value);
+        info->add_ints(fh.get_name(k), value);
       }
     }
     RMF_FOREACH(RMF::StringsKey k, ssks_) {
@@ -392,7 +418,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         // No automatic conversion from RMF::Strings to IMP::Strings
         RMF::Strings rvalue = nh.get_value(k);
         Strings value(rvalue.begin(), rvalue.end());
-        r->get_info()->add_strings(fh.get_name(k), value);
+        info->add_strings(fh.get_name(k), value);
       }
     }
     RMF_FOREACH(RMF::StringsKey k, filenamesks_) {
@@ -403,17 +429,15 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         for (const auto &it : rvalue) {
           value.push_back(RMF::internal::get_absolute_path(fh.get_path(), it));
         }
-        r->get_info()->add_filenames(fh.get_name(k), value);
+        info->add_filenames(fh.get_name(k), value);
       }
     }
 
     for (unsigned i = 0; i < static_pis.size(); ++i) {
-      r->get_info()->add_particle_indexes(static_pis[i].first,
-                                          static_pis[i].second);
+      info->add_particle_indexes(static_pis[i].first, static_pis[i].second);
     }
     for (unsigned i = 0; i < dynamic_pis.size(); ++i) {
-      r->get_info()->add_particle_indexes(dynamic_pis[i].first,
-                                          dynamic_pis[i].second);
+      info->add_particle_indexes(dynamic_pis[i].first, dynamic_pis[i].second);
     }
   }
 
