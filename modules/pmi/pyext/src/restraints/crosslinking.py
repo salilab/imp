@@ -250,6 +250,10 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                             self.model,
                             length,
                             slope)
+                        dr.set_source_protein1(c1)
+                        dr.set_source_protein2(c2)
+                        dr.set_source_residue1(r1)
+                        dr.set_source_residue2(r2)
                         restraints.append(dr)
 
                     if self.database.sigma1_key not in xl.keys():
@@ -337,6 +341,9 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.xl_restraints = restraints
         lw = IMP.isd.LogWrapper(restraints, 1.0)
         self.rs.add_restraint(lw)
+        indb.close()
+        exdb.close()
+        midb.close()
 
     def __set_dataset(self, ds):
         self.database.dataset = ds

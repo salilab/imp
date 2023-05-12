@@ -228,6 +228,18 @@ class Tests(IMP.test.TestCase):
                        'included.None.xl.db', 'missing.None.xl.db']:
             os.unlink(output)
 
+    def test_restraint_source_info(self):
+        """Test that restraint source info is populated"""
+        m = IMP.Model()
+        rbeads, dof = self.init_representation_beads_pmi2(m)
+        xlbeads, cldb = self.setup_crosslinks_beads(
+            root_hier=rbeads, mode="single_category")
+        r = xlbeads.xl_list[3]["Restraint"]
+        self.assertEqual(r.get_source_protein1(), "ProtA")
+        self.assertEqual(r.get_source_protein2(), "ProtB")
+        self.assertEqual(r.get_source_residue1(), 11)
+        self.assertEqual(r.get_source_residue2(), 1)
+
     def test_restraint_probability_beads(self):
         """Test restraint works for all-bead systems"""
         m = IMP.Model()
