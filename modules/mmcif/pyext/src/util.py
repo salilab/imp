@@ -281,12 +281,23 @@ class State(ihm.model.State):
         self.system._add_hierarchy(h, self)
 
     def _add_restraints(self, rs, model):
-        m = IMP.mmcif.restraint._RestraintMapper(self.system)
+        mapper = IMP.mmcif.restraint._RestraintMapper(self.system)
         for r in rs:
-            rw = m.handle(r, model, self.modeled_assembly)
-            if rw:
-                self._wrapped_restraints.append(rw)
-                self.system.system.restraints.append(rw)
+            self._handle_restraint(mapper, r, model)
+
+    def _handle_restraint(self, mapper, r, model):
+        rw = mapper.handle(r, model, self.modeled_assembly)
+        if rw:
+            self._wrapped_restraints.append(rw)
+            self.system.system.restraints.append(rw)
+        else:
+            try:
+                rs = IMP.RestraintSet.get_from(r)
+            except ValueError:
+                rs = None
+            if rs:
+                for child in rs.restraints:
+                    self._handle_restraint(mapper, child, model)
 
     def _update_restraints(self, model):
         for rw in self._wrapped_restraints:
