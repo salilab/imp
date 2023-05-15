@@ -188,6 +188,23 @@ RestraintInfo *CrossLinkMSRestraint::get_static_info() const {
     ri->add_string("protein2", protein2_);
     ri->add_int("residue1", residue1_);
     ri->add_int("residue2", residue2_);
+
+    ParticleIndexes ps;
+    for (const auto &sigma : sigmass_) {
+      ps.push_back(sigma[0]);
+      ps.push_back(sigma[1]);
+    }
+    ri->add_particle_indexes("sigmas", ps);
+
+    ri->add_particle_indexes("psis", psis_);
+
+    ps.clear();
+    for (const auto &ppi : ppis_) {
+      ps.push_back(ppi[0]);
+      ps.push_back(ppi[1]);
+    }
+    ri->add_particle_indexes("endpoints", ps);
+
     return ri.release();
   }
 }
