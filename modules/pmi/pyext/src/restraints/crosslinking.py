@@ -32,8 +32,16 @@ class _DataRestraintSet(IMP.RestraintSet):
         ri.add_filename("filename", self.filename or "")
         if self.linker:
             ri.add_string("linker_auth_name", self.linker.auth_name)
-            if self.linker.smiles:
-                ri.add_string("linker_smiles", self.linker.smiles)
+
+            def add_linker_opt(sname, val):
+                if val:
+                    ri.add_string(sname, val)
+            add_linker_opt("linker_chemical_name", self.linker.chemical_name)
+            add_linker_opt("linker_smiles", self.linker.smiles)
+            add_linker_opt("linker_smiles_canonical",
+                           self.linker.smiles_canonical)
+            add_linker_opt("linker_inchi", self.linker.inchi)
+            add_linker_opt("linker_inchi_key", self.linker.inchi_key)
         return ri
 
 
