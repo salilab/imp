@@ -28,8 +28,9 @@ class MockRestraint(IMP.Restraint):
     def get_static_info(self):
         i = IMP.RestraintInfo()
         if len(self.ps) >= 5:
+            # Include a duplicate (which will use an Alias node in RMF)
             i.add_particle_indexes("static particles",
-                    [self.ps[1], self.ps[2], self.ps[3]])
+                    [self.ps[1], self.ps[2], self.ps[3], self.ps[3]])
         return i
 
     def get_dynamic_info(self):
@@ -278,8 +279,10 @@ class Tests(IMP.test.TestCase):
                              'static particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(0)],
-                             ['extra0', 'extra1', 'extra2'])
-            ind0, ind1, ind2 = info.get_particle_indexes_value(0)
+                             ['extra0', 'extra1', 'extra2', 'extra2'])
+            ind0, ind1, ind2, ind3 = info.get_particle_indexes_value(0)
+            # last particle (ind3) should be an alias to ind2
+            self.assertEqual(ind2, ind3)
             self.assertEqual(info.get_particle_indexes_key(1),
                              'dynamic particles')
             self.assertEqual([m.get_particle_name(i)

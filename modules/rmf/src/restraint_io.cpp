@@ -188,6 +188,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   typedef std::pair<std::string, ParticleIndexes> ParticleIndexesData;
   typedef SimpleLoadLink<Restraint> P;
   RMF::decorator::ScoreFactory sf_;
+  RMF::decorator::AliasFactory af_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
   RMF::decorator::IntermediateParticleFactory ipf_;
@@ -312,9 +313,15 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       std::vector<ParticleIndexesData> &dynamic_pis) {
     ParticleIndexes pis;
     for(RMF::NodeConstHandle ch : parent.get_children()) {
-      Particle *p = get_association<Particle>(ch);
-      pis.push_back(p->get_index());
-      setup_particle(ch, m, p->get_index());
+      if (af_.get_is(ch)) {
+        Particle *p = get_association<Particle>(af_.get(ch).get_aliased());
+        pis.push_back(p->get_index());
+        // assume particle is already set up
+      } else {
+        Particle *p = get_association<Particle>(ch);
+        pis.push_back(p->get_index());
+        setup_particle(ch, m, p->get_index());
+      }
     }
     // todo: distinguish static and dynamic pis
     static_pis.push_back(ParticleIndexesData(parent.get_name(), pis));
@@ -445,6 +452,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RestraintLoadLink(RMF::FileConstHandle fh)
       : P("RestraintLoadLink%1%"),
         sf_(fh),
+        af_(fh),
         rf_(fh),
         gaussian_factory_(fh),
         ipf_(fh),
