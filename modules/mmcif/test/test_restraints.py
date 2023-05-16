@@ -68,8 +68,8 @@ class MockCrossLinkRestraint(IMP.RestraintSet):
         i = IMP.RestraintInfo()
         i.add_string("type", "IMP.pmi.CrossLinkingMassSpectrometryRestraint")
         i.add_filename("filename", self.xlms_filename)
-        i.add_string("linker_auth_name", "DSS")
-        i.add_float("linker_length", 21.0)
+        i.add_string("linker author name", "DSS")
+        i.add_float("linker length", 21.0)
         return i
 
 

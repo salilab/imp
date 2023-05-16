@@ -74,17 +74,17 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
             info['filename'], details='Crosslinks')
         dataset = ihm.dataset.CXMSDataset(loc)
         linker = ihm.ChemDescriptor(
-            auth_name=info['linker_auth_name'],
-            chemical_name=info.get('linker_chemical_name'),
-            smiles=info.get('linker_smiles'),
-            smiles_canonical=info.get('linker_smiles_canonical'),
-            inchi=info.get('linker_inchi'),
-            inchi_key=info.get('linker_inchi_key'))
+            auth_name=info['linker author name'],
+            chemical_name=info.get('linker chemical name'),
+            smiles=info.get('linker smiles'),
+            smiles_canonical=info.get('linker smiles canonical'),
+            inchi=info.get('linker inchi'),
+            inchi_key=info.get('linker inchi key'))
         super(_CrossLinkRestraint, self).__init__(
                 dataset=dataset, linker=linker)
         # Map from IMP/RMF chain names to ihm.Entity
         cmap = dict((e.description, e) for e in system.entities.get_all())
-        dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker_length'])
+        dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
         self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
                             system.components, dist)
 

@@ -22,6 +22,10 @@ IMPKERNEL_BEGIN_NAMESPACE
     about a Restraint instance as a set of key:value pairs. The primary
     purpose is to allow restraints to be written to files, such as RMF.
 
+    Key names are generally lowercase, full words, space-separated, for
+    example "force constant" rather than "force_constant", "ForceConstant",
+    or "k".
+
     Values can be simple types (int, float, string) or lists of them;
     filename(s) (treated similarly to strings but paths are made relative
     to that of the output file); or particles.
