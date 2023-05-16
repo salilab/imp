@@ -95,6 +95,10 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_imp_provenance(h)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
+        # Assign ID to IMP citation
+        dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system.system)
+
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system.system)
         out = _get_dumper_output(dumper, system.system)
@@ -111,7 +115,7 @@ _software.type
 _software.location
 _software.citation_id
 1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
-%s program https://integrativemodeling.org .
+%s program https://integrativemodeling.org 1
 #
 """ % IMP.get_module_version()).replace('\n', ' '))
 
