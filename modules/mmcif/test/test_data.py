@@ -124,6 +124,30 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(r._same_rigid_body(None))
         self.assertTrue(r._same_rigid_body(rigid1))
 
+    def test_software_add_hierarchy(self):
+        """Test AllSoftware.add_hierarchy"""
+        s = ihm.System()
+        allsoft = IMP.mmcif.data._AllSoftware(s)
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "testname", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "testname", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "testname", "diffver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "diffname", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        allsoft.add_hierarchy(top)
+        # Duplicate name-version should be removed
+        self.assertEqual([(x.name, x.version) for x in s.software],
+                         [('diffname', 'testver'), ('testname', 'diffver'),
+                          ('testname', 'testver')])
+
 
 if __name__ == '__main__':
     IMP.test.main()

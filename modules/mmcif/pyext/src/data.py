@@ -428,18 +428,28 @@ class _AllSoftware(object):
     """Keep track of all Software objects."""
     def __init__(self, system):
         self.system = system
+        self._by_namever = {}
         super(_AllSoftware, self).__init__()
 
     def add_hierarchy(self, h):
         # todo: if no SoftwareProvenance available, use RMF producer field
         for p in IMP.core.get_all_provenance(
                 h, types=[IMP.core.SoftwareProvenance]):
-            self.system.software.append(
-                    ihm.Software(name=p.get_software_name(),
-                                 classification='integrative model building',
-                                 description=None,
-                                 version=p.get_version(),
-                                 location=p.get_location()))
+            self._add_provenance(p)
+
+    def _add_provenance(self, p):
+        """Add Software from SoftwareProvenance"""
+        # Only reference the same version of a given software package once
+        name = p.get_software_name()
+        version = p.get_version()
+        if (name, version) not in self._by_namever:
+            s = ihm.Software(name=name,
+                             classification='integrative model building',
+                             description=None, version=version,
+                             location=p.get_location())
+            self.system.software.append(s)
+            self._by_namever[name, version] = s
+        return self._by_namever[name, version]
 
 
 class _ExternalFiles(object):
