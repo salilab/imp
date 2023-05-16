@@ -10,6 +10,7 @@ import ihm.startmodel
 import ihm.analysis
 import ihm.protocol
 import ihm.model
+import ihm.citations
 
 
 def get_molecule(h):
@@ -426,6 +427,12 @@ class _Datasets(object):
 
 class _AllSoftware(object):
     """Keep track of all Software objects."""
+
+    # IMP/RMF doesn't store citation info for software, so provide it
+    # for known software packages
+    cites = {'Integrative Modeling Platform (IMP)': ihm.citations.imp,
+             'IMP PMI module': ihm.citations.pmi}
+
     def __init__(self, system):
         self.system = system
         self._by_namever = {}
@@ -446,7 +453,8 @@ class _AllSoftware(object):
             s = ihm.Software(name=name,
                              classification='integrative model building',
                              description=None, version=version,
-                             location=p.get_location())
+                             location=p.get_location(),
+                             citation=self.cites.get(name))
             self.system.software.append(s)
             self._by_namever[name, version] = s
         return self._by_namever[name, version]

@@ -148,6 +148,23 @@ class Tests(IMP.test.TestCase):
                          [('diffname', 'testver'), ('testname', 'diffver'),
                           ('testname', 'testver')])
 
+    def test_software_add_hierarchy_citations(self):
+        """Test that AllSoftware.add_hierarchy adds citations"""
+        s = ihm.System()
+        allsoft = IMP.mmcif.data._AllSoftware(s)
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "testname", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "IMP PMI module", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        allsoft.add_hierarchy(top)
+        pmisoft, testsoft = s.software
+        self.assertIsNone(testsoft.citation)
+        self.assertEqual(pmisoft.citation.pmid, '31396911')
+
 
 if __name__ == '__main__':
     IMP.test.main()
