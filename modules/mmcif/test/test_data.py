@@ -165,6 +165,26 @@ class Tests(IMP.test.TestCase):
         self.assertIsNone(testsoft.citation)
         self.assertEqual(pmisoft.citation.pmid, '31396911')
 
+    def test_protocols_add_hierarchy(self):
+        """Test _Protocols.add_hierarchy"""
+        s = ihm.System()
+        software = IMP.mmcif.data._AllSoftware(s)
+        protocols = IMP.mmcif.data._Protocols(s)
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        prov = IMP.core.SoftwareProvenance.setup_particle(
+            IMP.Particle(m), "testname", "testver", "testloc")
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.SampleProvenance.setup_particle(
+            IMP.Particle(m), "Monte Carlo", 100, 10, 1)
+        IMP.core.add_provenance(m, top, prov)
+        protocols._add_hierarchy(top, None, software)
+        protocol, = s.orphan_protocols
+        step, = protocol.steps
+        self.assertEqual(step.num_models_begin, 0)
+        self.assertEqual(step.num_models_end, 100)
+        self.assertEqual(step.software.name, "testname")
+
 
 if __name__ == '__main__':
     IMP.test.main()

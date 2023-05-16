@@ -459,6 +459,13 @@ class _AllSoftware(object):
             self._by_namever[name, version] = s
         return self._by_namever[name, version]
 
+    def _add_previous_provenance(self, prov):
+        """Add Software from a previous SoftwareProvenance, if any"""
+        while prov:
+            if IMP.core.SoftwareProvenance.get_is_setup(prov):
+                return self._add_provenance(IMP.core.SoftwareProvenance(prov))
+            prov = prov.get_previous()
+
 
 class _ExternalFiles(object):
     """Track all externally-referenced files
@@ -485,7 +492,7 @@ class _ExternalFiles(object):
 
 class _ProtocolStep(ihm.protocol.Step):
     """A single step (e.g. sampling, refinement) in a protocol."""
-    def __init__(self, prov, num_models_begin, assembly):
+    def __init__(self, prov, num_models_begin, assembly, all_software):
         method = prov.get_method()
         if prov.get_number_of_replicas() > 1:
             method = "Replica exchange " + method
@@ -499,7 +506,8 @@ class _ProtocolStep(ihm.protocol.Step):
                 # todo: support multiple states, time ordered
                 multi_state=False, ordered=False,
                 # todo: revisit assumption all models are multiscale
-                multi_scale=True)
+                multi_scale=True,
+                software=all_software._add_previous_provenance(prov))
 
     def add_combine(self, prov):
         self.num_models_end = prov.get_number_of_frames()
@@ -512,14 +520,14 @@ class _Protocol(ihm.protocol.Protocol):
        refinement) followed by a number of postprocessing steps (e.g.
        filtering, rescoring, clustering)"""
 
-    def add_step(self, prov, num_models, assembly):
+    def add_step(self, prov, num_models, assembly, all_software):
         if isinstance(prov, IMP.core.CombineProvenance):
             # Fold CombineProvenance into a previous sampling step
             if len(self.steps) == 0:
                 raise ValueError("CombineProvenance with no previous sampling")
             return self.steps[-1].add_combine(prov)
         else:
-            ps = _ProtocolStep(prov, num_models, assembly)
+            ps = _ProtocolStep(prov, num_models, assembly, all_software)
             self.steps.append(ps)
             return ps.num_models_end
 
@@ -550,7 +558,7 @@ class _Protocols(object):
     def _add_protocol(self, prot):
         self.system.orphan_protocols.append(prot)
 
-    def _add_hierarchy(self, h, modeled_assembly):
+    def _add_hierarchy(self, h, modeled_assembly, all_software):
         num_models = 0  # assume we always start with no models
         prot_types = (IMP.core.SampleProvenance, IMP.core.CombineProvenance)
         pp_types = (IMP.core.FilterProvenance, IMP.core.ClusterProvenance)
@@ -566,7 +574,8 @@ class _Protocols(object):
                     # Start a new protocol
                     self._add_protocol(prot)
                     prot = _Protocol()
-                num_models = prot.add_step(p, num_models, modeled_assembly)
+                num_models = prot.add_step(p, num_models, modeled_assembly,
+                                           all_software)
                 in_postproc = False
         if len(prot.steps) > 0:
             self._add_protocol(prot)
