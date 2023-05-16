@@ -9,6 +9,8 @@ import IMP.core
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.samplers
 import IMP.pmi.output
+import ihm.cross_linkers
+
 
 class Tests(IMP.test.TestCase):
     def test_multistate(self):
@@ -83,7 +85,7 @@ class Tests(IMP.test.TestCase):
 
         xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
             root_hier=hier, database=cldb, length=length, slope=slope,
-            resolution=1.0)
+            resolution=1.0, linker=ihm.cross_linkers.dss)
 
         psi = xl.psi_dictionary['PSI'][0]
         psi.set_scale(psiv)

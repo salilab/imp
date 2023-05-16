@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
             length=21.0,
             slope=0.0,
             resolution=1.0,
-            label="XL")
+            label="XL", linker=ihm.cross_linkers.dss)
         xl.add_to_model()
         psi=xl.psi_dictionary["PSI"][0]
         psi.set_scale(0.05)
@@ -248,16 +248,16 @@ class Tests(IMP.test.TestCase):
         xlbeads, cldb = self.setup_crosslinks_beads(
             root_hier=rbeads, mode="single_category")
         info = _parse_restraint_info(xlbeads.rs.get_static_info())
-        self.assertAlmostEqual(info['linker_length'], 21.0, delta=1e-5)
+        self.assertAlmostEqual(info['linker length'], 21.0, delta=1e-5)
         self.assertAlmostEqual(info['slope'], 0.01, delta=1e-5)
         self.assertEqual(info['type'],
                          'IMP.pmi.CrossLinkingMassSpectrometryRestraint')
-        self.assertEqual(info['linker_auth_name'], 'DSS')
+        self.assertEqual(info['linker author name'], 'DSS')
         self.assertEqual(
             sorted(info.keys()),
-            ['filename', 'linker_auth_name', 'linker_chemical_name',
-             'linker_inchi', 'linker_inchi_key', 'linker_length',
-             'linker_smiles', 'slope', 'type'])
+            ['filename', 'linker author name', 'linker chemical name',
+             'linker inchi', 'linker inchi key', 'linker length',
+             'linker smiles', 'slope', 'type'])
 
     def test_restraint_source_info(self):
         """Test that restraint source info is populated"""

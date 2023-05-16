@@ -310,6 +310,8 @@ class MembraneSurfaceLocationConditionalRestraint(
        and (197,216,'Nup120').
        It returns a minimum penalty score from two potential ALPS motifs.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein1, protein2,
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):

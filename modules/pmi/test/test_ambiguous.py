@@ -6,6 +6,8 @@ import os
 import IMP.pmi.topology
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.output
+import ihm.cross_linkers
+
 
 class Tests(IMP.test.TestCase):
     def test_ambiguous(self):
@@ -49,7 +51,8 @@ class Tests(IMP.test.TestCase):
         xl = \
           IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
                 root_hier=hier, database=cldb,
-                length=21.0, slope=0.0, resolution=1.0)
+                length=21.0, slope=0.0, resolution=1.0,
+                linker=ihm.cross_linkers.dss)
         xl.sigma_dictionary['1.0'][0].set_scale(5.0)
         xl.psi_dictionary['0.05'][0].set_scale(0.1)
 
