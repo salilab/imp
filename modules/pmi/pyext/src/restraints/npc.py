@@ -19,6 +19,8 @@ import IMP.npc
 class XYRadialPositionRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's distance from the z axis to within a given range.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, term='C', label=None,
                  weight=1.0):
@@ -56,6 +58,8 @@ class XYRadialPositionRestraint(IMP.pmi.restraints.RestraintBase):
 class XYRadialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's distance from the z axis to above a lower bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -77,6 +81,8 @@ class XYRadialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 class XYRadialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's distance from the z axis to below an upper bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -98,6 +104,8 @@ class XYRadialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 class ZAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's z coordinate to within a given range.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0,
                  upper_bound=0.0, consider_radius=False, sigma=1.0, term='C',
                  label=None, weight=1.0):
@@ -135,6 +143,8 @@ class ZAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
 class ZAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's z coordinate to above a lower bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -156,6 +166,8 @@ class ZAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 class ZAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's z coordinate to below an upper bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -177,6 +189,8 @@ class ZAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 class YAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's y coordinate to within a given range.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0,
                  upper_bound=0.0, consider_radius=False, sigma=1.0, term='C',
                  label=None, weight=1.0):
@@ -214,6 +228,8 @@ class YAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
 class YAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's y coordinate to above a lower bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, lower_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -235,6 +251,8 @@ class YAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
 class YAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
     """Restrain a protein's y coordinate to below an upper bound.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein, upper_bound=0.0,
                  consider_radius=False, sigma=1.0, label=None, weight=1.0):
         """Constructor
@@ -256,6 +274,8 @@ class YAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
 class MembraneSurfaceLocationRestraint(IMP.pmi.restraints.RestraintBase):
     """Localize protein on the surface of a half torus in the xy plane.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein,
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):
@@ -325,6 +345,8 @@ class MembraneSurfaceLocationConditionalRestraint(
 class MembraneExclusionRestraint(IMP.pmi.restraints.RestraintBase):
     """Keep protein away from a half torus in the xy plane.
     """
+    _include_in_rmf = True
+
     def __init__(self, hier, protein=None,
                  tor_R=540.0, tor_r=127.5, tor_th=45.0, sigma=0.2,
                  resolution=1, label=None, weight=1.0):
