@@ -46,6 +46,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
 };
 
@@ -75,6 +78,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
 
@@ -103,6 +109,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
 };
@@ -135,6 +144,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(YAxialPositionRestraint);;
 };
 
@@ -164,6 +176,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(YAxialPositionLowerRestraint);;
 };
 
@@ -192,6 +207,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionUpperRestraint);;
 };
@@ -224,6 +242,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
 };
 
@@ -253,6 +274,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
 
@@ -281,6 +305,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionUpperRestraint);;
 };
@@ -372,6 +399,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(MembraneSurfaceLocationRestraint);;
 };
 
@@ -438,6 +468,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(MembraneExclusionRestraint);;
 };
