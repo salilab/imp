@@ -438,6 +438,9 @@ public:
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
   IMP_OBJECT_METHODS(MembraneSurfaceLocationConditionalRestraint);;
 };
 

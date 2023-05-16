@@ -1434,6 +1434,18 @@ ModelObjectsTemp MembraneSurfaceLocationConditionalRestraint::do_get_inputs() co
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *MembraneSurfaceLocationConditionalRestraint::get_static_info()
+        const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.MembraneSurfaceLocationConditionalRestraint");
+  ri->add_float("major_radius", R_);
+  ri->add_float("minor_radius", r_);
+  ri->add_float("thickness", thickness_);
+  ri->add_float("sigma", sigma_);
+  ri->add_particle_indexes("particles1", sc1_->get_contents());
+  ri->add_particle_indexes("particles2", sc2_->get_contents());
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - MembraneExclusionRestraint

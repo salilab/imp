@@ -19,7 +19,8 @@ def _parse_restraint_info(info):
     if info is None:
         return d
     info.set_was_used(True)
-    for typ in ('int', 'float', 'string', 'filename', 'floats', 'filenames'):
+    for typ in ('int', 'float', 'string', 'filename', 'floats', 'filenames',
+                'particle_indexes'):
         for i in range(getattr(info, 'get_number_of_' + typ)()):
             key = getattr(info, 'get_%s_key' % typ)(i)
             value = getattr(info, 'get_%s_value' % typ)(i)
@@ -141,6 +142,27 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.MembraneExclusionRestraint')
+
+    def test_membrane_surface_location_conditional_restraint(self):
+        """Test MembraneSurfaceLocationConditionalRestraint"""
+        m, p1 = setup_system()
+        p2 = IMP.core.XYZR.setup_particle(
+           IMP.Particle(m),
+            IMP.algebra.Sphere3D(IMP.algebra.Vector3D(4,0,0.), 0.4))
+        r = IMP.npc.MembraneSurfaceLocationConditionalRestraint(
+            m, [p1], [p2], 40.0, 10.0, 3.0, 0.5)
+        info = _parse_restraint_info(r.get_static_info())
+        self.assertAlmostEqual(info['major_radius'], 40.0, delta=1e-4)
+        self.assertAlmostEqual(info['minor_radius'], 10.0, delta=1e-4)
+        # thickness is half of user value
+        self.assertAlmostEqual(info['thickness'], 1.5, delta=1e-4)
+        self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
+        self.assertEqual(info['type'],
+                         'IMP.npc.MembraneSurfaceLocationConditionalRestraint')
+        p1ind, = info['particles1']
+        self.assertEqual(p1ind, p1.get_particle_index())
+        p2ind, = info['particles2']
+        self.assertEqual(p2ind, p2.get_particle_index())
 
 
 if __name__ == '__main__':
