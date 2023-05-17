@@ -17,6 +17,7 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.restraints.crosslinking
+import ihm.cross_linkers
 import tempfile
 import os
 import sys
@@ -95,7 +96,8 @@ xlr = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
     length=21,
     label="XL",
     resolution=1,
-    slope=0.01)
+    slope=0.01,
+    linker=ihm.cross_linkers.dss)
 xlr.add_to_model()
 output_objects.append(xlr)
 # needed to sample the nuisance particles (noise params)
