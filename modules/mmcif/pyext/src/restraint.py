@@ -142,7 +142,6 @@ class _SAXSRestraint(ihm.restraint.SASRestraint):
                 multi_state=False)
 
     def add_model_fit(self, model):
-        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
         # We don't know the chi value; we only report a score
         self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
 
