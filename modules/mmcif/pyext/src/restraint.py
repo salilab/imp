@@ -126,13 +126,35 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         pass  # todo
 
 
+class _SAXSRestraint(ihm.restraint.SASRestraint):
+    """Handle an IMP.saxs.Restraint"""
+
+    def __init__(self, imp_restraint, info, modeled_assembly, system):
+        self._imp_restraint = imp_restraint
+        loc = ihm.location.InputFileLocation(
+            info['filename'], details='SAXS profile')
+        dataset = ihm.dataset.SASDataset(loc)
+        super(_SAXSRestraint, self).__init__(
+                dataset=dataset,
+                assembly=modeled_assembly,  # todo: fill in correct assembly
+                segment=False, fitting_method='IMP SAXS restraint',
+                fitting_atom_type=info['form factor type'],
+                multi_state=False)
+
+    def add_model_fit(self, model):
+        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
+        # We don't know the chi value; we only report a score
+        self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
+
+
 class _RestraintMapper(object):
     """Map IMP restraints to mmCIF objects"""
     def __init__(self, system):
         self._typemap = {
             "IMP.isd.GaussianEMRestraint": _GaussianEMRestraint,
             "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
-            _CrossLinkRestraint}
+            _CrossLinkRestraint,
+            "IMP.saxs.Restraint": _SAXSRestraint}
         self._system = system
 
     def handle(self, r, model, modeled_assembly):

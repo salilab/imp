@@ -73,6 +73,31 @@ class MockCrossLinkRestraint(IMP.RestraintSet):
         return i
 
 
+class MockSAXSRestraint(IMP.Restraint):
+
+    def __init__(self, m, dat_filename):
+        self.dat_filename = dat_filename
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+    def unprotected_evaluate(self, accum):
+        return 0.
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP authors", "0.1")
+    def do_show(self, fh):
+        fh.write('MockRestraint')
+    def do_get_inputs(self):
+        return []
+
+    def get_static_info(self):
+        i = IMP.RestraintInfo()
+        i.add_string("type", "IMP.saxs.Restraint")
+        i.add_string("form factor type", "residues")
+        i.add_filename("filename", self.dat_filename)
+        i.add_float("min q", 0.0)
+        i.add_float("max q", 1.0)
+        i.add_float("delta q", 0.01)
+        return i
+
+
 class Tests(IMP.test.TestCase):
     def test_parse_restraint_info_empty(self):
         """Test _parse_restraint_info() with empty RestraintInfo"""
@@ -157,6 +182,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(type(wr.dataset), ihm.dataset.CXMSDataset)
         self.assertEqual(len(wr.experimental_cross_links), 1)
         self.assertEqual(len(wr.cross_links), 1)
+
+    def test_restraint_mapper_saxs(self):
+        """Test _RestraintMapper with SAXS restraint"""
+        s = IMP.mmcif.System()
+        m = IMP.Model()
+        dat_filename = self.get_input_file_name('6lyz.pdb.dat')
+        r = MockSAXSRestraint(m, dat_filename)
+        r.set_was_used(True)
+        rm = IMP.mmcif.restraint._RestraintMapper(s)
+        frame = None
+        assembly = None
+        wr = rm.handle(r, frame, assembly)
+        self.assertEqual(type(wr), IMP.mmcif.restraint._SAXSRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
 
 
 if __name__ == '__main__':
