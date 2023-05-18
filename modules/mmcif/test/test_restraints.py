@@ -98,6 +98,27 @@ class MockSAXSRestraint(IMP.Restraint):
         return i
 
 
+class MockZAxialRestraint(IMP.Restraint):
+    def __init__(self, m):
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+    def unprotected_evaluate(self, accum):
+        return 0.
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP authors", "0.1")
+    def do_show(self, fh):
+        fh.write('MockRestraint')
+    def do_get_inputs(self):
+        return []
+
+    def get_static_info(self):
+        i = IMP.RestraintInfo()
+        i.add_string("type", "IMP.npc.ZAxialPositionRestraint")
+        i.add_float("lower bound", -10.0)
+        i.add_float("upper bound", 20.0)
+        i.add_float("sigma", 4.0)
+        return i
+
+
 class Tests(IMP.test.TestCase):
     def test_parse_restraint_info_empty(self):
         """Test _parse_restraint_info() with empty RestraintInfo"""
@@ -196,6 +217,19 @@ class Tests(IMP.test.TestCase):
         wr = rm.handle(r, frame, assembly)
         self.assertEqual(type(wr), IMP.mmcif.restraint._SAXSRestraint)
         self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
+
+    def test_restraint_mapper_zaxial(self):
+        """Test _RestraintMapper with ZAxialPositionRestraint"""
+        s = IMP.mmcif.System()
+        m = IMP.Model()
+        r = MockZAxialRestraint(m)
+        r.set_was_used(True)
+        rm = IMP.mmcif.restraint._RestraintMapper(s)
+        frame = None
+        assembly = None
+        wr = rm.handle(r, frame, assembly)
+        self.assertEqual(type(wr), IMP.mmcif.restraint._ZAxialRestraint)
+        self.assertIsNone(wr.dataset)
 
 
 if __name__ == '__main__':

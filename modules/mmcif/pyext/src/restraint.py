@@ -6,6 +6,16 @@ import IMP.mmcif.metadata
 import ihm.restraint
 
 
+def _get_input_pis(r):
+    """Yield all input ParticleIndexes for a given Restraint"""
+    for inp in r.get_inputs():
+        try:
+            p = IMP.Particle.get_from(inp)
+            yield p.get_index()
+        except ValueError:
+            pass
+
+
 def _get_by_residue(m, p):
     """Determine whether the given particle represents a specific residue
        or a more coarse-grained object."""
@@ -20,17 +30,59 @@ def _get_scale(m, p):
     return IMP.isd.Scale(m, p).get_scale()
 
 
-def _get_asym(m, pi, comp):
-    """Get the ihm.AsymUnit for a given particle"""
-    # Walk up the hierarchy until we find the Chain, then map that to AsymUnit
-    if IMP.atom.Hierarchy.get_is_setup(m, pi):
-        h = IMP.atom.Hierarchy(m, pi)
-        while h:
-            if IMP.atom.Chain.get_is_setup(m, h):
-                return comp[IMP.atom.Chain(h)].asym_unit
-            h = h.get_parent()
-    raise ValueError("Could not find top-level Chain for "
-                     + m.get_particle_name(pi))
+class _AsymMapper(object):
+    """Map ParticleIndexes to ihm.AsymUnit"""
+    def __init__(self, m, system):
+        self.m = m
+        self.components = system.components
+        self._seen_ranges = {}
+
+    def __getitem__(self, pi):
+        m = self.m
+        # Walk up the hierarchy until we find the Chain,
+        # then map that to AsymUnit
+        if IMP.atom.Hierarchy.get_is_setup(m, pi):
+            h = IMP.atom.Hierarchy(m, pi)
+            while h:
+                if IMP.atom.Chain.get_is_setup(m, h):
+                    return self.components[IMP.atom.Chain(h)].asym_unit
+                h = h.get_parent()
+        raise KeyError("Could not find top-level Chain for "
+                       + m.get_particle_name(pi))
+
+    def get_feature(self, ps):
+        """Get an ihm.restraint.Feature that covers the given particles"""
+        # todo: handle things other than residues
+        m = self.m
+        rngs = []
+        for p in ps:
+            asym = self[p]
+            # todo: handle overlapping ranges
+            if IMP.atom.Residue.get_is_setup(m, p):
+                rind = IMP.atom.Residue(m, p).get_index()
+                rng = asym(rind, rind)
+            elif IMP.atom.Fragment.get_is_setup(m, p):
+                # PMI Fragments always contain contiguous residues
+                rinds = IMP.atom.Fragment(m, p).get_residue_indexes()
+                rng = asym(rinds[0], rinds[-1])
+            else:
+                raise ValueError("Unsupported particle type %s" % str(p))
+            # Join contiguous ranges
+            if len(rngs) > 0 and rngs[-1].asym == asym \
+               and rngs[-1].seq_id_range[1] == rng.seq_id_range[0] - 1:
+                rngs[-1].seq_id_range = (rngs[-1].seq_id_range[0],
+                                         rng.seq_id_range[1])
+            else:
+                rngs.append(rng)
+        # If an identical feature already exists, return that
+        # todo: python-ihm should handle this automatically for us
+        hrngs = tuple(rngs)
+        if hrngs in self._seen_ranges:
+            return self._seen_ranges[hrngs]
+        else:
+            feat = ihm.restraint.ResidueFeature(rngs)
+            self._seen_ranges[hrngs] = feat
+            return feat
 
 
 def _parse_restraint_info(info):
@@ -85,10 +137,11 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         # Map from IMP/RMF chain names to ihm.Entity
         cmap = dict((e.description, e) for e in system.entities.get_all())
         dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
+        asym = _AsymMapper(imp_restraint.get_model(), system)
         self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
-                            system.components, dist)
+                           asym, dist)
 
-    def _add_all_links(self, rset, cmap, comp, dist):
+    def _add_all_links(self, rset, cmap, asym, dist):
         """Add info for each cross-link in the given RestraintSet"""
         for link in rset.restraints:
             # Recurse into any child RestraintSets
@@ -97,7 +150,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
             except ValueError:
                 child_rs = None
             if child_rs:
-                self._add_all_links(child_rs, cmap, comp, dist)
+                self._add_all_links(child_rs, cmap, asym, dist)
             else:
                 info = _parse_restraint_info(link.get_static_info())
                 # todo: handle ambiguous cross-links, fix residue numbering
@@ -109,8 +162,8 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
                 # todo: handle multiple contributions
                 m = link.get_model()
                 endp1, endp2 = info['endpoints']
-                asym1 = _get_asym(m, endp1, comp)
-                asym2 = _get_asym(m, endp2, comp)
+                asym1 = asym[endp1]
+                asym2 = asym[endp2]
                 if _get_by_residue(m, endp1) and _get_by_residue(m, endp2):
                     cls = ihm.restraint.ResidueCrossLink
                 else:
@@ -124,6 +177,36 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     def add_model_fit(self, model):
         pass  # todo
+
+
+class _GeometricRestraint(ihm.restraint.GeometricRestraint):
+    """Base for all geometric restraints"""
+
+    def __init__(self, imp_restraint, info, modeled_assembly, system):
+        self._imp_restraint = imp_restraint
+        asym = _AsymMapper(imp_restraint.get_model(), system)
+        super(_GeometricRestraint, self).__init__(
+            dataset=None,
+            geometric_object=self._geom_object,
+            feature=asym.get_feature(_get_input_pis(imp_restraint)),
+            distance=self._get_distance(info),
+            harmonic_force_constant=1. / info['sigma'],
+            restrain_all=True)
+
+    def _get_distance(self, info):
+        pass
+
+    def add_model_fit(self, model):
+        pass
+
+
+class _ZAxialRestraint(_GeometricRestraint):
+    """Handle an IMP.npc.ZAxialRestraint"""
+    _geom_object = ihm.geometry.XYPlane()
+
+    def _get_distance(self, info):
+        return ihm.restraint.LowerUpperBoundDistanceRestraint(
+            info['lower bound'], info['upper bound'])
 
 
 class _SAXSRestraint(ihm.restraint.SASRestraint):
@@ -153,6 +236,7 @@ class _RestraintMapper(object):
             "IMP.isd.GaussianEMRestraint": _GaussianEMRestraint,
             "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
             _CrossLinkRestraint,
+            "IMP.npc.ZAxialPositionRestraint": _ZAxialRestraint,
             "IMP.saxs.Restraint": _SAXSRestraint}
         self._system = system
 
