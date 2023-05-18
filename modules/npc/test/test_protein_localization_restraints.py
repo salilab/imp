@@ -35,8 +35,8 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.ZAxialPositionRestraint(m, [p], 1.0, 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionRestraint')
 
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.ZAxialPositionLowerRestraint(m, [p], 1.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionLowerRestraint')
 
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.ZAxialPositionUpperRestraint(m, [p], 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionUpperRestraint')
 
@@ -63,8 +63,8 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.YAxialPositionRestraint(m, [p], 1.0, 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionRestraint')
 
@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.YAxialPositionLowerRestraint(m, [p], 1.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionLowerRestraint')
 
@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.YAxialPositionUpperRestraint(m, [p], 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionUpperRestraint')
 
@@ -91,8 +91,8 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.XYRadialPositionRestraint(m, [p], 1.0, 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.XYRadialPositionRestraint')
 
@@ -101,7 +101,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.XYRadialPositionLowerRestraint(m, [p], 1.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower_bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.XYRadialPositionLowerRestraint')
@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.XYRadialPositionUpperRestraint(m, [p], 2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['upper_bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.XYRadialPositionUpperRestraint')
@@ -122,8 +122,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.npc.MembraneSurfaceLocationRestraint(m, [p], 40.0, 10.0,
                                                      3.0, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['major_radius'], 40.0, delta=1e-4)
-        self.assertAlmostEqual(info['minor_radius'], 10.0, delta=1e-4)
+        self.assertAlmostEqual(info['major radius'], 40.0, delta=1e-4)
+        self.assertAlmostEqual(info['minor radius'], 10.0, delta=1e-4)
         # thickness is half of user value
         self.assertAlmostEqual(info['thickness'], 1.5, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
@@ -135,8 +135,8 @@ class Tests(IMP.test.TestCase):
         m, p = setup_system()
         r = IMP.npc.MembraneExclusionRestraint(m, [p], 40.0, 10.0, 3.0, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['major_radius'], 40.0, delta=1e-4)
-        self.assertAlmostEqual(info['minor_radius'], 10.0, delta=1e-4)
+        self.assertAlmostEqual(info['major radius'], 40.0, delta=1e-4)
+        self.assertAlmostEqual(info['minor radius'], 10.0, delta=1e-4)
         # thickness is half of user value
         self.assertAlmostEqual(info['thickness'], 1.5, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
@@ -152,8 +152,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.npc.MembraneSurfaceLocationConditionalRestraint(
             m, [p1], [p2], 40.0, 10.0, 3.0, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['major_radius'], 40.0, delta=1e-4)
-        self.assertAlmostEqual(info['minor_radius'], 10.0, delta=1e-4)
+        self.assertAlmostEqual(info['major radius'], 40.0, delta=1e-4)
+        self.assertAlmostEqual(info['minor radius'], 10.0, delta=1e-4)
         # thickness is half of user value
         self.assertAlmostEqual(info['thickness'], 1.5, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)

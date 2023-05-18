@@ -140,8 +140,8 @@ ModelObjectsTemp ZAxialPositionRestraint::do_get_inputs() const {
 RestraintInfo *ZAxialPositionRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.ZAxialPositionRestraint");
-  ri->add_float("lower_bound", lower_bound_);
-  ri->add_float("upper_bound", upper_bound_);
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("upper bound", upper_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -232,7 +232,7 @@ ModelObjectsTemp ZAxialPositionLowerRestraint::do_get_inputs() const {
 RestraintInfo *ZAxialPositionLowerRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.ZAxialPositionLowerRestraint");
-  ri->add_float("lower_bound", lower_bound_);
+  ri->add_float("lower bound", lower_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -323,7 +323,7 @@ ModelObjectsTemp ZAxialPositionUpperRestraint::do_get_inputs() const {
 RestraintInfo *ZAxialPositionUpperRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.ZAxialPositionUpperRestraint");
-  ri->add_float("upper_bound", upper_bound_);
+  ri->add_float("upper bound", upper_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -431,8 +431,8 @@ ModelObjectsTemp YAxialPositionRestraint::do_get_inputs() const {
 RestraintInfo *YAxialPositionRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.YAxialPositionRestraint");
-  ri->add_float("upper_bound", upper_bound_);
-  ri->add_float("lower_bound", lower_bound_);
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("lower bound", lower_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -523,7 +523,7 @@ ModelObjectsTemp YAxialPositionLowerRestraint::do_get_inputs() const {
 RestraintInfo *YAxialPositionLowerRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.YAxialPositionLowerRestraint");
-  ri->add_float("lower_bound", lower_bound_);
+  ri->add_float("lower bound", lower_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -614,7 +614,7 @@ ModelObjectsTemp YAxialPositionUpperRestraint::do_get_inputs() const {
 RestraintInfo *YAxialPositionUpperRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.YAxialPositionUpperRestraint");
-  ri->add_float("upper_bound", upper_bound_);
+  ri->add_float("upper bound", upper_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -744,8 +744,8 @@ ModelObjectsTemp XYRadialPositionRestraint::do_get_inputs() const {
 RestraintInfo *XYRadialPositionRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.XYRadialPositionRestraint");
-  ri->add_float("upper_bound", upper_bound_);
-  ri->add_float("lower_bound", lower_bound_);
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("lower bound", lower_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -847,7 +847,7 @@ ModelObjectsTemp XYRadialPositionLowerRestraint::do_get_inputs() const {
 RestraintInfo *XYRadialPositionLowerRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.XYRadialPositionLowerRestraint");
-  ri->add_float("lower_bound", lower_bound_);
+  ri->add_float("lower bound", lower_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -949,7 +949,7 @@ ModelObjectsTemp XYRadialPositionUpperRestraint::do_get_inputs() const {
 RestraintInfo *XYRadialPositionUpperRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.XYRadialPositionUpperRestraint");
-  ri->add_float("upper_bound", upper_bound_);
+  ri->add_float("upper bound", upper_bound_);
   ri->add_float("sigma", sigma_);
   return ri.release();
 }
@@ -1309,8 +1309,8 @@ ModelObjectsTemp MembraneSurfaceLocationRestraint::do_get_inputs() const {
 RestraintInfo *MembraneSurfaceLocationRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.MembraneSurfaceLocationRestraint");
-  ri->add_float("major_radius", R_);
-  ri->add_float("minor_radius", r_);
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
   ri->add_float("thickness", thickness_);
   ri->add_float("sigma", sigma_);
   return ri.release();
@@ -1438,8 +1438,8 @@ RestraintInfo *MembraneSurfaceLocationConditionalRestraint::get_static_info()
         const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.MembraneSurfaceLocationConditionalRestraint");
-  ri->add_float("major_radius", R_);
-  ri->add_float("minor_radius", r_);
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
   ri->add_float("thickness", thickness_);
   ri->add_float("sigma", sigma_);
   ri->add_particle_indexes("particles1", sc1_->get_contents());
@@ -1545,8 +1545,8 @@ ModelObjectsTemp MembraneExclusionRestraint::do_get_inputs() const {
 RestraintInfo *MembraneExclusionRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.MembraneExclusionRestraint");
-  ri->add_float("major_radius", R_);
-  ri->add_float("minor_radius", r_);
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
   ri->add_float("thickness", thickness_);
   ri->add_float("sigma", sigma_);
   return ri.release();
