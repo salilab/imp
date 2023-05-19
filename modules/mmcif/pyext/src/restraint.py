@@ -139,7 +139,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
         asym = _AsymMapper(imp_restraint.get_model(), system)
         self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
-                           asym, dist)
+                            asym, dist)
 
     def _add_all_links(self, rset, cmap, asym, dist):
         """Add info for each cross-link in the given RestraintSet"""
