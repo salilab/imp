@@ -70,5 +70,8 @@ ModelObjectsTemp WeightedSphereDistancePairScore::do_get_inputs(
 }
 
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::SphereDistancePairScore);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::HarmonicUpperBoundSphereDistancePairScore);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::HarmonicSphereDistancePairScore);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::SoftSpherePairScore);
 
 IMPCORE_END_NAMESPACE
