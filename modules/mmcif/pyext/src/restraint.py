@@ -179,6 +179,46 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         pass  # todo
 
 
+class _EM2DRestraint(ihm.restraint.EM2DRestraint):
+    """Handle an IMP.em2d.PCAFitRestraint"""
+
+    def __init__(self, imp_restraint, info, modeled_assembly, system):
+        # todo: handle more than one image
+        self._imp_restraint = imp_restraint
+        loc = ihm.location.InputFileLocation(
+                info['image files'][0],
+                details="Electron microscopy class average")
+        dataset = ihm.dataset.EM2DClassDataset(loc)
+        super(_EM2DRestraint, self).__init__(
+            dataset=dataset,
+            assembly=modeled_assembly,  # todo: fill in correct assembly
+            segment=False,
+            number_raw_micrographs=info['micrographs number'] or None,
+            pixel_size_width=info['pixel size'],
+            pixel_size_height=info['pixel size'],
+            image_resolution=info['resolution'],
+            number_of_projections=info['projection number'])
+
+    def add_model_fit(self, model):
+        # todo: handle multiple images
+        nimage = 0
+        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
+        ccc = info['cross correlation'][nimage]
+        transform = self._get_transformation(model, info, nimage)
+        rot = transform.get_rotation()
+        rm = [[e for e in rot.get_rotation_matrix_row(i)] for i in range(3)]
+        self.fits[model] = ihm.restraint.EM2DRestraintFit(
+            cross_correlation_coefficient=ccc, rot_matrix=rm,
+            tr_vector=transform.get_translation())
+
+    def _get_transformation(self, model, info, nimage):
+        """Get the transformation that places the model on image nimage"""
+        r = info['rotation'][nimage * 4: nimage * 4 + 4]
+        t = info['translation'][nimage * 3: nimage * 3 + 3]
+        return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
+                                            IMP.algebra.Vector3D(*t))
+
+
 class _GeometricRestraint(ihm.restraint.GeometricRestraint):
     """Base for all geometric restraints"""
 
@@ -236,6 +276,7 @@ class _RestraintMapper(object):
             "IMP.isd.GaussianEMRestraint": _GaussianEMRestraint,
             "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
             _CrossLinkRestraint,
+            "IMP.em2d.PCAFitRestraint": _EM2DRestraint,
             "IMP.npc.ZAxialPositionRestraint": _ZAxialRestraint,
             "IMP.saxs.Restraint": _SAXSRestraint}
         self._system = system

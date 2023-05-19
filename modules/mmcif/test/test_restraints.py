@@ -119,6 +119,38 @@ class MockZAxialRestraint(IMP.Restraint):
         return i
 
 
+class MockPCAFitRestraint(IMP.Restraint):
+
+    def __init__(self, m, image_filename):
+        self.image_filename = image_filename
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+    def unprotected_evaluate(self, accum):
+        return 0.
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP authors", "0.1")
+    def do_show(self, fh):
+        fh.write('MockRestraint')
+    def do_get_inputs(self):
+        return []
+
+    def get_static_info(self):
+        i = IMP.RestraintInfo()
+        i.add_string("type", "IMP.em2d.PCAFitRestraint")
+        i.add_filenames("image files", [self.image_filename])
+        i.add_float("pixel size", 2.2)
+        i.add_float("resolution", 20.)
+        i.add_int("projection number", 20)
+        i.add_int("micrographs number", 0)
+        return i
+
+    def get_dynamic_info(self):
+        i = IMP.RestraintInfo()
+        i.add_floats("cross correlation", [0.4])
+        i.add_floats("rotation", [0., 0., 1., 0.])
+        i.add_floats("translation", [241.8, 17.4, 0.0])
+        return i
+
+
 class Tests(IMP.test.TestCase):
     def test_parse_restraint_info_empty(self):
         """Test _parse_restraint_info() with empty RestraintInfo"""
@@ -230,6 +262,20 @@ class Tests(IMP.test.TestCase):
         wr = rm.handle(r, frame, assembly)
         self.assertEqual(type(wr), IMP.mmcif.restraint._ZAxialRestraint)
         self.assertIsNone(wr.dataset)
+
+    def test_restraint_mapper_em2d_restraint(self):
+        """Test _RestraintMapper with IMP.em2d.PCAFitRestraint"""
+        s = IMP.mmcif.System()
+        m = IMP.Model()
+        image_filename = self.get_input_file_name('image_2.pgm')
+        r = MockPCAFitRestraint(m, image_filename)
+        r.set_was_used(True)
+        rm = IMP.mmcif.restraint._RestraintMapper(s)
+        frame = None
+        assembly = None
+        wr = rm.handle(r, frame, assembly)
+        self.assertEqual(type(wr), IMP.mmcif.restraint._EM2DRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.EM2DClassDataset)
 
 
 if __name__ == '__main__':
