@@ -74,6 +74,8 @@ class ElectronMicroscopy2D(object):
             em2d = IMP.em2d.PCAFitRestraint(
                 particles, images, pixel_size, image_resolution,
                 projection_number, True)
+        if micrographs_number:
+            em2d.set_micrographs_number(micrographs_number)
         self._em2d_restraint = em2d
         self._num_images = len(images)
         self.rs.add_restraint(em2d)
