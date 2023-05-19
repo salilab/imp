@@ -19,7 +19,8 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
                                  const std::vector<std::string>& image_files,
                                  double pixel_size, double resolution,
                                  unsigned int projection_number, bool reuse_direction,
-                                 unsigned int n_components)
+                                 unsigned int n_components,
+                                 unsigned int micrographs_number)
   : Restraint(particles[0]->get_model(), "PCAFitRestraint%1%"),
     ps_(particles),
     pixel_size_(pixel_size),
@@ -28,6 +29,7 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
     projector_(ps_, projection_number, pixel_size, resolution),
     reuse_direction_(reuse_direction),
     n_components_(n_components),
+    micrographs_number_(micrographs_number),
     counter_(0)
 {
   // read and process the images
@@ -171,6 +173,7 @@ RestraintInfo *PCAFitRestraint::get_static_info() const {
   ri->add_float("pixel size", pixel_size_);
   ri->add_float("resolution", resolution_);
   ri->add_int("projection number", projection_number_);
+  ri->add_int("micrographs number", micrographs_number_);
   return ri.release();
 }
 

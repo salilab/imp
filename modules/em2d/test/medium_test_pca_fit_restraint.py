@@ -67,6 +67,9 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
 
             pca_fit_restraint = IMP.em2d.PCAFitRestraint(
                 particles, image_list, 2.2, 20, 100)
+            self.assertEqual(pca_fit_restraint.get_micrographs_number(), 0)
+            pca_fit_restraint.set_micrographs_number(22)
+            self.assertEqual(pca_fit_restraint.get_micrographs_number(), 22)
             self.check_standard_object_methods(pca_fit_restraint)
             score = pca_fit_restraint.evaluate(False)
             print('initial score = ' + str(score))
@@ -90,9 +93,11 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
     def _check_static_restraint_info(self, r):
         info = r.get_static_info()
 
-        self.assertEqual(info.get_number_of_int(), 1)
+        self.assertEqual(info.get_number_of_int(), 2)
         self.assertEqual(info.get_int_key(0), "projection number")
         self.assertEqual(info.get_int_value(0), 100)
+        self.assertEqual(info.get_int_key(1), "micrographs number")
+        self.assertEqual(info.get_int_value(1), 22)
 
         self.assertEqual(info.get_number_of_float(), 2)
         self.assertEqual(info.get_float_key(0), "pixel size")
