@@ -3,7 +3,7 @@
 # general imports
 from numpy import *
 from random import uniform
-
+import pickle
 
 # imp general
 import IMP
@@ -98,6 +98,28 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),
                                    exp(-self.J.unprotected_evaluate(self.DA)))
+
+    def test_serialize(self):
+        """Test (un-)serialize of JeffreysRestraint"""
+        self.sigma.set_scale(50.)
+        self.J.set_name("foo")
+        self.assertAlmostEqual(self.J.evaluate(True), 3.912, delta=0.001)
+        dump = pickle.dumps(self.J)
+        newr = pickle.loads(dump)
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(True), 3.912, delta=0.001)
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of JeffreysRestraint via polymorphic pointer"""
+        self.sigma.set_scale(50.)
+        self.J.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([self.J])
+        self.assertAlmostEqual(sf.evaluate(True), 3.912, delta=0.001)
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newr, = newsf.restraints
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(True), 3.912, delta=0.001)
 
 
 if __name__ == '__main__':
