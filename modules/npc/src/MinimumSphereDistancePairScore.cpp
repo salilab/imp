@@ -43,4 +43,6 @@ double MinimumSphereDistancePairScore::evaluate_index(Model *m,
   return v;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MinimumSphereDistancePairScore);
+
 IMPNPC_END_NAMESPACE

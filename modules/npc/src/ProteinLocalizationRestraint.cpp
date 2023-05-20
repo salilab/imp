@@ -1999,6 +1999,5 @@ IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PerinuclearVolumeLocationRestraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDistanceRestraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDihedralRestraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinProximityRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MinimumSphereDistancePairScore);
 
 IMPNPC_END_NAMESPACE
