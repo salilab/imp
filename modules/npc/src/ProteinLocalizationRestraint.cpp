@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -1978,5 +1978,27 @@ ModelObjectsTemp ProteinProximityRestraint::do_get_inputs() const {
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinContactRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinChainRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneSurfaceLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(
+               IMP::npc::MembraneSurfaceLocationConditionalRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneExclusionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PoreSideVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PerinuclearVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDistanceRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDihedralRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinProximityRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MinimumSphereDistancePairScore);
 
 IMPNPC_END_NAMESPACE

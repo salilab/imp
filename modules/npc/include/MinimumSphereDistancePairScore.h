@@ -13,6 +13,8 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/pair_macros.h>
 #include <IMP/algebra/Transformation3D.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPNPC_BEGIN_NAMESPACE
 
@@ -30,10 +32,18 @@ class IMPNPCEXPORT MinimumSphereDistancePairScore : public PairScore {
   IMP::PointerMember<UnaryFunction> f_;
   algebra::Transformation3Ds transforms_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<PairScore>(this), f_, transforms_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MinimumSphereDistancePairScore);
+
  public:
   MinimumSphereDistancePairScore(UnaryFunction *f,
                                  algebra::Transformation3Ds transforms)
                  : f_(f), transforms_(transforms) {}
+
+  MinimumSphereDistancePairScore() {}
 
   virtual double evaluate_index(Model *m, const ParticleIndexPair &pi,
                                 DerivativeAccumulator *da) const override;

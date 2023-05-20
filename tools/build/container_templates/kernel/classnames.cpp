@@ -192,4 +192,7 @@ Restraints ClassnameScore::create_current_decomposition(
   return do_create_current_decomposition(m, vt);
 }
 
+template<>
+IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::StaticListContainer<IMP::ClassnameContainer>);
+
 IMPKERNEL_END_NAMESPACE

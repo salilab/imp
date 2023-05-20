@@ -3,7 +3,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_STATIC_LIST_CONTAINER_H
@@ -27,6 +27,7 @@ class StaticListContainer : public ListLikeContainer<Base> {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<P>(this));
   }
+  IMP_OBJECT_SERIALIZE_DECL(StaticListContainer<Base>);
 
  public:
   StaticListContainer(Model *m, std::string name) : P(m, name) {}

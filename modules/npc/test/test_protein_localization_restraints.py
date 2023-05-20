@@ -3,6 +3,7 @@ import IMP.test
 import IMP.algebra
 import IMP.core
 import IMP.npc
+import pickle
 
 
 def setup_system():
@@ -30,6 +31,27 @@ def _parse_restraint_info(info):
 
 class Tests(IMP.test.TestCase):
 
+    def _check_pickle(self, r, score):
+        """Check that the restraint r can be (un-)pickled"""
+        r.set_name('foo')
+        self._check_pickle_non_polymorphic(r, score)
+        self._check_pickle_polymorphic(r, score)
+
+    def _check_pickle_non_polymorphic(self, r, score):
+        self.assertAlmostEqual(r.evaluate(False), score, delta=1e-3)
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(False), score, delta=1e-3)
+
+    def _check_pickle_polymorphic(self, r, score):
+        sf = IMP.core.RestraintsScoringFunction([r])
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newr, = newsf.restraints
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(False), score, delta=1e-3)
+
     def test_z_axial(self):
         """Test ZAxialPositionRestraint"""
         m, p = setup_system()
@@ -39,6 +61,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionRestraint')
+        self._check_pickle(r, score=3.920)
 
     def test_z_axial_lower(self):
         """Test ZAxialPositionLowerRestraint"""
@@ -48,15 +71,17 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionLowerRestraint')
+        self._check_pickle(r, score=3.920)
 
     def test_z_axial_upper(self):
         """Test ZAxialPositionUpperRestraint"""
         m, p = setup_system()
-        r = IMP.npc.ZAxialPositionUpperRestraint(m, [p], 2.0, True, 0.5)
+        r = IMP.npc.ZAxialPositionUpperRestraint(m, [p], -5.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], -5.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.ZAxialPositionUpperRestraint')
+        self._check_pickle(r, score=58.32)
 
     def test_y_axial(self):
         """Test YAxialPositionRestraint"""
@@ -67,6 +92,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionRestraint')
+        self._check_pickle(r, score=3.920)
 
     def test_y_axial_lower(self):
         """Test YAxialPositionLowerRestraint"""
@@ -76,15 +102,17 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionLowerRestraint')
+        self._check_pickle(r, score=3.920)
 
     def test_y_axial_upper(self):
         """Test YAxialPositionUpperRestraint"""
         m, p = setup_system()
-        r = IMP.npc.YAxialPositionUpperRestraint(m, [p], 2.0, True, 0.5)
+        r = IMP.npc.YAxialPositionUpperRestraint(m, [p], -2.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], -2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.YAxialPositionUpperRestraint')
+        self._check_pickle(r, score=11.52)
 
     def test_xy_radial(self):
         """Test XYRadialPositionRestraint"""
@@ -95,16 +123,18 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.XYRadialPositionRestraint')
+        self._check_pickle(r, score=0.32)
 
     def test_xy_radial_lower(self):
         """Test XYRadialPositionLowerRestraint"""
         m, p = setup_system()
-        r = IMP.npc.XYRadialPositionLowerRestraint(m, [p], 1.0, True, 0.5)
+        r = IMP.npc.XYRadialPositionLowerRestraint(m, [p], 10.0, True, 0.5)
         info = _parse_restraint_info(r.get_static_info())
-        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['lower bound'], 10.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.XYRadialPositionLowerRestraint')
+        self._check_pickle(r, score=141.12)
 
     def test_xy_radial_upper(self):
         """Test XYRadialPositionUpperRestraint"""
@@ -115,6 +145,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.XYRadialPositionUpperRestraint')
+        self._check_pickle(r, score=0.32)
 
     def test_membrane_surface_localization_restraint(self):
         """Test MembraneSurfaceLocationRestraint"""
@@ -129,10 +160,12 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.MembraneSurfaceLocationRestraint')
+        self._check_pickle(r, score=1568.0)
 
     def test_membrane_exclusion_restraint(self):
         """Test MembraneExclusionRestraint"""
         m, p = setup_system()
+        p.set_coordinates([40., 2., 3.])
         r = IMP.npc.MembraneExclusionRestraint(m, [p], 40.0, 10.0, 3.0, 0.5)
         info = _parse_restraint_info(r.get_static_info())
         self.assertAlmostEqual(info['major radius'], 40.0, delta=1e-4)
@@ -142,6 +175,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'],
                          'IMP.npc.MembraneExclusionRestraint')
+        self._check_pickle(r, score=144.5)
 
     def test_membrane_surface_location_conditional_restraint(self):
         """Test MembraneSurfaceLocationConditionalRestraint"""
@@ -163,6 +197,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p1ind, p1.get_particle_index())
         p2ind, = info['particles2']
         self.assertEqual(p2ind, p2.get_particle_index())
+        self._check_pickle(r, score=1352.0)
 
 
 if __name__ == '__main__':
