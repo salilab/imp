@@ -9,7 +9,7 @@
 IMP_SWIG_BASE_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CrossLinkMSRestraint, CrossLinkMSRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, LogWrapper, LogWrappers);
-IMP_SWIG_OBJECT(IMP::isd, UniformPrior, UniformPriors);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, NormalSigmaPCRestraint, NormalSigmaPCRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
