@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP
 import IMP.isd
 import IMP.test
+import pickle
 
 
 class LogRestraint(IMP.Restraint):
@@ -115,6 +116,31 @@ class Tests(IMP.test.TestCase):
         lw = IMP.isd.LogWrapper([r1, r2], 1.0)
         self.assertFalse(r1.get_is_aggregate())
         self.assertTrue(lw.get_is_aggregate())
+
+    def test_pickle(self):
+        """Test that LogWrapper can be (un-)pickled"""
+        m = IMP.Model()
+        r0 = IMP._ConstRestraint(m, [], 100)
+        lw = IMP.isd.LogWrapper([r0], 1.0)
+        lw.set_name("foo")
+        self.assertAlmostEqual(lw.evaluate(False), -4.605, delta=1e-3)
+        dump = pickle.dumps(lw)
+        newlw = pickle.loads(dump)
+        self.assertEqual(newlw.get_name(), "foo")
+        self.assertEqual([lw.get_name() for r in newlw.restraints], ["foo"])
+        self.assertAlmostEqual(newlw.evaluate(False), -4.605, delta=1e-3)
+
+    def test_pickle_polymorphic(self):
+        """Test that LogWrapper can be (un-)pickled via polymorphic pointer"""
+        m = IMP.Model()
+        r0 = IMP._ConstRestraint(m, [], 100)
+        lw = IMP.isd.LogWrapper([r0], 1.0)
+        rs = IMP.RestraintSet(m, 12.0)
+        rs.restraints.append(lw)
+        self.assertAlmostEqual(rs.evaluate(False), -55.262, delta=1e-3)
+        dump = pickle.dumps(rs)
+        newrs = pickle.loads(dump)
+        self.assertAlmostEqual(newrs.evaluate(False), -55.262, delta=1e-3)
 
 
 if __name__ == '__main__':

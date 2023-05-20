@@ -2,7 +2,7 @@
  *  \file IMP/isd/LogWrapper.h
  *  \brief Calculate the -Log of a list of restraints.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,9 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/container_macros.h>
 #include <IMP/RestraintSet.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -21,6 +24,13 @@ IMPISD_BEGIN_NAMESPACE
     \note Any weights of the wrapped restraints are ignored.
  */
 class IMPISDEXPORT LogWrapper : public RestraintSet {
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<RestraintSet>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(LogWrapper);
+
   void show_it(std::ostream &out) const;
 
    public:
@@ -31,6 +41,7 @@ class IMPISDEXPORT LogWrapper : public RestraintSet {
     //! Create a set that is registered with the model
     LogWrapper(const RestraintsTemp &rs, double weight,
                const std::string &name = "LogWrapper %1%");
+    LogWrapper() {}
 
     virtual double unprotected_evaluate(
         IMP::DerivativeAccumulator* accum) const override;

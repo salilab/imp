@@ -208,4 +208,6 @@ void LogWrapper::show_it(std::ostream &out) const {
   out << "... end LogWrapper " << get_name() << std::endl;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::LogWrapper);
+
 IMPISD_END_NAMESPACE
