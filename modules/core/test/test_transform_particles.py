@@ -3,6 +3,7 @@ import IMP
 import IMP.core
 import IMP.algebra
 import IMP.test
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -30,6 +31,41 @@ class Tests(IMP.test.TestCase):
                 (v - t.get_transformed(coords[i])).get_magnitude(),
                 0,
                 delta=0.01)
+
+    def make_system(self):
+        m = IMP.Model()
+        p1 = m.add_particle("p1")
+        xyz = IMP.core.XYZ.setup_particle(
+            m, p1, IMP.algebra.Vector3D(1., 2., 3.))
+        trans = IMP.algebra.Transformation3D(
+            IMP.algebra.get_identity_rotation_3d(),
+            IMP.algebra.Vector3D(10., 0., 0.))
+        t = IMP.core.Transform(trans)
+        return m, xyz, t
+
+    def test_pickle(self):
+        """Test (un-)pickle of Transform"""
+        m, xyz, t = self.make_system()
+        t.apply_index(m, xyz)
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 11.0, delta=1e-5)
+        t.set_name("foo")
+        dump = pickle.dumps(t)
+        newt = pickle.loads(dump)
+        self.assertEqual(newt.get_name(), "foo")
+        newt.apply_index(m, xyz)
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 21.0, delta=1e-5)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of Transform via polymorphic pointer"""
+        m, xyz, t = self.make_system()
+        r = IMP.core.SingletonConstraint(t, None, m, xyz)
+        r.before_evaluate()
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 11.0, delta=1e-5)
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        newr.before_evaluate()
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 21.0, delta=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

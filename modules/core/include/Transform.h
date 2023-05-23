@@ -11,6 +11,9 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/singleton_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a transformation to a passed particle
@@ -27,6 +30,8 @@ class IMPCOREEXPORT Transform : public SingletonModifier {
   */
   Transform(const algebra::Transformation3D &t, bool ignore_non_xyz = false);
 
+  Transform() {}
+
   virtual void apply_index(Model *m, ParticleIndex p) const
       override;
   virtual ModelObjectsTemp do_get_inputs(
@@ -40,6 +45,13 @@ class IMPCOREEXPORT Transform : public SingletonModifier {
  private:
   algebra::Transformation3D t_;
   bool ignore_non_xyz_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonModifier>(this), t_, ignore_non_xyz_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(Transform);
+
 };
 
 IMPCORE_END_NAMESPACE
