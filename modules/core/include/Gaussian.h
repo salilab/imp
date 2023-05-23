@@ -33,7 +33,12 @@ class IMPCOREEXPORT Matrix3D : public IMP::Object{
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<Object>(this), mat_);
+    ar(cereal::base_class<Object>(this));
+    for (unsigned i = 0; i < 3; ++i) {
+      for (unsigned j = 0; j < 3; ++j) {
+        ar(mat_(i, j));
+      }
+    }
   }
   IMP_OBJECT_SERIALIZE_DECL(Matrix3D);
 
@@ -142,31 +147,5 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 IMP_DECORATORS(Gaussian, Gaussians, Particles);
 
 IMPCORE_END_NAMESPACE
-
-namespace cereal {
-  template<class Archive, typename _Scalar, int _Rows, int _Cols,
-           int _Options, int _MaxRows, int _MaxCols>
-  inline void serialize(
-      Archive &ar, Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows,
-                                 _MaxCols> &matrix) {
-    int rows, cols;
-    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
-      rows = matrix.rows();
-      cols = matrix.cols();
-    }
-    ar(rows, cols);
-
-    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
-      if (rows != matrix.rows() || cols != matrix.cols()) {
-        matrix.resize(rows, cols);
-      }
-    }
-    auto mat_data = cereal::binary_data(matrix.data(),
-                                        rows * cols * sizeof(_Scalar));
-    if (matrix.size() != 0) {
-      ar(mat_data);
-    }
-  }
-}
 
 #endif /* IMPCORE_GAUSSIAN_H */
