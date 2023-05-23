@@ -149,7 +149,7 @@ namespace cereal {
   inline void serialize(
       Archive &ar, Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows,
                                  _MaxCols> &matrix) {
-    Eigen::Index rows, cols;
+    int rows, cols;
     if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
       rows = matrix.rows();
       cols = matrix.cols();
