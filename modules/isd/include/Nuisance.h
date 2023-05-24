@@ -2,7 +2,7 @@
  *  \file IMP/isd/Nuisance.h
  *  \brief A decorator for nuisance parameters particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_NUISANCE_H
@@ -12,6 +12,8 @@
 
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -92,12 +94,20 @@ IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT NuisanceScoreState : public ScoreState {
- private:
-  IMP::WeakPointer<Particle> p_;
+  ParticleIndex pi_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ScoreState>(this), pi_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(NuisanceScoreState);
 
  private:
   NuisanceScoreState(Particle *p)
-      : ScoreState(p->get_model(), "NuisanceScoreState%1%"), p_(p) {}
+      : ScoreState(p->get_model(), "NuisanceScoreState%1%"),
+        pi_(p->get_index()) {}
+
+  NuisanceScoreState() {}
 
  public:
   friend class Nuisance;
