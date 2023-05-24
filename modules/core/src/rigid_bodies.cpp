@@ -17,6 +17,8 @@
 #include <IMP/internal/ContainerConstraint.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/internal/utility.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -382,7 +384,34 @@ ModelKey get_rb_list_key() {
   static ModelKey key("rigid body list");
   return key;
 }
+
 }
+
+/* Make a simple subclass rather than using
+   IMP::internal::create_tuple_constraint(), so that we can serialize it */
+class RigidBodyPositionConstraint
+        : public IMP::internal::TupleConstraint<UpdateRigidBodyMembers,
+                                            AccumulateRigidBodyDerivatives> {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                    IMP::internal::TupleConstraint<UpdateRigidBodyMembers,
+                                      AccumulateRigidBodyDerivatives> >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyPositionConstraint);
+
+public:
+  RigidBodyPositionConstraint(UpdateRigidBodyMembers *before,
+                              AccumulateRigidBodyDerivatives *after,
+                              Model *m, const ParticleIndex &vt,
+                              std::string name, bool can_skip)
+          : IMP::internal::TupleConstraint<
+                UpdateRigidBodyMembers, AccumulateRigidBodyDerivatives>(
+                                    before, after, m, vt, name, can_skip) {}
+
+  RigidBodyPositionConstraint() {}
+};
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyPositionConstraint);
 
 namespace {
   // compute inertia tensor for particles ds with origin center
@@ -770,9 +799,9 @@ void RigidBody::setup_score_states() {
                                       get_particle_index())) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
-        urbm.get(), arbd.get(), get_particle(),
-        get_particle()->get_name() + " rigid body positions", true);
+    IMP_NEW(RigidBodyPositionConstraint, c0,
+               (urbm, arbd, get_model(), get_particle_index(),
+                get_particle()->get_name() + " rigid body positions", true));
     get_model()->add_score_state(c0);
     get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
                                c0);
