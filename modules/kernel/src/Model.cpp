@@ -69,6 +69,18 @@ uint32_t Model::ModelMap::add_new_model(Model *m) {
   return id;
 }
 
+void Model::ModelMap::add_model_with_id(Model *m, uint32_t id) {
+  // If an old model exists with this ID already (e.g. we picked a model
+  // and then unpickled it, duplicating the model) then give it a new ID.
+  // We don't want to change the ID of the *new* model, because we want
+  // any ModelObjects referenced by it to get pointers back to the new model.
+  Model *oldmodel = get(id);
+  if (oldmodel) {
+    oldmodel->unique_id_ = add_new_model(oldmodel);
+  }
+  map_[id] = m;
+}
+
 void Model::ModelMap::remove_model(Model *m) {
   map_.erase(m->get_unique_id());
 }

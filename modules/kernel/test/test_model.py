@@ -320,6 +320,18 @@ class Tests(IMP.test.TestCase):
         del m1
         self.assertIsNone(IMP.Model.get_by_unique_id(m1id))
 
+    def test_unique_id_duplication(self):
+        """Duplicating a Model should not duplicate the unique ID"""
+        m1 = IMP.Model()
+        m1_orig_id = m1.get_unique_id()
+        # Duplicate m1 via pickle
+        dump = pickle.dumps(m1)
+        m2 = pickle.loads(dump)
+
+        # New model (m2) should keep the ID; old model should get a new one
+        self.assertEqual(m2.get_unique_id(), m1_orig_id)
+        self.assertNotEqual(m1.get_unique_id(), m1_orig_id)
+
     def test_serialize_object(self):
         """Check that Object properties are (de-)serialized"""
         m = IMP.Model("test model")
@@ -524,6 +536,18 @@ class Tests(IMP.test.TestCase):
         m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
 
         dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(len(m2.score_states), 1)
+
+    def test_serialize_score_states_deleted(self):
+        """Check that Model ScoreState serialization survives model deletion"""
+        m = IMP.Model()
+        m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
+
+        dump = pickle.dumps(m)
+        # Make sure that the new ScoreState does not require (or get
+        # a pointer to) the old model
+        del m
         m2 = pickle.loads(dump)
         self.assertEqual(len(m2.score_states), 1)
 

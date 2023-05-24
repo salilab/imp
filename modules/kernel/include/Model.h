@@ -129,6 +129,7 @@ class IMPKERNELEXPORT Model : public Object
   public:
     ModelMap() {}
     uint32_t add_new_model(Model *m);
+    void add_model_with_id(Model *m, uint32_t id);
     void remove_model(Model *m);
     Model *get(uint32_t id) const;
   };
@@ -171,8 +172,14 @@ class IMPKERNELEXPORT Model : public Object
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<Object>(this),
-       cereal::base_class<internal::FloatAttributeTable>(this),
+    ar(cereal::base_class<Object>(this));
+    // We need to get unique_id_ early on read, so that any ModelObjects
+    // that reference it get correctly associated with this model
+    ar(unique_id_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      model_map_.add_model_with_id(this, unique_id_);
+    }
+    ar(cereal::base_class<internal::FloatAttributeTable>(this),
        cereal::base_class<internal::StringAttributeTable>(this),
        cereal::base_class<internal::IntAttributeTable>(this),
        cereal::base_class<internal::ObjectAttributeTable>(this),
