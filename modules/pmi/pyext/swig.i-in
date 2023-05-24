@@ -1,4 +1,5 @@
 IMP_SWIG_OBJECT(IMP::pmi, CompositeRestraint, CompositeRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::pmi, CrossLinkRestraintSet, CrossLinkRestraintSets);
 IMP_SWIG_DECORATOR(IMP::pmi, Uncertainty, Uncertainties);
 IMP_SWIG_DECORATOR(IMP::pmi, Resolution, Resolutions);
 IMP_SWIG_DECORATOR(IMP::pmi, Symmetric, Symmetrics);
@@ -24,6 +25,7 @@ class MissingFileWarning(UserWarning):
 
 %include "IMP/pmi/MembraneRestraint.h"
 %include "IMP/pmi/CompositeRestraint.h"
+%include "IMP/pmi/CrossLinkRestraintSet.h"
 %include "IMP/pmi/Uncertainty.h"
 %include "IMP/pmi/Resolution.h"
 %include "IMP/pmi/Symmetric.h"

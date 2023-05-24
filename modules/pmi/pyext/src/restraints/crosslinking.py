@@ -20,31 +20,6 @@ import operator
 import warnings
 
 
-class _DataRestraintSet(IMP.RestraintSet):
-    """Container for restraints shown in the RMF file and in Chimera"""
-
-    def get_static_info(self):
-        # Add custom metadata to the container, for RMF
-        ri = IMP.RestraintInfo()
-        ri.add_string("type", "IMP.pmi.CrossLinkingMassSpectrometryRestraint")
-        ri.add_float("linker length", self.length)
-        ri.add_float("slope", self.slope)
-        ri.add_filename("filename", self.filename or "")
-        if self.linker:
-            ri.add_string("linker author name", self.linker.auth_name)
-
-            def add_linker_opt(sname, val):
-                if val:
-                    ri.add_string(sname, val)
-            add_linker_opt("linker chemical name", self.linker.chemical_name)
-            add_linker_opt("linker smiles", self.linker.smiles)
-            add_linker_opt("linker smiles canonical",
-                           self.linker.smiles_canonical)
-            add_linker_opt("linker inchi", self.linker.inchi)
-            add_linker_opt("linker inchi key", self.linker.inchi_key)
-        return ri
-
-
 class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """Setup cross-link distance restraints from mass spectrometry data.
     The noise in the data and the structural uncertainty of cross-linked
@@ -85,7 +60,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         super(CrossLinkingMassSpectrometryRestraint, self).__init__(
             model, weight=weight, label=label,
-            restraint_set_class=_DataRestraintSet)
+            restraint_set_class=IMP.pmi.CrossLinkRestraintSet)
 
         if database is None:
             raise Exception("You must pass a database")
@@ -113,10 +88,14 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.rssig = self._create_restraint_set("PriorSig")
         self.rslin = self._create_restraint_set("Linear")
         # Add custom metadata (will be saved in RMF output)
-        self.rs.filename = self.database.name
-        self.rs.length = length
-        self.rs.slope = slope
-        self.rs.linker = linker
+        self.rs.set_metadata(self.database.name, length, slope)
+        if linker:
+            self.rs.set_linker_auth_name(linker.auth_name)
+            for attr in ('chemical_name', 'smiles', 'smiles_canonical',
+                         'inchi', 'inchi_key'):
+                val = getattr(linker, attr)
+                if val:
+                    getattr(self.rs, "set_linker_" + attr)(val)
 
         # dummy linear restraint used for Chimera display
         self.linear = IMP.core.Linear(0, 0.0)
