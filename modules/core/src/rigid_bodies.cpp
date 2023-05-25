@@ -413,6 +413,32 @@ public:
 };
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyPositionConstraint);
 
+/* Make a simple subclass rather than using
+   IMP::internal::create_container_constraint(), so that we can serialize it */
+class RigidBodyNormalizeConstraint
+          : public IMP::internal::ContainerConstraint<
+               NormalizeRotation, NullSDM,
+               IMP::internal::StaticListContainer<SingletonContainer> > {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+          IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
+              IMP::internal::StaticListContainer<SingletonContainer> > >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyNormalizeConstraint);
+public:
+  RigidBodyNormalizeConstraint(
+       NormalizeRotation *before, NullSDM *after,
+       IMP::internal::StaticListContainer<SingletonContainer> *c,
+       std::string name, bool can_skip=false)
+ : IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
+            IMP::internal::StaticListContainer<SingletonContainer> >(
+                            before, after, c, name, can_skip) {}
+
+  RigidBodyNormalizeConstraint() {}
+};
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyNormalizeConstraint);
+
 namespace {
   // compute inertia tensor for particles ds with origin center
 Eigen::Matrix3d compute_I(Model *model,
@@ -562,8 +588,8 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
     list->set(ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
-    Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
-        nr.get(), null.get(), list.get(), "normalize rigid bodies");
+    IMP_NEW(RigidBodyNormalizeConstraint, c1,
+            (nr, null, list, "normalize rigid bodies"));
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
   }
