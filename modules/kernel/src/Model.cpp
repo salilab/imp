@@ -57,6 +57,10 @@ Model::Model(std::string name)
 #endif
 }
 
+void Model::register_unique_id() {
+  model_map_.add_model_with_id(this, unique_id_);
+}
+
 Model::ModelMap Model::model_map_;
 
 uint32_t Model::ModelMap::add_new_model(Model *m) {

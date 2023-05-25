@@ -169,6 +169,8 @@ class IMPKERNELEXPORT Model : public Object
   // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
 
+  void register_unique_id();
+
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
@@ -177,7 +179,7 @@ class IMPKERNELEXPORT Model : public Object
     // that reference it get correctly associated with this model
     ar(unique_id_);
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
-      model_map_.add_model_with_id(this, unique_id_);
+      register_unique_id();
     }
     ar(cereal::base_class<internal::FloatAttributeTable>(this),
        cereal::base_class<internal::StringAttributeTable>(this),
