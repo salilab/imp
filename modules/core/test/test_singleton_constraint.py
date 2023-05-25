@@ -39,10 +39,18 @@ class Tests(IMP.test.TestCase):
         m.score_states.append(r)
         dump = pickle.dumps(m)
         newm = pickle.loads(dump)
+        # Get copy of xyz particle in new model
+        self.assertTrue(IMP.core.XYZ.get_is_setup(newm, xyz))
+        newxyz = IMP.core.XYZ(newm, xyz)
+        self.assertAlmostEqual(newxyz.get_coordinates()[0], 11.0, delta=1e-5)
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 11.0, delta=1e-5)
         newr, = newm.score_states
         self.assertEqual(newr.get_name(), "foo")
+        # Updating the constraint in the new model should only update the
+        # particle in the new model, not the original
         newr.before_evaluate()
-        self.assertAlmostEqual(xyz.get_coordinates()[0], 21.0, delta=1e-5)
+        self.assertAlmostEqual(newxyz.get_coordinates()[0], 21.0, delta=1e-5)
+        self.assertAlmostEqual(xyz.get_coordinates()[0], 11.0, delta=1e-5)
 
 
 if __name__ == '__main__':
