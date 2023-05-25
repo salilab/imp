@@ -11,6 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include "Restraint.h"
+#include "ScoringFunction.h"
 #include "container_macros.h"
 #include <string>
 #include <cereal/access.hpp>
