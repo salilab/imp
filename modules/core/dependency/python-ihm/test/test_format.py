@@ -182,6 +182,17 @@ x
         self.assertEqual(fh.getvalue(), "# " + "X" * 78 + '\n# ' + "X" * 7
                          + '\n')
 
+    def test_write_comment_unwrapped(self):
+        """Test CifWriter.write_comment() with line wrapping disabled"""
+        fh = StringIO()
+        try:
+            ihm.format.CifWriter._set_line_wrap(False)
+            writer = ihm.format.CifWriter(fh)
+            writer.write_comment('X' * 85)
+        finally:
+            ihm.format.CifWriter._set_line_wrap(True)
+        self.assertEqual(fh.getvalue(), "# " + "X" * 85 + '\n')
+
     def test_repr(self):
         """Test CifWriter._repr()"""
         w = ihm.format.CifWriter(None)

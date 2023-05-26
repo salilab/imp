@@ -3465,7 +3465,7 @@ _ihm_predicted_contact_restraint.software_id
 #
 """)
 
-    def test_FLRDumper(self):
+    def test_flr_dumper(self):
         """Test FLR dumpers"""
 
         class MockObject(object):
@@ -3792,7 +3792,7 @@ _ihm_predicted_contact_restraint.software_id
              cur_fret_model_distance_2_1, cur_fret_model_distance_2_2))
 
         # FPS modeling
-        cur_FPS_global_parameters = ihm.flr.FPSGlobalParameters(
+        cur_fps_global_parameters = ihm.flr.FPSGlobalParameters(
             forster_radius=52, conversion_function_polynom_order=3,
             repetition=1000, av_grid_rel=0.2, av_min_grid_a=0.4,
             av_allowed_sphere=0.5, av_search_nodes=3, av_e_samples_k=200,
@@ -3802,31 +3802,31 @@ _ihm_predicted_contact_restraint.software_id
             convergence_e=100, convergence_k=0.001, convergence_f=0.001,
             convergence_t=0.002)
 
-        cur_FPS_modeling_1 = ihm.flr.FPSModeling(
+        cur_fps_modeling_1 = ihm.flr.FPSModeling(
             protocol=cur_ihm_modeling_protocol,
             restraint_group=cur_fret_dist_restraint_group,
-            global_parameter=cur_FPS_global_parameters,
+            global_parameter=cur_fps_global_parameters,
             probe_modeling_method="AV3")
-        cur_FPS_modeling_2 = ihm.flr.FPSModeling(
+        cur_fps_modeling_2 = ihm.flr.FPSModeling(
             protocol=cur_ihm_modeling_protocol,
             restraint_group=cur_fret_dist_restraint_group,
-            global_parameter=cur_FPS_global_parameters,
+            global_parameter=cur_fps_global_parameters,
             probe_modeling_method="MPP")
         # Modeling by AV
-        cur_FPS_AV_parameters_1 = ihm.flr.FPSAVParameter(
+        cur_fps_av_parameters_1 = ihm.flr.FPSAVParameter(
             num_linker_atoms=15, linker_length=20.0, linker_width=3.5,
             probe_radius_1=10.0, probe_radius_2=5.0, probe_radius_3=3.5)
 
-        cur_FPS_AV_modeling_1 = ihm.flr.FPSAVModeling(
-            fps_modeling=cur_FPS_modeling_1,
+        cur_fps_av_modeling_1 = ihm.flr.FPSAVModeling(
+            fps_modeling=cur_fps_modeling_1,
             sample_probe=cur_sample_probe_details_1,
-            parameter=cur_FPS_AV_parameters_1)
-        cur_FPS_AV_modeling_3 = ihm.flr.FPSAVModeling(
-            fps_modeling=cur_FPS_modeling_1,
+            parameter=cur_fps_av_parameters_1)
+        cur_fps_av_modeling_3 = ihm.flr.FPSAVModeling(
+            fps_modeling=cur_fps_modeling_1,
             sample_probe=cur_sample_probe_details_3,
-            parameter=cur_FPS_AV_parameters_1)
-        cur_flr_data.fps_modeling.append(cur_FPS_AV_modeling_1)
-        cur_flr_data.fps_modeling.append(cur_FPS_AV_modeling_3)
+            parameter=cur_fps_av_parameters_1)
+        cur_flr_data.fps_modeling.append(cur_fps_av_modeling_1)
+        cur_flr_data.fps_modeling.append(cur_fps_av_modeling_3)
 
         # Modeling by mean probe position
         cur_mpp_atom_position_1 = ihm.flr.FPSMPPAtomPosition(
@@ -3840,14 +3840,14 @@ _ihm_predicted_contact_restraint.software_id
             sample_probe=cur_sample_probe_details_2, x=1.0, y=2.0, z=3.0)
         cur_mean_probe_position_4 = ihm.flr.FPSMeanProbePosition(
             sample_probe=cur_sample_probe_details_4, x=1.0, y=2.0, z=3.0)
-        cur_FPS_MPP_modeling_2 = ihm.flr.FPSMPPModeling(
-            fps_modeling=cur_FPS_modeling_2, mpp=cur_mean_probe_position_2,
+        cur_fps_mpp_modeling_2 = ihm.flr.FPSMPPModeling(
+            fps_modeling=cur_fps_modeling_2, mpp=cur_mean_probe_position_2,
             mpp_atom_position_group=cur_mpp_atom_position_group)
-        cur_FPS_MPP_modeling_4 = ihm.flr.FPSMPPModeling(
-            fps_modeling=cur_FPS_modeling_2, mpp=cur_mean_probe_position_4,
+        cur_fps_mpp_modeling_4 = ihm.flr.FPSMPPModeling(
+            fps_modeling=cur_fps_modeling_2, mpp=cur_mean_probe_position_4,
             mpp_atom_position_group=cur_mpp_atom_position_group)
-        cur_flr_data.fps_modeling.append(cur_FPS_MPP_modeling_2)
-        cur_flr_data.fps_modeling.append(cur_FPS_MPP_modeling_4)
+        cur_flr_data.fps_modeling.append(cur_fps_mpp_modeling_2)
+        cur_flr_data.fps_modeling.append(cur_fps_mpp_modeling_4)
 
         system.flr_data = [cur_flr_data]
 
@@ -3862,7 +3862,7 @@ _ihm_predicted_contact_restraint.software_id
         inst_setting_dumper = ihm.dumper._FLRInstSettingDumper()
         inst_setting_dumper.finalize(system)
 
-        exp_condition_dumper = ihm.dumper._FLR_ExpConditionDumper()
+        exp_condition_dumper = ihm.dumper._FLRExpConditionDumper()
         exp_condition_dumper.finalize(system)
 
         instrument_dumper = ihm.dumper._FLRInstrumentDumper()
@@ -4422,6 +4422,34 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
             variant=ihm.dumper.IgnoreVariant(['IHM_STRUCT_ASSEMBLY',
                                               'AUDIT_CONFORM']))
         self.assertNotIn('_ihm_struct_assembly', fh.getvalue())
+
+    def test_dumper_unwrapped(self):
+        """Test dumper output with line wrapping disabled"""
+        system = ihm.System()
+        system.software.append(ihm.Software(
+            name='long-software-name', classification='test code',
+            description='Some test program',
+            version=1, location='http://some-long-url.org'))
+        dumper = ihm.dumper._SoftwareDumper()
+        dumper.finalize(system)
+        try:
+            ihm.dumper.set_line_wrap(False)
+            out = _get_dumper_output(dumper, system)
+        finally:
+            ihm.dumper.set_line_wrap(True)
+        self.assertEqual(out, """#
+loop_
+_software.pdbx_ordinal
+_software.name
+_software.classification
+_software.description
+_software.version
+_software.type
+_software.location
+_software.citation_id
+1 long-software-name 'test code' 'Some test program' 1 program http://some-long-url.org .
+#
+""")  # noqa: E501
 
 
 if __name__ == '__main__':

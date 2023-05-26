@@ -115,7 +115,7 @@ class HDXDataset(Dataset):
 
 class PDBDataset(Dataset):
     """An experimentally-determined 3D structure as a set of a coordinates,
-       usually in a PDB file"""
+       usually in a PDB or mmCIF file"""
     data_type = 'Experimental model'
 
 

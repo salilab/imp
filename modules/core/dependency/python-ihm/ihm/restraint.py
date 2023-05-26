@@ -419,6 +419,20 @@ class ResidueCrossLink(CrossLink):
         #: objects and values are :class:`CrossLinkFit` objects.
         self.fits = {}
 
+    def _get_residue1(self):
+        seq_id = self.experimental_cross_link.residue1.seq_id
+        return self.asym1.residue(seq_id)
+    residue1 = property(_get_residue1,
+                        doc="Residue object representing one end "
+                            "of the cross-link")
+
+    def _get_residue2(self):
+        seq_id = self.experimental_cross_link.residue2.seq_id
+        return self.asym2.residue(seq_id)
+    residue2 = property(_get_residue2,
+                        doc="Residue object representing one end "
+                            "of the cross-link")
+
 
 class FeatureCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the closest primitive

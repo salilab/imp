@@ -52,7 +52,7 @@ class _LineWriter(object):
             return
         val = '.' if val is None else self.writer._repr(val)
         if self.column > 0:
-            if self.column + len(val) + 1 > self.line_len:
+            if self.line_len and self.column + len(val) + 1 > self.line_len:
                 self.writer.fh.write("\n")
                 self.column = 0
             else:
@@ -78,7 +78,8 @@ class _CifCategoryWriter(object):
 
 
 class _CifLoopWriter(object):
-    def __init__(self, writer, category, keys):
+    def __init__(self, writer, category, keys, line_wrap=True):
+        self._line_wrap = line_wrap
         self.writer = writer
         self.category = category
         self.keys = keys
@@ -93,7 +94,7 @@ class _CifLoopWriter(object):
             for k in self.keys:
                 f.write("%s.%s\n" % (self.category, k))
             self._empty_loop = False
-        lw = _LineWriter(self.writer)
+        lw = _LineWriter(self.writer, line_len=80 if self._line_wrap else 0)
         for k in self.python_keys:
             lw.write(kwargs.get(k, None))
         self.writer.fh.write("\n")
@@ -128,6 +129,12 @@ class CifWriter(_Writer):
        (or in scientific notation with 3 digits of precision if smaller
        than 1e-3); if a different amount of precision is desired, convert
        the float to a string first."""
+
+    _line_wrap = True
+
+    @classmethod
+    def _set_line_wrap(cls, line_wrap):
+        cls._line_wrap = line_wrap
 
     def flush(self):
         # noop - data is written as it is encountered
@@ -177,13 +184,17 @@ class CifWriter(_Writer):
                    for i in range(5):
                        l.write(id='HELX_P1%d' % i, conf_type_id='HELX_P')
            """
-        return _CifLoopWriter(self, category, keys)
+        return _CifLoopWriter(self, category, keys, line_wrap=self._line_wrap)
 
     def write_comment(self, comment):
         """Write a simple comment to the CIF file.
-           The comment will be wrapped if necessary for readability."""
-        for line in textwrap.wrap(comment, 78):
-            self.fh.write('# ' + line + '\n')
+           The comment will be wrapped if necessary for readability.
+           See :meth:`set_line_wrap`."""
+        if self._line_wrap:
+            for line in textwrap.wrap(comment, 78):
+                self.fh.write('# ' + line + '\n')
+        else:
+            self.fh.write('# ' + comment + '\n')
 
     def _write(self, category, kwargs):
         for key, val in sorted(kwargs.items(), key=operator.itemgetter(0)):

@@ -1433,6 +1433,9 @@ class _DatasetDBRefHandler(Handler):
         typ = None if db_name is None else db_name.lower()
         dbloc = self.sysr.db_locations.get_by_id(id,
                                                  self.type_map.get(typ, None))
+        # Preserve user-provided name for unknown databases
+        if dbloc.db_name is None and db_name is not None:
+            dbloc.db_name = db_name
         ds.location = dbloc
         self.copy_if_present(
             dbloc, locals(), keys=['version', 'details'],
@@ -1696,7 +1699,11 @@ class _PostProcessHandler(Handler):
             step.software = self.sysr.software.get_by_id_or_none(software_id)
             step.script_file = self.sysr.external_files.get_by_id_or_none(
                 script_file_id)
-            self.copy_if_present(step, locals(), keys=['feature'])
+            # Default to "other" if invalid method/feature read
+            try:
+                self.copy_if_present(step, locals(), keys=['feature'])
+            except ValueError:
+                step.feature = "other"
 
 
 class _ModelListHandler(Handler):

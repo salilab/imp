@@ -1046,10 +1046,11 @@ _ihm_dataset_related_db_reference.details
 2 3 PDB 3F3F 30-OCT-08 'CRYSTAL STRUCTURE'
 3 5 emdb EMD-123 . .
 4 6 . . . .
+5 7 testDB testcode testver testdetails
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            d1, d2, d3, d4 = s.orphan_datasets
+            d1, d2, d3, d4, d5 = s.orphan_datasets
             self.assertEqual(d1.location.db_name, 'PDB')
             self.assertEqual(d1.location.__class__, ihm.location.PDBLocation)
             self.assertEqual(d1.location.access_code, '3JRO')
@@ -1067,6 +1068,12 @@ _ihm_dataset_related_db_reference.details
             self.assertEqual(d4.location.__class__,
                              ihm.location.DatabaseLocation)
             self.assertIsNone(d4.location.access_code)
+            self.assertEqual(d5.location.__class__,
+                             ihm.location.DatabaseLocation)
+            self.assertEqual(d5.location.db_name, "testDB")
+            self.assertEqual(d5.location.access_code, "testcode")
+            self.assertEqual(d5.location.version, "testver")
+            self.assertEqual(d5.location.details, "testdetails")
 
     def test_related_datasets_handler(self):
         """Test RelatedDatasetsHandler"""
@@ -1374,7 +1381,7 @@ _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
 _ihm_modeling_post_process.details
 1  1   1   1   'filter'  'energy/score'  15000   6520 . . 401 501 .
-2  1   1   2   'cluster' 'dRMSD'         6520    6520 . . . . .
+2  1   1   2   'cluster' 'invalid'       6520    6520 . . . . .
 3  1   2   1   'filter'  'energy/score'  16000   7520 . . . . .
 4  1   2   2   'filter'  'composition'   7520    5520 . . . . .
 5  1   2   3   'cluster' 'dRMSD'         5520    6520 . . . . .
@@ -1400,7 +1407,8 @@ _ihm_modeling_post_process.details
             self.assertEqual(a1.steps[0].software._id, '401')
             self.assertEqual(a1.steps[0].script_file._id, '501')
             self.assertEqual(a1.steps[1].__class__, ihm.analysis.ClusterStep)
-            self.assertEqual(a1.steps[1].feature, 'dRMSD')
+            # invalid feature should be mapped to default
+            self.assertEqual(a1.steps[1].feature, 'other')
             self.assertEqual(a1.steps[1].num_models_begin, 6520)
             self.assertIsNone(a1.steps[1].software)
             self.assertIsNone(a1.steps[1].script_file)

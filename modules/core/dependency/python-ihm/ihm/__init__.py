@@ -20,7 +20,7 @@ except ImportError:
 import json
 from . import util
 
-__version__ = '0.37'
+__version__ = '0.38'
 
 
 class __UnknownValue(object):
@@ -1104,6 +1104,12 @@ class Residue(object):
     ins_code = property(_get_ins_code,
                         doc="Insertion code; only makes sense "
                             "for asymmetric units")
+
+    def _get_comp(self):
+        entity = self.entity or self.asym.entity
+        return entity.sequence[self.seq_id - 1]
+    comp = property(_get_comp,
+                    doc="Chemical component (residue type)")
 
     # Allow passing residues where a range is requested
     # (e.g. to ResidueFeature)

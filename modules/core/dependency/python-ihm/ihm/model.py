@@ -4,7 +4,7 @@
 
 import struct
 import itertools
-import ihm
+from ihm.util import _text_choice_property
 
 
 class Sphere(object):
@@ -177,23 +177,6 @@ class StateGroup(list):
     """
     def __init__(self, elements=()):
         super(StateGroup, self).__init__(elements)
-
-
-def _text_choice_property(attr, choices, doc=None):
-    schoices = frozenset(choices)
-
-    def getfunc(obj):
-        return getattr(obj, "_" + attr)
-
-    def setfunc(obj, val):
-        if val is not None and val is not ihm.unknown and val not in schoices:
-            raise ValueError(
-                "Invalid choice %s for %s; valid values are %s, "
-                "None, ihm.unknown"
-                % (repr(val), attr, ", ".join(repr(x) for x in choices)))
-        setattr(obj, "_" + attr, val)
-
-    return property(getfunc, setfunc, doc=doc)
 
 
 class Ensemble(object):

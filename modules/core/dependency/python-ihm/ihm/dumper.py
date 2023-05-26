@@ -92,8 +92,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.19",
-                     dict_location=self.URL % "2419956")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.22",
+                     dict_location=self.URL % "ac49042")
 
 
 class _StructDumper(Dumper):
@@ -189,7 +189,7 @@ class _AuditAuthorDumper(Dumper):
         # If system.authors is empty, get the set of all citation authors
         # instead
         seen_authors = set()
-        # Only look at explictly-added citations (since these are likely to
+        # Only look at explicitly-added citations (since these are likely to
         # describe the modeling) not that describe a method or a piece of
         # software we used (system._all_citations())
         for c in system.citations:
@@ -2464,7 +2464,7 @@ class _FLRInstSettingDumper(Dumper):
                 lp.write(id=x._id, details=x.details)
 
 
-class _FLR_ExpConditionDumper(Dumper):
+class _FLRExpConditionDumper(Dumper):
     def finalize(self, system):
         def all_exp_conditions():
             return itertools.chain.from_iterable(f._all_exp_conditions()
@@ -3159,7 +3159,7 @@ class _FLRFPSMPPModelingDumper(Dumper):
 
 
 _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
-                _FLR_ExpConditionDumper, _FLRInstrumentDumper,
+                _FLRExpConditionDumper, _FLRInstrumentDumper,
                 _FLREntityAssemblyDumper, _FLRSampleConditionDumper,
                 _FLRSampleDumper, _FLRProbeDumper,
                 _FLRSampleProbeDetailsDumper, _FLRPolyProbePositionDumper,
@@ -3279,6 +3279,20 @@ class IgnoreVariant(IHMVariant):
 
     def get_system_writer(self, system, writer_class, writer):
         return _IgnoreWriter(writer, self._ignores)
+
+
+def set_line_wrap(line_wrap):
+    """Set whether output lines are wrapped at 80 characters.
+       By default the mmCIF writer tries to avoid writing lines longer than
+       80 characters, for compatibility with traditional PDB. When
+       disabled, each row in a "loop" construct will be written on a
+       single line.
+
+       This setting has no effect on binary formats (BinaryCIF).
+
+       :param bool line_wrap: whether to wrap lines at 80 characters.
+    """
+    ihm.format.CifWriter._set_line_wrap(line_wrap)
 
 
 def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):

@@ -9,13 +9,13 @@ import ihm.flr
 
 class Tests(unittest.TestCase):
 
-    def test_Probe_Init(self):
+    def test_probe_init(self):
         """Test initialization of probe_list_entry and probe_descriptor."""
         p = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor='bar')
         self.assertEqual(p.probe_list_entry, 'foo')
         self.assertEqual(p.probe_descriptor, 'bar')
 
-    def test_Probe_Eq(self):
+    def test_probe_eq(self):
         """Test equality and inequality of Probe objects"""
         p_ref = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor='bar')
         p_equal = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor='bar')
@@ -240,7 +240,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(s_ref == s_unequal)
         self.assertTrue(s_ref != s_unequal)
 
-    def test_Experiment_Init(self):
+    def test_experiment_init(self):
         """Test initialization of Experiment."""
         # Initialization with only one parameter given should not add an entry
         e1 = ihm.flr.Experiment(instrument='foo')
@@ -271,7 +271,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(e3.details_list), 1)
         self.assertIsNone(e3.details_list[0])
 
-    def test_Experiment_Add_entry(self):
+    def test_experiment_add_entry(self):
         """ Test addition of an entry to the experiment. """
         # Adding to an empty Experiment
         e1 = ihm.flr.Experiment()
@@ -303,7 +303,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(e2.sample_list, ['foo4', 'bar4'])
         self.assertEqual(e2.details_list, ['foo5', 'bar5'])
 
-    def test_Experiment_Get_entry_by_index(self):
+    def test_experiment_get_entry_by_index(self):
         """ Test access to entries by index. """
         e = ihm.flr.Experiment()
         e.add_entry(instrument='foo', inst_setting='foo2',
@@ -324,7 +324,7 @@ class Tests(unittest.TestCase):
                          ('foobar', 'foobar2', 'foobar3', 'foobar4',
                           'foobar5'))
 
-    def test_Experiment_Contains(self):
+    def test_experiment_contains(self):
         """Test whether experiment contains a combination of instrument,
            exp_setting, and sample."""
         # An empty experiment should not contain anything
@@ -341,7 +341,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(e1.contains('foobar', 'foobar2', 'foobar3',
                                      'foobar4'))
 
-    def test_Experiment_Eq(self):
+    def test_experiment_eq(self):
         """ Test equality and inequality of Experiment objects. """
         e_ref = ihm.flr.Experiment()
         e_ref.add_entry(instrument='foo', inst_setting='foo2',
@@ -356,12 +356,12 @@ class Tests(unittest.TestCase):
         self.assertFalse(e_ref == e_unequal)
         self.assertTrue(e_ref != e_unequal)
 
-    def test_Instrument_Init(self):
+    def test_instrument_init(self):
         """ Test initialization of Instrument. """
         i = ihm.flr.Instrument(details='foo')
         self.assertEqual(i.details, 'foo')
 
-    def test_Instrument_Eq(self):
+    def test_instrument_eq(self):
         """Test equality and inequality of Instrument objects."""
         i_ref = ihm.flr.Instrument(details='foo')
         i_equal = ihm.flr.Instrument(details='foo')
@@ -837,10 +837,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(f1.distance_deviation, 4.0)
 
         # Initialization with calculation of distance deviation
-        class Dummy_Restraint():
+        class DummyRestraint():
             def __init__(self, distance):
                 self.distance = distance
-        f2 = ihm.flr.FRETModelDistance(restraint=Dummy_Restraint(40),
+        f2 = ihm.flr.FRETModelDistance(restraint=DummyRestraint(40),
                                        model='bar2', distance=30)
         self.assertEqual(f2.model, 'bar2')
         self.assertEqual(f2.distance, 30)
@@ -848,10 +848,10 @@ class Tests(unittest.TestCase):
 
     def test_fret_model_distance_calculate_deviation(self):
         """Test FRETModelDistance.calculate_deviation()"""
-        class Dummy_Restraint():
+        class DummyRestraint():
             def __init__(self, distance):
                 self.distance = distance
-        f1 = ihm.flr.FRETModelDistance(restraint=Dummy_Restraint(40),
+        f1 = ihm.flr.FRETModelDistance(restraint=DummyRestraint(40),
                                        model='foo', distance=30)
         self.assertEqual(f1.distance_deviation, 10.0)
         # Directly changing the distance should not change the deviation

@@ -351,6 +351,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.entity, e)
         self.assertIsNone(r.asym)
         self.assertEqual(r.seq_id, 3)
+        self.assertEqual(r.comp.id, 'CYS')
 
     def test_water_asym(self):
         """Test WaterAsymUnit class"""
@@ -379,6 +380,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
         self.assertIsNone(r.ins_code)
+        self.assertEqual(r.comp.id, 'CYS')
 
     def test_atom_entity(self):
         """Test Atom class built from an Entity"""
