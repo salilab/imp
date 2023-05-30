@@ -2,6 +2,8 @@ import IMP
 import IMP.test
 import IMP.atom
 import io
+import pickle
+
 
 def _make_hierarchy_decorators(m, *types):
     decorators = []
@@ -134,6 +136,17 @@ class Tests(IMP.test.TestCase):
         h = IMP.atom.Hierarchy(p)
         h.show(sio, "-foo-")
         self.assertIn(b"-foo-(1, 2, 3)", sio.getvalue())
+
+    def test_pickle(self):
+        """Check that hierarchy decorators can be (un-)pickled"""
+        m = IMP.Model()
+        decs = _make_hierarchy_decorators(
+            m, (IMP.atom.State, 1), (IMP.atom.State, 2),
+            (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL),
+            (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
+        dump = pickle.dumps(decs)
+        newdecs = pickle.loads(dump)
+
 
 if __name__ == '__main__':
     IMP.test.main()

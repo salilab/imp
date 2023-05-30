@@ -229,6 +229,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(newp.get_name(), "foo")
         self.assertEqual(newp.get_index(), p.get_index())
 
+    def test_decorator_pickle(self):
+        """Test that Decorators can be (un-)pickled"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        p.set_name("foo")
+        td = IMP._TrivialDecorator.setup_particle(p)
+        dump = pickle.dumps(td)
+        newtd = pickle.loads(dump)
+        newp = newtd.get_particle()
+        self.assertEqual(newp.get_name(), "foo")
+        self.assertEqual(newp.get_index(), p.get_index())
+
 
 if __name__ == '__main__':
     IMP.test.main()
