@@ -1,6 +1,7 @@
 from __future__ import print_function
 import IMP
 import IMP.test
+import pickle
 
 
 xkey = IMP.FloatKey("x")
@@ -217,6 +218,17 @@ class Tests(IMP.test.TestCase):
                 m.remove_particle(m.get_particle_indexes()[i])
             if i % 10000 == 0:
                 print(i)
+
+    def test_pickle(self):
+        """Test that Particle can be (un-)pickled"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        p.set_name("foo")
+        dump = pickle.dumps(p)
+        newp = pickle.loads(dump)
+        self.assertEqual(newp.get_name(), "foo")
+        self.assertEqual(newp.get_index(), p.get_index())
+
 
 if __name__ == '__main__':
     IMP.test.main()

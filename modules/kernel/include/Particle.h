@@ -3,7 +3,7 @@
  *  \brief Classes to handle individual model particles.
  *         (Note that implementation of inline functions is in internal)
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,6 +23,8 @@
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
 #include <utility>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -55,6 +57,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   Particle(Model *m);
 
 #ifndef IMP_DOXYGEN
+  Particle() {}
 
 #define IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
   inline void add_attribute(UCName##Key name, Value initial_value);           \
@@ -144,6 +147,12 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   }
   virtual ModelObjectsTemp do_get_outputs() const override final {
     return ModelObjectsTemp();
+  }
+
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), id_);
   }
 };
 
