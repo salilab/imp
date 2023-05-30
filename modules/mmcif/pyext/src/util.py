@@ -126,6 +126,8 @@ class System(object):
         frame.id = len(self._frames)
 
     def _add_hierarchy(self, h, state):
+        if self.system.title is None:
+            self.system.title = h.get_name()
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
         if len(chains) == 0:
