@@ -11,6 +11,7 @@ import IMP.rmf
 import IMP.pmi.dof
 import IMP.pmi.macros
 import os
+import shutil
 
 
 def get_atomic_residue_list(residues):
@@ -698,6 +699,8 @@ class Tests(IMP.test.TestCase):
         chain=m1.chain
         self.assertEqual(chain.get_sequence(),seqs["Protein_1"])
         self.assertEqual(chain.get_id(),"A")
+        self.assertEqual(chain.get_chain_type(), IMP.atom.Protein)
+        self.assertEqual(chain.get_chain_type(), IMP.atom.LPolypeptide)
 
         #test PMIMoleculeHierarchy
         mol=m1.hier
@@ -1081,6 +1084,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(hs),1)
         states = IMP.atom.get_by_type(hs[0],IMP.atom.STATE_TYPE)
         self.assertEqual(len(states),2)
+        shutil.rmtree('multistate_test')
 
     def test_pmi_molecule_hierarchy(self):
         model=IMP.Model()

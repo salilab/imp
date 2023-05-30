@@ -136,6 +136,20 @@ class Tests(IMP.test.TestCase):
         chains = IMP.atom.get_by_type(root_hier, IMP.atom.CHAIN_TYPE)
         self.assertEqual([IMP.atom.Chain(c).get_id() for c in chains], ['0'])
 
+    def test_custom_system_name(self):
+        """Check that custom System name can be given to BuildSystem"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_simple.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl, name="custom system")
+        state = bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+        self.assertEqual(root_hier.get_name(), "custom system")
+
     def test_keep_chain_id(self):
         """Check that keep_chain_id works"""
         mdl = IMP.Model()

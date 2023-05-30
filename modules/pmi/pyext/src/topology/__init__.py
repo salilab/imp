@@ -418,6 +418,7 @@ class Molecule(_SystemBase):
         # store the sequence
         self.chain = IMP.atom.Chain.setup_particle(self.hier, chain_id)
         self.chain.set_sequence(self.sequence)
+        self.chain.set_chain_type(alphabet.get_chain_type())
         # create TempResidues from the sequence (if passed)
         self.residues = []
         for ns, s in enumerate(sequence):
