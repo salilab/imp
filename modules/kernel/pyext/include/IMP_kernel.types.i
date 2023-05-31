@@ -615,8 +615,6 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 
 %define IMP_SWIG_DECORATOR(Namespace, Name, PluralName)
 IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
-IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name);
-IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name);
 %{
   BOOST_STATIC_ASSERT(Convert< Namespace::Name >::converter==3);
 %}
