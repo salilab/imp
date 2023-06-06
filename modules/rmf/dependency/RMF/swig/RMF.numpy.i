@@ -45,7 +45,7 @@ bool is_native_numpy_2d_array(PyObject *o, int numpy_type, npy_intp ncol) {
 // Utility class to visit RMF nodes and extract XYZ coordinates
 class _OurVisitor {
   RMF::decorator::ReferenceFrameConstFactory refframef_;
-  RMF::decorator::ParticleConstFactory particlef_;
+  RMF::decorator::IntermediateParticleConstFactory iparticlef_;
   RMF::decorator::BallConstFactory ballf_;
   RMF::decorator::AlternativesConstFactory altf_;
   // Dimension of the NumPy array
@@ -68,7 +68,7 @@ class _OurVisitor {
 
 public:
   _OurVisitor(RMF::FileConstHandle fh, npy_intp ncoord, double *data)
-          : refframef_(fh), particlef_(fh), ballf_(fh), altf_(fh),
+          : refframef_(fh), iparticlef_(fh), ballf_(fh), altf_(fh),
             ncoord_(ncoord), data_(data) {}
 
   void handle_node(RMF::NodeConstHandle &nh, RMF::CoordinateTransformer tran) {
@@ -79,9 +79,9 @@ public:
       RMF::Vector3 coord = tran.get_global_coordinates(
                                ballf_.get(nh).get_coordinates());
       add_coordinates(coord);
-    } else if (particlef_.get_is(nh)) {
+    } else if (iparticlef_.get_is(nh)) {
       RMF::Vector3 coord = tran.get_global_coordinates(
-                               particlef_.get(nh).get_coordinates());
+                               iparticlef_.get(nh).get_coordinates());
       add_coordinates(coord);
     }
     for (auto &child : nh.get_children()) {

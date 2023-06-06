@@ -1,6 +1,10 @@
 Change Log {#changelog}
 ==========
 
+# HEAD
+- Bugfix: relative paths should now be set correctly when the path to the
+  RMF file itself contains one or more '..' components.
+
 # 1.5.0 - 2023-03-22 # {#changelog_1_5_0}
 - Windows builds now require MS Visual Studio 2015 or later (for full C++11
   support). The following macros for pre-C++11 environments are no longer

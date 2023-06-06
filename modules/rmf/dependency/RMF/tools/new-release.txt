@@ -10,5 +10,5 @@ To make a new release:
   - git diff develop
   - git push origin main
 - Tag the new release:
-  - git tag -s -u 22A3BF2B x.y.z; git push origin x.y.z
+  - git tag -s -u E6414C85 x.y.z; git push origin x.y.z
 - Make new release on GitHub
