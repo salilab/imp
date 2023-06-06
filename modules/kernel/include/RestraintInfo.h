@@ -30,6 +30,10 @@ IMPKERNEL_BEGIN_NAMESPACE
     filename(s) (treated similarly to strings but paths are made relative
     to that of the output file); or particles.
 
+    Note that when written to RMF files, RMF stores both string and filename
+    keys as strings. To help it distinguish the two, the convention is
+    for filename key names to end in "filename" or "filenames".
+
     Particle index values are generally used for one of two purposes.
     First, to reference particles that contain restraint
     information (either static or dynamic) that often exist
