@@ -1,7 +1,14 @@
 Change Log {#changelog}
 ==========
 
-# HEAD
+# 1.5.1 - 2023-06-08 # {#changelog_1_5_1}
+- Any String or Strings attributes containing fileystem paths are now
+  rewritten when the RMF static frame is cloned (e.g. during `rmf_slice`
+  or `rmf_cat`) so that they are relative to the new file, not the old one.
+  This relies on the convention that path attributes have names ending in
+  "filename" or "filenames".
+- Bugfix: particles without Cartesian coordinates are now handled correctly
+  by the `get_all_global_coordinates()` Python function.
 - Bugfix: relative paths should now be set correctly when the path to the
   RMF file itself contains one or more '..' components.
 
