@@ -32,26 +32,31 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
 
 // Make sure that ModelObject::get_model() returns the same Model object
 %pythoncode %{
-_models_by_hash = weakref.WeakValueDictionary()
+_models_set = weakref.WeakSet()
+
+def _models_set_get(m):
+    for x in _models_set:
+        if x == m:
+            return x
 %}
 
 namespace IMP {
   %feature("pythonappend") Model::Model %{
-    if hash(self) not in _models_by_hash:
-        _models_by_hash[hash(self)] = self
+    if self not in _models_set:
+        _models_set.add(self)
   %}
   %feature("shadow") ModelObject::get_model %{
     def get_model(self):
         m = $action(self)
-        if hash(m) in _models_by_hash:
-            m = _models_by_hash[hash(m)]
+        if m in _models_set:
+            m = _models_set_get(m)
         return m
   %}
   %feature("shadow") Decorator::get_model %{
     def get_model(self):
         m = $action(self)
-        if hash(m) in _models_by_hash:
-            m = _models_by_hash[hash(m)]
+        if m in _models_set:
+            m = _models_set_get(m)
         return m
   %}
 }
