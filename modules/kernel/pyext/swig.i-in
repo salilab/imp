@@ -47,6 +47,13 @@ namespace IMP {
             m = _models_by_hash[hash(m)]
         return m
   %}
+  %feature("shadow") Decorator::get_model %{
+    def get_model(self):
+        m = $action(self)
+        if hash(m) in _models_by_hash:
+            m = _models_by_hash[hash(m)]
+        return m
+  %}
 }
 
 %feature("ref")   IMP::Object "if ($this) $this->ref();"

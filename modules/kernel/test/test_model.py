@@ -551,11 +551,19 @@ class Tests(IMP.test.TestCase):
         m2 = pickle.loads(dump)
         self.assertEqual(len(m2.score_states), 1)
 
-    def test_same_model_python(self):
+    def test_model_object_same_model_python(self):
         "ModelObject.get_model() should return the same Python Model object"
         m = IMP.Model()
         r = IMP._ConstRestraint(m, [], 1)
         newm = r.get_model()
+        self.assertEqual(id(newm), id(m))
+
+    def test_decorator_same_model_python(self):
+        "Decorator.get_model() should return the same Python Model object"
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        td = IMP._TrivialDecorator.setup_particle(p)
+        newm = td.get_model()
         self.assertEqual(id(newm), id(m))
 
 
