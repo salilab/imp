@@ -30,6 +30,25 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
   }
 }
 
+// Make sure that ModelObject::get_model() returns the same Model object
+%pythoncode %{
+_models_by_hash = weakref.WeakValueDictionary()
+%}
+
+namespace IMP {
+  %feature("pythonappend") Model::Model %{
+    if hash(self) not in _models_by_hash:
+        _models_by_hash[hash(self)] = self
+  %}
+  %feature("shadow") ModelObject::get_model %{
+    def get_model(self):
+        m = $action(self)
+        if hash(m) in _models_by_hash:
+            m = _models_by_hash[hash(m)]
+        return m
+  %}
+}
+
 %feature("ref")   IMP::Object "if ($this) $this->ref();"
 %feature("unref") IMP::Object "if ($this) $this->unref();"
 

@@ -551,6 +551,13 @@ class Tests(IMP.test.TestCase):
         m2 = pickle.loads(dump)
         self.assertEqual(len(m2.score_states), 1)
 
+    def test_same_model_python(self):
+        "ModelObject.get_model() should return the same Python Model object"
+        m = IMP.Model()
+        r = IMP._ConstRestraint(m, [], 1)
+        newm = r.get_model()
+        self.assertEqual(id(newm), id(m))
+
 
 if __name__ == '__main__':
     IMP.test.main()
