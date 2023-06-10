@@ -173,7 +173,8 @@ class IMPKERNELEXPORT Model : public Object
 
   friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar) {
+  template<class Archive> void serialize(Archive &ar,
+                                         std::uint32_t const version) {
     ar(cereal::base_class<Object>(this));
     // We need to get unique_id_ early on read, so that any ModelObjects
     // that reference it get correctly associated with this model
@@ -622,6 +623,8 @@ IMPKERNEL_END_NAMESPACE
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
             IMP::Model, cereal::specialization::member_serialize);
+
+CEREAL_CLASS_VERSION(IMP::Model, 1);
 
 // This is needed for per cpp compilations, a not even sure why
 // (perhaps cause Model returns ParticleIterator here and there?)
