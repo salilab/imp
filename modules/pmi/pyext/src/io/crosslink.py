@@ -932,6 +932,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self._update()
         cdb = CrossLinkDataBase(self.cldbkc, new_xl_dict)
         cdb.dataset = self.dataset
+        cdb.name = self.name
         return cdb
 
     def filter_score(self, score):
