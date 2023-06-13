@@ -499,7 +499,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       predicate_(pred),
       input_(input),
       is_get_inputs_ignores_individual_scores_(false),
-      input_version_(input->get_contents_hash()),
+      input_version_(-1),
       //      is_unknown_score_set_(false),
       error_on_unknown_(true),
       unknown_score_(nullptr)
