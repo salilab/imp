@@ -3,7 +3,7 @@ IMP_SWIG_OBJECT_SERIALIZE(IMP::pmi, CrossLinkRestraintSet, CrossLinkRestraintSet
 IMP_SWIG_DECORATOR(IMP::pmi, Uncertainty, Uncertainties);
 IMP_SWIG_DECORATOR(IMP::pmi, Resolution, Resolutions);
 IMP_SWIG_DECORATOR(IMP::pmi, Symmetric, Symmetrics);
-IMP_SWIG_OBJECT(IMP::pmi, TransformMover, TransformMovers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::pmi, TransformMover, TransformMovers);
 IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 
 %pythoncode %{

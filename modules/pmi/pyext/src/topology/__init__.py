@@ -142,13 +142,11 @@ class _OurWeakRef(object):
         self._ref = weakref.ref(system)
 
     def __call__(self):
-        return self._ref()
+        if hasattr(self, '_ref'):
+            return self._ref()
 
     def __getstate__(self):
         return None
-
-    def __setstate__(self, d):
-        self._ref = weakref.ref(None)
 
 
 class System(_SystemBase):
