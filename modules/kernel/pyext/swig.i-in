@@ -318,12 +318,6 @@ IMP_SWIG_BASE_OBJECT(IMP, QuadPredicate, QuadPredicates);
 
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 
-// Decorator subclasses don't add extra data for serialization, so we only
-// need to serialize the Decorator base class in order to add support
-// for *all* decorators
-IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP, Decorator);
-IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP, Decorator);
-
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE(IMP, EvaluationState, EvaluationStates);

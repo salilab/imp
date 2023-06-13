@@ -26,6 +26,8 @@
 #include <limits>
 #include <vector>
 #include <deque>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -48,6 +50,11 @@ class Hierarchy;
 class IMPCOREEXPORT HierarchyTraits {
   ParticleIndexesKey children_;
   ParticleIndexKey parent_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(children_, parent_);
+  }
 
  public:
   HierarchyTraits() {}
@@ -77,6 +84,11 @@ typedef IMP::Vector<Hierarchy> GenericHierarchies;
     \see HierarchyTraits
  */
 class IMPCOREEXPORT Hierarchy : public Decorator {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Decorator>(this), traits_);
+  }
+
   static void do_setup_particle(Model *, ParticleIndex,
                                 HierarchyTraits) {}
   static void do_setup_particle(Model *m, ParticleIndex pi,

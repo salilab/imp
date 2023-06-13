@@ -147,6 +147,18 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(decs)
         newdecs = pickle.loads(dump)
 
+    def test_pickle_model_hierarchy(self):
+        """Check pickle of model containing atom.Hierarchy"""
+        m = IMP.Model()
+        s = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m, "System"))
+        state = IMP.atom.State.setup_particle(IMP.Particle(m, "State_0"), 0)
+        s.add_child(state)
+        self.assertEqual(s.get_number_of_children(), 1)
+
+        dump = pickle.dumps((m, s))
+        m, s = pickle.loads(dump)
+        self.assertEqual(s.get_number_of_children(), 1)
+
 
 if __name__ == '__main__':
     IMP.test.main()
