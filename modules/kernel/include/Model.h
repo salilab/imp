@@ -185,14 +185,10 @@ class IMPKERNELEXPORT Model : public Object
     ar(cereal::base_class<internal::FloatAttributeTable>(this),
        cereal::base_class<internal::StringAttributeTable>(this),
        cereal::base_class<internal::IntAttributeTable>(this),
-       cereal::base_class<internal::ObjectAttributeTable>(this),
-       cereal::base_class<internal::WeakObjectAttributeTable>(this),
        cereal::base_class<internal::IntsAttributeTable>(this),
        cereal::base_class<internal::FloatsAttributeTable>(this),
-       cereal::base_class<internal::ObjectsAttributeTable>(this),
        cereal::base_class<internal::ParticleAttributeTable>(this),
-       cereal::base_class<internal::ParticlesAttributeTable>(this),
-       free_particles_, model_data_, mutable_access_score_states());
+       cereal::base_class<internal::ParticlesAttributeTable>(this));
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
@@ -221,6 +217,13 @@ class IMPKERNELEXPORT Model : public Object
       }
       ar(free_particles_);
     }
+
+    // Need particle info before anything that might refer to a particle
+    // (ScoreState, or arbitrary Object)
+    ar(cereal::base_class<internal::ObjectAttributeTable>(this),
+       cereal::base_class<internal::ObjectsAttributeTable>(this),
+       cereal::base_class<internal::WeakObjectAttributeTable>(this),
+       model_data_, mutable_access_score_states());
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       // clear caches
