@@ -56,6 +56,7 @@ Profile::Profile(const std::string& file_name, bool fit_file, double max_q, int 
       id_(0),
       beam_profile_(nullptr) {
   set_was_used(true);
+  ff_table_ = nullptr;
   if (fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file, max_q, units);
 }
@@ -1212,5 +1213,7 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
   // compute default profile c1 = 1, c2 = 0
   sum_partial_profiles(1.0, 0.0, false);
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::saxs::Profile);
 
 IMPSAXS_END_NAMESPACE
