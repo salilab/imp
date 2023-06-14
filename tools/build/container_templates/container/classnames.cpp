@@ -608,5 +608,6 @@ void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
 IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ListClassnameContainer);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesConstraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::PredicateClassnamesRestraint);
 
 IMPCONTAINER_END_NAMESPACE

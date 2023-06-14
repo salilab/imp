@@ -59,8 +59,15 @@ IMP_OBJECTS(_ConstRestraint, _ConstRestraints);
 class _ConstSingletonScore : public SingletonScore {
   double v_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonScore>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_ConstSingletonScore);
+
  public:
   _ConstSingletonScore(double v) : v_(v) {}
+  _ConstSingletonScore() {}
   virtual double evaluate_index(Model *, ParticleIndex,
                                 DerivativeAccumulator *) const override {
     return v_;

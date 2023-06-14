@@ -192,5 +192,6 @@ void _TrivialDecorator::do_setup_particle(Model *m, ParticleIndex pi) {
 }
 
 IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::_ConstRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::_ConstSingletonScore);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

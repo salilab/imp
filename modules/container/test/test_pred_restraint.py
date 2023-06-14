@@ -5,6 +5,7 @@ import IMP.core
 import IMP.algebra
 import IMP.container
 import random
+import pickle
 
 tk = IMP.IntKey("type")
 
@@ -99,6 +100,32 @@ class Tests(IMP.test.TestCase):
         r.set_score(42, IMP._ConstSingletonScore(10))
         # 20 particles * 10 = 200
         self.assertAlmostEqual(r.evaluate(False), 200.0, delta=0.1)
+
+    def test_pickle(self):
+        """Test (un-pickle) of PredicateSingletonsRestraint"""
+        m, r = self.make_system()
+        r.set_score(42, IMP._ConstSingletonScore(10))
+        r.set_name("foo")
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        self.assertEqual(newr.get_name(), "foo")
+        # 20 particles * 10 = 200
+        self.assertAlmostEqual(newr.evaluate(False), 200.0, delta=0.1)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-pickle) of PredicateSingletonsRestraint via poly ptr"""
+        m, r = self.make_system()
+        r.set_score(42, IMP._ConstSingletonScore(10))
+        r.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([r])
+        dump = pickle.dumps(sf)
+
+        newsf = pickle.loads(dump)
+        newr, = newsf.restraints
+
+        self.assertEqual(newr.get_name(), "foo")
+        # 20 particles * 10 = 200
+        self.assertAlmostEqual(newr.evaluate(False), 200.0, delta=0.1)
 
 
 if __name__ == '__main__':
