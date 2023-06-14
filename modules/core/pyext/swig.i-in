@@ -113,10 +113,10 @@ IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, LateralSurfaceConstraint, LateralSurfaceConstraints);
 
-IMP_SWIG_OBJECT( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantTripletPredicate, ConstantTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantQuadPredicate, ConstantQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantTripletPredicate, ConstantTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantQuadPredicate, ConstantQuadPredicates);
 
 IMP_SWIG_OBJECT( IMP::core, CoinFlipSingletonPredicate, CoinFlipSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipPairPredicate, CoinFlipPairPredicates);
