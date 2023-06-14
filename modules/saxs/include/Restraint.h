@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,8 @@
 #include <IMP/Restraint.h>
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -53,6 +55,8 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
   Restraint(const Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
+  Restraint() {}
+
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const override;
 
@@ -64,11 +68,31 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  FormFactorType ff_type_;
   Pointer<RigidBodiesProfileHandler> handler_;
   Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives
   Pointer<DerivativeCalculator> derivative_calculator_;
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<IMP::Restraint>(this));
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      ParticleIndexes pis = IMP::get_indexes(handler_->get_particles());
+      Pointer<Profile> exp_profile = const_cast<Profile*>(
+                                         profile_fitter_->get_profile());
+      ar(handler_->get_form_factor_type(), pis, exp_profile);
+    } else {
+      FormFactorType ff_type;
+      ParticleIndexes pis;
+      Pointer<Profile> exp_profile;
+      ar(ff_type, pis, exp_profile);
+      handler_ = new RigidBodiesProfileHandler(
+                      IMP::get_particles(get_model(), pis), ff_type);
+      profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
+      derivative_calculator_ = new DerivativeCalculator(exp_profile);
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(Restraint);
 };
 
 IMPSAXS_END_NAMESPACE

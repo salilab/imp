@@ -14,6 +14,7 @@ namespace std {
 IMP_SWIG_OBJECT_SERIALIZE(IMP::saxs, Profile, Profiles);
 IMP_SWIG_OBJECT(IMP::saxs, ChiScore, ChiScores);
 IMP_SWIG_OBJECT(IMP::saxs, ChiScoreLog, ChiScoreLogs);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::saxs, Restraint, Restraints);
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
