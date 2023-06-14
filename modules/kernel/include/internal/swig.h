@@ -84,8 +84,15 @@ IMP_OBJECTS(_ConstSingletonScore, _ConstSingletonScores);
 class IMPKERNELEXPORT _ConstPairScore : public PairScore {
   double v_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<PairScore>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_ConstPairScore);
+
  public:
   _ConstPairScore(double v) : v_(v) {}
+  _ConstPairScore() {}
   virtual double evaluate_index(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const override {
     return v_;

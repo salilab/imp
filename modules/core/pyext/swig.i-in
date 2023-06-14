@@ -123,20 +123,20 @@ IMP_SWIG_OBJECT( IMP::core, CoinFlipPairPredicate, CoinFlipPairPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipTripletPredicate, CoinFlipTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipQuadPredicate, CoinFlipQuadPredicates);
 
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeSingletonPredicate, UnorderedTypeSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypePairPredicate, UnorderedTypePairPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeTripletPredicate, UnorderedTypeTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeQuadPredicate, UnorderedTypeQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeSingletonPredicate, UnorderedTypeSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypePairPredicate, UnorderedTypePairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeTripletPredicate, UnorderedTypeTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeQuadPredicate, UnorderedTypeQuadPredicates);
 
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeSingletonPredicate, OrderedTypeSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypePairPredicate, OrderedTypePairPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeTripletPredicate, OrderedTypeTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeQuadPredicate, OrderedTypeQuadPredicates);
 
-IMP_SWIG_OBJECT( IMP::core, AllSameSingletonPredicate, AllSameSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameSingletonPredicate, AllSameSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);

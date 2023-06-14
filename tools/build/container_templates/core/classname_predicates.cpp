@@ -31,5 +31,7 @@ CoinFlipClassnamePredicate::CoinFlipClassnamePredicate(double p,
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ClassnameRestraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ClassnameConstraint);
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::ConstantClassnamePredicate);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::UnorderedTypeClassnamePredicate);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::AllSameClassnamePredicate);
 
 IMPCORE_END_NAMESPACE

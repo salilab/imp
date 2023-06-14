@@ -348,6 +348,7 @@ IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialT
 IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstRestraint, _ConstRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstOptimizer, _ConstOptimizers);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstSingletonScore, _ConstSingletonScores);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstPairScore, _ConstPairScores);
 IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::ModelObject*);
 
 

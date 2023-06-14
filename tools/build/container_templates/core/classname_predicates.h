@@ -55,6 +55,12 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
 
 class IMPCOREEXPORT UnorderedTypeClassnamePredicate
     : public ClassnamePredicate {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClassnamePredicate>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(UnorderedTypeClassnamePredicate);
+
  public:
   UnorderedTypeClassnamePredicate(std::string name =
                                       "UnorderedTypeClassnamePredicate%1%");
@@ -124,6 +130,12 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
 
 /** Return true if all members of the tuple are the same. */
 class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClassnamePredicate>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(AllSameClassnamePredicate);
+
  public:
   AllSameClassnamePredicate(std::string name = "AllSameClassnamePredicate%1%");
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const
