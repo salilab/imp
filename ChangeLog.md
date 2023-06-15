@@ -2,6 +2,26 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- Most IMP Value and Object types can now be serialized (or pickled in Python).
+  For example, this can be used to save the current state of an IMP::Model
+  or an IMP.pmi.macros.ReplicaExchange object to be restored later or passed
+  to a separate process. Building IMP from source code now requires the
+  cereal library.
+- Information on most IMP restraints, sampling protocols, input files and
+  analysis/clustering is now stored in the RMF file. Ultimately this can be
+  used to generate an IHM mmCIF file directly from the RMF.
+- IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint now
+  requires the `linker` argument, which specifies the chemistry of the linker.
+- IMP.pmi.macros.ReplicaExchange0 has been removed.
+  Use IMP.pmi.macros.ReplicaExchange instead.
+- The undocumented IMP::core::ConjugateGradients::set_threshold() method is
+  now deprecated; use set_gradient_threshold() instead.
+- Rigid body members are now handled correctly by IMP::atom::destroy(),
+  and can be removed from their rigid body with a new
+  IMP::core::RigidBody::remove_member() method.
+- The IMP::em2d::CenteredMat and IMP::em2d::Fine2DRegistrationRestraint
+  classes have been moved to the IMP::em2d::internal namespace, as they
+  are implementation details.
 - Windows builds now require MS Visual Studio 2015 or later (for full C++11
   support). The following macro for pre-C++11 environments is no longer
   needed and is deprecated: `IMP_NOEXCEPT`.
