@@ -68,6 +68,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
+  ParticleIndexes particles_;
   Pointer<RigidBodiesProfileHandler> handler_;
   Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives
@@ -77,17 +78,15 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<IMP::Restraint>(this));
     if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
-      ParticleIndexes pis = IMP::get_indexes(handler_->get_particles());
       Pointer<Profile> exp_profile = const_cast<Profile*>(
                                          profile_fitter_->get_profile());
-      ar(handler_->get_form_factor_type(), pis, exp_profile);
+      ar(handler_->get_form_factor_type(), particles_, exp_profile);
     } else {
       FormFactorType ff_type;
-      ParticleIndexes pis;
       Pointer<Profile> exp_profile;
-      ar(ff_type, pis, exp_profile);
+      ar(ff_type, particles_, exp_profile);
       handler_ = new RigidBodiesProfileHandler(
-                      IMP::get_particles(get_model(), pis), ff_type);
+                      IMP::get_particles(get_model(), particles_), ff_type);
       profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
       derivative_calculator_ = new DerivativeCalculator(exp_profile);
     }

@@ -43,8 +43,6 @@ class IMPSAXSEXPORT RigidBodiesProfileHandler : public Object {
 
   FormFactorType get_form_factor_type() const { return ff_type_; }
 
-  ParticlesTemp get_particles() const { return particles_; }
-
   IMP_OBJECT_METHODS(RigidBodiesProfileHandler);
 
  protected:

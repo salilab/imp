@@ -17,6 +17,7 @@ IMPSAXS_BEGIN_NAMESPACE
 Restraint::Restraint(const Particles& particles,
                      const Profile* exp_profile, FormFactorType ff_type)
     : IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint") {
+  particles_ = IMP::get_indexes(static_cast<const ParticlesTemp &>(particles));
   handler_ = new RigidBodiesProfileHandler(particles, ff_type);
   profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
