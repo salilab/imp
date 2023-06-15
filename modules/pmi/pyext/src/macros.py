@@ -179,7 +179,12 @@ class ReplicaExchange(object):
         self.vars = {}
 
         # add check hierarchy is multistate
-        self.output_objects = output_objects
+        if output_objects == []:
+            # The "[]" in the default parameters is a global object, so make
+            # our own copy here
+            self.output_objects = []
+        else:
+            self.output_objects = output_objects
         self.rmf_output_objects = rmf_output_objects
         if (isinstance(root_hier, IMP.atom.Hierarchy)
                 and not root_hier.get_parent()):
