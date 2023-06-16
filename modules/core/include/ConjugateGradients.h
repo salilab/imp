@@ -42,14 +42,6 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t) { threshold_ = t; }
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.19)
-  void set_threshold(Float t) {
-    IMPCORE_DEPRECATED_METHOD_DEF(2.19, "Use set_gradient_threshold().");
-    set_gradient_threshold(t);
-  }
-#endif
-
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
 
