@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.19.0 - 2023-06-22 # {#changelog_2_19_0}
 - Most IMP Value and Object types can now be serialized (or pickled in Python).
   For example, this can be used to save the current state of an IMP::Model
   or an IMP.pmi.macros.ReplicaExchange object to be restored later or passed
