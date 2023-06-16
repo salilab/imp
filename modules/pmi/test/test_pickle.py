@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
     def test_pickle(self):
         """Test that pickled ReplicaExchange objects work"""
         mc1 = make_system()
-        dump = pickle.dumps(mc1)
+        dump = pickle.dumps((mc1.model, mc1))
 
         # Run the original ReplicaExchange and get the final score
         IMP.random_number_generator.seed(99)
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
 
         # With the same random seed, we should get the exact same trajectory
         # with the pickled object
-        newmc1 = pickle.loads(dump)
+        newm, newmc1 = pickle.loads(dump)
         IMP.random_number_generator.seed(99)
         newmc1.execute_macro()
         rs = IMP.pmi.tools.get_restraint_set(newmc1.model)
