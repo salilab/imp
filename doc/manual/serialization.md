@@ -7,6 +7,10 @@ a file, string or stream. This allows for individual objects or an entire %IMP
 run to be saved and later restored, or to be sent from one machine to another.
 In Python, the objects can be loaded or saved using the `pickle` module.
 
+Serialization uses a compact binary format. However, it is not heavily
+optimized for size. If a smaller file size is desired, the Python `pickle`
+file can be compressed with a general-purpose compression tool such as `gzip`.
+
 Serialization relies on the excellent
 [cereal](https://uscilab.github.io/cereal/) library, which is required to
 build %IMP. 
