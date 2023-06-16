@@ -59,7 +59,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class T, class K>
 struct DefaultTraits {
   //! a container storing the attribute data for all particles (indexed by ParticleIndex)
-  typedef IndexVector<ParticleIndexTag, T> Container;
+  typedef CompressedIndexVector<ParticleIndexTag, T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
@@ -135,7 +135,7 @@ struct ObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef ObjectKey Key;
-  typedef IndexVector<ParticleIndexTag, Pointer<Object> >
+  typedef CompressedIndexVector<ParticleIndexTag, Pointer<Object> >
       Container;
   typedef Pointer<Object> const* ContainerConstDataAccess;
   typedef Pointer<Object>* ContainerDataAccess;
@@ -154,7 +154,7 @@ struct WeakObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef WeakObjectKey Key;
-  typedef IndexVector<ParticleIndexTag, WeakPointer<Object> >
+  typedef CompressedIndexVector<ParticleIndexTag, WeakPointer<Object> >
       Container;
   typedef WeakPointer<Object> const* ContainerConstDataAccess;
   typedef WeakPointer<Object>* ContainerDataAccess;
@@ -172,7 +172,7 @@ struct ObjectsAttributeTableTraits {
   typedef Objects Value;
   typedef const Objects &PassValue;
   typedef ObjectsKey Key;
-  typedef IndexVector<ParticleIndexTag, Objects> Container;
+  typedef CompressedIndexVector<ParticleIndexTag, Objects> Container;
   typedef Objects const* ContainerConstDataAccess;
   typedef Objects* ContainerDataAccess;
   static Value get_invalid() { return Value(); }
