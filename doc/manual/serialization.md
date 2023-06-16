@@ -11,6 +11,14 @@ Serialization uses a compact binary format. However, it is not heavily
 optimized for size. If a smaller file size is desired, the Python `pickle`
 file can be compressed with a general-purpose compression tool such as `gzip`.
 
+Note that IMP::Model is handled specially due to its large size. Objects that
+refer to the model (such as restraints or particles) will only include the ID
+of the model in the serialization stream, not the model itself.
+On deserialization these objects will be reassociated with the model by matching
+the ID. This requires that the model be deserialized before any of these other
+objects. To ensure this, `pickle` a tuple, list, or other ordered Python
+container containing the model before any other object.
+
 Serialization relies on the excellent
 [cereal](https://uscilab.github.io/cereal/) library, which is required to
 build %IMP. 
