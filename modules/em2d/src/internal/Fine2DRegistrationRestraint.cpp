@@ -4,7 +4,7 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/internal/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/opencv_interface.h"
