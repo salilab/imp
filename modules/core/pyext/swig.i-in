@@ -53,7 +53,6 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceHeightPairScore, HarmonicSurfaceHeigh
 IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDepthPairScore, HarmonicSurfaceDepthPairScores);
 IMP_SWIG_OBJECT( IMP::core, WeightedSum, WeightedSums);
 IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials);
-IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Linear, Linears);
@@ -304,7 +303,6 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
 %include "IMP/core/LogNormalMover.h"
-%include "IMP/core/IncrementalScoringFunction.h"
 %include "IMP/core/MonteCarlo.h"
 %include "IMP/core/NeighborsTable.h"
 %include "IMP/core/NormalMover.h"

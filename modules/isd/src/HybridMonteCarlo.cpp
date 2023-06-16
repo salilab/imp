@@ -26,9 +26,6 @@ HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps,
 }
 
 double HybridMonteCarlo::do_evaluate(const ParticleIndexes &, bool) const {
-  // we don't use evaluate_moved() so don't use either input argument
-  if (get_use_incremental_scoring_function())
-    IMP_THROW("Incremental scoring not supported", ModelException);
   double ekin = md_->get_kinetic_energy();
   double epot = get_scoring_function()->evaluate(false);
   return ekin + epot;

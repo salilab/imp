@@ -85,9 +85,6 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
       // values at the next scoring function evaluation
       reset_pis_ = moved.get_moved_particles();
     }
-    if (isf_) {
-      isf_->reset_moved_particles();
-    }
     return false;
   }
 }
@@ -202,12 +199,6 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   } else {
     return last_energy_;
   }
-}
-void MonteCarlo::set_incremental_scoring_function(
-    IncrementalScoringFunction *isf) {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.17, "Use set_score_moved() instead.")
-  isf_ = isf;
-  Optimizer::set_scoring_function(isf);
 }
 
 MonteCarloWithLocalOptimization::MonteCarloWithLocalOptimization(
