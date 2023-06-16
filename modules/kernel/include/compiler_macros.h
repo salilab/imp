@@ -62,8 +62,6 @@
 #endif
 #endif
 
-// Deprecated: just use 'noexcept' directly
-#define IMP_NOEXCEPT noexcept
 #define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
   Name &operator=(const Name &) = default
