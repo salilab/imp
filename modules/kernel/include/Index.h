@@ -2,7 +2,7 @@
  *  \file IMP/Index.h
  *  \brief Utility types to refer to various types of indices
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -141,36 +141,36 @@ class CompressedIndexVector : public IndexVector<Tag, T> {
   typedef Vector<T> P;
 
   template<class Archive> void write_no_compression(
-                        Archive &ar, size_t start, size_t end) const {
+                       Archive &ar, typename P::const_iterator start,
+                       typename P::const_iterator end) const {
     size_t sz = end - start;
     ar(COMP_NONE); ar(sz);
-    auto it = P::begin() + start;
-    while(sz-- > 0) {
-      ar(*it++);
+    while(start != end) {
+      ar(*start++);
     }
   }
 
   template<class Archive> void write_rle(
-                        Archive &ar, size_t start, size_t end) const {
+                       Archive &ar, typename P::const_iterator start,
+                       typename P::const_iterator end) const {
     size_t sz = end - start;
     ar(COMP_RLE); ar(sz);
-    ar(P::operator[](start));
+    ar(*start);
   }
 
   friend class cereal::access;
   template<class Archive> void save(Archive &ar) const {
     size_t sz = P::size();
     ar(sz);
-    size_t pos = 0, start = 0, runend;
-    while (pos < sz) {
-      const T& val = P::operator[](pos);
+    typename P::const_iterator pos = P::begin(), start = P::begin(), runend;
+    while (pos != P::end()) {
+      const T& val = *pos;
       // update runend to point past the end of a run of same values,
       // starting at pos
-      for (runend = pos + 1; runend < sz && P::operator[](runend) == val;
-           ++runend) {}
+      for (runend = pos + 1; runend != P::end() && *runend == val; ++runend) {}
       // exclude very short runs
       if (runend > pos + 10) {
-        if (pos > 0 && pos > start) {
+        if (pos > P::begin() && pos > start) {
           // Write previous set of non-RLE values
           write_no_compression(ar, start, pos);
         }
@@ -179,8 +179,8 @@ class CompressedIndexVector : public IndexVector<Tag, T> {
       }
       pos = runend;
     }
-    if (start < sz) {
-      write_no_compression(ar, start, sz);
+    if (start != P::end()) {
+      write_no_compression(ar, start, P::end());
     }
     ar(COMP_END);
   }
