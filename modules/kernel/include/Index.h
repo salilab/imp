@@ -169,7 +169,7 @@ class CompressedIndexVector : public IndexVector<Tag, T> {
       // starting at pos
       for (runend = pos + 1; runend != P::end() && *runend == val; ++runend) {}
       // exclude very short runs
-      if (runend > pos + 10) {
+      if (runend - pos > 10) {
         if (pos > P::begin() && pos > start) {
           // Write previous set of non-RLE values
           write_no_compression(ar, start, pos);
