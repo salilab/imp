@@ -317,7 +317,7 @@ struct TestSchema {
   template <typename Parser>
   void readFixed(Parser &p) {
 
-    boost::array<uint8_t, 16> input;
+    std::array<uint8_t, 16> input;
     p.readFixed(input);
     BOOST_CHECK_EQUAL(input.size(), 16U);
 
@@ -728,7 +728,7 @@ struct TestResolution {
 
 template <typename T>
 void addTestCase(boost::unit_test::test_suite &test) {
-  boost::shared_ptr<T> newtest(new T);
+  std::shared_ptr<T> newtest(new T);
   test.add(BOOST_CLASS_TEST_CASE(&T::test, newtest));
 }
 

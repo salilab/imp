@@ -9,7 +9,7 @@
 #include "IMP/core/internal/close_pairs_helpers.h"
 #include <IMP/log.h>
 #include <algorithm>
-#include <boost/timer.hpp>
+#include <IMP/internal/SimpleTimer.h>
 #include <vector>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -49,7 +49,7 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
     datas.push_back(Data());
     datas.back().slack = slack;
     {
-      boost::timer imp_timer;
+      IMP::internal::SimpleTimer imp_timer;
       int count = 0;
       SetLogState sl(opt->get_model(), SILENT);
       do {
@@ -62,7 +62,7 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
                                                  << std::endl);
     }
     {
-      boost::timer imp_timer;
+      IMP::internal::SimpleTimer imp_timer;
       double score = 0;
       int count = 0;
       int iters = 1;
@@ -185,16 +185,6 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
   return datas[opt_i].slack;
 }
 
-double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
-                          double step, const RestraintsTemp &restraints,
-                          bool derivatives, Optimizer *opt,
-                          ClosePairContainer *cpc) {
-  IMPCONTAINER_DEPRECATED_FUNCTION_DEF(
-        2.16, "Use the index-based function instead");
-  Model *m = ps[0]->get_model();
-  return get_slack_estimate(m, IMP::internal::get_index(ps),
-                            upper_bound, step, restraints, derivatives,
-                            opt, cpc);
-}
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClosePairContainer);
 
 IMPCONTAINER_END_NAMESPACE

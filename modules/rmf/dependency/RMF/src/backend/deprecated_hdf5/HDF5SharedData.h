@@ -10,8 +10,7 @@
 #define RMF_INTERNAL_HDF_5SHARED_DATA_H
 
 #include <H5public.h>
-#include <boost/array.hpp>
-#include <boost/make_shared.hpp>
+#include <array>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <hdf5.h>
 #include <stddef.h>
@@ -184,7 +183,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
     // category, type, per_frame
     typedef HDF5DataSetCacheD<StringTraits, 1> DS;
     typedef boost::ptr_vector<boost::nullable<DS> > PVDS;
-    typedef boost::array<PVDS, 2> Pair;
+    typedef std::array<PVDS, 2> Pair;
     mutable std::vector<Pair> cache_;
 
    public:

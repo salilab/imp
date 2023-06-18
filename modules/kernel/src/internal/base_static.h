@@ -10,13 +10,13 @@
 
 #include <IMP/kernel_config.h>
 #include <IMP/internal/base_static.h>
+#include <IMP/internal/BoostProgressDisplay.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/enums.h>
 #include <boost/cstdint.hpp>
 #include <boost/program_options.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
-#include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -61,7 +61,8 @@ extern IMPKERNELEXPORT std::string exe_description;
 extern IMPKERNELEXPORT AdvancedFlag<boost::int64_t, IMP_KERNEL_HAS_OPENMP>
     number_of_threads;
 
-extern IMPKERNELEXPORT boost::scoped_ptr<boost::progress_display> progress;
+extern IMPKERNELEXPORT boost::scoped_ptr<
+                           IMP::internal::BoostProgressDisplay> progress;
 
 extern IMPKERNELEXPORT AdvancedFlag<bool> no_print_deprecation_messages;
 extern IMPKERNELEXPORT AdvancedFlag<bool> exceptions_on_deprecation;

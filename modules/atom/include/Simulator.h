@@ -115,7 +115,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   void set_time_step(double ts) { set_maximum_time_step(ts); }
 #endif
 
-  // returns kt in units of kCal/mol for temperature get_temperature() [K]
+  // returns kt in units of kcal/mol for temperature get_temperature() [K]
   double get_kt() const;
 
   /**

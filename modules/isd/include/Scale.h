@@ -34,7 +34,7 @@ class IMPISDEXPORT Scale : public Nuisance {
     return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower() >= 0;
   }
 
-  Float get_scale() const { return Nuisance(get_particle()).get_nuisance(); }
+  Float get_scale() const { return get_nuisance(); }
 
   void set_scale(Float d) { set_nuisance(d); }
 

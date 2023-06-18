@@ -52,13 +52,18 @@ def add_ihm_info(s):
     return s
 
 
-if len(sys.argv) != 2:
-    print("Usage: %s input.cif" % sys.argv[0], file=sys.stderr)
+if len(sys.argv) != 2 and len(sys.argv) != 3:
+    print("Usage: %s input.cif [output.cif]" % sys.argv[0], file=sys.stderr)
     sys.exit(1)
+
 fname = sys.argv[1]
+if len(sys.argv) > 2:
+    out_fname = sys.argv[2]
+else:
+    out_fname = 'output.cif'
 
 with open(fname) as fh:
-    with open('output.cif', 'w') as fhout:
+    with open(out_fname, 'w') as fhout:
         ihm.dumper.write(
             fhout, [add_ihm_info(s) for s in ihm.reader.read(fh)],
             variant=ihm.dumper.IgnoreVariant(['_audit_conform']))

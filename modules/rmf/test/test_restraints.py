@@ -9,9 +9,9 @@ from IMP.algebra import *
 
 class MockRestraint(IMP.Restraint):
 
-    def __init__(self, val, ps):
+    def __init__(self, m, ps, val):
         self.ps = ps
-        IMP.Restraint.__init__(self, ps[0].get_model(), "MockRestraint %1%")
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         return 0.
@@ -28,8 +28,9 @@ class MockRestraint(IMP.Restraint):
     def get_static_info(self):
         i = IMP.RestraintInfo()
         if len(self.ps) >= 5:
+            # Include a duplicate (which will use an Alias node in RMF)
             i.add_particle_indexes("static particles",
-                    [self.ps[1], self.ps[2], self.ps[3]])
+                    [self.ps[1], self.ps[2], self.ps[3], self.ps[3]])
         return i
 
     def get_dynamic_info(self):
@@ -45,6 +46,17 @@ class MockRestraint(IMP.Restraint):
         i.add_ints("test ints", [42, 99])
         i.add_strings("test strings", ["bar", "baz"])
         i.add_filenames("test filenames", ["foo", "bar"])
+        return i
+
+
+class MockRestraintSet(IMP.RestraintSet):
+
+    def __init__(self, m, ps, val):
+        IMP.RestraintSet.__init__(self, m, "MockRestraintSet %1%")
+
+    def get_dynamic_info(self):
+        i = IMP.RestraintInfo()
+        i.add_int("test int", 99)
         return i
 
 
@@ -77,7 +89,7 @@ class Tests(IMP.test.TestCase):
             scale.set_lower(0.0)
             scale.set_upper(10.0)
             ps.extend([p1, p2, p3, p4])
-        r = cls(1, ps)
+        r = cls(m, ps, 1)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
@@ -85,7 +97,7 @@ class Tests(IMP.test.TestCase):
             scale.set_scale(0.5)
             IMP.rmf.save_frame(f, str(1))
 
-    def _read_restraint(self, name, extra_ps=0):
+    def _read_restraint(self, name, extra_ps=0, inputs=True):
         IMP.add_to_log(IMP.TERSE, "Starting reading back\n")
         f = RMF.open_rmf_file_read_only(name)
         m = IMP.Model()
@@ -95,7 +107,8 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.load_frame(f, RMF.FrameID(0))
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
-        self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
+        if inputs:
+            self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
         return m, r, f
 
     def test_0(self):
@@ -243,6 +256,17 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(info.get_filenames_key(0), "test filenames")
             self.assertEqual(len(info.get_filenames_value(0)), 2)
 
+    def test_dynamic_info_restraint_set(self):
+        """Test dynamic RestraintSet info"""
+        for suffix in IMP.rmf.suffixes:
+            name = self.get_tmp_file_name("dynamic_info_set" + suffix)
+            self._write_restraint(name, cls=MockRestraintSet)
+            m, r, rmf = self._read_restraint(name, inputs=False)
+            info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_int(), 1)
+            self.assertEqual(info.get_int_key(0), "test int")
+            self.assertEqual(info.get_int_value(0), 99)
+
     def test_associated_particles(self):
         """Test handling of restraint associated particles"""
         for suffix in IMP.rmf.suffixes:
@@ -255,8 +279,10 @@ class Tests(IMP.test.TestCase):
                              'static particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(0)],
-                             ['extra0', 'extra1', 'extra2'])
-            ind0, ind1, ind2 = info.get_particle_indexes_value(0)
+                             ['extra0', 'extra1', 'extra2', 'extra2'])
+            ind0, ind1, ind2, ind3 = info.get_particle_indexes_value(0)
+            # last particle (ind3) should be an alias to ind2
+            self.assertEqual(ind2, ind3)
             self.assertEqual(info.get_particle_indexes_key(1),
                              'dynamic particles')
             self.assertEqual([m.get_particle_name(i)

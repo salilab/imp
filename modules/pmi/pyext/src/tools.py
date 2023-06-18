@@ -41,12 +41,13 @@ def _get_system_for_hier(hier):
     while hier:
         # See if we labeled the Python object directly with the System
         if hasattr(hier, '_pmi2_system'):
-            return hier._pmi2_system()
+            h = hier._pmi2_system()
+            if h:
+                return h
         # Otherwise (maybe we got a new Python wrapper around the same C++
         # object), try all extant systems
-        for ws in IMP.pmi.topology.System._all_systems:
-            s = ws()
-            if s and s.hier == hier:
+        for s in IMP.pmi.topology.System._all_systems:
+            if s.hier == hier:
                 return s
         # Try the next level up in the hierarchy
         hier = hier.get_parent()
@@ -206,70 +207,6 @@ class SetupSurface(object):
 
     def get_particle(self):
         return self.surface
-
-
-@IMP.deprecated_object("2.18", "Create explicit MonteCarlo Movers instead")
-class ParticleToSampleList(object):
-
-    def __init__(self, label="None"):
-
-        self.dictionary_particle_type = {}
-        self.dictionary_particle_transformation = {}
-        self.dictionary_particle_name = {}
-        self.label = label
-
-    def add_particle(self, particle, particle_type, particle_transformation,
-                     name):
-        if particle_type not in ["Rigid_Bodies", "Floppy_Bodies", "Nuisances",
-                                 "X_coord", "Weights", "Surfaces"]:
-            raise TypeError("not the right particle type")
-        else:
-            self.dictionary_particle_type[particle] = particle_type
-            if particle_type == "Rigid_Bodies":
-                if (isinstance(particle_transformation, tuple)
-                    and len(particle_transformation) == 2
-                    and all(isinstance(x, float)
-                            for x in particle_transformation)):
-                    self.dictionary_particle_transformation[
-                        particle] = particle_transformation
-                    self.dictionary_particle_name[particle] = name
-                else:
-                    raise TypeError(
-                        "ParticleToSampleList: not the right transformation "
-                        "format for Rigid_Bodies, should be a tuple of floats")
-            elif particle_type == "Surfaces":
-                if (isinstance(particle_transformation, tuple)
-                    and len(particle_transformation) == 3
-                    and all(isinstance(x, float)
-                            for x in particle_transformation)):
-                    self.dictionary_particle_transformation[
-                        particle] = particle_transformation
-                    self.dictionary_particle_name[particle] = name
-                else:
-                    raise TypeError(
-                        "ParticleToSampleList: not the right transformation "
-                        "format for Surfaces, should be a tuple of floats")
-            else:
-                if isinstance(particle_transformation, float):
-                    self.dictionary_particle_transformation[
-                        particle] = particle_transformation
-                    self.dictionary_particle_name[particle] = name
-                else:
-                    raise TypeError(
-                        "ParticleToSampleList: not the right transformation "
-                        "format, should be a float")
-
-    def get_particles_to_sample(self):
-        ps = {}
-        for particle in self.dictionary_particle_type:
-            key = self.dictionary_particle_type[particle] + \
-                "ParticleToSampleList_" + \
-                self.dictionary_particle_name[particle] + "_" + self.label
-            value = (
-                [particle],
-                self.dictionary_particle_transformation[particle])
-            ps[key] = value
-        return ps
 
 
 def get_cross_link_data(directory, filename, dist, omega, sigma,
@@ -537,10 +474,15 @@ def select_by_tuple_2(hier, tuple_selection, resolution):
     return s.get_selected_particles()
 
 
-def get_db_from_csv(csvfilename):
+def get_db_from_csv(csvfilename, encoding=None):
+    if sys.version_info[0] == 2:
+        def open_with_encoding(fname, encoding):
+            return open(fname)
+    else:
+        open_with_encoding = open
     import csv
     outputlist = []
-    with open(csvfilename) as fh:
+    with open_with_encoding(csvfilename, encoding=encoding) as fh:
         csvr = csv.DictReader(fh)
         for ls in csvr:
             outputlist.append(ls)

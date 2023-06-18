@@ -2,7 +2,7 @@
  *  \file base/internal/PointerBase.h
  *  \brief A nullptr-initialized pointer to an IMP ref-counted Object.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,6 +14,11 @@
 #include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
+#include "../Object.h"
+#include <typeinfo>
+#include <memory>
+#include <cereal/access.hpp>
+#include <type_traits>
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
@@ -23,6 +28,31 @@
 #endif
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+template<typename O>
+typename std::enable_if<std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  return new O;
+}
+
+template<typename O>
+typename std::enable_if<!std::is_default_constructible<O>::value, O*>::type
+make_empty_object() {
+  IMP_THROW("Cannot load non-default-constructible object", TypeException);
+}
+
+class PtrWrapper {
+  Object *o_;
+public:
+  PtrWrapper(Object *o) : o_(o) {}
+  Object *get_object() { return o_; }
+};
+
+} // namespace
+#endif
+
 template <class TT>
 struct RefCountedPointerTraits {
   typedef TT Type;
@@ -78,21 +108,21 @@ struct GetPointer {
 template <class O, class OO>
 struct GetPointer<O, OO,
                   typename boost::enable_if<boost::mpl::and_<
-                      boost::mpl::not_<boost::is_integral<OO> >,
-                      boost::mpl::not_<boost::is_pointer<OO> > > >::type> {
+                      boost::mpl::not_<std::is_integral<OO>::value>,
+                      boost::mpl::not_<std::is_pointer<OO>::value> > >::type> {
   static O* get_pointer(const OO& o) { return o; }
   static const O* get_const_pointer(const OO& o) { return o; }
 };
 template <class O, class OO>
 struct GetPointer<O, OO*,
-                  typename boost::enable_if<boost::is_pointer<OO*> >::type> {
+                typename boost::enable_if<std::is_pointer<OO*>::value>::type> {
   static O* get_pointer(OO* o) { return o; }
   static const O* get_const_pointer(const OO* o) { return o; }
 };
 
 template <class O, class OO>
 struct GetPointer<O, OO,
-                  typename boost::enable_if<boost::is_integral<OO> >::type> {
+                typename boost::enable_if<std::is_integral<OO>::value>::type> {
   static O* get_pointer(const OO& o) {
     IMP_INTERNAL_CHECK_VARIABLE(o)
     IMP_INTERNAL_CHECK(o == 0, "Non-zero pointer constant found.");
@@ -105,9 +135,11 @@ struct GetPointer<O, OO,
   }
 };
 template <class O>
-struct GetPointer<O, nullptr_t> {
-  static O* get_pointer(const nullptr_t&) { return static_cast<O*>(nullptr); }
-  static const O* get_const_pointer(const nullptr_t&) {
+struct GetPointer<O, std::nullptr_t> {
+  static O* get_pointer(const std::nullptr_t&) {
+    return static_cast<O*>(nullptr);
+  }
+  static const O* get_const_pointer(const std::nullptr_t&) {
     return static_cast<O*>(nullptr);
   }
 };
@@ -154,6 +186,89 @@ class PointerBase {
   }
 
   struct UnusedClass {};
+
+  friend class cereal::access;
+
+  static void null_deleter(Object *) {}
+
+  void serialize(cereal::BinaryOutputArchive &ar) {
+    O* rawptr = o_;
+    if (rawptr == nullptr) {
+      char ptr_type = 0; // null pointer
+      ar(ptr_type);
+    } else {
+#if IMP_COMPILER_HAS_CEREAL_RAW_POINTER
+      uint32_t id = ar.registerSharedPointer(rawptr);
+#else
+      // Recent cereal wants a shared_ptr instead of a null pointer,
+      // but we manage the storage for Object ourselves, so provide a null
+      // deleter. This will potentially make multiple shared_ptr objects
+      // pointing to the same Object*, but that's OK here because cereal only
+      // uses the underlying pointer anyway.
+      std::shared_ptr<Object> shared_rawptr(rawptr, null_deleter);
+      uint32_t id = ar.registerSharedPointer(shared_rawptr);
+#endif
+      if (typeid(*rawptr) == typeid(O)) {
+        char ptr_type = 1; // non-polymorphic pointer
+        ar(ptr_type);
+        ar(id);
+        // only serialize if this is the first time we've seen this ID
+        if (id & cereal::detail::msb_32bit) {
+          ar(*rawptr);
+        }
+      } else {
+        char ptr_type = 2; // polymorphic pointer
+        ar(ptr_type);
+        ar(id);
+        // only serialize if this is the first time we've seen this ID
+        if (id & cereal::detail::msb_32bit) {
+          rawptr->poly_serialize(ar);
+        }
+      }
+    }
+  }
+
+  void serialize(cereal::BinaryInputArchive &ar) {
+    char ptr_type;
+    uint32_t id;
+    ar(ptr_type);
+    if (ptr_type == 0) { // null pointer
+      set_pointer(nullptr);
+    } else {
+      ar(id);
+      if (ptr_type == 1) { // non-polymorphic pointer
+        // only deserialize if this is the first time we've seen this ID
+        if (id & cereal::detail::msb_32bit) {
+          std::unique_ptr<O> ptr(make_empty_object<O>());
+          ar(*ptr);
+          auto ptr_wrapper = std::make_shared<PtrWrapper>(ptr.get());
+          set_pointer(ptr.release());
+          ar.registerSharedPointer(id, ptr_wrapper);
+        } else {
+          set_pointer_from_id(id, ar);
+        }
+      } else { // polymorphic pointer
+        // only deserialize if this is the first time we've seen this ID
+        if (id & cereal::detail::msb_32bit) {
+          O* rawptr = dynamic_cast<O*>(Object::poly_unserialize(ar));
+          IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+          set_pointer(rawptr);
+          auto ptr_wrapper = std::make_shared<PtrWrapper>(rawptr);
+          ar.registerSharedPointer(id, ptr_wrapper);
+        } else {
+          set_pointer_from_id(id, ar);
+        }
+      }
+    }
+  }
+
+  void set_pointer_from_id(uint32_t id, cereal::BinaryInputArchive &ar) {
+    auto ptr_wrapper = std::static_pointer_cast<PtrWrapper>(
+                                              ar.getSharedPointer(id));
+    O* rawptr = dynamic_cast<O*>(ptr_wrapper->get_object());
+    IMP_INTERNAL_CHECK(rawptr != nullptr, "Wrong type returned");
+    set_pointer(rawptr);
+  }
 
  public:
   //! initialize to nullptr
@@ -248,13 +363,10 @@ class PointerBase {
     }
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
-  PointerBase<Traits>& operator=(nullptr_t) {
+  PointerBase<Traits>& operator=(std::nullptr_t) {
     set_pointer(nullptr);
     return *this;
   }
-#endif
   PointerBase<Traits>& operator=(const PointerBase<Traits>& o) {
     set_pointer(o.o_);
     return *this;
@@ -284,12 +396,8 @@ inline void swap(PointerBase<Traits>& a, PointerBase<Traits>& b) {
   a.swap_with(b);
 }
 
-#if IMP_COMPILER_HAS_THREE_WAY
-template <class OT, class OTraits>
-inline std::strong_ordering operator<=>(OT* o, const PointerBase<OTraits>& p) {
-  return p <=> o;
-}
-#else
+// Reversed operators are not needed in C++20
+#ifndef IMP_COMPILER_HAS_THREE_WAY
 template <class OT, class OTraits>
 inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
   return p == o;

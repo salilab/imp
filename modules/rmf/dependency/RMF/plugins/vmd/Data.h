@@ -25,7 +25,7 @@
 #include "RMF/infrastructure_macros.h"
 #include "RMF/types.h"
 #include "molfile_plugin.h"
-#include <boost/array.hpp>
+#include <array>
 #include <boost/tuple/tuple.hpp>
 #include <boost/scoped_array.hpp>
 #include <string>
@@ -54,11 +54,11 @@ class Data {
   RMF::decorator::StateFactory stf_;
   struct AtomInfo {
     // can precompute the actual molfile_atom_t data to simplify things
-    boost::array<char, 2> chain_id;
+    std::array<char, 2> chain_id;
     int residue_index;
-    boost::array<char, 8> residue_name;
-    boost::array<char, 2> altid;
-    boost::array<char, 8> segment;
+    std::array<char, 8> residue_name;
+    std::array<char, 2> altid;
+    std::array<char, 8> segment;
     RMF::NodeID node_id;
   };
   struct Body {
@@ -80,29 +80,29 @@ class Data {
     RESTRAINTS = 2
   };
   int show_restraints_;
-  boost::array<RMF::Vector3, 2> bounds_;
+  std::array<RMF::Vector3, 2> bounds_;
   double max_radius_;
   bool done_;
 
   // find nodes to push to VMD
-  boost::array<int, 2> fill_bodies(RMF::NodeConstHandle cur, int body,
-                                   boost::array<char, 2> chain, int resid,
-                                   boost::array<char, 8> resname,
-                                   boost::array<char, 2> altid,
-                                   boost::array<char, 8> segment,
+  std::array<int, 2> fill_bodies(RMF::NodeConstHandle cur, int body,
+                                   std::array<char, 2> chain, int resid,
+                                   std::array<char, 8> resname,
+                                   std::array<char, 2> altid,
+                                   std::array<char, 8> segment,
                                    double resolution);
   void fill_index();
   void fill_graphics(RMF::NodeConstHandle cur, RMF::CoordinateTransformer tr);
   void fill_bonds(RMF::NodeConstHandle cur);
   int handle_reference_frame(int body, RMF::NodeConstHandle cur);
   int handle_state(int body, RMF::NodeConstHandle cur);
-  boost::tuple<RMF::NodeConstHandle, boost::array<char, 2>,
-               boost::array<int, 2> >
+  boost::tuple<RMF::NodeConstHandle, std::array<char, 2>,
+               std::array<int, 2> >
       handle_alternative(RMF::NodeConstHandle cur, int body,
-                         boost::array<char, 2> chain, int resid,
-                         boost::array<char, 8> resname,
-                         boost::array<char, 2> altid,
-                         boost::array<char, 8> segment, double resolution);
+                         std::array<char, 2> chain, int resid,
+                         std::array<char, 8> resname,
+                         std::array<char, 2> altid,
+                         std::array<char, 8> segment, double resolution);
   void handle_bond(RMF::NodeConstHandle cur);
   void handle_restraint(RMF::NodeConstHandle cur);
   double get_resolution();

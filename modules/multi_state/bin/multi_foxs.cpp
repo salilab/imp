@@ -166,14 +166,15 @@ int main(int argc, char* argv[]) {
   bool vr_score = false;
   bool use_offset = false;
 
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <experimental_profile> <pdb_file1> <pdb_file2> ... or <profiles_filename>\n\n"
       "Any number of input profiles is supported.\n"
       "The weights are computed to minimize the chi between the first profile\n"
       "and a weighted average of the rest.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

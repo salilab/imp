@@ -11,6 +11,9 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/singleton_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -36,7 +39,14 @@ class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
       Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_SCORE_METHODS(DihedralSingletonScore);
   IMP_OBJECT_METHODS(DihedralSingletonScore);
-  ;
+
+ private:
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonScore>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(DihedralSingletonScore);
 };
 
 IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);

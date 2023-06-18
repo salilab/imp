@@ -21,6 +21,8 @@
 #include <cstdio>
 
 #if IMP_KERNEL_HAS_NUMPY
+// Silence warnings about old NumPy API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 // This should be defined in the including module's SWIG wrapper
 extern int numpy_import_retval;
@@ -211,7 +213,7 @@ inline std::string get_convert_error(const char *err, const char *symname,
 
 template <class T>
 struct ConvertAllBase {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
     void* vp;
@@ -222,7 +224,7 @@ struct ConvertAllBase {
 
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   BOOST_STATIC_ASSERT(!(boost::is_base_of<Object, T>::value));
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
@@ -250,7 +252,7 @@ struct ConvertValueBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertObjectBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   BOOST_STATIC_ASSERT((boost::is_base_of<Object, T>::value) ||
                       (boost::is_same<Object, T>::value));
   template <class SwigData>
@@ -283,7 +285,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertRAII : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -355,7 +357,7 @@ struct Convert<T*, typename enable_if<boost::is_base_of<
 template <class T, class VT, class ConvertVT>
 struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
-  BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
+  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
@@ -399,7 +401,7 @@ struct ConvertSequence {};
 template <class T, class ConvertT>
 struct ConvertSequence<std::pair<T, T>, ConvertT> {
   static const int converter = 6;
-  typedef boost::array<T, 2> Intermediate;
+  typedef std::array<T, 2> Intermediate;
   typedef ConvertSequenceHelper<Intermediate, T, ConvertT> Helper;
   typedef typename ValueOrObject<T>::type VT;
   template <class SwigData>
@@ -573,7 +575,8 @@ struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+        memcpy(PyArray_DATA((PyArrayObject*)obj), &t[0],
+               t.size() * sizeof(int));
       }
       return ret.release();
     } else {
@@ -619,7 +622,8 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_DOUBLE));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+        memcpy(PyArray_DATA((PyArrayObject*)obj),
+               &t[0], t.size() * sizeof(double));
       }
       return ret.release();
     } else {
@@ -672,7 +676,8 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
       if (t.size() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+        memcpy(PyArray_DATA((PyArrayObject*)obj),
+               &t[0], t.size() * sizeof(int));
       }
       return ret.release();
     } else {
@@ -689,8 +694,8 @@ static IndexArray create_index_array_cpp(PyObject *o) {
 
   IndexArray arr(sz);
   if (sz > 0) {
-    char *data = (char *)PyArray_DATA(o);
-    for (size_t i = 0; i < sz; ++i) {
+    char *data = (char *)PyArray_DATA(a);
+    for (npy_intp i = 0; i < sz; ++i) {
       memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
     }
   }
@@ -706,7 +711,7 @@ static PyObject* create_index_array_numpy(const IndexArray &t) {
   PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
   if (t.size() > 0) {
     PyObject *obj = ret;
-    char *data = (char *)PyArray_DATA(obj);
+    char *data = (char *)PyArray_DATA((PyArrayObject*)obj);
     for (size_t i = 0; i < t.size(); ++i) {
       memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
     }

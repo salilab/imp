@@ -10,7 +10,7 @@
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/internal/units.h>
-#include <boost/progress.hpp>
+#include <IMP/internal/BoostProgressDisplay.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/atom/constants.h>
 
@@ -48,9 +48,9 @@ double Simulator::do_simulate(double time) {
 
   setup(ps);
   double target = current_time_ + time;
-  boost::scoped_ptr<boost::progress_display> pgs;
+  boost::scoped_ptr<IMP::internal::BoostProgressDisplay> pgs;
   if (get_log_level() == PROGRESS) {
-    pgs.reset(new boost::progress_display(time / max_time_step_));
+    pgs.reset(new IMP::internal::BoostProgressDisplay(time / max_time_step_));
   }
   while (current_time_ < target) {
     last_time_step_ = do_step(ps, max_time_step_);

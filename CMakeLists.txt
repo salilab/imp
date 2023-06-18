@@ -232,7 +232,7 @@ include_directories("${CMAKE_BINARY_DIR}/include")
 set(IMP_ALL_DEPENDS_VARS BOOST.FILESYSTEM_LIBRARIES BOOST.SYSTEM_LIBRARIES
     BOOST.THREAD_LIBRARIES BOOST.PROGRAMOPTIONS_LIBRARIES BOOST.REGEX_LIBRARIES
     BOOST.GRAPH_LIBRARIES BOOST.RANDOM_LIBRARIES
-    BOOST.SERIALIZATION_LIBRARIES CACHE INTERNAL "" FORCE)
+    CACHE INTERNAL "" FORCE)
 
 imp_execute_process("setup" ${CMAKE_BINARY_DIR}
                     COMMAND ${PYTHON_EXECUTABLE}
@@ -269,7 +269,7 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options serialization REQUIRED)
+find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options REQUIRED)
 if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
   message(FATAL_ERROR "Boost is required to build IMP.")
 endif()
@@ -311,13 +311,6 @@ link_directories(${Boost_LIBRARY_DIRS})
 set(BOOST.FILESYSTEM_LIBRARIES ${Boost_FILESYSTEM_LIBRARY_RELEASE})
 set(BOOST.SYSTEM_LIBRARIES ${Boost_SYSTEM_LIBRARY_RELEASE})
 set(BOOST.THREAD_LIBRARIES ${Boost_THREAD_LIBRARY_RELEASE})
-if(IMP_STATIC)
-# Boost.Serialization needs pthread, but order is important with static
-# libraries; we must link pthread *after* serialization
-set(BOOST.SERIALIZATION_LIBRARIES ${Boost_SERIALIZATION_LIBRARY_RELEASE} -lpthread)
-else()
-set(BOOST.SERIALIZATION_LIBRARIES ${Boost_SERIALIZATION_LIBRARY_RELEASE})
-endif()
 set(BOOST.PROGRAMOPTIONS_LIBRARIES ${Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE})
 set(BOOST.REGEX_LIBRARIES ${Boost_REGEX_LIBRARY_RELEASE})
 set(BOOST.GRAPH_LIBRARIES ${Boost_GRAPH_LIBRARY_RELEASE})
@@ -339,6 +332,9 @@ find_package(Eigen3 3.0 REQUIRED)
 # many compiler warnings about Eigen code which a) clutter the output and
 # b) we're not going to fix, since Eigen isn't our code.
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+
+find_package(cereal REQUIRED)
+include_directories(SYSTEM ${cereal_INCLUDE_DIRS})
 
 add_custom_target("IMP-version"
                   COMMAND ${PYTHON_EXECUTABLE}
@@ -437,9 +433,9 @@ if(IMP_DOXYGEN_FOUND)
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/manual" "${CMAKE_INSTALL_FULL_DOCDIR}/manual"
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/copy_directory_deref.py "${CMAKE_BINARY_DIR}/doc/manual" "${CMAKE_INSTALL_FULL_DOCDIR}/manual"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/doxygen/manual-tags.xml" "${CMAKE_INSTALL_FULL_DOCDIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/ref" "${CMAKE_INSTALL_FULL_DOCDIR}/ref"
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/copy_directory_deref.py "${CMAKE_BINARY_DIR}/doc/ref" "${CMAKE_INSTALL_FULL_DOCDIR}/ref"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/doxygen/ref-tags.xml" "${CMAKE_INSTALL_FULL_DOCDIR}"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
@@ -484,7 +480,7 @@ foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
   foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
               IMP_MAX_LOG IMP_SWIG_LIBRARIES EIGEN3_INCLUDE_DIR
-              Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
+              cereal_INCLUDE_DIRS Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
     file(APPEND "${cmakefile}"
          "SET(${var} \"${${var}}\" CACHE INTERNAL \"\" FORCE)\n")
   endforeach()

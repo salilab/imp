@@ -39,14 +39,14 @@ struct codec_traits<std::complex<T> > {
 };
 }
 int main() {
-  boost::shared_ptr<internal_avro::OutputStream> out =
+  std::shared_ptr<internal_avro::OutputStream> out =
       internal_avro::memoryOutputStream();
   internal_avro::EncoderPtr e = internal_avro::binaryEncoder();
   e->init(*out);
   std::complex<double> c1(1.0, 2.0);
   internal_avro::encode(*e, c1);
 
-  boost::shared_ptr<internal_avro::InputStream> in =
+  std::shared_ptr<internal_avro::InputStream> in =
       internal_avro::memoryInputStream(*out);
   internal_avro::DecoderPtr d = internal_avro::binaryDecoder();
   d->init(*in);

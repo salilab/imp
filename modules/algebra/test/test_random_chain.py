@@ -1,7 +1,5 @@
 import IMP.test
 import IMP.algebra
-import math
-import itertools
 
 
 class Tests(IMP.test.TestCase):
@@ -56,5 +54,7 @@ class Tests(IMP.test.TestCase):
             for c in chain:
                 self.assertFalse(IMP.algebra.get_interiors_intersect(
                     ss[i], IMP.algebra.Sphere3D(c, .9 * r)))
+
+
 if __name__ == '__main__':
     IMP.test.main()

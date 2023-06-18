@@ -4,6 +4,7 @@
 """
 
 import os.path
+import datetime
 import tools
 from optparse import OptionParser
 
@@ -46,13 +47,14 @@ def build_wrapper(module, finder, sorted, target, source):
     swig_module_name = "IMP" if module.name == 'kernel' \
         else "IMP." + module.name
 
+    year = datetime.datetime.now().year
     contents.append(
         """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
 
 %%pythonbegin %%{
 # This wrapper is part of IMP,
-# Copyright 2007-2022 IMP Inventors. All rights reserved.
+# Copyright 2007-%d IMP Inventors. All rights reserved.
 
 from __future__ import print_function, division, absolute_import
 %%}
@@ -74,6 +76,8 @@ from __future__ import print_function, division, absolute_import
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <exception>
+// for serialization/pickle support
+#include <cereal/archives/binary.hpp>
 
 #ifdef __cplusplus
 extern "C"
@@ -88,7 +92,7 @@ void
 #endif
 SWIG_init();
 %%}
-""" % swig_module_name)  # noqa: E501
+""" % (swig_module_name, year))  # noqa: E501
     # some of the typemap code ends up before this is swig sees the
     # typemaps first
     all_deps = [x for x in finder.get_dependent_modules([module])
@@ -104,6 +108,8 @@ SWIG_init();
 %include "std_string.i"
 %include "std_pair.i"
 
+// Help SWIG with cereal macros
+#define CEREAL_CLASS_VERSION(x, y)
 
 %pythoncode %{
 _value_types=[]

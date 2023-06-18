@@ -12,6 +12,8 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/AttributeOptimizer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -35,12 +37,17 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
   ConjugateGradients(Model *m,
                      std::string name = "ConjugateGradients%1%");
+  ConjugateGradients() {}
 
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t) { threshold_ = t; }
 
 #ifndef IMP_DOXYGEN
-  void set_threshold(Float t) { set_gradient_threshold(t); }
+  IMPCORE_DEPRECATED_METHOD_DECL(2.19)
+  void set_threshold(Float t) {
+    IMPCORE_DEPRECATED_METHOD_DEF(2.19, "Use set_gradient_threshold().");
+    set_gradient_threshold(t);
+  }
 #endif
 
   //! Limit how far anything can change each time step
@@ -64,6 +71,12 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
                    const Vector<NT> &estimate);
   Float threshold_;
   Float max_change_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<AttributeOptimizer>(this), threshold_, max_change_);
+  }
 };
 
 IMPCORE_END_NAMESPACE

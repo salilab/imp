@@ -23,7 +23,6 @@
 #include <RMF/decorator/alternatives.h>
 #include <algorithm>
 #include <RMF/utility.h>
-#include <boost/make_shared.hpp>
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -33,7 +32,7 @@ void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
   data_.insert(
-      std::make_pair(p->get_index(), boost::make_shared<Data>(cur.get_file())));
+      std::make_pair(p->get_index(), std::make_shared<Data>(cur.get_file())));
   add_recursive(p->get_model(), p->get_index(), p->get_index(),
                 ParticleIndexes(), cur, *data_[p->get_index()]);
   P::add_link(p, cur);

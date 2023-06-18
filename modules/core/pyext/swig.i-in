@@ -1,8 +1,3 @@
-%{
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-%}
-
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
@@ -11,12 +6,12 @@ IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
-IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
-IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleRestraint, AngleRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
-IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
-IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
-IMP_SWIG_OBJECT( IMP::core, SubsetMover, SubsetMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, BallMover, BallMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SerialMover, SerialMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SubsetMover, SubsetMovers);
 IMP_SWIG_OBJECT( IMP::core, DirectionMover, DirectionMovers);
 IMP_SWIG_OBJECT( IMP::core, SurfaceMover, SurfaceMovers);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
@@ -26,32 +21,32 @@ IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders)
 #endif
 IMP_SWIG_OBJECT( IMP::core, NearestNeighborsClosePairsFinder, NearestNeighborsClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, CentroidOfRefined, CentroidOfRefineds);
-IMP_SWIG_OBJECT( IMP::core, ChecksScoreState, ChecksScoreStates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ChecksScoreState, ChecksScoreStates);
 IMP_SWIG_OBJECT( IMP::core, ChildrenRefiner, ChildrenRefiners);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsFinder, ClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsPairScore, ClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, ClosedCubicSpline, ClosedCubicSplines);
-IMP_SWIG_OBJECT( IMP::core, ConjugateGradients, ConjugateGradientsList);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConjugateGradients, ConjugateGradientsList);
 IMP_SWIG_OBJECT( IMP::core, ConnectivityRestraint, ConnectivityRestraints);
-IMP_SWIG_OBJECT( IMP::core, ConstantRestraint, ConstantRestraints);
-IMP_SWIG_OBJECT( IMP::core, Cosine, Cosines);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantRestraint, ConstantRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Cosine, Cosines);
 IMP_SWIG_OBJECT( IMP::core, CoverRefined, CoverRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
-IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistanceRestraint, DistanceRestraints);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
-IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
-IMP_SWIG_OBJECT( IMP::core, Harmonic, Harmonics);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Harmonic, Harmonics);
 IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
-IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
-IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
-IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDistancePairScore, HarmonicSurfaceDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceHeightPairScore, HarmonicSurfaceHeightPairScores);
@@ -61,7 +56,7 @@ IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials)
 IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
-IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Linear, Linears);
 IMP_SWIG_OBJECT( IMP::core, LogNormalMover, LogNormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
 IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
@@ -72,25 +67,25 @@ IMP_SWIG_OBJECT( IMP::core, NeighborsTable, NeighborsTables);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
-IMP_SWIG_OBJECT( IMP::core, PairConstraint, PairConstraints);
-IMP_SWIG_OBJECT( IMP::core, PairRestraint, PairRestraints);
-IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
-IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, PairConstraint, PairConstraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, PairRestraint, PairRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, QuadConstraint, QuadConstraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, QuadRestraint, QuadRestraints);
 IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RefinedPairsPairScore, RefinedPairsPairScores);
-IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyAnglePairScore, RigidBodyAnglePairScores);
-IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, RigidBodyMover, RigidBodyMovers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyUmbrella, RigidBodyUmbrellas);
-IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
-IMP_SWIG_OBJECT( IMP::core, SingletonConstraint, SingletonConstraints);
-IMP_SWIG_OBJECT( IMP::core, SingletonRestraint, SingletonRestraints);
-IMP_SWIG_OBJECT( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
-IMP_SWIG_OBJECT( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonConstraint, SingletonConstraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonRestraint, SingletonRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSubSurfacePairScore, SoftSubSurfacePairScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSuperSurfacePairScore, SoftSuperSurfacePairScores);
@@ -101,13 +96,13 @@ IMP_SWIG_OBJECT( IMP::core, SurfaceTetheredChain, SurfaceTetheredChains);
 IMP_SWIG_OBJECT( IMP::core, SurfaceSymmetryConstraint, SurfaceSymmetryConstraints);
 IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
 IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
-IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Transform, Transforms);
 IMP_SWIG_OBJECT( IMP::core, TransformationAndReflectionSymmetry, TransformationAndReflectionSymmetries);
 IMP_SWIG_OBJECT( IMP::core, TransformationSymmetry, TransformationSymmetries);
 IMP_SWIG_OBJECT( IMP::core, TransformationSymmetryMover, TransformationSymmetryMovers);
 IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
-IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, TripletConstraint, TripletConstraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, TripletRestraint, TripletRestraints);
 IMP_SWIG_OBJECT( IMP::core, TypedPairScore, TypedPairScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
@@ -118,30 +113,30 @@ IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, LateralSurfaceConstraint, LateralSurfaceConstraints);
 
-IMP_SWIG_OBJECT( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantTripletPredicate, ConstantTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, ConstantQuadPredicate, ConstantQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantTripletPredicate, ConstantTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantQuadPredicate, ConstantQuadPredicates);
 
 IMP_SWIG_OBJECT( IMP::core, CoinFlipSingletonPredicate, CoinFlipSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipPairPredicate, CoinFlipPairPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipTripletPredicate, CoinFlipTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, CoinFlipQuadPredicate, CoinFlipQuadPredicates);
 
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeSingletonPredicate, UnorderedTypeSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypePairPredicate, UnorderedTypePairPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeTripletPredicate, UnorderedTypeTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, UnorderedTypeQuadPredicate, UnorderedTypeQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeSingletonPredicate, UnorderedTypeSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypePairPredicate, UnorderedTypePairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeTripletPredicate, UnorderedTypeTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, UnorderedTypeQuadPredicate, UnorderedTypeQuadPredicates);
 
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeSingletonPredicate, OrderedTypeSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypePairPredicate, OrderedTypePairPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeTripletPredicate, OrderedTypeTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeQuadPredicate, OrderedTypeQuadPredicates);
 
-IMP_SWIG_OBJECT( IMP::core, AllSameSingletonPredicate, AllSameSingletonPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
-IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameSingletonPredicate, AllSameSingletonPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
@@ -177,8 +172,8 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, 
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonic, TruncatedHarmonicLowerBounds);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
-IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistancePairScore, DistancePairScores);
 
 
 IMP_SWIG_OBJECT(IMP::core, XYZRGeometry, XYZRGeometries);
@@ -402,6 +397,8 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_att
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingSphere3DSingletonScore, bounding_sphere_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 
 %pythoncode %{
 

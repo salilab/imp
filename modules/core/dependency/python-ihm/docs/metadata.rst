@@ -15,3 +15,6 @@ The :mod:`ihm.metadata` Python module
 
 .. autoclass:: PDBParser
    :members:
+
+.. autoclass:: CIFParser
+   :members:

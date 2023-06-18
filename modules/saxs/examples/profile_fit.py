@@ -6,7 +6,7 @@
 # of the molecule.
 #
 # This application is available as a web service at salilab.org/foxs. It is
-# also available as C++ code in IMP/applications.
+# also available as C++ code in IMP at modules/foxs/bin/foxs.cpp.
 #
 # The experimental data for lysozyme is taken from crysol program
 # (www.embl-hamburg.de/ExternalInfo/Research/Sax/crysol.html)

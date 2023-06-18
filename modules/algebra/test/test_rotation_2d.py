@@ -5,6 +5,7 @@ import math
 import io
 import pickle
 
+
 class Tests(IMP.test.TestCase):
 
     def test_get_random(self):
@@ -19,10 +20,10 @@ class Tests(IMP.test.TestCase):
         dr = IMP.algebra.Rotation2D()
         r = IMP.algebra.Rotation2D(math.pi / 2.)
         self.assertRaisesInternalException(dr.get_rotated,
-                                           IMP.algebra.Vector2D(1,2))
-        v = r.get_rotated(IMP.algebra.Vector2D(1,2))
-        self.assertLess(IMP.algebra.get_distance(v, IMP.algebra.Vector2D(-2,1)),
-                        1e-4)
+                                           IMP.algebra.Vector2D(1, 2))
+        v = r.get_rotated(IMP.algebra.Vector2D(1, 2))
+        self.assertLess(IMP.algebra.get_distance(
+            v, IMP.algebra.Vector2D(-2, 1)), 1e-4)
 
     def test_get_rotated_point(self):
         """Test get_rotated() with a point"""
@@ -30,8 +31,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.Rotation2D(math.pi / 2.)
         self.assertRaisesInternalException(dr.get_rotated, 1, 2)
         v = r.get_rotated(1, 2)
-        self.assertLess(IMP.algebra.get_distance(v, IMP.algebra.Vector2D(-2,1)),
-                        1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+            v, IMP.algebra.Vector2D(-2, 1)), 1e-4)
 
     def test_get_inverse(self):
         """Test get_inverse()"""

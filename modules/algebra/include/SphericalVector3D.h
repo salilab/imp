@@ -14,7 +14,7 @@
 #include "constants.h"
 #include <IMP/showable_macros.h>
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -75,10 +75,10 @@ private:
   void set_cartesian_coordinates(const Vector3D& v);
   double v_[3];
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & v_[0] & v_[1] & v_[2];
+  template<class Archive> void serialize(Archive &ar) {
+    ar(v_[0], v_[1], v_[2]);
   }
 };
 

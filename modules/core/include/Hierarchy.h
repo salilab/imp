@@ -21,11 +21,13 @@
 #include <IMP/Pointer.h>
 
 #include <boost/tuple/tuple.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 #include <limits>
 #include <vector>
 #include <deque>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -48,6 +50,11 @@ class Hierarchy;
 class IMPCOREEXPORT HierarchyTraits {
   ParticleIndexesKey children_;
   ParticleIndexKey parent_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(children_, parent_);
+  }
 
  public:
   HierarchyTraits() {}
@@ -77,6 +84,11 @@ typedef IMP::Vector<Hierarchy> GenericHierarchies;
     \see HierarchyTraits
  */
 class IMPCOREEXPORT Hierarchy : public Decorator {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Decorator>(this), traits_);
+  }
+
   static void do_setup_particle(Model *, ParticleIndex,
                                 HierarchyTraits) {}
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -433,10 +445,10 @@ struct HierarchyCounter : public HierarchyVisitor {
 
  private:
   unsigned int ct_;
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & ct_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(ct_);
   }
 };
 

@@ -47,6 +47,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(loc.version, 'foo')
         self.assertEqual(loc.details, 'bar')
 
+    def test_model_archive_location(self):
+        """Test ModelArchiveLocation"""
+        loc = ihm.location.ModelArchiveLocation(
+            'ma-bak-cepc-0250', version='foo', details='bar')
+        self.assertEqual(loc.db_name, 'MODEL ARCHIVE')
+        self.assertEqual(loc.access_code, 'ma-bak-cepc-0250')
+        self.assertEqual(loc.version, 'foo')
+        self.assertEqual(loc.details, 'bar')
+
     def test_bmrb_location(self):
         """Test BMRBLocation"""
         loc = ihm.location.BMRBLocation('27600', version='foo', details='bar')
@@ -76,6 +85,30 @@ class Tests(unittest.TestCase):
         """Test ProXLLocation class"""
         d = ihm.location.ProXLLocation('abc', version=1, details='foo')
         self.assertEqual(d.db_name, 'ProXL')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
+    def test_jpost_location(self):
+        """Test JPOSTLocation class"""
+        d = ihm.location.JPOSTLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'jPOSTrepo')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
+    def test_iprox_location(self):
+        """Test IProXLocation class"""
+        d = ihm.location.IProXLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'iProX')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
+    def test_alpha_fold_db_location(self):
+        """Test AlphaFoldDBLocation class"""
+        d = ihm.location.AlphaFoldDBLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'AlphaFoldDB')
         self.assertEqual(d.access_code, 'abc')
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')

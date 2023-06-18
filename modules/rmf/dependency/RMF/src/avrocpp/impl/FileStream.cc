@@ -153,7 +153,7 @@ struct IStreamBufferCopyIn : public BufferCopyIn {
 class BufferCopyInInputStream : public InputStream {
   const size_t bufferSize_;
   uint8_t* const buffer_;
-  boost::shared_ptr<BufferCopyIn> in_;
+  std::shared_ptr<BufferCopyIn> in_;
   size_t byteCount_;
   uint8_t* next_;
   size_t available_;
@@ -213,7 +213,7 @@ class BufferCopyInInputStream : public InputStream {
   }
 
  public:
-  BufferCopyInInputStream(boost::shared_ptr<BufferCopyIn>& in,
+  BufferCopyInInputStream(std::shared_ptr<BufferCopyIn>& in,
                           size_t bufferSize)
       : bufferSize_(bufferSize),
         buffer_(new uint8_t[bufferSize]),
@@ -293,7 +293,7 @@ struct OStreamBufferCopyOut : public BufferCopyOut {
 class BufferCopyOutputStream : public OutputStream {
   size_t bufferSize_;
   uint8_t* const buffer_;
-  boost::shared_ptr<BufferCopyOut> out_;
+  std::shared_ptr<BufferCopyOut> out_;
   uint8_t* next_;
   size_t available_;
   size_t byteCount_;
@@ -326,7 +326,7 @@ class BufferCopyOutputStream : public OutputStream {
   }
 
  public:
-  BufferCopyOutputStream(boost::shared_ptr<BufferCopyOut> out,
+  BufferCopyOutputStream(std::shared_ptr<BufferCopyOut> out,
                          size_t bufferSize)
       : bufferSize_(bufferSize),
         buffer_(new uint8_t[bufferSize]),
@@ -338,31 +338,31 @@ class BufferCopyOutputStream : public OutputStream {
   ~BufferCopyOutputStream() { delete[] buffer_; }
 };
 
-boost::shared_ptr<InputStream> fileInputStream(const char* filename,
+std::shared_ptr<InputStream> fileInputStream(const char* filename,
                                                size_t bufferSize) {
-  boost::shared_ptr<BufferCopyIn> in(new FileBufferCopyIn(filename));
-  return boost::shared_ptr<InputStream>(
+  std::shared_ptr<BufferCopyIn> in(new FileBufferCopyIn(filename));
+  return std::shared_ptr<InputStream>(
       new BufferCopyInInputStream(in, bufferSize));
 }
 
-boost::shared_ptr<InputStream> istreamInputStream(istream& is,
+std::shared_ptr<InputStream> istreamInputStream(istream& is,
                                                   size_t bufferSize) {
-  boost::shared_ptr<BufferCopyIn> in(new IStreamBufferCopyIn(is));
-  return boost::shared_ptr<InputStream>(
+  std::shared_ptr<BufferCopyIn> in(new IStreamBufferCopyIn(is));
+  return std::shared_ptr<InputStream>(
       new BufferCopyInInputStream(in, bufferSize));
 }
 
-boost::shared_ptr<OutputStream> fileOutputStream(const char* filename,
+std::shared_ptr<OutputStream> fileOutputStream(const char* filename,
                                                  size_t bufferSize) {
-  boost::shared_ptr<BufferCopyOut> out(new FileBufferCopyOut(filename));
-  return boost::shared_ptr<OutputStream>(
+  std::shared_ptr<BufferCopyOut> out(new FileBufferCopyOut(filename));
+  return std::shared_ptr<OutputStream>(
       new BufferCopyOutputStream(out, bufferSize));
 }
 
-boost::shared_ptr<OutputStream> ostreamOutputStream(ostream& os,
+std::shared_ptr<OutputStream> ostreamOutputStream(ostream& os,
                                                     size_t bufferSize) {
-  boost::shared_ptr<BufferCopyOut> out(new OStreamBufferCopyOut(os));
-  return boost::shared_ptr<OutputStream>(
+  std::shared_ptr<BufferCopyOut> out(new OStreamBufferCopyOut(os));
+  return std::shared_ptr<OutputStream>(
       new BufferCopyOutputStream(out, bufferSize));
 }
 

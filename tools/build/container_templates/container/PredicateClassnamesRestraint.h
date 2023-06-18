@@ -2,7 +2,7 @@
  *  \file IMP/container/PredicateClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,8 +10,12 @@
 #define IMPCONTAINER_PREDICATE_CLASSNAMES_RESTRAINT_H
 
 #include <IMP/container/container_config.h>
+#include <IMP/container/internal/robin_map_cereal.h>
 #include <IMP/ClassnamePredicate.h>
 #include "generic.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/map.hpp>
 
 
 #if IMP_CONTAINER_HAS_ROBIN_MAP==1
@@ -61,6 +65,21 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   //  bool is_unknown_score_set_;
   bool error_on_unknown_;
   PointerMember<ClassnameScore> unknown_score_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       predicate_, input_, scores_,
+       is_get_inputs_ignores_individual_scores_,
+       error_on_unknown_, unknown_score_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // Force lists_ to be rebuilt (from scores_)
+      lists_.clear();
+      input_version_ = -1;
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(PredicateClassnamesRestraint);
+
   //  void update_lists_with_item(INDEXTYPE const &it) const;
   void update_lists_if_necessary() const;
 
@@ -69,6 +88,8 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
                                ClassnameContainerAdaptor input,
                                std::string name =
                                    "PredicateClassnamesRestraint %1%");
+
+  PredicateClassnamesRestraint() {}
 
   /** Apply the passed score to all pairs whose predicate values match
       the passed value.*/

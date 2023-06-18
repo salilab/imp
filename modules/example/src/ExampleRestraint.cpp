@@ -37,4 +37,8 @@ ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
   return ModelObjectsTemp(1, get_model()->get_particle(p_));
 }
 
+// Complete the serialization support (see IMP_OBJECT_SERIALIZE_DECL in the
+// header file)
+IMP_OBJECT_SERIALIZE_IMPL(IMP::example::ExampleRestraint);
+
 IMPEXAMPLE_END_NAMESPACE

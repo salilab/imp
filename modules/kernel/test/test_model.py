@@ -3,6 +3,8 @@ import IMP
 import IMP.test
 import io
 import random
+import IMP.core
+import pickle
 
 
 class DummyRestraint(IMP.Restraint):
@@ -305,6 +307,264 @@ class Tests(IMP.test.TestCase):
         # Cannot restore dependencies since graph does not match original
         # (as p2 was added)
         self.assertRaisesInternalException(m.restore_dependencies)
+
+    def test_unique_id(self):
+        """Each Model should get a unique ID"""
+        m1 = IMP.Model()
+        m2 = IMP.Model()
+        self.assertNotEqual(m1.get_unique_id(), m2.get_unique_id())
+        self.assertIsInstance(m1.get_unique_id(), int)
+
+        m1id = m1.get_unique_id()
+        self.assertEqual(IMP.Model.get_by_unique_id(m1id), m1)
+        del m1
+        self.assertIsNone(IMP.Model.get_by_unique_id(m1id))
+
+    def test_unique_id_duplication(self):
+        """Duplicating a Model should not duplicate the unique ID"""
+        m1 = IMP.Model()
+        m1_orig_id = m1.get_unique_id()
+        # Duplicate m1 via pickle
+        dump = pickle.dumps(m1)
+        m2 = pickle.loads(dump)
+
+        # New model (m2) should keep the ID; old model should get a new one
+        self.assertEqual(m2.get_unique_id(), m1_orig_id)
+        self.assertNotEqual(m1.get_unique_id(), m1_orig_id)
+
+    def test_serialize_object(self):
+        """Check that Object properties are (de-)serialized"""
+        m = IMP.Model("test model")
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_name(), "test model")
+
+    def test_serialize_int_attributes(self):
+        """Check that Model int attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(ik, p.get_index(), 42)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
+
+    def test_serialize_ints_attributes(self):
+        """Check that Model ints attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntsKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(ik, p.get_index(), [1, 2, 42])
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(list(m2.get_attribute(ik, p.get_index())), [1, 2, 42])
+
+    def test_serialize_cache_int_attributes(self):
+        """Check that Model cache int attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.IntKey("hi")
+        p = IMP.Particle(m)
+        m.add_cache_attribute(ik, p.get_index(), 42)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
+
+    def test_serialize_float_attributes(self):
+        """Check that Model float attributes are (de-)serialized"""
+        m = IMP.Model()
+        fk = IMP.FloatKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(fk, p.get_index(), 5.4)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
+                               delta=0.1)
+
+    def test_serialize_floats_attributes(self):
+        """Check that Model floats attributes are (de-)serialized"""
+        m = IMP.Model()
+        fk = IMP.FloatsKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(fk, p.get_index(), [1.0, 3.2, 5.4])
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        att = list(m2.get_attribute(fk, p.get_index()))
+        self.assertEqual(len(att), 3)
+        self.assertAlmostEqual(att[0], 1.0, delta=0.1)
+        self.assertAlmostEqual(att[1], 3.2, delta=0.1)
+        self.assertAlmostEqual(att[2], 5.4, delta=0.1)
+
+    def test_serialize_string_attributes(self):
+        """Check that Model string attributes are (de-)serialized"""
+        m = IMP.Model()
+        sk = IMP.StringKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(sk, p.get_index(), "test attribute")
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_attribute(sk, p.get_index()), "test attribute")
+
+    def test_serialize_object_attributes(self):
+        """Check that Model object attributes are (de-)serialized"""
+        m = IMP.Model()
+        ok = IMP.ObjectKey("hi")
+        p = IMP.Particle(m)
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_attribute(ok, p.get_index(), t)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        newt = m2.get_attribute(ok, p.get_index())
+        self.assertEqual(newt.get_name(), "testobj")
+
+    def test_serialize_particle_attributes(self):
+        """Check that Model particle attributes are (de-)serialized"""
+        m = IMP.Model()
+        pk = IMP.ParticleIndexKey("hi")
+        p = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(pk, p.get_index(), p2)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        newp2 = m2.get_attribute(pk, p.get_index())
+        self.assertEqual(newp2, p2.get_index())
+
+    def test_serialize_particles_attributes(self):
+        """Check that Model particles attributes are (de-)serialized"""
+        m = IMP.Model()
+        pk = IMP.ParticleIndexesKey("hi")
+        p = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+        m.add_attribute(pk, p.get_index(), [p2, p3])
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        newp2, newp3 = m2.get_attribute(pk, p.get_index())
+        self.assertEqual(newp2, p2.get_index())
+        self.assertEqual(newp3, p3.get_index())
+
+    def test_serialize_particles(self):
+        """Check that Model particles are (de-)serialized"""
+        m = IMP.Model()
+        p1 = m.add_particle("first")
+        p2 = m.add_particle("second")
+        p3 = m.add_particle("third")
+        m.remove_particle(p2)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(0)), "first")
+        self.assertEqual(m2.get_particle_name(IMP.ParticleIndex(2)), "third")
+        self.assertFalse(m2.get_has_particle(IMP.ParticleIndex(1)))
+        p4 = m2.add_particle("fourth")
+        # p2 was deleted, so new particle should use this index
+        self.assertEqual(p4, p2)
+
+    def test_serialize_triggers(self):
+        """Check that Model triggers are correctly handled by serialization"""
+        m = IMP.Model()
+        tk = IMP.TriggerKey("test_trigger")
+        self.assertEqual(m.get_age(), 1)
+        m.update()
+        m.set_trigger_updated(tk)
+        self.assertEqual(m.get_age(), 2)
+        self.assertEqual(m.get_trigger_last_updated(tk), 2)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        # Model age should be reset
+        self.assertEqual(m2.get_age(), 1)
+        # All triggers should be reset
+        self.assertEqual(m2.get_trigger_last_updated(tk), 0)
+
+    def test_serialize_data(self):
+        """Check that Model data are (de-)serialized"""
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key")
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_data(mk, t)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertTrue(m2.get_has_data(mk))
+        newt = m2.get_data(mk)
+        self.assertEqual(newt.get_name(), "testobj")
+
+    def test_serialize_track_polymorphic(self):
+        """Check that serialization tracks polymorphic pointers"""
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key1")
+        mk2 = IMP.ModelKey("data_key2")
+        mk3 = IMP.ModelKey("data_key3")
+        t = IMP._TestObject()
+        t.set_name("testobj")
+        m.add_data(mk, t)
+        m.add_data(mk2, t)
+        t3 = IMP._TestObject()
+        t3.set_name("testobj3")
+        m.add_data(mk3, t3)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertTrue(m2.get_has_data(mk))
+        self.assertTrue(m2.get_has_data(mk2))
+        newt = m2.get_data(mk)
+        self.assertEqual(newt.get_name(), "testobj")
+        newt2 = m2.get_data(mk2)
+        self.assertEqual(newt2.get_name(), "testobj")
+        newt3 = m2.get_data(mk3)
+        self.assertEqual(newt3.get_name(), "testobj3")
+        # newt and newt2 should point to the same underlying C++ object
+        self.assertEqual(newt, newt2)
+        # They should be distinct from the objects in the original model though
+        self.assertNotEqual(t, newt)
+
+    def test_serialize_score_states(self):
+        """Check that Model ScoreStates are (de-)serialized"""
+        m = IMP.Model()
+        m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(len(m2.score_states), 1)
+
+    def test_serialize_score_states_deleted(self):
+        """Check that Model ScoreState serialization survives model deletion"""
+        m = IMP.Model()
+        m.score_states.append(IMP.core.ChecksScoreState(m, 0.0))
+
+        dump = pickle.dumps(m)
+        # Make sure that the new ScoreState does not require (or get
+        # a pointer to) the old model
+        del m
+        m2 = pickle.loads(dump)
+        self.assertEqual(len(m2.score_states), 1)
+
+    def test_model_object_same_model_python(self):
+        "ModelObject.get_model() should return the same Python Model object"
+        m = IMP.Model()
+        r = IMP._ConstRestraint(m, [], 1)
+        newm = r.get_model()
+        self.assertEqual(id(newm), id(m))
+
+    def test_decorator_same_model_python(self):
+        "Decorator.get_model() should return the same Python Model object"
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        td = IMP._TrivialDecorator.setup_particle(p)
+        newm = td.get_model()
+        self.assertEqual(id(newm), id(m))
 
 
 if __name__ == '__main__':

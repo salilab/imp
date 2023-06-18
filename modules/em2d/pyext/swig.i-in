@@ -1,8 +1,6 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
 #include <IMP/em2d/opencv_interface.h>
 %}
 
@@ -33,9 +31,6 @@ IMP_SWIG_OBJECT(IMP::em2d, MeanAbsoluteDifference,MeanAbsoluteDifferences);
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);
 IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
-/*header is not included
-IMP_SWIG_OBJECT(IMP::em2d, Fine2DRegistrationRestraint,
-                                  Fine2DRegistrationRestraints);*/
 IMP_SWIG_OBJECT(IMP::em2d, Image, Images);
 IMP_SWIG_OBJECT(IMP::em2d, ImageReaderWriter, ImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, JPGImageReaderWriter, JPGImageReaderWriters);

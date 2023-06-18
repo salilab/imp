@@ -56,7 +56,7 @@ BuildRequires: swig3 >= 3.0
 BuildRequires: swig >= 3.0
 %endif
 BuildRequires: gsl-devel, fftw-devel
-BuildRequires: zlib-devel, perl, eigen3-devel
+BuildRequires: zlib-devel, perl, eigen3-devel, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 BuildRequires: ann-devel
 %endif
@@ -167,7 +167,7 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
-Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel
+Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel, cereal-devel
 Requires:      boost-devel, hdf5-devel, protobuf-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 Requires:      ann-devel
@@ -539,6 +539,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Thu Jun 22 2023 Ben Webb <ben@salilab.org>   2.19.0-1
+- 2.19.0 release.
+
 * Thu Dec 15 2022 Ben Webb <ben@salilab.org>   2.18.0-1
 - 2.18.0 release.
 

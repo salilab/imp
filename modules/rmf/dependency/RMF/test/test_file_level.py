@@ -16,6 +16,7 @@ class Tests(unittest.TestCase):
         for suffix in RMF.suffixes:
             f = RMF.create_rmf_file(
                 RMF._get_temporary_file_path("test_file_perturbed." + suffix))
+            self.assertFalse(f.get_is_closed())
             r = f.get_root_node()
             print(r.get_type())
             sc = f.get_category("sequence")
@@ -109,6 +110,35 @@ class Tests(unittest.TestCase):
             self.assertEqual(f.get_current_frame(), RMF.FrameID())
             f.set_current_frame(RMF.FrameID(0))
 
-if __name__ == '__main__':
+    def test_close(self):
+        """Test explicit close of file handle"""
+        for suffix in RMF.suffixes:
+            path = RMF._get_temporary_file_path("test_close." + suffix)
+            f = RMF.create_rmf_file(path)
+            self.assertEqual(f.get_number_of_frames(), 0)
+            f.add_frame("hi", RMF.FRAME)
+            self.assertEqual(f.get_number_of_frames(), 1)
+            f.close()
+            self.assertTrue(f.get_is_closed())
+            self.assertRaises(IOError, f.get_number_of_frames)
+            f2 = RMF.open_rmf_file_read_only(path)
+            self.assertEqual(f2.get_number_of_frames(), 1)
 
+    def test_context_manager(self):
+        """Test file handle context manager support"""
+        for suffix in RMF.suffixes:
+            path = RMF._get_temporary_file_path(
+                "test_context_manager." + suffix)
+            with RMF.create_rmf_file(path) as f:
+                self.assertEqual(f.get_number_of_frames(), 0)
+                f.add_frame("hi", RMF.FRAME)
+                self.assertEqual(f.get_number_of_frames(), 1)
+            self.assertTrue(f.get_is_closed())
+            self.assertRaises(IOError, f.get_number_of_frames)
+            with RMF.open_rmf_file_read_only(path) as f2:
+                self.assertEqual(f2.get_number_of_frames(), 1)
+            self.assertTrue(f2.get_is_closed())
+
+
+if __name__ == '__main__':
     unittest.main()

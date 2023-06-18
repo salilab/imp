@@ -12,6 +12,8 @@
 #include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
 #include <IMP/algebra/utility.h>
+#include <cereal/access.hpp>
+
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A harmonic score on the directed distance between a pair of particles,
@@ -20,8 +22,13 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 class Harmonic : public Score {
   double k_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(k_);
+  }
  public:
   Harmonic(double k) : k_(k) {}
+  Harmonic() {}
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

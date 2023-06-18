@@ -53,7 +53,7 @@ typedef RMF_TYPES<Vector3> Vector3s;
 /** Many Vector4s */
 typedef RMF_TYPES<Vector4> Vector4s;
 
-typedef boost::array<int, 2> IntRange;
+typedef std::array<int, 2> IntRange;
 
 } /* namespace RMF */
 

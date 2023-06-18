@@ -110,6 +110,17 @@ class PDBDevLocation(DatabaseLocation):
                                              version, details)
 
 
+class ModelArchiveLocation(DatabaseLocation):
+    """Something stored in Model Archive.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'MODEL ARCHIVE'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(ModelArchiveLocation, self).__init__(self._db_name, db_code,
+                                                   version, details)
+
+
 class BMRBLocation(DatabaseLocation):
     """Something stored in the BMRB database.
        See :class:`DatabaseLocation` for a description of the parameters
@@ -165,6 +176,17 @@ class PRIDELocation(DatabaseLocation):
                                             details)
 
 
+class JPOSTLocation(DatabaseLocation):
+    """Something stored in the JPOST database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'jPOSTrepo'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(JPOSTLocation, self).__init__(self._db_name, db_code, version,
+                                            details)
+
+
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
        See :class:`DatabaseLocation` for a description of the parameters
@@ -185,6 +207,28 @@ class ProXLLocation(DatabaseLocation):
     def __init__(self, db_code, version=None, details=None):
         super(ProXLLocation, self).__init__(self._db_name, db_code, version,
                                             details)
+
+
+class IProXLocation(DatabaseLocation):
+    """Something stored in the iProX database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'iProX'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(IProXLocation, self).__init__(self._db_name, db_code, version,
+                                            details)
+
+
+class AlphaFoldDBLocation(DatabaseLocation):
+    """Something stored in the AlphaFoldDB database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'AlphaFoldDB'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(AlphaFoldDBLocation, self).__init__(
+            self._db_name, db_code, version, details)
 
 
 class FileLocation(Location):

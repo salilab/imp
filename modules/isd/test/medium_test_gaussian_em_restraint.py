@@ -11,6 +11,7 @@ import numpy as np
 from math import cos, sin, pi, sqrt, exp, log
 from copy import deepcopy
 import itertools
+import pickle
 
 
 def create_test_points(mu, radii):
@@ -168,6 +169,22 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(s.get_float_value(0),
                                self.gem.get_cross_correlation_coefficient(),
                                delta=1e-4)
+
+    def test_serialize(self):
+        """Test (un-)serialize of GaussianEMRestraint"""
+        origscore = self.gem.evaluate(False)
+        dump = pickle.dumps(self.gem)
+        newgem = pickle.loads(dump)
+        newscore = newgem.evaluate(False)
+        self.assertAlmostEqual(newscore, origscore, delta=1e-3)
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of GaussianEMRestraint via polymorphic ptr"""
+        origscore = self.sf.evaluate(False)
+        dump = pickle.dumps(self.sf)
+        newsf = pickle.loads(dump)
+        newscore = newsf.evaluate(False)
+        self.assertAlmostEqual(newscore, origscore, delta=1e-3)
 
     def test_gem_score(self):
         """test accuracy of GMM score"""

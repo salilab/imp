@@ -3,7 +3,7 @@
  *  \brief Classes to handle individual model particles.
  *         (Note that implementation of inline functions is in internal)
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,6 +23,8 @@
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
 #include <utility>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -55,6 +57,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   Particle(Model *m);
 
 #ifndef IMP_DOXYGEN
+  Particle() {}
 
 #define IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
   inline void add_attribute(UCName##Key name, Value initial_value);           \
@@ -145,19 +148,31 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const override final {
     return ModelObjectsTemp();
   }
+
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), id_);
+  }
 };
 
 // for swig
 class Decorator;
 
-/** Take Decorator or Particle. */
+/** An adaptor that enable to implicitly pass particles to other
+    functions or constructors by passing either the particle itself
+    (in Python), a decorator to the particle, or a raw/smart IMP
+    pointer to the particle (in C++)
+*/
 class IMPKERNELEXPORT ParticleAdaptor : public InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
 
  public:
   ParticleAdaptor() : m_(nullptr), pi_() {}
+  //! convert p to itself
   ParticleAdaptor(Particle *p) : m_(p->get_model()), pi_(p->get_index()) {}
+  //! convert d to the particle it decorates
   ParticleAdaptor(const Decorator &d);
 #ifndef SWIG
   ParticleAdaptor(IMP::Pointer<Particle> p)

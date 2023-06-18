@@ -20,7 +20,7 @@ except ImportError:
 import json
 from . import util
 
-__version__ = '0.35'
+__version__ = '0.38'
 
 
 class __UnknownValue(object):
@@ -107,6 +107,11 @@ class System(object):
 
         #: All asymmetric units used in the system. See :class:`AsymUnit`.
         self.asym_units = []
+
+        #: Collections (if any) to which this entry belongs.
+        #: These are used to group depositions of related entries.
+        #: See :class:`Collection`.
+        self.collections = []
 
         #: All orphaned chemical descriptors in the system.
         #: See :class:`ChemDescriptor`. This can be used to track descriptors
@@ -1100,6 +1105,12 @@ class Residue(object):
                         doc="Insertion code; only makes sense "
                             "for asymmetric units")
 
+    def _get_comp(self):
+        entity = self.entity or self.asym.entity
+        return entity.sequence[self.seq_id - 1]
+    comp = property(_get_comp,
+                    doc="Chemical component (residue type)")
+
     # Allow passing residues where a range is requested
     # (e.g. to ResidueFeature)
     seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
@@ -1466,3 +1477,20 @@ class ChemDescriptor(object):
         self.chemical_name, self.common_name = chemical_name, common_name
         self.smiles, self.smiles_canonical = smiles, smiles_canonical
         self.inchi, self.inchi_key = inchi, inchi_key
+
+
+class Collection(object):
+    """A collection of entries belonging to single deposition or group.
+       These are used by the archive to group multiple related entries,
+       e.g. all entries deposited as part of a given study, or all
+       models for a genome. An entry (:class:`System`) can belong to
+       multiple collections.
+
+       :param str id: Unique identifier (assigned by the archive).
+       :param str name: Short name for the collection.
+       :param str details: Longer description of the collection.
+
+       See also :attr:`System.collections`.
+    """
+    def __init__(self, id, name=None, details=None):
+        self.id, self.name, self.details = id, name, details

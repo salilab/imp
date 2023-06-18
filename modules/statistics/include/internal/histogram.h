@@ -1,5 +1,6 @@
 /**
- *  \file random_generator.h   \brief random number generator
+ *  \file histogram.h
+ *  \brief histogram internals
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

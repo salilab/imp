@@ -27,26 +27,13 @@
 // Deprecated; just use 'final' keyword instead
 #define RMF_FINAL final
 
-#if defined(__GNUC__) && __cplusplus >= 201103L
-#define RMF_HAS_NOEXCEPT 1
-#elif defined(__clang__) && defined(__has_feature)
-#define RMF_HAS_NOEXCEPT __has_feature(cxx_noexcept)
-#else
-#define RMF_HAS_NOEXCEPT 0
-#endif
-
-#if RMF_HAS_NOEXCEPT
+// Deprecated; just use 'noexcept' keyword instead
 #define RMF_NOEXCEPT noexcept
 #define RMF_CANEXCEPT noexcept(false)
+
 #define RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
   Name &operator=(const Name &) = default
-#else
-// probably should be finer here
-#define RMF_NOEXCEPT throw()
-#define RMF_CANEXCEPT
-#define RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name)
-#endif
 
 #if defined(__clang__) || defined(__GNUC__)
 #define RMF_PRAGMA(x) _Pragma(RMF_STRINGIFY(x))

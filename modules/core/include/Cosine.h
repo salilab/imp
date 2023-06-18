@@ -9,6 +9,9 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -31,6 +34,8 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
         periodicity_(periodicity),
         phase_(phase) {}
 
+  Cosine() {}
+
   virtual DerivativePair evaluate_with_derivative(
                   double feature) const override;
 
@@ -44,6 +49,14 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
   Float force_constant_;
   int periodicity_;
   Float phase_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<UnaryFunction>(this),
+       force_constant_, periodicity_, phase_);
+  }    
+  IMP_OBJECT_SERIALIZE_DECL(Cosine);
 };
 
 IMPCORE_END_NAMESPACE

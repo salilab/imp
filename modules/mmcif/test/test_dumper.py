@@ -95,6 +95,10 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_imp_provenance(h)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
+        # Assign ID to IMP citation
+        dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system.system)
+
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system.system)
         out = _get_dumper_output(dumper, system.system)
@@ -111,7 +115,7 @@ _software.type
 _software.location
 _software.citation_id
 1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
-%s program https://integrativemodeling.org .
+%s program https://integrativemodeling.org 1
 #
 """ % IMP.get_module_version()).replace('\n', ' '))
 
@@ -571,9 +575,10 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
+_ihm_ensemble_info.model_group_superimposed_flag
 _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
-1 'cluster 1' . 1 . . 1 1 . . . NO .
+1 'cluster 1' . 1 . . 1 1 . . . . NO .
 #
 """)
 

@@ -16,9 +16,8 @@
 #include <H5Ppublic.h>
 #include <H5Tpublic.h>
 #include <H5public.h>
-#include <boost/make_shared.hpp>
 #include <boost/scoped_array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
@@ -46,24 +45,24 @@ bool show_errors = false;
 
 void set_show_errors(bool tf) { show_errors = tf; }
 
-Object::Object(boost::shared_ptr<SharedHandle> h) : h_(h) {}
+Object::Object(std::shared_ptr<SharedHandle> h) : h_(h) {}
 
 File Object::get_file() const {
   RMF_HDF5_NEW_HANDLE(h, H5Iget_file_id(get_handle()), &H5Fclose);
   return File(h);
 }
 
-Group::Group(boost::shared_ptr<SharedHandle> h) : P(h) {}
+Group::Group(std::shared_ptr<SharedHandle> h) : P(h) {}
 
-ConstGroup::ConstGroup(boost::shared_ptr<SharedHandle> h) : P(h) {}
+ConstGroup::ConstGroup(std::shared_ptr<SharedHandle> h) : P(h) {}
 
 Group::Group(Group parent, std::string name)
-    : P(boost::make_shared<SharedHandle>(H5Gopen2(parent.get_handle(),
+    : P(std::make_shared<SharedHandle>(H5Gopen2(parent.get_handle(),
                                                   name.c_str(), H5P_DEFAULT),
                                          &H5Gclose, name)) {}
 
 ConstGroup::ConstGroup(ConstGroup parent, std::string name)
-    : P(boost::make_shared<SharedHandle>(H5Gopen2(parent.get_handle(),
+    : P(std::make_shared<SharedHandle>(H5Gopen2(parent.get_handle(),
                                                   name.c_str(), H5P_DEFAULT),
                                          &H5Gclose, name)) {}
 
@@ -110,12 +109,12 @@ bool ConstGroup::get_child_is_group(unsigned int i) const {
   return get_child_is_group(get_child_name(i));
 }
 ConstGroup ConstGroup::get_child_group(std::string name) const {
-  return ConstGroup(boost::make_shared<SharedHandle>
+  return ConstGroup(std::make_shared<SharedHandle>
                     ( H5Gopen2(get_handle(), name.c_str(), H5P_DEFAULT), &H5Gclose,
                       "open group"));
 }
 Group Group::get_child_group(std::string name) const {
-  return Group(boost::make_shared<SharedHandle>
+  return Group(std::make_shared<SharedHandle>
                (H5Gopen2(get_handle(), name.c_str(), H5P_DEFAULT), &H5Gclose,
                 "open group"));
 }
@@ -199,8 +198,8 @@ File open_file_read_only_returning_nonconst(std::string name) {
   return File(h);
 }
 
-File::File(boost::shared_ptr<SharedHandle> h) : Group(h) {}
-ConstFile::ConstFile(boost::shared_ptr<SharedHandle> h) : ConstGroup(h) {}
+File::File(std::shared_ptr<SharedHandle> h) : Group(h) {}
+ConstFile::ConstFile(std::shared_ptr<SharedHandle> h) : ConstGroup(h) {}
 ConstFile::ConstFile(File h) : ConstGroup(h.get_shared_handle()) {}
 
 void File::flush() { RMF_HDF5_CALL(H5Fflush(get_handle(), H5F_SCOPE_LOCAL)); }

@@ -10,14 +10,14 @@
 %{
 #include "RMF.h"
 %}
-IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleRestraint, ExampleRestraints);
 IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
-IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
-IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
-IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
-IMP_SWIG_OBJECT(IMP::example, ExampleConstraint, ExampleConstraints);
-IMP_SWIG_OBJECT(IMP::example, ExampleObject, ExampleObjects);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleConstraint, ExampleConstraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::example, ExampleObject, ExampleObjects);
 IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD);
 

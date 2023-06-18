@@ -76,7 +76,7 @@ core::MonteCarlo *set_optimizer(Model *model,
   opt->add_mover(rb_mover);
   opt->set_return_best(true);  // return the lowest energy state visited
 
-  lopt->set_threshold(0.001);
+  lopt->set_gradient_threshold(0.001);
   //  lopt->set_step_size(0.05);
   // opt->set_local_optimizer(lopt);
   // opt->set_local_steps(number_of_cg_steps);

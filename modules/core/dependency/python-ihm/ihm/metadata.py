@@ -15,6 +15,8 @@ from . import location, dataset, startmodel, util
 from .startmodel import SequenceIdentityDenominator
 import ihm.source
 import ihm.citations
+import ihm.reader
+import ihm.format
 
 import operator
 import struct
@@ -209,7 +211,10 @@ class PDBParser(Parser):
        PDB file. This handles PDB headers added by the PDB database itself,
        comparative modeling packages such as MODELLER and Phyre2, and also
        some custom headers that can be used to indicate that a file has been
-       locally modified in some way."""
+       locally modified in some way.
+
+       See also :class:`CIFParser` for coordinate files in mmCIF format.
+    """
 
     def parse_file(self, filename):
         """Extract metadata. See :meth:`Parser.parse_file` for details.
@@ -607,3 +612,74 @@ class PDBParser(Parser):
             elif line.startswith('ATOM'):
                 break
         return details
+
+
+class _Database2Handler(ihm.reader.Handler):
+    def __init__(self, m):
+        self.m = m
+
+    def __call__(self, database_id, database_code):
+        self.m['db'][database_id.upper()] = database_code
+
+
+class _StructHandler(ihm.reader.Handler):
+    def __init__(self, m):
+        self.m = m
+
+    def __call__(self, title):
+        self.m['title'] = title
+
+
+class _AuditRevHistHandler(ihm.reader.Handler):
+    def __init__(self, m):
+        self.m = m
+
+    def __call__(self, revision_date):
+        self.m['version'] = revision_date
+
+
+class CIFParser(Parser):
+    """Extract metadata from an mmCIF file. Currently, this does not handle
+       information from comparative modeling packages such as MODELLER
+       (see :class:`PDBParser`).
+
+       See also :class:`PDBParser` for coordinate files in legacy PDB format.
+    """
+    dbmap = {'PDB': (location.PDBLocation, dataset.PDBDataset),
+             'MODELARCHIVE': (location.ModelArchiveLocation,
+                              dataset.DeNovoModelDataset)}
+
+    def parse_file(self, filename):
+        """Extract metadata. See :meth:`Parser.parse_file` for details.
+
+           :param str filename: the file to extract metadata from.
+           :return: a dict with key `dataset` pointing to the coordinate file,
+                    as an entry in the PDB or Model Archive databases if the
+                    file contains appropriate headers, otherwise to the
+                    file itself.
+        """
+        dset = self._get_dataset(filename)
+        return {'dataset': dset}
+
+    def _get_dataset(self, filename):
+        m = {'db': {}, 'title': 'Starting model structure'}
+        with open(filename) as fh:
+            dbh = _Database2Handler(m)
+            structh = _StructHandler(m)
+            arevhisth = _AuditRevHistHandler(m)
+            r = ihm.format.CifReader(
+                fh, {'_database_2': dbh, '_struct': structh,
+                     '_pdbx_audit_revision_history': arevhisth})
+            r.read_file()
+        # Check for known databases. Note that if a file is in multiple
+        # databases, we currently return one "at random"
+        for dbid, dbcode in m['db'].items():
+            if dbid in self.dbmap:
+                loccls, dsetcls = self.dbmap[dbid]
+                loc = loccls(db_code=dbcode, version=m.get('version'),
+                             details=m['title'])
+                return dsetcls(location=loc, details=loc.details)
+        # Fall back to a local file
+        loc = location.InputFileLocation(filename, details=m['title'])
+        return dataset.ComparativeModelDataset(
+            location=loc, details=loc.details)

@@ -107,22 +107,28 @@
     defined.
 */
 #define IMP_DECORATOR_SETUP_0(Name)                                    \
-  /** Setup the particle so it can be used with this decorator. */     \
-  static Name setup_particle(Model *m, ParticleIndex pi) {     \
+  /**								       
+     @return a Name object that decorates particle pi                  
+  */							               \
+  static Name setup_particle(Model *m, ParticleIndex pi) {             \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                              \
                     "Particle " << m->get_particle_name(pi)            \
                                 << " already set up as " << #Name);    \
     do_setup_particle(m, pi);                                          \
     return Name(m, pi);                                                \
   }                                                                    \
-  static Name setup_particle(IMP::ParticleAdaptor decorator) { \
-    return setup_particle(decorator.get_model(),                       \
-                          decorator.get_particle_index());             \
+  /** @return a Name object that decorates the particle specified by pa                  
+     \see setup_particle(m, p) */			       \
+  static Name setup_particle(IMP::ParticleAdaptor pa) {		       \
+    return setup_particle(pa.get_model(),                       \
+                          pa.get_particle_index());             \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_1(Name, FirstArgumentType, first_argument_name) \
-  /** Setup the particle so that it can be used with this decorator */  \
-  static Name setup_particle(Model *m, ParticleIndex pi,        \
+  /**								        
+     @return a Name object that decorates particle pi                   
+  */							                \
+  static Name setup_particle(Model *m, ParticleIndex pi,                \
                              FirstArgumentType first_argument_name) {   \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                               \
                     "Particle " << m->get_particle_name(pi)             \
@@ -130,19 +136,22 @@
     do_setup_particle(m, pi, first_argument_name);                      \
     return Name(m, pi);                                                 \
   }                                                                     \
-  /** \see setup_particle(m, pi, first_argument_name) */                \
-  static Name setup_particle(IMP::ParticleAdaptor decorator,    \
+  /** @return a Name object that decorates the particle specified by pa                  
+      \see setup_particle(m, pi, first_argument_name) */ \
+  static Name setup_particle(IMP::ParticleAdaptor pa,    \
                              FirstArgumentType first_argument_name) {   \
-    return setup_particle(decorator.get_model(),                        \
-                          decorator.get_particle_index(),               \
+    return setup_particle(pa.get_model(),                        \
+                          pa.get_particle_index(),               \
                           first_argument_name);                         \
   }
 
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_2(Name, FirstArgumentType, first_argument_name,    \
                               SecondArgumentType, second_argument_name)        \
-  /** Setup the particle so it can be used with this decorator. */             \
-  static Name setup_particle(Model *m, ParticleIndex pi,               \
+  /**								       
+     @return a Name object that decorates particle pi                  
+  */							                       \
+  static Name setup_particle(Model *m, ParticleIndex pi,		       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name) {        \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
@@ -151,19 +160,24 @@
     do_setup_particle(m, pi, first_argument_name, second_argument_name);       \
     return Name(m, pi);                                                        \
   }                                                                            \
-  static Name setup_particle(IMP::ParticleAdaptor decorator,           \
+  /** @return a Name object that decorates the particle specified by pa                  
+     \see setup_particle(m, p, first_argument_name, second_argument_name)
+  */									\
+  static Name setup_particle(IMP::ParticleAdaptor pa,                   \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name) {        \
-    return setup_particle(decorator.get_model(),                               \
-                          decorator.get_particle_index(), first_argument_name, \
+    return setup_particle(pa.get_model(),                               \
+                          pa.get_particle_index(), first_argument_name, \
                           second_argument_name);                               \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
 #define IMP_DECORATOR_SETUP_3(Name, FirstArgumentType, first_argument_name,    \
                               SecondArgumentType, second_argument_name,        \
                               ThirdArgumentType, third_argument_name)          \
-  /** Setup the particle so it can be used with this decorator. */             \
-  static Name setup_particle(Model *m, ParticleIndex pi,               \
+  /**								       
+     @return a Name object that decorates particle pi                  
+  */							                       \
+  static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name) {          \
@@ -173,13 +187,16 @@
     do_setup_particle(m, pi, first_argument_name, second_argument_name,        \
                       third_argument_name);                                    \
     return Name(m, pi);                                                        \
-  }                                                                            \
-  static Name setup_particle(IMP::ParticleAdaptor decorator,           \
+  }									       \
+  /** @return a Name object that decorates the particle specified by pa                  
+      \see setup_particle(m, pi, first_argument_name, second_argument_name,    
+      third_argument_name) */ 						       \
+  static Name setup_particle(IMP::ParticleAdaptor pa,                          \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name) {          \
-    return setup_particle(decorator.get_model(),                               \
-                          decorator.get_particle_index(), first_argument_name, \
+    return setup_particle(pa.get_model(),                                      \
+                          pa.get_particle_index(), first_argument_name,        \
                           second_argument_name, third_argument_name);          \
   }
 /** \see IMP_DECORATOR_SETUP_0() */
@@ -187,8 +204,10 @@
                               SecondArgumentType, second_argument_name,        \
                               ThirdArgumentType, third_argument_name,          \
                               FourthArgumentType, fourth_argument_name)        \
-  /** Setup the particle so it can be used with this decorator. */             \
-  static Name setup_particle(Model *m, ParticleIndex pi,               \
+  /**								               
+     @return a Name object that decorates particle pi                          
+  */							                       \
+  static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name,            \
@@ -199,14 +218,17 @@
     do_setup_particle(m, pi, first_argument_name, second_argument_name,        \
                       third_argument_name, fourth_argument_name);              \
     return Name(m, pi);                                                        \
-  }                                                                            \
-  static Name setup_particle(IMP::ParticleAdaptor decorator,           \
+  }									       \
+  /** @return a Name object that decorates the particle specified by pa
+      \see setup_particle(m, pi, first_argument_name, second_argument_name,
+      third_argument_name, fourth_argument_name) */ 			       \
+  static Name setup_particle(IMP::ParticleAdaptor pa,                          \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name,            \
                              FourthArgumentType fourth_argument_name) {        \
-    return setup_particle(decorator.get_model(),                               \
-                          decorator.get_particle_index(), first_argument_name, \
+    return setup_particle(pa.get_model(),                                      \
+                          pa.get_particle_index(), first_argument_name,        \
                           second_argument_name, third_argument_name,           \
                           fourth_argument_name);                               \
   }
@@ -218,13 +240,15 @@
                               ThirdArgumentType, third_argument_name,          \
                               FourthArgumentType, fourth_argument_name,        \
                               FifthArgumentType, fifth_argument_name)          \
-  /** Setup the particle so it can be used with this decorator. */             \
+  /**								               
+     @return a Name object that decorates particle pi                          
+  */							                       \
   static Name setup_particle(Model *m, ParticleIndex pi,                       \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name,            \
                              FourthArgumentType fourth_argument_name,          \
-                             FifthArgumentType fifth_argument_name) {         \
+                             FifthArgumentType fifth_argument_name) {          \
     IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
                     "Particle " << m->get_particle_name(pi)                    \
                                 << " already set up as " << #Name);            \
@@ -233,14 +257,17 @@
                       fifth_argument_name);                                    \
     return Name(m, pi);                                                        \
   }                                                                            \
-  static Name setup_particle(IMP::ParticleAdaptor decorator,                   \
+    /** @return a Name object that decorates the particle specified by pa                  
+	\see setup_particle(m, pi, first_argument_name, second_argument_name,    
+	third_argument_name, fourth_argument_name, fifth_argument_name) */ \
+  static Name setup_particle(IMP::ParticleAdaptor pa,                   \
                              FirstArgumentType first_argument_name,            \
                              SecondArgumentType second_argument_name,          \
                              ThirdArgumentType third_argument_name,            \
                              FourthArgumentType fourth_argument_name,          \
-                             FifthArgumentType fifth_argument_name) {         \
-    return setup_particle(decorator.get_model(),                               \
-                          decorator.get_particle_index(), first_argument_name, \
+                             FifthArgumentType fifth_argument_name) {          \
+    return setup_particle(pa.get_model(),                               \
+                          pa.get_particle_index(), first_argument_name, \
                           second_argument_name, third_argument_name,           \
                           fourth_argument_name, fifth_argument_name);          \
   }
@@ -252,7 +279,9 @@
     defined. But any docs needed before the macro invocation.
 */
 #define IMP_DECORATOR_TRAITS_SETUP_0(Name)                         \
-  /** Setup the particle so it can be used with this decorator. */ \
+  /**								       
+     @return a Name object that decorates particle pi                  
+  */							               \
   static Name setup_particle(                                      \
       Model *m, ParticleIndex pi,                          \
       DecoratorTraits tr = get_default_decorator_traits()) {       \

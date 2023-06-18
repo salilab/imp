@@ -62,6 +62,14 @@ class VarList(object):
     def __repr__(self):
         return str(self)
 
+    def __eq__(self, other):
+        # e.g. lists compare equal to other lists, but not to tuples
+        if not isinstance(other, (list, VarList)):
+            return False
+        if len(other) != len(self):
+            return False
+        return all(a == b for a, b in zip(self, other))
+
     def __getitem__(self, indx):
         ret = _handle_seq_indx(self, indx)
         if isinstance(ret, int):

@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 #include <boost/range/iterator_range.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <IMP/Object.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/rotamer/rotamer_config.h>
@@ -63,10 +63,10 @@ class IMPROTAMEREXPORT RotamerAngleTuple {
   float chi4_;
   float probability_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & chi1_ & chi2_ & chi3_ & chi4_ & probability_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(chi1_, chi2_, chi3_, chi4_, probability_);
   }
 };
 

@@ -2,7 +2,7 @@
  *  \file IMP/core/Gaussian.h
  *  \brief Decorator to hold Gaussian3D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,6 +20,8 @@
 #include <IMP/core/rigid_bodies.h>
 #include "internal/rigid_bodies.h"
 #include <Eigen/Dense>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -28,9 +30,24 @@ IMPCORE_BEGIN_NAMESPACE
 /** little class to store an Eigen::Matrix3d */
 class IMPCOREEXPORT Matrix3D : public IMP::Object{
   Eigen::Matrix3d mat_;
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+    for (unsigned i = 0; i < 3; ++i) {
+      for (unsigned j = 0; j < 3; ++j) {
+        ar(mat_(i, j));
+      }
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(Matrix3D);
+
  public:
- Matrix3D(Eigen::Matrix3d mat,
-          std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat){ }
+  Matrix3D(Eigen::Matrix3d mat,
+           std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat){ }
+
+  Matrix3D() : IMP::Object("") {}
+
   Eigen::Matrix3d get_mat() const {return mat_;}
 };
 

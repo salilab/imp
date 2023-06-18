@@ -14,6 +14,7 @@
 #include <IMP/pair_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
+#include <cereal/access.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -27,6 +28,7 @@ class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
 
  public:
   ExamplePairScore(double x0, double k);
+  ExamplePairScore() {}
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const override;
@@ -34,7 +36,15 @@ class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
       Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(ExamplePairScore);
   IMP_OBJECT_METHODS(ExamplePairScore);
-  ;
+
+  // Serialization support
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<PairScore>(this), x0_, k_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ExamplePairScore);
+
 };
 
 IMP_OBJECTS(ExamplePairScore, ExamplePairScores);

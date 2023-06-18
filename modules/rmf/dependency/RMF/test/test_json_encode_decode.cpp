@@ -4,7 +4,7 @@
 #include <avrocpp/api/Encoder.hh>
 #include <avrocpp/api/Specific.hh>
 #include <avrocpp/api/Stream.hh>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -18,10 +18,10 @@ const char* schema = "{\"type\" : \"array\", \"items\" : \"double\"}";
   return ::internal_avro::compileJsonSchemaFromString(schema);
 }
 std::string encode(std::vector<double> data) {
-  boost::shared_ptr<internal_avro::Encoder> encoder =
+  std::shared_ptr<internal_avro::Encoder> encoder =
       internal_avro::jsonEncoder(get_valid_schema());
   std::ostringstream oss;
-  boost::shared_ptr<internal_avro::OutputStream> stream =
+  std::shared_ptr<internal_avro::OutputStream> stream =
       internal_avro::ostreamOutputStream(oss);
   encoder->init(*stream);
   internal_avro::encode(*encoder, data);
@@ -30,10 +30,10 @@ std::string encode(std::vector<double> data) {
   return oss.str();
 }
 std::vector<double> decode(std::string buffer) {
-  boost::shared_ptr<internal_avro::Decoder> decoder =
+  std::shared_ptr<internal_avro::Decoder> decoder =
       internal_avro::jsonDecoder(get_valid_schema());
   std::istringstream iss(buffer);
-  boost::shared_ptr<internal_avro::InputStream> stream =
+  std::shared_ptr<internal_avro::InputStream> stream =
       internal_avro::istreamInputStream(iss);
   decoder->init(*stream);
   std::vector<double> data;

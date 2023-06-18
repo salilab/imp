@@ -4,6 +4,7 @@ import IMP.test
 import IMP.atom
 import IMP.core
 import IMP.saxs
+import pickle
 import os
 import time
 import io
@@ -83,8 +84,7 @@ class Tests(IMP.test.TestCase):
         print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
         self.assertAlmostEqual(vr, 5.70, delta=0.01)
 
-    def test_saxs_restraint(self):
-        """Check saxs restraint"""
+    def make_restraint(self):
         m = IMP.Model()
 
         #! read PDB
@@ -101,6 +101,11 @@ class Tests(IMP.test.TestCase):
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
         model_profile.calculate_profile(particles)
+        return m, particles, exp_profile, model_profile
+
+    def test_saxs_restraint(self):
+        """Check saxs restraint"""
+        m, particles, exp_profile, model_profile = self.make_restraint()
 
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
@@ -218,6 +223,30 @@ class Tests(IMP.test.TestCase):
         # Should be a noop if start_q is greater than any profile point,
         # rather than causing a crash
         exp_profile.background_adjust(2000.)
+
+    def test_pickle_restraint(self):
+        """Check (un-)pickle of SAXS restraint"""
+        m, particles, exp_profile, model_profile = self.make_restraint()
+        r = IMP.saxs.Restraint(particles, exp_profile)
+        r.set_name("foo")
+        self.assertAlmostEqual(r.evaluate(False), 0.2916, delta=0.01)
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(False), 0.2916, delta=0.01)
+
+    def test_pickle_restraint_polymorphic(self):
+        """Check (un-)pickle of SAXS restraint via polymorphic pointer"""
+        m, particles, exp_profile, model_profile = self.make_restraint()
+        r = IMP.saxs.Restraint(particles, exp_profile)
+        r.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([r])
+        self.assertAlmostEqual(sf.evaluate(False), 0.2916, delta=0.01)
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newr, = newsf.restraints
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertAlmostEqual(newr.evaluate(False), 0.2916, delta=0.01)
 
 
 if __name__ == '__main__':

@@ -96,4 +96,6 @@ IntRange _test_intrange() { return IntRange(-1, -1); }
 Strings _pass_overloaded_strings(const Strings &a, int) { return a; }
 Strings _pass_overloaded_strings(const Strings &a) { return a; }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::_TestObject);
+
 IMPKERNEL_END_INTERNAL_NAMESPACE

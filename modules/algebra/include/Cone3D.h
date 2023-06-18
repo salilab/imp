@@ -16,7 +16,7 @@
 #include "GeometricPrimitiveD.h"
 #include <IMP/showable_macros.h>
 #include <IMP/warning_macros.h>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <iostream>
 #include "constants.h"
 
@@ -58,10 +58,10 @@ class IMPALGEBRAEXPORT Cone3D : public GeometricPrimitiveD<3> {
   Segment3D seg_;
   double radius_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & seg_ & radius_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(seg_, radius_);
   }
 };
 

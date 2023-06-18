@@ -18,7 +18,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/range.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include "internal/vector.h"
 
 #include <limits>
@@ -26,14 +26,18 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/static_assert.hpp>
 
-#if IMP_HAS_CHECKS >= IMP_USAGE
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_ALGEBRA_VECTOR_CHECK check_vector()
+#else
+#define IMP_ALGEBRA_VECTOR_CHECK
+#endif
+
+#if IMP_HAS_CHECKS >= IMP_USAGE
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
   check_compatible_vector(o);                  \
   o.check_vector()
 #else
-#define IMP_ALGEBRA_VECTOR_CHECK
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o)
 #endif
@@ -49,11 +53,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <int D>
 class VectorBaseD : public GeometricPrimitiveD<D> {
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int) {
-    ar & data_;
+  void serialize(Archive &ar) {
+    ar(data_);
   }
 
   void check_vector() const {

@@ -23,6 +23,14 @@ your code in a new module, rather than adding it to an existing module. That
 way, people that elect not to install that dependency will only be deprived
 of your code, not of the existing module.
 
+Try not to require the very latest version of a dependency, as again that may
+make it harder for people to use. (If necessary, you can use preprocessor
+macros so that your code works with both old and new versions of a dependency;
+for examples, look in the C++ code for `BOOST_VERSION`.) We try to make %IMP
+work with the versions of packages available in the oldest supported versions
+of RedHat Enterprise Linux (RHEL), Ubuntu LTS, and macOS. For example, RHEL 7
+ships with Boost 1.53 and Python 2.7, so %IMP works with both of those.
+
 # Simple dependencies # {#extdep_simple}
 
 The simplest way to add a C/C++ dependency `foo` is to create a file

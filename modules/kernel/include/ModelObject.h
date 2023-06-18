@@ -12,6 +12,8 @@
 #include "base_types.h"
 #include <IMP/ref_counted_macros.h>
 #include <IMP/utility_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -27,6 +29,25 @@ class IMPKERNELEXPORT ModelObject : public Object {
   friend class Model;
   WeakPointer<Model> model_;
 
+#ifndef SWIG
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      uint32_t model_id = get_model_id();
+      ar(model_id);
+    } else {
+      uint32_t model_id;
+      ar(model_id);
+      set_model_from_id(model_id);
+    }
+  }
+
+  void set_model_from_id(uint32_t model_id);
+  uint32_t get_model_id() const;
+#endif
+
   // for cleanup
   void set_model(Model *m);
 
@@ -37,6 +58,7 @@ class IMPKERNELEXPORT ModelObject : public Object {
 #endif
 
   ModelObject(Model *m, std::string name);
+  ModelObject();
   ~ModelObject();
 
   Model *get_model() const { return model_; }

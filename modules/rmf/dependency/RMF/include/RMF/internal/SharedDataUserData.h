@@ -17,7 +17,7 @@
 #include <boost/any.hpp>
 #include <algorithm>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -28,7 +28,7 @@ inline uintptr_t get_uint(const P* p) {
   return reinterpret_cast<uintptr_t>(p);
 }
 template <class P>
-inline uintptr_t get_uint(boost::shared_ptr<P> p) {
+inline uintptr_t get_uint(std::shared_ptr<P> p) {
   return reinterpret_cast<uintptr_t>(p.get());
 }
 inline uintptr_t get_uint(NodeID id) { return id.get_index(); }

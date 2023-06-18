@@ -2,6 +2,9 @@
 """
 
 
+from ihm.util import _text_choice_property
+
+
 class Step(object):
     """A single step in an :class:`Analysis`.
 
@@ -37,6 +40,10 @@ class Step(object):
         self.num_models_end = num_models_end
         self.script_file = script_file
         self.details = details
+
+    feature = _text_choice_property(
+        "feature", ["energy/score", "RMSD", "dRMSD", "other", "none"],
+        doc="The feature used in the analysis, if applicable")
 
 
 class FilterStep(Step):

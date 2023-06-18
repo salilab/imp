@@ -72,8 +72,25 @@ class Base:
 
 class Attribute(Base):
 
+    def _is_path(self, name):
+        """Return True iff `name` describes a filesystem path attribute.
+           Unfortunately internally RMF stores both paths and non-path
+           strings in String(s) attributes (and we can't easily add a
+           separate Path(s) type without breaking backwards compatibility),
+           and uses the attribute name to distinguish them. Check here that
+           we haven't used a path-like name for a string or vice versa."""
+        return (name.endswith("filename") or name.endswith("filenames")
+                or name in ("cluster density", "image files", "path"))
+
+    def _check_string_name(self, name):
+        if self._is_path(name):
+            raise ValueError("Cannot use a 'path' name (%s) for a "
+                             "string Attribute" % name)
+
     def __init__(self, name, attribute_type, function_name=None,
                  default=None):
+        if attribute_type in ('String', 'Strings'):
+            self._check_string_name(name)
         if not function_name:
             self.function_name = name.replace(" ", "_")
         else:
@@ -154,6 +171,11 @@ class PathAttribute(Attribute):
        the RMF file (in-memory RMFs are considered to be in the current
        working directory) but the API always returns absolute paths."""
 
+    def _check_string_name(self, name):
+        if not self._is_path(name):
+            raise ValueError("Cannot use a non-path name (%s) "
+                             "for a PathAttribute" % name)
+
     def __init__(self, name, function_name=None):
         Attribute.__init__(self, name, "String", function_name)
         self.get_methods = """
@@ -178,6 +200,12 @@ class PathAttribute(Attribute):
 
 class OptionalPathAttribute(Attribute):
     """Like a PathAttribute, but it can be empty."""
+
+    def _check_string_name(self, name):
+        if not self._is_path(name):
+            raise ValueError("Cannot use a non-path name (%s) "
+                             "for an OptionalPathAttribute" % name)
+
     def __init__(self, name, function_name=None):
         Attribute.__init__(self, name, "String", function_name)
         self.get_methods = """
@@ -211,7 +239,7 @@ class OptionalPathAttribute(Attribute):
 class AttributePair(Base):
 
     def __init__(self, name, data_type, return_type, begin, end):
-        Base.__init__(self, name, "boost::array<%sKey, 2>" %
+        Base.__init__(self, name, "std::array<%sKey, 2>" %
                       data_type, return_type)
         self.helpers = """  template <class H> DATA get_NAME_keys(H fh) const {
      DATA ret;
@@ -556,7 +584,7 @@ def make_header(name, infos, deps):
 #include <RMF/constants.h>
 #include <RMF/Vector.h>
 #include <RMF/internal/paths.h>
-#include <boost/array.hpp>
+#include <array>
 #include <boost/lexical_cast.hpp>
 """ % {"name": name, "NAME": name.upper()})
     for d in deps:

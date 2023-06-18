@@ -2,7 +2,7 @@
  *  \file rigid_pair_score.h
  *  \brief utilities for rigid pair scores.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_RIGID_BODY_TREE_H
@@ -13,6 +13,8 @@
 #include "../rigid_bodies.h"
 #include <IMP/algebra/Sphere3D.h>
 #include <queue>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,9 +23,16 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::Object {
   struct Data {
     Ints children_;
     algebra::Sphere3D s_;
+    template<class Archive> void serialize(Archive &ar) { ar(children_, s_); }
   };
   Vector<Data> tree_;
   ParticleIndexes constituents_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this), rb_, tree_, constituents_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyHierarchy);
 
   typedef Vector<unsigned int> SphereIndexes;
   typedef Vector<SphereIndexes> SpheresSplit;
@@ -86,7 +95,11 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::Object {
     return index;
   }
   algebra::Sphere3Ds get_all_spheres() const;
+
   RigidBodyHierarchy(RigidBody rb, const ParticleIndexes &constituents);
+
+  RigidBodyHierarchy() : Object("") {}
+
   algebra::Sphere3Ds get_tree() const;
   bool get_constituents_match(const ParticleIndexes &ps) const {
     if (ps.size() != constituents_.size()) return false;

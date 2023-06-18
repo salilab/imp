@@ -2,7 +2,7 @@
  *  \file IMP/core/ClassnameRestraint.h
  *  \brief Apply a ClassnameScore to a Classname.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,8 @@
 #include <IMP/ClassnameScore.h>
 
 #include <iostream>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,6 +31,13 @@ class ClassnameRestraint :
     public IMP::internal::TupleRestraint<ClassnameScore>
 #endif
     {
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                    IMP::internal::TupleRestraint<ClassnameScore> >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ClassnameRestraint);
  public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -38,6 +47,7 @@ class ClassnameRestraint :
                      std::string name = "ClassnameRestraint %1%")
       : IMP::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
   }
+  ClassnameRestraint() {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:

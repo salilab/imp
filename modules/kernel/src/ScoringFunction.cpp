@@ -46,6 +46,10 @@ ScoringFunction::ScoringFunction(Model *m, std::string name)
   moved_particles_cache_age_ = 0;
 }
 
+ScoringFunction::ScoringFunction() : moved_particles_cache_(nullptr) {
+  moved_particles_cache_age_ = 0;
+}
+
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);

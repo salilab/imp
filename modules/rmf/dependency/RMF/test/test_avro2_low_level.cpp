@@ -2,7 +2,7 @@
 #include <avrocpp/api/Compiler.hh>
 #include <avrocpp/api/DataFile.hh>
 #include <backend/avro/raw_frame.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <generated/embed_jsons.h>
 #include <iostream>
 #include <string>
@@ -63,7 +63,7 @@ void read_raw(std::string name) {
   int read = 0;
   while (reader.read(frame)) {
     internal_avro::EncoderPtr encoder = internal_avro::jsonEncoder(schema);
-    boost::shared_ptr<internal_avro::OutputStream> os =
+    std::shared_ptr<internal_avro::OutputStream> os =
         internal_avro::ostreamOutputStream(std::cout);
     encoder->init(*os);
     internal_avro::encode(*encoder, frame);

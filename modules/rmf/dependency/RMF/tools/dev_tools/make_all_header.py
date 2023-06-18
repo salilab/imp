@@ -6,6 +6,7 @@ usage: make_all_header.py header_name.h include_prefix headers
 
 import sys
 import glob
+import datetime
 import os
 
 sys.path.append(os.path.split(sys.argv[0])[0])
@@ -27,13 +28,14 @@ def _add_includes(headers, output):
 
 includepath = sys.argv[1][sys.argv[1].find("include") + len("include") + 1:]
 
+year = datetime.datetime.now().year
 output = ["""/**
  *  \\file %s
  *  \\brief Include all non-deprecated headers in %s.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-%d IMP Inventors. All rights reserved.
  */
-""" % (includepath, includepath[:-2].replace('/', '.'))]
+""" % (includepath, includepath[:-2].replace('/', '.'), year)]
 guard = includepath.replace(
     "/",
     "_").replace("\\",

@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import pickle
 
 
 class TestMovedRestraint(IMP.Restraint):
@@ -53,7 +54,7 @@ class Tests(IMP.test.TestCase):
         """Test that restraints decompose ok"""
         m = IMP.Model()
         p = IMP.Particle(m)
-        r = IMP._ConstRestraint(1, [p])
+        r = IMP._ConstRestraint(m, [p], 1)
         rd = r.create_decomposition()
         self.assertEqual(r.evaluate(False), rd.evaluate(False))
         ra = IMP.get_restraints([r])
@@ -89,6 +90,70 @@ class Tests(IMP.test.TestCase):
                                420., delta=1e-6)
         self.assertEqual(r1.moved_pis, IMP.get_indexes([p]))
         self.assertEqual(len(r1.reset_pis), 0)
+
+    def test_python_list(self):
+        """Test Python list-like access to restraints"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = TestMovedRestraint(m, [p], value=42.)
+        r2 = TestMovedRestraint(m, [p], value=99.)
+        sf = IMP.core.RestraintsScoringFunction([r1])
+        self.assertAlmostEqual(sf.evaluate(False), 42., delta=1e-6)
+
+        self.assertEqual(len(sf.restraints), 1)
+        self.assertIn(r1, sf.restraints)
+        self.assertNotIn(r2, sf.restraints)
+
+        del sf.restraints
+        self.assertEqual(len(sf.restraints), 0)
+        self.assertAlmostEqual(sf.evaluate(False), 0., delta=1e-6)
+
+        sf.restraints = [r1, r2]
+        self.assertEqual(sf.restraints, [r1, r2])
+        self.assertNotEqual(sf.restraints, (r1, r2))
+        self.assertNotEqual(sf.restraints, [r1])
+        othersf = IMP.core.RestraintsScoringFunction([r1, r2])
+        self.assertEqual(sf.restraints, othersf.restraints)
+        self.assertAlmostEqual(sf.evaluate(False), 141., delta=1e-6)
+        sf.restraints.pop()
+        self.assertAlmostEqual(sf.evaluate(False), 42., delta=1e-6)
+        sf.restraints.pop()
+        self.assertAlmostEqual(sf.evaluate(False), 0., delta=1e-6)
+        self.assertRaises(IndexError, sf.restraints.pop)
+
+        sf.restraints.append(r1)
+        sf.restraints.extend([r2])
+        self.assertAlmostEqual(sf.evaluate(False), 141., delta=1e-6)
+        self.assertEqual(sf.restraints.index(r1), 0)
+        self.assertEqual(sf.restraints.index(r2), 1)
+        self.assertRaises(ValueError, sf.restraints.index, r1, start=6)
+        self.assertRaises(ValueError, sf.restraints.index, r1, start=0, stop=0)
+        self.assertEqual(sf.restraints[0], r1)
+        self.assertEqual(sf.restraints[1], r2)
+        self.assertRaises(IndexError, lambda: sf.restraints[42])
+        self.assertRaises(IndexError, lambda: sf.restraints[-42])
+        del sf.restraints[1]
+        def _delfunc():
+            del sf.restraints[42]
+        self.assertRaises(IndexError, _delfunc)
+        self.assertRaises(ValueError, sf.restraints.index, r2)
+
+    def test_pickle(self):
+        """Test (un-)pickle of RestraintsScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r = IMP._ConstRestraint(m, [p], 42)
+        r.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.set_name("bar")
+        self.assertEqual(sf.evaluate(False), 42)
+
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        self.assertEqual(newsf.get_name(), "bar")
+        newr, = newsf.restraints
+        self.assertEqual(newr.get_name(), "foo")
+        self.assertEqual(newsf.evaluate(False), 42)
 
 
 if __name__ == '__main__':

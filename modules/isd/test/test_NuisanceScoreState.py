@@ -3,7 +3,7 @@
 # general imports
 from numpy import *
 from random import uniform
-
+import pickle
 
 # imp general
 import IMP
@@ -167,6 +167,31 @@ class TestNuisanceScoreState(IMP.test.TestCase):
             mc.optimize(10)
             self.assertTrue(nuis.get_nuisance() >= nuis.get_lower()
                             and nuis.get_nuisance() <= nuis.get_upper())
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of NuisanceScoreState via polymorphic pointer"""
+        nuis = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
+        nuis.set_nuisance(2.)
+        nuis.set_upper(1.)
+        # NuisanceScoreState is not exposed to Python, but it should be in
+        # the model
+        dump = pickle.dumps(self.m)
+        newm = pickle.loads(dump)
+        # New model should contain an identical Nuisance particle
+        newnuisp, = newm.get_particle_indexes()
+        self.assertTrue(Nuisance.get_is_setup(newm, newnuisp))
+        newnuis = Nuisance(newm, newnuisp)
+        self.assertAlmostEqual(newnuis.get_nuisance(), 2., delta=1e-5)
+        # Updating the original model should call NuisanceScoreState on it,
+        # which should enforce the upper bound - but the new model should
+        # not be affected:
+        self.m.update()
+        self.assertAlmostEqual(nuis.get_nuisance(), 1., delta=1e-5)
+        self.assertAlmostEqual(newnuis.get_nuisance(), 2., delta=1e-5)
+        # Updating the new model should enforce the upper bound there:
+        newm.update()
+        self.assertAlmostEqual(newnuis.get_nuisance(), 1., delta=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

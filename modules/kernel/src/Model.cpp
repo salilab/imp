@@ -24,6 +24,7 @@ Model::Model(std::string name)
   saved_dependencies_age_ = 0;
   dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
+  unique_id_ = model_map_.add_new_model(this);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
       &this->Masks::read_mask_, &this->Masks::write_mask_,
@@ -56,6 +57,46 @@ Model::Model(std::string name)
 #endif
 }
 
+void Model::register_unique_id() {
+  model_map_.add_model_with_id(this, unique_id_);
+}
+
+Model::ModelMap Model::model_map_;
+
+uint32_t Model::ModelMap::add_new_model(Model *m) {
+  uint32_t id;
+  // Chance of collision is very small, but not zero
+  do {
+    id = id_gen_();
+  } while (map_.find(id) != map_.end());
+  map_[id] = m;
+  return id;
+}
+
+void Model::ModelMap::add_model_with_id(Model *m, uint32_t id) {
+  // If an old model exists with this ID already (e.g. we picked a model
+  // and then unpickled it, duplicating the model) then give it a new ID.
+  // We don't want to change the ID of the *new* model, because we want
+  // any ModelObjects referenced by it to get pointers back to the new model.
+  Model *oldmodel = get(id);
+  if (oldmodel) {
+    oldmodel->unique_id_ = add_new_model(oldmodel);
+  }
+  map_[id] = m;
+}
+
+void Model::ModelMap::remove_model(Model *m) {
+  map_.erase(m->get_unique_id());
+}
+
+Model* Model::ModelMap::get(uint32_t id) const {
+  auto p = map_.find(id);
+  if (p == map_.end()) {
+    return nullptr;
+  } else {
+    return p->second;
+  }
+}
 
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
@@ -212,6 +253,7 @@ void Model::do_destroy() {
     IMP_CHECK_OBJECT(mo);
     mo->set_model(nullptr);
   }
+  model_map_.remove_model(this);
 }
 
 IMPKERNEL_END_NAMESPACE

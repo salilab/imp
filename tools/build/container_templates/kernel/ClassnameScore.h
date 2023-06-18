@@ -13,6 +13,8 @@
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include <IMP/utility_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -133,6 +135,14 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                                      PASSINDEXTYPE vt) const;
 
   IMP_REF_COUNTED_DESTRUCTOR(ClassnameScore);
+
+ private:
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Neither we nor ParticleInputs stores data, but Object does
+    ar(cereal::base_class<Object>(this));
+  }
 };
 
 IMPKERNEL_END_NAMESPACE

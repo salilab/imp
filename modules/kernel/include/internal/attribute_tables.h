@@ -11,10 +11,12 @@
 
 #include <IMP/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
+#include <cereal/access.hpp>
 #include "../Key.h"
 #include "../utility.h"
 #include "../FloatIndex.h"
 #include "input_output_exception.h"
+#include "KeyVector.h"
 #include <IMP/exception.h>
 #include <IMP/check_macros.h>
 #include <IMP/log.h>
@@ -70,11 +72,18 @@ class BasicAttributeTable {
   typedef typename Traits::Key Key;
 
  private:
-  Vector<typename Traits::Container> data_;
+  KeyVector<typename Traits::Key, typename Traits::Container> data_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
   IMP_KERNEL_SMALL_UNORDERED_SET<Key> caches_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Note that we don't serialize masks; they are handled by Model
+    ar(caches_, data_);
+  }
 
   void do_add_attribute(Key k, ParticleIndex particle,
                         typename Traits::PassValue value) {
@@ -289,6 +298,15 @@ class FloatAttributeTable {
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
       *write_derivatives_mask_;
 #endif
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Note that we don't serialize masks; they are handled by Model
+    ar(spheres_, sphere_derivatives_, internal_coordinates_);
+    ar(internal_coordinate_derivatives_, data_, derivatives_, optimizeds_);
+  }
+
   algebra::Sphere3D get_invalid_sphere() const {
     double iv = internal::FloatAttributeTableTraits::get_invalid();
     algebra::Sphere3D ivs(algebra::Vector3D(iv, iv, iv), iv);

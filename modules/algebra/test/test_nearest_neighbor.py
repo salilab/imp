@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 
 
 def get_nn(vs, i):
@@ -77,6 +76,7 @@ class Tests(IMP.test.TestCase):
                 print(vs[x], (vs[x] - vs[i]).get_magnitude())
             # print
             self.assertNotEqual(rnn.index(cnn), -1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -22,13 +22,17 @@
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
 #include "internal/moved_particles_cache.h"
+#include "internal/KeyVector.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
+#include <IMP/internal/IDGenerator.h>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <IMP/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <limits>
 
@@ -51,6 +55,15 @@ enum Stage {
 #endif
 
 class Model;
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+// This is needed as NodeInfo (below) needs to be showable, and Edges are not
+inline std::ostream &operator<<(
+              std::ostream &out, const std::set<ModelObject *> &) {
+  out << "(set of ModelObject)";
+  return out;
+}
+#endif
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
@@ -88,7 +101,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::ParticlesAttributeTable
 #endif
                               {
-  typedef Vector<ModelObject *> Edges;
+  typedef std::set<ModelObject *> Edges;
   // must be up top
   // we don't want any liveness checks
   IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, Edges, inputs, Edges, input_outputs,
@@ -106,7 +119,24 @@ class IMPKERNELEXPORT Model : public Object
   IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
-  Vector<PointerMember<Object> > model_data_;
+  internal::KeyVector<ModelKey, PointerMember<Object> > model_data_;
+
+#if !defined(IMP_DOXYGEN)
+  // Map unique ID to Model*
+  class ModelMap {
+    std::map<uint32_t, Model*> map_;
+    internal::IDGenerator id_gen_;
+  public:
+    ModelMap() {}
+    uint32_t add_new_model(Model *m);
+    void add_model_with_id(Model *m, uint32_t id);
+    void remove_model(Model *m);
+    Model *get(uint32_t id) const;
+  };
+
+  static ModelMap model_map_;
+  uint32_t unique_id_;
+#endif
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
@@ -138,6 +168,73 @@ class IMPKERNELEXPORT Model : public Object
   internal::MovedParticlesParticleCache moved_particles_particle_cache_;
   // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
+
+  void register_unique_id();
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar,
+                                         std::uint32_t const version) {
+    ar(cereal::base_class<Object>(this));
+    // We need to get unique_id_ early on read, so that any ModelObjects
+    // that reference it get correctly associated with this model
+    ar(unique_id_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      register_unique_id();
+    }
+    ar(cereal::base_class<internal::FloatAttributeTable>(this),
+       cereal::base_class<internal::StringAttributeTable>(this),
+       cereal::base_class<internal::IntAttributeTable>(this),
+       cereal::base_class<internal::IntsAttributeTable>(this),
+       cereal::base_class<internal::FloatsAttributeTable>(this),
+       cereal::base_class<internal::ParticleAttributeTable>(this),
+       cereal::base_class<internal::ParticlesAttributeTable>(this));
+
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      size_t count;
+      free_particles_.clear();
+      ar(count);
+      particle_index_.clear();
+      while(count-- > 0) {
+        std::string name;
+        ar(name);
+        add_particle(name);
+      }
+      ParticleIndexes to_free;
+      ar(to_free);
+      for (auto pi : to_free) {
+        remove_particle(pi);
+      }
+    } else {
+      size_t count = particle_index_.size();
+      ar(count);
+      for (size_t i = 0; i < count; ++i) {
+        std::string name;
+        if (get_has_particle(ParticleIndex(i))) {
+          name = get_particle_name(ParticleIndex(i));
+        }
+        ar(name);
+      }
+      ar(free_particles_);
+    }
+
+    // Need particle info before anything that might refer to a particle
+    // (ScoreState, or arbitrary Object)
+    ar(cereal::base_class<internal::ObjectAttributeTable>(this),
+       cereal::base_class<internal::ObjectsAttributeTable>(this),
+       cereal::base_class<internal::WeakObjectAttributeTable>(this),
+       model_data_, mutable_access_score_states());
+
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // clear caches
+      age_counter_ = 1;
+      trigger_age_.clear();
+      dependencies_age_ = 0;
+      saved_dependencies_age_ = 0;
+      dependencies_saved_ = false;
+      moved_particles_cache_age_ = 0;
+    }
+  }
 
   // update model age (can never be zero, even if it wraps)
   void increase_age() {
@@ -263,7 +360,7 @@ class IMPKERNELEXPORT Model : public Object
       ScoreStates maintain invariants in the Model (see ScoreState
       for more information.)
 
-      ScoreStates do not need to be explictly added to the Model, but they
+      ScoreStates do not need to be explicitly added to the Model, but they
       can be if desired in order to keep them alive as long as the model is
       alive.
 
@@ -504,6 +601,19 @@ class IMPKERNELEXPORT Model : public Object
       and every ParticleIndex will be smaller than this value. */
   unsigned get_particles_size() const { return particle_index_.size(); }
 
+  //! Get the unique ID of this Model.
+  /** When multiple Models exist simultaneously, each has a different unique ID.
+    */
+  uint32_t get_unique_id() const {
+    return unique_id_;
+  }
+
+  //! Return the Model with the given unique ID.
+  /** If no Model with this ID exists, nullptr is returned. */
+  static Model* get_by_unique_id(uint32_t id) {
+    return model_map_.get(id);
+  }
+
   IMP_OBJECT_METHODS(Model);
 
  public:
@@ -513,6 +623,11 @@ class IMPKERNELEXPORT Model : public Object
 };
 
 IMPKERNEL_END_NAMESPACE
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+            IMP::Model, cereal::specialization::member_serialize);
+
+CEREAL_CLASS_VERSION(IMP::Model, 1);
 
 // This is needed for per cpp compilations, a not even sure why
 // (perhaps cause Model returns ParticleIterator here and there?)

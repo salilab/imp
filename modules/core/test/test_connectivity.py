@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         ps = self.create_particles_in_box(m, 4)
         ds = [IMP.core.XYZ(p) for p in ps]
         o = IMP.core.ConjugateGradients(m)
-        o.set_threshold(1e-4)
+        o.set_gradient_threshold(1e-4)
         self.randomize_particles(ps, 50.0)
 
         # add connectivity restraints

@@ -13,8 +13,6 @@
 #include "IMP/core/utility.h"
 #include "IMP/core/XYZ.h"
 #include "IMP/core/CoverRefined.h"
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 

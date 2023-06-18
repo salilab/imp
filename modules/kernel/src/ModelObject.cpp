@@ -21,6 +21,24 @@ ModelObject::ModelObject(Model *m, std::string name)
   m->do_add_model_object(this);
 }
 
+ModelObject::ModelObject() : Object("") {
+}
+
+uint32_t ModelObject::get_model_id() const {
+  return model_->get_unique_id();
+}
+
+void ModelObject::set_model_from_id(uint32_t model_id) {
+  Model *m = Model::get_by_unique_id(model_id);
+  if (!m) {
+    IMP_THROW("Cannot unserialize ModelObject as it refers to a "
+              "Model that does not exist", ValueException);
+  } else {
+    model_ = m;
+    m->do_add_model_object(this);
+  }
+}
+
 ModelObject::~ModelObject() {
   if (get_model()) get_model()->do_remove_model_object(this);
 }

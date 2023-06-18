@@ -21,7 +21,7 @@
 #include "SharedDataPath.h"
 #include <algorithm>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 

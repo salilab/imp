@@ -23,6 +23,9 @@
 #include <IMP/internal/utility.h>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -594,11 +597,19 @@ class IMPATOMEXPORT WritePDBOptimizerState : public OptimizerState {
   std::string filename_;
   ParticleIndexes pis_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<OptimizerState>(this), filename_, pis_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(WritePDBOptimizerState);
+
  public:
   WritePDBOptimizerState(Model *m,
                          const ParticleIndexesAdaptor &pis,
                          std::string filename);
   WritePDBOptimizerState(const atom::Hierarchies mh, std::string filename);
+  WritePDBOptimizerState() {}
 
  protected:
   virtual void do_update(unsigned int call) override;

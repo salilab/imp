@@ -17,7 +17,7 @@
 #include <RMF/constants.h>
 #include <RMF/Vector.h>
 #include <RMF/internal/paths.h>
-#include <boost/array.hpp>
+#include <array>
 #include <boost/lexical_cast.hpp>
 
 RMF_ENABLE_WARNINGS

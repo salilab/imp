@@ -22,15 +22,27 @@ IMPKERNEL_BEGIN_NAMESPACE
     about a Restraint instance as a set of key:value pairs. The primary
     purpose is to allow restraints to be written to files, such as RMF.
 
+    Key names are generally lowercase, full words, space-separated, for
+    example "force constant" rather than "force_constant", "ForceConstant",
+    or "k".
+
     Values can be simple types (int, float, string) or lists of them;
     filename(s) (treated similarly to strings but paths are made relative
     to that of the output file); or particles.
 
-    Particle values are used to reference particles that contain restraint
-    information (either static or dynamic) that generally exist
+    Note that when written to RMF files, RMF stores both string and filename
+    keys as strings. To help it distinguish the two, the convention is
+    for filename key names to end in "filename" or "filenames".
+
+    Particle index values are generally used for one of two purposes.
+    First, to reference particles that contain restraint
+    information (either static or dynamic) that often exist
     outside of the molecular hierarchy, such as Bayesian nuisances
-    or Gaussians for an EM density map. The particles must live in
-    the same model as the restraint.
+    or Gaussians for an EM density map. Second, to explicitly group or
+    sort restraint particles (as the default list of restraint inputs is
+    unsorted and does not contain duplicates) such as each endpoint of
+    a pairwise restraint, or the two groups of particles in a bipartite
+    restraint. The particles must live in the same model as the restraint.
   */
 class IMPKERNELEXPORT RestraintInfo : public Object {
 public:

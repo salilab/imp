@@ -14,8 +14,7 @@
 #include "exception.h"
 #include "Value.h"
 #include <boost/scoped_array.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
+#include <cereal/access.hpp>
 #include <IMP/hash.h>
 #include <iterator>
 
@@ -55,26 +54,17 @@ class ConstVector : public Value {
     std::copy(b, e, v_.get());
   }
 
-#ifndef SWIG
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
-    ar << sz_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(sz_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      create(sz_);
+    }
     for (unsigned int i = 0; i < sz_; ++i) {
-      ar << v_[i];
+      ar(v_[i]);
     }
   }
-
-  template<class Archive> void load(Archive &ar, const unsigned int) {
-    ar >> sz_;
-    create(sz_);
-    for (unsigned int i = 0; i < sz_; ++i) {
-      ar >> v_[i];
-    }
-  }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
  public:
   ~ConstVector() {}

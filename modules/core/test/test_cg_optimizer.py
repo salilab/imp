@@ -70,7 +70,7 @@ class Tests(IMP.test.TestCase):
         rsr = WoodsFunc(model, particles)
         opt = IMP.core.ConjugateGradients(model)
         opt.set_scoring_function([rsr])
-        opt.set_threshold(1e-5)
+        opt.set_gradient_threshold(1e-5)
         e = opt.optimize(100)
         for p in particles:
             val = model.get_attribute(xkey, p)

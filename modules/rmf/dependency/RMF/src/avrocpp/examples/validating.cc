@@ -46,7 +46,7 @@ int main() {
   internal_avro::ValidSchema cpxSchema;
   internal_avro::compileJsonSchema(ifs, cpxSchema);
 
-  boost::shared_ptr<internal_avro::OutputStream> out =
+  std::shared_ptr<internal_avro::OutputStream> out =
       internal_avro::memoryOutputStream();
   internal_avro::EncoderPtr e = internal_avro::validatingEncoder(
       cpxSchema, internal_avro::binaryEncoder());
@@ -54,7 +54,7 @@ int main() {
   std::complex<double> c1(1.0, 2.0);
   internal_avro::encode(*e, c1);
 
-  boost::shared_ptr<internal_avro::InputStream> in =
+  std::shared_ptr<internal_avro::InputStream> in =
       internal_avro::memoryInputStream(*out);
   internal_avro::DecoderPtr d = internal_avro::validatingDecoder(
       cpxSchema, internal_avro::binaryDecoder());

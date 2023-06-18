@@ -12,7 +12,7 @@
 #include <map>
 #include <ostream>
 #include <cmath>
-#include <boost/array.hpp>
+#include <array>
 #include <IMP/multifit/multifit_config.h>
 #include "IMP/algebra/VectorD.h"
 
@@ -30,7 +30,7 @@ class GeometricHash {
     EUCLIDEAN
   };
   typedef algebra::VectorD<D> Point;
-  typedef boost::array<int, D> Bucket;
+  typedef std::array<int, D> Bucket;
   typedef std::pair<Point, T> ValueType;
   typedef std::vector<ValueType> PointList;
   typedef std::map<const Bucket, PointList> GeomMap;

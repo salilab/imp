@@ -416,6 +416,45 @@ class Tests(unittest.TestCase):
         self.assertRaises(ValueError, ihm.metadata._get_aligned_region,
                           'AAAA', '----')
 
+    def _parse_cif(self, fname):
+        p = ihm.metadata.CIFParser()
+        return p.parse_file(fname)
+
+    def test_cif_official_pdb(self):
+        """Test CIFParser when given an mmCIF in the official PDB database"""
+        p = self._parse_cif(utils.get_input_file_name(TOPDIR, 'official.cif'))
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Experimental model')
+        self.assertEqual(dataset.location.db_name, 'PDB')
+        self.assertEqual(dataset.location.access_code, '2HBJ')
+        self.assertEqual(dataset.location.version, '2021-11-10')
+        self.assertEqual(dataset.location.details,
+                         'Structure of the yeast nuclear exosome component, '
+                         'Rrp6p, reveals an interplay between the active '
+                         'site and the HRDC domain')
+
+    def test_cif_model_archive(self):
+        """Test CIFParser when given an mmCIF in Model Archive"""
+        p = self._parse_cif(utils.get_input_file_name(TOPDIR,
+                                                      'modarchive.cif'))
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'De Novo model')
+        self.assertEqual(dataset.location.db_name, 'MODEL ARCHIVE')
+        self.assertEqual(dataset.location.access_code, 'ma-bak-cepc-0250')
+        self.assertEqual(dataset.location.version, '2022-11-30')
+        self.assertEqual(dataset.location.details,
+                         'Predicted interaction between CWP1 and IKI1')
+
+    def test_cif_unknown(self):
+        """Test CIFParser when given an mmCIF not in a database"""
+        fname = utils.get_input_file_name(TOPDIR, 'unknown_model.cif')
+        p = self._parse_cif(fname)
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        self.assertIsInstance(dataset.location, ihm.location.FileLocation)
+        self.assertEqual(dataset.location.path, fname)
+        self.assertEqual(dataset.location.details, 'Starting model structure')
+
 
 if __name__ == '__main__':
     unittest.main()

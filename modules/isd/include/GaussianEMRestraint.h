@@ -23,6 +23,8 @@
 #include <math.h>
 #include <Eigen/Dense>
 #include <boost/unordered_map.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -67,6 +69,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
                       bool update_model=true, bool backbone_slope=false,
                       bool local=false,
                       std::string name="GaussianEMRestraint%1%");
+  GaussianEMRestraint() {}
 
   //! Returns exp(score)
   double get_probability() const {
@@ -136,6 +139,25 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   double argmax_;
 
   mutable double cross_correlation_;
+
+  //! Create containers of model and density particles
+  void create_containers();
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), model_cutoff_dist_,
+       density_cutoff_dist_, model_ps_, density_ps_, slope_, update_model_,
+       local_, msize_,dsize_, normalization_, dd_score_, self_mm_score_,
+       slope_ps_, density_fn_, exp_grid_,
+       invdx_, argmax_, cross_correlation_);
+    // recreate md_container and mm_container on input
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      create_containers();
+    }
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(GaussianEMRestraint);
 };
 
 IMPISD_END_NAMESPACE

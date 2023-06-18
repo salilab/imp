@@ -101,13 +101,10 @@ struct Pointer
     P::operator=(o);
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
-  Pointer<O>& operator=(nullptr_t o) {
+  Pointer<O>& operator=(std::nullptr_t o) {
     P::operator=(o);
     return *this;
   }
-#endif
   Pointer<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;
@@ -160,13 +157,10 @@ struct PointerMember
     P::operator=(o);
     return *this;
   }
-#if (defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
-  PointerMember<O>& operator=(nullptr_t o) {
+  PointerMember<O>& operator=(std::nullptr_t o) {
     P::operator=(o);
     return *this;
   }
-#endif
   PointerMember<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;

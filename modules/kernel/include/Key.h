@@ -16,6 +16,7 @@
 #include <IMP/log_macros.h>
 #include <IMP/thread_macros.h>
 #include <IMP/Value.h>
+#include <cereal/access.hpp>
 #include <vector>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -57,6 +58,21 @@ class Key : public Value {
 
  private:
   int str_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Serialize Keys by string, not the internal index, which could change
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      std::string name = get_string();
+      ar(name);
+    } else {
+      std::string name;
+      ar(name);
+      str_ = find_or_add_index(name);
+    }
+  }
+
   static const internal::KeyData::Map& get_map() {
     return get_key_data().get_map();
   }

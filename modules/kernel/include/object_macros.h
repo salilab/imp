@@ -20,7 +20,7 @@
 /** This defines
     - IMP::Object::get_version_info()
     - IMP::Object::get_type_name()
-    - a protected destructor
+    - a virtual destructor
 */
 #define IMP_OBJECT_METHODS(Name)                                              \
  public:                                                                      \
@@ -29,7 +29,7 @@
     return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                           \
                                                                               \
- protected:                                                                   \
+ public:                                                                      \
   virtual ~Name() { IMP::Object::_on_destruction(); }                   \
                                                                               \
  public:
@@ -49,12 +49,12 @@
 
 //! Typedefs a default instantiation for a generic (templated) object 
 /**
- Define type [Name] to be an an instantiation of of Generic[Name] with
+ Define type [Name] to be an instantiation of Generic[Name] with
  template targument, and a function create_[lcname]() that generates a
- newly allocated object of type [Name], taking parameters [crguments]
+ newly allocated object of type [Name], taking parameters [carguments]
  and internally paassing [cparguments] to the constructor.
 
- @note doxygen documentatio prior to this macro will be applied to the type
+ @note doxygen documentation prior to this macro will be applied to the type
  definition
  */
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
@@ -73,5 +73,46 @@
 */
 #define IMP_NEW(Typename, varname, args) \
   IMP::Pointer<Typename> varname(new Typename args)
+
+//! Declare methods needed for serialization of Object pointers
+/** When an Object subclass is serialized via an IMP::Pointer, the
+    serialization subsystem needs to know the most derived type so that
+    the full information is saved/loaded. This macro ensures that the
+    necessary machinery is added, and should be placed in the header file
+    inside the declaration of the Object subclass.
+    It is similar to cereal's CEREAL_REGISTER_TYPE macro, but stores the
+    type information in precisely one place (the IMP::Object class) rather
+    than relying on the linker to keep this information unique, as cereal
+    attempts to do.
+
+    This macro needs to be paired with IMP_OBJECT_SERIALIZE_IMPL, which is
+    usually placed in the corresponding .cpp file for the class.
+
+    \see IMP_OBJECT_SERIALIZE_IMPL
+
+    \param[in] Name The name of the class.
+ */
+#define IMP_OBJECT_SERIALIZE_DECL(Name)                                 \
+private:                                                                \
+  static bool dummy_serialize_init_;                                    \
+  static void save_cereal(Object *o, cereal::BinaryOutputArchive &ar) { \
+    Name *cast = dynamic_cast<Name *>(o);                               \
+    if (!cast) { std::cerr << "bad cast" << std::endl; }                \
+    ar(*cast);                                                          \
+  }                                                                     \
+  static Object *load_cereal(cereal::BinaryInputArchive &ar) {          \
+    std::unique_ptr<Name> p(new Name());                                \
+    ar(*p);                                                             \
+    return p.release();                                                 \
+  }
+
+//! Add machinery needed for serialization of Object pointers
+/** \see IMP_OBJECT_SERIALIZE_DECL
+
+    \param[in] Name The fully-qualified name of the class.
+ */
+#define IMP_OBJECT_SERIALIZE_IMPL(Name)                                 \
+bool Name::dummy_serialize_init_ = Object::register_serialize(          \
+           typeid(Name), #Name, Name::save_cereal, Name::load_cereal);
 
 #endif /* IMPKERNEL_OBJECT_MACROS_H */

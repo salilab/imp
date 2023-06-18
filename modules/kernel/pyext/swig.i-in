@@ -1,11 +1,13 @@
-%{
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-%}
-
 %pythoncode %{
 from . import _list_util
 %}
+
+// Provide catch-all implementations in base classes so
+// that pickle fails with a more informative error than
+// "TypeError: cannot pickle 'SwigPyObject' object"
+IMP_NOT_SERIALIZABLE(IMP::Object);
+IMP_NOT_SERIALIZABLE(IMP::Value);
+IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
 
 %extend IMP::Object {
   bool __eq__(const Object *o) const {
@@ -26,6 +28,37 @@ from . import _list_util
   bool __gt__(const Object *o) const {
      return self > o;
   }
+}
+
+// Make sure that ModelObject::get_model() returns the same Model object
+%pythoncode %{
+_models_set = weakref.WeakSet()
+
+def _models_set_get(m):
+    for x in _models_set:
+        if x == m:
+            return x
+%}
+
+namespace IMP {
+  %feature("pythonappend") Model::Model %{
+    if self not in _models_set:
+        _models_set.add(self)
+  %}
+  %feature("shadow") ModelObject::get_model %{
+    def get_model(self):
+        m = $action(self)
+        if m in _models_set:
+            m = _models_set_get(m)
+        return m
+  %}
+  %feature("shadow") Decorator::get_model %{
+    def get_model(self):
+        m = $action(self)
+        if m in _models_set:
+            m = _models_set_get(m)
+        return m
+  %}
 }
 
 %feature("ref")   IMP::Object "if ($this) $this->ref();"
@@ -262,13 +295,16 @@ IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP, RestraintInfo, RestraintInfos);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
-IMP_SWIG_OBJECT(IMP,Model, Models);
-IMP_SWIG_OBJECT(IMP,Particle, Particles);
+IMP_SWIG_OBJECT_SERIALIZE(IMP,Model, Models);
+IMP_SWIG_OBJECT_SERIALIZE(IMP,Particle, Particles);
 
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps,);
 
 IMP_SWIG_BASE_OBJECT(IMP,RestraintSet, RestraintSets);
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP, RestraintSet)
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP, RestraintSet)
+
 IMP_SWIG_ARRAY(IMP, ParticlePair, ParticlePairsTemp, IMP::Particle);
 IMP_SWIG_ARRAY(IMP, ParticleTriplet, ParticleTripletsTemp, IMP::Particle);
 IMP_SWIG_ARRAY(IMP, ParticleQuad, ParticleQuadsTemp, IMP::Particle);
@@ -309,8 +345,10 @@ IMP_SWIG_BASE_OBJECT(IMP, ModelObject, ModelObjects);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
 IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialTraitsDecorators);
-IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
-IMP_SWIG_OBJECT(IMP::internal, _ConstOptimizer, _ConstOptimizers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstRestraint, _ConstRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstOptimizer, _ConstOptimizers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstSingletonScore, _ConstSingletonScores);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::internal, _ConstPairScore, _ConstPairScores);
 IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::ModelObject*);
 
 

@@ -75,7 +75,7 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
   IMP_UNUSED(accum);
   // IMP_USAGE_CHECK(!accum, "No derivatives computed");
   if (accum) {
-    IMP_WARN("Can not calcaulte derivatives\n");
+    IMP_WARN("Can not calculate derivatives\n");
   }
   // calculate actual rog
   float actual_rog = get_actual_radius_of_gyration(get_particles());

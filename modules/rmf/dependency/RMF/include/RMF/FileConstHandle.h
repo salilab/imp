@@ -11,7 +11,7 @@
 
 #include <boost/current_function.hpp>
 #include <boost/functional/hash.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iosfwd>
 #include <limits>
 #include <string>
@@ -99,7 +99,7 @@ class RMFEXPORT FileConstHandle {
   }
 
  protected:
-  boost::shared_ptr<internal::SharedData> shared_;
+  std::shared_ptr<internal::SharedData> shared_;
 
  public:
   RMF_COMPARISONS(FileConstHandle);
@@ -108,17 +108,43 @@ class RMFEXPORT FileConstHandle {
   //! Empty root handle, no open file.
   FileConstHandle() {}
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  FileConstHandle(boost::shared_ptr<internal::SharedData> shared);
+  FileConstHandle(std::shared_ptr<internal::SharedData> shared);
 #endif
 
   //! Return the root of the hierarchy
   NodeConstHandle get_root_node() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     return NodeConstHandle(NodeID(0), shared_);
   }
 
-  std::string get_name() const { return shared_->get_file_name(); }
+  //! Return True iff the file is closed
+  bool get_is_closed() const {
+    return !shared_;
+  }
 
-  std::string get_path() const { return shared_->get_file_path(); }
+  //! Explicitly close the file handle.
+  /** Normally, an RMF file is automatically closed when this handle object
+      goes out of scope. If closed with this method, any further operations
+      on this handle will raise an error.
+      Trying to close a file that is already closed will do nothing. */
+  void close() {
+    if (!get_is_closed()) {
+      shared_.reset();
+    }
+  }
+
+  std::string get_name() const {
+    if (shared_) {
+      return shared_->get_file_name();
+    } else {
+      return "(closed RMF file handle)";
+    }
+  }
+
+  std::string get_path() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "File is closed, no path.");
+    return shared_->get_file_path();
+  }
 
   /** \name Methods for manipulating keys
       When using C++ it is most convenient to specify types
@@ -193,22 +219,31 @@ class RMFEXPORT FileConstHandle {
       point.
       @{
    */
-  FrameID get_current_frame() const { return shared_->get_loaded_frame(); }
+  FrameID get_current_frame() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
+    return shared_->get_loaded_frame();
+  }
+
   FrameType get_type(FrameID fr) const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     return shared_->get_frame_data(fr).type;
   }
   std::string get_name(FrameID fr) const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     return shared_->get_frame_data(fr).name;
   }
   FrameIDs get_children(FrameID id) const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     const internal::FrameData& fd = shared_->get_frame_data(id);
     return FrameIDs(fd.children.begin(), fd.children.end());
   }
   FrameIDs get_parents(FrameID id) const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     const internal::FrameData& fd = shared_->get_frame_data(id);
     return FrameIDs(fd.parents.begin(), fd.parents.end());
   }
   void set_current_frame(FrameID frame) const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     RMF_USAGE_CHECK(frame != FrameID(), "Invalid frame passed.");
     RMF_USAGE_CHECK(frame != ALL_FRAMES,
                     "Use set_static_value() and get_static_value() to "
@@ -222,6 +257,7 @@ class RMFEXPORT FileConstHandle {
   /** Return the number of frames in the file.
    */
   unsigned int get_number_of_frames() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     try {
       return shared_->get_number_of_frames();
     }
@@ -231,6 +267,7 @@ class RMFEXPORT FileConstHandle {
   /** Return the number of nodes in the file.
    */
   unsigned int get_number_of_nodes() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
     try {
       return shared_->get_number_of_nodes();
     }
@@ -239,7 +276,10 @@ class RMFEXPORT FileConstHandle {
 
   /** Return a string identifying the file type.
   */
-  std::string get_file_type() const { return shared_->get_file_type(); }
+  std::string get_file_type() const {
+    RMF_USAGE_CHECK(!get_is_closed(), "Operation on closed file.");
+    return shared_->get_file_type();
+  }
 
   /** Get all the frames that are roots (aren't subframes). */
   FrameIDs get_root_frames() const;

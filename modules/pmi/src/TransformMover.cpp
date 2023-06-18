@@ -129,4 +129,6 @@ ModelObjectsTemp TransformMover::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::pmi::TransformMover);
+
 IMPPMI_END_NAMESPACE

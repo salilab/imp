@@ -196,7 +196,7 @@ class TestCase(unittest.TestCase):
 
     def get_magnitude(self, vector):
         """Get the magnitude of a list of floats"""
-        return sum([x*x for x in vector], 0)**.5
+        return sum(x*x for x in vector)**.5
 
     def assertRaisesUsageException(self, c, *args, **keys):
         """Assert that the given callable object raises UsageException.
@@ -220,8 +220,7 @@ class TestCase(unittest.TestCase):
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
            a tolerance, or a percentage (of the analytical value), whichever
-           is larger. `sf` should be a ScoringFunction or Restraint,
-           although for backwards compatibility a Model is also accepted."""
+           is larger. `sf` should be a ScoringFunction or Restraint."""
         sf.evaluate(True)
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(sf, xyz, 0.01)

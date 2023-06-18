@@ -2,19 +2,29 @@
 # Demonstration using NumPy to manipulate IMP data.
 #
 
-import IMP.example
+import IMP.container
 import sys
 
 IMP.setup_from_argv(sys.argv, "model numpy")
-
-(m, c) = IMP.example.create_model_and_particles()
 
 if not IMP.IMP_KERNEL_HAS_NUMPY:
     print("IMP was not built with NumPy support.")
     sys.exit(0)
 
+# Make 100 xyz particles randomly distributed in a cubic box
+m = IMP.Model()
+sc = IMP.container.ListSingletonContainer(m)
+b = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                              IMP.algebra.Vector3D(10,10,10))
+for i in range(100):
+    p = m.add_particle("p")
+    sc.add(p)
+    d = IMP.core.XYZR.setup_particle(m, p,
+                  IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(b), 1))
+    d.set_coordinates_are_optimized(True)
+
 # Get all pairs of particles that are close to each other
-nbl = IMP.container.ClosePairContainer(c, 0, 2)
+nbl = IMP.container.ClosePairContainer(sc, 0, 2)
 m.update()
 
 # contents is a NumPy 2xN array of the indices of each close particle pair

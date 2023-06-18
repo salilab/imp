@@ -9,8 +9,7 @@
 #ifndef RMF_VALIDATE_H
 #define RMF_VALIDATE_H
 
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 

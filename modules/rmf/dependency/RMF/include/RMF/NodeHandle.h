@@ -9,7 +9,7 @@
 #ifndef RMF_NODE_HANDLE_H
 #define RMF_NODE_HANDLE_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -71,7 +71,7 @@ class RMFEXPORT NodeHandle : public NodeConstHandle {
   }
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
  public:
-  NodeHandle(NodeID node, boost::shared_ptr<internal::SharedData> shared);
+  NodeHandle(NodeID node, std::shared_ptr<internal::SharedData> shared);
 #endif
 
  public:

@@ -1,5 +1,5 @@
 /**
- *  \file Fine2DRegistrationRestraint.cpp
+ *  \file internal/Fine2DRegistrationRestraint.cpp
  *  \brief Finely refine the angles and translations of a set of subject images
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
@@ -12,7 +12,7 @@
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/log.h"
 
-IMPEM2D_BEGIN_NAMESPACE
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(Model *m)
     : Restraint(m, "File2DRegistrationRestraint%1%"), calls_(0) {
@@ -134,4 +134,4 @@ RegistrationResult Fine2DRegistrationRestraint::get_final_registration() const {
   return rr;
 }
 
-IMPEM2D_END_NAMESPACE
+IMPEM2D_END_INTERNAL_NAMESPACE

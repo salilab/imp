@@ -17,6 +17,9 @@
 #include <IMP/Restraint.h>
 
 #include <iostream>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -36,6 +39,14 @@ class IMPCOREEXPORT DistanceRestraint :
     public IMP::internal::TupleRestraint<DistancePairScore>
 #endif
     {
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                  IMP::internal::TupleRestraint<DistancePairScore> >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(DistanceRestraint);
+
  public:
   //! Create the distance restraint.
   /** \param[in] m Model.
@@ -48,6 +59,7 @@ class IMPCOREEXPORT DistanceRestraint :
                     ParticleIndexAdaptor a,
                     ParticleIndexAdaptor b,
                     std::string name = "DistanceRestraint %1%");
+  DistanceRestraint() {}
 
 #ifdef SWIG
  protected:

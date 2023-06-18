@@ -51,12 +51,14 @@ int main(int argc, char **argv) {
   std::vector<std::string> pdb_file_names;
   std::string map_file_name;
   std::string out_file_name = "em_fit";
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <pdb1> <pdb2> ... <pdbN> <em_map>\n"
       "\nProgram for filtering of docking solutions with EM density maps.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
+
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")(

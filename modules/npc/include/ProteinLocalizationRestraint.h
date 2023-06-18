@@ -16,6 +16,8 @@
 #include <IMP/Restraint.h>
 #include <IMP/npc/npc_config.h>
 #include <IMP/SingletonContainer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPNPC_BEGIN_NAMESPACE
 
@@ -30,11 +32,20 @@ class IMPNPCEXPORT ZAxialPositionRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ZAxialPositionRestraint);
+
 public:
   ZAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
   ZAxialPositionRestraint(Model *m,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  ZAxialPositionRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -45,6 +56,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
 };
@@ -59,11 +73,20 @@ class IMPNPCEXPORT ZAxialPositionLowerRestraint : public Restraint
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ZAxialPositionLowerRestraint);
+
 public:
   ZAxialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, bool consider_radius, double sigma=1);
   ZAxialPositionLowerRestraint(Model *m,
       double lower_bound, bool consider_radius, double sigma=1);
+  ZAxialPositionLowerRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -74,6 +97,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
@@ -88,11 +114,20 @@ class IMPNPCEXPORT ZAxialPositionUpperRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ZAxialPositionUpperRestraint);
+
 public:
   ZAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
       double upper_bound, bool consider_radius, double sigma=1);
   ZAxialPositionUpperRestraint(Model *m,
       double upper_bound, bool consider_radius, double sigma=1);
+  ZAxialPositionUpperRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -103,6 +138,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
 };
@@ -119,11 +157,20 @@ class IMPNPCEXPORT YAxialPositionRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(YAxialPositionRestraint);
+
 public:
   YAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
   YAxialPositionRestraint(Model *m,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  YAxialPositionRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -134,6 +181,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionRestraint);;
 };
@@ -148,11 +198,20 @@ class IMPNPCEXPORT YAxialPositionLowerRestraint : public Restraint
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(YAxialPositionLowerRestraint);
+
 public:
   YAxialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, bool consider_radius, double sigma=1);
   YAxialPositionLowerRestraint(Model *m,
       double lower_bound, bool consider_radius, double sigma=1);
+  YAxialPositionLowerRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -163,6 +222,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionLowerRestraint);;
 };
@@ -177,11 +239,20 @@ class IMPNPCEXPORT YAxialPositionUpperRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(YAxialPositionUpperRestraint);
+
 public:
   YAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
       double upper_bound, bool consider_radius, double sigma=1);
   YAxialPositionUpperRestraint(Model *m,
       double upper_bound, bool consider_radius, double sigma=1);
+  YAxialPositionUpperRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -192,6 +263,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionUpperRestraint);;
 };
@@ -208,11 +282,20 @@ class IMPNPCEXPORT XYRadialPositionRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XYRadialPositionRestraint);
+
 public:
   XYRadialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
   XYRadialPositionRestraint(Model *m,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XYRadialPositionRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -223,6 +306,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
 };
@@ -237,11 +323,20 @@ class IMPNPCEXPORT XYRadialPositionLowerRestraint : public Restraint
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XYRadialPositionLowerRestraint);
+
 public:
   XYRadialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, bool consider_radius, double sigma=1);
   XYRadialPositionLowerRestraint(Model *m,
       double lower_bound, bool consider_radius, double sigma=1);
+  XYRadialPositionLowerRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -252,6 +347,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
@@ -266,11 +364,20 @@ class IMPNPCEXPORT XYRadialPositionUpperRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XYRadialPositionUpperRestraint);
+
 public:
   XYRadialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
       double upper_bound, bool consider_radius, double sigma=1);
   XYRadialPositionUpperRestraint(Model *m,
       double upper_bound, bool consider_radius, double sigma=1);
+  XYRadialPositionUpperRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -281,6 +388,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionUpperRestraint);;
 };
@@ -296,11 +406,19 @@ class IMPNPCEXPORT ProteinContactRestraint : public Restraint
   IMP::PointerMember<IMP::SingletonContainer> sc_;
   double tolerance_factor_;
   double sigma_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, tolerance_factor_, sigma_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ProteinContactRestraint);
+
 public:
   ProteinContactRestraint(Model *m, SingletonContainerAdaptor sc,
       double tolerance_factor, double sigma=0.1);
   ProteinContactRestraint(Model *m,
       double tolerance_factor, double sigma=0.1);
+  ProteinContactRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -325,11 +443,19 @@ class IMPNPCEXPORT ProteinChainRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, sigma_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ProteinChainRestraint);
+
 public:
   ProteinChainRestraint(Model *m, SingletonContainerAdaptor sc,
       double sigma=0.1);
   ProteinChainRestraint(Model *m,
       double sigma=0.1);
+  ProteinChainRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -356,11 +482,19 @@ class IMPNPCEXPORT MembraneSurfaceLocationRestraint : public Restraint
   double r_;
   double sigma_;
   double thickness_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, R_, r_, sigma_, thickness_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MembraneSurfaceLocationRestraint);
+
 public:
   MembraneSurfaceLocationRestraint(Model *m, SingletonContainerAdaptor sc,
       double R, double r, double thickness, double sigma=2);
   MembraneSurfaceLocationRestraint(Model *m,
       double R, double r, double thickness, double sigma=2);
+  MembraneSurfaceLocationRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -371,6 +505,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationRestraint);;
 };
@@ -389,11 +526,20 @@ class IMPNPCEXPORT MembraneSurfaceLocationConditionalRestraint : public Restrain
   double r_;
   double sigma_;
   double thickness_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc1_, sc2_, R_, r_, sigma_, thickness_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MembraneSurfaceLocationConditionalRestraint);
+
 public:
   MembraneSurfaceLocationConditionalRestraint(Model *m, SingletonContainerAdaptor sc1, SingletonContainerAdaptor sc2,
       double R, double r, double thickness, double sigma=2);
   MembraneSurfaceLocationConditionalRestraint(Model *m,
       double R, double r, double thickness, double sigma=2);
+  MembraneSurfaceLocationConditionalRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle1(Particle *p);
@@ -407,6 +553,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationConditionalRestraint);;
 };
@@ -423,11 +572,19 @@ class IMPNPCEXPORT MembraneExclusionRestraint : public Restraint
   double r_;
   double sigma_;
   double thickness_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, R_, r_, sigma_, thickness_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MembraneExclusionRestraint);
+
 public:
   MembraneExclusionRestraint(Model *m, SingletonContainerAdaptor sc,
       double R, double r, double thickness, double sigma=2);
   MembraneExclusionRestraint(Model *m,
       double R, double r, double thickness, double sigma=2);
+  MembraneExclusionRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -438,6 +595,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(MembraneExclusionRestraint);;
 };
@@ -455,11 +615,20 @@ class IMPNPCEXPORT PoreSideVolumeLocationRestraint : public Restraint
   double sigma_;
   double thickness_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, R_, r_, sigma_, thickness_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(PoreSideVolumeLocationRestraint);
+
 public:
   PoreSideVolumeLocationRestraint(Model *m, SingletonContainerAdaptor sc,
       double R, double r, double thickness, bool consider_radius, double sigma=2);
   PoreSideVolumeLocationRestraint(Model *m,
       double R, double r, double thickness, bool consider_radius, double sigma=2);
+  PoreSideVolumeLocationRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -487,11 +656,20 @@ class IMPNPCEXPORT PerinuclearVolumeLocationRestraint : public Restraint
   double sigma_;
   double thickness_;
   bool consider_radius_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, R_, r_, sigma_, thickness_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(PerinuclearVolumeLocationRestraint);
+
 public:
   PerinuclearVolumeLocationRestraint(Model *m, SingletonContainerAdaptor sc,
       double R, double r, double thickness, bool consider_radius, double sigma=2);
   PerinuclearVolumeLocationRestraint(Model *m,
       double R, double r, double thickness, bool consider_radius, double sigma=2);
+  PerinuclearVolumeLocationRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -517,11 +695,19 @@ class IMPNPCEXPORT AssemblySymmetryByDistanceRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, sigma_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(AssemblySymmetryByDistanceRestraint);
+
 public:
   AssemblySymmetryByDistanceRestraint(Model *m, SingletonContainerAdaptor sc,
       double sigma=4);
   AssemblySymmetryByDistanceRestraint(Model *m,
       double sigma=4);
+  AssemblySymmetryByDistanceRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -548,11 +734,19 @@ class IMPNPCEXPORT AssemblySymmetryByDihedralRestraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, sigma_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(AssemblySymmetryByDihedralRestraint);
+
 public:
   AssemblySymmetryByDihedralRestraint(Model *m, SingletonContainerAdaptor sc,
       double sigma=0.1);
   AssemblySymmetryByDihedralRestraint(Model *m,
       double sigma=0.1);
+  AssemblySymmetryByDihedralRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -577,11 +771,19 @@ class IMPNPCEXPORT ProteinProximityRestraint
   IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
   double max_dist_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), sc_, sigma_, max_dist_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ProteinProximityRestraint);
+
 public:
   ProteinProximityRestraint(Model *m, SingletonContainerAdaptor sc,
       double max_dist, double sigma=0.1);
   ProteinProximityRestraint(Model *m,
       double max_dist, double sigma=0.1);
+  ProteinProximityRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);

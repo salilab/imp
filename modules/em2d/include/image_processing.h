@@ -14,19 +14,19 @@
 #include "IMP/base_types.h"
 #include <algorithm>
 #include <cmath>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Class to provide all the parameters to the segmentation function
 class IMPEM2DEXPORT SegmentationParameters {
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & image_pixel_size & diffusion_beta & diffusion_timesteps
-       & fill_holes_stddevs & opening_kernel & remove_sizing_percentage
-       & binary_background & binary_foreground & threshold;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(image_pixel_size, diffusion_beta, diffusion_timesteps,
+       fill_holes_stddevs, opening_kernel, remove_sizing_percentage,
+       binary_background, binary_foreground, threshold);
   }
 
  public:
@@ -91,10 +91,10 @@ class IMPEM2DEXPORT MatchTemplateResult {
         << ") ccc = " << cross_correlation << std::endl;
   }
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & pair.first & pair.second & cross_correlation;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(pair.first, pair.second, cross_correlation);
   }
 };
 IMP_VALUES(MatchTemplateResult, MatchTemplateResults);

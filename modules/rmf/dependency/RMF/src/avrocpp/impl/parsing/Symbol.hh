@@ -25,8 +25,7 @@
 #include <sstream>
 
 #include <boost/any.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <boost/tuple/tuple.hpp>
 
 #include "Node.hh"
@@ -202,11 +201,11 @@ class Symbol {
     return Symbol(sPlaceholder, n);
   }
 
-  static Symbol indirect(const boost::shared_ptr<Production>& p) {
+  static Symbol indirect(const std::shared_ptr<Production>& p) {
     return Symbol(sIndirect, p);
   }
 
-  static Symbol symbolic(const boost::weak_ptr<Production>& p) {
+  static Symbol symbolic(const std::weak_ptr<Production>& p) {
     return Symbol(sSymbolic, p);
   }
 
@@ -233,17 +232,17 @@ class Symbol {
 
 template <typename T>
 void fixup(Production& p,
-           const std::map<T, boost::shared_ptr<Production> >& m) {
+           const std::map<T, std::shared_ptr<Production> >& m) {
   for (Production::iterator it = p.begin(); it != p.end(); ++it) {
     fixup(*it, m);
   }
 }
 
 template <typename T>
-void fixup(Symbol& s, const std::map<T, boost::shared_ptr<Production> >& m) {
+void fixup(Symbol& s, const std::map<T, std::shared_ptr<Production> >& m) {
   switch (s.kind()) {
     case Symbol::sIndirect:
-      fixup(*s.extra<boost::shared_ptr<Production> >(), m);
+      fixup(*s.extra<std::shared_ptr<Production> >(), m);
       break;
     case Symbol::sAlternative: {
       std::vector<Production>* vv = s.extrap<std::vector<Production> >();
@@ -259,7 +258,7 @@ void fixup(Symbol& s, const std::map<T, boost::shared_ptr<Production> >& m) {
     } break;
     case Symbol::sPlaceholder:
       s = Symbol::symbolic(
-          boost::weak_ptr<Production>(m.find(s.extra<T>())->second));
+          std::weak_ptr<Production>(m.find(s.extra<T>())->second));
       break;
     case Symbol::sUnionAdjust:
       fixup(s.extrap<std::pair<size_t, Production> >()->second, m);
@@ -325,15 +324,15 @@ class SimpleParser {
             append(boost::tuples::get<0>(*s.extrap<RootInfo>()));
             continue;
           case Symbol::sIndirect: {
-            boost::shared_ptr<Production> pp =
-                s.extra<boost::shared_ptr<Production> >();
+            std::shared_ptr<Production> pp =
+                s.extra<std::shared_ptr<Production> >();
             parsingStack.pop();
             append(*pp);
           }
             continue;
           case Symbol::sSymbolic: {
-            boost::shared_ptr<Production> pp(
-                s.extra<boost::weak_ptr<Production> >());
+            std::shared_ptr<Production> pp(
+                s.extra<std::weak_ptr<Production> >());
             parsingStack.pop();
             append(*pp);
           }
@@ -465,15 +464,15 @@ class SimpleParser {
           }
         } break;
         case Symbol::sIndirect: {
-          boost::shared_ptr<Production> pp =
-              t.extra<boost::shared_ptr<Production> >();
+          std::shared_ptr<Production> pp =
+              t.extra<std::shared_ptr<Production> >();
           parsingStack.pop();
           append(*pp);
         }
           continue;
         case Symbol::sSymbolic: {
-          boost::shared_ptr<Production> pp(
-              t.extra<boost::weak_ptr<Production> >());
+          std::shared_ptr<Production> pp(
+              t.extra<std::weak_ptr<Production> >());
           parsingStack.pop();
           append(*pp);
         }

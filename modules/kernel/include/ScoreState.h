@@ -18,6 +18,8 @@
 #include <IMP/deprecation_macros.h>
 #include <IMP/ref_counted_macros.h>
 #include <iostream>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -55,6 +57,15 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
   bool can_skip_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), can_skip_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      update_order_ = -1;
+    }
+  }
+
  protected:
   //! Set whether we can skip during model evaluation if appropriate
   /** This should be set only once before the state is used (ideally in the
@@ -67,6 +78,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 
  public:
   ScoreState(Model *m, std::string name);
+  ScoreState() {}
   //! Force update of the structure.
   void before_evaluate();
 
@@ -108,6 +120,12 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 /** Return an appropriate (topologically sorted) order to update
     the score states in. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
+
+#ifndef SWIG
+/** Return an appropriate (topologically sorted) order to update
+    the score states in. */
+IMPKERNELEXPORT ScoreStatesTemp get_update_order(std::set<ScoreState*> input);
+#endif
 
 IMPKERNEL_END_NAMESPACE
 

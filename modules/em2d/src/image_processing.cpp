@@ -1,11 +1,11 @@
 /**
  *  \file image_processing.cpp
  *  \brief image processing for EM
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/image_processing.h"
-#include "IMP/em2d/CenteredMat.h"
+#include "IMP/em2d/internal/CenteredMat.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
@@ -574,8 +574,8 @@ void get_transformed(const cv::Mat &input, cv::Mat &transformed,
 void do_extend_borders(cv::Mat &orig, cv::Mat &dst, unsigned int pix) {
   dst.create(orig.rows + 2 * pix, orig.cols + 2 * pix, orig.type());
   dst.setTo(0.0);
-  CenteredMat Orig(orig);
-  CenteredMat Dst(dst);
+  internal::CenteredMat Orig(orig);
+  internal::CenteredMat Dst(dst);
   for (int i = Orig.get_start(0); i <= Orig.get_end(0); ++i) {
     for (int j = Orig.get_start(1); j <= Orig.get_end(1); ++j) {
       Dst(i, j) = Orig(i, j);
@@ -622,8 +622,8 @@ void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
 
 double get_overlap_percentage(cv::Mat &m1, cv::Mat &m2, const IntPair &center) {
 
-  CenteredMat M1(m1, center.first, center.second);
-  CenteredMat M2(m2);
+  internal::CenteredMat M1(m1, center.first, center.second);
+  internal::CenteredMat M2(m2);
   IMP_USAGE_CHECK(
       (M2.get_start(0) < M1.get_start(0) || M2.get_start(1) < M1.get_start(1) ||
        M2.get_end(0) > M1.get_end(0) || M2.get_end(1) > M1.get_end(1)),

@@ -250,8 +250,8 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
   }
   if (!has_atom) {
     IMP_WARN(
-        "Sorry, unable to read atoms from PDB file."
-        " Thanks for the effort.\n");
+        "No atoms were read from " << filename
+	<< "; perhaps it is not a PDB file.\n");
     return Hierarchies();
   }
   if (!noradii) {
@@ -530,5 +530,7 @@ ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
   }
   return ret;
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::atom::WritePDBOptimizerState);
 
 IMPATOM_END_NAMESPACE

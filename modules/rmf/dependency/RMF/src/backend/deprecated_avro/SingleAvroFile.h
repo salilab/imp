@@ -10,7 +10,7 @@
 #define RMF_INTERNAL_SINGLE_AVRO_FILE_H
 
 #include "AllJSON.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -33,7 +33,7 @@ class SingleAvroFile : public AvroKeysAndCategories {
   bool dirty_;
   bool text_;
 
-  boost::shared_ptr<std::vector<char> > buffer_;
+  std::shared_ptr<std::vector<char> > buffer_;
 
   RMF_avro_backend::Data null_frame_data_;
   RMF_avro_backend::Data null_static_frame_data_;
@@ -146,7 +146,7 @@ class SingleAvroFile : public AvroKeysAndCategories {
   void reload();
 
   SingleAvroFile(std::string path, bool create, bool read_only);
-  SingleAvroFile(boost::shared_ptr<std::vector<char> > buffer, bool create,
+  SingleAvroFile(std::shared_ptr<std::vector<char> > buffer, bool create,
                  bool read_only);
   SingleAvroFile();
   ~SingleAvroFile() { flush(); }

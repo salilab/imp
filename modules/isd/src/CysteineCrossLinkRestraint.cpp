@@ -295,4 +295,6 @@ ModelObjectsTemp CysteineCrossLinkRestraint::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::CysteineCrossLinkRestraint);
+
 IMPISD_END_NAMESPACE

@@ -4,7 +4,6 @@
 #include <IMP.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/algebra.h>
-#include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/flags.h>

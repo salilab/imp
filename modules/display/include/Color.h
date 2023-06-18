@@ -14,8 +14,8 @@
 #include <IMP/comparison_macros.h>
 #include <IMP/check_macros.h>
 #include <IMP/value_macros.h>
-#include <boost/array.hpp>
-#include <boost/serialization/access.hpp>
+#include <array>
+#include <cereal/access.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -23,12 +23,12 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /**
  */
 class IMPDISPLAYEXPORT Color : public Value {
-  boost::array<double, 3> c_;
+  std::array<double, 3> c_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & c_[0] & c_[1] & c_[2];
+  template<class Archive> void serialize(Archive &ar) {
+    ar(c_[0], c_[1], c_[2]);
   }
 
   int compare(double a, double b) const {
@@ -72,10 +72,10 @@ class IMPDISPLAYEXPORT Color : public Value {
   double get_green() const { return c_[1]; }
   double get_blue() const { return c_[2]; }
 #ifndef SWIG
-  typedef const double *ComponentIterator;
+  typedef std::array<double, 3>::const_iterator ComponentIterator;
   ComponentIterator components_begin() const { return c_.begin(); }
   ComponentIterator components_end() const { return c_.end(); }
-  const boost::array<double, 3> &get_rgb() const { return c_; }
+  const std::array<double, 3> &get_rgb() const { return c_; }
 #endif
   //!@}
 

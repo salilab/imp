@@ -120,6 +120,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   // add a member associated with a reference frame
   void add_rigid_body_member(ParticleIndex pi);
 
+  // remove a member associated with xyz coords
+  void remove_point_member(ParticleIndex pi);
+
+  // remove a member associated with a reference frame
+  void remove_rigid_body_member(ParticleIndex pi);
+
  public:
   RigidMembers get_rigid_members() const;
 
@@ -180,6 +186,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_DECORATOR_SETUP_1(RigidBody, algebra::ReferenceFrame3D, rf);
 
   //! Make the rigid body no longer rigid.
+  /** If this rigid body has been added as a member of another rigid body,
+      it must be removed first. */
   static void teardown_particle(RigidBody rb);
 
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
@@ -581,6 +589,16 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      The radius of the rigid body is updated to reflect this change.
   */
   void set_is_rigid_member(ParticleIndex pi, bool tf);
+
+  //! Remove the member from this rigid body.
+  /** The member can be either a rigid body member or a point
+      member, either rigid ot non-rigid.
+
+      The radius of the rigid body is updated to reflect the removed member.
+
+      \throw UsageException if the given particle is not a member of this body.
+    */
+  void remove_member(ParticleIndexAdaptor p);
 };
 
 #ifndef IMP_DOXYGEN

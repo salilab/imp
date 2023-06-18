@@ -21,6 +21,14 @@ All have the precondition that the appropriate value exists. For `set`
 - `set_static_foo`: set a value that is stored once for the whole file
 - `set_foo`: if there is no static value, set it, otherwise, if the passed value differs from the static value, set it as a frame value.
 
+# Path attributes # {#pathattr}
+
+String attributes can be used either to store arbitrary text, or paths to files.
+Paths are stored internally as relative paths, relative to the directory
+containing the RMF file. (This ensures that if the entire directory structure
+containing the RMF file is archived, the paths are still correct.)
+However, the `set_*` methods will accept both absolute and relative paths,
+and the `get_*` methods will always return absolute paths.
 
 # Physics # {#physics}
 

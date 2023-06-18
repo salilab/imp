@@ -105,10 +105,19 @@ The data types that can currently be stored in an RMF file are
 | Name    |  Description | C++ type | Python type |
 |--------:|--------------|:--------:|:-----------:|
 | RMF::Float   | a floating point value | `float` | `float` |
-| RMF::String  | a utf8 string | `std::string` | `string` |
+| RMF::String  | a utf8 string | `std::string` | `str` |
 | RMF::Int | an 64 bit integer | `int` | `int`|
 | RMF::Vector3 | three Float values | RMF::Vector3 | RMF.Vector3 |
 | RMF::Vector4 | four Float values | RMF::Vector4 | RMF.Vector4 |
+
+RMF::String can be used either to store arbitrary text, or paths to files.
+Paths are stored as relative paths, relative to the directory containing
+the RMF file. This ensures that if the entire directory structure containing
+the RMF file is archived, the paths are still correct. The convention is that
+string attributes containing paths are named ending in "filename" or
+"filenames". Special handling is done on such attributes (e.g. if an RMF
+is moved to a different directory with `rmf_slice` or `rmf_cat`, the relative
+paths of the static frame are updated accordingly).
 
 In addition, an arbitrary length list of any of the above can be stored. The type for that
 is the type for the single data with an \c s on the end, eg \c Floats for a list of \c Float

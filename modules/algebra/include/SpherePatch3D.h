@@ -11,7 +11,7 @@
 #include "Sphere3D.h"
 #include "Plane3D.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -43,10 +43,10 @@ class IMPALGEBRAEXPORT SpherePatch3D : public GeometricPrimitiveD<3> {
   Sphere3D sph_;
   Plane3D crossing_plane_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & sph_ & crossing_plane_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(sph_, crossing_plane_);
   }
 };
 

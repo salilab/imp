@@ -13,7 +13,7 @@
 #include "Vector2D.h"
 #include "Rotation2D.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -115,10 +115,10 @@ private:
   Vector2D trans_;  // translation
   Rotation2D rot_;  // rotation
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & trans_ & rot_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(trans_, rot_);
   }
 
 };

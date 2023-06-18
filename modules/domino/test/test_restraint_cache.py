@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
     def _create_stuff(self):
         m = IMP.Model()
         ps = [IMP.Particle(m) for i in range(0, 10)]
-        r = IMP._ConstRestraint(1, ps)
+        r = IMP._ConstRestraint(m, ps, 1)
         r.set_name("const restraint")
         pst = IMP.domino.ParticleStatesTable()
         ik = IMP.IntKey("key")
@@ -99,7 +99,7 @@ class Tests(IMP.test.TestCase):
         """Test cache with simple restraint"""
         (m, ps, r, pst, ik, cache) = self._create_stuff()
         rs = IMP.RestraintSet(m, 1.0, "outer")
-        r = IMP._ConstRestraint(1, [ps[0]])
+        r = IMP._ConstRestraint(m, [ps[0]], 1)
         r.set_name("const 2")
         rs.add_restraint(r)
         r.set_maximum_score(.5)

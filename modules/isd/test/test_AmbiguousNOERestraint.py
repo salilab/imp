@@ -3,7 +3,7 @@
 # general imports
 from numpy import *
 from random import uniform
-
+import pickle
 
 # imp general
 import IMP
@@ -299,6 +299,31 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.get_probability(),
                                    exp(-self.noe.unprotected_evaluate(self.DA)), delta=0.001)
+
+    def test_serialize(self):
+        """Test (un-)serialize of AmbiguousNOERestraint"""
+        self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
+                               2.8517, delta=1e-4)
+        self.noe.set_name("foo")
+        dump = pickle.dumps(self.noe)
+        newnoe = pickle.loads(dump)
+        self.assertAlmostEqual(newnoe.unprotected_evaluate(None),
+                               2.8517, delta=1e-4)
+        self.assertEqual(newnoe.get_name(), "foo")
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of AmbiguousNOERestraint via polymorphic ptr"""
+        self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
+                               2.8517, delta=1e-4)
+        self.noe.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newnoe, = newsf.restraints
+        self.assertAlmostEqual(newnoe.unprotected_evaluate(None),
+                               2.8517, delta=1e-4)
+        self.assertEqual(newnoe.get_name(), "foo")
+
 
 if __name__ == '__main__':
     IMP.test.main()

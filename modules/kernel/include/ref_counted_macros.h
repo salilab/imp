@@ -11,49 +11,14 @@
 #include <IMP/kernel_config.h>
 #include "utility_macros.h"
 
-#ifdef _MSC_VER
-// VC doesn't understand friends properly
-#define IMP_REF_COUNTED_DESTRUCTOR(Name) \
- public:                                 \
-  virtual ~Name() {}                     \
-  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
-
-#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest) \
- public:                                              \
-  virtual ~Name() { dest }                            \
-  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
-
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name) \
- public:                                            \
-  virtual ~Name()
-
-#elif defined(SWIG)
-// SWIG doesn't do friends right either, but we don't care as much
-#define IMP_REF_COUNTED_DESTRUCTOR(Name) \
- public:                                 \
-  virtual ~Name() {}                     \
-  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
-
-#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest) \
- public:                                              \
-  virtual ~Name() { dest }                            \
-  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
-
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name) \
- public:                                            \
-  virtual ~Name()
-
-#elif defined(IMP_DOXYGEN)
-/* The destructor is unprotected for SWIG since if it is protected
-   SWIG does not wrap the Python proxy destruction and so does not
-   dereference the ref counted pointer. SWIG also gets confused
-   on template friends.
-*/
-//! Ref counted objects should have private destructors
-/** This macro defines a private destructor and adds the appropriate
-    friend methods so that the class can be used with ref counting.
-    By defining a private destructor, you make it so that the object
-    cannot be declared on the stack and so must be ref counted.
+#if defined(IMP_DOXYGEN)
+//! Set up destructor for a ref counted object
+/** This macro defines a virtual destructor for a ref counted object.
+    Ideally, the destructor would be defined private, so that the object
+    cannot be declared on the stack and so must be ref counted, but in
+    practice this breaks usage of the object with SWIG, some older compilers,
+    C++11 smart pointers (e.g. std::unique_ptr, std::shared_ptr), and
+    serialization, so a public destructor is used.
 
     \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR()
 */
@@ -71,24 +36,18 @@
 
 #else
 #define IMP_REF_COUNTED_DESTRUCTOR(Name) \
- protected:                              \
-  virtual ~Name() {}                     \
-                                         \
  public:                                 \
+  virtual ~Name() {}                     \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest) \
- protected:                                           \
-  virtual ~Name() { dest }                            \
-                                                      \
  public:                                              \
+  virtual ~Name() { dest }                            \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name) \
- protected:                                         \
-  virtual ~Name();                                  \
-                                                    \
  public:                                            \
+  virtual ~Name();                                  \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 #endif
 

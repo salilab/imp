@@ -24,6 +24,11 @@
 #include <IMP/hash.h>
 #include "hash.h"
 #include <boost/scoped_array.hpp>
+#include <cereal/access.hpp>
+
+// Make sure that binary archives are registered with cereal
+// before any Object subclass that uses CEREAL_REGISTER_TYPE
+#include <cereal/archives/binary.hpp>
 
 #if !defined(IMP_HAS_CHECKS)
 #error "IMP_HAS_CHECKS not defined, something is broken"
@@ -125,6 +130,24 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   static void remove_live_object(Object* o);
 #endif
 
+ friend class cereal::access;
+
+ template<class Archive> void serialize(Archive &ar) {
+    ar(name_);
+#if IMP_HAS_LOG != IMP_NONE
+    ar(log_level_);
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
+    ar(check_level_, was_owned_, check_value_);
+#endif
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // set quoted_name from name
+      set_name_internal(name_);
+    }
+  }
+
+  void set_name_internal(std::string name);
+
   void initialize(std::string name);
 
   int compare(const Object& o) const {
@@ -135,6 +158,16 @@ class IMPKERNELEXPORT Object : public NonCopyable {
     else
       return 0;
   }
+
+  typedef std::function<void(Object *, cereal::BinaryOutputArchive &)> SaveFunc;
+  typedef std::function<Object*(cereal::BinaryInputArchive &)> LoadFunc;
+  struct OutputSerializer {
+    std::string class_name;
+    SaveFunc save_func;
+  };
+
+  static std::map<std::string, OutputSerializer> &get_output_serializers();
+  static std::map<std::string, LoadFunc> &get_input_serializers();
 
  protected:
   //! Construct an object with the given name
@@ -208,6 +241,16 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   void unref() const;
   void release() const;
   const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
+
+  /** \see IMP_OBJECT_SERIALIZE_DECL */
+  static bool register_serialize(const std::type_info &t, std::string name,
+                                 SaveFunc save_func, LoadFunc load_func);
+
+  //! Save the most-derived Object subclass to the given binary archive
+  void poly_serialize(cereal::BinaryOutputArchive &ar);
+
+  //! Create most-derived Object subclass from the given binary archive
+  static Object *poly_unserialize(cereal::BinaryInputArchive &ar);
 #endif
 
   void _on_destruction();

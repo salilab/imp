@@ -66,6 +66,9 @@ inline Out get_as(const In &in) {
 /** This is done by replacing %1% with a sequential number.*/
 IMPKERNELEXPORT std::string get_unique_name(std::string templ);
 
+//! Get the IMP copyright notice
+IMPKERNELEXPORT std::string get_copyright();
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_BASE_UTILITY_H */

@@ -209,6 +209,22 @@ _struct.entry_id id4
             # and the system ID should match entry_id
             self.assertEqual(s4.id, 'id4')
 
+    def test_collection_handler(self):
+        """Test CollectionHandler"""
+        cif = """
+loop_
+_ihm_entry_collection.id
+_ihm_entry_collection.name
+_ihm_entry_collection.details
+foo bar 'more text'
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            c, = s.collections
+            self.assertEqual(c.id, 'foo')
+            self.assertEqual(c.name, 'bar')
+            self.assertEqual(c.details, 'more text')
+
     def test_software_handler(self):
         """Test SoftwareHandler"""
         cif = """
@@ -1030,10 +1046,11 @@ _ihm_dataset_related_db_reference.details
 2 3 PDB 3F3F 30-OCT-08 'CRYSTAL STRUCTURE'
 3 5 emdb EMD-123 . .
 4 6 . . . .
+5 7 testDB testcode testver testdetails
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            d1, d2, d3, d4 = s.orphan_datasets
+            d1, d2, d3, d4, d5 = s.orphan_datasets
             self.assertEqual(d1.location.db_name, 'PDB')
             self.assertEqual(d1.location.__class__, ihm.location.PDBLocation)
             self.assertEqual(d1.location.access_code, '3JRO')
@@ -1051,6 +1068,12 @@ _ihm_dataset_related_db_reference.details
             self.assertEqual(d4.location.__class__,
                              ihm.location.DatabaseLocation)
             self.assertIsNone(d4.location.access_code)
+            self.assertEqual(d5.location.__class__,
+                             ihm.location.DatabaseLocation)
+            self.assertEqual(d5.location.db_name, "testDB")
+            self.assertEqual(d5.location.access_code, "testcode")
+            self.assertEqual(d5.location.version, "testver")
+            self.assertEqual(d5.location.details, "testdetails")
 
     def test_related_datasets_handler(self):
         """Test RelatedDatasetsHandler"""
@@ -1358,7 +1381,7 @@ _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
 _ihm_modeling_post_process.details
 1  1   1   1   'filter'  'energy/score'  15000   6520 . . 401 501 .
-2  1   1   2   'cluster' 'dRMSD'         6520    6520 . . . . .
+2  1   1   2   'cluster' 'invalid'       6520    6520 . . . . .
 3  1   2   1   'filter'  'energy/score'  16000   7520 . . . . .
 4  1   2   2   'filter'  'composition'   7520    5520 . . . . .
 5  1   2   3   'cluster' 'dRMSD'         5520    6520 . . . . .
@@ -1384,7 +1407,8 @@ _ihm_modeling_post_process.details
             self.assertEqual(a1.steps[0].software._id, '401')
             self.assertEqual(a1.steps[0].script_file._id, '501')
             self.assertEqual(a1.steps[1].__class__, ihm.analysis.ClusterStep)
-            self.assertEqual(a1.steps[1].feature, 'dRMSD')
+            # invalid feature should be mapped to default
+            self.assertEqual(a1.steps[1].feature, 'other')
             self.assertEqual(a1.steps[1].num_models_begin, 6520)
             self.assertIsNone(a1.steps[1].software)
             self.assertIsNone(a1.steps[1].script_file)
@@ -1555,11 +1579,12 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
+_ihm_ensemble_info.model_group_superimposed_flag
 _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
-1 'Cluster 1' 2 3 . dRMSD 1257 10 15.400 9 . . .
-2 'Cluster 2' 2 . . dRMSD 1257 10 15.400 9 'cluster details' YES independent
-3 'Cluster 3' . . invalid_cluster invalid_feature 1 1 15.400 9 . . .
+1 'Cluster 1' 2 3 . dRMSD 1257 10 15.400 9 . . . .
+2 'Cluster 2' 2 . . dRMSD 1257 10 15.400 9 'cluster details' NO YES independent
+3 'Cluster 3' . . invalid_cluster invalid_feature 1 1 15.400 9 . YES . .
 #
 #
 loop_
@@ -1588,6 +1613,7 @@ _ihm_ensemble_sub_sample.file_id
             self.assertIsNone(e.details)
             self.assertAlmostEqual(e.precision, 15.4, delta=0.1)
             self.assertEqual(e.file._id, '9')
+            self.assertIsNone(e.superimposed)
             self.assertIsNone(e2.model_group)
             self.assertEqual(e2.num_models_deposited, 10)
             self.assertEqual(e2.details, 'cluster details')
@@ -1602,9 +1628,11 @@ _ihm_ensemble_sub_sample.file_id
             self.assertEqual(s2.model_group._id, '42')
             self.assertEqual(s2.file._id, '3')
             self.assertIsInstance(s2, ihm.model.IndependentSubsample)
+            self.assertFalse(e2.superimposed)
             # invalid cluster/feature should be mapped to default
             self.assertEqual(e3.clustering_method, 'Other')
             self.assertEqual(e3.clustering_feature, 'other')
+            self.assertTrue(e3.superimposed)
 
     def test_density_handler(self):
         """Test DensityHandler"""

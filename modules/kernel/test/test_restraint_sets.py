@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.test
+import pickle
 
 class LinkScoreState(IMP.ScoreState):
     """ScoreState that links one particle to another"""
@@ -70,6 +71,32 @@ class Tests(IMP.test.TestCase):
         m, rs, r0, r1, r2 = self._make_stuff()
         self.assertFalse(r1.get_is_aggregate())
         self.assertTrue(rs.get_is_aggregate())
+
+    def test_pickle(self):
+        """Test that RestraintSet can be (un-)pickled"""
+        m, rs, r0, r1, r2 = self._make_stuff()
+        rs.set_name("foo")
+        r0.set_name("bar")
+        r1.set_name("baz")
+        self.assertEqual(rs.evaluate(False), 1)
+        dump = pickle.dumps(rs)
+        newrs = pickle.loads(dump)
+        self.assertEqual(newrs.get_name(), "foo")
+        self.assertEqual([r.get_name() for r in newrs.restraints],
+                         ["bar", "baz"])
+        self.assertEqual(newrs.evaluate(False), 1)
+
+    def test_pickle_polymorphic(self):
+        """Test that RestraintSet can be (un-)pickled via polymorphic pointer"""
+        m = IMP.Model()
+        rs1 = IMP.RestraintSet(m, 2.0)
+        rs1.restraints.append(IMP._ConstRestraint(m, [], 1))
+        rs2 = IMP.RestraintSet(m, 12.0)
+        rs2.restraints.append(rs1)
+        self.assertEqual(rs2.evaluate(False), 24.)
+        dump = pickle.dumps(rs2)
+        newrs2 = pickle.loads(dump)
+        self.assertEqual(newrs2.evaluate(False), 24.)
 
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""

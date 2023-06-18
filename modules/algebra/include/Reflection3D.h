@@ -11,7 +11,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include "Plane3D.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -19,10 +19,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class Reflection3D : public GeometricPrimitiveD<3> {
   Plane3D pl_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & pl_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(pl_);
   }
 
  public:

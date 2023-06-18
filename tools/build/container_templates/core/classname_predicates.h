@@ -2,7 +2,7 @@
  *  \file IMP/core/classname_predicates.h
  *  \brief Define some predicates.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLASSNAME_PREDICATES_H
@@ -14,6 +14,8 @@
 #include <IMP/HELPERNAME_macros.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,9 +24,18 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   int v_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClassnamePredicate>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ConstantClassnamePredicate);
+
  public:
   ConstantClassnamePredicate(int v,
                              std::string name = "ConstClassnamePredicate%1%");
+
+  ConstantClassnamePredicate() {}
+
   virtual int get_value_index(Model *, PASSINDEXTYPE) const
       override {
     return v_;
@@ -44,6 +55,12 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
 
 class IMPCOREEXPORT UnorderedTypeClassnamePredicate
     : public ClassnamePredicate {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClassnamePredicate>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(UnorderedTypeClassnamePredicate);
+
  public:
   UnorderedTypeClassnamePredicate(std::string name =
                                       "UnorderedTypeClassnamePredicate%1%");
@@ -113,6 +130,12 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
 
 /** Return true if all members of the tuple are the same. */
 class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ClassnamePredicate>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(AllSameClassnamePredicate);
+
  public:
   AllSameClassnamePredicate(std::string name = "AllSameClassnamePredicate%1%");
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const

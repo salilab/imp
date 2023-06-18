@@ -82,7 +82,7 @@ Entity loadEntity(InputStream& in) {
 }
 
 Entity loadEntity(const uint8_t* text, size_t len) {
-  boost::shared_ptr<InputStream> in = memoryInputStream(text, len);
+  std::shared_ptr<InputStream> in = memoryInputStream(text, len);
   return loadEntity(*in);
 }
 
@@ -127,12 +127,12 @@ void writeEntity(JsonGenerator& g, const Entity& n) {
 }
 
 std::string Entity::toString() const {
-  boost::shared_ptr<OutputStream> out = memoryOutputStream();
+  std::shared_ptr<OutputStream> out = memoryOutputStream();
   JsonGenerator g;
   g.init(*out);
   writeEntity(g, *this);
   g.flush();
-  boost::shared_ptr<InputStream> in = memoryInputStream(*out);
+  std::shared_ptr<InputStream> in = memoryInputStream(*out);
   const uint8_t* p = 0;
   size_t n = 0;
   size_t c = 0;
@@ -142,7 +142,7 @@ std::string Entity::toString() const {
   std::string result;
   result.resize(c);
   c = 0;
-  boost::shared_ptr<InputStream> in2 = memoryInputStream(*out);
+  std::shared_ptr<InputStream> in2 = memoryInputStream(*out);
   while (in2->next(&p, &n)) {
     ::memcpy(&result[c], p, n);
     c += n;

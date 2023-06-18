@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -137,6 +137,14 @@ ModelObjectsTemp ZAxialPositionRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *ZAxialPositionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.ZAxialPositionRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM ZAxialPositionLowerRestraint
@@ -221,6 +229,13 @@ ModelObjectsTemp ZAxialPositionLowerRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *ZAxialPositionLowerRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.ZAxialPositionLowerRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM ZAxialPositionUpperRestraint
@@ -305,6 +320,13 @@ ModelObjectsTemp ZAxialPositionUpperRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *ZAxialPositionUpperRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.ZAxialPositionUpperRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM YAxialPositionRestraint
@@ -406,6 +428,14 @@ ModelObjectsTemp YAxialPositionRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *YAxialPositionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.YAxialPositionRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM YAxialPositionLowerRestraint
@@ -490,6 +520,13 @@ ModelObjectsTemp YAxialPositionLowerRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *YAxialPositionLowerRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.YAxialPositionLowerRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM YAxialPositionUpperRestraint
@@ -574,6 +611,13 @@ ModelObjectsTemp YAxialPositionUpperRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *YAxialPositionUpperRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.YAxialPositionUpperRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM XYRadialPositionRestraint
@@ -697,6 +741,14 @@ ModelObjectsTemp XYRadialPositionRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *XYRadialPositionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XYRadialPositionRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM XYRadialPositionLowerRestraint
@@ -792,6 +844,13 @@ ModelObjectsTemp XYRadialPositionLowerRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *XYRadialPositionLowerRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XYRadialPositionLowerRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM XYRadialPositionUpperRestraint
@@ -887,6 +946,13 @@ ModelObjectsTemp XYRadialPositionUpperRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *XYRadialPositionUpperRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XYRadialPositionUpperRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - ProteinContactRestraint
@@ -981,7 +1047,6 @@ ModelObjectsTemp ProteinContactRestraint::do_get_inputs() const {
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
 }
-
 
 /*#####################################################
 # Restraints setup - ProteinChainRestraint
@@ -1241,6 +1306,15 @@ ModelObjectsTemp MembraneSurfaceLocationRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *MembraneSurfaceLocationRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.MembraneSurfaceLocationRestraint");
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
+  ri->add_float("thickness", thickness_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - MembraneSurfaceLocationConditionalRestraint
@@ -1360,6 +1434,18 @@ ModelObjectsTemp MembraneSurfaceLocationConditionalRestraint::do_get_inputs() co
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *MembraneSurfaceLocationConditionalRestraint::get_static_info()
+        const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.MembraneSurfaceLocationConditionalRestraint");
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
+  ri->add_float("thickness", thickness_);
+  ri->add_float("sigma", sigma_);
+  ri->add_particle_indexes("particles1", sc1_->get_contents());
+  ri->add_particle_indexes("particles2", sc2_->get_contents());
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - MembraneExclusionRestraint
@@ -1456,6 +1542,15 @@ ModelObjectsTemp MembraneExclusionRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *MembraneExclusionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.MembraneExclusionRestraint");
+  ri->add_float("major radius", R_);
+  ri->add_float("minor radius", r_);
+  ri->add_float("thickness", thickness_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - PoreSideVolumeLocationRestraint
@@ -1883,5 +1978,26 @@ ModelObjectsTemp ProteinProximityRestraint::do_get_inputs() const {
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinContactRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinChainRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneSurfaceLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(
+               IMP::npc::MembraneSurfaceLocationConditionalRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneExclusionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PoreSideVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PerinuclearVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDistanceRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDihedralRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinProximityRestraint);
 
 IMPNPC_END_NAMESPACE

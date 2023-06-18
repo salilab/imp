@@ -34,6 +34,7 @@
 #include <boost/exception/exception.hpp>
 
 #include <exception>
+#include <stdexcept>
 
 #include "RMF/internal/swig_helpers.h"
 #include "RMF.h"
@@ -68,7 +69,7 @@
   // hack, I don't understand what swig is doing
   typedef RMF::Vector<3U> Vector3;
   typedef RMF::Vector<4U> Vector4;
-  typedef boost::array<int,2> IntRange;
+  typedef std::array<int,2> IntRange;
 %}
 
 %include "RMF.range.i"
@@ -94,7 +95,8 @@
 %inline %{
 std::string _get_rmf_version() {
   std::ostringstream oss;
-  oss << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR;
+  oss << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR
+       << "." << RMF_VERSION_MICRO;
   return oss.str();
 }
 %}
@@ -161,3 +163,4 @@ RMF_SWIG_VECTOR(RMF, TraverseHelper)
 
 
 %include "RMF.python.i"
+%include "RMF.numpy.i"

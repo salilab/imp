@@ -179,10 +179,15 @@ class ReplicaExchange(object):
         self.vars = {}
 
         # add check hierarchy is multistate
-        self.output_objects = output_objects
+        if output_objects == []:
+            # The "[]" in the default parameters is a global object, so make
+            # our own copy here
+            self.output_objects = []
+        else:
+            self.output_objects = output_objects
         self.rmf_output_objects = rmf_output_objects
         if (isinstance(root_hier, IMP.atom.Hierarchy)
-                and root_hier.get_name() == 'System'):
+                and not root_hier.get_parent()):
             if self.output_objects is not None:
                 self.output_objects.append(
                     IMP.pmi.io.TotalScoreOutput(self.model))
@@ -575,11 +580,6 @@ class ReplicaExchange(object):
             output.close_rmf(rmfname)
 
 
-@IMP.deprecated_object("2.18", "Use ReplicaExchange instead")
-class ReplicaExchange0(ReplicaExchange):
-    pass
-
-
 class BuildSystem(object):
     """A macro to build a IMP::pmi::topology::System based on a
        TopologyReader object.
@@ -610,7 +610,8 @@ class BuildSystem(object):
                   'RNA': IMP.pmi.alphabets.rna}
 
     def __init__(self, model, sequence_connectivity_scale=4.0,
-                 force_create_gmm_files=False, resolutions=[1, 10]):
+                 force_create_gmm_files=False, resolutions=[1, 10],
+                 name='System'):
         """Constructor
         @param model An IMP Model
         @param sequence_connectivity_scale For scaling the connectivity
@@ -620,9 +621,10 @@ class BuildSystem(object):
                   files don't exist. If number of Gaussians is zero, won't
                   do anything.
         @param resolutions The resolutions to build for structured regions
+        @param name The name of the top-level hierarchy node.
         """
         self.model = model
-        self.system = IMP.pmi.topology.System(self.model)
+        self.system = IMP.pmi.topology.System(self.model, name=name)
         self._readers = []    # the TopologyReaders (one per state)
         # TempResidues for each domain key=unique name,
         # value=(atomic_res,non_atomic_res).
@@ -785,6 +787,7 @@ class BuildSystem(object):
         self._domain_res.append(these_domain_res)
         self._domains.append(these_domains)
         print('BuildSystem.add_state: State', len(self.system.states), 'added')
+        return state
 
     def get_molecules(self):
         """Return list of all molecules grouped by state.

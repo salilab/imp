@@ -295,7 +295,7 @@ void ProteinKinematics::build_topology_graph() {
 
   // TODO: add IMP_CHECK on this code
   std::vector<int> component(boost::num_vertices(graph_));
-  unsigned int num = boost::connected_components(graph_, &component[0]);
+  // unsigned int num = boost::connected_components(graph_, &component[0]);
   //std::cout << "Num Connected Components = " << num << std::endl;
 }
 
@@ -327,7 +327,7 @@ void ProteinKinematics::mark_rotatable_angle(
     IMP_THROW("cannot find node index for angle", ValueException);
   }
   std::vector<int> component(boost::num_vertices(graph_));
-  unsigned int num = boost::connected_components(graph_, &component[0]);
+  // unsigned int num = boost::connected_components(graph_, &component[0]);
   //std::cerr << "CC NUM before removal of rotatable bonds = " << component[0]
   //          << std::endl;
   //std::cerr << "REMOVE EDGE = " << atom_index1 << atom_index2 << std::endl;

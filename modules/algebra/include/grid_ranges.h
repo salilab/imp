@@ -16,7 +16,7 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <IMP/Vector.h>
 
 #include <limits>
@@ -27,9 +27,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <int D>
 class UnboundedGridRangeD {
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {}
+  template<class Archive> void serialize(Archive &ar) {}
 
  public:
   typedef GridIndexD<D> Index;
@@ -103,10 +103,10 @@ template <int D>
 class BoundedGridRangeD {
   ExtendedGridIndexD<D> d_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & d_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(d_);
   }
 
   void set_number_of_voxels(Ints bds) {

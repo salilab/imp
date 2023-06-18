@@ -12,7 +12,7 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -58,10 +58,10 @@ private:
   double distance_;
   Vector3D normal_;  // normal to plane
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & distance_ & normal_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(distance_, normal_);
   }
 
 };

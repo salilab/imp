@@ -59,13 +59,15 @@ int main(int argc, char** argv) {
   // input parsing
   std::string out_file_name;
   bool use_nter = true;
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <mol1> <mol2> <thr>\n"
       "\nReturns Lys-Lys cross links for the two molecules below the\n"
       "given threshold.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
+
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

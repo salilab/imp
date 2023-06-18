@@ -86,3 +86,6 @@ The :mod:`ihm` Python module
 
 .. autoclass:: ChemDescriptor
    :members:
+
+.. autoclass:: Collection
+   :members:

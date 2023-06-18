@@ -2,7 +2,7 @@
  *  \file isd/JeffreysRestraint.cpp
  *  \brief Restrain a scale particle with log(scale)
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,13 +13,13 @@
 IMPISD_BEGIN_NAMESPACE
 
 JeffreysRestraint::JeffreysRestraint(Model *m, Particle *p)
-    : Restraint(m, "JeffreysRestraint_" + p->get_name()), p_(p) {}
+    : Restraint(m, "JeffreysRestraint_" + p->get_name()), pi_(p->get_index()) {}
 
 /* Apply the score if it's a scale decorator.
  */
 double JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
-  Scale sig(p_);
+  Scale sig(get_model(), pi_);
   double score;
   if (sig.get_scale() <= 0) {
     // std::cout << sig << std::endl;
@@ -38,7 +38,9 @@ double JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp JeffreysRestraint::do_get_inputs() const {
-  return ParticlesTemp(1, p_);
+  return ParticlesTemp(1, get_model()->get_particle(pi_));
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::JeffreysRestraint);
 
 IMPISD_END_NAMESPACE

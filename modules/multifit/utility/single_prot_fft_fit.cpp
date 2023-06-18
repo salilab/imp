@@ -12,8 +12,6 @@
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
 #include <IMP/atom/distance.h>
 #include <IMP/constants.h>
 #include <IMP/atom/Hierarchy.h>

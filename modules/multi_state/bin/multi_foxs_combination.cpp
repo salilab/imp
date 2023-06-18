@@ -129,12 +129,13 @@ int main(int argc, char* argv[]) {
   int units = 1; // determine automatically
   bool use_offset = false;
 
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <experimental_profile> <main_pdb_file> <pdb_file1> <pdb_file2> ... or <pdbs_filename>\n\n"
       "Any number of input pdbs is supported.\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

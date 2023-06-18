@@ -1,8 +1,6 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
 %}
 
 IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,

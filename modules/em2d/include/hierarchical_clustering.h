@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <limits>
 #include <functional>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -109,11 +109,11 @@ class IMPEM2DEXPORT ClusterSet {
   IntsList clusters_elements_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & steps_ & n_elements_ & joined_ids1_ & joined_ids2_
-       & cluster_distances_ & clusters_elements_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(steps_, n_elements_, joined_ids1_, joined_ids2_,
+       cluster_distances_, clusters_elements_);
   }
 };
 IMP_VALUES(ClusterSet, ClusterSets);
@@ -141,9 +141,9 @@ class IMPEM2DEXPORT SingleLinkage {
     out << "SingleLinkage";
   };
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &, const unsigned int) {}
+  template<class Archive> void serialize(Archive &) {}
 };
 IMP_VALUES(SingleLinkage, SingleLinkages);
 
@@ -164,9 +164,9 @@ class IMPEM2DEXPORT CompleteLinkage {
     out << "CompleteLinkage";
   };
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &, const unsigned int) {}
+  template<class Archive> void serialize(Archive &) {}
 };
 IMP_VALUES(CompleteLinkage, CompleteLinkages);
 
@@ -186,9 +186,9 @@ class IMPEM2DEXPORT AverageDistanceLinkage {
     out << "AverageDistanceLinkage";
   };
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &, const unsigned int) {}
+  template<class Archive> void serialize(Archive &) {}
 };
 IMP_VALUES(AverageDistanceLinkage, AverageDistanceLinkages);
 

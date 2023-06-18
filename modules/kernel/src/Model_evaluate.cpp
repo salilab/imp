@@ -18,7 +18,6 @@
 #include "IMP/internal/evaluate_utility.h"
 #include <IMP/CreateLogContext.h>
 #include <IMP/thread_macros.h>
-#include <boost/timer.hpp>
 #include <IMP/internal/base_static.h>
 #include <numeric>
 

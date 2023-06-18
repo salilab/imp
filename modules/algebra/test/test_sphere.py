@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
 
     def test_random_vector_2d(self):
         """Test random vectors on a 2D sphere (circle)"""
-        s = IMP.algebra.Sphere2D(IMP.algebra.Vector2D(1,2), 3)
+        s = IMP.algebra.Sphere2D(IMP.algebra.Vector2D(1, 2), 3)
         v = IMP.algebra.get_random_vector_in(s)
         self.assertLess(IMP.algebra.get_distance(v, s.get_center()), 3. + 1e-6)
 
@@ -90,8 +90,8 @@ class Tests(IMP.test.TestCase):
         """Check I/O of Sphere3Ds"""
         V = IMP.algebra.Vector3D
         S = IMP.algebra.Sphere3D
-        vs1 = [S(V(1,2,3), 4),
-               S(V(4,5,6), 7)]
+        vs1 = [S(V(1, 2, 3), 4),
+               S(V(4, 5, 6), 7)]
 
         sio = io.BytesIO()
         IMP.algebra.write_spheres(vs1, sio)
@@ -109,7 +109,7 @@ class Tests(IMP.test.TestCase):
 
     def test_sphere_nd(self):
         """Test SphereD<N> operations for unusual N"""
-        for N in (-1,1,2,4,5,6):
+        for N in (-1, 1, 2, 4, 5, 6):
             if N == -1:
                 clsdim = 'K'
                 dim = 5

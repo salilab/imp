@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 import io
 import pickle
 
@@ -118,7 +117,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bounding_box_nd(self):
         """Test BoundingBox<N> operations for unusual N"""
-        for N in (-1,1,2,4,5,6):
+        for N in (-1, 1, 2, 4, 5, 6):
             if N == -1:
                 clsdim = 'K'
                 dim = 5

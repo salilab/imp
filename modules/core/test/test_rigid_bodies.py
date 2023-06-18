@@ -90,6 +90,30 @@ class Tests(IMP.test.TestCase):
                 success = success + 1
         self.assertGreater(success, count / 2.0)
 
+    def test_remove_member(self):
+        """Test RigidBody.remove_member()"""
+        m = IMP.Model()
+        member = IMP.core.RigidMember.setup_particle(IMP.Particle(m))
+        body = IMP.core.RigidBody.setup_particle(
+                     IMP.core.RigidMember.setup_particle(
+                           IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
+
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [member, body])
+        self.assertTrue(IMP.core.RigidMember.get_is_setup(member))
+        self.assertTrue(IMP.core.RigidMember.get_is_setup(body))
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 1)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 1)
+        rb.remove_member(member)
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 1)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 0)
+        rb.remove_member(body)
+        self.assertEqual(len(rb.get_body_member_particle_indexes()), 0)
+        self.assertEqual(len(rb.get_member_particle_indexes()), 0)
+        self.assertFalse(IMP.core.RigidMember.get_is_setup(member))
+        self.assertFalse(IMP.core.RigidMember.get_is_setup(body))
+        self.assertRaisesUsageException(rb.remove_member, member)
+        self.assertRaisesUsageException(rb.remove_member, body)
+
     def test_get_members(self):
         """Test rigid body get_member* functions"""
         m = IMP.Model()
@@ -173,9 +197,17 @@ class Tests(IMP.test.TestCase):
         rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1 = IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         IMP.core.RigidBody.teardown_particle(rb1)
+        IMP.core.RigidBody.teardown_particle(rb0)
         print("setting up again")
+        rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1 = IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         print("tearing down")
+        # Cannot teardown body that is a member of another body;
+        # must remove it first
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.assertRaises(IMP.UsageException,
+                              IMP.core.RigidBody.teardown_particle, rb0)
+        rb1.remove_member(rb0)
         IMP.core.RigidBody.teardown_particle(rb0)
         print("again")
         IMP.core.RigidBody.teardown_particle(rb1)

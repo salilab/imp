@@ -106,14 +106,22 @@ class Tests(unittest.TestCase):
 
     def test_residue_cross_link(self):
         """Test ResidueCrossLink class"""
+        e = ihm.Entity('AHCDAH')
+        asym1 = ihm.AsymUnit(e)
+        asym2 = ihm.AsymUnit(e)
+        ex_xl = ihm.restraint.ExperimentalCrossLink(e.residue(1), e.residue(2))
         f = ihm.restraint.ResidueCrossLink(
-            experimental_cross_link='ex', asym1='asym1', asym2='asym2',
+            experimental_cross_link=ex_xl, asym1=asym1, asym2=asym2,
             distance='dist')
         self.assertEqual(f.granularity, 'by-residue')
         self.assertIsNone(f.atom1)
         self.assertIsNone(f.atom2)
-        self.assertEqual(f.asym1, 'asym1')
-        self.assertEqual(f.asym2, 'asym2')
+        self.assertEqual(f.asym1, asym1)
+        self.assertEqual(f.asym2, asym2)
+        self.assertEqual(f.residue1.seq_id, 1)
+        self.assertEqual(f.residue1.asym, asym1)
+        self.assertEqual(f.residue2.seq_id, 2)
+        self.assertEqual(f.residue2.asym, asym2)
 
     def test_feature_cross_link(self):
         """Test FeatureCrossLink class"""

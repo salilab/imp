@@ -9,8 +9,7 @@
 #include "factory.h"
 
 #include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -48,13 +47,13 @@ struct SingleTextAvroFactory : public RMF::backends::IOFactory {
   virtual std::string get_file_extension() const override {
     return ".rmf-text";
   }
-  virtual boost::shared_ptr<RMF::backends::IO> read_file(
+  virtual std::shared_ptr<RMF::backends::IO> read_file(
       const std::string& name) const override {
-    return boost::make_shared<SingleAvroShareData>(name, false, true);
+    return std::make_shared<SingleAvroShareData>(name, false, true);
   }
-  virtual boost::shared_ptr<RMF::backends::IO> create_file(
+  virtual std::shared_ptr<RMF::backends::IO> create_file(
       const std::string& name) const override {
-    return boost::make_shared<SingleAvroShareData>(name, true, false);
+    return std::make_shared<SingleAvroShareData>(name, true, false);
   }
   virtual ~SingleTextAvroFactory() {}
 };
@@ -63,18 +62,18 @@ struct SingleAvroFactory : public SingleTextAvroFactory {
   virtual std::string get_file_extension() const override {
     return ".rmfa";
   }
-  /*virtual boost::shared_ptr<RMF::backends::IO> create_buffer(
+  /*virtual std::shared_ptr<RMF::backends::IO> create_buffer(
       BufferHandle buffer) const override {
-    return boost::make_shared<SingleAvroShareData>(buffer);
+    return std::make_shared<SingleAvroShareData>(buffer);
     }*/
-  virtual boost::shared_ptr<RMF::backends::IO> read_buffer(
+  virtual std::shared_ptr<RMF::backends::IO> read_buffer(
       BufferConstHandle buffer) const override {
     try {
-      return boost::make_shared<SingleAvroShareData>(buffer);
+      return std::make_shared<SingleAvroShareData>(buffer);
     }
     catch (const std::exception &e) {
       RMF_INFO("Can't read buffer with old reader: " << e.what());
-      return boost::shared_ptr<RMF::backends::IO>();
+      return std::shared_ptr<RMF::backends::IO>();
     }
   }
   virtual ~SingleAvroFactory() {}
@@ -84,22 +83,22 @@ struct MultipleAvroFactory : public RMF::backends::IOFactory {
   virtual std::string get_file_extension() const override {
     return ".rmf-avro";
   }
-  virtual boost::shared_ptr<RMF::backends::IO> read_file(
+  virtual std::shared_ptr<RMF::backends::IO> read_file(
       const std::string& name) const override {
-    return boost::make_shared<AvroReaderShareData>(name, false, true);
+    return std::make_shared<AvroReaderShareData>(name, false, true);
   }
-  virtual boost::shared_ptr<RMF::backends::IO> create_file(
+  virtual std::shared_ptr<RMF::backends::IO> create_file(
       const std::string& name) const override {
-    return boost::make_shared<AvroWriterShareData>(name, true, false);
+    return std::make_shared<AvroWriterShareData>(name, true, false);
   }
   virtual ~MultipleAvroFactory() {}
 };
 }  // namespace
-std::vector<boost::shared_ptr<backends::IOFactory> > get_factories() {
-  std::vector<boost::shared_ptr<backends::IOFactory> > ret;
-  ret.push_back(boost::make_shared<MultipleAvroFactory>());
-  ret.push_back(boost::make_shared<SingleAvroFactory>());
-  ret.push_back(boost::make_shared<SingleTextAvroFactory>());
+std::vector<std::shared_ptr<backends::IOFactory> > get_factories() {
+  std::vector<std::shared_ptr<backends::IOFactory> > ret;
+  ret.push_back(std::make_shared<MultipleAvroFactory>());
+  ret.push_back(std::make_shared<SingleAvroFactory>());
+  ret.push_back(std::make_shared<SingleTextAvroFactory>());
   return ret;
 }
 }  // namespace avro_backend

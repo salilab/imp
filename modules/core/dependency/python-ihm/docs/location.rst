@@ -22,6 +22,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: PDBDevLocation
    :members:
 
+.. autoclass:: ModelArchiveLocation
+   :members:
+
 .. autoclass:: BMRBLocation
    :members:
 
@@ -37,10 +40,19 @@ The :mod:`ihm.location` Python module
 .. autoclass:: PRIDELocation
    :members:
 
+.. autoclass:: JPOSTLocation
+   :members:
+
 .. autoclass:: BioGRIDLocation
    :members:
 
 .. autoclass:: ProXLLocation
+   :members:
+
+.. autoclass:: IProXLocation
+   :members:
+
+.. autoclass:: AlphaFoldDBLocation
    :members:
 
 .. autoclass:: FileLocation

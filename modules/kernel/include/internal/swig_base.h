@@ -18,6 +18,9 @@
 #include "../tuple_macros.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -241,6 +244,12 @@ IMPKERNELEXPORT IntsLists _pass_ints_lists(const IntsLists &input);
 IMPKERNELEXPORT const Strings &_pass_strings(const Strings &input);
 
 class _TestObject : public Object {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_TestObject);
+
  public:
   _TestObject() : Object("TestObject%1%") {}
   IMP_OBJECT_METHODS(_TestObject);

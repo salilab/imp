@@ -24,9 +24,7 @@
 #include <algorithm>
 #include <iterator>
 #include <ctype.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <boost/any.hpp>
 #include <boost/utility.hpp>
 
@@ -40,12 +38,12 @@
 
 namespace internal_avro {
 
-using boost::make_shared;
+using std::make_shared;
 
 namespace parsing {
 
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
 using std::map;
 using std::pair;
@@ -188,7 +186,7 @@ Production ResolvingGrammarGenerator::resolveRecords(
       if (p.size() == 1) {
         result.push_back(p[0]);
       } else {
-        result.push_back(Symbol::indirect(boost::make_shared<Production>(p)));
+        result.push_back(Symbol::indirect(std::make_shared<Production>(p)));
       }
     }
   }
@@ -249,7 +247,7 @@ Production ResolvingGrammarGenerator::doGenerate(
           Symbol r[] = {Symbol::sizeCheckSymbol(reader->fixedSize()),
                         Symbol::fixedSymbol()};
           Production result(r, r + 2);
-          m[make_pair(writer, reader)] = boost::make_shared<Production>(result);
+          m[make_pair(writer, reader)] = std::make_shared<Production>(result);
           return result;
         }
         break;
@@ -261,7 +259,7 @@ Production ResolvingGrammarGenerator::doGenerate(
 
           const bool found = m.find(key) != m.end();
 
-          shared_ptr<Production> p = boost::make_shared<Production>(result);
+          shared_ptr<Production> p = std::make_shared<Production>(result);
           m[key] = p;
           return found ? Production(1, Symbol::indirect(p)) : result;
         }
@@ -272,7 +270,7 @@ Production ResolvingGrammarGenerator::doGenerate(
           Symbol r[] = {Symbol::enumAdjustSymbol(writer, reader),
                         Symbol::enumSymbol(), };
           Production result(r, r + 2);
-          m[make_pair(writer, reader)] = boost::make_shared<Production>(result);
+          m[make_pair(writer, reader)] = std::make_shared<Production>(result);
           return result;
         }
         break;

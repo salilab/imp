@@ -2,7 +2,7 @@
  *  \file container/internal/ClosePairContainer.h
  *  \brief Internal class of close pair container
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H
@@ -19,6 +19,8 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/ContainerScoreState.h>
 #include <IMP/internal/ListLikeContainer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
@@ -33,6 +35,20 @@ class IMPCONTAINEREXPORT ClosePairContainer
   unsigned int updates_, rebuilds_, partial_rebuilds_;
   typedef IMP::internal::ContainerScoreState<ClosePairContainer> SS;
   PointerMember<SS> score_state_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                IMP::internal::ListLikeContainer<PairContainer> >(this),
+       c_, cpf_, moved_count_, first_call_, distance_, slack_, updates_,
+       rebuilds_, partial_rebuilds_, mutable_access_pair_filters());
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // Reset moved particles list and score state
+      moved_ = cpf_->get_moved_singleton_container(c_, slack_);
+      score_state_ = new SS(this);
+    }
+  }
 
   void initialize(SingletonContainer *c, double distance, double slack,
                   core::ClosePairsFinder *cpf);
@@ -54,6 +70,8 @@ class IMPCONTAINEREXPORT ClosePairContainer
   ClosePairContainer(SingletonContainer *c, double distance,
                      core::ClosePairsFinder *cpf, double slack = 1,
                          std::string name = "ClosePairContainer%1%");
+
+  ClosePairContainer() {}
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
                   PairPredicate *, PairPredicates,

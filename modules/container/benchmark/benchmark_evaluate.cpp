@@ -3,7 +3,6 @@
  */
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/Particle.h>
-#include <boost/timer.hpp>
 #include <boost/version.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/internal/AccumulatorScoreModifier.h>

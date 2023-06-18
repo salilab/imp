@@ -138,7 +138,7 @@ class Tests(IMP.test.TestCase):
 
         o = IMP.core.ConjugateGradients(self.m)
         o.set_scoring_function(self.sf)
-        o.set_threshold(1e-4)
+        o.set_gradient_threshold(1e-4)
         o.optimize(100)
 
 #        print 'AFTER optimization'

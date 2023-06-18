@@ -14,7 +14,7 @@
 #include "algebra_macros.h"
 #include "GeometricPrimitiveD.h"
 #include <iostream>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -38,10 +38,10 @@ class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
 private:
   Vector3D p_[3];
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & p_[0] & p_[1] & p_[2];
+  template<class Archive> void serialize(Archive &ar) {
+    ar(p_[0], p_[1], p_[2]);
   }
 };
 

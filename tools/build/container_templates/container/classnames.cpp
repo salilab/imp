@@ -13,6 +13,8 @@
 #include "IMP/container/ClassnameContainerSet.h"
 #include "IMP/container/ClassnameContainerStatistics.h"
 #include "IMP/container/ClassnamesOptimizerState.h"
+#include "IMP/container/ClassnamesConstraint.h"
+#include "IMP/container/ClassnamesRestraint.h"
 #include "IMP/container/DistributeClassnamesScoreState.h"
 #include "IMP/container/DynamicListClassnameContainer.h"
 #include "IMP/container/InContainerClassnameFilter.h"
@@ -497,7 +499,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       predicate_(pred),
       input_(input),
       is_get_inputs_ignores_individual_scores_(false),
-      input_version_(input->get_contents_hash()),
+      input_version_(-1),
       //      is_unknown_score_set_(false),
       error_on_unknown_(true),
       unknown_score_(nullptr)
@@ -602,5 +604,10 @@ void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
   //score->set_was_used(true);
   //is_unknown_score_set_=true;
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ListClassnameContainer);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesConstraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::ClassnamesRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::PredicateClassnamesRestraint);
 
 IMPCONTAINER_END_NAMESPACE

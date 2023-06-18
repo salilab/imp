@@ -39,26 +39,26 @@ public:
                            double min_c2 = -0.5, double max_c2 = 2.0,
                            bool use_offset = false);
 
-  double get_score(const MultiStateModel& m) const IMP_OVERRIDE;
+  double get_score(const MultiStateModel& m) const override;
   double get_score(const MultiStateModel& m,
-                  Vector<double>& weights) const IMP_OVERRIDE {
+                  Vector<double>& weights) const override {
     IMP_UNUSED(weights);
     return get_score(m);
   }
 
-  saxs::WeightedFitParameters get_fit_parameters(MultiStateModel& m) const IMP_OVERRIDE;
+  saxs::WeightedFitParameters get_fit_parameters(MultiStateModel& m) const override;
 
-  saxs::WeightedFitParameters get_fit_parameters() const IMP_OVERRIDE;
+  saxs::WeightedFitParameters get_fit_parameters() const override;
 
   void write_fit_file(MultiStateModel& m,
                       const saxs::WeightedFitParameters& fp,
-                      const std::string fit_file_name) const IMP_OVERRIDE;
+                      const std::string fit_file_name) const override;
 
-  std::string get_state_name(unsigned int id) const IMP_OVERRIDE {
+  std::string get_state_name(unsigned int id) const override {
     return profiles_[id]->get_name();
   }
 
-  std::string get_dataset_name() const IMP_OVERRIDE {
+  std::string get_dataset_name() const override {
     return exp_profile_->get_name();
   }
 

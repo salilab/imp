@@ -6,6 +6,7 @@ import sys
 from math import exp, log
 from random import sample
 import ast
+import pickle
 
 # imp general
 import IMP
@@ -160,6 +161,13 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             cystrest.add_contribution(ps[0], ps[1])
             cystrest.add_contribution(ps[0], ps[2])
             restdict[fexp] = cystrest
+        r1 = restdict[0.0]
+        # Test pickle
+        self.assertAlmostEqual(r1.evaluate(False), 2.929, delta=1e-3)
+        dump = pickle.dumps(r1)
+        newr1 = pickle.loads(dump)
+        self.assertAlmostEqual(newr1.evaluate(False), 2.929, delta=1e-3)
+        del newr1
 
         f = gzip.open(
             self.get_input_file_name('test_CysteineCrosslink.data.gz'),
@@ -187,6 +195,23 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
                                    t[6], delta=0.000001)
             self.assertAlmostEqual(restdict[t[0]].get_model_frequency(),
                                    t[7], delta=0.000001)
+
+    def test_cross_link_data_pickle(self):
+        """Test pickle of CrossLinkData"""
+        disttuple = (0.0, 25.0, 1000)
+        omegatuple = (1.0, 1000.0, 50)
+        sigmatuple = (1.0, 1.0, 1)
+
+        crossdata = self.get_cross_link_data(
+            "cysteine", "cysteine_CA_FES.txt.standard",
+            disttuple, omegatuple, sigmatuple)
+        self.assertAlmostEqual(crossdata.get_marginal_maximum(),
+                               0.344, delta=1e-3)
+        dump = pickle.dumps(crossdata)
+        newcd = pickle.loads(dump)
+        self.assertAlmostEqual(newcd.get_marginal_maximum(),
+                               0.344, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -12,8 +12,7 @@
 #include "RMF/config.h"
 #include "infrastructure_macros.h"
 #include "exceptions.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <limits>
 #include <stdint.h>
 
@@ -29,7 +28,7 @@ namespace RMF {
     */
 class BufferConstHandle {
  protected:
-  boost::shared_ptr<std::vector<char> > data_;
+  std::shared_ptr<std::vector<char> > data_;
   int compare(BufferConstHandle o) const {
     if (&*data_ < &*o.data_)
       return -1;
@@ -42,13 +41,13 @@ class BufferConstHandle {
  public:
 #ifndef SWIG
   explicit BufferConstHandle(std::string r)
-      : data_(boost::make_shared<std::vector<char> >(r.begin(), r.end())) {}
+      : data_(std::make_shared<std::vector<char> >(r.begin(), r.end())) {}
 #endif
   explicit BufferConstHandle(const std::vector<char> &r)
-      : data_(boost::make_shared<std::vector<char> >(r.begin(), r.end())) {}
+      : data_(std::make_shared<std::vector<char> >(r.begin(), r.end())) {}
   explicit BufferConstHandle(const std::vector<uint8_t> &r)
-      : data_(boost::make_shared<std::vector<char> >(r.begin(), r.end())) {}
-  explicit BufferConstHandle(boost::shared_ptr<std::vector<char> > r)
+      : data_(std::make_shared<std::vector<char> >(r.begin(), r.end())) {}
+  explicit BufferConstHandle(std::shared_ptr<std::vector<char> > r)
       : data_(r) {}
   const std::vector<char> &get_buffer() const { return *data_; }
 #ifndef SWIG
@@ -65,7 +64,7 @@ class BufferConstHandle {
     return std::make_pair(reinterpret_cast<const uint8_t *>(&(*data_)[0]),
                           data_->size());
   }
-  boost::shared_ptr<std::vector<char> > get() const { return data_; }
+  std::shared_ptr<std::vector<char> > get() const { return data_; }
 #endif
 };
 

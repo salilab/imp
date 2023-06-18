@@ -9,7 +9,6 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/container/generic.h>
-#include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/flags.h>

@@ -30,6 +30,10 @@ Restraint::Restraint(Model *m, std::string name)
     : ModelObject(m, name), is_aggregate_(false), weight_(1), max_(NO_MAX),
       last_score_(BAD_SCORE), last_last_score_(BAD_SCORE) {}
 
+Restraint::Restraint()
+    : ModelObject(), is_aggregate_(false), weight_(1), max_(NO_MAX),
+      last_score_(BAD_SCORE), last_last_score_(BAD_SCORE) {}
+
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
@@ -200,6 +204,7 @@ ScoringFunction *Restraint::create_scoring_function(double weight,
 }
 
 ScoringFunction *Restraint::create_internal_scoring_function() const {
+  IMP_USAGE_CHECK(get_model(), "No Model set");
   if (!cached_internal_scoring_function_) {
     Restraint *ncthis = const_cast<Restraint *>(this);
     IMP_NEW(internal::GenericRestraintsScoringFunction<RestraintsTemp>, ret,

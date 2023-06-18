@@ -1,10 +1,11 @@
 /**
  *  \file ProjectionMask.cpp
  *  \brief projection masks
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionMask.h"
+#include "IMP/em2d/internal/CenteredMat.h"
 #include "IMP/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -32,7 +33,7 @@ void ProjectionMask::create(const em::KernelParameters &kparams,
                             double mass) {
 
   // Decorate the masks to use centered coordinates
-  CenteredMat centered_mask(data_);
+  internal::CenteredMat centered_mask(data_);
 
   IMP_LOG_VERBOSE(" Generating mask.  " << centered_mask);
 

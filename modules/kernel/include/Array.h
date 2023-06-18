@@ -15,29 +15,37 @@
 #include "hash_macros.h"
 #include "check_macros.h"
 #include "showable_macros.h"
-#include <boost/array.hpp>
+#include <array>
+#include <type_traits>
+#include <cereal/access.hpp>
+#include <cereal/types/array.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! A class to store an fixed array of same-typed values.
+//! A class to store a fixed array of same-typed values.
 /** Only the constructor with the correct number of arguments for the
-        dimensionality can be used.
+    dimensionality can be used.
 
-        \note These are mapped to/from Python tuples, so there is
-        no need to use types that are typedefs of this on the Python
-        side.
+    \note These are mapped to/from Python tuples, so there is
+    no need to use types that are typedefs of this on the Python side.
 
-        \see ConstVector
-    */
+    \see ConstVector
+ */
 template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
-  typedef boost::array<Data, D> Storage;
+  typedef std::array<Data, D> Storage;
   Storage d_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(d_);
+  }
+
   int compare(const Array<D, Data, SwigData>& o) const {
     for (unsigned int i = 0; i < D; ++i) {
-      if (d_[i] < o[i])
+      if (d_[i] < o.get(i))
         return -1;
-      else if (d_[i] > o[i])
+      else if (d_[i] > o.get(i))
         return 1;
     }
     return 0;
@@ -51,28 +59,30 @@ class Array : public Value {
     return D;
   };
   Array() {}
+
+  template<int DT=D, typename std::enable_if<DT == 2>::type* = nullptr>
   Array(SwigData x, SwigData y) {
-    IMP_USAGE_CHECK(D == 2, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
   }
+
+  template<int DT=D, typename std::enable_if<DT == 3>::type* = nullptr>
   Array(SwigData x, SwigData y, SwigData z) {
-    IMP_USAGE_CHECK(D == 3, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x;
     d_[1] = y;
     d_[2] = z;
   }
+
+  template<int DT=D, typename std::enable_if<DT == 4>::type* = nullptr>
   Array(SwigData x0, SwigData x1, SwigData x2, SwigData x3) {
-    IMP_USAGE_CHECK(D == 4, "Need " << D << " to construct a " << D
-                                    << "-tuple.");
     d_[0] = x0;
     d_[1] = x1;
     d_[2] = x2;
     d_[3] = x3;
   }
+
   SwigData get(unsigned int i) const { return d_[i]; }
+
   IMP_HASHABLE_INLINE(Array, std::size_t seed = 0;
                       for (unsigned int i = 0; i < D; ++i) {
                              boost::hash_combine(seed, d_[i]);
@@ -140,6 +150,13 @@ class Array : public Value {
     }
   }
 };
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <unsigned int D, class Data, class SwigData>
+inline std::size_t hash_value(const Array<D, Data, SwigData> &t) {
+  return t.__hash__();
+}
+#endif
 
 IMPKERNEL_END_NAMESPACE
 

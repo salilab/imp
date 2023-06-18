@@ -13,6 +13,9 @@
 #include <IMP/ScoringFunction.h>
 #include <IMP/Restraint.h>
 #include <IMP/internal/RestraintsScoringFunction.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -23,7 +26,14 @@ class RestraintsScoringFunction :
 #else
     public IMP::internal::RestraintsScoringFunction
 #endif
-    {
+{
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<IMP::internal::RestraintsScoringFunction>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RestraintsScoringFunction);
+
  public:
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             double weight = 1.0, double max = NO_MAX,
@@ -32,6 +42,8 @@ class RestraintsScoringFunction :
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             std::string name)
       : IMP::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name) {}
+
+  RestraintsScoringFunction() {}
 #if defined(SWIG)
   void do_add_score_and_derivatives(
            ScoreAccumulator sa, const ScoreStatesTemp &ss) override;
@@ -43,7 +55,22 @@ class RestraintsScoringFunction :
 
   virtual Restraints create_restraints() const override;
   virtual ModelObjectsTemp do_get_inputs() const override;
+
+  // Expose methods to access the list of restraints from Python
+  Restraints get_restraints() const;
+  void set_restraints(const Restraints& d);
+  unsigned int get_number_of_restraints() const;
+  void clear_restraints();
+  Restraint *get_restraint(unsigned int i) const;
+  void erase_restraint(unsigned int i);
+  unsigned int add_restraint(Restraint *d);
+  void add_restraints(const Restraints& d);
+  unsigned int _python_index_restraint(Restraint *r, unsigned int start,
+                                       unsigned int stop);
+  IMP_LIST_PYTHON_IMPL(restraint, restraints, Restraints, Restraints)
+
   IMP_OBJECT_METHODS(RestraintsScoringFunction);
+
 #endif
 };
 

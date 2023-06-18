@@ -21,6 +21,19 @@ except ImportError:
     rem = None
 
 
+def _parse_restraint_info(info):
+    """Convert RestraintInfo object to Python dict"""
+    d = {}
+    if info is None:
+        return d
+    info.set_was_used(True)
+    for typ in ('int', 'float', 'string', 'filename', 'floats', 'filenames'):
+        for i in range(getattr(info, 'get_number_of_' + typ)()):
+            key = getattr(info, 'get_%s_key' % typ)(i)
+            value = getattr(info, 'get_%s_value' % typ)(i)
+            d[key] = value
+    return d
+
 def sphere_cap(r1, r2, d):
     sc = 0.0
     if d <= max(r1, r2) - min(r1, r2):
@@ -99,7 +112,7 @@ class Tests(IMP.test.TestCase):
             length=21.0,
             slope=0.0,
             resolution=1.0,
-            label="XL")
+            label="XL", linker=ihm.cross_linkers.dss)
         xl.add_to_model()
         psi=xl.psi_dictionary["PSI"][0]
         psi.set_scale(0.05)
@@ -227,6 +240,36 @@ class Tests(IMP.test.TestCase):
                        'expensive_test_new_cross_link_ms_restraint.dat',
                        'included.None.xl.db', 'missing.None.xl.db']:
             os.unlink(output)
+
+    def test_restraint_set_static_info(self):
+        """Test that RestraintSet static info is populated"""
+        m = IMP.Model()
+        rbeads, dof = self.init_representation_beads_pmi2(m)
+        xlbeads, cldb = self.setup_crosslinks_beads(
+            root_hier=rbeads, mode="single_category")
+        info = _parse_restraint_info(xlbeads.rs.get_static_info())
+        self.assertAlmostEqual(info['linker length'], 21.0, delta=1e-5)
+        self.assertAlmostEqual(info['slope'], 0.01, delta=1e-5)
+        self.assertEqual(info['type'],
+                         'IMP.pmi.CrossLinkingMassSpectrometryRestraint')
+        self.assertEqual(info['linker author name'], 'DSS')
+        self.assertEqual(
+            sorted(info.keys()),
+            ['filename', 'linker author name', 'linker chemical name',
+             'linker inchi', 'linker inchi key', 'linker length',
+             'linker smiles', 'slope', 'type'])
+
+    def test_restraint_source_info(self):
+        """Test that restraint source info is populated"""
+        m = IMP.Model()
+        rbeads, dof = self.init_representation_beads_pmi2(m)
+        xlbeads, cldb = self.setup_crosslinks_beads(
+            root_hier=rbeads, mode="single_category")
+        r = xlbeads.xl_list[3]["Restraint"]
+        self.assertEqual(r.get_source_protein1(), "ProtA")
+        self.assertEqual(r.get_source_protein2(), "ProtB")
+        self.assertEqual(r.get_source_residue1(), 11)
+        self.assertEqual(r.get_source_residue2(), 1)
 
     def test_restraint_probability_beads(self):
         """Test restraint works for all-bead systems"""

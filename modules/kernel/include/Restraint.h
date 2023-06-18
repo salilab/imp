@@ -18,6 +18,9 @@
 #include <IMP/InputAdaptor.h>
 #include <IMP/deprecation_macros.h>
 #include <IMP/RestraintInfo.h>
+#include <type_traits>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -52,54 +55,47 @@ class DerivativeAccumulator;
  */
 class IMPKERNELEXPORT Restraint : public ModelObject {
  public:
-  /** Create a restraint and register it with the model. The restraint is
-      not added to the implicit scoring function in the Model.*/
+  //! Create a restraint and register it with the model.
   Restraint(Model *m, std::string name);
+
+  //! Default constructor.
+  /** Default-constructed restraints cannot be evaluated. */
+  Restraint();
 
   /** Compute and return the current score for the restraint.
    */
   double get_score() const;
 
-#ifndef IMP_DOXYGEN
-  //! Return the score for this restraint for the current state of the model.
-  /** \return Current score.
+  /** \name Evaluation convenience methods
+      These are convenience methods to get the score of just this restraint;
+      each just calls the equivalent method in the ScoringFunction class.
+      @{
    */
+
+  //! \see ScoringFunction::evaluate
   double evaluate(bool calc_derivs) const;
 
-  //! Score the restraint when some particles have moved.
-  /** No particles in the model other those listed should have been
-      changed (e.g. by Monte Carlo movers) since the last evaluation (although
-      ScoreStates may have moved particles not in this list, as a function of
-      particles that *are* in the list). This method should behave
-      identically to evaluate() but may be more efficient if it can
-      skip terms that involve unchanged particles.
-
-      \param calc_derivs Whether to calculate first derivatives.
-      \param moved_pis Particles that have moved since the last
-             scoring function evaluation.
-      \param reset_pis Particles that have moved, but back to the
-             positions they had at the last-but-one evaluation
-             (e.g. due to a rejected Monte Carlo move).
-
-      \return Current score.
-   */
+  //! \see ScoringFunction::evaluate_moved
   double evaluate_moved(bool calc_derivs,
                         const ParticleIndexes &moved_pis,
                         const ParticleIndexes &reset_pis) const;
 
+  //! \see ScoringFunction::evaluate_moved_if_below
   double evaluate_moved_if_below(bool calc_derivatives,
                       const ParticleIndexes &moved_pis,
                       const ParticleIndexes &reset_pis, double max) const;
 
+  //! \see ScoringFunction::evaluate_moved_if_good
   double evaluate_moved_if_good(bool calc_derivatives,
                       const ParticleIndexes &moved_pis,
                       const ParticleIndexes &reset_pis) const;
 
+  //! \see ScoringFunction::evaluate_if_good
   double evaluate_if_good(bool calc_derivatives) const;
 
-  //! \see Model::evaluate_with_maximum()
+  //! \see ScoringFunction::evaluate_if_below
   double evaluate_if_below(bool calc_derivatives, double max) const;
-#endif
+/** @} */
 
   /** \name Evaluation implementation
       These methods are called in order to perform the actual restraint
@@ -343,6 +339,19 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   mutable double last_last_score_;
   // cannot be released outside the class
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
+
+ friend class cereal::access;
+
+ template<class Archive> void serialize(Archive &ar) {
+   ar(cereal::base_class<ModelObject>(this));
+   ar(weight_, max_);
+   // Clear caches
+   if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+     last_score_ = last_last_score_ = BAD_SCORE;
+     cached_internal_scoring_function_ = nullptr;
+   }
+ }
+
 };
 
 //! Provide a consistent interface for things that take Restraints as arguments.

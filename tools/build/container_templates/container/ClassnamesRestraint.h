@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,8 @@
 #include <IMP/internal/ContainerRestraint.h>
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameScore.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -37,6 +39,13 @@ class ClassnamesRestraint :
   typedef IMP::internal::ContainerRestraint<
       ClassnameScore, ClassnameContainer> P;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<P>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ClassnamesRestraint);
+
  public:
   //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.
@@ -47,6 +56,8 @@ class ClassnamesRestraint :
   ClassnamesRestraint(ClassnameScore *ss, ClassnameContainerAdaptor pc,
                       std::string name = "ClassnamesRestraint %1%")
       : P(ss, pc, name) {}
+
+  ClassnamesRestraint() {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;

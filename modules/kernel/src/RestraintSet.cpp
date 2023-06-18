@@ -245,4 +245,6 @@ RestraintsTemp get_restraints(const RestraintsTemp &rs) {
   return get_restraints(rs.begin(), rs.end());
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::RestraintSet);
+
 IMPKERNEL_END_NAMESPACE

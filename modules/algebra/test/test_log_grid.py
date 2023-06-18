@@ -1,9 +1,6 @@
 from __future__ import print_function
 import IMP.test
 import IMP.algebra
-import io
-import os
-import math
 
 displayit = False
 if displayit:
@@ -60,10 +57,10 @@ class Tests(IMP.test.TestCase):
 
     def test_default_embedding_pickle(self):
         """Test (un-)pickle of DefaultEmbedding3D"""
-        e1 = IMP.algebra.DefaultEmbedding3D(IMP.algebra.Vector3D(1,2,3),
-                                            IMP.algebra.Vector3D(2,4,5))
-        e2 = IMP.algebra.DefaultEmbedding3D(IMP.algebra.Vector3D(4,5,6),
-                                            IMP.algebra.Vector3D(7,8,9))
+        e1 = IMP.algebra.DefaultEmbedding3D(IMP.algebra.Vector3D(1, 2, 3),
+                                            IMP.algebra.Vector3D(2, 4, 5))
+        e2 = IMP.algebra.DefaultEmbedding3D(IMP.algebra.Vector3D(4, 5, 6),
+                                            IMP.algebra.Vector3D(7, 8, 9))
         e2.foo = 'bar'
         dump = pickle.dumps((e1, e2))
         newe1, newe2 = pickle.loads(dump)
@@ -82,12 +79,12 @@ class Tests(IMP.test.TestCase):
 
     def test_log_embedding_pickle(self):
         """Test (un-)pickle of LogEmbedding3D"""
-        e1 = IMP.algebra.LogEmbedding3D(IMP.algebra.Vector3D(1,2,3),
-                                        IMP.algebra.Vector3D(2,4,5),
-                                        IMP.algebra.Vector3D(7,8,9))
-        e2 = IMP.algebra.LogEmbedding3D(IMP.algebra.Vector3D(4,5,6),
-                                        IMP.algebra.Vector3D(7,8,9),
-                                        IMP.algebra.Vector3D(17,18,19))
+        e1 = IMP.algebra.LogEmbedding3D(IMP.algebra.Vector3D(1, 2, 3),
+                                        IMP.algebra.Vector3D(2, 4, 5),
+                                        IMP.algebra.Vector3D(7, 8, 9))
+        e2 = IMP.algebra.LogEmbedding3D(IMP.algebra.Vector3D(4, 5, 6),
+                                        IMP.algebra.Vector3D(7, 8, 9),
+                                        IMP.algebra.Vector3D(17, 18, 19))
         e2.foo = 'bar'
         dump = pickle.dumps((e1, e2))
         newe1, newe2 = pickle.loads(dump)
@@ -106,8 +103,8 @@ class Tests(IMP.test.TestCase):
 
     def test_grid_index_pickle(self):
         """Test (un-)pickle of GridIndex3D"""
-        g1 = IMP.algebra.GridIndex3D(1,2,3)
-        g2 = IMP.algebra.GridIndex3D(4,5,6)
+        g1 = IMP.algebra.GridIndex3D(1, 2, 3)
+        g2 = IMP.algebra.GridIndex3D(4, 5, 6)
         g2.foo = 'bar'
         dump = pickle.dumps((g1, g2))
         newg1, newg2 = pickle.loads(dump)
@@ -124,8 +121,8 @@ class Tests(IMP.test.TestCase):
 
     def test_extended_grid_index_pickle(self):
         """Test (un-)pickle of ExtendedGridIndex3D"""
-        g1 = IMP.algebra.ExtendedGridIndex3D(1,2,3)
-        g2 = IMP.algebra.ExtendedGridIndex3D(4,5,6)
+        g1 = IMP.algebra.ExtendedGridIndex3D(1, 2, 3)
+        g2 = IMP.algebra.ExtendedGridIndex3D(4, 5, 6)
         g2.foo = 'bar'
         dump = pickle.dumps((g1, g2))
         newg1, newg2 = pickle.loads(dump)
@@ -154,8 +151,8 @@ class Tests(IMP.test.TestCase):
 
     def test_bounded_grid_range_pickle(self):
         """Test (un-)pickle of BoundedGridRange3D"""
-        g1 = IMP.algebra.BoundedGridRange3D([1,2,3])
-        g2 = IMP.algebra.BoundedGridRange3D([4,5,6])
+        g1 = IMP.algebra.BoundedGridRange3D([1, 2, 3])
+        g2 = IMP.algebra.BoundedGridRange3D([4, 5, 6])
         g2.foo = 'bar'
         dump = pickle.dumps((g1, g2))
         newg1, newg2 = pickle.loads(dump)

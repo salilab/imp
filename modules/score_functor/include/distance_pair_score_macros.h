@@ -11,6 +11,8 @@
 #define IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_MACROS_H
 
 #include "DistancePairScore.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 /** Use this macro to define PairScores based on the
@@ -29,6 +31,7 @@
                                                                        \
    public:                                                             \
     Name Args;                                                         \
+    Name() {}                                                          \
     double evaluate_index(Model *m,                            \
                           const ParticleIndexPair &pip,        \
                           DerivativeAccumulator *da) const;            \
@@ -41,9 +44,16 @@
 #define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
   class Name : public IMP::score_functor::DistancePairScore<Functor> { \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
+    friend class cereal::access;                                       \
+    template<class Archive> void serialize(Archive &ar) {              \
+      ar(cereal::base_class<                                           \
+          IMP::score_functor::DistancePairScore<Functor> >(this));     \
+    }                                                                  \
+    IMP_OBJECT_SERIALIZE_DECL(Name);                                   \
                                                                        \
    public:                                                             \
     Name Args : P(Functor PassArgs, name) {}                           \
+    Name() {}                                                          \
   }
 #endif
 

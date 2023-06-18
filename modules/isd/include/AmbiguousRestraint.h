@@ -30,6 +30,14 @@ class IMPISDEXPORT AmbiguousRestraint : public Restraint {
   int d_;
   Restraints rs_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), d_, rs_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(AmbiguousRestraint);
+
  public:
   //! Create the restraint.
   /** Two ways to call it: pass it two restraints, or a list of restraints.
@@ -37,6 +45,7 @@ class IMPISDEXPORT AmbiguousRestraint : public Restraint {
   AmbiguousRestraint(Model *m, int d, Restraint *r0,
                      Restraint *r1);
   AmbiguousRestraint(Model *m, int d, Restraints rs);
+  AmbiguousRestraint() {}
 
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 

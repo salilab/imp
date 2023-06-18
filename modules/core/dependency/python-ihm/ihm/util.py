@@ -2,6 +2,7 @@
 
 import string
 import os
+import ihm
 
 
 class _AsymIDs(object):
@@ -45,3 +46,21 @@ def _get_relative_path(reference, path):
         return path
     else:
         return os.path.join(os.path.dirname(reference), path)
+
+
+def _text_choice_property(attr, choices, doc=None):
+    """Like `property` but requires that the value be one of the set choices"""
+    schoices = frozenset(choices)
+
+    def getfunc(obj):
+        return getattr(obj, "_" + attr)
+
+    def setfunc(obj, val):
+        if val is not None and val is not ihm.unknown and val not in schoices:
+            raise ValueError(
+                "Invalid choice %s for %s; valid values are %s, "
+                "None, ihm.unknown"
+                % (repr(val), attr, ", ".join(repr(x) for x in choices)))
+        setattr(obj, "_" + attr, val)
+
+    return property(getfunc, setfunc, doc=doc)

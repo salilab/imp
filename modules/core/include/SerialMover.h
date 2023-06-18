@@ -2,7 +2,7 @@
  *  \file IMP/core/SerialMover.h
  *  \brief  A mover that applies other movers one at a time
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,10 @@
 #include <IMP/core/core_config.h>
 #include "MonteCarlo.h"
 #include "MonteCarloMover.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -24,11 +28,21 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
   int imov_;
   MonteCarloMovers movers_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<MonteCarloMover>(this),
+       imov_, movers_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(SerialMover);
+
  public:
   /** Constructor.
       \param[in] mvs list of movers to apply one after another
    */
   SerialMover(const MonteCarloMoversTemp& mvs);
+
+  SerialMover() {}
 
   const MonteCarloMovers& get_movers() const { return movers_; }
 

@@ -23,9 +23,7 @@
 #include <algorithm>
 #include <iterator>
 #include <ctype.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <boost/any.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -42,8 +40,8 @@ namespace internal_avro {
 
 namespace parsing {
 
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
 using std::map;
 using std::vector;
@@ -57,7 +55,7 @@ using internal_avro::json::JsonGenerator;
 
 class JsonGrammarGenerator : public ValidatingGrammarGenerator {
   Production doGenerate(const NodePtr& n,
-                        std::map<NodePtr, boost::shared_ptr<Production> >& m);
+                        std::map<NodePtr, std::shared_ptr<Production> >& m);
 };
 
 static std::string nameOf(const NodePtr& n) {
@@ -70,7 +68,7 @@ static std::string nameOf(const NodePtr& n) {
 }
 
 Production JsonGrammarGenerator::doGenerate(
-    const NodePtr& n, std::map<NodePtr, boost::shared_ptr<Production> >& m) {
+    const NodePtr& n, std::map<NodePtr, std::shared_ptr<Production> >& m) {
   switch (n->type()) {
     case AVRO_NULL:
     case AVRO_BOOL:
@@ -104,7 +102,7 @@ Production JsonGrammarGenerator::doGenerate(
 
       bool found = m.find(n) != m.end();
 
-      shared_ptr<Production> p = boost::make_shared<Production>(result);
+      shared_ptr<Production> p = std::make_shared<Production>(result);
       m[n] = p;
 
       return found ? Production(1, Symbol::indirect(p)) : result;
@@ -118,7 +116,7 @@ Production JsonGrammarGenerator::doGenerate(
       }
       Symbol r[] = {Symbol::nameListSymbol(nn), Symbol::enumSymbol()};
       Production result(r, r + 2);
-      m[n] = boost::make_shared<Production>(result);
+      m[n] = std::make_shared<Production>(result);
       return result;
     }
     case AVRO_UNION: {
@@ -635,12 +633,12 @@ void JsonEncoder<P>::encodeUnionIndex(size_t e) {
 }  // namespace parsing
 
 DecoderPtr jsonDecoder(const ValidSchema& s) {
-  return boost::make_shared<parsing::JsonDecoder<
+  return std::make_shared<parsing::JsonDecoder<
       parsing::SimpleParser<parsing::JsonDecoderHandler> > >(s);
 }
 
 EncoderPtr jsonEncoder(const ValidSchema& schema) {
-  return boost::make_shared<
+  return std::make_shared<
       parsing::JsonEncoder<parsing::SimpleParser<parsing::JsonHandler> > >(
       schema);
 }

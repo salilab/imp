@@ -1,8 +1,3 @@
-%{
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-%}
-
 IMP_SWIG_VALUE_SERIALIZE(IMP::rotamer, RotamerAngleTuple, RotamerAngleTuples);
 IMP_SWIG_VALUE(IMP::rotamer, ResidueRotamer, ResidueRotamers);
 IMP_SWIG_OBJECT(IMP::rotamer, RotamerLibrary, RotamerLibraries);

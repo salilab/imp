@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Profile.h
  *  \brief A class for profile storing and computation
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,6 +18,9 @@
 
 #include <iostream>
 #include <vector>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -298,11 +301,66 @@ class IMPSAXSEXPORT Profile : public Object {
   std::string name_;  // file name
   unsigned int id_;   // identifier
 
-  Profile* beam_profile_;
+  Pointer<Profile> beam_profile_;
+ private:
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this), q_, intensity_, error_,
+       min_q_, max_q_, delta_q_, partial_profiles_, c1_, c2_,
+       experimental_, average_radius_, average_volume_,
+       name_, id_, beam_profile_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // q_mapping_ is regenerated when needed in resample()
+      q_mapping_.clear();
+      bool default_ff_table;
+      ar(default_ff_table);
+      if (default_ff_table) {
+        ff_table_ = get_default_form_factor_table();
+      } else {
+        ff_table_ = nullptr;
+      }
+    } else {
+      if (ff_table_ == nullptr) {
+        ar(false);
+      } else if (ff_table_ == get_default_form_factor_table()) {
+        ar(true);
+      } else {
+        IMP_THROW("Serialization of profiles using non-default form "
+                  "factors is not supported", IMP::ValueException);
+      }
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(Profile);
 };
 
 IMP_OBJECTS(Profile, Profiles);
 
 IMPSAXS_END_NAMESPACE
+
+namespace cereal {
+  template<class Archive, typename _Scalar, int _Rows, int _Cols,
+           int _Options, int _MaxRows, int _MaxCols>
+  inline void serialize(
+      Archive &ar, Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows,
+                                 _MaxCols> &matrix) {
+    int rows, cols;
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      rows = matrix.rows();
+      cols = matrix.cols();
+    }
+    ar(rows, cols);
+
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      if (rows != matrix.rows() || cols != matrix.cols()) {
+        matrix.resize(rows, cols);
+      }
+    }
+    auto mat_data = cereal::binary_data(matrix.data(),
+                                        rows * cols * sizeof(_Scalar));
+    if (matrix.size() != 0) {
+      ar(mat_data);
+    }
+  }
+}
 
 #endif /* IMPSAXS_PROFILE_H */

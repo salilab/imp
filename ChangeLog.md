@@ -1,6 +1,42 @@
 ChangeLog {#changelog}
 =========
 
+# 2.19.0 - 2023-06-22 # {#changelog_2_19_0}
+- Most IMP Value and Object types can now be serialized (or pickled in Python).
+  For example, this can be used to save the current state of an IMP::Model
+  or an IMP.pmi.macros.ReplicaExchange object to be restored later or passed
+  to a separate process. Building IMP from source code now requires the
+  cereal library.
+- Information on most IMP restraints, sampling protocols, input files and
+  analysis/clustering is now stored in the RMF file. Ultimately this can be
+  used to generate an IHM mmCIF file directly from the RMF.
+- IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint now
+  requires the `linker` argument, which specifies the chemistry of the linker.
+- IMP.pmi.macros.ReplicaExchange0 has been removed.
+  Use IMP.pmi.macros.ReplicaExchange instead.
+- The undocumented IMP::core::ConjugateGradients::set_threshold() method is
+  now deprecated; use set_gradient_threshold() instead.
+- Rigid body members are now handled correctly by IMP::atom::destroy(),
+  and can be removed from their rigid body with a new
+  IMP::core::RigidBody::remove_member() method.
+- The IMP::em2d::CenteredMat and IMP::em2d::Fine2DRegistrationRestraint
+  classes have been moved to the IMP::em2d::internal namespace, as they
+  are implementation details.
+- Windows builds now require MS Visual Studio 2015 or later (for full C++11
+  support). The following macro for pre-C++11 environments is no longer
+  needed and is deprecated: `IMP_NOEXCEPT`.
+- The following pre-C++11 compatibility macros and headers are removed:
+  `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
+  `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+- The deprecated IMP::em::emreal type has been removed.
+- The deprecated IMP::isd::Weight::get_nstates_key() method has been removed.
+- The deprecated IMP.npc.npc_restraints module has been removed. Use
+  IMP.pmi.restraints.npc or IMP.pmi1.restraints.npc instead.
+- The deprecated IMP::core::{Singleton,Pair,Triplet,Quad}Constraint constructors
+  that take Particle/ParticlePair/ParticleTriplet/ParticleQuad have been
+  removed. Use the constructors that take a Model and ParticleIndex (etc.)
+  instead.
+
 # 2.18.0 - 2022-12-15 # {#changelog_2_18_0}
 - The Windows .exe installer now supports Python 3.11.
 - The IMP::em::emreal type is deprecated; use plain `double` instead.

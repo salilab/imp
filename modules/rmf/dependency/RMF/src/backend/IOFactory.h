@@ -14,7 +14,7 @@
 #include "RMF/BufferHandle.h"
 #include "RMF/BufferConstHandle.h"
 #include "RMF/infrastructure_macros.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 RMF_ENABLE_WARNINGS
 
@@ -25,17 +25,17 @@ namespace backends {
 class IOFactory {
  public:
   virtual std::string get_file_extension() const = 0;
-  virtual boost::shared_ptr<IO> read_buffer(BufferConstHandle) const {
-    return boost::shared_ptr<IO>();
+  virtual std::shared_ptr<IO> read_buffer(BufferConstHandle) const {
+    return std::shared_ptr<IO>();
   }
-  virtual boost::shared_ptr<IO> read_file(const std::string &) const {
-    return boost::shared_ptr<IO>();
+  virtual std::shared_ptr<IO> read_file(const std::string &) const {
+    return std::shared_ptr<IO>();
   }
-  virtual boost::shared_ptr<IO> create_buffer(BufferHandle) const {
-    return boost::shared_ptr<IO>();
+  virtual std::shared_ptr<IO> create_buffer(BufferHandle) const {
+    return std::shared_ptr<IO>();
   }
-  virtual boost::shared_ptr<IO> create_file(const std::string &) const {
-    return boost::shared_ptr<IO>();
+  virtual std::shared_ptr<IO> create_file(const std::string &) const {
+    return std::shared_ptr<IO>();
   }
   virtual ~IOFactory() {}
 };

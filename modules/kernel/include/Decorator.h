@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,6 +20,7 @@
 #include <IMP/utility_macros.h>
 #include <IMP/Vector.h>
 #include <IMP/Value.h>
+#include <cereal/access.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class ParticleAdaptor;
@@ -120,6 +121,26 @@ class IMPKERNELEXPORT Decorator : public Value {
   WeakPointer<Model> model_;
   ParticleIndex pi_;
   bool is_valid_; // false if constructed with default constructor
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(is_valid_);
+    if (is_valid_) {
+      if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+        uint32_t model_id = get_model_id();
+        ar(model_id);
+      } else {
+        uint32_t model_id;
+        ar(model_id);
+        set_model_from_id(model_id);
+      }
+      ar(pi_);
+    }
+  }
+
+  void set_model_from_id(uint32_t model_id);
+  uint32_t get_model_id() const;
+
   int compare(Object* o) const {
     if (o < get_particle())
       return -1;

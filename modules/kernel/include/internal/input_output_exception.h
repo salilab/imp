@@ -24,7 +24,7 @@ struct IMPKERNELEXPORT InputOutputException : public std::runtime_error {
   InputOutputException(int particle_index, int operation, int entity,
                        std::string key_name);
   InputOutputException(std::string container_name, int entity);
-  ~InputOutputException() IMP_NOEXCEPT;
+  ~InputOutputException() noexcept;
   enum AccessEntity {
     NO_ENTITY,
     ATTRIBUTE,

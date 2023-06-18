@@ -13,11 +13,11 @@
 #include "Showable.h"
 #include "Value.h"
 #include <sstream>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/split_member.hpp>
+#include <cereal/access.hpp>
 #include "hash.h"
 
 #if defined(_MSC_VER) && _MSC_VER == 1500
+# include <type_traits>
 # include <boost/type_traits.hpp>
 # include <boost/utility.hpp>
 #endif
@@ -56,30 +56,26 @@ class Vector : public Value
   typedef std::vector<T> V;
 #endif
 
-#ifndef SWIG
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void save(Archive &ar, const unsigned int) const {
+  template<class Archive> void save(Archive &ar) const {
     size_t sz = V::size();
-    ar << sz;
+    ar(sz);
     auto it = V::begin();
     while(sz-- > 0) {
-      ar << *it++;
+      ar(*it++);
     }
   }
 
-  template<class Archive> void load(Archive &ar, const unsigned int) {
+  template<class Archive> void load(Archive &ar) {
     size_t sz;
-    ar >> sz;
+    ar(sz);
     V::resize(sz);
     auto it = V::begin();
     while(sz-- > 0) {
-      ar >> *it++;
+      ar(*it++);
     }
   }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif
 
  public:
   Vector() {}
@@ -87,7 +83,7 @@ class Vector : public Value
 #if defined(_MSC_VER) && _MSC_VER == 1500
   template <class It>
   Vector(It b, It e,
-         typename boost::disable_if<boost::is_integral<It> >::type *t=0) {
+         typename boost::disable_if<std::is_integral<It>::value>::type *t=0) {
     for (It it = b; it != e; ++it) {
       push_back(T(*it));
     }
@@ -163,5 +159,11 @@ inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
 #endif
 
 IMPKERNEL_END_NAMESPACE
+
+namespace cereal {
+  template <class Archive, class T>
+  struct specialize<Archive, IMP::Vector<T>,
+                    cereal::specialization::member_load_save> {};
+}
 
 #endif /* IMPKERNEL_CONVERTIBLE_VECTOR_H */

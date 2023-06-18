@@ -100,5 +100,6 @@ class Tests(IMP.test.TestCase):
         v2 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 10.0)
         r2 = IMP.algebra.get_rotation_from_vector4d(v2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

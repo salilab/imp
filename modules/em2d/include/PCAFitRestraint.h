@@ -44,13 +44,17 @@ public:
                recalculating projections
     \param[in] n_components Number of the largest components to be
                considered for the EM image
+    \param[in] micrographs_number Number of micrograph particles that were
+               used to generate the class averages (or zero, the default,
+               if unknown)
   */
   PCAFitRestraint(Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
                   unsigned int projection_number = 100,
                   bool reuse_direction = false,
-                  unsigned int n_components = 1);
+                  unsigned int n_components = 1,
+                  unsigned int micrographs_number = 0);
 
   double unprotected_evaluate(
                  IMP::DerivativeAccumulator *accum) const override;
@@ -58,6 +62,10 @@ public:
   unsigned int get_projection_number() const { return projection_number_; }
 
   void set_projection_number(unsigned int n) { projection_number_ = n; }
+
+  unsigned int get_micrographs_number() const { return micrographs_number_; }
+
+  void set_micrographs_number(unsigned int n) { micrographs_number_ = n; }
 
   //! Get transformation that best places the model on the image
   /** The transformation places the model such that if the image is placed
@@ -125,6 +133,7 @@ public:
   // Number of the largest components to be considered for the EM image
   unsigned int n_components_;
 
+  unsigned int micrographs_number_;
   mutable unsigned long counter_;
 };
 

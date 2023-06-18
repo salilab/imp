@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,10 +13,12 @@
 #include "RMF/log.h"
 #include "RMF/internal/shared_data_ranges.h"
 #include "RMF/internal/SharedData.h"
+#include "RMF/internal/paths.h"
 #include "shared_data_maps.h"
 #include "shared_data_equality.h"
 
 #include <boost/range/distance.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 RMF_ENABLE_WARNINGS
 
@@ -167,11 +169,85 @@ void clone_values_category(SDA* sda, Category cata, SDB* sdb, Category catb,
   RMF_FOREACH_TYPE(RMF_CLONE_VALUES);
 }
 
+// Return true iff an attribute contains a filesystem path.
+// Unfortunately RMF stores both paths and non-path strings in String(s)
+// attributes (and we can't easily add a separate Path(s) type without
+// breaking backwards compatibility), so we do this based on the name
+// of the attribute. The convention is to end path attribute names in
+// "filename" or "filenames" but we have to also include a few that
+// predate this convention.
+inline bool is_string_key_path(std::string name) {
+  return boost::algorithm::ends_with(name, "filename") ||
+         boost::algorithm::ends_with(name, "filenames") ||
+         name == "cluster density" ||
+         name == "image files" ||
+         name == "path";
+}
+
+// Rewrite a String node attribute containing a relative path
+template <class SDB>
+void rewrite_node_path(SDB *sdb, NodeID n, ID<StringTraits> k,
+                       StringTraits::ReturnType s,
+                       const std::string &from_path,
+                       const std::string &to_path) {
+  sdb->set_static_value(
+       n, k, get_relative_path(to_path, get_absolute_path(from_path, s)));
+}
+
+// Rewrite a Strings node attribute containing relative paths
+template <class SDB>
+void rewrite_node_path(SDB *sdb, NodeID n, ID<StringsTraits> k,
+                       StringsTraits::ReturnType s,
+                       const std::string &from_path,
+                       const std::string &to_path) {
+  for (std::string &es : s) {
+    es = get_relative_path(to_path, get_absolute_path(from_path, es));
+  }
+  sdb->set_static_value(n, k, s);
+}
+
+// Rewrite all relative paths (in String or Strings attributes) in the
+// given category, that were relative to from_path, to be relative to to_path
+template <class Traits, class SDB>
+void rewrite_paths_type(SDB *sdb, Category catb,
+                        const std::string &from_path,
+                        const std::string &to_path) {
+  std::vector<ID<Traits>> keysb = sdb->get_keys(catb, Traits());
+  for (auto &k : keysb) {
+    if (is_string_key_path(sdb->get_name(k))) {
+      for(NodeID n : get_nodes(sdb)) {
+        typename Traits::ReturnType s = sdb->get_static_value(n, k);
+        if (!Traits::get_is_null_value(s)) {
+          rewrite_node_path(sdb, n, k, s, from_path, to_path);
+        }
+      }
+    }
+  }
+}
+
+// Rewrite all path attributes, that were relative to sba, to be
+// relative to sdb
+template <class SDA, class SDB>
+void rewrite_relative_paths(SDA* sda, SDB* sdb) {
+  std::string from_path = sda->get_file_path();
+  std::string to_path = sdb->get_file_path();
+  for (Category catb : sdb->get_categories()) {
+    // Both String and Strings attributes can contain paths
+    rewrite_paths_type<StringTraits>(sdb, catb, from_path, to_path);
+    rewrite_paths_type<StringsTraits>(sdb, catb, from_path, to_path);
+  }
+}
+
 template <class SDA, class SDB>
 void clone_static_data(SDA* sda, SDB* sdb) {
   for(Category cata : sda->get_categories()) {
     Category catb = sdb->get_category(sda->get_name(cata));
     clone_values_category(sda, cata, sdb, catb, StaticValues());
+  }
+  // Path attributes are relative to sda, so rewrite (if necessary) to
+  // be relative to sdb
+  if (!get_is_same_base_path(sda->get_file_path(), sdb->get_file_path())) {
+    rewrite_relative_paths(sda, sdb);
   }
 }
 

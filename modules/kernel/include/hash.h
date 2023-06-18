@@ -49,6 +49,11 @@ template <class T>
 inline std::size_t hash_value(const std::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
+
+template <class T>
+inline std::size_t hash_value(const std::set<T> &t) {
+  return boost::hash_range(t.begin(), t.end());
+}
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_HASH_H */

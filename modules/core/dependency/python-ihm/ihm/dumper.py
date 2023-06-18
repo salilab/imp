@@ -77,6 +77,14 @@ class _EntryDumper(Dumper):
             lp.write(id=system.id)
 
 
+class _CollectionDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_ihm_entry_collection",
+                         ["id", "name", "details"]) as lp:
+            for c in system.collections:
+                lp.write(id=c.id, name=c.name, details=c.details)
+
+
 class _AuditConformDumper(Dumper):
     URL = ("https://raw.githubusercontent.com/" +
            "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
@@ -84,8 +92,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.17",
-                     dict_location=self.URL % "f15a6bb")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.22",
+                     dict_location=self.URL % "ac49042")
 
 
 class _StructDumper(Dumper):
@@ -181,7 +189,7 @@ class _AuditAuthorDumper(Dumper):
         # If system.authors is empty, get the set of all citation authors
         # instead
         seen_authors = set()
-        # Only look at explictly-added citations (since these are likely to
+        # Only look at explicitly-added citations (since these are likely to
         # describe the modeling) not that describe a method or a piece of
         # software we used (system._all_citations())
         for c in system.citations:
@@ -1610,6 +1618,7 @@ class _EnsembleDumper(Dumper):
                           "num_ensemble_models_deposited",
                           "ensemble_precision_value",
                           "ensemble_file_id", "details",
+                          "model_group_superimposed_flag",
                           "sub_sample_flag", "sub_sampling_type"]) as lp:
             for e in system.ensembles:
                 if e.subsamples:
@@ -1627,6 +1636,7 @@ class _EnsembleDumper(Dumper):
                          ensemble_precision_value=e.precision,
                          ensemble_file_id=e.file._id if e.file else None,
                          details=e.details,
+                         model_group_superimposed_flag=e.superimposed,
                          sub_sample_flag=len(e.subsamples) > 0,
                          sub_sampling_type=sstype)
 
@@ -2454,7 +2464,7 @@ class _FLRInstSettingDumper(Dumper):
                 lp.write(id=x._id, details=x.details)
 
 
-class _FLR_ExpConditionDumper(Dumper):
+class _FLRExpConditionDumper(Dumper):
     def finalize(self, system):
         def all_exp_conditions():
             return itertools.chain.from_iterable(f._all_exp_conditions()
@@ -3149,7 +3159,7 @@ class _FLRFPSMPPModelingDumper(Dumper):
 
 
 _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
-                _FLR_ExpConditionDumper, _FLRInstrumentDumper,
+                _FLRExpConditionDumper, _FLRInstrumentDumper,
                 _FLREntityAssemblyDumper, _FLRSampleConditionDumper,
                 _FLRSampleDumper, _FLRProbeDumper,
                 _FLRSampleProbeDetailsDumper, _FLRPolyProbePositionDumper,
@@ -3230,6 +3240,7 @@ class IHMVariant(Variant):
     """Used to select typical PDBx/IHM file output. See :func:`write`."""
     _dumpers = [
         _EntryDumper,  # must be first
+        _CollectionDumper,
         _StructDumper, _CommentDumper, _AuditConformDumper, _CitationDumper,
         _SoftwareDumper, _AuditAuthorDumper, _GrantDumper, _ChemCompDumper,
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
@@ -3268,6 +3279,20 @@ class IgnoreVariant(IHMVariant):
 
     def get_system_writer(self, system, writer_class, writer):
         return _IgnoreWriter(writer, self._ignores)
+
+
+def set_line_wrap(line_wrap):
+    """Set whether output lines are wrapped at 80 characters.
+       By default the mmCIF writer tries to avoid writing lines longer than
+       80 characters, for compatibility with traditional PDB. When
+       disabled, each row in a "loop" construct will be written on a
+       single line.
+
+       This setting has no effect on binary formats (BinaryCIF).
+
+       :param bool line_wrap: whether to wrap lines at 80 characters.
+    """
+    ihm.format.CifWriter._set_line_wrap(line_wrap)
 
 
 def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):

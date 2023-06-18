@@ -63,10 +63,11 @@ bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi)
 }
 
 namespace {
-/** get the force displacement term in the Ermak-Mccammon equation
-    for coordinate i of  particle pi in model m, with time step dt [fs] and ikT=1/kT [mol/kcal]
+/** get the force translation term in the Ermak-Mccammon equation
+    for coordinate i of  particle pi in model m, with time step dt [fs]
+    and ikT=1/kT [mol/kcal]
 */
-inline double get_force_displacement(Model *m, ParticleIndex pi,
+inline double get_force_i(Model *m, ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
   double nforce(-d.get_derivative(i)); // [kCal/mol/A]
@@ -84,7 +85,7 @@ inline double get_force_displacement(Model *m, ParticleIndex pi,
             << std::endl;*/
   return force_term;
 }
-// returns i'th torque displacement in radians given model m, particle index p,
+// returns i'th torque translation in radians given model m, particle index p,
 // torque component number i, time dt in fs, and ikT (1/kT) in mol/kcal
 inline double get_torque(Model *m, ParticleIndex p,
                          unsigned int i, double dt, double ikT) {
@@ -104,19 +105,20 @@ inline double get_torque(Model *m, ParticleIndex p,
   return -force_term;
 }
 
-  // returns the std-dev for the random displacement in the Ermak-Mccammon equation
-inline double get_sigma_displacement(Model *m, ParticleIndex p,
+  // returns the std-dev for the random translation in the Ermak-Mccammon equation
+  // for a single translational degree of freedom (e.g. x-coordinate)
+inline double get_translational_sigma_i(Model *m, ParticleIndex p,
                         double dtfs) {
-  // 6.0 is 2.0 for the variance of each translation dof (Barak)
-  // 6.0 since we are picking radius rather than the coordinates (Daniel)
   double dd = Diffusion(m, p).get_diffusion_coefficient();
-  return sqrt(6.0 * dd * dtfs);
+  return sqrt(2.0 * dd * dtfs);
 }
 
- // returns the std-dev for the random rotation angle in the Ermak-Mccammon equation
-inline double get_rotational_sigma(Model *m, ParticleIndex p,
+  // returns the std-dev for the random rotation angle in the Ermak-Mccammon equation
+  // for all three rotational degree of freedom of a single particle (a single rotation
+  // of variance $6 x D_{rot} x \DeltaT$ is used to approximate the variance of three
+  // indepnendent rotations of $2 x D_{rot} * \DeltaT$
+inline double get_rotational_sigma_total(Model *m, ParticleIndex p,
                                    double dtfs) {
-  // 6.0 is 2.0 for the variance of each rotational dof (Barak)
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }
@@ -132,10 +134,10 @@ void BrownianDynamics::setup(const ParticleIndexes &ips) {
     Model* m = get_model();
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma_displacement(m, ips[i], dtfs);
+      double c = get_translational_sigma_i(m, ips[i], dtfs);
       ms = std::max(ms, c);
       for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force_displacement(m, ips[i], j, dtfs, ikT);
+        double f = get_force_i(m, ips[i], j, dtfs, ikT);
         mf = std::max(mf, f);
       }
     }
@@ -164,9 +166,9 @@ void BrownianDynamics::advance_coordinates_1(ParticleIndex pi,
                                              double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
-  algebra::Vector3D force(get_force_displacement(get_model(), pi, 0, dt, ikT),
-                          get_force_displacement(get_model(), pi, 1, dt, ikT),
-                          get_force_displacement(get_model(), pi, 2, dt, ikT));
+  algebra::Vector3D force(get_force_i(get_model(), pi, 0, dt, ikT),
+                          get_force_i(get_model(), pi, 1, dt, ikT),
+                          get_force_i(get_model(), pi, 2, dt, ikT));
   algebra::Vector3D dX = (force - forces_[i]) / 2.0;
   check_dX(dX, max_step_in_A_);
   xd.set_coordinates(xd.get_coordinates() + dX);
@@ -176,13 +178,13 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
                                              unsigned int i, double dtfs,
                                              double ikT) {
   core::XYZ xd(get_model(), pi);
-  double sigma = get_sigma_displacement(get_model(), pi, dtfs);
-  double r = get_sample(sigma);
-  algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
+  double sigma_i = get_translational_sigma_i(get_model(), pi, dtfs);
+  algebra::Vector3D random_dX
+    (get_sample(sigma_i), get_sample(sigma_i), get_sample(sigma_i));
   algebra::Vector3D force_dX
-    (get_force_displacement(get_model(), pi, 0, dtfs, ikT),
-     get_force_displacement(get_model(), pi, 1, dtfs, ikT),
-     get_force_displacement(get_model(), pi, 2, dtfs, ikT));
+    (get_force_i(get_model(), pi, 0, dtfs, ikT),
+     get_force_i(get_model(), pi, 1, dtfs, ikT),
+     get_force_i(get_model(), pi, 2, dtfs, ikT));
   if (srk_) {
     forces_[i] = force_dX;
   }
@@ -210,7 +212,10 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
 void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
-  double sigma = get_rotational_sigma(get_model(), pi, dtfs);
+  // Note - 6*dr*dtfs*N(0,1) for sigma is an approximation. the real angle should be 2*X where
+  // X is a random variable drawn from the Chi2 distribution with 3 dofs
+  // (corresponding to each of the 3 rotational dofs)
+  double sigma = get_rotational_sigma_total(get_model(), pi, dtfs);
   double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();

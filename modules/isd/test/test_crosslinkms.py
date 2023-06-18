@@ -3,6 +3,7 @@ import IMP
 import IMP.core
 import IMP.isd
 import IMP.test
+import pickle
 from random import sample
 from math import pi, log, exp
 
@@ -18,6 +19,31 @@ def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
     nuisance.set_is_optimized(nuisance.get_nuisance_key(), isoptimized)
 
     return nuisance
+
+
+def make_test_restraint():
+    m = IMP.Model()
+    p1 = IMP.Particle(m)
+    p2 = IMP.Particle(m)
+
+    slope = 0.01
+    length = 10
+
+    xyz1 = IMP.core.XYZ.setup_particle(p1)
+    xyz2 = IMP.core.XYZ.setup_particle(p2)
+
+    xyz1.set_coordinates((0, 0, 0))
+    xyz2.set_coordinates((0, 0, 0))
+
+    sigma1 = setupnuisance(m, 5, 0, 100, False)
+    sigma2 = setupnuisance(m, 5, 0, 100, False)
+    psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
+
+    dr = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+    dr.set_weight(0.10)
+    dr.set_name("test restraint")
+    dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
+    return m, p1, p2, sigma1, sigma2, psi, dr
 
 
 class CrossLinkMS(object):
@@ -90,6 +116,11 @@ class CrossLinkMS(object):
 
 
 class TestXLRestraintSimple(IMP.test.TestCase):
+    def test_default(self):
+        """Test default-constructed restraint"""
+        dr = IMP.isd.CrossLinkMSRestraint()
+        self.assertRaisesUsageException(dr.evaluate, False)
+
     def test_score_simple(self):
         """
         Test the straight pairwise restraint
@@ -160,6 +191,52 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         self.assertAlmostEqual(score,scoretest,places=4)
                         self.assertAlmostEqual(score_lp,scoretest,places=4)
 
+    def test_serialize(self):
+        """Test (un-)serialize of CrossLinkMSRestraint"""
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        dr.set_source_residue1(1)
+        dr.set_source_residue2(4)
+        dr.set_source_protein1("r1")
+        dr.set_source_protein2("r2")
+        dump = pickle.dumps(dr)
+        del dr
+
+        # Should be able to restore restraint parameters
+        newdr = pickle.loads(dump)
+        self.assertAlmostEqual(newdr.get_weight(), 0.10, 0.01)
+        self.assertEqual(newdr.get_name(), "test restraint")
+        self.assertEqual(newdr.get_number_of_contributions(), 1)
+        self.assertEqual(newdr.get_contribution_particle_indexes(0),
+                         (p1.get_index(), p2.get_index()))
+        self.assertEqual(newdr.get_contribution_psi_index(0),
+                         psi.get_particle_index())
+        self.assertEqual(newdr.get_contribution_sigma_indexes(0),
+                         (sigma1.get_particle_index(),
+                          sigma2.get_particle_index()))
+        self.assertAlmostEqual(newdr.get_slope(), 0.01, delta=1e-4)
+        self.assertAlmostEqual(newdr.get_length(), 10.0, delta=1e-4)
+
+        self.assertEqual(newdr.get_source_residue1(), 1)
+        self.assertEqual(newdr.get_source_residue2(), 4)
+        self.assertEqual(newdr.get_source_protein1(), "r1")
+        self.assertEqual(newdr.get_source_protein2(), "r2")
+
+        del newdr
+        m2 = IMP.Model()
+        del m
+        # Cannot restore a Restraint if the Model it acts on is gone
+        self.assertRaises(ValueError, pickle.loads, dump)
+
+    def test_serialize_polymorphic(self):
+        """Test (un-)serialize of CrossLinkMSRestraint via polymorphic
+           pointer"""
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        sf = IMP.core.RestraintsScoringFunction([dr])
+        dump = pickle.dumps(sf)
+
+        newsf = pickle.loads(dump)
+        newdr, = newsf.restraints
+        self.assertEqual(newdr.get_name(), "test restraint")
 
     def test_score_multiple_restraints(self):
         """Intensive random test, it tests manifold ambiguity, sameparticle, particle positions
@@ -357,6 +434,27 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             score_lp = dr_lp.unprotected_evaluate(None)
                             self.assertAlmostEqual(score,scoretest,places=4)
                             self.assertAlmostEqual(score_lp,scoretest,places=4)
+
+    def test_static_info(self):
+        """Test restraint static info"""
+        m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
+        self.assertIsNone(dr.get_static_info())
+        dr.set_source_residue1(1)
+        dr.set_source_residue2(4)
+        dr.set_source_protein1("foo")
+        dr.set_source_protein2("bar")
+        s = dr.get_static_info()
+        self.assertEqual(s.get_number_of_string(), 2)
+        self.assertEqual(s.get_string_key(0), "protein1")
+        self.assertEqual(s.get_string_value(0), "foo")
+        self.assertEqual(s.get_string_key(1), "protein2")
+        self.assertEqual(s.get_string_value(1), "bar")
+        self.assertEqual(s.get_number_of_int(), 2)
+        self.assertEqual(s.get_int_key(0), "residue1")
+        self.assertEqual(s.get_int_value(0), 1)
+        self.assertEqual(s.get_int_key(1), "residue2")
+        self.assertEqual(s.get_int_value(1), 4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -2,7 +2,7 @@
  *  \file IMP/isd/UniformPrior.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,8 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Restraint.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -19,15 +21,23 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT UniformPrior : public Restraint
 {
-  Pointer<Particle> p_;
-  Float upperb_;
-  Float lowerb_;
-  Float k_;
+  ParticleIndex pi_;
+  double upperb_;
+  double lowerb_;
+  double k_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), pi_, upperb_, lowerb_, k_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(UniformPrior);
 
 public:
   //! Create the restraint.
-  UniformPrior(IMP::Model* m, Particle *p, Float k,
-            Float upperb, Float lowerb, std::string name="UniformPrior%1%");
+  UniformPrior(IMP::Model* m, Particle *p, double k, double upperb,
+               double lowerb, std::string name="UniformPrior%1%");
+
+  UniformPrior() {}
 
   virtual double
   unprotected_evaluate(IMP::DerivativeAccumulator *accum)

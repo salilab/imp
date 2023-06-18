@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 
 
 class Tests(IMP.test.TestCase):
@@ -59,6 +58,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(q_id[1], 0.0)
         self.assertAlmostEqual(q_id[2], 0.0)
         self.assertAlmostEqual(q_id[3], 0.0)
+
 
 if __name__ == '__main__':
     IMP.test.main()

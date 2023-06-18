@@ -7,9 +7,9 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/timer.hpp>
 #include <exception>
 #include <iostream>
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -44,6 +44,21 @@ std::string show_size(unsigned int sz) {
   }
   return oss.str();
 }
+
+class Timer {
+  std::chrono::steady_clock::time_point start_time_;
+public:
+  Timer() {
+    start_time_ = std::chrono::steady_clock::now();
+  }
+
+  double elapsed() const {
+    auto end_time = std::chrono::steady_clock::now();
+    auto time_span = std::chrono::duration_cast<
+                      std::chrono::duration<double> >(end_time - start_time_);
+    return time_span.count();
+  }
+};
 
 void benchmark_size(std::string path, std::string type) {
   unsigned int size = 0;
@@ -181,11 +196,11 @@ double load(RMF::FileConstHandle file, const RMF::NodeIDs& nodes) {
 std::pair<std::size_t, std::size_t> benchmark_create(RMF::FileHandle file,
                                                      std::string type) {
   RMF::NodeIDs atoms;
-  boost::timer timer;
+  Timer timer;
   boost::tuple<std::size_t> cur = create(file, atoms);
   std::cout << type << ", create, " << timer.elapsed() << ", " << cur.get<0>()
             << std::endl;
-  boost::timer frame_timer;
+  Timer frame_timer;
   boost::tuple<double, std::size_t> frames = create_frames(file, atoms);
   std::cout << type << ", create frame, " << frame_timer.elapsed() / 20.0
             << ", " << frames.get<0>() << std::endl;
@@ -194,7 +209,7 @@ std::pair<std::size_t, std::size_t> benchmark_create(RMF::FileHandle file,
 
 void benchmark_traverse(RMF::FileConstHandle file, std::string type) {
   file.set_current_frame(RMF::FrameID(0));
-  boost::timer timer;
+  Timer timer;
   double count = 0;
   double t;
   while (timer.elapsed() < 1) {
@@ -211,17 +226,18 @@ void benchmark_load(RMF::FileConstHandle file, std::string type) {
   for(RMF::NodeID n : file.get_node_ids()) {
     if (ipcf.get_is(file.get_node(n))) nodes.push_back(n);
   }
-  boost::timer timer;
+  Timer timer;
   double dist = load(file, nodes);
   std::cout << type << ", load, " << timer.elapsed() / 20.0 << ", " << dist
             << std::endl;
 }
 
 RMF::FileConstHandle benchmark_open(std::string path, std::string type) {
-  boost::timer timer;
+  Timer timer;
   RMF::FileConstHandle ret;
   double count = 0;
   while (timer.elapsed() < 1) {
+    ret.close();
     ret = RMF::open_rmf_file_read_only(path);
     ++count;
   }
@@ -268,6 +284,21 @@ int main(int, char**) {
       }
       benchmark_size(name, "rmfz");
     }
+#if RMF_HAS_DEPRECATED_BACKENDS
+    {
+      const std::string name = name_base + ".rmf-hdf5";
+      {
+        RMF::FileHandle fh = RMF::create_rmf_file(name);
+        benchmark_create(fh, "hdf5");
+      }
+      {
+        RMF::FileConstHandle fh = benchmark_open(name, "hdf5");
+        benchmark_traverse(fh, "hdf5");
+        benchmark_load(fh, "hdf5");
+      }
+      benchmark_size(name, "hdf5");
+    }
+#endif
     {
       RMF::BufferHandle buffer;
       {
@@ -275,7 +306,7 @@ int main(int, char**) {
         benchmark_create(fh, "buffer");
       }
       {
-        boost::timer timer;
+        Timer timer;
         RMF::FileConstHandle fh = RMF::open_rmf_buffer_read_only(buffer);
         std::cout << "buffer"
                   << ", open, " << timer.elapsed() << ", 0" << std::endl;

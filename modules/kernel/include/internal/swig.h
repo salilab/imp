@@ -20,6 +20,9 @@
 #include <boost/unordered_map.hpp>
 #include <IMP/internal/swig_base.h>
 #include <IMP/deprecation_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -28,15 +31,21 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 // probably not legal C++, but for python
 class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   double v_;
-  const ParticlesTemp ps_;
+  ParticleIndexes pis_;
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), v_, pis_);
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(_ConstRestraint);
 
  public:
-  _ConstRestraint(double v, const ParticlesTemp ps)
-      : Restraint(internal::get_model(ps), "ConstRestraint%1%"),
-        v_(v),
-        ps_(ps) {}
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
-      : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
+      : Restraint(m, "ConstRestraint%1%"), v_(v), pis_(pis) {}
+  _ConstRestraint() {}
+
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const override;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
@@ -50,8 +59,15 @@ IMP_OBJECTS(_ConstRestraint, _ConstRestraints);
 class _ConstSingletonScore : public SingletonScore {
   double v_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonScore>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_ConstSingletonScore);
+
  public:
   _ConstSingletonScore(double v) : v_(v) {}
+  _ConstSingletonScore() {}
   virtual double evaluate_index(Model *, ParticleIndex,
                                 DerivativeAccumulator *) const override {
     return v_;
@@ -68,8 +84,15 @@ IMP_OBJECTS(_ConstSingletonScore, _ConstSingletonScores);
 class IMPKERNELEXPORT _ConstPairScore : public PairScore {
   double v_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<PairScore>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_ConstPairScore);
+
  public:
   _ConstPairScore(double v) : v_(v) {}
+  _ConstPairScore() {}
   virtual double evaluate_index(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const override {
     return v_;
@@ -127,8 +150,15 @@ IMP_DECORATORS_WITH_TRAITS(_TrivialTraitsDecorator, _TrivialTraitsDecorators,
                            Particles);
 
 class IMPKERNELEXPORT _ConstOptimizer : public Optimizer {
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Optimizer>(this));
+  }
+
  public:
   _ConstOptimizer(Model *m) : Optimizer(m, "ConstOptimizer%1%") {}
+  _ConstOptimizer() {}
   virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(_ConstOptimizer);
 };

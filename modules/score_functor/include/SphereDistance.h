@@ -12,6 +12,8 @@
 #include <IMP/Model.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/check_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -19,6 +21,11 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     and pass it off to BaseDistanceScore.*/
 template <class BaseDistanceScore>
 class SphereDistance : public BaseDistanceScore {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<BaseDistanceScore>(this));
+  }
+
   /* Caching the rsum makes things 30% faster with a linear score, but
      doesn't work in non-trivial cases (eg AddScores where get_maximum_range()
      isn't necessarily called first). I don't see how to fix the nontrivial
@@ -32,6 +39,7 @@ class SphereDistance : public BaseDistanceScore {
 
  public:
   SphereDistance(BaseDistanceScore base) : P(base) {}
+  SphereDistance() {}
   double get_score(Model *m, const ParticleIndexPair &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - get_rsum(m, pi));

@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Python-IHM'
-copyright = u'2018-2022, Benjamin Webb'
+copyright = u'2018-2023, Benjamin Webb'
 author = u'Benjamin Webb'
 
 # The version info for the project you're documenting, acts as replacement for

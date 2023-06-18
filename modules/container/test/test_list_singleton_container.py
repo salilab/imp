@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.container
+import pickle
 
 
 class TestMovedScore(IMP.SingletonScore):
@@ -50,6 +51,16 @@ class Tests(IMP.test.TestCase):
                                168., delta=1e-6)
         self.assertAlmostEqual(r1.evaluate_moved(False, [p2], []),
                                168., delta=1e-6)
+
+    def test_pickle(self):
+        """Test (un-)serialize of ListSingletonContainer"""
+        m = IMP.Model()
+        p1 = m.add_particle("p1")
+        lpc = IMP.container.ListSingletonContainer(m, [p1])
+        self.assertEqual(lpc.get_contents(), [p1])
+        dump = pickle.dumps(lpc)
+        newlpc = pickle.loads(dump)
+        self.assertEqual(newlpc.get_contents(), [p1])
 
 
 if __name__ == '__main__':

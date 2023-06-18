@@ -15,8 +15,6 @@
 #include "IMP/em/exp.h"
 #include "IMP/exception.h"
 #include "IMP/constants.h"
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
 #include <complex>
 #include <math.h>
 

@@ -14,6 +14,8 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/triplet_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,9 +24,17 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   IMP::PointerMember<UnaryFunction> f_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<TripletScore>(this), f_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(AngleTripletScore);
+
  public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
+  AngleTripletScore() {}
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexTriplet &pi,
                                 DerivativeAccumulator *da) const override;

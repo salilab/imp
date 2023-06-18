@@ -2,7 +2,6 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
-import math
 
 
 class Tests(IMP.test.TestCase):
@@ -35,5 +34,7 @@ class Tests(IMP.test.TestCase):
                 if IMP.algebra.get_distance(vecs[i], j) < i * .98 and ij != i:
                     print(ij, j, IMP.algebra.get_distance(vecs[i], j))
                     self.assertIn(ij, n1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

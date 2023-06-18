@@ -5,6 +5,7 @@ import IMP.core
 import IMP.algebra
 import IMP.container
 import random
+import pickle
 
 tk = IMP.IntKey("type")
 
@@ -73,5 +74,59 @@ class Tests(IMP.test.TestCase):
                 d.set_coordinates(d.get_coordinates()
                                   + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 5)))
             self.assertEqual(r.evaluate(False), 0)
+
+    def make_system(self):
+        m = IMP.Model()
+        ps = self.create_particles_in_box(m, 20)
+        lsc = IMP.container.ListSingletonContainer(m, ps)
+        pred = IMP.core.ConstantSingletonPredicate(42)
+        r = IMP.container.PredicateSingletonsRestraint(pred, lsc)
+        return m, r
+
+    def test_unknown_score(self):
+        """Test PredicateSingletonsRestraint handling of unknown score"""
+        m, r = self.make_system()
+        # By default, an error if a particle doesn't have a score set
+        self.assertRaisesUsageException(r.evaluate, False)
+        r.set_is_complete(False)
+        self.assertAlmostEqual(r.evaluate(False), 0.0, delta=0.1)
+        # 20 particles * 10 = 200
+        r.set_unknown_score(IMP._ConstSingletonScore(10))
+        self.assertAlmostEqual(r.evaluate(False), 200.0, delta=0.1)
+
+    def test_set_score(self):
+        """Test PredicateSingletonsRestraint handling of set score"""
+        m, r = self.make_system()
+        r.set_score(42, IMP._ConstSingletonScore(10))
+        # 20 particles * 10 = 200
+        self.assertAlmostEqual(r.evaluate(False), 200.0, delta=0.1)
+
+    def test_pickle(self):
+        """Test (un-pickle) of PredicateSingletonsRestraint"""
+        m, r = self.make_system()
+        r.set_score(42, IMP._ConstSingletonScore(10))
+        r.set_name("foo")
+        dump = pickle.dumps(r)
+        newr = pickle.loads(dump)
+        self.assertEqual(newr.get_name(), "foo")
+        # 20 particles * 10 = 200
+        self.assertAlmostEqual(newr.evaluate(False), 200.0, delta=0.1)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-pickle) of PredicateSingletonsRestraint via poly ptr"""
+        m, r = self.make_system()
+        r.set_score(42, IMP._ConstSingletonScore(10))
+        r.set_name("foo")
+        sf = IMP.core.RestraintsScoringFunction([r])
+        dump = pickle.dumps(sf)
+
+        newsf = pickle.loads(dump)
+        newr, = newsf.restraints
+
+        self.assertEqual(newr.get_name(), "foo")
+        # 20 particles * 10 = 200
+        self.assertAlmostEqual(newr.evaluate(False), 200.0, delta=0.1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

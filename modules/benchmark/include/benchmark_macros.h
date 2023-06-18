@@ -11,7 +11,7 @@
 
 #include <IMP/benchmark/benchmark_config.h>
 #include <IMP/flags.h>
-#include <boost/timer.hpp>
+#include <IMP/internal/SimpleTimer.h>
 #include <boost/scoped_ptr.hpp>
 #include "internal/control.h"
 #include "internal/flags.h"
@@ -95,7 +95,7 @@
 /** The units for the time are in seconds. \see IMP_TIME_N */
 #define IMP_TIME(block, timev)                                           \
   IMP_BENCHMARK_RUN {                                                    \
-    boost::timer imp_timer;                                              \
+    IMP::internal::SimpleTimer imp_timer;                                \
     unsigned int imp_reps = 0;                                           \
     IMP_BENCHMARK_PROFILING_BEGIN;                                       \
     try {                                                                \
@@ -145,7 +145,7 @@
     exactly N times. \see IMP_TIME */
 #define IMP_TIME_N(block, timev, N)                                \
   IMP_BENCHMARK_RUN {                                              \
-    boost::timer imp_timer;                                        \
+    IMP::internal::SimpleTimer imp_timer;                          \
     IMP_BENCHMARK_PROFILING_BEGIN;                                 \
     for (unsigned int i = 0; i < (N); ++i) {                       \
       try {                                                        \

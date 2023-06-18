@@ -12,6 +12,8 @@
 #include "../Constraint.h"
 #include "container_helpers.h"
 #include <IMP/Pointer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,16 +23,18 @@ class TupleConstraint : public Constraint {
   IMP::PointerMember<After> af_;
   typename Before::IndexArgument v_;
 
- public:
-  TupleConstraint(Before *before, After *after,
-                  const typename Before::Argument &vt,
-                  std::string name = "TupleConstraint %1%",
-                  bool can_skip=false);
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Constraint>(this), f_, af_, v_);
+  }
 
+ public:
   TupleConstraint(Before *before, After *after, Model *m,
                   const typename Before::IndexArgument &vt,
                   std::string name = "TupleConstraint %1%",
                   bool can_skip=false);
+
+  TupleConstraint() {}
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }
@@ -50,16 +54,6 @@ class TupleConstraint : public Constraint {
   IMP_OBJECT_METHODS(TupleConstraint);
   ;
 };
-
-template <class Before, class After>
-TupleConstraint<Before, After>::TupleConstraint(
-    Before *before, After *after, const typename Before::Argument &vt,
-    std::string name, bool can_skip)
-    : Constraint(internal::get_model(vt), name), v_(get_index(vt)) {
-  if (before) f_ = before;
-  if (after) af_ = after;
-  set_can_skip(can_skip);
-}
 
 template <class Before, class After>
 TupleConstraint<Before, After>::TupleConstraint(
@@ -121,7 +115,8 @@ inline Constraint *create_tuple_constraint(Before *b, After *a,
     if (b) name += " and  " + b->get_name();
     if (a) name += " and " + a->get_name();
   }
-  return new internal::TupleConstraint<Before, After>(b, a, t, name, can_skip);
+  return new internal::TupleConstraint<Before, After>(
+                   b, a, internal::get_model(t), get_index(t), name, can_skip);
 }
 
 #ifndef IMP_DOXYGEN

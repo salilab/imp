@@ -24,7 +24,7 @@
 #include <map>
 #include <algorithm>
 
-#include "boost/array.hpp"
+#include <array>
 
 #include "Config.hh"
 #include "Encoder.hh"
@@ -180,18 +180,18 @@ struct codec_traits<std::vector<uint8_t> > {
  * codec_traits for Avro fixed.
  */
 template <size_t N>
-struct codec_traits<boost::array<uint8_t, N> > {
+struct codec_traits<std::array<uint8_t, N> > {
   /**
    * Encodes a given value.
    */
-  static void encode(Encoder& e, const boost::array<uint8_t, N>& b) {
+  static void encode(Encoder& e, const std::array<uint8_t, N>& b) {
     e.encodeFixed(&b[0], N);
   }
 
   /**
    * Decodes into a given value.
    */
-  static void decode(Decoder& d, boost::array<uint8_t, N>& s) {
+  static void decode(Decoder& d, std::array<uint8_t, N>& s) {
     std::vector<uint8_t> v(N);
     d.decodeFixed(N, v);
     std::copy(&v[0], &v[0] + N, &s[0]);

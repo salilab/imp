@@ -9,7 +9,7 @@
 #ifndef RMF_INTERNAL_SHARED_DATA_FACTORIES_H
 #define RMF_INTERNAL_SHARED_DATA_FACTORIES_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -33,10 +33,10 @@ namespace RMF {
 
 namespace internal {
 
-RMFEXPORT boost::shared_ptr<SharedData> create_file(const std::string& name);
-RMFEXPORT boost::shared_ptr<SharedData> create_buffer(BufferHandle buffer);
-RMFEXPORT boost::shared_ptr<SharedData> read_file(const std::string& name);
-RMFEXPORT boost::shared_ptr<SharedData> read_buffer(BufferConstHandle buffer);
+RMFEXPORT std::shared_ptr<SharedData> create_file(const std::string& name);
+RMFEXPORT std::shared_ptr<SharedData> create_buffer(BufferHandle buffer);
+RMFEXPORT std::shared_ptr<SharedData> read_file(const std::string& name);
+RMFEXPORT std::shared_ptr<SharedData> read_buffer(BufferConstHandle buffer);
 
 }  // namespace internal
 } /* namespace RMF */

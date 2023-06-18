@@ -9,9 +9,10 @@
 #include <IMP/statistics/internal/VQClustering.h>
 #include <IMP/statistics/internal/DataPoints.h>
 #include <IMP/algebra/vector_search.h>
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
+#include <IMP/internal/BoostProgressDisplay.h>
+
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
+
 using namespace algebra::internal;
 
 typedef std::pair<double, unsigned int> ValInd;
@@ -86,7 +87,7 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
   if (show_status_bar_) {
     show_number_of_runs = par_.number_of_runs_;
   }
-  boost::progress_display show_progress(show_number_of_runs);
+  IMP::internal::BoostProgressDisplay show_progress(show_number_of_runs);
   Array1DD_VEC centers_sample;
   for (int run_ind = 0; run_ind < par_.number_of_runs_; ++run_ind) {
     if (show_status_bar_) {

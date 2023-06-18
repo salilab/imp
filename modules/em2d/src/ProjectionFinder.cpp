@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.cpp
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
@@ -11,7 +11,7 @@
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/project.h"
-#include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/internal/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/TIFFImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
@@ -22,8 +22,7 @@
 #include "IMP/log.h"
 #include "IMP/Pointer.h"
 #include "IMP/exception.h"
-#include <boost/timer.hpp>
-#include <boost/progress.hpp>
+#include <IMP/internal/SimpleTimer.h>
 #include <algorithm>
 #include <iostream>
 #include <limits>
@@ -54,7 +53,7 @@ void ProjectionFinder::set_subjects(const em2d::Images &subjects) {
         subjects[0]->get_header().get_number_of_columns());
     polar_params_.create_maps_for_resampling();
   }
-  boost::timer preprocessing_timer;
+  IMP::internal::SimpleTimer preprocessing_timer;
   subjects_.resize(subjects.size());
   unsigned int n_subjects = subjects_.size();
   registration_results_.clear();
@@ -109,7 +108,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
   PROJECTIONS_POLAR_AUTOC_.clear();
   PROJECTIONS_POLAR_AUTOC_.resize(n_projections);
   projections_cog_.resize(n_projections);
-  boost::timer preprocessing_timer;
+  IMP::internal::SimpleTimer preprocessing_timer;
   for (unsigned int i = 0; i < n_projections; ++i) {
     projections_[i] = projections[i];  // does not copy
     std::ostringstream oss;
@@ -302,7 +301,7 @@ void ProjectionFinder::get_coarse_registration() {
   //  boost::progress_display show_progress(subjects_.size());
   for (unsigned long i = 0; i < subjects_.size(); ++i) {
     RegistrationResults coarse_RRs(projections_.size());
-    boost::timer timer_coarse_subject;
+    IMP::internal::SimpleTimer timer_coarse_subject;
     get_coarse_registrations_for_subject(i, coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
 
@@ -345,7 +344,7 @@ void ProjectionFinder::get_complete_registration() {
 
   // Set optimizer
   IMP_NEW(Model, scoring_model, ());
-  IMP_NEW(Fine2DRegistrationRestraint, fine2d, (scoring_model));
+  IMP_NEW(internal::Fine2DRegistrationRestraint, fine2d, (scoring_model));
   IMP_NEW(IMP::gsl::Simplex, simplex_optimizer, (scoring_model));
 
   IMP_LOG_TERSE("ProjectionFinder: Setting Fine2DRegistrationRestraint "
@@ -368,7 +367,7 @@ void ProjectionFinder::get_complete_registration() {
   for (unsigned long i = 0; i < subjects_.size(); ++i) {
     RegistrationResults coarse_RRs(projections_.size());
 
-    boost::timer timer_coarse_subject;
+    IMP::internal::SimpleTimer timer_coarse_subject;
     get_coarse_registrations_for_subject(i, coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
     // The coarse registration scoring is done by cross-correlation
@@ -391,7 +390,7 @@ void ProjectionFinder::get_complete_registration() {
     RegistrationResult best_fine_registration;
     best_fine_registration.set_score(std::numeric_limits<double>::max());
 
-    boost::timer timer_fine_subject;
+    IMP::internal::SimpleTimer timer_fine_subject;
     for (unsigned int k = 0; k < n_optimized; ++k) {
       // Fine registration of the subject using simplex
       sorted_coarse_RRs[k]->set_in_image(subjects_[i]->get_header());

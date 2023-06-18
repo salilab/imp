@@ -65,15 +65,17 @@ int main(int argc, char** argv) {
   bool oriented_potentials = false;
   bool normalize = false;
   std::string potentials_file, receptor_potentials_file, ligand_potentials_file;
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <pdb1> <pdb2> [trans_file] OR <filenames.txt>\n"
       "\nOption 1: compute the SOAP score of the interface between pdb1\n"
       "and pdb2 for a set of transformations in the trans_file.\n\n"
       "Option 2: compute SOAP scores for each pair of PDB file names in\n"
       "the input file filenames.txt.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
+
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

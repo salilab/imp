@@ -174,7 +174,7 @@ struct Convert<
       return ConvertValueBase<T>::get_cpp_object(o, symname, argnum, argtype,
                                                  st, particle_st, decorator_st);
     }
-    catch (ValueException) {
+    catch (ValueException &) {
       Particle *p = Convert<Particle>::get_cpp_object(
           o, symname, argnum, argtype, particle_st, particle_st, decorator_st);
       if (!T::get_is_setup(p)) {

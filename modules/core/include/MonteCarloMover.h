@@ -2,7 +2,7 @@
  *  \file IMP/core/MonteCarloMover.h
  *  \brief The base class for movers for Monte Carlo optimization.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,8 @@
 #include <IMP/Model.h>
 #include <IMP/particle_index.h>
 #include <IMP/tuple_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -44,8 +46,16 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   unsigned int num_rejected_;
   bool has_move_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this),
+       num_proposed_, num_rejected_, has_move_);
+  }
+
  public:
   MonteCarloMover(Model *m, std::string name);
+  MonteCarloMover();
 
   //! Propose a modification
   /** The method should return the list of all particles that were

@@ -16,12 +16,12 @@
 #include "IMP/base_macros.h"
 #include "IMP/flags.h"
 #include "IMP/live_objects.h"
+#include "IMP/internal/SimpleTimer.h"
 #include "boost/unordered_map.hpp"
 #include "IMP/types.h"
 #include <boost/unordered_set.hpp>
 #include <IMP/random.h>
 #include <boost/cstdint.hpp>
-#include <boost/timer.hpp>
 #include <cmath>
 #include <ostream>
 #if IMP_KERNEL_HAS_BOOST_RANDOM
@@ -52,7 +52,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 // logging
 bool print_time;
-boost::timer log_timer;
+SimpleTimer log_timer;
 #if !IMP_KERNEL_HAS_LOG4CXX
 Vector<std::pair<const char*, const void*> > log_contexts;
 int log_context_initializeds = -1;
@@ -91,7 +91,7 @@ void init_logger() {
 
 #endif
 
-boost::scoped_ptr<boost::progress_display> progress;
+boost::scoped_ptr<IMP::internal::BoostProgressDisplay> progress;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 IMPKERNEL_BEGIN_NAMESPACE

@@ -15,29 +15,30 @@ class Tests(IMP.test.ApplicationTestCase):
         os.chmod('buildParams.pl', 0o755)
 
         with open('patch_dock.Linux', 'w') as fh:
-            fh.write("""#!/usr/bin/python
+            fh.write("""#!%s
 import sys, shutil
 params, outfname = sys.argv[1:]
 shutil.copy('%s', outfname)
-""" % input_docking)
+""" % (sys.executable, input_docking))
         os.chmod('patch_dock.Linux', 0o755)
 
         with open('interface_cluster.linux', 'w') as fh:
-            fh.write("""#!/usr/bin/python
+            fh.write("#!" + sys.executable + """
+from __future__ import print_function
 import sys
 receptor, ligand, trans_in, dummy, clustered_out = sys.argv[1:]
 
 fh = open(clustered_out, 'w')
-print >> fh, "receptorPdb (str) " + receptor
-print >> fh, "ligandPdb (str) " + ligand
+print("receptorPdb (str) " + receptor, file=fh)
+print("ligandPdb (str) " + ligand, file=fh)
 
 for n, line in enumerate(open(trans_in)):
     spl = line.rstrip('\\r\\n').split()
     spl[0] = int(spl[0])
     for i in range(1, 8):
         spl[i] = float(spl[i])
-    print >> fh, "%4d | %.4f | %5d | %4d |%.5f %.5f %.5f %.5f %.5f %.5f" \
-                % tuple(spl[0:2] + [n+1, 1] + spl[2:])
+    print("%4d | %.4f | %5d | %4d |%.5f %.5f %.5f %.5f %.5f %.5f"
+          % tuple(spl[0:2] + [n+1, 1] + spl[2:]), file=fh)
 """)
         os.chmod('interface_cluster.linux', 0o755)
 

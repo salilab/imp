@@ -38,7 +38,7 @@ int32_t decodeZigzag32(uint32_t input) {
       ((input >> 1) ^ -(static_cast<int64_t>(input) & 1)));
 }
 
-size_t encodeInt64(int64_t input, boost::array<uint8_t, 10> &output) {
+size_t encodeInt64(int64_t input, std::array<uint8_t, 10> &output) {
   // get the zigzag encoding
   uint64_t val = encodeZigzag64(input);
 
@@ -54,7 +54,7 @@ size_t encodeInt64(int64_t input, boost::array<uint8_t, 10> &output) {
   return bytesOut;
 }
 
-size_t encodeInt32(int32_t input, boost::array<uint8_t, 5> &output) {
+size_t encodeInt32(int32_t input, std::array<uint8_t, 5> &output) {
   // get the zigzag encoding
   uint32_t val = encodeZigzag32(input);
 

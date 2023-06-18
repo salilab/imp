@@ -29,7 +29,7 @@ template <class Base>
 class ConstAttributes : public Base {
 #ifndef SWIG
  protected:
-  ConstAttributes(boost::shared_ptr<SharedHandle> h) : Base(h) {}
+  ConstAttributes(std::shared_ptr<SharedHandle> h) : Base(h) {}
   ConstAttributes() {}
 #else
  private:

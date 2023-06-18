@@ -15,7 +15,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 FibrilSampler::FibrilSampler(
     TransformationJoints trans_joint,
     DihedralAngleRevoluteJoints joints, DOFs dofs)
-    : trans_joint_(trans_joint), dihedral_joints_(joints), DOFsSampler(dofs) {
+    : DOFsSampler(dofs), dihedral_joints_(joints), trans_joint_(trans_joint) {
   IMP_USAGE_CHECK(dihedral_joints_.size() == get_number_of_dofs() + -6,
                   "FibrilSampler: number of joints should be equal to the number "
                       << "of degrees of freedom minus 5");

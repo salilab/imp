@@ -26,5 +26,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual((v1_t_inv - self.v1).get_magnitude() < 0.01, True)
         self.assertEqual((v2_t_inv - self.v2).get_magnitude() < 0.01, True)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -26,8 +26,8 @@
 using std::string;
 using std::make_pair;
 using boost::format;
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
 namespace internal_avro {
 

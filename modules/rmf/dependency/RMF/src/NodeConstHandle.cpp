@@ -6,7 +6,7 @@
  *
  */
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iomanip>
 #include <ostream>
 #include <string>
@@ -26,7 +26,7 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 
 NodeConstHandle::NodeConstHandle(NodeID node,
-                                 boost::shared_ptr<internal::SharedData> shared)
+                                 std::shared_ptr<internal::SharedData> shared)
     : node_(node), shared_(shared) {}
 
 FileConstHandle NodeConstHandle::get_file() const {

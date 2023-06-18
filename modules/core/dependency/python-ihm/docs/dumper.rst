@@ -17,4 +17,6 @@ The :mod:`ihm.dumper` Python module
 
 .. autoclass:: IgnoreVariant
 
+.. autofunction:: set_line_wrap
+
 .. autofunction:: write

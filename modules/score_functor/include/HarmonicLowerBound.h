@@ -14,6 +14,8 @@
 #include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
 #include <IMP/algebra/utility.h>
+#include <cereal/access.hpp>
+
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A harmonic score on the negative directed distance between
@@ -23,8 +25,14 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 class HarmonicLowerBound : public Score {
   double k_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(k_);
+  }
+
  public:
   HarmonicLowerBound(double k) : k_(k) {}
+  HarmonicLowerBound() {}
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

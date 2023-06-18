@@ -10,7 +10,7 @@
 #define RMF_INTERNAL_MULTIPLE_AVRO_FILE_READER_H
 
 #include "avrocpp/api/DataFile.hh"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -44,7 +44,7 @@ namespace avro_backend {
 class MultipleAvroFileReader : public MultipleAvroFileBase {
   typedef MultipleAvroFileBase P;
   struct CategoryData {
-    boost::shared_ptr<internal_avro::DataFileReader<RMF_avro_backend::Data> >
+    std::shared_ptr<internal_avro::DataFileReader<RMF_avro_backend::Data> >
         reader;
     // frame is always something valid
     RMF_avro_backend::Data data;

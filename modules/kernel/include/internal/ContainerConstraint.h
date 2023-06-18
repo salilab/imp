@@ -1,8 +1,8 @@
 /**
- *  \file core/generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file ContainerConstraint.h
+ *  \brief Templated and more efficient constraint implementation.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,11 +12,13 @@
 #include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-/** Create a constraint tied to particular modifiers and contains. This
-    functionality, which is only available in C++ can result in faster
+/** Create a constraint tied to particular modifiers and containers. This
+    functionality, which is only available in C++, can result in faster
     evaluates.
 */
 template <class Before, class After, class Container>
@@ -25,10 +27,17 @@ class ContainerConstraint : public Constraint {
   IMP::PointerMember<After> af_;
   IMP::PointerMember<Container> c_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Constraint>(this), f_, af_, c_);
+  }
+
  public:
   ContainerConstraint(Before *before, After *after, Container *c,
                       std::string name="ContainerConstraint %1%",
                       bool can_skip=false);
+
+  ContainerConstraint() {}
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }

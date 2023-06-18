@@ -50,11 +50,12 @@ int rrt_sample(int argc, char **argv)
   float radii_scaling = 0.5;
   bool reset_angles = false;
   std::string connect_chains_file;
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <pdb_file> <rotatable_angles_file>\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

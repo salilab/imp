@@ -1,8 +1,5 @@
 import IMP.test
 import IMP.algebra
-import io
-import os
-import math
 if IMP.IMP_KERNEL_HAS_NUMPY:
     import numpy
     import numpy.testing

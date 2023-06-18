@@ -25,7 +25,6 @@ FloatKey Nuisance::get_nuisance_key() {
 }
 void Nuisance::set_nuisance(Float d) {
   Float d_ = d;
-  Particle *p = get_particle();
   if (get_has_lower()) {
     Float lo = get_lower();
     if (d < lo) d_ = lo;
@@ -34,7 +33,7 @@ void Nuisance::set_nuisance(Float d) {
     Float up = get_upper();
     if (d > up) d_ = up;
   }
-  p->set_value(get_nuisance_key(), d_);
+  get_model()->set_attribute(get_nuisance_key(), get_particle_index(), d_);
 }
 
 bool Nuisance::get_has_lower() const {
@@ -190,21 +189,24 @@ void Nuisance::remove_bounds() {
 
 void NuisanceScoreState::do_before_evaluate() {
   IMP_LOG_TERSE("NSS: do_before_evaluate()" << std::endl);
-  Nuisance nuis(p_);
+  Nuisance nuis(get_model(), pi_);
   nuis.set_nuisance(nuis.get_nuisance());
 }
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
+  Particle *p = get_model()->get_particle(pi_);
   ModelObjectsTemp pt;
-  pt.push_back(p_);
-  ParticleIndexKey pu(Nuisance(p_).get_upper_particle_key());
-  if (p_->has_attribute(pu)) pt.push_back(p_->get_value(pu));
-  ParticleIndexKey pd(Nuisance(p_).get_lower_particle_key());
-  if (p_->has_attribute(pd)) pt.push_back(p_->get_value(pd));
+  pt.push_back(p);
+  ParticleIndexKey pu(Nuisance(p).get_upper_particle_key());
+  if (p->has_attribute(pu)) pt.push_back(p->get_value(pu));
+  ParticleIndexKey pd(Nuisance(p).get_lower_particle_key());
+  if (p->has_attribute(pd)) pt.push_back(p->get_value(pd));
   return pt;
 }
 ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
-  return ModelObjectsTemp(1, p_);
+  return ModelObjectsTemp(1, get_model()->get_particle(pi_));
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::isd::NuisanceScoreState);
 
 IMPISD_END_NAMESPACE

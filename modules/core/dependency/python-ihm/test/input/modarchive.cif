@@ -1,0 +1,19 @@
+data_ma-bak-cepc-0250
+_entry.id ma-bak-cepc-0250
+_entry.ma_collection_id ma-bak-cepc
+
+_struct.entry_id ma-bak-cepc-0250
+_struct.title 'Predicted interaction between CWP1 and IKI1'
+
+_database_2.database_id ModelArchive
+_database_2.database_code ma-bak-cepc-0250
+_database_2.pdbx_DOI 10.5452/ma-bak-cepc-0250
+
+loop_
+_pdbx_audit_revision_history.ordinal
+_pdbx_audit_revision_history.data_content_type
+_pdbx_audit_revision_history.major_revision
+_pdbx_audit_revision_history.minor_revision
+_pdbx_audit_revision_history.revision_date
+1 'Structure model' 1 0 2021-11-11
+2 'Structure model' 1 1 2022-11-30

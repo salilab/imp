@@ -14,7 +14,7 @@
 #include "VectorD.h"
 #include "utility.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -24,11 +24,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
   */
 template <int D>
 class SphereD : public GeometricPrimitiveD<D> {
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int) {
-    ar & center_ & radius_;
+  void serialize(Archive &ar) {
+    ar(center_, radius_);
   }
 
  public:

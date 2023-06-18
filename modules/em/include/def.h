@@ -13,8 +13,6 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-// Deprecated: just use 'double' instead
-typedef double emreal;
 const double EPS = 1e-16;
 
 IMPEM_END_NAMESPACE

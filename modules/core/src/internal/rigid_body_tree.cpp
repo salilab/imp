@@ -554,4 +554,6 @@ ParticlesTemp close_particles(Model *m, const RigidBodyHierarchy *da,
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::internal::RigidBodyHierarchy);
+
 IMPCORE_END_INTERNAL_NAMESPACE

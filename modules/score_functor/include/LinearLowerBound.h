@@ -22,6 +22,7 @@ class LinearLowerBound : public Score {
 
  public:
   LinearLowerBound(double k) : k_(k) {}
+  LinearLowerBound() : k_(0.0) {}
   // depend on get_is_trivially_zero
   template <unsigned int D>
   double get_score(Model *,

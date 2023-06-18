@@ -23,7 +23,7 @@
 
 #include <cassert>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "Exception.hh"
 #include "Types.hh"
@@ -33,7 +33,7 @@ namespace internal_avro {
 
 class Node;
 
-typedef boost::shared_ptr<Node> NodePtr;
+typedef std::shared_ptr<Node> NodePtr;
 
 class AVRO_DECL Name {
   std::string ns_;

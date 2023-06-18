@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
         sd = IMP.core.DistancePairScore(ub)
         pr = IMP.container.PairsRestraint(sd, cpc)
         sf = IMP.core.RestraintsScoringFunction([pr])
-        cg.set_threshold(.0001)
+        cg.set_gradient_threshold(.0001)
         cg.set_scoring_function(sf)
         for i in range(10):
             try:

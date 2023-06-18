@@ -108,7 +108,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   /** Usually the primary sequence of a chain can be uniquely deduced by
       iterating over all child Residue decorators and querying their type.
       However, this may not be possible in all cases (e.g. if there are gaps
-      in the sequence or parts that are not explictly represented).
+      in the sequence or parts that are not explicitly represented).
 
       \note The sequence set here should be consistent with that of any
             children of this Chain. This is not currently enforced.

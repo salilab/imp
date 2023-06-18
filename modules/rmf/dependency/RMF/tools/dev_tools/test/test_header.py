@@ -1,6 +1,7 @@
 import unittest
 import subprocess
 import os
+import datetime
 import utils
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -26,13 +27,14 @@ class Tests(unittest.TestCase):
                                   'include/test/subdir'], cwd=tmpdir)
             stdout, stderr = p.communicate()
             self.assertEqual(p.returncode, 0)
+            year = datetime.datetime.now().year
             self.assertEqual(utils.read_file(os.path.join(tmpdir,
                                                           'include/test.h')),
                              """/**
  *  \\file test.h
  *  \\brief Include all non-deprecated headers in test.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-%d IMP Inventors. All rights reserved.
  */
 
 #ifndef TEST_H
@@ -43,7 +45,7 @@ class Tests(unittest.TestCase):
 #include <bar/deprecated.h>
 #endif
 #endif /* TEST_H */
-""")
+""" % year)
 
 
 if __name__ == '__main__':

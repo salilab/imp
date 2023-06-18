@@ -104,5 +104,6 @@ class Tests(IMP.test.TestCase):
             ed2.get_principal_value(2),
             delta=0.2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

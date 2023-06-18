@@ -44,13 +44,14 @@ int main(int argc, char** argv) {
   bool score_log = false;
   bool gnuplot_script = false;
   bool explicit_water = false;
-  po::options_description desc(
+  std::string desc_prefix(
       "Usage: <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ...\n"
       "\nAny number of input PDBs and profiles is supported.\n"
       "Each PDB will be fitted against each profile.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2022 IMP Inventors.\n\n"
-      "Options");
+      "which is ");
+  po::options_description desc(
+      desc_prefix + IMP::get_copyright() + ".\n\nOptions");
   desc.add_options()
     ("help", "Show command line arguments and exit.")
     ("version", "Show version info and exit.")

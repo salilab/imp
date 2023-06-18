@@ -149,14 +149,14 @@ class Tests(IMP.test.TestCase):
     def test_get_transformed_bb(self):
         """Check get_transformed() for a BoundingBox3D"""
         V = IMP.algebra.Vector3D
-        bb = IMP.algebra.BoundingBox3D(V(1,2,3), V(4,5,6))
-        r = IMP.algebra.get_rotation_about_axis(V(0,1,0), math.pi / 2.)
-        t = IMP.algebra.Transformation3D(r, V(10,20,30))
+        bb = IMP.algebra.BoundingBox3D(V(1, 2, 3), V(4, 5, 6))
+        r = IMP.algebra.get_rotation_about_axis(V(0, 1, 0), math.pi / 2.)
+        t = IMP.algebra.Transformation3D(r, V(10, 20, 30))
         nbb = IMP.algebra.get_transformed(bb, t)
         self.assertLess(IMP.algebra.get_distance(nbb.get_corner(0),
-                          V(13, 22, 26)), 1e-4)
+                        V(13, 22, 26)), 1e-4)
         self.assertLess(IMP.algebra.get_distance(nbb.get_corner(1),
-                          V(16, 25, 29)), 1e-4)
+                        V(16, 25, 29)), 1e-4)
 
     def test_pickle(self):
         """Test (un-)pickle of Transformation3D"""

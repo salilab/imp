@@ -16,6 +16,19 @@ Binaries are [also available for our latest nightly builds](https://integrativem
 please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
 to see if the code is currently stable enough for your purposes.
 
+# Google Colab {#installation_colab}
+
+To experiment with IMP on [Google Colaboratory](https://colab.research.google.com), use the following code snippet:
+
+\code{.unparsed}
+!echo "deb https://integrativemodeling.org/latest/download $(lsb_release -cs)/" > /etc/apt/sources.list.d/salilab.list
+!wget -O /etc/apt/trusted.gpg.d/salilab.asc https://salilab.org/~ben/pubkey256.asc
+!apt update
+!apt install imp
+import sys
+sys.path.append('/usr/lib/python3.8/dist-packages')
+\endcode
+
 # Source code installation {#installation_source}
 
 ## Prerequisites {#installation_prereqs}
@@ -23,15 +36,15 @@ to see if the code is currently stable enough for your purposes.
 In order to build %IMP from source, you will need:
 
 - A C++ compiler that supports the C++11 standard, such as gcc, clang,
-  or Microsoft Visual Studio 2012 or later.
+  or Microsoft Visual Studio 2015 or later.
 - [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
-- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
-  should also work)
-- [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
-- [SWIG](http://www.swig.org) (3 or later)
+- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later)
+- [cereal](https://uscilab.github.io/cereal/)
+- [Python](https://www.python.org) (3.6 or later, or 2.7)
+- [SWIG](https://www.swig.org/) (3 or later)
 
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
@@ -39,8 +52,8 @@ will not build, and some will not function optimally.
 - The [NumPy](https://numpy.org/) library is strongly recommended; if %IMP
   is built with NumPy, many operations that transfer data between C++ and Python
   become more efficient.
-- [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
-  and [Graphviz](http://www.graphviz.org/): required for building
+- [Doxygen](https://www.doxygen.nl/) (only exactly version 1.8.6 is supported)
+  and [Graphviz](https://www.graphviz.org/): required for building
   documentation.
 - [Modeller](\ref modeller): needed to use the IMP.modeller module.
 - [CGAL](\ref CGAL): enables faster geometric operations, such as
@@ -59,9 +72,9 @@ will not build, and some will not function optimally.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
-- The [scipy](https://scipy.org/download/),
-  [scikit-learn](http://scikit-learn.org/stable/install.html),
-  and [matplotlib](http://matplotlib.org/downloads.html)
+- The [scipy](https://scipy.org/install/),
+  [scikit-learn](https://scikit-learn.org/stable/install.html),
+  and [matplotlib](https://matplotlib.org/stable/users/installing/index.html)
   Python libraries are also recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) or
   [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) are recommended
@@ -114,6 +127,14 @@ such as
 
         sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
+
+- [Conda](https://docs.conda.io/en/latest/) Once you installed conda (typically via the Miniconda or Anaconda distributions), do 
+
+        conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libprotobuf protobuf libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy
+	conda activate IMP_BUILD
+
+  As in brew and Macports, some of these packages may be optional. In addition, cgal may not be identified by cmake. IMP will still run just fine. Either way, a solution could be setting the CGAL_DIR environment variable to $CONDA_PREFIX/lib/cmake/CGAL/ before running cmake, or adding a -DCGAL_DIR=$CONDA_PREFIX/lib/cmake/CGAL flag to the cmake command line ($CONDA_PREFIX is an environment variable that points to the folder of the active conda environment).
+	
 
 - or [Fink](http://www.finkproject.org/) (not supported)
 

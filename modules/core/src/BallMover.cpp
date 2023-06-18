@@ -88,4 +88,6 @@ ModelObjectsTemp BallMover::do_get_inputs() const {
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::BallMover);
+
 IMPCORE_END_NAMESPACE

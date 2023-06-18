@@ -381,7 +381,7 @@ struct ConvertEigenMatrix {
              NULL, NULL, NPY_ARRAY_F_CONTIGUOUS, NULL));
       if (t.rows()*t.cols() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), t.data(),
+        memcpy(PyArray_DATA((PyArrayObject *)obj), t.data(),
                t.rows() * t.cols() * sizeof(typename M::Scalar));
       }
       return ret.release();
@@ -452,7 +452,7 @@ struct ConvertEigenVector {
                    ? NPY_DOUBLE : NPY_FLOAT));
       if (t.rows() > 0) {
         PyObject *obj = ret;
-        memcpy(PyArray_DATA(obj), t.data(),
+        memcpy(PyArray_DATA((PyArrayObject *)obj), t.data(),
                t.rows() * sizeof(typename M::Scalar));
       }
       return ret.release();

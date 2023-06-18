@@ -12,7 +12,8 @@
 #include "ModelObject.h"
 #include <IMP/WeakPointer.h>
 #include <IMP/Object.h>
-
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -21,9 +22,10 @@ class Optimizer;
 
 //! Shared optimizer state that is invoked upon commitment of new coordinates.
 /** An OptimizerState update() method is called every time that an
-    owning Optimizer commits to a new set of coordinates. The update()
-    method, in turn, invokes do_update(), which can be overridden by
-    inheriting classes.
+    owning Optimizer commits to a new set of coordinates. (For example, this
+    is typically every step during molecular dynamics, or every accepted move
+    during Monte Carlo.) The update() method, in turn, invokes do_update(),
+    which can be overridden by inheriting classes.
 
     @note An OptimizerState may have periodicity by its set_period() method.
 
@@ -44,11 +46,21 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   friend class Optimizer;
   unsigned int period_, call_number_, update_number_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ModelObject>(this), period_, call_number_,
+       update_number_, is_optimizing_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      optimizer_ = nullptr;
+    }
+  }
+
   void set_optimizer(Optimizer* optimizer);
 
  public:
   //! Constructor.
-  /** Constructs an optimizer state whose update() method  is invoked
+  /** Constructs an optimizer state whose update() method is invoked
       every time that a set of model coordinates is committed
       by an optimizer.
 
@@ -58,6 +70,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
             method.
   */
   OptimizerState(Model* m, std::string name);
+  OptimizerState();
 
   //! Called when the Optimizer accepts a new conformation
   /**

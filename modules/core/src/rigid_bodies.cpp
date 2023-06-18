@@ -17,6 +17,8 @@
 #include <IMP/internal/ContainerConstraint.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/internal/utility.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -382,7 +384,60 @@ ModelKey get_rb_list_key() {
   static ModelKey key("rigid body list");
   return key;
 }
+
 }
+
+/* Make a simple subclass rather than using
+   IMP::internal::create_tuple_constraint(), so that we can serialize it */
+class RigidBodyPositionConstraint
+        : public IMP::internal::TupleConstraint<UpdateRigidBodyMembers,
+                                            AccumulateRigidBodyDerivatives> {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                    IMP::internal::TupleConstraint<UpdateRigidBodyMembers,
+                                      AccumulateRigidBodyDerivatives> >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyPositionConstraint);
+
+public:
+  RigidBodyPositionConstraint(UpdateRigidBodyMembers *before,
+                              AccumulateRigidBodyDerivatives *after,
+                              Model *m, const ParticleIndex &vt,
+                              std::string name, bool can_skip)
+          : IMP::internal::TupleConstraint<
+                UpdateRigidBodyMembers, AccumulateRigidBodyDerivatives>(
+                                    before, after, m, vt, name, can_skip) {}
+
+  RigidBodyPositionConstraint() {}
+};
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyPositionConstraint);
+
+/* Make a simple subclass rather than using
+   IMP::internal::create_container_constraint(), so that we can serialize it */
+class RigidBodyNormalizeConstraint
+          : public IMP::internal::ContainerConstraint<
+               NormalizeRotation, NullSDM,
+               IMP::internal::StaticListContainer<SingletonContainer> > {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+          IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
+              IMP::internal::StaticListContainer<SingletonContainer> > >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyNormalizeConstraint);
+public:
+  RigidBodyNormalizeConstraint(
+       NormalizeRotation *before, NullSDM *after,
+       IMP::internal::StaticListContainer<SingletonContainer> *c,
+       std::string name, bool can_skip=false)
+ : IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
+            IMP::internal::StaticListContainer<SingletonContainer> >(
+                            before, after, c, name, can_skip) {}
+
+  RigidBodyNormalizeConstraint() {}
+};
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyNormalizeConstraint);
 
 namespace {
   // compute inertia tensor for particles ds with origin center
@@ -533,8 +588,8 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
     list->set(ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
-    Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
-        nr.get(), null.get(), list.get(), "normalize rigid bodies");
+    IMP_NEW(RigidBodyNormalizeConstraint, c1,
+            (nr, null, list, "normalize rigid bodies"));
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
   }
@@ -542,6 +597,10 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
 
 void RigidBody::teardown_particle(RigidBody rb) {
   IMP_FUNCTION_LOG;
+  IMP_USAGE_CHECK(!RigidMember::get_is_setup(rb),
+                  "This body is a member of another rigid body. "
+                  "Remove it first.");
+
   // clear caches
   rb.on_change();
   {
@@ -766,9 +825,9 @@ void RigidBody::setup_score_states() {
                                       get_particle_index())) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
-        urbm.get(), arbd.get(), get_particle(),
-        get_particle()->get_name() + " rigid body positions", true);
+    IMP_NEW(RigidBodyPositionConstraint, c0,
+               (urbm, arbd, get_model(), get_particle_index(),
+                get_particle()->get_name() + " rigid body positions", true));
     get_model()->add_score_state(c0);
     get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
                                c0);
@@ -843,6 +902,65 @@ void RigidBody::add_non_rigid_member(ParticleIndexAdaptor pi) {
   IMP_FUNCTION_LOG;
   add_member(pi);
   set_is_rigid_member(pi, false);
+}
+
+void RigidBody::remove_member(ParticleIndexAdaptor pi) {
+  IMP_FUNCTION_LOG;
+  if (RigidBody::get_is_setup(get_model(), pi)) {
+    remove_rigid_body_member(pi);
+  } else {
+    remove_point_member(pi);
+  }
+  setup_score_states();
+  on_change();
+}
+
+void RigidBody::remove_point_member(ParticleIndex pi) {
+  ParticleIndexes members;
+  if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
+                                     get_particle_index())) {
+    members = get_model()->get_attribute(
+        internal::rigid_body_data().members_, get_particle_index());
+  }
+
+  auto r = std::remove(members.begin(), members.end(), pi);
+  IMP_CHECK_VARIABLE(r);
+  IMP_USAGE_CHECK(r != members.end(),
+                  "Particle is not a member of this rigid body");
+  members.erase(r, members.end());
+
+  if (members.empty()) {
+    get_model()->remove_attribute(internal::rigid_body_data().members_,
+                                  get_particle_index());
+  } else {
+    get_model()->set_attribute(internal::rigid_body_data().members_,
+                               get_particle_index(), members);
+  }
+  internal::remove_required_attributes_for_member(get_model(), pi);
+}
+
+void RigidBody::remove_rigid_body_member(ParticleIndex pi) {
+  ParticleIndexes members;
+  if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
+                                     get_particle_index())) {
+    members = get_model()->get_attribute(
+        internal::rigid_body_data().body_members_, get_particle_index());
+  }
+
+  auto r = std::remove(members.begin(), members.end(), pi);
+  IMP_CHECK_VARIABLE(r);
+  IMP_USAGE_CHECK(r != members.end(),
+                  "Particle is not a member of this rigid body");
+  members.erase(r, members.end());
+
+  if (members.empty()) {
+    get_model()->remove_attribute(internal::rigid_body_data().body_members_,
+                                  get_particle_index());
+  } else {
+    get_model()->set_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(), members);
+  }
+  internal::remove_required_attributes_for_body_member(get_model(), pi);
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {

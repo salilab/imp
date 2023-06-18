@@ -44,7 +44,7 @@ void print_help_and_exit(char* argv[]) {
 
 void print_version_and_exit() {
   std::cout << "RMF version " << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR
-            << std::endl;
+            << "." << RMF_VERSION_MICRO << std::endl;
   exit(0);
 }
 

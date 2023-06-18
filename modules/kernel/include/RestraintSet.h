@@ -11,8 +11,12 @@
 
 #include <IMP/kernel_config.h>
 #include "Restraint.h"
+#include "ScoringFunction.h"
 #include "container_macros.h"
 #include <string>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -40,6 +44,14 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   static void on_remove(RestraintSet *container, Restraint *r);
   void show_it(std::ostream &out) const;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), mutable_access_restraints());
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(RestraintSet);
+
  public:
   //! Create an empty set that is registered with the model
   RestraintSet(Model *m, double weight,
@@ -49,6 +61,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
+  RestraintSet() {}
 
   double unprotected_evaluate(DerivativeAccumulator *da) const override;
 

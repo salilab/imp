@@ -6,7 +6,6 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/flags.h>
-#include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container/internal/ClosePairContainer.h>

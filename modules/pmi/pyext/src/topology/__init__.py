@@ -133,10 +133,26 @@ class _SystemBase(object):
         pass
 
 
+class _OurWeakRef(object):
+    """A simple wrapper around weakref.ref which can be pickled.
+       Note that we throw the reference away at pickle time. It should
+       be able to be reconstructed from System._all_systems anyway."""
+
+    def __init__(self, system):
+        self._ref = weakref.ref(system)
+
+    def __call__(self):
+        if hasattr(self, '_ref'):
+            return self._ref()
+
+    def __getstate__(self):
+        return None
+
+
 class System(_SystemBase):
     """Represent the root node of the global IMP.atom.Hierarchy."""
 
-    _all_systems = set()
+    _all_systems = weakref.WeakSet()
 
     def __init__(self, model=None, name="System"):
         """Constructor.
@@ -150,16 +166,12 @@ class System(_SystemBase):
         self.states = []
         self.built = False
 
-        System._all_systems.add(weakref.ref(self))
+        System._all_systems.add(self)
 
         # the root hierarchy node
         self.hier = self._create_hierarchy()
         self.hier.set_name(name)
-        self.hier._pmi2_system = weakref.ref(self)
-
-    def __del__(self):
-        System._all_systems = set(x for x in System._all_systems
-                                  if x() not in (None, self))
+        self.hier._pmi2_system = _OurWeakRef(self)
 
     def get_states(self):
         """Get a list of all State objects in this system"""
@@ -418,6 +430,7 @@ class Molecule(_SystemBase):
         # store the sequence
         self.chain = IMP.atom.Chain.setup_particle(self.hier, chain_id)
         self.chain.set_sequence(self.sequence)
+        self.chain.set_chain_type(alphabet.get_chain_type())
         # create TempResidues from the sequence (if passed)
         self.residues = []
         for ns, s in enumerate(sequence):

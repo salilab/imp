@@ -2,7 +2,7 @@
  *  \file RMF/paths.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -96,8 +96,9 @@ boost::filesystem::path normalize(const boost::filesystem::path& p) {
 boost::filesystem::path relpath(boost::filesystem::path p,
                                 boost::filesystem::path base) {
   boost::filesystem::path cwd = boost::filesystem::current_path();
-  boost::filesystem::path absp = abspath(p, cwd);
-  boost::filesystem::path absbase = abspath(base.parent_path(), cwd);
+  // Handle any . or .. path components
+  boost::filesystem::path absp = normalize(abspath(p, cwd));
+  boost::filesystem::path absbase = normalize(abspath(base.parent_path(), cwd));
 
   size_t lenbase = count_path_components(absbase);
   size_t common = get_common_prefix(absp, absbase);
@@ -138,6 +139,20 @@ std::string get_relative_path(std::string base, std::string file) {
                  boost::filesystem::path(base)).string();
 #endif
 }
+
+bool get_is_same_base_path(std::string file1, std::string file2) {
+#ifdef _MSC_VER
+  return false;
+#else
+  boost::filesystem::path f1(file1), f2(file2);
+  boost::filesystem::path absf1 = normalize(abspath(f1.parent_path(),
+                                            boost::filesystem::current_path()));
+  boost::filesystem::path absf2 = normalize(abspath(f2.parent_path(),
+                                            boost::filesystem::current_path()));
+  return (absf1 == absf2);
+#endif
+}
+
 
 std::string get_absolute_path(std::string base, std::string file) {
 #ifdef _MSC_VER

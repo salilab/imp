@@ -14,6 +14,9 @@
 
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -24,9 +27,17 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ConstantRestraint : public Restraint {
   Float v_;
 
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this), v_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(ConstantRestraint);
+
  public:
   //! Add v to the total score.
   ConstantRestraint(Model *m, Float v);
+  ConstantRestraint() {}
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const override;

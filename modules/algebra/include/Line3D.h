@@ -14,7 +14,7 @@
 #include "BoundingBoxD.h"
 #include "algebra_macros.h"
 #include "GeometricPrimitiveD.h"
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 //! Simple implementation of lines in 3D
@@ -29,10 +29,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Line3D : public GeometricPrimitiveD<3> {
   Vector3D l_, m_;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & l_ & m_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(l_, m_);
   }
 
   public:

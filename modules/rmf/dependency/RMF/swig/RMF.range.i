@@ -1,4 +1,4 @@
-namespace boost {
+namespace std {
 template <class T,  int D>
 struct array {
   array();
@@ -7,7 +7,7 @@ struct array {
 };
 }
 
-%extend boost::array<int, 2> {
+%extend std::array<int, 2> {
   %pythoncode %{
      def __getitem__(self, d):
        if d >= self.size() or d < 0:
@@ -18,4 +18,4 @@ struct array {
        return self.size()
      %}
 }
-%template(IntRange) boost::array<int,2>;
+%template(IntRange) std::array<int,2>;

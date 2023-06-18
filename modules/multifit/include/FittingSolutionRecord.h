@@ -13,7 +13,7 @@
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/multifit/multifit_config.h>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -84,12 +84,12 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
   Float rmsd_to_ref_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & index_ & sol_fn_ & fit_transformation_ & dock_transformation_
-       & match_size_ & match_avg_dist_ & env_pen_ & fitting_score_
-       & rmsd_to_ref_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(index_, sol_fn_, fit_transformation_, dock_transformation_,
+       match_size_, match_avg_dist_, env_pen_, fitting_score_,
+       rmsd_to_ref_);
   }
 };
 IMP_VALUES(FittingSolutionRecord, FittingSolutionRecords);

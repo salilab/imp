@@ -15,6 +15,8 @@
 #include <IMP/types.h>
 #include <IMP/Pointer.h>
 #include <vector>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -32,6 +34,9 @@ class IMPEXAMPLEEXPORT ExampleObject : public Object {
  public:
   ExampleObject(const Floats &data);
 
+  // Default constructor, needed for serialization or Python pickle support
+  ExampleObject() : Object("") {}
+
   double get_data(unsigned int i) const {
     IMP_USAGE_CHECK(i < data_.size(), "Index " << i << " out of range.");
     return data_[i];
@@ -43,6 +48,15 @@ class IMPEXAMPLEEXPORT ExampleObject : public Object {
      to maintain.
   */
   IMP_OBJECT_METHODS(ExampleObject);
+
+ private:
+  // Serialization support
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    // We must save/load everything in the Object base class
+    // (e.g. name) plus our own variables
+    ar(cereal::base_class<Object>(this), data_);
+  }
 };
 
 typedef Vector<Pointer<ExampleObject> > ExampleObjects;

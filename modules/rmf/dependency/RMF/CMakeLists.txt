@@ -119,6 +119,11 @@ else()
   link_directories(${Log4CXX_LIBRARY_DIR})
 endif()
 
+if(${PYTHON_NUMPY_FOUND})
+  set(RMF_HAS_NUMPY "1" CACHE BOOL "Whether to include numpy support" FORCE)
+else()
+  set(RMF_HAS_NUMPY "0" CACHE BOOL "Whether to include numpy support" FORCE)
+endif()
 
 include(GNUInstallDirs)
 
@@ -134,7 +139,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 # Version information
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 4)
+set (RMF_VERSION_MINOR 5)
+set (RMF_VERSION_MICRO 1)
 
 set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")

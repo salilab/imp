@@ -2,7 +2,7 @@
  *  \file IMP/pmi/TransformMover.h
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,9 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/XYZ.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 IMPPMI_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
@@ -43,64 +46,72 @@ class IMPPMIEXPORT TransformMover : public IMP::core::MonteCarloMover {
   unsigned int not_accepted_;
   unsigned int constr_;
 
-IMP::algebra::Vector3D get_center(){
-  Float x=0;
-  Float y=0;
-  Float z=0;
-  unsigned int nelements=0;
-  for (unsigned int i=0;i<pixyzs_.size();i++) {
-       core::XYZ d(get_model(), pixyzs_[i]);
-       algebra::Vector3D xyz=d.get_coordinates();
-       x=x+xyz[0];
-       y=y+xyz[1];
-       z=z+xyz[2];
-       nelements++;
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<core::MonteCarloMover>(this),
+       last_transformation_, max_translation_, max_angle_, p1i_, p2i_,
+       pixyzs_, pirbs_, pis_, t_, c_, rbts_, xyzs_, axis_, tt_, called_,
+       not_accepted_, constr_);
   }
+  IMP_OBJECT_SERIALIZE_DECL(TransformMover);
 
-  for (unsigned int i=0;i<pirbs_.size();i++){
+  IMP::algebra::Vector3D get_center(){
+    Float x=0;
+    Float y=0;
+    Float z=0;
+    unsigned int nelements=0;
+    for (unsigned int i=0;i<pixyzs_.size();i++) {
+      core::XYZ d(get_model(), pixyzs_[i]);
+      algebra::Vector3D xyz=d.get_coordinates();
+      x=x+xyz[0];
+      y=y+xyz[1];
+      z=z+xyz[2];
+      nelements++;
+    }
+
+    for (unsigned int i=0;i<pirbs_.size();i++){
       core::RigidBody rb(get_model(), pirbs_[i]);
       algebra::Vector3D xyz=rb.get_coordinates();
       unsigned int nparticles=rb.get_number_of_members();
       x=x+xyz[0]*float(nparticles);
       y=y+xyz[1]*float(nparticles);
       z=z+xyz[2]*float(nparticles);
-      nelements=nelements+nparticles;      
+      nelements=nelements+nparticles;
+    }
+
+    algebra::Vector3D center;
+    center[0]=x/float(nelements);
+    center[1]=y/float(nelements);
+    center[2]=z/float(nelements);
+    return center;
   }
-
-  algebra::Vector3D center;
-  center[0]=x/float(nelements);
-  center[1]=y/float(nelements);  
-  center[2]=z/float(nelements);
-  return center;
-}
-
 
  public:
   TransformMover(Model *m, Float max_translation, Float max_rotation);
 
-  TransformMover(Model *m, algebra::Vector3D axis, 
-                                   Float max_translation, Float max_rotation);
+  TransformMover(Model *m, algebra::Vector3D axis,
+                 Float max_translation, Float max_rotation);
 
-  TransformMover(Model *m, IMP::ParticleIndexAdaptor p1i, IMP::ParticleIndexAdaptor p2i, 
-                                   Float max_translation, Float max_rotation);
+  TransformMover(Model *m, IMP::ParticleIndexAdaptor p1i,
+                 IMP::ParticleIndexAdaptor p2i,
+                 Float max_translation, Float max_rotation);
 
-void add_xyz_particle(IMP::ParticleIndexAdaptor pi){
-if ( core::RigidBody::get_is_setup(get_model(), pi) ) {
+  TransformMover() {}
+
+  void add_xyz_particle(IMP::ParticleIndexAdaptor pi) {
+    if (core::RigidBody::get_is_setup(get_model(), pi)) {
+      pirbs_.push_back(pi);
+      pis_.push_back(pi);
+    } else {
+      pixyzs_.push_back(pi);
+      pis_.push_back(pi);
+    }
+  }
+
+  void add_rigid_body_particle(IMP::ParticleIndexAdaptor pi) {
     pirbs_.push_back(pi);
-    pis_.push_back(pi); }
-else {
-    pixyzs_.push_back(pi);
-    pis_.push_back(pi); }
-}
-
-void add_rigid_body_particle(IMP::ParticleIndexAdaptor pi){
-pirbs_.push_back(pi);
-pis_.push_back(pi);
-//initializing the last_transformation array
-//last_transformation_.push_back( d.get_reference_frame().get_transformation_to());
-}
-
-
+    pis_.push_back(pi);
+  }
 
   void set_maximum_translation(Float mt) {
     IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");

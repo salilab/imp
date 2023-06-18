@@ -15,10 +15,6 @@ class TransformFunct:
         self.x = x_base
         self.qi = q_index
         self.q = q_base
-        # print self.xi
-        # print self.qi
-        #self.x.show(); print
-        # print self.q
 
     def __call__(self, v):
         self.q[self.qi] = v
@@ -153,11 +149,9 @@ class Tests(IMP.test.TestCase):
 
     def test_deriv(self):
         """Check the quaternion derivatives"""
-        #r= IMP.algebra.Rotation3D(1,0,0,0)
         r = IMP.algebra.get_random_rotation_3d()
         x = IMP.algebra.get_random_vector_in(
             IMP.algebra.get_unit_bounding_box_3d())
-        # x=IMP.algebra.Vector3D(1,0,0)
         for qi in range(0, 4):
             for xi in range(0, 3):
                 print("qi=" + str(qi) + " and xi= " + str(xi))
@@ -309,7 +303,7 @@ class Tests(IMP.test.TestCase):
     def test_about_point(self):
         """Test get_rotation_about_point()"""
         r0 = IMP.algebra.get_random_rotation_3d()
-        v = IMP.algebra.Vector3D(1,2,3)
+        v = IMP.algebra.Vector3D(1, 2, 3)
         t = IMP.algebra.get_rotation_about_point(v, r0)
         # Rotating a point about itself should not move it
         self.assertLess(IMP.algebra.get_distance(v, t * v), 1e-6)

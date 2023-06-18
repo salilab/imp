@@ -14,7 +14,7 @@
 #include <IMP/value_macros.h>
 #include <IMP/showable_macros.h>
 #include <IMP/Vector.h>
-#include <boost/serialization/access.hpp>
+#include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -26,10 +26,10 @@ class ConnollySurfacePoint {
   double area;
   algebra::Vector3D normal;
 
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & atom[0] & atom[1] & atom[2] & surface_point & area & normal;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(atom[0], atom[1], atom[2], surface_point, area, normal);
   }
 
  public:

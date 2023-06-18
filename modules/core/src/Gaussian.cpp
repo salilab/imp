@@ -79,4 +79,6 @@ void Gaussian::show(std::ostream &out) const { out << get_gaussian(); }
   return prob;
   }*/
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Matrix3D);
+
 IMPCORE_END_NAMESPACE

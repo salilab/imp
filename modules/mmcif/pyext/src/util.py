@@ -126,6 +126,8 @@ class System(object):
         frame.id = len(self._frames)
 
     def _add_hierarchy(self, h, state):
+        if self.system.title is None:
+            self.system.title = h.get_name()
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
         if len(chains) == 0:
@@ -148,9 +150,10 @@ class System(object):
             # states, so we only need one copy of it in the mmCIF file
             if num_state_reps == 1:
                 self.representation.extend(state.repsegments[component])
-        self.protocols._add_hierarchy(h, state.modeled_assembly)
-        self._external_files.add_hierarchy(h)
         self._software.add_hierarchy(h)
+        self.protocols._add_hierarchy(h, state.modeled_assembly,
+                                      self._software)
+        self._external_files.add_hierarchy(h)
 
     def _get_all_starting_models(self, comp):
         """Get all starting models (in all states) for the given component"""
@@ -281,12 +284,23 @@ class State(ihm.model.State):
         self.system._add_hierarchy(h, self)
 
     def _add_restraints(self, rs, model):
-        m = IMP.mmcif.restraint._RestraintMapper(self.system)
+        mapper = IMP.mmcif.restraint._RestraintMapper(self.system)
         for r in rs:
-            rw = m.handle(r, model, self.modeled_assembly)
-            if rw:
-                self._wrapped_restraints.append(rw)
-                self.system.system.restraints.append(rw)
+            self._handle_restraint(mapper, r, model)
+
+    def _handle_restraint(self, mapper, r, model):
+        rw = mapper.handle(r, model, self.modeled_assembly)
+        if rw:
+            self._wrapped_restraints.append(rw)
+            self.system.system.restraints.append(rw)
+        else:
+            try:
+                rs = IMP.RestraintSet.get_from(r)
+            except ValueError:
+                rs = None
+            if rs:
+                for child in rs.restraints:
+                    self._handle_restraint(mapper, child, model)
 
     def _update_restraints(self, model):
         for rw in self._wrapped_restraints:

@@ -20,8 +20,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(v_unit.get_magnitude(), 1.0, places=6)
         # tests that a tiny vector is converted to a random unit vector
         for i in range(1, 5):
-            tiny_v = IMP.algebra.VectorKD \
-                ([1.0e-16, 2.0e-16, 3.0e-16, 4.0e-16, 5.0e-16, 6.0e-16])
+            tiny_v = IMP.algebra.VectorKD(
+                [1.0e-16, 2.0e-16, 3.0e-16, 4.0e-16, 5.0e-16, 6.0e-16])
             tiny_v_unit = tiny_v.get_unit_vector()
             self.assertAlmostEqual(tiny_v_unit.get_magnitude(), 1.0, places=6)
 
@@ -43,6 +43,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v[4], 30.0)
         self.assertRaises(IndexError, lambda: v[5])
         self.assertRaises(IndexError, lambda: v[-6])
+
         def test_set(ind):
             v[ind] = 0.
         self.assertRaises(IndexError, test_set, 5)

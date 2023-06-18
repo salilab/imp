@@ -10,6 +10,8 @@
 #include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/Object.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -51,6 +53,13 @@ class IMPKERNELEXPORT UnaryFunction : public IMP::Object {
   }
 
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
+
+private:
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+  }
 };
 
 IMP_OBJECTS(UnaryFunction, UnaryFunctions);

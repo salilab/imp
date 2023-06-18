@@ -21,16 +21,13 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/ScoreState.h>
 #include <algorithm>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/vector.hpp>
 
-namespace boost {
-  namespace serialization {
-    template<class Archive> void serialize(Archive &ar,
-          std::pair<IMP::algebra::Transformation3D, IMP::Float> &g,
-          const unsigned int) {
-      ar & g.first & g.second;
-    }
+namespace cereal {
+  template<class Archive> void serialize(Archive &ar,
+        std::pair<IMP::algebra::Transformation3D, IMP::Float> &g) {
+    ar(g.first, g.second);
   }
 }
 
@@ -114,10 +111,10 @@ class IMPEMEXPORT FittingSolutions {
   std::vector<FittingSolution> fs_;
 
 private:
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar & fs_;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(fs_);
   }
 };
 IMP_VALUES(FittingSolutions, FittingSolutionsList);

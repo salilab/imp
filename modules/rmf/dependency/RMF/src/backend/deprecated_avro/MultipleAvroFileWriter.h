@@ -12,7 +12,7 @@
 #include "avrocpp/api/DataFile.hh"
 #include "AllJSON.h"
 #include "FrameJSON.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -43,7 +43,7 @@ class MultipleAvroFileWriter : public MultipleAvroFileBase {
   std::vector<bool> static_categories_dirty_;
 
   struct CategoryData {
-    boost::shared_ptr<internal_avro::DataFileWriter<RMF_avro_backend::Data> >
+    std::shared_ptr<internal_avro::DataFileWriter<RMF_avro_backend::Data> >
         writer;
     RMF_avro_backend::Data data;
     bool dirty;
@@ -53,7 +53,7 @@ class MultipleAvroFileWriter : public MultipleAvroFileBase {
 
   RMF_avro_backend::Data null_frame_data_;
   RMF_avro_backend::Data null_static_frame_data_;
-  boost::shared_ptr<internal_avro::DataFileWriter<RMF_avro_backend::Frame> >
+  std::shared_ptr<internal_avro::DataFileWriter<RMF_avro_backend::Frame> >
       frame_writer_;
   RMF_avro_backend::Frame frame_;
 

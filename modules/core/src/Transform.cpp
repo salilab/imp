@@ -35,4 +35,6 @@ ModelObjectsTemp Transform::do_get_outputs(
   return IMP::get_particles(m, pis);
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::Transform);
+
 IMPCORE_END_NAMESPACE

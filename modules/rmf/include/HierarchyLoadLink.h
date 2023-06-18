@@ -27,7 +27,9 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/tuple_macros.h>
 #include <RMF/decorators.h>
+#include <memory>
 #include <boost/unordered_map.hpp>
+
 IMPRMF_BEGIN_NAMESPACE
 
 /** Manage the loading link between an RMF file and an atom::Hierarchy.
@@ -61,7 +63,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
           load_gaussians(h),
           load_rigid_bodies(h) {}
   };
-  typedef boost::unordered_map<ParticleIndex, boost::shared_ptr<Data> >
+  typedef boost::unordered_map<ParticleIndex, std::shared_ptr<Data> >
       DM;
   DM data_;
   virtual bool get_is(RMF::NodeConstHandle nh) const override {

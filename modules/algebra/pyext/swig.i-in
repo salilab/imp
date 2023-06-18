@@ -1,7 +1,5 @@
 %{
 #include <IMP/internal/range.h>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
 %}
 
 %include "IMP/algebra/geometric_primitive_macros.h"
