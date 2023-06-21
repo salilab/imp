@@ -78,7 +78,7 @@ struct DefaultTraits {
 template <class T, class K>
 struct ArrayTraits {
   typedef IMP::Vector<T> Value;
-  typedef IndexVector<ParticleIndexTag, Value> Container;
+  typedef CompressedIndexVector<ParticleIndexTag, Value> Container;
   typedef const Value &PassValue;
   typedef K Key;
   typedef Value const* ContainerConstDataAccess;
