@@ -9,7 +9,7 @@
 #include <IMP/file.h>
 #include <IMP/types.h>
 #include <IMP/log_macros.h>
-#include <IMP/base_utility.h>
+#include <IMP/utility.h>
 #include <IMP/internal/base_static.h>
 #include <IMP/internal/directories.h>
 #include <IMP/internal/log.h>

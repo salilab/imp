@@ -133,7 +133,7 @@ IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
 %include "IMP/WarningContext.h"
 %include "IMP/CreateLogContext.h"
 %include "IMP/SetCheckState.h"
-%include "IMP/base_utility.h"
+%include "IMP/utility.h"
 %include "IMP/internal/swig_base.h"
 %include "IMP/ConstVector.h"
 %include "IMP/Array.h"

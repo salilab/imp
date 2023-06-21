@@ -10,7 +10,7 @@
 #include "IMP/log.h"
 #include "IMP/log_macros.h"
 #include "IMP/exception.h"
-#include "IMP/base_utility.h"
+#include "IMP/utility.h"
 #include "IMP/internal/utility.h"
 #include <cereal/types/string.hpp>
 #include <exception>

@@ -17,7 +17,7 @@ import re
 
 
 FILES = ["README.md", "doc/manual/licenses.md", "tools/debian/copyright",
-         "modules/kernel/src/base_utility.cpp"]
+         "modules/kernel/src/utility.cpp"]
 YEAR = datetime.datetime.now().year
 
 
