@@ -14,6 +14,7 @@
 #include "showable_macros.h"
 #include "Value.h"
 #include <cereal/access.hpp>
+#include <functional>
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -136,7 +137,7 @@ class IndexVector : public Vector<T> {
 
 // This class functions identically to IndexVector but compresses
 // the data during serialization
-template <class Tag, class T>
+template <class Tag, class T, class Equal = std::equal_to<T> >
 class CompressedIndexVector : public IndexVector<Tag, T> {
   typedef Vector<T> P;
 
@@ -163,11 +164,13 @@ class CompressedIndexVector : public IndexVector<Tag, T> {
     size_t sz = P::size();
     ar(sz);
     typename P::const_iterator pos = P::begin(), start = P::begin(), runend;
+    Equal cmp;
     while (pos != P::end()) {
       const T& val = *pos;
       // update runend to point past the end of a run of same values,
       // starting at pos
-      for (runend = pos + 1; runend != P::end() && *runend == val; ++runend) {}
+      for (runend = pos + 1; runend != P::end() && cmp(*runend, val);
+           ++runend) {}
       // exclude very short runs
       if (runend - pos > 10) {
         if (pos > P::begin() && pos > start) {

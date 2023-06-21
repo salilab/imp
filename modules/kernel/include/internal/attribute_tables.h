@@ -12,6 +12,7 @@
 #include <IMP/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
 #include <cereal/access.hpp>
+#include <algorithm>
 #include "../Key.h"
 #include "../utility.h"
 #include "../FloatIndex.h"
@@ -281,13 +282,34 @@ class BasicAttributeTable {
 };
 IMP_SWAP_1(BasicAttributeTable);
 
+// VectorD and SphereD do not support operator==, so provide our
+// own functions to test for exact equality (to be used during serialization)
+template<class T> struct vector_equal {
+  bool operator()(const T&a, const T&b) {
+    return std::equal(a.begin(), a.end(), b.begin());
+  }
+};
+
+template<class T> struct sphere_equal {
+  bool operator()(const T&a, const T&b) {
+    return a.get_radius() == b.get_radius() && std::equal(a.get_center().begin(), a.get_center().end(), b.get_center().begin());
+  }
+};
+
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
   // vector<algebra::Sphere3D> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
-  IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D>
+  CompressedIndexVector<ParticleIndexTag, algebra::Sphere3D,
+                        sphere_equal<algebra::Sphere3D> >
+      spheres_;
+  CompressedIndexVector<ParticleIndexTag, algebra::Sphere3D,
+                        sphere_equal<algebra::Sphere3D> >
+      sphere_derivatives_;
+  CompressedIndexVector<ParticleIndexTag, algebra::Vector3D,
+                        vector_equal<algebra::Vector3D> >
+      internal_coordinates_;
+  CompressedIndexVector<ParticleIndexTag, algebra::Vector3D,
+                        vector_equal<algebra::Vector3D> >
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
