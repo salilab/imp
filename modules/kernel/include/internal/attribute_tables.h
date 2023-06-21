@@ -299,17 +299,14 @@ template<class T> struct sphere_equal {
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
   // vector<algebra::Sphere3D> sphere_derivatives_;
-  CompressedIndexVector<ParticleIndexTag, algebra::Sphere3D,
-                        sphere_equal<algebra::Sphere3D> >
-      spheres_;
-  CompressedIndexVector<ParticleIndexTag, algebra::Sphere3D,
-                        sphere_equal<algebra::Sphere3D> >
-      sphere_derivatives_;
-  CompressedIndexVector<ParticleIndexTag, algebra::Vector3D,
-                        vector_equal<algebra::Vector3D> >
-      internal_coordinates_;
-  CompressedIndexVector<ParticleIndexTag, algebra::Vector3D,
-                        vector_equal<algebra::Vector3D> >
+  IndexVector<ParticleIndexTag, algebra::Sphere3D,
+              sphere_equal<algebra::Sphere3D> > spheres_;
+  IndexVector<ParticleIndexTag, algebra::Sphere3D,
+              sphere_equal<algebra::Sphere3D> > sphere_derivatives_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D,
+              vector_equal<algebra::Vector3D> > internal_coordinates_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D,
+              vector_equal<algebra::Vector3D> >
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;

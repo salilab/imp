@@ -78,67 +78,12 @@ namespace {
 }
 
 //! Implements a vector tied to a particular index of type Index<Tag>.
-template <class Tag, class T>
-class IndexVector : public Vector<T> {
-  typedef Vector<T> P;
-
-  friend class cereal::access;
-
-  // No compression on output (use CompressedIndexVector for that)
-  template<class Archive> void save(Archive &ar) const {
-    size_t sz = P::size();
-    ar(sz);
-    // Write a single no-compression block. This allows us to add compression
-    // for this class in future without breaking the format.
-    ar(COMP_NONE); ar(sz);
-    auto it = P::begin();
-    while(sz-- > 0) {
-      ar(*it++);
-    }
-    ar(COMP_END);
-  }
-
-  // Read both non-compressed and compressed serialized streams
-  template<class Archive> void load(Archive &ar) {
-    P::resize(0);
-    size_t sz;
-    ar(sz);
-    P::reserve(sz);
-    unsigned char comp_type;
-    ar(comp_type);
-    while(comp_type != COMP_END) {
-      if (comp_type == COMP_NONE) {
-        ar(sz);
-        while(sz-- > 0) {
-          T val;
-          ar(val);
-          P::push_back(val);
-        }
-      } else if (comp_type == COMP_RLE) {
-        ar(sz);
-        T val;
-        ar(val);
-        while(sz-- > 0) {
-          P::push_back(val);
-        }
-      } else {
-        IMP_THROW("Unsupported IndexVector compression type", ValueException);
-      }
-      ar(comp_type);
-    }
-  }
-
- public:
-  IndexVector(unsigned int sz, const T &t = T()) : P(sz, t) {}
-  IndexVector() {}
-  IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < P::size(),
-              return P::operator[](get_as_unsigned_int(i)));
-};
-
-// This class functions identically to IndexVector but compresses
-// the data during serialization
+/** When this class is serialized, the output data are compressed using simple
+    run-length encoding, as these vectors are often sparse. For objects that
+    do not implement operator== (e.g. VectorD, SphereD), a custom comparison
+    functor should be provided. */
 template <class Tag, class T, class Equal = std::equal_to<T> >
-class CompressedIndexVector : public IndexVector<Tag, T> {
+class IndexVector : public Vector<T> {
   typedef Vector<T> P;
 
   template<class Archive> void write_no_compression(
@@ -187,6 +132,42 @@ class CompressedIndexVector : public IndexVector<Tag, T> {
     }
     ar(COMP_END);
   }
+
+  // Read both non-compressed and compressed serialized streams
+  template<class Archive> void load(Archive &ar) {
+    P::resize(0);
+    size_t sz;
+    ar(sz);
+    P::reserve(sz);
+    unsigned char comp_type;
+    ar(comp_type);
+    while(comp_type != COMP_END) {
+      if (comp_type == COMP_NONE) {
+        ar(sz);
+        while(sz-- > 0) {
+          T val;
+          ar(val);
+          P::push_back(val);
+        }
+      } else if (comp_type == COMP_RLE) {
+        ar(sz);
+        T val;
+        ar(val);
+        while(sz-- > 0) {
+          P::push_back(val);
+        }
+      } else {
+        IMP_THROW("Unsupported IndexVector compression type", ValueException);
+      }
+      ar(comp_type);
+    }
+  }
+
+ public:
+  IndexVector(unsigned int sz, const T &t = T()) : P(sz, t) {}
+  IndexVector() {}
+  IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < P::size(),
+              return P::operator[](get_as_unsigned_int(i)));
 };
 
 template <class Tag, class Container, class T>
@@ -201,12 +182,6 @@ IMPKERNEL_END_NAMESPACE
 namespace cereal {
   template <class Archive, class Tag, class T>
   struct specialize<Archive, IMP::IndexVector<Tag, T>,
-                    cereal::specialization::member_load_save> {};
-}
-
-namespace cereal {
-  template <class Archive, class Tag, class T>
-  struct specialize<Archive, IMP::CompressedIndexVector<Tag, T>,
                     cereal::specialization::member_load_save> {};
 }
 

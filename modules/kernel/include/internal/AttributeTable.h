@@ -59,7 +59,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class T, class K>
 struct DefaultTraits {
   //! a container storing the attribute data for all particles (indexed by ParticleIndex)
-  typedef CompressedIndexVector<ParticleIndexTag, T> Container;
+  typedef IndexVector<ParticleIndexTag, T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
@@ -78,7 +78,7 @@ struct DefaultTraits {
 template <class T, class K>
 struct ArrayTraits {
   typedef IMP::Vector<T> Value;
-  typedef CompressedIndexVector<ParticleIndexTag, Value> Container;
+  typedef IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value &PassValue;
   typedef K Key;
   typedef Value const* ContainerConstDataAccess;
@@ -135,8 +135,7 @@ struct ObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef ObjectKey Key;
-  typedef CompressedIndexVector<ParticleIndexTag, Pointer<Object> >
-      Container;
+  typedef IndexVector<ParticleIndexTag, Pointer<Object> > Container;
   typedef Pointer<Object> const* ContainerConstDataAccess;
   typedef Pointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
@@ -154,8 +153,7 @@ struct WeakObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef WeakObjectKey Key;
-  typedef CompressedIndexVector<ParticleIndexTag, WeakPointer<Object> >
-      Container;
+  typedef IndexVector<ParticleIndexTag, WeakPointer<Object> > Container;
   typedef WeakPointer<Object> const* ContainerConstDataAccess;
   typedef WeakPointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
@@ -172,7 +170,7 @@ struct ObjectsAttributeTableTraits {
   typedef Objects Value;
   typedef const Objects &PassValue;
   typedef ObjectsKey Key;
-  typedef CompressedIndexVector<ParticleIndexTag, Objects> Container;
+  typedef IndexVector<ParticleIndexTag, Objects> Container;
   typedef Objects const* ContainerConstDataAccess;
   typedef Objects* ContainerDataAccess;
   static Value get_invalid() { return Value(); }
