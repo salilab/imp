@@ -24,7 +24,7 @@
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/utility_macros.h>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 
 #include <boost/pending/disjoint_sets.hpp>
 

@@ -23,7 +23,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <boost/graph/reverse_graph.hpp>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 namespace {

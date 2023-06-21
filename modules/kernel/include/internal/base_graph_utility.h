@@ -21,7 +21,7 @@
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/unordered_map.hpp>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 namespace OWN {
