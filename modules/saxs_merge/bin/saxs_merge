@@ -1588,13 +1588,13 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
         uso = np.dot(Su, I0)
         usj = np.dot(Su, J)
         jsj = np.dot(J.transpose(), Sj)
-        c = float((M * osj + usu * osj - uso * usj) / (uso * jsj - usj * osj))
-        gamma = float(uso / (M + usu + c * usj))
+        c = ((M * osj + usu * osj - uso * usj) / (uso * jsj - usj * osj)).item()
+        gamma = (uso / (M + usu + c * usj)).item()
         return gamma, c, mat
     elif normal:
         # normal without offset
         Si1 = linalg.cho_solve(Scho, I1).transpose()
-        gamma = float(np.dot(Si1, I0) / (np.dot(Si1, I1) + M))
+        gamma = (np.dot(Si1, I0) / (np.dot(Si1, I1) + M)).item()
         return gamma, 0, mat
     elif not offset:
         # lognormal
@@ -1604,7 +1604,7 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
             raise ValueError("negative entries in I1")
         li = np.log(I0 / I1).transpose()
         Sij = linalg.cho_solve(Scho, J)
-        lg = float(np.dot(li, Sij) / np.dot(J.transpose(), Sij))
+        lg = (np.dot(li, Sij) / np.dot(J.transpose(), Sij)).item()
         gamma = np.exp(lg)
         return gamma, 0, mat
     else:
