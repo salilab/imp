@@ -3,7 +3,7 @@
 # Yannick
 
 from __future__ import print_function, division
-from numpy import *
+import numpy as np
 from numpy.random import random, randint
 from numpy.random import shuffle
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
@@ -165,7 +165,7 @@ class ReplicaTracker:
         metrop = {}
         for (s1, s2) in pairslist:
             metrop[(s1, s2)] = \
-                min(1, exp((old_ene[s2] - old_ene[s1]) *
+                min(1, np.exp((old_ene[s2] - old_ene[s1]) *
                            (self.inv_temps[s2] - self.inv_temps[s1])))
         return metrop
 
@@ -251,14 +251,14 @@ class ReplicaTracker:
                 if 'dumb_scale' in td:
                     kwargs['dumb_scale'] = td['dumb_scale']
                 indicators = TuneRex.compute_indicators(
-                    transpose(self.rn_history))
+                    np.transpose(self.rn_history))
                 changed, newparams = TuneRex.tune_params_ar(
                     indicators, temps, **kwargs)
             elif td['method'] == 'flux':
                 if 'alpha' in td:
                     kwargs['alpha'] = td['alpha']
                 changed, newparams = TuneRex.tune_params_flux(
-                    transpose(self.rn_history),
+                    np.transpose(self.rn_history),
                     temps, **kwargs)
             if changed:
                 self.rn_history = []

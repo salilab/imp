@@ -5,7 +5,7 @@ import sys
 import os
 import argparse
 from random import sample
-from numpy import *
+import numpy as np
 import copy
 from scipy.stats import t as student_t
 from scipy import linalg, optimize
@@ -34,12 +34,12 @@ def subsample(idx, data, npoints):
     if npoints >= Ntot or npoints <= 0:
         return data
     all = sorted(zip(idx, data))
-    qvals = array([i[0] for i in all])
+    qvals = np.array([i[0] for i in all])
     newdata = []
     i = 0
     qmin = min(qvals)
     qmax = max(qvals)
-    for q in linspace(qmin, qmax, num=npoints):
+    for q in np.linspace(qmin, qmax, num=npoints):
         if q == qmax:
             i = Ntot - 1
         else:
@@ -410,7 +410,7 @@ class SAXSProfile:
         if self.recompute_hessian is False:
             return self._memoized_hessian
         gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.model, gp)
-        Hessian = matrix(gpr.get_hessian(False))
+        Hessian = np.matrix(gpr.get_hessian(False))
         if linalg.det(Hessian) == 0:
             print(Hessian, [(i, j.get_nuisance())
                             for i, j in self.particles.items()
@@ -468,7 +468,7 @@ class SAXSProfile:
                 qmax = kwargs['qmax']
             else:
                 qmax = self.data[-1][0]
-            qvals = linspace(qmin, qmax, num)
+            qvals = np.linspace(qmin, qmax, num)
         #
         verbose = False
         if 'verbose' in kwargs:
@@ -518,26 +518,26 @@ class SAXSProfile:
                 if False in [flags[i - 3] for i in flagnos]:
                     continue
             thing = [q, gamma * (self.gp.get_posterior_mean([q]) + offset),
-                     gamma * sqrt(self.gp.get_posterior_covariance([q], [q])),
+                     gamma * np.sqrt(self.gp.get_posterior_covariance([q], [q])),
                      gamma * (self.functions['mean']([q])[0] + offset)]
             if average != 0:
                 # compute hessian of -log(cov)
                 cov = thing[2] ** 2
-                Hder = matrix(gp.get_posterior_covariance_derivative(
+                Hder = np.matrix(gp.get_posterior_covariance_derivative(
                     [q], False)).T
-                Hcov = matrix(gp.get_posterior_covariance_hessian(
+                Hcov = np.matrix(gp.get_posterior_covariance_hessian(
                     [q], False))
                 Hlcov = 1 / cov * (-Hcov + 1 / cov * Hder * Hder.T)
                 # fl=open('avcov','a')
                 #fl.write(" ".join(["%f" % i for  i in thing[:3]]))
-                lapl = linalg.det(matrix(eye(Hessian.shape[0]))
+                lapl = linalg.det(np.matrix(np.eye(Hessian.shape[0]))
                                   + linalg.cho_solve(Hcho, Hlcov)) ** (-0.5)
-                #fl.write(" %f" % sqrt(cov*lapl))
+                #fl.write(" %f" % np.sqrt(cov*lapl))
                 #fl.write(" %f" % lapl)
                 #fl.write(" %f\n" % linalg.det(Hlcov))
                 # fl.close()
                 # print thing[0],thing[1],cov,cov*lapl,lapl
-                thing[2] = sqrt(cov * lapl)
+                thing[2] = np.sqrt(cov * lapl)
             if flags:
                 thing.extend(flags)
             if colwise:
@@ -553,7 +553,7 @@ class SAXSProfile:
         """
         gamma = self.get_gamma()
         M = len(qvals)
-        retval = zeros((M, M))
+        retval = np.zeros((M, M))
         for i, q1 in enumerate(qvals):
             for j, q2 in enumerate(qvals[:i + 1]):
                 retval[i, j] = \
@@ -854,7 +854,7 @@ def get_global_scaling_factor(file):
     n = len(data)
     # take the first 50 points or 10% whichever comes first
     m = min(int(0.1 * n), 50)
-    return 100. / mean([i[1] for i in data[:m]])
+    return 100. / np.mean([i[1] for i in data[:m]])
 
 
 def create_profile(file, nreps, scale=1):
@@ -870,7 +870,7 @@ def ttest_one(mu, s, n):
     Returns: pval, t, nu
     """
     v = s ** 2 / float(n)
-    t = mu / sqrt(v)
+    t = mu / np.sqrt(v)
     nu = n - 1
     pval = (1 - student_t.cdf(t, nu))
     return pval, t, nu
@@ -883,7 +883,7 @@ def ttest_two(mu1, s1, n1, mu2, s2, n2):
     """
     v1 = s1 ** 2 / float(n1)
     v2 = s2 ** 2 / float(n2)
-    t = (mu1 - mu2) / sqrt(v1 + v2)
+    t = (mu1 - mu2) / np.sqrt(v1 + v2)
     nu = (v1 + v2) ** 2 / (v1 ** 2 / (n1 - 1) + v2 ** 2 / (n2 - 1))
     pval = 2 * (1 - student_t.cdf(abs(t), nu))
     return pval, t, nu
@@ -948,27 +948,27 @@ def setup_process(data, subs, maxpoints=-1):
 
 
 def _get_guinier_fit_fixed(qs, Is, errs):
-    X = array([ones(len(qs)), qs ** 2]).transpose()
-    W = diagflat(errs / Is)
-    y = atleast_2d(log(Is)).transpose()
+    X = np.array([np.ones(len(qs)), qs ** 2]).transpose()
+    W = np.diagflat(errs / Is)
+    y = np.atleast_2d(np.log(Is)).transpose()
     # weighted least squares estimator
     # beta = (X^T W X )^(-1) X^T W y
-    XW = dot(X.transpose(), W)
+    XW = np.dot(X.transpose(), W)
     try:
-        beta = linalg.solve(dot(XW, X), dot(XW, y), sym_pos=True)
+        beta = linalg.solve(np.dot(XW, X), np.dot(XW, y), sym_pos=True)
     except linalg.LinAlgError:
         print("Warning: singular matrix during guinier fit")
-        beta = atleast_2d(ones(2)).transpose()
+        beta = np.atleast_2d(np.ones(2)).transpose()
     if beta[1, 0] > 0:
         rg = 0
     else:
-        rg = sqrt(-3 * beta[1, 0])
-    izero = exp(beta[0, 0])
+        rg = np.sqrt(-3 * beta[1, 0])
+    izero = np.exp(beta[0, 0])
     return rg, izero
 
 
 def get_guinier_fit(data, end_q_rg=1.3):
-    qs, Is, errs = list(map(array, [data['q'], data['I'], data['err']]))
+    qs, Is, errs = list(map(np.array, [data['q'], data['I'], data['err']]))
     # fit the whole range up to q_rg, take median values for robustness
     cut = 5  # drop first 5 points, and take at least 5 points to estimate
     vals = []
@@ -978,9 +978,9 @@ def get_guinier_fit(data, end_q_rg=1.3):
             vals.append((rg, izero, qs[i - 1] * rg))
             if qs[i - 1] * rg > end_q_rg:
                 break
-    vals = array(vals).transpose()
-    rg = median(vals[0])
-    izero = median(vals[1])
+    vals = np.array(vals).transpose()
+    rg = np.median(vals[0])
+    izero = np.median(vals[1])
     return rg, izero
 
 
@@ -998,13 +998,13 @@ def set_defaults_mean(data, particles, mean_function):
         particles['G'].set_lower(0)
         particles['G'].set_upper(0)
         particles['G'].set_nuisance(0)
-        particles['A'].set_nuisance(mean(data['I']))
+        particles['A'].set_nuisance(np.mean(data['I']))
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
         particles['s'].set_nuisance_is_optimized(False)
     else:
-        particles['A'].set_nuisance(mean(data['I'][-10:]))
+        particles['A'].set_nuisance(np.mean(data['I'][-10:]))
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
         if mean_function == 'Simple':
@@ -1040,7 +1040,7 @@ def set_defaults_cov(data, particles):
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
     particles['sigma2'].set_nuisance_is_optimized(True)
-    meandist = mean(array(data['q'][1:]) - array(data['q'][:-1]))
+    meandist = np.mean(np.array(data['q'][1:]) - np.array(data['q'][:-1]))
     lambdalow = 0
     particles['lambda'].set_lower(max(2 * meandist, lambdalow))
     particles['lambda'].set_upper(1e8)
@@ -1048,9 +1048,9 @@ def set_defaults_cov(data, particles):
     particles['sigma2'].set_lower(1e-8)
     particles['sigma2'].set_upper(1e8)
     particles['sigma2'].set_nuisance(10.)
-    particles['tau'].set_lower(sqrt(1e-2))
-    particles['tau'].set_upper(sqrt(1e8))
-    particles['tau'].set_nuisance(sqrt(10))
+    particles['tau'].set_lower(np.sqrt(1e-2))
+    particles['tau'].set_upper(np.sqrt(1e8))
+    particles['tau'].set_nuisance(np.sqrt(10))
 
 
 def transform(particle):
@@ -1061,7 +1061,7 @@ def transform(particle):
     d = particle.get_nuisance()
     dmin = particle.get_lower()
     dmax = particle.get_upper()
-    return tan(pi / 2 * ((d - dmin) - (dmax - d)) / (dmax - dmin))
+    return np.tan(np.pi / 2 * ((d - dmin) - (dmax - d)) / (dmax - dmin))
 
 
 def untransform(x, particle):
@@ -1071,7 +1071,7 @@ def untransform(x, particle):
     """
     dmin = particle.get_lower()
     dmax = particle.get_upper()
-    return (dmax - dmin) / pi * arctan(x) + (dmax + dmin) / 2.
+    return (dmax - dmin) / np.pi * np.arctan(x) + (dmax + dmin) / 2.
 
 
 def untransform_d(x, particle):
@@ -1081,7 +1081,7 @@ def untransform_d(x, particle):
     """
     dmin = particle.get_lower()
     dmax = particle.get_upper()
-    return (dmax - dmin) / (pi * (1 + x ** 2))
+    return (dmax - dmin) / (np.pi * (1 + x ** 2))
 
 
 def residuals(point, mean, particles, mean_fn, data):
@@ -1105,7 +1105,7 @@ def residuals(point, mean, particles, mean_fn, data):
         particles['s'].set_scale(untransform(mx, particles['s']))
     #
     mean_fn.update()
-    retval = (array([(I - mean_fn([q])[0]) / err
+    retval = (np.array([(I - mean_fn([q])[0]) / err
                     for q, I, err in zip(data['q'], data['I'], data['err'])
                      ]) ** 2).sum()
     return retval
@@ -1147,23 +1147,23 @@ def target_function(point, mean, particles, sf, gpr, M, deriv=False):
     dcv = untransform_d(cv, particles['sigma2']) * dsi2
     dcl = untransform_d(cl, particles['lambda']) * dlam
     if mean == 'cov':
-        return retval, array([dcu, dcv, dcl])
+        return retval, np.array([dcu, dcv, dcl])
     dA = particles['A'].get_nuisance_derivative()
     if mean == 'Flat':
-        return retval, array([dA, dcu, dcv, dcl])
+        return retval, np.array([dA, dcu, dcv, dcl])
     dG = particles['G'].get_nuisance_derivative()
     dRg = particles['Rg'].get_nuisance_derivative()
     dmu = untransform_d(mu, particles['G']) * dG
     dmv = untransform_d(mv, particles['Rg']) * dRg
     if mean == 'Simple':
-        return retval, array([dA, dmu, dmv, dcu, dcv, dcl])
+        return retval, np.array([dA, dmu, dmv, dcu, dcv, dcl])
     dd = particles['d'].get_nuisance_derivative()
     dmw = untransform_d(mw, particles['d']) * dd
     if mean == 'Generalized':
-        return retval, array([dA, dmu, dmv, dmw, dcu, dcv, dcl])
+        return retval, np.array([dA, dmu, dmv, dmw, dcu, dcv, dcl])
     ds = particles['s'].get_nuisance_derivative()
     dmx = untransform_d(mx, particles['s']) * ds
-    return retval, array([dA, dmu, dmv, dmw, dmx, dcu, dcv, dcl])
+    return retval, np.array([dA, dmu, dmv, dmw, dmx, dcu, dcv, dcl])
 
 
 def find_fit_mean(data, verbose, mean_function):
@@ -1178,7 +1178,7 @@ def find_fit_mean(data, verbose, mean_function):
     A0 = particles['A'].get_nuisance()
     if mean_function == 'Flat':
         res = optimize.fmin(residuals,
-                            array([A0]),
+                            np.array([A0]),
                             args=(
                                 mean_function,
                                 particles,
@@ -1197,7 +1197,7 @@ def find_fit_mean(data, verbose, mean_function):
         particles['d'].set_nuisance(dmin)
         particles['d'].set_upper(dmin + 1)
         res = optimize.fmin(residuals,
-                            array([A0, mu0, mv0]),
+                            np.array([A0, mu0, mv0]),
                             args=(
                                 'Simple',
                                 particles,
@@ -1212,7 +1212,7 @@ def find_fit_mean(data, verbose, mean_function):
         if mean_function != 'Simple':
             mw0 = transform(particles['d'])
             res = optimize.fmin(residuals,
-                                array([Af, muf, mvf, mw0]),
+                                np.array([Af, muf, mvf, mw0]),
                                 args=(
                                     'Generalized',
                                     particles,
@@ -1224,7 +1224,7 @@ def find_fit_mean(data, verbose, mean_function):
                 particles['s'].set_nuisance(.1)
                 mx0 = transform(particles['s'])
                 res = optimize.fmin(residuals,
-                                    array([Af, muf, mvf, mwf, mx0]),
+                                    np.array([Af, muf, mvf, mwf, mx0]),
                                     args=(
                                         'Full',
                                         particles,
@@ -1262,7 +1262,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
     #
     # first find minimum for lambda
     vals = []
-    for lam in logspace(log(particles['lambda'].get_lower()) / log(10), 2, num=100):
+    for lam in np.logspace(np.log(particles['lambda'].get_lower()) / np.log(10), 2, num=100):
         particles['lambda'].set_nuisance(lam)
         ene = sf.evaluate(False)
         vals.append((ene, particles['lambda'].get_nuisance()))
@@ -1270,7 +1270,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
     particles['lambda'].set_nuisance(vals[0][1])
     # then fit covariance particles only
     res = optimize.fmin(target_function,
-                        array([cu0, cv0, cl0]),
+                        np.array([cu0, cv0, cl0]),
                         args=('cov', particles, sf, gpr, M, False),
                         maxiter=100, disp=False)
     cuf, cvf, clf = res
@@ -1278,7 +1278,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
     A0 = particles['A'].get_nuisance()
     if mean_function == 'Flat':
         res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                 array([A0, cuf, cvf, clf]),
+                                 np.array([A0, cuf, cvf, clf]),
                                  lambda *a: target_function(*a)[1],
                                  args=(
                                      mean_function,
@@ -1295,7 +1295,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
         mv0 = transform(particles['Rg'])
         if mean_function == 'Simple':
             res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                     array([A0, mu0, mv0, cuf, cvf, clf]),
+                                     np.array([A0, mu0, mv0, cuf, cvf, clf]),
                                      lambda *a: target_function(*a)[1],
                                      args=(
                                          mean_function,
@@ -1311,7 +1311,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
             mw0 = transform(particles['d'])
             if mean_function == 'Generalized':
                 res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                         array(
+                                         np.array(
                                              [A0,
                                               mu0,
                                               mv0,
@@ -1333,7 +1333,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
             else:
                 mx0 = transform(particles['s'])
                 res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                         array(
+                                         np.array(
                                              [A0,
                                               mu0,
                                               mv0,
@@ -1368,12 +1368,12 @@ def find_fit_all(data, initvals, verbose, mean_function):
     ene = sf.evaluate(False)
     # make sure the errors are defined
     if not success:
-        ene = inf
+        ene = np.inf
     else:
         for q in data['q']:
             err = gp.get_posterior_covariance([q], [q])
-            if err < 0 or isnan(err) or isinf(err):
-                ene = inf
+            if err < 0 or np.isnan(err) or np.isinf(err):
+                ene = np.inf
                 break
     #global ctr
     #fl=open('fit_%d.dat' % ctr, 'w')
@@ -1411,15 +1411,15 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     for p, v in initvals.items():
         particles[p].set_nuisance(v)
     #
-    H = matrix(gpr.get_hessian(False))
+    H = np.matrix(gpr.get_hessian(False))
     Np = H.shape[0]
     MP = sf.evaluate(False)
     ML = gpr.unprotected_evaluate(None)
     try:
         retval = linalg.slogdet(H)
-        if retval[0] == 0 and retval[1] == -inf:
+        if retval[0] == 0 and retval[1] == -np.inf:
             # print "Warning: skipping model %s" % mean_func
-            logdet = inf
+            logdet = np.inf
         else:
             logdet = retval[1] / 2.
     except AttributeError:
@@ -1427,17 +1427,17 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
         # at the cost of an extra hessian calculation
         try:
             retval = gpr.get_logdet_hessian()
-            if isinf(retval):
+            if np.isinf(retval):
                 # print "Warning: re-skipping model %s" % mean_func
-                logdet = inf
+                logdet = np.inf
             else:
                 logdet = retval / 2.
         except IMP.ModelException:
             # print "Warning: Hessian is not positive definite"
-            logdet = inf
-    return (Np, (2 * pi) ** (Np / 2.), H, logdet, MP, ML, MP - ML,
-            exp(-MP) * (2 * pi) ** (Np / 2.) * exp(-logdet),
-            MP - Np / 2. * log(2 * pi) + logdet)
+            logdet = np.inf
+    return (Np, (2 * np.pi) ** (Np / 2.), H, logdet, MP, ML, MP - ML,
+            np.exp(-MP) * (2 * np.pi) ** (Np / 2.) * np.exp(-logdet),
+            MP - Np / 2. * np.log(2 * np.pi) + logdet)
 
 
 def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
@@ -1500,19 +1500,19 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
             free_energies[f] = bayes_factor(data, param_vals[f], verbose, f,
                                             model_comp_maxpoints)
         else:
-            free_energies[f] = [-1] + [inf] * 8
+            free_energies[f] = [-1] + [np.inf] * 8
         if verbose > 2:
             print("%.1f" % free_energies[f][8], end=' ')
             sys.stdout.flush()
     if verbose > 2:
         print("")
     # must have at least one model with admissible bayes factor
-    if not (False in map(isinf, [free_energies[f][8] for f in functions])):
+    if not (False in map(np.isinf, [free_energies[f][8] for f in functions])):
         raise FittingError("Error while fitting! All Bayes factors are "
                            "undefined.\n"
                            "Change initial parameters or disable model comparison.")
     minf = sorted([(free_energies[i][8], i) for i in functions if not
-                   (isnan(free_energies[i][8]) or isinf(free_energies[i][8]))])[0][1]
+                   (np.isnan(free_energies[i][8]) or np.isinf(free_energies[i][8]))])[0][1]
     return minf, param_vals[minf], free_energies
 
 
@@ -1548,34 +1548,34 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
     lognormal model log I0 = log(gamma*I1)
     if offset==False we have c=0
     """
-    I0 = atleast_2d(I0).transpose()
-    I1 = atleast_2d(I1).transpose()
+    I0 = np.atleast_2d(I0).transpose()
+    I1 = np.atleast_2d(I1).transpose()
     M = I1.shape[0]
-    J = ones(I1.shape)
+    J = np.ones(I1.shape)
     try:
         Scho = linalg.cho_factor(Sigma1)
         mat = 1
     except linalg.LinAlgError:
         try:
-            Sigma2 = Sigma1 + eye(M) * max(Sigma1.diagonal()) * 0.05
+            Sigma2 = Sigma1 + np.eye(M) * max(Sigma1.diagonal()) * 0.05
             Scho = linalg.cho_factor(Sigma2)
             mat = 2
         except linalg.LinAlgError:
             try:
-                Sigma3 = zeros(Sigma1.shape)
-                Sigma3[diag_indices_from(Sigma3)] = Sigma1.diagonal()
+                Sigma3 = np.zeros(Sigma1.shape)
+                Sigma3[np.diag_indices_from(Sigma3)] = Sigma1.diagonal()
                 Scho = linalg.cho_factor(Sigma3)
                 mat = 3
             except linalg.LinAlgError:
                 try:
-                    Sigma4 = zeros(Sigma1.shape)
-                    Sigma4[diag_indices_from(Sigma4)] = Sigma1.diagonal()
-                    Sigma4 += eye(M) * max(Sigma1.diagonal()) * 0.05
+                    Sigma4 = np.zeros(Sigma1.shape)
+                    Sigma4[np.diag_indices_from(Sigma4)] = Sigma1.diagonal()
+                    Sigma4 += np.eye(M) * max(Sigma1.diagonal()) * 0.05
                     Scho = linalg.cho_factor(Sigma4)
                     mat = 4
                 except linalg.LinAlgError:
-                    Sigma5 = zeros(Sigma1.shape)
-                    Sigma5[diag_indices_from(Sigma5)] = abs(Sigma1.diagonal())
+                    Sigma5 = np.zeros(Sigma1.shape)
+                    Sigma5[np.diag_indices_from(Sigma5)] = abs(Sigma1.diagonal())
                     Scho = linalg.cho_factor(Sigma5)
                     mat = 5
 
@@ -1583,18 +1583,18 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
         # normal with offset
         Su = linalg.cho_solve(Scho, I1).transpose()
         Sj = linalg.cho_solve(Scho, J)
-        osj = dot(I0.transpose(), Sj)
-        usu = dot(Su, I1)
-        uso = dot(Su, I0)
-        usj = dot(Su, J)
-        jsj = dot(J.transpose(), Sj)
+        osj = np.dot(I0.transpose(), Sj)
+        usu = np.dot(Su, I1)
+        uso = np.dot(Su, I0)
+        usj = np.dot(Su, J)
+        jsj = np.dot(J.transpose(), Sj)
         c = float((M * osj + usu * osj - uso * usj) / (uso * jsj - usj * osj))
         gamma = float(uso / (M + usu + c * usj))
         return gamma, c, mat
     elif normal:
         # normal without offset
         Si1 = linalg.cho_solve(Scho, I1).transpose()
-        gamma = float(dot(Si1, I0) / (dot(Si1, I1) + M))
+        gamma = float(np.dot(Si1, I0) / (np.dot(Si1, I1) + M))
         return gamma, 0, mat
     elif not offset:
         # lognormal
@@ -1602,10 +1602,10 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
             raise ValueError("negative entries in I0")
         if (I1 < 0).any():
             raise ValueError("negative entries in I1")
-        li = log(I0 / I1).transpose()
+        li = np.log(I0 / I1).transpose()
         Sij = linalg.cho_solve(Scho, J)
-        lg = float(dot(li, Sij) / dot(J.transpose(), Sij))
-        gamma = exp(lg)
+        lg = float(np.dot(li, Sij) / np.dot(J.transpose(), Sij))
+        gamma = np.exp(lg)
         return gamma, 0, mat
     else:
         # lognormal with offset
@@ -1634,8 +1634,8 @@ def write_individual_profile(prof, qvals, args):
             qvalues = prof.get_data(colwise=True)['q']
             qmin = min(qvalues)
             qmax = max(qvalues)
-            qvalues = qvals[where(qvals >= qmin)]
-            qvalues = qvalues[where(qvalues <= qmax)]
+            qvalues = qvals[np.where(qvals >= qmin)]
+            qvalues = qvalues[np.where(qvalues <= qmax)]
             prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
                             header=args.header, average=args.eaverage, qvalues=qvalues,
                             flags=mflags)
@@ -1670,8 +1670,8 @@ def write_merge_profile(merge, qvals, args):
     else:
         if args.verbose > 2:
             print(" mean ", end=' ')
-        qvalues = qvals[where(qvals >= qmin)]
-        qvalues = qvals[where(qvalues <= qmax)]
+        qvalues = qvals[np.where(qvals >= qmin)]
+        qvalues = qvals[np.where(qvalues <= qmax)]
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                          dir=args.destdir, qvalues=qvalues, header=args.header,
                          flags=mflags, average=args.eaverage, verbose=(args.verbose > 2))
@@ -1684,7 +1684,7 @@ def get_hessian_stats(profile, nmax):
     for k in ['G', 'Rg', 'd', 's', 'A', 'sigma2', 'tau', 'lambda']:
         if profile.particles[k].get_nuisance_is_optimized():
             hessian_names.append(k)
-    return array(hessian), hessian_names
+    return np.array(hessian), hessian_names
 
 
 def write_summary_file(merge, profiles, args):
@@ -1717,12 +1717,12 @@ def write_summary_file(merge, profiles, args):
             for i, k in enumerate(Hess_names):
                 fl.write(
                     "   %s : %f +- %f\n" %
-                    (k, data[k], sqrt(Hessian[i][i])))
+                    (k, data[k], np.sqrt(Hessian[i][i])))
         else:
             for i in sorted(data.keys()):
                 fl.write("   %s : %f\n" % (i, data[i]))
         fl.write("  Calculated Values\n")
-        Q1Rg = sqrt((data['d'] - data['s']) * (3 - data['s']) / 2)
+        Q1Rg = np.sqrt((data['d'] - data['s']) * (3 - data['s']) / 2)
         fl.write("   Q1 : %f\n" % (Q1Rg / data['Rg']))
         fl.write("   Q1.Rg : %f\n" % Q1Rg)
         fl.write("   I(0) : %f\n" %
@@ -1737,10 +1737,10 @@ def write_summary_file(merge, profiles, args):
                 else:
                     name = i
                 fl.write("   %s : %d\t%f\t%f\t%f\t%f\t%f\n" %
-                        (name, merge.bayes[i][0], merge.bayes[i][8] / log(10),
+                        (name, merge.bayes[i][0], merge.bayes[i][8] / np.log(10),
                             merge.bayes[i][4], merge.bayes[i][5],
                             -2 * merge.bayes[i][5]
-                         + merge.bayes[i][0] * log(
+                         + merge.bayes[i][0] * np.log(
                              len(merge.get_raw_data())),
                             -2 * merge.bayes[i][5] + 2 * merge.bayes[i][0]))
             fl.write("  Model Comparison : best model\n")
@@ -1793,12 +1793,12 @@ def write_summary_file(merge, profiles, args):
         if Hessian is not None:
             for i, k in enumerate(Hess_names):
                 fl.write("   %s : %f +- %f\n" % (k, data[k],
-                                                 sqrt(Hessian[i][i])))
+                                                 np.sqrt(Hessian[i][i])))
         else:
             for i in sorted(data.keys()):
                 fl.write("   %s : %f\n" % (i, data[i]))
         fl.write("   Calculated Values\n")
-        qrg = sqrt((data['d'] - data['s']) * (3 - data['s']) / 2)
+        qrg = np.sqrt((data['d'] - data['s']) * (3 - data['s']) / 2)
         fl.write("    Q1 : %f\n" % (qrg / data['Rg']))
         fl.write("    Q1.Rg : %f\n" % qrg)
         fl.write("    I(0) : %f\n" % (p.get_mean(qvalues=[0],
@@ -1872,7 +1872,7 @@ def reorder_profiles(profiles):
         #gamma = p.get_gamma()
         data = p.get_data(filter='agood', colwise=True)
         Rg, Izero = get_guinier_fit(data)
-        mnoise = median(data['err'])
+        mnoise = np.median(data['err'])
         Izeros.append((Izero / mnoise, i))
         """
         fl.write("%d\t" % i)
@@ -1906,11 +1906,11 @@ def remove_redundant(profiles, verbose=0):
     if len(profiles) <= 1:
         return profiles
     # map noise levels to profiles
-    noiselevels = sorted([(median(p['err']), i) for i, p in enumerate(data)])
+    noiselevels = sorted([(np.median(p['err']), i) for i, p in enumerate(data)])
     n2p = [i[1] for i in noiselevels]  # n2p[-1] is noisiest profile
     dbest = data[n2p[0]]
     # get median distance between q values
-    qdist = median([dbest['q'][i + 1] - dbest['q'][i]
+    qdist = np.median([dbest['q'][i + 1] - dbest['q'][i]
                     for i in range(len(dbest['q']) - 1)])
     for p in n2p[1:]:
         prof = profiles[p]
@@ -1954,7 +1954,7 @@ def write_fit(data, initvals, outfile, mean_function, npoints=200):
         fl.write("%s\t" % I)
         fl.write("%s\t" % err)
         fl.write("%s\t" % gp.get_posterior_mean([q]))
-        fl.write("%s\t" % sqrt(gp.get_posterior_covariance([q], [q])))
+        fl.write("%s\t" % np.sqrt(gp.get_posterior_covariance([q], [q])))
         fl.write("%s\n" % functions['mean']([q])[0])
 
 
@@ -2018,7 +2018,7 @@ def cleanup(profiles, args):
                 print("Warning: all points in file %s have been discarded"\
                     " on cleanup" % os.path.basename(p.filename))
                 continue
-            med = median(data['err'])
+            med = np.median(data['err'])
             ids = []
             for datum in p.get_data(filter="agood"):
                 id, q, I, err = datum[:4]
@@ -2129,7 +2129,7 @@ def rescaling(profiles, args):
         create_intervals_from_data(p, 'cgood')
         # generate points in these intervals to compute gamma
         goodip = [i for i in p.get_flag_intervals('cgood') if i[2]]
-        totaldist = array([i[1] - i[0] for i in goodip]).sum()
+        totaldist = np.array([i[1] - i[0] for i in goodip]).sum()
         qvalues = []
         for interval in goodip:
             qmin = interval[0]
@@ -2141,18 +2141,18 @@ def rescaling(profiles, args):
             for i in range(numint):
                 qvalues.append((float(i) / (numint - 1)) * dist + qmin)
         pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
-        if True in map(isnan, pvalues['I']):
+        if True in map(np.isnan, pvalues['I']):
             raise RuntimeError("Got NAN in I")
         prefvalues = pref.get_mean(qvalues=qvalues, colwise=True,
                                    average=average)
-        if True in map(isnan, prefvalues['I']):
+        if True in map(np.isnan, prefvalues['I']):
             raise RuntimeError("Got NAN in ref I")
         pcov = p.get_cov(pvalues['q'])
-        if isnan(pcov).any():
+        if np.isnan(pcov).any():
             raise RuntimeError("Got NAN in covariance matrix")
-        if isinf(pcov).any():
+        if np.isinf(pcov).any():
             raise RuntimeError("Got inf in covariance matrix")
-        if True in map(isnan, prefvalues['err']):
+        if True in map(np.isnan, prefvalues['err']):
             raise RuntimeError("Got NAN in ref err")
         gammas.append(rescale_curves(prefvalues['I'],
                                      pvalues['I'],
@@ -2191,7 +2191,7 @@ def rescaling(profiles, args):
             if use_offset:
                 print("   offset = %.3G" % c, end=' ')
             print(" (%d)" % mat)
-    if True in map(isnan, gammas[-1]):
+    if True in map(np.isnan, gammas[-1]):
         raise RuntimeError("Got NAN in rescaling step, try another rescaling "
                            "or fitting model.")
     return profiles, args
@@ -2379,7 +2379,7 @@ def write_data(merge, profiles, args):
         print("writing data to %s" % args.destdir)
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
-    qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
+    qvals = np.array(profiles[0].get_raw_data(colwise=True)['q'])
     # individual profiles
     if args.allfiles:
         if args.verbose > 1:
