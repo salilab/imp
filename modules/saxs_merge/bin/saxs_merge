@@ -4,13 +4,11 @@ from __future__ import print_function, division
 import sys
 import os
 import argparse
-from random import sample
 import numpy as np
 import copy
 from scipy.stats import t as student_t
 from scipy import linalg, optimize
 import glob
-import tempfile
 
 import IMP
 import IMP.isd
@@ -18,8 +16,6 @@ import IMP.gsl
 import IMP.saxs
 
 IMP.set_log_level(IMP.SILENT)
-# IMP.set_log_level(IMP.VERBOSE)
-# fitno=0
 
 
 def subsample(idx, data, npoints):
@@ -83,7 +79,7 @@ class SAXSProfile:
                 stuff = [i.split() for i in fh.readlines()]
             # keep the ones that have data
             stuff = [a for a in stuff if (len(a) >= self.nflags)
-                           and not a[0].startswith('#')]
+                     and not a[0].startswith('#')]
             # drop offset, and first 3 columns must be of float type and not
             # nan
             stuff = [a[:self.nflags + offset] for a in stuff]
@@ -154,8 +150,8 @@ class SAXSProfile:
             filter : string or list of strings corresponding to a boolean flag
             name which should be used to filter the data before returning it.
             Data is returned only if all of the provided flags are True.
-            colwise : instead of returning a list of tuples for each data point,
-                      return a dictionnary with flag names as keys.
+            colwise : instead of returning a list of tuples for each data
+                      point, return a dictionnary with flag names as keys.
             maxpoints : only return at most N points, subsampling if necessary.
         """
         if 'filter' in kwargs:
@@ -184,7 +180,7 @@ class SAXSProfile:
                 try:
                     qmin = float(args[0])
                     qmax = float(args[1])
-                except:
+                except ValueError:
                     raise TypeError("arguments have incorrect type")
                 if qmin > qmax:
                     raise ValueError("qmin > qmax !")
@@ -256,7 +252,7 @@ class SAXSProfile:
         flagtype = self.flag_types[flagno]
         try:
             converted = flagtype(value)
-        except:
+        except ValueError:
             raise TypeError("unable to cast given value to %s" % flagtype)
         self.data[id][flagno] = converted
 
@@ -277,7 +273,7 @@ class SAXSProfile:
             return retval
         elif not isinstance(val, float):
             raise ValueError("first argument must be int or float")
-        if not flag in self.get_flag_names():
+        if flag not in self.get_flag_names():
             raise KeyError("flag %s does not exist!" % flag)
         for qmin, qmax, flagval in self.get_flag_intervals(flag):
             if qmin <= val <= qmax:
@@ -370,14 +366,14 @@ class SAXSProfile:
         if npoints < 0:
             return self.gp
         q = self.gp.get_data_abscissa()
-        I = self.gp.get_data_mean()
+        Ival = self.gp.get_data_mean()
         S = self.gp.get_data_variance()
         err = [S[i][i] for i in range(len(S))]
-        q, I, err = list(zip(*self._subsample(q, zip(q, I, err), npoints)))
-        gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
-                                                  self.get_Nreps(), self.functions[
-                                                      'mean'],
-                                                  self.functions['covariance'], self.particles['sigma2'])
+        q, Ival, err = list(zip(*self._subsample(q, zip(q, Ival, err),
+                                                 npoints)))
+        gp = IMP.isd.GaussianProcessInterpolation(
+            q, Ival, err, self.get_Nreps(), self.functions['mean'],
+            self.functions['covariance'], self.particles['sigma2'])
         return gp
 
     def _get_hessian(self, gp):
@@ -429,8 +425,8 @@ class SAXSProfile:
         possible keyword arguments:
             num qmin qmax filter average verbose qvalues
         mean is the mean function of the gaussian process.
-        the length of the returned tuple is the same as the number of flags plus
-        one for the mean function.
+        the length of the returned tuple is the same as the number of flags
+        plus one for the mean function.
         You can also give specific values via the qvalues keyword argument.
         see get_data for details on the filter argument. If num is used with
         filter, the function returns at most num elements and possibly none.
@@ -451,7 +447,7 @@ class SAXSProfile:
             # compute hessian, which doesn't depend on q
             gp = self._setup_gp(average)
             Hessian = self._get_hessian(gp)
-            Hchol = linalg.cho_factor(Hessian)
+            Hcho = linalg.cho_factor(Hessian)
         #
         if 'qvalues' in kwargs:
             qvals = kwargs['qvalues']
@@ -514,11 +510,12 @@ class SAXSProfile:
                 sys.stdout.write('\b' * (len(percent) + 1))
             if len(flagnames) > 4:
                 flags = list(map(self.get_flag, [q] * len(flagnames[4:]),
-                            flagnames[4:]))
+                                 flagnames[4:]))
                 if False in [flags[i - 3] for i in flagnos]:
                     continue
             thing = [q, gamma * (self.gp.get_posterior_mean([q]) + offset),
-                     gamma * np.sqrt(self.gp.get_posterior_covariance([q], [q])),
+                     gamma * np.sqrt(self.gp.get_posterior_covariance([q],
+                                                                      [q])),
                      gamma * (self.functions['mean']([q])[0] + offset)]
             if average != 0:
                 # compute hessian of -log(cov)
@@ -528,15 +525,8 @@ class SAXSProfile:
                 Hcov = np.matrix(gp.get_posterior_covariance_hessian(
                     [q], False))
                 Hlcov = 1 / cov * (-Hcov + 1 / cov * Hder * Hder.T)
-                # fl=open('avcov','a')
-                #fl.write(" ".join(["%f" % i for  i in thing[:3]]))
                 lapl = linalg.det(np.matrix(np.eye(Hessian.shape[0]))
                                   + linalg.cho_solve(Hcho, Hlcov)) ** (-0.5)
-                #fl.write(" %f" % np.sqrt(cov*lapl))
-                #fl.write(" %f" % lapl)
-                #fl.write(" %f\n" % linalg.det(Hlcov))
-                # fl.close()
-                # print thing[0],thing[1],cov,cov*lapl,lapl
                 thing[2] = np.sqrt(cov * lapl)
             if flags:
                 thing.extend(flags)
@@ -669,152 +659,202 @@ Merging
     eorigin   (int)    : profile index from which this point originates
     eoriname  (string) : associated filename
     eextrapol (bool)   : True if mean function is being extrapolated.
-""")
-    p.add_argument('--verbose', '-v', action="count",
-                      dest='verbose', default=0,
-                      help="Increase verbosity. Can be repeated up to 3 times "
-                      "for more output.")
+""")  # noqa: E501
+    p.add_argument(
+        '--verbose', '-v', action="count",
+        dest='verbose', default=0,
+        help="Increase verbosity. Can be repeated up to 3 times "
+             "for more output.")
     # general
     group = p.add_argument_group(title="general")
-    group.add_argument('--auto', help="Fully automatic merge. Will try to find"
-                     " correct order for input files (default is off)",
-                     default=False, action='store_true')
-    group.add_argument('--remove_noisy', help="Remove data points that have"
-                     " too large error bars, such as data at very low q (default is not "
-                     " to perform this cleanup) ", default=False, action='store_true')
-    group.add_argument('--remove_redundant', help="Remove high noise data if it "
-                     " is surrounded by low noise data (default is not to remove it)",
-                     default=False, action='store_true')
-    group.add_argument('--mergename', help="filename suffix for output "
-                     "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
-    group.add_argument('--sumname', metavar='NAME', default='summary.txt',
-                     help="File to which the merge summary will be written."
-                     " Default is summary.txt")
-    group.add_argument('--destdir', default="./", metavar='DIR',
-                     help="Destination folder in which files will be written")
-    group.add_argument('--header', default=False, action='store_true',
-                     help="First line of output files is a header (default False)")
-    group.add_argument('--outlevel', default='normal', help="Set the output "
-                     "level, 'sparse' is for q,I,err columns only, 'normal' adds "
-                     "eorigin, eoriname and eextrapol (default), and 'full' outputs "
-                     "all flags.", choices=['normal', 'sparse', 'full'])
-    group.add_argument('--allfiles', default=False, action='store_true',
-                     help="Output data files for parsed input files as well (default "
-                     "is only to output merge and summary files).")
-    group.add_argument('--stop', help="stop after the given step, "
-                     "one of cleanup, fitting, rescaling, classification, merging "
-                     "(default: merging)", choices=["cleanup", "fitting", "rescaling",
-                                                    "classification", "merging"], default="merging")
-    group.add_argument('--postpone_cleanup', action='store_true', default=False,
-                     help="Cleanup step comes after rescaling step (default is False)")
-    group.add_argument('--npoints', type=int, default=200, metavar="NUM",
-                     help="Number of points to output for the mean function. Negative "
-                     "values signify to take the same q values as the first data file. "
-                     "In that case extrapolation flags are ignored, and extrapolation "
-                     "is performed when the data file's q values fall outside of the "
-                     "range of accepted data points. Default is NUM=200 points.")
+    group.add_argument(
+        '--auto',
+        help="Fully automatic merge. Will try to find"
+             " correct order for input files (default is off)",
+        default=False, action='store_true')
+    group.add_argument(
+        '--remove_noisy',
+        help="Remove data points that have too large error bars, such as "
+             "data at very low q (default is not to perform this cleanup) ",
+        default=False, action='store_true')
+    group.add_argument(
+        '--remove_redundant',
+        help="Remove high noise data if it  is surrounded by low noise data "
+             "(default is not to remove it)",
+        default=False, action='store_true')
+    group.add_argument(
+        '--mergename',
+        help="filename suffix for output (default is merged.dat)",
+        default='merged.dat', metavar='SUFFIX')
+    group.add_argument(
+        '--sumname', metavar='NAME', default='summary.txt',
+        help="File to which the merge summary will be written."
+             " Default is summary.txt")
+    group.add_argument(
+        '--destdir', default="./", metavar='DIR',
+        help="Destination folder in which files will be written")
+    group.add_argument(
+        '--header', default=False, action='store_true',
+        help="First line of output files is a header (default False)")
+    group.add_argument(
+        '--outlevel', default='normal',
+        help="Set the output level, 'sparse' is for q,I,err columns only, "
+             "'normal' adds eorigin, eoriname and eextrapol (default), and "
+             "'full' outputs all flags.",
+        choices=['normal', 'sparse', 'full'])
+    group.add_argument(
+        '--allfiles', default=False, action='store_true',
+        help="Output data files for parsed input files as well (default "
+             "is only to output merge and summary files).")
+    group.add_argument(
+        '--stop',
+        help="stop after the given step, "
+             "one of cleanup, fitting, rescaling, classification, merging "
+             "(default: merging)",
+        choices=["cleanup", "fitting", "rescaling",
+                 "classification", "merging"],
+        default="merging")
+    group.add_argument(
+        '--postpone_cleanup', action='store_true', default=False,
+        help="Cleanup step comes after rescaling step (default is False)")
+    group.add_argument(
+        '--npoints', type=int, default=200, metavar="NUM",
+        help="Number of points to output for the mean function. Negative "
+             "values signify to take the same q values as the first data "
+             "file. In that case extrapolation flags are ignored, and "
+             "extrapolation is performed when the data file's q values fall "
+             "outside of the range of accepted data points. Default is "
+             "NUM=200 points.")
     # cleanup
-    group = p.add_argument_group(title="Cleanup (Step 1)",
-                                 description="Discard or keep SAXS curves' "
-                                 "points based on their SNR.\nPoints with an error"
-                                 " of zero are discarded as well")
+    group = p.add_argument_group(
+        title="Cleanup (Step 1)",
+        description="Discard or keep SAXS curves' "
+                    "points based on their SNR.\nPoints with an error"
+                    " of zero are discarded as well")
 
-    group.add_argument('--aalpha', help='type I error (default 0.05 before '
-                     'Bonferroni correction)', type=float, default=0.05,
-                     metavar='ALPHA')
-    group.add_argument('--acutoff', help='when a value after CUT is discarded,'
-                     ' the rest of the curve is discarded as well (default is 0.1)',
-                     type=float, default=0.1, metavar='CUT')
+    group.add_argument(
+        '--aalpha',
+        help='type I error (default 0.05 before Bonferroni correction)',
+        type=float, default=0.05, metavar='ALPHA')
+    group.add_argument(
+        '--acutoff',
+        help='when a value after CUT is discarded,'
+             ' the rest of the curve is discarded as well (default is 0.1)',
+        type=float, default=0.1, metavar='CUT')
     # fitting
-    group = p.add_argument_group(title="Fitting (Step 2)",
-                                 description="Estimate the mean function and the noise level "
-                                 "of each SAXS curve.")
-    group.add_argument('--bmean', help='Defines the most complex mean '
-                     'function that will be tried during model comparison.'
-                     " One of Flat (the offset parameter A is optimized), "
-                     "Simple (optimizes A, G and Rg), "
-                     "Generalized (optimizes G, Rg and d), "
-                     "Full (default, optimizes G, Rg, d and s) "
-                     "If --bnocomp is given, will try to fit only with this model",
-                     default="Full",
-                     choices=['Flat', 'Simple', 'Generalized', 'Full'])
-    group.add_argument('--bnocomp', help='Don\'t perform model comparison. '
-                     "Default: perform it.",
-                     action='store_true', default=False)
-    group.add_argument('--baverage', help='Average over all possible parameters '
-                     'instead of just taking the most probable set of parameters. '
-                     'Default is not to perform the averaging.',
-                     action='store_true', default=False)
-    group.add_argument('--blimit_fitting', metavar='NUM', default=-1, type=int,
-                     help='To save resources, set the maximum number of points used in'
-                     'the fitting step. Dataset will be subsampled if it is bigger than'
-                     ' NUM. If NUM=-1 (default), all points will be used.')
-    group.add_argument('--blimit_hessian', metavar='NUM', default=-1, type=int,
-                     help='To save resources, set the maximum number of points used in'
-                     ' the Hessian calculation (model comparison, options --baverage, '
-                     'and --berror ). Dataset will be subsampled if it is bigger than'
-                     'NUM. If NUM=-1 (default), all points will be used.')
-    group.add_argument('--berror', action='store_true', default=False,
-                     help="Compute error bars on all parameters even in case where "
-                     "model comparison was disabled. Involves the computation of a "
-                     "Hessian. Default: no extra computation.")
+    group = p.add_argument_group(
+        title="Fitting (Step 2)",
+        description="Estimate the mean function and the noise level "
+                    "of each SAXS curve.")
+    group.add_argument(
+        '--bmean',
+        help='Defines the most complex mean '
+             'function that will be tried during model comparison.'
+             " One of Flat (the offset parameter A is optimized), "
+             "Simple (optimizes A, G and Rg), "
+             "Generalized (optimizes G, Rg and d), "
+             "Full (default, optimizes G, Rg, d and s) "
+             "If --bnocomp is given, will try to fit only with this model",
+        default="Full", choices=['Flat', 'Simple', 'Generalized', 'Full'])
+    group.add_argument(
+        '--bnocomp',
+        help='Don\'t perform model comparison. Default: perform it.',
+        action='store_true', default=False)
+    group.add_argument(
+        '--baverage',
+        help='Average over all possible parameters '
+             'instead of just taking the most probable set of parameters. '
+             'Default is not to perform the averaging.',
+        action='store_true', default=False)
+    group.add_argument(
+        '--blimit_fitting', metavar='NUM', default=-1, type=int,
+        help='To save resources, set the maximum number of points used in the '
+             'fitting step. Dataset will be subsampled if it is bigger than'
+             ' NUM. If NUM=-1 (default), all points will be used.')
+    group.add_argument(
+        '--blimit_hessian', metavar='NUM', default=-1, type=int,
+        help='To save resources, set the maximum number of points used in'
+             ' the Hessian calculation (model comparison, options --baverage, '
+             'and --berror ). Dataset will be subsampled if it is bigger than'
+             'NUM. If NUM=-1 (default), all points will be used.')
+    group.add_argument(
+        '--berror', action='store_true', default=False,
+        help="Compute error bars on all parameters even in case where "
+             "model comparison was disabled. Involves the computation of a "
+             "Hessian. Default: no extra computation.")
     # rescaling
-    group = p.add_argument_group(title="Rescaling (Step 3)",
-                                 description="Find the most probable scaling factor of all "
-                                 "curves wrt the first curve.")
-    group.add_argument('--creference', default='last', help="Define which "
-                     "input curve the other curves will be rescaled to. Options are "
-                     "first or last (default is last)",
-                     choices=['first', 'last'])
-    group.add_argument('--cmodel', default='normal',
-                     help="Which rescaling model to use to calculate gamma. "
-                     "'normal-offset' for a normal model with offset, "
-                     "'normal' (default) for a normal model with zero offset "
-                     "and 'lognormal' for a lognormal model.",
-                     choices=['normal', 'normal-offset', 'lognormal'])
-    group.add_argument('--cnpoints', type=int, default=200, metavar="NUM",
-                     help="Number of points to use to compute gamma (default 200)")
+    group = p.add_argument_group(
+        title="Rescaling (Step 3)",
+        description="Find the most probable scaling factor of all "
+                    "curves wrt the first curve.")
+    group.add_argument(
+        '--creference', default='last',
+        help="Define which input curve the other curves will be rescaled to. "
+             "Options are first or last (default is last)",
+        choices=['first', 'last'])
+    group.add_argument(
+        '--cmodel', default='normal',
+        help="Which rescaling model to use to calculate gamma. "
+             "'normal-offset' for a normal model with offset, "
+             "'normal' (default) for a normal model with zero offset "
+             "and 'lognormal' for a lognormal model.",
+        choices=['normal', 'normal-offset', 'lognormal'])
+    group.add_argument(
+        '--cnpoints', type=int, default=200, metavar="NUM",
+        help="Number of points to use to compute gamma (default 200)")
     # classification
-    group = p.add_argument_group(title="Classification (Step 4)",
-                                 description="Classify the mean curves by comparing them using "
-                                 "a two-sided two-sample\nstudent t test")
+    group = p.add_argument_group(
+        title="Classification (Step 4)",
+        description="Classify the mean curves by comparing them using "
+                    "a two-sided two-sample\nstudent t test")
     group.add_argument('--dalpha', help='type I error (default 0.05)',
-                     type=float, default=0.05, metavar='ALPHA')
+                       type=float, default=0.05, metavar='ALPHA')
     # merging
-    group = p.add_argument_group(title="Merging (Step 5)",
-                                 description="Collect compatible data and produce best estimate "
-                                 "of mean function")
-    group.add_argument('--eextrapolate', metavar="NUM", help='Extrapolate '
-                     "NUM percent outside of the curve's bounds. Example: if NUM=50 "
-                     "and the highest acceptable data point is at q=0.3, the mean will "
-                     "be estimated up to q=0.45. Default is 0 (just extrapolate at low "
-                     "angle).", type=int, default=0)
-    group.add_argument('--enoextrapolate', action='store_true', default=False,
-                     help="Don't extrapolate at all, even at low angle (default False)")
-    group.add_argument('--emean', help='Which most complex mean function '
-                     'to try for model comparison.'
-                     ' See --bmean. Default is Full',
-                     default="Full", choices=['Simple', 'Generalized', 'Full', 'Flat'])
-    group.add_argument('--enocomp', help='Don\'t perform model comparison, '
-                     'see --bnocomp. Default is not to perform it.',
-                     action='store_true', default=False)
-    group.add_argument('--eaverage', help="Average over all possible parameters "
-                     "instead of just taking the most probable set of parameters. "
-                     "Default is not to perform the averaging.",
-                     action='store_true', default=False)
-    group.add_argument('--elimit_fitting', metavar='NUM', default=-1, type=int,
-                     help='To save resources, set the maximum number of points used in'
-                     ' the fitting step. Dataset will be subsampled if it is bigger than'
-                     ' NUM. If NUM=-1 (default), all points will be used.')
-    group.add_argument('--elimit_hessian', metavar='NUM', default=-1, type=int,
-                     help='To save resources, set the maximum number of points used in'
-                     ' the Hessian calculation (model comparison, options --eaverage, '
-                     'and --eerror ). Dataset will be subsampled if it is bigger than'
-                     'NUM. If NUM=-1 (default), all points will be used.')
-    group.add_argument('--eerror', action='store_true', default=False,
-                     help="Compute error bars on all parameters even in case where "
-                     "model comparison was disabled. Involves the computation of a "
-                     "Hessian. Default: no extra computation.")
+    group = p.add_argument_group(
+        title="Merging (Step 5)",
+        description="Collect compatible data and produce best estimate "
+                    "of mean function")
+    group.add_argument(
+        '--eextrapolate', metavar="NUM",
+        help='Extrapolate NUM percent outside of the curve\'s bounds. '
+             "Example: if NUM=50 and the highest acceptable data point is "
+             "at q=0.3, the mean will be estimated up to q=0.45. Default "
+             "is 0 (just extrapolate at low angle).", type=int, default=0)
+    group.add_argument(
+        '--enoextrapolate', action='store_true', default=False,
+        help="Don't extrapolate at all, even at low angle (default False)")
+    group.add_argument(
+        '--emean',
+        help='Which most complex mean function to try for model comparison.'
+             ' See --bmean. Default is Full',
+        default="Full", choices=['Simple', 'Generalized', 'Full', 'Flat'])
+    group.add_argument(
+        '--enocomp',
+        help='Don\'t perform model comparison, '
+             'see --bnocomp. Default is not to perform it.',
+        action='store_true', default=False)
+    group.add_argument(
+        '--eaverage',
+        help="Average over all possible parameters instead of just "
+             "taking the most probable set of parameters. "
+             "Default is not to perform the averaging.",
+             action='store_true', default=False)
+    group.add_argument(
+        '--elimit_fitting', metavar='NUM', default=-1, type=int,
+        help='To save resources, set the maximum number of points used in'
+             ' the fitting step. Dataset will be subsampled if it is bigger '
+             ' than NUM. If NUM=-1 (default), all points will be used.')
+    group.add_argument(
+        '--elimit_hessian', metavar='NUM', default=-1, type=int,
+        help='To save resources, set the maximum number of points used in'
+             ' the Hessian calculation (model comparison, options --eaverage, '
+             'and --eerror ). Dataset will be subsampled if it is bigger than'
+             'NUM. If NUM=-1 (default), all points will be used.')
+    group.add_argument(
+        '--eerror', action='store_true', default=False,
+        help="Compute error bars on all parameters even in case where "
+             "model comparison was disabled. Involves the computation of a "
+             "Hessian. Default: no extra computation.")
     p.add_argument("file", nargs="+",
                    help="""
 file names to merge. Each file is a 3-column file that contains SAXS data.
@@ -936,14 +976,13 @@ def setup_particles():
 def setup_process(data, subs, maxpoints=-1):
     model, particles, restraints, functions = setup_particles()
     q = [[i] for i in data['q'][::subs]]
-    I = data['I'][::subs]
+    dI = data['I'][::subs]
     err = data['err'][::subs]
     if maxpoints > 0:
-        q, I, err = list(zip(*subsample(q, zip(q, I, err), maxpoints)))
-    gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
-                                              data['N'], functions[
-                                                  'mean'], functions['covariance'],
-                                              particles['sigma2'])
+        q, dI, err = list(zip(*subsample(q, zip(q, dI, err), maxpoints)))
+    gp = IMP.isd.GaussianProcessInterpolation(
+        q, dI, err, data['N'], functions['mean'], functions['covariance'],
+        particles['sigma2'])
     return model, particles, restraints, functions, gp
 
 
@@ -1105,9 +1144,9 @@ def residuals(point, mean, particles, mean_fn, data):
         particles['s'].set_scale(untransform(mx, particles['s']))
     #
     mean_fn.update()
-    retval = (np.array([(I - mean_fn([q])[0]) / err
-                    for q, I, err in zip(data['q'], data['I'], data['err'])
-                     ]) ** 2).sum()
+    retval = (np.array(
+        [(I - mean_fn([q])[0]) / err
+         for q, I, err in zip(data['q'], data['I'], data['err'])]) ** 2).sum()
     return retval
 
 
@@ -1190,8 +1229,8 @@ def find_fit_mean(data, verbose, mean_function):
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
         # only fit guinier region for now
-        dval = particles['d'].get_nuisance()
-        dlo = particles['d'].get_lower()
+        # dval = particles['d'].get_nuisance()
+        # dlo = particles['d'].get_lower()
         dmin = 2 / 3. * (max(data['q']) * particles['Rg'].get_nuisance()) ** 2
         particles['d'].set_lower(dmin)
         particles['d'].set_nuisance(dmin)
@@ -1262,7 +1301,8 @@ def find_fit_all(data, initvals, verbose, mean_function):
     #
     # first find minimum for lambda
     vals = []
-    for lam in np.logspace(np.log(particles['lambda'].get_lower()) / np.log(10), 2, num=100):
+    for lam in np.logspace(np.log(particles['lambda'].get_lower())
+                           / np.log(10), 2, num=100):
         particles['lambda'].set_nuisance(lam)
         ene = sf.evaluate(False)
         vals.append((ene, particles['lambda'].get_nuisance()))
@@ -1277,80 +1317,45 @@ def find_fit_all(data, initvals, verbose, mean_function):
     # refine all particles
     A0 = particles['A'].get_nuisance()
     if mean_function == 'Flat':
-        res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                 np.array([A0, cuf, cvf, clf]),
-                                 lambda *a: target_function(*a)[1],
-                                 args=(
-                                     mean_function,
-                                     particles,
-                                     sf,
-                                     gpr,
-                                     M,
-                                     True),
-                                 gtol=1e-5, maxiter=100, disp=False, full_output=True)
+        res = optimize.fmin_bfgs(
+            lambda *a: target_function(*a)[0],
+            np.array([A0, cuf, cvf, clf]),
+            lambda *a: target_function(*a)[1],
+            args=(mean_function, particles, sf, gpr, M, True),
+            gtol=1e-5, maxiter=100, disp=False, full_output=True)
         Af, cuf, cvf, clf = res[0]
         success = (res[-1] == 0)
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])
         if mean_function == 'Simple':
-            res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                     np.array([A0, mu0, mv0, cuf, cvf, clf]),
-                                     lambda *a: target_function(*a)[1],
-                                     args=(
-                                         mean_function,
-                                         particles,
-                                         sf,
-                                         gpr,
-                                         M,
-                                         True),
-                                     gtol=1e-5, maxiter=100, disp=False, full_output=True)
+            res = optimize.fmin_bfgs(
+                lambda *a: target_function(*a)[0],
+                np.array([A0, mu0, mv0, cuf, cvf, clf]),
+                lambda *a: target_function(*a)[1],
+                args=(mean_function, particles, sf, gpr, M, True),
+                gtol=1e-5, maxiter=100, disp=False, full_output=True)
             Af, muf, mvf, cuf, cvf, clf = res[0]
             success = (res[-1] == 0)
         else:
             mw0 = transform(particles['d'])
             if mean_function == 'Generalized':
-                res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                         np.array(
-                                             [A0,
-                                              mu0,
-                                              mv0,
-                                              mw0,
-                                              cuf,
-                                              cvf,
-                                              clf]),
-                                         lambda *a: target_function(*a)[1],
-                                         args=(
-                                             mean_function,
-                                             particles,
-                                             sf,
-                                             gpr,
-                                             M,
-                                             True),
-                                         gtol=1e-5, maxiter=100, disp=False, full_output=True)
+                res = optimize.fmin_bfgs(
+                    lambda *a: target_function(*a)[0],
+                    np.array([A0, mu0, mv0, mw0, cuf, cvf, clf]),
+                    lambda *a: target_function(*a)[1],
+                    args=(mean_function, particles, sf, gpr, M, True),
+                    gtol=1e-5, maxiter=100, disp=False, full_output=True)
                 Af, muf, mvf, mwf, cuf, cvf, clf = res[0]
                 success = (res[-1] == 0)
             else:
                 mx0 = transform(particles['s'])
-                res = optimize.fmin_bfgs(lambda *a: target_function(*a)[0],
-                                         np.array(
-                                             [A0,
-                                              mu0,
-                                              mv0,
-                                              mw0,
-                                              mx0,
-                                              cuf,
-                                              cvf,
-                                              clf]),
-                                         lambda *a: target_function(*a)[1],
-                                         args=(
-                                             mean_function,
-                                             particles,
-                                             sf,
-                                             gpr,
-                                             M,
-                                             True),
-                                         gtol=1e-5, maxiter=100, disp=False, full_output=True)
+                res = optimize.fmin_bfgs(
+                    lambda *a: target_function(*a)[0],
+                    np.array([A0, mu0, mv0, mw0, mx0, cuf, cvf, clf]),
+                    lambda *a: target_function(*a)[1],
+                    args=(mean_function, particles, sf, gpr, M, True),
+                    gtol=1e-5, maxiter=100, disp=False, full_output=True)
                 Af, muf, mvf, mwf, mxf, cuf, cvf, clf = res[0]
                 success = (res[-1] == 0)
                 particles['s'].set_nuisance(untransform(mxf, particles['s']))
@@ -1375,15 +1380,6 @@ def find_fit_all(data, initvals, verbose, mean_function):
             if err < 0 or np.isnan(err) or np.isinf(err):
                 ene = np.inf
                 break
-    #global ctr
-    #fl=open('fit_%d.dat' % ctr, 'w')
-    # for q,I,err in zip(data['q'],data['I'],data['err']):
-    #    Ith = gp.get_posterior_mean([q])
-    #    errth = gp.get_posterior_covariance([q],[q])
-    #    mth = functions['mean']([q])[0]
-    #    fl.write('\t'.join(['%G' % i for i in [q,I,err,Ith,errth,mth]]))
-    #    fl.write('\n')
-    # ctr+=1
     return newvals, ene
 
 
@@ -1402,7 +1398,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     8 MP - Np/2*log(2Pi) + 1/2*log(det(H)) (minus log bayes factor)
     """
     model, particles, restraints, functions, gp = \
-             setup_process(data, 1, maxpoints=maxpoints)
+        setup_process(data, 1, maxpoints=maxpoints)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(model, gp)
     restraints.append(gpr)
     sf = IMP.core.RestraintsScoringFunction(restraints)
@@ -1510,9 +1506,11 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
     if not (False in map(np.isinf, [free_energies[f][8] for f in functions])):
         raise FittingError("Error while fitting! All Bayes factors are "
                            "undefined.\n"
-                           "Change initial parameters or disable model comparison.")
+                           "Change initial parameters or disable "
+                           "model comparison.")
     minf = sorted([(free_energies[i][8], i) for i in functions if not
-                   (np.isnan(free_energies[i][8]) or np.isinf(free_energies[i][8]))])[0][1]
+                   (np.isnan(free_energies[i][8])
+                    or np.isinf(free_energies[i][8]))])[0][1]
     return minf, param_vals[minf], free_energies
 
 
@@ -1526,7 +1524,6 @@ def create_intervals_from_data(profile, flag):
         raise KeyError("No such flag: %s" % flag)
     data = profile.get_data(colwise=True)
     new = True
-    interval = []
     oldb = None
     oldval = None
     for q, b in zip(data['q'], data[flag]):
@@ -1575,7 +1572,8 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
                     mat = 4
                 except linalg.LinAlgError:
                     Sigma5 = np.zeros(Sigma1.shape)
-                    Sigma5[np.diag_indices_from(Sigma5)] = abs(Sigma1.diagonal())
+                    Sigma5[np.diag_indices_from(Sigma5)] \
+                        = abs(Sigma1.diagonal())
                     Scho = linalg.cho_factor(Sigma5)
                     mat = 5
 
@@ -1588,7 +1586,8 @@ def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
         uso = np.dot(Su, I0)
         usj = np.dot(Su, J)
         jsj = np.dot(J.transpose(), Sj)
-        c = ((M * osj + usu * osj - uso * usj) / (uso * jsj - usj * osj)).item()
+        c = ((M * osj + usu * osj - uso * usj)
+             / (uso * jsj - usj * osj)).item()
         gamma = (uso / (M + usu + c * usj)).item()
         return gamma, c, mat
     elif normal:
@@ -1628,8 +1627,8 @@ def write_individual_profile(prof, qvals, args):
     if args.postpone_cleanup or args.stop != "cleanup":
         if args.npoints > 0:
             prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
-                            header=args.header, average=args.eaverage, num=args.npoints,
-                            flags=mflags)
+                            header=args.header, average=args.eaverage,
+                            num=args.npoints, flags=mflags)
         else:
             qvalues = prof.get_data(colwise=True)['q']
             qmin = min(qvalues)
@@ -1637,8 +1636,8 @@ def write_individual_profile(prof, qvals, args):
             qvalues = qvals[np.where(qvals >= qmin)]
             qvalues = qvalues[np.where(qvalues <= qmax)]
             prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
-                            header=args.header, average=args.eaverage, qvalues=qvalues,
-                            flags=mflags)
+                            header=args.header, average=args.eaverage,
+                            qvalues=qvalues, flags=mflags)
 
 
 def write_merge_profile(merge, qvals, args):
@@ -1664,9 +1663,9 @@ def write_merge_profile(merge, qvals, args):
         if args.verbose > 2:
             print(" mean ", end=' ')
         merge.write_mean(merge.get_filename(), bool_to_int=True,
-                         dir=args.destdir, qmin=qmin, qmax=qmax, header=args.header,
-                         flags=mflags, num=args.npoints, average=args.eaverage,
-                         verbose=(args.verbose > 2))
+                         dir=args.destdir, qmin=qmin, qmax=qmax,
+                         header=args.header, flags=mflags, num=args.npoints,
+                         average=args.eaverage, verbose=(args.verbose > 2))
     else:
         if args.verbose > 2:
             print(" mean ", end=' ')
@@ -1674,7 +1673,8 @@ def write_merge_profile(merge, qvals, args):
         qvalues = qvals[np.where(qvalues <= qmax)]
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                          dir=args.destdir, qvalues=qvalues, header=args.header,
-                         flags=mflags, average=args.eaverage, verbose=(args.verbose > 2))
+                         flags=mflags, average=args.eaverage,
+                         verbose=(args.verbose > 2))
 
 
 def get_hessian_stats(profile, nmax):
@@ -1737,12 +1737,13 @@ def write_summary_file(merge, profiles, args):
                 else:
                     name = i
                 fl.write("   %s : %d\t%f\t%f\t%f\t%f\t%f\n" %
-                        (name, merge.bayes[i][0], merge.bayes[i][8] / np.log(10),
-                            merge.bayes[i][4], merge.bayes[i][5],
-                            -2 * merge.bayes[i][5]
-                         + merge.bayes[i][0] * np.log(
+                         (name, merge.bayes[i][0],
+                          merge.bayes[i][8] / np.log(10),
+                          merge.bayes[i][4], merge.bayes[i][5],
+                          -2 * merge.bayes[i][5]
+                          + merge.bayes[i][0] * np.log(
                              len(merge.get_raw_data())),
-                            -2 * merge.bayes[i][5] + 2 * merge.bayes[i][0]))
+                          -2 * merge.bayes[i][5] + 2 * merge.bayes[i][0]))
             fl.write("  Model Comparison : best model\n")
             fl.write("   Name : %s\n" % merge.mean)
             fl.write("   Number of parameters : %d\n" %
@@ -1847,14 +1848,15 @@ def write_summary_file(merge, profiles, args):
         else:
             fl.write("  4. Classification\n" +
                      "   Number of valid points: %d \n" % len(data['q']) +
-                     "   Data range: %.5f %.5f \n" % (data['q'][0], data['q'][-1]))
+                     "   Data range: %.5f %.5f \n"
+                     % (data['q'][0], data['q'][-1]))
         fl.write("\n")
     # command-line arguments
     fl.write("List of all options used for the merge:\n")
     fl.write(' name (type) = "value"\n')
     for name in [i for i in dir(args) if
                  (not i.startswith('_'))
-                 and (not i in ['ensure_value', 'read_file', 'read_module'])]:
+                 and (i not in ['ensure_value', 'read_file', 'read_module'])]:
         fl.write(" %s " % name)
         val = getattr(args, name)
         fl.write("(%s)" % type(val).__name__)
@@ -1866,10 +1868,7 @@ def reorder_profiles(profiles):
     criterion is increasing I(0) at constant noise level
     """
     Izeros = []
-    # fl=open(profiles[0].get_filename().split('/')[-2]+'.txt','w')
-    #fl.write("id name Izero mnoise Izero/mnoise Rg G\n")
     for i, p in enumerate(profiles):
-        #gamma = p.get_gamma()
         data = p.get_data(filter='agood', colwise=True)
         Rg, Izero = get_guinier_fit(data)
         mnoise = np.median(data['err'])
@@ -1901,17 +1900,18 @@ def remove_redundant(profiles, verbose=0):
         pbye = profiles.pop(i)
         data.pop(i)
         if verbose > 0:
-            print("    removed profile %d (%s) because it is redundant" % \
-                (i, os.path.basename(pbye.filename)))
+            print("    removed profile %d (%s) because it is redundant"
+                  % (i, os.path.basename(pbye.filename)))
     if len(profiles) <= 1:
         return profiles
     # map noise levels to profiles
-    noiselevels = sorted([(np.median(p['err']), i) for i, p in enumerate(data)])
+    noiselevels = sorted([(np.median(p['err']), i)
+                          for i, p in enumerate(data)])
     n2p = [i[1] for i in noiselevels]  # n2p[-1] is noisiest profile
     dbest = data[n2p[0]]
     # get median distance between q values
     qdist = np.median([dbest['q'][i + 1] - dbest['q'][i]
-                    for i in range(len(dbest['q']) - 1)])
+                      for i in range(len(dbest['q']) - 1)])
     for p in n2p[1:]:
         prof = profiles[p]
         dat = data[p]
@@ -1945,7 +1945,7 @@ def write_fit(data, initvals, outfile, mean_function, npoints=200):
     fl = open(outfile, 'w')
     fl.write("#q I err gp sd gp_mean\n")
     model, particles, restraints, functions, gp = \
-              setup_process(data, 1, jitter=0.)
+        setup_process(data, 1, jitter=0.)
     for p, v in initvals.items():
         particles[p].set_nuisance(v)
     qs, Is, errs = data['q'], data['I'], data['err']
@@ -1967,7 +1967,8 @@ def initialize():
     args.filenames = filenames
     args.Nreps = Nreps
     scale = get_global_scaling_factor(filenames[-1])
-    profiles = list(map(create_profile, filenames, Nreps, [scale] * len(filenames)))
+    profiles = list(map(create_profile, filenames, Nreps,
+                        [scale] * len(filenames)))
     return profiles, args
 
 
@@ -2006,7 +2007,7 @@ def cleanup(profiles, args):
             pval, t = ttest_one(I, err, N)[0:2]
             if pval > alpha / M or had_outlier:  # the point is invalid
                 p.set_flag(id, 'agood', False)
-                if q >= q_cutoff and had_outlier == False:
+                if q >= q_cutoff and not had_outlier:
                     had_outlier = True
             else:
                 p.set_flag(id, 'agood', True)
@@ -2015,11 +2016,10 @@ def cleanup(profiles, args):
         if args.remove_noisy:
             data = p.get_data(filter="agood", colwise=True)
             if len(data) == 0:
-                print("Warning: all points in file %s have been discarded"\
-                    " on cleanup" % os.path.basename(p.filename))
+                print("Warning: all points in file %s have been discarded"
+                      " on cleanup" % os.path.basename(p.filename))
                 continue
             med = np.median(data['err'])
-            ids = []
             for datum in p.get_data(filter="agood"):
                 id, q, I, err = datum[:4]
                 if err > 20 * med:
@@ -2027,13 +2027,12 @@ def cleanup(profiles, args):
                     p.set_flag(id, 'apvalue', -1)
         data = p.get_data(filter="agood", colwise=True)
         if data == {}:
-            print("Warning: all points in file %s have been discarded"\
-                " on cleanup" % os.path.basename(p.filename))
+            print("Warning: all points in file %s have been discarded"
+                  " on cleanup" % os.path.basename(p.filename))
             continue
         qvals = data['q']
         if verbose > 2:
-            print("\tqmin = %.3f\tqmax = %.3f" % \
-                (qvals[0], qvals[-1]))
+            print("\tqmin = %.3f\tqmax = %.3f" % (qvals[0], qvals[-1]))
         elif verbose == 2:
             print("")
         good_profiles.append(p)
@@ -2066,15 +2065,16 @@ def fitting(profiles, args):
             data = p.get_data(colwise=True, maxpoints=maxpointsF)
         if verbose > 1:
             if len(data['q']) == maxpointsF:
-                print(" (subsampled fitting: %d points) " % maxpointsF, end=' ')
+                print(" (subsampled fitting: %d points) "
+                      % maxpointsF, end=' ')
             if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
-                print(" (subsampled hessian: %d points) " % maxpointsH, end=' ')
+                print(" (subsampled hessian: %d points) "
+                      % maxpointsH, end=' ')
         data['N'] = p.get_Nreps()
-        mean, initvals, bayes = find_fit(data, verbose,
-                                         model_comp=model_comp, model_comp_maxpoints=maxpointsH,
-                                         mean_function=mean_function)
-        model, particles, restraints, functions, gp = \
-                           setup_process(data, 1)
+        mean, initvals, bayes = find_fit(
+            data, verbose, model_comp=model_comp,
+            model_comp_maxpoints=maxpointsH, mean_function=mean_function)
+        model, particles, restraints, functions, gp = setup_process(data, 1)
         for part, v in initvals.items():
             particles[part].set_nuisance(v)
         if bayes:
@@ -2158,21 +2158,6 @@ def rescaling(profiles, args):
                                      pvalues['I'],
                                      pcov, normal=use_normal,
                                      offset=use_offset))
-        #fl=open('rescale_%d.npy' % ctr, 'w')
-        #import cPickle
-        # cPickle.dump([pvalues,prefvalues],fl)
-        # fl.close()
-        #fl=open('rescale_%d.dat' % ctr, 'w')
-        # for i in xrange(len(pvalues['q'])):
-        #    fl.write("%s " % pvalues['q'][i])
-        #    fl.write("%s " % pvalues['I'][i])
-        #    fl.write("%s " % pvalues['err'][i])
-        #    fl.write("%s " % pvalues['q'][i])
-        #    fl.write("%s " % (gammas[-1][0]*pvalues['I'][i]))
-        #    fl.write("%s " % (gammas[-1][0]*pvalues['err'][i]))
-        #    fl.write("%s " % prefvalues['q'][i])
-        #    fl.write("%s " % prefvalues['I'][i])
-        #    fl.write("%s\n" % prefvalues['err'][i])
     # set gammas wrt reference
     if reference == 'first':
         gr = gammas[0][0]
@@ -2187,7 +2172,8 @@ def rescaling(profiles, args):
         p.set_gamma(gamma)
         p.set_offset(c)
         if verbose > 1:
-            print("   ", os.path.basename(p.filename), "   gamma = %.3G" % gamma, end=' ')
+            print("   ", os.path.basename(p.filename),
+                  "   gamma = %.3G" % gamma, end=' ')
             if use_offset:
                 print("   offset = %.3G" % c, end=' ')
             print(" (%d)" % mat)
@@ -2263,8 +2249,8 @@ def classification(profiles, args):
         name = os.path.basename(profiles[i].get_filename())
         profiles.pop(i)
         if verbose > 1:
-            print("   All points of profile %d (%s) were discarded" % \
-                (i, name))
+            print("   All points of profile %d (%s) were discarded"
+                  % (i, name))
     # remove redundant data if required
     if args.remove_redundant:
         if verbose > 0:
@@ -2275,8 +2261,8 @@ def classification(profiles, args):
 
 def merging(profiles, args):
     """last stage of merge: collect valid data points and fit them
-    Creates a profile that contains all compatible data points. This profile has
-    the following flags:
+    Creates a profile that contains all compatible data points.
+    This profile has the following flags:
         dselfref, drefnum, drefname (see above)
         eorigin : profile index from which this point originates
         eoriname : associated filename
@@ -2309,11 +2295,6 @@ def merging(profiles, args):
         data = p.get_data(filter='dgood', colwise=True)
         if data == {}:  # no good datapoints
             continue
-        #flag_numbers = [p.flag_dict[k]+1 for k in flags_to_keep]
-        # print len(flag_numbers)
-        # cleaned = [[d for j,d in enumerate(dat) if j in flag_numbers]
-        #            + [i,p.filename] for dat in data]
-        # print cleaned
         for k in list(data.keys()):
             if k not in flags_to_keep:
                 data.pop(k)
@@ -2423,6 +2404,7 @@ def main():
             merge, profiles, args = merging(profiles, args)
     # write output
     write_data(merge, profiles, args)
+
 
 if __name__ == "__main__":
     main()
