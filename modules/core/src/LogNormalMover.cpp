@@ -2,7 +2,7 @@
  *  \file LogNormalMover.cpp
  *  \brief A modifier that perturbs a point with a log-normal distribution.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -95,5 +95,7 @@ ModelObjectsTemp LogNormalMover::do_get_inputs() const {
   }
   return ret;
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::LogNormalMover);
 
 IMPCORE_END_NAMESPACE

@@ -2,7 +2,7 @@
  *  \file IMP/core/LogNormalMover.h
  *  \brief A modifier that perturbs a point with a log-normal distribution.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,9 @@
 
 #include <IMP/core/core_config.h>
 #include "MonteCarloMover.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/vector.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -27,6 +30,16 @@ class IMPCOREEXPORT LogNormalMover : public MonteCarloMover {
   FloatKeys keys_;
   Float stddev_;
   algebra::VectorKDs originals_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<MonteCarloMover>(this), pis_, keys_, stddev_);
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // clear originals
+      initialize(pis_, keys_, stddev_);
+    }
+  }
+  IMP_OBJECT_SERIALIZE_DECL(LogNormalMover);
 
   void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
 
@@ -45,6 +58,7 @@ class IMPCOREEXPORT LogNormalMover : public MonteCarloMover {
 
     LogNormalMover(const ParticlesTemp &sc, Float radius);
 #endif
+    LogNormalMover() {}
 
     void set_sigma(Float sigma) {
       IMP_USAGE_CHECK(sigma > 0, "Sigma must be positive");

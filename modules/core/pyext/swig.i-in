@@ -56,14 +56,14 @@ IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials)
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Linear, Linears);
-IMP_SWIG_OBJECT( IMP::core, LogNormalMover, LogNormalMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, LogNormalMover, LogNormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
 IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithLocalOptimization, MonteCarloWithLocalOptimizations);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithBasinHopping, MonteCarloWithBasinHoppings);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
 IMP_SWIG_OBJECT( IMP::core, NeighborsTable, NeighborsTables);
-IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, PairConstraint, PairConstraints);
