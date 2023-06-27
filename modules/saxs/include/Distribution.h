@@ -70,6 +70,7 @@ class Distribution : public std::vector<ValueT> {
  this is distance distribution multiplied by form factors of atoms
 */
 class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<double> {
+  mutable std::vector<double> sqrt_distances_;
 
  public:
   //! Constructor (default)
@@ -77,6 +78,20 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<double> {
 
   //! Constructor from gnom file
   RadialDistributionFunction(const std::string& file_name);
+
+  //! Get square root of distance for each distribution point
+  /** This is cached, and points to internal storage, so should not be used
+      after the distribution is modified or destroyed. */
+  const std::vector<double> &get_square_root_distances() const {
+    size_t sz = size();
+    if (sz > sqrt_distances_.size()) {
+      sqrt_distances_.reserve(sz);
+      for (unsigned int r = sqrt_distances_.size(); r < sz; ++r) {
+        sqrt_distances_.push_back(sqrt(get_distance_from_index(r)));
+      }
+    }
+    return sqrt_distances_;
+  }
 
   //! scale distribution by a constant
   void scale(double c);

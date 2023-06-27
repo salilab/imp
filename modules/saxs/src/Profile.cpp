@@ -825,11 +825,15 @@ void Profile::squared_distribution_2_profile(
   static internal::SincFunction sf(
       sqrt(r_dist.get_max_distance()) * get_max_q(), 0.0001);
 
-  // precompute square roots of distances
-  Vector<double> distances(r_dist.size(), 0.0);
-  for (unsigned int r = 0; r < r_dist.size(); r++) {
-    if (r_dist[r] != 0.0) {
-      distances[r] = sqrt(r_dist.get_distance_from_index(r));
+  // get precomputed square roots of distances
+  const std::vector<double> &distances = r_dist.get_square_root_distances();
+
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int r = 0; r < r_dist.size(); r++) {
+      IMP_INTERNAL_CHECK(
+          std::abs(r_dist.get_distance_from_index(r)
+                   - (distances[r] * distances[r])) < 1e-6,
+          "Cached sqrt distance does not match current distance");
     }
   }
 
