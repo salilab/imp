@@ -841,10 +841,11 @@ void Profile::squared_distribution_2_profile(
   if (beam_profile_ != nullptr && beam_profile_->size() > 0)
     use_beam_profile = true;
 
+  size_t r_size = r_dist.size();
   // iterate over intensity profile
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
-    for (unsigned int r = 0; r < r_dist.size(); r++) {
+    for (unsigned int r = 0; r < r_size; ++r) {
       if (r_dist[r] != 0.0) {
         double dist = distances[r];
         double x = 0.0;
