@@ -19,8 +19,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** Always return a constant value.
- */
+//! Always return a constant value.
 class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   int v_;
 
@@ -48,11 +47,11 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   IMP_OBJECT_METHODS(ConstantClassnamePredicate);
 };
 
-/** Return a unique predicate value for each unordered set of
-   ParticleTypes
-    (see Typed).
-*/
-
+//! Return a unique predicate value for each unordered set of ParticleTypes
+/** When applied to a set of particles that are decorated with the
+    Typed decorator, this returns a value that is a function of all of
+    the types. The order of the particles does not matter.
+ */
 class IMPCOREEXPORT UnorderedTypeClassnamePredicate
     : public ClassnamePredicate {
   friend class cereal::access;
@@ -78,9 +77,11 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
   IMP_OBJECT_METHODS(UnorderedTypeClassnamePredicate);
 };
 
-/** Return a unique predicate value for each ordered classname of
-    ParticleTypes (see Typed).
-*/
+//! Return a unique predicate value for each ordered set of ParticleTypes
+/** When applied to a set of particles that are decorated with the
+    Typed decorator, this returns a value that is a function of all of
+    the types. The order of the particles matters.
+ */
 class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
  private:
   mutable int const* cached_particle_type_ids_table_;
@@ -128,7 +129,7 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   IMP_OBJECT_METHODS(OrderedTypeClassnamePredicate);
 };
 
-/** Return true if all members of the tuple are the same. */
+//! Return true (1) if all members of the tuple are the same.
 class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
@@ -150,7 +151,7 @@ class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
   IMP_OBJECT_METHODS(AllSameClassnamePredicate);
 };
 
-/** Return true with a fixed probability. */
+//! Return true (1) with a fixed probability.
 class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
   double p_;
   mutable boost::uniform_real<double> rng_;

@@ -15,10 +15,11 @@
 #include <IMP/score_functor/distance_pair_score_macros.h>
 IMPCORE_BEGIN_NAMESPACE
 
-/** Score a pair of particles based on the distance between their
-    centers using an arbitrary UnaryFunction. 
+//! Score a pair of particles based on the distance between their centers.
+/** The pairwise distance is converted to a score using a provided
+    UnaryFunction.
 
-    Note: implicitly assumes the scored particles are decorated as XYZR. 
+    Note: implicitly assumes the scored particles are decorated as XYZR.
 
     \see XYZR
     \see SphereDistancePairScore
@@ -34,11 +35,12 @@ IMP_OBJECTS(DistancePairScore, DistancePairScores);
 typedef score_functor::Shift<score_functor::Harmonic> HarmonicDistanceScore;
 #endif
 
-/** Score a pair of particles based on the distance between their centers, using a
-    Harmonic. This is faster than DistancePairScore if you
-    are using a Harmonic.
+//! Score distance between two particle centers using a harmonic function.
+/** Score a pair of particles based on the distance between their centers,
+    using a harmonic function. This is faster than using a regular
+    DistancePairScore combined with a Harmonic UnaryFunction.
 
-    Note: implicitly assumes the scored particles are decorated as XYZR. 
+    Note: implicitly assumes the scored particles are decorated as XYZR.
 
     \see XYZR
     \see SphereDistancePairScore
