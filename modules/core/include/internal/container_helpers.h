@@ -1,6 +1,6 @@
 /**
- *  \file internal/particle_helpers.h
- *  \brief A container for Singletons.
+ *  \file internal/container_helpers.h
+ *  \brief Helper functions for containers and predicates.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
@@ -52,7 +52,7 @@ inline int get_ordered_type_hash
   return ret;
 }
 
-// faster version when done in batch (probably due to faster memore access)
+// faster version when done in batch (probably due to faster memory access)
 inline int get_ordered_type_hash(ParticleIndex pi,
                                  int const* cached_particle_type_ids_table,
                                  int cached_n_particle_types // just for compatibility with D-dimensional template)
@@ -62,7 +62,7 @@ inline int get_ordered_type_hash(ParticleIndex pi,
   return ParticleType(type_id).get_index();
 }
 
-// faster version when done in batch (probably due to faster memore access)
+// faster version when done in batch (probably due to faster memory access)
 template <unsigned int D>
 inline int get_ordered_type_hash
 (const Array<D, ParticleIndex> &pi,
