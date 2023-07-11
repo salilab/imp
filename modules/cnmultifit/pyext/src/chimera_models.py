@@ -2,7 +2,6 @@
 
 __doc__ = "Generate complete models from Chimera transformations file."
 
-import sys
 import IMP
 import IMP.atom
 from IMP import ArgumentParser
@@ -73,6 +72,7 @@ def main():
     args = parse_args()
     run(args.subunit, args.degree, args.transform_file, args.num_models,
         args.output)
+
 
 if __name__ == "__main__":
     main()

@@ -188,7 +188,6 @@ def main():
         pca_matching_thr = resolution * 0.75
     params_fn = args.params
     intermediate_fn = args.med
-    log_fn = "multifit.log"
     output_fn = args.out
     model_fn = args.model
     f = open(params_fn, "w")
@@ -204,6 +203,7 @@ def main():
     f.write(get_surface_data())
     f.write(get_fitting_data(args.numsols))
     f.close()
+
 
 if __name__ == "__main__":
     main()

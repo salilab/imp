@@ -42,5 +42,6 @@ def main():
     if args.vec:
         open(args.vec, 'w').write(" ".join(['%f' % x for x in rmsds]))
 
+
 if __name__ == '__main__':
     main()
