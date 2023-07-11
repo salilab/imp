@@ -231,6 +231,12 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03,
                                delta=0.01)
 
+        # define residue level restraint
+        saxs_restraint = IMP.saxs.Restraint(
+            saxs_particles, exp_profile, IMP.saxs.RESIDUES)
+        score = saxs_restraint.evaluate(False)
+        self.assertAlmostEqual(score, 1.0307, delta=0.01)
+
     def test_background_adjust(self):
         """Test Profile.background_adjust"""
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
