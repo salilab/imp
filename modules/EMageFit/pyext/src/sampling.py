@@ -2,7 +2,6 @@
    Utility functions to handle sampling.
 """
 
-import IMP
 import IMP.algebra as alg
 import IMP.EMageFit.solutions_io as solutions_io
 import IMP.EMageFit.imp_general.io as io
@@ -40,7 +39,7 @@ def create_sampling_grid_3d(diameter, n_axis_points):
     for x, y, z in itertools.product(points, points, points):
         d = (x ** 2. + y ** 2. + z ** 2.) ** .5
         # allow 1% margin. Avoids approximation problems
-        if(d < (1.01 * radius)):
+        if d < (1.01 * radius):
             positions.append(alg.Vector3D(x, y, z))
     return positions
 
@@ -53,9 +52,9 @@ def create_sampling_grid_2d(diameter, n_axis_points):
         will contain n_axis_points, equispaced. The other regions of space will
         contain only the points allowed by the size of the circle.
     """
-    if(diameter < 0):
+    if diameter < 0:
         raise ValueError("create_sampling_grid_2d: Negative diameter.")
-    if(n_axis_points < 1):
+    if n_axis_points < 1:
         raise ValueError("create_sampling_grid_2d: Less than one axis point.")
     radius = diameter / 2.0
     step = diameter / n_axis_points
@@ -65,7 +64,7 @@ def create_sampling_grid_2d(diameter, n_axis_points):
     for x, y in itertools.product(points, points):
         d = (x ** 2. + y ** 2.) ** .5
         # allow 1% margin. Avoids approximation problems
-        if(d < (1.01 * radius)):
+        if d < (1.01 * radius):
             positions.append(alg.Vector3D(x, y, 0.0))
     return positions
 
@@ -102,7 +101,7 @@ class SamplingSchema:
             @param anchor A list of True/False values. If anchor = True,
                     the component is set at (0,0,0) without rotating it.
         """
-        if(n_components < 1):
+        if n_components < 1:
             raise ValueError(
                 "SamplingSchema: Requesting less than 1 components.")
 
@@ -122,8 +121,8 @@ class SamplingSchema:
         """
         if not os.path.exists(fn_database):
             raise IOError("read_from_database: Database file not found. "
-                          "Are you perhaps trying to run the DOMINO optimization without "
-                          "having the database yet?")
+                          "Are you perhaps trying to run the DOMINO "
+                          "optimization without having the database yet?")
 
         db = solutions_io.ResultsDB()
         db.connect(fn_database)

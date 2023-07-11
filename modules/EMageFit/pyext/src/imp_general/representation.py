@@ -31,7 +31,7 @@ def create_assembly_from_pdb(model, fn_pdb, names=False):
     log.debug("Creating assembly from pdb %s,names: %s. Chains %s",
               fn_pdb, names, ids)
     IMP.atom.add_radii(temp)
-    if(names):
+    if names:
         for i, h in enumerate(hchains):
             h.set_name(names[i])
     assembly = IMP.atom.Molecule.setup_particle(temp)
@@ -44,7 +44,7 @@ def create_assembly(model, fn_pdbs, names=False):
     """
     assembly = IMP.atom.Molecule.setup_particle(IMP.Particle(model))
     for i, fn_pdb in enumerate(fn_pdbs):
-        if(names):
+        if names:
             prot = read_component(model, fn_pdb, names[i])
         else:
             prot = read_component(model, fn_pdb)
@@ -104,7 +104,7 @@ def rename_chains(assembly):
     all_chains_as_hierarchies = get_all_chains(m.get_children())
     letters = string.ascii_uppercase
     n_chains = len(all_chains_as_hierarchies)
-    if(len(letters) < n_chains):
+    if len(letters) < n_chains:
         raise ValueError("There are more chains than letter ids")
     ids = letters[0:n_chains]
     for h, c_id in zip(all_chains_as_hierarchies, ids):
@@ -120,8 +120,8 @@ def create_simplified_dna(dna_hierarchy, n_res):
         n_res - Number of residues to use per sphere.
     """
     if not IMP.atom.Chain.get_is_setup(dna_hierarchy):
-        raise TypeError("create_simplified_dna: the hierarchy provided is not a "
-                        "chain.")
+        raise TypeError("create_simplified_dna: the hierarchy provided is "
+                        "not a chain.")
 
     model = dna_hierarchy.get_model()
     ph = IMP.Particle(model)
@@ -129,9 +129,8 @@ def create_simplified_dna(dna_hierarchy, n_res):
     IMP.atom.Chain.setup_particle(ph, "0")
 
     residues = IMP.atom.get_by_type(dna_hierarchy, IMP.atom.RESIDUE_TYPE)
-    l = len(residues)
-    # print "the DNA has ",l,"residues"
-    for i in range(0, l, n_res):
+    lenr = len(residues)
+    for i in range(0, lenr, n_res):
         xyzrs = []
         equivalent_mass = 0.0
         residues_numbers = []
@@ -164,8 +163,8 @@ def get_residue_mass(residue):
         raise TypeError("The argument is not a residue")
     r = IMP.atom.Residue(residue)
     mass = 0.0
-    for l in IMP.atom.get_leaves(r):
-        ms = IMP.atom.Mass(l)
+    for leaf in IMP.atom.get_leaves(r):
+        ms = IMP.atom.Mass(leaf)
         mass += ms.get_residue_mass()
     return mass
 
@@ -191,7 +190,7 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
         component = molecule.get_child(i)
         name = component.get_name()
         rb = components_rbs[i]
-        if(rb.get_name() != get_rb_name(name)):
+        if rb.get_name() != get_rb_name(name):
             raise ValueError("Rigid body and component do not match")
 
         hchains = IMP.atom.get_by_type(component, IMP.atom.CHAIN_TYPE)
@@ -201,8 +200,7 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
         for h in hchains:
             chain = IMP.atom.Chain(h.get_particle())
             coarse_h = None
-            if(name == "DNA"):
-            # print "simplifying DNA"
+            if name == "DNA":
                 coarse_h_particle = create_simplified_dna(h, n_res)
                 coarse_h = IMP.atom.Hierarchy(coarse_h_particle)
             else:
@@ -211,7 +209,6 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
 
             # does not work for DNA
             chain_rb = IMP.atom.create_rigid_body(coarse_h)
-            # chain_rb = IMP.atom.setup_as_rigid_body(coarse_h) # works with DNA
             chain_rb.set_name("sub_rb" + name)
             rb.add_member(chain_rb)
 
@@ -330,7 +327,7 @@ def get_residue_particle(h, chain_id=False, res=1):
         @param res Number of residue in the chain
     """
 #    log.debug("get_residue_particle: chain_id %s, res %s",chain_id, res)
-    if(chain_id):
+    if chain_id:
         s = IMP.atom.Selection(h, chain=chain_id, residue_index=res)
     else:
         s = IMP.atom.Selection(h, residue_index=res)
@@ -339,7 +336,8 @@ def get_residue_particle(h, chain_id=False, res=1):
 
 def get_residue_coordinates(h, chain_id=False, res=1):
     """
-        Get the coordinates of a residue (the coordinates of the first particle)
+        Get the coordinates of a residue (the coordinates of the first
+        particle)
         @param h Hierarchy
         @param chain_id See help for get_residue_particle()
         @param res See help for get_residue_particle()
@@ -386,7 +384,8 @@ def get_nucleic_acid_backbone(hierarchy, backbone='minimal'):
     """
         Returns the atoms in the backbone of the nucleic acid contained
         in the hierarchy.
-        backbone 'minimal' returns the atoms: ["P", "O5'", "C5'", "C4'", "C3'", "O3'"]
+        backbone 'minimal' returns the atoms:
+                 ["P", "O5'", "C5'", "C4'", "C3'", "O3'"]
         backbone 'trace' returns the atoms C4'
     """
 #    log.debug("get_nucleic_acid_backbone")

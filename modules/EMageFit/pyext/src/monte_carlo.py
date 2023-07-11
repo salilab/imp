@@ -4,15 +4,10 @@
 
 import IMP
 import IMP.core as core
-import IMP.atom as atom
 import IMP.em2d as em2d
-import IMP.em as em
 import IMP.algebra as alg
-import IMP.container as container
 import IMP.EMageFit.imp_general.representation as representation
 import IMP.EMageFit.imp_general.io as io
-import sys
-import os
 import time
 import logging
 log = logging.getLogger("MonteCarloParticleSates")
@@ -32,7 +27,7 @@ def set_random_seed(index):
         jobs in the cluster.
         @param index Seed for the random number generator
     """
-    if(index != -1):
+    if index != -1:
         log.debug("Seed for the random number generator: %s", index)
         IMP.random_number_generator.seed(index)
     else:
@@ -87,7 +82,7 @@ class MonteCarloRelativeMoves:
         log.info("Setting movers for subunits")
         self.movers = []
         for is_anchored, rb in zip(self.anchored, self.rbs):
-            if(not is_anchored):
+            if not is_anchored:
                 self.movers.append(core.RigidBodyMover(rb, max_translation,
                                                        max_rotation))
 
@@ -117,8 +112,8 @@ class MonteCarloRelativeMoves:
             i = relative_names.index(rb_id)
             relative_movers[i].set_random_move_probability(
                 self.non_relative_move_prob)
-            rb_rec = representation.get_rigid_body(self.rbs,
-                                                   representation.get_rb_name(d[0]))
+            rb_rec = representation.get_rigid_body(
+                self.rbs, representation.get_rb_name(d[0]))
             rb_rec.set_coordinates_are_optimized(True)
             log.debug("Reference added for %s: %s. ref. frame %s ",
                       rb_id, rb_rec.get_name(), rb_rec)
@@ -128,9 +123,9 @@ class MonteCarloRelativeMoves:
         # anchored nor moved relative to others
         regular_movers = []
         for is_anchored, rb in zip(self.anchored, self.rbs):
-            if(not is_anchored):
+            if not is_anchored:
                 name = rb.get_name()
-                if(not name in relative_names):
+                if name not in relative_names:
                     rb.set_coordinates_are_optimized(True)
                     log.debug("adding a RigidBodyMover for %s", name)
                     mv = core.RigidBodyMover(rb, max_translation, max_rotation)
@@ -160,7 +155,8 @@ class MonteCarloRelativeMoves:
         for i in range(self.cycles):
             log.info("Cycle: %s", i)
             for iters, T, tr, rot in zip(self.iterations, self.temperatures,
-                                         self.max_translations, self.max_rotations):
+                                         self.max_translations,
+                                         self.max_rotations):
                 for rb in self.rbs:
                     log.debug("%s %s", rb.get_name(), rb.get_reference_frame())
                 self.set_movers(tr, rot)
@@ -186,7 +182,8 @@ class MonteCarloRelativeMoves:
         for i in range(self.cycles):
             log.info("Cycle: %s", i)
             for iters, T, tr, rot in zip(self.iterations, self.temperatures,
-                                         self.max_translations, self.max_rotations):
+                                         self.max_translations,
+                                         self.max_rotations):
                 log.debug("BEFORE RELATIVE MOVERS")
                 self.set_relative_movers(tr, rot)
                 for m in self.movers:

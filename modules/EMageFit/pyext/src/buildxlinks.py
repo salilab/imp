@@ -17,6 +17,7 @@ except NameError:
 
 log = logging.getLogger("buildxlinks")
 
+
 class Xlink:
 
     """

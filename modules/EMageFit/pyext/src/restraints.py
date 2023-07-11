@@ -4,12 +4,9 @@
 
 import IMP
 import IMP.core as core
-import IMP.domino as domino
 import IMP.container as container
 import IMP.em2d as em2d
-import IMP.EMageFit.imp_general.representation as representation
 import IMP.atom as atom
-import os
 
 import logging
 
@@ -58,11 +55,11 @@ def get_em2d_restraint(assembly,
     lsc = container.ListSingletonContainer(model, IMP.get_indexes(ps))
     r.set_particles(lsc)
 
-    if (mode == "coarse"):
+    if mode == "coarse":
         r.set_coarse_registration_mode(True)
-    elif (mode == "fast"):
+    elif mode == "fast":
         r.set_fast_mode(n_optimized)
-    elif(mode == "complete"):
+    elif mode == "complete":
         pass
     else:
         raise ValueError("Em2DRestraint mode not recognized")

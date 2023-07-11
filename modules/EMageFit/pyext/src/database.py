@@ -8,7 +8,7 @@ import csv
 import sys
 import logging
 if sys.version_info[0] == 2:
-    input = raw_input
+    input = raw_input  # noqa: F821
 
 log = logging.getLogger("Database")
 
@@ -149,7 +149,7 @@ class Database2:
         """
         try:  # if this fails is because the view already exist
             self.drop_view(view_name)
-        except:
+        except:  # noqa: E722
             pass
         sql_command = 'CREATE VIEW %s AS SELECT * FROM %s WHERE ' % (
             view_name, table_name)
@@ -167,7 +167,7 @@ class Database2:
             n_records):
         try:  # if this fails is because the view already exist
             self.drop_view(view_name)
-        except:
+        except:  # noqa: E722
             pass
         sql_command = """CREATE VIEW %s AS SELECT * FROM %s
                          ORDER BY %s ASC LIMIT %d """ % (view_name, table_name,
@@ -329,11 +329,11 @@ def write_data(data, output_file, delimiter=" "):
 
 
 def get_sql_type_name(data_type):
-    if(data_type == int):
+    if data_type == int:
         return "INT"
-    elif(data_type == float):
+    elif data_type == float:
         return "DOUBLE"
-    elif(data_type == str):
+    elif data_type == str:
         return (
             # 10 is a random number, SQLITE does not chop strings
             "VARCHAR(10)"

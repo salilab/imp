@@ -10,7 +10,7 @@ def argmin(sequence):
     min_value = sequence[0]
     min_index = 0
     for i, s in enumerate(sequence):
-        if(s < min_value):
+        if s < min_value:
             min_value = s
             min_index = i
     return min_value, min_index
@@ -22,7 +22,7 @@ def keymin(dictionary):
     min_key = ks[0]
     min_value = dictionary[min_key]
     for k in ks:
-        if(dictionary[k] < min_value):
+        if dictionary[k] < min_value:
             min_value = dictionary[k]
             min_key = k
     return min_value, min_key
@@ -35,7 +35,7 @@ def argmax(sequence):
     max_value = sequence[0]
     max_index = 0
     for i, s in enumerate(sequence):
-        if(s > max_value):
+        if s > max_value:
             max_value = s
             max_index = i
     return max_value, max_index
@@ -47,7 +47,7 @@ def keymax(dictionary):
     max_key = ks[0]
     min_value = dictionary[max_key]
     for k in ks:
-        if(dictionary[k] > min_value):
+        if dictionary[k] > min_value:
             min_value = dictionary[k]
             max_key = k
     return min_value, max_key
