@@ -6,7 +6,6 @@ import IMP.core
 import IMP.saxs
 import pickle
 import os
-import time
 import io
 
 
@@ -16,22 +15,22 @@ class Tests(IMP.test.TestCase):
         """Check protein profile computation"""
         m = IMP.Model()
 
-        #! read PDB
+        # read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                                IMP.atom.NonWaterNonHydrogenPDBSelector(),
                                True, True)
 
-        #! read experimental profile
+        # read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
         # print 'min_q = ' + str(exp_profile.get_min_q())
         # print 'max_q = ' + str(exp_profile.get_max_q())
         # print 'delta_q = ' + str(exp_profile.get_delta_q())
 
-        #! select particles from the model
+        # select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
-        #! add radius for water layer computation
+        # add radius for water layer computation
         ft = IMP.saxs.get_default_form_factor_table()
         for i in range(0, len(particles)):
             radius = ft.get_radius(particles[i])
@@ -41,14 +40,14 @@ class Tests(IMP.test.TestCase):
         s = IMP.saxs.SolventAccessibleSurface()
         surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
 
-        #! calculate SAXS profile
+        # calculate SAXS profile
         max_q = 0.5
         delta_q = 0.5 / 500
         model_profile = IMP.saxs.Profile(0, max_q, delta_q)
         model_profile.calculate_profile(particles)
         # model_profile.write_SAXS_file('i_single_protein_IMP.txt')
 
-        #! calculate chi-square
+        # calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile, False, 'chi.dat')
         print('Chi = ' + str(chi))
@@ -63,33 +62,39 @@ class Tests(IMP.test.TestCase):
         os.unlink('chilog.dat')
         os.unlink('chilog.fit')
 
-        #! calculate SAXS profile that is good for c1/c2 fitting using calculate_profile_partial
+        # calculate SAXS profile that is good for c1/c2 fitting using
+        # calculate_profile_partial
         model_profile = IMP.saxs.Profile(0, max_q, delta_q)
         model_profile.calculate_profile_partial(particles, surface_area)
 
-        fp = saxs_score.fit_profile(model_profile,
-                                    0.95, 1.12, -2.0, 4.0, False, "chi_fit.dat")
+        fp = saxs_score.fit_profile(model_profile, 0.95, 1.12, -2.0, 4.0,
+                                    False, "chi_fit.dat")
         chi = fp.get_chi_square()
-        print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
+        print('Chi after adjustment of excluded volume and water layer '
+              'parameters = ' + str(chi))
         sio = io.BytesIO()
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.2025, delta=0.01)
         os.unlink('chi_fit.dat')
         os.unlink('chi_fit.fit')
 
-        #! test chi with log intensities
-        chi = (saxs_score_log.fit_profile(model_profile,
-                                          0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_score()
-        print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
+        # test chi with log intensities
+        chi = saxs_score_log.fit_profile(model_profile,
+                                         0.95, 1.12, -2.0, 4.0, False,
+                                         "chilog_fit.dat").get_score()
+        print('ChiLog after adjustment of excluded volume and water layer '
+              'parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
         os.unlink('chilog_fit.dat')
         os.unlink('chilog_fit.fit')
 
-        #! test RatioVolatilityScore
-        vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile);
-        vr = (vr_score.fit_profile(model_profile,
-                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_score()
-        print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
+        # test RatioVolatilityScore
+        vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile)
+        vr = vr_score.fit_profile(model_profile,
+                                  0.95, 1.12, -2.0, 4.0, False,
+                                  "vr_fit.dat").get_score()
+        print('RatioVolatilityScore after adjustment of excluded volume and '
+              'water layer parameters = ' + str(vr))
         self.assertAlmostEqual(vr, 5.70, delta=0.01)
         os.unlink('vr_fit.dat')
         os.unlink('vr_fit.fit')
@@ -97,18 +102,18 @@ class Tests(IMP.test.TestCase):
     def make_restraint(self):
         m = IMP.Model()
 
-        #! read PDB
+        # read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                                IMP.atom.NonWaterNonHydrogenPDBSelector())
 
-        #! read experimental profile
+        # read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
-        #! select particles from the model
+        # select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         print('Atomic level, number of particles ' + str(len(particles)))
 
-        #! calculate SAXS profile
+        # calculate SAXS profile
         model_profile = IMP.saxs.Profile()
         model_profile.calculate_profile(particles)
         return m, particles, exp_profile, model_profile
@@ -117,12 +122,12 @@ class Tests(IMP.test.TestCase):
         """Check saxs restraint"""
         m, particles, exp_profile, model_profile = self.make_restraint()
 
-        #! calculate chi-square
+        # calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
         self.assertAlmostEqual(chi, 0.2916, delta=0.01)
 
-        #! define restraint
+        # define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 0.2916, delta=0.01)
@@ -149,31 +154,29 @@ class Tests(IMP.test.TestCase):
         """Check residue level saxs restraint"""
         m = IMP.Model()
 
-        #! read PDB
+        # read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                                IMP.atom.CAlphaPDBSelector())
 
-        #! read experimental profile
+        # read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
-        #! select particles from the model
+        # select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(particles), 129)
 
-        #! calculate SAXS profile
+        # calculate SAXS profile
         model_profile = IMP.saxs.Profile()
         model_profile.calculate_profile(particles, IMP.saxs.CA_ATOMS)
 
-        #! calculate chi-square
+        # calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
         self.assertAlmostEqual(chi, 1.0307, delta=0.01)
 
-        #! define residue level restraint
+        # define residue level restraint
         saxs_restraint = IMP.saxs.Restraint(
-            particles,
-            exp_profile,
-            IMP.saxs.CA_ATOMS)
+            particles, exp_profile, IMP.saxs.CA_ATOMS)
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 1.0307, delta=0.01)
 
@@ -183,9 +186,9 @@ class Tests(IMP.test.TestCase):
         hierarchies at resolution=1, which have no atom particles
         """
         m = IMP.Model()
-        mdl = IMP.Model() # New model for residue particles only
+        mdl = IMP.Model()  # New model for residue particles only
 
-        #! read PDB (only CA atoms)
+        # read PDB (only CA atoms)
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                                IMP.atom.CAlphaPDBSelector())
 
@@ -200,17 +203,18 @@ class Tests(IMP.test.TestCase):
             vol = IMP.atom.get_volume_from_residue_type(rt)
             mass = IMP.atom.get_mass(rt)
 
-
             # Create new particle in mdl and set up as a Residue
             rp1 = IMP.Particle(mdl)
-            this_res = IMP.atom.Residue.setup_particle(rp1, rt, residue.get_index())
+            this_res = IMP.atom.Residue.setup_particle(
+                rp1, rt, residue.get_index())
 
             # Add radius and shape information
             radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
-            shape = IMP.algebra.Sphere3D(IMP.core.XYZ(ca).get_coordinates(),radius)
-            rp1.set_name("Residue_%i"%residue.get_index())
-            IMP.core.XYZR.setup_particle(rp1,shape)
-            IMP.atom.Mass.setup_particle(rp1,mass)
+            shape = IMP.algebra.Sphere3D(IMP.core.XYZ(ca).get_coordinates(),
+                                         radius)
+            rp1.set_name("Residue_%i" % residue.get_index())
+            IMP.core.XYZR.setup_particle(rp1, shape)
+            IMP.atom.Mass.setup_particle(rp1, mass)
 
             outhiers.append(this_res)
 
