@@ -148,7 +148,7 @@ class Tests(IMP.test.TestCase):
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
-        print('Residue level, number of particles ' + str(len(particles)))
+        self.assertEqual(len(particles), 129)
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
@@ -157,7 +157,7 @@ class Tests(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
-        print('Chi = ' + str(chi))
+        self.assertAlmostEqual(chi, 1.0307, delta=0.01)
 
         #! define residue level restraint
         saxs_restraint = IMP.saxs.Restraint(
@@ -165,7 +165,7 @@ class Tests(IMP.test.TestCase):
             exp_profile,
             IMP.saxs.CA_ATOMS)
         score = saxs_restraint.evaluate(False)
-        print('initial score = ' + str(score))
+        self.assertAlmostEqual(score, 1.0307, delta=0.01)
 
     def test_saxs_residue_particle_restraint(self):
         """Check residue level saxs restraint using
@@ -214,7 +214,8 @@ class Tests(IMP.test.TestCase):
         model_profile.calculate_profile(saxs_particles, IMP.saxs.RESIDUES)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
 
-        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03, delta=0.01)
+        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03,
+                               delta=0.01)
 
     def test_background_adjust(self):
         """Test Profile.background_adjust"""
