@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 import matplotlib.pyplot
-from numpy import *
+import numpy as np
 from IMP.isd.History import History
 
 
@@ -125,7 +125,7 @@ class Analysis:
         range. To plot multiple data at the same time, add them sequentially.
         Takes x axis from the 'step' entry of the first datum. TODO.
         """
-        data = [array(h.get_data(cat, name), dtype=float)
+        data = [np.array(h.get_data(cat, name), dtype=float)
                 for (cat, name) in datums]
         x = h.get_data(datums[0][0], 'step')
         toplot = []
@@ -141,7 +141,7 @@ class Analysis:
         specifying a range. To plot multiple data at the same time, add them
         sequentially.
         """
-        data = [array(h.get_data(*dat), dtype=float)
+        data = [np.array(h.get_data(*dat), dtype=float)
                 for dat in datums]
         matplotlib.pyplot.hist(*data, **kwargs)
         matplotlib.pyplot.grid(True)
@@ -151,9 +151,10 @@ class Analysis:
     def dump(self, h, dest, *args):
         """"dump float data from history h to file dest.
         args can be either strings corresponding to categories, or tuples
-        corresponding to entries of a certain category. Only one counter will be
-        output for the whole dump, it corresponds to the counter of the first
-        entry's category. You can always specify additional counters if needed.
+        corresponding to entries of a certain category. Only one counter will
+        be output for the whole dump, it corresponds to the counter of the
+        first entry's category. You can always specify additional counters
+        if needed.
         """
         # parse args
         cats = []

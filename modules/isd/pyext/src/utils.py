@@ -623,18 +623,18 @@ def make_block(s, length=80, tol=10):
 
 def _make_block(s, length, tol):
 
-    l = s.split(' ')
-    l = [(w, ' ') for w in l]
+    spl = s.split(' ')
+    spl = [(w, ' ') for w in spl]
 
     words = []
-    for ll in l:
+    for ll in spl:
         g = ll[0].split('/')
         g = [w + '/' for w in g]
         g[-1] = g[-1][:-1] + ' '
 
         words += g
 
-    l = []
+    spl = []
     line = ''
 
     for i in range(len(words)):
@@ -653,7 +653,7 @@ def _make_block(s, length, tol):
                     line[1] != ' ':
                 line = line[1:]
 
-            l.append(line)
+            spl.append(line)
             line = word
 
     line = line[:-1]
@@ -661,9 +661,9 @@ def _make_block(s, length, tol):
        line[1] != ' ':
         line = line[1:]
 
-    l.append(line)
+    spl.append(line)
 
-    return l
+    return spl
 
 
 def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,

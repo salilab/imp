@@ -68,7 +68,7 @@ class LogHolder:
                 continue
             # get file category and add to files dict
             category = tail.split('_')[0]
-            if not category in files:
+            if category not in files:
                 files[category] = []
             files[category].append(tail)
         # see if there are multiple files in the same category, and store them
@@ -78,7 +78,7 @@ class LogHolder:
             if len(fnames) > 1 \
                     or os.path.splitext(fnames[0].split('_')[-1])[0].isdigit():
                 # there are multiple files, no need to understand their content
-                if not cat in self.dumpfiles:
+                if cat not in self.dumpfiles:
                     self.dumpfiles[cat] = []
                 for fname in fnames:
                     # parse tail and find index number
@@ -165,11 +165,11 @@ class Demuxer:
         # create needed folders
         if not os.path.isdir(outfolder):
             os.mkdir(outfolder)
-        for l in range(len(self.logs)):
-            fname = os.path.join(outfolder, 'p%d' % l)
+        for log in range(len(self.logs)):
+            fname = os.path.join(outfolder, 'p%d' % log)
             if not os.path.isdir(fname):
                 os.mkdir(fname)
-            self.folders[l] = fname
+            self.folders[log] = fname
         # make sure every log has the same header
         h0 = self.logs[0].get_stats_header()
         for log in self.logs[1:]:
@@ -200,8 +200,10 @@ class Demuxer:
 
     def _write_step_dump(self, stateno, lstep):
         for cat, fname in lstep.get_dumps().items():
-            shutil.copyfile(fname, os.path.join(self.folders[stateno],
-                                                str(stateno) + '_' + cat + fname.split(cat)[1]))
+            shutil.copyfile(fname,
+                            os.path.join(self.folders[stateno],
+                                         str(stateno) + '_' + cat
+                                         + fname.split(cat)[1]))
 
     def _write_traj_rmf(self, infile, instep, outfile, stateno, cat):
         import RMF
@@ -242,7 +244,7 @@ class Demuxer:
 
     def write(self):
         # loop over time steps
-        log_iterators = [list(l.items()) for l in self.logs]
+        log_iterators = [list(log.items()) for log in self.logs]
         print("Demuxing", len(log_iterators), "replicas")
         for idx, steps in enumerate(zip(*log_iterators)):
             if idx % 10 == 0 and idx > 0:
@@ -264,15 +266,16 @@ def get_prefix(folder):
         raise ValueError("stats file not unique, found %d" % len(rval))
     return rval[0].group(1)
 
+
 if __name__ == '__main__':
     if len(sys.argv) == 1 or len(sys.argv) > 4:
         sys.exit("""demux_trajs.py column [infolder [outfolder]]
-        expects r?? folders in infolder and will write p?? folders in outfolder.
-        infolder must contain a _stats.txt file which will contain a header.
-        column must be a substring matching to one of the columns in the
-        _stats.txt files. It will typically be a temperature, or a state number.
-        That column will be used for demuxing. Folders are optional and will be
-        taken as ./ if not indicated.
+        expects r?? folders in infolder and will write p?? folders in
+        outfolder. infolder must contain a _stats.txt file which will contain
+        a header. column must be a substring matching to one of the columns in
+        the _stats.txt files. It will typically be a temperature, or a state
+        number. That column will be used for demuxing. Folders are optional
+        and will be taken as ./ if not indicated.
         """)
     column = sys.argv[1]
     if len(sys.argv) == 3:
