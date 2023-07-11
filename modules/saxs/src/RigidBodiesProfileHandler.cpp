@@ -174,13 +174,19 @@ ModelObjectsTemp RigidBodiesProfileHandler::do_get_inputs() const {
   ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz = pts.size();
   for (unsigned int i = 0; i < sz; ++i) {
-    pts.push_back(atom::Hierarchy(particles_[i]).get_parent());
+    atom::Hierarchy h = atom::Hierarchy(particles_[i]).get_parent();
+    if (h) {
+      pts.push_back(h);
+    }
   }
   for (unsigned int i = 0; i < rigid_bodies_.size(); ++i) {
     pts.insert(pts.end(), rigid_bodies_[i].begin(), rigid_bodies_[i].end());
     for (unsigned int j = 0; j < rigid_bodies_[i].size(); ++j) {
       // add the residue particle since that is needed too
-      pts.push_back(atom::Hierarchy(rigid_bodies_[i][j]).get_parent());
+      atom::Hierarchy h = atom::Hierarchy(rigid_bodies_[i][j]).get_parent();
+      if (h) {
+        pts.push_back(h);
+      }
     }
   }
   return pts;
