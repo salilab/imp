@@ -53,11 +53,15 @@ class Tests(IMP.test.TestCase):
         chi = saxs_score.compute_score(model_profile, False, 'chi.dat')
         print('Chi = ' + str(chi))
         self.assertAlmostEqual(chi, 0.2916, delta=0.01)
+        os.unlink('chi.dat')
+        os.unlink('chi.fit')
 
         saxs_score_log = IMP.saxs.ProfileFitterChiLog(exp_profile)
         chi = saxs_score_log.compute_score(model_profile, False, 'chilog.dat')
         print('Chi log = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0347, delta=0.001)
+        os.unlink('chilog.dat')
+        os.unlink('chilog.fit')
 
         #! calculate SAXS profile that is good for c1/c2 fitting using calculate_profile_partial
         model_profile = IMP.saxs.Profile(0, max_q, delta_q)
@@ -70,12 +74,16 @@ class Tests(IMP.test.TestCase):
         sio = io.BytesIO()
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.2025, delta=0.01)
+        os.unlink('chi_fit.dat')
+        os.unlink('chi_fit.fit')
 
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
                                           0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_score()
         print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
+        os.unlink('chilog_fit.dat')
+        os.unlink('chilog_fit.fit')
 
         #! test RatioVolatilityScore
         vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile);
@@ -83,6 +91,8 @@ class Tests(IMP.test.TestCase):
                                    0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_score()
         print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
         self.assertAlmostEqual(vr, 5.70, delta=0.01)
+        os.unlink('vr_fit.dat')
+        os.unlink('vr_fit.fit')
 
     def make_restraint(self):
         m = IMP.Model()
