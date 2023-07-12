@@ -30,9 +30,9 @@ import socket
 
 
 try:
-    from queue import Queue # python3
+    from queue import Queue  # python3
 except ImportError:
-    from Queue import Queue # python2
+    from Queue import Queue  # python2
 from threading import Thread
 
 debug = False
@@ -76,7 +76,7 @@ def atexit_unregister(func):
 
     try:
         i = exit_funcs.index(func)
-    except:
+    except ValueError:
         return
 
     atexit._exithandlers.pop(i)
@@ -115,8 +115,9 @@ class WatchDog(Thread):
         self._last_ping = x
 
     def run(self):
-        """run the Watchdog thread, which sits in a loop sleeping for timeout/4. at
-        each iteration, and if abs(time() - _last_ping) > timeout, exits.
+        """run the Watchdog thread, which sits in a loop sleeping for
+           timeout/4. at each iteration, and
+           if abs(time() - _last_ping) > timeout, exits.
         """
 
         while not self._stop:
@@ -133,8 +134,8 @@ class WatchDog(Thread):
                 else:
                     val = '%.0f s' % delta
 
-                print('Watchdog: last life sign %s ago; timeout is %d min(s).' % \
-                      (val, self.timeout / 60.))
+                print('Watchdog: last life sign %s ago; timeout is %d min(s).'
+                      % (val, self.timeout / 60.))
 
             if self._last_ping is not None and delta > self.timeout:
 
@@ -176,9 +177,6 @@ class SpinWheel:
         self.state = 0
 
     def update(self, s=''):
-
-        import sys
-
         sys.stdout.write('\r%s%s' % (s, self.symbols[self.state]))
         sys.stdout.flush()
 
@@ -195,24 +193,24 @@ class Pipe(object):
         self.pipe = []
 
     def put(self, x):
-        """if x is subscriptable, insert its contents at the beginning of the pipe.
-        Else insert the element itself.
-        If the pipe is full, drop the oldest element.
+        """If x is subscriptable, insert its contents at the beginning of
+           the pipe. Else insert the element itself.
+           If the pipe is full, drop the oldest element.
         """
 
         try:
             x[0]
             self.pipe = list(x) + self.pipe
 
-        except:
+        except TypeError:
             self.pipe.insert(0, x)
 
         if self.length > 0 and len(self.pipe) > self.length:
             self.pipe = self.pipe[:-1]
 
     def append(self, x):
-        """ x must be a list and will be appended to the end of the pipe, dropping
-        rightmost elements if necessary
+        """x must be a list and will be appended to the end of the pipe,
+           dropping rightmost elements if necessary
         """
 
         self.pipe = (list(x) + self.pipe)[:self.length]
@@ -327,7 +325,7 @@ def read_sequence_file(filename, first_residue_number=1):
     filename = os.path.abspath(filename)
     try:
         f = open(filename)
-    except IOError as msg:
+    except IOError:
         raise IOError('Could not open sequence file "%s".' % filename)
     seq = f.read().upper()
 
@@ -337,21 +335,24 @@ def read_sequence_file(filename, first_residue_number=1):
         # get rid of first line and get sequence in one line
         seq = ''.join(seq[pos + 1:].split())
         names = [code[i] for i in seq]
-        numbers = list(range(first_residue_number, first_residue_number + len(seq)))
+        numbers = list(range(first_residue_number,
+                             first_residue_number + len(seq)))
         return dict(list(zip(numbers, names)))
     else:
-        l = seq.split()
-        for x in l:
-            if not x in list(code.values()):
+        spl = seq.split()
+        for x in spl:
+            if x not in code.values():
                 print('Warning: unknown 3-letter code: %s' % x)
-        numbers = list(range(first_residue_number, first_residue_number + len(l)))
-        return dict(list(zip(numbers, l)))
+        numbers = list(range(first_residue_number,
+                             first_residue_number + len(spl)))
+        return dict(list(zip(numbers, spl)))
 
 # Yannick
 
 
 def check_residue(a, b):
-    "checks whether residue codes a and b are the same, doing necessary conversions"
+    """checks whether residue codes a and b are the same, doing necessary
+       conversions"""
     a = a.upper()
     b = b.upper()
     if len(a) == 1:
@@ -407,7 +408,7 @@ def Dump(this, filename, gzip=0, mode='w', bin=1):
 
     filename = os.path.expanduser(filename)
 
-    if not mode in ['w', 'a']:
+    if mode not in ['w', 'a']:
         raise ValueError("mode has to be 'w' (write) or 'a' (append)")
 
     if gzip:
@@ -437,7 +438,7 @@ def Load(filename, gzip=0, force=0):
         import gzip
         try:
             f = gzip.GzipFile(filename)
-        except:
+        except IOError:
             return
 
     f = open(filename, 'rb')
@@ -479,7 +480,6 @@ def Load(filename, gzip=0, force=0):
 def get_pdb(pdb_entry, dest='.', verbose_level=0):
 
     import ftplib
-    from tempfile import mktemp
     import os
 
     url = 'ftp.ebi.ac.uk'
@@ -555,7 +555,7 @@ def get_coordinates(universe, E, indices=None, atom_names=('CA',),
         atom_index_list, index_map = compile_index_list(chain, atom_names,
                                                         residue_index_list)
 
-    l = []
+    coord = []
 
     for i in indices:
 
@@ -563,9 +563,9 @@ def get_coordinates(universe, E, indices=None, atom_names=('CA',),
 
         X = array(take(universe.X, atom_index_list))
 
-        l.append(X)
+        coord.append(X)
 
-    return array(l)
+    return array(coord)
 
 
 def map_angles(angles, period=None):
@@ -614,11 +614,11 @@ def indent(lines, prefix):
 
 def make_block(s, length=80, tol=10):
     blocks = s.split('\n')
-    l = []
+    spl = []
     for block in blocks:
-        l += _make_block(block, length, tol)
+        spl += _make_block(block, length, tol)
 
-    return l
+    return spl
 
 
 def _make_block(s, length, tol):

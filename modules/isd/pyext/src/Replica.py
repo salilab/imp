@@ -5,7 +5,6 @@
 from __future__ import print_function, division
 import numpy as np
 from numpy.random import random, randint
-from numpy.random import shuffle
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
 
 
@@ -120,7 +119,6 @@ class ReplicaTracker:
         return pairslist
 
     def gen_pairs_list_conv(self):
-        nreps = self.nreps
         rep = self.stirred['replica']
         state = self.statenums[rep]
         pair = sorted([state, state + 2 * self.stirred['dir'] - 1])
@@ -166,7 +164,7 @@ class ReplicaTracker:
         for (s1, s2) in pairslist:
             metrop[(s1, s2)] = \
                 min(1, np.exp((old_ene[s2] - old_ene[s1]) *
-                           (self.inv_temps[s2] - self.inv_temps[s1])))
+                              (self.inv_temps[s2] - self.inv_temps[s1])))
         return metrop
 
     def try_exchanges(self, plist, metrop):
