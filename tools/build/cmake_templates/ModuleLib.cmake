@@ -28,17 +28,6 @@ set_source_files_properties(${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
 if(DEFINED IMP_%(name)s_IS_CUDA)
   #  FILE(GLOB IMP_%(name)s_CUDA_SOURCES "${CMAKE_SOURCE_DIR}/modules/%(name)s/src/*.cu")
   message(STATUS "Setting up cuda: " "${cudafiles}")
-  FIND_PACKAGE(CUDA REQUIRED)
-  INCLUDE(FindCUDA)
-  LIST(APPEND CUDA_NVCC_FLAGS --compiler-options -fno-strict-aliasing -lineinfo -use_fast_math -Xptxas -dlcm=cg)
-  LIST(APPEND CUDA_NVCC_FLAGS -lcufft)
-  # Support for the Fermi architecture was removed in CUDA toolkit 9
-  IF (CUDA_VERSION_MAJOR LESS 9)
-    LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_20,code=sm_20)
-  ENDIF()
-  LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_30,code=sm_30)
-  LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_35,code=sm_35)
-  LIST(APPEND CUDA_NVCC_FLAGS -arch sm_37)
   set(sources ${cppfiles} ${cudafiles} )
   CUDA_ADD_LIBRARY(IMP.%(name)s-lib ${gensources} ${genheaders}
     ${headers} ${sources} ${cudasources}
@@ -47,9 +36,6 @@ if(DEFINED IMP_%(name)s_IS_CUDA)
     ${IMP_LIB_TYPE}
     )
   target_link_libraries(IMP.%(name)s-lib ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY} ${CUDA_cufft_LIBRARY})
-  message(STATUS "CUDA libraries: " "${CUDA_LIBRARIES}")
-  message(STATUS "CUDA curand library: " "${CUDA_curand_LIBRARY}")
-  message(STATUS "CUDA cufft library: " "${CUDA_cufft_LIBRARY}")
 elseif(DEFINED IMP_IS_PER_CPP OR DEFINED IMP_%(name)s_IS_PER_CPP)
   set(sources ${cppfiles})
   add_library(IMP.%(name)s-lib  ${IMP_LIB_TYPE} ${gensources} ${genheaders}
