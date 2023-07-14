@@ -152,11 +152,9 @@ endif()
 
 string(REGEX MATCHALL "[a-zA-Z0-9_]+" cudalist "${IMP_CUDA}")
 foreach(m ${cudalist})
-  string(TOUPPER ${m} M)
   message(STATUS ${m} " is cuda lib")
   set(IMP_${m}_IS_CUDA 1)
   set(IMP_CUDA_REQUESTED 1)
-  add_definitions( -DIMP_${M}_CUDA_LIB )
 endforeach(m)
 
 if(WIN32)
