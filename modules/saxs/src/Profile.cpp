@@ -1,7 +1,7 @@
 /**
  *  \file Profile.cpp   \brief A class for profile storing and computation
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Profile.h>
@@ -9,6 +9,9 @@
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/exp_function.h>
 #include <IMP/saxs/internal/sinc_function.h>
+#ifdef IMP_SAXS_CUDA_LIB
+#include <IMP/saxs/internal/cuda_helpers.h>
+#endif
 
 #include <IMP/math.h>
 #include <IMP/core/XYZ.h>
@@ -840,6 +843,15 @@ void Profile::squared_distribution_2_profile(
   bool use_beam_profile = false;
   if (beam_profile_ != nullptr && beam_profile_->size() > 0)
     use_beam_profile = true;
+
+#ifdef IMP_SAXS_CUDA_LIB
+  if (!use_beam_profile) {
+    IMPcuda::saxs::internal::squared_distribution_2_profile_cuda(
+           r_dist.data(), q_.data(), distances.data(), intensity_.data(),
+           modulation_function_parameter_, r_dist.size(), size());
+    return;
+  }
+#endif
 
   size_t r_size = r_dist.size();
   // iterate over intensity profile
