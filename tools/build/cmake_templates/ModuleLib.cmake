@@ -50,7 +50,7 @@ if(DEFINED IMP_%(name)s_IS_CUDA)
   message(STATUS "CUDA libraries: " "${CUDA_LIBRARIES}")
   message(STATUS "CUDA curand library: " "${CUDA_curand_LIBRARY}")
   message(STATUS "CUDA cufft library: " "${CUDA_cufft_LIBRARY}")
-elseif(DEFINED IMP_%(name)s_IS_PER_CPP)
+elseif(DEFINED IMP_IS_PER_CPP OR DEFINED IMP_%(name)s_IS_PER_CPP)
   set(sources ${cppfiles})
   add_library(IMP.%(name)s-lib  ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
