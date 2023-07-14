@@ -25,7 +25,7 @@ endif()
 set_source_files_properties(${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
   PROPERTIES GENERATED 1)
 
-if(DEFINED IMP_%(name)s_IS_CUDA)
+if(DEFINED IMP_%(name)s_IS_CUDA AND NOT "${cudafiles}" STREQUAL "")
   #  FILE(GLOB IMP_%(name)s_CUDA_SOURCES "${CMAKE_SOURCE_DIR}/modules/%(name)s/src/*.cu")
   message(STATUS "Setting up cuda: " "${cudafiles}")
   set(sources ${cppfiles} ${cudafiles} )
