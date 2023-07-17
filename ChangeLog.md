@@ -1,6 +1,10 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- We no longer provide packages for Ubuntu 18.04 LTS (Bionic Beaver), as it
+  reached end of life in May 2023.
+
 # 2.19.0 - 2023-06-22 # {#changelog_2_19_0}
 - Most IMP Value and Object types can now be serialized (or pickled in Python).
   For example, this can be used to save the current state of an IMP::Model
