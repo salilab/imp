@@ -692,17 +692,15 @@ class TestCase(unittest.TestCase):
         sys.argv = [filename]
         vars = {}
         try:
-            try:
-                exec(open(filename).read(), vars)
-            # Catch sys.exit() called from within the example; a non-zero exit
-            # value should cause the test case to fail
-            except SystemExit as e:
-                if e.code != 0 and e.code is not None:
-                    raise _FatalError(
-                        "Example exit with code %s" % str(e.code))
+            exec(open(filename).read(), vars)
+        # Catch sys.exit() called from within the example; a non-zero exit
+        # value should cause the test case to fail
+        except SystemExit as e:
+            if e.code != 0 and e.code is not None:
+                raise _FatalError(
+                    "Example exit with code %s" % str(e.code))
         finally:
-            # Restore sys.path (note that Python 2.3 does not allow
-            # try/except/finally, so we need to use nested trys)
+            # Restore sys.path
             sys.path = oldsyspath
             sys.argv = olssysargv
 
