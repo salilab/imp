@@ -151,7 +151,7 @@ class SAXSProfile:
             name which should be used to filter the data before returning it.
             Data is returned only if all of the provided flags are True.
             colwise : instead of returning a list of tuples for each data
-                      point, return a dictionnary with flag names as keys.
+                      point, return a dictionary with flag names as keys.
             maxpoints : only return at most N points, subsampling if necessary.
         """
         if 'filter' in kwargs:
@@ -1540,7 +1540,7 @@ def create_intervals_from_data(profile, flag):
 
 
 def rescale_curves(I0, I1, Sigma1, normal=False, offset=False):
-    """Find gamma and (optionnally) c so that
+    """Find gamma and (optionally) c so that
     normal model: I0 = gamma*(I1 + c)
     lognormal model log I0 = log(gamma*I1)
     if offset==False we have c=0

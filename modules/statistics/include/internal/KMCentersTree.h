@@ -30,7 +30,7 @@ class KMCentersTree {
    \param[in] centers the centers
    /parm[in]  bb_lo Bounding box left-bottom coordinates (default: compute
    bounding box from points).
-   /parm[in]  bb_hi Bounding box right_upper coordiantes (default: compute
+   /parm[in]  bb_hi Bounding box right_upper coordinates (default: compute
    bounding box from points).
    /note As long as the number of points is nonzero, or if a bounding box
          is provided, then the constructor will build a tree with at least one
@@ -164,7 +164,7 @@ class KMCentersTree {
   //! Find the bounding rectangle of points represented by
   //! data_points_[p_id_[i]] i in [start_ind,end_ind]
   KMRectangle *bounding_rectangle(int start_ind, int end_ind);
-  //! Find the lenght of bounding rectangle of points
+  //! Find the length of bounding rectangle of points
   //! represented by data_points_[p_id_[i]] i in [start_ind,end_ind]
   //! in a certain dimension
   double spread(int start_ind, int end_ind, int dim);

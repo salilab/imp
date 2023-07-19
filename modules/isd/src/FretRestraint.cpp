@@ -165,10 +165,10 @@ double FretRestraint::get_sumFi(double Pbleach) const {
   if (Na == 0) {
     return 1.0 / (1.0 + std::numeric_limits<double>::epsilon());
   }
-  // Beyond that, thresold at 10% of the greatest
+  // Beyond that, threshold at 10% of the greatest
   double thres = power6_[0] * 0.1;
   // increase Na by adding the number of
-  // entries in power6_ above the thresold value
+  // entries in power6_ above the threshold value
   for (unsigned i = Nmin; i < power6_.size(); ++i) {
     if (power6_[i] < thres) {
       break;
@@ -196,7 +196,7 @@ double FretRestraint::get_sumFi(double Pbleach) const {
 // type 0
 double FretRestraint::get_model_fretr_type_0() const {
   Model *m = get_model();
-  // thresold for forster factor
+  // threshold for forster factor
   const double thres = 0.01;
   // get scales
   double Ida = Scale(m, Ida_).get_scale();

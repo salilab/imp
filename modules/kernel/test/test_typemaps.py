@@ -216,7 +216,7 @@ class Tests(IMP.test.TestCase):
 
     def test_dir_tms(self):
         """Test that decorator particle methods can be called"""
-        m = IMP.Model("decorator particle methos")
+        m = IMP.Model("decorator particle method")
         p0 = IMP.Particle(m)
         d = IMP._TrivialDecorator.setup_particle(p0)
         d.add_attribute(IMP.IntKey("Hi"), 1)
@@ -234,7 +234,7 @@ class Tests(IMP.test.TestCase):
 
     def test_model_objects(self):
         """Test that model objects can get passed from python"""
-        m = IMP.Model("model objets")
+        m = IMP.Model("model objects")
         r = IMP._ConstRestraint(m, [], 1)
         p = IMP.Particle(m)
         self.assertEqual([p], IMP._pass_model_objects([p]))
@@ -242,7 +242,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_cast(self):
         """Test that restraints can be cast"""
-        m = IMP.Model("model objets")
+        m = IMP.Model("model objects")
         rs = IMP.RestraintSet(m)
         r = IMP._ConstRestraint(m, [], 1)
         rs.add_restraint(r)

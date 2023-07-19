@@ -19,7 +19,7 @@ bool is_interaction_header_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -46,7 +46,7 @@ bool is_xlink_header_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -74,7 +74,7 @@ bool is_ev_header_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -111,7 +111,7 @@ void parse_xlink_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -158,7 +158,7 @@ void parse_ev_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -198,7 +198,7 @@ void parse_protein_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -251,7 +251,7 @@ void parse_interaction_line(const std::string &line, ProteomicsData *dp) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());

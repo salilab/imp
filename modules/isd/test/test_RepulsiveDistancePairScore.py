@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
                                                       for i in range(3)]))
             p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(-5, 5)
                                                       for i in range(3)]))
-                # when decorated as XYZR, get_distance substracts the radii!!
+                # when decorated as XYZR, get_distance subtracts the radii!!
             dist = IMP.core.get_distance(p0, p1)
             if dist > 0:
                 expected = 0

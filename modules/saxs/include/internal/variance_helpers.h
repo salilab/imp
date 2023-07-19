@@ -317,7 +317,7 @@ inline std::complex<double> w(std::complex<double> z) {
     } else {
       xquad = -xquad;
 
-      // protect agains 2*exp(-z**2) overflow
+      // protect against 2*exp(-z**2) overflow
       if (yquad > rmaxgoni)
         throw std::overflow_error("overflow in w(z): yquad > rmaxgoni");
       if (xquad > rmaxexp)

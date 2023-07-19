@@ -31,7 +31,7 @@ void KMLocalSearchLloyd::end_stage() {
   IMP_LOG_VERBOSE("end Lloyd stage==\n");
 }
 bool KMLocalSearchLloyd::is_run_done() {
-  // check if we already preformed too many stages
+  // check if we already performed too many stages
   if (KMLocalSearch::is_run_done() ||
       (stage_num_ - run_init_stage_ >=
        term_->get_max_num_of_stages_for_run())) {

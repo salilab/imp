@@ -10,7 +10,7 @@ import IMP.parallel
 class Manager(IMP.parallel.Manager):
     heartbeat_timeout = 5.0
 
-# On Windows sytems, we cannot delete a file if another process has it open.
+# On Windows systems, we cannot delete a file if another process has it open.
 if sys.platform == 'win32':
     def unlink(filename):
         pass

@@ -128,7 +128,7 @@ class TBLReader:
 
                 if '*' in atom_name or '#' in atom_name:
 
-                    msg = 'Pseudoatoms not upported: %s' % atom_name
+                    msg = 'Pseudoatoms not supported: %s' % atom_name
 
                     if self.ignore:
                         print(msg)

@@ -223,7 +223,7 @@ void KMCentersTree::split_by_mid_point(int start_ind, int end_ind, int &cut_dim,
   // point on right).
   else if (ideal_cut_val > min_max.second)
     n_lo = end_ind;
-  // Otherwise, we select n_lo as close to the middle of  [x..y] as possbile
+  // Otherwise, we select n_lo as close to the middle of  [x..y] as possible
   else if (break_ind.first > n_lo)
     n_lo = break_ind.first;
   else if (break_ind.second < n_lo)

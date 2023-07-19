@@ -19,7 +19,7 @@ def is_comment(list_values, comment_char="#"):
 def parse_relative_transform(row):
     """
         Returns an relative transform with the conventions used by IMP.
-        row - A list containing a splitted line from the relative output file
+        row - A list containing a split line from the relative output file
     """
     euler = [-float(x) for x in row[8:11]]
     xyz = [float(x) for x in row[5:8]]

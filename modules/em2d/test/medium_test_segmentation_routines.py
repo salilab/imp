@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
             for j in range(0, cols):
                 self.assertAlmostEqual(
                     filtered(i, j), stored(i, j), delta=0.001,
-                    msg="Fill holes and treshold: filtered is different from "
+                    msg="Fill holes and threshold: filtered is different from "
                         "stored row %d col %d" % (i, j))
 
     def test_removing_small_objects(self):

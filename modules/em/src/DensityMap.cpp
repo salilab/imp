@@ -1127,7 +1127,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse,
       // we create a new map using a bounding box based on 
       // the particle coordinates and distance threshold
       
-      // Build a bounding box based on the input coordiantes
+      // Build a bounding box based on the input coordinates
       algebra::BoundingBox3D bb(coords);
 
       // Add the distance threshold

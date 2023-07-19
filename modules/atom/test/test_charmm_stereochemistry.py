@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
 
 class SelectionTests(IMP.test.TestCase):
 
-    """Test CHARMM stereochemistry restraint with seletion"""
+    """Test CHARMM stereochemistry restraint with selection"""
 
     def setup_restraint(self):
         m = IMP.Model()

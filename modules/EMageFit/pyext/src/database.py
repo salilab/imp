@@ -212,7 +212,7 @@ class Database2:
 
     def get_table_types(self, name):
         """
-            Gets info about a table and retuns all the types in it
+            Gets info about a table and returns all the types in it
         """
         self.check_if_is_connected()
         sql_command = "PRAGMA table_info(%s)" % name

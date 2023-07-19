@@ -56,7 +56,7 @@ const unsigned int number_of_steps = 1000;
 const unsigned int num_x = 2;
 const unsigned int num_y = num_x;
 const unsigned int num_per_chain = 5;
-const unsinged int number_of_steps = 50;
+const unsigned int number_of_steps = 50;
 #endif
 
 #ifdef __GNUC__

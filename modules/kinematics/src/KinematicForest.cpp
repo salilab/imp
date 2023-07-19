@@ -62,7 +62,7 @@ void KinematicForest::add_edge(Joint* joint) {
     nodes_.insert(child_kn);
   } else {
     child_kn = KinematicNode(child_p);
-    // If child is alread set up s a KN, make sure it is in this KF
+    // If child is already set up s a KN, make sure it is in this KF
     if (child_kn.get_owner() != this) {
       IMP_THROW("the child rigid body "
                     << child_rb << " in the joint " << joint

@@ -28,7 +28,7 @@ class IMPMULTIFITEXPORT FFTWPlan : public boost::noncopyable {
       // Must not call fftw_cleanup while plans still exist, as it causes
       // existing plans to become undefined. Also, fftw_cleanup() throws away
       // accumulated FFTW wisdom, so keep it around until a cleanup has been
-      // specificially requested (i.e. we're done with FFTW)
+      // specifically requested (i.e. we're done with FFTW)
       IMP_LOG_VERBOSE("Doing FFTW cleanup");
       fftw_cleanup();
     }

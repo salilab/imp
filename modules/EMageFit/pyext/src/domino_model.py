@@ -30,7 +30,7 @@ log = logging.getLogger("DominoModel")
 field_delim = ","
 
 # separate units within a field (eg, reference frames).
-# It is used in output text files and in databse files
+# It is used in output text files and in database files
 unit_delim = "/"
 
 
@@ -918,7 +918,7 @@ class DominoModel:
         """
         if not self.assignments_sampling_done:
             raise ValueError("DominoModel: sampling not done")
-        log.info("Writting PDB %s for assignment %s", fn_pdb, assignment)
+        log.info("Writing PDB %s for assignment %s", fn_pdb, assignment)
         self.load_state(assignment)
         atom.write_pdb(self.assembly, fn_pdb)
 
@@ -931,7 +931,7 @@ class DominoModel:
         """
         if not self.configuration_sampling_done:
             raise ValueError("DominoModel: sampling not done")
-        log.debug("Writting PDB %s for configuration %s", fn_pdb, n)
+        log.debug("Writing PDB %s for configuration %s", fn_pdb, n)
         # configuration_set.load_configuration(n)
         atom.write_pdb(self.assembly, fn_pdb)
 
@@ -941,7 +941,7 @@ class DominoModel:
             @param RFs Reference frames for the elements of the complex
             @param fn_pdb File to write the solution
         """
-        log.debug("Writting PDB %s for reference frames %s", fn_pdb, RFs)
+        log.debug("Writing PDB %s for reference frames %s", fn_pdb, RFs)
         representation.set_reference_frames(self.components_rbs, RFs)
         atom.write_pdb(self.assembly, fn_pdb)
 
@@ -951,7 +951,7 @@ class DominoModel:
             @param RFs Reference frames for the elements of the complex
             @param fn_base base string to build the names of the PDBs files
         """
-        log.debug("Writting PDBs with basename %s", fn_base)
+        log.debug("Writing PDBs with basename %s", fn_base)
         representation.set_reference_frames(self.components_rbs, RFs)
         for i, ch in enumerate(self.assembly.get_children()):
             atom.write_pdb(ch, fn_base + "component-%02d.pdb" % i)
@@ -963,7 +963,7 @@ class DominoModel:
             @param ref Reference frame of the component
             @param fn_pdb Output PDB
         """
-        ("Writting PDB %s for component %s", fn_pdb, component_index)
+        ("Writing PDB %s for component %s", fn_pdb, component_index)
         self.components_rbs[component_index].set_reference_frame(ref)
         hierarchy_component = self.assembly.get_child(component_index)
         atom.write_pdb(hierarchy_component, fn_pdb)

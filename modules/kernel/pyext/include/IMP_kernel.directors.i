@@ -37,7 +37,7 @@ a weak pointer to the Python object. The pure Python class is now a
 user-defined subclass of the proxy which holds implementations. So now it is
 a problem if the proxy is destroyed, because then the C++ object cannot route
 method calls to it. Thus, the proxy must be kept alive as long as the C++
-object is. This could be achieved by maintaing a strong pointer from the C++
+object is. This could be achieved by maintaining a strong pointer from the C++
 object to the Python object, but that would create a reference loop, and the
 object would never be freed. Ideally the Python object's reference count would
 be increased or decreased when the C++ object's count was, but this would

@@ -57,7 +57,7 @@ IMPATOMEXPORT bool is_CONECT_rec(const String& pdb_line);
 IMPATOMEXPORT int model_index(const String& pdb_line);
 
 /** Returns a string with an atom type string.
-    The atom type is a 4 charachter long field.
+    The atom type is a 4 character long field.
     the first character is space in many cases, but not always. */
 IMPATOMEXPORT String atom_type(const String& pdb_line);
 

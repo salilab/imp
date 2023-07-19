@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
     coordinates2.push_back(
         IMP::core::XYZ(atom_particles2[i]).get_coordinates());
 
-  // read tranformations
+  // read transformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
 

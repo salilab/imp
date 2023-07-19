@@ -388,7 +388,7 @@ class FloatAttributeTable {
     return internal_coordinates_[particle];
   }
 
-  /**  Expert function to add derviatives in v directly to xyzr_deriv[0..2],
+  /**  Expert function to add derivatives in v directly to xyzr_deriv[0..2],
        after transforming the derivative using da (static cause does not depend
        on model instance)
 
@@ -405,7 +405,7 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(xyzr_deriv[2], da(v[2]));
   }
 
-  //! add derviatives in v to xyz derivative of particle, after
+  //! add derivatives in v to xyz derivative of particle, after
   //! transforming the derivative using da
   void add_to_coordinate_derivatives(ParticleIndex particle,
                                      const algebra::Vector3D &v,

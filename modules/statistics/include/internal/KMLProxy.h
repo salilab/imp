@@ -80,7 +80,7 @@ class IMPSTATISTICSEXPORT KMLProxy {
   DistributionType distr_;         // distribution //TODO - return when relevant
   Float std_dev_;                  // standard deviation
   Float corr_coef_;                // correlation coef
-  Float clus_sep_;                 // cluster seperation
+  Float clus_sep_;                 // cluster separation
   unsigned int max_visit_;         // number of points visited
   unsigned int seed_;              // seed for random numbers
   KMLocalSearchLloyd *lloyd_alg_;  // Lloyd algorithm

@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
         after = mc.optimize(num_mc_steps)
 
     def test_moved_score(self):
-        """Test ISD restraints with move-aware MC scoring is indentical"""
+        """Test ISD restraints with move-aware MC scoring is identical"""
 
         bb = IMP.algebra.get_unit_bounding_box_3d()
         coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(20)]

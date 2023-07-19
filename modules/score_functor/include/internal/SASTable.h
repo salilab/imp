@@ -1,6 +1,6 @@
 /**
  * \file SASTable.h
- * \brief Storage of Solvent Accessability Statistical potential
+ * \brief Storage of Solvent Accessibility Statistical potential
  *
  * \authors Dina Schneidman
  * Copyright 2007-2022 IMP Inventors. All rights reserved.

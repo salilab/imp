@@ -4,7 +4,7 @@ __doc__ = "Generate proteomics info from anchor graph and fits."
 
 # read the anchors
 # read the top fit for each protein, and assign the anchors
-# add EV accordinly
+# add EV accordingly
 
 import IMP.multifit
 from IMP import ArgumentParser

@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
  * \f[ E(x) = \frac{\alpha}{2} d^2(x,x_0) \f]
  * \f$d\f$ is the distance between x and x_0
  * \f[d^2(x,x_0) = d^2_\text{eucl}(COM,COM_0) + k*d^2_\text{quat}(Q,Q_0)\f]
- * \f$d_\text{eucl}\f$ is the 3D euclidian distance
+ * \f$d_\text{eucl}\f$ is the 3D euclidean distance
  * \f$d_\text{quat}\f$ is the geodesic distance between two rotations, i.e. the
  * angle of the rotation \f$Q\cdot Q_0^{-1}\f$
  *

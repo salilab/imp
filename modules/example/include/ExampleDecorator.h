@@ -33,7 +33,7 @@ class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
   /* Use a static variable in a static method to create the key
      so that it is only done once and is only done when it is first
      needed. Lazy initialization of keys makes \imp more efficient as
-     Particles do not have to allocate memory for ununsed keys.
+     Particles do not have to allocate memory for unused keys.
   */
   static StringKey get_name_key();
   //! Add a name to the particle

@@ -483,7 +483,7 @@ atom::Molecule create_protein(Model *m, RestraintSet *allrs, std::string name,
     protein.add_child(dom);
   }
   if (nbeads > 1 && copy == 0) {
-    // ORGINAL IMP CONNECTIVITY
+    // ORIGINAL IMP CONNECTIVITY
     if (use_connectivity) {
       atom::Selections ss = atom::Selections();
       atom::Hierarchies hs = protein.get_children();

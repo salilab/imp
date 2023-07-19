@@ -107,7 +107,7 @@ bool digest_parameter(const str param, const po::variables_map &vm,
 //! variables map from boost.
 /*!
   \param[in] required_params parameters that all have to be present
-  \param[in] choosing_params parameters tha only one needs to be present
+  \param[in] choosing_params parameters that only one needs to be present
 */
 bool check_parameters(const po::variables_map &vm, const str required_params,
                       const str choosing_params = "") {

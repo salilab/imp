@@ -82,7 +82,7 @@ def get_assignments(vertex):
     )
 
 
-# the root is the last vetex
+# the root is the last vertex
 all = get_assignments(mt.get_vertices()[-1])
 all[1].set_was_used(True)
 

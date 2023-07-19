@@ -111,7 +111,7 @@ void load_union(const Subset &s0, const Subset &s1, AssignmentContainer *nd0,
   Ints uii = get_index(ed.union_subset, ed.intersection_subset);
   Assignments nd1a =
       nd1->get_assignments(IntRange(0, nd1->get_number_of_assignments()));
-  // chunck outer and writing later
+  // chunk outer and writing later
   unsigned int nd0sz = nd0->get_number_of_assignments();
   IMP_PROGRESS_DISPLAY("Merging subsets " << s0 << " and " << s1,
                        nd0sz * nd1a.size());

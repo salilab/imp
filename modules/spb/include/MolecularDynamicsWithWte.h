@@ -58,7 +58,7 @@ class IMPSPBEXPORT MolecularDynamicsWithWte : public atom::Simulator {
   void set_bias(const Floats &bias) {
     IMP_USAGE_CHECK(static_cast<int>(bias.size()) == 2 * nbin_, "Don't match");
     // Getting over a warning about comparing unsigned to signed int.
-    // It wont work if x >= INT_MIN (max integer size)
+    // It won't work if x >= INT_MIN (max integer size)
     std::copy(bias.begin(), bias.end(), bias_.get());
   }
 

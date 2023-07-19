@@ -10,7 +10,7 @@ namespace domino {
 }
 %rename(_ParticlesAdaptor) IMP::domino::ParticlesAdaptor;
 
-/* Tell swig how to treat various types when moving them to and from pyton */
+/* Tell SWIG how to treat various types when moving them to and from Python */
 
 
 IMP_SWIG_BASE_OBJECT(IMP::domino, DiscreteSampler, DiscreteSamplers);

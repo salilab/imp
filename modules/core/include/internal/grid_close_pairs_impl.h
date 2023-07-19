@@ -134,7 +134,7 @@ template <class Traits>
 struct Helper {
   typedef typename Traits::ID ID;
   //! an extension of vector, containing a (template) vector of
-  //! Traits::ID, with an integer indentifier which_
+  //! Traits::ID, with an integer identifier which_
   struct IDs : public Vector<ID> {
     int which_;
     //! an empty ids vector identified by which

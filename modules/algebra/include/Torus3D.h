@@ -37,7 +37,8 @@ class IMPALGEBRAEXPORT Torus3D : public GeometricPrimitiveD<3> {
 
      @return a tuple (d,v) s.t.:
      d = The shortest distance from any point on s to any point on the torus.
-     If s penetrates the torus, the opposite of the maximal penetration depth is returnd.
+     If s penetrates the torus, the opposite of the maximal penetration
+     depth is returned.
      v = the normalized derivative vector of d
   */
   inline std::pair<double, algebra::Vector3D>
@@ -61,7 +62,7 @@ IMP_VOLUME_GEOMETRY_METHODS(Torus3D, torus_3d,
                             IMP_NOT_IMPLEMENTED);
 
 
-// implememt inline method
+// implement inline method
 std::pair<double, algebra::Vector3D>
   Torus3D::get_torus_distance
   (Sphere3D sphere) const

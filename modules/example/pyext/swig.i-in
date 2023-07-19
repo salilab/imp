@@ -73,7 +73,7 @@ def create_model_and_particles():
 namespace IMP {
   namespace example {
   /* Python doesn't natively support C++ templates, so you have to manually
-     choose which template parameters you want to intantiate a template with.
+     choose which template parameters you want to instantiate a template with.
    */
    %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
   }

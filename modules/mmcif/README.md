@@ -1,6 +1,6 @@
 \brief Support for output of models in mmCIF format.
 
-This module adds basic support for outputing IMP models in mmCIF format,
+This module adds basic support for outputting IMP models in mmCIF format,
 using the [integrative/hybrid modeling extensions](https://github.com/ihmwg/IHM-dictionary).
 This allows IMP models to be deposited in [PDB-dev](https://pdb-dev.wwpdb.org/).
 

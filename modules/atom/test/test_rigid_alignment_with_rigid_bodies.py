@@ -9,7 +9,7 @@ import IMP.atom
 class Tests(IMP.test.TestCase):
 
     def test_alignment_without_rigid_body(self):
-        """Rigid aligment without rigid bodies"""
+        """Rigid alignment without rigid bodies"""
         mdl = IMP.Model()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), mdl)
         xyz1 = IMP.core.XYZs(IMP.core.get_leaves(mh1))
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1, xyz2), 0., delta=.01)
 
     def test_alignment_with_rigid_body(self):
-        """Rigid aligment with rigid bodies"""
+        """Rigid alignment with rigid bodies"""
         mdl = IMP.Model()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), mdl)
         xyz1 = IMP.core.XYZs(IMP.core.get_leaves(mh1))
@@ -58,10 +58,10 @@ class Tests(IMP.test.TestCase):
         align_t = IMP.algebra.get_transformation_aligning_first_to_second(
             vec1, vec2)
         print("alignment", align_t)
-        # now transform mh1 accordinly
+        # now transform mh1 accordingly
         rbtr = rb1.get_reference_frame().get_transformation_to()
         print("initial 2", rbtr)
-        print("inital*align", rbtr * align_t)
+        print("initial*align", rbtr * align_t)
         print("align*initial", align_t * rbtr)
         IMP.core.transform(rb1, align_t)
         # rb1.set_reference_frame(IMP.algebra.get_transformed(rb1.get_reference_frame(),

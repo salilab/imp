@@ -273,7 +273,7 @@ class AtomicDomino:
             try:
                 IMP.rmf.load_frame(rh, i, self.protein)
             except Exception:
-                print("execption in loading frame %s" % i)
+                print("exception in loading frame %s" % i)
                 continue
             score = self.model.evaluate(False)
             # for leaf in leaves:
@@ -940,7 +940,7 @@ class AtomicDomino:
         for assignment in filteredAssignments:
             hdf5AssignmentContainer.add_assignment(assignment)
         for assignment in hdf5AssignmentContainer.get_assignments():
-            print("hdf5 assignment container node %s next assignmet %s"
+            print("hdf5 assignment container node %s next assignment %s"
                   % (nodeIndex, assignment))
 
         # self.checkAssignments(subset, nodeIndex, particleOrder)

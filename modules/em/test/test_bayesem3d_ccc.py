@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(cc2, 1.0, delta=1e-8)
 
     def test_ccc_non_overlapping(self):
-        """Check ccc of a map with itself when the copy has no overlaping"""
+        """Check ccc of a map with itself when the copy has no overlap"""
         cc3 = IMP.em.bayesem3d_get_cross_correlation_coefficient(
             self.ps_map, self.ps_map2)
         self.assertAlmostEqual(cc3, 0.0, delta=1e-8)

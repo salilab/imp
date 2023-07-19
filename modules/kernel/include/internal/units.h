@@ -146,7 +146,7 @@ convert_J_to_kcal(Unit<internal::MKSTag, EXP, Units> i) {
   return Return(i.get_exponential_value() / JOULES_PER_KILOCALORIE);
 }
 
-//! Marker constant to handle coversions
+//! Marker constant to handle conversions
 extern const IMPKERNELEXPORT internal::AtomsPerMol ATOMS_PER_MOL;
 
 typedef Unit<internal::MDEnergyTag, 0, SingletonUnit> KilocaloriePerMol;

@@ -54,7 +54,7 @@ void KMLProxy::run(Particles *initial_centers) {
     }
   }
   IMP_LOG_VERBOSE("KMLProxy::run load initial guess \n");
-  // load the initail guess
+  // load the initial guess
   KMFilterCenters ctrs(kcenters_, data_, kmc, damp_factor_);
 
   // apply lloyd search
@@ -62,7 +62,7 @@ void KMLProxy::run(Particles *initial_centers) {
   lloyd_alg_ = new KMLocalSearchLloyd(&ctrs, &term_);
   log_header();
   IMP_CHECK_CODE(clock_t start = clock());
-  IMP_LOG_VERBOSE("KMLProxy::run excute lloyd \n");
+  IMP_LOG_VERBOSE("KMLProxy::run execute lloyd \n");
   lloyd_alg_->execute();
   IMP_LOG_VERBOSE("KMLProxy::run analyse \n");
   KMFilterCentersResults best_clusters = lloyd_alg_->get_best();

@@ -45,7 +45,7 @@ void Optimizer::update_states() const {
 }
 
 void Optimizer::set_is_optimizing_states(bool tf) const {
-  IMP_LOG_VERBOSE("Reseting OptimizerStates " << std::flush);
+  IMP_LOG_VERBOSE("Resetting OptimizerStates " << std::flush);
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);

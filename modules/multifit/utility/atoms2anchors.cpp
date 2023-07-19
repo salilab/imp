@@ -35,7 +35,7 @@ int parse_input(int argc, char *argv[], std::string &pdb_filename,
         << "<number of clusters> <output pdb filename>\n\n";
   boost::program_options::options_description optional_params(
       "Allowed options"),
-      po, ao, required_params("Hideen options");
+      po, ao, required_params("Hidden options");
   required_params.add_options()(
       "pdb", boost::program_options::value<std::string>(&pdb_filename),
       "the name of the PDB file")(

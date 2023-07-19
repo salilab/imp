@@ -95,7 +95,7 @@ def get_rbs_and_beads(hiers):
     return rbs_ordered,beads
 
 def add_symmetry(clones,refs,transform,mdl):
-    '''setup the simmetry from the clones'''
+    '''setup the symmetry from the clones'''
 
     ref_rbs,ref_beads = get_rbs_and_beads(refs)
     clones_rbs,clones_beads = get_rbs_and_beads(clones)

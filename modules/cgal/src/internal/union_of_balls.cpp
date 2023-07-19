@@ -28,7 +28,7 @@ IMP_CLANG_PRAGMA(+diagnostic ignored "-Wconversion")
 #endif
 
 /* To access specialized predicates for orthocenter localization
- uncomment one of the followings :*/
+ uncomment one of the following :*/
 //#include <CGAL/Regular_triangulation_euclidean_traits_3.h>
 //#include <CGAL/Regular_triangulation_filtered_traits_3.h>
 
@@ -112,7 +112,7 @@ double safe_sqrt(double v) {
 /*! This class mainly stores geometric functions for the computation
  * of volumetrics on balls and lines it is parameterized with Gt, a
  * Geometrical traits arguments that will most of the time be
- * somehting like CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel>
+ * something like CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel>
  *
  * \todo should singleton this class, what about static members ?
  * \todo should const every functions
@@ -153,11 +153,11 @@ class SpacefillingVolumetric {
   // float const PI=3.1415926
   double PI;
   // float const PI=acos(-1.0)
-  //! the oposite of Pi
+  //! the opposite of Pi
   //#define OP_PI=0.318309892
   double OP_PI;
   //#define OP_PI (1./acos(-1.0))
-  //! the oposite of 2Pi
+  //! the opposite of 2Pi
   double OP_2PI;
   //! length of a vector
   //@}
@@ -171,11 +171,11 @@ class SpacefillingVolumetric {
   //\@{
   // begin name A
 
-  // a global instanciation for the geometric traits class
-  /* a global instanciation for the geometric traits class
+  // a global instantiation for the geometric traits class
+  /* a global instantiation for the geometric traits class
   * \todo
   * it shall disappear (brieffly appear in the constructor) when we'll
-  * host all that stuff in a class it is only needed to instanciate
+  * host all that stuff in a class it is only needed to instantiate
   * the 3 construction predicates.
   */
   // Gt gt;
@@ -204,7 +204,7 @@ class SpacefillingVolumetric {
   //@}
 
   /*! \name C. Attachedness compute simplex attachedness as described
-  * in \ref pageRefWeighted .  Basicaly these functions are provided by
+  * in \ref pageRefWeighted .  Basically these functions are provided by
   * the alpha shape alf package, so that they are not described in \ref
   * pageRefMeasure .  Anyway, as for the orthogonal centers stuff,
   * these are functions related with the alpha shape construction, so
@@ -213,16 +213,16 @@ class SpacefillingVolumetric {
   * About attachedness :
   *
   * A k-simplex t is said <b>attached</b> (to it's (k+1)-simplex s, t
-  * beeing a facet of s) when t and s appear at the same time in the
+  * being a facet of s) when t and s appear at the same time in the
   * alpha filter.  A k-simplex t is said attached if it is attached to
   * one of it's parent (k+1)-simplices That is, it is a simplex that is
   * never singular no matter alpha.  Edelsbrunner (see 5.2 in \ref
   * pageRefWeighted) demonstrates that there is a correpondance between
   * "t is attached" and "y_t is conflict free" where y_t is the
-  * orthocenter of t and conflicts reffers to the power center
-  * propertie (the power of any site out of t to y_t is > 0).
+  * orthocenter of t and conflicts refers to the power center
+  * property (the power of any site out of t to y_t is > 0).
   *
-  * For a simple 2D exemple of attachedness, consider three intersectig
+  * For a simple 2D example of attachedness, consider three intersectig
   * disks, two of which intersecting inside the third and not outside
   * it (a Gabriel Edge).  In this case, the two disks already
   * intersect, so the segment that links their centers could appear in
@@ -435,11 +435,11 @@ class SpacefillingVolumetric {
   * equation with one unknown to fix the radius.
   * So, any point in the space is the center of a unique sphere orthogonal to P
   * - spheres R orthogonal to two sphere P,Q :
-  * Rewritting pi(P,R) = pi(Q,R) (= 0) in |p-z|^2 - |q-z|^2 = w_P^2 - w_Q^2
+  * Rewriting pi(P,R) = pi(Q,R) (= 0) in |p-z|^2 - |q-z|^2 = w_P^2 - w_Q^2
   * (which can also be expressed as pi_P(r) = pi_Q(r) ) leads to a linear
   * equation with d (dimension) unknown.
   * That is, the locus for centers of spheres orthogonal to P and Q is a
-  * hyperplane, usually reffered as the
+  * hyperplane, usually referred as the
   * <b>radical plane</b> or <b>chordale</b> of P and Q. To fix the radius of
   * such
   * orthogonal sphere, just remember pi(Q,R)=0
@@ -450,7 +450,7 @@ class SpacefillingVolumetric {
   * necessary to consider all pairs, but just two.
   *
   *
-  * for more informations refer to some books or collect in publications such as
+  * for more information refer to some books or collect in publications such as
   * \ref pageRefTopoflip .
   */
   //\@{
@@ -481,7 +481,7 @@ class SpacefillingVolumetric {
   Vector cross_prod(Vector const &, Vector const &);
   //! dot product
   double dot_prod(Vector const &, Vector const &);
-  //! tells if i sees (j,k,l) in conter clock wise order
+  //! tells if i sees (j,k,l) in counter clock wise order
   bool ccw_orientation(Point const &, Point const &, Point const &,
                        Point const &);
   //\@}
@@ -568,8 +568,8 @@ inline typename SpacefillingVolumetric<Gt>::Vector SpacefillingVolumetric<
  * \param j a second sphere
  * \result true if i is hidden by j
  *
- * \todo check if there is nothing easyer,
- * for instance check if the orthocenter o is such that i is inbetween o and j.
+ * \todo check if there is nothing easier,
+ * for instance check if the orthocenter o is such that i is in between o and j.
  *
  */
 template <typename Gt>
@@ -586,7 +586,7 @@ inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
  *
  * \todo check correctness of this algorithm : ij is hidden by k if
  * k and the orthocenter o of ijk are on different sides of ij
- * \todo check a ore efficient algorithm : try to avoid the two calls to
+ * \todo check for a more efficient algorithm : try to avoid the two calls to
  * orthocenter()
  * at the moment the algorithm is a bit greedy : to check if j and o are on the
  * same side
@@ -901,7 +901,7 @@ inline double SpacefillingVolumetric<Gt>::capInter2_V(Wpoint const &i,
 }
 /*! area intersection of two caps
  * \todo for speedup, the first term can be replaced :
- * in abscence of roundoff errors the two dihedral angles are
+ * in absence of roundoff errors the two dihedral angles are
  * supposed to be the same
  */
 template <typename Gt>
@@ -934,7 +934,7 @@ inline double SpacefillingVolumetric<Gt>::capInter3_V(Wpoint const &i,
           (ball_R(i) - cap_H(i, l)) * segmentInter2_A(i, l, j, k)) /
          3.0;
 }
-/*! volume intersection of three caps from which are substracted the three
+/*! volume intersection of three caps from which are subtracted the three
  * subsequent intersections of two caps
  * \param i a first sphere
  * \param j a second sphere
@@ -1011,13 +1011,13 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
          6.0;
 }
 
-/*! volume intersection of three caps from which are substracted the three
+/*! volume intersection of three caps from which are subtracted the three
  * subsequent intersections of two caps
  * \param i a first sphere
  * \param j a second sphere
  * \param kk a third sphere
  * \param ll a fourth sphere
- * \param surf the external surface of the element from wich we want to compute
+ * \param surf the external surface of the element from which we want to compute
  * the volume (capInter3and2_A)
  * When this has been computed before it is no use to compute it again.
  * \return the volume of the intersection of the three caps less the volumes of
@@ -1131,7 +1131,7 @@ inline double SpacefillingVolumetric<Gt>::capInter3_A(Wpoint const &i,
               (ball_R(i) - cap_H(i, l));
   return A1 - A2 - A3 - A4;
 }
-/*! area of the intersection of three caps from which are substracted the three
+/*! area of the intersection of three caps from which are subtracted the three
  * areas of the subsequent intersections of two caps
  * \param i a first sphere
  * \param j a second sphere
@@ -1254,7 +1254,7 @@ inline double SpacefillingVolumetric<Gt>::segment_H(Wpoint const &i,
  * \param ll a weighted point i
  * \return the area of the intersection of the two segments computed as the
  * difference between the disk sector
- * (from the center of the disk along the segment angle) and the two bording
+ * (from the center of the disk along the segment angle) and the two bordering
  * triangles
  */
 template <typename Gt>
@@ -1335,7 +1335,7 @@ SpacefillingVolumetric<Gt>::orthoCenter(Wpoint const &p, Wpoint const &q) {
  *
  * Here, the "dual" term has nothing to do with Voronoi - delaunay duality.
  * We are only interested by the intersection of the three spheres P,Q,R
- * that sees their centers p,q,r in a conter clock wise order
+ * that sees their centers p,q,r in a counter clock wise order
  *
  * \todo this function might essentially be used when one needs to compute a
  * distance between a point and a triangledual point
@@ -1439,7 +1439,7 @@ inline double SpacefillingVolumetric<Gt>::dot_prod(Vector const &u,
                                                    Vector const &v) {
   return u * v;
 }
-/*! tells if i sees (j,k,l) in conter clock wise order
+/*! tells if i sees (j,k,l) in counter clock wise order
  */
 template <typename Gt>
 inline bool SpacefillingVolumetric<Gt>::ccw_orientation(Point const &i,
@@ -1449,7 +1449,7 @@ inline bool SpacefillingVolumetric<Gt>::ccw_orientation(Point const &i,
   // CGAL considers the viewer on last point, contrary to Edelsbrunner
   return (CGAL::orientation(j, k, l, i) == CGAL::COUNTERCLOCKWISE);
 }
-/*! tells if i sees (j,k,l) in conter clock wise order
+/*! tells if i sees (j,k,l) in counter clock wise order
  */
 /*bool ccw_orientation(Wpoint const&i,Wpoint const&j,
   Wpoint const&k,Wpoint const&l){
@@ -1469,7 +1469,7 @@ inline bool SpacefillingVolumetric<Gt>::ccw_orientation(Point const &i,
  * \param[in] k a third point composing the triangle
  * \return the area of the triangle
  *
- * basicly, just link this function to the one related with edges length
+ * basically, just link this function to the one related with edges length
  */
 template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::triangle_A(Point const &i,
@@ -1576,7 +1576,7 @@ inline double SpacefillingVolumetric<Gt>::sector_L(Wpoint const &p, double a) {
  * the area of these two delineated disks.
  * This is simply done by considering the triangle i,j,k where k is one of the
  * two two-circles intersections.
- * We then summ areas of both half sectors issued from i and j and substract the
+ * We then sum areas of both half sectors issued from i and j and subtract the
  * triangle area.
  */
 template <typename Gt>
@@ -1595,8 +1595,8 @@ inline double SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
     I = (ball_R2(i) - ball_R2(j) + d2) / (2. * d * ball_R(i));
     J = (ball_R2(j) - ball_R2(i) + d2) / (2. * d * ball_R(j));
     // let's check numerical problems
-    //! \remark Patrice does that qith an epsilon that he eventually
-    //! substracts or adds to I or J
+    //! \remark Patrice does that with an epsilon that he eventually
+    //! subtracts or adds to I or J
     if (I < -1) {
       I = PI;
     } else if (I > 1) {
@@ -1632,7 +1632,7 @@ inline double SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
  * the area of these two delineated disks.
  * This is simply done by considering the triangle i,j,k where k is one of the
  * two two-circles intersections.
- * We then summ areas of both half sectors issued from i and j and substract the
+ * We then sum areas of both half sectors issued from i and j and subtract the
  * triangle area.
  */
 template <typename Gt>
@@ -1652,8 +1652,8 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
     double J;  // angle at j
     I = (ball_R2(i) - ball_R2(j) + d2) / (2. * d * ball_R(i));
     J = (ball_R2(j) - ball_R2(i) + d2) / (2. * d * ball_R(j));
-    // let's check numerical problems ! \remark Patrice does that qith an
-    // epsilon that he eventually substracts or adds to I or J
+    // let's check numerical problems ! \remark Patrice does that with an
+    // epsilon that he eventually subtracts or adds to I or J
     if (I < -1) {
       I = PI;
     } else if (I > 1) {
@@ -1685,7 +1685,7 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
  * \param[in] k a third weighted point composing the triangle
  * \return the area of that part that is in the triangle linking the three
  * sphere centers,
- * and that is not in any of the three bording spheres
+ * and that is not in any of the three bordering spheres
  *
  * This is computed as an inclusion exclusion formula, see \ref pageTechVolPck.
  * \warning still have to validate (understand these functions)

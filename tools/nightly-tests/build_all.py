@@ -465,7 +465,7 @@ failures are considered to be non-fatal).
     parser = OptionParser(usage=usage)
     parser.add_option("--summary",
                       default=None,
-                      help="Dump summmary info as a Python pickle to the "
+                      help="Dump summary info as a Python pickle to the "
                            "named file. For each component, the time taken to "
                            "run makecmd is recorded, plus the build result, "
                            "which is either the return value of makecmd, or "

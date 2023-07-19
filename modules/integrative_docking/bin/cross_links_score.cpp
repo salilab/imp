@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
     if (at.get_particle() != NULL) ca_atoms2.push_back(at.get_particle());
   }
 
-  // read tranformations
+  // read transformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
 

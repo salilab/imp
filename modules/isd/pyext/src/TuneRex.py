@@ -184,7 +184,7 @@ def power_test(ar, power=0.8, alpha=0.05):
     """perform an anova power test and return
     - the power of the test with this input data
     - the number of points that would be needed to achieve a default power of 0.8
-    ar: the ouput of anova()
+    ar: the output of anova()
     """
     result = r('power.anova.test')(groups=ar['nreps'], n=min(ar['nsteps']),
                                    between=ar['between'], within=ar['within'], sig=alpha)
@@ -192,7 +192,7 @@ def power_test(ar, power=0.8, alpha=0.05):
     result = r('power.anova.test')(groups=ar['nreps'],
                                    between=ar['between'], within=ar['within'], sig=alpha, pow=power)
     prdb(
-        'To have a power of %.3f, there should be at least %d exchange attemps.' %
+        'To have a power of %.3f, there should be at least %d exchange attempts.' %
         (power, result[1][0]))
     return
 
@@ -313,7 +313,7 @@ class CvEstimator:
             return
 
     def _isinbounds(self, p, params):
-        """returns True if p is within parms, else false. the params list must be sorted ascendingly."""
+        """returns True if p is within params, else false. the params list must be sorted ascendingly."""
         if p < params[0] - EPSILON or p > params[-1] + EPSILON:
             #prdb("Warning: value %f is outside of bounds, extrapolating." % p)
             return False
@@ -383,7 +383,7 @@ def update_bad_dumb(newp, oldp, ind, targetAR=0.4, scale=0.1, **kwargs):
     is equal to the targetAR.
     In the "dumb" method, the Cv keyword is ignored. Here the newp[1]
     parameter is modified to follow the possible translation of newp[0] by
-    calling update_good_dumb, and then newp[1] is added or substracted scale% of
+    calling update_good_dumb, and then newp[1] is added or subtracted scale% of
     (oldp[1] - oldp[0]) to adjust to targetAR.
     """
 

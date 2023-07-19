@@ -74,7 +74,7 @@ def get_assignments(vertex):
     return ret
 
 
-# the root is the last vetex
+# the root is the last vertex
 get_assignments(mt.get_vertices()[-1])
 
 schedule = []

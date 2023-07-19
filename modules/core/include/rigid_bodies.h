@@ -397,7 +397,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   /**  Update the translational and rotational derivatives
        on the rigid body center of mass, using the Cartesian derivative
-       vector at a speicified location (the point where the force is
+       vector at a specified location (the point where the force is
        being applied).
 
        Updates both the quaternion derivatives and the torque.
@@ -592,7 +592,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   //! Remove the member from this rigid body.
   /** The member can be either a rigid body member or a point
-      member, either rigid ot non-rigid.
+      member, either rigid or non-rigid.
 
       The radius of the rigid body is updated to reflect the removed member.
 

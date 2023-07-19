@@ -50,7 +50,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //       done by some more sophisticated method.
 //
 //       Note that this structure does not support copying or
-//       assignments.  If you want to resuse the structure, the only way
+//       assignments.  If you want to reuse the structure, the only way
 //       to do so is to first apply resize(), which destroys the kc-tree
 //       (if it exists), and then assign to it a new set of points.
 //----------------------------------------------------------------------

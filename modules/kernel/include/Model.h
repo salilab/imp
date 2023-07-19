@@ -392,11 +392,11 @@ class IMPKERNELEXPORT Model : public Object
       (where, eg, TypeKey is FloatKey or StringKey)
       @{
   */
-  //! add particle atribute with the specied key and initial value
+  //! add particle attribute with the specified key and initial value
   /** \pre get_has_attribute(attribute_key, particle) is false*/
   void add_attribute(TypeKey attribute_key, ParticleIndex particle, Type value);
 
-  //! remove particle attribute with the specied key
+  //! remove particle attribute with the specified key
   /** \pre get_has_attribute(attribute_key, particle) is true*/
   void remove_attribute(TypeKey attribute_key, ParticleIndex particle);
 

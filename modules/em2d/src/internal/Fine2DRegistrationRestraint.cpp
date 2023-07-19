@@ -40,7 +40,7 @@ void Fine2DRegistrationRestraint::setup(
         MasksManagerPtr(new MasksManager(params.resolution, params.pixel_size));
     masks_->create_masks(ps);
     IMP_LOG_VERBOSE("Created " << masks_->get_number_of_masks()
-                               << " masks withing Fine2DRegistrationRestraint "
+                               << " masks within Fine2DRegistrationRestraint "
                                << std::endl);
   } else {
     masks_ = masks;

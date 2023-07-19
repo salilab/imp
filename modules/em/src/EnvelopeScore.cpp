@@ -16,7 +16,7 @@ EnvelopeScore::EnvelopeScore(const MapDistanceTransform* mdt)
   //[-5,-4],[-4,-3],[-3,-2],[-2,-1],[-1,1],[1,2]
   for (int i = -5; i < 3; i++)
     if (i != 0) ranges_.push_back(i * mdt_->get_spacing());
-  // setup weigths
+  // setup weights
   // negative weight for negative distances outside the object
   for (int i = -6; i < -1; i++) weights_.push_back(2 * (i + 1));
   // weight = 1 for [-1,1] and [1-2] ranges

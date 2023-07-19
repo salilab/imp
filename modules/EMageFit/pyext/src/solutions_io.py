@@ -556,7 +556,7 @@ class ResultsDB(database.Database2):
     def get_solutions_from_list(self, fields=False, solutions_ids=[]):
         """
             Recover solutions for a specific list of results
-            @param fields Fields to recover fro the database
+            @param fields Fields to recover from the database
             @param solutions_ids A list with the desired solutions.
                    E.g. [0,3,6]
         """

@@ -34,7 +34,7 @@ After a run is finished, we check to see whether we want to "accept" the
 solution. Presumably this happens if the cost is lower, but it may happen even
 if the cost is inferior in other circumstances (e.g., as part of a simulated
 annealing approach). Accepting a solution means copying the current solution to
-the saved solution. In some cases, the acceptance may involve reseting the
+the saved solution. In some cases, the acceptance may involve resetting the
 current solution to a random solution.
 The generic algorithm:
 \verbatim

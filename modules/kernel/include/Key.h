@@ -153,7 +153,7 @@ class Key : public Value {
 
 #if !defined(IMP_DOXYGEN)
       //! this is a fast and lean constructor that should be used
-      //! whenever performence is of the essence
+      //! whenever performance is of the essence
       explicit Key(unsigned int i) : str_(i) {
 	IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
 	// cannot check here as we need a past end iterator

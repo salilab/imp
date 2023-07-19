@@ -160,7 +160,7 @@ int main(int argc, char** argv) {
     normalization = new Normalization(IMP::score_functor::get_data_path("residue_norm.lib"));
   }
 
-  // Option 1: score pairs of PDBs fom filenames.txt
+  // Option 1: score pairs of PDBs from filenames.txt
   std::vector<std::pair<std::string, std::string> > file_names;
   if (files.size() == 1) {
     read_input_file(files[0], file_names);
@@ -276,7 +276,7 @@ int main(int argc, char** argv) {
       coordinates2.push_back(IMP::core::XYZ(model, pis2[i]).get_coordinates());
     }
 
-    // read tranformations
+    // read transformations
     std::vector<IMP::algebra::Transformation3D> transforms;
     if (trans_file.length() > 0)
       read_trans_file(trans_file, transforms);
