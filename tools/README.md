@@ -32,3 +32,7 @@ The `tools/dev_tools/check_standards.py` runs a number of
 %IMP-specific standards checks on C++ and Python files.
 It is also run as part of `git` commits. This can help you conform to %IMP's
 [code conventions](@ref code_conventions).
+
+The `tools/codespell.sh` script can be run in any %IMP directory to check
+for common spelling mistakes in source code. It uses the
+[codespell](https://github.com/codespell-project/codespell) library.
