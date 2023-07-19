@@ -150,6 +150,35 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(s.get_float_value(2), 0.00233152, delta=1e-4)
         self.assertEqual(s.get_number_of_int(), 0)
 
+    def test_saxs_restraint_all_rigid(self):
+        """Check saxs restraint with all particles in a rigid body"""
+        m, particles, exp_profile, model_profile = self.make_restraint()
+
+        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
+        score = saxs_restraint.evaluate(False)
+        self.assertAlmostEqual(score, 0.2916, delta=0.01)
+
+        # SAXS restraint should still work if all particles are rigid,
+        # and the score should be unchanged
+        rb = IMP.atom.create_rigid_body(particles)
+        r = IMP.saxs.Restraint(particles, exp_profile)
+        self.assertAlmostEqual(r.evaluate(False), 0.2916, delta=0.01)
+
+    def test_saxs_restraint_some_rigid(self):
+        """Check saxs restraint with some particles in rigid bodies"""
+        m, particles, exp_profile, model_profile = self.make_restraint()
+
+        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
+        score = saxs_restraint.evaluate(False)
+        self.assertAlmostEqual(score, 0.2916, delta=0.01)
+
+        # Score should be unchanged
+        self.assertEqual(len(particles), 1001)
+        rb1 = IMP.atom.create_rigid_body(particles[:400])
+        rb2 = IMP.atom.create_rigid_body(particles[400:700])
+        r = IMP.saxs.Restraint(particles, exp_profile)
+        self.assertAlmostEqual(r.evaluate(False), 0.2916, delta=0.01)
+
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
         m = IMP.Model()
