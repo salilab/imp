@@ -179,7 +179,7 @@ std::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
                                        std::array<char, 8> segment,
                                        double resolution) {
   std::array<int, 2> ret = {{0}};
-  // must be firest due to ret
+  // must be first due to ret
   if (altf_.get_is(cur))
     boost::tie(cur, altid, ret) = handle_alternative(
         cur, body, chain, resid, resname, altid, segment, resolution);

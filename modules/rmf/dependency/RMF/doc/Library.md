@@ -32,7 +32,7 @@ its hierarchy and objects in the program accessing. The methods
 RMF::FileConstHandle::get_node_handle_from_association(),
 RMF::NodeConstHandle::set_association() and
 RMF::NodeConstHandle::get_assocation() can be used to take advantage of
-this. The idea is that one can store pointers to the programatic
+this. The idea is that one can store pointers to the programmatic
 data structures corresponding to the nodes and so avoid maintaining
 ones own lookup table. Any function used in an association must support
 a `get_uint()` function. An implementation is provided for pointers.

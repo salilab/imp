@@ -2,7 +2,7 @@ Change Log {#changelog}
 ==========
 
 # 1.5.1 - 2023-06-08 # {#changelog_1_5_1}
-- Any String or Strings attributes containing fileystem paths are now
+- Any String or Strings attributes containing filesystem paths are now
   rewritten when the RMF static frame is cloned (e.g. during `rmf_slice`
   or `rmf_cat`) so that they are relative to the new file, not the old one.
   This relies on the convention that path attributes have names ending in
@@ -57,7 +57,7 @@ Change Log {#changelog}
   be accurately stored in the file.)
 
 # 1.1 - 2014-03-07 # {#changelog_1_1}
-- To be more consisent, RMF::decorator::Domain and
+- To be more consistent, RMF::decorator::Domain and
 	RMF::decorator::Fragment had their access methods modified to
 	include `residue` in the name.
 - A Pymol plugin was added
