@@ -44,7 +44,7 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
         @param label Label for the restraint in outputs
 
         @param maxq - maximum q value that the restraint will be evaluated at
-               Default vaules for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
+               Default values for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
                CA_ATOMS and RESIDUES = 0.15. These values were eyeballed
                by comparing ALL_ATOM calculated SAXS profiles to those
                calculated with the reduced representations, so could
@@ -265,7 +265,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
     @staticmethod
     def _logspace(a, b, num=100):
-        """Mimick numpy's logspace function"""
+        """Mimic numpy's logspace function"""
         for i in range(num):
             val = a + float(b - a) / float(num - 1) * i
             yield 10 ** val

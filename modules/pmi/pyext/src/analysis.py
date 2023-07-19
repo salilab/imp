@@ -439,7 +439,7 @@ class Clustering(object):
                 template_rmsd, transformation = Ali.align()
 
                 # here we calculate the rmsd
-                # we will align two models based n the nuber of subunits
+                # we will align two models based n the number of subunits
                 # provided and transform coordinates of model 2 to model 1
                 coords_f1 = dict([(pr, all_coords[model_list_names[f1]][pr])
                                  for pr in rmsd_protein_names])
@@ -1379,10 +1379,10 @@ class GetContactMap(object):
         distances = distances <= self.distance
         self.contactmap += distances
 
-    def add_xlinks(self, filname,
+    def add_xlinks(self, filename,
                    identification_string='ISDCrossLinkMS_Distance_'):
         self.xlinks = 1
-        with open(filname) as data:
+        with open(filename) as data:
             D = data.readlines()
 
         for d in D:

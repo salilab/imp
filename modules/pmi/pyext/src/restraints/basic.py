@@ -551,7 +551,7 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
 
         br.add_contribution_particles(sel_resi, sel_target)
 
-        # Compute interpolation paramaters
+        # Compute interpolation parameters
         yi = ((cutoff**2/(2*sigma**2)
                - math.log(1/math.sqrt(2*math.pi*sigma*sigma))+cutoff*xi/2.)
               / (cutoff/2.))

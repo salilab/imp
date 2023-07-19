@@ -918,12 +918,12 @@ def input_adaptor(stuff, pmi_resolution=0, flatten=False, selection_tuple=None,
     else:
         stuff = [stuff]
 
-    # check that it is a hierarchy homogenously:
+    # check that it is a hierarchy homogeneously:
     try:
         is_hierarchy = all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
     except (NotImplementedError, TypeError):
         is_hierarchy = False
-    # get the other types homogenously
+    # get the other types homogeneously
     is_system = all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
     is_state = all(isinstance(s, IMP.pmi.topology.State) for s in stuff)
     is_molecule = all(isinstance(s, IMP.pmi.topology.Molecule) for s in stuff)

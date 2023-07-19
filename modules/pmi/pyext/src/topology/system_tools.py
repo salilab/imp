@@ -260,7 +260,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
     If any volume-based representations (e.g.,densities) are requested,
     will instead create a single Representation node.
     All reps are added as children of the passed parent.
-    @param parent The Molecule to which we'll add add representations
+    @param parent The Molecule to which we'll add representations
     @param rep What to build. An instance of pmi::topology::_Representation
     @param coord_finder A _FindCloseStructure object to help localize beads
     """

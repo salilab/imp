@@ -1375,7 +1375,7 @@ class AnalysisReplicaExchange0(object):
                     rmsd_coordinates)
 
             if self.rank == 0:
-                # save needed informations in external files
+                # save needed information in external files
                 self.save_objects(
                     [best_score_feature_keyword_list_dict,
                      rmf_file_name_index_dict],
@@ -1414,7 +1414,7 @@ class AnalysisReplicaExchange0(object):
                     file_name=distance_matrix_file)
 
 # ------------------------------------------------------------------------
-# Alteratively, load the distance matrix from file and cluster that
+# Alternatively, load the distance matrix from file and cluster that
 # ------------------------------------------------------------------------
         else:
             if self.rank == 0:
@@ -1436,7 +1436,7 @@ class AnalysisReplicaExchange0(object):
             self.comm.Barrier()
 
 # ------------------------------------------------------------------------
-# now save all informations about the clusters
+# now save all information about the clusters
 # ------------------------------------------------------------------------
 
         if self.rank == 0:
@@ -2505,7 +2505,7 @@ class AnalysisReplicaExchange(object):
     def set_reference(self, reference, cluster):
         """
         Fix the reference structure for structural alignment, rmsd and
-        chain assignemnt
+        chain assignment
 
         @param reference can be either "Absolute" (cluster center of the
                first cluster) or Relative (cluster center of the current
@@ -2522,7 +2522,7 @@ class AnalysisReplicaExchange(object):
 
     def apply_molecular_assignments(self, n1):
         """
-        compute the molecular assignemnts between multiple copies
+        compute the molecular assignments between multiple copies
         of the same sequence. It changes the Copy index of Molecules
         """
         _ = self.stath1[n1]

@@ -575,7 +575,7 @@ class DegreesOfFreedom(object):
         return list(fixed_xyz), list(fixed_rb)
 
     def enable_all_movers(self):
-        """Reenable all movers: previously fixed particles will be released"""
+        """Re-enable all movers: previously fixed particles will be released"""
         self.disabled_movers = []
 
     def get_nuisances_from_restraint(self, r):

@@ -9,7 +9,7 @@ membrane is represented as the surface of a half torus, also lying in
 the xy plane and centered at the origin. Individual proteins
 (or parts of proteins, such as the N- or C- termini) are then localized to
 different regions of the complex (e.g. near the membrane or pore, or on
-the nuclear or cytoplasmic side) by simple restraints on ther Cartesian
+the nuclear or cytoplasmic side) by simple restraints on their Cartesian
 coordinates.
 """
 

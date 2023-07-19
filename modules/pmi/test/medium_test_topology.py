@@ -94,7 +94,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
                                density_residues_per_component=20,
                                density_voxel_size=3.0)
 
-        # before we add the beads representation we chack the consistency
+        # before we add the beads representation we check the consistency
         # of mol.represented with the list obtained by removing it from the
         # whole molecule, and store the list of results
         mol_beads_1 = mol[:] - mol.get_represented()
@@ -161,7 +161,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
                                density_residues_per_component=20,
                                density_voxel_size=3.0)
 
-        # before we add the beads representation we chack the consistency
+        # before we add the beads representation we check the consistency
         # of mol.represented with the list obtained by removing it from the
         # whole molecule, and store the list of results
         mol_beads_1 = mol[:] - mol.get_represented()
