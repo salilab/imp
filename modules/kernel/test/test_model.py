@@ -351,6 +351,17 @@ class Tests(IMP.test.TestCase):
         m2 = pickle.loads(dump)
         self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
 
+    def test_serialize_sparse_int_attributes(self):
+        """Check that Model sparse int attributes are (de-)serialized"""
+        m = IMP.Model()
+        ik = IMP.SparseIntKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(ik, p.get_index(), 42)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_attribute(ik, p.get_index()), 42)
+
     def test_serialize_ints_attributes(self):
         """Check that Model ints attributes are (de-)serialized"""
         m = IMP.Model()
@@ -404,6 +415,17 @@ class Tests(IMP.test.TestCase):
         """Check that Model string attributes are (de-)serialized"""
         m = IMP.Model()
         sk = IMP.StringKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(sk, p.get_index(), "test attribute")
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_attribute(sk, p.get_index()), "test attribute")
+
+    def test_serialize_sparse_string_attributes(self):
+        """Check that Model sparse string attributes are (de-)serialized"""
+        m = IMP.Model()
+        sk = IMP.SparseStringKey("hi")
         p = IMP.Particle(m)
         m.add_attribute(sk, p.get_index(), "test attribute")
 

@@ -15,9 +15,11 @@
 #include <IMP/Pointer.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
+#include <boost/container/flat_map.hpp>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/string.hpp>
+#include <cereal/types/map.hpp>
 
 #include <limits>
 
@@ -230,6 +232,29 @@ struct StringAttributeTableTraits : public DefaultTraits<String, StringKey> {
   static Value get_invalid() { return "This is an invalid string in IMP"; }
   static bool get_is_valid(String f) { return f != get_invalid(); }
 };
+
+/** Base class for defining traits of sparse attributes in the attribute table
+    to be stored in a Model object.
+    Template params:
+    T - the attribute type
+    K - the attribute key type
+*/
+template <class T, class K>
+struct DefaultSparseTraits {
+  typedef boost::container::flat_map<ParticleIndex, T> Container;
+  typedef T Value;
+  typedef T PassValue;
+  typedef K Key;
+  typedef PassValue const* ContainerConstDataAccess;
+  typedef Value* ContainerDataAccess;
+};
+
+struct SparseStringAttributeTableTraits
+   : public DefaultSparseTraits<String, SparseStringKey> {};
+
+struct SparseIntAttributeTableTraits
+   : public DefaultSparseTraits<Int, SparseIntKey> {};
+
 
 // The traits for the particle class are declared in the Particle.h
 

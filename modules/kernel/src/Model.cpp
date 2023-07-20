@@ -54,6 +54,12 @@ Model::Model(std::string name)
   internal::ParticlesAttributeTable::set_masks(&this->Masks::read_mask_,
                                                &this->Masks::write_mask_,
                                                &this->Masks::add_remove_mask_);
+  internal::SparseStringAttributeTable::set_masks(&this->Masks::read_mask_,
+                                            &this->Masks::write_mask_,
+                                            &this->Masks::add_remove_mask_);
+  internal::SparseIntAttributeTable::set_masks(&this->Masks::read_mask_,
+                                            &this->Masks::write_mask_,
+                                            &this->Masks::add_remove_mask_);
 #endif
 }
 
@@ -145,6 +151,8 @@ void Model::do_remove_particle(ParticleIndex pi) {
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);
+  internal::SparseStringAttributeTable::clear_attributes(pi);
+  internal::SparseIntAttributeTable::clear_attributes(pi);
   free_particles_.push_back(pi);
   particle_index_[pi]->set_model(nullptr);
   particle_index_[pi] = nullptr;
