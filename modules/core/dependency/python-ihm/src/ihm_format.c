@@ -229,7 +229,7 @@ struct ihm_mapping {
   ihm_destroy_callback value_destroy_func;
 };
 
-/* Make a new mapping from case-insensitive strings to arbitary pointers.
+/* Make a new mapping from case-insensitive strings to arbitrary pointers.
    The mapping uses a simple binary search (more memory efficient than
    a hash table and generally faster too since the number of keys is quite
    small). */

@@ -375,7 +375,7 @@ class Tests(unittest.TestCase):
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=5)
         r = a.residue(3)
-        self.assertIsNone(r.entity)
+        self.assertEqual(r.entity, e)
         self.assertEqual(r.asym, a)
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
@@ -400,7 +400,7 @@ class Tests(unittest.TestCase):
         a = asym.residue(3).atom('CA')
         self.assertEqual(a.id, 'CA')
         self.assertEqual(a.residue.seq_id, 3)
-        self.assertIsNone(a.entity)
+        self.assertEqual(a.entity, e)
         self.assertEqual(a.asym, asym)
         self.assertEqual(a.seq_id, 3)
 

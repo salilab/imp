@@ -22,6 +22,7 @@ import ihm.dumper
 import ihm.model
 import ihm.protocol
 import sys
+import os
 
 
 def add_ihm_info(s):
@@ -61,6 +62,10 @@ if len(sys.argv) > 2:
     out_fname = sys.argv[2]
 else:
     out_fname = 'output.cif'
+
+if (os.path.exists(fname) and os.path.exists(out_fname)
+        and os.path.samefile(fname, out_fname)):
+    raise ValueError("Input and output are the same file")
 
 with open(fname) as fh:
     with open(out_fname, 'w') as fhout:

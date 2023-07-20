@@ -1230,7 +1230,7 @@ _ihm_external_files.details
     def test_dataset_dumper_duplicates_samedata_sameloc(self):
         """DatasetDumper doesn't duplicate same datasets in same location"""
         system = ihm.System()
-        loc1 = ihm.location.DatabaseLocation("mydb", "abc", "1.0", "")
+        loc1 = ihm.location.DatabaseLocation("abc", "1.0", "")
 
         # Identical datasets in the same location aren't duplicated
         cx1 = ihm.dataset.CXMSDataset(loc1)
@@ -1246,8 +1246,8 @@ _ihm_external_files.details
     def test_dataset_dumper_duplicates_samedata_diffloc(self):
         """DatasetDumper is OK with same datasets in different locations"""
         system = ihm.System()
-        loc1 = ihm.location.DatabaseLocation("mydb", "abc", "1.0", "")
-        loc2 = ihm.location.DatabaseLocation("mydb", "xyz", "1.0", "")
+        loc1 = ihm.location.DatabaseLocation("abc", "1.0", "")
+        loc2 = ihm.location.DatabaseLocation("xyz", "1.0", "")
         cx1 = ihm.dataset.CXMSDataset(loc1)
         cx2 = ihm.dataset.CXMSDataset(loc2)
         dump = ihm.dumper._DatasetDumper()
@@ -1261,7 +1261,7 @@ _ihm_external_files.details
         """DatasetDumper is OK with different datasets in same location"""
         system = ihm.System()
         # Different datasets in same location are OK (but odd)
-        loc2 = ihm.location.DatabaseLocation("mydb", "xyz", "1.0", "")
+        loc2 = ihm.location.DatabaseLocation("xyz", "1.0", "")
         cx2 = ihm.dataset.CXMSDataset(loc2)
         em3d = ihm.dataset.EMDensityDataset(loc2)
         dump = ihm.dumper._DatasetDumper()

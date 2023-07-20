@@ -1064,7 +1064,7 @@ _ihm_dataset_related_db_reference.details
             self.assertEqual(d3.location.access_code, 'EMD-123')
             self.assertIsNone(d3.location.version)
             self.assertIsNone(d3.location.details)
-            self.assertIsNone(d4.location.db_name)
+            self.assertEqual(d4.location.db_name, 'Other')
             self.assertEqual(d4.location.__class__,
                              ihm.location.DatabaseLocation)
             self.assertIsNone(d4.location.access_code)

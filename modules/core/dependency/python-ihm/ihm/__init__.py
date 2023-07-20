@@ -575,7 +575,7 @@ class Software(object):
     """Software used as part of the modeling protocol.
 
        :param str name: The name of the software.
-       :param str classification: The major function of the sofware, for
+       :param str classification: The major function of the software, for
               example 'model building', 'sample preparation',
               'data collection'.
        :param str description: A longer text description of the software.
@@ -1086,6 +1086,8 @@ class Residue(object):
     def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
         self.asym = asym
+        if entity is None and asym:
+            self.entity = asym.entity
         # todo: check id for validity (at property read time)
         self.seq_id = seq_id
 
@@ -1106,8 +1108,7 @@ class Residue(object):
                             "for asymmetric units")
 
     def _get_comp(self):
-        entity = self.entity or self.asym.entity
-        return entity.sequence[self.seq_id - 1]
+        return self.entity.sequence[self.seq_id - 1]
     comp = property(_get_comp,
                     doc="Chemical component (residue type)")
 

@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(p_ref != p_unequal)
 
     def test_probe_descriptor_init(self):
-        """ Test initalization of ProbeDescriptor """
+        """ Test initialization of ProbeDescriptor """
         p = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor='foo',
                                     chromophore_chem_descriptor='bar',
                                     chromophore_center_atom='foo2')
@@ -399,7 +399,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(e_ref != e_unequal)
 
     def test_fret_analysis_init(self):
-        """Test initalization of FRETAnalysis."""
+        """Test initialization of FRETAnalysis."""
         f = ihm.flr.FRETAnalysis(
             experiment='this_experiment',
             sample_probe_1='this_sample_probe_1',

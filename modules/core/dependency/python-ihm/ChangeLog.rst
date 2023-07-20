@@ -1,3 +1,10 @@
+HEAD
+====
+  - :class:`ihm.location.DatabaseLocation` no longer accepts a ``db_name``
+    parameter. Derived classes (such as :class:`ihm.location.PDBLocation`)
+    should be used instead; the base class should only be used for "other"
+    databases that are not described in the IHM dictionary (#116).
+
 0.38 - 2023-05-26
 =================
   - Convenience classes are added to describe datasets stored in

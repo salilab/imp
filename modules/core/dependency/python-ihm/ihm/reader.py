@@ -1421,11 +1421,11 @@ class _DatasetDBRefHandler(Handler):
         super(_DatasetDBRefHandler, self).__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.location.DatabaseLocation
+        # or ihm.location.DatabaseLocation itself
         self.type_map = dict(
-            (x[1]._db_name.lower(), x[1])
+            (x[1].db_name.lower(), x[1])
             for x in inspect.getmembers(ihm.location, inspect.isclass)
-            if issubclass(x[1], ihm.location.DatabaseLocation)
-            and x[1] is not ihm.location.DatabaseLocation)
+            if issubclass(x[1], ihm.location.DatabaseLocation))
 
     def __call__(self, dataset_list_id, db_name, id, version, details,
                  accession_code):
@@ -1434,7 +1434,7 @@ class _DatasetDBRefHandler(Handler):
         dbloc = self.sysr.db_locations.get_by_id(id,
                                                  self.type_map.get(typ, None))
         # Preserve user-provided name for unknown databases
-        if dbloc.db_name is None and db_name is not None:
+        if dbloc.db_name == 'Other' and db_name is not None:
             dbloc.db_name = db_name
         ds.location = dbloc
         self.copy_if_present(

@@ -504,7 +504,7 @@ def _get_mask_and_type(data):
             mask[i] = 1 if val is None else 2
         else:
             seen_types.add(type(val))
-    # If a mix of types, coerce to that of the highest precendence
+    # If a mix of types, coerce to that of the highest precedence
     # (mixed int/float can be represented as float; mix int/float/str can
     # be represented as str; bool is represented as str)
     if not seen_types or bool in seen_types or str in seen_types:

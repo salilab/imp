@@ -16,16 +16,16 @@ class Tests(unittest.TestCase):
 
     def test_database_location(self):
         """Test DatabaseLocation"""
-        dl1 = ihm.location.DatabaseLocation('mydb', 'abc', version=1)
-        dl2 = ihm.location.DatabaseLocation('mydb', 'abc', version=1)
+        dl1 = ihm.location.DatabaseLocation('abc', version=1)
+        dl2 = ihm.location.DatabaseLocation('abc', version=1)
         self.assertEqual(dl1, dl2)
-        dl3 = ihm.location.DatabaseLocation('mydb', 'abc', version=2)
+        dl3 = ihm.location.DatabaseLocation('abc', version=2)
         self.assertNotEqual(dl1, dl3)
         # details can change without affecting equality
-        dl4 = ihm.location.DatabaseLocation('mydb', 'abc', version=1,
+        dl4 = ihm.location.DatabaseLocation('abc', version=1,
                                             details='foo')
         self.assertEqual(dl1, dl4)
-        self.assertEqual(dl1.db_name, 'mydb')
+        self.assertEqual(dl1.db_name, 'Other')
         self.assertEqual(dl1.access_code, 'abc')
         self.assertEqual(dl1.version, 1)
         self.assertIsNone(dl1.details)

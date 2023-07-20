@@ -718,7 +718,7 @@ class _AsymIDProvider(object):
         self.index += 1
         while self.ids[self.index] in self.seen_ids:
             self.index += 1
-        # Note tha we don't need to add our own IDs to seen_ids since
+        # Note that we don't need to add our own IDs to seen_ids since
         # they are already guaranteed to be unique
         return self.ids[self.index]
 

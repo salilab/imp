@@ -55,6 +55,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(ret, 1)
 
     @unittest.skipIf(sys.version_info[0] < 3, "make-mmcif.py needs Python 3")
+    def test_same_file(self):
+        """Check that make-mmcif fails if input and output are the same"""
+        incif = utils.get_input_file_name(TOPDIR, 'struct_only.cif')
+        ret = subprocess.call([sys.executable, MAKE_MMCIF, incif, incif])
+        self.assertEqual(ret, 1)
+
+    @unittest.skipIf(sys.version_info[0] < 3, "make-mmcif.py needs Python 3")
     def test_mini(self):
         """Check that make-mmcif works given only basic atom info"""
         incif = utils.get_input_file_name(TOPDIR, 'mini.cif')
