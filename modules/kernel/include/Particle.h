@@ -85,6 +85,9 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 
   IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseString, string, String);
   IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseInt, int, Int);
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseFloat, float, Float);
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseParticleIndex,
+                                                 particle_index, ParticleIndex);
 
   /** @name Float Attributes
        Float attributes can be optimized, meaning an Optimizer class is
@@ -279,6 +282,9 @@ IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, Object *);
 
 IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseString, string, String);
 IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseInt, int, Int);
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseFloat, float, Float);
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseParticleIndex, particle_index,
+                                       ParticleIndex);
 
 #endif // DOXYGEN
 

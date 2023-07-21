@@ -374,6 +374,8 @@ namespace IMP {
   %template(FloatsKey) ::IMP::Key<10>;
   %template(SparseStringKey) ::IMP::Key<12>;
   %template(SparseIntKey) ::IMP::Key<13>;
+  %template(SparseFloatKey) ::IMP::Key<14>;
+  %template(SparseParticleIndexKey) ::IMP::Key<15>;
 }
 
 %inline %{

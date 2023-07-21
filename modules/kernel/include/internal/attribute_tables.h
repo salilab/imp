@@ -1009,6 +1009,10 @@ typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
     SparseStringAttributeTable;
 typedef SparseBasicAttributeTable<internal::SparseIntAttributeTableTraits>
     SparseIntAttributeTable;
+typedef SparseBasicAttributeTable<internal::SparseFloatAttributeTableTraits>
+    SparseFloatAttributeTable;
+typedef SparseBasicAttributeTable<internal::SparseParticleAttributeTableTraits>
+    SparseParticleAttributeTable;
 
 struct Masks {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL

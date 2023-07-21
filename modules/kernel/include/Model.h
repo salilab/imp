@@ -100,7 +100,9 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable,
                               public internal::SparseStringAttributeTable,
-                              public internal::SparseIntAttributeTable
+                              public internal::SparseIntAttributeTable,
+                              public internal::SparseFloatAttributeTable,
+                              public internal::SparseParticleAttributeTable
 #endif
                               {
   typedef std::set<ModelObject *> Edges;
@@ -192,7 +194,9 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::ParticleAttributeTable>(this),
        cereal::base_class<internal::ParticlesAttributeTable>(this),
        cereal::base_class<internal::SparseStringAttributeTable>(this),
-       cereal::base_class<internal::SparseIntAttributeTable>(this));
+       cereal::base_class<internal::SparseIntAttributeTable>(this),
+       cereal::base_class<internal::SparseFloatAttributeTable>(this),
+       cereal::base_class<internal::SparseParticleAttributeTable>(this));
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
@@ -340,6 +344,8 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
   IMP_MODEL_SPARSE_IMPORT(internal::SparseStringAttributeTable);
   IMP_MODEL_SPARSE_IMPORT(internal::SparseIntAttributeTable);
+  IMP_MODEL_SPARSE_IMPORT(internal::SparseFloatAttributeTable);
+  IMP_MODEL_SPARSE_IMPORT(internal::SparseParticleAttributeTable);
 #endif
   //! Clear all the cache attributes of a given particle.
   void clear_particle_caches(ParticleIndex pi);
@@ -472,6 +478,8 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object *);
   IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(SparseString, String);
   IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(SparseInt, Int);
+  IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(SparseFloat, Float);
+  IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(SparseParticleIndex, ParticleIndex);
   void set_is_optimized(FloatKey, ParticleIndex, bool);
   void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
                          const DerivativeAccumulator &da);

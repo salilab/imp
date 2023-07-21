@@ -90,6 +90,14 @@ IMP_VALUES(SparseStringKey, SparseStringKeys);
 typedef Key<13> SparseIntKey;
 IMP_VALUES(SparseIntKey, SparseIntKeys);
 
+//! The type used to identify sparse float attributes in the Particles
+typedef Key<14> SparseFloatKey;
+IMP_VALUES(SparseFloatKey, SparseFloatKeys);
+
+//! The type used to identify sparse particle attributes in the Particles
+typedef Key<15> SparseParticleIndexKey;
+IMP_VALUES(SparseParticleIndexKey, SparseParticleIndexKeys);
+
 /** @} */
 
 class Restraint;

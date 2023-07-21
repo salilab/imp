@@ -255,6 +255,12 @@ struct SparseStringAttributeTableTraits
 struct SparseIntAttributeTableTraits
    : public DefaultSparseTraits<Int, SparseIntKey> {};
 
+struct SparseFloatAttributeTableTraits
+   : public DefaultSparseTraits<Float, SparseFloatKey> {};
+
+struct SparseParticleAttributeTableTraits
+   : public DefaultSparseTraits<ParticleIndex, SparseParticleIndexKey> {};
+
 
 // The traits for the particle class are declared in the Particle.h
 
