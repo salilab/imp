@@ -359,7 +359,7 @@ class SparseBasicAttributeTable {
     if (data_.size() <= k.get_index()) {
       return false;
     } else {
-      return data_[k.get_index()].contains(particle);
+      return data_[k.get_index()].count(particle) > 0;
     }
   }
   void set_attribute(Key k, ParticleIndex particle,
