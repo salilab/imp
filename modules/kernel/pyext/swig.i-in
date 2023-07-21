@@ -334,6 +334,11 @@ IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexesKey, Key, ParticleIndexesKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ModelKey, Key, ModelKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, TriggerKey, Key, TriggerKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, SparseFloatKey, Key, SparseFloatKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, SparseIntKey, Key, SparseIntKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, SparseStringKey, Key, SparseStringKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, SparseParticleIndexKey, Key,
+                        SparseParticleIndexKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
