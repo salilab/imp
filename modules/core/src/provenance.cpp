@@ -44,8 +44,8 @@ Provenance clone_one(Provenance prov) {
 
 } // anonymous namespace
 
-ParticleIndexKey Provenanced::get_provenance_key() {
-  static const ParticleIndexKey provenance("provenance");
+SparseParticleIndexKey Provenanced::get_provenance_key() {
+  static const SparseParticleIndexKey provenance("provenance");
   return provenance;
 }
 
@@ -53,8 +53,8 @@ void Provenanced::show(std::ostream &out) const {
   out << "Provenanced" << std::endl;
 }
 
-ParticleIndexKey Provenance::get_previous_key() {
-  static const ParticleIndexKey previous("previous_provenance");
+SparseParticleIndexKey Provenance::get_previous_key() {
+  static const SparseParticleIndexKey previous("previous_provenance");
   return previous;
 }
 
@@ -138,8 +138,8 @@ SparseIntKey ClusterProvenance::get_members_key() {
   return members;
 }
 
-FloatKey ClusterProvenance::get_precision_key() {
-  static const FloatKey precision("cp_precision");
+SparseFloatKey ClusterProvenance::get_precision_key() {
+  static const SparseFloatKey precision("cp_precision");
   return precision;
 }
 
@@ -168,8 +168,8 @@ SparseStringKey FilterProvenance::get_method_key() {
   return method;
 }
 
-FloatKey FilterProvenance::get_threshold_key() {
-  static const FloatKey threshold("fp_threshold");
+SparseFloatKey FilterProvenance::get_threshold_key() {
+  static const SparseFloatKey threshold("fp_threshold");
   return threshold;
 }
 

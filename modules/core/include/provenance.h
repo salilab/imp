@@ -34,7 +34,7 @@ class IMPCOREEXPORT Provenance : public Decorator {
     m->add_attribute(get_previous_key(), pi, pi);
   }
 
-  static ParticleIndexKey get_previous_key();
+  static SparseParticleIndexKey get_previous_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -353,7 +353,7 @@ class IMPCOREEXPORT FilterProvenance : public Provenance {
   }
 
   static SparseStringKey get_method_key();
-  static FloatKey get_threshold_key();
+  static SparseFloatKey get_threshold_key();
   static SparseIntKey get_frames_key();
 
   // get list of method names allowed in FilterProvenance
@@ -443,7 +443,7 @@ class IMPCOREEXPORT ClusterProvenance : public Provenance {
   }
 
   static SparseIntKey get_members_key();
-  static FloatKey get_precision_key();
+  static SparseFloatKey get_precision_key();
   static SparseStringKey get_density_key();
 
 public:
@@ -635,7 +635,7 @@ class IMPCOREEXPORT Provenanced : public Decorator {
     m->add_attribute(get_provenance_key(), pi, p.get_particle_index());
   }
 
-  static ParticleIndexKey get_provenance_key();
+  static SparseParticleIndexKey get_provenance_key();
 public:
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
