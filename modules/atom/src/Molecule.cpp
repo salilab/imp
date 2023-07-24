@@ -1,5 +1,5 @@
 /**
- *  \file Atom.cpp   \brief Simple atoms decorator.
+ *  \file Molecule.cpp   \brief A decorator for Molecules.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
