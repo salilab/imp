@@ -11,13 +11,14 @@ import pathlib
 p = pathlib.Path('.')
 filere = re.compile(r'\\file\s+(\S+)')
 
+
 def read_name(fname):
     with open(fname) as fh:
         for line in fh:
             m = filere.search(line)
             if m:
                 return m.group(1)
-        
+
 
 for f in p.rglob("*.h"):
     name = read_name(f)
