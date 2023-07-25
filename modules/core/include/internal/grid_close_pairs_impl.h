@@ -1,5 +1,5 @@
 /**
- *  \file grid_close_pair_impl.h
+ *  \file internal/grid_close_pairs_impl.h
  *  \brief Implementation of close pairs finder that is based on a grid hierarchy
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.

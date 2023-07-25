@@ -1,6 +1,6 @@
 /**
- *  \file IMP/score_functor/OpenCubicSpline.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \file internal/RawOpenCubicSpline.h
+ *  \brief Implementation of a non-periodic cubic spline.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

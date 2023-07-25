@@ -1,6 +1,6 @@
 /**
- *  \file cgal/internal/polyhedrons.h
- *  \brief manipulation of text, and Interconversion between text and numbers
+ *  \file cgal/internal/sphere_cover.h
+ *  \brief Generate points that cover a sphere.
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 

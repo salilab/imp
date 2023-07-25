@@ -1,5 +1,6 @@
 /**
- * \file Projection \brief basic projection class
+ * \file internal/Projection.h
+ * brief basic projection class
  *
  * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

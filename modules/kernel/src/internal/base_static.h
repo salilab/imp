@@ -1,6 +1,6 @@
 /**
- *  \file internal/static.h
- *  \brief Various useful utilities
+ *  \file internal/base_static.h
+ *  \brief Static variables.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

@@ -1,9 +1,7 @@
 /**
- *  \file internal/core_FUNCTIONNAME_helpers.h
+ *  \file internal/ListLikeContainer.h
  *  \brief a templated list-like container of Base::ContainedIndexTypes
  * (e.g. ParticlePairIndexes)
- *
- *  BLURB
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

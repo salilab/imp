@@ -1,5 +1,6 @@
 /**
- * \file sinc_function \brief caching of sinc values
+ * \file internal/variance_helpers.h
+ * \brief Distribution and error functions.
  *
  * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

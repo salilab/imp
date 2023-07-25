@@ -1,5 +1,5 @@
 /**
- *  \file internal/swig_helpers.h
+ *  \file internal/swig_helpers_base.h
  *  \brief Functions for use in swig wrappers
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.

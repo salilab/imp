@@ -1,6 +1,6 @@
 /**
- *  \file generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file internal/ContainerScoreState.h
+ *  \brief Compatibility class to add ScoreStates for Containers.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

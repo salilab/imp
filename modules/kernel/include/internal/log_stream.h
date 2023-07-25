@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/log_stream.h
+ *  \brief Various useful utilities for logging
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

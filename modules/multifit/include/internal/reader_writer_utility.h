@@ -1,5 +1,6 @@
 /**
- *  \file fft_fitting_utils.h   \brief masking function for fft fitting
+ *  \file internal/reader_writer_utility.h
+ *  \brief Utilities for reading/writing files.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

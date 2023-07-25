@@ -1,6 +1,6 @@
 /**
- *  \file internal/graph_utility.h
- *  \brief Various useful utilities
+ *  \file internal/base_graph_utility.h
+ *  \brief Various useful utilities for working with graphs.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

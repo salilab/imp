@@ -1,5 +1,5 @@
 /**
- *  \file rigid_pair_score.h
+ *  \file internal/sinks.h
  *  \brief utilities for output "sink", including classes ParticleSink,
  *         ParticlePairSink, ParticleIndexPairSink, etc.
  *

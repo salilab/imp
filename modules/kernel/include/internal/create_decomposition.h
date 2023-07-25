@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/create_decomposition.h
+ *  \brief Various useful utilities for decomposing scores.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

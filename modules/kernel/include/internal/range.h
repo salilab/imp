@@ -1,6 +1,6 @@
 /**
- *  \file internal/log.h
- *  \brief Various useful utilities
+ *  \file internal/range.h
+ *  \brief Useful utilities for working with ranges.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

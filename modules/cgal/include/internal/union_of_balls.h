@@ -1,6 +1,6 @@
 /**
- *  \file cgal/internal/polyhedrons.h
- *  \brief manipulation of text, and Interconversion between text and numbers
+ *  \file cgal/internal/union_of_balls.h
+ *  \brief Utilities to handle multiple spheres.
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 

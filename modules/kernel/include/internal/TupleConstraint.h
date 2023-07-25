@@ -1,6 +1,6 @@
 /**
- *  \file generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file internal/TupleConstraint.h
+ *  \brief Templated Constraint.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

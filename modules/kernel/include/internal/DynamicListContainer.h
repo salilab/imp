@@ -1,8 +1,6 @@
 /**
- *  \file ListClassnameContainer.h
- *  \brief Store a list of PLURALVARIABLETYPE
- *
- *  BLURB
+ *  \file internal/DynamicListContainer.h
+ *  \brief Store a dynamic list of objects
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

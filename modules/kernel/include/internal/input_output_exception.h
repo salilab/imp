@@ -1,6 +1,6 @@
 /**
- *  \file IMP/exception.h
- *  \brief Exception definitions and assertions.
+ *  \file IMP/internal/input_output_exception.h
+ *  \brief An exception when something is missing from an input or output list.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

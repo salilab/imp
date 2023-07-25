@@ -1,5 +1,5 @@
 /**
- *  \file internal/static.h
+ *  \file internal/base_static.h
  *  \brief Various useful utilities
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.

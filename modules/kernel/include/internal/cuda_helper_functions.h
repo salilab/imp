@@ -1,6 +1,6 @@
 /**
- *  \file IMP/kernel/random_number_generation.h
- *  \brief GPU or CPU pooled random number generation
+ *  \file IMP/kernel/internal/cuda_helper_functions.h
+ *  \brief CUDA helper functions, e.g. for error handling.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

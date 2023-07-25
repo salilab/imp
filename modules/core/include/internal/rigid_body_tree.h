@@ -1,6 +1,6 @@
 /**
- *  \file rigid_pair_score.h
- *  \brief utilities for rigid pair scores.
+ *  \file internal/rigid_body_tree.h
+ *  \brief Utilities for hierarchies of rigid bodies.
  *
  *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */

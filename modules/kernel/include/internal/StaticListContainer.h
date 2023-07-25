@@ -1,7 +1,6 @@
 /**
- *  \file ListClassnameContainer.h    \brief Store a list of PLURALVARIABLETYPE
- *
- *  BLURB
+ *  \file internal/StaticListContainer.h
+ *  \brief Store a static list of objects.
  *
  *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */

@@ -1,5 +1,6 @@
 /**
- *  \file random_generator.h   \brief random number generator
+ *  \file internal/centrality_clustering.h
+ *  \brief Clustering
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

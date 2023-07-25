@@ -1,6 +1,6 @@
 /**
- *  \file IMP/functor.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file internal/functors.h
+ *  \brief Functors to compare for (in)equality.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
- *  \file internal/log.h
- *  \brief Various useful utilities
+ *  \file internal/eat.h
+ *  \brief Fake usage of variable (for IMP_UNUSED)
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
