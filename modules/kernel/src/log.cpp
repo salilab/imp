@@ -9,7 +9,7 @@
 #include "IMP/exception.h"
 #include "IMP/file.h"
 #include "IMP/Object.h"
-#include "internal/base_static.h"
+#include "internal/static.h"
 #include <IMP/internal/SimpleTimer.h>
 #include "IMP/thread_macros.h"
 #ifdef _OPENMP

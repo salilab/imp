@@ -6,7 +6,7 @@
  */
 
 #include "IMP/random.h"
-#include "IMP/internal/base_static.h"
+#include "IMP/internal/static.h"
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

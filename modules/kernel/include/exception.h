@@ -12,7 +12,7 @@
 #include <IMP/kernel_config.h>
 #include "compiler_macros.h"
 #include "enums.h"
-#include "internal/base_static.h"
+#include "internal/static.h"
 #include <string>
 #include <stdexcept>
 

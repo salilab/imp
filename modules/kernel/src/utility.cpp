@@ -9,7 +9,7 @@
 #include <IMP/utility.h>
 #include <boost/unordered_map.hpp>
 #include <boost/format.hpp>
-#include "internal/base_static.h"
+#include "internal/static.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

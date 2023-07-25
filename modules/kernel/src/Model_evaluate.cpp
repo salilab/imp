@@ -18,7 +18,7 @@
 #include "IMP/internal/evaluate_utility.h"
 #include <IMP/CreateLogContext.h>
 #include <IMP/thread_macros.h>
-#include <IMP/internal/base_static.h>
+#include <IMP/internal/static.h>
 #include <numeric>
 
 IMPKERNEL_BEGIN_NAMESPACE

@@ -1,12 +1,12 @@
 /**
- *  \file internal/base_static.h
+ *  \file internal/static.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPKERNEL_INTERNAL_BASE_STATIC_H
-#define IMPKERNEL_INTERNAL_BASE_STATIC_H
+#ifndef IMPKERNEL_INTERNAL_STATIC_H
+#define IMPKERNEL_INTERNAL_STATIC_H
 
 #include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
@@ -48,4 +48,4 @@ extern IMPKERNELEXPORT AdvancedFlag<bool> show_seed;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif /* IMPKERNEL_INTERNAL_BASE_STATIC_H */
+#endif /* IMPKERNEL_INTERNAL_STATIC_H */

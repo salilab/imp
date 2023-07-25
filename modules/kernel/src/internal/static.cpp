@@ -5,7 +5,7 @@
  *
  */
 
-#include "base_static.h"
+#include "static.h"
 #if !IMP_KERNEL_HAS_LOG4CXX
 #include "IMP/internal/log_stream.h"
 #endif

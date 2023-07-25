@@ -12,7 +12,7 @@
 #if !IMP_KERNEL_HAS_LOG4CXX
 
 #include "../file.h"
-#include "base_static.h"
+#include "static.h"
 #include "SimpleTimer.h"
 #include <istream>
 #include <sstream>

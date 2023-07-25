@@ -1,5 +1,5 @@
 %{
-#include <IMP/internal/base_static.h>
+#include <IMP/internal/static.h>
 namespace IMP {
 namespace internal {
 extern IMPKERNELEXPORT std::string exe_usage;
