@@ -236,4 +236,7 @@ AdvancedFlag<bool> exceptions_on_deprecation(
     "Throw an exception when deprecated functions are used.", false);
 boost::unordered_set<std::string> printed_deprecation_messages;
 
+// particle validation
+Vector<std::pair<ParticleFunction, ParticleFunction> > particle_validators;
+
 IMPKERNEL_END_INTERNAL_NAMESPACE
