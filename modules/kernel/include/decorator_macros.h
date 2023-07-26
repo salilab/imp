@@ -582,6 +582,8 @@
     \param[in] create_post_modifier a SingletonDerivativeModifier for
                the derivatives of the summary back to its members,
                using refiner 'ref'
+    \param[in] can_skip set to true iff the modifiers do not need to be
+               called when the particle did not move
 */
 #define IMP_SUMMARIZE_DECORATOR_DEF(Name, Parent, Members,                \
                                   create_pre_modifier,                  \
