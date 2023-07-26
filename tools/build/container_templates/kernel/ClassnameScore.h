@@ -125,7 +125,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       be equal to the current score. The default implementation
       returns a single restraint with this score bound to vt,
       or zero restraints if the score equals zero.
-. */
+  */
   Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
