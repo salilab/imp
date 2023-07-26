@@ -167,6 +167,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
         self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
 
+    def test_bad_header(self):
+        """Test PDBParser when given a non-official PDB with HEADER line"""
+        pdbname = utils.get_input_file_name(TOPDIR, 'bad_header.pdb')
+        p = self._parse_pdb(pdbname)
+        self.assertEqual(p['templates'], {})
+        self.assertEqual(p['software'], [])
+        self.assertEqual(p['metadata'], [])
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        self.assertEqual(dataset.location.path, pdbname)
+        self.assertIsNone(dataset.location.repo)
+        self.assertEqual(dataset.location.details,
+                         'Starting model structure')
+
     def test_derived_pdb(self):
         """Test PDBarser when given a file derived from a PDB"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')

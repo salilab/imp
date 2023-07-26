@@ -21,6 +21,7 @@ import ihm.format
 import operator
 import struct
 import json
+import string
 import warnings
 import sys
 import re
@@ -241,9 +242,10 @@ class PDBParser(Parser):
            version of some other resource. Additional details will be extracted
            from other PDB headers if available, such as ``TITLE`` records.
 
-           If the first line of the file starts with ``HEADER`` then the file
-           is assumed to live in the PDB database. For example, the following
-           will be interpreted as PDB entry 2HBJ::
+           If the first line of the file starts with ``HEADER`` and it also
+           contains a PDB ID, then the file is assumed to live in the PDB
+           database. For example, the following will be interpreted as
+           PDB entry 2HBJ::
 
                HEADER    HYDROLASE, GENE REGULATION              14-JUN-06   2HBJ
 
@@ -292,7 +294,8 @@ class PDBParser(Parser):
             first_line = fh.readline()
             local_file = location.InputFileLocation(
                 filename, details="Starting model structure")
-            if first_line.startswith('HEADER'):
+            if (first_line.startswith('HEADER') and len(first_line) > 62
+                    and first_line[62] in string.digits):
                 self._parse_official_pdb(fh, first_line, ret)
             elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
                 self._parse_derived_from_pdb(fh, first_line, local_file,
