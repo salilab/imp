@@ -21,6 +21,7 @@
 #include "IMP/types.h"
 #include <boost/unordered_set.hpp>
 #include <IMP/random.h>
+#include <IMP/internal/utility.h>
 #include <boost/cstdint.hpp>
 #include <cmath>
 #include <ostream>
