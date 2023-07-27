@@ -1773,7 +1773,7 @@ def plot_field_histogram(name, values_lists, valuename=None, bins=40,
                          leg_names=None):
     '''Plot a list of histograms from a value list.
     @param name the name of the plot
-    @param value_lists the list of list of values eg: [[...],[...],[...]]
+    @param values_lists the list of list of values eg: [[...],[...],[...]]
     @param valuename the y-label
     @param bins the number of bins
     @param colors If None, will use rainbow. Else will use specific list

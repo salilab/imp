@@ -477,7 +477,7 @@ class RMSD(object):
         """
         @param hier0 first input hierarchy
         @param hier1 second input hierarchy
-        @param molname the names of the molecules used for the RMSD
+        @param molnames the names of the molecules used for the RMSD
         @dynamic0 if True stores the decorators XYZ and coordinates of
                   hier0 can be update. If false coordinates are static
                   (stored in Vector3Ds) and will never be updated
@@ -1076,7 +1076,7 @@ class Precision(object):
             self, structure_set_name, alignment_selection_key):
         """First align then calculate RMSD
         @param structure_set_name: the name of the structure set
-        @param alignment_selection: the key containing the selection tuples
+        @param alignment_selection_key: the key containing the selection tuples
                needed to make the alignment stored in self.selection_dictionary
         @return: for each structure in the structure set, returns the rmsd
         """

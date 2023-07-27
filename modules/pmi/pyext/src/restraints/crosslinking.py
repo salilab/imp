@@ -841,7 +841,7 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
                is above this
         @param coarsen                Use CA positions
         @param limit_to_chains        Try to visualize just these chains
-        @param exclude_to_chains        Try to NOT visualize these chains
+        @param exclude_chains        Try to NOT visualize these chains
         """
         print('going to calculate violations and plot CMM files')
         all_stats = self.get_best_stats()

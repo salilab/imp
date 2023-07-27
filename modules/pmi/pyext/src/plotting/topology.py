@@ -16,7 +16,7 @@ class TopologyPlot(object):
                  quantitative_proteomic_data=None):
         """Set up a new graphXL object
         @param model          The IMP model
-        @param selection_dict A dictionary containing component names.
+        @param selections     A dictionary containing component names.
                               Keys are labels
                               values are either moleculename or
                               start,stop,moleculename
