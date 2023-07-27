@@ -42,7 +42,7 @@ class IMPEM2DEXPORT ProjectionMask {
 
   //! Generates the mask
   /*!
-    \param[in] KP Kernel parameters to employ. See the EM module
+    \param[in] kparams Kernel parameters to employ. See the EM module
     \param[in] mass Mass to give to the mask
   */
   void create(const em::KernelParameters& kparams,
