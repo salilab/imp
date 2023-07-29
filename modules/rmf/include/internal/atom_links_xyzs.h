@@ -22,7 +22,8 @@ class IMPRMFEXPORT HierarchyLoadXYZs {
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
   typedef Vector<Pair> NodeParticlePairs;
 
-  NodeParticlePairs global_, local_;
+  NodeParticlePairs global_, local_, local_first_;
+  bool first_load_after_link_;
 
   // backwards compat
   RMF::IntKey rb_index_key_;
@@ -34,7 +35,8 @@ class IMPRMFEXPORT HierarchyLoadXYZs {
                       const ParticleIndexes &rigid_bodies);
   void link_particle(RMF::NodeConstHandle n, Model *m,
                      ParticleIndex p,
-                     const ParticleIndexes &rigid_bodies);
+                     const ParticleIndexes &rigid_bodies,
+                     bool link_to_existing);
   void load(RMF::FileConstHandle fh, Model *m);
 };
 

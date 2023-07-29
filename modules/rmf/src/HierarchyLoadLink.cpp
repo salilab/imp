@@ -253,7 +253,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
   } // alternative factory
   data.load_static.link_particle(node, m, cur, rigid_bodies);
   data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
-  data.load_xyzs.link_particle(node, m, cur, rigid_bodies);
+  data.load_xyzs.link_particle(node, m, cur, rigid_bodies, true);
   data.load_gaussians.link_particle(node, m, cur, rigid_bodies);
 
   do_link_particle(m, root, cur, node);

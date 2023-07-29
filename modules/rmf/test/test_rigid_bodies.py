@@ -175,6 +175,48 @@ class Tests(IMP.test.TestCase):
             new_hs.append(new_hs[0].get_child(0))
             self.compare_coords(hs, new_hs, m)
 
+    def test_linked_internal_coordinates(self):
+        """Check that internal coordinates of linked hierarchies are updated"""
+        for suffix in IMP.rmf.suffixes:
+            # Create rigid body containing one particle
+            m = IMP.Model()
+            h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+            h.set_name("rb")
+            tr = IMP.algebra.Transformation3D(
+                         IMP.algebra.get_identity_rotation_3d(),
+                         IMP.algebra.Vector3D(1,2,3))
+            rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.ReferenceFrame3D(tr))
+            p = IMP.Particle(m)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_coordinates(IMP.algebra.Vector3D(0., 2., 0.))
+            d.set_radius(.5)
+            IMP.atom.Mass.setup_particle(p, .1)
+            rbd.add_member(p)
+            orig = d.get_coordinates()
+            h.add_child(IMP.atom.Hierarchy.setup_particle(p))
+            # Write to RMF
+            fn = self.get_tmp_file_name("rigid" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [h])
+            IMP.rmf.save_frame(f, str(0))
+            del f
+            # Change rigid body reference frame and particle internal coords
+            tr = IMP.algebra.Transformation3D(
+                         IMP.algebra.get_identity_rotation_3d(),
+                         IMP.algebra.Vector3D(3,2,1))
+            rbd.set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
+            self.assertTrue(IMP.core.RigidMember.get_is_setup(p))
+            IMP.core.RigidMember(p).set_internal_coordinates(
+                IMP.algebra.Vector3D(2., 0., 0.))
+            m.update()
+            # Reread RMF and make sure coordinates match
+            f = RMF.open_rmf_file_read_only(fn)
+            IMP.rmf.link_hierarchies(f, [h])
+            IMP.rmf.load_frame(f, RMF.FrameID(0))
+            new = d.get_coordinates()
+            self.assertLess(IMP.algebra.get_squared_distance(orig, new), 0.01)
+
     def compare_coords(self, hs, new_hs, m):
         coords = [IMP.core.XYZ(x).get_coordinates() for x in hs]
         new_coords = [IMP.core.XYZ(x).get_coordinates() for x in new_hs]
