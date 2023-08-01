@@ -720,14 +720,14 @@ class TestCase(unittest.TestCase):
         def mock_setup_from_argv(*args, **kwargs):
             # do-nothing replacement for boost command line parser
             pass
-        if type(module) == type(os):
+        if type(module) == type(os):  # noqa: E721
             mod = module
         else:
             mod = __import__(module, {}, {}, [''])
         modpath = mod.__file__
         if modpath.endswith('.pyc'):
             modpath = modpath[:-1]
-        if type(module) == type(os):
+        if type(module) == type(os):  # noqa: E721
             old_sys_argv = sys.argv
             # boost parser doesn't like being called multiple times per process
             old_setup = IMP.setup_from_argv
@@ -770,7 +770,7 @@ class _ExecDictProxy(object):
         module_type = type(IMP)
         d = self._d
         for k in d.keys():
-            if type(d[k]) != module_type:
+            if type(d[k]) != module_type:  # noqa: E721
                 del d[k]
 
     for meth in ['__contains__', '__getitem__', '__iter__', '__len__',
