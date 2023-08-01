@@ -1,27 +1,23 @@
-#[=======================================================================[.rst:
-FindRMF
--------
-
-Try to find RMF
-
-Result Variables
-^^^^^^^^^^^^^^^^
-
-This module defines the following variables:
-
-``RMF_FOUND``
-  system has RMF
-``RMF_INCLUDE_PATH``
-  the RMF include directory
-``RMF_SWIG_PATH``
-  the directory containing SWIG (.i) files for RMF
-``RMF_LIBRARY``
-  Link this to use RMF
-``RMF_VERSION_STRING``
-  the version of RMF found
-
-
-#]=======================================================================]
+# FindRMF
+# -------
+#
+# Try to find RMF
+#
+# Result Variables
+# ^^^^^^^^^^^^^^^^
+#
+# This module defines the following variables:
+#
+# ``RMF_FOUND``
+#   system has RMF
+# ``RMF_INCLUDE_PATH``
+#   the RMF include directory
+# ``RMF_SWIG_PATH``
+#   the directory containing SWIG (.i) files for RMF
+# ``RMF_LIBRARY``
+#   Link this to use RMF
+# ``RMF_VERSION_STRING``
+#   the version of RMF found
 
 
 find_path(RMF_INCLUDE_PATH RMF.h PATH_SUFFIXES include)
