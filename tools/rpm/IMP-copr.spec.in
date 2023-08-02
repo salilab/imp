@@ -392,6 +392,27 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
 perl -pi -e 's@^#!.*python.*$@#!/usr/bin/%{default_python}@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env %{default_python}#' \{\} \;
 
+%check
+export IMP_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/IMP
+export IMP_EXAMPLE_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples
+export PATH=${RPM_BUILD_ROOT}%{_prefix}/bin:${PATH}
+%if 0%{?fedora}
+export MOCK=fedora-%{fedora}-%{_arch}
+%else
+export MOCK=epel-%{rhel}-%{_arch}
+%endif
+cd imp/tools/nightly-tests/test-install
+
+export PYTHONPATH=${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages
+%{default_python} test.py  -v
+%{default_python} test_mock.py  -v
+
+%if 0%{?with_python2} && 0%{?with_python3}
+export PYTHONPATH=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
+%{PYTHON2} test.py  -v
+%{PYTHON2} test_mock.py  -v
+%endif
+
 %files
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}
