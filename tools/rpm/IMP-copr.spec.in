@@ -397,9 +397,9 @@ export IMP_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/IMP
 export IMP_EXAMPLE_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples
 export PATH=${RPM_BUILD_ROOT}%{_prefix}/bin:${PATH}
 %if 0%{?fedora}
-export MOCK=fedora-%{fedora}-%{_arch}
+export MOCK_CONFIG=fedora-%{fedora}-%{_arch}
 %else
-export MOCK=epel-%{rhel}-%{_arch}
+export MOCK_CONFIG=epel-%{rhel}-%{_arch}
 %endif
 cd imp/tools/nightly-tests/test-install
 
