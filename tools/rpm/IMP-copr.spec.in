@@ -201,6 +201,7 @@ Summary:       Python wrappers for Python 2
 Requires:      %{name} = %{version}-%{release}
 Requires:      python2
 Requires:      RMF-python2
+BuildRequires: RMF-python2
 # No Python protobuf package in RHEL8 or Fedora 32
 %if 0%{?fedora} > 0 && 0%{?fedora} < 32
 Requires: python2-protobuf
@@ -423,8 +424,10 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${defver}/site-packages
 %if 0%{?with_python2} && 0%{?with_python3}
 py2_ver=`%{PYTHON2} -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
-%{PYTHON2} test.py -v
-%{PYTHON2} test_mock.py -v
+# Don't run any application tests, as these will fail (because the apps use
+# Python 3, but we have set a Python 2 path)
+%{PYTHON2} test.py -v IMPInstallTests.test_modules_installed IMPInstallTests.test_data_installed IMPInstallTests.test_examples_installed IMPInstallTests.test_get_numpy
+%{PYTHON2} test_mock.py -v IMPMockTests.test_modules_installed
 %endif
 
 %files
