@@ -43,6 +43,7 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
+Patch1:        imp-no-cnmultifit.patch
 %if 0%{?with_python2}
 BuildRequires: %{PYTHON2}-devel >= 2.7
 %endif
@@ -65,12 +66,12 @@ BuildRequires: ann-devel
 
 # Need for npctransport module
 BuildRequires: protobuf-devel
-# No Python protobuf package in RHEL8
-%if 0%{?fedora} || 0%{?rhel} == 9
-Requires: python3-protobuf
-%endif
 %if 0%{?rhel} == 7
+BuildRequires: protobuf-python
 Requires: protobuf-python
+%else
+BuildRequires: python3-protobuf
+Requires: python3-protobuf
 %endif
 
 %if 0%{?rhel} == 7
@@ -98,12 +99,20 @@ BuildRequires: opencv-devel
 %endif
 
 # On other systems, use our custom CGAL and OpenCV packages instead
-# from https://integrativemodeling.org/build-extras/
+# from https://integrativemodeling.org/build-extras/ or Fedora COPR
 %if 0%{?rhel}
 %if 0%{?rhel} == 9
 BuildRequires: opencv-nogui-devel
 %endif
+
+%if 0%{?rhel} == 7
+# Newer CGAL builds fine on RHEL7 but segfaults on init when we try to
+# run multifit or import IMP.npctransport
+BuildRequires: CGAL-nogui-devel = 4.3
+%else
 BuildRequires: CGAL-nogui-devel
+%endif
+
 %endif
 
 # The IMP kernel (both with Python 2 and Python3) links with numpy, so
@@ -261,6 +270,8 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 
 %prep
 %setup -n imp-%{version}
+# We don't build IMP.cnmultifit, so don't run the tests that require it
+%patch -P 1 -p1
 
 %build
 mkdir imp && mv * imp || :
@@ -309,11 +320,11 @@ module purge
 
 %install
 cd build
-make %{?_smp_mflags} DESTDIR=${RPM_BUILD_ROOT} install
+make %{?_smp_mflags} DESTDIR=%{buildroot} install
 
 %if 0%{?with_python2} && 0%{?with_python3}
 # Build Python 2 wrappers
-py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+py2_ver=`%{PYTHON2} -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py2_lib=`echo %{_libdir}/libpython2.*.so`
 py2_inc=`echo /usr/include/python2.*`
@@ -328,15 +339,15 @@ module load %{mpiprefix}mpich-%{_arch}
       -DPYTHON_INCLUDE_PATH=${py2_inc} \
       -DIMP_USE_SYSTEM_IHM=off \
       -DPYTHON_LIBRARIES=${py2_lib} -DUSE_PYTHON2=on
-make %{?_smp_mflags} DESTDIR=${RPM_BUILD_ROOT} install
+make %{?_smp_mflags} DESTDIR=%{buildroot} install
 %if 0%{?with_mpich}
 module purge
 %endif
 
 # Don't build Python 2 MPI for now
 for mod in %{MPI_MODULES}; do
-  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/${mod}
-  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/_IMP_${mod}.so
+  rm -rf %{buildroot}%{_libdir}/python${py2_ver}/site-packages/IMP/${mod}
+  rm -f %{buildroot}%{_libdir}/python${py2_ver}/site-packages/_IMP_${mod}.so
 done
 
 # Replace .py files with symlinks to Python 3 files (since they are the same)
@@ -345,23 +356,23 @@ done
 # include numpy support but the Python 2 wrappers do not)
 # We should also exclude the 'ihm' directory since python-ihm provides Python 3
 # wrappers, but we provide Python 2 wrappers.
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver} \
+(cd %{buildroot}%{_libdir}/python${py2_ver} \
  && find site-packages -name '*.py' -a ! -name __init__.py \
       -a ! -path '*/ihm/*' \
-      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
+      -exec ln -sf %{buildroot}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
  && symlinks -rc .)
 %endif
 
 # Put MPI-dependent libraries and binaries in mpich directories
 %if 0%{?with_mpich}
-(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir -p mpich/bin mpich/lib)
-(cd ${RPM_BUILD_ROOT}%{_bindir} && mv spb* ${RPM_BUILD_ROOT}%{_libdir}/mpich/bin)
+(cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
+(cd %{buildroot}%{_libdir} && mkdir -p mpich/bin mpich/lib)
+(cd %{buildroot}%{_bindir} && mv spb* %{buildroot}%{_libdir}/mpich/bin)
 for mod in %{MPI_MODULES}; do
-  (cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ \
+  (cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
-  (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
-  (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
+  (cd %{buildroot}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
+  (cd %{buildroot}%{_libdir} && rm libimp_${mod}.so \
    && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
 done
 %endif
@@ -373,7 +384,7 @@ done
 #  and d) only certain versions of doxygen work correctly
 # You can build the documentation by running "make IMP-doc"
 # on the IMP source code.
-README=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/README
+README=%{buildroot}%{_prefix}/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
 if echo ${version} | grep -q git; then
@@ -383,19 +394,21 @@ else
 fi
 
 # Don't distribute example application or dependency
-rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
-       ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
-       ${RPM_BUILD_ROOT}%{_prefix}/include/example*
+rm -rf %{buildroot}%{_prefix}/bin/imp_example_app \
+       %{buildroot}%{_libdir}/libexample* \
+       %{buildroot}%{_prefix}/include/example*
 
 # Make sure all Python applications and build tools use the same Python
 # we built with
-perl -pi -e 's@^#!.*python.*$@#!/usr/bin/%{default_python}@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
-find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env %{default_python}#' \{\} \;
+perl -pi -e 's@^#!.*python.*$@#!/usr/bin/%{default_python}@' %{buildroot}%{_prefix}/bin/*
+find %{buildroot}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env %{default_python}#' \{\} \;
 
 %check
-export IMP_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/IMP
-export IMP_EXAMPLE_DATA=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples
-export PATH=${RPM_BUILD_ROOT}%{_prefix}/bin:${PATH}
+defver=`%{default_python} -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+export IMP_DATA=%{buildroot}%{_prefix}/share/IMP
+export IMP_EXAMPLE_DATA=%{buildroot}%{_prefix}/share/doc/%{name}-%{version}/examples
+export LD_LIBRARY_PATH=%{buildroot}%{_libdir}
+export PATH=%{buildroot}%{_prefix}/bin:${PATH}
 %if 0%{?fedora}
 export MOCK_CONFIG=fedora-%{fedora}-%{_arch}
 %else
@@ -403,14 +416,15 @@ export MOCK_CONFIG=epel-%{rhel}-%{_arch}
 %endif
 cd imp/tools/nightly-tests/test-install
 
-export PYTHONPATH=${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages
-%{default_python} test.py  -v
-%{default_python} test_mock.py  -v
+export PYTHONPATH=%{buildroot}%{_libdir}/python${defver}/site-packages
+%{default_python} test.py -v
+%{default_python} test_mock.py -v
 
 %if 0%{?with_python2} && 0%{?with_python3}
-export PYTHONPATH=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
-%{PYTHON2} test.py  -v
-%{PYTHON2} test_mock.py  -v
+py2_ver=`%{PYTHON2} -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
+%{PYTHON2} test.py -v
+%{PYTHON2} test_mock.py -v
 %endif
 
 %files
