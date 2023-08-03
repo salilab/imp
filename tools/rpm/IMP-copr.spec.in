@@ -410,10 +410,13 @@ export IMP_DATA=%{buildroot}%{_prefix}/share/IMP
 export IMP_EXAMPLE_DATA=%{buildroot}%{_prefix}/share/doc/%{name}-%{version}/examples
 export LD_LIBRARY_PATH=%{buildroot}%{_libdir}
 export PATH=%{buildroot}%{_prefix}/bin:${PATH}
+
+# Don't use %{_arch} for MOCK_CONFIG because test_mock.py only checks for x86_64
+# architecture (but the same check should work for, e.g., aarch64)
 %if 0%{?fedora}
-export MOCK_CONFIG=fedora-%{fedora}-%{_arch}
+export MOCK_CONFIG=fedora-%{fedora}-x86_64
 %else
-export MOCK_CONFIG=epel-%{rhel}-%{_arch}
+export MOCK_CONFIG=epel-%{rhel}-x86_64
 %endif
 cd imp/tools/nightly-tests/test-install
 
