@@ -994,7 +994,7 @@ def _get_guinier_fit_fixed(qs, Is, errs):
     # beta = (X^T W X )^(-1) X^T W y
     XW = np.dot(X.transpose(), W)
     try:
-        beta = linalg.solve(np.dot(XW, X), np.dot(XW, y), sym_pos=True)
+        beta = linalg.solve(np.dot(XW, X), np.dot(XW, y), assume_a='pos')
     except linalg.LinAlgError:
         print("Warning: singular matrix during guinier fit")
         beta = np.atleast_2d(np.ones(2)).transpose()
