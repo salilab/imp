@@ -23,13 +23,41 @@ IMPCORE_BEGIN_NAMESPACE
 //! A generic C++ template for scoring particles based on how far outside a
 //!  box they are using unary function UF.
 //! \see BoundingBox3DSingletonScore
-/** The bounding box score is evaluated by applying UF to a particle based on 
-    the distance of its center from the bounding box walls. The radius of the 
-    particle is ignored. If the particle is within the bounding box, the score
-    is always 0. Logically, it is exepcted that UF(0) = 0 and UF(x) > 0 if x>0.
+/** The bounding box score is evaluated by applying a function f of
+    class UF to a particle based on the distance of its center from
+    the bounding box walls.  The radius of the particle is ignored. If
+    the particle is within the bounding box, the score is always
+    0. Logically, it is exepcted that f(0) = 0 and f(x) > 0 if x>0.
 
-    The BoundingBox3DSingletonScore can be used directly from Python, and it
-    includes a usage example.
+    In Python, use the templated \ref BoundingBox3DSingletonScore class
+    as in the following example. In the example, 10 particles of
+    radius 1.0 are generated in a 10 A x 10 A x 10 A bounding box. The
+    particles are restrained in the bounding box by applying an
+    upper-bounded harmonic potential. It is upper bounded because it
+    is active only outside the bounding box.
+
+    \code{.py}
+    k_bb = 10.0 # bounding box force coefficient in kcal/mol/A^2
+    bb_side = 10.0 # in A
+    radius = 1.0 # in A
+    number
+    m = IMP.Model()
+    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                               IMP.algebra.Vector3D(bb_side, bb_side, bb_side))
+    particles = []
+    for i in range(0,10):
+      p = IMP.Particle(m) 
+      s = IMP.algebra.Sphere3D(
+                IMP.algebra.get_random_vector_in(bb), radius)
+      d = IMP.core.XYZR.setup_particle(p, s)
+      d.set_coordinates_are_optimized(True)
+      particles.append(p)
+    hpb = IMP.core.HarmonicUpperBound(0, k)
+    bbss = IMP.core.BoundingBox3DSingletonScore(hpb, bb)
+    bbr = IMP.container.SingletonsRestraint(bbss, particles)
+    \endcode
+
+    \see BoundingBox3DSingletonScore
  */
 template <class UF>
 class GenericBoundingBox3DSingletonScore : public SingletonScore {
@@ -37,12 +65,20 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
   algebra::BoundingBoxD<3> bb_;
 
  public:
+  /**
+    @param f an unary function applied to particles that are outside the box. 
+            f is passed the distance of the particle center from the bounding 
+            box walls, ignoring the particle radius. Logically, it is exepcted 
+            to satisfy f(0) = 0 and f(x) > 0 if x>0.
+    @param bb the bounding box to which f is applied
+   */
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
   /**
-    return 0 if the p is within the bounding box or UF(d) if it is 
-    outside the bounding box, where UF is the template unary function
-    and d is the distance of the center of p from the bounding box walls.
+    return 0 if the p is within the bounding box or f(d) if it is
+    outside the bounding box, where f is the unary function provided
+    during construction and d is the distance of the center of p from
+    the bounding box walls.
     Update derivatives as needed, weighted using da.
   */
   virtual double evaluate_index(Model *m, ParticleIndex p,
@@ -106,36 +142,7 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
 //! applying f to the distance. 
 //! \see GenericBoundingBox3DSingletonScore
 /** 
-    @param f an unary function applied to particles that are outside the box. 
-            f is passed the distance of the particle center from the bounding 
-            box walls, ignoring the particle radius. Logically, it is exepcted 
-            to satisfy f(0) = 0 and f(x) > 0 if x>0.
-    @param bb the bounding box 
-
-    Example usage in Python, with 10 particles of radius 1.0 in a
-    10 A x 10 A x 10 A bounding box. The particles are restrained 
-    in the bounding box by applying an upper-bounded harmonic 
-    potential. It is upper bounded because it is active only outside 
-    the bounding box.
-
-    k_bb = 10.0 # bounding box force coefficient in kcal/mol/A^2
-    bb_side = 10.0 # in A
-    radius = 1.0 # in A
-    number
-    m = IMP.Model()
-    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
-                               IMP.algebra.Vector3D(bb_side, bb_side, bb_side))
-    particles = []
-    for i in range(0,10):
-      p = IMP.Particle(m) 
-      s = IMP.algebra.Sphere3D(
-                IMP.algebra.get_random_vector_in(bb), radius)
-      d = IMP.core.XYZR.setup_particle(p, s)
-      d.set_coordinates_are_optimized(True)
-      particles.append(p)
-    hpb = IMP.core.HarmonicUpperBound(0, k)
-    bbss = IMP.core.BoundingBox3DSingletonScore(hpb, bb)
-    bbr = IMP.container.SingletonsRestraint(bbss, particles)
+    Example usage is provided in \ref GenericBoundingBox3DSingletonScore
 */
 IMP_GENERIC_OBJECT(BoundingBox3DSingletonScore, bounding_box_3d_singleton_score,
                    UnaryFunction,
