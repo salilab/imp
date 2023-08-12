@@ -252,7 +252,7 @@ class _BeadsFragment(ihm.representation.FeatureSegment):
 
     def combine(self, other):
         # todo: don't combine if one fragment is rigid and the other flexible
-        if (type(other) == type(self) and
+        if (type(other) == type(self) and     # noqa: E721
                 other.asym_unit.seq_id_range[0]
                 == self.asym_unit.seq_id_range[1] + 1):
             self.asym_unit.seq_id_range = (self.asym_unit.seq_id_range[0],

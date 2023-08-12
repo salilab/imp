@@ -73,9 +73,9 @@ class TopologyPlot(object):
 
         for component_name in self.selections:
             for seg in self.selections[component_name]:
-                if type(seg) == str:
+                if isinstance(seg, str):
                     s = IMP.atom.Selection(hier, molecule=seg)
-                elif type(seg) == tuple:
+                elif isinstance(seg, tuple):
                     s = IMP.atom.Selection(
                         hier, molecule=seg[2],
                         residue_indexes=range(seg[0], seg[1] + 1))

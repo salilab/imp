@@ -64,7 +64,7 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                 maxq = 0.4
             else:
                 maxq = 0.5
-        elif type(maxq) == float:
+        elif isinstance(maxq, float):
             if maxq < 0.01 or maxq > 4.0:
                 raise Exception(
                     "SAXSRestraint: maxq must be set between 0.01 and 4.0")

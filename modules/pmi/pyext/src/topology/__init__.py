@@ -312,8 +312,13 @@ class State(_SystemBase):
         """Build all molecules (automatically makes clones)"""
         if not self.built:
             for molname in self.molecules:
+                # We want to update ProtocolOutput in forward order so
+                # that, e.g. we get nice chain IDs in the mmCIF output,
+                # but we want to build the sequence in reverse order
+                for mol in self.molecules[molname]:
+                    mol._build_protocol_output()
                 for mol in reversed(self.molecules[molname]):
-                    mol.build(**kwargs)
+                    mol.build(protocol_output=False, **kwargs)
             self.built = True
         return self.hier
 
@@ -765,7 +770,7 @@ class Molecule(_SystemBase):
         # unify formatting for extra breaks
         breaks = []
         for b in bead_extra_breaks:
-            if type(b) == str:
+            if isinstance(b, str):
                 breaks.append(int(b)-1)
             else:
                 breaks.append(b)
@@ -779,7 +784,18 @@ class Molecule(_SystemBase):
     def _all_protocol_output(self):
         return self.state._protocol_output
 
-    def build(self):
+    def _build_protocol_output(self):
+        """Add molecule name and sequence to any ProtocolOutput objects"""
+        if not self.built:
+            name = self.hier.get_name()
+            for po, state in self._all_protocol_output():
+                po.create_component(state, name, True,
+                                    asym_name=self._name_with_copy)
+                po.add_component_sequence(state, name, self.sequence,
+                                          asym_name=self._name_with_copy,
+                                          alphabet=self.alphabet)
+
+    def build(self, protocol_output=True):
         """Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and,
         finally, Copies.
@@ -789,14 +805,8 @@ class Molecule(_SystemBase):
               these can be constructed from the PDB file.
         """
         if not self.built:
-            # Add molecule name and sequence to any ProtocolOutput objects
-            name = self.hier.get_name()
-            for po, state in self._all_protocol_output():
-                po.create_component(state, name, True,
-                                    asym_name=self._name_with_copy)
-                po.add_component_sequence(state, name, self.sequence,
-                                          asym_name=self._name_with_copy,
-                                          alphabet=self.alphabet)
+            if protocol_output:
+                self._build_protocol_output()
             # if requested, clone structure and representations
             # BEFORE building original
             if self.mol_to_clone is not None:
@@ -1223,7 +1233,8 @@ class TempResidue(object):
                 self.pdb_index, self.internal_index)
 
     def __eq__(self, other):
-        return type(other) == type(self) and self.__key() == other.__key()
+        return (type(other) == type(self)  # noqa: E721
+                and self.__key() == other.__key())
 
     def __hash__(self):
         return hash(self.__key())

@@ -260,6 +260,21 @@ _ihm_multi_state_model_group_link.model_group_id
         h1 = IMP.atom.get_by_type(nup85_2.hier, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(mapper[h1[0]]._id, 'B')
 
+    def test_asym_id_copy_order(self):
+        """Test correct ordering of AsymUnits when using copies"""
+        m = IMP.Model()
+        po = IMP.pmi.mmcif.ProtocolOutput()
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        clone = nup84.create_clone("A")
+
+        _ = s.build()
+        self.assertEqual(["Nup84.0", "Nup84.1"],
+                         [x.details for x in po.system.asym_units])
+
     def test_rna_dna(self):
         """Test handling of RNA/DNA sequences"""
         m = IMP.Model()
