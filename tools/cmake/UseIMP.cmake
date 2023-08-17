@@ -33,6 +33,8 @@ function(imp_build_module sourcedir)
     set(modname "")
   endif()
 
+  set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time, or ALL to do this for all modules.")
+
   # Use same compiler flags as IMP itself
   include(${IMP_MODULES_DIR}/IMPFindC++11.cmake)
   include(${IMP_MODULES_DIR}/IMPFindCompilerFlags.cmake)
@@ -98,6 +100,17 @@ function(imp_build_module sourcedir)
     # On Windows the batch file is run once to set up the test environment, not
     # per test
     set(IMP_TEST_SETUP )
+  endif()
+
+  if("${IMP_PER_CPP_COMPILATION}" STREQUAL "ALL")
+    message(STATUS "All modules are percpp")
+    set(IMP_IS_PER_CPP 1)
+  else()
+    string(REGEX MATCHALL "[a-zA-Z0-9_]+" percpplist "${IMP_PER_CPP_COMPILATION}")
+    foreach(m ${percpplist})
+      message(STATUS ${m} " is percpp")
+      set(IMP_${m}_IS_PER_CPP 1)
+    endforeach(m)
   endif()
 
   add_custom_target("IMP-version"
