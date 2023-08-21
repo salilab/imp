@@ -22,8 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A generic C++ template for scoring particles based on how far outside a
 //!  box they are using unary function UF.
-//! \see BoundingBox3DSingletonScore
-/** The bounding box score is evaluated by applying a function f of
+/** 
+    The bounding box score is evaluated by applying a function f of
     class UF to a particle based on the distance of its center from
     the bounding box walls.  The radius of the particle is ignored. If
     the particle is within the bounding box, the score is always
@@ -53,11 +53,12 @@ IMPCORE_BEGIN_NAMESPACE
       d.set_coordinates_are_optimized(True)
       particles.append(p)
     hpb = IMP.core.HarmonicUpperBound(0, k)
-    bbss = IMP.core.BoundingBox3DSingletonScore(hpb, bb)
+    bbss = IMP.core.BoundingBox3DSingletonScore(hpb, bb) 
     bbr = IMP.container.SingletonsRestraint(bbss, particles)
     \endcode
 
     \see BoundingBox3DSingletonScore
+    \see create_bounding_box_3d_singleton_score
  */
 template <class UF>
 class GenericBoundingBox3DSingletonScore : public SingletonScore {
