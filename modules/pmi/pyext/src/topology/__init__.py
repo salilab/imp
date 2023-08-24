@@ -319,6 +319,8 @@ class State(_SystemBase):
                     mol._build_protocol_output()
                 for mol in reversed(self.molecules[molname]):
                     mol.build(protocol_output=False, **kwargs)
+                for mol in self.molecules[molname]:
+                    mol._finalize_build()
             self.built = True
         return self.hier
 
@@ -795,6 +797,17 @@ class Molecule(_SystemBase):
                                           asym_name=self._name_with_copy,
                                           alphabet=self.alphabet)
 
+    def _finalize_build(self):
+        # For clones, pass the representation of the original molecule
+        # to ProtocolOutput
+        if self.mol_to_clone:
+            rephandler = _RepresentationHandler(
+                self._name_with_copy, list(self._all_protocol_output()),
+                self.mol_to_clone._pdb_elements)
+            for res in self.mol_to_clone.residues:
+                if res.hier:
+                    rephandler(res)
+
     def build(self, protocol_output=True):
         """Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and,
@@ -883,7 +896,11 @@ class Molecule(_SystemBase):
                         # otherwise just store what you found
                         new_hier = IMP.atom.Hierarchy(new_p)
                     res.hier = new_hier
-                    rephandler(res)
+                    # Clones will be handled in _finalize_build() instead
+                    # (can't handle them here as the parent of the clone
+                    # isn't built yet)
+                    if self.mol_to_clone is None:
+                        rephandler(res)
                 else:
                     res.hier = None
             self._represented = IMP.pmi.tools.OrderedSet(
