@@ -27,7 +27,8 @@ class Restraint(object):
     """Base class for all restraints.
        See :attr:`ihm.System.restraints`.
     """
-    pass
+    def _get_report(self):
+        return str(self)
 
 
 class RestraintGroup(list):
@@ -216,6 +217,11 @@ class CrossLinkRestraint(Restraint):
     """
 
     assembly = None  # no struct_assembly_id for XL restraints
+
+    def _get_report(self):
+        return ("%d %s cross-links from %d experimental identifications"
+                % (len(self.cross_links), self.linker.auth_name,
+                   sum(len(x) for x in self.experimental_cross_links)))
 
     def __init__(self, dataset, linker):
         self.dataset, self.linker = dataset, linker
@@ -681,7 +687,7 @@ class PseudoSiteFeature(Feature):
         return 'other'
 
 
-class GeometricRestraint(object):
+class GeometricRestraint(Restraint):
     """A restraint between part of the system and some part of a
        geometric object. See :class:`CenterGeometricRestraint`,
        :class:`InnerSurfaceGeometricRestraint`,
@@ -701,6 +707,10 @@ class GeometricRestraint(object):
     """
     object_characteristic = 'other'
     assembly = None  # no struct_assembly_id for geometric restraints
+
+    def _get_report(self):
+        return ("Distance (%s) to %s"
+                % (self.distance.restraint_type, self.geometric_object.type))
 
     def __init__(self, dataset, geometric_object, feature, distance,
                  harmonic_force_constant=None, restrain_all=None,
@@ -736,7 +746,7 @@ class OuterSurfaceGeometricRestraint(GeometricRestraint):
     object_characteristic = 'outer surface'
 
 
-class DerivedDistanceRestraint(object):
+class DerivedDistanceRestraint(Restraint):
     """A restraint between two parts of the system, derived from experimental
        data.
 
@@ -766,7 +776,7 @@ class DerivedDistanceRestraint(object):
     _all_features = property(lambda self: (self.feature1, self.feature2))
 
 
-class PredictedContactRestraint(object):
+class PredictedContactRestraint(Restraint):
     """A predicted contact between two parts of the system, derived from
        various computational tools.
 

@@ -79,6 +79,10 @@ class DatabaseLocation(Location):
         self.access_code = db_code
         self.version = version
 
+    def __str__(self):
+        return "<%s.%s(%s)>" % (self.__module__, self.__class__.__name__,
+                                repr(self.access_code))
+
 
 class EMDBLocation(DatabaseLocation):
     """Something stored in the EMDB database.
@@ -207,6 +211,10 @@ class FileLocation(Location):
             # Store absolute path in case the working directory changes later
             self.path = os.path.abspath(path)
 
+    def __str__(self):
+        return "<%s.%s(%s)>" % (self.__module__, self.__class__.__name__,
+                                repr(self.path))
+
 
 class InputFileLocation(FileLocation):
     """An externally stored file used as input.
@@ -293,6 +301,9 @@ class Repository(object):
 
     def __hash__(self):
         return hash((self.doi, self.url))
+
+    def __str__(self):
+        return "<ihm.location.Repository(%r)>" % self.doi
 
     def __init__(self, doi, root=None, url=None, top_directory=None,
                  details=None):

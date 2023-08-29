@@ -34,7 +34,7 @@ if sys.version_info[0] >= 3:
 
     def _encode_str(s):
         return s
-else:
+else:    # pragma: no cover
     def _decode_bytes(bs):
         if isinstance(bs, unicode):  # noqa: F821
             return bs.encode('ascii', errors='replace')

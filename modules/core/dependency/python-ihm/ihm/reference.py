@@ -3,7 +3,7 @@
 # Handle different naming of urllib in Python 2/3
 try:
     import urllib.request as urlreq
-except ImportError:
+except ImportError:    # pragma: no cover
     import urllib2
     import contextlib
 
@@ -104,7 +104,7 @@ class UniProtSequence(Sequence):
             def decode(t):
                 return t.decode('ascii')
         else:
-            def decode(t):
+            def decode(t):    # pragma: no cover
                 return t
         url = 'https://www.uniprot.org/uniprot/%s.fasta' % accession
         with urlreq.urlopen(url) as fh:

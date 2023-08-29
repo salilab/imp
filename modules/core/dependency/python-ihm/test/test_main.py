@@ -426,7 +426,7 @@ class Tests(unittest.TestCase):
         """Test AsymUnitRange class"""
         e = ihm.Entity('AHCDAH')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
-        a = ihm.AsymUnit(e)
+        a = ihm.AsymUnit(e, "testdetail")
         aheme = ihm.AsymUnit(heme)
         a._id = 42
         self.assertEqual(a.seq_id_range, (1, 6))
@@ -436,6 +436,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
+        self.assertEqual(r.details, "testdetail")
         # Cannot create ranges for nonpolymeric entities
         self.assertRaises(TypeError, aheme.__call__, 1, 1)
         samer = a(3, 4)

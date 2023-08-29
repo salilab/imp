@@ -31,6 +31,10 @@ class Step(object):
     """
     type = 'other'
 
+    def _get_report(self):
+        return ("%s (%s->%s models)"
+                % (self.type, self.num_models_begin, self.num_models_end))
+
     def __init__(self, feature, num_models_begin, num_models_end,
                  assembly=None, dataset_group=None, software=None,
                  script_file=None, details=None):

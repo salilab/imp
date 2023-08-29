@@ -29,6 +29,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(dl1.access_code, 'abc')
         self.assertEqual(dl1.version, 1)
         self.assertIsNone(dl1.details)
+        self.assertEqual(str(dl1), "<ihm.location.DatabaseLocation('abc')>")
 
     def test_pdb_location(self):
         """Test PDBLocation"""
@@ -180,6 +181,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(loc.path, 'foo/bar')
         self.assertEqual(loc.repo, r)
         self.assertIsNone(loc.file_size)
+        self.assertEqual(str(loc),
+                         "<ihm.location.InputFileLocation('foo/bar')>")
         # locations should only compare equal if path and repo both match
         loc2 = ihm.location.InputFileLocation('foo/bar', repo=r)
         self.assertEqual(loc, loc2)

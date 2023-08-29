@@ -30,6 +30,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.feature, 'RMSD')
         self.assertEqual(s.num_models_begin, 42)
         self.assertEqual(s.num_models_end, 5)
+        self.assertEqual(s._get_report(), "cluster (42->5 models)")
 
     def test_rescore_step(self):
         """Test analysis RescoreStep class"""

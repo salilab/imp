@@ -16,7 +16,7 @@ import operator
 # similar interface
 try:
     from inspect import getfullargspec as getargspec
-except ImportError:
+except ImportError:    # pragma: no cover
     from inspect import getargspec
 import re
 try:
@@ -27,7 +27,7 @@ except ImportError:
 # Python 3 has no 'long' type, so use 'int' instead
 if sys.version_info[0] >= 3:
     _long_type = int
-else:
+else:    # pragma: no cover
     _long_type = long   # noqa: F821
 
 
@@ -363,7 +363,7 @@ class CifReader(_Reader):
 
     # Read a line from the file. Treat it as ASCII (not Unicode)
     # but be tolerant of 8-bit characters by assuming latin-1 encoding
-    if sys.version_info[0] == 2:
+    if sys.version_info[0] == 2:    # pragma: no cover
         def _read_line(self):
             return self.fh.readline()
     else:

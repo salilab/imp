@@ -36,6 +36,12 @@ On a Mac with [Homebrew](https://brew.sh/), install with
 brew tap salilab/salilab; brew install ihm
 ```
 
+On a Fedora or RedHat Enterprise Linux box, install with
+
+```
+dnf copr enable salilab/salilab; dnf install python3-ihm
+```
+
 Alternatively, install with pip:
 
 ```

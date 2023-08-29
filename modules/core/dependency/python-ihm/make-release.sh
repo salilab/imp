@@ -3,12 +3,13 @@
 # First, do
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
 # - Run util/validate-outputs.py to make sure all example outputs validate
-# - Update ChangeLog.rst with the release number
+# - Update ChangeLog.rst and util/python-ihm.spec with the release number
 # - Update release number in ihm/__init__.py, MANIFEST.in, and setup.py
 # - Commit, tag, and push
 # - Make release on GitHub
 # - Upload the release tarball from
 #   https://github.com/ihmwg/python-ihm/releases to Zenodo as a new release
+# - Build SRPM and upload to COPR
 # - Make sure there are no extraneous .py files (setup.py will include them
 #   in the pypi package)
 

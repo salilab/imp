@@ -15,12 +15,12 @@ import sys
 # Handle different naming of urllib in Python 2/3
 try:
     import urllib.request as urllib2
-except ImportError:
+except ImportError:    # pragma: no cover
     import urllib2
 import json
 from . import util
 
-__version__ = '0.38'
+__version__ = '0.39'
 
 
 class __UnknownValue(object):
@@ -271,6 +271,19 @@ class System(object):
         for loc in self._all_locations():
             if isinstance(loc, ihm.location.FileLocation):
                 ihm.location.Repository._update_in_repos(loc, repos)
+
+    def report(self, fh=sys.stdout):
+        """Print a summary report of this system. This can be used to
+           more easily spot errors or inconsistencies. It will also warn
+           about missing data that may not be technically required for a
+           compliant mmCIF file, but is usually expected to be present.
+
+           :param file fh: The file handle to print the report to, if not
+                  standard output.
+        """
+        import ihm.report
+        r = ihm.report.Reporter(self, fh)
+        r.report()
 
     def _all_restraints(self):
         """Iterate over all Restraints in the system.
@@ -601,6 +614,9 @@ class Software(object):
         self.version = version
         self.citation = citation
 
+    def __str__(self):
+        return "<ihm.Software(%s)>" % repr(self.name)
+
     # Software compares equal if the names and versions are the same
     def _eq_vals(self):
         return (self.name, self.version)
@@ -688,7 +704,7 @@ class Citation(object):
             return rng
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
-        if sys.version_info[0] < 3:
+        if sys.version_info[0] < 3:    # pragma: no cover
             def enc(s):
                 return s.encode('ascii')
         else:
@@ -1281,6 +1297,7 @@ class AsymUnitRange(object):
     _id = property(lambda self: self.asym._id)
     _ordinal = property(lambda self: self.asym._ordinal)
     entity = property(lambda self: self.asym.entity)
+    details = property(lambda self: self.asym.details)
 
 
 class AsymUnitSegment(object):

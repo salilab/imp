@@ -5,13 +5,15 @@ import unittest
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.restraint
+import ihm.geometry
 
 
 class Tests(unittest.TestCase):
 
     def test_restraint(self):
         """Test Restraint base class"""
-        _ = ihm.restraint.Restraint()  # does nothing
+        r = ihm.restraint.Restraint()  # does nothing
+        _ = r._get_report()
 
     def test_em3d_restraint_fit(self):
         """Test EM3DRestraintFit class"""
@@ -93,6 +95,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.linker, dss)
         self.assertEqual(f.experimental_cross_links, [])
+        self.assertEqual(
+            f._get_report(),
+            "0 DSS cross-links from 0 experimental identifications")
 
     def test_experimental_cross_link(self):
         """Test ExperimentalCrossLink class"""
@@ -175,12 +180,15 @@ class Tests(unittest.TestCase):
 
     def test_geometric_restraint(self):
         """Test GeometricRestraint class"""
+        dist = ihm.restraint.UpperBoundDistanceRestraint(42.0)
+        geom = ihm.geometry.XAxis(name='foo', description='bar')
         f = ihm.restraint.GeometricRestraint(
-            dataset='foo', geometric_object='geom', feature='feat',
-            distance='dist')
+            dataset='foo', geometric_object=geom, feature='feat',
+            distance=dist)
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'other')
         self.assertIsNone(f.assembly)
+        self.assertEqual(f._get_report(), "Distance (upper bound) to axis")
 
     def test_center_geometric_restraint(self):
         """Test CenterGeometricRestraint class"""

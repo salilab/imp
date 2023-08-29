@@ -2,7 +2,7 @@
 
 try:
     from enum import IntEnum
-except ImportError:
+except ImportError:    # pragma: no cover
     IntEnum = object
 
 
