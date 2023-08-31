@@ -292,7 +292,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
 
     def _add_residue(self, resind):
         # Update seq_id_range to accommodate this residue
-        seq_id_end = resind + self.offset
+        seq_id_end = resind
         seq_id_begin = self.asym_unit.seq_id_range[0]
         if seq_id_begin == 0:
             seq_id_begin = seq_id_end
