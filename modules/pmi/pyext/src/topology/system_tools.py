@@ -252,6 +252,7 @@ def _add_fragment_provenance(fragment, first_residue, rephandler):
         sp = IMP.core.StructureProvenance.setup_particle(
             p, pdb_element.filename, pdb_element.chain_id, pdb_element.offset)
         IMP.core.add_provenance(m, fragment, sp)
+        return pdb_element
 
 
 def build_representation(parent, rep, coord_finder, rephandler):
@@ -278,6 +279,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
     # below we sample or read the GMMs and add them as representation
     # flag indicating grouping nonlinear segments with one GMM
     single_node = False
+    prov_dict = {}
     if rep.density_residues_per_component:
         single_node = True
         num_components = (len(rep.residues)
@@ -376,8 +378,10 @@ def build_representation(parent, rep, coord_finder, rephandler):
             this_resolution = IMP.atom.Fragment.setup_particle(fp, res_nums)
             this_resolution.set_name("%s: Res %i" % (name, resolution))
             if frag_res[0].get_has_structure():
-                _add_fragment_provenance(this_resolution, frag_res[0],
-                                         rephandler)
+                pdb_element = _add_fragment_provenance(
+                    this_resolution, frag_res[0], rephandler)
+                if pdb_element is not None:
+                    prov_dict[resolution] = pdb_element
                 # if structured, merge particles as needed
                 if resolution == atomic_res:
                     for residue in frag_res:
@@ -446,6 +450,16 @@ def build_representation(parent, rep, coord_finder, rephandler):
                 IMP.Particle(model),
                 [r.get_index() for r in rep.residues])
             this_resolution.set_name("%s: Res %i" % (name_all, resolution))
+            # Use provenance information from the last original node (hopefully
+            # all nodes have the same provenance, i.e. came from the same
+            # PDB file)
+            if prov_dict[resolution]:
+                pdb_element = prov_dict[resolution]
+                sp = IMP.core.StructureProvenance.setup_particle(
+                    IMP.Particle(model, "input structure"),
+                    pdb_element.filename,
+                    pdb_element.chain_id, pdb_element.offset)
+                IMP.core.add_provenance(model, this_resolution, sp)
             for hier in rep_dict[resolution]:
                 this_resolution.add_child(hier)
             if resolution == primary_resolution:

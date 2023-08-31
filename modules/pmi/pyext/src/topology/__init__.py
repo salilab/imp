@@ -13,7 +13,8 @@
    like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues().
    These functions all return Python sets for easy set arithmetic using
    & (and), | (or), - (difference)
- * Molecule.add_structure() to add structural information from a PDB file.
+ * Molecule.add_structure() to add structural information from an mmCIF
+   or PDB file.
  * Molecule.add_representation() to create a representation unit - here you
    can choose bead resolutions as well as alternate representations like
    densities or ideal helices.
@@ -548,7 +549,7 @@ class Molecule(_SystemBase):
                       soft_check=False):
         """Read a structure and store the coordinates.
         @return the atomic residues (as a set)
-        @param pdb_fn     The file to read
+        @param pdb_fn     The file to read (in PDB or mmCIF format)
         @param chain_id   Chain ID to read
         @param res_range  Add only a specific set of residues from the PDB
                           file. res_range[0] is the starting and res_range[1]

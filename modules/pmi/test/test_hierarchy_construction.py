@@ -9,9 +9,14 @@ import IMP.pmi.output
 class Tests(IMP.test.TestCase):
     def test_hierarchy_construction(self):
         """Test construction of a hierarchy"""
+        self._test_hierarchy_internal(self.get_input_file_name("mini.pdb"))
 
+    def test_hierarchy_construction_mmcif(self):
+        """Test construction of a hierarchy using mmCIF inputs"""
+        self._test_hierarchy_internal(self.get_input_file_name("mini.cif"))
+
+    def _test_hierarchy_internal(self, pdbfile):
         # input parameter
-        pdbfile = self.get_input_file_name("mini.pdb")
         fastafile = self.get_input_file_name("mini.fasta")
 
         components = ["Rpb1", "Rpb2" ]
@@ -32,6 +37,7 @@ class Tests(IMP.test.TestCase):
             mol.add_representation(mol.get_non_atomic_residues(),
                                    resolutions=[10])
         hier = simo.build()
+        self.assertEqual(len(IMP.atom.get_leaves(hier)), 12)
 
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
                                         included_objects=hier, resolution=10)
