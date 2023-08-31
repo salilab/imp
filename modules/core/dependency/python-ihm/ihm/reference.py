@@ -89,7 +89,7 @@ class UniProtSequence(Sequence):
             self._db_name, db_code, accession, sequence, details)
 
     def __str__(self):
-        return "<ihm.reference.UniProtSequence(%s)>" % self.accession
+        return "<ihm.reference.UniProtSequence(%r)>" % self.accession
 
     @classmethod
     def from_accession(cls, accession):

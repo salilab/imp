@@ -43,10 +43,13 @@ class Tests(unittest.TestCase):
             pass
         asym = ihm.AsymUnit(ihm.Entity('AA'), "testdetail")
         sm = MockObject()
-        sm._id = '42'
         s = ihm.representation.ResidueSegment(
             asym_unit=asym, rigid=False, primitive='sphere',
             starting_model=sm)
+        self.assertEqual(
+            s._get_report(),
+            "testdetail 1-2 as flexible residues (from starting model)")
+        sm._id = '42'
         self.assertEqual(
             s._get_report(),
             "testdetail 1-2 as flexible residues (from starting model 42)")

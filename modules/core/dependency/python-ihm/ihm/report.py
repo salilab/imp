@@ -15,6 +15,17 @@ class LocalFilesWarning(UserWarning):
     pass
 
 
+class MissingFileWarning(UserWarning):
+    pass
+
+
+def _get_name(name):
+    if name:
+        return repr(name)
+    else:
+        return "(unnamed)"
+
+
 class _SectionReporter(object):
     def __init__(self, title, fh):
         self.fh = fh
@@ -40,6 +51,8 @@ class Reporter(object):
         self.report_software()
         self.report_protocols()
         self.report_restraints()
+        self.report_models()
+        self.report_ensembles()
 
     def _section(self, title):
         return _SectionReporter(title, self.fh)
@@ -105,7 +118,10 @@ class Reporter(object):
     def report_representations(self):
         r = self._section("Model representation")
         for rep in self.system._all_representations():
-            r.report("- Representation %s" % rep._id)
+            if hasattr(rep, '_id'):
+                r.report("- Representation %s" % rep._id)
+            else:
+                r.report("- Representation")
             for segment in rep:
                 r.report("  - " + segment._get_report())
 
@@ -124,3 +140,37 @@ class Reporter(object):
         r = self._section("Restraints")
         for rsr in ihm._remove_identical(self.system._all_restraints()):
             r.report("- " + rsr._get_report())
+
+    def report_models(self):
+        r = self._section("Models")
+        for sg in self.system.state_groups:
+            r.report("- State group")
+            for state in sg:
+                r.report("  - State %s" % _get_name(state.name))
+                for mg in state:
+                    r.report("    - Model group %s containing %d models"
+                             % (_get_name(mg.name), len(mg)))
+
+    def report_ensembles(self):
+        r = self._section("Ensembles")
+        for e in self.system.ensembles:
+            r.report("- Ensemble %s containing %d models"
+                     % (_get_name(e.name), e.num_models))
+            if e.model_group is not None:
+                r.report("  - From model group %s"
+                         % _get_name(e.model_group.name))
+            if e.precision is not None:
+                r.report("  - Precision %.1f" % e.precision)
+            if e.file:
+                r.report("  - In external file %s" % e.file)
+            if (e.model_group is not None and not e.file
+                    and e.num_models > len(e.model_group)):
+                warnings.warn(
+                    "%s references more models (%d) than are deposited in "
+                    "its model group, but does not reference an external file"
+                    % (e, e.num_models), MissingFileWarning)
+            for d in e.densities:
+                asym = d.asym_unit
+                r.report("  - Localization density for %s %d-%d"
+                         % (asym.details, asym.seq_id_range[0],
+                            asym.seq_id_range[1]))

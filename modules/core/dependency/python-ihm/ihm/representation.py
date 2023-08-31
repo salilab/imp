@@ -4,7 +4,10 @@
 
 def _starting_model_report(seg):
     if seg.starting_model:
-        return " (from starting model %s)" % seg.starting_model._id
+        if hasattr(seg.starting_model, '_id'):
+            return " (from starting model %s)" % seg.starting_model._id
+        else:
+            return " (from starting model)"
     else:
         return ""
 

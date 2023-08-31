@@ -18,6 +18,7 @@ import ihm.protocol
 import ihm.analysis
 import ihm.restraint
 import ihm.geometry
+import ihm.model
 
 
 class Tests(unittest.TestCase):
@@ -70,9 +71,12 @@ class Tests(unittest.TestCase):
             a(3, 4), starting_model=None,
             rigid=True, primitive='other', count=3)
         r1 = ihm.representation.Representation((s1, s2), name='foo')
-        r1._id = '1'
         s.orphan_representations.append(r1)
         r = ihm.report.Reporter(s, sio)
+        # Test report of representation without ID
+        r.report_representations()
+        # Test report of representation with ID
+        r1._id = 42
         r.report_representations()
 
     def test_citations(self):
@@ -165,6 +169,46 @@ class Tests(unittest.TestCase):
         s.restraints.append(rsr)
         r = ihm.report.Reporter(s, sio)
         r.report_restraints()
+
+    def test_models(self):
+        """Test report_models"""
+        sio = StringIO()
+        s = ihm.System(title='test system')
+        sg = ihm.model.StateGroup()
+        state = ihm.model.State(name='foo')
+        mg = ihm.model.ModelGroup(name='bar')
+        m = ihm.model.Model(assembly='foo', protocol='bar',
+                            representation='baz')
+        mg.append(m)
+        state.append(mg)
+        sg.append(state)
+        s.state_groups.append(sg)
+        r = ihm.report.Reporter(s, sio)
+        r.report_models()
+
+    def test_ensembles(self):
+        """Test report_ensembles"""
+        sio = StringIO()
+        s = ihm.System(title='test system')
+        e = ihm.Entity("ACG")
+        a = ihm.AsymUnit(e, "my asym")
+        a.id = 'A'
+        s.asym_units.append(a)
+        s.entities.append(e)
+        e1 = ihm.model.Ensemble(model_group=None, num_models=10)
+        e2 = ihm.model.Ensemble(model_group=None, num_models=5, precision=1.0,
+                                name='test ensemble')
+        mg = ihm.model.ModelGroup(name='bar')
+        e3 = ihm.model.Ensemble(model_group=mg, num_models=1, file='file')
+        e3.densities.append(ihm.model.LocalizationDensity(
+            file='foo', asym_unit=a(1, 2)))
+        s.ensembles.extend((e1, e2, e3))
+        r = ihm.report.Reporter(s, sio)
+        r.report_ensembles()
+        # Should warn about extra models but no external file
+        e4 = ihm.model.Ensemble(model_group=mg, num_models=1)
+        s.ensembles.append(e4)
+        self.assertWarns(ihm.report.MissingFileWarning, r.report_ensembles)
 
 
 if __name__ == '__main__':

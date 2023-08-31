@@ -26,6 +26,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(),
+                         "Fit to 3D electron microscopy density map")
+        f = ihm.restraint.EM3DRestraint(
+            dataset='foo', assembly='bar',
+            fitting_method="Gaussian mixture models")
+        self.assertEqual(f._get_report(),
+                         "Fit to 3D electron microscopy density map "
+                         "using Gaussian mixture models")
 
     def test_sas_restraint_fit(self):
         """Test SASRestraintFit class"""
@@ -38,6 +46,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(), "SAS restraint")
+        f = ihm.restraint.SASRestraint(dataset='foo', assembly='bar',
+                                       multi_state=False)
+        self.assertEqual(f._get_report(), "Single-state SAS restraint")
+        f = ihm.restraint.SASRestraint(dataset='foo', assembly='bar',
+                                       multi_state=True,
+                                       fitting_atom_type='residues')
+        self.assertEqual(f._get_report(),
+                         "Multi-state SAS restraint on residues")
 
     def test_em2d_restraint_fit(self):
         """Test EM2DRestraintFit class"""

@@ -257,6 +257,7 @@ class Tests(unittest.TestCase):
         f = ihm.location.InputFileLocation(repo=r, path='foo')
         self.assertEqual(f.repo.doi, '10.5281/zenodo.46266')
         self.assertEqual(f.path, 'foo')
+        self.assertEqual(str(f), "<ihm.location.InputFileLocation('foo')>")
 
     def test_repository_get_full_path(self):
         """Test Repository._get_full_path"""
