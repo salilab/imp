@@ -453,7 +453,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
             # Use provenance information from the last original node (hopefully
             # all nodes have the same provenance, i.e. came from the same
             # PDB file)
-            if prov_dict[resolution]:
+            if prov_dict.get(resolution):
                 pdb_element = prov_dict[resolution]
                 sp = IMP.core.StructureProvenance.setup_particle(
                     IMP.Particle(model, "input structure"),
