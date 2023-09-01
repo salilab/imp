@@ -469,16 +469,15 @@ def read_coordinates_of_rmfs(model,
 
         if not prots:
             continue
-        if IMP.pmi.get_is_canonical(prots[0]):
-            states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
+        states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
+        if states:
             prot = states[state_number]
         else:
+            # If no states, assume PMI1-style
             prot = prots[state_number]
 
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-        all_particles = [pp for key in part_dict for pp in part_dict[key]]
-        all_ps_set = set(all_particles)
         model_coordinate_dict = {}
         template_coordinate_dict = {}
         rmsd_coordinate_dict = {}
@@ -497,30 +496,12 @@ def read_coordinates_of_rmfs(model,
                 continue
 
             # PMI2: do selection of resolution and name at the same time
-            if IMP.pmi.get_is_canonical(prot):
-                for pr in tuple_dict:
-                    ps = IMP.pmi.tools.select_by_tuple_2(
-                        prot, tuple_dict[pr], resolution=1)
-                    result_dict[pr] = [
-                        list(map(float, IMP.core.XYZ(p).get_coordinates()))
-                        for p in ps]
-            else:
-                for pr in tuple_dict:
-                    if type(tuple_dict[pr]) is str:
-                        name = tuple_dict[pr]
-                        s = IMP.atom.Selection(prot, molecule=name)
-                    elif type(tuple_dict[pr]) is tuple:
-                        name = tuple_dict[pr][2]
-                        rend = tuple_dict[pr][1]
-                        rbegin = tuple_dict[pr][0]
-                        s = IMP.atom.Selection(
-                            prot, molecule=name,
-                            residue_indexes=range(rbegin, rend+1))
-                    ps = s.get_selected_particles()
-                    filtered_particles = [p for p in ps if p in all_ps_set]
-                    result_dict[pr] = \
-                        [list(map(float, IMP.core.XYZ(p).get_coordinates()))
-                         for p in filtered_particles]
+            for pr in tuple_dict:
+                ps = IMP.pmi.tools.select_by_tuple_2(
+                    prot, tuple_dict[pr], resolution=1)
+                result_dict[pr] = [
+                    list(map(float, IMP.core.XYZ(p).get_coordinates()))
+                    for p in ps]
 
         all_coordinates.append(model_coordinate_dict)
         alignment_coordinates.append(template_coordinate_dict)
@@ -549,43 +530,17 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
                                                 frame_number,
                                                 rmf_file)
 
-    if IMP.pmi.get_is_canonical(prots[0]):
-        states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
-        prot = states[state_number]
-    else:
-        prot = prots[state_number]
+    states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
+    prot = states[state_number]
 
     rmsd_bead_size_dict = {}
 
     # PMI2: do selection of resolution and name at the same time
-    if IMP.pmi.get_is_canonical(prot):
-        for pr in rmsd_calculation_components:
-            ps = IMP.pmi.tools.select_by_tuple_2(
-                prot, rmsd_calculation_components[pr], resolution=1)
-            rmsd_bead_size_dict[pr] = [
-                len(IMP.pmi.tools.get_residue_indexes(p)) for p in ps]
-    else:
-        # getting the particles
-        part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-        all_particles = [pp for key in part_dict for pp in part_dict[key]]
-        all_ps_set = set(all_particles)
-
-        # getting the coordinates
-        for pr in rmsd_calculation_components:
-            if type(rmsd_calculation_components[pr]) is str:
-                name = rmsd_calculation_components[pr]
-                s = IMP.atom.Selection(prot, molecule=name)
-            elif type(rmsd_calculation_components[pr]) is tuple:
-                name = rmsd_calculation_components[pr][2]
-                rend = rmsd_calculation_components[pr][1]
-                rbegin = rmsd_calculation_components[pr][0]
-                s = IMP.atom.Selection(
-                    prot, molecule=name, residue_indexes=range(rbegin, rend+1))
-            ps = s.get_selected_particles()
-            filtered_particles = [p for p in ps if p in all_ps_set]
-            rmsd_bead_size_dict[pr] = \
-                [len(IMP.pmi.tools.get_residue_indexes(p))
-                 for p in filtered_particles]
+    for pr in rmsd_calculation_components:
+        ps = IMP.pmi.tools.select_by_tuple_2(
+            prot, rmsd_calculation_components[pr], resolution=1)
+        rmsd_bead_size_dict[pr] = [
+            len(IMP.pmi.tools.get_residue_indexes(p)) for p in ps]
 
     return rmsd_bead_size_dict
 

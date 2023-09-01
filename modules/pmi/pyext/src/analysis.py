@@ -782,11 +782,7 @@ class Precision(object):
     def _get_residue_particle_index_map(self, prot_name, structure, hier):
         # Creates map from all particles to residue numbers
         residue_particle_index_map = []
-        if IMP.pmi.get_is_canonical(hier):
-            s = IMP.atom.Selection(hier, molecules=[prot_name],
-                                   resolution=1)
-        else:
-            s = IMP.atom.Selection(hier, molecules=[prot_name])
+        s = IMP.atom.Selection(hier, molecules=[prot_name], resolution=1)
         all_selected_particles = s.get_selected_particles()
         intersection = list(set(all_selected_particles) & set(structure))
         sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
@@ -799,14 +795,9 @@ class Precision(object):
         selected_coordinates = []
         for t in tuple_selections:
             if isinstance(t, tuple) and len(t) == 3:
-                if IMP.pmi.get_is_canonical(prot):
-                    s = IMP.atom.Selection(
-                        prot, molecules=[t[2]],
-                        residue_indexes=range(t[0], t[1]+1), resolution=1)
-                else:
-                    s = IMP.atom.Selection(
-                        prot, molecules=[t[2]],
-                        residue_indexes=range(t[0], t[1]+1))
+                s = IMP.atom.Selection(
+                    prot, molecules=[t[2]],
+                    residue_indexes=range(t[0], t[1]+1), resolution=1)
                 all_selected_particles = s.get_selected_particles()
                 intersection = list(set(all_selected_particles)
                                     & set(structure))
@@ -816,10 +807,7 @@ class Precision(object):
                       for p in sorted_intersection]
                 selected_coordinates += cc
             elif isinstance(t, str):
-                if IMP.pmi.get_is_canonical(prot):
-                    s = IMP.atom.Selection(prot, molecules=[t], resolution=1)
-                else:
-                    s = IMP.atom.Selection(prot, molecules=[t])
+                s = IMP.atom.Selection(prot, molecules=[t], resolution=1)
                 all_selected_particles = s.get_selected_particles()
                 intersection = list(set(all_selected_particles)
                                     & set(structure))
@@ -1181,78 +1169,58 @@ class GetModelDensity(object):
                                'density_name_1' :[('ccl1')],
                                'density_name_2' :[(1,142,'tfb3d1'),
                                                   (143,700,'tfb3d2')],
-           @param representation PMI representation, for doing selections.
-                          Not needed if you only pass hierarchies
            @param resolution The MRC resolution of the output map (in
                   Angstrom unit)
            @param voxel The voxel size for the output map (lower is slower)
         """
 
-        self.representation = representation
+        if representation:
+            IMP.handle_use_deprecated(
+                "The 'representation' argument is deprecated "
+                "(and is ignored). Pass hierarchies to "
+                "add_subunits_density() instead.")
         self.MRCresolution = resolution
         self.voxel = voxel
         self.densities = {}
         self.count_models = 0.0
         self.custom_ranges = custom_ranges
 
-    def add_subunits_density(self, hierarchy=None):
+    def add_subunits_density(self, hierarchy):
         """Add a frame to the densities.
-        @param hierarchy Optionally read the hierarchy from somewhere.
-                         If not passed, will just read the representation.
+        @param hierarchy The hierarchy to add.
         """
         self.count_models += 1.0
 
-        if hierarchy:
-            part_dict = get_particles_at_resolution_one(hierarchy)
-            all_particles_by_resolution = []
-            for name in part_dict:
-                all_particles_by_resolution += part_dict[name]
+        part_dict = get_particles_at_resolution_one(hierarchy)
+        all_particles_by_resolution = []
+        for name in part_dict:
+            all_particles_by_resolution += part_dict[name]
 
         for density_name in self.custom_ranges:
             parts = []
-            if hierarchy:
-                all_particles_by_segments = []
+            all_particles_by_segments = []
 
             for seg in self.custom_ranges[density_name]:
-                if not hierarchy:
-                    # when you have a IMP.pmi.representation.Representation
-                    # class
-                    parts += IMP.tools.select_by_tuple(
-                        self.representation, seg, resolution=1,
-                        name_is_ambiguous=False)
+                if isinstance(seg, str):
+                    s = IMP.atom.Selection(hierarchy, molecule=seg)
+                elif isinstance(seg, tuple) and len(seg) == 2:
+                    s = IMP.atom.Selection(
+                        hierarchy, molecule=seg[0], copy_index=seg[1])
+                elif isinstance(seg, tuple) and len(seg) == 3:
+                    s = IMP.atom.Selection(
+                        hierarchy, molecule=seg[2],
+                        residue_indexes=range(seg[0], seg[1] + 1))
+                elif isinstance(seg, tuple) and len(seg) == 4:
+                    s = IMP.atom.Selection(
+                        hierarchy, molecule=seg[2],
+                        residue_indexes=range(seg[0], seg[1] + 1),
+                        copy_index=seg[3])
                 else:
-                    # else, when you have a hierarchy, but not a representation
-                    if not IMP.pmi.get_is_canonical(hierarchy):
-                        for h in hierarchy.get_children():
-                            if not IMP.atom.Molecule.get_is_setup(h):
-                                IMP.atom.Molecule.setup_particle(
-                                    h.get_particle())
+                    raise Exception('could not understand selection tuple '
+                                    + str(seg))
 
-                    if isinstance(seg, str):
-                        s = IMP.atom.Selection(hierarchy, molecule=seg)
-                    elif isinstance(seg, tuple) and len(seg) == 2:
-                        s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[0], copy_index=seg[1])
-                    elif isinstance(seg, tuple) and len(seg) == 3:
-                        s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[2],
-                            residue_indexes=range(seg[0], seg[1] + 1))
-                    elif isinstance(seg, tuple) and len(seg) == 4:
-                        s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[2],
-                            residue_indexes=range(seg[0], seg[1] + 1),
-                            copy_index=seg[3])
-                    else:
-                        raise Exception('could not understand selection tuple '
-                                        + str(seg))
-
-                    all_particles_by_segments += s.get_selected_particles()
-            if hierarchy:
-                if IMP.pmi.get_is_canonical(hierarchy):
-                    parts = all_particles_by_segments
-                else:
-                    parts = list(set(all_particles_by_segments)
-                                 & set(all_particles_by_resolution))
+                all_particles_by_segments += s.get_selected_particles()
+            parts = all_particles_by_segments
             self._create_density_from_particles(parts, density_name)
 
     def normalize_density(self):
@@ -1637,24 +1605,9 @@ def get_particles_at_resolution_one(prot):
     particle_dict = {}
 
     # attempt to give good results for PMI2
-    if IMP.pmi.get_is_canonical(prot):
-        for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
-            sel = IMP.atom.Selection(mol, resolution=1)
-            particle_dict[mol.get_name()] = sel.get_selected_particles()
-    else:
-        allparticles = []
-        for c in prot.get_children():
-            name = c.get_name()
-            particle_dict[name] = IMP.atom.get_leaves(c)
-            for s in c.get_children():
-                if "_Res:1" in s.get_name() and "_Res:10" not in s.get_name():
-                    allparticles += IMP.atom.get_leaves(s)
-                if "Beads" in s.get_name():
-                    allparticles += IMP.atom.get_leaves(s)
-
-        for name in particle_dict:
-            particle_dict[name] = IMP.pmi.tools.sort_by_residues(
-                list(set(particle_dict[name]) & set(allparticles)))
+    for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
+        sel = IMP.atom.Selection(mol, resolution=1)
+        particle_dict[mol.get_name()] = sel.get_selected_particles()
     return particle_dict
 
 
@@ -1669,23 +1622,9 @@ def get_particles_at_resolution_ten(prot):
     """
     particle_dict = {}
     # attempt to give good results for PMI2
-    if IMP.pmi.get_is_canonical(prot):
-        for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
-            sel = IMP.atom.Selection(mol, resolution=10)
-            particle_dict[mol.get_name()] = sel.get_selected_particles()
-    else:
-        allparticles = []
-        for c in prot.get_children():
-            name = c.get_name()
-            particle_dict[name] = IMP.atom.get_leaves(c)
-            for s in c.get_children():
-                if "_Res:10" in s.get_name():
-                    allparticles += IMP.atom.get_leaves(s)
-                if "Beads" in s.get_name():
-                    allparticles += IMP.atom.get_leaves(s)
-        for name in particle_dict:
-            particle_dict[name] = IMP.pmi.tools.sort_by_residues(
-                list(set(particle_dict[name]) & set(allparticles)))
+    for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
+        sel = IMP.atom.Selection(mol, resolution=10)
+        particle_dict[mol.get_name()] = sel.get_selected_particles()
     return particle_dict
 
 

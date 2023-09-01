@@ -340,10 +340,8 @@ class Tests(IMP.test.TestCase):
 
             self.assertTrue((n00==10 and n11==10) or (n01==10 and n10==10))
 
-            # check the output RMF file is canonical
             rhC = RMF.open_rmf_file_read_only(os.path.join(cl0,'0.rmf3'))
             protC = IMP.rmf.create_hierarchies(rhC,mdl)[0]
-            self.assertTrue(IMP.pmi.get_is_canonical(protC))
             # Provenance information should be attached to the state,
             # which is one level down (under the System)
             self.check_provenance(protC.get_children()[0])

@@ -1192,21 +1192,20 @@ class AnalysisReplicaExchange0(object):
             # expand the dictionaries to include ambiguous copies
             prot_ahead = IMP.pmi.analysis.get_hiers_from_rmf(
                 self.model, 0, my_best_score_rmf_tuples[0][1])[0]
-            if IMP.pmi.get_is_canonical(prot_ahead):
-                if rmsd_calculation_components is not None:
-                    tmp = self._expand_ambiguity(
-                        prot_ahead, rmsd_calculation_components)
-                    if tmp != rmsd_calculation_components:
-                        print('Detected ambiguity, expand rmsd components to',
-                              tmp)
-                        rmsd_calculation_components = tmp
-                if alignment_components is not None:
-                    tmp = self._expand_ambiguity(prot_ahead,
-                                                 alignment_components)
-                    if tmp != alignment_components:
-                        print('Detected ambiguity, expand alignment '
-                              'components to', tmp)
-                        alignment_components = tmp
+            if rmsd_calculation_components is not None:
+                tmp = self._expand_ambiguity(
+                    prot_ahead, rmsd_calculation_components)
+                if tmp != rmsd_calculation_components:
+                    print('Detected ambiguity, expand rmsd components to',
+                          tmp)
+                    rmsd_calculation_components = tmp
+            if alignment_components is not None:
+                tmp = self._expand_ambiguity(prot_ahead,
+                                             alignment_components)
+                if tmp != alignment_components:
+                    print('Detected ambiguity, expand alignment '
+                          'components to', tmp)
+                    alignment_components = tmp
 
 # -------------------------------------------------------------
 # read the coordinates
@@ -1282,12 +1281,9 @@ class AnalysisReplicaExchange0(object):
                     if not prots:
                         continue
 
-                    if IMP.pmi.get_is_canonical(prots[0]):
-                        states = IMP.atom.get_by_type(
-                            prots[0], IMP.atom.STATE_TYPE)
-                        prot = states[state_number]
-                    else:
-                        prot = prots[state_number]
+                    states = IMP.atom.get_by_type(
+                        prots[0], IMP.atom.STATE_TYPE)
+                    prot = states[state_number]
 
                     # get transformation aligning coordinates of
                     # requested tuples to the first RMF file
@@ -1340,15 +1336,12 @@ class AnalysisReplicaExchange0(object):
 
                     clusstat.write(str(tmp_dict)+"\n")
 
-                    if IMP.pmi.get_is_canonical(prot):
-                        # create a single-state System and write that
-                        h = IMP.atom.Hierarchy.setup_particle(
-                            IMP.Particle(self.model))
-                        h.set_name("System")
-                        h.add_child(prot)
-                        o.init_rmf(out_rmf_fn, [h], rs)
-                    else:
-                        o.init_rmf(out_rmf_fn, [prot], rs)
+                    # create a single-state System and write that
+                    h = IMP.atom.Hierarchy.setup_particle(
+                        IMP.Particle(self.model))
+                    h.set_name("System")
+                    h.add_child(prot)
+                    o.init_rmf(out_rmf_fn, [h], rs)
 
                     o.write_rmf(out_rmf_fn)
                     o.close_rmf(out_rmf_fn)
@@ -1500,12 +1493,9 @@ class AnalysisReplicaExchange0(object):
                     if not prots:
                         continue
 
-                    if IMP.pmi.get_is_canonical(prots[0]):
-                        states = IMP.atom.get_by_type(
-                            prots[0], IMP.atom.STATE_TYPE)
-                        prot = states[state_number]
-                    else:
-                        prot = prots[state_number]
+                    states = IMP.atom.get_by_type(
+                        prots[0], IMP.atom.STATE_TYPE)
+                    prot = states[state_number]
                     if k == 0:
                         IMP.pmi.io.add_provenance(cluster_prov, (prot,))
 
@@ -1543,15 +1533,12 @@ class AnalysisReplicaExchange0(object):
                     o.init_pdb(dircluster + str(k) + ".pdb", prot)
                     o.write_pdb(dircluster + str(k) + ".pdb")
 
-                    if IMP.pmi.get_is_canonical(prot):
-                        # create a single-state System and write that
-                        h = IMP.atom.Hierarchy.setup_particle(
-                            IMP.Particle(self.model))
-                        h.set_name("System")
-                        h.add_child(prot)
-                        o.init_rmf(dircluster + str(k) + ".rmf3", [h], rs)
-                    else:
-                        o.init_rmf(dircluster + str(k) + ".rmf3", [prot], rs)
+                    # create a single-state System and write that
+                    h = IMP.atom.Hierarchy.setup_particle(
+                        IMP.Particle(self.model))
+                    h.set_name("System")
+                    h.add_child(prot)
+                    o.init_rmf(dircluster + str(k) + ".rmf3", [h], rs)
                     o.write_rmf(dircluster + str(k) + ".rmf3")
                     o.close_rmf(dircluster + str(k) + ".rmf3")
 
