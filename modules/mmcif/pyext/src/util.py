@@ -15,6 +15,14 @@ import string
 import weakref
 import operator
 import json
+import sys
+
+
+if sys.version_info[0] == 2:
+    # basestring is base for both str and unicode (used by json)
+    _string_type = basestring
+else:
+    _string_type = str
 
 
 class _ChainIDs(object):
@@ -117,7 +125,7 @@ class System(object):
         asym_map = {}
         for asym in self.system.asym_units:
             asym_map[asym.details] = asym
-        if isinstance(t, str):
+        if isinstance(t, _string_type):
             return asym_map[t]
         elif isinstance(t, (list, tuple)) and len(t) == 3:
             return asym_map[t[2]](t[0], t[1])
