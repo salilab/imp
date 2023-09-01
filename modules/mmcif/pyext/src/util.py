@@ -120,6 +120,10 @@ class System(object):
         self._external_files.add_repo(ihm.location.Repository(
                                             doi, root, url, top_directory))
 
+    def report(self, fh=sys.stdout):
+        """Use python-ihm to print a summary report of this system."""
+        self.system.report(fh)
+
     def _parse_sel_tuple(self, t):
         """Convert a PMI-style selection tuple into an IHM object"""
         asym_map = {}
