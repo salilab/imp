@@ -1,6 +1,8 @@
 from __future__ import print_function
 import IMP.test
 import IMP.mmcif
+import ihm
+
 
 class Tests(IMP.test.TestCase):
     def make_model(self, system, chains=None):
@@ -65,6 +67,23 @@ class Tests(IMP.test.TestCase):
                          ['AY', 'AZ', 'BA', 'BB'])
         self.assertEqual([c[i] for i in range(700,704)],
                          ['ZY', 'ZZ', 'AAA', 'AAB'])
+
+    def test_parse_sel_tuple(self):
+        """Test _parse_sel_tuple()"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        e = IMP.mmcif.Ensemble(state, "cluster 1")
+        e.add_model([h], [], "model1")
+        all_foo = system._parse_sel_tuple("foo")
+        self.assertIsInstance(all_foo, ihm.AsymUnit)
+        self.assertEqual(all_foo.details, 'foo')
+        self.assertEqual(all_foo.seq_id_range, (1, 4))
+        part_bar = system._parse_sel_tuple([2, 3, "bar"])
+        self.assertIsInstance(part_bar, ihm.AsymUnitRange)
+        self.assertEqual(part_bar.details, 'bar')
+        self.assertEqual(part_bar.seq_id_range, (2, 3))
+        self.assertRaises(TypeError, system._parse_sel_tuple, [1, 2, 3, 4])
+
 
 if __name__ == '__main__':
     IMP.test.main()

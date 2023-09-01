@@ -14,6 +14,7 @@ import ihm.representation
 import string
 import weakref
 import operator
+import json
 
 
 class _ChainIDs(object):
@@ -110,6 +111,18 @@ class System(object):
         """Add a repository containing one or more modeling files."""
         self._external_files.add_repo(ihm.location.Repository(
                                             doi, root, url, top_directory))
+
+    def _parse_sel_tuple(self, t):
+        """Convert a PMI-style selection tuple into an IHM object"""
+        asym_map = {}
+        for asym in self.system.asym_units:
+            asym_map[asym.details] = asym
+        if isinstance(t, str):
+            return asym_map[t]
+        elif isinstance(t, (list, tuple)) and len(t) == 3:
+            return asym_map[t[2]](t[0], t[1])
+        else:
+            raise TypeError("Cannot handle selection tuple: %s" % t)
 
     def _add_state(self, state):
         if not self.system.state_groups:
@@ -324,6 +337,44 @@ class Ensemble(ihm.model.Ensemble):
         model = IMP.mmcif.data._Model(frame, self.state)
         self.model_group.append(model)
         self.state._add_frame(frame, model)
+        for h in self.state.hiers:
+            self._add_hierarchy(h)
+
+    def _add_hierarchy(self, h):
+        """Add ensemble-specific information from the given hierarchy"""
+        for prov in reversed(list(IMP.core.get_all_provenance(
+                h, types=[IMP.core.ClusterProvenance]))):
+            self.num_models = prov.get_number_of_members()
+            self.precision = prov.get_precision()
+            self.name = prov.get_name()
+            d = prov.get_density()
+            if d and d.endswith('.json'):
+                with open(d) as fh:
+                    j = json.load(fh)
+                self._parse_json_density(j, d)
+
+    def _parse_json_density(self, j, json_fname):
+        """Add information from cluster density JSON file"""
+        if j.get('producer') and j['producer'].get('name') == 'IMP.sampcon':
+            self._parse_sampcon(j, json_fname)
+
+    def _parse_sampcon(self, j, json_fname):
+        """Add information from IMP.sampcon-generated JSON file"""
+        ranges = j['density_custom_ranges']
+        for cluster in j['clusters']:
+            if cluster['name'] == self.name:
+                for range_name, mrc in cluster['density'].items():
+                    sel_tuple = ranges[range_name]
+                    if len(sel_tuple) > 1:
+                        raise ValueError("Cannot handle sel tuple")
+                    asym = self.state.system._parse_sel_tuple(sel_tuple[0])
+                    # Path is relative to that of the JSON file
+                    full_mrc = IMP.get_relative_path(json_fname, mrc)
+                    density = ihm.model.LocalizationDensity(
+                        file=ihm.location.OutputFileLocation(
+                            path=full_mrc, details='Localization density'),
+                        asym_unit=asym)
+                    self.densities.append(density)
 
     def add_rmf(self, fname, name, frame=0):
         """Add a frame from an RMF file"""

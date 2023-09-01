@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
             mol.add_child(chain)
         return top, s
 
-    def make_model_with_protocol(self, system, chains=None):
+    def make_model_with_protocol(self, system, chains=None, sampcon=False):
         top, s = self.make_model(system, chains)
         m = s.model
         prov = IMP.core.SampleProvenance.setup_particle(m, IMP.Particle(m),
@@ -85,6 +85,10 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_provenance(m, top, prov)
 
         prov = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        if sampcon:
+            prov.set_name("cluster.0")
+            prov.set_precision(42.0)
+            prov.set_density(self.get_input_file_name("sampcon.json"))
         IMP.core.add_provenance(m, top, prov)
         return top, s
 
@@ -728,6 +732,60 @@ _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
 1 1 1 1 A 1.000 2.000 3.000 4.200 . 1
 2 2 1 2 B 4.000 5.000 6.000 9.200 . 1
+#
+""")
+
+    def test_no_localization_densities(self):
+        """Test DensityDumper with no density information"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model_with_protocol(system)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+
+        dumper = ihm.dumper._DensityDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
+        self.assertEqual(out, "")
+
+    def test_sampcon_localization_densities(self):
+        """Test DensityDumper with IMP.sampcon output"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model_with_protocol(system, sampcon=True)
+        e = IMP.mmcif.Ensemble(state, "original name")
+        e.add_model([h], [], "model1")
+
+        # Name and precision should be assigned based on sampcon output
+        self.assertEqual(e.name, "cluster.0")
+        self.assertAlmostEqual(e.precision, 42.0, delta=1e-4)
+
+        den1, den2 = e.densities
+        self.assertEqual(den1.asym_unit.details, 'foo')
+        self.assertEqual(den1.asym_unit.seq_id_range, (1, 4))
+        self.assertEqual(os.path.basename(den1.file.path), 'test_1.mrc')
+        self.assertEqual(den2.asym_unit.details, 'bar')
+        self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
+        self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
+
+        # assign IDs
+        self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
+        self._assign_range_ids(system)
+        self._assign_location_ids(system)
+        dumper = ihm.dumper._EnsembleDumper()
+        dumper.finalize(system.system)
+
+        dumper = ihm.dumper._DensityDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
+        self.assertEqual(out, """#
+loop_
+_ihm_localization_density_files.id
+_ihm_localization_density_files.file_id
+_ihm_localization_density_files.ensemble_id
+_ihm_localization_density_files.entity_id
+_ihm_localization_density_files.asym_id
+_ihm_localization_density_files.entity_poly_segment_id
+1 1 1 1 A 1
+2 2 1 1 B 3
 #
 """)
 
