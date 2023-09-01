@@ -20,7 +20,7 @@ import sys
 
 if sys.version_info[0] == 2:
     # basestring is base for both str and unicode (used by json)
-    _string_type = basestring
+    _string_type = basestring  # noqa: F821
 else:
     _string_type = str
 
