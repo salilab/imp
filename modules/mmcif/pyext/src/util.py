@@ -381,7 +381,8 @@ class Ensemble(ihm.model.Ensemble):
                         raise ValueError("Cannot handle sel tuple")
                     asym = self.state.system._parse_sel_tuple(sel_tuple[0])
                     # Path is relative to that of the JSON file
-                    full_mrc = IMP.get_relative_path(json_fname, mrc)
+                    # With Python 2, covert mrc from unicode to str
+                    full_mrc = IMP.get_relative_path(json_fname, str(mrc))
                     density = ihm.model.LocalizationDensity(
                         file=ihm.location.OutputFileLocation(
                             path=full_mrc, details='Localization density'),
