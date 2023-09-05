@@ -357,19 +357,20 @@ class Output(object):
         # highest resolution have highest priority
         resindexes_dict = {}
 
-        # this dictionary dill contain the sequence of tuples needed to
+        # this dictionary will contain the sequence of tuples needed to
         # write the pdb
         particle_infos_for_pdb = []
 
         geometric_center = [0, 0, 0]
         atom_count = 0
 
-        # select highest resolution
-        sel = IMP.atom.Selection(self.dictionary_pdbs[name], resolution=0)
-        ps = sel.get_selected_particles()
-        # If the hierarchy is empty, it itself is returned; don't use it
-        if len(ps) == 1 and ps[0] == self.dictionary_pdbs[name]:
+        # select highest resolution, if hierarchy is non-empty
+        if (not IMP.core.XYZR.get_is_setup(self.dictionary_pdbs[name])
+                and self.dictionary_pdbs[name].get_number_of_children() == 0):
             ps = []
+        else:
+            sel = IMP.atom.Selection(self.dictionary_pdbs[name], resolution=0)
+            ps = sel.get_selected_particles()
 
         for n, p in enumerate(ps):
             protname, is_a_bead = self.get_prot_name_from_particle(name, p)
@@ -1033,7 +1034,7 @@ class ProcessOutput(object):
                 # "get_every" and "filterout" not enforced for RMF
                 statistics.passed_get_every += 1
                 statistics.passed_filterout += 1
-                IMP.rmf.load_frame(rh, RMF.FrameID(i))
+                rh.set_current_frame(RMF.FrameID(i))
                 if filtertuple is not None:
                     keytobefiltered = filtertuple[0]
                     relationship = filtertuple[1]
