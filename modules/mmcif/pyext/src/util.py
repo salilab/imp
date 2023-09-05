@@ -396,3 +396,107 @@ class Ensemble(ihm.model.Ensemble):
     def add_model(self, hiers, restraints, name):
         """Add hierarchies and restraints from an IMP.Model"""
         self.add_frame(_ModelFrame(hiers, restraints, name))
+
+
+class Convert(object):
+    """Convert one or more IMP Models and/or RMF frames to mmCIF
+       or BinaryCIF.
+
+       Models can be added by calling `add_model`. The final output
+       is collected in a python-ihm `ihm.System` object, as the `system`
+       attribute, and can be written out using the python-ihm API or
+       with the convenience `write` method."""
+
+    def __init__(self):
+        self.system = ihm.System()
+        self._state_by_name = {}
+        self._entities = IMP.mmcif.data._EntityMapper(self.system)
+        self._components = IMP.mmcif.data._ComponentMapper(self.system)
+
+    def add_model(self, hiers, restraints, name=None, states=None,
+                  ensembles=None):
+        """Add information to the system from an IMP Model.
+           Multiple IHM Models (coordinate sets) may be created (one per
+           state per hierarchy). All IHM models in a state are given the
+           same name and are added to the given IHM Ensemble for that state
+           (or placed in a new Ensemble if not given). Only coordinates
+           for the given state names (or all states, if not given) are added.
+           The IHM Ensembles containing the new models are returned."""
+        if ensembles is None:
+            ensembles = {}
+        if self.system.title is None and len(hiers) > 0:
+            self.system.title = hiers[0].get_name()
+        for state_obj, state_hier in self._get_states(hiers, states):
+            e = self._add_hierarchy(state_hier, state_obj, name,
+                                    ensembles.get(state_obj.name))
+            ensembles[state_obj.name] = e
+        return ensembles
+
+    def _add_hierarchy(self, h, state, name, ensemble):
+        if ensemble is None:
+            mg = ihm.model.ModelGroup()
+            state.append(mg)
+            ensemble = ihm.model.Ensemble(model_group=mg, num_models=0)
+            self.system.ensembles.append(ensemble)
+        chains = [IMP.atom.Chain(c)
+                  for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
+        if len(chains) == 0:
+            raise ValueError("No chains found in %s" % h)
+        for c in chains:
+            self._add_chain(c)
+        return ensemble
+
+    def _get_states(self, hiers, states):
+        def get_state_by_name(name):
+            if states is not None and name not in states:
+                return None
+            if name not in self._state_by_name:
+                self._add_state(ihm.model.State(name=name))
+            return self._state_by_name[name]
+
+        for h in hiers:
+            state_hiers = IMP.atom.get_by_type(h, IMP.atom.STATE_TYPE)
+            for state_hier in state_hiers:
+                state_obj = get_state_by_name(state_hier.get_name())
+                if state_obj is not None:
+                    yield state_obj, state_hier
+            # If no state nodes, treat everything as in a single unnamed state
+            if len(state_hiers) == 0:
+                state_obj = get_state_by_name(None)
+                if state_obj is not None:
+                    yield state_obj, h
+
+    def _add_state(self, state):
+        if not self.system.state_groups:
+            self.system.state_groups.append(ihm.model.StateGroup())
+        self.system.state_groups[-1].append(state)
+        self._state_by_name[state.name] = state
+
+    def _add_chain(self, chain):
+        entity = self._entities.add(chain)
+        component = self._components.add(chain, entity)
+        return component
+
+    def add_rmf(self, filename, name=None, frame=0, states=None,
+                ensembles=None):
+        """Add information to the system from a single frame in an RMF file."""
+        m = IMP.Model()
+        rh = RMF.open_rmf_file_read_only(filename)
+        rh.set_current_frame(RMF.FrameID(frame))
+        hiers = IMP.rmf.create_hierarchies(rh, m)
+        restraints = IMP.rmf.create_restraints(rh, m)
+        return self.add_model(hiers, restraints, name=name, states=states,
+                              ensembles=ensembles)
+
+    def write(self, filename):
+        """Write out the IHM system to a named mmCIF or BinaryCIF file."""
+        if filename.endswith('.bcif'):
+            with open(filename, 'wb') as fh:
+                ihm.dumper.write(fh, [self.system], format='BCIF')
+        else:
+            with open(filename, 'w') as fh:
+                ihm.dumper.write(fh, [self.system])
+
+    def report(self, fh=sys.stdout):
+        """Use python-ihm to print a summary report of the IHM system."""
+        self.system.report(fh)
