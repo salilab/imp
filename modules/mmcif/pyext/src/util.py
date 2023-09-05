@@ -405,7 +405,11 @@ class Convert(object):
        Models can be added by calling `add_model`. The final output
        is collected in a python-ihm `ihm.System` object, as the `system`
        attribute, and can be written out using the python-ihm API or
-       with the convenience `write` method."""
+       with the convenience `write` method.
+
+       This class is still in development and does not yet convert all
+       IMP data to IHM mmCIF/BinaryCIF.
+    """
 
     def __init__(self):
         self.system = ihm.System()
