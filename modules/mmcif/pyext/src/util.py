@@ -448,7 +448,57 @@ class Convert(object):
             raise ValueError("No chains found in %s" % h)
         for c in chains:
             self._add_chain(c)
+        self._add_hierarchy_ensemble_info(h, ensemble)
         return ensemble
+
+    def _add_hierarchy_ensemble_info(self, h, ensemble):
+        """Add ensemble-specific information from the given hierarchy"""
+        for prov in reversed(list(IMP.core.get_all_provenance(
+                h, types=[IMP.core.ClusterProvenance]))):
+            ensemble.num_models = prov.get_number_of_members()
+            ensemble.precision = prov.get_precision()
+            ensemble.name = prov.get_name()
+            d = prov.get_density()
+            if d and d.endswith('.json'):
+                with open(d) as fh:
+                    j = json.load(fh)
+                self._parse_json_density(j, d, ensemble)
+
+    def _parse_json_density(self, j, json_fname, ensemble):
+        """Add information from cluster density JSON file"""
+        if j.get('producer') and j['producer'].get('name') == 'IMP.sampcon':
+            self._parse_sampcon(j, json_fname, ensemble)
+
+    def _parse_sampcon(self, j, json_fname, ensemble):
+        """Add information from IMP.sampcon-generated JSON file"""
+        ranges = j['density_custom_ranges']
+        for cluster in j['clusters']:
+            if cluster['name'] == ensemble.name:
+                for range_name, mrc in cluster['density'].items():
+                    sel_tuple = ranges[range_name]
+                    if len(sel_tuple) > 1:
+                        raise ValueError("Cannot handle sel tuple")
+                    asym = self._parse_sel_tuple(sel_tuple[0])
+                    # Path is relative to that of the JSON file
+                    # With Python 2, covert mrc from unicode to str
+                    full_mrc = IMP.get_relative_path(json_fname, str(mrc))
+                    density = ihm.model.LocalizationDensity(
+                        file=ihm.location.OutputFileLocation(
+                            path=full_mrc, details='Localization density'),
+                        asym_unit=asym)
+                    ensemble.densities.append(density)
+
+    def _parse_sel_tuple(self, t):
+        """Convert a PMI-style selection tuple into an IHM object"""
+        asym_map = {}
+        for asym in self.system.asym_units:
+            asym_map[asym.details] = asym
+        if isinstance(t, _string_type):
+            return asym_map[t]
+        elif isinstance(t, (list, tuple)) and len(t) == 3:
+            return asym_map[t[2]](t[0], t[1])
+        else:
+            raise TypeError("Cannot handle selection tuple: %s" % t)
 
     def _get_states(self, hiers, states):
         def get_state_by_name(name):

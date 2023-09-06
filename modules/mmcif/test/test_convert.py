@@ -36,6 +36,30 @@ class Tests(IMP.test.TestCase):
             chain.set_sequence(seq)
             mol.add_child(chain)
 
+    def add_protocol(self, m, top, sampcon=False):
+        prov = IMP.core.SampleProvenance.setup_particle(
+            m, IMP.Particle(m), "Monte Carlo", 100, 5)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.CombineProvenance.setup_particle(m, IMP.Particle(m),
+                                                         5, 500)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.FilterProvenance.setup_particle(
+            m, IMP.Particle(m), "Total score", 100.5, 400)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.SampleProvenance.setup_particle(
+            m, IMP.Particle(m), "Molecular Dynamics", 2000, 5, 16)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        if sampcon:
+            prov.set_name("cluster.0")
+            prov.set_precision(42.0)
+            prov.set_density(self.get_input_file_name("sampcon.json"))
+        IMP.core.add_provenance(m, top, prov)
+
     def test_no_chains(self):
         """Trying to add a Hierarchy with no chains should give an error"""
         m = IMP.Model()
@@ -185,6 +209,27 @@ class Tests(IMP.test.TestCase):
         c = IMP.mmcif.Convert()
         c.add_model([top], [])
         c.report(sio)
+
+    def test_sampcon_ensemble(self):
+        """Test ensemble information from IMP.sampcon output"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top)
+        self.add_protocol(m, top, sampcon=True)
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+        e, = c.system.ensembles
+        # Name and precision should be assigned based on sampcon output
+        self.assertEqual(e.name, "cluster.0")
+        self.assertAlmostEqual(e.precision, 42.0, delta=1e-4)
+
+        den1, den2 = e.densities
+        self.assertEqual(den1.asym_unit.details, 'foo')
+        self.assertEqual(den1.asym_unit.seq_id_range, (1, 4))
+        self.assertEqual(os.path.basename(den1.file.path), 'test_1.mrc')
+        self.assertEqual(den2.asym_unit.details, 'bar')
+        self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
+        self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
 
 
 if __name__ == '__main__':
