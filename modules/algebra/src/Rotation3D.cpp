@@ -148,29 +148,10 @@ Vector3D Rotation3D::get_gradient_of_rotated(const Vector3D &v,
   return dRv_dqi;
 }
 
-Vector3D Rotation3D::get_derivative(const Vector3D &v,
-                                    unsigned int i,
-                                    bool wrt_unnorm) const {
-  IMPALGEBRA_DEPRECATED_METHOD_DEF(
-    2.12,
-    "Use get_gradient_of_rotated(args) instead."
-  );
-  return get_gradient_of_rotated(v, i, wrt_unnorm);
-}
-
 Eigen::MatrixXd Rotation3D::get_jacobian_of_rotated(
     const Eigen::Vector3d &v, bool wrt_unnorm) const {
   Eigen::Vector4d q(v_.get_data());
   return internal::get_jacobian_of_rotated(q, v, wrt_unnorm);
-}
-
-Eigen::MatrixXd Rotation3D::get_gradient(
-  const Eigen::Vector3d &v, bool wrt_unnorm) const {
-  IMPALGEBRA_DEPRECATED_METHOD_DEF(
-    2.12,
-    "Use get_jacobian_of_rotated(args) instead."
-  );
-  return get_jacobian_of_rotated(v, wrt_unnorm);
 }
 
 void compose_adjoint(const Rotation3D &RA, const Rotation3D &RB, Vector4D DC,
@@ -217,12 +198,6 @@ Eigen::MatrixXd get_jacobian_of_composed_wrt_first(
   return internal::get_jacobian_of_composed_wrt_first(Q, P, wrt_unnorm);
 }
 
-Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
-  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
-  IMPALGEBRA_DEPRECATED_FUNCTION_DEF(2.12, "Use get_jacobian_of_composed_wrt_first(args) instead.");
-  return get_jacobian_of_composed_wrt_first(q, p, wrt_unnorm);
-}
-
 Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
     const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
   Eigen::Vector4d Q(q.get_quaternion().get_data());
@@ -232,12 +207,6 @@ Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
     Q *= -1;
   }
   return internal::get_jacobian_of_composed_wrt_second(Q, P, wrt_unnorm);
-}
-
-Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
-  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
-  IMPALGEBRA_DEPRECATED_FUNCTION_DEF(2.12, "Use get_jacobian_of_composed_with_respect_to_second(args) instead.");
-  return get_jacobian_of_composed_wrt_second(q, p, wrt_unnorm);
 }
 
 Rotation3D get_random_rotation_3d() {
