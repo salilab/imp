@@ -418,6 +418,7 @@ class Convert(object):
         self._entities = IMP.mmcif.data._EntityMapper(self.system)
         self._components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
+        self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
 
     def add_model(self, hiers, restraints, name=None, states=None,
                   ensembles=None):
@@ -452,6 +453,7 @@ class Convert(object):
             self._add_chain(c)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         self._software.add_hierarchy(h, top_h)
+        self._external_files.add_hierarchy(h, top_h)
         return ensemble
 
     def _add_hierarchy_ensemble_info(self, h, top_h, ensemble):

@@ -283,6 +283,39 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(soft.version, "testver")
             self.assertEqual(soft.location, "testloc")
 
+    def test_external_files(self):
+        """Test that Python script info is collected"""
+        def add_script(m, top):
+            prov = IMP.core.ScriptProvenance.setup_particle(
+                IMP.Particle(m), self.get_input_file_name("test_1.mrc"))
+            IMP.core.add_provenance(m, top, prov)
+
+        m = IMP.Model()
+
+        # No state node, script info on top node
+        top1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top1)
+        add_script(m, top1)
+
+        # State node, script info on top node
+        top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top2, 0, "State_0")
+        self.add_chains(m, state0)
+        add_script(m, top2)
+
+        # State node, script info on state node
+        top3 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top3, 0, "State_0")
+        self.add_chains(m, state0)
+        add_script(m, state0)
+
+        for top in (top1, top2, top3):
+            c = IMP.mmcif.Convert()
+            c.add_model([top], [])
+
+            loc, = c.system.locations
+            self.assertEqual(os.path.basename(loc.path), 'test_1.mrc')
+
 
 if __name__ == '__main__':
     IMP.test.main()

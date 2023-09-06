@@ -3,6 +3,8 @@ import IMP.test
 import IMP.atom
 import IMP.mmcif.data
 import ihm
+import os
+
 
 class MockChain(object):
     def __init__(self, name, sequence=''):
@@ -164,6 +166,27 @@ class Tests(IMP.test.TestCase):
         pmisoft, testsoft = s.software
         self.assertIsNone(testsoft.citation)
         self.assertEqual(pmisoft.citation.pmid, '31396911')
+
+    def test_external_files_add_hierarchy(self):
+        """Test _ExternalFiles.add_hierarchy"""
+        s = ihm.System()
+        extfiles = IMP.mmcif.data._ExternalFiles(s)
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        # Add paths that we know exist (they are not scripts though)
+        prov = IMP.core.ScriptProvenance.setup_particle(
+            IMP.Particle(m), self.get_input_file_name("test_1.mrc"))
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.ScriptProvenance.setup_particle(
+            IMP.Particle(m), self.get_input_file_name("test_2.mrc"))
+        IMP.core.add_provenance(m, top, prov)
+        prov = IMP.core.ScriptProvenance.setup_particle(
+            IMP.Particle(m), self.get_input_file_name("test_1.mrc"))
+        IMP.core.add_provenance(m, top, prov)
+        extfiles.add_hierarchy(top)
+        # Duplicate path should be removed
+        self.assertEqual([os.path.basename(x.path) for x in s.locations],
+                         ['test_1.mrc', 'test_2.mrc'])
 
     def test_protocols_add_hierarchy(self):
         """Test _Protocols.add_hierarchy"""

@@ -487,21 +487,25 @@ class _ExternalFiles(object):
        a DatabaseLocation)."""
     def __init__(self, system):
         self.system = system
+        self._by_path = {}
 
-    def add(self, location):
-        """Add a new externally-referenced file.
-           Note that ids are assigned later."""
-        self.system.locations.append(location)
-
-    def add_hierarchy(self, h):
+    def add_hierarchy(self, h, top_h=None):
         # Add all Python scripts that were used in the modeling
-        for p in IMP.core.get_all_provenance(
-                h, types=[IMP.core.ScriptProvenance]):
-            # todo: set details
+        for p in _get_all_state_provenance(
+                h, top_h, types=[IMP.core.ScriptProvenance]):
+            self._add_provenance(p)
+
+    def _add_provenance(self, p):
+        """Add external file from ScriptProvenance"""
+        # Only reference the same path once
+        path = p.get_filename()
+        if path not in self._by_path:
             loc = ihm.location.WorkflowFileLocation(
                 path=p.get_filename(),
                 details='Integrative modeling Python script')
-            self.add(loc)
+            self.system.locations.append(loc)
+            self._by_path[path] = loc
+        return self._by_path[path]
 
 
 class _ProtocolStep(ihm.protocol.Step):
