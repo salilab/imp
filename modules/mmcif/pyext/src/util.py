@@ -541,9 +541,10 @@ class Convert(object):
         """Add information to the system from a single frame in an RMF file."""
         m = IMP.Model()
         rh = RMF.open_rmf_file_read_only(filename)
-        rh.set_current_frame(RMF.FrameID(frame))
         hiers = IMP.rmf.create_hierarchies(rh, m)
         restraints = IMP.rmf.create_restraints(rh, m)
+        if frame != 0:
+            IMP.rmf.load_frame(rh, RMF.FrameID(frame))
         return self.add_model(hiers, restraints, name=name, states=states,
                               ensembles=ensembles)
 
