@@ -452,10 +452,10 @@ class _AllSoftware(object):
         self._by_namever = {}
         super(_AllSoftware, self).__init__()
 
-    def add_hierarchy(self, h):
+    def add_hierarchy(self, h, top_h=None):
         # todo: if no SoftwareProvenance available, use RMF producer field
-        for p in IMP.core.get_all_provenance(
-                h, types=[IMP.core.SoftwareProvenance]):
+        for p in _get_all_state_provenance(
+                h, top_h, types=[IMP.core.SoftwareProvenance]):
             self._add_provenance(p)
 
     def _add_provenance(self, p):

@@ -248,6 +248,41 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
             self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
 
+    def test_software(self):
+        """Test that software information is collected"""
+        def add_software(m, top):
+            prov = IMP.core.SoftwareProvenance.setup_particle(
+                IMP.Particle(m), "testname", "testver", "testloc")
+            IMP.core.add_provenance(m, top, prov)
+
+        m = IMP.Model()
+
+        # No state node, software info on top node
+        top1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top1)
+        add_software(m, top1)
+
+        # State node, software info on top node
+        top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top2, 0, "State_0")
+        self.add_chains(m, state0)
+        add_software(m, top2)
+
+        # State node, software info on state node
+        top3 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top3, 0, "State_0")
+        self.add_chains(m, state0)
+        add_software(m, state0)
+
+        for top in (top1, top2, top3):
+            c = IMP.mmcif.Convert()
+            c.add_model([top], [])
+
+            soft, = c.system.software
+            self.assertEqual(soft.name, "testname")
+            self.assertEqual(soft.version, "testver")
+            self.assertEqual(soft.location, "testloc")
+
 
 if __name__ == '__main__':
     IMP.test.main()
