@@ -22,6 +22,20 @@ def get_molecule(h):
     return None
 
 
+def _get_all_state_provenance(state_h, top_h, types):
+    """Yield all provenance information for the given state.
+       If the given State Hierarchy node contains no provenance information,
+       fall back to any provenance information for the top-level node
+       (if provided)."""
+    count = 0
+    for p in IMP.core.get_all_provenance(state_h, types=types):
+        count += 1
+        yield p
+    if count == 0 and top_h is not None:
+        for p in IMP.core.get_all_provenance(top_h, types=types):
+            yield p
+
+
 class _EntityMapper(dict):
     """Handle mapping from IMP chains to CIF entities.
        Multiple components may map to the same entity if they

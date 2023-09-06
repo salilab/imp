@@ -16,6 +16,7 @@ import weakref
 import operator
 import json
 import sys
+from IMP.mmcif.data import _get_all_state_provenance
 
 
 if sys.version_info[0] == 2:
@@ -430,13 +431,13 @@ class Convert(object):
             ensembles = {}
         if self.system.title is None and len(hiers) > 0:
             self.system.title = hiers[0].get_name()
-        for state_obj, state_hier in self._get_states(hiers, states):
-            e = self._add_hierarchy(state_hier, state_obj, name,
+        for state_obj, state_hier, top_hier in self._get_states(hiers, states):
+            e = self._add_hierarchy(state_hier, top_hier, state_obj, name,
                                     ensembles.get(state_obj.name))
             ensembles[state_obj.name] = e
         return ensembles
 
-    def _add_hierarchy(self, h, state, name, ensemble):
+    def _add_hierarchy(self, h, top_h, state, name, ensemble):
         if ensemble is None:
             mg = ihm.model.ModelGroup()
             state.append(mg)
@@ -448,13 +449,13 @@ class Convert(object):
             raise ValueError("No chains found in %s" % h)
         for c in chains:
             self._add_chain(c)
-        self._add_hierarchy_ensemble_info(h, ensemble)
+        self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         return ensemble
 
-    def _add_hierarchy_ensemble_info(self, h, ensemble):
+    def _add_hierarchy_ensemble_info(self, h, top_h, ensemble):
         """Add ensemble-specific information from the given hierarchy"""
-        for prov in reversed(list(IMP.core.get_all_provenance(
-                h, types=[IMP.core.ClusterProvenance]))):
+        for prov in reversed(list(_get_all_state_provenance(
+                h, top_h, types=[IMP.core.ClusterProvenance]))):
             ensemble.num_models = prov.get_number_of_members()
             ensemble.precision = prov.get_precision()
             ensemble.name = prov.get_name()
@@ -513,12 +514,12 @@ class Convert(object):
             for state_hier in state_hiers:
                 state_obj = get_state_by_name(state_hier.get_name())
                 if state_obj is not None:
-                    yield state_obj, state_hier
+                    yield state_obj, state_hier, h
             # If no state nodes, treat everything as in a single unnamed state
             if len(state_hiers) == 0:
                 state_obj = get_state_by_name(None)
                 if state_obj is not None:
-                    yield state_obj, h
+                    yield state_obj, h, None
 
     def _add_state(self, state):
         if not self.system.state_groups:

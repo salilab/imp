@@ -213,23 +213,40 @@ class Tests(IMP.test.TestCase):
     def test_sampcon_ensemble(self):
         """Test ensemble information from IMP.sampcon output"""
         m = IMP.Model()
-        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        self.add_chains(m, top)
-        self.add_protocol(m, top, sampcon=True)
-        c = IMP.mmcif.Convert()
-        c.add_model([top], [])
-        e, = c.system.ensembles
-        # Name and precision should be assigned based on sampcon output
-        self.assertEqual(e.name, "cluster.0")
-        self.assertAlmostEqual(e.precision, 42.0, delta=1e-4)
 
-        den1, den2 = e.densities
-        self.assertEqual(den1.asym_unit.details, 'foo')
-        self.assertEqual(den1.asym_unit.seq_id_range, (1, 4))
-        self.assertEqual(os.path.basename(den1.file.path), 'test_1.mrc')
-        self.assertEqual(den2.asym_unit.details, 'bar')
-        self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
-        self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
+        # No state node, clustering info on top node
+        top1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top1)
+        self.add_protocol(m, top1, sampcon=True)
+
+        # State node, clustering info on top node
+        top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top2, 0, "State_0")
+        self.add_chains(m, state0)
+        self.add_protocol(m, top2, sampcon=True)
+
+        # State node, clustering info on state node
+        top3 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top3, 0, "State_0")
+        self.add_chains(m, state0)
+        self.add_protocol(m, state0, sampcon=True)
+
+        for top in (top1, top2, top3):
+            c = IMP.mmcif.Convert()
+            c.add_model([top], [])
+
+            e, = c.system.ensembles
+            # Name and precision should be assigned based on sampcon output
+            self.assertEqual(e.name, "cluster.0")
+            self.assertAlmostEqual(e.precision, 42.0, delta=1e-4)
+
+            den1, den2 = e.densities
+            self.assertEqual(den1.asym_unit.details, 'foo')
+            self.assertEqual(den1.asym_unit.seq_id_range, (1, 4))
+            self.assertEqual(os.path.basename(den1.file.path), 'test_1.mrc')
+            self.assertEqual(den2.asym_unit.details, 'bar')
+            self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
+            self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
 
 
 if __name__ == '__main__':
