@@ -645,8 +645,8 @@ class _ModelAssemblies(object):
         # list isn't hashable but tuple is
         asyms = tuple(asyms)
         if asyms not in self._seen_assemblies:
-            assembly = ihm.Assembly(asyms,
-                name="Modeled assembly",
+            assembly = ihm.Assembly(
+                asyms, name="Modeled assembly",
                 description="All components modeled by IMP")
             self.system.orphan_assemblies.append(assembly)
             self._seen_assemblies[asyms] = assembly
