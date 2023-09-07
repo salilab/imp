@@ -634,3 +634,20 @@ class _Model(ihm.model.Model):
             yield ihm.model.Sphere(
                 asym_unit=asym, seq_id_range=(sbegin, send),
                 x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius())
+
+
+class _ModelAssemblies(object):
+    def __init__(self, system):
+        self.system = system
+        self._seen_assemblies = {}
+
+    def add(self, asyms):
+        # list isn't hashable but tuple is
+        asyms = tuple(asyms)
+        if asyms not in self._seen_assemblies:
+            assembly = ihm.Assembly(asyms,
+                name="Modeled assembly",
+                description="All components modeled by IMP")
+            self.system.orphan_assemblies.append(assembly)
+            self._seen_assemblies[asyms] = assembly
+        return self._seen_assemblies[asyms]

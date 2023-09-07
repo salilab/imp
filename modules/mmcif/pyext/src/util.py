@@ -419,6 +419,7 @@ class Convert(object):
         self._components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
+        self._model_assemblies = IMP.mmcif.data._ModelAssemblies(self.system)
 
     def add_model(self, hiers, restraints, name=None, states=None,
                   ensembles=None):
@@ -449,8 +450,11 @@ class Convert(object):
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
         if len(chains) == 0:
             raise ValueError("No chains found in %s" % h)
+        asyms = []
         for c in chains:
-            self._add_chain(c)
+            comp = self._add_chain(c)
+            asyms.append(comp.asym_unit)
+        self._model_assemblies.add(asyms)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         self._software.add_hierarchy(h, top_h)
         self._external_files.add_hierarchy(h, top_h)

@@ -208,6 +208,23 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(step.num_models_end, 100)
         self.assertEqual(step.software.name, "testname")
 
+    def test_model_assemblies(self):
+        """Test ModelAsssemblies class"""
+        system = ihm.System()
+        entity1 = ihm.Entity("ANC")
+        asym1 = ihm.AsymUnit(entity1)
+        asym2 = ihm.AsymUnit(entity1)
+        system.entities.append(entity1)
+        system.asym_units.extend((asym1, asym2))
+        ma = IMP.mmcif.data._ModelAssemblies(system)
+        as1 = ma.add([asym1])
+        as1a = ma.add([asym1])
+        as2 = ma.add([asym2])
+        as2a = ma.add([asym2])
+        self.assertIs(as1, as1a)
+        self.assertIs(as2, as2a)
+        self.assertEqual(len(system.orphan_assemblies), 2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

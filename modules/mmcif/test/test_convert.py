@@ -316,6 +316,36 @@ class Tests(IMP.test.TestCase):
             loc, = c.system.locations
             self.assertEqual(os.path.basename(loc.path), 'test_1.mrc')
 
+    def test_same_assembly(self):
+        """Test reading multiple models with the same assembly"""
+        m = IMP.Model()
+        top1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top1)
+
+        top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top2)
+
+        c = IMP.mmcif.Convert()
+        c.add_model([top1, top2], [])
+        self.assertEqual(len(c.system.orphan_assemblies), 1)
+        self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
+
+    def test_different_assembly(self):
+        """Test reading multiple models with different assemblies"""
+        m = IMP.Model()
+        top1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top1)
+
+        top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top2,
+                        chains = (('foo', 'ACGT', 'X'), ('bar', 'ACGT', 'Y')))
+
+        c = IMP.mmcif.Convert()
+        c.add_model([top1, top2], [])
+        self.assertEqual(len(c.system.orphan_assemblies), 2)
+        self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
+        self.assertEqual(len(c.system.orphan_assemblies[1]), 2)
+
 
 if __name__ == '__main__':
     IMP.test.main()
