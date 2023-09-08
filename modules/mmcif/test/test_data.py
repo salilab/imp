@@ -225,6 +225,32 @@ class Tests(IMP.test.TestCase):
         self.assertIs(as2, as2a)
         self.assertEqual(len(system.orphan_assemblies), 2)
 
+    def test_coordinate_handler(self):
+        """Test CoordinateHandler class"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
+                                                       [3, 4]))
+        top.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                      IMP.atom.ALA, 1))
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 2)
+        atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
+                                            IMP.atom.AT_CA)
+        residue.add_child(atom)
+        top.add_child(residue)
+        ch = IMP.mmcif.data._CoordinateHandler()
+        ps = ch._get_structure_particles(top)
+        self.assertEqual(len(ps), 3)
+        self.assertIsInstance(ps[0], IMP.atom.Residue)
+        self.assertIsInstance(ps[1], IMP.atom.Atom)
+        self.assertIsInstance(ps[2], IMP.atom.Fragment)
+
+        # Non-sequential fragments are not supported
+        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
+                                                       [5, 6, 7, 9]))
+        self.assertRaises(ValueError, ch._get_structure_particles, top)
+
 
 if __name__ == '__main__':
     IMP.test.main()

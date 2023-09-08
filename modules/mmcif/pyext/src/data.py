@@ -11,6 +11,7 @@ import ihm.analysis
 import ihm.protocol
 import ihm.model
 import ihm.citations
+import operator
 
 
 def get_molecule(h):
@@ -20,6 +21,14 @@ def get_molecule(h):
             return IMP.atom.Molecule(h)
         h = h.get_parent()
     return None
+
+
+def _check_sequential(fragment, resinds):
+    for i in range(1, len(resinds)):
+        if resinds[i - 1] + 1 != resinds[i]:
+            raise ValueError(
+                "%s: non-sequential residue indices are not supported"
+                % str(fragment))
 
 
 def _get_all_state_provenance(state_h, top_h, types):
@@ -597,6 +606,31 @@ class _Protocols(object):
                 in_postproc = False
         if len(prot.steps) > 0:
             self._add_protocol(prot)
+
+
+class _CoordinateHandler(object):
+    def add_chain(self, c, asym):
+        ps = self._get_structure_particles(c)
+
+    def _get_structure_particles(self, h):
+        """Return particles sorted by residue index"""
+        ps = []
+        for p in IMP.atom.Selection(
+                hierarchy=h, resolution=0.).get_selected_particles():
+            if IMP.atom.Residue.get_is_setup(p):
+                residue = IMP.atom.Residue(p)
+                ps.append((residue.get_index(), residue))
+            elif IMP.atom.Fragment.get_is_setup(p):
+                fragment = IMP.atom.Fragment(p)
+                resinds = fragment.get_residue_indexes()
+                _check_sequential(fragment, resinds)
+                resind = resinds[len(resinds) // 2]
+                ps.append((resind, fragment))
+            elif IMP.atom.Atom.get_is_setup(p):
+                atom = IMP.atom.Atom(p)
+                residue = IMP.atom.get_residue(atom)
+                ps.append((residue.get_index(), atom))
+        return [p[1] for p in sorted(ps, key=operator.itemgetter(0))]
 
 
 class _Model(ihm.model.Model):

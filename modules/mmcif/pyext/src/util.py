@@ -451,9 +451,11 @@ class Convert(object):
         if len(chains) == 0:
             raise ValueError("No chains found in %s" % h)
         asyms = []
+        ch = IMP.mmcif.data._CoordinateHandler()
         for c in chains:
             comp = self._add_chain(c)
             asyms.append(comp.asym_unit)
+            ch.add_chain(c, comp.asym_unit)
         self._model_assemblies.add(asyms)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         self._software.add_hierarchy(h, top_h)
