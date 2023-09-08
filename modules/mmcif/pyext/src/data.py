@@ -594,15 +594,16 @@ class _Protocols(object):
 
     def _add_protocol(self, prot):
         self.system.orphan_protocols.append(prot)
+        return prot
 
-    def _add_hierarchy(self, h, modeled_assembly, all_software):
+    def _add_hierarchy(self, h, top_h, modeled_assembly, all_software):
         num_models = 0  # assume we always start with no models
         prot_types = (IMP.core.SampleProvenance, IMP.core.CombineProvenance)
         pp_types = (IMP.core.FilterProvenance, IMP.core.ClusterProvenance)
         in_postproc = False
         prot = _Protocol()
-        for p in reversed(list(IMP.core.get_all_provenance(
-                                          h, types=prot_types + pp_types))):
+        for p in reversed(list(_get_all_state_provenance(
+                h, top_h, types=prot_types + pp_types))):
             if isinstance(p, pp_types):
                 num_models = prot.add_postproc(p, num_models, modeled_assembly)
                 in_postproc = True
@@ -615,7 +616,7 @@ class _Protocols(object):
                                            all_software)
                 in_postproc = False
         if len(prot.steps) > 0:
-            self._add_protocol(prot)
+            return self._add_protocol(prot)
 
 
 class _CoordinateHandler(object):

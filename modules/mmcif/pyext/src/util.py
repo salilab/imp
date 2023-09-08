@@ -177,7 +177,7 @@ class System(object):
             if num_state_reps == 1:
                 self.representation.extend(state.repsegments[component])
         self._software.add_hierarchy(h)
-        self.protocols._add_hierarchy(h, state.modeled_assembly,
+        self.protocols._add_hierarchy(h, None, state.modeled_assembly,
                                       self._software)
         self._external_files.add_hierarchy(h)
 
@@ -421,6 +421,7 @@ class Convert(object):
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
         self._model_assemblies = IMP.mmcif.data._ModelAssemblies(self.system)
         self._representations = IMP.mmcif.data._Representations(self.system)
+        self._protocols = IMP.mmcif.data._Protocols(self.system)
 
     def add_model(self, hiers, restraints, name=None, states=None,
                   ensembles=None):
@@ -457,11 +458,17 @@ class Convert(object):
             comp = self._add_chain(c)
             asyms.append(comp.asym_unit)
             ch.add_chain(c, comp.asym_unit)
-        self._representations.add(ch._representation)
-        self._model_assemblies.add(asyms)
+        representation = self._representations.add(ch._representation)
+        assembly = self._model_assemblies.add(asyms)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         self._software.add_hierarchy(h, top_h)
+        protocol = self._protocols._add_hierarchy(h, top_h, assembly,
+                                                  self._software)
         self._external_files.add_hierarchy(h, top_h)
+        model = ihm.model.Model(assembly=assembly, protocol=protocol,
+                                representation=representation)
+        ensemble.model_group.append(model)
+        ensemble.num_models += 1
         return ensemble
 
     def _add_hierarchy_ensemble_info(self, h, top_h, ensemble):

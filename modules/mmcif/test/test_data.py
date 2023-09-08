@@ -201,7 +201,7 @@ class Tests(IMP.test.TestCase):
         prov = IMP.core.SampleProvenance.setup_particle(
             IMP.Particle(m), "Monte Carlo", 100, 10, 1)
         IMP.core.add_provenance(m, top, prov)
-        protocols._add_hierarchy(top, None, software)
+        protocols._add_hierarchy(top, None, None, software)
         protocol, = s.orphan_protocols
         step, = protocol.steps
         self.assertEqual(step.num_models_begin, 0)
