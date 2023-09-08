@@ -420,6 +420,7 @@ class Convert(object):
         self._software = IMP.mmcif.data._AllSoftware(self.system)
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
         self._model_assemblies = IMP.mmcif.data._ModelAssemblies(self.system)
+        self._representations = IMP.mmcif.data._Representations(self.system)
 
     def add_model(self, hiers, restraints, name=None, states=None,
                   ensembles=None):
@@ -456,6 +457,7 @@ class Convert(object):
             comp = self._add_chain(c)
             asyms.append(comp.asym_unit)
             ch.add_chain(c, comp.asym_unit)
+        self._representations.add(ch._representation)
         self._model_assemblies.add(asyms)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
         self._software.add_hierarchy(h, top_h)

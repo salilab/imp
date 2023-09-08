@@ -298,6 +298,39 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(r4.rigid)
         self.assertEqual(r4.count, 2)
 
+    def test_representations(self):
+        """Test _Representations class"""
+        s = ihm.System()
+        ent = ihm.Entity('ACGT')
+        asym = ihm.AsymUnit(ent)
+        reps = IMP.mmcif.data._Representations(s)
+
+        # New representation should be returned unchanged
+        rep1 = ihm.representation.Representation(
+            [ihm.representation.ResidueSegment(asym, rigid=False,
+                                               primitive='sphere')])
+        self.assertIs(reps.add(rep1), rep1)
+
+        # Identical representation should map to same object
+        rep2 = ihm.representation.Representation(
+            [ihm.representation.ResidueSegment(asym, rigid=False,
+                                               primitive='sphere')])
+        self.assertIs(reps.add(rep2), rep1)
+
+        # Different representation parameters should map to different object
+        rep3 = ihm.representation.Representation(
+            [ihm.representation.ResidueSegment(asym, rigid=True,
+                                               primitive='sphere')])
+        self.assertIs(reps.add(rep3), rep3)
+
+        # Different representation type should map to different object
+        rep4 = ihm.representation.Representation(
+            [ihm.representation.MultiResidueSegment(asym, rigid=False,
+                                                    primitive='sphere')])
+        self.assertIs(reps.add(rep4), rep4)
+
+        self.assertEqual(len(s.orphan_representations), 3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

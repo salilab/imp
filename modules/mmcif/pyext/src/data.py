@@ -707,3 +707,20 @@ class _ModelAssemblies(object):
             self.system.orphan_assemblies.append(assembly)
             self._seen_assemblies[asyms] = assembly
         return self._seen_assemblies[asyms]
+
+
+class _Representations(object):
+    def __init__(self, system):
+        self.system = system
+
+    def add(self, rep):
+        # Representation isn't hashable or sortable, so just compare dicts
+        # with existing representations. This should still be performant as
+        # we generally don't have more than one or two representations.
+        for existing in self.system.orphan_representations:
+            if (len(existing) == len(rep)
+                    and all(type(x) == type(y) and x.__dict__ == y.__dict__
+                            for (x, y) in zip(existing, rep))):
+                return existing
+        self.system.orphan_representations.append(rep)
+        return rep
