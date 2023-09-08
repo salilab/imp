@@ -161,8 +161,8 @@ class _ComponentMapper(object):
 class _RepSegmentFactory(object):
     """Make ihm.representation.Segment objects for each set of contiguous
        particles with the same representation"""
-    def __init__(self, component):
-        self.component = component
+    def __init__(self, asym):
+        self.asym = asym
         self.particles = []
         self.residue_range = ()  # inclusive range
 
@@ -170,19 +170,22 @@ class _RepSegmentFactory(object):
         """Add a new particle to the last segment (and return None).
            Iff the particle could not be added, return the segment and start
            a new one."""
-        resrange, rigid_body, is_res = self._get_particle_info(particle)
+        (resrange, rigid_body,
+         is_res, is_atom) = self._get_particle_info(particle)
 
         def start_new_segment():
             self.particles = [particle]
             self.residue_range = resrange
             self.rigid_body = rigid_body
             self.is_res = is_res
+            self.is_atom = is_atom
             self.starting_model = starting_model
         if not self.particles:
             # First particle in a segment
             start_new_segment()
         elif (type(particle) == type(self.particles[0])  # noqa: E721
               and is_res == self.is_res
+              and is_atom == self.is_atom
               and resrange[0] == self.residue_range[1] + 1
               and starting_model == self.starting_model
               and self._same_rigid_body(rigid_body)):
@@ -198,8 +201,12 @@ class _RepSegmentFactory(object):
     def get_last(self):
         """Return the last segment, or None"""
         if self.particles:
-            asym = self.component.asym_unit(*self.residue_range)
-            if self.is_res:
+            asym = self.asym(*self.residue_range)
+            if self.is_atom:
+                return ihm.representation.AtomicSegment(
+                        asym_unit=asym, rigid=self.rigid_body is not None,
+                        starting_model=self.starting_model)
+            elif self.is_res:
                 return ihm.representation.ResidueSegment(
                         asym_unit=asym,
                         rigid=self.rigid_body is not None, primitive='sphere',
@@ -228,10 +235,13 @@ class _RepSegmentFactory(object):
         else:
             rigid_body = None
         if isinstance(p, IMP.atom.Residue):
-            return (p.get_index(), p.get_index()), rigid_body, True
+            return (p.get_index(), p.get_index()), rigid_body, True, False
+        elif isinstance(p, IMP.atom.Atom):
+            res = IMP.atom.get_residue(p)
+            return (res.get_index(), res.get_index()), rigid_body, False, True
         elif isinstance(p, IMP.atom.Fragment):
             resinds = p.get_residue_indexes()
-            return (resinds[0], resinds[-1]), rigid_body, False
+            return (resinds[0], resinds[-1]), rigid_body, False, False
         raise TypeError("Unknown particle ", p)
 
 
@@ -609,8 +619,20 @@ class _Protocols(object):
 
 
 class _CoordinateHandler(object):
+    def __init__(self):
+        self._representation = ihm.representation.Representation()
+
     def add_chain(self, c, asym):
         ps = self._get_structure_particles(c)
+        segfactory = _RepSegmentFactory(asym)
+        for p in ps:
+            # todo: handle starting models
+            seg = segfactory.add(p, None)
+            if seg:
+                self._representation.append(seg)
+        last = segfactory.get_last()
+        if last:
+            self._representation.append(last)
 
     def _get_structure_particles(self, h):
         """Return particles sorted by residue index"""

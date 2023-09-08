@@ -192,7 +192,7 @@ class System(object):
         """Yield groups of particles under chain with same representation"""
         smf = IMP.mmcif.data._StartingModelFinder(component,
                                                   existing_starting_models)
-        segfactory = IMP.mmcif.data._RepSegmentFactory(component)
+        segfactory = IMP.mmcif.data._RepSegmentFactory(component.asym_unit)
 
         for sp in self._get_structure_particles(chain):
             starting_model = smf.find(sp, self)

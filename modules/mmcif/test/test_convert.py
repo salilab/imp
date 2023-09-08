@@ -346,6 +346,25 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
         self.assertEqual(len(c.system.orphan_assemblies[1]), 2)
 
+    def test_representation(self):
+        """Test representation"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top)
+        c = IMP.mmcif.Convert()
+        chain0 = top.get_child(0).get_child(0)
+        chain0.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                         IMP.atom.ALA, 1))
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 2)
+        atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
+                                            IMP.atom.AT_CA)
+        residue.add_child(atom)
+        chain0.add_child(residue)
+        chain0.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
+                                                          [3, 4]))
+        c.add_model([top], [])
+
 
 if __name__ == '__main__':
     IMP.test.main()
