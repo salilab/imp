@@ -467,6 +467,8 @@ class Convert(object):
         self._external_files.add_hierarchy(h, top_h)
         model = ihm.model.Model(assembly=assembly, protocol=protocol,
                                 representation=representation)
+        model._atoms = ch._atoms
+        model._spheres = ch._spheres
         ensemble.model_group.append(model)
         ensemble.num_models += 1
         return ensemble

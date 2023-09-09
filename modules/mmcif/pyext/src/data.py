@@ -597,7 +597,8 @@ class _Protocols(object):
         # with existing protocols. This should still be performant as
         # we generally don't have more than one or two protocols.
         def step_equal(x, y):
-            return type(x) == type(y) and x.__dict__ == y.__dict__
+            return (type(x) == type(y)  # noqa: E721
+                    and x.__dict__ == y.__dict__)
 
         def analysis_equal(x, y):
             return (len(x.steps) == len(y.steps)
@@ -641,6 +642,12 @@ class _Protocols(object):
 class _CoordinateHandler(object):
     def __init__(self):
         self._representation = ihm.representation.Representation()
+        # IHM atoms/spheres corresponding to IMP beads/residues/atoms
+        # We build them up front (rather than on the fly) as the original
+        # IMP objects may have been destroyed or changed (e.g. if we read
+        # multiple frames from an RMF file) by the time we write the mmCIF.
+        self._atoms = []
+        self._spheres = []
 
     def add_chain(self, c, asym):
         ps = self._get_structure_particles(c)
@@ -650,9 +657,39 @@ class _CoordinateHandler(object):
             seg = segfactory.add(p, None)
             if seg:
                 self._representation.append(seg)
+            self._add_atom_or_sphere(p, asym)
         last = segfactory.get_last()
         if last:
             self._representation.append(last)
+
+    def _add_atom_or_sphere(self, p, asym):
+        if isinstance(p, IMP.atom.Atom):
+            residue = IMP.atom.get_residue(p)
+            xyz = IMP.core.XYZ(p).get_coordinates()
+            element = p.get_element()
+            element = IMP.atom.get_element_table().get_name(element)
+            atom_name = p.get_atom_type().get_string()
+            het = atom_name.startswith('HET:')
+            if het:
+                atom_name = atom_name[4:]
+            self._atoms.append(ihm.model.Atom(
+                asym_unit=asym, seq_id=residue.get_index(),
+                atom_id=atom_name, type_symbol=element,
+                x=xyz[0], y=xyz[1], z=xyz[2], het=het,
+                biso=p.get_temperature_factor(),
+                occupancy=p.get_occupancy()))
+        else:
+            if isinstance(p, IMP.atom.Fragment):
+                resinds = p.get_residue_indexes()
+                sbegin = resinds[0]
+                send = resinds[-1]
+            else:  # residue
+                sbegin = send = p.get_index()
+            xyzr = IMP.core.XYZR(p)
+            xyz = xyzr.get_coordinates()
+            self._spheres.append(ihm.model.Sphere(
+                asym_unit=asym, seq_id_range=(sbegin, send),
+                x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius()))
 
     def _get_structure_particles(self, h):
         """Return particles sorted by residue index"""

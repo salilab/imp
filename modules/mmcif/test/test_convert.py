@@ -346,24 +346,48 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
         self.assertEqual(len(c.system.orphan_assemblies[1]), 2)
 
-    def test_representation(self):
-        """Test representation"""
+    def test_model_creation(self):
+        """Test creation of ihm Model objects"""
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
         c = IMP.mmcif.Convert()
         chain0 = top.get_child(0).get_child(0)
-        chain0.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                         IMP.atom.ALA, 1))
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 2)
+                                                  IMP.atom.ALA, 1)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        chain0.add_child(residue)
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.HIS, 2)
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
                                             IMP.atom.AT_CA)
+        IMP.core.XYZR.setup_particle(
+            atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5, 6, 7), 8))
         residue.add_child(atom)
         chain0.add_child(residue)
-        chain0.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
-                                                          [3, 4]))
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
+        chain0.add_child(frag)
+        IMP.core.XYZR.setup_particle(
+            frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))
         c.add_model([top], [])
+        model, = c.system.state_groups[0][0][0]
+        # Representation should contain residue, atom, fragment
+        r1, r2, r3 = model.representation
+        self.assertIsInstance(r1, ihm.representation.ResidueSegment)
+        self.assertIsInstance(r2, ihm.representation.AtomicSegment)
+        self.assertIsInstance(r3, ihm.representation.FeatureSegment)
+        # Coordinates should contain one atom, two spheres
+        a1, = model._atoms
+        self.assertEqual(a1.seq_id, 2)
+        self.assertEqual(a1.atom_id, 'CA')
+        self.assertEqual(a1.type_symbol, 'C')
+        self.assertFalse(a1.het)
+        s1, s2 = model._spheres
+        self.assertEqual(s1.seq_id_range, (1, 1))
+        self.assertAlmostEqual(s1.radius, 4.0, delta=1e-2)
+        self.assertEqual(s2.seq_id_range, (3, 4))
+        self.assertAlmostEqual(s2.radius, 12.0, delta=1e-2)
 
 
 if __name__ == '__main__':
