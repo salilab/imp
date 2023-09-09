@@ -593,6 +593,25 @@ class _Protocols(object):
         self.system = system
 
     def _add_protocol(self, prot):
+        # Protocol isn't hashable or sortable, so just compare dicts
+        # with existing protocols. This should still be performant as
+        # we generally don't have more than one or two protocols.
+        def step_equal(x, y):
+            return type(x) == type(y) and x.__dict__ == y.__dict__
+
+        def analysis_equal(x, y):
+            return (len(x.steps) == len(y.steps)
+                    and all(step_equal(a, b)
+                            for (a, b) in zip(x.steps, y.steps)))
+
+        for existing in self.system.orphan_protocols:
+            if (len(existing.steps) == len(prot.steps)
+                and len(existing.analyses) == len(prot.analyses)
+                and all(step_equal(x, y)
+                        for (x, y) in zip(existing.steps, prot.steps))
+                and all(analysis_equal(x, y)
+                        for (x, y) in zip(existing.analyses, prot.analyses))):
+                return existing
         self.system.orphan_protocols.append(prot)
         return prot
 

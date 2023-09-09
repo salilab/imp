@@ -208,6 +208,45 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(step.num_models_end, 100)
         self.assertEqual(step.software.name, "testname")
 
+    def test_protocols_add_protocol(self):
+        """Test _Protocols.add_protocol"""
+        s = ihm.System()
+        protocols = IMP.mmcif.data._Protocols(s)
+        p1 = ihm.protocol.Protocol()
+        p1.steps.append(ihm.protocol.Step(
+            assembly='foo', dataset_group='bar', method='baz',
+            num_models_begin=0, num_models_end=42))
+
+        # New protocol should be returned unchanged
+        self.assertIs(protocols._add_protocol(p1), p1)
+
+        # Identical protocol should map to same object
+        p2 = ihm.protocol.Protocol()
+        p2.steps.append(ihm.protocol.Step(
+            assembly='foo', dataset_group='bar', method='baz',
+            num_models_begin=0, num_models_end=42))
+        self.assertIs(protocols._add_protocol(p2), p1)
+
+        # Different step parameters should map to different object
+        p3 = ihm.protocol.Protocol()
+        p3.steps.append(ihm.protocol.Step(
+            assembly='foo', dataset_group='bar', method='baz',
+            num_models_begin=0, num_models_end=99))
+        self.assertIs(protocols._add_protocol(p3), p3)
+
+        # Longer protocol should map to different object
+        p4 = ihm.protocol.Protocol()
+        p4.steps.append(ihm.protocol.Step(
+            assembly='foo', dataset_group='bar', method='baz',
+            num_models_begin=0, num_models_end=42))
+        analysis = ihm.analysis.Analysis()
+        analysis.steps.append(ihm.analysis.FilterStep(
+            feature='RMSD', num_models_begin=42, num_models_end=5))
+        p4.analyses.append(analysis)
+        self.assertIs(protocols._add_protocol(p4), p4)
+
+        self.assertEqual(len(s.orphan_protocols), 3)
+
     def test_model_assemblies(self):
         """Test ModelAsssemblies class"""
         system = ihm.System()
