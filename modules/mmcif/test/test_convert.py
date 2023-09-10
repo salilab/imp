@@ -357,6 +357,7 @@ class Tests(IMP.test.TestCase):
                                                   IMP.atom.ALA, 1)
         IMP.core.XYZR.setup_particle(
             residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
         chain0.add_child(residue)
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                   IMP.atom.HIS, 2)
@@ -370,6 +371,7 @@ class Tests(IMP.test.TestCase):
         chain0.add_child(frag)
         IMP.core.XYZR.setup_particle(
             frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))
+        IMP.atom.Mass.setup_particle(frag, 1.0)
         c.add_model([top], [])
         model, = c.system.state_groups[0][0][0]
         # Representation should contain residue, atom, fragment

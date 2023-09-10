@@ -268,14 +268,23 @@ class Tests(IMP.test.TestCase):
         """Test CoordinateHandler._get_structure_particles()"""
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
-                                                       [3, 4]))
-        top.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                      IMP.atom.ALA, 1))
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
+        IMP.core.XYZR.setup_particle(
+            frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(frag, 1.0)
+        top.add_child(frag)
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 1)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5, 6, 7), 8))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
+        top.add_child(residue)
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                   IMP.atom.ALA, 2)
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
                                             IMP.atom.AT_CA)
+        IMP.core.XYZR.setup_particle(
+            atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))
         residue.add_child(atom)
         top.add_child(residue)
         ch = IMP.mmcif.data._CoordinateHandler()
@@ -286,26 +295,38 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(ps[2], IMP.atom.Fragment)
 
         # Non-sequential fragments are not supported
-        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
-                                                       [5, 6, 7, 9]))
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6, 7, 9])
+        IMP.core.XYZR.setup_particle(
+            frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(frag, 1.0)
+        top.add_child(frag)
         self.assertRaises(ValueError, ch._get_structure_particles, top)
 
     def test_coordinate_handler_add_chain(self):
         """Test CoordinateHandler.add_chain()"""
+        def add_attrs(r):
+            IMP.core.XYZR.setup_particle(
+                r, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+            IMP.atom.Mass.setup_particle(r, 1.0)
+
         s = ihm.System()
         ent = ihm.Entity('ACGT')
         asym = ihm.AsymUnit(ent)
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         # Two flexible residues
-        top.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                      IMP.atom.ALA, 1))
-        top.add_child(IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                      IMP.atom.ALA, 2))
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 1)
+        add_attrs(residue)
+        top.add_child(residue)
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 2)
+        add_attrs(residue)
+        top.add_child(residue)
         # One rigid residue
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                   IMP.atom.ALA, 3)
-        IMP.core.XYZ.setup_particle(residue, IMP.algebra.Vector3D(1,1,1))
+        add_attrs(residue)
         rigid1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [residue])
         top.add_child(residue)
         # One residue with atomic representation
@@ -313,13 +334,17 @@ class Tests(IMP.test.TestCase):
                                                   IMP.atom.ALA, 4)
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
                                             IMP.atom.AT_CA)
+        IMP.core.XYZR.setup_particle(
+            atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         residue.add_child(atom)
         top.add_child(residue)
         # Two beads each spanning two residues
-        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
-                                                       [5, 6]))
-        top.add_child(IMP.atom.Fragment.setup_particle(IMP.Particle(m),
-                                                       [7, 8]))
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6])
+        add_attrs(frag)
+        top.add_child(frag)
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [7, 8])
+        add_attrs(frag)
+        top.add_child(frag)
         ch = IMP.mmcif.data._CoordinateHandler()
         ch.add_chain(top, asym)
         r1, r2, r3, r4 = ch._representation
