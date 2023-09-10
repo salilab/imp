@@ -694,6 +694,10 @@ class _CoordinateHandler(object):
     def _get_structure_particles(self, h):
         """Return particles sorted by residue index"""
         ps = []
+        if h.get_number_of_children() == 0:
+            return []
+        if not h.get_is_valid():
+            raise ValueError("Invalid hierarchy as input")
         for p in IMP.atom.Selection(
                 hierarchy=h, resolution=0.).get_selected_particles():
             if IMP.atom.Residue.get_is_setup(p):
