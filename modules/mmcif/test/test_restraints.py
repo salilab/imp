@@ -26,8 +26,9 @@ def make_model(system, chains=None):
 
 class MockGaussianEMRestraint(IMP.Restraint):
 
-    def __init__(self, m, em_filename):
+    def __init__(self, m, em_filename, inputs=[]):
         self.em_filename = em_filename
+        self.inputs = inputs
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
@@ -36,7 +37,7 @@ class MockGaussianEMRestraint(IMP.Restraint):
     def do_show(self, fh):
         fh.write('MockRestraint')
     def do_get_inputs(self):
-        return []
+        return self.inputs
 
     def get_static_info(self):
         i = IMP.RestraintInfo()
@@ -276,6 +277,22 @@ class Tests(IMP.test.TestCase):
         wr = rm.handle(r, frame, assembly)
         self.assertEqual(type(wr), IMP.mmcif.restraint._EM2DRestraint)
         self.assertEqual(type(wr.dataset), ihm.dataset.EM2DClassDataset)
+
+    def test_all_restraints_gaussian_em(self):
+        """Test _AllRestraints with GaussianEM restraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        em_filename = self.get_input_file_name('test.gmm.txt')
+        r = MockGaussianEMRestraint(m, em_filename)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._EM3DRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.EMDensityDataset)
+        self.assertAlmostEqual(
+            wr.fits["model0"].cross_correlation_coefficient, 0.4, delta=1e-3)
+        self.assertAlmostEqual(
+            wr.fits["model1"].cross_correlation_coefficient, 0.4, delta=1e-3)
 
 
 if __name__ == '__main__':

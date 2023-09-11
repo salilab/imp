@@ -4,6 +4,7 @@
 
 import IMP.mmcif.metadata
 import ihm.restraint
+import operator
 
 
 def _get_input_pis(r):
@@ -32,10 +33,11 @@ def _get_scale(m, p):
 
 class _AsymMapper(object):
     """Map ParticleIndexes to ihm.AsymUnit"""
-    def __init__(self, m, system):
+    def __init__(self, m, components, ignore_non_structural=False):
         self.m = m
-        self.components = system.components
+        self.components = components
         self._seen_ranges = {}
+        self._ignore_non_structural = ignore_non_structural
 
     def __getitem__(self, pi):
         m = self.m
@@ -47,8 +49,9 @@ class _AsymMapper(object):
                 if IMP.atom.Chain.get_is_setup(m, h):
                     return self.components[IMP.atom.Chain(h)].asym_unit
                 h = h.get_parent()
-        raise KeyError("Could not find top-level Chain for "
-                       + m.get_particle_name(pi))
+        if not self._ignore_non_structural:
+            raise KeyError("Could not find top-level Chain for "
+                           + m.get_particle_name(pi))
 
     def get_feature(self, ps):
         """Get an ihm.restraint.Feature that covers the given particles"""
@@ -137,7 +140,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         # Map from IMP/RMF chain names to ihm.Entity
         cmap = dict((e.description, e) for e in system.entities.get_all())
         dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
-        asym = _AsymMapper(imp_restraint.get_model(), system)
+        asym = _AsymMapper(imp_restraint.get_model(), system.components)
         self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
                             asym, dist)
 
@@ -224,7 +227,7 @@ class _GeometricRestraint(ihm.restraint.GeometricRestraint):
 
     def __init__(self, imp_restraint, info, modeled_assembly, system):
         self._imp_restraint = imp_restraint
-        asym = _AsymMapper(imp_restraint.get_model(), system)
+        asym = _AsymMapper(imp_restraint.get_model(), system.components)
         super(_GeometricRestraint, self).__init__(
             dataset=None,
             geometric_object=self._geom_object,
@@ -291,3 +294,74 @@ class _RestraintMapper(object):
                                             self._system)
             r.add_model_fit(model)
             return r
+
+
+def _make_gaussian_em_restraint(imp_restraint, info, components):
+    yield _EM3DRestraint(imp_restraint, info, components)
+
+
+class _EM3DRestraint(ihm.restraint.EM3DRestraint):
+    def __init__(self, imp_restraint, info, components):
+        asym_map = _AsymMapper(imp_restraint.get_model(), components,
+                               ignore_non_structural=True)
+        # If a subunit contains any density, add the entire subunit to
+        # this restraint's assembly
+        asyms = frozenset(
+            asym_map[p]
+            for p in IMP.get_input_particles(imp_restraint.get_inputs()))
+        asyms = sorted((a for a in asyms if a is not None),
+                       key=operator.attrgetter('id'))
+        assembly = ihm.Assembly(
+            asyms, name="EM subassembly",
+            description="All components that fit the EM map")
+
+        self._filename = info['filename']
+        self._asyms = tuple(asyms)
+        p = IMP.mmcif.metadata._GMMParser()
+        r = p.parse_file(info['filename'])
+        super(_EM3DRestraint, self).__init__(
+            dataset=r['dataset'], assembly=assembly,
+            number_of_gaussians=r['number_of_gaussians'],
+            fitting_method='Gaussian mixture model')
+
+    def _get_signature(self):
+        return ("EM3DRestraint", self._filename, self._asyms,
+                self.number_of_gaussians, self.fitting_method)
+
+    def add_model_fit(self, imp_restraint, model):
+        info = _parse_restraint_info(imp_restraint.get_dynamic_info())
+        self.fits[model] = ihm.restraint.EM3DRestraintFit(
+                cross_correlation_coefficient=info['cross correlation'])
+
+
+class _AllRestraints(object):
+    """Map IMP restraints to mmCIF objects"""
+    _typemap = {
+        "IMP.isd.GaussianEMRestraint": _make_gaussian_em_restraint}
+
+    def __init__(self, system, components):
+        self._system = system
+        self._components = components
+        self._seen_restraints = {}
+
+    def add(self, restraint):
+        """Add and return a new restraint"""
+        sig = restraint._get_signature()
+        if sig not in self._seen_restraints:
+            self._system.restraints.append(restraint)
+            self._seen_restraints[sig] = restraint
+        return self._seen_restraints[sig]
+
+    def handle(self, restraint, ihm_models):
+        """Handle an individual IMP restraint.
+           Yield wrapped version(s) of the restraint if it is handled in
+           mmCIF (one IMP restraint may map to multiple mmCIF restraints).
+           These may be new or existing restraint objects."""
+        info = _parse_restraint_info(restraint.get_static_info())
+        if 'type' in info and info['type'] in self._typemap:
+            for cif_r in self._typemap[info['type']](restraint,
+                                                     info, self._components):
+                cif_r = self.add(cif_r)
+                for model in ihm_models:
+                    cif_r.add_model_fit(restraint, model)
+                yield cif_r

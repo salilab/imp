@@ -424,6 +424,8 @@ class Convert(object):
         self._model_assemblies = IMP.mmcif.data._ModelAssemblies(self.system)
         self._representations = IMP.mmcif.data._Representations(self.system)
         self._protocols = IMP.mmcif.data._Protocols(self.system)
+        self._restraints = IMP.mmcif.restraint._AllRestraints(
+            self.system, self._components)
 
     def add_model(self, hiers, restraints, name=None, states=None,
                   ensembles=None):
@@ -438,11 +440,32 @@ class Convert(object):
             ensembles = {}
         if self.system.title is None and len(hiers) > 0:
             self.system.title = hiers[0].get_name()
+        ihm_models = []
         for state_obj, state_hier, top_hier in self._get_states(hiers, states):
-            e = self._add_hierarchy(state_hier, top_hier, state_obj, name,
-                                    ensembles.get(state_obj.name))
+            e, model = self._add_hierarchy(
+                state_hier, top_hier, state_obj, name,
+                ensembles.get(state_obj.name))
+            ihm_models.append(model)
             ensembles[state_obj.name] = e
+        self._add_restraints(restraints, ihm_models)
         return ensembles
+
+    def _add_restraints(self, restraints, ihm_models):
+        for r in restraints:
+            self._handle_restraint(r, ihm_models)
+
+    def _handle_restraint(self, r, ihm_models):
+        num_cif_r = 0
+        for cif_r in self._restraints.handle(r, ihm_models):
+            num_cif_r += 1
+        if num_cif_r == 0:
+            try:
+                rs = IMP.RestraintSet.get_from(r)
+            except ValueError:
+                rs = None
+            if rs:
+                for child in rs.restraints:
+                    self._handle_restraint(child, ihm_models)
 
     def _add_hierarchy(self, h, top_h, state, name, ensemble):
         if ensemble is None:
@@ -473,7 +496,7 @@ class Convert(object):
         model._spheres = ch._spheres
         ensemble.model_group.append(model)
         ensemble.num_models += 1
-        return ensemble
+        return ensemble, model
 
     def _add_hierarchy_ensemble_info(self, h, top_h, ensemble):
         """Add ensemble-specific information from the given hierarchy"""

@@ -7,6 +7,7 @@ import ihm
 import ihm.reader
 import os
 import sys
+from test_restraints import MockGaussianEMRestraint
 if sys.version_info[0] >= 3:
     from io import StringIO
 else:
@@ -59,6 +60,15 @@ class Tests(IMP.test.TestCase):
             prov.set_precision(42.0)
             prov.set_density(self.get_input_file_name("sampcon.json"))
         IMP.core.add_provenance(m, top, prov)
+
+    def add_structured_residue(self, m, top, ind):
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, ind)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
+        top.add_child(residue)
+        return residue
 
     def test_no_chains(self):
         """Trying to add a Hierarchy with no chains should give an error"""
@@ -440,6 +450,34 @@ class Tests(IMP.test.TestCase):
         self.assertIs(state0_model.representation, state1_model.representation)
         s1, = state0_model.representation
         self.assertEqual(s1.starting_model.asym_id, 'X')
+
+    def test_em3d_restraint(self):
+        """Test handling of 3D EM restraints"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top)
+        c = IMP.mmcif.Convert()
+        chain0 = top.get_child(0).get_child(0)
+        r1 = self.add_structured_residue(m, chain0, 1)
+        self.add_structured_residue(m, chain0, 2)
+        r3 = chain1 = top.get_child(1).get_child(0)
+        self.add_structured_residue(m, chain1, 1)
+
+        em_filename = self.get_input_file_name('test.gmm.txt')
+        em1 = MockGaussianEMRestraint(m, em_filename, [r1.get_particle()])
+        em2 = MockGaussianEMRestraint(m, em_filename, [r1.get_particle()])
+        em3 = MockGaussianEMRestraint(m, em_filename, [r1.get_particle(),
+                                                       r3.get_particle()])
+
+        c.add_model([top], [em1, em2, em3])
+        # Duplicate restraint em2 should be consolidated with em1
+        cr1, cr2 = c.system.restraints
+        self.assertEqual([asym.id for asym in cr1.assembly], ['X'])
+        self.assertEqual(os.path.basename(cr1.dataset.location.path),
+                         'test.gmm.txt')
+        self.assertEqual([asym.id for asym in cr2.assembly], ['X', 'Y'])
+        self.assertEqual(os.path.basename(cr2.dataset.location.path),
+                         'test.gmm.txt')
 
 
 
