@@ -391,6 +391,57 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s2.seq_id_range, (3, 4))
         self.assertAlmostEqual(s2.radius, 12.0, delta=1e-2)
 
+    def test_starting_models(self):
+        """Test handling of starting models"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state0 = self.add_state(m, top, 0, "State_0")
+        self.add_chains(m, state0)
+        state1 = self.add_state(m, top, 1, "State_1")
+        self.add_chains(m, state1)
+
+        chain0 = state0.get_child(0).get_child(0)
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 1)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
+
+        prov = IMP.core.StructureProvenance.setup_particle(
+            m, IMP.Particle(m), self.get_input_file_name("test.nup84.pdb"),
+            "X")
+        IMP.core.add_provenance(m, residue, prov)
+
+        chain0.add_child(residue)
+
+        chain1 = state1.get_child(0).get_child(0)
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [1])
+
+        # Provenance here is attached to the parent fragment, not the
+        # residue directly
+        prov = IMP.core.StructureProvenance.setup_particle(
+            m, IMP.Particle(m), self.get_input_file_name("test.nup84.pdb"),
+            "X")
+        IMP.core.add_provenance(m, frag, prov)
+
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 1)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
+        frag.add_child(residue)
+        chain1.add_child(frag)
+
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+        # Both models should have same representation, with same starting model
+        state0_model, = c.system.state_groups[0][0][0]
+        state1_model, = c.system.state_groups[0][1][0]
+        self.assertIs(state0_model.representation, state1_model.representation)
+        s1, = state0_model.representation
+        self.assertEqual(s1.starting_model.asym_id, 'X')
+
+
 
 if __name__ == '__main__':
     IMP.test.main()

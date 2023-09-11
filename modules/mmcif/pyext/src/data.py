@@ -345,19 +345,19 @@ class _StartingModel(ihm.startmodel.StartingModel):
     def __hash__(self):
         return hash(self._eq_vals())
 
-    def _set_sources_datasets(self, system):
+    def _set_sources_datasets(self, system, datasets):
         # Attempt to identify PDB file vs. comparative model
         p = ihm.metadata.PDBParser()
         r = p.parse_file(self.filename)
-        system.system.software.extend(r['software'])
-        dataset = system.datasets.add(r['dataset'])
+        system.software.extend(r['software'])
+        dataset = datasets.add(r['dataset'])
         # We only want the templates that model the starting model chain
         templates = r['templates'].get(self.asym_id, [])
         for t in templates:
             if t.alignment_file:
-                system.system.locations.append(t.alignment_file)
+                system.locations.append(t.alignment_file)
             if t.dataset:
-                system.datasets.add(t.dataset)
+                datasets.add(t.dataset)
         self.dataset = dataset
         self.templates = templates
         self.metadata = r['metadata']
@@ -388,19 +388,23 @@ class _StartingModel(ihm.startmodel.StartingModel):
 
 class _StartingModelFinder(object):
     """Map IMP particles to starting model objects"""
-    def __init__(self, component, existing_starting_models):
+    def __init__(self, asym, existing_starting_models, system, datasets):
         self._seen_particles = {}
-        self._component = component
-        self._seen_starting_models = dict.fromkeys(existing_starting_models)
+        self._asym = asym
+        self._seen_starting_models = {}
+        for sm in existing_starting_models:
+            self._seen_starting_models[sm] = sm
+        self._system = system
+        self._datasets = datasets
 
-    def find(self, particle, system):
+    def find(self, particle):
         """Return a StartingModel object, or None, for this particle"""
         def _get_starting_model(sp, resind):
-            s = _StartingModel(self._component.asym_unit, sp)
+            s = _StartingModel(self._asym, sp)
             if s not in self._seen_starting_models:
                 self._seen_starting_models[s] = s
-                s._set_sources_datasets(system)
-                system.system.orphan_starting_models.append(s)
+                s._set_sources_datasets(self._system, self._datasets)
+                self._system.orphan_starting_models.append(s)
             s = self._seen_starting_models[s]
             if s:
                 s._add_residue(resind)
@@ -640,7 +644,9 @@ class _Protocols(object):
 
 
 class _CoordinateHandler(object):
-    def __init__(self):
+    def __init__(self, system, datasets):
+        self._system = system
+        self._datasets = datasets
         self._representation = ihm.representation.Representation()
         # IHM atoms/spheres corresponding to IMP beads/residues/atoms
         # We build them up front (rather than on the fly) as the original
@@ -650,11 +656,21 @@ class _CoordinateHandler(object):
         self._spheres = []
 
     def add_chain(self, c, asym):
+        def matches_asym(s):
+            # Match AsymUnit or AsymUnitRange
+            return s == asym or hasattr(s, 'asym') and s.asym == asym
+
+        # Consolidate starting models if the same model was used for this
+        # asym in a different state or for a different model_id
+        smf = _StartingModelFinder(
+            asym, [s for s in self._system.orphan_starting_models
+                   if matches_asym(s.asym_unit)],
+            self._system, self._datasets)
         ps = self._get_structure_particles(c)
         segfactory = _RepSegmentFactory(asym)
         for p in ps:
-            # todo: handle starting models
-            seg = segfactory.add(p, None)
+            starting_model = smf.find(p)
+            seg = segfactory.add(p, starting_model)
             if seg:
                 self._representation.append(seg)
             self._add_atom_or_sphere(p, asym)

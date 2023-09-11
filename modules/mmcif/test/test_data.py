@@ -287,7 +287,7 @@ class Tests(IMP.test.TestCase):
             atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))
         residue.add_child(atom)
         top.add_child(residue)
-        ch = IMP.mmcif.data._CoordinateHandler()
+        ch = IMP.mmcif.data._CoordinateHandler(None, None)
         ps = ch._get_structure_particles(top)
         self.assertEqual(len(ps), 3)
         self.assertIsInstance(ps[0], IMP.atom.Residue)
@@ -345,7 +345,7 @@ class Tests(IMP.test.TestCase):
         frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [7, 8])
         add_attrs(frag)
         top.add_child(frag)
-        ch = IMP.mmcif.data._CoordinateHandler()
+        ch = IMP.mmcif.data._CoordinateHandler(s, None)
         ch.add_chain(top, asym)
         r1, r2, r3, r4 = ch._representation
         self.assertIsInstance(r1, ihm.representation.ResidueSegment)

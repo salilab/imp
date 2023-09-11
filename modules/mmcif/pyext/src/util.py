@@ -190,12 +190,13 @@ class System(object):
 
     def _get_repsegments(self, chain, component, existing_starting_models):
         """Yield groups of particles under chain with same representation"""
-        smf = IMP.mmcif.data._StartingModelFinder(component,
-                                                  existing_starting_models)
+        smf = IMP.mmcif.data._StartingModelFinder(component.asym_unit,
+                                                  existing_starting_models,
+                                                  self.system, self.datasets)
         segfactory = IMP.mmcif.data._RepSegmentFactory(component.asym_unit)
 
         for sp in self._get_structure_particles(chain):
-            starting_model = smf.find(sp, self)
+            starting_model = smf.find(sp)
             seg = segfactory.add(sp, starting_model)
             if seg:
                 yield seg
@@ -419,6 +420,7 @@ class Convert(object):
         self._components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
+        self._datasets = IMP.mmcif.data._Datasets(self.system)
         self._model_assemblies = IMP.mmcif.data._ModelAssemblies(self.system)
         self._representations = IMP.mmcif.data._Representations(self.system)
         self._protocols = IMP.mmcif.data._Protocols(self.system)
@@ -453,7 +455,7 @@ class Convert(object):
         if len(chains) == 0:
             raise ValueError("No chains found in %s" % h)
         asyms = []
-        ch = IMP.mmcif.data._CoordinateHandler()
+        ch = IMP.mmcif.data._CoordinateHandler(self.system, self._datasets)
         for c in chains:
             comp = self._add_chain(c)
             asyms.append(comp.asym_unit)
@@ -466,7 +468,7 @@ class Convert(object):
                                                   self._software)
         self._external_files.add_hierarchy(h, top_h)
         model = ihm.model.Model(assembly=assembly, protocol=protocol,
-                                representation=representation)
+                                representation=representation, name=name)
         model._atoms = ch._atoms
         model._spheres = ch._spheres
         ensemble.model_group.append(model)
