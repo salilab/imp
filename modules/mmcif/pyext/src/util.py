@@ -448,7 +448,15 @@ class Convert(object):
             ihm_models.append(model)
             ensembles[state_obj.name] = e
         self._add_restraints(restraints, ihm_models)
+        self._remove_duplicate_chain_ids()
         return ensembles
+
+    def _remove_duplicate_chain_ids(self):
+        chain_ids = [a.id for a in self.system.asym_units]
+        if len(set(chain_ids)) < len(chain_ids):
+            print("Duplicate chain IDs detected - reassigning alphabetically")
+            for chain, cid in zip(self.system.asym_units, _ChainIDs()):
+                chain.id = cid
 
     def _add_restraints(self, restraints, ihm_models):
         all_rsr = []

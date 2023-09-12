@@ -100,6 +100,18 @@ class Tests(IMP.test.TestCase):
         # Single ensemble
         self.assertEqual(len(c.system.ensembles), 1)
 
+    def test_duplicate_chain_ids(self):
+        """Test handling of duplicate chain IDs"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        top.set_name("Top node")
+        self.add_chains(m, top,
+                        chains = (('foo', 'ACGT', 'X'), ('baz', 'ACCT', 'X')))
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+        self.assertEqual([x.id for x in c.system.asym_units],
+                         ['A', 'B'])
+
     def test_add_rmf(self):
         """Test add_rmf() convenience method"""
         def make_rmf(fname):
