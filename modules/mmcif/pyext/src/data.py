@@ -115,8 +115,9 @@ class _ComponentMapper(object):
         if isinstance(chain, IMP.atom.Chain):
             modeled = True
             mol = get_molecule(chain)
-            asym_id = map_key = chain.get_id()
+            asym_id = chain.get_id()
             name = mol.get_name() if mol else None
+            map_key = name or asym_id
         else:
             modeled = False
             asym_id = None
