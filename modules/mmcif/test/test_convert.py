@@ -456,6 +456,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
+        self.add_protocol(m, top)
         c = IMP.mmcif.Convert()
         chain0 = top.get_child(0).get_child(0)
         r1 = self.add_structured_residue(m, chain0, 1)
@@ -478,7 +479,12 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([asym.id for asym in cr2.assembly], ['X', 'Y'])
         self.assertEqual(os.path.basename(cr2.dataset.location.path),
                          'test.gmm.txt')
-
+        # Both restraints should be used in the model protocol
+        model, = c.system.state_groups[0][0][0]
+        step, = model.protocol.steps
+        self.assertEqual(len(step.dataset_group), 2)
+        self.assertEqual(step.dataset_group.name,
+                         'All datasets used in modeling')
 
 
 if __name__ == '__main__':

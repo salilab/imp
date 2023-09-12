@@ -448,6 +448,7 @@ class _Datasets(object):
     def __init__(self, system):
         super(_Datasets, self).__init__()
         self._datasets = {}
+        self._groups = {}
         self.system = system
 
     def add(self, d):
@@ -456,6 +457,22 @@ class _Datasets(object):
             self._datasets[d] = d
             self.system.orphan_datasets.append(d)
         return self._datasets[d]
+
+    def add_group(self, datasets, name):
+        """Add and return a new group of datasets"""
+        seen = set()
+        # Remove duplicates
+        d = []
+        for dataset in datasets:
+            if dataset not in seen:
+                d.append(dataset)
+                seen.add(dataset)
+        d = tuple(d)
+        if d not in self._groups:
+            g = ihm.dataset.DatasetGroup(d, name=name)
+            self._groups[d] = g
+            self.system.orphan_dataset_groups.append(g)
+        return self._groups[d]
 
     def get_all(self):
         """Yield all datasets"""
@@ -600,9 +617,15 @@ class _Protocols(object):
         # Protocol isn't hashable or sortable, so just compare dicts
         # with existing protocols. This should still be performant as
         # we generally don't have more than one or two protocols.
+        # We exclude dataset_group from the comparison as this is typically
+        # filled in later.
         def step_equal(x, y):
+            def get_dict(d):
+                return {x: y for x, y in d.__dict__.items()
+                        if x != 'dataset_group'}
+
             return (type(x) == type(y)  # noqa: E721
-                    and x.__dict__ == y.__dict__)
+                    and get_dict(x) == get_dict(y))
 
         def analysis_equal(x, y):
             return (len(x.steps) == len(y.steps)

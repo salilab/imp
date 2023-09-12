@@ -451,13 +451,28 @@ class Convert(object):
         return ensembles
 
     def _add_restraints(self, restraints, ihm_models):
+        all_rsr = []
         for r in restraints:
-            self._handle_restraint(r, ihm_models)
+            all_rsr.extend(self._handle_restraint(r, ihm_models))
+        # IMP provenance doesn't currently record which restraints were
+        # used in modeling, so assume all of them were
+        dsg = self._datasets.add_group(
+            [r.dataset for r in all_rsr if r.dataset is not None],
+            "All datasets used in modeling")
+        for m in ihm_models:
+            if not m.protocol:
+                continue
+            for step in m.protocol.steps:
+                step.dataset_group = dsg
+            for analysis in m.protocol.analyses:
+                for step in analysis.steps:
+                    step.dataset_group = dsg
 
     def _handle_restraint(self, r, ihm_models):
         num_cif_r = 0
         for cif_r in self._restraints.handle(r, ihm_models):
             num_cif_r += 1
+            yield cif_r
         if num_cif_r == 0:
             try:
                 rs = IMP.RestraintSet.get_from(r)
@@ -465,7 +480,8 @@ class Convert(object):
                 rs = None
             if rs:
                 for child in rs.restraints:
-                    self._handle_restraint(child, ihm_models)
+                    for r in self._handle_restraint(child, ihm_models):
+                        yield r
 
     def _add_hierarchy(self, h, top_h, state, name, ensemble):
         if ensemble is None:
