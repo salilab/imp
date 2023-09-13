@@ -309,10 +309,6 @@ def _get_restraint_assembly(imp_restraint, components):
     return asyms
 
 
-def _make_gaussian_em_restraint(imp_restraint, info, components):
-    yield _EM3DRestraint(imp_restraint, info, components)
-
-
 class _EM3DRestraint(ihm.restraint.EM3DRestraint):
     def __init__(self, imp_restraint, info, components):
         # If a subunit contains any density, add the entire subunit to
@@ -397,10 +393,6 @@ class _NewEM2DRestraint(ihm.restraint.EM2DRestraint):
                                             IMP.algebra.Vector3D(*t))
 
 
-def _make_saxs_restraint(imp_restraint, info, components):
-    yield _NewSAXSRestraint(imp_restraint, info, components)
-
-
 class _NewSAXSRestraint(ihm.restraint.SASRestraint):
     def __init__(self, imp_restraint, info, components):
         asyms = _get_restraint_assembly(imp_restraint, components)
@@ -433,9 +425,9 @@ class _NewSAXSRestraint(ihm.restraint.SASRestraint):
 class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
-        "IMP.isd.GaussianEMRestraint": _make_gaussian_em_restraint,
+        "IMP.isd.GaussianEMRestraint": _EM3DRestraint,
         "IMP.em2d.PCAFitRestraint": _make_em2d_restraint,
-        "IMP.saxs.Restraint": _make_saxs_restraint}
+        "IMP.saxs.Restraint": _NewSAXSRestraint}
 
     def __init__(self, system, components):
         self._system = system
@@ -457,8 +449,13 @@ class _AllRestraints(object):
            These may be new or existing restraint objects."""
         info = _parse_restraint_info(restraint.get_static_info())
         if 'type' in info and info['type'] in self._typemap:
-            for cif_r in self._typemap[info['type']](restraint,
-                                                     info, self._components):
+            cif_rs = self._typemap[info['type']](restraint,
+                                                 info, self._components)
+            try:
+                _ = iter(cif_rs)
+            except TypeError:
+                cif_rs = [cif_rs]
+            for cif_r in cif_rs:
                 cif_r = self.add(cif_r)
                 for model in ihm_models:
                     cif_r.add_model_fit(restraint, model)
