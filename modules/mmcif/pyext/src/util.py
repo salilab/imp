@@ -12,8 +12,6 @@ import RMF
 import ihm.format
 import ihm.representation
 import string
-import weakref
-import operator
 import itertools
 import json
 import sys
