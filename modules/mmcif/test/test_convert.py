@@ -112,6 +112,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([x.id for x in c.system.asym_units],
                          ['A', 'B'])
 
+    def test_duplicate_molecule_names(self):
+        """Test handling of duplicate molecule names"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        top.set_name("Top node")
+        self.add_chains(m, top,
+                        chains = (('foo', 'ACGT', 'X'), ('foo', 'ACCT', 'Y'),
+                                  ('foo', 'ACGT', 'Z')))
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+        self.assertEqual([x.id for x in c.system.asym_units],
+                         ['X', 'Y', 'Z'])
+        self.assertEqual([x.details for x in c.system.asym_units],
+                         ['foo', 'foo copy 1', 'foo copy 2'])
+
     def test_add_rmf(self):
         """Test add_rmf() convenience method"""
         def make_rmf(fname):

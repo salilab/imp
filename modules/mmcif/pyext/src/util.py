@@ -14,6 +14,7 @@ import ihm.representation
 import string
 import weakref
 import operator
+import itertools
 import json
 import sys
 from IMP.mmcif.data import _get_all_state_provenance
@@ -448,15 +449,7 @@ class Convert(object):
             ihm_models.append(model)
             ensembles[state_obj.name] = e
         self._add_restraints(restraints, ihm_models)
-        self._remove_duplicate_chain_ids()
         return ensembles
-
-    def _remove_duplicate_chain_ids(self):
-        chain_ids = [a.id for a in self.system.asym_units]
-        if len(set(chain_ids)) < len(chain_ids):
-            print("Duplicate chain IDs detected - reassigning alphabetically")
-            for chain, cid in zip(self.system.asym_units, _ChainIDs()):
-                chain.id = cid
 
     def _add_restraints(self, restraints, ihm_models):
         all_rsr = []
@@ -491,6 +484,41 @@ class Convert(object):
                     for r in self._handle_restraint(child, ihm_models):
                         yield r
 
+    def _ensure_unique_molecule_names(self, chains):
+        """Make sure that the input IMP molecule names are unique.
+           We assume that a given molecule name maps to an IHM asym,
+           so we need these names to be unique. Rename molecules if
+           necessary."""
+        def _get_unique_name(old_name, seen_names):
+            for copy_num in itertools.count(1):
+                name = old_name + " copy %d" % copy_num
+                if name not in seen_names:
+                    return name
+
+        seen_names = set()
+        for c in chains:
+            mol = IMP.mmcif.data.get_molecule(c)
+            if mol and mol.get_name():
+                name = mol.get_name()
+                if name in seen_names:
+                    old_name = name
+                    name = _get_unique_name(old_name, seen_names)
+                    mol.set_name(name)
+                    print("Duplicate molecule name detected - reassigning "
+                          "from %r to %r" % (old_name, name))
+                seen_names.add(name)
+
+    def _ensure_unique_chain_ids(self, chains):
+        """Make sure that IMP chain IDs are unique, since they are mapped to
+           IHM asym IDs, which need to be unique. Reassign them alphabetically
+           if duplicates are found."""
+        chain_ids = [c.get_id() for c in chains]
+        if len(set(chain_ids)) < len(chain_ids):
+            for chain, cid in zip(chains, _ChainIDs()):
+                chain.set_id(cid)
+            print("Duplicate chain IDs detected - reassigning from %s to %s"
+                  % (chain_ids, [c.get_id() for c in chains]))
+
     def _add_hierarchy(self, h, top_h, state, name, ensemble):
         if ensemble is None:
             mg = ihm.model.ModelGroup()
@@ -499,6 +527,8 @@ class Convert(object):
             self.system.ensembles.append(ensemble)
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
+        self._ensure_unique_molecule_names(chains)
+        self._ensure_unique_chain_ids(chains)
         if len(chains) == 0:
             raise ValueError("No chains found in %s" % h)
         asyms = []
