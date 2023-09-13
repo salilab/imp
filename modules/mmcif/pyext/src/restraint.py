@@ -296,21 +296,29 @@ class _RestraintMapper(object):
             return r
 
 
+def _get_restraint_assembly(imp_restraint, components):
+    """Get the assembly corresponding to all input particles for
+       the restraint"""
+    asym_map = _AsymMapper(imp_restraint.get_model(), components,
+                           ignore_non_structural=True)
+    asyms = frozenset(
+        asym_map[p]
+        for p in IMP.get_input_particles(imp_restraint.get_inputs()))
+    asyms = sorted((a for a in asyms if a is not None),
+                   key=operator.attrgetter('id'))
+    return asyms
+
+
 def _make_gaussian_em_restraint(imp_restraint, info, components):
     yield _EM3DRestraint(imp_restraint, info, components)
 
 
 class _EM3DRestraint(ihm.restraint.EM3DRestraint):
     def __init__(self, imp_restraint, info, components):
-        asym_map = _AsymMapper(imp_restraint.get_model(), components,
-                               ignore_non_structural=True)
         # If a subunit contains any density, add the entire subunit to
         # this restraint's assembly
-        asyms = frozenset(
-            asym_map[p]
-            for p in IMP.get_input_particles(imp_restraint.get_inputs()))
-        asyms = sorted((a for a in asyms if a is not None),
-                       key=operator.attrgetter('id'))
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
         assembly = ihm.Assembly(
             asyms, name="EM subassembly",
             description="All components that fit the EM map")
@@ -334,10 +342,66 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
                 cross_correlation_coefficient=info['cross correlation'])
 
 
+def _make_em2d_restraint(imp_restraint, info, components):
+    for i in range(len(info['image files'])):
+        yield _NewEM2DRestraint(imp_restraint, info, components, i)
+
+
+class _NewEM2DRestraint(ihm.restraint.EM2DRestraint):
+    def __init__(self, imp_restraint, info, components, image_number):
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
+        assembly = ihm.Assembly(
+            asyms, name="2D EM subassembly",
+            description="All components that fit the EM images")
+
+        self._image_number = image_number
+        self._filename = info['image files'][image_number]
+        self._asyms = tuple(asyms)
+
+        loc = ihm.location.InputFileLocation(
+                self._filename,
+                details="Electron microscopy class average")
+        dataset = ihm.dataset.EM2DClassDataset(loc)
+
+        super(_NewEM2DRestraint, self).__init__(
+            dataset=dataset, assembly=assembly,
+            segment=False,
+            number_raw_micrographs=info['micrographs number'] or None,
+            pixel_size_width=info['pixel size'],
+            pixel_size_height=info['pixel size'],
+            image_resolution=info['resolution'],
+            number_of_projections=info['projection number'])
+
+    def _get_signature(self):
+        return ("EM2DRestraint", self._filename, self._asyms,
+                self.number_raw_micrographs, self.pixel_size_width,
+                self.pixel_size_height, self.image_resolution,
+                self.number_of_projections)
+
+    def add_model_fit(self, imp_restraint, model):
+        info = _parse_restraint_info(imp_restraint.get_dynamic_info())
+        ccc = info['cross correlation'][self._image_number]
+        transform = self._get_transformation(model, info, self._image_number)
+        rot = transform.get_rotation()
+        rm = [[e for e in rot.get_rotation_matrix_row(i)] for i in range(3)]
+        self.fits[model] = ihm.restraint.EM2DRestraintFit(
+            cross_correlation_coefficient=ccc, rot_matrix=rm,
+            tr_vector=transform.get_translation())
+
+    def _get_transformation(self, model, info, nimage):
+        """Get the transformation that places the model on image nimage"""
+        r = info['rotation'][nimage * 4: nimage * 4 + 4]
+        t = info['translation'][nimage * 3: nimage * 3 + 3]
+        return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
+                                            IMP.algebra.Vector3D(*t))
+
+
 class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
-        "IMP.isd.GaussianEMRestraint": _make_gaussian_em_restraint}
+        "IMP.isd.GaussianEMRestraint": _make_gaussian_em_restraint,
+        "IMP.em2d.PCAFitRestraint": _make_em2d_restraint}
 
     def __init__(self, system, components):
         self._system = system

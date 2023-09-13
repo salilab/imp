@@ -122,8 +122,8 @@ class MockZAxialRestraint(IMP.Restraint):
 
 class MockPCAFitRestraint(IMP.Restraint):
 
-    def __init__(self, m, image_filename):
-        self.image_filename = image_filename
+    def __init__(self, m, image_filenames):
+        self.image_filenames = image_filenames
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
@@ -137,7 +137,7 @@ class MockPCAFitRestraint(IMP.Restraint):
     def get_static_info(self):
         i = IMP.RestraintInfo()
         i.add_string("type", "IMP.em2d.PCAFitRestraint")
-        i.add_filenames("image files", [self.image_filename])
+        i.add_filenames("image files", self.image_filenames)
         i.add_float("pixel size", 2.2)
         i.add_float("resolution", 20.)
         i.add_int("projection number", 20)
@@ -146,9 +146,11 @@ class MockPCAFitRestraint(IMP.Restraint):
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
-        i.add_floats("cross correlation", [0.4])
-        i.add_floats("rotation", [0., 0., 1., 0.])
-        i.add_floats("translation", [241.8, 17.4, 0.0])
+        i.add_floats("cross correlation", [0.4, 0.3])
+        i.add_floats("rotation", [0., 0., 1., 0.,
+                                  0., 0., 1., 0.])
+        i.add_floats("translation", [241.8, 17.4, 0.0,
+                                     90.0, 80.0, 70.0])
         return i
 
 
@@ -269,7 +271,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.mmcif.System()
         m = IMP.Model()
         image_filename = self.get_input_file_name('image_2.pgm')
-        r = MockPCAFitRestraint(m, image_filename)
+        r = MockPCAFitRestraint(m, [image_filename])
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(s)
         frame = None
@@ -293,6 +295,31 @@ class Tests(IMP.test.TestCase):
             wr.fits["model0"].cross_correlation_coefficient, 0.4, delta=1e-3)
         self.assertAlmostEqual(
             wr.fits["model1"].cross_correlation_coefficient, 0.4, delta=1e-3)
+
+    def test_all_restraints_em2d_restraint(self):
+        """Test _AllRestraints with IMP.em2d.PCAFitRestraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        image1 = self.get_input_file_name('image_1.pgm')
+        image2 = self.get_input_file_name('image_2.pgm')
+        r = MockPCAFitRestraint(m, [image1, image2])
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        # Each image should map to a separate IHM restraint
+        wr1, wr2 = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr1), IMP.mmcif.restraint._NewEM2DRestraint)
+        self.assertEqual(type(wr1.dataset), ihm.dataset.EM2DClassDataset)
+        self.assertAlmostEqual(
+            wr1.fits["model0"].cross_correlation_coefficient, 0.4, delta=1e-3)
+        self.assertEqual(len(wr1.fits["model0"].rot_matrix), 3)
+        self.assertEqual(len(wr1.fits["model0"].tr_vector), 3)
+
+        self.assertEqual(type(wr2), IMP.mmcif.restraint._NewEM2DRestraint)
+        self.assertEqual(type(wr2.dataset), ihm.dataset.EM2DClassDataset)
+        self.assertAlmostEqual(
+            wr2.fits["model0"].cross_correlation_coefficient, 0.3, delta=1e-3)
+        self.assertEqual(len(wr2.fits["model0"].rot_matrix), 3)
+        self.assertEqual(len(wr2.fits["model0"].tr_vector), 3)
 
 
 if __name__ == '__main__':
