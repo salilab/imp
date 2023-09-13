@@ -70,6 +70,24 @@ class Tests(IMP.test.TestCase):
         top.add_child(residue)
         return residue
 
+    def test_parse_sel_tuple(self):
+        """Test _parse_sel_tuple()"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top)
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+
+        all_foo = c._parse_sel_tuple("foo")
+        self.assertIsInstance(all_foo, ihm.AsymUnit)
+        self.assertEqual(all_foo.details, 'foo')
+        self.assertEqual(all_foo.seq_id_range, (1, 4))
+        part_bar = c._parse_sel_tuple([2, 3, "bar"])
+        self.assertIsInstance(part_bar, ihm.AsymUnitRange)
+        self.assertEqual(part_bar.details, 'bar')
+        self.assertEqual(part_bar.seq_id_range, (2, 3))
+        self.assertRaises(TypeError, c._parse_sel_tuple, [1, 2, 3, 4])
+
     def test_no_chains(self):
         """Trying to add a Hierarchy with no chains should give an error"""
         m = IMP.Model()
