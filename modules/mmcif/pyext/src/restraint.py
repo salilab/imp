@@ -489,6 +489,41 @@ class _NewCrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         pass  # todo
 
 
+class _NewGeometricRestraint(ihm.restraint.GeometricRestraint):
+    """Base for all geometric restraints"""
+
+    def __init__(self, imp_restraint, info, components, system):
+        self._info = info
+        asym = _AsymMapper(imp_restraint.get_model(), components)
+        super(_NewGeometricRestraint, self).__init__(
+            dataset=None,
+            geometric_object=self._geom_object,
+            feature=asym.get_feature(
+                IMP.get_input_particles(imp_restraint.get_inputs())),
+            distance=self._get_distance(info),
+            harmonic_force_constant=1. / info['sigma'],
+            restrain_all=True)
+
+    def _get_distance(self, info):
+        pass
+
+    def add_model_fit(self, imp_restraint, model):
+        pass
+
+    def _get_signature(self):
+        return ("GeometricRestraint", self.feature, self.geometric_object,
+                tuple(self._info.items()))
+
+
+class _NewZAxialRestraint(_NewGeometricRestraint):
+    """Handle an IMP.npc.ZAxialRestraint"""
+    _geom_object = ihm.geometry.XYPlane()
+
+    def _get_distance(self, info):
+        return ihm.restraint.LowerUpperBoundDistanceRestraint(
+            info['lower bound'], info['upper bound'])
+
+
 class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
@@ -496,6 +531,7 @@ class _AllRestraints(object):
         "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
         _NewCrossLinkRestraint,
         "IMP.em2d.PCAFitRestraint": _make_em2d_restraint,
+        "IMP.npc.ZAxialPositionRestraint": _NewZAxialRestraint,
         "IMP.saxs.Restraint": _NewSAXSRestraint}
 
     def __init__(self, system, components):

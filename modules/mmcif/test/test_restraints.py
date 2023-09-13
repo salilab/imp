@@ -366,6 +366,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(wr.experimental_cross_links), 1)
         self.assertEqual(len(wr.cross_links), 1)
 
+    def test_all_restraints_zaxial(self):
+        """Test _RestraintMapper with ZAxialPositionRestraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        r = MockZAxialRestraint(m)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._NewZAxialRestraint)
+        self.assertIsNone(wr.dataset)
+
 
 if __name__ == '__main__':
     IMP.test.main()
