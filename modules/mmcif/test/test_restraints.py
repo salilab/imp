@@ -4,12 +4,10 @@ import IMP.mmcif.restraint
 import ihm.dataset
 
 
-def make_model(system, chains=None):
+def make_model(m, chains=None):
     if chains is None:
         chains = (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
                   ('baz', 'ACC', 'C'))
-    s = IMP.mmcif.State(system)
-    m = s.model
     top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
     for name, seq, cid in chains:
         h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
@@ -21,7 +19,7 @@ def make_model(system, chains=None):
         chain = IMP.atom.Chain.setup_particle(h, cid)
         chain.set_sequence(seq)
         mol.add_child(chain)
-    return top, s
+    return top
 
 
 class MockGaussianEMRestraint(IMP.Restraint):
@@ -207,8 +205,9 @@ class Tests(IMP.test.TestCase):
     def test_restraint_mapper_cross_link(self):
         """Test _RestraintMapper with cross-link restraint"""
         system = IMP.mmcif.System()
-        h, state = make_model(system, chains=[("Rpb1", "AMT", "X"),
-                                              ("Rpb2", "ACC", "Z")])
+        state = IMP.mmcif.State(system)
+        h = make_model(state.model, chains=[("Rpb1", "AMT", "X"),
+                                            ("Rpb2", "ACC", "Z")])
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         m = state.model
 
@@ -334,6 +333,38 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
         self.assertIsNone(wr.fits["model0"].chi_value)
         self.assertIsNone(wr.fits["model1"].chi_value)
+
+    def test_all_restraints_cross_link(self):
+        """Test _AllRestraints with cross-link restraint"""
+        conv = IMP.mmcif.Convert()
+        m = IMP.Model()
+        h = make_model(m, chains=[("Rpb1", "AMT", "X"),
+                                  ("Rpb2", "ACC", "Z")])
+        conv.add_model([h], [])
+
+        xl_csv = self.get_input_file_name('test.xlms.csv')
+        r = MockCrossLinkRestraint(m, xl_csv)
+        xl = IMP.isd.CrossLinkMSRestraint(m, 21.0, 0.01)
+        xl.set_source_protein1('Rpb1')
+        xl.set_source_residue1(34)
+        xl.set_source_protein2('Rpb1')
+        xl.set_source_residue2(49)
+        rpb1 = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]
+        h1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        h2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        rpb1.add_child(h1)
+        rpb1.add_child(h2)
+        s1 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 10.0)
+        s2 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 10.0)
+        psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
+        xl.add_contribution((h1, h2), (s1, s2), psi)
+        r.restraints.append(xl)
+        rm = IMP.mmcif.restraint._AllRestraints(conv.system, conv._components)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._NewCrossLinkRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.CXMSDataset)
+        self.assertEqual(len(wr.experimental_cross_links), 1)
+        self.assertEqual(len(wr.cross_links), 1)
 
 
 if __name__ == '__main__':

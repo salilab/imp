@@ -310,7 +310,7 @@ def _get_restraint_assembly(imp_restraint, components):
 
 
 class _EM3DRestraint(ihm.restraint.EM3DRestraint):
-    def __init__(self, imp_restraint, info, components):
+    def __init__(self, imp_restraint, info, components, system):
         # If a subunit contains any density, add the entire subunit to
         # this restraint's assembly
         asyms = _get_restraint_assembly(imp_restraint, components)
@@ -338,7 +338,7 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
                 cross_correlation_coefficient=info['cross correlation'])
 
 
-def _make_em2d_restraint(imp_restraint, info, components):
+def _make_em2d_restraint(imp_restraint, info, components, system):
     for i in range(len(info['image files'])):
         yield _NewEM2DRestraint(imp_restraint, info, components, i)
 
@@ -394,7 +394,7 @@ class _NewEM2DRestraint(ihm.restraint.EM2DRestraint):
 
 
 class _NewSAXSRestraint(ihm.restraint.SASRestraint):
-    def __init__(self, imp_restraint, info, components):
+    def __init__(self, imp_restraint, info, components, system):
         asyms = _get_restraint_assembly(imp_restraint, components)
 
         assembly = ihm.Assembly(
@@ -422,10 +422,79 @@ class _NewSAXSRestraint(ihm.restraint.SASRestraint):
         self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
 
 
+class _NewCrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
+    def __init__(self, imp_restraint, info, components, system):
+        self._info = info
+        loc = ihm.location.InputFileLocation(
+            info['filename'], details='Crosslinks')
+        dataset = ihm.dataset.CXMSDataset(loc)
+        linker = ihm.ChemDescriptor(
+            auth_name=info['linker author name'],
+            chemical_name=info.get('linker chemical name'),
+            smiles=info.get('linker smiles'),
+            smiles_canonical=info.get('linker smiles canonical'),
+            inchi=info.get('linker inchi'),
+            inchi_key=info.get('linker inchi key'))
+        super(_NewCrossLinkRestraint, self).__init__(
+            dataset=dataset, linker=linker)
+        # Map from IMP/RMF chain names to ihm.Entity
+        cmap = {e.description: e for e in system.entities}
+        dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
+        asym = _AsymMapper(imp_restraint.get_model(), components)
+        self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
+                            asym, dist)
+
+    def _add_all_links(self, rset, cmap, asym, dist):
+        """Add info for each cross-link in the given RestraintSet"""
+        for link in rset.restraints:
+            # Recurse into any child RestraintSets
+            try:
+                child_rs = IMP.RestraintSet.get_from(link)
+            except ValueError:
+                child_rs = None
+            if child_rs:
+                self._add_all_links(child_rs, cmap, asym, dist)
+            else:
+                info = _parse_restraint_info(link.get_static_info())
+                # todo: handle ambiguous cross-links, fix residue numbering
+                r1 = cmap[info['protein1']].residue(info['residue1'])
+                r2 = cmap[info['protein2']].residue(info['residue2'])
+                ex_xl = ihm.restraint.ExperimentalCrossLink(residue1=r1,
+                                                            residue2=r2)
+                self.experimental_cross_links.append([ex_xl])
+                # todo: handle multiple contributions
+                m = link.get_model()
+                endp1, endp2 = info['endpoints']
+                asym1 = asym[endp1]
+                asym2 = asym[endp2]
+                if _get_by_residue(m, endp1) and _get_by_residue(m, endp2):
+                    cls = ihm.restraint.ResidueCrossLink
+                else:
+                    cls = ihm.restraint.FeatureCrossLink
+                xl = cls(ex_xl, asym1=asym1, asym2=asym2, distance=dist,
+                         restrain_all=False,
+                         psi=_get_scale(m, info['psis'][0]),
+                         sigma1=_get_scale(m, info['sigmas'][0]),
+                         sigma2=_get_scale(m, info['sigmas'][1]))
+                self.cross_links.append(xl)
+
+    def _get_signature(self):
+        # Assume that if we have the same restraint info (linker, csv file)
+        # and the same number of links, it is the same restraint.
+        # dict is not hashable, but a tuple of its items is.
+        return ("CXMSRestraint", tuple(self._info.items()),
+                len(self.cross_links), len(self.experimental_cross_links))
+
+    def add_model_fit(self, imp_restraint, model):
+        pass  # todo
+
+
 class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
         "IMP.isd.GaussianEMRestraint": _EM3DRestraint,
+        "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
+        _NewCrossLinkRestraint,
         "IMP.em2d.PCAFitRestraint": _make_em2d_restraint,
         "IMP.saxs.Restraint": _NewSAXSRestraint}
 
@@ -450,7 +519,8 @@ class _AllRestraints(object):
         info = _parse_restraint_info(restraint.get_static_info())
         if 'type' in info and info['type'] in self._typemap:
             cif_rs = self._typemap[info['type']](restraint,
-                                                 info, self._components)
+                                                 info, self._components,
+                                                 self._system)
             try:
                 _ = iter(cif_rs)
             except TypeError:
