@@ -397,11 +397,45 @@ class _NewEM2DRestraint(ihm.restraint.EM2DRestraint):
                                             IMP.algebra.Vector3D(*t))
 
 
+def _make_saxs_restraint(imp_restraint, info, components):
+    yield _NewSAXSRestraint(imp_restraint, info, components)
+
+
+class _NewSAXSRestraint(ihm.restraint.SASRestraint):
+    def __init__(self, imp_restraint, info, components):
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
+        assembly = ihm.Assembly(
+            asyms, name="SAXS subassembly",
+            description="All components that fit the SAXS profile")
+
+        self._filename = info['filename']
+        self._asyms = tuple(asyms)
+        loc = ihm.location.InputFileLocation(
+            info['filename'], details='SAXS profile')
+        dataset = ihm.dataset.SASDataset(loc)
+        super(_NewSAXSRestraint, self).__init__(
+            dataset=dataset, assembly=assembly,
+            segment=False, fitting_method='IMP SAXS restraint',
+            fitting_atom_type=info['form factor type'],
+            multi_state=False)
+
+    def _get_signature(self):
+        return ("SAXSRestraint", self._filename, self._asyms,
+                self.segment, self.fitting_method, self.fitting_atom_type,
+                self.multi_state)
+
+    def add_model_fit(self, imp_restraint, model):
+        # We don't know the chi value; we only report a score
+        self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
+
+
 class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
         "IMP.isd.GaussianEMRestraint": _make_gaussian_em_restraint,
-        "IMP.em2d.PCAFitRestraint": _make_em2d_restraint}
+        "IMP.em2d.PCAFitRestraint": _make_em2d_restraint,
+        "IMP.saxs.Restraint": _make_saxs_restraint}
 
     def __init__(self, system, components):
         self._system = system

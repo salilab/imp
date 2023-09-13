@@ -321,6 +321,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(wr2.fits["model0"].rot_matrix), 3)
         self.assertEqual(len(wr2.fits["model0"].tr_vector), 3)
 
+    def test_all_restraints_saxs(self):
+        """Test _AllRestraints with SAXS restraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        dat_filename = self.get_input_file_name('6lyz.pdb.dat')
+        r = MockSAXSRestraint(m, dat_filename)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._NewSAXSRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
+        self.assertIsNone(wr.fits["model0"].chi_value)
+        self.assertIsNone(wr.fits["model1"].chi_value)
+
 
 if __name__ == '__main__':
     IMP.test.main()
