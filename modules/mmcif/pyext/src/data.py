@@ -117,7 +117,11 @@ class _ComponentMapper(object):
             mol = get_molecule(chain)
             asym_id = chain.get_id()
             name = mol.get_name() if mol else None
-            map_key = name or asym_id
+            # Avoid conflict between name="A" and asym_id="A"
+            if name:
+                map_key = "name", name
+            else:
+                map_key = "asym_id", asym_id
         else:
             modeled = False
             asym_id = None
