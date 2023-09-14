@@ -25,8 +25,9 @@ To experiment with IMP on [Google Colaboratory](https://colab.research.google.co
 !wget -O /etc/apt/trusted.gpg.d/salilab.asc https://salilab.org/~ben/pubkey256.asc
 !apt update
 !apt install imp
-import sys
-sys.path.append('/usr/lib/python3.8/dist-packages')
+import sys, os, glob
+sys.path.append(os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[0]))
+
 \endcode
 
 # Source code installation {#installation_source}
