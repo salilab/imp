@@ -173,10 +173,11 @@ class Convert(object):
             raise ValueError("No chains found in %s" % h)
         asyms = []
         ch = IMP.mmcif.data._CoordinateHandler(self.system, self._datasets)
-        for c in chains:
-            comp = self._add_chain(c)
+        for chain in chains:
+            ps = ch.get_structure_particles(chain)
+            comp = self._add_chain(chain, ch.get_residue_sequence(ps))
             asyms.append(comp.asym_unit)
-            ch.add_chain(c, comp.asym_unit)
+            ch.add_chain(ps, comp.asym_unit)
         representation = self._representations.add(ch._representation)
         assembly = self._model_assemblies.add(asyms)
         self._add_hierarchy_ensemble_info(h, top_h, ensemble)
@@ -267,7 +268,7 @@ class Convert(object):
         self.system.state_groups[-1].append(state)
         self._state_by_name[state.name] = state
 
-    def _add_chain(self, chain):
+    def _add_chain(self, chain, seq_from_res):
         entity = self._entities.add(chain)
         component = self._components.add(chain, entity)
         return component

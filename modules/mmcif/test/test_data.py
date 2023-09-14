@@ -5,6 +5,11 @@ import IMP.mmcif.data
 import ihm
 import os
 
+def add_attrs(r):
+    IMP.core.XYZR.setup_particle(
+        r, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+    IMP.atom.Mass.setup_particle(r, 1.0)
+
 
 class MockChain(object):
     def __init__(self, name, sequence=''):
@@ -265,7 +270,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(system.orphan_assemblies), 2)
 
     def test_coordinate_handler_get_structure_particles(self):
-        """Test CoordinateHandler._get_structure_particles()"""
+        """Test CoordinateHandler.get_structure_particles()"""
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
@@ -288,7 +293,7 @@ class Tests(IMP.test.TestCase):
         residue.add_child(atom)
         top.add_child(residue)
         ch = IMP.mmcif.data._CoordinateHandler(None, None)
-        ps = ch._get_structure_particles(top)
+        ps = ch.get_structure_particles(top)
         self.assertEqual(len(ps), 3)
         self.assertIsInstance(ps[0], IMP.atom.Residue)
         self.assertIsInstance(ps[1], IMP.atom.Atom)
@@ -300,15 +305,10 @@ class Tests(IMP.test.TestCase):
             frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(frag, 1.0)
         top.add_child(frag)
-        self.assertRaises(ValueError, ch._get_structure_particles, top)
+        self.assertRaises(ValueError, ch.get_structure_particles, top)
 
     def test_coordinate_handler_add_chain(self):
         """Test CoordinateHandler.add_chain()"""
-        def add_attrs(r):
-            IMP.core.XYZR.setup_particle(
-                r, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
-            IMP.atom.Mass.setup_particle(r, 1.0)
-
         s = ihm.System()
         ent = ihm.Entity('ACGT')
         asym = ihm.AsymUnit(ent)
@@ -346,7 +346,8 @@ class Tests(IMP.test.TestCase):
         add_attrs(frag)
         top.add_child(frag)
         ch = IMP.mmcif.data._CoordinateHandler(s, None)
-        ch.add_chain(top, asym)
+        ps = ch.get_structure_particles(top)
+        ch.add_chain(ps, asym)
         r1, r2, r3, r4 = ch._representation
         self.assertIsInstance(r1, ihm.representation.ResidueSegment)
         self.assertEqual(r1.asym_unit.seq_id_range, (1, 2))
@@ -361,6 +362,44 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(r4.asym_unit.seq_id_range, (5, 8))
         self.assertFalse(r4.rigid)
         self.assertEqual(r4.count, 2)
+
+    def test_coordinate_handler_get_residue_sequence(self):
+        """Test CoordinateHandler.get_residue_sequence()"""
+        s = ihm.System()
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        # No sequence
+        ch = IMP.mmcif.data._CoordinateHandler(s, None)
+        ps = ch.get_structure_particles(top)
+        seq_id_begin, seq = ch.get_residue_sequence(ps)
+        self.assertEqual(seq_id_begin, 1)
+        self.assertEqual(seq, [])
+        # Sequence with gaps
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, 2)
+        atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
+                                            IMP.atom.AT_CA)
+        IMP.core.XYZR.setup_particle(
+            atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))
+        residue.add_child(atom)
+        top.add_child(residue)
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.PRO, 4)
+        add_attrs(residue)
+        top.add_child(residue)
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6, 7])
+        add_attrs(frag)
+        top.add_child(frag)
+        ps = ch.get_structure_particles(top)
+        seq_id_begin, seq = ch.get_residue_sequence(ps)
+        self.assertEqual(len(seq), 6)
+        self.assertEqual(seq_id_begin, 2)
+        self.assertEqual(seq[0].id, 'ALA')
+        self.assertIsNone(seq[1])
+        self.assertEqual(seq[2].id, 'PRO')
+        self.assertIsNone(seq[3])
+        self.assertIsNone(seq[4])
+        self.assertIsNone(seq[5])
 
     def test_representations(self):
         """Test _Representations class"""

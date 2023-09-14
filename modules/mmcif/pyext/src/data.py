@@ -12,6 +12,32 @@ import ihm.protocol
 import ihm.model
 import ihm.citations
 import operator
+import inspect
+
+
+# Map from IMP ResidueType to ihm ChemComp
+_imp_to_ihm = {}
+
+
+def _fill_imp_to_ihm():
+    d = dict(x for x in inspect.getmembers(IMP.atom)
+             if isinstance(x[1], IMP.atom.ResidueType))
+    # Handle standard amino acids plus some extras like MSE, UNK
+    for comp in ihm.LPeptideAlphabet._comps.values():
+        if comp.id in d:
+            _imp_to_ihm[d[comp.id]] = comp
+    # Handle RNA and DNA
+    alpha = ihm.RNAAlphabet()
+    for code in ['ADE', 'CYT', 'GUA', 'URA']:
+        _imp_to_ihm[d[code]] = alpha[d[code].get_string()]
+    alpha = ihm.DNAAlphabet()
+    for code in ['DADE', 'DCYT', 'DGUA', 'DTHY']:
+        _imp_to_ihm[d[code]] = alpha[d[code].get_string()]
+    # Pass through missing IMP residue
+    _imp_to_ihm[None] = None
+
+
+_fill_imp_to_ihm()
 
 
 def get_molecule(h):
@@ -683,7 +709,31 @@ class _CoordinateHandler(object):
         self._atoms = []
         self._spheres = []
 
-    def add_chain(self, c, asym):
+    def get_residue_sequence(self, ps):
+        """Determine the primary sequence based on Residue particles.
+           Return the index of the first residue and the sequence, as a list
+           of ihm.ChemComp objects (or None)"""
+        restyp = {}
+        for p in ps:
+            if isinstance(p, IMP.atom.Atom):
+                residue = IMP.atom.get_residue(p)
+                restyp[residue.get_index()] = residue.get_residue_type()
+            elif isinstance(p, IMP.atom.Residue):
+                restyp[p.get_index()] = p.get_residue_type()
+            else:  # fragment
+                resinds = p.get_residue_indexes()
+                for ri in resinds:
+                    if ri not in restyp:   # don't overwrite residue/atom info
+                        restyp[ri] = None
+        if not restyp:
+            return 1, []
+        seq_id_begin = min(restyp.keys())
+        seq_id_end = max(restyp.keys())
+        return (seq_id_begin,
+                [_imp_to_ihm[restyp.get(x)]
+                 for x in range(seq_id_begin, seq_id_end + 1)])
+
+    def add_chain(self, ps, asym):
         def matches_asym(s):
             # Match AsymUnit or AsymUnitRange
             return s == asym or hasattr(s, 'asym') and s.asym == asym
@@ -694,7 +744,6 @@ class _CoordinateHandler(object):
             asym, [s for s in self._system.orphan_starting_models
                    if matches_asym(s.asym_unit)],
             self._system, self._datasets)
-        ps = self._get_structure_particles(c)
         segfactory = _RepSegmentFactory(asym)
         for p in ps:
             starting_model = smf.find(p)
@@ -735,7 +784,7 @@ class _CoordinateHandler(object):
                 asym_unit=asym, seq_id_range=(sbegin, send),
                 x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius()))
 
-    def _get_structure_particles(self, h):
+    def get_structure_particles(self, h):
         """Return particles sorted by residue index"""
         ps = []
         if h.get_number_of_children() == 0:
