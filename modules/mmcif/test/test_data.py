@@ -98,13 +98,17 @@ class Tests(IMP.test.TestCase):
         system = ihm.System()
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
+        entity2 = ihm.Entity("AC")
         chain1 = MockChain("A.1@12")
         chain2 = MockChain("A.2@12")
+        chain3 = MockChain(None)
         comp1 = cm.add(chain1, entity1)
         comp2 = cm.add(chain2, entity1)
+        comp3 = cm.add(chain3, entity2)
         self.assertEqual(chain1.name, "A.1@12")
         self.assertEqual(chain2.name, "A.2@12")
-        self.assertEqual(entity1.description, 'A')
+        self.assertIsNone(chain3.name)
+        self.assertIsNone(entity2.description)
 
     def test_component_mapper_same_id_chain(self):
         """Test ComponentMapper given two chains with same ID"""

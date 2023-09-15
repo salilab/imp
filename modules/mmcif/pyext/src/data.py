@@ -199,7 +199,9 @@ class _ComponentMapper(object):
                 self._used_entities.add(entity)
                 # Assign entity name from the component; strip out anything
                 # after a @ or .
-                entity.description = component.name.split("@")[0].split(".")[0]
+                if component.name:
+                    entity.description = \
+                        component.name.split("@")[0].split(".")[0]
             self._all_components.append(component)
             if modeled:
                 asym = ihm.AsymUnit(entity, name, id=asym_id)
