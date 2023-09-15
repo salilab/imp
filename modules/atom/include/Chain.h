@@ -141,13 +141,13 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
 
   //! The key used to store the chain
-  static StringKey get_id_key();
+  static SparseStringKey get_id_key();
 
   //! The key used to store the primary sequence
-  static StringKey get_sequence_key();
+  static SparseStringKey get_sequence_key();
 
   //! The key used to store the polymer type
-  static IntKey get_chain_type_key();
+  static SparseIntKey get_chain_type_key();
 };
 
 IMP_DECORATORS(Chain, Chains, Hierarchies);

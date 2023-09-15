@@ -25,18 +25,18 @@ const ChainType Protein(LPolypeptide);
 const ChainType DNA(Polydeoxyribonucleotide);
 const ChainType RNA(Polyribonucleotide);
 
-StringKey Chain::get_id_key() {
-  static StringKey k("chain");
+SparseStringKey Chain::get_id_key() {
+  static SparseStringKey k("chain");
   return k;
 }
 
-StringKey Chain::get_sequence_key() {
-  static StringKey k("sequence");
+SparseStringKey Chain::get_sequence_key() {
+  static SparseStringKey k("sequence");
   return k;
 }
 
-IntKey Chain::get_chain_type_key() {
-  static IntKey k("chain_type");
+SparseIntKey Chain::get_chain_type_key() {
+  static SparseIntKey k("chain_type");
   return k;
 }
 
