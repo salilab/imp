@@ -222,7 +222,7 @@ class Convert(object):
                         raise ValueError("Cannot handle sel tuple")
                     asym = self._parse_sel_tuple(sel_tuple[0])
                     # Path is relative to that of the JSON file
-                    # With Python 2, covert mrc from unicode to str
+                    # With Python 2, convert mrc from unicode to str
                     full_mrc = IMP.get_relative_path(json_fname, str(mrc))
                     density = ihm.model.LocalizationDensity(
                         file=ihm.location.OutputFileLocation(
