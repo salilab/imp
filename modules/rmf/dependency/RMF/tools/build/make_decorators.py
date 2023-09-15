@@ -177,6 +177,7 @@ chain = Decorator(["REPRESENTATION"], "sequence",
                   "Chain",
                   [Attribute("chain id", "String"),
                    Attribute("sequence", "String", default=""),
+                   Attribute("sequence offset", "Int", default=0),
                    Attribute("chain type", "String",
                              default='UnknownChainType')])
 

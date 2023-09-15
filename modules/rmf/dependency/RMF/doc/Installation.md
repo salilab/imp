@@ -14,6 +14,10 @@ or on a Mac with [Homebrew](https://brew.sh/), install with
 
     brew tap salilab/salilab; brew install rmf
 
+or on a Fedora or RedHat Enterprise Linux system, install with
+
+    dnf copr enable salilab/salilab; dnf install RMF
+
 IMP: Download an IMP binary (which includes RMF) from the
 [IMP download page](https://integrativemodeling.org/download.html).
 
