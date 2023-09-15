@@ -12,11 +12,14 @@ def add_attrs(r):
 
 
 class MockChain(object):
-    def __init__(self, name, sequence=''):
+    def __init__(self, name, sequence='', chain_type=IMP.atom.Protein):
         self.name = name
         self.sequence = sequence
+        self.chain_type = chain_type
     def get_sequence(self):
         return self.sequence
+    def get_chain_type(self):
+        return self.chain_type
 
 class Tests(IMP.test.TestCase):
     def test_get_molecule(self):
@@ -61,19 +64,23 @@ class Tests(IMP.test.TestCase):
         system = ihm.System()
         e = IMP.mmcif.data._EntityMapper(system)
         self.assertEqual(len(e.get_all()), 0)
-        chain1 = MockChain("A", sequence='ANC')
-        chain2 = MockChain("B", sequence='ANC')
+        chain1 = MockChain("A", sequence='ACC')
+        chain2 = MockChain("B", sequence='ACC')
         e.add(chain1)
         e.add(chain2)
         # Identical sequences, so only one entity
         self.assertEqual(len(e.get_all()), 1)
         # Different sequences, so two entities
-        chain3 = MockChain("C", sequence='ANCD')
+        chain3 = MockChain("C", sequence='ACCD')
         e.add(chain3)
         self.assertEqual(len(e.get_all()), 2)
+        # Same primary sequence but different chain type, so separate entity
+        chain4 = MockChain("D", sequence='ACC', chain_type=IMP.atom.DNA)
+        e.add(chain4)
+        self.assertEqual(len(e.get_all()), 3)
         # Cannot add chains with no sequence
-        chain4 = MockChain("D", sequence='')
-        self.assertRaises(ValueError, e.add, chain4)
+        chain5 = MockChain("E", sequence='')
+        self.assertRaises(ValueError, e.add, chain5)
 
     def test_entity_naming(self):
         """Test naming of Entities"""

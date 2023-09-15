@@ -35,6 +35,7 @@ class Tests(IMP.test.TestCase):
             h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             chain = IMP.atom.Chain.setup_particle(h, cid)
             chain.set_sequence(seq)
+            chain.set_chain_type(IMP.atom.Protein)
             mol.add_child(chain)
 
     def add_protocol(self, m, top, sampcon=False):
@@ -117,6 +118,25 @@ class Tests(IMP.test.TestCase):
         self.assertIsNone(state.name)
         # Single ensemble
         self.assertEqual(len(c.system.ensembles), 1)
+
+    def test_dna_rna(self):
+        """Test reading a hierarchy containing DNA or RNA nodes"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.add_chains(m, top,
+                        chains = (('foo', 'ACG', 'X'), ('baz', 'ACG', 'Y')))
+        chain0 = top.get_child(0).get_child(0)
+        self.assertTrue(IMP.atom.Chain.get_is_setup(chain0))
+        IMP.atom.Chain(chain0).set_chain_type(IMP.atom.RNA)
+        chain1 = top.get_child(1).get_child(0)
+        self.assertTrue(IMP.atom.Chain.get_is_setup(chain1))
+        IMP.atom.Chain(chain1).set_chain_type(IMP.atom.DNA)
+        c = IMP.mmcif.Convert()
+        c.add_model([top], [])
+        self.assertIsInstance(c.system.entities[0].sequence[0],
+                              ihm.RNAChemComp)
+        self.assertIsInstance(c.system.entities[1].sequence[0],
+                              ihm.DNAChemComp)
 
     def test_duplicate_chain_ids(self):
         """Test handling of duplicate chain IDs"""

@@ -71,6 +71,13 @@ def _get_all_state_provenance(state_h, top_h, types):
             yield p
 
 
+class _CustomDNAAlphabet(ihm.Alphabet):
+    """Custom DNA alphabet that maps A,C,G,T (rather than DA,DC,DG,DT
+       as in python-ihm)"""
+    _comps = dict([cc.code_canonical, cc]
+                  for cc in ihm.DNAAlphabet._comps.values())
+
+
 class _EntityMapper(dict):
     """Handle mapping from IMP chains to CIF entities.
        Multiple components may map to the same entity if they
@@ -80,12 +87,20 @@ class _EntityMapper(dict):
         super(_EntityMapper, self).__init__()
         self._sequence_dict = {}
         self._entities = []
+        self._alphabet_map = {
+            IMP.atom.UnknownChainType: ihm.LPeptideAlphabet,
+            IMP.atom.Protein: ihm.LPeptideAlphabet,
+            IMP.atom.RNA: ihm.RNAAlphabet,
+            IMP.atom.DNA: _CustomDNAAlphabet}
 
     def add(self, chain):
-        # todo: handle non-protein sequences
         sequence = chain.get_sequence()
         if sequence == '':
             raise ValueError("Chain %s has no sequence" % chain)
+        else:
+            # Map one-letter codes to ihm.ChemComp
+            alphabet = self._alphabet_map[chain.get_chain_type()]()
+            sequence = tuple(alphabet[x] for x in sequence)
         if sequence not in self._sequence_dict:
             entity = ihm.Entity(sequence)
             self.system.entities.append(entity)
