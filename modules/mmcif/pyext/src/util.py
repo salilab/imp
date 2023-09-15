@@ -269,8 +269,8 @@ class Convert(object):
         self._state_by_name[state.name] = state
 
     def _add_chain(self, chain, seq_from_res):
-        entity = self._entities.add(chain, seq_from_res)
-        component = self._components.add(chain, entity)
+        entity, offset = self._entities.add(chain, seq_from_res)
+        component = self._components.add(chain, entity, offset)
         return component
 
     def add_rmf(self, filename, name=None, frame=0, states=None,

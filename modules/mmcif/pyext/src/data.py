@@ -95,7 +95,6 @@ class _EntityMapper(dict):
 
     def _get_sequence_from_residues(self, chain, seq_from_res):
         seq_id_begin, seq = seq_from_res
-        # todo: handle seq_id_begin != 1
         if not seq:
             raise ValueError("Chain %s has no sequence and no residues"
                              % chain)
@@ -107,14 +106,15 @@ class _EntityMapper(dict):
                 "sequence from Residues, but the following residue indices "
                 "have no residue type (perhaps covered only by Fragments): %s"
                 % (chain, str(missing_seq)))
-        return tuple(seq)
+        return seq_id_begin - 1, tuple(seq)
 
     def add(self, chain, seq_from_res=None):
         sequence = chain.get_sequence()
+        offset = chain.get_sequence_offset()
         if sequence == '':
             if seq_from_res is not None:
-                sequence = self._get_sequence_from_residues(chain,
-                                                            seq_from_res)
+                offset, sequence = self._get_sequence_from_residues(
+                    chain, seq_from_res)
             else:
                 raise ValueError("Chain %s has no sequence" % chain)
         else:
@@ -127,7 +127,7 @@ class _EntityMapper(dict):
             self._entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[chain] = self._sequence_dict[sequence]
-        return self[chain]
+        return self[chain], offset
 
     def get_all(self):
         """Yield all entities"""
@@ -189,7 +189,7 @@ class _ComponentMapper(object):
             name = map_key = chain.name
         return modeled, asym_id, map_key, name
 
-    def add(self, chain, entity):
+    def add(self, chain, entity, offset):
         """Add a chain (either an IMP Chain object for a modeled component,
            or a NonModeledChain object for a non-modeled component)"""
         modeled, asym_id, map_key, name = self._handle_chain(chain)
@@ -203,8 +203,13 @@ class _ComponentMapper(object):
                     entity.description = \
                         component.name.split("@")[0].split(".")[0]
             self._all_components.append(component)
+            if offset != 0:
+                raise ValueError(
+                    "Non-zero chain sequence offsets are not "
+                    "currently handled")
             if modeled:
-                asym = ihm.AsymUnit(entity, name, id=asym_id)
+                asym = ihm.AsymUnit(entity, name, id=asym_id,
+                                    auth_seq_id_map=offset)
                 self.system.asym_units.append(asym)
                 component.asym_unit = asym
                 self._all_modeled_components.append(component)

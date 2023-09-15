@@ -12,12 +12,16 @@ def add_attrs(r):
 
 
 class MockChain(object):
-    def __init__(self, name, sequence='', chain_type=IMP.atom.Protein):
+    def __init__(self, name, sequence='', chain_type=IMP.atom.Protein,
+                 offset=0):
         self.name = name
         self.sequence = sequence
         self.chain_type = chain_type
+        self.offset = offset
     def get_sequence(self):
         return self.sequence
+    def get_sequence_offset(self):
+        return self.offset
     def get_chain_type(self):
         return self.chain_type
 
@@ -102,9 +106,9 @@ class Tests(IMP.test.TestCase):
         chain1 = MockChain("A.1@12")
         chain2 = MockChain("A.2@12")
         chain3 = MockChain(None)
-        comp1 = cm.add(chain1, entity1)
-        comp2 = cm.add(chain2, entity1)
-        comp3 = cm.add(chain3, entity2)
+        comp1 = cm.add(chain1, entity1, 0)
+        comp2 = cm.add(chain2, entity1, 0)
+        comp3 = cm.add(chain3, entity2, 0)
         self.assertEqual(chain1.name, "A.1@12")
         self.assertEqual(chain2.name, "A.2@12")
         self.assertIsNone(chain3.name)
@@ -118,10 +122,19 @@ class Tests(IMP.test.TestCase):
         entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
         chain2 = MockChain("A")
-        comp1 = cm.add(chain1, entity1)
+        comp1 = cm.add(chain1, entity1, 0)
         self.assertEqual(cm[chain1], comp1)
         # Cannot add two chains with the same ID but different sequences
-        self.assertRaises(ValueError, cm.add, chain2, entity2)
+        self.assertRaises(ValueError, cm.add, chain2, entity2, 0)
+
+    def test_component_mapper_non_zero_offset(self):
+        """Test ComponentMapper given non-zero sequence offset"""
+        system = ihm.System()
+        cm = IMP.mmcif.data._ComponentMapper(system)
+        entity1 = ihm.Entity("ANC")
+        chain1 = MockChain("A")
+        # Non-zero offsets are not currently handled
+        self.assertRaises(ValueError, cm.add, chain1, entity1, 100)
 
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
@@ -131,8 +144,8 @@ class Tests(IMP.test.TestCase):
         entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
         chain2 = MockChain("B")
-        comp1 = cm.add(chain1, entity1)
-        comp2 = cm.add(chain2, entity2)
+        comp1 = cm.add(chain1, entity1, 0)
+        comp2 = cm.add(chain2, entity2, 0)
         allc = cm.get_all()
         self.assertEqual(allc, [comp1, comp2])
         self.assertEqual(cm.get_all_modeled(), [])
