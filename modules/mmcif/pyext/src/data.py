@@ -254,7 +254,7 @@ class _RepSegmentFactory(object):
         elif (type(particle) == type(self.particles[0])  # noqa: E721
               and is_res == self.is_res
               and is_atom == self.is_atom
-              and resrange[0] == self.residue_range[1] + 1
+              and resrange[0] <= self.residue_range[1] + 1
               and starting_model == self.starting_model
               and self._same_rigid_body(rigid_body)):
             # Continue an existing segment

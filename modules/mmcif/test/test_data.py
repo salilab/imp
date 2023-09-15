@@ -354,11 +354,11 @@ class Tests(IMP.test.TestCase):
         # One residue with atomic representation
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                   IMP.atom.ALA, 4)
-        atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
-                                            IMP.atom.AT_CA)
-        IMP.core.XYZR.setup_particle(
-            atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
-        residue.add_child(atom)
+        for att in (IMP.atom.AT_CA, IMP.atom.AT_O):
+            atom = IMP.atom.Atom.setup_particle(IMP.Particle(m), att)
+            IMP.core.XYZR.setup_particle(
+                atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+            residue.add_child(atom)
         top.add_child(residue)
         # Two beads each spanning two residues
         frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6])
