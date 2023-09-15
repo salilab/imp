@@ -159,40 +159,32 @@ class _Component(object):
 
 
 class _ComponentMapper(object):
-    """Handle mapping from chains to CIF components."""
+    """Handle mapping from IMP Chains to CIF AsymUnits."""
     def __init__(self, system):
         super(_ComponentMapper, self).__init__()
         self.system = system
         self._used_entities = set()
         self._all_components = []
-        self._all_modeled_components = []
         self._map = {}
 
     def __getitem__(self, chain):
-        modeled, asym_id, map_key, name = self._handle_chain(chain)
+        asym_id, map_key, name = self._handle_chain(chain)
         return self._map[map_key]
 
     def _handle_chain(self, chain):
-        if isinstance(chain, IMP.atom.Chain):
-            modeled = True
-            mol = get_molecule(chain)
-            asym_id = chain.get_id()
-            name = mol.get_name() if mol else None
-            # Avoid conflict between name="A" and asym_id="A"
-            if name:
-                map_key = "name", name
-            else:
-                map_key = "asym_id", asym_id
+        mol = get_molecule(chain)
+        asym_id = chain.get_id()
+        name = mol.get_name() if mol else None
+        # Avoid conflict between name="A" and asym_id="A"
+        if name:
+            map_key = "name", name
         else:
-            modeled = False
-            asym_id = None
-            name = map_key = chain.name
-        return modeled, asym_id, map_key, name
+            map_key = "asym_id", asym_id
+        return asym_id, map_key, name
 
     def add(self, chain, entity, offset):
-        """Add a chain (either an IMP Chain object for a modeled component,
-           or a NonModeledChain object for a non-modeled component)"""
-        modeled, asym_id, map_key, name = self._handle_chain(chain)
+        """Add a chain (an IMP Chain object)"""
+        asym_id, map_key, name = self._handle_chain(chain)
         if map_key not in self._map:
             component = _Component(entity, asym_id, name)
             if entity not in self._used_entities:
@@ -207,28 +199,22 @@ class _ComponentMapper(object):
                 raise ValueError(
                     "Non-zero chain sequence offsets are not "
                     "currently handled")
-            if modeled:
-                asym = ihm.AsymUnit(entity, name, id=asym_id,
-                                    auth_seq_id_map=offset)
-                self.system.asym_units.append(asym)
-                component.asym_unit = asym
-                self._all_modeled_components.append(component)
+            asym = ihm.AsymUnit(entity, name, id=asym_id,
+                                auth_seq_id_map=offset)
+            self.system.asym_units.append(asym)
+            component.asym_unit = asym
             self._map[map_key] = component
         else:
             component = self._map[map_key]
             if component.entity != entity:
                 raise ValueError("Two chains have the same ID (%s) but "
                                  "different sequences - rename one of the "
-                                 "chains" % map_key)
+                                 "chains" % component.asym_unit.id)
         return component
 
     def get_all(self):
         """Get all components"""
         return self._all_components
-
-    def get_all_modeled(self):
-        """Get all modeled components"""
-        return self._all_modeled_components
 
 
 class _RepSegmentFactory(object):

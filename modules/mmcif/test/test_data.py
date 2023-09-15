@@ -11,19 +11,18 @@ def add_attrs(r):
     IMP.atom.Mass.setup_particle(r, 1.0)
 
 
-class MockChain(object):
-    def __init__(self, name, sequence='', chain_type=IMP.atom.Protein,
-                 offset=0):
-        self.name = name
-        self.sequence = sequence
-        self.chain_type = chain_type
-        self.offset = offset
-    def get_sequence(self):
-        return self.sequence
-    def get_sequence_offset(self):
-        return self.offset
-    def get_chain_type(self):
-        return self.chain_type
+def make_chain(m, chain_id, name, sequence='',
+               chain_type=IMP.atom.Protein, offset=0):
+    p = IMP.Particle(m)
+    p.set_name(name)
+    h = IMP.atom.Hierarchy.setup_particle(p)
+    chain = IMP.atom.Chain.setup_particle(p, chain_id)
+    chain.set_sequence(sequence)
+    chain.set_sequence_offset(offset)
+    chain.set_chain_type(chain_type)
+    molecule = IMP.atom.Molecule.setup_particle(p)
+    return chain
+
 
 class Tests(IMP.test.TestCase):
     def test_get_molecule(self):
@@ -65,25 +64,27 @@ class Tests(IMP.test.TestCase):
 
     def test_entity_mapper_add(self):
         """Test EntityMapper.add()"""
+        m = IMP.Model()
         system = ihm.System()
         e = IMP.mmcif.data._EntityMapper(system)
         self.assertEqual(len(e.get_all()), 0)
-        chain1 = MockChain("A", sequence='ACC')
-        chain2 = MockChain("B", sequence='ACC')
+        chain1 = make_chain(m, "A", "A", sequence='ACC')
+        chain2 = make_chain(m, "B", "B", sequence='ACC')
         e.add(chain1)
         e.add(chain2)
         # Identical sequences, so only one entity
         self.assertEqual(len(e.get_all()), 1)
         # Different sequences, so two entities
-        chain3 = MockChain("C", sequence='ACCD')
+        chain3 = make_chain(m, "C", "C", sequence='ACCD')
         e.add(chain3)
         self.assertEqual(len(e.get_all()), 2)
         # Same primary sequence but different chain type, so separate entity
-        chain4 = MockChain("D", sequence='ACC', chain_type=IMP.atom.DNA)
+        chain4 = make_chain(m, "D", "D", sequence='ACC',
+                            chain_type=IMP.atom.DNA)
         e.add(chain4)
         self.assertEqual(len(e.get_all()), 3)
         # Cannot add chains with no sequence
-        chain5 = MockChain("E", sequence='')
+        chain5 = make_chain(m, "E", "E", sequence='')
         self.assertRaises(ValueError, e.add, chain5)
         # Chain with no declared sequence, but we have from-residue sequence
         alpha = ihm.LPeptideAlphabet()
@@ -99,29 +100,35 @@ class Tests(IMP.test.TestCase):
 
     def test_entity_naming(self):
         """Test naming of Entities"""
+        m = IMP.Model()
         system = ihm.System()
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         entity2 = ihm.Entity("AC")
-        chain1 = MockChain("A.1@12")
-        chain2 = MockChain("A.2@12")
-        chain3 = MockChain(None)
+        chain1 = make_chain(m, "A", "A.1@12")
+        chain2 = make_chain(m, "B", "A.2@12")
+        chain3 = make_chain(m, "C", "")
         comp1 = cm.add(chain1, entity1, 0)
         comp2 = cm.add(chain2, entity1, 0)
         comp3 = cm.add(chain3, entity2, 0)
-        self.assertEqual(chain1.name, "A.1@12")
-        self.assertEqual(chain2.name, "A.2@12")
-        self.assertIsNone(chain3.name)
+        self.assertEqual(chain1.get_name(), "A.1@12")
+        self.assertEqual(chain2.get_name(), "A.2@12")
+        self.assertEqual(chain3.get_name(), "")
+        # AsymUnits and Entities should be named from the molecules
+        self.assertEqual([x.details for x in system.asym_units],
+                         ['A.1@12', 'A.2@12', ''])
+        self.assertEqual(entity1.description, 'A')
         self.assertIsNone(entity2.description)
 
     def test_component_mapper_same_id_chain(self):
         """Test ComponentMapper given two chains with same ID"""
+        m = IMP.Model()
         system = ihm.System()
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         entity2 = ihm.Entity("DEF")
-        chain1 = MockChain("A")
-        chain2 = MockChain("A")
+        chain1 = make_chain(m, "A", "A")
+        chain2 = make_chain(m, "A", "A")
         comp1 = cm.add(chain1, entity1, 0)
         self.assertEqual(cm[chain1], comp1)
         # Cannot add two chains with the same ID but different sequences
@@ -129,26 +136,27 @@ class Tests(IMP.test.TestCase):
 
     def test_component_mapper_non_zero_offset(self):
         """Test ComponentMapper given non-zero sequence offset"""
+        m = IMP.Model()
         system = ihm.System()
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
-        chain1 = MockChain("A")
+        chain1 = make_chain(m, "A", "A")
         # Non-zero offsets are not currently handled
         self.assertRaises(ValueError, cm.add, chain1, entity1, 100)
 
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
+        m = IMP.Model()
         system = ihm.System()
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         entity2 = ihm.Entity("DEF")
-        chain1 = MockChain("A")
-        chain2 = MockChain("B")
+        chain1 = make_chain(m, "A", "A")
+        chain2 = make_chain(m, "B", "B")
         comp1 = cm.add(chain1, entity1, 0)
         comp2 = cm.add(chain2, entity2, 0)
         allc = cm.get_all()
         self.assertEqual(allc, [comp1, comp2])
-        self.assertEqual(cm.get_all_modeled(), [])
 
     def test_representation_same_rigid_body(self):
         """Test RepSegmentFactory._same_rigid_body()"""
