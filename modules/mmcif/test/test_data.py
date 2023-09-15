@@ -81,6 +81,17 @@ class Tests(IMP.test.TestCase):
         # Cannot add chains with no sequence
         chain5 = MockChain("E", sequence='')
         self.assertRaises(ValueError, e.add, chain5)
+        # Chain with no declared sequence, but we have from-residue sequence
+        alpha = ihm.LPeptideAlphabet()
+        e.add(chain5, seq_from_res=(1, (alpha['C'], alpha['G'])))
+        # List should work as well as tuple
+        e.add(chain5, seq_from_res=(1, [alpha['C'], alpha['G']]))
+        # Will not work if from-residue sequence is also empty
+        self.assertRaises(ValueError, e.add, chain5, seq_from_res=(1, ()))
+        # Also no good if the from-residue sequence has gaps
+        self.assertRaises(ValueError, e.add, chain5,
+                          seq_from_res=(1, (alpha['C'], None,
+                                            alpha['G'], None)))
 
     def test_entity_naming(self):
         """Test naming of Entities"""

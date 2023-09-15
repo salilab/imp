@@ -93,10 +93,30 @@ class _EntityMapper(dict):
             IMP.atom.RNA: ihm.RNAAlphabet,
             IMP.atom.DNA: _CustomDNAAlphabet}
 
-    def add(self, chain):
+    def _get_sequence_from_residues(self, chain, seq_from_res):
+        seq_id_begin, seq = seq_from_res
+        # todo: handle seq_id_begin != 1
+        if not seq:
+            raise ValueError("Chain %s has no sequence and no residues"
+                             % chain)
+        missing_seq = [ind + seq_id_begin
+                       for (ind, res) in enumerate(seq) if res is None]
+        if missing_seq:
+            raise ValueError(
+                "Chain %s has no declared sequence; tried to determine the "
+                "sequence from Residues, but the following residue indices "
+                "have no residue type (perhaps covered only by Fragments): %s"
+                % (chain, str(missing_seq)))
+        return tuple(seq)
+
+    def add(self, chain, seq_from_res=None):
         sequence = chain.get_sequence()
         if sequence == '':
-            raise ValueError("Chain %s has no sequence" % chain)
+            if seq_from_res is not None:
+                sequence = self._get_sequence_from_residues(chain,
+                                                            seq_from_res)
+            else:
+                raise ValueError("Chain %s has no sequence" % chain)
         else:
             # Map one-letter codes to ihm.ChemComp
             alphabet = self._alphabet_map[chain.get_chain_type()]()
