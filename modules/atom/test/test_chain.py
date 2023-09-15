@@ -37,6 +37,7 @@ class Tests(IMP.test.TestCase):
                   IMP.atom.Polyribonucleotide,
                   IMP.atom.DPolysaccharide,
                   IMP.atom.LPolysaccharide]:
+            self.assertIsInstance(t, IMP.atom.ChainType)
             c.set_chain_type(t)
             ttest=c.get_chain_type()
             self.assertEqual(ttest,t)
