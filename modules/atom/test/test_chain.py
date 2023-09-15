@@ -19,8 +19,11 @@ class Tests(IMP.test.TestCase):
         c.set_id("B")
         self.assertEqual(c.get_id(), "B")
         self.assertEqual(c.get_sequence(), "")
+        self.assertEqual(c.get_sequence_offset(), 0)
         c.set_sequence("CCY")
+        c.set_sequence_offset(10)
         self.assertEqual(c.get_sequence(), "CCY")
+        self.assertEqual(c.get_sequence_offset(), 10)
 
     def test_chain_type(self):
         """Test Chain type"""

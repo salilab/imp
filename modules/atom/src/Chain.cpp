@@ -35,6 +35,11 @@ SparseStringKey Chain::get_sequence_key() {
   return k;
 }
 
+SparseIntKey Chain::get_sequence_offset_key() {
+  static SparseIntKey k("sequence offset");
+  return k;
+}
+
 SparseIntKey Chain::get_chain_type_key() {
   static SparseIntKey k("chain_type");
   return k;
