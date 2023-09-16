@@ -428,21 +428,24 @@ class Tests(IMP.test.TestCase):
         self.add_chains(m, top)
         c = IMP.mmcif.Convert()
         chain0 = top.get_child(0).get_child(0)
+        self.assertTrue(IMP.atom.Chain.get_is_setup(chain0))
+        # Test that IMP residue numbering (11-14) maps to IHM (1-4)
+        IMP.atom.Chain(chain0).set_sequence_offset(10)
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 1)
+                                                  IMP.atom.ALA, 11)
         IMP.core.XYZR.setup_particle(
             residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(residue, 1.0)
         chain0.add_child(residue)
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.HIS, 2)
+                                                  IMP.atom.HIS, 12)
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m),
                                             IMP.atom.AT_CA)
         IMP.core.XYZR.setup_particle(
             atom, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5, 6, 7), 8))
         residue.add_child(atom)
         chain0.add_child(residue)
-        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [13, 14])
         chain0.add_child(frag)
         IMP.core.XYZR.setup_particle(
             frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(9, 10, 11), 12))

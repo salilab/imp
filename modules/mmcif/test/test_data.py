@@ -141,8 +141,9 @@ class Tests(IMP.test.TestCase):
         cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         chain1 = make_chain(m, "A", "A")
-        # Non-zero offsets are not currently handled
-        self.assertRaises(ValueError, cm.add, chain1, entity1, 100)
+        cm.add(chain1, entity1, 100)
+        # Cannot add the same chain but with a different offset
+        self.assertRaises(ValueError, cm.add, chain1, entity1, 200)
 
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
@@ -160,13 +161,17 @@ class Tests(IMP.test.TestCase):
 
     def test_representation_same_rigid_body(self):
         """Test RepSegmentFactory._same_rigid_body()"""
+        class MockComp(object):
+            auth_seq_id_map = 0
+
         m = IMP.Model()
         xyz1 = IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                            IMP.algebra.Vector3D(1,1,1))
         xyz2 = IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                            IMP.algebra.Vector3D(2,2,2))
         rigid1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [xyz1])
-        r = IMP.mmcif.data._RepSegmentFactory('mockcomp')
+        mockcomp = MockComp()
+        r = IMP.mmcif.data._RepSegmentFactory(mockcomp)
         r.rigid_body = None
         self.assertTrue(r._same_rigid_body(None))
         self.assertFalse(r._same_rigid_body(rigid1))
@@ -354,27 +359,28 @@ class Tests(IMP.test.TestCase):
         """Test CoordinateHandler.add_chain()"""
         s = ihm.System()
         ent = ihm.Entity('ACGT')
-        asym = ihm.AsymUnit(ent)
+        # Check that IMP residue numbering (11-18) maps to IHM (1-8)
+        asym = ihm.AsymUnit(ent, auth_seq_id_map=10)
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         # Two flexible residues
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 1)
+                                                  IMP.atom.ALA, 11)
         add_attrs(residue)
         top.add_child(residue)
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 2)
+                                                  IMP.atom.ALA, 12)
         add_attrs(residue)
         top.add_child(residue)
         # One rigid residue
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 3)
+                                                  IMP.atom.ALA, 13)
         add_attrs(residue)
         rigid1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [residue])
         top.add_child(residue)
         # One residue with atomic representation
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                                  IMP.atom.ALA, 4)
+                                                  IMP.atom.ALA, 14)
         for att in (IMP.atom.AT_CA, IMP.atom.AT_O):
             atom = IMP.atom.Atom.setup_particle(IMP.Particle(m), att)
             IMP.core.XYZR.setup_particle(
@@ -382,10 +388,10 @@ class Tests(IMP.test.TestCase):
             residue.add_child(atom)
         top.add_child(residue)
         # Two beads each spanning two residues
-        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6])
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [15, 16])
         add_attrs(frag)
         top.add_child(frag)
-        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [7, 8])
+        frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [17, 18])
         add_attrs(frag)
         top.add_child(frag)
         ch = IMP.mmcif.data._CoordinateHandler(s, None)

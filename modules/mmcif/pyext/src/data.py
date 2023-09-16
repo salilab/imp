@@ -195,10 +195,6 @@ class _ComponentMapper(object):
                     entity.description = \
                         component.name.split("@")[0].split(".")[0]
             self._all_components.append(component)
-            if offset != 0:
-                raise ValueError(
-                    "Non-zero chain sequence offsets are not "
-                    "currently handled")
             asym = ihm.AsymUnit(entity, name, id=asym_id,
                                 auth_seq_id_map=offset)
             self.system.asym_units.append(asym)
@@ -210,6 +206,12 @@ class _ComponentMapper(object):
                 raise ValueError("Two chains have the same ID (%s) but "
                                  "different sequences - rename one of the "
                                  "chains" % component.asym_unit.id)
+            if component.asym_unit.auth_seq_id_map != offset:
+                raise ValueError(
+                    "Two chains have the same ID (%s) but different offsets "
+                    "(%d, %d) - this is not supported"
+                    % (component.asym_unit.id,
+                       component.asym_unit.auth_seq_id_map, offset))
         return component
 
     def get_all(self):
@@ -222,8 +224,10 @@ class _RepSegmentFactory(object):
        particles with the same representation"""
     def __init__(self, asym):
         self.asym = asym
+        # Offset from IHM to IMP numbering
+        self.offset = asym.auth_seq_id_map
         self.particles = []
-        self.residue_range = ()  # inclusive range
+        self.imp_residue_range = ()  # inclusive range, using IMP numbering
 
     def add(self, particle, starting_model):
         """Add a new particle to the last segment (and return None).
@@ -234,7 +238,7 @@ class _RepSegmentFactory(object):
 
         def start_new_segment():
             self.particles = [particle]
-            self.residue_range = resrange
+            self.imp_residue_range = resrange
             self.rigid_body = rigid_body
             self.is_res = is_res
             self.is_atom = is_atom
@@ -245,12 +249,12 @@ class _RepSegmentFactory(object):
         elif (type(particle) == type(self.particles[0])  # noqa: E721
               and is_res == self.is_res
               and is_atom == self.is_atom
-              and resrange[0] <= self.residue_range[1] + 1
+              and resrange[0] <= self.imp_residue_range[1] + 1
               and starting_model == self.starting_model
               and self._same_rigid_body(rigid_body)):
             # Continue an existing segment
             self.particles.append(particle)
-            self.residue_range = (self.residue_range[0], resrange[1])
+            self.imp_residue_range = (self.imp_residue_range[0], resrange[1])
         else:
             # Make a new segment
             seg = self.get_last()
@@ -260,7 +264,9 @@ class _RepSegmentFactory(object):
     def get_last(self):
         """Return the last segment, or None"""
         if self.particles:
-            asym = self.asym(*self.residue_range)
+            # Convert residue_range from IMP to IHM
+            asym = self.asym(self.imp_residue_range[0] - self.offset,
+                             self.imp_residue_range[1] - self.offset)
             if self.is_atom:
                 return ihm.representation.AtomicSegment(
                         asym_unit=asym, rigid=self.rigid_body is not None,
@@ -773,17 +779,18 @@ class _CoordinateHandler(object):
                    if matches_asym(s.asym_unit)],
             self._system, self._datasets)
         segfactory = _RepSegmentFactory(asym)
+        offset = asym.auth_seq_id_map
         for p in ps:
             starting_model = smf.find(p)
             seg = segfactory.add(p, starting_model)
             if seg:
                 self._representation.append(seg)
-            self._add_atom_or_sphere(p, asym)
+            self._add_atom_or_sphere(p, asym, offset)
         last = segfactory.get_last()
         if last:
             self._representation.append(last)
 
-    def _add_atom_or_sphere(self, p, asym):
+    def _add_atom_or_sphere(self, p, asym, offset):
         if isinstance(p, IMP.atom.Atom):
             residue = IMP.atom.get_residue(p)
             xyz = IMP.core.XYZ(p).get_coordinates()
@@ -794,7 +801,7 @@ class _CoordinateHandler(object):
             if het:
                 atom_name = atom_name[4:]
             self._atoms.append(ihm.model.Atom(
-                asym_unit=asym, seq_id=residue.get_index(),
+                asym_unit=asym, seq_id=residue.get_index() - offset,
                 atom_id=atom_name, type_symbol=element,
                 x=xyz[0], y=xyz[1], z=xyz[2], het=het,
                 biso=p.get_temperature_factor(),
@@ -809,7 +816,7 @@ class _CoordinateHandler(object):
             xyzr = IMP.core.XYZR(p)
             xyz = xyzr.get_coordinates()
             self._spheres.append(ihm.model.Sphere(
-                asym_unit=asym, seq_id_range=(sbegin, send),
+                asym_unit=asym, seq_id_range=(sbegin - offset, send - offset),
                 x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius()))
 
     def get_structure_particles(self, h):
