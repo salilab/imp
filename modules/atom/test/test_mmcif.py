@@ -147,6 +147,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(residues), 4)
         self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
                          [279, 301, 302, 303])
+        # Make sure that ligand names are not restricted to 3 characters
+        self.assertEqual([IMP.atom.Residue(x).get_residue_type().get_string()
+                          for x in residues],
+                         ['LYS', 'CA', '7ZTVU', '7ZTVU'])
 
     def test_multiple_ligands_no_auth(self):
         """Check handling of multiple ligands with no author-provided info"""
@@ -166,6 +170,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(residues), 4)
         self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
                          [261, 1, 1, 1])
+        # Make sure that ligand names are not restricted to 3 characters
+        self.assertEqual([IMP.atom.Residue(x).get_residue_type().get_string()
+                          for x in residues],
+                         ['LYS', 'CA', '7ZTVU', '7ZTVU'])
 
 
 if __name__ == '__main__':
