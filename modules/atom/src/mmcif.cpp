@@ -83,6 +83,8 @@ class AtomSiteCategory : public Category {
   Hierarchies *hiers_;
   std::string curr_chain_;
   int curr_seq_id_;
+  std::string curr_auth_seq_id_str_;
+  std::string curr_label_asym_id_;
   int curr_auth_seq_id_;
   int curr_model_num_;
   std::string curr_residue_icode_;
@@ -127,6 +129,8 @@ public:
     curr_chain_ = "";
     curr_seq_id_ = 0;
     curr_auth_seq_id_ = 0;
+    curr_auth_seq_id_str_ = "";
+    curr_label_asym_id_ = "";
     curr_residue_icode_ = "";
     curr_model_num_ = 0;
     hetatm_ = "HETATM";
@@ -237,19 +241,24 @@ public:
     std::string residue_icode = ins_code_.as_str();
 
     // Use author-provided chain ID if available
+    std::string label_asym_id = chain_.as_str();
     if (strlen(auth_chain_.as_str()) > 0) {
       get_chain_particle(auth_chain_.as_str());
     } else {
-      get_chain_particle(chain_.as_str());
+      get_chain_particle(label_asym_id);
     }
+    std::string auth_seq_id_str = auth_seq_id_.as_str();
     // Check if new residue
     if (rp_ == nullptr || seq_id != curr_seq_id_
-        || residue_icode != curr_residue_icode_) {
+        || residue_icode != curr_residue_icode_
+        || auth_seq_id_str != curr_auth_seq_id_str_
+        || label_asym_id != curr_label_asym_id_) {
       curr_seq_id_ = seq_id;
       curr_residue_icode_ = residue_icode;
+      curr_auth_seq_id_str_ = auth_seq_id_str;
+      curr_label_asym_id_ = label_asym_id;
       // use author-provided seq_id and insertion code if available
-      std::string si = auth_seq_id_.as_str();
-      const char *start = si.c_str();
+      const char *start = auth_seq_id_str.c_str();
       char *endptr;
       int auth_seq_id = strtol(start, &endptr, 10);
       // if auth_seq_id is blank, use seq_id instead

@@ -130,6 +130,43 @@ class Tests(IMP.test.TestCase):
                         for x in IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE))
         self.assertEqual(ats, frozenset(['N']))
 
+    def test_multiple_ligands(self):
+        """Check handling of multiple ligands"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(
+            self.get_input_file_name("long_ligands.cif"), m)
+
+        self.assertEqual(len(m.get_particle_indexes()), 47)
+        # Should use author-provided information; everything is in chain A,
+        # numbered sequentially
+        chains = IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(IMP.atom.Chain(chains[0]).get_id(), 'A')
+        residues = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual(len(residues), 4)
+        self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
+                         [279, 301, 302, 303])
+
+    def test_multiple_ligands_no_auth(self):
+        """Check handling of multiple ligands with no author-provided info"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(
+            self.get_input_file_name("long_ligands_no_auth.cif"), m)
+
+        self.assertEqual(len(m.get_particle_indexes()), 53)
+        # Should use internal cif information; each ligand is in a separate
+        # chain, and has default seq_id ("." in mmCIF, 1 in IMP)
+        chains = IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)
+        self.assertEqual(len(chains), 4)
+        self.assertEqual([IMP.atom.Chain(x).get_id() for x in chains],
+                         ['A', 'B', 'C', 'D'])
+        residues = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual(len(residues), 4)
+        self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
+                         [261, 1, 1, 1])
+
 
 if __name__ == '__main__':
     IMP.test.main()
