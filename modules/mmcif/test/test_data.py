@@ -11,14 +11,14 @@ import contextlib
 def mocked_ihm_from_accession():
     """Prevent ihm.reference.UniProtSequence.from_accession from
        accessing the network"""
-    def mock_from_acc(accession):
-        return ihm.reference.UniProtSequence(db_code='CSN1_HUMAN',
-                                             accession='Q13098',
-                                             sequence='someseq')
+    def mock_from_acc(cls, accession):
+        return cls(db_code='CSN1_HUMAN', accession='Q13098',
+                   sequence='someseq')
 
     orig_meth = ihm.reference.UniProtSequence.from_accession
     try:
-        ihm.reference.UniProtSequence.from_accession = mock_from_acc
+        ihm.reference.UniProtSequence.from_accession = classmethod(
+            mock_from_acc)
         yield
     finally:
         ihm.reference.UniProtSequence.from_accession = orig_meth
