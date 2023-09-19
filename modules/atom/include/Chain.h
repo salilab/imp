@@ -65,6 +65,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
     m->add_attribute(get_id_key(), pi, id);
     m->add_attribute(get_sequence_key(), pi, "");
     m->add_attribute(get_sequence_offset_key(), pi, 0);
+    m->add_attribute(get_uniprot_accession_key(), pi, "");
     m->add_attribute(get_chain_type_key(), pi, UnknownChainType.get_index());
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
@@ -87,6 +88,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
     return m->get_has_attribute(get_id_key(), pi) &&
            m->get_has_attribute(get_sequence_key(), pi) &&
            m->get_has_attribute(get_sequence_offset_key(), pi) &&
+           m->get_has_attribute(get_uniprot_accession_key(), pi) &&
            m->get_has_attribute(get_chain_type_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }
@@ -138,6 +140,18 @@ class IMPATOMEXPORT Chain : public Hierarchy {
                                offset);
   }
 
+  //! Return the UniProt accession for the chain's sequence
+  std::string get_uniprot_accession() const {
+    return get_model()->get_attribute(get_uniprot_accession_key(),
+                                      get_particle_index());
+  }
+
+  //! Set the UniProt accession for the chain's sequence
+  void set_uniprot_accession(std::string accession) {
+    get_model()->set_attribute(get_uniprot_accession_key(),
+                               get_particle_index(), accession);
+  }
+
   //! Return the chain type
   ChainType get_chain_type() const {
     return ChainType(get_model()->get_attribute(get_chain_type_key(),
@@ -168,6 +182,9 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
   //! The key used to store the sequence offset
   static SparseIntKey get_sequence_offset_key();
+
+  //! The key used to store the UniProt accession
+  static SparseStringKey get_uniprot_accession_key();
 
   //! The key used to store the polymer type
   static SparseIntKey get_chain_type_key();

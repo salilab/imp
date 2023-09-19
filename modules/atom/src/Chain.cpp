@@ -40,6 +40,11 @@ SparseIntKey Chain::get_sequence_offset_key() {
   return k;
 }
 
+SparseStringKey Chain::get_uniprot_accession_key() {
+  static SparseStringKey k("uniprot accession");
+  return k;
+}
+
 SparseIntKey Chain::get_chain_type_key() {
   static SparseIntKey k("chain_type");
   return k;
