@@ -20,10 +20,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.get_chain_type(), 'UnknownChainType')
         self.assertEqual(c.get_sequence(), '')
         self.assertEqual(c.get_sequence_offset(), 0)
+        self.assertEqual(c.get_uniprot_accession(), '')
         # Check setters
         c.set_chain_type('LPolypeptide')
         c.set_sequence('CGY')
         c.set_sequence_offset(10)
+        c.set_uniprot_accession('Q13098')
         c.set_chain_id('X')
 
         # Check both const and non-const getters
@@ -37,6 +39,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.get_chain_type(), 'LPolypeptide')
         self.assertEqual(c.get_sequence(), 'CGY')
         self.assertEqual(c.get_sequence_offset(), 10)
+        self.assertEqual(c.get_uniprot_accession(), 'Q13098')
         self.assertEqual(c.get_chain_id(), 'X')
 
 if __name__ == '__main__':

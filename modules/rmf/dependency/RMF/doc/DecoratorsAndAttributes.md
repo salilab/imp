@@ -73,6 +73,7 @@ The category name is `sequence` and it includes information about the types and 
 | `sequence`       | string    |  Primary sequence of a chain                     |
 | `sequence offset`| int       |  Offset from sequence index to residue index     |
 | `chain type`     | string    |  Type of chain sequence (e.g. Protein, DNA, RNA) |
+| `uniprot accession`| string  |  UniProt accession code for the sequence         |
 | `first residue index` | int  |  The index of the first residue (in a domain)    |
 | `last residue index` | int   |  The index of the last residue (in a domain)     |
 | `residue indexes` | ints      |  The list of indexes in a fragment               |
