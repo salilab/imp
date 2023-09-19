@@ -11,6 +11,7 @@ import ihm.analysis
 import ihm.protocol
 import ihm.model
 import ihm.citations
+import ihm.reference
 import operator
 import inspect
 
@@ -126,6 +127,10 @@ class _EntityMapper(dict):
             self.system.entities.append(entity)
             self._entities.append(entity)
             self._sequence_dict[sequence] = entity
+            uniprot = chain.get_uniprot_accession()
+            if uniprot:
+                up = ihm.reference.UniProtSequence.from_accession(uniprot)
+                entity.references.append(up)
         self[chain] = self._sequence_dict[sequence]
         return self[chain], offset
 

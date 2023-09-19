@@ -4,6 +4,25 @@ import IMP.atom
 import IMP.mmcif.data
 import ihm
 import os
+import contextlib
+
+
+@contextlib.contextmanager
+def mocked_ihm_from_accession():
+    """Prevent ihm.reference.UniProtSequence.from_accession from
+       accessing the network"""
+    def mock_from_acc(accession):
+        return ihm.reference.UniProtSequence(db_code='CSN1_HUMAN',
+                                             accession='Q13098',
+                                             sequence='someseq')
+
+    orig_meth = ihm.reference.UniProtSequence.from_accession
+    try:
+        ihm.reference.UniProtSequence.from_accession = mock_from_acc
+        yield
+    finally:
+        ihm.reference.UniProtSequence.from_accession = orig_meth
+
 
 def add_attrs(r):
     IMP.core.XYZR.setup_particle(
@@ -97,6 +116,20 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(ValueError, e.add, chain5,
                           seq_from_res=(1, (alpha['C'], None,
                                             alpha['G'], None)))
+
+    def test_entity_uniprot(self):
+        """Test EntityMapper.add() with UniProt accession"""
+        m = IMP.Model()
+        system = ihm.System()
+        e = IMP.mmcif.data._EntityMapper(system)
+        chain1 = make_chain(m, "A", "A", sequence='ACC')
+        chain1.set_uniprot_accession('Q13098')
+        with mocked_ihm_from_accession():
+            e.add(chain1)
+        entity, = system.entities
+        ref, = entity.references
+        self.assertEqual(ref.db_code, 'CSN1_HUMAN')
+        self.assertEqual(ref.accession, 'Q13098')
 
     def test_entity_naming(self):
         """Test naming of Entities"""
