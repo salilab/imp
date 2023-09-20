@@ -11,6 +11,7 @@ class MockRestraint(IMP.Restraint):
 
     def __init__(self, m, ps, val):
         self.ps = ps
+        self._dyn_info = "foo"
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
 
     def unprotected_evaluate(self, accum):
@@ -31,6 +32,14 @@ class MockRestraint(IMP.Restraint):
             # Include a duplicate (which will use an Alias node in RMF)
             i.add_particle_indexes("static particles",
                     [self.ps[1], self.ps[2], self.ps[3], self.ps[3]])
+        i.add_int("test stat int", 9)
+        i.add_float("test stat float", 48.4)
+        i.add_string("stat type", "MockRestraint")
+        i.add_filename("test stat filename", "/foo")
+        i.add_floats("test stat floats", [42., 199.5])
+        i.add_ints("test stat ints", [42, 199])
+        i.add_strings("test stat strings", ["bar2", "baz2"])
+        i.add_filenames("test stat filenames", ["foo2", "bar2"])
         return i
 
     def get_dynamic_info(self):
@@ -38,14 +47,14 @@ class MockRestraint(IMP.Restraint):
         if len(self.ps) >= 5:
             i.add_particle_indexes("dynamic particles",
                                    [self.ps[4]])
-        i.add_int("test int", 5)
-        i.add_float("test float", 42.4)
-        i.add_string("type", "MockRestraint")
-        i.add_filename("test filename", "/foobar")
-        i.add_floats("test floats", [42., 99.5])
-        i.add_ints("test ints", [42, 99])
-        i.add_strings("test strings", ["bar", "baz"])
-        i.add_filenames("test filenames", ["foo", "bar"])
+        i.add_int("test dyn int", 5)
+        i.add_float("test dyn float", 42.4)
+        i.add_string("dyn string", self._dyn_info)
+        i.add_filename("test dyn filename", "/foobar")
+        i.add_floats("test dyn floats", [42., 99.5])
+        i.add_ints("test dyn ints", [42, 99])
+        i.add_strings("test dyn strings", ["bar", "baz"])
+        i.add_filenames("test dyn filenames", ["foo", "bar"])
         return i
 
 
@@ -62,7 +71,8 @@ class MockRestraintSet(IMP.RestraintSet):
 
 class Tests(IMP.test.TestCase):
 
-    def _write_restraint(self, name, cls=IMP._ConstRestraint, extra_ps=0):
+    def _write_restraint(self, name, cls=IMP._ConstRestraint, extra_ps=0,
+                         add_extra_mock_restraint_frame=False):
         f = RMF.create_rmf_file(name)
         m = IMP.Model()
         p = IMP.Particle(m)
@@ -95,6 +105,9 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(f, str(0))
         if extra_ps:
             scale.set_scale(0.5)
+            IMP.rmf.save_frame(f, str(1))
+        elif add_extra_mock_restraint_frame:
+            r._dyn_info = "bar"
             IMP.rmf.save_frame(f, str(1))
 
     def _read_restraint(self, name, extra_ps=0, inputs=True):
@@ -221,40 +234,82 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rn.get_name(), r.get_name())
         self.assertEqual([x for x in rn.get_children()], [])
 
+    def test_static_info(self):
+        """Test static restraint info"""
+        for suffix in IMP.rmf.suffixes:
+            name = self.get_tmp_file_name("static_info" + suffix)
+            self._write_restraint(name, cls=MockRestraint)
+            m, r, rmf = self._read_restraint(name)
+            info = r.get_static_info()
+            self.assertEqual(info.get_number_of_int(), 1)
+            self.assertEqual(info.get_int_key(0), "test stat int")
+            self.assertEqual(info.get_int_value(0), 9)
+            self.assertEqual(info.get_number_of_float(), 1)
+            self.assertEqual(info.get_float_key(0), "test stat float")
+            self.assertAlmostEqual(info.get_float_value(0), 48.4, delta=0.01)
+            self.assertEqual(info.get_number_of_string(), 1)
+            self.assertEqual(info.get_string_key(0), "stat type")
+            self.assertEqual(info.get_string_value(0), "MockRestraint")
+            self.assertEqual(info.get_number_of_filename(), 1)
+            self.assertEqual(info.get_filename_key(0), "test stat filename")
+            self.assertEqual(info.get_filename_value(0), "/foo")
+            self.assertEqual(info.get_number_of_floats(), 1)
+            self.assertEqual(info.get_floats_key(0), "test stat floats")
+            val = info.get_floats_value(0)
+            self.assertEqual(len(val), 2)
+            self.assertAlmostEqual(val[0], 42., delta=1e-6)
+            self.assertAlmostEqual(val[1], 199.5, delta=1e-6)
+            self.assertEqual(info.get_number_of_ints(), 1)
+            self.assertEqual(info.get_ints_key(0), "test stat ints")
+            self.assertEqual(list(info.get_ints_value(0)), [42, 199])
+            self.assertEqual(info.get_number_of_strings(), 1)
+            self.assertEqual(info.get_strings_key(0), "test stat strings")
+            self.assertEqual(info.get_strings_value(0), ["bar2", "baz2"])
+            self.assertEqual(info.get_number_of_filenames(), 1)
+            self.assertEqual(info.get_filenames_key(0), "test stat filenames")
+            self.assertEqual(len(info.get_filenames_value(0)), 2)
+
     def test_dynamic_info(self):
         """Test dynamic restraint info"""
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("dynamic_info" + suffix)
-            self._write_restraint(name, cls=MockRestraint)
+            self._write_restraint(name, cls=MockRestraint,
+                                  add_extra_mock_restraint_frame=True)
             m, r, rmf = self._read_restraint(name)
             info = r.get_dynamic_info()
             self.assertEqual(info.get_number_of_int(), 1)
-            self.assertEqual(info.get_int_key(0), "test int")
+            self.assertEqual(info.get_int_key(0), "test dyn int")
             self.assertEqual(info.get_int_value(0), 5)
             self.assertEqual(info.get_number_of_float(), 1)
-            self.assertEqual(info.get_float_key(0), "test float")
+            self.assertEqual(info.get_float_key(0), "test dyn float")
             self.assertAlmostEqual(info.get_float_value(0), 42.4, delta=0.01)
             self.assertEqual(info.get_number_of_string(), 1)
-            self.assertEqual(info.get_string_key(0), "type")
-            self.assertEqual(info.get_string_value(0), "MockRestraint")
+            self.assertEqual(info.get_string_key(0), "dyn string")
+            self.assertEqual(info.get_string_value(0), "foo")
             self.assertEqual(info.get_number_of_filename(), 1)
-            self.assertEqual(info.get_filename_key(0), "test filename")
+            self.assertEqual(info.get_filename_key(0), "test dyn filename")
             self.assertEqual(info.get_filename_value(0), "/foobar")
             self.assertEqual(info.get_number_of_floats(), 1)
-            self.assertEqual(info.get_floats_key(0), "test floats")
+            self.assertEqual(info.get_floats_key(0), "test dyn floats")
             val = info.get_floats_value(0)
             self.assertEqual(len(val), 2)
             self.assertAlmostEqual(val[0], 42., delta=1e-6)
             self.assertAlmostEqual(val[1], 99.5, delta=1e-6)
             self.assertEqual(info.get_number_of_ints(), 1)
-            self.assertEqual(info.get_ints_key(0), "test ints")
+            self.assertEqual(info.get_ints_key(0), "test dyn ints")
             self.assertEqual(list(info.get_ints_value(0)), [42, 99])
             self.assertEqual(info.get_number_of_strings(), 1)
-            self.assertEqual(info.get_strings_key(0), "test strings")
+            self.assertEqual(info.get_strings_key(0), "test dyn strings")
             self.assertEqual(info.get_strings_value(0), ["bar", "baz"])
             self.assertEqual(info.get_number_of_filenames(), 1)
-            self.assertEqual(info.get_filenames_key(0), "test filenames")
+            self.assertEqual(info.get_filenames_key(0), "test dyn filenames")
             self.assertEqual(len(info.get_filenames_value(0)), 2)
+            # Test per-frame values
+            IMP.rmf.load_frame(rmf, RMF.FrameID(1))
+            info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_string(), 1)
+            self.assertEqual(info.get_string_key(0), "dyn string")
+            self.assertEqual(info.get_string_value(0), "bar")
 
     def test_dynamic_info_restraint_set(self):
         """Test dynamic RestraintSet info"""
@@ -273,7 +328,12 @@ class Tests(IMP.test.TestCase):
             name = self.get_tmp_file_name("assoc_ps" + suffix)
             self._write_restraint(name, cls=MockRestraint, extra_ps=4)
             m, r, rmf = self._read_restraint(name, extra_ps=4)
+            # Dynamic particle indexes are not currently supported
+            info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_particle_indexes(), 0)
             info = r.get_static_info()
+            # Currently both "static" and "dynamic" particles show up
+            # in static info
             self.assertEqual(info.get_number_of_particle_indexes(), 2)
             self.assertEqual(info.get_particle_indexes_key(0),
                              'static particles')
