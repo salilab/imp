@@ -267,13 +267,15 @@ class State(_SystemBase):
             return self.molecules[name][copy_num]
 
     def create_molecule(self, name, sequence='', chain_id='',
-                        alphabet=IMP.pmi.alphabets.amino_acid):
+                        alphabet=IMP.pmi.alphabets.amino_acid,
+                        uniprot=None):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string);
                                    it must not be already used
         @param sequence            sequence (string)
         @param chain_id            Chain ID to assign to this molecule
         @param alphabet            Mapping from FASTA codes to residue types
+        @param uniprot             UniProt accession, if available
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
@@ -290,7 +292,7 @@ class State(_SystemBase):
                 "is desired." % name, IMP.pmi.ParameterWarning)
 
         mol = Molecule(self, name, sequence, chain_id, copy_num=0,
-                       alphabet=alphabet)
+                       alphabet=alphabet, uniprot=uniprot)
         self.molecules[name] = [mol]
         return mol
 
@@ -401,7 +403,8 @@ class Molecule(_SystemBase):
     """
 
     def __init__(self, state, name, sequence, chain_id, copy_num,
-                 mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid):
+                 mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid,
+                 uniprot=None):
         """The user should not call this directly; instead call
            State.create_molecule()
 
@@ -423,6 +426,7 @@ class Molecule(_SystemBase):
         self.alphabet = alphabet
         self.representations = []  # list of stuff to build
         self._pdb_elements = []
+        self.uniprot = uniprot
         # residues with representation
         self._represented = IMP.pmi.tools.OrderedSet()
         # helps you place beads by storing structure
@@ -439,6 +443,8 @@ class Molecule(_SystemBase):
         self.chain = IMP.atom.Chain.setup_particle(self.hier, chain_id)
         self.chain.set_sequence(self.sequence)
         self.chain.set_chain_type(alphabet.get_chain_type())
+        if self.uniprot:
+            self.chain.set_uniprot_accession(self.uniprot)
         # create TempResidues from the sequence (if passed)
         self.residues = []
         for ns, s in enumerate(sequence):
@@ -997,13 +1003,23 @@ class _FindCloseStructure(object):
 class Sequences(object):
     """A dictionary-like wrapper for reading and storing sequence data.
        Keys are FASTA sequence names, and each value a string of one-letter
-       codes."""
+       codes.
+
+       The FASTA header may contain multiple fields split by pipe (|)
+       characters. If so, the FASTA sequence name is the first field and
+       the second field (if present) is the UniProt accession.
+       For example, ">cop9|Q13098" yields a FASTA sequence name of "cop9"
+       and UniProt accession of "Q13098".
+    """
     def __init__(self, fasta_fn, name_map=None):
         """Read a FASTA file and extract all the requested sequences
         @param fasta_fn sequence file
         @param name_map dictionary mapping the FASTA name to final stored name
         """
+        # Mapping from sequence name to primary sequence
         self.sequences = IMP.pmi.tools.OrderedDict()
+        # Mapping from sequence name to UniProt accession, if available
+        self.uniprot = {}
         self.read_sequences(fasta_fn, name_map)
 
     def __len__(self):
@@ -1040,13 +1056,17 @@ class Sequences(object):
                 if line.startswith('>'):
                     if seq is not None:
                         self.sequences[code] = seq.strip('*')
-                    code = line.rstrip()[1:]
+                    spl = line[1:].split('|')
+                    code = spl[0].strip()
                     if name_map is not None:
                         try:
                             code = name_map[code]
                         except KeyError:
                             pass
                     seq = ''
+                    if len(spl) >= 2:
+                        up_accession = spl[1].strip()
+                        self.uniprot[code] = up_accession
                 else:
                     line = line.rstrip()
                     if line:  # Skip blank lines

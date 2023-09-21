@@ -27,6 +27,15 @@ class Tests(IMP.test.TestCase):
         self.assertNotIn('1WCM:A', s)
         self.assertEqual(s['foo'], 'MVGQQYSS')
 
+    def test_sequences_uniprot(self):
+        """Test reading sequences with UniProt info from a FASTA file"""
+        s = IMP.pmi.topology.Sequences(
+            self.get_input_file_name('uniprot.fasta'))
+        self.assertIn('test1', s)
+        self.assertIn('test2', s)
+        self.assertEqual(s.uniprot['test1'], 'acc1')
+        self.assertEqual(s.uniprot['test2'], 'acc2')
+
     def test_sequences_bad(self):
         """Test reading sequences from an invalid FASTA file"""
         fname = 'test_sequences_bad.fasta'

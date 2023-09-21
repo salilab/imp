@@ -421,7 +421,8 @@ class Tests(IMP.test.TestCase):
         m1 = st.create_molecule("Prot1", sequence=seqs["Prot1"])
         self.assertRaises(ValueError, st.create_molecule, "Prot1",
                           sequence=seqs["Prot1"])
-        m2 = st.create_molecule("Prot2", sequence=seqs["Prot2"])
+        m2 = st.create_molecule("Prot2", sequence=seqs["Prot2"],
+                                uniprot="testup")
         self.assertEqual(m1.get_hierarchy().get_parent(), st.get_hierarchy())
         self.assertEqual(m2.get_hierarchy().get_parent(), st.get_hierarchy())
         self.assertEqual(m1.model, st.model)
@@ -429,6 +430,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m1.get_name(), "Prot1")
         self.assertEqual(m2.get_name(), "Prot2")
         self.assertEqual(len(st.get_hierarchy().get_children()), 2)
+        self.assertIsNone(m1.uniprot)
+        self.assertEqual(m2.uniprot, 'testup')
 
         # create state 2 with one molecule
         st2 = s.create_state()

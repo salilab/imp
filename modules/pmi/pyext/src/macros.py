@@ -683,12 +683,14 @@ class BuildSystem(object):
                     fasta_flag = copy[0].fasta_flag
                     if fasta_flag in self._alphabets:
                         alphabet = self._alphabets[fasta_flag]
-                    seq = IMP.pmi.topology.Sequences(
-                        copy[0].fasta_file, fasta_name_map)[copy[0].fasta_id]
+                    seqs = IMP.pmi.topology.Sequences(
+                        copy[0].fasta_file, fasta_name_map)
+                    seq = seqs[copy[0].fasta_id]
                     print("BuildSystem.add_state: molecule %s sequence has "
                           "%s residues" % (molname, len(seq)))
-                    orig_mol = state.create_molecule(molname, seq, chain_id,
-                                                     alphabet=alphabet)
+                    orig_mol = state.create_molecule(
+                        molname, seq, chain_id, alphabet=alphabet,
+                        uniprot=seqs.uniprot.get(copy[0].fasta_id))
                     mol = orig_mol
                     numchain += 1
                 else:
