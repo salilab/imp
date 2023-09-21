@@ -104,6 +104,7 @@ class Tests(unittest.TestCase):
                          page_range=(10, 20), year=2023,
                          authors=["foo", "bar"], doi="test")
         soft.citation = c
+        soft.version = None
         r.report_software()
 
     def test_databases(self):

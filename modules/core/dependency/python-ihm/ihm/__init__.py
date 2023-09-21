@@ -243,8 +243,9 @@ class System(object):
                 yield group, model
 
     def update_locations_in_repositories(self, repos):
-        """Update all :class:`Location` objects in the system that lie within
-           a checked-out :class:`Repository` to point to that repository.
+        """Update all :class:`~ihm.location.Location` objects in the system
+           that lie within a checked-out :class:`~ihm.location.Repository`
+           to point to that repository.
 
            This is intended for the use case where the current working
            directory is a checkout of a repository which is archived somewhere

@@ -16,7 +16,7 @@ class Tests(unittest.TestCase):
 
     def test_atomic_segment(self):
         """Test AtomicSegment class"""
-        asym = ihm.AsymUnit(ihm.Entity('A' * 30))
+        asym = ihm.AsymUnit(ihm.Entity('A' * 30), "testdetail")
         s = ihm.representation.AtomicSegment(
             asym_unit=asym(1, 10), rigid=True, starting_model=None)
         self.assertEqual(s.asym_unit.seq_id_range, (1, 10))
@@ -24,6 +24,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.granularity, 'by-atom')
         self.assertIsNone(s.count)
         self.assertEqual(s.rigid, True)
+        self.assertEqual(s._get_report(), "testdetail 1-10 as rigid atoms")
 
     def test_residue_segment(self):
         """Test ResidueSegment class"""

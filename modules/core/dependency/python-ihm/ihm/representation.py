@@ -42,6 +42,13 @@ class AtomicSegment(Segment):
     count = None
     granularity = 'by-atom'
 
+    def _get_report(self):
+        asym = self.asym_unit
+        return ("%s %d-%d as %s atoms%s"
+                % (asym.details, asym.seq_id_range[0], asym.seq_id_range[1],
+                   "rigid" if self.rigid else "flexible",
+                   _starting_model_report(self)))
+
     def __init__(self, asym_unit, rigid, starting_model=None,
                  description=None):
         self.asym_unit = asym_unit

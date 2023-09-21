@@ -45,10 +45,9 @@ class Tests(unittest.TestCase):
     def test_mrc_parser_emdb_ok(self):
         """Test MRCParser pointing to an MRC in EMDB, no network errors"""
         def mock_urlopen(url, timeout=None):
-            txt = ('{"EMD-1883":[{"deposition":'
-                   '{"map_release_date":"2011-04-21",'
-                   '"title":"test details"}}]}')
-            return StringIO(txt)
+            return StringIO(
+                '{"admin": {"key_dates": {"map_release": "2011-04-21"},'
+                '"title": "test details"}}')
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
         d = p.parse_file(fname)

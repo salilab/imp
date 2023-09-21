@@ -125,7 +125,7 @@ class _ParsedEMDBLocation(location.EMDBLocation):
         if self.__emdb_info is not None:
             return
         req = urllib.request.Request(
-            'https://www.ebi.ac.uk/pdbe/api/emdb/entry/summary/%s'
+            'https://www.ebi.ac.uk/emdb/api/entry/admin/%s'
             % self.access_code, None, {})
         try:
             response = urllib.request.urlopen(req, timeout=10)
@@ -135,15 +135,16 @@ class _ParsedEMDBLocation(location.EMDBLocation):
             self.__emdb_info = [None, None]
             return
         contents = json.load(response)
-        keys = list(contents.keys())
-        info = contents[keys[0]][0]['deposition']
+        info = contents['admin']
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
         if sys.version_info[0] < 3:    # pragma: no cover
-            self.__emdb_info = [info['map_release_date'].encode('ascii'),
-                                info['title'].encode('ascii')]
+            self.__emdb_info = [
+                info['key_dates']['map_release'].encode('ascii'),
+                info['title'].encode('ascii')]
         else:
-            self.__emdb_info = [info['map_release_date'], info['title']]
+            self.__emdb_info = [info['key_dates']['map_release'],
+                                info['title']]
 
     version = property(__get_version, __set_version)
     details = property(__get_details, __set_details)

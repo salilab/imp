@@ -180,6 +180,9 @@ class EM2DRestraint(Restraint):
        :param str details: Additional details regarding the fitting.
     """
 
+    def _get_report(self):
+        return "Fit to 2D electron microscopy class average"
+
     def __init__(self, dataset, assembly, segment=None,
                  number_raw_micrographs=None, pixel_size_width=None,
                  pixel_size_height=None, image_resolution=None,

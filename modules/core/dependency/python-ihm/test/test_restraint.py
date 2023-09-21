@@ -69,6 +69,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(),
+                         "Fit to 2D electron microscopy class average")
 
     def test_distance_restraint(self):
         """Test DistanceRestraint class"""

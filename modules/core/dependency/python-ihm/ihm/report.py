@@ -87,7 +87,10 @@ class Reporter(object):
     def report_software(self):
         r = self._section("Software used")
         for s in ihm._remove_identical(self.system._all_software()):
-            r.report("- %s (version %s)" % (s.name, s.version))
+            if s.version is None:
+                r.report("- %s (no version given)" % s.name)
+            else:
+                r.report("- %s (version %s)" % (s.name, s.version))
             if not s.citation:
                 warnings.warn(
                     "No citation provided for %s" % s, MissingDataWarning)
