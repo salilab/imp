@@ -23,6 +23,7 @@
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/show_hierarchy.h>
+#include <RMF/config.h>
 #include <boost/range/iterator_range.hpp>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -112,6 +113,10 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
                                                         chain.get_chain_id());
     imp_chain.set_sequence(chain.get_sequence());
     imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
+#if RMF_VERSION >= 100600
+    imp_chain.set_sequence_offset(chain.get_sequence_offset());
+    imp_chain.set_uniprot_accession(chain.get_uniprot_accession());
+#endif
   }
   if (typed_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("typed " << std::endl);
@@ -217,6 +222,10 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     imp_chain.set_id(chain.get_chain_id());
     imp_chain.set_sequence(chain.get_sequence());
     imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
+#if RMF_VERSION >= 100600
+    imp_chain.set_sequence_offset(chain.get_sequence_offset());
+    imp_chain.set_uniprot_accession(chain.get_uniprot_accession());
+#endif
   }
   IMP_CHECK_CODE
     (
@@ -316,6 +325,10 @@ void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
     chain.set_chain_id(d.get_id());
     chain.set_sequence(d.get_sequence());
     chain.set_chain_type(d.get_chain_type().get_string());
+#if RMF_VERSION >= 100600
+    chain.set_sequence_offset(d.get_sequence_offset());
+    chain.set_uniprot_accession(d.get_uniprot_accession());
+#endif
   }
   if (atom::Diffusion::get_is_setup(m, p)) {
     atom::Diffusion d(m, p);
