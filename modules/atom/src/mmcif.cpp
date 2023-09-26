@@ -213,8 +213,13 @@ public:
     // Residue name
     replace(pdb_line_, internal::atom_res_name_field_, 3,
                       residue_name_.as_str());
-    // Chain ID
-    replace(pdb_line_, internal::atom_chain_id_field_, 1, chain_.as_str());
+    // Chain ID; use author-provided ID if available
+    if (strlen(auth_chain_.as_str()) > 0) {
+      replace(pdb_line_, internal::atom_chain_id_field_, 1,
+              auth_chain_.as_str());
+    } else {
+      replace(pdb_line_, internal::atom_chain_id_field_, 1, chain_.as_str());
+    }
     // Insertion code
     // Extract this from the author-provided residue number
     const char *start = auth_seq_id_.as_str();

@@ -189,6 +189,10 @@ class AllPDBSelector : public PDBSelector {
 };
 
 //! Select all ATOM and HETATM records with the given chain ids
+/** When reading mmCIF format, this will use the author-provided chain
+    ID, if available; otherwise the mmCIF "chain" ID, label_asym_id,
+    will be used.
+ */
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
   bool get_is_selected(const std::string &pdb_line) const override {

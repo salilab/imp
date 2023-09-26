@@ -175,6 +175,29 @@ class Tests(IMP.test.TestCase):
                           for x in residues],
                          ['LYS', 'CA', '7ZTVU', '7ZTVU'])
 
+    def test_chain_selector(self):
+        """Check reading single chain from an mmCIF file"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector("K"))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['K'])
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector("7"))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['7'])
+
+        # If no auth-provided chain, select by asym_id
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector("B"))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['B'])
+
 
 if __name__ == '__main__':
     IMP.test.main()
