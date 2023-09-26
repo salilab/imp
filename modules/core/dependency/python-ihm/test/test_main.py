@@ -88,6 +88,29 @@ class Tests(unittest.TestCase):
         cc1 = ihm.DNAChemComp(id='DG', code='DG', code_canonical='G')
         self.assertEqual(cc1.type, 'DNA linking')
 
+    def test_sugar_chem_comp(self):
+        """Test SaccharideChemComp class and subclasses"""
+        cc = ihm.SaccharideChemComp('NAG')
+        self.assertEqual(cc.type, 'saccharide')
+
+        cc = ihm.LSaccharideChemComp('NAG')
+        self.assertEqual(cc.type, 'L-saccharide')
+
+        cc = ihm.DSaccharideChemComp('NAG')
+        self.assertEqual(cc.type, 'D-saccharide')
+
+        cc = ihm.LSaccharideAlphaChemComp('NAG')
+        self.assertEqual(cc.type, 'L-saccharide, alpha linking')
+
+        cc = ihm.LSaccharideBetaChemComp('NAG')
+        self.assertEqual(cc.type, 'L-saccharide, beta linking')
+
+        cc = ihm.DSaccharideAlphaChemComp('NAG')
+        self.assertEqual(cc.type, 'D-saccharide, alpha linking')
+
+        cc = ihm.DSaccharideBetaChemComp('NAG')
+        self.assertEqual(cc.type, 'D-saccharide, beta linking')
+
     def test_non_polymer_chem_comp(self):
         """Test NonPolymerChemComp class"""
         cc1 = ihm.NonPolymerChemComp('HEM')
@@ -195,12 +218,14 @@ class Tests(unittest.TestCase):
         e2 = ihm.Entity('AHCD', description='bar')
         e3 = ihm.Entity('AHCDE', description='foo')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        sugar = ihm.Entity([ihm.SaccharideChemComp('NAG')])
         self.assertEqual(e1, e2)
         self.assertNotEqual(e1, e3)
         self.assertEqual(e1.seq_id_range, (1, 4))
         self.assertEqual(e3.seq_id_range, (1, 5))
-        # seq_id does not exist for nonpolymers
+        # seq_id does not exist for nonpolymers or branched entities
         self.assertEqual(heme.seq_id_range, (None, None))
+        self.assertEqual(sugar.seq_id_range, (None, None))
 
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
@@ -215,12 +240,19 @@ class Tests(unittest.TestCase):
         protein = ihm.Entity('AHCD')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         water = ihm.Entity([ihm.WaterChemComp()])
+        sugar = ihm.Entity([ihm.SaccharideChemComp('NAG')])
         self.assertEqual(protein.type, 'polymer')
         self.assertTrue(protein.is_polymeric())
+        self.assertFalse(protein.is_branched())
         self.assertEqual(heme.type, 'non-polymer')
         self.assertFalse(heme.is_polymeric())
+        self.assertFalse(heme.is_branched())
         self.assertEqual(water.type, 'water')
         self.assertFalse(water.is_polymeric())
+        self.assertFalse(water.is_branched())
+        self.assertEqual(sugar.type, 'branched')
+        self.assertFalse(sugar.is_polymeric())
+        self.assertTrue(sugar.is_branched())
 
         # A single amino acid should be classified non-polymer
         single_aa = ihm.Entity('A')
@@ -408,13 +440,15 @@ class Tests(unittest.TestCase):
         """Test EntityRange class"""
         e = ihm.Entity('AHCDAH')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        sugar = ihm.Entity([ihm.SaccharideChemComp('NAG')])
         e._id = 42
         self.assertEqual(e.seq_id_range, (1, 6))
         r = e(3, 4)
         self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)
-        # Cannot create ranges for nonpolymeric entities
+        # Cannot create ranges for nonpolymeric or branched entities
         self.assertRaises(TypeError, heme.__call__, 1, 1)
+        self.assertRaises(TypeError, sugar.__call__, 1, 1)
         samer = e(3, 4)
         otherr = e(2, 4)
         self.assertEqual(r, samer)
@@ -426,19 +460,23 @@ class Tests(unittest.TestCase):
         """Test AsymUnitRange class"""
         e = ihm.Entity('AHCDAH')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        sugar = ihm.Entity([ihm.SaccharideChemComp('NAG')])
         a = ihm.AsymUnit(e, "testdetail")
         aheme = ihm.AsymUnit(heme)
+        asugar = ihm.AsymUnit(sugar)
         a._id = 42
         self.assertEqual(a.seq_id_range, (1, 6))
-        # seq_id is not defined for nonpolymers
+        # seq_id is not defined for nonpolymers or branched entities
         self.assertEqual(aheme.seq_id_range, (None, None))
+        self.assertEqual(asugar.seq_id_range, (None, None))
         r = a(3, 4)
         self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
         self.assertEqual(r.details, "testdetail")
-        # Cannot create ranges for nonpolymeric entities
+        # Cannot create ranges for nonpolymeric or branched entities
         self.assertRaises(TypeError, aheme.__call__, 1, 1)
+        self.assertRaises(TypeError, asugar.__call__, 1, 1)
         samer = a(3, 4)
         otherr = a(2, 4)
         self.assertEqual(r, samer)
@@ -1044,6 +1082,29 @@ class Tests(unittest.TestCase):
         self.assertFalse(u > u)
         # Should act like False
         self.assertFalse(u)
+
+    def test_branch_descriptor(self):
+        """Test the BranchDescriptor class"""
+        bd = ihm.BranchDescriptor(text='foo', type='bar', program='baz',
+                                  program_version="1.0")
+        self.assertEqual(bd.text, 'foo')
+        self.assertEqual(bd.type, 'bar')
+        self.assertEqual(bd.program, 'baz')
+        self.assertEqual(bd.program_version, '1.0')
+
+    def test_branch_link(self):
+        """Test the BranchLink class"""
+        lnk = ihm.BranchLink(num1=1, atom_id1='CA', leaving_atom_id1='H1',
+                             num2=2, atom_id2='N', leaving_atom_id2='H2',
+                             order='sing', details='foo')
+        self.assertEqual(lnk.num1, 1)
+        self.assertEqual(lnk.atom_id1, 'CA')
+        self.assertEqual(lnk.leaving_atom_id1, 'H1')
+        self.assertEqual(lnk.num2, 2)
+        self.assertEqual(lnk.atom_id2, 'N')
+        self.assertEqual(lnk.leaving_atom_id2, 'H2')
+        self.assertEqual(lnk.order, 'sing')
+        self.assertEqual(lnk.details, 'foo')
 
 
 if __name__ == '__main__':

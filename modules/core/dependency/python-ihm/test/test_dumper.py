@@ -4451,6 +4451,136 @@ _software.citation_id
 #
 """)  # noqa: E501
 
+    def test_entity_branch_list_dumper(self):
+        """Test EntityBranchListDumper"""
+        system = ihm.System()
+        system.entities.append(ihm.Entity(
+            [ihm.SaccharideChemComp('NAG')]))
+        # Non-branched entity
+        system.entities.append(ihm.Entity('ACGT'))
+        ed = ihm.dumper._EntityDumper()
+        ed.finalize(system)  # Assign IDs
+        dumper = ihm.dumper._EntityBranchListDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_branch_list.entity_id
+_pdbx_entity_branch_list.num
+_pdbx_entity_branch_list.comp_id
+_pdbx_entity_branch_list.hetero
+1 1 NAG .
+#
+""")
+
+    def test_entity_branch_dumper(self):
+        """Test EntityBranchDumper"""
+        system = ihm.System()
+        system.entities.append(ihm.Entity(
+            [ihm.SaccharideChemComp('NAG')]))
+        # Non-branched entity
+        system.entities.append(ihm.Entity('ACGT'))
+        ed = ihm.dumper._EntityDumper()
+        ed.finalize(system)  # Assign IDs
+        dumper = ihm.dumper._EntityBranchDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_branch.entity_id
+_pdbx_entity_branch.type
+1 oligosaccharide
+#
+""")
+
+    def test_branch_scheme_dumper(self):
+        """Test BranchSchemeDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity([ihm.SaccharideChemComp('NAG')])
+        e2 = ihm.Entity([ihm.SaccharideChemComp('FUC')])
+        # Non-branched entity
+        e3 = ihm.Entity('ACT')
+        system.entities.extend((e1, e2, e3))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'bar', auth_seq_id_map=5))
+        system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._BranchSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_branch_scheme.asym_id
+_pdbx_branch_scheme.entity_id
+_pdbx_branch_scheme.mon_id
+_pdbx_branch_scheme.num
+_pdbx_branch_scheme.pdb_seq_num
+_pdbx_branch_scheme.auth_seq_num
+_pdbx_branch_scheme.auth_mon_id
+_pdbx_branch_scheme.pdb_asym_id
+A 1 NAG 1 1 1 NAG A
+B 2 FUC 1 6 6 FUC B
+#
+""")
+
+    def test_branch_descriptor_dumper(self):
+        """Test BranchDescriptorDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity([ihm.SaccharideChemComp('NAG')])
+        bd1 = ihm.BranchDescriptor('foo', type='typ1', program='prog',
+                                   program_version='1.0')
+        bd2 = ihm.BranchDescriptor('bar', type='typ2')
+        e1.branch_descriptors.extend((bd1, bd2))
+        system.entities.append(e1)
+        ihm.dumper._EntityDumper().finalize(system)
+        dumper = ihm.dumper._BranchDescriptorDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_branch_descriptor.ordinal
+_pdbx_entity_branch_descriptor.entity_id
+_pdbx_entity_branch_descriptor.descriptor
+_pdbx_entity_branch_descriptor.type
+_pdbx_entity_branch_descriptor.program
+_pdbx_entity_branch_descriptor.program_version
+1 1 foo typ1 prog 1.0
+2 1 bar typ2 . .
+#
+""")
+
+    def test_branch_link_dumper(self):
+        """Test BranchLinkDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity([ihm.SaccharideChemComp('NAG'),
+                         ihm.SaccharideChemComp('BMC'),
+                         ihm.SaccharideChemComp('FUC')])
+        lnk1 = ihm.BranchLink(num1=1, atom_id1='CA', leaving_atom_id1='H1',
+                              num2=2, atom_id2='N', leaving_atom_id2='H2',
+                              order='sing', details='foo')
+        lnk2 = ihm.BranchLink(num1=2, atom_id1='CA', leaving_atom_id1='H1',
+                              num2=3, atom_id2='N', leaving_atom_id2='H2')
+        e1.branch_links.extend((lnk1, lnk2))
+        system.entities.append(e1)
+        ihm.dumper._EntityDumper().finalize(system)
+        dumper = ihm.dumper._BranchLinkDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_branch_link.link_id
+_pdbx_entity_branch_link.entity_id
+_pdbx_entity_branch_link.entity_branch_list_num_1
+_pdbx_entity_branch_link.comp_id_1
+_pdbx_entity_branch_link.atom_id_1
+_pdbx_entity_branch_link.leaving_atom_id_1
+_pdbx_entity_branch_link.entity_branch_list_num_2
+_pdbx_entity_branch_link.comp_id_2
+_pdbx_entity_branch_link.atom_id_2
+_pdbx_entity_branch_link.leaving_atom_id_2
+_pdbx_entity_branch_link.value_order
+_pdbx_entity_branch_link.details
+1 1 1 NAG CA H1 2 BMC N H2 sing foo
+2 1 2 BMC CA H1 3 FUC N H2 . .
+#
+""")
+
 
 if __name__ == '__main__':
     unittest.main()

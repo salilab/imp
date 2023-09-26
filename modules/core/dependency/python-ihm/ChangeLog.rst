@@ -1,3 +1,21 @@
+0.40 - 2023-09-25
+=================
+  - Basic support for oligosaccharides is now provided. New classes are
+    provided to describe saccharide chemical components
+    (:class:`ihm.SaccharideChemComp` and subclasses). Unlike polymers and
+    non-polymers, oligosaccharides can be branched, and a new
+    :class:`ihm.BranchLink` class allows the linkage between individual
+    components to be described.
+  - A summary report of the system can now be produced by calling
+    :meth:`ihm.System.report`. This can help to reveal errors or
+    inconsistencies, and will warn about missing data that may not be
+    technically required for a compliant mmCIF file, but is usually
+    expected to be present.
+  - :class:`ihm.metadata.MRCParser` now uses the new EMDB API to extract
+    version information and details for electron density map datasets.
+  - RPM packages are now available for recent versions of Fedora and
+    RedHat Enterprise Linux.
+
 0.39 - 2023-08-04
 =================
   - :class:`ihm.location.DatabaseLocation` no longer accepts a ``db_name``

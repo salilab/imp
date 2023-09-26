@@ -4317,6 +4317,153 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
             s, = ihm.reader.read(fh, variant=ihm.reader.IHMVariant())
             self.assertEqual(s.id, 'testid')
 
+    def test_branch_scheme_handler(self):
+        """Test BranchSchemeHandler"""
+        fh = StringIO("""
+loop_
+_chem_comp.id
+_chem_comp.type
+_chem_comp.name
+_chem_comp.formula
+_chem_comp.formula_weight
+BGC 'D-saccharide, beta linking' beta-D-glucopyranose 'C6 H12 O6' 180.156
+#
+loop_
+_pdbx_entity_branch_list.entity_id
+_pdbx_entity_branch_list.num
+_pdbx_entity_branch_list.comp_id
+_pdbx_entity_branch_list.hetero
+1 1 BGC .
+1 2 BGC .
+1 3 BGC .
+1 4 BGC .
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 foo
+B 1 bar
+C 1 baz
+#
+loop_
+_pdbx_branch_scheme.asym_id
+_pdbx_branch_scheme.entity_id
+_pdbx_branch_scheme.mon_id
+_pdbx_branch_scheme.num
+_pdbx_branch_scheme.pdb_seq_num
+_pdbx_branch_scheme.auth_seq_num
+_pdbx_branch_scheme.auth_mon_id
+_pdbx_branch_scheme.pdb_asym_id
+A 1 BGC 1 5 5 BGC 0
+A 1 BGC 2 6 6 BGC 0
+A 1 BGC 3 7 7 BGC 0
+A 1 BGC 4 8 8 BGC 0
+B 1 BGC 1 1 1 BGC .
+B 1 BGC 2 2 2 BGC .
+B 1 BGC 3 3 3 BGC .
+B 1 BGC 4 4 4 BGC .
+C 1 BGC 1 2 2 BGC .
+C 1 BGC 2 4 4 BGC .
+C 1 BGC 3 6 6 BGC .
+C 1 BGC 4 8 8 BGC .
+""")
+        s, = ihm.reader.read(fh)
+        asym_a, asym_b, asym_c = s.asym_units
+        self.assertEqual(asym_a.auth_seq_id_map, 4)
+        self.assertEqual(asym_a._strand_id, '0')
+        self.assertEqual(asym_a.residue(1).auth_seq_id, 5)
+        self.assertEqual(asym_b.auth_seq_id_map, 0)
+        self.assertIsNone(asym_b._strand_id)
+        self.assertEqual(asym_b.residue(1).auth_seq_id, 1)
+        self.assertEqual(asym_c.auth_seq_id_map,
+                         {1: (2, None), 2: (4, None), 3: (6, None),
+                          4: (8, None)})
+        self.assertIsNone(asym_c._strand_id)
+        self.assertEqual(asym_c.residue(1).auth_seq_id, 2)
+
+    def test_entity_branch_list_handler(self):
+        """Test EntityBranchListHandler"""
+        fh = StringIO("""
+loop_
+_pdbx_entity_branch_list.entity_id
+_pdbx_entity_branch_list.num
+_pdbx_entity_branch_list.comp_id
+_pdbx_entity_branch_list.hetero
+1 1 BGC .
+1 2 BGC .
+1 3 BGC .
+1 4 BGC .
+""")
+        s, = ihm.reader.read(fh)
+        e1, = s.entities
+        c1, c2, c3, c4 = e1.sequence
+        self.assertEqual([c.id for c in e1.sequence], ['BGC'] * 4)
+
+    def test_entity_branch_descriptor_handler(self):
+        """Test EntityBranchDescriptorHandler"""
+        fh = StringIO("""
+loop_
+_pdbx_entity_branch_descriptor.ordinal
+_pdbx_entity_branch_descriptor.entity_id
+_pdbx_entity_branch_descriptor.descriptor
+_pdbx_entity_branch_descriptor.type
+_pdbx_entity_branch_descriptor.program
+_pdbx_entity_branch_descriptor.program_version
+1 1 foo typ1 prog 1.0
+2 1 bar typ2 . .
+""")
+        s, = ihm.reader.read(fh)
+        e1, = s.entities
+        bd1, bd2 = e1.branch_descriptors
+        self.assertEqual(bd1.text, 'foo')
+        self.assertEqual(bd1.type, 'typ1')
+        self.assertEqual(bd1.program, 'prog')
+        self.assertEqual(bd1.program_version, '1.0')
+        self.assertEqual(bd2.text, 'bar')
+        self.assertEqual(bd2.type, 'typ2')
+        self.assertIsNone(bd2.program)
+        self.assertIsNone(bd2.program_version)
+
+    def test_entity_branch_link_handler(self):
+        """Test EntityBranchLinkHandler"""
+        fh = StringIO("""
+loop_
+_pdbx_entity_branch_link.link_id
+_pdbx_entity_branch_link.entity_id
+_pdbx_entity_branch_link.entity_branch_list_num_1
+_pdbx_entity_branch_link.comp_id_1
+_pdbx_entity_branch_link.atom_id_1
+_pdbx_entity_branch_link.leaving_atom_id_1
+_pdbx_entity_branch_link.entity_branch_list_num_2
+_pdbx_entity_branch_link.comp_id_2
+_pdbx_entity_branch_link.atom_id_2
+_pdbx_entity_branch_link.leaving_atom_id_2
+_pdbx_entity_branch_link.value_order
+_pdbx_entity_branch_link.details
+1 1 1 NAG CA H1 2 BMC N H2 sing foo
+2 1 2 BMC CA H1 3 FUC N H2 . .
+""")
+        s, = ihm.reader.read(fh)
+        e1, = s.entities
+        lnk1, lnk2 = e1.branch_links
+        self.assertEqual(lnk1.num1, 1)
+        self.assertEqual(lnk1.atom_id1, 'CA')
+        self.assertEqual(lnk1.leaving_atom_id1, 'H1')
+        self.assertEqual(lnk1.num2, 2)
+        self.assertEqual(lnk1.atom_id2, 'N')
+        self.assertEqual(lnk1.leaving_atom_id2, 'H2')
+        self.assertEqual(lnk1.order, 'sing')
+        self.assertEqual(lnk1.details, 'foo')
+        self.assertEqual(lnk2.num1, 2)
+        self.assertEqual(lnk2.atom_id1, 'CA')
+        self.assertEqual(lnk2.leaving_atom_id1, 'H1')
+        self.assertEqual(lnk2.num2, 3)
+        self.assertEqual(lnk2.atom_id2, 'N')
+        self.assertEqual(lnk2.leaving_atom_id2, 'H2')
+        self.assertIsNone(lnk2.order)
+        self.assertIsNone(lnk2.details)
+
 
 if __name__ == '__main__':
     unittest.main()

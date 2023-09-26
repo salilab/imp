@@ -653,6 +653,29 @@ class _EntityPolySegmentDumper(Dumper):
                     comp_id_end=entity.sequence[rng.seq_id_range[1] - 1].id)
 
 
+class _EntityBranchListDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_entity_branch_list",
+                         ["entity_id", "num", "comp_id", "hetero"]) as lp:
+            for entity in system.entities:
+                if not entity.is_branched():
+                    continue
+                for num, comp in enumerate(entity.sequence):
+                    lp.write(entity_id=entity._id, num=num + 1,
+                             comp_id=comp.id)
+
+
+class _EntityBranchDumper(Dumper):
+    def dump(self, system, writer):
+        # todo: we currently only support branched oligosaccharides
+        with writer.loop("_pdbx_entity_branch",
+                         ["entity_id", "type"]) as lp:
+            for entity in system.entities:
+                if not entity.is_branched():
+                    continue
+                lp.write(entity_id=entity._id, type="oligosaccharide")
+
+
 class _PolySeqSchemeDumper(Dumper):
     """Output the _pdbx_poly_seq_scheme table.
        This is needed because it is a parent category of atom_site.
@@ -689,7 +712,7 @@ class _NonPolySchemeDumper(Dumper):
                           "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
-                if entity.is_polymeric():
+                if entity.is_polymeric() or entity.is_branched():
                     continue
                 for num, comp in enumerate(asym.sequence):
                     auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
@@ -704,6 +727,65 @@ class _NonPolySchemeDumper(Dumper):
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id,
                              auth_mon_id=comp.id, pdb_ins_code=ins)
+
+
+class _BranchSchemeDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_branch_scheme",
+                         ["asym_id", "entity_id", "mon_id", "num",
+                          "pdb_seq_num", "auth_seq_num",
+                          "auth_mon_id", "pdb_asym_id"]) as lp:
+            for asym in system.asym_units:
+                entity = asym.entity
+                if not entity.is_branched():
+                    continue
+                for num, comp in enumerate(asym.sequence):
+                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    # Assume num counts sequentially from 1 (like seq_id)
+                    lp.write(asym_id=asym._id, pdb_asym_id=asym.strand_id,
+                             entity_id=entity._id,
+                             num=num + 1,
+                             pdb_seq_num=auth_seq_num,
+                             auth_seq_num=auth_seq_num,
+                             mon_id=comp.id,
+                             auth_mon_id=comp.id)
+
+
+class _BranchDescriptorDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_entity_branch_descriptor",
+                         ["ordinal", "entity_id", "descriptor", "type",
+                          "program", "program_version"]) as lp:
+            for entity in system.entities:
+                for d in entity.branch_descriptors:
+                    lp.write(ordinal=next(ordinal), entity_id=entity._id,
+                             descriptor=d.text, type=d.type, program=d.program,
+                             program_version=d.program_version)
+
+
+class _BranchLinkDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_entity_branch_link",
+                         ["link_id", "entity_id", "entity_branch_list_num_1",
+                          "comp_id_1", "atom_id_1", "leaving_atom_id_1",
+                          "entity_branch_list_num_2", "comp_id_2", "atom_id_2",
+                          "leaving_atom_id_2", "value_order",
+                          "details"]) as lp:
+            for entity in system.entities:
+                for lnk in entity.branch_links:
+                    lp.write(
+                        link_id=next(ordinal), entity_id=entity._id,
+                        entity_branch_list_num_1=lnk.num1,
+                        comp_id_1=entity.sequence[lnk.num1 - 1].id,
+                        atom_id_1=lnk.atom_id1,
+                        leaving_atom_id_1=lnk.leaving_atom_id1,
+                        entity_branch_list_num_2=lnk.num2,
+                        comp_id_2=entity.sequence[lnk.num2 - 1].id,
+                        atom_id_2=lnk.atom_id2,
+                        leaving_atom_id_2=lnk.leaving_atom_id2,
+                        value_order=lnk.order, details=lnk.details)
 
 
 class _AsymIDProvider(object):
@@ -3246,8 +3328,10 @@ class IHMVariant(Variant):
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
         _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,
-        _EntityPolySegmentDumper, _StructAsymDumper, _PolySeqSchemeDumper,
-        _NonPolySchemeDumper, _AssemblyDumper, _ExternalReferenceDumper,
+        _EntityPolySegmentDumper, _EntityBranchListDumper, _EntityBranchDumper,
+        _StructAsymDumper, _PolySeqSchemeDumper,
+        _NonPolySchemeDumper, _BranchSchemeDumper, _BranchDescriptorDumper,
+        _BranchLinkDumper, _AssemblyDumper, _ExternalReferenceDumper,
         _DatasetDumper, _ModelRepresentationDumper, _StartingModelDumper,
         _ProtocolDumper, _PostProcessDumper, _PseudoSiteDumper,
         _GeometricObjectDumper, _FeatureDumper, _CrossLinkDumper,

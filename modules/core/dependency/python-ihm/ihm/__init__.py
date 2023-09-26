@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '0.39'
+__version__ = '0.40'
 
 
 class __UnknownValue(object):
@@ -741,7 +741,10 @@ class Citation(object):
 class ChemComp(object):
     """A chemical component from which :class:`Entity` objects are constructed.
        Usually these are amino acids (see :class:`LPeptideChemComp`) or
-       nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`).
+       nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`),
+       but non-polymers such as ligands or water (see
+       :class:`NonPolymerChemComp` and :class:`WaterChemComp`) and saccharides
+       (see :class:`SaccharideChemComp`) are also supported.
 
        For standard amino and nucleic acids, it is generally easier to use
        a :class:`Alphabet` and refer to the components with their one-letter
@@ -885,6 +888,66 @@ class RNAChemComp(ChemComp):
     """A single RNA component.
        See :class:`ChemComp` for a description of the parameters."""
     type = 'RNA linking'
+
+
+class SaccharideChemComp(ChemComp):
+    """A saccharide chemical component. Usually a subclass that specifies
+       the chirality and linkage (e.g. :class:`LSaccharideBetaChemComp`)
+       is used.
+
+       :param str id: A globally unique identifier for this component.
+       :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. See :class:`ChemComp` for
+              more details.
+       :param str ccd: The chemical component dictionary (CCD) where
+              this component is defined. See :class:`ChemComp` for
+              more details.
+       :param list descriptors: Information on the component's chemistry.
+              See :class:`ChemComp` for more details.
+    """
+    type = "saccharide"
+
+    def __init__(self, id, name=None, formula=None, ccd=None,
+                 descriptors=None):
+        super(SaccharideChemComp, self).__init__(
+            id, id, id, name=name, formula=formula,
+            ccd=ccd, descriptors=descriptors)
+
+
+class LSaccharideChemComp(SaccharideChemComp):
+    """A single saccharide component with L-chirality and unspecified linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide"
+
+
+class LSaccharideAlphaChemComp(LSaccharideChemComp):
+    """A single saccharide component with L-chirality and alpha linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide, alpha linking"
+
+
+class LSaccharideBetaChemComp(LSaccharideChemComp):
+    """A single saccharide component with L-chirality and beta linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide, beta linking"
+
+
+class DSaccharideChemComp(SaccharideChemComp):
+    """A single saccharide component with D-chirality and unspecified linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide"
+
+
+class DSaccharideAlphaChemComp(DSaccharideChemComp):
+    """A single saccharide component with D-chirality and alpha linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide, alpha linking"
+
+
+class DSaccharideBetaChemComp(DSaccharideChemComp):
+    """A single saccharide component with D-chirality and beta linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide, beta linking"
 
 
 class NonPolymerChemComp(ChemComp):
@@ -1189,6 +1252,8 @@ class Entity(object):
     def __get_type(self):
         if self.is_polymeric():
             return 'polymer'
+        elif self.is_branched():
+            return 'branched'
         else:
             return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
     type = property(__get_type)
@@ -1234,6 +1299,15 @@ class Entity(object):
         self.references = []
         self.references.extend(references)
 
+        #: String descriptors of branched chemical structure.
+        #: These generally only make sense for oligosaccharide entities,
+        #: and should be a list of :class:`BranchDescriptor` objects.
+        self.branch_descriptors = []
+
+        #: Any links between components in a branched entity.
+        #: This is a list of :class:`BranchLink` objects.
+        self.branch_links = []
+
     def __str__(self):
         return "<ihm.Entity(%s)>" % self.description
 
@@ -1245,6 +1319,12 @@ class Entity(object):
                 len(self.sequence) > 1
                 and any(isinstance(x, (PeptideChemComp, DNAChemComp,
                                        RNAChemComp)) for x in self.sequence))
+
+    def is_branched(self):
+        """Return True iff this entity is branched (generally
+           an oligosaccharide)"""
+        return (len(self.sequence) > 0
+                and isinstance(self.sequence[0], SaccharideChemComp))
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
@@ -1513,3 +1593,45 @@ class Collection(object):
     """
     def __init__(self, id, name=None, details=None):
         self.id, self.name, self.details = id, name, details
+
+
+class BranchDescriptor(object):
+    """String descriptor of branched chemical structure.
+       These generally only make sense for oligosaccharide entities.
+       See :attr:`Entity.branch_descriptors`.
+
+       :param str text: The value of this descriptor.
+       :param str type: The type of the descriptor; one of
+              "Glycam Condensed Core Sequence", "Glycam Condensed Sequence",
+              "LINUCS", or "WURCS".
+       :param str program: The name of the program or library used to compute
+              the descriptor.
+       :param str program_version: The version of the program or library
+              used to compute the descriptor.
+    """
+    def __init__(self, text, type, program=None, program_version=None):
+        self.text, self.type = text, type
+        self.program, self.program_version = program, program_version
+
+
+class BranchLink(object):
+    """A link between components in a branched entity.
+       These generally only make sense for oligosaccharide entities.
+       See :attr:`Entity.branch_links`.
+
+       :param int num1: 1-based index of the first component.
+       :param str atom_id1: Name of the first atom in the linkage.
+       :param str leaving_atom_id1: Name of the first leaving atom.
+       :param int num2: 1-based index of the second component.
+       :param str atom_id2: Name of the second atom in the linkage.
+       :param str leaving_atom_id2: Name of the second leaving atom.
+       :param str order: Bond order (e.g. sing, doub, trip).
+       :param str details: More information about this link.
+    """
+    def __init__(self, num1, atom_id1, leaving_atom_id1, num2, atom_id2,
+                 leaving_atom_id2, order=None, details=None):
+        self.num1, self.atom_id1 = num1, atom_id1
+        self.num2, self.atom_id2 = num2, atom_id2
+        self.leaving_atom_id1 = leaving_atom_id1
+        self.leaving_atom_id2 = leaving_atom_id2
+        self.order, self.details = order, details
