@@ -175,6 +175,21 @@ class Tests(IMP.test.TestCase):
                           for x in residues],
                          ['LYS', 'CA', '7ZTVU', '7ZTVU'])
 
+    def test_non_alt_selector(self):
+        """Check NonAlternativePDBSelector when reading mmCIF files"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('nonalttest.cif'), m,
+                                 IMP.atom.NonAlternativePDBSelector())
+        residues = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        # Residue #3 should be rejected because its alt_loc is "B" (only
+        # blank or "A" alt_loc should be accepted)
+        # Residue #4 should be rejected because alt_loc is "AA". Previous
+        # versions of IMP would pass this because it would be truncated to
+        # one character, "A".
+        self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
+                         [1, 2, 5, 6])
+
     def test_chain_selector(self):
         """Check reading single chain from an mmCIF file"""
         m = IMP.Model()
