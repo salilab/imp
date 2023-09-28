@@ -361,7 +361,12 @@ struct ConvertSequenceHelper {
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
-    if (!in || !PySequence_Check(in)) {
+#if PY_VERSION_HEX < 0x03000000
+    if (!in || !PySequence_Check(in) || PyString_Check(in)) {
+#else
+    if (!in || !PySequence_Check(in) || PyUnicode_Check(in)
+        || PyBytes_Check(in)) {
+#endif
       return false;
     }
     for (unsigned int i = 0; i < PySequence_Length(in); ++i) {
@@ -376,7 +381,12 @@ struct ConvertSequenceHelper {
   static void fill(PyObject* in, const char *symname, int argnum,
                    const char *argtype, SwigData st, SwigData particle_st,
                    SwigData decorator_st, C& t) {
-    if (!in || !PySequence_Check(in)) {
+#if PY_VERSION_HEX < 0x03000000
+    if (!in || !PySequence_Check(in) || PyString_Check(in)) {
+#else
+    if (!in || !PySequence_Check(in) || PyUnicode_Check(in)
+        || PyBytes_Check(in)) {
+#endif
       PyErr_SetString(PyExc_ValueError, "Expected a sequence");
     }
     unsigned int l = PySequence_Size(in);
