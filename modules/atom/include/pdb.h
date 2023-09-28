@@ -242,7 +242,7 @@ class AllPDBSelector : public PDBSelector {
  public:
   AllPDBSelector(std::string name = "AllPDBSelector%1%") : PDBSelector(name) {}
 
-  bool get_is_selected(const PDBRecord &record) const override {
+  bool get_is_selected(const PDBRecord &) const override {
     return true;
   }
   IMP_OBJECT_METHODS(AllPDBSelector);
