@@ -1,7 +1,7 @@
 /**
  *  \file PDBParser.h   \brief A class for reading PDB files
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>
@@ -33,12 +33,130 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
-  if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+void PDBRecord::set_line(const std::string &line) {
+  line_ = &line;
+  use_keywords_ = false;
+  use_line_ = true;
+}
+
+void PDBRecord::set_keywords(internal::CifKeyword &group,
+                             internal::CifKeyword &element,
+                             internal::CifKeyword &atom_name,
+                             internal::CifKeyword &alt_loc_id,
+                             internal::CifKeyword &residue_name,
+                             internal::CifKeyword &auth_chain,
+                             internal::CifKeyword &chain,
+                             internal::CifKeyword &auth_seq_id) {
+  group_ = &group;
+  element_ = &element;
+  atom_name_ = &atom_name;
+  alt_loc_id_ = &alt_loc_id;
+  residue_name_ = &residue_name;
+  auth_chain_ = &auth_chain;
+  chain_ = &chain;
+  auth_seq_id_ = &auth_seq_id;
+  use_keywords_ = true;
+  use_line_ = false;
+}
+
+std::string PDBRecord::get_alt_loc_indicator() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    char alt_loc = internal::atom_alt_loc_indicator(*line_);
+    return std::string(1, alt_loc);
+  } else {
+    return alt_loc_id_->as_str();
+  }
+}
+
+bool PDBRecord::get_is_atom() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    return internal::is_ATOM_rec(*line_);
+  } else {
+    return strcmp(group_->as_str(), "ATOM");
+  }
+}
+
+std::string PDBRecord::get_trimmed_atom_name() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    std::string ret = internal::atom_type(*line_);
+    boost::trim(ret);
+    return ret;
+  } else {
+    return atom_name_->as_str();
+  }
+}
+
+std::string PDBRecord::get_padded_atom_name() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    return internal::atom_type(*line_);
+  } else {
+    std::string ret;
+    // left align atom names with 2-character element names to distinguish
+    // calcium from C-alpha; otherwise pad with a space
+    if (strlen(atom_name_->as_str()) < 4 && strlen(element_->as_str()) < 2) {
+      ret.append(" ");
+    }
+    ret.append(atom_name_->as_str());
+    if (ret.size() < 4) {
+      ret.resize(4, ' ');
+    }
+    return ret;
+  }
+}
+
+std::string PDBRecord::get_residue_name() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    std::string ret = internal::atom_residue_name(*line_);
+    boost::trim(ret);
+    return ret;
+  } else {
+    return residue_name_->as_str();
+  }
+}
+
+std::string PDBRecord::get_chain_id() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    char cid = internal::atom_chain_id(*line_);
+    return std::string(1, cid);
+  } else {
+    // Use author-provided ID if available
+    if (strlen(auth_chain_->as_str()) > 0) {
+      return auth_chain_->as_str();
+    } else {
+      return chain_->as_str();
+    }
+  }
+}
+
+std::string PDBRecord::get_element() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    std::string ret = internal::atom_element(*line_);
+    boost::trim(ret);
+    return ret;
+  } else {
+    return element_->as_str();
+  }
+}
+
+bool HydrogenPDBSelector::is_hydrogen(const PDBRecord &record) const {
+  if (!NonAlternativePDBSelector::get_is_selected(record)) {
     return false;
   }
-  std::string elem = internal::atom_element(pdb_line);
-  boost::trim(elem);
+  std::string elem = record.get_element();
   // determine if the line is hydrogen atom as follows:
   // 1. if the record has element field (columns 76-77),
   // check that it is indeed H. Note that it may be missing
@@ -54,7 +172,7 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
   // 3. if no hydrogen is found in the element record,
   // try atom type field.
   // some NMR structures have 'D' for labeled hydrogens
-  std::string atom_name = internal::atom_type(pdb_line);
+  std::string atom_name = record.get_padded_atom_name();
   return (  // " HXX" or " DXX" or "1HXX" ...
       ((atom_name[0] == ' ' || isdigit(atom_name[0])) &&
        (atom_name[1] == 'H' || atom_name[1] == 'D')) ||
@@ -171,6 +289,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
   bool has_atom = false;
 
   std::string line;
+  PDBRecord pdb_record;
+  pdb_record.set_line(line);
+
   while (!in.eof()) {
     getline(in, line);
     if (in.eof()) break;
@@ -196,7 +317,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
     // the
     // Particle to the Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
-      if (!selector->get_is_selected(line)) {
+      if (!selector->get_is_selected(pdb_record)) {
         IMP_LOG_VERBOSE("Selector rejected line " << line << std::endl);
         continue;
       }

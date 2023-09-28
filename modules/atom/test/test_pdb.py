@@ -188,8 +188,8 @@ class Tests(IMP.test.TestCase):
             def __init__(self):
                 IMP.atom.PDBSelector.__init__(self, "my selector")
 
-            def get_is_selected(self, ln):
-                return ln.startswith("ATOM")
+            def get_is_selected(self, record):
+                return record.get_is_atom()
 
         m = IMP.Model()
         with self.open_input_file("hydrogen.pdb") as fh:

@@ -2,7 +2,7 @@
  *  \file internal/pdb.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,6 +14,7 @@
 #include <IMP/atom/Hierarchy.h>
 
 #include <IMP/base_types.h>
+#include "ihm_format.h"
 
 #include <vector>
 
@@ -110,6 +111,42 @@ IMPATOMEXPORT String atom_element(const String& pdb_line);
 //! Returns the connected atoms from the CONECT record
 IMPATOMEXPORT Vector<unsigned short> connected_atoms(
     const String& pdb_line);
+
+//! Handle a keyword in an mmCIF file
+class CifKeyword {
+  struct ihm_keyword *k_;
+public:
+  CifKeyword(struct ihm_category *c, std::string name)
+      : k_(ihm_keyword_new(c, name.c_str())) {}
+
+  //! Get raw string value of the keyword (may be null)
+  const char *data() { return k_->data; }
+
+  //! Get value as a string, or the empty string if it is missing
+  const char *as_str() {
+    if (k_->omitted || k_->unknown || !k_->in_file) {
+      return "";
+    } else {
+      return k_->data;
+    }
+  }
+
+  float as_float(float default_value=0.) {
+    if (k_->omitted || k_->unknown || !k_->in_file) {
+      return default_value;
+    } else {
+      return boost::lexical_cast<float>(k_->data);
+    }
+  }
+
+  int as_int(int default_value=0) {
+    if (k_->omitted || k_->unknown || !k_->in_file) {
+      return default_value;
+    } else {
+      return boost::lexical_cast<int>(k_->data);
+    }
+  }
+};
 
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
 IMPATOMEXPORT void write_pdb(const ParticlesTemp& ps,

@@ -2,7 +2,7 @@
  *  \file mmcif.cpp
  *  \brief Functions to read PDBs in mmCIF format
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,49 +36,15 @@ public:
     c_(ihm_category_new(reader, name, callback, NULL, NULL, this, NULL)) {}
 };
 
-
-class Keyword {
-  struct ihm_keyword *k_;
-public:
-  Keyword(struct ihm_category *c, std::string name)
-      : k_(ihm_keyword_new(c, name.c_str())) {}
-
-  const char *data() { return k_->data; }
-
-  const char *as_str() {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return "";
-    } else {
-      return k_->data;
-    }
-  }
-
-  float as_float(float default_value=0.) {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return default_value;
-    } else {
-      return boost::lexical_cast<float>(k_->data);
-    }
-  }
-
-  int as_int(int default_value=0) {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return default_value;
-    } else {
-      return boost::lexical_cast<int>(k_->data);
-    }
-  }
-};
-
-
 class AtomSiteCategory : public Category {
   std::string name_, filename_;
   Model *model_;
   IMP::PointerMember<PDBSelector> selector_;
   bool read_all_models_, honor_model_num_;
-  Keyword atom_name_, residue_name_, chain_, auth_chain_, element_, seq_id_,
-          group_, id_, occupancy_, temp_factor_, ins_code_, x_, y_, z_,
-          model_num_, auth_seq_id_, alt_loc_id_;
+  internal::CifKeyword atom_name_, residue_name_, chain_, auth_chain_,
+                       element_, seq_id_, group_, id_, occupancy_,
+                       temp_factor_, ins_code_, x_, y_, z_,
+                       model_num_, auth_seq_id_, alt_loc_id_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
@@ -91,7 +57,7 @@ class AtomSiteCategory : public Category {
   std::string hetatm_;
   std::map<std::pair<Particle *, std::string>, Particle *> chain_map_;
   std::map<int, Particle *> root_map_;
-  std::string pdb_line_;
+  PDBRecord pdb_record_;
 
   static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
@@ -126,6 +92,8 @@ public:
         alt_loc_id_(c_, "label_alt_id"),
         cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
+    pdb_record_.set_keywords(group_, element_, atom_name_, alt_loc_id_,
+                             residue_name_, auth_chain_, chain_, auth_seq_id_);
     curr_chain_ = "";
     curr_seq_id_ = 0;
     curr_auth_seq_id_ = 0;
@@ -191,46 +159,7 @@ public:
 
   // Return true iff the current atom passes the PDBSelector check
   bool get_is_selected() {
-    // PDBSelectors currently take a PDB atom line string, so hack one.
-    // Note that this limits us to what can currently be stored in PDB,
-    // e.g. single character chain IDs and alternate locations
-
-    // First blank any previous line
-    pdb_line_.assign(80, ' ');
-    // ATOM/HETATM indicator
-    replace(pdb_line_, internal::atom_entry_type_field_, 6, group_.as_str());
-    // Atom name; need to pad appropriately (left align those with 2-character
-    // element names to distinguish calcium with C-alpha; otherwise pad with
-    // a space)
-    if (strlen(atom_name_.as_str()) >= 4 || strlen(element_.as_str()) == 2) {
-      replace(pdb_line_, internal::atom_type_field_, 4, atom_name_.as_str());
-    } else {
-      replace(pdb_line_, internal::atom_type_field_ + 1, 3,
-              atom_name_.as_str());
-    }
-    // Alternate location indicator
-    replace(pdb_line_, internal::atom_alt_loc_field_, 1, alt_loc_id_.as_str());
-    // Residue name
-    replace(pdb_line_, internal::atom_res_name_field_, 3,
-                      residue_name_.as_str());
-    // Chain ID; use author-provided ID if available
-    if (strlen(auth_chain_.as_str()) > 0) {
-      replace(pdb_line_, internal::atom_chain_id_field_, 1,
-              auth_chain_.as_str());
-    } else {
-      replace(pdb_line_, internal::atom_chain_id_field_, 1, chain_.as_str());
-    }
-    // Insertion code
-    // Extract this from the author-provided residue number
-    const char *start = auth_seq_id_.as_str();
-    char *endptr;
-    strtol(start, &endptr, 10); // ignore return value
-    // Insertion code is first non-digit (if any, otherwise blank)
-    pdb_line_[internal::atom_res_insertion_field_] = *endptr || ' ';
-    // Element
-    replace(pdb_line_, internal::atom_element_field_, 2, element_.as_str());
-
-    return selector_->get_is_selected(pdb_line_);
+    return selector_->get_is_selected(pdb_record_);
   }
 
   void handle() {
