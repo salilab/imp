@@ -436,7 +436,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
         """Read the coordinates for this starting model"""
         m = IMP.Model()
         # todo: support reading other subsets of the atoms (e.g. CA/CB)
-        slt = IMP.atom.ChainPDBSelector(self.asym_id) \
+        slt = IMP.atom.ChainPDBSelector([self.asym_id]) \
             & IMP.atom.NonWaterNonHydrogenPDBSelector()
         hier = IMP.atom.read_pdb(self.filename, m, slt)
         rng = self.asym_unit.seq_id_range

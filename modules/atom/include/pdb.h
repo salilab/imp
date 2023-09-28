@@ -259,22 +259,33 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
     if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    char cid = record.get_chain_id()[0];
-    for (int i = 0; i < (int)chains_.length(); i++) {
-      if (cid == chains_[i]) return true;
-    }
-    return false;
+    std::string cid = record.get_chain_id();
+    return std::binary_search(chains_.begin(), chains_.end(), cid);
   }
   IMP_OBJECT_METHODS(ChainPDBSelector);
+
+  //! Allow any of the named chains
+  /** Chain IDs here, and in mmCIF files, can be any length,
+      although chains in legacy PDB files are restricted to
+      a single character.
+   */
+  ChainPDBSelector(Strings chains,
+                   std::string name = "ChainPDBSelector%1%")
+      : NonAlternativePDBSelector(name), chains_(chains) {
+    std::sort(chains_.begin(), chains_.end());
+  }
+
+#ifndef IMP_DOXYGEN
   //! The chain id can be any character in chains
   /** \note This limits the selection to single-character chain IDs
             (mmCIF files support multiple-character chain names) */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.20)
   ChainPDBSelector(const std::string &chains,
-                   std::string name = "ChainPDBSelector%1%")
-      : NonAlternativePDBSelector(name), chains_(chains) {}
+                   std::string name = "ChainPDBSelector%1%");
+#endif
 
  private:
-  std::string chains_;
+  Strings chains_;
 };
 
 //! Select all non-water ATOM and HETATM records

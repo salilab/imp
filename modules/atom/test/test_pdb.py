@@ -157,25 +157,27 @@ class Tests(IMP.test.TestCase):
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), len(an) + len(a))
         for s in (IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(),
-                                          IMP.atom.ChainPDBSelector('L')),
+                                          IMP.atom.ChainPDBSelector(['L'])),
                   IMP.atom.HydrogenPDBSelector()
-                        & IMP.atom.ChainPDBSelector('L')):
+                        & IMP.atom.ChainPDBSelector(['L'])):
             with self.open_input_file("hydrogen.pdb") as fh:
                 mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 9)
         for s in (IMP.atom.XorPDBSelector(IMP.atom.HydrogenPDBSelector(),
-                                          IMP.atom.ChainPDBSelector('L')),
+                                          IMP.atom.ChainPDBSelector(['L'])),
                   IMP.atom.HydrogenPDBSelector()
-                        ^ IMP.atom.ChainPDBSelector('L')):
+                        ^ IMP.atom.ChainPDBSelector(['L'])):
             with self.open_input_file("hydrogen.pdb") as fh:
                 mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 14)
-        for s in (IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(),
-                      IMP.atom.NotPDBSelector(IMP.atom.ChainPDBSelector('L'))),
+        for s in (IMP.atom.AndPDBSelector(
+                      IMP.atom.HydrogenPDBSelector(),
+                      IMP.atom.NotPDBSelector(
+                          IMP.atom.ChainPDBSelector(['L']))),
                   IMP.atom.HydrogenPDBSelector()
-                        - IMP.atom.ChainPDBSelector('L')):
+                        - IMP.atom.ChainPDBSelector(['L'])):
             with self.open_input_file("hydrogen.pdb") as fh:
                 mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)

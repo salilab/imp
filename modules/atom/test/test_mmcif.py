@@ -195,23 +195,61 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
-                                 IMP.atom.ChainPDBSelector("K"))
+                                 IMP.atom.ChainPDBSelector(["K"]))
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains], ['K'])
 
         mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
-                                 IMP.atom.ChainPDBSelector("7"))
+                                 IMP.atom.ChainPDBSelector(["7"]))
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains], ['7'])
 
         # If no auth-provided chain, select by asym_id
         mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
-                                 IMP.atom.ChainPDBSelector("B"))
+                                 IMP.atom.ChainPDBSelector(["B"]))
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains], ['B'])
+
+    def test_chain_selector_multi_char(self):
+        """Check reading single chain with multi-char ID from an mmCIF file"""
+        m = IMP.Model()
+
+        # Try deprecated method, will select chains "Z" and "K"
+        with IMP.allow_deprecated():
+            s = IMP.atom.ChainPDBSelector("ZK")
+        mp = IMP.atom.read_mmcif(
+            self.get_input_file_name('chaintest.cif'), m, s)
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['K'])
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["Z", "K"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['K'])
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["ZK"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['ZK'])
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["Z7"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['Z7'])
+
+        # If no auth-provided chain, select by asym_id
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["ZB"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['ZB'])
 
 
 if __name__ == '__main__':
