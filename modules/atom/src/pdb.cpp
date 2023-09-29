@@ -76,7 +76,7 @@ bool PDBRecord::get_is_atom() const {
   if (use_line_) {
     return internal::is_ATOM_rec(*line_);
   } else {
-    return strcmp(group_->as_str(), "ATOM");
+    return strcmp(group_->as_str(), "ATOM") == 0;
   }
 }
 

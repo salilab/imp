@@ -190,6 +190,16 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
                          [1, 2, 5, 6])
 
+    def test_atom_selector(self):
+        """Check ATOMPDBSelector when reading mmCIF files"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('atomtest.cif'), m,
+                                 IMP.atom.ATOMPDBSelector())
+        residues = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual([IMP.atom.Residue(x).get_index() for x in residues],
+                         [68, 287, 287, 287, 287])
+
     def test_chain_selector(self):
         """Check reading single chain from an mmCIF file"""
         m = IMP.Model()
