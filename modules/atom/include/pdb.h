@@ -281,7 +281,15 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
             (mmCIF files support multiple-character chain names) */
   IMPATOM_DEPRECATED_METHOD_DECL(2.20)
   ChainPDBSelector(const std::string &chains,
-                   std::string name = "ChainPDBSelector%1%");
+                   std::string name = "ChainPDBSelector%1%")
+        : NonAlternativePDBSelector(name) {
+    IMPATOM_DEPRECATED_METHOD_DEF(
+             2.20, "Pass a list of chain ID strings instead");
+    for (size_t i = 0; i < chains.length(); ++i) {
+      chains_.push_back(std::string(1, chains[i]));
+    }
+    std::sort(chains_.begin(), chains_.end());
+  }
 #endif
 
  private:
