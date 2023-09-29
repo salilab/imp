@@ -2,7 +2,7 @@
  *  \file PDBParser.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,6 +18,7 @@
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/core/provenance.h>
 #include <boost/algorithm/string.hpp>
+#include "ihm_format.h"
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -220,6 +221,38 @@ Vector<unsigned short> connected_atoms(const String& pdb_line) {
     }
   }
   return conn_atoms;
+}
+
+CifKeyword::CifKeyword(struct ihm_category *c, std::string name)
+      : k_(ihm_keyword_new(c, name.c_str())) {
+}
+
+const char *CifKeyword::data() {
+  return k_->data;
+}
+
+const char *CifKeyword::as_str() {
+  if (k_->omitted || k_->unknown || !k_->in_file) {
+    return "";
+  } else {
+    return k_->data;
+  }
+}
+
+float CifKeyword::as_float(float default_value) {
+  if (k_->omitted || k_->unknown || !k_->in_file) {
+    return default_value;
+  } else {
+    return boost::lexical_cast<float>(k_->data);
+  }
+}
+
+int CifKeyword::as_int(int default_value) {
+  if (k_->omitted || k_->unknown || !k_->in_file) {
+    return default_value;
+  } else {
+    return boost::lexical_cast<int>(k_->data);
+  }
 }
 
 void write_pdb(const ParticlesTemp& ps, TextOutput out) {

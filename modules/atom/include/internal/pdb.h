@@ -14,9 +14,11 @@
 #include <IMP/atom/Hierarchy.h>
 
 #include <IMP/base_types.h>
-#include "ihm_format.h"
 
 #include <vector>
+
+struct ihm_keyword;
+struct ihm_category;
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -113,39 +115,20 @@ IMPATOMEXPORT Vector<unsigned short> connected_atoms(
     const String& pdb_line);
 
 //! Handle a keyword in an mmCIF file
-class CifKeyword {
+class IMPATOMEXPORT CifKeyword {
   struct ihm_keyword *k_;
 public:
-  CifKeyword(struct ihm_category *c, std::string name)
-      : k_(ihm_keyword_new(c, name.c_str())) {}
+  CifKeyword(struct ihm_category *c, std::string name);
 
   //! Get raw string value of the keyword (may be null)
-  const char *data() { return k_->data; }
+  const char *data();
 
   //! Get value as a string, or the empty string if it is missing
-  const char *as_str() {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return "";
-    } else {
-      return k_->data;
-    }
-  }
+  const char *as_str();
 
-  float as_float(float default_value=0.) {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return default_value;
-    } else {
-      return boost::lexical_cast<float>(k_->data);
-    }
-  }
+  float as_float(float default_value=0.);
 
-  int as_int(int default_value=0) {
-    if (k_->omitted || k_->unknown || !k_->in_file) {
-      return default_value;
-    } else {
-      return boost::lexical_cast<int>(k_->data);
-    }
-  }
+  int as_int(int default_value=0);
 };
 
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
