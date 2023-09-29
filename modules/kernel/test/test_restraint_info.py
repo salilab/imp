@@ -60,9 +60,11 @@ class Tests(IMP.test.TestCase):
         ri = IMP.RestraintInfo()
         ri.set_was_used(True)
         self.assertRaisesUsageException(ri.add_string, "test filename", "foo")
-        self.assertRaisesUsageException(ri.add_strings, "test filename", "foo")
+        self.assertRaisesUsageException(ri.add_strings, "test filename",
+                                        ["foo", "bar"])
         self.assertRaisesUsageException(ri.add_filename, "test string", "foo")
-        self.assertRaisesUsageException(ri.add_filenames, "test string", "foo")
+        self.assertRaisesUsageException(ri.add_filenames, "test string",
+                                        ["foo", "bar"])
 
     def test_floats(self):
         """Test get/set of floats RestraintInfo"""
