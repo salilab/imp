@@ -227,7 +227,7 @@ class _PDBFragment(ihm.representation.ResidueSegment):
             = component, start, end, pdb_offset, pdbname
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
-            & IMP.atom.ChainPDBSelector(chain)
+            & IMP.atom.ChainPDBSelector([chain])
         self.starting_hier = IMP.atom.read_pdb(pdbname, state.model, sel)
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),

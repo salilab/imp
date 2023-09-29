@@ -80,9 +80,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
         sel = IMP.atom.get_default_pdb_selector()
 
     reader = read_file if model_num is None else read_multi_file
-    mh = reader(pdb_fn, model,
-                IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id),
-                                        sel))
+    mh = reader(pdb_fn, model, IMP.atom.ChainPDBSelector([chain_id]) & sel)
     if model_num is not None:
         mh = mh[model_num]
 
