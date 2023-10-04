@@ -69,28 +69,37 @@ class Tests(IMP.test.TestCase):
         IMP.atom.add_radii(mp)
         IMP.atom.show_molecular_hierarchy(mp)
 
-        m2 = IMP.Model()
+    def test_calpha_pdb_selector(self):
+        """Test CAlphaPDBSelector"""
+        m = IMP.Model()
         with self.open_input_file("input.pdb") as fh:
-            mp = IMP.atom.read_pdb(fh, m2, IMP.atom.CAlphaPDBSelector())
-        self.assertEqual(len(m2.get_particle_indexes()), 261)
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.CAlphaPDBSelector())
+        self.assertEqual(len(m.get_particle_indexes()), 261)
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(len(bds), 0)
 
-        # more selector testing
+    def test_backbone_pdb_selector(self):
+        """Test BackbonePDBSelector"""
+        m = IMP.Model()
         with self.open_input_file("input.pdb") as fh:
             mp = IMP.atom.read_pdb(fh, m, IMP.atom.BackbonePDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 516)
 
+    def test_n_pdb_selector(self):
+        """Test NPDBSelector"""
+        m = IMP.Model()
         with self.open_input_file("input.pdb") as fh:
             mp = IMP.atom.read_pdb(fh, m, IMP.atom.NPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
 
-        # one more test for DNA
+    def test_non_water_pdb_selector_dna(self):
+        """Test NonWaterPDBSelector with DNA"""
+        m = IMP.Model()
         with self.open_input_file("single_dna.pdb") as fh:
             mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
