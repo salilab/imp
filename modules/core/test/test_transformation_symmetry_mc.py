@@ -4,6 +4,7 @@ import IMP.atom
 import IMP.rmf
 import RMF
 from math import *
+import os
 import IMP.test
 import itertools
 
@@ -295,6 +296,7 @@ class TestSymmetryMC(IMP.test.TestCase):
                 for a,b in itertools.combinations(rb_rbpt_values[key][rb],2):
                     self.assertAlmostEqual(a,b,places=7)
         del rh
+        os.unlink('out.rmf')
 
 
 if __name__ == '__main__':
