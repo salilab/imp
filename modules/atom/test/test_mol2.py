@@ -76,11 +76,9 @@ class Tests(IMP.test.TestCase):
             m, IMP.atom.AllMol2Selector())
         out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)
-        testout = open(
-            self.get_input_file_name(
-                "1d3d-ligands.out1.mol2"),
-            "rb").read(
-        )
+        with open(self.get_input_file_name("1d3d-ligands.out1.mol2"),
+                  "rb") as fh:
+            testout = fh.read()
         # print out.getvalue()
         # print " vs "
         # print testout
@@ -94,15 +92,14 @@ class Tests(IMP.test.TestCase):
 
         out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)
-        testout = open(
-            self.get_input_file_name(
-                "1d3d-ligands.out2.mol2"),
-            "rb").read(
-        )
+        with open(self.get_input_file_name("1d3d-ligands.out2.mol2"),
+                  "rb") as fh:
+            testout = fh.read()
         # print out.getvalue()
         # print " vs "
         # print testout
         self.assertEqual(out.getvalue(), testout)
+
 
 if __name__ == '__main__':
     IMP.test.main()

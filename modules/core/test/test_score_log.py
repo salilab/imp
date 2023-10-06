@@ -24,8 +24,10 @@ class Tests(IMP.test.TestCase):
         l.update()
         l.update()
         del l
-        txt = open(nm, "r").read()
+        with open(nm, "r") as fh:
+            txt = fh.read()
         print(txt)
+
 
 if __name__ == '__main__':
     IMP.test.main()
