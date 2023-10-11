@@ -223,9 +223,10 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(e1, e3)
         self.assertEqual(e1.seq_id_range, (1, 4))
         self.assertEqual(e3.seq_id_range, (1, 5))
-        # seq_id does not exist for nonpolymers or branched entities
+        # seq_id does not exist for nonpolymers
         self.assertEqual(heme.seq_id_range, (None, None))
-        self.assertEqual(sugar.seq_id_range, (None, None))
+        # We do have an internal seq_id_range for branched entities
+        self.assertEqual(sugar.seq_id_range, (1, 1))
 
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
@@ -466,9 +467,10 @@ class Tests(unittest.TestCase):
         asugar = ihm.AsymUnit(sugar)
         a._id = 42
         self.assertEqual(a.seq_id_range, (1, 6))
-        # seq_id is not defined for nonpolymers or branched entities
+        # seq_id is not defined for nonpolymers
         self.assertEqual(aheme.seq_id_range, (None, None))
-        self.assertEqual(asugar.seq_id_range, (None, None))
+        # We use seq_id internally for branched entities
+        self.assertEqual(asugar.seq_id_range, (1, 1))
         r = a(3, 4)
         self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)

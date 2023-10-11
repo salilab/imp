@@ -1,3 +1,10 @@
+0.41 - 2023-10-02
+=================
+  - More complete support for oligosaccharides, in particular correct
+    numbering for atoms in `atom_site`, and the addition of some
+    data items to the output which are required for full
+    dictionary compliance.
+
 0.40 - 2023-09-25
 =================
   - Basic support for oligosaccharides is now provided. New classes are

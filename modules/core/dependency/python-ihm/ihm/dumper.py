@@ -597,7 +597,7 @@ class _EntityNonPolyDumper(Dumper):
         with writer.loop("_pdbx_entity_nonpoly",
                          ["entity_id", "name", "comp_id"]) as lp:
             for entity in system.entities:
-                if entity.is_polymeric():
+                if entity.is_polymeric() or entity.is_branched():
                     continue
                 lp.write(entity_id=entity._id, name=entity.description,
                          comp_id=entity.sequence[0].id)
@@ -734,7 +734,7 @@ class _BranchSchemeDumper(Dumper):
         with writer.loop("_pdbx_branch_scheme",
                          ["asym_id", "entity_id", "mon_id", "num",
                           "pdb_seq_num", "auth_seq_num",
-                          "auth_mon_id", "pdb_asym_id"]) as lp:
+                          "auth_mon_id", "pdb_mon_id", "pdb_asym_id"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if not entity.is_branched():
@@ -747,8 +747,8 @@ class _BranchSchemeDumper(Dumper):
                              num=num + 1,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
-                             mon_id=comp.id,
-                             auth_mon_id=comp.id)
+                             mon_id=comp.id, auth_mon_id=comp.id,
+                             pdb_mon_id=comp.id)
 
 
 class _BranchDescriptorDumper(Dumper):
@@ -1460,6 +1460,9 @@ class _RangeChecker(object):
         else:
             type_check = self._type_check_atom
             seq_id_range = (obj.seq_id, obj.seq_id)
+            # Allow seq_id to be either 1 or None for ligands
+            if obj.seq_id == 1 and asym.entity.type == 'non-polymer':
+                seq_id_range = (None, None)
             self._check_duplicate_atom(obj)
         self._check_assembly(obj, asym, seq_id_range)
         self._check_representation(obj, asym, type_check, seq_id_range)
@@ -1591,7 +1594,7 @@ class _ModelDumperBase(Dumper):
               "label_alt_id", "label_comp_id", "label_seq_id", "auth_seq_id",
               "pdbx_PDB_ins_code", "label_asym_id", "Cartn_x", "Cartn_y",
               "Cartn_z", "occupancy", "label_entity_id", "auth_asym_id",
-              "B_iso_or_equiv", "pdbx_PDB_model_num"]
+              "auth_comp_id", "B_iso_or_equiv", "pdbx_PDB_model_num"]
         if add_ihm:
             it.append("ihm_model_id")
         with writer.loop("_atom_site", it) as lp:
@@ -1600,8 +1603,10 @@ class _ModelDumperBase(Dumper):
                 for atom in model.get_atoms():
                     rngcheck(atom)
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
+                    label_seq_id = atom.seq_id
+                    if not atom.asym_unit.entity.is_polymeric():
+                        label_seq_id = None
                     comp = atom.asym_unit.sequence[seq_id - 1]
-                    water = isinstance(atom.asym_unit, ihm.WaterAsymUnit)
                     seen_types[atom.type_symbol] = None
                     auth_seq_id, ins = \
                         atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
@@ -1612,8 +1617,8 @@ class _ModelDumperBase(Dumper):
                              label_comp_id=comp.id,
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
-                             label_seq_id=None if water else atom.seq_id,
-                             auth_seq_id=auth_seq_id,
+                             label_seq_id=label_seq_id,
+                             auth_seq_id=auth_seq_id, auth_comp_id=comp.id,
                              pdbx_PDB_ins_code=ins or ihm.unknown,
                              auth_asym_id=atom.asym_unit.strand_id,
                              Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,

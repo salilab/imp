@@ -143,7 +143,8 @@ class _ValidatorReader(object):
                 # the chem_comp_* categories don't need to be fully populated
                 if cat in self.dictionary.categories \
                    and not cat.startswith('chem_comp_'):
-                    missing = self._seen_ids[child] - self._seen_ids[parent]
+                    missing = sorted(self._seen_ids[child]
+                                     - self._seen_ids[parent])
                     self.errors.append(
                         "The following IDs referenced by %s "
                         "were not defined in the parent category (%s): %s"

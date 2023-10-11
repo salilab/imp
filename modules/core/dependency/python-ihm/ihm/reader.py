@@ -1994,8 +1994,9 @@ class _AtomSiteHandler(Handler):
         self._missing_sequence = collections.defaultdict(dict)
         self._seq_id_map = {}
 
-    def _get_water_seq_id(self, auth_seq_id, pdbx_pdb_ins_code, asym):
-        """Get an internal seq_id for a water, given author-provided info"""
+    def _get_seq_id_from_auth(self, auth_seq_id, pdbx_pdb_ins_code, asym):
+        """Get an internal seq_id for something not a polymer (nonpolymer,
+           water, branched), given author-provided info"""
         if asym._id not in self._seq_id_map:
             m = {}
             # Make reverse mapping from author-provided info to seq_id
@@ -2028,23 +2029,24 @@ class _AtomSiteHandler(Handler):
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
         auth_seq_id = self.get_int_or_string(auth_seq_id)
-        water = isinstance(asym, ihm.WaterAsymUnit)
-        if water:
+        if seq_id is None:
             # Fill in our internal seq_id if possible
-            seq_id = self._get_water_seq_id(auth_seq_id, pdbx_pdb_ins_code,
-                                            asym)
+            our_seq_id = self._get_seq_id_from_auth(
+                auth_seq_id, pdbx_pdb_ins_code, asym)
+        else:
+            our_seq_id = seq_id
         biso = self.get_float(b_iso_or_equiv)
         occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
-            asym_unit=asym, seq_id=seq_id, atom_id=label_atom_id,
+            asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
             z=float(cartn_z), het=group != 'ATOM', biso=biso,
             occupancy=occupancy)
         model.add_atom(a)
 
         # Note any residues that have different seq_id and auth_seq_id
-        if (auth_seq_id is not None and not water and
+        if (auth_seq_id is not None and seq_id is not None and
                 (seq_id != auth_seq_id
                  or pdbx_pdb_ins_code not in (None, ihm.unknown))):
             if asym.auth_seq_id_map == 0:
