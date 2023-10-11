@@ -525,11 +525,12 @@ _atom_site.Cartn_z
 _atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
+_atom_site.auth_comp_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 . CA . MET 1 1 ? A -8.986 11.688 -5.817 . 1 A . 1 1
-ATOM 2 . CA . GLU 2 2 ? A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 1 . CA . MET 1 1 ? A -8.986 11.688 -5.817 . 1 A MET . 1 1
+ATOM 2 . CA . GLU 2 2 ? A -8.986 11.688 -5.817 . 1 A GLU . 1 1
 #
 #
 loop_
