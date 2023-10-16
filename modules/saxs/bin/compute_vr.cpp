@@ -60,22 +60,22 @@ int main(int argc, char **argv) {
   if (vm.count("offset")) use_offset = true;
 
   IMP::saxs::Profiles exp_profiles;
-  for (unsigned int i = 0; i < files.size(); i++) {
+  for (const auto &file : files) {
     // check if file exists
-    std::ifstream in_file(files[i].c_str());
+    std::ifstream in_file(file.c_str());
     if (!in_file) {
-      std::cerr << "Can't open file " << files[i] << std::endl;
+      std::cerr << "Can't open file " << file << std::endl;
       exit(1);
     }
 
-    IMP_NEW(IMP::saxs::Profile, profile, (files[i]));
+    IMP_NEW(IMP::saxs::Profile, profile, (file));
     if (profile->size() == 0) {
-      std::cerr << "can't parse input file " << files[i] << std::endl;
+      std::cerr << "can't parse input file " << file << std::endl;
       return 1;
     } else {
-      dat_files.push_back(files[i]);
+      dat_files.push_back(file);
       exp_profiles.push_back(profile);
-      std::cout << "Profile read from file " << files[i]
+      std::cout << "Profile read from file " << file
                 << " size = " << profile->size() << std::endl;
     }
   }

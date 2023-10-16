@@ -25,9 +25,9 @@ Profile* compute_profile(Particles particles, double min_q,
   double average_radius = 0.0;
   if (hydration_layer) {
     // add radius
-    for (unsigned int i = 0; i < particles.size(); i++) {
-      double radius = ft->get_radius(particles[i], ff_type);
-      core::XYZR::setup_particle(particles[i], radius);
+    for (auto &particle : particles) {
+      double radius = ft->get_radius(particle, ff_type);
+      core::XYZR::setup_particle(particle, radius);
       average_radius += radius;
     }
     surface_area = s.get_solvent_accessibility(core::XYZRs(particles));
@@ -121,28 +121,28 @@ void read_files(Model *m, const std::vector<std::string>& files,
                 bool heavy_atoms_only, int multi_model_pdb,
                 bool explicit_water, float max_q, int units) {
 
-  for (unsigned int i = 0; i < files.size(); i++) {
+  for (const auto &file : files) {
     // check if file exists
-    std::ifstream in_file(files[i].c_str());
+    std::ifstream in_file(file.c_str());
     if (!in_file) {
-      IMP_WARN("Can't open file " << files[i] << std::endl);
+      IMP_WARN("Can't open file " << file << std::endl);
       return;
     }
     // 1. try as pdb or mmcif
     try {
-      read_pdb(m, files[i], pdb_file_names, particles_vec, residue_level,
+      read_pdb(m, file, pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb, explicit_water);
     }
     catch (const IMP::ValueException &e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i], false, max_q, units));
+      IMP_NEW(Profile, profile, (file, false, max_q, units));
       if (profile->size() == 0) {
-        IMP_WARN("can't parse input file " << files[i] << std::endl);
+        IMP_WARN("can't parse input file " << file << std::endl);
         return;
       } else {
-        dat_files.push_back(files[i]);
+        dat_files.push_back(file);
         exp_profiles.push_back(profile);
-        IMP_LOG_TERSE("Profile read from file " << files[i]
+        IMP_LOG_TERSE("Profile read from file " << file
                       << " size = " << profile->size() << std::endl);
       }
     }

@@ -31,9 +31,9 @@ int CommonEndpointPairFilter::get_value_index(
 ModelObjectsTemp CommonEndpointPairFilter::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::get_particles(m, pis);
-  for (unsigned int i = 0; i < pis.size(); ++i) {
-    if (IMP::atom::Bond::get_is_setup(m, pis[i])) {
-      IMP::atom::Bond b(m, pis[i]);
+  for (auto pi : pis) {
+    if (IMP::atom::Bond::get_is_setup(m, pi)) {
+      IMP::atom::Bond b(m, pi);
       ret.push_back(b.get_bonded(0));
       ret.push_back(b.get_bonded(1));
     }

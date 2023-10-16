@@ -17,10 +17,10 @@ FixedRefiner::FixedRefiner(const ParticlesTemp &ps)
   IMP_LOG_VERBOSE("Created fixed particle refiner with "
                   << ps.size() << " particles" << std::endl);
   m_ = ps[0]->get_model();
-  for(unsigned int i = 0; i < ps.size(); i++){
-    IMP_USAGE_CHECK(m_ == ps[i]->get_model(),
+  for (const auto &p : ps) {
+    IMP_USAGE_CHECK(m_ == p->get_model(),
                     "refiner assumes all particles are from the same model");
-    pis_.push_back(ps[i]->get_index());
+    pis_.push_back(p->get_index());
   }
 }
 
@@ -34,8 +34,8 @@ const ParticlesTemp
 FixedRefiner::get_refined(Particle *) const
 {
   ParticlesTemp ps;
-  for(unsigned int i=0; i < pis_.size(); i++){
-    ps.push_back(m_->get_particle(pis_[i]));
+  for (const auto &pi : pis_) {
+    ps.push_back(m_->get_particle(pi));
   }
   return ps;
 }
