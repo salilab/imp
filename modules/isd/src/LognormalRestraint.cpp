@@ -10,7 +10,7 @@
 #include <IMP/isd/LognormalRestraint.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

@@ -13,7 +13,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/isd/Scale.h>
-#include <math.h>
+#include <cmath>
 #include <limits.h>
 #include <IMP/random.h>
 #include <iostream>

@@ -10,7 +10,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/spb/ChiSquareMetric.h>
 #include <IMP/statistics.h>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include <vector>
 

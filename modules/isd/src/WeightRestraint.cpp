@@ -11,7 +11,7 @@
 #include <IMP/isd/WeightRestraint.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Weight.h>
-#include <math.h>
+#include <cmath>
 #include <limits.h>
 #include <IMP/random.h>
 #include <iostream>

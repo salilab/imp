@@ -14,7 +14,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
 #include <boost/math/special_functions/erf.hpp>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

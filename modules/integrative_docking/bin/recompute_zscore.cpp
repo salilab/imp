@@ -4,7 +4,7 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <math.h>
+#include <cmath>
 
 #include <iostream>
 #include <fstream>

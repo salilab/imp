@@ -10,7 +10,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/utility.h>
 #include <IMP/em/BayesEM3D.h>
-#include <math.h>
+#include <cmath>
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/unordered_set.hpp>

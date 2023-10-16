@@ -8,7 +8,7 @@
  */
 
 #include <IMP/isd/AmbiguousRestraint.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

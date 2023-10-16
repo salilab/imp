@@ -8,7 +8,7 @@
 
 #include <IMP/isd/LogWrapper.h>
 #include <IMP/internal/scoring_functions.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

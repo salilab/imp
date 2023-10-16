@@ -7,7 +7,7 @@
  */
 
 #include "IMP/isd/RepulsiveDistancePairScore.h"
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

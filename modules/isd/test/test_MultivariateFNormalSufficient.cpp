@@ -10,7 +10,7 @@
 #include <IMP/macros.h>
 #include <IMP/Pointer.h>
 #include <IMP/exception.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
 #include <Eigen/Dense>

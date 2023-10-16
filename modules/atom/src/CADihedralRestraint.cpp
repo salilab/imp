@@ -11,7 +11,7 @@
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/constants.h>
-#include <math.h>
+#include <cmath>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>

@@ -7,7 +7,8 @@
  */
 
 #include <IMP/core/Gaussian.h>
-#include <math.h>
+#include <cmath>
+
 IMPCORE_BEGIN_NAMESPACE
 
 void Gaussian::do_setup_particle(Model *m, ParticleIndex pi,

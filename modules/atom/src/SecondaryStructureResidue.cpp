@@ -6,7 +6,7 @@
  */
 
 #include <IMP/atom/SecondaryStructureResidue.h>
-#include <math.h>
+#include <cmath>
 
 IMPATOM_BEGIN_NAMESPACE
 

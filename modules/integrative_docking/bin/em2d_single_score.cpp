@@ -22,7 +22,7 @@ namespace po = boost::program_options;
 
 using namespace IMP::integrative_docking::internal;
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <string>
 

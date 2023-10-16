@@ -18,7 +18,7 @@
 #include <IMP/Model.h>
 #include <IMP/log.h>
 
-#include <math.h>
+#include <cmath>
 #include <boost/tuple/tuple.hpp>
 
 IMPISD_BEGIN_NAMESPACE

@@ -16,7 +16,7 @@
 #include <string>
 #include <list>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <time.h>
 #include <Eigen/Dense>
 #include <IMP/flags.h>

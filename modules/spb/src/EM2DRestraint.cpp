@@ -17,7 +17,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/EM2DRestraint.h>
 #include <limits.h>
-#include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include <boost/math/special_functions/erf.hpp>
 #include <iostream>

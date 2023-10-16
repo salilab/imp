@@ -8,7 +8,7 @@
  */
 
 #include <IMP/isd/GaussianAnchorEMRestraint.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container_macros.h>

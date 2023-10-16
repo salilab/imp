@@ -12,7 +12,7 @@
 #include <IMP/spb/DistanceTerminiRestraint.h>
 #include <IMP/random.h>
 #include <limits.h>
-#include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include <iostream>
 IMPSPB_BEGIN_NAMESPACE

@@ -9,7 +9,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/spb/TwoStateGoModelRestraint.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <numeric>

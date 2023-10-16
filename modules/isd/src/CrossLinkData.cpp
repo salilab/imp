@@ -8,7 +8,7 @@
 #include <IMP/macros.h>
 #include <IMP/Object.h>
 #include <IMP/constants.h>
-#include <math.h>
+#include <cmath>
 #include <boost/math/special_functions/erf.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 

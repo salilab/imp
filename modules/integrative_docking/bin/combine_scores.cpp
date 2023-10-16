@@ -7,7 +7,7 @@
 
 #include <IMP/integrative_docking/internal/Result.h>
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <vector>

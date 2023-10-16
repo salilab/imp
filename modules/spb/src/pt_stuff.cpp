@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/spb.h>
-#include <math.h>
+#include <cmath>
 
 IMPSPB_BEGIN_NAMESPACE
 

@@ -13,7 +13,7 @@
 #include <IMP/em2d/em2d_config.h>
 #include <IMP/algebra/constants.h>
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #define IMP_RAD_2_DEG(a) 180 * a / IMP::algebra::PI

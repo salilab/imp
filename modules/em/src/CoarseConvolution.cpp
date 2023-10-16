@@ -7,7 +7,7 @@
  */
 
 #include <IMP/em/CoarseConvolution.h>
-#include <math.h>
+#include <cmath>
 
 IMPEM_BEGIN_NAMESPACE
 

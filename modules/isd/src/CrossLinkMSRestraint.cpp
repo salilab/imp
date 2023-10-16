@@ -14,7 +14,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/Restraint.h>
-#include <math.h>
+#include <cmath>
 #include <limits.h>
 #include <boost/math/special_functions/erf.hpp>
 

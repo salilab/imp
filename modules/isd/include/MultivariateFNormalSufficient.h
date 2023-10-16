@@ -14,7 +14,7 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <IMP/Object.h>
-#include <math.h>
+#include <cmath>
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
 #include <IMP/isd/internal/cg_eigen.h>
