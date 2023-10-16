@@ -74,14 +74,14 @@ void show_hierarchy(RMF::NodeConstHandle nh, const RMF::Categories& cs,
       << "type=\"" << nh.get_type() << "\">\n";
   if (seen.find(nh) == seen.end()) {
     if (variables_map.count("verbose")) {
-      for (unsigned int i = 0; i < cs.size(); ++i) {
-        show_data_xml(nh, cs[i], out);
+      for (const auto &c : cs) {
+        show_data_xml(nh, c, out);
       }
     }
     RMF::NodeConstHandles children = nh.get_children();
-    for (unsigned int i = 0; i < children.size(); ++i) {
+    for (const auto &child : children) {
       out << "<child>\n";
-      show_hierarchy(children[i], cs, seen, out);
+      show_hierarchy(child, cs, seen, out);
       out << "</child>\n";
     }
     seen.insert(nh);

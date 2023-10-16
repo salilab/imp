@@ -107,10 +107,10 @@ void validate() {
   fr.id = FrameID(1);
   validate_one(fr, Frame());
   FileDataChanges changes;
-  changes.categories.push_back(std::make_pair(Category(0), "hi"));
-  changes.node_types.push_back(std::make_pair(ROOT, "root"));
-  changes.frame_types.push_back(std::make_pair(STATIC, "static"));
-  changes.node_sets.push_back(std::make_pair(1, NodeIDs(2, NodeID(10))));
+  changes.categories.emplace_back(Category(0), "hi");
+  changes.node_types.emplace_back(ROOT, "root");
+  changes.frame_types.emplace_back(STATIC, "static");
+  changes.node_sets.emplace_back(1, NodeIDs(2, NodeID(10)));
   FileData data;
   validate_one(changes, data);
   validate_raw(fr);

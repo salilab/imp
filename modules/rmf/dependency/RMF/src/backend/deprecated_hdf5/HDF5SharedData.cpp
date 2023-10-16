@@ -278,10 +278,9 @@ unsigned int HDF5SharedData::add_category_impl(std::string name) {
 
 Categories HDF5SharedData::get_categories() const {
   Categories ret;
-  for (CategoryDataMap::const_iterator it = category_data_map_.begin();
-       it != category_data_map_.end(); ++it) {
-    if (it->second.name == "link") continue;
-    ret.push_back(it->first);
+  for (const auto &it : category_data_map_) {
+    if (it.second.name == "link") continue;
+    ret.push_back(it.first);
   }
   return ret;
 }

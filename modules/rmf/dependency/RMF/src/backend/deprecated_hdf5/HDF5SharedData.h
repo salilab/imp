@@ -13,7 +13,7 @@
 #include <array>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <hdf5.h>
-#include <stddef.h>
+#include <cstddef>
 #include <algorithm>
 #include <functional>
 #include <string>

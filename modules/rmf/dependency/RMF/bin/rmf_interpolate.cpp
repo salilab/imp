@@ -118,7 +118,7 @@ void interpolate_frames(int num, double noise, double angle_noise,
   // boost::random_device seed_gen;
   boost::mt19937 rng;
   // rng.seed(seed_gen());
-  rng.seed(static_cast<boost::uint64_t>(std::time(NULL)));
+  rng.seed(static_cast<boost::uint64_t>(std::time(nullptr)));
   boost::normal_distribution<> nd(0.0, noise);
   boost::variate_generator<boost::mt19937&, boost::normal_distribution<> >
       normal_random(rng, nd);

@@ -223,8 +223,8 @@ std::string File::get_name() const {
   return std::string(buf.get());
 }
 
-File::~File() {}
-ConstFile::~ConstFile() {}
+File::~File() = default;
+ConstFile::~ConstFile() = default;
 
 int get_number_of_open_handles(ConstFile f) {
   H5garbage_collect();

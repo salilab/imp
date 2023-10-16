@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
         "input-files,i",
         boost::program_options::value<std::vector<std::string> >(&inputs),
         "input rmf file");
-    positional_names.push_back("input_1.rmf input_2.rmf ... output.rmf");
+    positional_names.emplace_back("input_1.rmf input_2.rmf ... output.rmf");
     positional_options_description.add("input-files", -1);
     process_options(argc, argv);
     if (inputs.size() < 3) {

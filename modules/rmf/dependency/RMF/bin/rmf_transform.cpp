@@ -67,8 +67,8 @@ void transform(RMF::NodeHandle nh,
   RMF_TRANSFORM_LIST(cf, Cylinder, coordinates_list);
   RMF_TRANSFORM_LIST(sf, Segment, coordinates_list);
   RMF::NodeHandles children = nh.get_children();
-  for (unsigned int i = 0; i < children.size(); ++i) {
-    transform(children[i], ipf, rpf, rff, bf, cf, sf, scale, translation);
+  for (const auto &child: children) {
+    transform(child, ipf, rpf, rff, bf, cf, sf, scale, translation);
   }
 }
 }

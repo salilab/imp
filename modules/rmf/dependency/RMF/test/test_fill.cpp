@@ -15,7 +15,7 @@
 #include <H5Spublic.h>
 #include <H5Tpublic.h>
 #include <H5public.h>
-#include <stddef.h>
+#include <cstddef>
 #include <iostream>
 
 #define HDF5_CALL(x)                                             \
@@ -48,12 +48,13 @@ void set_value(hid_t ds, int i, int j, double v) {
   ij[0] = i;
   ij[1] = j;
   hsize_t one = 1;
-  HDF5_HANDLE(ids, H5Screate_simple(1, &one, NULL), &H5Sclose);
+  HDF5_HANDLE(ids, H5Screate_simple(1, &one, nullptr), &H5Sclose);
   hsize_t ones[2];
   ones[0] = 1;
   ones[1] = 1;
   HDF5_HANDLE(space, H5Dget_space(ds), &H5Sclose);
-  HDF5_CALL(H5Sselect_hyperslab(space, H5S_SELECT_SET, ij, ones, ones, NULL));
+  HDF5_CALL(H5Sselect_hyperslab(space, H5S_SELECT_SET, ij, ones, ones,
+                                nullptr));
   HDF5_CALL(H5Dwrite(ds, H5T_NATIVE_DOUBLE, ids, space, H5P_DEFAULT, &v));
 }
 }

@@ -148,8 +148,8 @@ RMF_ENABLE_WARNINGS namespace {
       out << str;
     }
     RMF::NodeConstHandles ch = nh.get_children();
-    for (unsigned int i = 0; i < ch.size(); ++i) {
-      current_index = write_atoms(out, current_index, ch[i], ipf, af, cf, rf,
+    for (const auto &c : ch) {
+      current_index = write_atoms(out, current_index, c, ipf, af, cf, rf,
                                   chain, residue_index, residue_type);
     }
     return current_index;
