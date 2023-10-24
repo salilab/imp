@@ -417,12 +417,16 @@ class _StartingModel(ihm.startmodel.StartingModel):
 
     def _set_sources_datasets(self, system, datasets):
         # Attempt to identify PDB file vs. comparative model
-        p = ihm.metadata.PDBParser()
+        if (hasattr(ihm.metadata, 'CIFParser')
+                and self.filename.endswith('.cif')):
+            p = ihm.metadata.CIFParser()
+        else:
+            p = ihm.metadata.PDBParser()
         r = p.parse_file(self.filename)
-        system.software.extend(r['software'])
+        system.software.extend(r.get('software', []))
         dataset = datasets.add(r['dataset'])
         # We only want the templates that model the starting model chain
-        templates = r['templates'].get(self.asym_id, [])
+        templates = r.get('templates', {}).get(self.asym_id, [])
         for t in templates:
             if t.alignment_file:
                 system.locations.append(t.alignment_file)
@@ -430,7 +434,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
                 datasets.add(t.dataset)
         self.dataset = dataset
         self.templates = templates
-        self.metadata = r['metadata']
+        self.metadata = r.get('metadata', [])
 
     def _read_coords(self):
         """Read the coordinates for this starting model"""
@@ -438,7 +442,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
         # todo: support reading other subsets of the atoms (e.g. CA/CB)
         slt = IMP.atom.ChainPDBSelector([self.asym_id]) \
             & IMP.atom.NonWaterNonHydrogenPDBSelector()
-        hier = IMP.atom.read_pdb(self.filename, m, slt)
+        hier = IMP.atom.read_pdb_or_mmcif(self.filename, m, slt)
         rng = self.asym_unit.seq_id_range
         sel = IMP.atom.Selection(
             hier, residue_indexes=list(range(rng[0] - self.offset,

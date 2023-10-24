@@ -282,14 +282,17 @@ _ihm_model_representation_details.description
         top.add_child(state)
         return state
 
-    def _make_residue_chain(self, name, chain_id, model):
+    def _make_residue_chain(self, name, chain_id, model, cif=False):
         if name == 'Nup84':
-            fname = 'test.nup84.pdb'
+            if cif:
+                fname = 'test.nup84.cif'
+            else:
+                fname = 'test.nup84.pdb'
             seq = 'ME'
         else:
             fname = 'test.nup85.pdb'
             seq = 'GE'
-        h = IMP.atom.read_pdb(self.get_input_file_name(fname), model)
+        h = IMP.atom.read_pdb_or_mmcif(self.get_input_file_name(fname), model)
         for hchain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             chain = IMP.atom.Chain(hchain)
             chain.set_sequence(seq)
@@ -308,20 +311,27 @@ _ihm_model_representation_details.description
             p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(p, 1.0)
 
-    def test_starting_model_dumper(self):
-        """Test StartingModelDumper"""
+    def test_starting_model_dumper_pdb(self):
+        """Test StartingModelDumper with PDB starting models"""
+        self._internal_test_starting_model_dumper(cif=False)
+
+    def test_starting_model_dumper_cif(self):
+        """Test StartingModelDumper with mmCIF starting models"""
+        self._internal_test_starting_model_dumper(cif=True)
+
+    def _internal_test_starting_model_dumper(self, cif):
         m = IMP.Model()
 
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         state1h = self.add_state(m, top, 0, "State1")
 
-        h1 = self._make_residue_chain('Nup84', 'A', m)
+        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
         state1h.add_child(h1)
 
         # Test multiple states: components that are the same in both states
         # (Nup84) should not be duplicated in the mmCIF output
         state2h = self.add_state(m, top, 0, "State2")
-        h1 = self._make_residue_chain('Nup84', 'A', m)
+        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
         state2h.add_child(h1)
         h2 = self._make_residue_chain('Nup85', 'B', m)
         state2h.add_child(h2)
