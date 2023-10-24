@@ -1161,7 +1161,10 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         system.locations.append(loc)
 
         with utils.temporary_directory('') as tmpdir:
-            bar = os.path.join(tmpdir, 'test_mmcif_extref.tmp')
+            # Force tmpdir to be a relative path (in Python 3.12 or later
+            # it will be an absolute path)
+            rel_tmpdir = os.path.relpath(tmpdir)
+            bar = os.path.join(rel_tmpdir, 'test_mmcif_extref.tmp')
             with open(bar, 'w') as f:
                 f.write("abcd")
             # Local file

@@ -266,8 +266,11 @@ class Tests(unittest.TestCase):
             for t in templates:
                 self.assertIsNone(t.alignment_file)
 
-    def check_modeller_model(self, pdbname):
-        p = self._parse_pdb(pdbname)
+    def check_modeller_model(self, pdbname, cif=False):
+        if cif:
+            p = self._parse_cif(pdbname)
+        else:
+            p = self._parse_pdb(pdbname)
         dataset = p['dataset']
         self.assertEqual(sorted(p['templates'].keys()), ['A', 'B'])
         s1, s2 = p['templates']['A']
@@ -304,11 +307,18 @@ class Tests(unittest.TestCase):
         self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
         self.assertEqual(s.name, 'MODELLER')
-        self.assertEqual(s.version, '9.18')
-        self.assertEqual(
-            s.description,
-            'Comparative modeling by satisfaction of spatial restraints, '
-            'build 2017/02/10 22:21:34')
+        if cif:
+            self.assertEqual(s.version, '10.4')
+            self.assertEqual(
+                s.description,
+                'Comparative modeling by satisfaction of spatial restraints, '
+                'build 2023/10/23 11:26:12')
+        else:
+            self.assertEqual(s.version, '9.18')
+            self.assertEqual(
+                s.description,
+                'Comparative modeling by satisfaction of spatial restraints, '
+                'build 2017/02/10 22:21:34')
         return p
 
     def test_modeller_local(self):
@@ -467,6 +477,17 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(dataset.location, ihm.location.FileLocation)
         self.assertEqual(dataset.location.path, fname)
         self.assertEqual(dataset.location.details, 'Starting model structure')
+
+    def test_cif_modeller_model(self):
+        """Test CIFParser when given a Modeller model"""
+        fname = utils.get_input_file_name(TOPDIR, 'modeller_model.cif')
+        p = self.check_modeller_model(fname, cif=True)
+        aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
+        script = utils.get_input_file_name(TOPDIR, 'modeller_model.py')
+        self.assertEqual(p['script'].path, script)
+        for templates in p['templates'].values():
+            for t in templates:
+                self.assertEqual(t.alignment_file.path, aliname)
 
 
 if __name__ == '__main__':
