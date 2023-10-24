@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/vector_metrics.h   \brief Functions to generate vectors.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,9 @@
 #include <IMP/WeakPointer.h>
 #include <algorithm>
 #include <numeric>
+#include <cereal/access.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -32,6 +35,11 @@ IMP_OBJECTS(VectorKDMetric, VectorKDMetrics);
 
 //! The l2 norm on the distance vector.
 class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(EuclideanVectorKDMetric);
  public:
   EuclideanVectorKDMetric(std::string name = "EuclideanVectorKDMetric%1%");
   double get_distance(const VectorKD &a, const VectorKD &b) const override {
@@ -50,6 +58,11 @@ class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
     centroid is the center of the bounding box of the vectors.
  */
 class IMPALGEBRAEXPORT MaxVectorKDMetric : public VectorKDMetric {
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MaxVectorKDMetric);
  public:
   MaxVectorKDMetric(std::string name = "MaxVectorKDMetric%1%");
   double get_distance(const VectorKD &a, const VectorKD &b) const override {
