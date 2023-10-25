@@ -2,7 +2,7 @@
  *  \file SurfaceMover.cpp
  *  \brief A mover that transforms a Surface
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/SurfaceMover.h>
@@ -96,5 +96,7 @@ void SurfaceMover::do_reject() {
 ModelObjectsTemp SurfaceMover::do_get_inputs() const {
   return ParticlesTemp(1, get_model()->get_particle(pi_));
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::SurfaceMover);
 
 IMPCORE_END_NAMESPACE

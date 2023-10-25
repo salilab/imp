@@ -13,7 +13,7 @@ IMP_SWIG_OBJECT_SERIALIZE( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SerialMover, SerialMovers);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SubsetMover, SubsetMovers);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DirectionMover, DirectionMovers);
-IMP_SWIG_OBJECT( IMP::core, SurfaceMover, SurfaceMovers);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SurfaceMover, SurfaceMovers);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingSphere3DSingletonScore, BoundingSphere3DSingletonScore, BoundingSphere3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
