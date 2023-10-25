@@ -2,7 +2,7 @@
  *  \file IMP/core/DirectionMover.h
  *  \brief A mover that transforms a Direction.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,9 @@
 #include <IMP/Particle.h>
 #include <IMP/Object.h>
 #include <IMP/Model.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -36,12 +39,22 @@ class IMPCOREEXPORT DirectionMover : public MonteCarloMover {
     void initialize(ParticleIndex pi, double max_rotation,
                     double reflect_probability);
 
+    friend class cereal::access;
+
+    template<class Archive> void serialize(Archive &ar) {
+      ar(cereal::base_class<MonteCarloMover>(this), last_direction_,
+         max_angle_, reflect_prob_, pi_);
+    }
+    IMP_OBJECT_SERIALIZE_DECL(DirectionMover);
+
   public:
     DirectionMover(Model *m, ParticleIndex pi, Float max_rotation,
                    Float reflect_probability);
 
     DirectionMover(Direction d, Float max_rotation,
                    Float reflect_probability);
+
+    DirectionMover() {}
   
     //! Set the maximum rotation in radians.
     void set_maximum_rotation(Float mr);

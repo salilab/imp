@@ -3,6 +3,7 @@ import IMP.algebra
 import IMP.core
 import IMP.atom
 import IMP.test
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -61,6 +62,35 @@ class Tests(IMP.test.TestCase):
         mv = IMP.core.DirectionMover(d, .1, 1.)
         self.assertSetEqual(set([d.get_particle()]), set(mv.get_inputs()))
         mv.set_was_used(True)
+
+    def test_pickle(self):
+        """Test (un-)pickle of DirectionMover"""
+        m = IMP.Model()
+        d = IMP.core.Direction.setup_particle(IMP.Particle(m),
+                                              IMP.algebra.Vector3D(0, 0, 1))
+        d.set_direction_is_optimized(True)
+        mvr = IMP.core.DirectionMover(d, .1, 1.)
+        mvr.set_name("foo")
+        dump = pickle.dumps(mvr)
+
+        newmvr = pickle.loads(dump)
+        self.assertEqual(newmvr.get_name(), "foo")
+        self.assertSetEqual(set([d.get_particle()]), set(newmvr.get_inputs()))
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of DirectionMover via polymorphic pointer"""
+        m = IMP.Model()
+        d = IMP.core.Direction.setup_particle(IMP.Particle(m),
+                                              IMP.algebra.Vector3D(0, 0, 1))
+        d.set_direction_is_optimized(True)
+        mvr = IMP.core.DirectionMover(d, .1, 1.)
+        mvr.set_name("foo")
+        sm = IMP.core.SerialMover([mvr])
+        dump = pickle.dumps(sm)
+
+        newsm = pickle.loads(dump)
+        newmvr, = newsm.get_movers()
+        self.assertEqual(newmvr.get_name(), "foo")
 
 
 if __name__ == '__main__':
