@@ -11,8 +11,8 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (3.6, 3.7, 3.8, 3.9, 3.10 and 3.11
-# for us)
+# Repeat for all desired Python versions (3.6, 3.7, 3.8, 3.9, 3.10, 3.11,
+# and 3.12 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -87,7 +87,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="3.6 3.7 3.8 3.9 3.10 3.11"
+PYVERS="3.6 3.7 3.8 3.9 3.10 3.11 3.12"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
@@ -114,7 +114,7 @@ rm -rf ${ROOT}/bin/imp_example_app.exe \
 # Remove any .svn directories
 rm -rf `find ${ROOT} -name .svn`
 
-PYVERS="36 37 38 39 310 311"
+PYVERS="36 37 38 39 310 311 312"
 if [ "${BITS}" = "32" ]; then
   MAKENSIS="makensis"
   DLLSRC=/usr/lib/w32comp/windows/system
