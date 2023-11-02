@@ -3,11 +3,11 @@
 # Make a Win32 installer
 
 # First run the following in the binary directory to install files:
-# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/3.6 \
-#       -DSWIG_PYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib \
-#       -DPYTHON_INCLUDE_DIRS=$w32py/3.6/include/ \
-#       -DPYTHON_INCLUDE_PATH=$w32py/3.6/include/ \
-#       -DPYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib
+# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/3.9 \
+#       -DSWIG_PYTHON_LIBRARIES=$w32py/3.9/lib/python39.lib \
+#       -DPYTHON_INCLUDE_DIRS=$w32py/3.9/include/ \
+#       -DPYTHON_INCLUDE_PATH=$w32py/3.9/include/ \
+#       -DPYTHON_LIBRARIES=$w32py/3.9/lib/python39.lib
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
@@ -61,8 +61,10 @@ rm -rf ${ROOT}/pylib/2.7/
 
 # Remove .pyc files
 find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
-mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/3.6/ihm/*.py ${ROOT}/python/ihm || exit 1
+
+# Put pure Python files in correct location
+mv ${ROOT}/pylib/3.9/*.py ${ROOT}/pylib/3.9/IMP ${ROOT}/python || exit 1
+mv ${ROOT}/pylib/3.9/ihm/*.py ${ROOT}/python/ihm || exit 1
 
 rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
 
