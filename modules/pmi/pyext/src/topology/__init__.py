@@ -562,6 +562,12 @@ class Molecule(_SystemBase):
                           is the ending residue index.
         @param offset     Apply an offset to the residue indexes of the PDB
                           file. This number is added to the PDB sequence.
+                          PMI uses 1-based FASTA numbering internally (the
+                          first residue in the sequence is numbered 1, and
+                          so on). If the PDB chain is not also numbered
+                          starting from 1, apply an offset to make it match
+                          the FASTA. For example, if the PDB is numbered
+                          starting from -5, use an offset of 6 (-5 + 6 = 1).
         @param model_num  Read multi-model PDB and return that model
         @param ca_only    Only read the CA positions from the PDB file
         @param soft_check If True, it only warns if there are sequence
