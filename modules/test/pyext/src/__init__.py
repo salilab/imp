@@ -787,10 +787,13 @@ class _TestResult(unittest.TextTestResult):
 
     def stopTestRun(self):
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
+            # Various parts of the IMP build pipeline use Python 3.6,
+            # which predates pickle protocol 5
+            protocol = min(pickle.HIGHEST_PROTOCOL, 4)
             fname = (Path(os.environ['IMP_TEST_DETAIL_DIR'])
                      / Path(sys.argv[0]).name)
             with open(str(fname), 'wb') as fh:
-                pickle.dump(self.all_tests, fh, -1)
+                pickle.dump(self.all_tests, fh, protocol)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
