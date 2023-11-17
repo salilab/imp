@@ -50,7 +50,8 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
      \param[in] ff_type Type of the form factors for profile calculations:
                 ALL_ATOMS - all atoms including hydrogens
                 HEAVY_ATOMS - no hydrogens, all other atoms included
-                CA_ATOMS - residue level, residue represented by CA
+                CA_ATOMS - residue level, residue represented by CA atom
+                RESIDUES - residue level, residue represented by bead
   */
   Restraint(const Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
