@@ -16,16 +16,14 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     : Object("RigidBodiesProfileHandler%1%") {
   boost::unordered_map<ParticleIndex, Particles> rigid_bodies;
   for (unsigned int i = 0; i < particles.size(); ++i) {
-    if (core::RigidMember::get_is_setup(particles[i])) {
-      ParticleIndex pi =
+    if (atom::Atom::get_is_setup(particles[i])
+        || (ff_type == RESIDUES && atom::Residue::get_is_setup(particles[i]))) {
+      if (core::RigidMember::get_is_setup(particles[i])) {
+        ParticleIndex pi =
           core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
-      rigid_bodies[pi].push_back(particles[i]);
-    } else {
-      if (ff_type ==RESIDUES && atom::Residue::get_is_setup(particles[i])) {
-          particles_.push_back(particles[i]);
-      } 
-      else if (atom::Atom::get_is_setup(particles[i])) {
-          particles_.push_back(particles[i]);          
+        rigid_bodies[pi].push_back(particles[i]);
+      } else {
+        particles_.push_back(particles[i]);
       }
     }
   }
