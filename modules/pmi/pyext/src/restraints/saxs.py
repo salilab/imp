@@ -45,13 +45,12 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
         @param label Label for the restraint in outputs
         @param maxq Maximum q value that the restraint will be evaluated at.
                If set to 'standard' (the default), the following values will
-               be used:
+               be used (these values were eyeballed by comparing ALL_ATOM
+               calculated SAXS profiles to those calculated with the reduced
+               representations, so could be improved):
                    - For ff_type = ALL_ATOMS: 0.5
                    - HEAVY_ATOMS: 0.4
                    - CA_ATOMS and RESIDUES: 0.15
-               These values were eyeballed by comparing ALL_ATOM calculated
-               SAXS profiles to those calculated with the reduced
-               representations, so could be improved.
         """
         # Get all hierarchies.
         hiers = IMP.pmi.tools.input_adaptor(input_objects,
