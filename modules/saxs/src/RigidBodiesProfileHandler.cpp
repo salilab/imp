@@ -25,6 +25,11 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
       } else {
         particles_.push_back(particles[i]);
       }
+    } else {
+      IMP_THROW("SAXS::RigidBodiesProfileHandler: invalid particle provided "
+                "(only " << (ff_type == RESIDUES ? "Atom or Residue" : "Atom")
+                << " particles are considered): " << particles[i],
+                IMP::TypeException);
     }
   }
 

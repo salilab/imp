@@ -266,6 +266,10 @@ class Tests(IMP.test.TestCase):
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 1.0307, delta=0.01)
 
+        # Atomic restraint should fail given residue information
+        self.assertRaises(TypeError, IMP.saxs.Restraint, saxs_particles,
+                          exp_profile, IMP.saxs.HEAVY_ATOMS)
+
     def test_background_adjust(self):
         """Test Profile.background_adjust"""
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
