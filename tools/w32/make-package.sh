@@ -131,16 +131,16 @@ cp ${DLLSRC}/msvcp140.dll ${DLLSRC}/concrt140.dll ${DLLSRC}/vcruntime140.dll \
 
 # Add other DLL dependencies
 cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-   ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_program_options-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_system-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_date_time-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_graph-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_regex-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_thread-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
+   ${DLLSRC}/boost_filesystem-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_program_options-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_system-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_date_time-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_graph-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_regex-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_thread-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_random-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_iostreams-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_zlib-vc141-mt-x${BITS}-1_83.dll \
    ${DLLSRC}/libgmp-10.dll \
    ${DLLSRC}/libmpfr-4.dll \
    ${DLLSRC}/libfftw3-3.dll \
