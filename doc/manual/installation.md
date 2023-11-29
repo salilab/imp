@@ -37,7 +37,7 @@ sys.path.append(os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[
 In order to build %IMP from source, you will need:
 
 - A C++ compiler that supports the C++11 standard, such as gcc, clang,
-  or Microsoft Visual Studio 2015 or later.
+  or Microsoft Visual Studio 2017 or later.
 - [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
