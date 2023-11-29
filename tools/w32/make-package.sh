@@ -176,6 +176,9 @@ echo "mf.dll" >> w32.dlls
 echo "mfplat.dll" >> w32.dlls
 echo "mfreadwrite.dll" >> w32.dlls
 echo "shlwapi.dll" >> w32.dlls
+echo "bcrypt.dll" >> w32.dlls
+echo "d3d11.dll" >> w32.dlls
+echo "dxgi.dll" >> w32.dlls
 
 # Also exclude Universal C runtime and Windows API sets, which
 # should be present on any up to date Windows 7 system (via KB2999226),
