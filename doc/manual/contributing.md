@@ -8,3 +8,5 @@ could include
    button at the top of each page)
  - Adding a new function, class, or module to %IMP
  - [Publishing your protocol](@ref biosystem) for applying %IMP to a biological system
+
+Please also see our [code of conduct](@ref codeconduct) for all contributions.
