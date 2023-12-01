@@ -91,6 +91,7 @@ class DoxConfigFileGenerator(tools.FileGenerator):
         if manual:
             inputsh = [source + "/doc/manual",
                        source + "/tools/README.md",
+                       source + "/CODE_OF_CONDUCT.md",
                        source + "/ChangeLog.md"]
         else:
             inputsh = ["doxygen/generated", source + "/doc/ref",
