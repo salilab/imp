@@ -1,6 +1,8 @@
 vars = Variables('config.py')
-vars.Add('libpath', 'Directory/ies where IMP libraries are installed', None)
-vars.Add('cpppath', 'Directory/ies where IMP headers are installed', None)
+vars.Add('libpath',
+         'Directory/ies where IMP or dependency libraries are installed', None)
+vars.Add('cpppath',
+         'Directory/ies where IMP or dependency headers are installed', None)
 vars.Add('cxxflags', 'C++ compile flags', '')
 vars.Add('linkflags', 'Link flags', '')
 vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
