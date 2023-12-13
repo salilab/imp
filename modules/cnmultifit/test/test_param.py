@@ -28,7 +28,8 @@ class Tests(IMP.test.TestCase):
                                 '--numsols', '42', '--',
                                 '7', 'testmonomer.pdb', 'test.mrc', '8.0',
                                 '4.0', '5.0', '-10.0', '-20.0', '-30.0'])
-        contents = open('test.params').read()
+        with open('test.params') as fh:
+            contents = fh.read()
         self.assertIn('output = test.output', contents)
         self.assertIn('intermediate = test.int', contents)
         self.assertIn('model = test.model', contents)

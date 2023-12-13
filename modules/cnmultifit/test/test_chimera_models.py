@@ -22,7 +22,8 @@ class Tests(IMP.test.TestCase):
 
     def test_chimera_models_run(self):
         """Test chimera_models module run"""
-        open('test.pdb', 'w').write("""
+        with open('test.pdb', 'w') as fh:
+            fh.write("""
 ATOM      1  N   ALA A   2     -27.425   4.153 -19.130  1.00  0.00           N
 ATOM      2  CA  ALA A   2     -18.390   4.442 -18.049  1.00  0.00           C
 """)
