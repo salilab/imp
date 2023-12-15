@@ -14,6 +14,7 @@ import ihm.representation
 import ihm.model
 import ihm.source
 import ihm.flr
+import ihm.multi_state_scheme
 
 
 class Tests(unittest.TestCase):
@@ -214,7 +215,7 @@ class Tests(unittest.TestCase):
     def test_entity(self):
         """Test Entity class"""
         e1 = ihm.Entity('AHCD', description='foo')
-        # Should compare identical if sequences are the same
+        # Should compare identical if sequences are the same, if not branched
         e2 = ihm.Entity('AHCD', description='bar')
         e3 = ihm.Entity('AHCDE', description='foo')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
@@ -223,6 +224,10 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(e1, e3)
         self.assertEqual(e1.seq_id_range, (1, 4))
         self.assertEqual(e3.seq_id_range, (1, 5))
+        sugar2 = ihm.Entity([ihm.SaccharideChemComp('NAG')])
+        # Branched entities never compare equal unless they are the same object
+        self.assertEqual(sugar, sugar)
+        self.assertNotEqual(sugar, sugar2)
         # seq_id does not exist for nonpolymers
         self.assertEqual(heme.seq_id_range, (None, None))
         # We do have an internal seq_id_range for branched entities
@@ -259,16 +264,25 @@ class Tests(unittest.TestCase):
         single_aa = ihm.Entity('A')
         self.assertEqual(single_aa.type, 'non-polymer')
         self.assertFalse(single_aa.is_polymeric())
+        self.assertFalse(single_aa.is_branched())
 
         # ... unless forced polymer
         single_aa._force_polymer = True
         self.assertEqual(single_aa.type, 'polymer')
         self.assertTrue(single_aa.is_polymeric())
+        self.assertFalse(single_aa.is_branched())
 
         # An entity with no sequence is a polymer
         empty = ihm.Entity([])
         self.assertEqual(empty.type, 'polymer')
         self.assertTrue(empty.is_polymeric())
+        self.assertFalse(empty.is_branched())
+
+        # ... unless hint branched
+        empty._hint_branched = True
+        self.assertEqual(empty.type, 'branched')
+        self.assertFalse(empty.is_polymeric())
+        self.assertTrue(empty.is_branched())
 
     def test_entity_src_method_default(self):
         """Test default values of Entity.src_method"""
@@ -518,6 +532,24 @@ class Tests(unittest.TestCase):
         self.assertEqual(a._get_auth_seq_id_ins_code(2), (4, None))
         self.assertEqual(a._get_auth_seq_id_ins_code(3), (3, None))
 
+    def test_orig_auth_seq_id_none(self):
+        """Test default orig_auth_seq_idm_map (None)"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: (4, 'A')})
+        self.assertIsNone(a.orig_auth_seq_id_map)
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(1), (0, 0, None))
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(2), (4, 4, 'A'))
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(3), (3, 3, None))
+
+    def test_orig_auth_seq_id_dict(self):
+        """Test orig_auth_seq_id_map as dict"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: (4, 'A')},
+                         orig_auth_seq_id_map={1: 5})
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(1), (0, 5, None))
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(2), (4, 4, 'A'))
+        self.assertEqual(a._get_pdb_auth_seq_id_ins_code(3), (3, 3, None))
+
     def test_assembly(self):
         """Test Assembly class"""
         e1 = ihm.Entity('AHCD')
@@ -580,6 +612,30 @@ class Tests(unittest.TestCase):
                                     model_group2, model_group2,
                                     model_group3, model_group4,
                                     model_group1, model_group2])
+
+        model_group5 = 'mg5'
+        model_group6 = 'mg6'
+        model_group7 = 'mg7'
+        state3 = [model_group5]
+        state4 = [model_group6]
+        state5 = [model_group7]
+        mssc1 = ihm.multi_state_scheme.Connectivity(
+            begin_state=state3,
+            end_state=state4)
+        mssc2 = ihm.multi_state_scheme.Connectivity(
+            begin_state=state5)
+        mssc3 = ihm.multi_state_scheme.Connectivity(
+            begin_state=state3,
+            end_state=state4)
+        mss = ihm.multi_state_scheme.MultiStateScheme(
+            name='mss',
+            connectivities=[mssc1, mssc2, mssc3])
+        s.multi_state_schemes.append(mss)
+        mg = s._all_model_groups()
+        self.assertEqual(list(mg), [model_group1, model_group2,
+                                    model_group2, model_group2,
+                                    model_group5, model_group6,
+                                    model_group7])
 
     def test_all_models(self):
         """Test _all_models() method"""
@@ -1060,6 +1116,164 @@ class Tests(unittest.TestCase):
         # duplicates should not be filtered
         self.assertEqual(list(s._all_entity_ranges()),
                          [e1rng, a1, e1, a1, a1rng])
+
+    def test_all_multi_state_schemes(self):
+        """Test _all_multi_state_schemes() method"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        m1 = MockObject()
+        m2 = MockObject()
+        m3 = MockObject()
+        s.multi_state_schemes.append(m1)
+        s.multi_state_schemes.append(m2)
+        s.multi_state_schemes.append(m3)
+
+        self.assertEqual(list(s._all_multi_state_schemes()),
+                         [m1, m2, m3])
+
+    def test_all_multi_state_scheme_connectivities(self):
+        """Test _all_multi_state_scheme_connectivities() method"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        # Multi-state schemes
+        mss1 = ihm.multi_state_scheme.MultiStateScheme('mss1')
+        mss2 = ihm.multi_state_scheme.MultiStateScheme('mss2')
+        # States
+        s1 = MockObject()
+        s2 = MockObject()
+        s3 = MockObject()
+        # Connectivities
+        c1 = ihm.multi_state_scheme.Connectivity(s1)
+        c2 = ihm.multi_state_scheme.Connectivity(s2)
+        c3 = ihm.multi_state_scheme.Connectivity(s3)
+        mss1.add_connectivity(c1)
+        mss1.add_connectivity(c2)
+        mss2.add_connectivity(c1)
+        mss2.add_connectivity(c3)
+        s.multi_state_schemes.append(mss1)
+        s.multi_state_schemes.append(mss2)
+        # Duplicates are kept
+        self.assertEqual(list(s._all_multi_state_scheme_connectivities()),
+                         [c1, c2, c1, c3])
+
+    def test_all_kinetic_rates(self):
+        """Test _all_kinetic_rates() method"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        # Multi-state schemes
+        mss1 = ihm.multi_state_scheme.MultiStateScheme('mss1')
+        mss2 = ihm.multi_state_scheme.MultiStateScheme('mss2')
+        # States
+        s1 = MockObject()
+        s2 = MockObject()
+        s3 = MockObject()
+        # Kinetic rates
+        k1 = MockObject()
+        k2 = MockObject()
+        k3 = MockObject()
+
+        # Connectivities
+        c1 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s1,
+            kinetic_rate=k1)
+        c2 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s2,
+            kinetic_rate=k2)
+        c3 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s3,
+            kinetic_rate=k3)
+        c4 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s3,
+            kinetic_rate=None)
+
+        mss1.add_connectivity(c1)
+        mss1.add_connectivity(c2)
+        mss2.add_connectivity(c1)
+        mss2.add_connectivity(c3)
+        mss2.add_connectivity(c4)
+        s.multi_state_schemes.append(mss1)
+        s.multi_state_schemes.append(mss2)
+
+        # Does not contain duplicates
+        self.assertEqual(list(s._all_kinetic_rates()),
+                         [k1, k2, k3])
+
+        # From kinetic_rate_fret_analysis_connections in FLRData
+        k4 = MockObject()
+        kfc = MockObject()
+        kfc.kinetic_rate = k4
+        f = ihm.flr.FLRData()
+        f.kinetic_rate_fret_analysis_connections.append(kfc)
+        s.flr_data.append(f)
+        # Does not contain duplicates
+        self.assertEqual(list(s._all_kinetic_rates()),
+                         [k1, k2, k3, k4])
+
+    def test_all_relaxation_times(self):
+        """Test _all_relaxation_times() method"""
+        class MockObject(object):
+            pass
+        s = ihm.System()
+        # Multi-state schemes
+        mss1 = ihm.multi_state_scheme.MultiStateScheme('mss1')
+        mss2 = ihm.multi_state_scheme.MultiStateScheme('mss2')
+        # States
+        s1 = MockObject()
+        s2 = MockObject()
+        s3 = MockObject()
+        # Kinetic rates
+        r1 = MockObject()
+        r2 = MockObject()
+        r3 = MockObject()
+        r4 = MockObject()
+        r5 = MockObject()
+
+        # Connectivities
+        c1 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s1,
+            relaxation_time=r1)
+        c2 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s2,
+            relaxation_time=r2)
+        c3 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s3,
+            relaxation_time=r3)
+        c4 = ihm.multi_state_scheme.Connectivity(
+            begin_state=s3,
+            relaxation_time=None,
+            kinetic_rate='rate'
+        )
+
+        mss1.add_relaxation_time(r4)
+        mss2.add_relaxation_time(r5)
+
+        mss1.add_connectivity(c1)
+        mss1.add_connectivity(c2)
+        mss2.add_connectivity(c1)
+        mss2.add_connectivity(c3)
+        mss2.add_connectivity(c4)
+        s.multi_state_schemes.append(mss1)
+        s.multi_state_schemes.append(mss2)
+        # Does not contain duplicates
+        self.assertEqual(list(s._all_relaxation_times()),
+                         [r4, r5, r1, r2, r3])
+
+        # From relaxation_time_fret_analysis_connections in FLRData
+        r6 = MockObject()
+        rfc = MockObject()
+        rfc.relaxation_time = r6
+        f = ihm.flr.FLRData()
+        f.relaxation_time_fret_analysis_connections.append(rfc)
+        s.flr_data.append(f)
+        # Does not contain duplicates
+        self.assertEqual(list(s._all_relaxation_times()),
+                         [r4, r5, r1, r2, r3, r6])
 
     def test_update_locations_in_repositories(self):
         """Test update_locations_in_repositories() method"""

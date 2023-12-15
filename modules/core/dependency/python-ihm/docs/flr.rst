@@ -106,5 +106,11 @@ The :mod:`ihm.flr` Python module
 .. autoclass:: FPSMPPAtomPosition
    :members:
 
+.. autoclass:: KineticRateFretAnalysisConnection
+   :members:
+
+.. autoclass:: RelaxationTimeFretAnalysisConnection
+   :members:
+
 .. autoclass:: FLRData
    :members:

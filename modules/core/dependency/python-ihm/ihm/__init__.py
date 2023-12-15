@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '0.41'
+__version__ = '0.43'
 
 
 class __UnknownValue(object):
@@ -222,6 +222,10 @@ class System(object):
         #: See :class:`~ihm.flr.FLRData`.
         self.flr_data = []
 
+        #: All multi-state schemes
+        #: See :class:`~ihm.multi_state_scheme.MultiStateScheme`.
+        self.multi_state_schemes = []
+
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
         # Clear out any existing components
@@ -311,10 +315,22 @@ class System(object):
            by a State object; otherwise, also include ModelGroups referenced
            by an OrderedProcess or Ensemble."""
         # todo: raise an error if a modelgroup is present in multiple states
+        seen_model_groups = []
         for state_group in self.state_groups:
             for state in state_group:
                 for model_group in state:
+                    seen_model_groups.append(model_group)
                     yield model_group
+        for mssc in self._all_multi_state_scheme_connectivities():
+            for model_group in mssc.begin_state:
+                if model_group not in seen_model_groups:
+                    seen_model_groups.append(model_group)
+                    yield model_group
+            if mssc.end_state:
+                for model_group in mssc.end_state:
+                    if model_group not in seen_model_groups:
+                        seen_model_groups.append(model_group)
+                        yield model_group
         if not only_in_states:
             for ensemble in self.ensembles:
                 if ensemble.model_group:
@@ -397,7 +413,14 @@ class System(object):
             (step.dataset_group for step in self._all_protocol_steps()
              if step.dataset_group),
             (step.dataset_group for step in self._all_analysis_steps()
-             if step.dataset_group))
+             if step.dataset_group),
+            (rt.dataset_group for rt in self._all_relaxation_times()
+             if rt.dataset_group),
+            (kr.dataset_group for kr in self._all_kinetic_rates()
+             if kr.dataset_group),
+            (mssc.dataset_group for mssc in
+             self._all_multi_state_scheme_connectivities()
+             if mssc.dataset_group))
 
     def _all_templates(self):
         """Iterate over all Templates in the system."""
@@ -471,7 +494,11 @@ class System(object):
             (step.script_file for step in self._all_protocol_steps()
                 if step.script_file),
             (step.script_file for step in self._all_analysis_steps()
-                if step.script_file))
+                if step.script_file),
+            (rt.external_file for rt in self._all_relaxation_times()
+                if rt.external_file),
+            (kr.external_file for kr in self._all_kinetic_rates()
+                if kr.external_file))
 
     def _all_geometric_objects(self):
         """Iterate over all GeometricObjects in the system.
@@ -562,6 +589,57 @@ class System(object):
             (comp for f in self._all_features()
                 for comp in f._all_entities_or_asyms()),
             (d.asym_unit for d in self._all_densities())))
+
+    def _all_multi_state_schemes(self):
+        for mss in self.multi_state_schemes:
+            yield mss
+
+    def _all_multi_state_scheme_connectivities(self):
+        """Iterate over all multi-state scheme connectivities"""
+        for mss in self.multi_state_schemes:
+            for mssc in mss.get_connectivities():
+                yield mssc
+
+    def _all_kinetic_rates(self):
+        """Iterate over all kinetic rates within multi-state schemes"""
+        return _remove_identical(itertools.chain(
+            (mssc.kinetic_rate for mssc in
+             self._all_multi_state_scheme_connectivities()
+             if mssc.kinetic_rate),
+            (c.kinetic_rate for f in
+             self.flr_data for c in f.kinetic_rate_fret_analysis_connections
+             if self.flr_data)))
+
+    def _all_relaxation_times(self):
+        """Iterate over all relaxation times.
+        This includes relaxation times from
+        :class:`ihm.multi_state_scheme.MultiStateScheme`
+        and those assigned to connectivities in
+        :class:`ihm.multi_state_scheme.Connectivity`"""
+        seen_relaxation_times = []
+        for mss in self._all_multi_state_schemes():
+            for rt in mss.get_relaxation_times():
+                if rt in seen_relaxation_times:
+                    continue
+                seen_relaxation_times.append(rt)
+                yield rt
+        for mssc in self._all_multi_state_scheme_connectivities():
+            if mssc.relaxation_time:
+                rt = mssc.relaxation_time
+                if rt in seen_relaxation_times:
+                    continue
+                seen_relaxation_times.append(rt)
+                yield rt
+        # Get the relaxation times from the
+        # flr.RelaxationTimeFRETAnalysisConnection objects
+        if self.flr_data:
+            for f in self.flr_data:
+                for c in f.relaxation_time_fret_analysis_connections:
+                    rt = c.relaxation_time
+                    if rt in seen_relaxation_times:
+                        continue
+                    seen_relaxation_times.append(rt)
+                    yield rt
 
     def _before_write(self):
         """Do any setup necessary before writing out to a file"""
@@ -1248,6 +1326,7 @@ class Entity(object):
     """  # noqa: E501
 
     _force_polymer = None
+    _hint_branched = None
 
     def __get_type(self):
         if self.is_polymeric():
@@ -1315,7 +1394,7 @@ class Entity(object):
         """Return True iff this entity represents a polymer, such as an
            amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
         return (self._force_polymer or
-                len(self.sequence) == 0 or
+                (len(self.sequence) == 0 and not self._hint_branched) or
                 len(self.sequence) > 1
                 and any(isinstance(x, (PeptideChemComp, DNAChemComp,
                                        RNAChemComp)) for x in self.sequence))
@@ -1323,19 +1402,29 @@ class Entity(object):
     def is_branched(self):
         """Return True iff this entity is branched (generally
            an oligosaccharide)"""
-        return (len(self.sequence) > 0
-                and isinstance(self.sequence[0], SaccharideChemComp))
+        return ((len(self.sequence) > 0
+                 and isinstance(self.sequence[0], SaccharideChemComp)) or
+                (len(self.sequence) == 0 and self._hint_branched))
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(entity=self, seq_id=seq_id)
 
-    # Entities are considered identical if they have the same sequence
+    # Entities are considered identical if they have the same sequence,
+    # unless they are branched
     def __eq__(self, other):
-        return isinstance(other, Entity) and self.sequence == other.sequence
+        if not isinstance(other, Entity):
+            return False
+        if self.is_branched() or other.is_branched():
+            return self is other
+        else:
+            return self.sequence == other.sequence
 
     def __hash__(self):
-        return hash(self.sequence)
+        if self.is_branched():
+            return hash(id(self))
+        else:
+            return hash(self.sequence)
 
     def __call__(self, seq_id_begin, seq_id_end):
         return EntityRange(self, seq_id_begin, seq_id_end)
@@ -1408,7 +1497,7 @@ class AsymUnit(object):
        :type entity: :class:`Entity`
        :param str details: Longer text description of this unit.
        :param auth_seq_id_map: Mapping from internal 1-based consecutive
-              residue numbering (`seq_id`) to "author-provided" numbering
+              residue numbering (`seq_id`) to PDB "author-provided" numbering
               (`auth_seq_id` plus an optional `ins_code`). This can be either
               be an int offset, in which case
               ``auth_seq_id = seq_id + auth_seq_id_map`` with no insertion
@@ -1429,19 +1518,30 @@ class AsymUnit(object):
               IDs are automatically assigned alphabetically.
        :param str strand_id: PDB or "author-provided" strand/chain ID.
               If not specified, it will be the same as the regular ID.
-
+       :param orig_auth_seq_id_map: Mapping from internal 1-based consecutive
+              residue numbering (`seq_id`) to original "author-provided"
+              numbering. This differs from `auth_seq_id_map` as the original
+              numbering need not follow any defined scheme, while
+              `auth_seq_id_map` must follow certain PDB-defined rules. This
+              can either be a mapping type (dict, list, tuple) in which case
+              ``orig_auth_seq_id = orig_auth_seq_id_map[seq_id]``. If the
+              mapping is None (the default), or a given `seq_id` cannot be
+              found in the mapping, ``orig_auth_seq_id = auth_seq_id``.
+              This mapping is only used in the various `scheme` tables, such
+              as ``pdbx_poly_seq_scheme``.
        See :attr:`System.asym_units`.
     """
 
     number_of_molecules = 1
 
     def __init__(self, entity, details=None, auth_seq_id_map=0, id=None,
-                 strand_id=None):
+                 strand_id=None, orig_auth_seq_id_map=None):
         if (entity is not None and entity.type == 'water'
                 and not isinstance(self, WaterAsymUnit)):
             raise TypeError("Use WaterAsymUnit instead for creating waters")
         self.entity, self.details = entity, details
         self.auth_seq_id_map = auth_seq_id_map
+        self.orig_auth_seq_id_map = orig_auth_seq_id_map
         self.id = id
         self._strand_id = strand_id
 
@@ -1457,6 +1557,14 @@ class AsymUnit(object):
                     return ret
             except (KeyError, IndexError):
                 return seq_id, None
+
+    def _get_pdb_auth_seq_id_ins_code(self, seq_id):
+        pdb_seq_num, ins_code = self._get_auth_seq_id_ins_code(seq_id)
+        if self.orig_auth_seq_id_map is None:
+            auth_seq_num = pdb_seq_num
+        else:
+            auth_seq_num = self.orig_auth_seq_id_map.get(seq_id, pdb_seq_num)
+        return pdb_seq_num, auth_seq_num, ins_code
 
     def __call__(self, seq_id_begin, seq_id_end):
         return AsymUnitRange(self, seq_id_begin, seq_id_end)

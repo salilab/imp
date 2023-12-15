@@ -511,10 +511,11 @@ _entity.details
 2 polymer syn Nup85 3 200.0 .
 3 polymer . Nup86 3 300.0 .
 4 polymer unknown Nup87 3 300.0 .
+5 branched unknown Nup88 3 300.0 .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            e1, e2, e3, e4 = s.entities
+            e1, e2, e3, e4, e5 = s.entities
             self.assertEqual(e1.description, 'Nup84')
             self.assertTrue(e1._force_polymer)
             self.assertEqual(
@@ -523,6 +524,8 @@ _entity.details
             self.assertEqual(e2.source.src_method, 'syn')
             self.assertIsNone(e3.source)
             self.assertIsNone(e4.source)
+            self.assertFalse(e5._force_polymer)
+            self.assertTrue(e5._hint_branched)
 
     def test_entity_handler_minimal(self):
         """Test EntityHandler with minimal entity category"""
@@ -971,6 +974,9 @@ _ihm_dataset_list.details
             self.assertEqual(d1.__class__, ihm.dataset.PDBDataset)
             self.assertEqual(d2.__class__, ihm.dataset.ComparativeModelDataset)
             self.assertEqual(d3.__class__, ihm.dataset.EMMicrographsDataset)
+            self.assertTrue(d1._allow_duplicates)
+            self.assertTrue(d2._allow_duplicates)
+            self.assertTrue(d3._allow_duplicates)
             # No specified data type - use base class
             self.assertEqual(d4.__class__, ihm.dataset.Dataset)
             self.assertIsNone(d1.details)
@@ -2542,7 +2548,7 @@ loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
-_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_seq_num
 _pdbx_poly_seq_scheme.pdb_strand_id
 A 1 1 6 A
 A 1 2 7 A
@@ -2555,6 +2561,7 @@ A 1 4 9 A
         self.assertIsNone(asym._strand_id)
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 9])
+        self.assertIsNone(asym.orig_auth_seq_id_map)
 
     def test_poly_seq_scheme_handler_offset_ins_code(self):
         """Test PolySeqSchemeHandler with constant offset but inscodes"""
@@ -2563,7 +2570,7 @@ loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
-_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_seq_num
 _pdbx_poly_seq_scheme.pdb_strand_id
 _pdbx_poly_seq_scheme.pdb_ins_code
 A 1 1 6 A .
@@ -2581,6 +2588,7 @@ A 1 4 9 A A
                          [6, 7, 8, 9])
         self.assertIsNone(asym.residue(1).ins_code)
         self.assertEqual(asym.residue(4).ins_code, 'A')
+        self.assertIsNone(asym.orig_auth_seq_id_map)
 
     def test_poly_seq_scheme_handler_empty(self):
         """Test PolySeqSchemeHandler with no poly_seq_scheme"""
@@ -2590,6 +2598,7 @@ A 1 4 9 A A
         self.assertEqual(asym.auth_seq_id_map, 0)
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [1, 2, 3, 4])
+        self.assertIsNone(asym.orig_auth_seq_id_map)
 
     def test_poly_seq_scheme_handler_nop(self):
         """Test PolySeqSchemeHandler with a do-nothing poly_seq_scheme"""
@@ -2598,7 +2607,7 @@ loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
-_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_seq_num
 A 1 1 1
 A 1 2 2
 A 1 3 3
@@ -2608,6 +2617,7 @@ A 1 3 3
         self.assertEqual(asym.auth_seq_id_map, 0)
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [1, 2, 3, 4])
+        self.assertIsNone(asym.orig_auth_seq_id_map)
 
     def test_poly_seq_scheme_handler_partial(self):
         """Test PolySeqSchemeHandler with partial information"""
@@ -2616,10 +2626,11 @@ loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.pdb_seq_num
 _pdbx_poly_seq_scheme.auth_seq_num
-A 1 1 6
-A 1 2 7
-A 1 3 8
+A 1 1 6 .
+A 1 2 7 9
+A 1 3 8 .
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
@@ -2629,6 +2640,7 @@ A 1 3 8
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 4])
         self.assertIsNone(asym.residue(1).ins_code)
+        self.assertEqual(asym.orig_auth_seq_id_map, {2: 9})
 
     def test_poly_seq_scheme_handler_incon_off(self):
         """Test PolySeqSchemeHandler with inconsistent offset"""
@@ -2637,7 +2649,7 @@ loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
-_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_seq_num
 _pdbx_poly_seq_scheme.pdb_strand_id
 A 1 1 6 X
 A 1 2 7 X
@@ -2652,21 +2664,23 @@ A 1 4 10 X
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 10])
         self.assertIsNone(asym.residue(1).ins_code)
+        self.assertIsNone(asym.orig_auth_seq_id_map)
 
     def test_poly_seq_scheme_handler_str_seq_id(self):
-        """Test PolySeqSchemeHandler with a non-integer auth_seq_num"""
+        """Test PolySeqSchemeHandler with a non-integer pdb_seq_num"""
         fh = StringIO(ASYM_ENTITY + """
 loop_
 _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.pdb_seq_num
 _pdbx_poly_seq_scheme.auth_seq_num
 _pdbx_poly_seq_scheme.pdb_strand_id
 _pdbx_poly_seq_scheme.pdb_ins_code
-A 1 1 6 ? .
-A 1 2 7 ? .
-A 1 3 8 ? X
-A 1 4 9A ? .
+A 1 1 6 6 ? .
+A 1 2 7 12 ? .
+A 1 3 8 24 ? X
+A 1 4 9A 48A ? .
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
@@ -2677,6 +2691,7 @@ A 1 4 9A ? .
                          [6, 7, 8, '9A'])
         self.assertIsNone(asym.residue(1).ins_code)
         self.assertEqual(asym.residue(3).ins_code, 'X')
+        self.assertEqual(asym.orig_auth_seq_id_map, {2: 12, 3: 24, 4: '48A'})
 
     def test_nonpoly_scheme_handler(self):
         """Test NonPolySchemeHandler"""
@@ -2713,13 +2728,18 @@ loop_
 _pdbx_nonpoly_scheme.asym_id
 _pdbx_nonpoly_scheme.entity_id
 _pdbx_nonpoly_scheme.mon_id
+_pdbx_nonpoly_scheme.ndb_seq_num
+_pdbx_nonpoly_scheme.pdb_seq_num
 _pdbx_nonpoly_scheme.auth_seq_num
 _pdbx_nonpoly_scheme.pdb_strand_id
 _pdbx_nonpoly_scheme.pdb_ins_code
-A 1 FOO 1 . .
-A 1 BAR 101 . .
-B 2 BAR 1 Q X
-C 3 HOH 1 . .
+A 1 FOO 1 1 1 . .
+A 1 BAR 1 101 202 . .
+B 2 BAR 1 1 1 Q X
+C 3 HOH . 1 1 . .
+C 3 HOH 2 2 2 . .
+C 3 HOH 3 5 10 . .
+C 3 HOH 4 1 20 . .
 """)
         s, = ihm.reader.read(fh)
         e1, e2, e3 = s.entities
@@ -2738,12 +2758,20 @@ C 3 HOH 1 . .
         self.assertIsNone(asym.residue(1).ins_code)
         self.assertEqual(asym.strand_id, asym._id)
         self.assertIsNone(asym._strand_id)
+        self.assertEqual(asym.orig_auth_seq_id_map, {1: 202})
 
         self.assertEqual(a2.auth_seq_id_map, {1: (1, 'X')})
         self.assertEqual(a2.residue(1).auth_seq_id, 1)
         self.assertEqual(a2.residue(1).ins_code, 'X')
         self.assertEqual(a2.strand_id, 'Q')
         self.assertEqual(a2._strand_id, 'Q')
+        self.assertIsNone(a2.orig_auth_seq_id_map)
+
+        # For waters, the first row should be ignored since ndb_seq_num
+        # is missing; the second row should also be ignored because it
+        # is a one-to-one mapping; only the last two rows should be used
+        self.assertEqual(a3.auth_seq_id_map, {3: (5, None), 4: (1, None)})
+        self.assertEqual(a3.orig_auth_seq_id_map, {3: 10, 4: 20})
 
     def test_cross_link_list_handler(self):
         """Test CrossLinkListHandler"""
@@ -3294,6 +3322,342 @@ _ihm_starting_model_seq_dif.details
         self.assertEqual(sd1.db_seq_id, 12)
         self.assertEqual(sd1.db_comp_id, "MSE")
         self.assertEqual(sd1.details, "Mutation of MSE to LEU")
+
+    def test_multi_state_scheme_handler(self):
+        """Test MultiStateSchemeHandler"""
+        fh = StringIO("""
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+2 'scheme2' .
+""")
+        s, = ihm.reader.read(fh)
+        schemes = s.multi_state_schemes
+        mss1 = schemes[0]
+        self.assertIsInstance(mss1, ihm.multi_state_scheme.MultiStateScheme)
+        self.assertEqual(mss1._id, '1')
+        self.assertEqual(mss1.name, 'scheme1')
+        self.assertEqual(mss1.details, 'details1')
+        mss2 = schemes[1]
+        self.assertIsInstance(mss2, ihm.multi_state_scheme.MultiStateScheme)
+        self.assertEqual(mss2._id, '2')
+        self.assertEqual(mss2.name, 'scheme2')
+        self.assertIsNone(mss2.details)
+
+    def test_multi_state_scheme_connectivity_handler(self):
+        """Test MultiStateSchemeConnectivityHandler"""
+        mss_cif = """
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+2 'scheme2' 'details2'
+#
+"""
+        mssc_cif = """
+#
+loop_
+_ihm_multi_state_scheme_connectivity.id
+_ihm_multi_state_scheme_connectivity.scheme_id
+_ihm_multi_state_scheme_connectivity.begin_state_id
+_ihm_multi_state_scheme_connectivity.end_state_id
+_ihm_multi_state_scheme_connectivity.dataset_group_id
+_ihm_multi_state_scheme_connectivity.details
+1 1 1 2 10 'connectivity1'
+2 1 2 1 11 .
+3 1 3 . 12 'connectivity3'
+4 2 2 1 11 .
+"""
+        # Order of categories should not matter
+        for cif in (mss_cif + mssc_cif, mssc_cif + mss_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                schemes = s.multi_state_schemes
+                mss1 = schemes[0]
+                # Connectivity 1
+                c1 = mss1._connectivity_list[0]
+                self.assertIsInstance(
+                    c1,
+                    ihm.multi_state_scheme.Connectivity)
+                self.assertEqual(c1._id, '1')
+                self.assertIsInstance(c1.begin_state, ihm.model.State)
+                self.assertEqual(c1.begin_state._id, '1')
+                self.assertIsInstance(c1.end_state, ihm.model.State)
+                self.assertEqual(c1.end_state._id, '2')
+                self.assertIsInstance(c1.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(c1.dataset_group._id, '10')
+                self.assertEqual(c1.details, 'connectivity1')
+                # Connectivity 2
+                c2 = mss1._connectivity_list[1]
+                self.assertIsInstance(
+                    c2,
+                    ihm.multi_state_scheme.Connectivity)
+                self.assertEqual(c2._id, '2')
+                self.assertIsInstance(c2.begin_state, ihm.model.State)
+                self.assertEqual(c2.begin_state._id, '2')
+                self.assertIsInstance(c1.end_state, ihm.model.State)
+                self.assertEqual(c2.end_state._id, '1')
+                self.assertIsInstance(c2.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(c2.dataset_group._id, '11')
+                self.assertIsNone(c2.details)
+                # Connectivity 1 is unequal to Connectivity 2
+                self.assertFalse(c1 == c2)
+                # Connectivity 3
+                c3 = mss1._connectivity_list[2]
+                self.assertIsInstance(
+                    c3,
+                    ihm.multi_state_scheme.Connectivity)
+                self.assertEqual(c3._id, '3')
+                self.assertIsInstance(c3.begin_state, ihm.model.State)
+                self.assertEqual(c3.begin_state._id, '3')
+                self.assertIsNone(c3.end_state)
+                self.assertIsInstance(c3.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(c3.dataset_group._id, '12')
+                self.assertEqual(c3.details, 'connectivity3')
+                # Connectivity 4 - belongs to scheme 2
+                mss2 = schemes[1]
+                c4 = mss2._connectivity_list[0]
+                self.assertIsInstance(
+                    c4,
+                    ihm.multi_state_scheme.Connectivity)
+                self.assertEqual(c4._id, '4')
+                self.assertIsInstance(c4.begin_state, ihm.model.State)
+                self.assertEqual(c4.begin_state._id, '2')
+                self.assertIsInstance(c4.end_state, ihm.model.State)
+                self.assertEqual(c4.end_state._id, '1')
+                self.assertIsInstance(c4.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(c4.dataset_group._id, '11')
+                self.assertIsNone(c4.details)
+
+    def test_kinetic_rate_handler(self):
+        """Test KineticRateHandler"""
+        mss_cif = """
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+2 'scheme2' 'details2'
+#
+#
+loop_
+_ihm_multi_state_scheme_connectivity.id
+_ihm_multi_state_scheme_connectivity.scheme_id
+_ihm_multi_state_scheme_connectivity.begin_state_id
+_ihm_multi_state_scheme_connectivity.end_state_id
+_ihm_multi_state_scheme_connectivity.dataset_group_id
+_ihm_multi_state_scheme_connectivity.details
+1 1 1 2 10 'connectivity1'
+2 1 2 1 11 'connectivity2'
+3 2 1 2 10 'connectivity1'
+4 1 1 2 10 'connectivity3'
+5 1 1 2 10 'connectivity4'
+#
+"""
+        rate_cif = """
+#
+loop_
+_ihm_kinetic_rate.id
+_ihm_kinetic_rate.transition_rate_constant
+_ihm_kinetic_rate.equilibrium_constant
+_ihm_kinetic_rate.equilibrium_constant_determination_method
+_ihm_kinetic_rate.equilibrium_constant_unit
+_ihm_kinetic_rate.details
+_ihm_kinetic_rate.scheme_connectivity_id
+_ihm_kinetic_rate.dataset_group_id
+_ihm_kinetic_rate.external_file_id
+1 3.0 . . . 'rate1' 1 4 5
+2 . 6.5 'equilibrium constant is determined from population' . 'rate2' 2  . .
+3 7.0 . . . 'rate3' 3 8 9
+4 . 8.5 'equilibrium constant is determined from kinetic rates, kAB/kBA'
+ 'unit' 'rate4' 4 . .
+5 . 9.5 'equilibrium constant is determined from another method not listed' .
+ 'rate5' 5 . .
+"""
+        # Order of categories should not matter
+        for cif in (mss_cif + rate_cif, rate_cif + mss_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                schemes = s.multi_state_schemes
+                mss1 = schemes[0]
+                k1 = mss1._connectivity_list[0].kinetic_rate
+                self.assertIsInstance(k1,
+                                      ihm.multi_state_scheme.KineticRate)
+                self.assertEqual(k1._id, '1')
+                self.assertEqual(k1.transition_rate_constant, '3.0')
+                self.assertIsNone(k1.equilibrium_constant)
+                self.assertEqual(k1.details, 'rate1')
+                self.assertIsInstance(k1.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(k1.dataset_group._id, '4')
+                self.assertIsInstance(k1.external_file,
+                                      ihm.location.Location)
+                self.assertEqual(k1.external_file._id, '5')
+                k2 = mss1._connectivity_list[1].kinetic_rate
+                self.assertIsInstance(k2, ihm.multi_state_scheme.KineticRate)
+                self.assertEqual(k2._id, '2')
+                self.assertIsNone(k2.transition_rate_constant)
+                self.assertIsInstance(
+                    k2.equilibrium_constant,
+                    ihm.multi_state_scheme.PopulationEquilibriumConstant)
+                self.assertEqual(k2.equilibrium_constant.value, '6.5')
+                self.assertEqual(
+                    k2.equilibrium_constant.method,
+                    'equilibrium constant is determined from population')
+                self.assertIsNone(k2.equilibrium_constant.unit)
+                self.assertEqual(k2.details, 'rate2')
+                self.assertIsNone(k2.dataset_group)
+                self.assertIsNone(k2.external_file)
+                mss2 = schemes[1]
+                k3 = mss2._connectivity_list[0].kinetic_rate
+                self.assertIsInstance(k3, ihm.multi_state_scheme.KineticRate)
+                self.assertEqual(k3._id, '3')
+                self.assertEqual(k3.transition_rate_constant, '7.0')
+                self.assertIsNone(k3.equilibrium_constant)
+                self.assertEqual(k3.details, 'rate3')
+                self.assertIsInstance(k3.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(k3.dataset_group._id, '8')
+                self.assertIsInstance(k3.external_file, ihm.location.Location)
+                self.assertEqual(k3.external_file._id, '9')
+                k4 = mss1._connectivity_list[2].kinetic_rate
+                self.assertIsInstance(k4, ihm.multi_state_scheme.KineticRate)
+                self.assertEqual(k4._id, '4')
+                self.assertIsNone(k4.transition_rate_constant)
+                self.assertIsInstance(
+                    k4.equilibrium_constant,
+                    ihm.multi_state_scheme.KineticRateEquilibriumConstant)
+                self.assertEqual(k4.equilibrium_constant.value, '8.5')
+                self.assertEqual(
+                    k4.equilibrium_constant.method,
+                    'equilibrium constant is determined from kinetic '
+                    'rates, kAB/kBA')
+                self.assertEqual(k4.equilibrium_constant.unit, 'unit')
+                self.assertEqual(k4.details, 'rate4')
+                self.assertIsNone(k4.dataset_group)
+                self.assertIsNone(k4.external_file)
+                k5 = mss1._connectivity_list[3].kinetic_rate
+                self.assertIsInstance(k5, ihm.multi_state_scheme.KineticRate)
+                self.assertEqual(k5._id, '5')
+                self.assertIsNone(k5.transition_rate_constant)
+                self.assertIsInstance(
+                    k5.equilibrium_constant,
+                    ihm.multi_state_scheme.EquilibriumConstant)
+                self.assertEqual(k5.equilibrium_constant.value, '9.5')
+                self.assertEqual(
+                    k5.equilibrium_constant.method,
+                    'equilibrium constant is determined from another '
+                    'method not listed')
+                self.assertIsNone(k5.equilibrium_constant.unit)
+                self.assertEqual(k5.details, 'rate5')
+                self.assertIsNone(k5.dataset_group)
+                self.assertIsNone(k5.external_file)
+
+    def test_relaxation_time_handler(self):
+        """Test RelaxationTimeHandler and
+        RelaxationTimeMultiStateSchemeHandler"""
+        mss_cif = """
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+#
+#
+loop_
+_ihm_multi_state_scheme_connectivity.id
+_ihm_multi_state_scheme_connectivity.scheme_id
+_ihm_multi_state_scheme_connectivity.begin_state_id
+_ihm_multi_state_scheme_connectivity.end_state_id
+_ihm_multi_state_scheme_connectivity.dataset_group_id
+_ihm_multi_state_scheme_connectivity.details
+1 1 1 2 10 'connectivity1'
+2 1 2 1 11 'connectivity2'
+#
+"""
+        relaxation_time_cif = """
+#
+loop_
+_ihm_relaxation_time.id
+_ihm_relaxation_time.value
+_ihm_relaxation_time.unit
+_ihm_relaxation_time.amplitude
+_ihm_relaxation_time.dataset_group_id
+_ihm_relaxation_time.external_file_id
+_ihm_relaxation_time.details
+1 10.0 seconds 0.5 20 21 'relaxation_time1'
+2 11.5 milliseconds . 22 23 'relaxation_time2'
+3 12.0 seconds 0.4 24 25 'relaxation_time3'
+#
+#
+loop_
+_ihm_relaxation_time_multi_state_scheme.id
+_ihm_relaxation_time_multi_state_scheme.relaxation_time_id
+_ihm_relaxation_time_multi_state_scheme.scheme_id
+_ihm_relaxation_time_multi_state_scheme.scheme_connectivity_id
+_ihm_relaxation_time_multi_state_scheme.details
+1 1 1 1 .
+2 2 1 2 .
+3 3 1 . .
+"""
+        # Order of categories should not matter
+        for cif in (relaxation_time_cif + mss_cif,
+                    mss_cif + relaxation_time_cif,
+                    ):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                schemes = s.multi_state_schemes
+                mss1 = schemes[0]
+                self.assertEqual(len(mss1._connectivity_list), 2)
+                r1 = mss1._connectivity_list[0].relaxation_time
+                self.assertIsInstance(r1,
+                                      ihm.multi_state_scheme.RelaxationTime)
+                self.assertEqual(r1._id, '1')
+                self.assertEqual(r1.value, '10.0')
+                self.assertEqual(r1.unit, 'seconds')
+                self.assertEqual(r1.amplitude, '0.5')
+                self.assertIsInstance(r1.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(r1.dataset_group._id, '20')
+                self.assertIsInstance(r1.external_file, ihm.location.Location)
+                self.assertEqual(r1.external_file._id, '21')
+                self.assertEqual(r1.details, 'relaxation_time1')
+                r2 = mss1._connectivity_list[1].relaxation_time
+                self.assertIsInstance(r2,
+                                      ihm.multi_state_scheme.RelaxationTime)
+                self.assertEqual(r2._id, '2')
+                self.assertEqual(r2.value, '11.5')
+                self.assertEqual(r2.unit, 'milliseconds')
+                self.assertIsNone(r2.amplitude)
+                self.assertIsInstance(r2.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(r2.dataset_group._id, '22')
+                self.assertIsInstance(r2.external_file, ihm.location.Location)
+                self.assertEqual(r2.external_file._id, '23')
+                self.assertEqual(r2.details, 'relaxation_time2')
+                # Relaxation time 3 is only assigned to a scheme,
+                # not to a connectivity
+                self.assertEqual(len(mss1._relaxation_time_list), 1)
+                r3 = mss1._relaxation_time_list[0]
+                self.assertIsInstance(r3,
+                                      ihm.multi_state_scheme.RelaxationTime)
+                self.assertEqual(r3._id, '3')
+                self.assertEqual(r3.value, '12.0')
+                self.assertEqual(r3.unit, 'seconds')
+                self.assertEqual(r3.amplitude, '0.4')
+                self.assertIsInstance(r3.dataset_group,
+                                      ihm.dataset.DatasetGroup)
+                self.assertEqual(r3.dataset_group._id, '24')
+                self.assertIsInstance(r3.external_file, ihm.location.Location)
+                self.assertEqual(r3.external_file._id, '25')
+                self.assertEqual(r3.details, 'relaxation_time3')
 
     def test_flr_experiment_handler(self):
         """Test FLRExperimentHandler"""
@@ -4304,6 +4668,213 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
                               ihm.flr.FPSMPPAtomPositionGroup)
         self.assertEqual(m.mpp_atom_position_group._id, '5')
 
+    def test_flr_kinetic_rate_fret_analysis_connection_handler(self):
+        """Test FLRKineticRateFretAnalysisConnectionHandler"""
+        mss_cif = """
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+2 'scheme2' 'details2'
+#
+#
+loop_
+_ihm_multi_state_scheme_connectivity.id
+_ihm_multi_state_scheme_connectivity.scheme_id
+_ihm_multi_state_scheme_connectivity.begin_state_id
+_ihm_multi_state_scheme_connectivity.end_state_id
+_ihm_multi_state_scheme_connectivity.dataset_group_id
+_ihm_multi_state_scheme_connectivity.details
+1 1 1 2 10 'connectivity1'
+2 1 2 1 11 'connectivity2'
+3 2 1 2 10 'connectivity1'
+#
+"""
+        rate_cif = """
+#
+loop_
+_ihm_kinetic_rate.id
+_ihm_kinetic_rate.transition_rate_constant
+_ihm_kinetic_rate.equilibrium_constant
+_ihm_kinetic_rate.equilibrium_constant_determination_method
+_ihm_kinetic_rate.equilibrium_constant_unit
+_ihm_kinetic_rate.details
+_ihm_kinetic_rate.scheme_connectivity_id
+_ihm_kinetic_rate.dataset_group_id
+_ihm_kinetic_rate.external_file_id
+51 3.0 . . . 'rate1' 1 4 5
+52 . 6.5 'equilibrium constant is determined from population' . 'rate2' 2  . .
+53 7.0 . . . 'rate3' 3 8 9
+#
+"""
+        flr_cif = """
+#
+loop_
+_flr_fret_analysis.id
+_flr_fret_analysis.experiment_id
+_flr_fret_analysis.type
+_flr_fret_analysis.sample_probe_id_1
+_flr_fret_analysis.sample_probe_id_2
+_flr_fret_analysis.forster_radius_id
+_flr_fret_analysis.dataset_list_id
+_flr_fret_analysis.external_file_id
+_flr_fret_analysis.software_id
+1 108 intensity-based 9 2 11 18 42 99
+5 113 lifetime-based 24 5 19 32 81 98
+#
+#
+loop_
+_flr_kinetic_rate_analysis.id
+_flr_kinetic_rate_analysis.fret_analysis_id
+_flr_kinetic_rate_analysis.kinetic_rate_id
+_flr_kinetic_rate_analysis.details
+1 1 51 details1
+2 1 52 details2
+3 5 51 details3
+4 8 54 details4
+"""
+        # Order of categories should not matter
+        for cif in (
+                mss_cif + rate_cif + flr_cif,
+                mss_cif + flr_cif + rate_cif,
+                rate_cif + mss_cif + flr_cif,
+                rate_cif + flr_cif + mss_cif,
+                flr_cif + mss_cif + rate_cif,
+                flr_cif + rate_cif + mss_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                flr, = s.flr_data
+                con = flr.kinetic_rate_fret_analysis_connections
+                self.assertEqual(len(con), 4)
+                self.assertEqual(con[0].fret_analysis._id, '1')
+                self.assertEqual(con[0].kinetic_rate._id, '51')
+                self.assertEqual(con[0].details, 'details1')
+                self.assertEqual(con[1].fret_analysis._id, '1')
+                self.assertEqual(con[1].kinetic_rate._id, '52')
+                self.assertEqual(con[1].details, 'details2')
+                self.assertEqual(con[2].fret_analysis._id, '5')
+                self.assertEqual(con[2].kinetic_rate._id, '51')
+                self.assertEqual(con[2].details, 'details3')
+                # The last one is auto generated
+                self.assertEqual(con[3].fret_analysis._id, '8')
+                self.assertEqual(con[3].kinetic_rate._id, '54')
+                self.assertEqual(con[3].details, 'details4')
+
+                # Test the _all_relaxation_times() function
+                self.assertEqual([x._id for x in list(s._all_kinetic_rates())],
+                                 ['51', '52', '53', '54'])
+
+    def test_flr_relaxation_time_fret_analysis_connection_handler(self):
+        """Test FLRRelaxationTimeFretAnalysisConnectionHandler"""
+        mss_cif = """
+loop_
+_ihm_multi_state_scheme.id
+_ihm_multi_state_scheme.name
+_ihm_multi_state_scheme.details
+1 'scheme1' 'details1'
+2 'scheme2' 'details2'
+#
+#
+loop_
+_ihm_multi_state_scheme_connectivity.id
+_ihm_multi_state_scheme_connectivity.scheme_id
+_ihm_multi_state_scheme_connectivity.begin_state_id
+_ihm_multi_state_scheme_connectivity.end_state_id
+_ihm_multi_state_scheme_connectivity.dataset_group_id
+_ihm_multi_state_scheme_connectivity.details
+1 1 1 2 10 'connectivity1'
+2 1 2 1 11 'connectivity2'
+3 2 1 2 10 'connectivity1'
+#
+"""
+        relaxation_time_cif = """
+#
+loop_
+_ihm_relaxation_time.id
+_ihm_relaxation_time.value
+_ihm_relaxation_time.unit
+_ihm_relaxation_time.amplitude
+_ihm_relaxation_time.dataset_group_id
+_ihm_relaxation_time.external_file_id
+_ihm_relaxation_time.details
+101 10.0 seconds 0.5 20 21 'relaxation_time1'
+102 11.5 milliseconds . 22 23 'relaxation_time2'
+103 12.0 seconds 0.4 24 25 'relaxation_time3'
+104 16.0 seconds 0.6 25 25 'relaxation_time4'
+#
+#
+loop_
+_ihm_relaxation_time_multi_state_scheme.id
+_ihm_relaxation_time_multi_state_scheme.relaxation_time_id
+_ihm_relaxation_time_multi_state_scheme.scheme_id
+_ihm_relaxation_time_multi_state_scheme.scheme_connectivity_id
+_ihm_relaxation_time_multi_state_scheme.details
+1 101 1 1 .
+2 102 1 2 .
+3 103 1 . .
+4 104 1 . .
+#
+"""
+        flr_cif = """
+#
+loop_
+_flr_fret_analysis.id
+_flr_fret_analysis.experiment_id
+_flr_fret_analysis.type
+_flr_fret_analysis.sample_probe_id_1
+_flr_fret_analysis.sample_probe_id_2
+_flr_fret_analysis.forster_radius_id
+_flr_fret_analysis.dataset_list_id
+_flr_fret_analysis.external_file_id
+_flr_fret_analysis.software_id
+1 108 intensity-based 9 2 11 18 42 99
+5 113 lifetime-based 24 5 19 32 81 98
+#
+#
+loop_
+_flr_relaxation_time_analysis.id
+_flr_relaxation_time_analysis.fret_analysis_id
+_flr_relaxation_time_analysis.relaxation_time_id
+_flr_relaxation_time_analysis.details
+1 1 101 details1
+2 1 102 details2
+3 5 101 details3
+4 8 103 details4
+"""
+
+        # Order of categories should not matter
+        for cif in (
+                mss_cif + relaxation_time_cif + flr_cif,
+                mss_cif + flr_cif + relaxation_time_cif,
+                relaxation_time_cif + mss_cif + flr_cif,
+                relaxation_time_cif + flr_cif + mss_cif,
+                flr_cif + mss_cif + relaxation_time_cif,
+                flr_cif + relaxation_time_cif + mss_cif):
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                flr, = s.flr_data
+                con = flr.relaxation_time_fret_analysis_connections
+                self.assertEqual(len(con), 4)
+                self.assertEqual(con[0].fret_analysis._id, '1')
+                self.assertEqual(con[0].relaxation_time._id, '101')
+                self.assertEqual(con[0].details, 'details1')
+                self.assertEqual(con[1].fret_analysis._id, '1')
+                self.assertEqual(con[1].relaxation_time._id, '102')
+                self.assertEqual(con[1].details, 'details2')
+                self.assertEqual(con[2].fret_analysis._id, '5')
+                self.assertEqual(con[2].relaxation_time._id, '101')
+                self.assertEqual(con[2].details, 'details3')
+                # The last one is auto generated
+                self.assertEqual(con[3].fret_analysis._id, '8')
+                self.assertEqual(con[3].relaxation_time._id, '103')
+                self.assertEqual(con[3].details, 'details4')
+
+                # Test the _all_relaxation_times() function
+                self.assertEqual([x._id for x in
+                                  list(s._all_relaxation_times())],
+                                 ['103', '104', '101', '102'])
+
     def test_variant_base(self):
         """Test Variant base class"""
         v = ihm.reader.Variant()
@@ -4359,28 +4930,34 @@ A 1 BGC 1 5 5 BGC 0
 A 1 BGC 2 6 6 BGC 0
 A 1 BGC 3 7 7 BGC 0
 A 1 BGC 4 8 8 BGC 0
-B 1 BGC 1 1 1 BGC .
-B 1 BGC 2 2 2 BGC .
-B 1 BGC 3 3 3 BGC .
-B 1 BGC 4 4 4 BGC .
-C 1 BGC 1 2 2 BGC .
-C 1 BGC 2 4 4 BGC .
-C 1 BGC 3 6 6 BGC .
-C 1 BGC 4 8 8 BGC .
+B 1 BGC 1 1 11 BGC .
+B 1 BGC 2 2 12 BGC .
+B 1 BGC 3 3 13 BGC .
+B 1 BGC 4 4 14 BGC .
+C 1 BGC 1 2 . BGC .
+C 1 BGC 2 4 . BGC .
+C 1 BGC 3 6 . BGC .
+C 1 BGC 4 8 . BGC .
 """)
         s, = ihm.reader.read(fh)
         asym_a, asym_b, asym_c = s.asym_units
         self.assertEqual(asym_a.auth_seq_id_map, 4)
         self.assertEqual(asym_a._strand_id, '0')
         self.assertEqual(asym_a.residue(1).auth_seq_id, 5)
+        self.assertIsNone(asym_a.orig_auth_seq_id_map)
+
         self.assertEqual(asym_b.auth_seq_id_map, 0)
         self.assertIsNone(asym_b._strand_id)
         self.assertEqual(asym_b.residue(1).auth_seq_id, 1)
+        self.assertEqual(asym_b.orig_auth_seq_id_map,
+                         {1: 11, 2: 12, 3: 13, 4: 14})
+
         self.assertEqual(asym_c.auth_seq_id_map,
                          {1: (2, None), 2: (4, None), 3: (6, None),
                           4: (8, None)})
         self.assertIsNone(asym_c._strand_id)
         self.assertEqual(asym_c.residue(1).auth_seq_id, 2)
+        self.assertIsNone(asym_c.orig_auth_seq_id_map)
 
     def test_entity_branch_list_handler(self):
         """Test EntityBranchListHandler"""

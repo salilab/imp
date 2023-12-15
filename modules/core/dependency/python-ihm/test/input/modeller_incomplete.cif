@@ -1,0 +1,38 @@
+data_model
+#
+_exptl.method 'incomplete data'
+#
+_modeller.version 10.4
+#
+loop_
+_modeller_template.id
+_modeller_template.name
+_modeller_template.template_begin
+_modeller_template.template_end
+_modeller_template.target_begin
+_modeller_template.target_end
+_modeller_template.pct_seq_id
+1 3jroC 33:C 424:C 33:A 424:A 100.0
+2 3f3fG 482:G 551:G 429:A 488:A 10.0
+3 1abcA 1:A 10:A 1:B 20:B 10.0
+#
+loop_
+_atom_site.group_PDB
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.auth_asym_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.label_entity_id
+_atom_site.id
+_atom_site.pdbx_PDB_model_num
+ATOM C CA . ALA A A 1 1 ? 25.847 14.655 5.416 1.000 21.304 1 2 1

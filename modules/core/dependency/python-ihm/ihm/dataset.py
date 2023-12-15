@@ -18,12 +18,16 @@ class Dataset(object):
     """
 
     _eq_keys = ['location']
+    _allow_duplicates = False
 
-    # Datasets compare equal iff they are the same class and have the
-    # same attributes
+    # Datasets compare equal iff they are the same class, have the
+    # same attributes, and allow_duplicates=False
     def _eq_vals(self):
-        return tuple([self.__class__]
-                     + [getattr(self, x) for x in self._eq_keys])
+        if self._allow_duplicates:
+            return id(self)
+        else:
+            return tuple([self.__class__]
+                         + [getattr(self, x) for x in self._eq_keys])
 
     def __eq__(self, other):
         return self._eq_vals() == other._eq_vals()

@@ -1,3 +1,26 @@
+0.43 - 2023-12-08
+=================
+  - Branched and polymeric empty entities are now distinguished
+    based on entity.type in the input file (previously, any empty
+    entity would always be reported as a polymer) (#129).
+  - Warn rather than reporting an error if the system contains
+    one or more empty entities (#128).
+  - If an input file contains multiple duplicated datasets, preserve
+    them as is rather than consolidating into a single dataset (#127).
+  - Allow for multiple branched entities to have the same composition
+    (they could have different connectivity) (#126).
+
+0.42 - 2023-11-30
+=================
+  - The :class:`ihm.metadata.CIFParser` class now parses Modeller-specific
+    CIF categories to add information about software and templates for
+    Modeller-generated mmCIF starting models.
+  - Basic support for original author-provided residue numbering is now
+    provided in the :class:`ihm.AsymUnit` class with a new
+    ``orig_auth_seq_id_map`` argument. This information is read from and
+    written to the various mmCIF tables such as ``pdbx_poly_seq_scheme``
+    (#124).
+
 0.41 - 2023-10-02
 =================
   - More complete support for oligosaccharides, in particular correct

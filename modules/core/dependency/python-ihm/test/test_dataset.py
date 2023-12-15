@@ -40,6 +40,17 @@ class Tests(unittest.TestCase):
         d.parents.append(td)
         self.assertEqual(len(d.parents), 2)
 
+    def test_dataset_allow_duplicates(self):
+        """Test Dataset base class with allow_duplicates=True"""
+        loc = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        d = ihm.dataset.Dataset(loc)
+        d._allow_duplicates = True
+        self.assertEqual(d._eq_vals(), id(d))
+
+        d2 = ihm.dataset.Dataset(loc)
+        d2._allow_duplicates = True
+        self.assertNotEqual(d, d2)
+
     def test_add_primary_no_parents(self):
         """Test add_primary() method, no parents"""
         l1 = ihm.location.PDBLocation('1abc', version='foo', details='bar')

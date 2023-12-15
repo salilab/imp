@@ -489,6 +489,12 @@ class Tests(unittest.TestCase):
             for t in templates:
                 self.assertEqual(t.alignment_file.path, aliname)
 
+    def test_cif_modeller_incomplete_model(self):
+        """Test CIFParser when given an incomplete Modeller model"""
+        fname = utils.get_input_file_name(TOPDIR, 'modeller_incomplete.cif')
+        p = self._parse_cif(fname)
+        self.assertIsNone(p['script'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -413,7 +413,7 @@ class Tests(unittest.TestCase):
             chi_square_reduced='this_chi_square_reduced',
             donor_only_fraction='this_donly_fraction',
             dataset='this_dataset_list_id',
-            external_file='this_external_file',
+            file='this_external_file',
             software='this_software')
         self.assertEqual(f.experiment, 'this_experiment')
         self.assertEqual(f.sample_probe_1, 'this_sample_probe_1')
@@ -451,7 +451,7 @@ class Tests(unittest.TestCase):
             chi_square_reduced='this_chi_square_reduced',
             donor_only_fraction='this_donly_fraction',
             dataset='this_dataset_list_id',
-            external_file='this_external_file',
+            file='this_external_file',
             software='this_software')
         f_equal = ihm.flr.FRETAnalysis(
             experiment='this_experiment',
@@ -464,7 +464,7 @@ class Tests(unittest.TestCase):
             chi_square_reduced='this_chi_square_reduced',
             donor_only_fraction='this_donly_fraction',
             dataset='this_dataset_list_id',
-            external_file='this_external_file',
+            file='this_external_file',
             software='this_software')
         f_unequal = ihm.flr.FRETAnalysis(
             experiment='this_experiment',
@@ -477,7 +477,7 @@ class Tests(unittest.TestCase):
             chi_square_reduced='this_chi_square_reduced',
             donor_only_fraction='this_donly_fraction',
             dataset='this_dataset_list_id',
-            external_file='this_external_file',
+            file='this_external_file',
             software='this_software')
         f_unequal_type = ihm.flr.FRETAnalysis(
             experiment='this_experiment',
@@ -490,7 +490,7 @@ class Tests(unittest.TestCase):
             chi_square_reduced='this_chi_square_reduced',
             donor_only_fraction='this_donly',
             dataset='this_dataset_list_id',
-            external_file='this_external_file',
+            file='this_external_file',
             software='this_software')
         self.assertTrue(f_ref == f_equal)
         self.assertFalse(f_ref == f_unequal)
@@ -502,7 +502,7 @@ class Tests(unittest.TestCase):
         """ Test initialization of LifetimeFitModel."""
         f = ihm.flr.LifetimeFitModel(name='this_name',
                                      description='this_description',
-                                     external_file='this_ext_file',
+                                     file='this_ext_file',
                                      citation='this_citation')
         self.assertEqual(f.name, 'this_name')
         self.assertEqual(f.description, 'this_description')
@@ -1190,6 +1190,95 @@ class Tests(unittest.TestCase):
         self.assertFalse(f_ref == f_unequal)
         self.assertTrue(f_ref != f_unequal)
 
+    def test_kinetic_rate_fret_analysis_connection_init(self):
+        """Test initialization of KineticRateFretAnalysisConnection objects."""
+        c = ihm.flr.KineticRateFretAnalysisConnection(fret_analysis='f',
+                                                      kinetic_rate='k',
+                                                      details='d')
+        self.assertEqual(c.fret_analysis, 'f')
+        self.assertEqual(c.kinetic_rate, 'k')
+        self.assertEqual(c.details, 'd')
+
+    def test_kinetic_rate_fret_analysis_connection_eq(self):
+        """Test equality of KineticRateFretAnalysisConnection objects."""
+        class MockObject(object):
+            pass
+        f1 = MockObject()
+        f1._id = '1'
+        f1.name = 'fret_analysis1'
+        f2 = MockObject()
+        f2._id = '2'
+        f2.name = 'fret_analysis2'
+
+        k1 = MockObject()
+        k1._id = '11'
+        k1.name = 'kinetic_rate1'
+        k2 = MockObject()
+        k2._id = '12'
+        k2.name = 'kinetic_rate2'
+
+        c_ref = ihm.flr.KineticRateFretAnalysisConnection(
+            fret_analysis=f1,
+            kinetic_rate=k1,
+            details='details1')
+        c_equal = ihm.flr.KineticRateFretAnalysisConnection(
+            fret_analysis=f1,
+            kinetic_rate=k1,
+            details='details1')
+        c_unequal = ihm.flr.KineticRateFretAnalysisConnection(
+            fret_analysis=f2,
+            kinetic_rate=k2,
+            details='details2')
+
+        self.assertTrue(c_ref == c_equal)
+        self.assertFalse(c_ref == c_unequal)
+        self.assertTrue(c_ref != c_unequal)
+
+    def test_relaxation_time_fret_analysis_connection_init(self):
+        """Test initialization of
+           RelaxationTimeFretAnalysisConnection objects."""
+        c = ihm.flr.RelaxationTimeFretAnalysisConnection(
+            fret_analysis='f',
+            relaxation_time='r',
+            details='d')
+        self.assertEqual(c.fret_analysis, 'f')
+        self.assertEqual(c.relaxation_time, 'r')
+        self.assertEqual(c.details, 'd')
+
+    def test_relaxation_time_fret_analysis_connection_eq(self):
+        """Test equality of RelaxationTimeFretAnalysisConnection objects."""
+        class MockObject(object):
+            pass
+        f1 = MockObject()
+        f1._id = '1'
+        f1.name = 'fret_analysis1'
+        f2 = MockObject()
+        f2._id = '2'
+        f2.name = 'fret_analysis2'
+
+        r1 = MockObject()
+        r1._id = '11'
+        r1.name = 'relaxation_time1'
+        r2 = MockObject()
+        r2._id = '12'
+        r2.name = 'relaxation_time2'
+
+        c_ref = ihm.flr.RelaxationTimeFretAnalysisConnection(
+            fret_analysis=f1,
+            relaxation_time=r1,
+            details='details1')
+        c_equal = ihm.flr.RelaxationTimeFretAnalysisConnection(
+            fret_analysis=f1,
+            relaxation_time=r1,
+            details='details1')
+        c_unequal = ihm.flr.RelaxationTimeFretAnalysisConnection(
+            fret_analysis=f2,
+            relaxation_time=r2,
+            details='details2')
+        self.assertTrue(c_ref == c_equal)
+        self.assertFalse(c_ref == c_unequal)
+        self.assertTrue(c_ref != c_unequal)
+
     def test_flr_data_init(self):
         """ Test initialization of FLRData. """
         f = ihm.flr.FLRData()
@@ -1198,6 +1287,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.fret_model_qualities, [])
         self.assertEqual(f.fret_model_distances, [])
         self.assertEqual(f.fps_modeling, [])
+        self.assertEqual(f.kinetic_rate_fret_analysis_connections, [])
 
     def test_flr_data_add_distance_restraint_group(self):
         """Test addition of a distance restraint group."""
@@ -1231,6 +1321,24 @@ class Tests(unittest.TestCase):
         f.fps_modeling.append('foo')
         f.fps_modeling.append('bar')
         self.assertEqual(f.fps_modeling, ['foo', 'bar'])
+
+    def test_flr_data_add_kinetic_rate_fret_analysis_connection(self):
+        """Test addition of object to
+           kinetic_rate_fret_analysis_connections."""
+        f = ihm.flr.FLRData()
+        f.kinetic_rate_fret_analysis_connections.append('foo')
+        f.kinetic_rate_fret_analysis_connections.append('bar')
+        self.assertEqual(f.kinetic_rate_fret_analysis_connections,
+                         ['foo', 'bar'])
+
+    def test_flr_data_add_relaxation_time_fret_analysis_connection(self):
+        """Test addition of object to
+           relaxation_time_fret_analysis_connections."""
+        f = ihm.flr.FLRData()
+        f.relaxation_time_fret_analysis_connections.append('foo')
+        f.relaxation_time_fret_analysis_connections.append('bar')
+        self.assertEqual(f.relaxation_time_fret_analysis_connections,
+                         ['foo', 'bar'])
 
     def test_flr_data_all_chemical_descriptors(self):
         """Test for collection of all chemical descriptors."""
