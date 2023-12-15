@@ -37,7 +37,7 @@ ENDIF()
 
 set_property(TARGET "${SWIG_MODULE_RMF_REAL_NAME}" PROPERTY FOLDER "RMF")
 if(APPLE)
-  set_target_properties("${SWIG_MODULE_RMF_REAL_NAME}" PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
+  set_target_properties("${SWIG_MODULE_RMF_REAL_NAME}" PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 set_target_properties("${SWIG_MODULE_RMF_REAL_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
@@ -76,7 +76,7 @@ ENDIF()
 
 set_property(TARGET "${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTY FOLDER "RMF")
 if(APPLE)
-  set_target_properties("${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
+  set_target_properties("${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 set_target_properties("${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
@@ -97,7 +97,7 @@ ENDIF(WIN32)
 # Apple linkers complain by default if there are undefined symbols
 IF(APPLE)
   SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
-    "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
+    "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
 ENDIF(APPLE)
 
 INSTALL(TARGETS ${SWIG_MODULE_RMF_HDF5_REAL_NAME} DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

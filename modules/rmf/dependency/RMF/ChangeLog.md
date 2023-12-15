@@ -1,6 +1,14 @@
 Change Log {#changelog}
 ==========
 
+# 1.6.0 - 2023-12-14 # {#changelog_1_6_0}
+- RPM packages for RMF for RedHat Linux (and clones such as Alma or Rocky)
+  and for Fedora are now provided by the
+  [COPR project](https://copr.fedorainfracloud.org/coprs/salilab/salilab/).
+- RMF::decorator::Chain can now store a per-chain sequence offset and UniProt
+  accession. The offset, which defaults to zero, maps from the sequence index
+  (which always starts at 1) to the residue index (which may not).
+
 # 1.5.1 - 2023-06-08 # {#changelog_1_5_1}
 - Any String or Strings attributes containing filesystem paths are now
   rewritten when the RMF static frame is cloned (e.g. during `rmf_slice`
