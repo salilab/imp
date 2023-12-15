@@ -41,7 +41,7 @@ class _ChainIDs(object):
         return "".join(reversed(ids))
 
 
-class Convert(object):
+class Writer(object):
     """Convert one or more IMP Models and/or RMF frames to mmCIF
        or BinaryCIF.
 

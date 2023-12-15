@@ -246,7 +246,7 @@ class Tests(IMP.test.TestCase):
 
     def test_all_restraints_cross_link(self):
         """Test _AllRestraints with cross-link restraint"""
-        conv = IMP.mmcif.Convert()
+        conv = IMP.mmcif.Writer()
         m = IMP.Model()
         h = make_model(m, chains=[("Rpb1", "AMT", "X"),
                                   ("Rpb2", "ACC", "Z")])

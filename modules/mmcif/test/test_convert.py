@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
 
         all_foo = c._parse_sel_tuple("foo")
@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
         """Trying to add a Hierarchy with no chains should give an error"""
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         self.assertIsNone(c.system.title)
         self.assertRaises(ValueError, c.add_model, [top], [])
 
@@ -103,7 +103,7 @@ class Tests(IMP.test.TestCase):
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         top.set_name("Top node")
         self.add_chains(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual([x.description for x in c.system.entities],
                          ['foo', 'baz'])
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
         chain1 = top.get_child(1).get_child(0)
         self.assertTrue(IMP.atom.Chain.get_is_setup(chain1))
         IMP.atom.Chain(chain1).set_chain_type(IMP.atom.DNA)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertIsInstance(c.system.entities[0].sequence[0],
                               ihm.RNAChemComp)
@@ -145,7 +145,7 @@ class Tests(IMP.test.TestCase):
         top.set_name("Top node")
         self.add_chains(m, top,
                         chains = (('foo', 'ACGT', 'X'), ('baz', 'ACCT', 'X')))
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual([x.id for x in c.system.asym_units],
                          ['A', 'B'])
@@ -158,7 +158,7 @@ class Tests(IMP.test.TestCase):
         self.add_chains(m, top,
                         chains = (('foo', 'ACGT', 'X'), ('foo', 'ACCT', 'Y'),
                                   ('foo', 'ACGT', 'Z')))
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual([x.id for x in c.system.asym_units],
                          ['X', 'Y', 'Z'])
@@ -188,7 +188,7 @@ class Tests(IMP.test.TestCase):
         fname = self.get_tmp_file_name("test_add_rmf.rmf3")
         make_rmf(fname)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_rmf(fname)
         self.assertEqual(len(c.system.entities), 2)
         self.assertEqual(len(c.system.asym_units), 3)
@@ -203,7 +203,7 @@ class Tests(IMP.test.TestCase):
         self.add_chains(m, state0)
         state1 = self.add_state(m, top, 1, "State_1")
         self.add_chains(m, state1)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         # Entities/asyms should not be duplicated
         self.assertEqual([x.description for x in c.system.entities],
@@ -229,16 +229,16 @@ class Tests(IMP.test.TestCase):
         self.add_chains(m, state1)
 
         # No filtering -> two states
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual(len(c.system.state_groups[0]), 2)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [], states=["State_0"])
         self.assertEqual(len(c.system.state_groups[0]), 1)
 
         # No states selected (and so no groups either)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [], states=["State_99"])
         self.assertEqual(len(c.system.state_groups), 0)
 
@@ -248,24 +248,24 @@ class Tests(IMP.test.TestCase):
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         c.add_model([top], [])
         # No grouping -> ensemble for each model
         self.assertEqual(len(c.system.ensembles), 2)
 
         # Group into single ensemble
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         ens = c.add_model([top], [])
         c.add_model([top], [], ensembles=ens)
         self.assertEqual(len(c.system.ensembles), 1)
 
     def test_write(self):
-        """Test Convert.write() method"""
+        """Test Writer.write() method"""
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         fname = 'test_write.cif'
         c.write(fname)
@@ -276,12 +276,12 @@ class Tests(IMP.test.TestCase):
         os.unlink(fname)
 
     def test_report(self):
-        """Test Convert.report() method"""
+        """Test Writer.report() method"""
         sio = StringIO()
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         c.report(sio)
 
@@ -307,7 +307,7 @@ class Tests(IMP.test.TestCase):
         self.add_protocol(m, state0, sampcon=True)
 
         for top in (top1, top2, top3):
-            c = IMP.mmcif.Convert()
+            c = IMP.mmcif.Writer()
             c.add_model([top], [])
 
             e, = c.system.ensembles
@@ -350,7 +350,7 @@ class Tests(IMP.test.TestCase):
         add_software(m, state0)
 
         for top in (top1, top2, top3):
-            c = IMP.mmcif.Convert()
+            c = IMP.mmcif.Writer()
             c.add_model([top], [])
 
             soft, = c.system.software
@@ -385,7 +385,7 @@ class Tests(IMP.test.TestCase):
         add_script(m, state0)
 
         for top in (top1, top2, top3):
-            c = IMP.mmcif.Convert()
+            c = IMP.mmcif.Writer()
             c.add_model([top], [])
 
             loc, = c.system.locations
@@ -400,7 +400,7 @@ class Tests(IMP.test.TestCase):
         top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top2)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top1, top2], [])
         self.assertEqual(len(c.system.orphan_assemblies), 1)
         self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
@@ -415,7 +415,7 @@ class Tests(IMP.test.TestCase):
         self.add_chains(m, top2,
                         chains = (('foo', 'ACGT', 'X'), ('bar', 'ACGT', 'Y')))
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top1, top2], [])
         self.assertEqual(len(c.system.orphan_assemblies), 2)
         self.assertEqual(len(c.system.orphan_assemblies[0]), 3)
@@ -426,7 +426,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         chain0 = top.get_child(0).get_child(0)
         self.assertTrue(IMP.atom.Chain.get_is_setup(chain0))
         # Test that IMP residue numbering (11-14) maps to IHM (1-4)
@@ -510,7 +510,7 @@ class Tests(IMP.test.TestCase):
         frag.add_child(residue)
         chain1.add_child(frag)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
         # Both models should have same representation, with same starting model
         state0_model, = c.system.state_groups[0][0][0]
@@ -525,7 +525,7 @@ class Tests(IMP.test.TestCase):
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
         self.add_protocol(m, top)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         chain0 = top.get_child(0).get_child(0)
         r1 = self.add_structured_residue(m, chain0, 1)
         self.add_structured_residue(m, chain0, 2)

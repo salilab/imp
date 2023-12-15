@@ -104,7 +104,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         h = self.make_model(m)
         IMP.core.add_imp_provenance(h)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [], name="model1")
 
         # Assign ID to IMP citation
@@ -161,7 +161,7 @@ _software.citation_id
         self.add_structured_residue(m, chain2, 3)
         self.add_structured_residue(m, chain3, 1)
         self.add_structured_residue(m, chain3, 2)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [])
 
         foo, bar, baz = c.system.asym_units
@@ -235,7 +235,7 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         frag1 = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
         self.add_structure(frag1)
         chain.add_child(frag1)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [])
 
         self._assign_entity_ids(c)
@@ -336,7 +336,7 @@ _ihm_model_representation_details.description
         h2 = self._make_residue_chain('Nup85', 'B', m)
         state2h.add_child(h2)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([top], [])
 
         self._assign_entity_ids(c)
@@ -413,7 +413,7 @@ _ihm_starting_model_coord.ordinal_id
         prov = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
                                                         __file__)
         IMP.core.add_provenance(m, h, prov)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [], name="model1")
 
         root = os.path.dirname(__file__)
@@ -451,7 +451,7 @@ _ihm_external_files.details
         """Test ProtocolDumper"""
         m = IMP.Model()
         h = self.make_model_with_protocol(m)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [], name="model1")
 
         self._assign_entity_ids(c)
@@ -498,7 +498,7 @@ _ihm_modeling_protocol_details.description
         """Test PostProcessDumper"""
         m = IMP.Model()
         h = self.make_model_with_protocol(m)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [], name="model1")
 
         self._assign_entity_ids(c)
@@ -534,7 +534,7 @@ _ihm_modeling_post_process.details
         """Test EnsembleDumper"""
         m = IMP.Model()
         h = self.make_model(m)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         ens[None].name = 'cluster 1'
 
@@ -567,7 +567,7 @@ _ihm_ensemble_info.sub_sampling_type
         """Test ModelListDumper"""
         m = IMP.Model()
         h = self.make_model(m)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         ens[None].model_group.name = 'cluster 1'
         c.add_model([h], [], name="model2", ensembles=ens)
@@ -615,7 +615,7 @@ _ihm_model_group_link.model_id
         em_filename = self.get_input_file_name('test.gmm.txt')
         r = MockGaussianEMRestraint(m, em_filename, [res1.get_particle()])
         r.set_was_used(True)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [r], name="model1")
 
         # Assign dataset ID (=2 since the gmm is derived from an MRC)
@@ -668,7 +668,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         xyzr.set_radius(9.2)
         chains[1].add_child(pfrag)
 
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         ens[None].model_group.name = 'cluster 1'
 
@@ -725,7 +725,7 @@ _ihm_sphere_obj_site.model_id
         """Test DensityDumper with no density information"""
         m = IMP.Model()
         h = self.make_model_with_protocol(m)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         c.add_model([h], [], name="model1")
 
         dumper = ihm.dumper._DensityDumper()
@@ -737,7 +737,7 @@ _ihm_sphere_obj_site.model_id
         """Test DensityDumper with IMP.sampcon output"""
         m = IMP.Model()
         h = self.make_model_with_protocol(m, sampcon=True)
-        c = IMP.mmcif.Convert()
+        c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         e = ens[None]
 
