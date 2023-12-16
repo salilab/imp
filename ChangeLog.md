@@ -32,6 +32,10 @@ ChangeLog {#changelog}
   that `foxs` does.
 - Model attributes can now use sparse rather than vector storage. This reduces
   memory usage for attributes that are used by a minority of particles.
+- Previous releases would erroneously allow a single Python string to be
+  passed to any method that wants a list of strings. This would split the
+  string into a list of single-character strings, which is often not was
+  intended. Such methods now require an explicit list (or tuple) of strings.
 - The `IMP_NOEXCEPT` pre-C++11 compatibility macro has been removed; use
   the C++ `noexcept` keyword instead.
 - The CMake `IMP_PER_CPP_COMPILATION` and `IMP_CUDA` variables can now be set
