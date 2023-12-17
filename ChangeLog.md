@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.20.0 - 2023-12-21 # {#changelog_2_20_0}
 - The Windows .exe installer now supports Python 3.7 through 3.12.
 - RPM packages for IMP for RedHat Linux (and clones such as Alma or Rocky)
   and for Fedora are now provided by the
