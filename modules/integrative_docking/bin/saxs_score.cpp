@@ -186,7 +186,7 @@ recommended q value is 0.2")("offset,f",
     surface_area2 = s.get_solvent_accessibility(IMP::core::XYZRs(particles2));
   }
 
-  // read tranformations
+  // read transformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
 

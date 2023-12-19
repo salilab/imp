@@ -131,8 +131,6 @@ class ElectronMicroscopy2D_FFT(object):
                registration) to estimate the registration parameters
         @param resolution Which level of
                [model representation](@ref pmi_resolution) to use in the fit
-        @param n_components Number of the largest components to be
-               considered for the EM image
         """
 
         import IMP.em2d

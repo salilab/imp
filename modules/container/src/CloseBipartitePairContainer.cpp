@@ -1,7 +1,7 @@
 /**
  *  \file CloseBipartitePairContainer.cpp   \brief A list of ParticlePairs.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,4 +26,7 @@ CloseBipartitePairContainer::CloseBipartitePairContainer(
   a.set_name_if_default("CloseBipartitePairContainerInput0%1%");
   b.set_name_if_default("CloseBipartitePairContainerInput1%1%");
 }
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::container::CloseBipartitePairContainer);
+
 IMPCONTAINER_END_NAMESPACE

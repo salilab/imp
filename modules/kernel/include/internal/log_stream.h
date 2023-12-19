@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/log_stream.h
+ *  \brief Various useful utilities for logging
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
@@ -12,7 +12,7 @@
 #if !IMP_KERNEL_HAS_LOG4CXX
 
 #include "../file.h"
-#include "base_static.h"
+#include "static.h"
 #include "SimpleTimer.h"
 #include <istream>
 #include <sstream>

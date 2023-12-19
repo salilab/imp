@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/scoring_functions.h
+ *  \brief Various useful utilities for scoring functions.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

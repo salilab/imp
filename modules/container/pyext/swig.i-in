@@ -1,6 +1,6 @@
 IMP_SWIG_OBJECT(IMP::container, AllBipartitePairContainer, AllBipartitePairContainers);
 IMP_SWIG_OBJECT(IMP::container, AllPairContainer, AllPairContainers);
-IMP_SWIG_OBJECT(IMP::container, CloseBipartitePairContainer, CloseBipartitePairContainers);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::container, CloseBipartitePairContainer, CloseBipartitePairContainers);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::container, ClosePairContainer, ClosePairContainers);
 IMP_SWIG_OBJECT(IMP::container, ConnectingPairContainer, ConnectingPairContainers);
 IMP_SWIG_OBJECT(IMP::container, ConsecutivePairContainer, ConsecutivePairContainers);

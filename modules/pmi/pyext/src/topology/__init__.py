@@ -13,7 +13,8 @@
    like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues().
    These functions all return Python sets for easy set arithmetic using
    & (and), | (or), - (difference)
- * Molecule.add_structure() to add structural information from a PDB file.
+ * Molecule.add_structure() to add structural information from an mmCIF
+   or PDB file.
  * Molecule.add_representation() to create a representation unit - here you
    can choose bead resolutions as well as alternate representations like
    densities or ideal helices.
@@ -266,13 +267,15 @@ class State(_SystemBase):
             return self.molecules[name][copy_num]
 
     def create_molecule(self, name, sequence='', chain_id='',
-                        alphabet=IMP.pmi.alphabets.amino_acid):
+                        alphabet=IMP.pmi.alphabets.amino_acid,
+                        uniprot=None):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string);
                                    it must not be already used
         @param sequence            sequence (string)
         @param chain_id            Chain ID to assign to this molecule
         @param alphabet            Mapping from FASTA codes to residue types
+        @param uniprot             UniProt accession, if available
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
@@ -289,7 +292,7 @@ class State(_SystemBase):
                 "is desired." % name, IMP.pmi.ParameterWarning)
 
         mol = Molecule(self, name, sequence, chain_id, copy_num=0,
-                       alphabet=alphabet)
+                       alphabet=alphabet, uniprot=uniprot)
         self.molecules[name] = [mol]
         return mol
 
@@ -312,8 +315,15 @@ class State(_SystemBase):
         """Build all molecules (automatically makes clones)"""
         if not self.built:
             for molname in self.molecules:
+                # We want to update ProtocolOutput in forward order so
+                # that, e.g. we get nice chain IDs in the mmCIF output,
+                # but we want to build the sequence in reverse order
+                for mol in self.molecules[molname]:
+                    mol._build_protocol_output()
                 for mol in reversed(self.molecules[molname]):
-                    mol.build(**kwargs)
+                    mol.build(protocol_output=False, **kwargs)
+                for mol in self.molecules[molname]:
+                    mol._finalize_build()
             self.built = True
         return self.hier
 
@@ -393,7 +403,8 @@ class Molecule(_SystemBase):
     """
 
     def __init__(self, state, name, sequence, chain_id, copy_num,
-                 mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid):
+                 mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid,
+                 uniprot=None):
         """The user should not call this directly; instead call
            State.create_molecule()
 
@@ -415,6 +426,7 @@ class Molecule(_SystemBase):
         self.alphabet = alphabet
         self.representations = []  # list of stuff to build
         self._pdb_elements = []
+        self.uniprot = uniprot
         # residues with representation
         self._represented = IMP.pmi.tools.OrderedSet()
         # helps you place beads by storing structure
@@ -431,6 +443,8 @@ class Molecule(_SystemBase):
         self.chain = IMP.atom.Chain.setup_particle(self.hier, chain_id)
         self.chain.set_sequence(self.sequence)
         self.chain.set_chain_type(alphabet.get_chain_type())
+        if self.uniprot:
+            self.chain.set_uniprot_accession(self.uniprot)
         # create TempResidues from the sequence (if passed)
         self.residues = []
         for ns, s in enumerate(sequence):
@@ -541,13 +555,19 @@ class Molecule(_SystemBase):
                       soft_check=False):
         """Read a structure and store the coordinates.
         @return the atomic residues (as a set)
-        @param pdb_fn     The file to read
+        @param pdb_fn     The file to read (in PDB or mmCIF format)
         @param chain_id   Chain ID to read
         @param res_range  Add only a specific set of residues from the PDB
                           file. res_range[0] is the starting and res_range[1]
                           is the ending residue index.
         @param offset     Apply an offset to the residue indexes of the PDB
                           file. This number is added to the PDB sequence.
+                          PMI uses 1-based FASTA numbering internally (the
+                          first residue in the sequence is numbered 1, and
+                          so on). If the PDB chain is not also numbered
+                          starting from 1, apply an offset to make it match
+                          the FASTA. For example, if the PDB is numbered
+                          starting from -5, use an offset of 6 (-5 + 6 = 1).
         @param model_num  Read multi-model PDB and return that model
         @param ca_only    Only read the CA positions from the PDB file
         @param soft_check If True, it only warns if there are sequence
@@ -765,7 +785,7 @@ class Molecule(_SystemBase):
         # unify formatting for extra breaks
         breaks = []
         for b in bead_extra_breaks:
-            if type(b) == str:
+            if isinstance(b, str):
                 breaks.append(int(b)-1)
             else:
                 breaks.append(b)
@@ -779,7 +799,29 @@ class Molecule(_SystemBase):
     def _all_protocol_output(self):
         return self.state._protocol_output
 
-    def build(self):
+    def _build_protocol_output(self):
+        """Add molecule name and sequence to any ProtocolOutput objects"""
+        if not self.built:
+            name = self.hier.get_name()
+            for po, state in self._all_protocol_output():
+                po.create_component(state, name, True,
+                                    asym_name=self._name_with_copy)
+                po.add_component_sequence(state, name, self.sequence,
+                                          asym_name=self._name_with_copy,
+                                          alphabet=self.alphabet)
+
+    def _finalize_build(self):
+        # For clones, pass the representation of the original molecule
+        # to ProtocolOutput
+        if self.mol_to_clone:
+            rephandler = _RepresentationHandler(
+                self._name_with_copy, list(self._all_protocol_output()),
+                self.mol_to_clone._pdb_elements)
+            for res in self.mol_to_clone.residues:
+                if res.hier:
+                    rephandler(res)
+
+    def build(self, protocol_output=True):
         """Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and,
         finally, Copies.
@@ -789,14 +831,8 @@ class Molecule(_SystemBase):
               these can be constructed from the PDB file.
         """
         if not self.built:
-            # Add molecule name and sequence to any ProtocolOutput objects
-            name = self.hier.get_name()
-            for po, state in self._all_protocol_output():
-                po.create_component(state, name, True,
-                                    asym_name=self._name_with_copy)
-                po.add_component_sequence(state, name, self.sequence,
-                                          asym_name=self._name_with_copy,
-                                          alphabet=self.alphabet)
+            if protocol_output:
+                self._build_protocol_output()
             # if requested, clone structure and representations
             # BEFORE building original
             if self.mol_to_clone is not None:
@@ -873,7 +909,11 @@ class Molecule(_SystemBase):
                         # otherwise just store what you found
                         new_hier = IMP.atom.Hierarchy(new_p)
                     res.hier = new_hier
-                    rephandler(res)
+                    # Clones will be handled in _finalize_build() instead
+                    # (can't handle them here as the parent of the clone
+                    # isn't built yet)
+                    if self.mol_to_clone is None:
+                        rephandler(res)
                 else:
                     res.hier = None
             self._represented = IMP.pmi.tools.OrderedSet(
@@ -969,13 +1009,23 @@ class _FindCloseStructure(object):
 class Sequences(object):
     """A dictionary-like wrapper for reading and storing sequence data.
        Keys are FASTA sequence names, and each value a string of one-letter
-       codes."""
+       codes.
+
+       The FASTA header may contain multiple fields split by pipe (|)
+       characters. If so, the FASTA sequence name is the first field and
+       the second field (if present) is the UniProt accession.
+       For example, ">cop9|Q13098" yields a FASTA sequence name of "cop9"
+       and UniProt accession of "Q13098".
+    """
     def __init__(self, fasta_fn, name_map=None):
         """Read a FASTA file and extract all the requested sequences
         @param fasta_fn sequence file
         @param name_map dictionary mapping the FASTA name to final stored name
         """
+        # Mapping from sequence name to primary sequence
         self.sequences = IMP.pmi.tools.OrderedDict()
+        # Mapping from sequence name to UniProt accession, if available
+        self.uniprot = {}
         self.read_sequences(fasta_fn, name_map)
 
     def __len__(self):
@@ -1012,13 +1062,17 @@ class Sequences(object):
                 if line.startswith('>'):
                     if seq is not None:
                         self.sequences[code] = seq.strip('*')
-                    code = line.rstrip()[1:]
+                    spl = line[1:].split('|')
+                    code = spl[0].strip()
                     if name_map is not None:
                         try:
                             code = name_map[code]
                         except KeyError:
                             pass
                     seq = ''
+                    if len(spl) >= 2:
+                        up_accession = spl[1].strip()
+                        self.uniprot[code] = up_accession
                 else:
                     line = line.rstrip()
                     if line:  # Skip blank lines
@@ -1223,7 +1277,8 @@ class TempResidue(object):
                 self.pdb_index, self.internal_index)
 
     def __eq__(self, other):
-        return type(other) == type(self) and self.__key() == other.__key()
+        return (type(other) == type(self)  # noqa: E721
+                and self.__key() == other.__key())
 
     def __hash__(self):
         return hash(self.__key())
@@ -1283,7 +1338,7 @@ class TempResidue(object):
 
 
 class TopologyReader(object):
-    """Automatically setup Sytem and Degrees of Freedom with a formatted
+    """Automatically setup System and Degrees of Freedom with a formatted
        text file.
     The file is read in and each part of the topology is stored as a
     ComponentTopology object for input into IMP::pmi::macros::BuildSystem.

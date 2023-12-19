@@ -16,7 +16,7 @@
 #include <IMP/log_macros.h>
 #include <boost/multi_array.hpp>
 #include <boost/unordered_map.hpp>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <algorithm>
 

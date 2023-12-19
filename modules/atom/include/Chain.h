@@ -64,6 +64,8 @@ class IMPATOMEXPORT Chain : public Hierarchy {
                                 std::string id) {
     m->add_attribute(get_id_key(), pi, id);
     m->add_attribute(get_sequence_key(), pi, "");
+    m->add_attribute(get_sequence_offset_key(), pi, 0);
+    m->add_attribute(get_uniprot_accession_key(), pi, "");
     m->add_attribute(get_chain_type_key(), pi, UnknownChainType.get_index());
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
@@ -85,6 +87,8 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_id_key(), pi) &&
            m->get_has_attribute(get_sequence_key(), pi) &&
+           m->get_has_attribute(get_sequence_offset_key(), pi) &&
+           m->get_has_attribute(get_uniprot_accession_key(), pi) &&
            m->get_has_attribute(get_chain_type_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }
@@ -118,6 +122,36 @@ class IMPATOMEXPORT Chain : public Hierarchy {
                                sequence);
   }
 
+  //! Return the offset from the sequence numbering to residue indexes
+  int get_sequence_offset() const {
+    return get_model()->get_attribute(get_sequence_offset_key(),
+                                      get_particle_index());
+  }
+
+  //! Set the offset from the sequence numbering to residue indexes
+  /** This offset is added to 1-based indexes into the chain primary sequence
+      (see set_sequence()) to get corresponding residue indexes. By default,
+      the offset is zero, corresponding to residues being numbered from 1.
+      For example, if residues were instead numbered starting from 0, the
+      offset would be -1.
+    */
+  void set_sequence_offset(int offset) {
+    get_model()->set_attribute(get_sequence_offset_key(), get_particle_index(),
+                               offset);
+  }
+
+  //! Return the UniProt accession for the chain's sequence
+  std::string get_uniprot_accession() const {
+    return get_model()->get_attribute(get_uniprot_accession_key(),
+                                      get_particle_index());
+  }
+
+  //! Set the UniProt accession for the chain's sequence
+  void set_uniprot_accession(std::string accession) {
+    get_model()->set_attribute(get_uniprot_accession_key(),
+                               get_particle_index(), accession);
+  }
+
   //! Return the chain type
   ChainType get_chain_type() const {
     return ChainType(get_model()->get_attribute(get_chain_type_key(),
@@ -141,13 +175,19 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
 
   //! The key used to store the chain
-  static StringKey get_id_key();
+  static SparseStringKey get_id_key();
 
   //! The key used to store the primary sequence
-  static StringKey get_sequence_key();
+  static SparseStringKey get_sequence_key();
+
+  //! The key used to store the sequence offset
+  static SparseIntKey get_sequence_offset_key();
+
+  //! The key used to store the UniProt accession
+  static SparseStringKey get_uniprot_accession_key();
 
   //! The key used to store the polymer type
-  static IntKey get_chain_type_key();
+  static SparseIntKey get_chain_type_key();
 };
 
 IMP_DECORATORS(Chain, Chains, Hierarchies);

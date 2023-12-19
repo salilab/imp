@@ -12,7 +12,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

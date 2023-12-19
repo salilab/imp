@@ -68,6 +68,17 @@ class Tests(IMP.test.TestCase):
         rep.add_representation(res20,IMP.atom.BALLS,20)
         return rep
 
+    def test_get_info_fail(self):
+        """Info functions should fail with a bad Hierarchy"""
+        m = IMP.Model()
+        h1 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        self.assertRaises(ValueError, IMP.atom.get_residue_indexes, h1)
+        self.assertRaises(ValueError, IMP.atom.get_residue_type, h1)
+        self.assertRaises(ValueError, IMP.atom.get_chain_id, h1)
+        self.assertRaises(ValueError, IMP.atom.get_atom_type, h1)
+        self.assertRaises(ValueError, IMP.atom.get_domain_name, h1)
+        self.assertRaises(ValueError, IMP.atom.get_molecule_name, h1)
+
     def test_named_representation(self):
         """Test representation when you manually set resolutions"""
         mdl = IMP.Model()

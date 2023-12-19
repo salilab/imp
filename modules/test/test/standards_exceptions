@@ -23,7 +23,8 @@ path_attributes = [
    'lchmod', 'lstat', 'match', 'mkdir', 'open', 'owner', 'relative_to',
    'rename', 'replace', 'resolve', 'rglob', 'rmdir', 'stat', 'symlink_to',
    'touch', 'unlink', 'with_name', 'with_suffix', 'expanduser', 'hardlink_to',
-   'home', 'is_mount', 'is_relative_to', 'readlink', 'samefile', 'with_stem' ]
+   'home', 'is_mount', 'is_relative_to', 'readlink', 'samefile', 'with_stem',
+   'is_junction', 'walk', 'with_segments' ]
 exceptions = ["Path." + x for x in path_attributes] \
            + ["TestCase." + x for x in standard_unittest_attributes] \
            + ["ApplicationTestCase." + x for x in standard_unittest_attributes]

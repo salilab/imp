@@ -230,7 +230,7 @@ bool parse_input(int argc, char *argv[], std::string &density_filename,
   max_angle = -1.;
   int cluster_off_ind = 0;
   po::options_description optional_params("Allowed options"), po, ao,
-      required_params("Hideen options");
+      required_params("Hidden options");
   required_params.add_options()("density",
                                 po::value<std::string>(&density_filename),
                                 "complex density filename")(

@@ -26,9 +26,12 @@ import IMP.EMageFit.csv_related as csv_related
 
 log = logging.getLogger("DominoModel")
 
-field_delim = ","  # separate fields in the output text file
-unit_delim = "/"  # separate units within a field (eg, reference frames).
-                  # It is used in output text files and in databse files
+# separate fields in the output text file
+field_delim = ","
+
+# separate units within a field (eg, reference frames).
+# It is used in output text files and in database files
+unit_delim = "/"
 
 
 class DominoModel:
@@ -360,9 +363,9 @@ class DominoModel:
                               merge tree. This function is recursive.
             @param[in] k
         """
-        if(self.sampler.get_number_of_subset_filter_tables() == 0):
+        if self.sampler.get_number_of_subset_filter_tables() == 0:
             raise ValueError("No subset filter tables")
-        if(self.merge_tree is None):
+        if self.merge_tree is None:
             raise ValueError("No merge tree")
         # In the merge tree, the names of the vertices are the subsets.
         # The type of the vertex name is a domino.Subset
@@ -636,7 +639,7 @@ class DominoModel:
         subset = self.merge_tree.get_vertex_name(v)
         names = [p.get_name() for p in subset]
         reps = [x for x in names if names.count(x) > 1]  # repeated names
-        if(len(reps)):
+        if len(reps):
             raise ValueError(
                 "The names of the particles in the subset %s are not unique"
                 % subset)
@@ -724,7 +727,8 @@ class DominoModel:
         self.not_optimized_rbs.append(rb_name)
 
     def set_close_pairs_excluded_volume_restraint(
-        self, distance=10, weight=1.0, ratio=0.05, stddev=2, max_score=False):
+            self, distance=10, weight=1.0, ratio=0.05, stddev=2,
+            max_score=False):
         """
             Creates an excluded volume restraint between all the components
             of the coarse assembly.See help for
@@ -778,7 +782,8 @@ class DominoModel:
 
     def set_pair_score_restraint(self, name1, name2,
                                  restraint_name, distance=10,
-                                 weight=1.0, n_pairs=1, stddev=2, max_score=None):
+                                 weight=1.0, n_pairs=1, stddev=2,
+                                 max_score=None):
         """
             Set a pair_score restraint between the coarse representation
             of two components
@@ -850,7 +855,7 @@ class DominoModel:
             scores, total_score = self.get_assignment_scores(
                 assignment, subset)
             measures = None
-            if(self.measure_models):
+            if self.measure_models:
                 measures = measure_model(self.assembly, self.native_assembly,
                                          self.components_rbs, self.native_rbs)
             db.add_record(sol_id, txt, RFs, total_score, scores, measures)
@@ -913,7 +918,7 @@ class DominoModel:
         """
         if not self.assignments_sampling_done:
             raise ValueError("DominoModel: sampling not done")
-        log.info("Writting PDB %s for assignment %s", fn_pdb, assignment)
+        log.info("Writing PDB %s for assignment %s", fn_pdb, assignment)
         self.load_state(assignment)
         atom.write_pdb(self.assembly, fn_pdb)
 
@@ -926,8 +931,8 @@ class DominoModel:
         """
         if not self.configuration_sampling_done:
             raise ValueError("DominoModel: sampling not done")
-        log.debug("Writting PDB %s for configuration %s", fn_pdb, n)
-        configuration_set.load_configuration(n)
+        log.debug("Writing PDB %s for configuration %s", fn_pdb, n)
+        # configuration_set.load_configuration(n)
         atom.write_pdb(self.assembly, fn_pdb)
 
     def write_pdb_for_reference_frames(self, RFs, fn_pdb):
@@ -936,7 +941,7 @@ class DominoModel:
             @param RFs Reference frames for the elements of the complex
             @param fn_pdb File to write the solution
         """
-        log.debug("Writting PDB %s for reference frames %s", fn_pdb, RFs)
+        log.debug("Writing PDB %s for reference frames %s", fn_pdb, RFs)
         representation.set_reference_frames(self.components_rbs, RFs)
         atom.write_pdb(self.assembly, fn_pdb)
 
@@ -946,7 +951,7 @@ class DominoModel:
             @param RFs Reference frames for the elements of the complex
             @param fn_base base string to build the names of the PDBs files
         """
-        log.debug("Writting PDBs with basename %s", fn_base)
+        log.debug("Writing PDBs with basename %s", fn_base)
         representation.set_reference_frames(self.components_rbs, RFs)
         for i, ch in enumerate(self.assembly.get_children()):
             atom.write_pdb(ch, fn_base + "component-%02d.pdb" % i)
@@ -958,7 +963,7 @@ class DominoModel:
             @param ref Reference frame of the component
             @param fn_pdb Output PDB
         """
-        ("Writting PDB %s for component %s", fn_pdb, component_index)
+        ("Writing PDB %s for component %s", fn_pdb, component_index)
         self.components_rbs[component_index].set_reference_frame(ref)
         hierarchy_component = self.assembly.get_child(component_index)
         atom.write_pdb(hierarchy_component, fn_pdb)
@@ -988,7 +993,7 @@ class DominoModel:
         db.add_results_table(rnames, self.measure_models)
         RFs = [rb.get_reference_frame() for rb in self.components_rbs]
         measures = None
-        if(self.measure_models):
+        if self.measure_models:
             measures = measure_model(self.assembly, self.native_assembly,
                                      self.components_rbs, self.native_rbs)
         solution_id = 0
@@ -1013,11 +1018,11 @@ def anchor_assembly(components_rbs, anchored):
         "Anchor" a set of rigid bodies, by setting the position of one of them
         at the origin (0,0,0).
         @param components_rbs Rigid bodies of the components
-        @param anchored - List of True/False values indicating if the components
-      of the assembly are anchored. The function sets the FIRST anchored
-      component in the (0,0,0) coordinate and moves the other
-      components with the same translation. If all the values are False, the
-      function does not do anything
+        @param anchored - List of True/False values indicating if the
+               components of the assembly are anchored. The function sets the
+               FIRST anchored component in the (0,0,0) coordinate and moves
+               the other components with the same translation. If all the
+               values are False, the function does not do anything
     """
     if True in anchored:
         anchored_rb = None

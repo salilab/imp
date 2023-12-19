@@ -76,7 +76,7 @@ int parse_input(int argc, char *argv[], std::string &density_filename,
   log_filename = "multifit.log";
   pdb_fit_filename = "";
   po::options_description optional_params("Allowed options"), po, ao,
-      required_params("Hideen options");
+      required_params("Hidden options");
   required_params.add_options()("density",
                                 po::value<std::string>(&density_filename),
                                 "complex density filename")(

@@ -26,8 +26,8 @@ IMP_SWIG_EIGEN_VECTOR(VectorXf);
 IMP_SWIG_EIGEN_VECTOR(Vector3d);
 IMP_SWIG_EIGEN_MATRIX(ArrayXXf);
 IMP_SWIG_EIGEN_MATRIX(ArrayXXd);
-IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
-IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, DynamicNearestNeighbor3D, DynamicNearestNeighbor3Ds);
 
 IMP_SWIG_VALUE_SERIALIZE(IMP::algebra, Rotation2D, Rotation2Ds);

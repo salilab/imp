@@ -37,8 +37,10 @@ class Tests(IMP.test.TestCase):
                                 'multifit.param', self.get_input_file_name(
                                     'multifit.output'),
                                 self.get_input_file_name('mini-ref-complex.pdb')])
-        self.assertEqual(len(open('rmsd.output').readlines()), 10)
-        self.assertEqual(len(open('test.vec').read().split(' ')), 10)
+        with open('rmsd.output') as fh:
+            self.assertEqual(len(fh.readlines()), 10)
+        with open('test.vec') as fh:
+            self.assertEqual(len(fh.read().split(' ')), 10)
         os.unlink('rmsd.output')
         os.unlink('test.vec')
 
@@ -47,7 +49,8 @@ class Tests(IMP.test.TestCase):
                                 'multifit.param', self.get_input_file_name(
                                     'multifit.output'),
                                 self.get_input_file_name('mini-ref-complex.pdb')])
-        self.assertEqual(len(open('rmsd.output').readlines()), 2)
+        with open('rmsd.output') as fh:
+            self.assertEqual(len(fh.readlines()), 2)
         os.unlink('rmsd.output')
         os.unlink('multifit.param')
 

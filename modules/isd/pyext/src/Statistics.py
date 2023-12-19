@@ -19,13 +19,14 @@ class Statistics:
     - num_entries_per_line: number of entries per line in the output. -1 to
                             disable wrapping.
     - repeat_title: if 0 (default) only print it in the beginning. Else repeat
-                    it every 'repeat_title' outputted lines in the statistics file.
-    - separate_lines: If False the entries are not separated (default). If True,
-                      the lines are separated with stars.
-    - compress: If set to a positive number of steps, compress trajectories each
-                time so many steps have elapsed, appending the current frame
-                number to the filename. Only works in append mode, and when it
-                is set to a multiple of rate.
+                    it every 'repeat_title' outputted lines in the statistics
+                    file.
+    - separate_lines: If False the entries are not separated (default).
+                      If True, the lines are separated with stars.
+    - compress: If set to a positive number of steps, compress trajectories
+                each time so many steps have elapsed, appending the current
+                frame number to the filename. Only works in append mode, and
+                when it is set to a multiple of rate.
 
     TODO: check if everything was updated nicely
     """
@@ -88,8 +89,8 @@ class Statistics:
     def add_category(self, name=None):
         """creates a logging entry for a simulation substep of the gibbs
         sampler. Each category has its own counter, initialized to zero.
-        The global category does not need to be created, it's already created by
-        the init method, and its key is 'global'.
+        The global category does not need to be created, it's already created
+        by the init method, and its key is 'global'.
         - name: an optional name, must be string.
         Returns: a unique key to refer to this category, which will start with
         the optional name.
@@ -129,15 +130,15 @@ class Statistics:
             self._append_to_stats(name, entry)
             self.categories[key][name] = entry
         else:
-            if not name in self.categories[key]:
+            if name not in self.categories[key]:
                 raise ValueError("entry %s:%s does not exist!" % (key, name))
             self._append_to_stats(name, self.categories[key][name])
 
     def update(self, key, name, value):
         """updates an entry and change its value to value"""
-        if not key in self.categories:
+        if key not in self.categories:
             raise ValueError("unknown category: %s" % key)
-        if not name in self.categories[key]:
+        if name not in self.categories[key]:
             raise ValueError("unknown entry %s:%s" % (key, name))
         self.categories[key][name].set_value(value)
 
@@ -156,7 +157,7 @@ class Statistics:
               numbered according to the counter of their category.
             - extension: the file extension to use
               """
-        if not key in self.categories:
+        if key not in self.categories:
             raise ValueError("unknown category: %s" % key)
         self.categories[key][name] = None
         if format == 'raw':
@@ -179,15 +180,15 @@ class Statistics:
         note that setting value to None is equivalent to not calling this
         function
         """
-        if not key in self.categories:
+        if key not in self.categories:
             raise ValueError("unknown category: %s" % key)
-        if not name in self.categories[key]:
+        if name not in self.categories[key]:
             raise ValueError("unknown coordinates %s:%s" % (key, name))
         self.categories[key][name] = value
 
     def increment_counter(self, key, value):
         """increments the counter of category 'key' by 'value' steps."""
-        if not key in self.categories:
+        if key not in self.categories:
             raise ValueError("unknown category: %s" % key)
         cnt = self.categories[key]['counter']
         cnt.set_value(cnt.get_raw_value() + value)

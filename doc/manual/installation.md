@@ -25,8 +25,9 @@ To experiment with IMP on [Google Colaboratory](https://colab.research.google.co
 !wget -O /etc/apt/trusted.gpg.d/salilab.asc https://salilab.org/~ben/pubkey256.asc
 !apt update
 !apt install imp
-import sys
-sys.path.append('/usr/lib/python3.8/dist-packages')
+import sys, os, glob
+sys.path.append(os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[0]))
+
 \endcode
 
 # Source code installation {#installation_source}
@@ -36,7 +37,7 @@ sys.path.append('/usr/lib/python3.8/dist-packages')
 In order to build %IMP from source, you will need:
 
 - A C++ compiler that supports the C++11 standard, such as gcc, clang,
-  or Microsoft Visual Studio 2015 or later.
+  or Microsoft Visual Studio 2017 or later.
 - [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
@@ -130,10 +131,11 @@ such as
 
 - [Conda](https://docs.conda.io/en/latest/) Once you installed conda (typically via the Miniconda or Anaconda distributions), do 
 
-        conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libprotobuf protobuf libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy
-	conda activate IMP_BUILD
+        conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy cereal
+		conda activate IMP_BUILD
+		conda install -c anaconda protobuf libprotobuf 
 
-  As in brew and Macports, some of these packages may be optional. In addition, cgal may not be identified by cmake. IMP will still run just fine. Either way, a solution could be setting the CGAL_DIR environment variable to $CONDA_PREFIX/lib/cmake/CGAL/ before running cmake, or adding a -DCGAL_DIR=$CONDA_PREFIX/lib/cmake/CGAL flag to the cmake command line ($CONDA_PREFIX is an environment variable that points to the folder of the active conda environment).
+  Conda tips: as with brew and Macports, some of these packages may be optional. It is up to you whether to use "-c anaconda" or "-c conda-forge" for either of the packages, e.g. libprotobuf and protobuf worked better with anaconda in the past. In addition, cgal may not be identified by cmake. IMP will still run just fine. Either way, a solution could be setting the CGAL_DIR environment variable to $CONDA_PREFIX/lib/cmake/CGAL/ before running cmake, or adding a -DCGAL_DIR=$CONDA_PREFIX/lib/cmake/CGAL flag to the cmake command line ($CONDA_PREFIX is an environment variable that points to the folder of the active conda environment).
 	
 
 - or [Fink](http://www.finkproject.org/) (not supported)

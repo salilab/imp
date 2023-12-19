@@ -11,7 +11,7 @@
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/UniformBoundedRestraint.h>
-#include <math.h>
+#include <cmath>
 
 IMPSPB_BEGIN_NAMESPACE
 

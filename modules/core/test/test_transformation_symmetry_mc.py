@@ -3,7 +3,8 @@ import IMP.container
 import IMP.atom
 import IMP.rmf
 import RMF
-from math import *
+import math
+import os
 import IMP.test
 import itertools
 
@@ -62,11 +63,11 @@ def get_angle_and_axis(q):
     if 1.0 < q[0] < 1.001:
         angle = 0.
     else:
-        angle = 2 * acos(q[0])
+        angle = 2 * math.acos(q[0])
     if angle != 0:
-        x = q[1] / sqrt(1-q[0]*q[0])
-        y = q[2] / sqrt(1-q[0]*q[0])
-        z = q[3] / sqrt(1-q[0]*q[0])
+        x = q[1] / math.sqrt(1-q[0]*q[0])
+        y = q[2] / math.sqrt(1-q[0]*q[0])
+        z = q[3] / math.sqrt(1-q[0]*q[0])
         return (angle,(x,y,z))
     else:
         return (0,None)
@@ -95,7 +96,7 @@ def get_rbs_and_beads(hiers):
     return rbs_ordered,beads
 
 def add_symmetry(clones,refs,transform,mdl):
-    '''setup the simmetry from the clones'''
+    '''setup the symmetry from the clones'''
 
     ref_rbs,ref_beads = get_rbs_and_beads(refs)
     clones_rbs,clones_beads = get_rbs_and_beads(clones)
@@ -182,7 +183,7 @@ class TestSymmetryMC(IMP.test.TestCase):
         rotational_point=IMP.algebra.Vector3D(0,0,0)
         disabled_movers=set()
         for n,c in enumerate(pss[1:]):
-            rotation_angle = 2.0 * pi / len(pss) * float(n+1)
+            rotation_angle = 2.0 * math.pi / len(pss) * float(n+1)
             rotation3D = IMP.algebra.get_rotation_about_axis(rotational_axis, rotation_angle)
             transformation3D =IMP.algebra.get_rotation_about_point(rotational_point, rotation3D)
             add_symmetry(c,pss[0],transformation3D,mdl)
@@ -295,6 +296,7 @@ class TestSymmetryMC(IMP.test.TestCase):
                 for a,b in itertools.combinations(rb_rbpt_values[key][rb],2):
                     self.assertAlmostEqual(a,b,places=7)
         del rh
+        os.unlink('out.rmf')
 
 
 if __name__ == '__main__':

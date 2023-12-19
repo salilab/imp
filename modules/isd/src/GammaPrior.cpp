@@ -9,7 +9,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/GammaPrior.h>
 #include <boost/math/special_functions/gamma.hpp>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

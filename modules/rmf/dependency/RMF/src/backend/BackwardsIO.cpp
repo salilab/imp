@@ -26,7 +26,7 @@ std::array<std::string, 4> make_array(std::string a, std::string b,
   return ret;
 }
 }
-typedef std::pair<std::string, std::array<std::string, 3> > P3;
+using P3 = std::pair<std::string, std::array<std::string, 3> >;
 const P3 vector_3_names[] = {
     P3("coordinates", make_array("cartesian x", "cartesian y", "cartesian z")),
     P3("translation",
@@ -44,7 +44,7 @@ const int vector_3_names_size =
 
 V3N vector_3_names_map(vector_3_names, vector_3_names + vector_3_names_size);
 
-typedef std::pair<std::string, std::array<std::string, 4> > P4;
+using P4 = std::pair<std::string, std::array<std::string, 4> >;
 
 const P4 vector_4_names[] = {
     P4("orientation", make_array("orientation r", "orientation i",

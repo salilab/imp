@@ -454,7 +454,7 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
         """
         Constructor
         @param hier        Hierarchy of the system
-        @param section     Selection of residues and target;
+        @param selection   Selection of residues and target;
                            syntax is (prot, r1, r2, target_prot) or
                            (prot1, r1, r2, target_prot, target_r1, target_r2)
         @param cutoff      Distance cutoff between selected segment and target
@@ -551,7 +551,7 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
 
         br.add_contribution_particles(sel_resi, sel_target)
 
-        # Compute interpolation paramaters
+        # Compute interpolation parameters
         yi = ((cutoff**2/(2*sigma**2)
                - math.log(1/math.sqrt(2*math.pi*sigma*sigma))+cutoff*xi/2.)
               / (cutoff/2.))

@@ -70,7 +70,7 @@ match_strictness = 1.0
 # print the queried fields
 if result.fields is not None:
     field_list = []
-    # check whether the fields exist and convert them to best maching existing
+    # check whether the fields exist and convert them to best matching existing
     # field names
     for field in result.fields:
         found_entries = difflib.get_close_matches(

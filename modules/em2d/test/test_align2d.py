@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
         # Tolerate 1 pixel error
         self.assertAlmostEqual(
             cross_correlation_coefficient, 1, delta=0.035,
-            msg="Error in the complete aligment routine,"
+            msg="Error in the complete alignment routine,"
                 "ccc %f less than 0.965" % (cross_correlation_coefficient))
 
 

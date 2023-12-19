@@ -120,7 +120,7 @@ class Tests(IMP.test.TestCase):
             r2, r1)
         second_to_first = IMP.algebra.get_transformation_from_first_to_second(
             r1, r2)
-        # preform test
+        # perform test
         dist = IMP.algebra.get_distance(
             first_to_second.get_rotation(),
             second_to_first.get_inverse().get_rotation())

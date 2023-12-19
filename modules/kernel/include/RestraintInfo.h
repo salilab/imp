@@ -48,6 +48,19 @@ class IMPKERNELEXPORT RestraintInfo : public Object {
 public:
   RestraintInfo(std::string name = "RestraintInfo %1%") : Object(name) {}
 
+  // Clear all data
+  void clear() {
+    int_.clear();
+    ints_.clear();
+    float_.clear();
+    floats_.clear();
+    string_.clear();
+    strings_.clear();
+    filename_.clear();
+    filenames_.clear();
+    pis_.clear();
+  }
+
   //! Add an int value referenced by the given key
   void add_int(std::string key, int value);
 

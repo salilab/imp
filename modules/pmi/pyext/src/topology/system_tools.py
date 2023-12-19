@@ -80,9 +80,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
         sel = IMP.atom.get_default_pdb_selector()
 
     reader = read_file if model_num is None else read_multi_file
-    mh = reader(pdb_fn, model,
-                IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id),
-                                        sel))
+    mh = reader(pdb_fn, model, IMP.atom.ChainPDBSelector([chain_id]) & sel)
     if model_num is not None:
         mh = mh[model_num]
 
@@ -252,6 +250,7 @@ def _add_fragment_provenance(fragment, first_residue, rephandler):
         sp = IMP.core.StructureProvenance.setup_particle(
             p, pdb_element.filename, pdb_element.chain_id, pdb_element.offset)
         IMP.core.add_provenance(m, fragment, sp)
+        return pdb_element
 
 
 def build_representation(parent, rep, coord_finder, rephandler):
@@ -260,7 +259,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
     If any volume-based representations (e.g.,densities) are requested,
     will instead create a single Representation node.
     All reps are added as children of the passed parent.
-    @param parent The Molecule to which we'll add add representations
+    @param parent The Molecule to which we'll add representations
     @param rep What to build. An instance of pmi::topology::_Representation
     @param coord_finder A _FindCloseStructure object to help localize beads
     """
@@ -278,6 +277,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
     # below we sample or read the GMMs and add them as representation
     # flag indicating grouping nonlinear segments with one GMM
     single_node = False
+    prov_dict = {}
     if rep.density_residues_per_component:
         single_node = True
         num_components = (len(rep.residues)
@@ -376,8 +376,10 @@ def build_representation(parent, rep, coord_finder, rephandler):
             this_resolution = IMP.atom.Fragment.setup_particle(fp, res_nums)
             this_resolution.set_name("%s: Res %i" % (name, resolution))
             if frag_res[0].get_has_structure():
-                _add_fragment_provenance(this_resolution, frag_res[0],
-                                         rephandler)
+                pdb_element = _add_fragment_provenance(
+                    this_resolution, frag_res[0], rephandler)
+                if pdb_element is not None:
+                    prov_dict[resolution] = pdb_element
                 # if structured, merge particles as needed
                 if resolution == atomic_res:
                     for residue in frag_res:
@@ -446,6 +448,16 @@ def build_representation(parent, rep, coord_finder, rephandler):
                 IMP.Particle(model),
                 [r.get_index() for r in rep.residues])
             this_resolution.set_name("%s: Res %i" % (name_all, resolution))
+            # Use provenance information from the last original node (hopefully
+            # all nodes have the same provenance, i.e. came from the same
+            # PDB file)
+            if prov_dict.get(resolution):
+                pdb_element = prov_dict[resolution]
+                sp = IMP.core.StructureProvenance.setup_particle(
+                    IMP.Particle(model, "input structure"),
+                    pdb_element.filename,
+                    pdb_element.chain_id, pdb_element.offset)
+                IMP.core.add_provenance(model, this_resolution, sp)
             for hier in rep_dict[resolution]:
                 this_resolution.add_child(hier)
             if resolution == primary_resolution:

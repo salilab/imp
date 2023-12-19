@@ -1,6 +1,68 @@
 ChangeLog {#changelog}
 =========
 
+# 2.20.0 - 2023-12-21 # {#changelog_2_20_0}
+- The Windows .exe installer now supports Python 3.7 through 3.12.
+- RPM packages for IMP for RedHat Linux (and clones such as Alma or Rocky)
+  and for Fedora are now provided by the
+  [COPR project](https://copr.fedorainfracloud.org/coprs/salilab/salilab/).
+  Dependencies such as RMF and python-ihm are now packaged separately so that
+  they can be updated independently of IMP itself.
+- We no longer provide packages for Ubuntu 18.04 LTS (Bionic Beaver), as it
+  reached end of life in May 2023.
+- IMP::atom::Chain objects now track the sequence offset (if any) between
+  FASTA and PDB residue numbering, and the UniProt accession (if known) of
+  the sequence. This information is also stored in RMF files.
+- PMI's FASTA file reader now reads the UniProt accession for each sequence,
+  if provided.
+- IMP::atom::ChainPDBSelector now takes a list of chain IDs, rather than a
+  single string, so that it can select chains with multi-character IDs.
+  When working with mmCIF files, it will now select based on the author-provided
+  chain ID, if available, for consistency with the naming of IMP::atom::Chain
+  particles.
+- The IMP::rmf::load_frame and IMP::rmf::save_frame functions now warn if they
+  are called before links to IMP objects have been made (as this is a noop).
+- IMP::saxs::Restraint has seen performance improvements, and will now use a
+  GPU for speedup if IMP is built with CUDA support.
+- IMP::saxs::Restraint will now report an error if it is given invalid
+  particles; previously they would be silently ignored.
+- The IMP::mmcif module has been rewritten to work with modern RMF files
+  and IMP::sampcon output.
+- The `multi_foxs` command line tool now provides the same `--offset` option
+  that `foxs` does.
+- Model attributes can now use sparse rather than vector storage. This reduces
+  memory usage for attributes that are used by a minority of particles.
+- Previous releases would erroneously allow a single Python string to be
+  passed to any method that wants a list of strings. This would split the
+  string into a list of single-character strings, which is often not was
+  intended. Such methods now require an explicit list (or tuple) of strings.
+- The `IMP_NOEXCEPT` pre-C++11 compatibility macro has been removed; use
+  the C++ `noexcept` keyword instead.
+- The CMake `IMP_PER_CPP_COMPILATION` and `IMP_CUDA` variables can now be set
+  to `ALL` to build all IMP modules one .cpp at a time, or with CUDA support,
+  respectively.
+- PMI no longer supports old PMI1-style hierarchies. The
+  IMP::pmi::get_is_canonical function, which detects PMI2-style hierarchies,
+  should thus be assumed to always return true, and has been deprecated.
+- Windows builds now require MS Visual Studio 2017 or later.
+- IMP::algebra::Rotation3D::get_derivative(),
+  IMP::algebra::Rotation3D::get_gradient(),
+  IMP::algebra::get_gradient_of_composed_with_respect_to_first(), and
+  IMP::algebra::get_gradient_of_composed_with_respect_to_second() have been
+  removed; instead use IMP::algebra::Rotation3D::get_gradient_of_rotated(),
+  IMP::algebra::Rotation3D::get_jacobian_of_rotated(),
+  IMP::algebra::get_jacobian_of_composed_wrt_first(), and
+  IMP::algebra::get_jacobian_of_composed_wrt_second(), respectively.
+- The IMP::core::IncrementalScoringFunction class has been removed. Use
+  IMP::core::MonteCarlo::set_score_moved or
+  IMP::ScoringFunction::evaluate_moved instead.
+- The IMP::em2d::CenteredMat and IMP::em2d::Fine2DRegistrationRestraint
+  classes, which are used only internally, have been removed.
+- The base_utility.h and base_static.h headers have been removed; use utility.h
+  and static.h instead, respectively.
+- The vector_property_map.h compatibility header has been removed;
+  use Boost's boost/property_map/property_map.hpp header instead.
+
 # 2.19.0 - 2023-06-22 # {#changelog_2_19_0}
 - Most IMP Value and Object types can now be serialized (or pickled in Python).
   For example, this can be used to save the current state of an IMP::Model

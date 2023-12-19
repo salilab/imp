@@ -46,9 +46,9 @@ class Tests(IMP.test.TestCase):
     def test_gmm_parser_emdb(self):
         """Test GMMParser pointing to an MRC in EMDB"""
         def mock_urlopen(url, timeout=None):
-            txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
-                  ',"title":"test details"}}]}'
-            return StringIO(txt)
+            return StringIO(
+                '{"admin": {"key_dates": {"map_release": "2011-04-21"},'
+                '"title": "test details"}}')
         system = MockSystem()
         p = IMP.mmcif.metadata._GMMParser()
         fname = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')

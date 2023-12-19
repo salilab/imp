@@ -193,6 +193,7 @@ int main(int argc, char* argv[]) {
     ("min_c2", po::value<double>(&min_c2)->default_value(-0.5, "-0.50"), "min c2 value")
     ("max_c2", po::value<double>(&max_c2)->default_value(2.0, "2.00"), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
+    ("offset,o", "use offset in fitting (default = false)")
     ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
      "1 - read the first MODEL only (default), \
 2 - read each MODEL into a separate structure, \
@@ -213,7 +214,6 @@ recommended q value is 0.2")
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
      "input profile files")
-    ("offset,o", "use offset in fitting (default = false)")
     ;
 
   po::options_description cmdline_options;

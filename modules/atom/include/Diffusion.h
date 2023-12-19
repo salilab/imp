@@ -86,7 +86,7 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
       is the default IMP temperature of 297.15K.
 
       \note If the simulation temperature or particle radius change,
-      the diffusion coefficient must be changed explicity e.g., using
+      the diffusion coefficient must be changed explicitly e.g., using
       set_diffusion_coefficient()
       \note This constructor can be used only on particles that have
             a radius field, e.g. decorated as IMP::core::XYZR.
@@ -146,7 +146,7 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
       default IMP temperature of 297.15K.
 
       \note If the simulation temperature or particle radius change,
-      the diffusion coefficient must be changed explicity e.g., using
+      the diffusion coefficient must be changed explicitly e.g., using
       set_diffusion_coefficient()
       \note The particle must have been decorated with core::XYZR
             for this constructor to be used

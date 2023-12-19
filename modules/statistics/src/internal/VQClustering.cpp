@@ -164,7 +164,7 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
   for (int i = 0; i < k_; i++) {
     last_centers.push_back(Array1DD(dim_));
   }
-  // loop until clustering convergance
+  // loop until clustering convergence
   do {
     closest_center.clear();
     for (int i = 0; i < k_; ++i) {
@@ -355,7 +355,8 @@ void VQClustering::set_assignments() {
 }
 
 void VQClustering::run(DataPoints *starting_centers) {
-  // tracking keeps information of all suggested centers throught the algorithm
+  // tracking keeps information of all suggested centers throughout
+  // the algorithm
   Array1DD_VEC tracking;
   IMP_LOG_VERBOSE("VQClustering::run before sampling" << std::endl);
   sampling(&tracking);

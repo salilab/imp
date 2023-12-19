@@ -2,15 +2,28 @@
 """
 
 
+def _starting_model_report(seg):
+    if seg.starting_model:
+        if hasattr(seg.starting_model, '_id'):
+            return " (from starting model %s)" % seg.starting_model._id
+        else:
+            return " (from starting model)"
+    else:
+        return ""
+
+
 class Segment(object):
     """Base class for part of a :class:`Representation`.
        See :class:`AtomicSegment`, :class:`ResidueSegment`,
        :class:`MultiResidueSegment`, and :class:`FeatureSegment`.
     """
-    pass
+    def _get_report(self):
+        """Return a textual description of the object, used by
+           :meth:`ihm.System.report`"""
+        return str(self)
 
 
-class AtomicSegment(object):
+class AtomicSegment(Segment):
     """Part of the system modeled atomistically, stored in
        a :class:`Representation`.
 
@@ -29,6 +42,13 @@ class AtomicSegment(object):
     count = None
     granularity = 'by-atom'
 
+    def _get_report(self):
+        asym = self.asym_unit
+        return ("%s %d-%d as %s atoms%s"
+                % (asym.details, asym.seq_id_range[0], asym.seq_id_range[1],
+                   "rigid" if self.rigid else "flexible",
+                   _starting_model_report(self)))
+
     def __init__(self, asym_unit, rigid, starting_model=None,
                  description=None):
         self.asym_unit = asym_unit
@@ -36,7 +56,7 @@ class AtomicSegment(object):
         self.description = description
 
 
-class ResidueSegment(object):
+class ResidueSegment(Segment):
     """Part of the system modeled as a set of residues, stored in
        a :class:`Representation`.
 
@@ -56,6 +76,13 @@ class ResidueSegment(object):
     count = None
     granularity = 'by-residue'
 
+    def _get_report(self):
+        asym = self.asym_unit
+        return ("%s %d-%d as %s residues%s"
+                % (asym.details, asym.seq_id_range[0], asym.seq_id_range[1],
+                   "rigid" if self.rigid else "flexible",
+                   _starting_model_report(self)))
+
     def __init__(self, asym_unit, rigid, primitive, starting_model=None,
                  description=None):
         self.asym_unit = asym_unit
@@ -64,7 +91,7 @@ class ResidueSegment(object):
         self.description = description
 
 
-class MultiResidueSegment(object):
+class MultiResidueSegment(Segment):
     """Part of the system modeled as a single object representing a
        range of residues, stored in a :class:`Representation`.
 
@@ -92,7 +119,7 @@ class MultiResidueSegment(object):
         self.description = description
 
 
-class FeatureSegment(object):
+class FeatureSegment(Segment):
     """Part of the system modeled as a number of geometric features,
        stored in a :class:`Representation`.
 
@@ -111,6 +138,14 @@ class FeatureSegment(object):
     """
 
     granularity = 'by-feature'
+
+    def _get_report(self):
+        asym = self.asym_unit
+        return ("%s %d-%d as %d %s feature%s (%s)%s"
+                % (asym.details, asym.seq_id_range[0], asym.seq_id_range[1],
+                   self.count, "rigid" if self.rigid else "flexible",
+                   "" if self.count == 1 else "s", self.primitive,
+                   _starting_model_report(self)))
 
     def __init__(self, asym_unit, rigid, primitive, count, starting_model=None,
                  description=None):

@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.container
+import pickle
 
 from math import *
 
@@ -37,6 +38,24 @@ class NormalMoverTest(IMP.test.TestCase):
         mv.reject()
         new = m.get_attribute(att, pa)
         self.assertAlmostEqual(new, old)
+
+    def test_pickle(self):
+        m, mv, pa, att = self._make_stuff()
+        mv.set_name("foo")
+        dump = pickle.dumps(mv)
+
+        newmv = pickle.loads(dump)
+        self.assertEqual(newmv.get_name(), "foo")
+
+    def test_pickle_polymorphic(self):
+        m, mv, pa, att = self._make_stuff()
+        mv.set_name("foo")
+        sm = IMP.core.SerialMover([mv])
+        dump = pickle.dumps(sm)
+
+        newsm = pickle.loads(dump)
+        newmv, = newsm.get_movers()
+        self.assertEqual(newmv.get_name(), "foo")
 
 
 class LogNormalMoverTest(NormalMoverTest):

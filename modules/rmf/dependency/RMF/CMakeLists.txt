@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.12...3.6.0)
 project(RMF)
 
 # needs to be in main CMakeLists.txt
@@ -139,8 +139,9 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 # Version information
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 5)
-set (RMF_VERSION_MICRO 1)
+set (RMF_VERSION_MINOR 6)
+set (RMF_VERSION_MICRO 0)
+math (EXPR RMF_VERSION "${RMF_VERSION_MAJOR} * 100000 + ${RMF_VERSION_MINOR} * 100 + ${RMF_VERSION_MICRO}")
 
 set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")

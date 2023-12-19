@@ -10,24 +10,21 @@ import IMP.em
 import IMP.atom
 import IMP.EMageFit.imp_general.representation as representation
 
-import random
-import itertools
 import math
-import csv
-import itertools
 import logging
 log = logging.getLogger("comparisons")
 
 
 def get_coordinates(hierarchy):
-    xyz = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy)]
+    xyz = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(hierarchy)]
     coords = [x.get_coordinates() for x in xyz]
     return coords
 
 
 def get_assembly_placement_score(assembly, native_assembly, align=False):
     """
-        Computes the placement score of an assembly respect to the native_assembly.
+        Computes the placement score of an assembly respect to the
+        native_assembly.
         @param assembly  An IMP.atom.Molecule object
         @param native_assembly  An IMP.atom.Molecule object
         @param align If True, assembly is aligned to native_assembly before
@@ -45,14 +42,14 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
         Compute the placement score of each of the children of an assembly.
         The function does not do any time of alignment of the coordinates
         @param assembly An IMP.atom.Molecule object
-        @param native_assembly An IMP.atom.Molecule object with the native conformation
-                                Obviously the atoms in assembly and native assembly
-                                must be the same
+        @param native_assembly An IMP.atom.Molecule object with the native
+                               conformation. Obviously the atoms in assembly
+                               and native assembly must be the same
         @param align If True, assembly is aligned to native_assembly before
                     calculating the placement score
         @return The function returns 2 lists. The first list contains the
-                placement distances of the children. The second list contains the
-                placement angles
+                placement distances of the children. The second list contains
+                the placement angles
     """
     model_coords_per_child = [get_coordinates(c)
                               for c in assembly.get_children()]
@@ -60,9 +57,11 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
                                for c in native_assembly.get_children()]
     if align:
         model_coords = []
-        nil = [model_coords.extend(x) for x in model_coords_per_child]
+        for x in model_coords_per_child:
+            model_coords.extend(x)
         native_coords = []
-        nil = [native_coords.extend(x) for x in native_coords_per_child]
+        for x in native_coords_per_child:
+            native_coords.extend(x)
         T = IMP.algebra.get_transformation_aligning_first_to_second(
                                                model_coords, native_coords)
         # get aligned coordinates
@@ -110,11 +109,10 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
     model_centroid = IMP.algebra.get_centroid(model_coords)
     translation_vector = native_centroid - model_centroid
     distance = translation_vector.get_magnitude()
-    if(len(model_coords) != len(native_coords)):
+    if len(model_coords) != len(native_coords):
         raise ValueError(
-            "Mismatch in the number of members %d %d " % (
-                len(model_coords),
-                len(native_coords)))
+            "Mismatch in the number of members %d %d "
+            % (len(model_coords), len(native_coords)))
     TT = IMP.algebra.get_transformation_aligning_first_to_second(model_coords,
                                                                  native_coords)
     P = IMP.algebra.get_axis_and_angle(TT.get_rotation())
@@ -123,8 +121,8 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
 
 
 def get_rmsd(hierarchy1, hierarchy2):
-    xyz1 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy1)]
-    xyz2 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy2)]
+    xyz1 = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(hierarchy1)]
+    xyz2 = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(hierarchy2)]
     return IMP.atom.get_rmsd(xyz1, xyz2)
 
 
@@ -135,7 +133,6 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
         with values above this threshold in the native map are used for the
         calculation of the cross_correlation_coefficient
     """
-    import IMP.em as em
     particles_native = IMP.atom.get_leaves(native_assembly)
     particles_solution = IMP.atom.get_leaves(assembly)
     bb_native = IMP.core.get_bounding_box(IMP.core.XYZs(particles_native))
@@ -163,14 +160,14 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
     map_solution.set_particles(particles_solution)
     map_solution.resample()
 
-    if(write_maps):
+    if write_maps:
         IMP.em.write_map(map_solution, "map_solution.mrc", mrw)
         IMP.em.write_map(map_native, "map_native.mrc", mrw)
     map_native.calcRMS()
     map_solution.calcRMS()
-    # base the calculation of the cross_correlation coefficient on the threshold]
-    # for the native map, because the threshold for the map of the model changes
-    # with each model
+    # base the calculation of the cross_correlation coefficient on the
+    # threshold for the native map, because the threshold for the map of
+    # the model changes with each model
     threshold = 0.25  # threshold AFTER normalization using calcRMS()
     ccc = IMP.em.get_coarse_cc_coefficient(map_solution,
                                            map_native, threshold)
@@ -221,13 +218,12 @@ def get_drms_for_backbone(assembly, native_assembly):
         ranges.append((begin_range, end_range))
         begin_range = end_range
     log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
-    xyzs = [IMP.core.XYZ(l) for l in backbone]
+    xyzs = [IMP.core.XYZ(leaf) for leaf in backbone]
     native_chains = IMP.atom.get_by_type(native_assembly, IMP.atom.CHAIN_TYPE)
-    names = [IMP.atom.Chain(ch).get_id() for ch in native_chains]
     native_backbone = []
     for h in native_chains:
         native_backbone.extend(representation.get_backbone(h))
-    native_xyzs = [IMP.core.XYZ(l) for l in native_backbone]
+    native_xyzs = [IMP.core.XYZ(leaf) for leaf in native_backbone]
     if len(xyzs) != len(native_xyzs):
         raise ValueError(
             "Cannot compute DRMS for sets of atoms of different size")
@@ -242,5 +238,6 @@ def get_drms_for_backbone(assembly, native_assembly):
         IMP.atom.write_pdb(assembly, "drms_model_calphas.pdb")
         IMP.atom.write_pdb(native_assembly, "drms_native_calphas.pdb")
         raise ValueError("There is a problem with the drms. I wrote the pdbs "
-                         "for you: drms_model_calphas.pdb drms_native_calphas.pdb")
+                         "for you: drms_model_calphas.pdb "
+                         "drms_native_calphas.pdb")
     return drms

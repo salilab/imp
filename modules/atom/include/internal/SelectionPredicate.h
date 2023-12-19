@@ -77,7 +77,7 @@ class SelectionPredicate : public ParticleInputs, public Object {
    */
   MatchType get_value_index(Model *m, ParticleIndex vt,
                             boost::dynamic_bitset<> &bs) const {
-    /* If a parent particle already matched sucessfully, no need to
+    /* If a parent particle already matched successfully, no need to
        check this one */
     if (!bs[bitset_index_]) {
       return MATCH_WITH_CHILDREN;

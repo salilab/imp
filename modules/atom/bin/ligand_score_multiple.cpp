@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
     ilatoms[i] = IMP::get_indexes(latoms[i]);
   }
 
-  // read tranformations
+  // read transformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   if (trans_file.length() > 0)
     read_trans_file(trans_file, transforms);

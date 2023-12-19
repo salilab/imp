@@ -84,7 +84,9 @@ class IMPEM2DEXPORT MatchTemplateResult {
  public:
   IntPair pair;
   double cross_correlation;
-  MatchTemplateResult(IntPair p, double cc) : pair(p), cross_correlation(cc) {};
+  MatchTemplateResult(IntPair p, double cc) : pair(p), cross_correlation(cc) {}
+
+  MatchTemplateResult() {}
 
   void show(std::ostream &out = std::cout) const {
     out << "MatchTemplateResult: Pair (" << pair.first << "," << pair.second

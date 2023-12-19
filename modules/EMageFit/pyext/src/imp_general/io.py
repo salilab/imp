@@ -16,26 +16,12 @@ log = logging.getLogger("io")
 
 
 def get_vectors_from_points(points, vector_type="2d"):
-    if(vector_type == "2d"):
+    if vector_type == "2d":
         return [IMP.algebra.Vector2D(p[0], p[1]) for p in points]
-    elif(vector_type == "3d"):
+    elif vector_type == "3d":
         return [IMP.algebra.Vector3D(p[0], p[1], p[2]) for p in points]
     else:
         raise ValueError("vector type not recognized")
-
-
-def get_particles_from_points(points, model):
-    """ Simply creates IMP particles from a set of 2D points
-        model - is the model to store the particles
-    """
-    particles = []
-    for x in points:
-        p = IMP.Particle(model)
-        d = IMP.core.XYZR.setup_particle(p)
-        d.set_coordinates(IMP.algebra.Vector3D(x[0], x[1], x[2]))
-        d.set_radius(2)
-        particles.append(p)
-    return particles
 
 
 def get_particles_from_points(points, model):
@@ -67,7 +53,7 @@ def write_particles_as_text(leaves, fn_output):
     """ Writes a set of particles with coordinates to a file """
     xyzs = IMP.core.XYZs(leaves)
     f_output = open(fn_output, "w")
-    f_output.write(io.imp_info([IMP, IMP.em2d]))
+    f_output.write(imp_info([IMP, IMP.em2d]))
 
     f_output.write(get_common_title())
     for xyz in xyzs:
@@ -114,7 +100,7 @@ class TextToTransformation3D:
 
     def __init__(self, text, delimiter="|"):
         vals = [float(x) for x in text.split(delimiter)]
-        if(len(vals) != 7):
+        if len(vals) != 7:
             raise ValueError("The text is not a transformation", vals)
         R = IMP.algebra.Rotation3D(vals[0], vals[1], vals[2], vals[3])
         t = IMP.algebra.Vector3D(vals[4], vals[5], vals[6])
@@ -152,11 +138,11 @@ def read_transforms(fn, n=False):
     """
     f = open(fn, "r")
     Ts = []
-    for l in f:
-        if(n):
-            if(len(Ts) == n):
+    for line in f:
+        if n:
+            if len(Ts) == n:
                 break
-        T = TextToTransformation3D(l).get_transformation()
+        T = TextToTransformation3D(line).get_transformation()
         Ts.append(T)
     f.close()
     return Ts
@@ -195,12 +181,13 @@ def write_pdb_for_reference_frames(fn_pdbs, refs_texts, fn_output):
     """
     model = IMP.Model()
     assembly = IMP.EMageFit.imp_general.representation.create_assembly(
-                                                                 model, fn_pdbs)
+        model, fn_pdbs)
     rbs = IMP.EMageFit.imp_general.representation.create_rigid_bodies(assembly)
     for t, rb in zip(refs_texts, rbs):
         r = TextToReferenceFrame(t).get_reference_frame()
         rb.set_reference_frame(r)
     IMP.atom.write_pdb(assembly, fn_output)
+
 
 def imp_info(imp_modules=None):
     """
@@ -209,16 +196,11 @@ def imp_info(imp_modules=None):
     """
 
     tt = time.asctime()
-    if(imp_modules is None):
+    if imp_modules is None:
         versions = [IMP.get_module_version()]
-# versions = [IMP.get_module_version_info()] # until SVN 11063
     else:
-# versions = [p.get_module_version_info() for p in imp_modules] # until
-# SVN 11063
         versions = [p.get_module_version() for p in imp_modules]
     text = "# " + tt + "\n"
     for x in versions:
-# text += "# " + x.get_module() + " " + x.get_version() + "\n" # until SVN
-# 11063
         text += "# " + x + "\n"
     return text

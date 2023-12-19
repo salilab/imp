@@ -29,9 +29,8 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                  ff_type=IMP.saxs.HEAVY_ATOMS, label=None, maxq="standard"):
         """Builds the restraint.
         @param input_objects A list of hierarchies or PMI objects that the
-               SAXS restraint will be applied to. This hierarchy MUST be
-               atomic. You can pass a list of CA atom particles to evaluate
-               at residue resolution
+               SAXS restraint will be applied to. This hierarchy must be
+               atomic unless ff_type=IMP.saxs.RESIDUES is used.
         @param saxs_datafile the SAXS .dat file.
         @param weight Restraint score coefficient
         @param ff_type the form factor to use, of the following types:
@@ -41,14 +40,17 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                      atoms. Does not build missing hydrogens.
                    - IMP.saxs.CA_ATOMS: use residue based form factors
                      centered at CA atoms
+                   - IMP.saxs.RESIDUES: use residue based form factors
+                     using per-residue beads
         @param label Label for the restraint in outputs
-
-        @param maxq - maximum q value that the restraint will be evaluated at
-               Default vaules for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
-               CA_ATOMS and RESIDUES = 0.15. These values were eyeballed
-               by comparing ALL_ATOM calculated SAXS profiles to those
-               calculated with the reduced representations, so could
-               be improved.
+        @param maxq Maximum q value that the restraint will be evaluated at.
+               If set to 'standard' (the default), the following values will
+               be used (these values were eyeballed by comparing ALL_ATOM
+               calculated SAXS profiles to those calculated with the reduced
+               representations, so could be improved):
+                   - For ff_type = ALL_ATOMS: 0.5
+                   - HEAVY_ATOMS: 0.4
+                   - CA_ATOMS and RESIDUES: 0.15
         """
         # Get all hierarchies.
         hiers = IMP.pmi.tools.input_adaptor(input_objects,
@@ -64,7 +66,7 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                 maxq = 0.4
             else:
                 maxq = 0.5
-        elif type(maxq) == float:
+        elif isinstance(maxq, float):
             if maxq < 0.01 or maxq > 4.0:
                 raise Exception(
                     "SAXSRestraint: maxq must be set between 0.01 and 4.0")
@@ -265,7 +267,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
     @staticmethod
     def _logspace(a, b, num=100):
-        """Mimick numpy's logspace function"""
+        """Mimic numpy's logspace function"""
         for i in range(num):
             val = a + float(b - a) / float(num - 1) * i
             yield 10 ** val

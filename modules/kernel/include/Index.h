@@ -14,6 +14,7 @@
 #include "showable_macros.h"
 #include "Value.h"
 #include <cereal/access.hpp>
+#include <functional>
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -77,22 +78,57 @@ namespace {
 }
 
 //! Implements a vector tied to a particular index of type Index<Tag>.
-template <class Tag, class T>
+/** When this class is serialized, the output data are compressed using simple
+    run-length encoding, as these vectors are often sparse. For objects that
+    do not implement operator== (e.g. VectorD, SphereD), a custom comparison
+    functor should be provided. */
+template <class Tag, class T, class Equal = std::equal_to<T> >
 class IndexVector : public Vector<T> {
   typedef Vector<T> P;
 
-  friend class cereal::access;
+  template<class Archive> void write_no_compression(
+                       Archive &ar, typename P::const_iterator start,
+                       typename P::const_iterator end) const {
+    size_t sz = end - start;
+    ar(COMP_NONE); ar(sz);
+    while(start != end) {
+      ar(*start++);
+    }
+  }
 
-  // No compression on output (use CompressedIndexVector for that)
+  template<class Archive> void write_rle(
+                       Archive &ar, typename P::const_iterator start,
+                       typename P::const_iterator end) const {
+    size_t sz = end - start;
+    ar(COMP_RLE); ar(sz);
+    ar(*start);
+  }
+
+  friend class cereal::access;
   template<class Archive> void save(Archive &ar) const {
     size_t sz = P::size();
     ar(sz);
-    // Write a single no-compression block. This allows us to add compression
-    // for this class in future without breaking the format.
-    ar(COMP_NONE); ar(sz);
-    auto it = P::begin();
-    while(sz-- > 0) {
-      ar(*it++);
+    typename P::const_iterator pos = P::begin(), start = P::begin(), runend;
+    Equal cmp;
+    while (pos != P::end()) {
+      const T& val = *pos;
+      // update runend to point past the end of a run of same values,
+      // starting at pos
+      for (runend = pos + 1; runend != P::end() && cmp(*runend, val);
+           ++runend) {}
+      // exclude very short runs
+      if (runend - pos > 10) {
+        if (pos > P::begin() && pos > start) {
+          // Write previous set of non-RLE values
+          write_no_compression(ar, start, pos);
+        }
+        write_rle(ar, pos, runend);
+        start = runend;
+      }
+      pos = runend;
+    }
+    if (start != P::end()) {
+      write_no_compression(ar, start, P::end());
     }
     ar(COMP_END);
   }
@@ -134,58 +170,6 @@ class IndexVector : public Vector<T> {
               return P::operator[](get_as_unsigned_int(i)));
 };
 
-// This class functions identically to IndexVector but compresses
-// the data during serialization
-template <class Tag, class T>
-class CompressedIndexVector : public IndexVector<Tag, T> {
-  typedef Vector<T> P;
-
-  template<class Archive> void write_no_compression(
-                       Archive &ar, typename P::const_iterator start,
-                       typename P::const_iterator end) const {
-    size_t sz = end - start;
-    ar(COMP_NONE); ar(sz);
-    while(start != end) {
-      ar(*start++);
-    }
-  }
-
-  template<class Archive> void write_rle(
-                       Archive &ar, typename P::const_iterator start,
-                       typename P::const_iterator end) const {
-    size_t sz = end - start;
-    ar(COMP_RLE); ar(sz);
-    ar(*start);
-  }
-
-  friend class cereal::access;
-  template<class Archive> void save(Archive &ar) const {
-    size_t sz = P::size();
-    ar(sz);
-    typename P::const_iterator pos = P::begin(), start = P::begin(), runend;
-    while (pos != P::end()) {
-      const T& val = *pos;
-      // update runend to point past the end of a run of same values,
-      // starting at pos
-      for (runend = pos + 1; runend != P::end() && *runend == val; ++runend) {}
-      // exclude very short runs
-      if (runend - pos > 10) {
-        if (pos > P::begin() && pos > start) {
-          // Write previous set of non-RLE values
-          write_no_compression(ar, start, pos);
-        }
-        write_rle(ar, pos, runend);
-        start = runend;
-      }
-      pos = runend;
-    }
-    if (start != P::end()) {
-      write_no_compression(ar, start, P::end());
-    }
-    ar(COMP_END);
-  }
-};
-
 template <class Tag, class Container, class T>
 void resize_to_fit(Container &v, Index<Tag> i, const T &default_value = T()) {
   if (v.size() <= get_as_unsigned_int(i)) {
@@ -198,12 +182,6 @@ IMPKERNEL_END_NAMESPACE
 namespace cereal {
   template <class Archive, class Tag, class T>
   struct specialize<Archive, IMP::IndexVector<Tag, T>,
-                    cereal::specialization::member_load_save> {};
-}
-
-namespace cereal {
-  template <class Archive, class Tag, class T>
-  struct specialize<Archive, IMP::CompressedIndexVector<Tag, T>,
                     cereal::specialization::member_load_save> {};
 }
 

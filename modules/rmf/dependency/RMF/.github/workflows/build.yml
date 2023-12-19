@@ -10,12 +10,6 @@ jobs:
       matrix:
         include:
         - os: ubuntu-latest
-          python-version: 2.7
-          install: ''
-          flags: '--coverage'
-          tests: RMF
-          build: Debug
-        - os: ubuntu-latest
           python-version: 3.9
           install: ''
           flags: '--coverage'
@@ -57,7 +51,7 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         brew install swig boost log4cxx ${{ matrix.install }}
-        pip install coverage
+        pip install coverage numpy
     - name: Build and test
       run: |
         mkdir build

@@ -53,7 +53,7 @@ class Experiment (object):
 
     def __init__(self,):
 
-        # representaion
+        # representation
         self.model_name = ["3sfd"]
         self.names = ["3sfdA", "3sfdB", "3sfdC", "3sfdD"]
         self.fn_pdbs = ["3sfdA.pdb", "3sfdB.pdb", "3sfdC.pdb", "3sfdD.pdb"]

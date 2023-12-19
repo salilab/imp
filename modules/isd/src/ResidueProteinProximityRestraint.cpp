@@ -18,7 +18,7 @@
 #include <boost/math/special_functions/erf.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <math.h>
+#include <cmath>
 
 namespace {
   // sqrt(2*PI)

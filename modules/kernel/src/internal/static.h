@@ -1,15 +1,15 @@
 /**
  *  \file internal/static.h
- *  \brief Various useful utilities
+ *  \brief Static variables.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPKERNEL_BASE_STATIC_H
-#define IMPKERNEL_BASE_STATIC_H
+#ifndef IMPKERNEL_STATIC_H
+#define IMPKERNEL_STATIC_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/internal/base_static.h>
+#include <IMP/internal/static.h>
 #include <IMP/internal/BoostProgressDisplay.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/enums.h>
@@ -77,4 +77,4 @@ struct Timing {
 extern IMPKERNELEXPORT boost::unordered_map<std::string, Timing> timings;
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif /* IMPKERNEL_BASE_STATIC_H */
+#endif /* IMPKERNEL_STATIC_H */

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/multifit/pca_based_rigid_fitting.h
- *  \brief preforms rigid fitting between a set of particles and a density map
+ *  \brief Performs rigid fitting between a set of particles and a density map
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

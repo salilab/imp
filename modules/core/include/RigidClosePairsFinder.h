@@ -89,7 +89,7 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   internal::MovedSingletonContainer *get_moved_singleton_container(
-      SingletonContainer *c, double thresold) const override;
+      SingletonContainer *c, double threshold) const override;
 #endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
       override;

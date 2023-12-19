@@ -24,7 +24,7 @@ We have updated PMI significantly, completely rewriting the topology building to
 * Movers are now handled separately in the DegreesOfFreedom class, with functions like create_rigid_body(), create_super_rigid_body(), create_flexible_beads(), setup_md(), and constraints like constrain_symmetry()
 * The previous "table" format for automatic construction has been revamped. Now we use the TopologyReader to read in a text file (with format checking) and the BuildSystem macro to construct the hierarchy and degrees of freedom.
 * Most restraints support the new interface, usually you'll pass the built System hierarchy instead of the old representation object.
-* The ReplicaExchange0 macro works the same as before, just pass your System hierarchy, again instaed of the old representation object.
+* The ReplicaExchange0 macro works the same as before, just pass your System hierarchy, again instead of the old representation object.
 * Most analysis tools are now compatible with PMI2. 
 * Lots of examples have been added, see the full list [here](https://integrativemodeling.org/nightly/doc/ref/examples.html).
 

@@ -23,7 +23,7 @@ namespace po = boost::program_options;
 
 using namespace IMP::integrative_docking::internal;
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -148,7 +148,7 @@ CA atoms only (default = false)")(
     }
   }
 
-  // read tranformations
+  // read transformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
 

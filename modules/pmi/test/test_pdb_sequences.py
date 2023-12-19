@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         self.check_pdb_sequences(s)
 
     def check_pdb_sequences(self, s):
-        # Safe comparision since PDBSequences uses OrderedDict
+        # Safe comparison since PDBSequences uses OrderedDict
         self.assertEqual(list(s.sequences.keys()), ['A', 'B', 'G'])
         a = s.sequences['A']
         self.assertEqual(list(a.items()),

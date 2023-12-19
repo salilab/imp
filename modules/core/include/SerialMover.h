@@ -21,8 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a list of movers one at a time
 /** Each time a move is requested, only the next mover in the list
-    is applied. This should probably be used in conjunction with
-    incremental scoring (MonteCarlo::set_use_incremental()).
+    is applied.
  */
 class IMPCOREEXPORT SerialMover : public MonteCarloMover {
   int imov_;

@@ -436,36 +436,45 @@ void add_category_handler(struct ihm_reader *reader, char *name,
 static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
                                         void *data, struct ihm_error **err)
 {
-  int i, seq_id, auth_seq_num;
-  char *seq_id_endptr, *auth_seq_num_endptr;
+  int i, seq_id, pdb_seq_num, auth_seq_num;
+  char *seq_id_endptr, *pdb_seq_num_endptr;
   struct category_handler_data *hd = data;
   struct ihm_keyword **keys;
 
-  /* If both asym_id (1st keyword) and pdb_strand_id (5th keyword) are
+  /* If both asym_id (1st keyword) and pdb_strand_id (6th keyword) are
      present, but different, call the Python handler */
-  if (hd->keywords[0]->in_file && hd->keywords[4]->in_file &&
-      !hd->keywords[0]->omitted && !hd->keywords[4]->omitted &&
-      !hd->keywords[0]->unknown && !hd->keywords[4]->unknown &&
-      strcmp(hd->keywords[0]->data, hd->keywords[4]->data) != 0) {
+  if (hd->keywords[0]->in_file && hd->keywords[5]->in_file &&
+      !hd->keywords[0]->omitted && !hd->keywords[5]->omitted &&
+      !hd->keywords[0]->unknown && !hd->keywords[5]->unknown &&
+      strcmp(hd->keywords[0]->data, hd->keywords[5]->data) != 0) {
     handle_category_data(reader, data, err);
     return;
   }
 
   for (i = 0, keys = hd->keywords; i < 3; ++i, ++keys) {
-    /* Do nothing if seq_id or auth_seq_num is missing */
+    /* Do nothing if any of asym_id, seq_id, or pdb_seq_num are missing */
     if (!(*keys)->in_file || (*keys)->omitted || (*keys)->unknown) {
       return;
     }
   }
 
-  /* If seq_id (2nd keyword) and auth_seq_num (3rd keyword) are identical
-     integers, and pdb_ins_code (4th keyword) is blank or missing,
+  /* If seq_id (2nd keyword), pdb_seq_num (3rd keyword), and
+     auth_seq_num (4th keyword) are identical integers, and
+     pdb_ins_code (5th keyword) is blank or missing,
      nothing needs to be done */
   seq_id = strtol(hd->keywords[1]->data, &seq_id_endptr, 10);
-  auth_seq_num = strtol(hd->keywords[2]->data, &auth_seq_num_endptr, 10);
-  if (!*seq_id_endptr && !*auth_seq_num_endptr && seq_id == auth_seq_num
-      && (!hd->keywords[3]->in_file || hd->keywords[3]->omitted
-          || hd->keywords[3]->unknown)) {
+  pdb_seq_num = strtol(hd->keywords[2]->data, &pdb_seq_num_endptr, 10);
+  if (!hd->keywords[3]->in_file || hd->keywords[3]->omitted
+      || hd->keywords[3]->unknown) {
+    /* If auth_seq_num is missing, assume identical to pdb_seq_num */
+    auth_seq_num = pdb_seq_num;
+  } else {
+    auth_seq_num = strtol(hd->keywords[3]->data, &pdb_seq_num_endptr, 10);
+  }
+  if (!*seq_id_endptr && !*pdb_seq_num_endptr && seq_id == pdb_seq_num
+      && seq_id == auth_seq_num
+      && (!hd->keywords[4]->in_file || hd->keywords[4]->omitted
+          || hd->keywords[4]->unknown)) {
     return;
   } else {
     /* Otherwise, call the normal handler */
@@ -477,8 +486,8 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
 %inline %{
 /* Add a handler specifically for the _pdbx_poly_seq_scheme table.
    This speeds up processing by skipping the callback to Python in
-   the common case where seq_id==auth_seq_num, asym_id==pdb_strand_id,
-   and pdb_ins_code is blank */
+   the common case where seq_id==pdb_seq_num==auth_seq_num,
+   asym_id==pdb_strand_id, and pdb_ins_code is blank */
 void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
                                  PyObject *keywords, PyObject *callable,
                                  struct ihm_error **err)
@@ -489,11 +498,12 @@ void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
   if (hd) {
     /* Make sure the Python handler and the C handler agree on the order
        of the keywords */
-    assert(hd->num_keywords >= 5);
+    assert(hd->num_keywords >= 6);
     assert(strcmp(hd->keywords[1]->name, "seq_id") == 0);
-    assert(strcmp(hd->keywords[2]->name, "auth_seq_num") == 0);
-    assert(strcmp(hd->keywords[3]->name, "pdb_ins_code") == 0);
-    assert(strcmp(hd->keywords[4]->name, "pdb_strand_id") == 0);
+    assert(strcmp(hd->keywords[2]->name, "pdb_seq_num") == 0);
+    assert(strcmp(hd->keywords[3]->name, "auth_seq_num") == 0);
+    assert(strcmp(hd->keywords[4]->name, "pdb_ins_code") == 0);
+    assert(strcmp(hd->keywords[5]->name, "pdb_strand_id") == 0);
   }
 }
 

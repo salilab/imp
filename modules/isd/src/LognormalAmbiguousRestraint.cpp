@@ -13,7 +13,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/constants.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <boost/random/uniform_real.hpp>

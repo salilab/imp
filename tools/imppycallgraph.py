@@ -363,7 +363,7 @@ def save_dot(filename):
 def make_graph(filename, format=None, tool=None, stop=None):
     """This has been changed to make_dot_graph."""
     raise PyCallGraphException(
-        'make_graph is depricated. Please use make_dot_graph')
+        'make_graph is deprecated. Please use make_dot_graph')
 
 
 def make_dot_graph(filename, format='png', tool='dot', stop=True):

@@ -3,16 +3,16 @@
 # Make a Win32 installer
 
 # First run the following in the binary directory to install files:
-# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/3.6 \
-#       -DSWIG_PYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib \
-#       -DPYTHON_INCLUDE_DIRS=$w32py/3.6/include/ \
-#       -DPYTHON_INCLUDE_PATH=$w32py/3.6/include/ \
-#       -DPYTHON_LIBRARIES=$w32py/3.6/lib/python36.lib
+# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/3.9 \
+#       -DSWIG_PYTHON_LIBRARIES=$w32py/3.9/lib/python39.lib \
+#       -DPYTHON_INCLUDE_DIRS=$w32py/3.9/include/ \
+#       -DPYTHON_INCLUDE_PATH=$w32py/3.9/include/ \
+#       -DPYTHON_LIBRARIES=$w32py/3.9/lib/python39.lib
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (3.6, 3.7, 3.8, 3.9, 3.10 and 3.11
-# for us)
+# Repeat for all desired Python versions (3.7, 3.8, 3.9, 3.10, 3.11,
+# and 3.12 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -61,8 +61,10 @@ rm -rf ${ROOT}/pylib/2.7/
 
 # Remove .pyc files
 find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
-mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/3.6/ihm/*.py ${ROOT}/python/ihm || exit 1
+
+# Put pure Python files in correct location
+mv ${ROOT}/pylib/3.9/*.py ${ROOT}/pylib/3.9/IMP ${ROOT}/python || exit 1
+mv ${ROOT}/pylib/3.9/ihm/*.py ${ROOT}/python/ihm || exit 1
 
 rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
 
@@ -87,7 +89,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="3.6 3.7 3.8 3.9 3.10 3.11"
+PYVERS="3.7 3.8 3.9 3.10 3.11 3.12"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
@@ -114,7 +116,7 @@ rm -rf ${ROOT}/bin/imp_example_app.exe \
 # Remove any .svn directories
 rm -rf `find ${ROOT} -name .svn`
 
-PYVERS="36 37 38 39 310 311"
+PYVERS="36 37 38 39 310 311 312"
 if [ "${BITS}" = "32" ]; then
   MAKENSIS="makensis"
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -129,16 +131,16 @@ cp ${DLLSRC}/msvcp140.dll ${DLLSRC}/concrt140.dll ${DLLSRC}/vcruntime140.dll \
 
 # Add other DLL dependencies
 cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-   ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_program_options-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_system-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_date_time-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_graph-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_regex-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_thread-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
+   ${DLLSRC}/boost_filesystem-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_program_options-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_system-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_date_time-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_graph-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_regex-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_thread-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_random-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_iostreams-vc141-mt-x${BITS}-1_83.dll \
+   ${DLLSRC}/boost_zlib-vc141-mt-x${BITS}-1_83.dll \
    ${DLLSRC}/libgmp-10.dll \
    ${DLLSRC}/libmpfr-4.dll \
    ${DLLSRC}/libfftw3-3.dll \
@@ -174,6 +176,9 @@ echo "mf.dll" >> w32.dlls
 echo "mfplat.dll" >> w32.dlls
 echo "mfreadwrite.dll" >> w32.dlls
 echo "shlwapi.dll" >> w32.dlls
+echo "bcrypt.dll" >> w32.dlls
+echo "d3d11.dll" >> w32.dlls
+echo "dxgi.dll" >> w32.dlls
 
 # Also exclude Universal C runtime and Windows API sets, which
 # should be present on any up to date Windows 7 system (via KB2999226),

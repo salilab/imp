@@ -2,7 +2,7 @@
  *  \file internal/pdb.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,9 @@
 #include <IMP/base_types.h>
 
 #include <vector>
+
+struct ihm_keyword;
+struct ihm_category;
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -57,7 +60,7 @@ IMPATOMEXPORT bool is_CONECT_rec(const String& pdb_line);
 IMPATOMEXPORT int model_index(const String& pdb_line);
 
 /** Returns a string with an atom type string.
-    The atom type is a 4 charachter long field.
+    The atom type is a 4 character long field.
     the first character is space in many cases, but not always. */
 IMPATOMEXPORT String atom_type(const String& pdb_line);
 
@@ -110,6 +113,23 @@ IMPATOMEXPORT String atom_element(const String& pdb_line);
 //! Returns the connected atoms from the CONECT record
 IMPATOMEXPORT Vector<unsigned short> connected_atoms(
     const String& pdb_line);
+
+//! Handle a keyword in an mmCIF file
+class IMPATOMEXPORT CifKeyword {
+  struct ihm_keyword *k_;
+public:
+  CifKeyword(struct ihm_category *c, std::string name);
+
+  //! Get raw string value of the keyword (may be null)
+  const char *data();
+
+  //! Get value as a string, or the empty string if it is missing
+  const char *as_str();
+
+  float as_float(float default_value=0.);
+
+  int as_int(int default_value=0);
+};
 
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
 IMPATOMEXPORT void write_pdb(const ParticlesTemp& ps,

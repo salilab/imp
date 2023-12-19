@@ -81,6 +81,23 @@ IMP_VALUES(ModelKey, ModelKeys);
 //! The type used to identify changed model properties
 typedef Key<11> TriggerKey;
 IMP_VALUES(TriggerKey, TriggerKeys);
+
+//! The type used to identify sparse string attributes in the Particles
+typedef Key<12> SparseStringKey;
+IMP_VALUES(SparseStringKey, SparseStringKeys);
+
+//! The type used to identify sparse int attributes in the Particles
+typedef Key<13> SparseIntKey;
+IMP_VALUES(SparseIntKey, SparseIntKeys);
+
+//! The type used to identify sparse float attributes in the Particles
+typedef Key<14> SparseFloatKey;
+IMP_VALUES(SparseFloatKey, SparseFloatKeys);
+
+//! The type used to identify sparse particle attributes in the Particles
+typedef Key<15> SparseParticleIndexKey;
+IMP_VALUES(SparseParticleIndexKey, SparseParticleIndexKeys);
+
 /** @} */
 
 class Restraint;

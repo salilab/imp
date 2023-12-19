@@ -9,12 +9,12 @@
 #include <IMP/file.h>
 #include <IMP/types.h>
 #include <IMP/log_macros.h>
-#include <IMP/base_utility.h>
-#include <IMP/internal/base_static.h>
+#include <IMP/utility.h>
+#include <IMP/internal/static.h>
 #include <IMP/internal/directories.h>
 #include <IMP/internal/log.h>
 #include <IMP/random.h>
-#include "internal/base_static.h"
+#include "internal/static.h"
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/errors.hpp>
 

@@ -2,7 +2,7 @@
  *  \file IMP/core/SurfaceMover.h
  *  \brief A mover that transforms a Surface.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,9 @@
 #include <IMP/Particle.h>
 #include <IMP/Object.h>
 #include <IMP/Model.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -42,12 +45,21 @@ class IMPCOREEXPORT SurfaceMover : public MonteCarloMover {
     void initialize(ParticleIndex pi, double max_translation,
                     double max_rotation, double reflect_probability);
 
+    friend class cereal::access;
+    template<class Archive> void serialize(Archive &ar) {
+      ar(cereal::base_class<MonteCarloMover>(this), last_transform_,
+         max_translation_, max_angle_, reflect_prob_, pi_);
+    }
+    IMP_OBJECT_SERIALIZE_DECL(SurfaceMover);
+
   public:
     SurfaceMover(Model *m, ParticleIndex pi, Float max_translation,
                  Float max_rotation, Float reflect_probability);
 
     SurfaceMover(Surface s, Float max_translation, Float max_rotation,
                  Float reflect_probability);
+
+    SurfaceMover() {}
 
     //! Set the maximum translation in angstroms.
     void set_maximum_translation(Float mt);

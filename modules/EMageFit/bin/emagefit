@@ -126,7 +126,7 @@ def generate_domino_model(params, fn_database, fn_log=None):
     """
         Generate a model for an assembly using DOMINO.
         @param params Class with the parameters for the experiment
-        @param fn_database Databse file that will contain the solutions
+        @param fn_database Database file that will contain the solutions
                     SQLite format
     """
     log.info(io.imp_info([IMP, em2d]))
@@ -167,7 +167,7 @@ def print_restraints(params):
     """
         Generate a model for an assembly using DOMINO.
         @param params Class with the parameters for the experiment
-        @param fn_database Databse file that will contain the solutions
+        @param fn_database Database file that will contain the solutions
                     SQLite format
     """
     log.info(io.imp_info([IMP, em2d]))
@@ -260,7 +260,7 @@ def generate_monte_carlo_model(params, fn_database, seed,
     """
         Generate a model for an assembly using MonteCarlo optimization
         @param params Class with the parameters for the experiment
-        @param fn_database Datbase file where the solutions will be written.
+        @param fn_database Database file where the solutions will be written.
                             SQLite format.
         @param write_solution If True, writes a PDB with the final model
         @param fn_log File for logging. If the value is None, no file is written
@@ -367,9 +367,9 @@ def create_dockings_from_xlinks(params):
         sel = atom.ATOMPDBSelector()
         new_m = IMP.Model()
         # After reading the file with the initial solution, the reference frame
-        # for the rigid body of the ligand is not necessarily the  same one
+        # for the rigid body of the ligand is not necessarily the same one
         # that it had when saved.
-        # Thus reading the file again ensures  consisten results when
+        # Thus reading the file again ensures consistent results when
         # using the HEXDOCK transforms
         new_h_ligand = atom.read_pdb(fn_initial_docking, new_m, sel)
         new_rb_ligand = atom.create_rigid_body(new_h_ligand)

@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <avrocpp/api/Compiler.hh>
 #include <avrocpp/api/Decoder.hh>
 #include <avrocpp/api/Encoder.hh>

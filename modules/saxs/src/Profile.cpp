@@ -1,7 +1,7 @@
 /**
  *  \file Profile.cpp   \brief A class for profile storing and computation
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Profile.h>
@@ -9,6 +9,9 @@
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/exp_function.h>
 #include <IMP/saxs/internal/sinc_function.h>
+#ifdef IMP_SAXS_CUDA_LIB
+#include <IMP/saxs/internal/cuda_helpers.h>
+#endif
 
 #include <IMP/math.h>
 #include <IMP/core/XYZ.h>
@@ -825,11 +828,15 @@ void Profile::squared_distribution_2_profile(
   static internal::SincFunction sf(
       sqrt(r_dist.get_max_distance()) * get_max_q(), 0.0001);
 
-  // precompute square roots of distances
-  Vector<double> distances(r_dist.size(), 0.0);
-  for (unsigned int r = 0; r < r_dist.size(); r++) {
-    if (r_dist[r] != 0.0) {
-      distances[r] = sqrt(r_dist.get_distance_from_index(r));
+  // get precomputed square roots of distances
+  const std::vector<double> &distances = r_dist.get_square_root_distances();
+
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int r = 0; r < r_dist.size(); r++) {
+      IMP_INTERNAL_CHECK(
+          std::abs(r_dist.get_distance_from_index(r)
+                   - (distances[r] * distances[r])) < 1e-6,
+          "Cached sqrt distance does not match current distance");
     }
   }
 
@@ -837,10 +844,20 @@ void Profile::squared_distribution_2_profile(
   if (beam_profile_ != nullptr && beam_profile_->size() > 0)
     use_beam_profile = true;
 
+#ifdef IMP_SAXS_CUDA_LIB
+  if (!use_beam_profile) {
+    IMPcuda::saxs::internal::squared_distribution_2_profile_cuda(
+           r_dist.data(), q_.data(), distances.data(), intensity_.data(),
+           modulation_function_parameter_, r_dist.size(), size());
+    return;
+  }
+#endif
+
+  size_t r_size = r_dist.size();
   // iterate over intensity profile
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
-    for (unsigned int r = 0; r < r_dist.size(); r++) {
+    for (unsigned int r = 0; r < r_size; ++r) {
       if (r_dist[r] != 0.0) {
         double dist = distances[r];
         double x = 0.0;

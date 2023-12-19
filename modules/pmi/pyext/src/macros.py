@@ -683,12 +683,14 @@ class BuildSystem(object):
                     fasta_flag = copy[0].fasta_flag
                     if fasta_flag in self._alphabets:
                         alphabet = self._alphabets[fasta_flag]
-                    seq = IMP.pmi.topology.Sequences(
-                        copy[0].fasta_file, fasta_name_map)[copy[0].fasta_id]
+                    seqs = IMP.pmi.topology.Sequences(
+                        copy[0].fasta_file, fasta_name_map)
+                    seq = seqs[copy[0].fasta_id]
                     print("BuildSystem.add_state: molecule %s sequence has "
                           "%s residues" % (molname, len(seq)))
-                    orig_mol = state.create_molecule(molname, seq, chain_id,
-                                                     alphabet=alphabet)
+                    orig_mol = state.create_molecule(
+                        molname, seq, chain_id, alphabet=alphabet,
+                        uniprot=seqs.uniprot.get(copy[0].fasta_id))
                     mol = orig_mol
                     numchain += 1
                 else:
@@ -1192,21 +1194,20 @@ class AnalysisReplicaExchange0(object):
             # expand the dictionaries to include ambiguous copies
             prot_ahead = IMP.pmi.analysis.get_hiers_from_rmf(
                 self.model, 0, my_best_score_rmf_tuples[0][1])[0]
-            if IMP.pmi.get_is_canonical(prot_ahead):
-                if rmsd_calculation_components is not None:
-                    tmp = self._expand_ambiguity(
-                        prot_ahead, rmsd_calculation_components)
-                    if tmp != rmsd_calculation_components:
-                        print('Detected ambiguity, expand rmsd components to',
-                              tmp)
-                        rmsd_calculation_components = tmp
-                if alignment_components is not None:
-                    tmp = self._expand_ambiguity(prot_ahead,
-                                                 alignment_components)
-                    if tmp != alignment_components:
-                        print('Detected ambiguity, expand alignment '
-                              'components to', tmp)
-                        alignment_components = tmp
+            if rmsd_calculation_components is not None:
+                tmp = self._expand_ambiguity(
+                    prot_ahead, rmsd_calculation_components)
+                if tmp != rmsd_calculation_components:
+                    print('Detected ambiguity, expand rmsd components to',
+                          tmp)
+                    rmsd_calculation_components = tmp
+            if alignment_components is not None:
+                tmp = self._expand_ambiguity(prot_ahead,
+                                             alignment_components)
+                if tmp != alignment_components:
+                    print('Detected ambiguity, expand alignment '
+                          'components to', tmp)
+                    alignment_components = tmp
 
 # -------------------------------------------------------------
 # read the coordinates
@@ -1282,12 +1283,9 @@ class AnalysisReplicaExchange0(object):
                     if not prots:
                         continue
 
-                    if IMP.pmi.get_is_canonical(prots[0]):
-                        states = IMP.atom.get_by_type(
-                            prots[0], IMP.atom.STATE_TYPE)
-                        prot = states[state_number]
-                    else:
-                        prot = prots[state_number]
+                    states = IMP.atom.get_by_type(
+                        prots[0], IMP.atom.STATE_TYPE)
+                    prot = states[state_number]
 
                     # get transformation aligning coordinates of
                     # requested tuples to the first RMF file
@@ -1340,15 +1338,12 @@ class AnalysisReplicaExchange0(object):
 
                     clusstat.write(str(tmp_dict)+"\n")
 
-                    if IMP.pmi.get_is_canonical(prot):
-                        # create a single-state System and write that
-                        h = IMP.atom.Hierarchy.setup_particle(
-                            IMP.Particle(self.model))
-                        h.set_name("System")
-                        h.add_child(prot)
-                        o.init_rmf(out_rmf_fn, [h], rs)
-                    else:
-                        o.init_rmf(out_rmf_fn, [prot], rs)
+                    # create a single-state System and write that
+                    h = IMP.atom.Hierarchy.setup_particle(
+                        IMP.Particle(self.model))
+                    h.set_name("System")
+                    h.add_child(prot)
+                    o.init_rmf(out_rmf_fn, [h], rs)
 
                     o.write_rmf(out_rmf_fn)
                     o.close_rmf(out_rmf_fn)
@@ -1375,7 +1370,7 @@ class AnalysisReplicaExchange0(object):
                     rmsd_coordinates)
 
             if self.rank == 0:
-                # save needed informations in external files
+                # save needed information in external files
                 self.save_objects(
                     [best_score_feature_keyword_list_dict,
                      rmf_file_name_index_dict],
@@ -1414,7 +1409,7 @@ class AnalysisReplicaExchange0(object):
                     file_name=distance_matrix_file)
 
 # ------------------------------------------------------------------------
-# Alteratively, load the distance matrix from file and cluster that
+# Alternatively, load the distance matrix from file and cluster that
 # ------------------------------------------------------------------------
         else:
             if self.rank == 0:
@@ -1436,7 +1431,7 @@ class AnalysisReplicaExchange0(object):
             self.comm.Barrier()
 
 # ------------------------------------------------------------------------
-# now save all informations about the clusters
+# now save all information about the clusters
 # ------------------------------------------------------------------------
 
         if self.rank == 0:
@@ -1500,12 +1495,9 @@ class AnalysisReplicaExchange0(object):
                     if not prots:
                         continue
 
-                    if IMP.pmi.get_is_canonical(prots[0]):
-                        states = IMP.atom.get_by_type(
-                            prots[0], IMP.atom.STATE_TYPE)
-                        prot = states[state_number]
-                    else:
-                        prot = prots[state_number]
+                    states = IMP.atom.get_by_type(
+                        prots[0], IMP.atom.STATE_TYPE)
+                    prot = states[state_number]
                     if k == 0:
                         IMP.pmi.io.add_provenance(cluster_prov, (prot,))
 
@@ -1543,15 +1535,12 @@ class AnalysisReplicaExchange0(object):
                     o.init_pdb(dircluster + str(k) + ".pdb", prot)
                     o.write_pdb(dircluster + str(k) + ".pdb")
 
-                    if IMP.pmi.get_is_canonical(prot):
-                        # create a single-state System and write that
-                        h = IMP.atom.Hierarchy.setup_particle(
-                            IMP.Particle(self.model))
-                        h.set_name("System")
-                        h.add_child(prot)
-                        o.init_rmf(dircluster + str(k) + ".rmf3", [h], rs)
-                    else:
-                        o.init_rmf(dircluster + str(k) + ".rmf3", [prot], rs)
+                    # create a single-state System and write that
+                    h = IMP.atom.Hierarchy.setup_particle(
+                        IMP.Particle(self.model))
+                    h.set_name("System")
+                    h.add_child(prot)
+                    o.init_rmf(dircluster + str(k) + ".rmf3", [h], rs)
                     o.write_rmf(dircluster + str(k) + ".rmf3")
                     o.close_rmf(dircluster + str(k) + ".rmf3")
 
@@ -2505,7 +2494,7 @@ class AnalysisReplicaExchange(object):
     def set_reference(self, reference, cluster):
         """
         Fix the reference structure for structural alignment, rmsd and
-        chain assignemnt
+        chain assignment
 
         @param reference can be either "Absolute" (cluster center of the
                first cluster) or Relative (cluster center of the current
@@ -2522,7 +2511,7 @@ class AnalysisReplicaExchange(object):
 
     def apply_molecular_assignments(self, n1):
         """
-        compute the molecular assignemnts between multiple copies
+        compute the molecular assignments between multiple copies
         of the same sequence. It changes the Copy index of Molecules
         """
         _ = self.stath1[n1]

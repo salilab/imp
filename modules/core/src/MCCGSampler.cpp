@@ -23,7 +23,7 @@
 #include <IMP/log.h>
 #include <IMP/internal/BoostProgressDisplay.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 

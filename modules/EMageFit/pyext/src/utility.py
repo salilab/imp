@@ -5,6 +5,7 @@
 import os
 import IMP
 
+
 def vararg_callback(option, opt_str, value, parser):
     """
         Snippet from Python website to process multiple values for

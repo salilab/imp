@@ -4,12 +4,10 @@ import IMP.mmcif.restraint
 import ihm.dataset
 
 
-def make_model(system, chains=None):
+def make_model(m, chains=None):
     if chains is None:
         chains = (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
                   ('baz', 'ACC', 'C'))
-    s = IMP.mmcif.State(system)
-    m = s.model
     top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
     for name, seq, cid in chains:
         h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
@@ -21,13 +19,14 @@ def make_model(system, chains=None):
         chain = IMP.atom.Chain.setup_particle(h, cid)
         chain.set_sequence(seq)
         mol.add_child(chain)
-    return top, s
+    return top
 
 
 class MockGaussianEMRestraint(IMP.Restraint):
 
-    def __init__(self, m, em_filename):
+    def __init__(self, m, em_filename, inputs=[]):
         self.em_filename = em_filename
+        self.inputs = inputs
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
@@ -36,7 +35,7 @@ class MockGaussianEMRestraint(IMP.Restraint):
     def do_show(self, fh):
         fh.write('MockRestraint')
     def do_get_inputs(self):
-        return []
+        return self.inputs
 
     def get_static_info(self):
         i = IMP.RestraintInfo()
@@ -121,8 +120,8 @@ class MockZAxialRestraint(IMP.Restraint):
 
 class MockPCAFitRestraint(IMP.Restraint):
 
-    def __init__(self, m, image_filename):
-        self.image_filename = image_filename
+    def __init__(self, m, image_filenames):
+        self.image_filenames = image_filenames
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
@@ -136,7 +135,7 @@ class MockPCAFitRestraint(IMP.Restraint):
     def get_static_info(self):
         i = IMP.RestraintInfo()
         i.add_string("type", "IMP.em2d.PCAFitRestraint")
-        i.add_filenames("image files", [self.image_filename])
+        i.add_filenames("image files", self.image_filenames)
         i.add_float("pixel size", 2.2)
         i.add_float("resolution", 20.)
         i.add_int("projection number", 20)
@@ -145,9 +144,11 @@ class MockPCAFitRestraint(IMP.Restraint):
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
-        i.add_floats("cross correlation", [0.4])
-        i.add_floats("rotation", [0., 0., 1., 0.])
-        i.add_floats("translation", [241.8, 17.4, 0.0])
+        i.add_floats("cross correlation", [0.4, 0.3])
+        i.add_floats("rotation", [0., 0., 1., 0.,
+                                  0., 0., 1., 0.])
+        i.add_floats("translation", [241.8, 17.4, 0.0,
+                                     90.0, 80.0, 70.0])
         return i
 
 
@@ -178,40 +179,81 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(d['test floats'][1], 3.4, delta=1e-4)
         self.assertEqual(d['test filenames'], ["/foo", "/bar"])
 
-    def test_restraint_mapper_none(self):
-        """Test _RestraintMapper with non-handled restraint"""
+    def test_all_restraints_none(self):
+        """Test _AllRestraints with non-handled restraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
         m = IMP.Model()
-        frame = None
         r = IMP._ConstRestraint(m, [], 1)
-        r.set_was_used(True)
-        rm = IMP.mmcif.restraint._RestraintMapper(None)
-        self.assertEqual(rm.handle(r, frame, None), None)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        rs = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(len(rs), 0)
 
-    def test_restraint_mapper_gaussian_em(self):
-        """Test _RestraintMapper with GaussianEM restraint"""
-        s = IMP.mmcif.System()
+    def test_all_restraints_gaussian_em(self):
+        """Test _AllRestraints with GaussianEM restraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
         m = IMP.Model()
         em_filename = self.get_input_file_name('test.gmm.txt')
         r = MockGaussianEMRestraint(m, em_filename)
-        r.set_was_used(True)
-        rm = IMP.mmcif.restraint._RestraintMapper(s)
-        frame = None
-        assembly = None
-        wr = rm.handle(r, frame, assembly)
-        self.assertEqual(type(wr), IMP.mmcif.restraint._GaussianEMRestraint)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._EM3DRestraint)
         self.assertEqual(type(wr.dataset), ihm.dataset.EMDensityDataset)
+        self.assertAlmostEqual(
+            wr.fits["model0"].cross_correlation_coefficient, 0.4, delta=1e-3)
+        self.assertAlmostEqual(
+            wr.fits["model1"].cross_correlation_coefficient, 0.4, delta=1e-3)
 
-    def test_restraint_mapper_cross_link(self):
-        """Test _RestraintMapper with cross-link restraint"""
-        system = IMP.mmcif.System()
-        h, state = make_model(system, chains=[("Rpb1", "AMT", "X"),
-                                              ("Rpb2", "ACC", "Z")])
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        m = state.model
+    def test_all_restraints_em2d_restraint(self):
+        """Test _AllRestraints with IMP.em2d.PCAFitRestraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        image1 = self.get_input_file_name('image_1.pgm')
+        image2 = self.get_input_file_name('image_2.pgm')
+        r = MockPCAFitRestraint(m, [image1, image2])
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        # Each image should map to a separate IHM restraint
+        wr1, wr2 = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr1), IMP.mmcif.restraint._EM2DRestraint)
+        self.assertEqual(type(wr1.dataset), ihm.dataset.EM2DClassDataset)
+        self.assertAlmostEqual(
+            wr1.fits["model0"].cross_correlation_coefficient, 0.4, delta=1e-3)
+        self.assertEqual(len(wr1.fits["model0"].rot_matrix), 3)
+        self.assertEqual(len(wr1.fits["model0"].tr_vector), 3)
+
+        self.assertEqual(type(wr2), IMP.mmcif.restraint._EM2DRestraint)
+        self.assertEqual(type(wr2.dataset), ihm.dataset.EM2DClassDataset)
+        self.assertAlmostEqual(
+            wr2.fits["model0"].cross_correlation_coefficient, 0.3, delta=1e-3)
+        self.assertEqual(len(wr2.fits["model0"].rot_matrix), 3)
+        self.assertEqual(len(wr2.fits["model0"].tr_vector), 3)
+
+    def test_all_restraints_saxs(self):
+        """Test _AllRestraints with SAXS restraint"""
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
+        m = IMP.Model()
+        dat_filename = self.get_input_file_name('6lyz.pdb.dat')
+        r = MockSAXSRestraint(m, dat_filename)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
+        self.assertEqual(type(wr), IMP.mmcif.restraint._SAXSRestraint)
+        self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
+        self.assertIsNone(wr.fits["model0"].chi_value)
+        self.assertIsNone(wr.fits["model1"].chi_value)
+
+    def test_all_restraints_cross_link(self):
+        """Test _AllRestraints with cross-link restraint"""
+        conv = IMP.mmcif.Writer()
+        m = IMP.Model()
+        h = make_model(m, chains=[("Rpb1", "AMT", "X"),
+                                  ("Rpb2", "ACC", "Z")])
+        conv.add_model([h], [])
 
         xl_csv = self.get_input_file_name('test.xlms.csv')
         r = MockCrossLinkRestraint(m, xl_csv)
-        r.set_was_used(True)
         xl = IMP.isd.CrossLinkMSRestraint(m, 21.0, 0.01)
         xl.set_source_protein1('Rpb1')
         xl.set_source_residue1(34)
@@ -227,55 +269,23 @@ class Tests(IMP.test.TestCase):
         psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
         xl.add_contribution((h1, h2), (s1, s2), psi)
         r.restraints.append(xl)
-        rm = IMP.mmcif.restraint._RestraintMapper(system)
-        frame = None
-        assembly = None
-        wr = rm.handle(r, frame, assembly)
+        rm = IMP.mmcif.restraint._AllRestraints(conv.system, conv._components)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
         self.assertEqual(type(wr), IMP.mmcif.restraint._CrossLinkRestraint)
         self.assertEqual(type(wr.dataset), ihm.dataset.CXMSDataset)
         self.assertEqual(len(wr.experimental_cross_links), 1)
         self.assertEqual(len(wr.cross_links), 1)
 
-    def test_restraint_mapper_saxs(self):
-        """Test _RestraintMapper with SAXS restraint"""
-        s = IMP.mmcif.System()
-        m = IMP.Model()
-        dat_filename = self.get_input_file_name('6lyz.pdb.dat')
-        r = MockSAXSRestraint(m, dat_filename)
-        r.set_was_used(True)
-        rm = IMP.mmcif.restraint._RestraintMapper(s)
-        frame = None
-        assembly = None
-        wr = rm.handle(r, frame, assembly)
-        self.assertEqual(type(wr), IMP.mmcif.restraint._SAXSRestraint)
-        self.assertEqual(type(wr.dataset), ihm.dataset.SASDataset)
-
-    def test_restraint_mapper_zaxial(self):
+    def test_all_restraints_zaxial(self):
         """Test _RestraintMapper with ZAxialPositionRestraint"""
-        s = IMP.mmcif.System()
+        s = ihm.System()
+        comps = IMP.mmcif.data._ComponentMapper(s)
         m = IMP.Model()
         r = MockZAxialRestraint(m)
-        r.set_was_used(True)
-        rm = IMP.mmcif.restraint._RestraintMapper(s)
-        frame = None
-        assembly = None
-        wr = rm.handle(r, frame, assembly)
+        rm = IMP.mmcif.restraint._AllRestraints(s, comps)
+        wr, = list(rm.handle(r, ["model0", "model1"]))
         self.assertEqual(type(wr), IMP.mmcif.restraint._ZAxialRestraint)
         self.assertIsNone(wr.dataset)
-
-    def test_restraint_mapper_em2d_restraint(self):
-        """Test _RestraintMapper with IMP.em2d.PCAFitRestraint"""
-        s = IMP.mmcif.System()
-        m = IMP.Model()
-        image_filename = self.get_input_file_name('image_2.pgm')
-        r = MockPCAFitRestraint(m, image_filename)
-        r.set_was_used(True)
-        rm = IMP.mmcif.restraint._RestraintMapper(s)
-        frame = None
-        assembly = None
-        wr = rm.handle(r, frame, assembly)
-        self.assertEqual(type(wr), IMP.mmcif.restraint._EM2DRestraint)
-        self.assertEqual(type(wr.dataset), ihm.dataset.EM2DClassDataset)
 
 
 if __name__ == '__main__':

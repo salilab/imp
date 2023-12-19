@@ -44,7 +44,9 @@ class Atom(object):
        :type asym_unit: :class:`ihm.AsymUnit`
        :param int seq_id: The sequence ID of the residue represented by this
               atom. This should generally be a number starting at 1 for any
-              polymer chain or water, or None for a ligand.
+              polymer chain, water, or oligosaccharide. For ligands, a seq_id
+              is not needed (as a given asym can only contain a single ligand),
+              so either 1 or None can be used.
        :param str atom_id: The name of the atom in the residue
        :param str type_symbol: Element name
        :param float x: x coordinate of the atom

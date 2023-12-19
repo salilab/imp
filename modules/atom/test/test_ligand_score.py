@@ -47,7 +47,7 @@ class Tests(IMP.test.ApplicationTestCase):
         out = out.split('\n')
         for line, nligand, score in [(out[-3], '001', val1),
                                      (out[-2], '002', val2)]:
-            m = re.match('Score for 1d3d\-ligand\.1d3d\.(\d+) is ([\d\.-]+)',
+            m = re.match(r'Score for 1d3d\-ligand\.1d3d\.(\d+) is ([\d\.-]+)',
                          line)
             self.assertIsNotNone(m, msg="Score output not found in " + str(out))
             self.assertEqual(m.group(1), nligand)

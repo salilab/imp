@@ -84,7 +84,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //            Initial probability of accepting an solution that does
 //            not alter the distortion.
 //      tempRunLength
-//            The number of stages before chaning the temperature.
+//            The number of stages before changing the temperature.
 //      tempReducFactor
 //            The factor by which temperature is reduced at the end of
 //            a temperature run.

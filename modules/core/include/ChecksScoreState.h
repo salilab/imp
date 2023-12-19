@@ -16,8 +16,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** Turn checks on with a given probability each evaluate call.
- */
+//! Turn checks on with a given probability each evaluate call.
 class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   double probability_;
   unsigned int num_checked_;

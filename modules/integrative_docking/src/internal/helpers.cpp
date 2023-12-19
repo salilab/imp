@@ -191,7 +191,7 @@ void get_residue_solvent_accessibility(
     residue_solvent_accessibility[atom_2_residue_map[i]] += area;
   }
 
-  // compute solvent accessability percentage
+  // compute solvent accessibility percentage
   std::map<IMP::atom::ResidueType, float> residue_type_area_map_;
   residue_type_area_map_[IMP::atom::ALA] = 113.0;
   residue_type_area_map_[IMP::atom::ARG] = 241.0;

@@ -36,7 +36,7 @@ TextWriter::TextWriter(std::string name) : Writer(name), file_name_(name) {
 void TextWriter::open() {
   /*IMP_INTERNAL_CHECK(!(file_name_.find("%1%") != std::string::npos
                        && get_frame() == -1),
-                       "Cant open file without a frame.");*/
+                       "Can't open file without a frame.");*/
   out_ = TextOutput();
   out_ = TextOutput(get_current_file_name());
   do_open();

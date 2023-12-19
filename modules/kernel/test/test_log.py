@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test log targets"""
         if IMP.IMP_KERNEL_HAS_LOG4CXX:
-            self.skipTest("Log4CXX log backend doesnt (yet) support targets")
+            self.skipTest("Log4CXX log backend doesn't (yet) support targets")
         log_level = IMP.get_log_level()
         # Make sure we are not logging at level MEMORY, since that will add
         # extra logs (for ref/unref) and cause assertions to fail
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         """Test time log looks ok"""
         # I don't feel like arranging to capture the output...
         if IMP.IMP_KERNEL_HAS_LOG4CXX:
-            self.skipTest("Log4CXX log backend doesnt (yet) support targets")
+            self.skipTest("Log4CXX log backend doesn't (yet) support targets")
         if not IMP.get_log_level():
             self.skipTest("Logging is disabled")
         print("calling")

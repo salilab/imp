@@ -28,7 +28,8 @@ prot_lib = %s
         fin.close()
         fout.close()
         IMP.cnmultifit.do_all_fitting('trimer.param')
-        self.assertEqual(len(open('multifit.output').readlines()), 4)
+        with open('multifit.output') as fh:
+            self.assertEqual(len(fh.readlines()), 4)
 
         m = IMP.Model()
         ref = IMP.atom.read_pdb(self.get_input_file_name('trimer-ref.pdb'), m)

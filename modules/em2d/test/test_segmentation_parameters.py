@@ -6,7 +6,7 @@ import pickle
 
 class Tests(IMP.test.TestCase):
 
-    def get_pickle(self):
+    def test_pickle(self):
         """Test (un-)pickle of SegmentationParameters"""
         p = IMP.em2d.SegmentationParameters()
         p.image_pixel_size = 2.7

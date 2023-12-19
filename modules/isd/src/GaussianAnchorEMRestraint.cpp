@@ -1,14 +1,14 @@
 /**
  *  \file isd/GaussianAnchorEMRestraint.cpp
  *  \brief Restrain two sets of anchor points (e.g. protein and EM map)
- *  NOTE: derivitives not implemented
+ *  NOTE: derivatives not implemented
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/isd/GaussianAnchorEMRestraint.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container_macros.h>

@@ -1,6 +1,6 @@
 /**
- *  \file IMP/kernel/random_number_generation.h
- *  \brief GPU or CPU pooled random number generation
+ *  \file IMP/kernel/internal/cuda_helper_functions.h
+ *  \brief CUDA helper functions, e.g. for error handling.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
@@ -732,7 +732,7 @@ namespace IMPcuda {
 
 #ifdef __DRIVER_TYPES_H__
       // This will output the proper CUDA error strings in the event that a CUDA host call returns an error
-#define IMP_checkCudaErrors(val)           check ( (val), #val, __FILE__, __LINE__ )
+#define IMP_checkCudaErrors(val)           IMPcuda::kernel::internal::check ( (val), #val, __FILE__, __LINE__ )
 
       // This will output the proper error string when calling cudaGetLastError
 #define IMP_getLastCudaError(msg)      __getLastCudaError (msg, __FILE__, __LINE__)

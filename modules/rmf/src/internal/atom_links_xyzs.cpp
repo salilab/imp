@@ -13,7 +13,7 @@
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f)
-  : reference_frame_factory_(f), ip_factory_(f) {
+  : reference_frame_factory_(f), ip_factory_(f), first_load_after_link_(false) {
   // backwards compat
   RMF::Category cat = f.get_category("IMP");
   rb_index_key_ = f.get_key(cat, "rigid body", RMF::IntTraits());
@@ -59,12 +59,13 @@ void HierarchyLoadXYZs::setup_particle(
           .set_internal_coordinates(get_coordinates(n, ip_factory_));
     }
   }
-  link_particle(n, m, p, rigid_bodies);
+  link_particle(n, m, p, rigid_bodies, false);
 }
 
 void HierarchyLoadXYZs::link_particle(
     RMF::NodeConstHandle n, Model *m, ParticleIndex p,
-    const ParticleIndexes &rigid_bodies) {
+    const ParticleIndexes &rigid_bodies,
+    bool link_to_existing) {
   if (!ip_factory_.get_is(n)) return;
   if (rigid_bodies.empty()) {
     global_.push_back(std::make_pair(n.get_id(), p));
@@ -77,6 +78,12 @@ void HierarchyLoadXYZs::link_particle(
       // backwards compat: need to read coordinates of rigid members in order
       // to set the reference frame of the rigid body later
       global_.push_back(std::make_pair(n.get_id(), p));
+    } else if (link_to_existing && core::RigidMember::get_is_setup(m, p)) {
+      // if we are linking to an existing IMP rigid member, we need to update
+      // its internal coordinates to match those in the RMF, but only on the
+      // load of the first frame (since they are static in the RMF)
+      first_load_after_link_ = true;
+      local_first_.push_back(std::make_pair(n.get_id(), p));
     }
   }
 }
@@ -93,6 +100,15 @@ void HierarchyLoadXYZs::load(RMF::FileConstHandle fh, Model *m) {
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::Vector3D rf(get_coordinates(fh.get_node(pp.first), ip_factory_));
     core::RigidBodyMember(m, pp.second).set_internal_coordinates(rf);
+  }
+  if (first_load_after_link_) {
+    for(Pair pp : local_first_) {
+      IMP_LOG_VERBOSE("Loading local coordinates on first frame read for "
+                      << m->get_particle_name(pp.second) << std::endl);
+      algebra::Vector3D rf(get_coordinates(fh.get_node(pp.first), ip_factory_));
+      core::RigidMember(m, pp.second).set_internal_coordinates(rf);
+    }
+    first_load_after_link_ = false;
   }
 }
 

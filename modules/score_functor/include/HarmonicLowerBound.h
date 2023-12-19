@@ -3,7 +3,6 @@
  *  \brief A harmonic score on the negative directed distance between
  *         a pair of particles. The score equals zero for
  *         non-negative directed distances.
- * .
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

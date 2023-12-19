@@ -16,19 +16,20 @@ class Tests(unittest.TestCase):
 
     def test_database_location(self):
         """Test DatabaseLocation"""
-        dl1 = ihm.location.DatabaseLocation('mydb', 'abc', version=1)
-        dl2 = ihm.location.DatabaseLocation('mydb', 'abc', version=1)
+        dl1 = ihm.location.DatabaseLocation('abc', version=1)
+        dl2 = ihm.location.DatabaseLocation('abc', version=1)
         self.assertEqual(dl1, dl2)
-        dl3 = ihm.location.DatabaseLocation('mydb', 'abc', version=2)
+        dl3 = ihm.location.DatabaseLocation('abc', version=2)
         self.assertNotEqual(dl1, dl3)
         # details can change without affecting equality
-        dl4 = ihm.location.DatabaseLocation('mydb', 'abc', version=1,
+        dl4 = ihm.location.DatabaseLocation('abc', version=1,
                                             details='foo')
         self.assertEqual(dl1, dl4)
-        self.assertEqual(dl1.db_name, 'mydb')
+        self.assertEqual(dl1.db_name, 'Other')
         self.assertEqual(dl1.access_code, 'abc')
         self.assertEqual(dl1.version, 1)
         self.assertIsNone(dl1.details)
+        self.assertEqual(str(dl1), "<ihm.location.DatabaseLocation('abc')>")
 
     def test_pdb_location(self):
         """Test PDBLocation"""
@@ -180,6 +181,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(loc.path, 'foo/bar')
         self.assertEqual(loc.repo, r)
         self.assertIsNone(loc.file_size)
+        self.assertEqual(str(loc),
+                         "<ihm.location.InputFileLocation('foo/bar')>")
         # locations should only compare equal if path and repo both match
         loc2 = ihm.location.InputFileLocation('foo/bar', repo=r)
         self.assertEqual(loc, loc2)
@@ -254,6 +257,7 @@ class Tests(unittest.TestCase):
         f = ihm.location.InputFileLocation(repo=r, path='foo')
         self.assertEqual(f.repo.doi, '10.5281/zenodo.46266')
         self.assertEqual(f.path, 'foo')
+        self.assertEqual(str(f), "<ihm.location.InputFileLocation('foo')>")
 
     def test_repository_get_full_path(self):
         """Test Repository._get_full_path"""

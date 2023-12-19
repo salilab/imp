@@ -10,7 +10,6 @@
 
 #include <IMP/core/core_config.h>
 #include "MonteCarloMover.h"
-#include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>
@@ -148,20 +147,6 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
                   MonteCarloMovers, {}, {}, {});
   /** @} */
 
-  /** Set whether to use incremental evaluate or evaluate all restraints
-      each time. This cannot be changed during optimization.
-
-      \deprecated_at{2.17} Use set_score_moved() instead
-  */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.17)
-  void set_incremental_scoring_function(IncrementalScoringFunction *isf);
-
-  bool get_use_incremental_scoring_function() const { return isf_; }
-
-  IncrementalScoringFunction *get_incremental_scoring_function() const {
-    return isf_;
-  }
-
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
@@ -196,9 +181,6 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
    */
   virtual double do_evaluate(const ParticleIndexes &moved,
                              bool force_full_score) const {
-    if (isf_) {
-      isf_->set_moved_particles(moved);
-    }
     if (get_maximum_difference() < NO_MAX) {
       if (score_moved_ && !force_full_score) {
         return get_scoring_function()->evaluate_moved_if_below(
@@ -229,8 +211,6 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   double min_score_;
   IMP::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
-
-  Pointer<IncrementalScoringFunction> isf_;
 };
 
 //! This variant of Monte Carlo that relaxes after each move

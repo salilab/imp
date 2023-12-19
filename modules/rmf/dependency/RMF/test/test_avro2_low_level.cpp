@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <avrocpp/api/Compiler.hh>
 #include <avrocpp/api/DataFile.hh>
 #include <backend/avro/raw_frame.h>

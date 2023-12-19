@@ -73,7 +73,7 @@ struct SameParticle {
   }
   };*/
 
-//! returns trun if sa and sb sphere distance is lower then
+//! returns true if sa and sb sphere distance is lower then
 //! the specified distance
 inline bool get_are_close
 (algebra::Sphere3D const& sa,
@@ -255,7 +255,7 @@ inline void initialize_particles(
          it != constituents_.end(); ++it) {
       ParticleIndexes cur = it->second;
       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), it->first) == cur.end(),
-                      "A rigid body cann't be its own constituent.");
+                      "A rigid body can't be its own constituent.");
       boost::unordered_set<ParticleIndex> scur(cur.begin(), cur.end());
       IMP_USAGE_CHECK(
           cur.size() == scur.size(),

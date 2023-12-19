@@ -5,7 +5,7 @@
  */
 
 #include <IMP/isd/distribution.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

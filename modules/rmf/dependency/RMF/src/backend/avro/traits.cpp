@@ -398,7 +398,7 @@ struct BackwardsTypeDatas {
 };
 
 struct BackwardsFrame {
-  typedef rmf_raw_avro2::_Frame_json_Union__0__ info_t;
+  using info_t = rmf_raw_avro2::_Frame_json_Union__0__;
   info_t info;
   std::vector<rmf_raw_avro2::Node> nodes;
   std::vector<rmf_raw_avro2::KeyInfo> keys;

@@ -1,4 +1,5 @@
 from __future__ import print_function
+import os
 import IMP
 import IMP.test
 import IMP.core
@@ -23,6 +24,8 @@ class Tests(IMP.test.TestCase):
             r = d.get_radius()
             print(r)
             self.assertTrue(r > 3.5 and r < 5.5)
+        del w
+        os.unlink('1.pym')
 
     def test_bonded2(self):
         """Test simplifying DNA 2"""
@@ -39,6 +42,9 @@ class Tests(IMP.test.TestCase):
             r = d.get_radius()
             print(r)
             self.assertTrue(r > 4 and r < 6.8)
+        del w
+        os.unlink('2.pym')
+
 
 if __name__ == '__main__':
     IMP.test.main()

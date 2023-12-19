@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     if (at.get_particle() != NULL) ca_atoms2.push_back(at.get_particle());
   }
 
-  // cross link only acessible residues
+  // cross link only accessible residues
   IMP::Floats residue_solvent_accessibility1, residue_solvent_accessibility2;
   get_residue_solvent_accessibility(ca_atoms1, residue_solvent_accessibility1);
   get_residue_solvent_accessibility(ca_atoms2, residue_solvent_accessibility2);

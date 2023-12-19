@@ -5,7 +5,7 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/spb/RMSDMetric.h>

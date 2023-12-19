@@ -100,7 +100,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   }
 
   //! updated internal coordinates in the forest based on the current cartesian
-  //! coordinates and the architechture of joints in the tree
+  //! coordinates and the architecture of joints in the tree
   void update_all_internal_coordinates() {
     IMP_LOG(VERBOSE, "updating internal coords needed?" << std::endl);
     if (is_internal_coords_updated_) {

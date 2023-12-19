@@ -16,7 +16,7 @@
 #include "IMP/exception.h"
 #include "IMP/constants.h"
 #include <complex>
-#include <math.h>
+#include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
 

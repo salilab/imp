@@ -122,9 +122,15 @@ of the data used in modeling:
  - *Author-provided numbering*. If a different numbering scheme is used by the
    authors, for example to correspond to the numbering of the original sequence
    that is modeled, this can be given as an author-provided numbering for
-   one or more asymmetric units. See the ``auth_seq_id_map`` parameter to
-   :class:`~ihm.AsymUnit`. (The mapping between author-provided and internal
-   numbering is given in the ``pdbx_poly_seq_scheme`` table in the mmCIF file.)
+   one or more asymmetric units. See the ``auth_seq_id_map`` and
+   ``orig_auth_seq_id_map`` parameters to :class:`~ihm.AsymUnit`. (The mapping
+   between author-provided and internal numbering is given in tables such
+   as ``pdbx_poly_seq_scheme`` in the mmCIF file.) Two maps are provided as
+   PDB provides for two distinct author-provided schemes; the "original"
+   author-provided numbering ``orig_auth_seq_id_map`` is entirely unrestricted
+   but is only used internally, while ``auth_seq_id_map`` must follow certain
+   PDB rules (and generally matches the residue numbers used in legacy PDB
+   files). In most cases, only ``auth_seq_id_map`` is used.
  - *Starting model numbering*. If the initial state of the modeling is given
    by one or more PDB files, the numbering of residues in those files may not
    line up with the internal numbering. In this case an offset from starting

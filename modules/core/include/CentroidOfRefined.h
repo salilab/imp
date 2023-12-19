@@ -20,9 +20,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Set the coordinates (or any float keys) of the particle to be the centroid of
-//! the corresponding keys in a set of fine particles.
-/** An exception is thrown if there are no refined particles. The weight
+//! Set a particle to be the centroid of the refined particles.
+/** Set the coordinates (or any float keys) of the particle to be the
+    centroid of the corresponding keys in a set of fine particles.
+    An exception is thrown if there are no refined particles. The weight
     FloatKey can be used to reweight the centroid computation, or it can be set
     to FloatKey() and then all the weights will be equal to 1.0.
 

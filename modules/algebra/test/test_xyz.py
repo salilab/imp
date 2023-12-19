@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
 #            print e.get_x()
 #            print e.get_y()
 #            print e.get_z()
-            # we can not compare x to e.get_x() as tehy can be PI shifted.
+            # we can not compare x to e.get_x() as they can be PI shifted.
             r2 = IMP.algebra.get_rotation_from_fixed_xyz(
                 e.get_x(), e.get_y(), e.get_z())
             id_mat = r * r2.get_inverse()

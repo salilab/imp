@@ -1107,20 +1107,24 @@ Ints get_tree_residue_indexes(Hierarchy h) {
 }
 
 Ints get_residue_indexes(Hierarchy h) {
+  Hierarchy orig = h;
   do {
     Ints ret = get_tree_residue_indexes(h);
     if (!ret.empty()) return ret;
   } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has no residue index.", ValueException);
+  IMP_THROW("Hierarchy " << orig << " has no residue index.", ValueException);
 }
+
 ResidueType get_residue_type(Hierarchy h) {
+  Hierarchy orig = h;
   do {
     if (Residue::get_is_setup(h)) {
       return Residue(h).get_residue_type();
     }
   } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has no residue type.", ValueException);
+  IMP_THROW("Hierarchy " << orig << " has no residue type.", ValueException);
 }
+
 std::string get_chain_id(Hierarchy h) {
   Chain c = get_chain(h);
   if (!c) {
@@ -1129,28 +1133,35 @@ std::string get_chain_id(Hierarchy h) {
     return c.get_id();
   }
 }
+
 AtomType get_atom_type(Hierarchy h) {
+  Hierarchy orig = h;
   do {
     if (Atom::get_is_setup(h)) {
       return Atom(h).get_atom_type();
     }
   } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has no atom type.", ValueException);
+  IMP_THROW("Hierarchy " << orig << " has no atom type.", ValueException);
 }
+
 std::string get_domain_name(Hierarchy h) {
+  Hierarchy orig = h;
   do {
     if (Domain::get_is_setup(h)) {
       return Domain(h)->get_name();
     }
   } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has no domain name.", ValueException);
+  IMP_THROW("Hierarchy " << orig << " has no domain name.", ValueException);
 }
+
 std::string get_molecule_name(Hierarchy h) {
+  Hierarchy orig = h;
   do {
     if (Molecule::get_is_setup(h)) {
       return h->get_name();
     }
   } while ((h = get_parent_representation(h)));
-  IMP_THROW("Hierarchy " << h << " has no molecule name.", ValueException);
+  IMP_THROW("Hierarchy " << orig << " has no molecule name.", ValueException);
 }
+
 IMPATOM_END_NAMESPACE

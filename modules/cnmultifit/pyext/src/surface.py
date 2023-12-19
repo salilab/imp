@@ -35,5 +35,6 @@ def main():
     IMP.multifit.write_connolly_surface(IMP.atom.get_leaves(h),
                                         outfile, density, rp)
 
+
 if __name__ == "__main__":
     main()

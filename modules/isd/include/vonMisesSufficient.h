@@ -11,7 +11,7 @@
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
-#include <math.h>
+#include <cmath>
 #include <boost/math/special_functions/bessel.hpp>
 
 IMPISD_BEGIN_NAMESPACE

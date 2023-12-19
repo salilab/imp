@@ -15,7 +15,7 @@ import IMP.isd.TALOSReader
 import IMP.isd.utils
 from IMP.isd.Entry import Entry
 
-from math import sqrt, exp
+from math import exp
 from io import StringIO
 
 from random import random
@@ -37,7 +37,6 @@ class PyMDMover:
         # self.oldvel=[]
         for i in range(self.cont.get_number_of_particles()):
             p = self.cont.get_particle(i)
-            #self.oldvel.append([p.get_value(k) for k in self.velkeys])
             d = IMP.core.XYZ(p)
             self.oldcoords.append(d.get_coordinates())
 
@@ -86,9 +85,8 @@ class PyMC(IMP.Optimizer):
     def metropolis(self, old, new):
         deltaE = new - old
         if self.debug:
-            print(": old %f new %f deltaE %f new_epot: %f" % (old, new, deltaE,
-                                                              self.m.evaluate(
-                                                                  False)), end=' ')
+            print(": old %f new %f deltaE %f new_epot: %f"
+                  % (old, new, deltaE, self.m.evaluate(False)), end=' ')
         kT = self.kT
         if deltaE < 0:
             return True
@@ -239,8 +237,8 @@ class sfo_common:
                     bj = IMP.atom.Bonded.setup_particle(j)
                 bond = IMP.atom.create_custom_bond(bi, bj, 3.78, 10)  # stiff
                 bonds.append(bond)
-            bonds_container = IMP.container.ListSingletonContainer(self._m,
-                                                    IMP.get_indexes(bonds))
+            bonds_container = IMP.container.ListSingletonContainer(
+                self._m, IMP.get_indexes(bonds))
             hdps = IMP.core.Harmonic(0, 1)
             bs = IMP.atom.BondSingletonScore(hdps)
             br = IMP.container.SingletonsRestraint(bs, bonds_container)
@@ -253,12 +251,14 @@ class sfo_common:
         else:
             print("setting up CHARMM forcefield")
             #
-            # Using the CHARMM libraries, determine the ideal topology (atoms and their
-            # connectivity) for the PDB file's primary sequence
+            # Using the CHARMM libraries, determine the ideal topology
+            # (atoms and their connectivity) for the PDB file's primary
+            # sequence
             topology = ff.create_topology(prot)
-            # Typically this modifies the C and N termini of each chain in the protein by
-            # applying the CHARMM CTER and NTER patches. Patches can also be manually
-            # applied at this point, e.g. to add disulfide bridges.
+            # Typically this modifies the C and N termini of each chain in
+            # the protein by applying the CHARMM CTER and NTER patches.
+            # Patches can also be manually applied at this point, e.g. to add
+            # disulfide bridges.
             topology.apply_default_patches()
             # disulfides
             if disulfides:
@@ -274,37 +274,39 @@ class sfo_common:
                     if j == 0:
                         r1.set_patched(False)
                     dis.apply(r0, r1)
-                    print("added disulfide bridge between cysteines %d and %d" % (i, j))
-            # Make the PDB file conform with the topology; i.e. if it contains extra
-            # atoms that are not in the CHARMM topology file, remove them; if it is
-            # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
-            # add them and construct their Cartesian coordinates from internal coordinate
-            # information.
+                    print("added disulfide bridge between cysteines %d and %d"
+                          % (i, j))
+            # Make the PDB file conform with the topology; i.e. if it contains
+            # extra atoms that are not in the CHARMM topology file, remove
+            # them; if it is missing atoms (e.g. sidechains, hydrogens) that
+            # are in the CHARMM topology, add them and construct their
+            # Cartesian coordinates from internal coordinate information.
             topology.setup_hierarchy(prot)
-            # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
-            # impropers) of the CHARMM forcefield
+            # Set up and evaluate the stereochemical part (bonds, angles,
+            # dihedrals, impropers) of the CHARMM forcefield
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
             rsb = IMP.RestraintSet(m, 1.0, "bonded")
             rsb.add_restraint(r)
             #
-            # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-            # know the radii and well depths for each atom, so add them from the forcefield
-            # (they can also be assigned manually using the XYZR or LennardJones
-            # decorators):
+            # Add non-bonded interaction (in this case, Lennard-Jones).
+            # This needs to know the radii and well depths for each atom,
+            # so add them from the forcefield (they can also be assigned
+            # manually using the XYZR or LennardJones decorators):
             ff.add_radii(prot)
             ff.add_well_depths(prot)
             nonbonded_pair_filter = r.get_pair_filter()
         # Get a list of all atoms in the protein, and put it in a container
         atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         cont = IMP.container.ListSingletonContainer(self._m,
-                                                 IMP.get_indexes(atoms))
+                                                    IMP.get_indexes(atoms))
         # Add a restraint for the Lennard-Jones interaction. This is built from
-        # a collection of building blocks. First, a ClosePairContainer maintains a list
-        # of all pairs of Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
-        # from the stereochemistry created above are filtered out.
-        # Then, a LennardJonesPairScore scores a pair of atoms with the Lennard-Jones
-        # potential. Finally, a PairsRestraint is used which simply applies the
-        # LennardJonesPairScore to each pair in the ClosePairContainer.
+        # a collection of building blocks. First, a ClosePairContainer
+        # maintains a list of all pairs of Particles that are close. Next, all
+        # 1-2, 1-3 and 1-4 pairs from the stereochemistry created above are
+        # filtered out. Then, a LennardJonesPairScore scores a pair of atoms
+        # with the Lennard-Jones potential. Finally, a PairsRestraint is used
+        # which simply applies the LennardJonesPairScore to each pair in the
+        # ClosePairContainer.
         nbl = IMP.container.ClosePairContainer(cont, 4.0)
         nbl.add_pair_filter(nonbonded_pair_filter)
         # should weight the ff restraint by a temperature, set to 300K.
@@ -328,8 +330,9 @@ class sfo_common:
 
     def init_model_jeffreys_kappa(self, scales, prior_rs=None):
         """given a list of scales, returns a RestraintSet('prior') with weight
-        1.0 that contains a list of vonMisesKappaJeffreysRestraint on each scale.
-        If argument prior_rs is used, add them to that RestraintSet instead.
+        1.0 that contains a list of vonMisesKappaJeffreysRestraint on each
+        scale. If argument prior_rs is used, add them to that RestraintSet
+        instead.
         """
         if not prior_rs:
             prior_rs = IMP.RestraintSet('prior')
@@ -385,7 +388,7 @@ class sfo_common:
                 print("found multiple atoms for atom %d %s!" % atom)
                 return
             p0 = IMP.core.XYZ(sel[0])
-        except:
+        except IndexError:
             print("atom %d %s not found" % atom)
             return
         self.__memoized[prot][atom] = p0
@@ -449,8 +452,9 @@ class sfo_common:
         self, prot, seqfile, tblfile, name='NOE', prior_rs=None,
         bounds_sigma=(1.0, 0.1, 100), bounds_gamma=(1.0, 0.1, 100),
             verbose=True, sequence_match=(1, 1)):
-        """read TBL file and store NOE restraints, using one sigma and one gamma
-        for the whole dataset. Creates the necessary uninformative priors.
+        """read TBL file and store NOE restraints, using one sigma and one
+        gamma for the whole dataset. Creates the necessary uninformative
+        priors.
         - prot: protein hierarchy
         - seqfile: a file with 3-letter sequence
         - tblfile: a TBL file with the restraints
@@ -472,8 +476,8 @@ class sfo_common:
         # likelihood
         rs = IMP.RestraintSet(self._m, 1.0, name)
         # use the TBLReader to parse the TBL file.
-        sequence = IMP.isd.utils.read_sequence_file(seqfile,
-                                                    first_residue_number=sequence_match[1])
+        sequence = IMP.isd.utils.read_sequence_file(
+            seqfile, first_residue_number=sequence_match[1])
         tblr = IMP.isd.TBLReader.TBLReader(sequence,
                                            sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
@@ -513,8 +517,8 @@ class sfo_common:
         # likelihood
         rs = IMP.RestraintSet(self._m, 1.0, name)
         # use the TBLReader to parse the TBL file.
-        sequence = IMP.isd.utils.read_sequence_file(seqfile,
-                                                    first_residue_number=sequence_match[1])
+        sequence = IMP.isd.utils.read_sequence_file(
+            seqfile, first_residue_number=sequence_match[1])
         tblr = IMP.isd.TBLReader.TBLReader(sequence,
                                            sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
@@ -539,8 +543,8 @@ class sfo_common:
 
     def init_model_HBonds_marginal(self, prot, seqfile, tblfile, name='NOE',
                                    verbose=True):
-        """read TBL file and store lognormal restraints, using the marginal of the
-        lognormal with one sigma and gamma=1, for the whole dataset.
+        """read TBL file and store lognormal restraints, using the marginal
+        of the lognormal with one sigma and gamma=1, for the whole dataset.
         - prot: protein hierarchy
         - seqfile: a file with 3-letter sequence
         - tblfile: a TBL file with the restraints
@@ -575,24 +579,25 @@ class sfo_common:
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
                          sequence_match=(1, 1), name='TALOS', prior_rs=None,
-                         bounds_kappa=(1.0, 0.1, 10), verbose=True, prior='jeffreys',
-                         keep_all=False):
+                         bounds_kappa=(1.0, 0.1, 10), verbose=True,
+                         prior='jeffreys', keep_all=False):
         """read TALOS dihedral angle data, and create restraints for phi/psi
-        torsion angles, along with the prior for kappa, which is a scale for the
-        whole dataset, compare to 1/sigma**2 in the NOE case.
+        torsion angles, along with the prior for kappa, which is a scale for
+        the whole dataset, compare to 1/sigma**2 in the NOE case.
         - prot: protein hierarchy
         - seqfile: a file with 3-letter sequence
-        - talos_data: either a file (pred.tab), or a folder (pred/) in which all
-                      files in the form res???.tab can be found. If possible,
-                      try to provide the folder, as statistics are more
-                      accurate in that case.
+        - talos_data: either a file (pred.tab), or a folder (pred/) in which
+                      all files in the form res???.tab can be found. If
+                      possible, try to provide the folder, as statistics are
+                      more accurate in that case.
         - fulldata : either True or False, whether the data is the full TALOS
                      output (predAll.tab or pred/ folder), or just the averages
                      (pred.tab)
         - sequence_match : (talos_no, sequence_no) to adjust for different
                            residue numberings
         - name: an optional name for the restraintset
-        - prior_rs: when not None, add new kappa(s) to this RestraintSet instance.
+        - prior_rs: when not None, add new kappa(s) to this RestraintSet
+                    instance.
         - bounds_kappa: tuple of (initial value, lower, upper bound)
                         bounds can be -1 to set to default range [0,+inf]
         - verbose: be verbose (default True)
@@ -600,7 +605,8 @@ class sfo_common:
                  conjugate prior of the von Mises restraint, with parameters R
                  and c.  Good values are R=0 and c=10. Default: jeffreys prior.
         - keep_all: in case of a folder for 'talos_data', whether to keep
-                    candidates marked as 'outliers' by TALOS, or to include them.
+                    candidates marked as 'outliers' by TALOS, or to include
+                    them.
         Returns: data_rs, prior_rs, kappa
 
         """
@@ -613,14 +619,15 @@ class sfo_common:
         if verbose:
             print("reading data")
         rs = IMP.RestraintSet(self._m, 1.0, name)
-        sequence = IMP.isd.utils.read_sequence_file(seqfile,
-                                                    first_residue_no=sequence_match[1])
+        sequence = IMP.isd.utils.read_sequence_file(
+            seqfile, first_residue_no=sequence_match[1])
         if fulldata:
-            talosr = IMP.isd.TALOSReader.TALOSReader(sequence, True, keep_all,
-                                                     sequence_match=sequence_match)
+            talosr = IMP.isd.TALOSReader.TALOSReader(
+                sequence, True, keep_all, sequence_match=sequence_match)
             if os.path.isdir(talos_data):
                 # using pred/res???.tab files
-                for i, res in enumerate(glob(os.path.join(talos_data, 'res???.tab'))):
+                for i, res in enumerate(glob(os.path.join(talos_data,
+                                                          'res???.tab'))):
                     if verbose and i % 100:
                         print("\r%d" % i, end=' ')
                         sys.stdout.flush()
@@ -630,8 +637,8 @@ class sfo_common:
                 talosr.read(talos_data)
         else:
             # using pred.tab file and correcting for estimates
-            talosr = IMP.isd.TALOSReader.TALOSReader(sequence, False, keep_all,
-                                                     sequence_match=sequence_match)
+            talosr = IMP.isd.TALOSReader.TALOSReader(
+                sequence, False, keep_all, sequence_match=sequence_match)
             talosr.read(talos_data)
         # get harvested data and create restraints
         data = talosr.get_data()
@@ -642,7 +649,7 @@ class sfo_common:
         for resno, datum in data.items():
             phidata = datum['phi']
             psidata = datum['psi']
-            num = datum['num']
+            # num = datum['num']
             res = IMP.atom.Residue(IMP.atom.get_residue(prot, resno))
             phi = IMP.atom.get_phi_dihedral_atoms(res)
             psi = IMP.atom.get_psi_dihedral_atoms(res)
@@ -669,8 +676,8 @@ class sfo_common:
                 if verbose:
                     avgR.append(r.get_R0())
         if verbose:
-            print("%s Restraints created. Average R0: %f" % \
-                (len(avgR), sum(avgR) / float(len(avgR))))
+            print("%s Restraints created. Average R0: %f"
+                  % (len(avgR), sum(avgR) / float(len(avgR))))
         return rs, prior_rs, kappa
 
     def init_model_standard_SAXS_restraint(
@@ -688,19 +695,20 @@ class sfo_common:
         return rs, saxs_profile
 
     def _setup_md(self, prot, temperature=300.0, thermostat='berendsen',
-                  coupling=500, md_restraints=None, timestep=1.0, recenter=1000,
-                  momentum=1000):
+                  coupling=500, md_restraints=None, timestep=1.0,
+                  recenter=1000, momentum=1000):
         """setup molecular dynamics
         - temperature: target temperature
         - thermostat: one of 'NVE', rescale_velocities',
                                 'berendsen', 'langevin'
         - coupling: coupling constant (tau (fs) for berendsen,
                                         gamma (/fs) for langevin)
-        - md_restraints: if not None, specify the terms of the energy to be used
-                            during the md steps via a list of restraints.
+        - md_restraints: if not None, specify the terms of the energy to be
+                            used during the md steps via a list of restraints.
         - timestep: in femtoseconds.
         - recenter: recenter the molecule every so many steps (Langevin only)
-        - momentum: remove angular momentum every so many steps (Berendsen only)
+        - momentum: remove angular momentum every so many steps
+          (Berendsen only)
         Returns: an instance of md and an instance of an OptimizerState (the
         thermostat), or None if NVE.
         """
@@ -777,18 +785,18 @@ class sfo_common:
             mc.set_restraints(mc_restraints)
         return mc
 
-    def init_simulation_setup_protein_hmc_hopper(self, prot, temperature=300.0,
-                                                 gamma=0.01, n_md_steps=10,
-                                                 md_restraints=None, mc_restraints=None, timestep=1.0,
-                                                 sd_threshold=0.0, sd_stepsize=0.01, sd_maxsteps=100):
-        """setup hybrid monte-carlo on protein. Uses basin hopping with steepest
-        descent minimization.
+    def init_simulation_setup_protein_hmc_hopper(
+            self, prot, temperature=300.0, gamma=0.01, n_md_steps=10,
+            md_restraints=None, mc_restraints=None, timestep=1.0,
+            sd_threshold=0.0, sd_stepsize=0.01, sd_maxsteps=100):
+        """setup hybrid monte-carlo on protein. Uses basin hopping with
+        steepest descent minimization.
         - prot: protein hierarchy.
         - temperature: target temperature.
         - gamma: coupling constant for langevin (/fs)
         - n_md_steps: number of md steps per mc step
-        - md_restraints: if not None, specify the terms of the energy to be used
-                            during the md steps.
+        - md_restraints: if not None, specify the terms of the energy to be
+                            used during the md steps.
         - mc_restraints: if not None, use these energy terms for the metropolis
                             criterion.
         - timestep: time step for md, in femtoseconds.
@@ -813,17 +821,17 @@ class sfo_common:
         hmc.set_use_basin_hopping(True)
         return hmc, mdmover, md, os
 
-    def init_simulation_setup_protein_hmc_nve(self, prot, temperature=300.0,
-                                              n_md_steps=100, md_restraints=None, mc_restraints=None,
-                                              timestep=1.0):
+    def init_simulation_setup_protein_hmc_nve(
+            self, prot, temperature=300.0, n_md_steps=100, md_restraints=None,
+            mc_restraints=None, timestep=1.0):
         """setup hybrid monte-carlo on protein. Uses NVE MD and tries the full
         - prot: protein hierarchy.
         - temperature: target temperature.
         - coupling: coupling constant (tau (fs) for berendsen,
                                         gamma (/fs) for langevin)
         - n_md_steps: number of md steps per mc step
-        - md_restraints: if not None, specify the terms of the energy to be used
-                            during the md steps.
+        - md_restraints: if not None, specify the terms of the energy to be
+                         used during the md steps.
         - mc_restraints: if not None, use these energy terms for the metropolis
                             criterion.
         - timestep: time step for md, in femtoseconds.
@@ -842,9 +850,7 @@ class sfo_common:
         cont.add(IMP.get_indexes(particles))
         mdmover = PyMDMover(cont, md, n_md_steps)
         mdmover.m = self._m
-        #mdmover = IMP.atom.MDMover(cont, md, temperature, n_md_steps)
         mc = PyMC(self._m)
-        #mc = IMP.core.MonteCarlo(self._m)
         # why is this returning an int?
         mc.add_mover(mdmover)
         # set same temp as MD, careful with units
@@ -861,8 +867,8 @@ class sfo_common:
         optionally using a certain set of restraints only.
         - nuis: nuisance particle
         - temperature: target temperature
-        - mc_restraints: optional set of restraints from which the energy should
-          be drawn instead of the energy of the complete system.
+        - mc_restraints: optional set of restraints from which the energy
+          should be drawn instead of the energy of the complete system.
         - floatkey: the floatkey to move.
         - nm_stepsize: the stepsize of the normal mover
         Returns: mc instance, nm instance.
@@ -902,7 +908,8 @@ class sfo_common:
                            adjust_stepsize=True):
         """run hmc, update stepsize and print statistics. Updates number of MD
         steps to reach a target acceptance between 0.4 and 0.6, sends
-        statistics to self.stat. MD steps are always at least 10 and at most 500.
+        statistics to self.stat. MD steps are always at least 10 and at
+        most 500.
         """
         hmc.optimize(nsteps)
         naccept = hmc.get_number_of_forward_steps()
@@ -940,8 +947,8 @@ class sfo_common:
         - nsteps: number of steps performed.
         - md_instance: instance of the MolecularDynamics class.
         - temperature: target temperature
-        - prot_coordinates: protein coordinates to be passed to the stats class,
-          (should be a string)
+        - prot_coordinates: protein coordinates to be passed to the stats
+          class, (should be a string)
         """
         self.stat.update(md_key, 'target_temp', temperature)
         kinetic = md_instance.get_kinetic_energy()

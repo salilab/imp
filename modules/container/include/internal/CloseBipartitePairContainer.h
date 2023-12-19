@@ -2,7 +2,7 @@
  *  \file container/include/internal/CloseBipartitePairContainer.h
  *  \brief Internal class of close bipartite pair container
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -17,6 +17,8 @@
 #include <IMP/internal/ContainerScoreState.h>
 #include <IMP/internal/ListLikeContainer.h>
 #include <boost/unordered_map.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
@@ -50,6 +52,21 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer
   typedef IMP::internal::ContainerScoreState<CloseBipartitePairContainer>
       SS;
   PointerMember<SS> score_state_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+            IMP::internal::ListLikeContainer<PairContainer> >(this),
+            sc_[0], sc_[1], key_, slack_, distance_,
+            covers_[0], covers_[1], mutable_access_pair_filters());
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      // Reset moved particles list and score state
+      initialize(sc_[0], sc_[1], covers_[0], covers_[1], distance_, slack_,
+                 key_);
+      score_state_ = new SS(this);
+    }
+  }
+
   void initialize(SingletonContainer *a, SingletonContainer *b,
                   ParticleIndex cover_a, ParticleIndex cover_b,
                   double distance, double slack, ObjectKey key);
@@ -69,6 +86,8 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer
                                   double distance, double slack = 1,
                                   std::string name =
                                       "CloseBipartitePairContainer%1%");
+
+  CloseBipartitePairContainer() {}
 
   /** @name Methods to control the set of filters
 

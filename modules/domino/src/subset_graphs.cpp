@@ -17,7 +17,7 @@
 #include <IMP/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
 #include <IMP/input_output.h>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>

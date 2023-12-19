@@ -169,7 +169,7 @@ public:                                                                     \
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames, Data,    \
                         PluralData, OnAdd, OnChanged, OnRemoved)               \
   IMP_PROTECTION(protection)                                                   \
-      /** \brief Remove first occurence of d from the container. */            \
+      /** \brief Remove first occurrence of d from the container. */           \
       void remove_##lcname(Data d) {                                           \
     IMP_OBJECT_LOG;                                                            \
     bool found = false;                                                        \
@@ -226,7 +226,7 @@ public:                                                                     \
         lcname##_vector_.end());                                               \
     lcname##_handle_change();                                                  \
   }                                                                            \
-  /** \brief Remove any occurences of each item in d. */                       \
+  /** \brief Remove any occurrences of each item in d. */                      \
   template <class List>                                                        \
   void remove_##lcnames(List d) {                                              \
     IMP_OBJECT_LOG;                                                            \
@@ -297,7 +297,7 @@ public:                                                                     \
   } /** \brief return true if there are any objects in the container*/         \
   bool get_has_##lcnames() const {                                             \
     return !lcname##_vector_.empty();                                          \
-  } /** Get the object refered to by the index
+  } /** Get the object referfed to by the index
         \throws IndexException in Python if the index is out of range
     */                                                                         \
   Data get_##lcname(unsigned int i) const { return lcname##_vector_[i]; }      \

@@ -692,17 +692,15 @@ class TestCase(unittest.TestCase):
         sys.argv = [filename]
         vars = {}
         try:
-            try:
-                exec(open(filename).read(), vars)
-            # Catch sys.exit() called from within the example; a non-zero exit
-            # value should cause the test case to fail
-            except SystemExit as e:
-                if e.code != 0 and e.code is not None:
-                    raise _FatalError(
-                        "Example exit with code %s" % str(e.code))
+            exec(open(filename).read(), vars)
+        # Catch sys.exit() called from within the example; a non-zero exit
+        # value should cause the test case to fail
+        except SystemExit as e:
+            if e.code != 0 and e.code is not None:
+                raise _FatalError(
+                    "Example exit with code %s" % str(e.code))
         finally:
-            # Restore sys.path (note that Python 2.3 does not allow
-            # try/except/finally, so we need to use nested trys)
+            # Restore sys.path
             sys.path = oldsyspath
             sys.argv = olssysargv
 
@@ -722,14 +720,14 @@ class TestCase(unittest.TestCase):
         def mock_setup_from_argv(*args, **kwargs):
             # do-nothing replacement for boost command line parser
             pass
-        if type(module) == type(os):
+        if type(module) == type(os):  # noqa: E721
             mod = module
         else:
             mod = __import__(module, {}, {}, [''])
         modpath = mod.__file__
         if modpath.endswith('.pyc'):
             modpath = modpath[:-1]
-        if type(module) == type(os):
+        if type(module) == type(os):  # noqa: E721
             old_sys_argv = sys.argv
             # boost parser doesn't like being called multiple times per process
             old_setup = IMP.setup_from_argv
@@ -772,7 +770,7 @@ class _ExecDictProxy(object):
         module_type = type(IMP)
         d = self._d
         for k in d.keys():
-            if type(d[k]) != module_type:
+            if type(d[k]) != module_type:  # noqa: E721
                 del d[k]
 
     for meth in ['__contains__', '__getitem__', '__iter__', '__len__',
@@ -789,10 +787,13 @@ class _TestResult(unittest.TextTestResult):
 
     def stopTestRun(self):
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
+            # Various parts of the IMP build pipeline use Python 3.6,
+            # which predates pickle protocol 5
+            protocol = min(pickle.HIGHEST_PROTOCOL, 4)
             fname = (Path(os.environ['IMP_TEST_DETAIL_DIR'])
                      / Path(sys.argv[0]).name)
             with open(str(fname), 'wb') as fh:
-                pickle.dump(self.all_tests, fh, -1)
+                pickle.dump(self.all_tests, fh, protocol)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):

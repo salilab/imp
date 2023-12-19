@@ -1,5 +1,6 @@
 /**
- * \file sinc_function \brief caching of sinc values
+ * \file internal/sinc_function.h
+ * \brief caching of sinc values
  *
  * Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

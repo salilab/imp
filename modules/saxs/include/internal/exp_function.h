@@ -1,6 +1,6 @@
 /**
- * \file ExpFunction
- * \brief
+ * \file internal/exp_function.h
+ * \brief Caching of exp function.
  *
  * \authors Dina Schneidman
  * Copyright 2007-2022 IMP Inventors. All rights reserved.

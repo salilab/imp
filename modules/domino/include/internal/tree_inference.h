@@ -1,6 +1,6 @@
 /**
- *  \file RestraintGraph.h
- *  \brief creates a MRF from a set of particles and restraints
+ *  \file internal/tree_inference.h
+ *  \brief Utility functions for tree inference.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

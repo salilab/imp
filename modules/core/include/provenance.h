@@ -2,7 +2,7 @@
  *  \file IMP/core/provenance.h
  *  \brief Classes to track how the model was created.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_PROVENANCE_H
@@ -34,7 +34,7 @@ class IMPCOREEXPORT Provenance : public Decorator {
     m->add_attribute(get_previous_key(), pi, pi);
   }
 
-  static ParticleIndexKey get_previous_key();
+  static SparseParticleIndexKey get_previous_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -101,9 +101,9 @@ class IMPCOREEXPORT StructureProvenance : public Provenance {
                       o.get_residue_offset());
   }
 
-  static StringKey get_filename_key();
-  static StringKey get_chain_key();
-  static IntKey get_residue_offset_key();
+  static SparseStringKey get_filename_key();
+  static SparseStringKey get_chain_key();
+  static SparseIntKey get_residue_offset_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -189,10 +189,10 @@ class IMPCOREEXPORT SampleProvenance : public Provenance {
                       o.get_number_of_replicas());
   }
 
-  static StringKey get_method_key();
-  static IntKey get_frames_key();
-  static IntKey get_iterations_key();
-  static IntKey get_replicas_key();
+  static SparseStringKey get_method_key();
+  static SparseIntKey get_frames_key();
+  static SparseIntKey get_iterations_key();
+  static SparseIntKey get_replicas_key();
 
   // get list of method names allowed in SamplingProvenance
   static std::set<std::string>& get_allowed_methods();
@@ -290,8 +290,8 @@ class IMPCOREEXPORT CombineProvenance : public Provenance {
     do_setup_particle(m, pi, o.get_number_of_runs(), o.get_number_of_frames());
   }
 
-  static IntKey get_runs_key();
-  static IntKey get_frames_key();
+  static SparseIntKey get_runs_key();
+  static SparseIntKey get_frames_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -352,9 +352,9 @@ class IMPCOREEXPORT FilterProvenance : public Provenance {
                       o.get_number_of_frames());
   }
 
-  static StringKey get_method_key();
-  static FloatKey get_threshold_key();
-  static IntKey get_frames_key();
+  static SparseStringKey get_method_key();
+  static SparseFloatKey get_threshold_key();
+  static SparseIntKey get_frames_key();
 
   // get list of method names allowed in FilterProvenance
   static std::set<std::string>& get_allowed_methods();
@@ -442,9 +442,9 @@ class IMPCOREEXPORT ClusterProvenance : public Provenance {
                       o.get_density();
   }
 
-  static IntKey get_members_key();
-  static FloatKey get_precision_key();
-  static StringKey get_density_key();
+  static SparseIntKey get_members_key();
+  static SparseFloatKey get_precision_key();
+  static SparseStringKey get_density_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -521,7 +521,7 @@ class IMPCOREEXPORT ScriptProvenance : public Provenance {
     do_setup_particle(m, pi, o.get_filename());
   }
 
-  static StringKey get_filename_key();
+  static SparseStringKey get_filename_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -576,9 +576,9 @@ class IMPCOREEXPORT SoftwareProvenance : public Provenance {
                       o.get_location());
   }
 
-  static StringKey get_name_key();
-  static StringKey get_version_key();
-  static StringKey get_location_key();
+  static SparseStringKey get_name_key();
+  static SparseStringKey get_version_key();
+  static SparseStringKey get_location_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -635,7 +635,7 @@ class IMPCOREEXPORT Provenanced : public Decorator {
     m->add_attribute(get_provenance_key(), pi, p.get_particle_index());
   }
 
-  static ParticleIndexKey get_provenance_key();
+  static SparseParticleIndexKey get_provenance_key();
 public:
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {

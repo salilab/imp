@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 # general imports
-from numpy import *
+import numpy as np
 
 
 # imp general
 import IMP
 
 # our project
-from IMP.isd import *
+import IMP.isd
 
 # unit testing framework
 import IMP.test
@@ -41,13 +41,13 @@ class Tests(IMP.test.TestCase):
         # IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
         self.m = IMP.Model()
-        self.G = Scale.setup_particle(IMP.Particle(self.m), 10.0)
-        self.Rg = Scale.setup_particle(IMP.Particle(self.m), 10.0)
-        self.d = Scale.setup_particle(IMP.Particle(self.m), 4.0)
-        self.s = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.A = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.G = IMP.isd.Scale.setup_particle(IMP.Particle(self.m), 10.0)
+        self.Rg = IMP.isd.Scale.setup_particle(IMP.Particle(self.m), 10.0)
+        self.d = IMP.isd.Scale.setup_particle(IMP.Particle(self.m), 4.0)
+        self.s = IMP.isd.Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.A = IMP.isd.Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.particles = [self.G, self.Rg, self.d, self.s, self.A]
-        self.mean = GeneralizedGuinierPorodFunction(*self.particles)
+        self.mean = IMP.isd.GeneralizedGuinierPorodFunction(*self.particles)
         self.DA = IMP.DerivativeAccumulator()
 
     def shuffle_particle_values(self):
@@ -55,13 +55,13 @@ class Tests(IMP.test.TestCase):
                      (self.Rg, 0, 100),
                      (self.d, 1, 4)]
         # number of shuffled values
-        for i in range(random.randint(0, len(particles))):
+        for i in range(np.random.randint(0, len(particles))):
             # which particle
-            p, imin, imax = particles.pop(random.randint(0, len(particles)))
-            p.set_nuisance(random.uniform(imin, imax))
-        if random.randint(0, 2) or self.s.get_nuisance() > self.d.get_nuisance():
+            p, imin, imax = particles.pop(np.random.randint(0, len(particles)))
+            p.set_nuisance(np.random.uniform(imin, imax))
+        if np.random.randint(0, 2) or self.s.get_nuisance() > self.d.get_nuisance():
             self.s.set_nuisance(
-                random.uniform(0, min(3, self.d.get_nuisance())))
+                np.random.uniform(0, min(3, self.d.get_nuisance())))
         self.mean.update()
 
     def test_has_changed(self):
@@ -78,13 +78,13 @@ class Tests(IMP.test.TestCase):
         s = self.s.get_nuisance()
         A = self.A.get_nuisance()
         Q1 = ((d - s) * (3 - s) / 2) ** .5 / Rg
-        D = G * exp(-(d - s) / 2) * Q1 ** (d - s)
+        D = G * np.exp(-(d - s) / 2) * Q1 ** (d - s)
         return G, Rg, d, s, A, Q1, D
 
     def get_value(self, q):
         G, Rg, d, s, A, Q1, D = self.get_params()
         if q <= Q1:
-            return A + (G / (q ** s)) * exp(-(q * Rg) ** 2 / (3. - s))
+            return A + (G / (q ** s)) * np.exp(-(q * Rg) ** 2 / (3. - s))
         else:
             return A + D / (q ** d)
 
@@ -104,18 +104,18 @@ class Tests(IMP.test.TestCase):
         if q <= Q1:
             return 0
         else:
-            return (self.get_value(q) - A) * log(Q1 / q)
+            return (self.get_value(q) - A) * np.log(Q1 / q)
 
     def get_deriv_s(self, q):
         G, Rg, d, s, A, Q1, D = self.get_params()
         if q <= Q1:
             return (
                 -(self.get_value(q) - A) *
-                ((q * Rg) ** 2 / (s - 3) ** 2 + log(q))
+                ((q * Rg) ** 2 / (s - 3) ** 2 + np.log(q))
             )
         else:
             return (
-                (self.get_value(q) - A) * ((d - s) / (2 * (s - 3)) - log(Q1))
+                (self.get_value(q) - A) * ((d - s) / (2 * (s - 3)) - np.log(Q1))
             )
 
     def testValue(self):
@@ -125,10 +125,10 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for rep in range(10):
             for i in range(10):
-                pos = random.uniform(0, 1)
+                pos = np.random.uniform(0, 1)
                 observed = self.mean([pos])[0]
                 expected = self.get_value(pos)
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -151,7 +151,7 @@ class Tests(IMP.test.TestCase):
         tests if we can get multiple values at once
         """
         for rep in range(10):
-            data = random.uniform(0, 1, random.randint(1, 100))
+            data = np.random.uniform(0, 1, np.random.randint(1, 100))
             expected = [self.mean([i]) for i in data]
             observed = self.mean([[i] for i in data], True)
             self.assertEqual(observed, expected)
@@ -165,12 +165,12 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for rep in range(10):
             for i in range(10):
-                pos = random.uniform(0, 1)
+                pos = np.random.uniform(0, 1)
                 self.mean.add_to_derivatives([pos], self.DA)
                 # G
                 observed = self.G.get_nuisance_derivative()
                 expected = self.get_deriv_G(pos)
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -187,7 +187,7 @@ class Tests(IMP.test.TestCase):
                 # Rg
                 observed = self.Rg.get_nuisance_derivative()
                 expected = self.get_deriv_Rg(pos)
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -204,7 +204,7 @@ class Tests(IMP.test.TestCase):
                 # d
                 observed = self.d.get_nuisance_derivative()
                 expected = self.get_deriv_d(pos)
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -221,7 +221,7 @@ class Tests(IMP.test.TestCase):
                 # s
                 observed = self.s.get_nuisance_derivative()
                 expected = self.get_deriv_s(pos)
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -238,7 +238,7 @@ class Tests(IMP.test.TestCase):
                 # A
                 observed = self.A.get_nuisance_derivative()
                 expected = 1
-                if isnan(expected):
+                if np.isnan(expected):
                     skipped += 1
                     continue
                 if expected != 0:
@@ -277,7 +277,7 @@ class Tests(IMP.test.TestCase):
             expectedd = 0
             expecteds = 0
             for i in range(10):
-                pos = random.uniform(0, 1)
+                pos = np.random.uniform(0, 1)
                 self.mean.add_to_derivatives([pos], self.DA)
                 expectedG += self.get_deriv_G(pos)
                 expectedRg += self.get_deriv_Rg(pos)
@@ -392,12 +392,12 @@ class Tests(IMP.test.TestCase):
         pos = self.get_params()[5]
         dFunc = MockFunc(self.d.set_nuisance,
                          lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for d in linspace(4, 0.1):
+        for d in np.linspace(4, 0.1):
             self.d.set_nuisance(d)
             # Function only valid for d>s, so ensure s is always a little below
             # d so we can calculate numerical derivatives
             if self.s.get_nuisance() + 0.04 > d:
-                self.s.set_nuisance(random.uniform(0.05, min(d - 0.04, 2.9)))
+                self.s.set_nuisance(np.random.uniform(0.05, min(d - 0.04, 2.9)))
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
                                                        False)[0][particle]
@@ -414,10 +414,10 @@ class Tests(IMP.test.TestCase):
         sFunc = MockFunc(self.s.set_nuisance,
                          lambda a: self.mean([a])[0], pos, update=self.mean.update)
         # can't compute derivative at border
-        for s in linspace(0.1, 2.9, num=20):
+        for s in np.linspace(0.1, 2.9, num=20):
             self.s.set_nuisance(s)
             if self.d.get_nuisance() < s:
-                self.d.set_nuisance(random.uniform(s, 4))
+                self.d.set_nuisance(np.random.uniform(s, 4))
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
                                                        False)[0][particle]
@@ -533,10 +533,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for d in linspace(4, 0.1):
+        for d in np.linspace(4, 0.1):
             self.d.set_nuisance(d)
             if self.s.get_nuisance() > d - 0.02:
-                self.s.set_nuisance(random.uniform(0.02, min(d, 3) - 0.02))
+                self.s.set_nuisance(np.random.uniform(0.02, min(d, 3) - 0.02))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -555,10 +555,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for s in linspace(0.1, 2.9, num=20):
+        for s in np.linspace(0.1, 2.9, num=20):
             self.s.set_nuisance(s)
             if self.d.get_nuisance() < s:
-                self.d.set_nuisance(random.uniform(s, 4))
+                self.d.set_nuisance(np.random.uniform(s, 4))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -577,7 +577,7 @@ class Tests(IMP.test.TestCase):
                           lambda a: self.mean.get_derivative_matrix(
                               [[a]], False)[0][pa],
                           pos, update=self.mean.update)
-        for Rg in linspace(0.1, 9.1):
+        for Rg in np.linspace(0.1, 9.1):
             self.Rg.set_nuisance(Rg)
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
@@ -597,10 +597,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for d in linspace(4, 0.1, num=20):
+        for d in np.linspace(4, 0.1, num=20):
             self.d.set_nuisance(d)
             if self.s.get_nuisance() > d - 0.02:
-                self.s.set_nuisance(random.uniform(0.07, min(d, 3) - 0.02))
+                self.s.set_nuisance(np.random.uniform(0.07, min(d, 3) - 0.02))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -619,10 +619,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for s in linspace(0.1, 2.9, num=20):
+        for s in np.linspace(0.1, 2.9, num=20):
             self.s.set_nuisance(s)
             if self.d.get_nuisance() < s:
-                self.d.set_nuisance(random.uniform(s, 4))
+                self.d.set_nuisance(np.random.uniform(s, 4))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -641,10 +641,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for d in linspace(4, 0.1, num=20):
+        for d in np.linspace(4, 0.1, num=20):
             self.d.set_nuisance(d)
             if self.s.get_nuisance() > d - 0.02:
-                self.s.set_nuisance(random.uniform(0.07, min(d, 3) - 0.02))
+                self.s.set_nuisance(np.random.uniform(0.07, min(d, 3) - 0.02))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -663,10 +663,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for s in linspace(0.1, 2.9, num=20):
+        for s in np.linspace(0.1, 2.9, num=20):
             self.s.set_nuisance(s)
             if self.d.get_nuisance() < s:
-                self.d.set_nuisance(random.uniform(s, 4))
+                self.d.set_nuisance(np.random.uniform(s, 4))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -685,10 +685,10 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for s in linspace(0.1, 2.9, num=20):
+        for s in np.linspace(0.1, 2.9, num=20):
             self.s.set_nuisance(s)
             if self.d.get_nuisance() < s:
-                self.d.set_nuisance(random.uniform(s + 0.1, 4))
+                self.d.set_nuisance(np.random.uniform(s + 0.1, 4))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                                                               False)[0][0]
@@ -697,7 +697,7 @@ class Tests(IMP.test.TestCase):
 
     def testGetDerivativeMatrix(self):
         for rep in range(3):
-            xlist = random.uniform(0, 1, random.randint(1, 100))
+            xlist = np.random.uniform(0, 1, np.random.randint(1, 100))
             data = self.mean.get_derivative_matrix([[i] for i in xlist], True)
             self.assertEqual(len(data), len(xlist))
             self.assertEqual(len(data[0]), 5)
@@ -730,7 +730,7 @@ class Tests(IMP.test.TestCase):
     def testAddToParticleDerivative(self):
         for i in range(10):
             # G
-            val = random.uniform(0, 1)
+            val = np.random.uniform(0, 1)
             self.mean.add_to_particle_derivative(0, val, self.DA)
             self.assertAlmostEqual(self.G.get_nuisance_derivative(), val)
             self.assertAlmostEqual(self.Rg.get_nuisance_derivative(), 0.0)
@@ -739,7 +739,7 @@ class Tests(IMP.test.TestCase):
             self.G.add_to_nuisance_derivative(
                 -self.G.get_nuisance_derivative(), self.DA)
             # Rg
-            val = random.uniform(0, 1)
+            val = np.random.uniform(0, 1)
             self.mean.add_to_particle_derivative(1, val, self.DA)
             self.assertAlmostEqual(self.G.get_nuisance_derivative(), 0.)
             self.assertAlmostEqual(self.Rg.get_nuisance_derivative(), val)
@@ -748,7 +748,7 @@ class Tests(IMP.test.TestCase):
             self.Rg.add_to_nuisance_derivative(
                 -self.Rg.get_nuisance_derivative(), self.DA)
             # d
-            val = random.uniform(0, 1)
+            val = np.random.uniform(0, 1)
             self.mean.add_to_particle_derivative(2, val, self.DA)
             self.assertAlmostEqual(self.G.get_nuisance_derivative(), 0.)
             self.assertAlmostEqual(self.Rg.get_nuisance_derivative(), 0.0)
@@ -757,7 +757,7 @@ class Tests(IMP.test.TestCase):
             self.d.add_to_nuisance_derivative(
                 -self.d.get_nuisance_derivative(), self.DA)
             # s
-            val = random.uniform(0, 1)
+            val = np.random.uniform(0, 1)
             self.mean.add_to_particle_derivative(3, val, self.DA)
             self.assertAlmostEqual(self.G.get_nuisance_derivative(), 0)
             self.assertAlmostEqual(self.Rg.get_nuisance_derivative(), 0.0)

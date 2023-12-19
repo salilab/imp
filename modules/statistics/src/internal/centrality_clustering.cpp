@@ -15,7 +15,6 @@
 # include <boost/type_traits/ice.hpp>
 #endif
 
-#include <boost/property_map/vector_property_map.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>

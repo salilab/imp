@@ -171,7 +171,8 @@ class Tests(IMP.test.TestCase):
     def test_split_tabs(self):
         """Make sure that splitting works with tabs"""
         fname = 'toptest.inp'
-        open(fname, 'w').write("""
+        with open(fname, 'w') as fh:
+            fh.write("""
                \tRESI\tHIS\t0.00000
                ATOM\tCB\tCH2E\t0.00
                BOND\tN\tCB
@@ -211,7 +212,8 @@ class Tests(IMP.test.TestCase):
         parname = 'partest.inp'
         # Both 'ANGL' and 'THETA' should work for angles (thus this
         # topology file defines two separate angles), etc.
-        open(topname, 'w').write("""
+        with open(topname, 'w') as fh:
+            fh.write("""
              RESI HIS 0.00000
              BOND N CB
              ANGL N CA CB
@@ -220,7 +222,8 @@ class Tests(IMP.test.TestCase):
              PHI C CA CB CG
              IMPR N CA CB CG
              IMPH C CA CB CG""")
-        open(parname, 'w').write("""
+        with open(parname, 'w') as fh:
+            fh.write("""
              BOND
              C    C      450.0       1.38
              ANGL

@@ -14,6 +14,7 @@ import ihm.restraint
 import ihm.geometry
 import ihm.source
 import ihm.cross_linkers
+import ihm.multi_state_scheme
 import ihm.flr
 import inspect
 import warnings
@@ -612,6 +613,33 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.model.ProcessStep` objects
         self.ordered_steps = IDMapper(None, ihm.model.ProcessStep)
 
+        #: Mapping from ID to :class:`ihm.multi_state_scheme.MultiStateScheme`
+        #: objects
+        self.multi_state_schemes = IDMapper(
+            self.system.multi_state_schemes,
+            ihm.multi_state_scheme.MultiStateScheme,
+            None)
+
+        #: Mapping from ID to
+        #: :class:`ihm.multi_state_scheme.Connectivity` objects
+        self.multi_state_scheme_connectivities = IDMapper(
+            None,
+            ihm.multi_state_scheme.Connectivity,
+            None)
+
+        #: Mapping from ID to :class:`ihm.multi_state_scheme.KineticRate`
+        #: objects
+        self.kinetic_rates = IDMapper(
+            None,
+            ihm.multi_state_scheme.KineticRate)
+
+        #: Mapping from ID to
+        #: :class:`ihm.multi_state_schene.RelaxationTime` objects
+        self.relaxation_times = IDMapper(
+            None,
+            ihm.multi_state_scheme.RelaxationTime,
+            *(None,) * 2)
+
         # FLR part
 
         #: Mapping from ID to :class:`ihm.flr.FLRData` objects
@@ -771,6 +799,24 @@ class SystemReader(object):
         self.flr_fps_mpp_modeling = _FLRIDMapper(
             '_collection_flr_fps_mpp_modeling', 'fps_modeling',
             self.flr_data, ihm.flr.FPSMPPModeling, *(None,) * 3)
+
+        #: Mapping from ID to
+        #: :class:`ihm.flr.KineticRateFRETAnalysisConnection` objects
+        self.flr_kinetic_rate_fret_analysis_connection = _FLRIDMapper(
+            '_collection_flr_kinetic_rate_fret_analysis_connection',
+            'kinetic_rate_fret_analysis_connections',
+            self.flr_data,
+            ihm.flr.KineticRateFretAnalysisConnection,
+            *(None,) * 3)
+
+        #: Mapping from ID to
+        #: :class:`ihm.flr.KineticRateFRETAnalysisConnection` objects
+        self.flr_relaxation_time_fret_analysis_connection = _FLRIDMapper(
+            '_collection_flr_relaxation_time_fret_analysis_connection',
+            'relaxation_time_fret_analysis_connections',
+            self.flr_data,
+            ihm.flr.RelaxationTimeFretAnalysisConnection,
+            *(None,) * 3)
 
     def finalize(self):
         # make sequence immutable (see also _make_new_entity)
@@ -1035,6 +1081,10 @@ class _EntityHandler(Handler):
         # one (e.g. just a single amino acid)
         if type and type.lower() == 'polymer':
             s._force_polymer = True
+        # Encourage branched if _entity.type says so (otherwise empty entities
+        # are assumed to be polymer)
+        if type and type.lower() == 'branched':
+            s._hint_branched = True
 
 
 class _EntitySrcNatHandler(Handler):
@@ -1384,6 +1434,7 @@ class _DatasetListHandler(Handler):
         f = self.sysr.datasets.get_by_id(
             id, self.type_map.get(typ, ihm.dataset.Dataset))
         f.details = details
+        f._allow_duplicates = True
 
 
 class _DatasetGroupHandler(Handler):
@@ -1421,11 +1472,11 @@ class _DatasetDBRefHandler(Handler):
         super(_DatasetDBRefHandler, self).__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.location.DatabaseLocation
+        # or ihm.location.DatabaseLocation itself
         self.type_map = dict(
-            (x[1]._db_name.lower(), x[1])
+            (x[1].db_name.lower(), x[1])
             for x in inspect.getmembers(ihm.location, inspect.isclass)
-            if issubclass(x[1], ihm.location.DatabaseLocation)
-            and x[1] is not ihm.location.DatabaseLocation)
+            if issubclass(x[1], ihm.location.DatabaseLocation))
 
     def __call__(self, dataset_list_id, db_name, id, version, details,
                  accession_code):
@@ -1434,7 +1485,7 @@ class _DatasetDBRefHandler(Handler):
         dbloc = self.sysr.db_locations.get_by_id(id,
                                                  self.type_map.get(typ, None))
         # Preserve user-provided name for unknown databases
-        if dbloc.db_name is None and db_name is not None:
+        if dbloc.db_name == 'Other' and db_name is not None:
             dbloc.db_name = db_name
         ds.location = dbloc
         self.copy_if_present(
@@ -1994,8 +2045,9 @@ class _AtomSiteHandler(Handler):
         self._missing_sequence = collections.defaultdict(dict)
         self._seq_id_map = {}
 
-    def _get_water_seq_id(self, auth_seq_id, pdbx_pdb_ins_code, asym):
-        """Get an internal seq_id for a water, given author-provided info"""
+    def _get_seq_id_from_auth(self, auth_seq_id, pdbx_pdb_ins_code, asym):
+        """Get an internal seq_id for something not a polymer (nonpolymer,
+           water, branched), given author-provided info"""
         if asym._id not in self._seq_id_map:
             m = {}
             # Make reverse mapping from author-provided info to seq_id
@@ -2028,23 +2080,24 @@ class _AtomSiteHandler(Handler):
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
         auth_seq_id = self.get_int_or_string(auth_seq_id)
-        water = isinstance(asym, ihm.WaterAsymUnit)
-        if water:
+        if seq_id is None:
             # Fill in our internal seq_id if possible
-            seq_id = self._get_water_seq_id(auth_seq_id, pdbx_pdb_ins_code,
-                                            asym)
+            our_seq_id = self._get_seq_id_from_auth(
+                auth_seq_id, pdbx_pdb_ins_code, asym)
+        else:
+            our_seq_id = seq_id
         biso = self.get_float(b_iso_or_equiv)
         occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
-            asym_unit=asym, seq_id=seq_id, atom_id=label_atom_id,
+            asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
             z=float(cartn_z), het=group != 'ATOM', biso=biso,
             occupancy=occupancy)
         model.add_atom(a)
 
         # Note any residues that have different seq_id and auth_seq_id
-        if (auth_seq_id is not None and not water and
+        if (auth_seq_id is not None and seq_id is not None and
                 (seq_id != auth_seq_id
                  or pdbx_pdb_ins_code not in (None, ihm.unknown))):
             if asym.auth_seq_id_map == 0:
@@ -2410,20 +2463,27 @@ class _PolySeqSchemeHandler(Handler):
 
     # Note: do not change the ordering of the first 6 parameters to this
     # function; the C parser expects them in this order
-    def __call__(self, asym_id, seq_id, auth_seq_num, pdb_ins_code,
-                 pdb_strand_id):
+    def __call__(self, asym_id, seq_id, pdb_seq_num, auth_seq_num,
+                 pdb_ins_code, pdb_strand_id):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         seq_id = self.get_int(seq_id)
         if pdb_strand_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_strand_id
+        pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        # Note any residues that have different seq_id and auth_seq_id
-        if seq_id is not None and auth_seq_num is not None \
-           and (seq_id != auth_seq_num
+        # Note any residues that have different seq_id and pdb_seq_num
+        if seq_id is not None and pdb_seq_num is not None \
+           and (seq_id != pdb_seq_num
                 or pdb_ins_code not in (None, ihm.unknown)):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
-            asym.auth_seq_id_map[seq_id] = auth_seq_num, pdb_ins_code
+            asym.auth_seq_id_map[seq_id] = pdb_seq_num, pdb_ins_code
+        # Note any residues that have different pdb_seq_num and auth_seq_num
+        if (seq_id is not None and auth_seq_num is not None
+                and pdb_seq_num is not None and auth_seq_num != pdb_seq_num):
+            if asym.orig_auth_seq_id_map is None:
+                asym.orig_auth_seq_id_map = {}
+            asym.orig_auth_seq_id_map[seq_id] = auth_seq_num
 
     def finalize(self):
         for asym in self.sysr.system.asym_units:
@@ -2437,13 +2497,18 @@ class _PolySeqSchemeHandler(Handler):
     def _get_auth_seq_id_offset(self, asym):
         """Get the offset from seq_id to auth_seq_id. Return None if no
            consistent offset exists."""
-        # Do nothing if the entity is not polymeric
-        if asym.entity is None or not asym.entity.is_polymeric():
+        # Do nothing if the entity is not polymeric or branched
+        if asym.entity is None or (not asym.entity.is_polymeric()
+                                   and not asym.entity.is_branched()):
             return
         # Do nothing if no map exists
         if asym.auth_seq_id_map == 0:
             return
-        rng = asym.seq_id_range
+        if asym.entity.is_branched():
+            # Hack, as branched entities don't technically have seq_ids
+            rng = (1, len(asym.entity.sequence))
+        else:
+            rng = asym.seq_id_range
         offset = None
         for seq_id in range(rng[0], rng[1] + 1):
             # If a residue isn't in the map, it has an effective offset of 0,
@@ -2470,8 +2535,8 @@ class _PolySeqSchemeHandler(Handler):
 class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
-    def __call__(self, asym_id, entity_id, auth_seq_num, mon_id, pdb_ins_code,
-                 pdb_strand_id, ndb_seq_num):
+    def __call__(self, asym_id, entity_id, pdb_seq_num, mon_id, pdb_ins_code,
+                 pdb_strand_id, ndb_seq_num, auth_seq_num):
         entity = self.sysr.entities.get_by_id(entity_id)
         # nonpolymer entities generally have information on their chemical
         # component in pdbx_entity_nonpoly, but if that's missing, at least
@@ -2492,21 +2557,103 @@ class _NonPolySchemeHandler(Handler):
             asym.number = 1
         if pdb_strand_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_strand_id
+        pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        if auth_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
-            if entity.type == 'water':
-                # For waters, assume ndb_seq_num counts starting from 1,
-                # so use as our internal seq_id. Make sure the WaterAsymUnit
-                # is long enough to handle all ids
-                seq_id = self.get_int(ndb_seq_num)
+        if entity.type == 'water':
+            # For waters, assume ndb_seq_num counts starting from 1,
+            # so use as our internal seq_id. Make sure the WaterAsymUnit
+            # is long enough to handle all ids
+            seq_id = self.get_int(ndb_seq_num)
+            if seq_id is None:
+                # If no ndb_seq_num, we cannot map
+                return
+            # Don't bother adding a 1->1 mapping
+            if (pdb_seq_num != seq_id
+                    or pdb_ins_code not in (None, ihm.unknown)):
                 asym.number = max(asym.number, seq_id)
                 asym._water_sequence = [entity.sequence[0]] * asym.number
                 if asym.auth_seq_id_map == 0:
                     asym.auth_seq_id_map = {}
-                asym.auth_seq_id_map[seq_id] = (auth_seq_num, pdb_ins_code)
-            else:
-                # For nonpolymers, assume a single ChemComp with seq_id=1
-                asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
+                asym.auth_seq_id_map[seq_id] = (pdb_seq_num, pdb_ins_code)
+            # Note any residues that have different pdb_seq_num & auth_seq_num
+            if (auth_seq_num is not None and pdb_seq_num is not None
+                    and auth_seq_num != pdb_seq_num):
+                if asym.orig_auth_seq_id_map is None:
+                    asym.orig_auth_seq_id_map = {}
+                asym.orig_auth_seq_id_map[seq_id] = auth_seq_num
+        else:
+            # For nonpolymers, assume a single ChemComp with seq_id=1,
+            # but don't bother adding a 1->1 mapping
+            if pdb_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
+                asym.auth_seq_id_map = {1: (pdb_seq_num, pdb_ins_code)}
+            # Note any residues that have different pdb_seq_num & auth_seq_num
+            if (auth_seq_num is not None and pdb_seq_num is not None
+                    and auth_seq_num != pdb_seq_num):
+                asym.orig_auth_seq_id_map = {1: auth_seq_num}
+
+
+class _BranchSchemeHandler(Handler):
+    category = '_pdbx_branch_scheme'
+
+    def __call__(self, asym_id, num, pdb_seq_num, auth_seq_num, pdb_asym_id):
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        if pdb_asym_id not in (None, ihm.unknown, asym_id):
+            asym._strand_id = pdb_asym_id
+        pdb_seq_num = self.get_int_or_string(pdb_seq_num)
+        auth_seq_num = self.get_int_or_string(auth_seq_num)
+        num = self.get_int(num)
+        # Note any residues that have different num and auth_seq_id
+        # These will be finalized by _PolySeqSchemeHandler
+        if num is not None and pdb_seq_num is not None \
+                and num != pdb_seq_num:
+            if asym.auth_seq_id_map == 0:
+                asym.auth_seq_id_map = {}
+            asym.auth_seq_id_map[num] = pdb_seq_num, None
+        # Note any residues that have different pdb_seq_num and auth_seq_num
+        if (num is not None and auth_seq_num is not None
+                and pdb_seq_num is not None and auth_seq_num != pdb_seq_num):
+            if asym.orig_auth_seq_id_map is None:
+                asym.orig_auth_seq_id_map = {}
+            asym.orig_auth_seq_id_map[num] = auth_seq_num
+
+
+class _EntityBranchListHandler(Handler):
+    category = '_pdbx_entity_branch_list'
+
+    def __call__(self, entity_id, comp_id, num):
+        s = self.sysr.entities.get_by_id(entity_id)
+        # Assume num is 1-based (appears to be)
+        seq_id = int(num)
+        if seq_id > len(s.sequence):
+            s.sequence.extend([None] * (seq_id - len(s.sequence)))
+        s.sequence[seq_id - 1] = self.sysr.chem_comps.get_by_id(comp_id)
+
+
+class _BranchDescriptorHandler(Handler):
+    category = '_pdbx_entity_branch_descriptor'
+
+    def __call__(self, entity_id, descriptor, type, program, program_version):
+        e = self.sysr.entities.get_by_id(entity_id)
+        d = ihm.BranchDescriptor(text=descriptor, type=type, program=program,
+                                 program_version=program_version)
+        e.branch_descriptors.append(d)
+
+
+class _BranchLinkHandler(Handler):
+    category = '_pdbx_entity_branch_link'
+
+    def __call__(self, entity_id, entity_branch_list_num_1, atom_id_1,
+                 leaving_atom_id_1, entity_branch_list_num_2, atom_id_2,
+                 leaving_atom_id_2, value_order, details):
+        e = self.sysr.entities.get_by_id(entity_id)
+        num1 = self.get_int(entity_branch_list_num_1)
+        num2 = self.get_int(entity_branch_list_num_2)
+        lnk = ihm.BranchLink(num1=num1, atom_id1=atom_id_1,
+                             leaving_atom_id1=leaving_atom_id_1,
+                             num2=num2, atom_id2=atom_id_2,
+                             leaving_atom_id2=leaving_atom_id_2,
+                             order=value_order, details=details)
+        e.branch_links.append(lnk)
 
 
 class _CrossLinkListHandler(Handler):
@@ -2718,6 +2865,135 @@ class _UnknownKeywordHandler(object):
                       % (catname, keyname,
                          " on line %d" % line if line else ""),
                       UnknownKeywordWarning, stacklevel=2)
+
+
+class _MultiStateSchemeHandler(Handler):
+    category = '_ihm_multi_state_scheme'
+
+    def __call__(self, id, name, details):
+        # Get the object or create the object
+        cur_mss = self.sysr.multi_state_schemes.get_by_id(id)
+        # Set the variables
+        self.copy_if_present(cur_mss, locals(), keys=('name', 'details'))
+
+
+class _MultiStateSchemeConnectivityHandler(Handler):
+    category = '_ihm_multi_state_scheme_connectivity'
+
+    def __call__(self, id, scheme_id, begin_state_id, end_state_id,
+                 dataset_group_id, details):
+        # Get the object or create the object
+        mssc = self.sysr.multi_state_scheme_connectivities.get_by_id(id)
+        # Add the content
+        mssc.begin_state = self.sysr.states.get_by_id(begin_state_id)
+        mssc.end_state = self.sysr.states.get_by_id_or_none(end_state_id)
+        mssc.dataset_group = \
+            self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
+        mssc.details = details
+        # Get the MultiStateScheme
+        mss = self.sysr.multi_state_schemes.get_by_id(scheme_id)
+        # Add the connectivity to the scheme
+        mss.add_connectivity(mssc)
+
+
+class _KineticRateHandler(Handler):
+    category = '_ihm_kinetic_rate'
+
+    def __call__(self, id,
+                 transition_rate_constant,
+                 equilibrium_constant,
+                 equilibrium_constant_determination_method,
+                 equilibrium_constant_unit,
+                 details,
+                 scheme_connectivity_id,
+                 dataset_group_id,
+                 external_file_id):
+        # Get the object or create the object
+        k = self.sysr.kinetic_rates.get_by_id(id)
+        # if information for an equilibrium is given, create an object
+        eq_const = None
+        if (equilibrium_constant is not None) \
+                and (equilibrium_constant_determination_method is not None):
+            if equilibrium_constant_determination_method == 'equilibrium ' \
+                                                            'constant is ' \
+                                                            'determined from '\
+                                                            'population':
+                eq_const = \
+                    ihm.multi_state_scheme.PopulationEquilibriumConstant(
+                        value=equilibrium_constant,
+                        unit=equilibrium_constant_unit)
+            elif equilibrium_constant_determination_method == 'equilibrium ' \
+                                                              'constant is ' \
+                                                              'determined ' \
+                                                              'from kinetic ' \
+                                                              'rates, ' \
+                                                              'kAB/kBA':
+                eq_const = \
+                    ihm.multi_state_scheme.KineticRateEquilibriumConstant(
+                        value=equilibrium_constant,
+                        unit=equilibrium_constant_unit)
+            else:
+                eq_const = \
+                    ihm.multi_state_scheme.EquilibriumConstant(
+                        value=equilibrium_constant,
+                        unit=equilibrium_constant_unit)
+        # Add the content
+        k.transition_rate_constant = transition_rate_constant
+        k.equilibrium_constant = eq_const
+        k.details = details
+        k.dataset_group = \
+            self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
+        k.external_file = \
+            self.sysr.external_files.get_by_id_or_none(external_file_id)
+        tmp_connectivities = self.sysr.multi_state_scheme_connectivities
+        mssc = tmp_connectivities.get_by_id(scheme_connectivity_id)
+        # Add the kinetic rate to the connectivity
+        mssc.kinetic_rate = k
+
+
+class _RelaxationTimeHandler(Handler):
+    category = '_ihm_relaxation_time'
+
+    def __call__(self, id, value, unit, amplitude,
+                 dataset_group_id, external_file_id, details):
+        # Get the object or create the object
+        r = self.sysr.relaxation_times.get_by_id(id)
+        # Add the content
+        r.value = value
+        r.unit = unit
+        r.amplitude = amplitude
+        r.dataset_group = \
+            self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
+        r.external_file = \
+            self.sysr.external_files.get_by_id_or_none(external_file_id)
+        r.details = details
+
+
+class _RelaxationTimeMultiStateSchemeHandler(Handler):
+    category = '_ihm_relaxation_time_multi_state_scheme'
+
+    def __init__(self, *args):
+        super(_RelaxationTimeMultiStateSchemeHandler, self).__init__(*args)
+        self._read_args = []
+
+    def __call__(self, id, relaxation_time_id,
+                 scheme_id, scheme_connectivity_id,
+                 details):
+        r = self.sysr.relaxation_times.get_by_id(relaxation_time_id)
+        mss = self.sysr.multi_state_schemes.get_by_id(scheme_id)
+        self._read_args.append((r, mss, scheme_connectivity_id, details))
+
+    def finalize(self):
+        for (r, mss, scheme_connectivity_id, details) in self._read_args:
+            tmp_connectivities = self.sysr.multi_state_scheme_connectivities
+            mssc = tmp_connectivities.get_by_id_or_none(scheme_connectivity_id)
+            # If the relaxation time is assigned to a connectivity,
+            # add it there
+            if mssc is not None:
+                mssc.relaxation_time = r
+            # Otherwise, add it to the multi-state scheme
+            else:
+                mss.add_relaxation_time(r)
 
 
 # FLR part
@@ -2963,8 +3239,8 @@ class _FLRFretAnalysisHandler(Handler):
         f.forster_radius = self.sysr.flr_fret_forster_radius.get_by_id(
             forster_radius_id)
         f.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
-        f.external_file = self.sysr.external_files.get_by_id_or_none(
-            external_file_id)
+        f.external_file = \
+            self.sysr.external_files.get_by_id_or_none(external_file_id)
         f.software = self.sysr.software.get_by_id_or_none(software_id)
 
 
@@ -3112,6 +3388,10 @@ class _FLRFretModelQualityHandler(Handler):
 class _FLRFretModelDistanceHandler(Handler):
     category = '_flr_fret_model_distance'
 
+    def __init__(self, *args):
+        super(_FLRFretModelDistanceHandler, self).__init__(*args)
+        self._read_args = []
+
     def __call__(self, id, restraint_id, model_id, distance,
                  distance_deviation):
         md = self.sysr.flr_fret_model_distances.get_by_id(id)
@@ -3120,9 +3400,11 @@ class _FLRFretModelDistanceHandler(Handler):
         md.model = self.sysr.models.get_by_id(model_id)
         md.distance = self.get_float(distance)
         md.distance_deviation = self.get_float(distance_deviation)
-        # todo: this will fail if we haven't read the restraint category
-        # yet (should be in finalize instead)
-        md.calculate_deviation()
+        self._read_args.append(md)
+
+    def finalize(self):
+        for md in self._read_args:
+            md.calculate_deviation()
 
 
 class _FLRFPSGlobalParameterHandler(Handler):
@@ -3245,6 +3527,41 @@ class _FLRFPSMPPModelingHandler(Handler):
                 mpp_atom_position_group_id)
 
 
+class _FLRKineticRateFretAnalysisConnectionHandler(Handler):
+    category = '_flr_kinetic_rate_analysis'
+
+    def __call__(self, id, fret_analysis_id, kinetic_rate_id, details):
+        f = self.sysr.flr_fret_analyses.get_by_id(fret_analysis_id)
+        k = self.sysr.kinetic_rates.get_by_id(kinetic_rate_id)
+        c = self.sysr.flr_kinetic_rate_fret_analysis_connection.get_by_id(id)
+        c.fret_analysis = f
+        c.kinetic_rate = k
+        c.details = details
+
+
+class _FLRRelaxationTimeFretAnalysisConnectionHandler(Handler):
+    category = '_flr_relaxation_time_analysis'
+
+    def __init__(self, *args):
+        super(_FLRRelaxationTimeFretAnalysisConnectionHandler,
+              self).__init__(*args)
+        self._read_args = []
+
+    def __call__(self, id, fret_analysis_id, relaxation_time_id, details):
+        f = self.sysr.flr_fret_analyses.get_by_id(fret_analysis_id)
+        r = self.sysr.relaxation_times.get_by_id(relaxation_time_id)
+        self._read_args.append((id, f, r, details))
+
+    def finalize(self):
+        for (id, f, r, details) in self._read_args:
+            tmp_connection = \
+                self.sysr.flr_relaxation_time_fret_analysis_connection
+            c = tmp_connection.get_by_id(id)
+            c.fret_analysis = f
+            c.relaxation_time = r
+            c.details = details
+
+
 _flr_handlers = [_FLRChemDescriptorHandler, _FLRInstSettingHandler,
                  _FLRExpConditionHandler, _FLRInstrumentHandler,
                  _FLRSampleConditionHandler, _FLREntityAssemblyHandler,
@@ -3265,7 +3582,9 @@ _flr_handlers = [_FLRChemDescriptorHandler, _FLRInstSettingHandler,
                  _FLRFretModelDistanceHandler, _FLRFPSGlobalParameterHandler,
                  _FLRFPSModelingHandler, _FLRFPSAVParameterHandler,
                  _FLRFPSAVModelingHandler, _FLRFPSMPPHandler,
-                 _FLRFPSMPPAtomPositionHandler, _FLRFPSMPPModelingHandler]
+                 _FLRFPSMPPAtomPositionHandler, _FLRFPSMPPModelingHandler,
+                 _FLRKineticRateFretAnalysisConnectionHandler,
+                 _FLRRelaxationTimeFretAnalysisConnectionHandler]
 
 
 class Variant(object):
@@ -3327,10 +3646,15 @@ class IHMVariant(Variant):
         _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
         _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
         _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,
-        _NonPolySchemeHandler, _CrossLinkListHandler,
+        _NonPolySchemeHandler, _BranchSchemeHandler, _EntityBranchListHandler,
+        _BranchDescriptorHandler, _BranchLinkHandler, _CrossLinkListHandler,
         _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
         _CrossLinkResultHandler, _StartingModelSeqDifHandler,
-        _OrderedEnsembleHandler]
+        _OrderedEnsembleHandler,
+        _MultiStateSchemeHandler, _MultiStateSchemeConnectivityHandler,
+        _KineticRateHandler,
+        _RelaxationTimeHandler, _RelaxationTimeMultiStateSchemeHandler
+    ]
 
     def get_handlers(self, sysr):
         return [h(sysr) for h in self._handlers + _flr_handlers]

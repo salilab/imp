@@ -1,5 +1,5 @@
 /**
- *  \file anglel_helpers.h
+ *  \file internal/angle_helpers.h
  *  \brief Helper functions to calculate and handle angles
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.

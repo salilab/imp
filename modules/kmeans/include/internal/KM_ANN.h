@@ -418,7 +418,7 @@ class IMPKMEANSEXPORT KMorthRect {
   KMorthRect(       // construct from points
       int dd,       // dimension
       KMpoint l,    // low point
-      KMpoint h) {  // hight point
+      KMpoint h) {  // high point
     lo = kmAllocCopyPt(dd, l);
     hi = kmAllocCopyPt(dd, h);
   }

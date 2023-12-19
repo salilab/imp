@@ -1,6 +1,6 @@
 ## \example cloning.py
 # RMF includes functions to help cloning files an extracting parts. They are
-# also exposed throught the [rmf_slice](\ref rmf_slice) application.
+# also exposed through the [rmf_slice](\ref rmf_slice) application.
 
 from __future__ import print_function
 import RMF

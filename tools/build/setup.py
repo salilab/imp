@@ -56,7 +56,7 @@ def link_examples(modules):
         tools.link_dir(os.path.join(module.path, "examples"),
                        os.path.join(target, module.name))
 
-# link files from the module/data directries from the source into the
+# link files from the module/data directories from the source into the
 # build tree
 
 

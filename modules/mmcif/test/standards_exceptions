@@ -1,4 +1,4 @@
 value_object_exceptions=[]
-function_name_exceptions=[]
+function_name_exceptions=['System.report', 'Writer.report']
 show_exceptions=[]
 spelling_exceptions=['rmf']

@@ -3,6 +3,7 @@ import IMP.algebra
 import IMP.core
 import IMP.atom
 import IMP.test
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -64,6 +65,36 @@ class Tests(IMP.test.TestCase):
         mv = IMP.core.SurfaceMover(surf, 1, .1, 1.)
         self.assertSetEqual(set([surf.get_particle()]), set(mv.get_inputs()))
         mv.set_was_used(True)
+
+    def test_pickle(self):
+        """Test (un-)pickle of SurfaceMover"""
+        m = IMP.Model()
+        surf = IMP.core.Surface.setup_particle(IMP.Particle(m))
+        surf.set_coordinates_are_optimized(True)
+        surf.set_normal_is_optimized(True)
+        mvr = IMP.core.SurfaceMover(surf, 1, .1, 1.)
+        mvr.set_name("foo")
+        dump = pickle.dumps(mvr)
+
+        newmvr = pickle.loads(dump)
+        self.assertEqual(newmvr.get_name(), "foo")
+        self.assertSetEqual(set([surf.get_particle()]),
+                            set(newmvr.get_inputs()))
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of SurfaceMover via polymorphic pointer"""
+        m = IMP.Model()
+        surf = IMP.core.Surface.setup_particle(IMP.Particle(m))
+        surf.set_coordinates_are_optimized(True)
+        surf.set_normal_is_optimized(True)
+        mvr = IMP.core.SurfaceMover(surf, 1, .1, 1.)
+        mvr.set_name("foo")
+        sm = IMP.core.SerialMover([mvr])
+        dump = pickle.dumps(sm)
+
+        newsm = pickle.loads(dump)
+        newmvr, = newsm.get_movers()
+        self.assertEqual(newmvr.get_name(), "foo")
 
 
 if __name__ == '__main__':

@@ -53,8 +53,10 @@ int main(int argc, char *argv[]) {
   // read in the input protein
   IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
+  IMP::Strings chains;
+  chains.push_back("A");
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      fname, model, new IMP::atom::ChainPDBSelector("A"),
+      fname, model, new IMP::atom::ChainPDBSelector(chains),
       // new IMP::atom::ATOMPDBSelector(),
       // don't add radii
       true, true);

@@ -21,23 +21,37 @@ enum BoundDirection {
   UPPER
 };
 
-//! A function that is harmonic over an interval.
-/** This function is harmonic between center and threshold and then
- asymptotically converges to the limit value.
+//! A function that is harmonic over an bounded interval.
+/** This is a harmonic function of the form 
+    $f(x) = 0.5 \cdot k \cdot (x-center)^2$ within a bounded interval
+    around a center value, in the bounded interval where $\|x-center\|<threshold$,
+    i.e. up to a threshold offset from the center. Beyond the threshold offset,
+    the function asymptotically converges to the limit value. 
 
- The function form above the threshold is currently limit-b/(x-o)
- where x is the offset from the center and b,o are constants chosen to
- make the function smooth and continuous.  This form may change
- without notice unless someone tells us it is important that it does
- not.
+    \param[in] DIRECTION This template parameter determines whether the function 
+    is non-zero only for input values that are greater than the center (UPPER), 
+    lower than the center (LOWER), or both (BOTH). In Python code, these choices
+    can be specified using the types TruncatedHarmonicUpperBound, 
+    TruncatedHarmonicLowerBound, and TruncatedHarmonic, respectively.
 
- \param[in] DIRECTION Whether the harmonic is of an upper bound, lower bound, or
- both directions type.  It should be one of the BoundDirection enum
- values. If it is LOWER, than the function is 0 for all values above
- the passed center.
- \see Harmonic
- \see HarmonicLowerBound
- \see HarmonicUpperBound
+    For example, if the center equals to 5, the threshold to 2, and the direction 
+    is BOTH (see below), then the function is harmonic in the interval [3,7], 
+    and beyond that interval it converges to the limit value in either direction.  
+    If the direction is LOWER, then the function is  harmonic in the interval
+    [3,5], it converges to the limit value for values lower thans 3, and is 0
+    for values higher than 5. If it is UPPER, then the function is harmonic in 
+    the interval [5,7], it is 0 for values lower than 5, and it converges to 
+    the limit value for values higher than 7.
+
+    @note The function form beyond the threshold offset from center is currently 
+    limit-b/(x-o) where x is the offset from the center and b,o are constants 
+    chosen to make the function smooth and continuous.  This form may change
+    without notice unless someone tells us it is important that it does
+    not.
+
+    \see Harmonic
+    \see HarmonicLowerBound
+    \see HarmonicUpperBound
  */
 template <int DIRECTION>
 class TruncatedHarmonic : public UnaryFunction {
@@ -77,16 +91,16 @@ class TruncatedHarmonic : public UnaryFunction {
   internal::TruncatedHarmonicData d_;
 };
 
-//! A specialization of TruncatedHarmonic that may be non-zero only
-//! above the center value (always zero below it)
+//! A specialization of TruncatedHarmonic that returns a non-zero value 
+//! only for input values that are greater than the center value
 typedef TruncatedHarmonic<UPPER> TruncatedHarmonicUpperBound;
 
-//! A specialization of TruncatedHarmonic that may be non-zero only
-//! below the center value (always zero above it)
+//! A specialization of TruncatedHarmonic that returns a non-zero value 
+//! only for input values that are lower than the center value
 typedef TruncatedHarmonic<LOWER> TruncatedHarmonicLowerBound;
 
-//! A specialization of TruncatedHarmonic that may be non-zero in both
-//! directions, below or above the center value
+//! A specialization of TruncatedHarmonic that returns non-zero value 
+//! for any input values other than center value 
 typedef TruncatedHarmonic<BOTH> TruncatedHarmonicBound;
 
 IMPCORE_END_NAMESPACE

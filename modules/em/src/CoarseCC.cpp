@@ -7,8 +7,9 @@
  */
 
 #include <IMP/em/CoarseCC.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/core/utility.h>
+
 IMPEM_BEGIN_NAMESPACE
 
 double get_coarse_cc_score(DensityMap *em_map, SampledDensityMap *model_map,

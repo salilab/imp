@@ -14,7 +14,7 @@
  * Note:  Since the algorithm is tail-recursive, the parameters are
  * passed by reference.  This makes the algorithm much more efficient.
  *
- * Note:  The cliques are outputed by vertex_descriptors, NOT
+ * Note:  The cliques are output by vertex_descriptors, NOT
  * the vertex names.  If you need the vertex names (as in file),
  * you need to translate them using the name map.
  *

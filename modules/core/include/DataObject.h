@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/DataObject.h
- *  \brief A modifier which variables within a ball.
+ *  \brief Helper class for creating an IMP object storing some data.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
@@ -14,8 +14,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** This is a helper class for creating an IMP object storing some data. This
-    can be used to, eg, add the data to a particle as part of a cache.
+//! Helper class for creating an IMP object storing some data.
+/** This can be used to, eg, add the data to a particle as part of a cache.
 
     This class is C++ only.
  */

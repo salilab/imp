@@ -87,8 +87,12 @@ inline std::string get_molecule_name_and_copy(atom::Hierarchy h){
     boost::lexical_cast<std::string>(atom::get_copy_index(h));
 }
 
-//! Walk up a PMI2 hierarchy/representations and check if the root is named System
+IMPPMI_DEPRECATED_METHOD_DECL(2.20)
 inline bool get_is_canonical(atom::Hierarchy h){
+  IMPPMI_DEPRECATED_FUNCTION_DEF(
+    2.20, "Support for PMI1-style hierarchies is no longer present; "
+          "all hierarchies should now be considered 'canonical'.");
+
   while (h) {
     if (h->get_name()=="System") {
       return true;

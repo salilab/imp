@@ -18,7 +18,7 @@
 #include <IMP/utility.h>
 #include <string>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 IMPATOM_BEGIN_NAMESPACE
 

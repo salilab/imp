@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
                 oic = rf.get_global_coordinates(ic)
                 dist = IMP.algebra.get_distance(oic, oc)
                 # print ic, oc, rf, oic, dist
-                self.assert_(dist < .1)
+                self.assertLess(dist, 0.1)
             for j in range(0, i):
                 pp = (ps[i], ps[j])
                 ppi = (ps[j], ps[i])
@@ -71,11 +71,11 @@ class Tests(IMP.test.TestCase):
                 # m.get_particle(ps[j]).get_name(), pp
                 if IMP.core.RigidMember.get_is_setup(m, ps[i]) and IMP.core.RigidMember.get_is_setup(m, ps[j])\
                         and IMP.core.RigidMember(m, ps[i]).get_rigid_body() == IMP.core.RigidMember(m, ps[j]).get_rigid_body():
-                    self.assert_(pp not in cpcpps and ppi not in cpcpps)
+                    self.assertTrue(pp not in cpcpps and ppi not in cpcpps)
                 else:
                     d = IMP.core.get_distance(d0, d1)
                     if d < 0:
-                        self.assert_(pp in cpcpps or ppi in cpcpps)
+                        self.assertTrue(pp in cpcpps or ppi in cpcpps)
 
     def _create_rigid_body(self, m, name):
         rbp = m.add_particle("rb" + name)

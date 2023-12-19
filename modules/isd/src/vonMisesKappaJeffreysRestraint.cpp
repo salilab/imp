@@ -9,7 +9,7 @@
 #include <IMP/Particle.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/vonMisesKappaJeffreysRestraint.h>
-#include <math.h>
+#include <cmath>
 #include <boost/math/special_functions/bessel.hpp>
 
 IMPISD_BEGIN_NAMESPACE

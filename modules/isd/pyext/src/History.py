@@ -23,7 +23,7 @@ class History:
         self.data[name] = {}
 
     def create_entry(self, cat, name):
-        if not cat in self.data:
+        if cat not in self.data:
             self.create_category(cat)
         self.data[cat][name] = []
 
@@ -33,20 +33,19 @@ class History:
     def sanity_check(self):
         """checks if all entries have same length and are of constant type"""
         goodlen = None
-        had_warnings = False
         for cat in self.data:
             for name in self.data[cat]:
                 if goodlen is None:
                     goodlen = len(self.data[cat][name])
                 if len(self.data[cat][name]) != goodlen:
-                    print("category %s entry %s : length %s expected, got %s"\
-                        % (cat, name, goodlen, len(self.data[cat][name])))
+                    print("category %s entry %s : length %s expected, got %s"
+                          % (cat, name, goodlen, len(self.data[cat][name])))
                     break
                 goodtype = type(self.data[cat][name][0])
                 for ent in self.data[cat][name]:
                     if not isinstance(ent, goodtype):
-                        print("category %s entry %s : %s expected, got %s"\
-                            % (cat, name, goodtype, type(ent)))
+                        print("category %s entry %s : %s expected, got %s"
+                              % (cat, name, goodtype, type(ent)))
                         break
 
     def get_data(self, cat, name):
@@ -78,10 +77,11 @@ class History:
         or down.
         mean100 is the average over the last 100 frames
         """
-        if not isinstance(out, file):
+        if isinstance(out, str):
             out = open(out, 'w')
         out.write(
-            "category\tkey_name\tn_frames\ttype\taverage\tstd\tmean100\ttendency\n")
+            "category\tkey_name\tn_frames\ttype\taverage\tstd\tmean100\t"
+            "tendency\n")
         for cat in self.data:
             out.write(cat + '\n')
             for name in self.data[cat]:

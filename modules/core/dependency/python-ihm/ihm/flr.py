@@ -389,8 +389,9 @@ class FRETAnalysis(object):
        :param float donor_only_fraction: The donor-only fraction.
        :param dataset: The dataset used.
        :type dataset: :class:`ihm.dataset.Dataset`
-       :param external_file: The external file that contains (results of)
+       :param file: The external file that contains (results of)
               the analysis.
+       :type file: :class:`ihm.location.OutputFileLocation`
        :param software: The software used for the analysis.
        :type software: :class:`ihm.Software`
     """
@@ -401,7 +402,7 @@ class FRETAnalysis(object):
                  ref_measurement_group=None,
                  method_name=None, details=None,
                  chi_square_reduced=None, donor_only_fraction=None,
-                 dataset=None, external_file=None, software=None):
+                 dataset=None, file=None, software=None):
         if type not in ['lifetime-based', 'intensity-based', None]:
             raise ValueError(
                 'FRETAnalysis.type can be \'lifetime-based\' or '
@@ -419,7 +420,7 @@ class FRETAnalysis(object):
         self.chi_square_reduced = chi_square_reduced
         self.donor_only_fraction = donor_only_fraction
         self.dataset = dataset
-        self.external_file = external_file
+        self.external_file = file
         self.software = software
 
     def __eq__(self, other):
@@ -431,15 +432,16 @@ class LifetimeFitModel(object):
 
         :param str name: The name of the fit model.
         :param str description: A description of the fit model.
-        :param external_file: An external file that contains additional
+        :param file: An external file that contains additional
                information on the fit model.
+        :type file: :class:`ihm.location.OutputFileLocation`
         :param citation: A citation for the fit model.
         :type citation: :class:`ihm.Citation`
     """
-    def __init__(self, name, description, external_file=None, citation=None):
+    def __init__(self, name, description, file=None, citation=None):
         self.name = name
         self.description = description
-        self.external_file = external_file
+        self.external_file = file
         self.citation = citation
 
     def __eq__(self, other):
@@ -472,11 +474,11 @@ class RefMeasurement(object):
     """A reference measurement for lifetime-based analysis.
 
         :param ref_sample_probe: The combination of sample and probe used
-               for the reference measurement.
+         for the reference measurement.
         :type ref_sample_probe: :class:`SampleProbeDetails`
         :param str details: Details on the measurement.
         :param list_of_lifetimes: A list of the results from the reference
-               measurement.
+         measurement.
         :type list_of_lifetimes: List of :class:`RefMeasurementLifetime`
     """
     def __init__(self, ref_sample_probe, details=None, list_of_lifetimes=None):
@@ -497,8 +499,9 @@ class RefMeasurement(object):
 
 class RefMeasurementLifetime(object):
     """Lifetime for a species in a reference measurement.
+
         :param float species_fraction: The species-fraction for the
-               respective lifetime.
+         respective lifetime.
         :param float lifetime: The lifetime (in ns).
         :param str species_name: A name for the species.
     """
@@ -932,6 +935,44 @@ class FPSMPPAtomPosition(object):
         return self.__dict__ == other.__dict__
 
 
+class KineticRateFretAnalysisConnection(object):
+    """Connects a kinetic rate with a FRET analysis.
+
+    :param fret_analysis: The FRETAnalysis object assigned to a kinetic rate
+    :type analysis: :class:`FRETAnalysis`
+    :param kinetic_rate: The kinetic rate.
+    :type kinetic_rate: :class:`ihm.multi_state_scheme.KineticRate`
+    :param str details: Details about the connection between the FRETAnalysis
+     object and the KineticRate object
+    """
+    def __init__(self, fret_analysis, kinetic_rate, details=None):
+        self.fret_analysis = fret_analysis
+        self.kinetic_rate = kinetic_rate
+        self.details = details
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+class RelaxationTimeFretAnalysisConnection(object):
+    """Connects a relaxation time with a FRET analysis.
+
+    :param fret_analysis: The FRETAnalysis object assigned to a kinetic rate
+    :type analysis: :class:`FRETAnalysis`
+    :param relaxation_time: The relaxation time.
+    :type relaxation_time: :class:`ihm.multi_state_scheme.RelaxationTime`
+    :param str details: Details about the connection between the FRETAnalysis
+     object and the RelaxationTime object
+    """
+    def __init__(self, fret_analysis, relaxation_time, details=None):
+        self.fret_analysis = fret_analysis
+        self.relaxation_time = relaxation_time
+        self.details = details
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
 class FLRData(object):
     """A collection of the fluorescence data to be added to the system.
 
@@ -958,6 +999,14 @@ class FLRData(object):
         #: All modeling objects.
         #: See :class:`FPSAVModeling` and :class:`FPSMPPModeling`.
         self.fps_modeling = []
+
+        #: All Connections between FRETAnalysis and KineticRate objects
+        #: See :class: `KineticRateFRETAnalysisConnection`
+        self.kinetic_rate_fret_analysis_connections = []
+
+        #: All Connections between FRETAnalysis and RelaxationTime objects
+        #: See :class: `RelaxationTimeFRETAnalysisConnection`
+        self.relaxation_time_fret_analysis_connections = []
 
         # The following dictionaries are so far only used when reading data
         self._collection_flr_experiment = {}
@@ -992,6 +1041,8 @@ class FLRData(object):
         self._collection_flr_fps_mean_probe_position = {}
         self._collection_flr_fps_mpp_atom_position = {}
         self._collection_flr_fps_mpp_modeling = {}
+        self._collection_flr_kinetic_rate_fret_analysis_connection = {}
+        self._collection_flr_relaxation_time_fret_analysis_connection = {}
 
     def _all_distance_restraints(self):
         """Yield all FRETDistanceRestraint objects"""
@@ -1003,6 +1054,12 @@ class FLRData(object):
         """Yield all FRETAnalysis objects"""
         for r in self._all_distance_restraints():
             yield r.analysis
+        # Get the analyses from the kinetic rate and
+        # relaxation time connections
+        for c in self.kinetic_rate_fret_analysis_connections:
+            yield c.fret_analysis
+        for c in self.relaxation_time_fret_analysis_connections:
+            yield c.fret_analysis
 
     def _all_peak_assignments(self):
         """Yield all PeakAssignment objects"""

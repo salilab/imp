@@ -125,7 +125,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
 
       \see IMP::core::MonteCarlo::set_score_moved
 
-      \param calc_derivs Whether to calculate first derivatives.
+      \param derivatives Whether to calculate first derivatives.
       \param moved_pis Particles that have moved since the last
              scoring function evaluation.
       \param reset_pis Particles that have moved, but back to the

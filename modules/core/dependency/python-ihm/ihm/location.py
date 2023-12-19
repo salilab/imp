@@ -61,174 +61,125 @@ class Location(object):
 
 class DatabaseLocation(Location):
     """A dataset stored in an official database (PDB, EMDB, PRIDE, etc.).
+       Generally a subclass should be used specific to the database -
+       for example, :class:`PDBLocation`, :class:`EMDBLocation`, or
+       :class:`PRIDELocation`, although this base class can be used directly
+       for "other" databases not currently supported by the IHM dictionary.
 
-       :param str db_name: The name of the database.
        :param str db_code: The accession code inside the database.
        :param str version: The version of the dataset in the database.
        :param str details: Additional details about the dataset, if known.
     """
 
     _eq_keys = Location._eq_keys + ['db_name', 'access_code', 'version']
+    db_name = 'Other'
 
-    def __init__(self, db_name, db_code, version=None, details=None):
+    def __init__(self, db_code, version=None, details=None):
         super(DatabaseLocation, self).__init__(details)
-        self.db_name = db_name
         self.access_code = db_code
         self.version = version
+
+    def __str__(self):
+        return "<%s.%s(%s)>" % (self.__module__, self.__class__.__name__,
+                                repr(self.access_code))
 
 
 class EMDBLocation(DatabaseLocation):
     """Something stored in the EMDB database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'EMDB'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(EMDBLocation, self).__init__(self._db_name, db_code,
-                                           version, details)
+    db_name = 'EMDB'
 
 
 class PDBLocation(DatabaseLocation):
     """Something stored in the PDB database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'PDB'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(PDBLocation, self).__init__(self._db_name, db_code,
-                                          version, details)
+    db_name = 'PDB'
 
 
 class PDBDevLocation(DatabaseLocation):
     """Something stored in the PDB-Dev database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'PDB-Dev'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(PDBDevLocation, self).__init__(self._db_name, db_code,
-                                             version, details)
+    db_name = 'PDB-Dev'
 
 
 class ModelArchiveLocation(DatabaseLocation):
     """Something stored in Model Archive.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'MODEL ARCHIVE'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(ModelArchiveLocation, self).__init__(self._db_name, db_code,
-                                                   version, details)
+    db_name = 'MODEL ARCHIVE'
 
 
 class BMRBLocation(DatabaseLocation):
     """Something stored in the BMRB database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'BMRB'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(BMRBLocation, self).__init__(self._db_name, db_code,
-                                           version, details)
+    db_name = 'BMRB'
 
 
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'MASSIVE'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(MassIVELocation, self).__init__(self._db_name, db_code, version,
-                                              details)
+    db_name = 'MASSIVE'
 
 
 class EMPIARLocation(DatabaseLocation):
     """Something stored in the EMPIAR database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'EMPIAR'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(EMPIARLocation, self).__init__(self._db_name, db_code, version,
-                                             details)
+    db_name = 'EMPIAR'
 
 
 class SASBDBLocation(DatabaseLocation):
     """Something stored in the SASBDB database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'SASBDB'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(SASBDBLocation, self).__init__(self._db_name, db_code, version,
-                                             details)
+    db_name = 'SASBDB'
 
 
 class PRIDELocation(DatabaseLocation):
     """Something stored in the PRIDE database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'PRIDE'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(PRIDELocation, self).__init__(self._db_name, db_code, version,
-                                            details)
+    db_name = 'PRIDE'
 
 
 class JPOSTLocation(DatabaseLocation):
     """Something stored in the JPOST database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'jPOSTrepo'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(JPOSTLocation, self).__init__(self._db_name, db_code, version,
-                                            details)
+    db_name = 'jPOSTrepo'
 
 
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'BioGRID'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(BioGRIDLocation, self).__init__(self._db_name, db_code, version,
-                                              details)
+    db_name = 'BioGRID'
 
 
 class ProXLLocation(DatabaseLocation):
     """Something stored in the ProXL database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'ProXL'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(ProXLLocation, self).__init__(self._db_name, db_code, version,
-                                            details)
+    db_name = 'ProXL'
 
 
 class IProXLocation(DatabaseLocation):
     """Something stored in the iProX database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'iProX'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(IProXLocation, self).__init__(self._db_name, db_code, version,
-                                            details)
+    db_name = 'iProX'
 
 
 class AlphaFoldDBLocation(DatabaseLocation):
     """Something stored in the AlphaFoldDB database.
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
-    _db_name = 'AlphaFoldDB'
-
-    def __init__(self, db_code, version=None, details=None):
-        super(AlphaFoldDBLocation, self).__init__(
-            self._db_name, db_code, version, details)
+    db_name = 'AlphaFoldDB'
 
 
 class FileLocation(Location):
@@ -259,6 +210,10 @@ class FileLocation(Location):
             self.file_size = os.stat(path).st_size
             # Store absolute path in case the working directory changes later
             self.path = os.path.abspath(path)
+
+    def __str__(self):
+        return "<%s.%s(%s)>" % (self.__module__, self.__class__.__name__,
+                                repr(self.path))
 
 
 class InputFileLocation(FileLocation):
@@ -346,6 +301,9 @@ class Repository(object):
 
     def __hash__(self):
         return hash((self.doi, self.url))
+
+    def __str__(self):
+        return "<ihm.location.Repository(%r)>" % self.doi
 
     def __init__(self, doi, root=None, url=None, top_directory=None,
                  details=None):

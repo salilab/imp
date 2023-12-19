@@ -1,6 +1,18 @@
 This directory contains files to build RPM packages for RedHat Linux and
-similar systems (we have tested it on CentOS/RHEL 6 and 7, and Fedora, but it
-may work on other RPM-based Linux variants).
+similar systems (we have tested it on current versions of RHEL and Fedora,
+but it may work on other RPM-based Linux variants).
 
-To use, simply copy IMP.spec.in to IMP.spec and replace @IMP_VERSION@ with
-your IMP version number.
+To use, simply copy IMP.spec.in or IMP-copr.spec.in to IMP.spec and replace
+@IMP_VERSION@ with your IMP version number:
+
+IMP.spec.in tries to build as much of IMP as possible into an RPM that will
+install on plain Fedora (or RHEL with the EPEL repository). At build time
+extra RPM dependencies may be needed from
+https://integrativemodeling.org/build-extras/ but these libraries will be
+bundled into the final IMP RPM so will not be needed at run time.
+
+IMP-copr.spec.in builds everything except the IMP.cnmultifit module (which
+requires the closed-source libTAU library). It does not bundle any
+dependencies, which will be needed both at build time and run time from Fedora
+COPR at https://copr.fedorainfracloud.org/coprs/salilab/salilab/.
+This spec file is used to build the IMP package itself in COPR.

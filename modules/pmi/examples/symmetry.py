@@ -1,5 +1,5 @@
 ## \example pmi/symmetry.py
-"""Clone molecules and use a symmetry constrant
+"""Clone molecules and use a symmetry constraint
 """
 
 import IMP
@@ -38,9 +38,9 @@ for nc in range(7):
 hier = s.build()
 
 # Create a symmetry constraint
-#  A constrant is invariant: IMP will automatically move all clones to
+#  A constraint is invariant: IMP will automatically move all clones to
 #  match the reference
-#  If instead you want some more flexiblity, consider
+#  If instead you want some more flexibility, consider
 #  IMP.pmi.restraints.stereochemistry.SymmetryRestraint
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 center = IMP.algebra.Vector3D([50, 0, 0])

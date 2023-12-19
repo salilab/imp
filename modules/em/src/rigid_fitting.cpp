@@ -66,7 +66,7 @@ core::MonteCarlo *set_optimizer(Model *model,
   // create a rigid body mover
   IMP_NEW(core::RigidBodyMover, rb_mover,
           (model, rb.get_particle_index(), max_translation, max_rotation));
-  // preform mc search
+  // perform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));
   lopt->set_scoring_function(rsrs);
@@ -221,7 +221,7 @@ FittingSolutions local_rigid_fitting_grid_search(
   Float step_t = dmap->get_spacing() * translation_step;
 
   IMP_LOG_TERSE(
-      "going to preform local rigid fitting using a grid search method"
+      "going to perform local rigid fitting using a grid search method"
       << " on " << ps.size() << " particles. " << std::endl
       << "The grid search parameters are: "
       << " translation between " << -max_t << " to " << max_t

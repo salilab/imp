@@ -1,3 +1,61 @@
+0.43 - 2023-12-08
+=================
+  - Branched and polymeric empty entities are now distinguished
+    based on entity.type in the input file (previously, any empty
+    entity would always be reported as a polymer) (#129).
+  - Warn rather than reporting an error if the system contains
+    one or more empty entities (#128).
+  - If an input file contains multiple duplicated datasets, preserve
+    them as is rather than consolidating into a single dataset (#127).
+  - Allow for multiple branched entities to have the same composition
+    (they could have different connectivity) (#126).
+
+0.42 - 2023-11-30
+=================
+  - The :class:`ihm.metadata.CIFParser` class now parses Modeller-specific
+    CIF categories to add information about software and templates for
+    Modeller-generated mmCIF starting models.
+  - Basic support for original author-provided residue numbering is now
+    provided in the :class:`ihm.AsymUnit` class with a new
+    ``orig_auth_seq_id_map`` argument. This information is read from and
+    written to the various mmCIF tables such as ``pdbx_poly_seq_scheme``
+    (#124).
+
+0.41 - 2023-10-02
+=================
+  - More complete support for oligosaccharides, in particular correct
+    numbering for atoms in `atom_site`, and the addition of some
+    data items to the output which are required for full
+    dictionary compliance.
+
+0.40 - 2023-09-25
+=================
+  - Basic support for oligosaccharides is now provided. New classes are
+    provided to describe saccharide chemical components
+    (:class:`ihm.SaccharideChemComp` and subclasses). Unlike polymers and
+    non-polymers, oligosaccharides can be branched, and a new
+    :class:`ihm.BranchLink` class allows the linkage between individual
+    components to be described.
+  - A summary report of the system can now be produced by calling
+    :meth:`ihm.System.report`. This can help to reveal errors or
+    inconsistencies, and will warn about missing data that may not be
+    technically required for a compliant mmCIF file, but is usually
+    expected to be present.
+  - :class:`ihm.metadata.MRCParser` now uses the new EMDB API to extract
+    version information and details for electron density map datasets.
+  - RPM packages are now available for recent versions of Fedora and
+    RedHat Enterprise Linux.
+
+0.39 - 2023-08-04
+=================
+  - :class:`ihm.location.DatabaseLocation` no longer accepts a ``db_name``
+    parameter. Derived classes (such as :class:`ihm.location.PDBLocation`)
+    should be used instead; the base class should only be used for "other"
+    databases that are not described in the IHM dictionary (#116).
+  - Bugfix: AlphaFold models in PDB format are no longer categorized by
+    :class:`ihm.metadata.PDBParser` as being deposited in the PDB database
+    with an empty accession code.
+
 0.38 - 2023-05-26
 =================
   - Convenience classes are added to describe datasets stored in

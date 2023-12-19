@@ -43,6 +43,19 @@ class Step(object):
         self.script_file = script_file
         self.description = description
 
+    def _get_report(self):
+        def _get_flags():
+            if self.multi_scale:
+                yield "multi-scale"
+            if self.multi_state:
+                yield "multi-state"
+            if self.ordered:
+                yield "ordered"
+        return ("%s (%s) (%s->%s models)"
+                % (self.name or "Unnamed step",
+                   "; ".join([self.method] + list(_get_flags())),
+                   self.num_models_begin, self.num_models_end))
+
 
 class Protocol(object):
     """A modeling protocol.

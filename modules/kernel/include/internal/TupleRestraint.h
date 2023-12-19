@@ -1,6 +1,6 @@
 /**
- *  \file generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file internal/TupleRestraint.h
+ *  \brief Templated combination of a Restraint with a Score.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

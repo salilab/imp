@@ -226,7 +226,6 @@ class Output(object):
         self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
         self.atomistic = atomistic
-        self.use_pmi2 = False
 
     def get_pdb_names(self):
         """Get a list of all PDB files being output by this instance"""
@@ -240,32 +239,24 @@ class Output(object):
 
     def _init_dictchain(self, name, prot, multichar_chain=False, mmcif=False):
         self.dictchain[name] = {}
-        self.use_pmi2 = False
         seen_chains = set()
 
         # attempt to find PMI objects.
-        if IMP.pmi.get_is_canonical(prot):
-            self.use_pmi2 = True
-            self.atomistic = True  # detects automatically
-            for n, mol in enumerate(IMP.atom.get_by_type(
-                    prot, IMP.atom.MOLECULE_TYPE)):
-                chid = IMP.atom.Chain(mol).get_id()
-                if not mmcif and len(chid) > 1:
-                    raise ValueError(
-                        "The system contains at least one chain ID (%s) that "
-                        "is more than 1 character long; this cannot be "
-                        "represented in PDB. Either write mmCIF files "
-                        "instead, or assign 1-character IDs to all chains "
-                        "(this can be done with the `chain_ids` argument to "
-                        "BuildSystem.add_state())." % chid)
-                chid = _disambiguate_chain(chid, seen_chains)
-                molname = IMP.pmi.get_molecule_name_and_copy(mol)
-                self.dictchain[name][molname] = chid
-        else:
-            chainids = self.multi_chainids if multichar_chain \
-                else self.chainids
-            for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-                self.dictchain[name][i.get_name()] = chainids[n]
+        self.atomistic = True  # detects automatically
+        for n, mol in enumerate(IMP.atom.get_by_type(
+                prot, IMP.atom.MOLECULE_TYPE)):
+            chid = IMP.atom.Chain(mol).get_id()
+            if not mmcif and len(chid) > 1:
+                raise ValueError(
+                    "The system contains at least one chain ID (%s) that "
+                    "is more than 1 character long; this cannot be "
+                    "represented in PDB. Either write mmCIF files "
+                    "instead, or assign 1-character IDs to all chains "
+                    "(this can be done with the `chain_ids` argument to "
+                    "BuildSystem.add_state())." % chid)
+            chid = _disambiguate_chain(chid, seen_chains)
+            molname = IMP.pmi.get_molecule_name_and_copy(mol)
+            self.dictchain[name][molname] = chid
 
     def init_pdb(self, name, prot, mmcif=False):
         """Init PDB Writing.
@@ -356,11 +347,7 @@ class Output(object):
     def get_prot_name_from_particle(self, name, p):
         """Get the protein name from the particle.
            This is done by traversing the hierarchy."""
-        if self.use_pmi2:
-            return IMP.pmi.get_molecule_name_and_copy(p), True
-        else:
-            return IMP.pmi.tools.get_prot_name_from_particle(
-                p, self.dictchain[name])
+        return IMP.pmi.get_molecule_name_and_copy(p), True
 
     def get_particle_infos_for_pdb_writing(self, name):
         # index_residue_pair_list={}
@@ -370,19 +357,20 @@ class Output(object):
         # highest resolution have highest priority
         resindexes_dict = {}
 
-        # this dictionary dill contain the sequence of tuples needed to
+        # this dictionary will contain the sequence of tuples needed to
         # write the pdb
         particle_infos_for_pdb = []
 
         geometric_center = [0, 0, 0]
         atom_count = 0
 
-        if self.use_pmi2:
-            # select highest resolution
+        # select highest resolution, if hierarchy is non-empty
+        if (not IMP.core.XYZR.get_is_setup(self.dictionary_pdbs[name])
+                and self.dictionary_pdbs[name].get_number_of_children() == 0):
+            ps = []
+        else:
             sel = IMP.atom.Selection(self.dictionary_pdbs[name], resolution=0)
             ps = sel.get_selected_particles()
-        else:
-            ps = IMP.atom.get_leaves(self.dictionary_pdbs[name])
 
         for n, p in enumerate(ps):
             protname, is_a_bead = self.get_prot_name_from_particle(name, p)
@@ -1046,7 +1034,7 @@ class ProcessOutput(object):
                 # "get_every" and "filterout" not enforced for RMF
                 statistics.passed_get_every += 1
                 statistics.passed_filterout += 1
-                IMP.rmf.load_frame(rh, RMF.FrameID(i))
+                rh.set_current_frame(RMF.FrameID(i))
                 if filtertuple is not None:
                     keytobefiltered = filtertuple[0]
                     relationship = filtertuple[1]
@@ -1773,7 +1761,7 @@ def plot_field_histogram(name, values_lists, valuename=None, bins=40,
                          leg_names=None):
     '''Plot a list of histograms from a value list.
     @param name the name of the plot
-    @param value_lists the list of list of values eg: [[...],[...],[...]]
+    @param values_lists the list of list of values eg: [[...],[...],[...]]
     @param valuename the y-label
     @param bins the number of bins
     @param colors If None, will use rainbow. Else will use specific list

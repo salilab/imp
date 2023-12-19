@@ -56,11 +56,11 @@ Triangle3D get_largest_triangle(const Vector3Ds &points) {
   }
   algebra::Segment3D seg(triple[0], triple[1]);
   max_dist = 0;
-  for (unsigned int i = 0; i < points.size(); i++) {
-    double dist = algebra::get_distance(seg, points[i]);
+  for (const auto &point : points) {
+    double dist = algebra::get_distance(seg, point);
     if (dist > max_dist) {
       max_dist = dist;
-      triple[2] = points[i];
+      triple[2] = point;
     }
   }
   return Triangle3D(triple[0], triple[1], triple[2]);

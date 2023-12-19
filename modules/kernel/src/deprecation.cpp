@@ -6,7 +6,7 @@
  */
 
 #include "IMP/deprecation.h"
-#include "internal/base_static.h"
+#include "internal/static.h"
 #include "IMP/exception.h"
 #include "IMP/log_macros.h"
 

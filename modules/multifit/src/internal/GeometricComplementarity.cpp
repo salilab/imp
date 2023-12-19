@@ -71,8 +71,8 @@ bool SurfaceDistanceMap::has_background_neighbor(long voxel_ind) const {
 }
 
 void SurfaceDistanceMap::set_surface_shell(std::vector<long> *shell) {
-  // a voxel is part of the outher shell if it has at least one
-  // background nieghbor
+  // a voxel is part of the outer shell if it has at least one
+  // background neighbor
   for (long i = 0; i < get_number_of_voxels(); i++) {
     if ((data_[i] != 0) && (has_background_neighbor(i))) {
       data_[i] = 1;
@@ -132,7 +132,7 @@ void SurfaceDistanceMap::resample() {
   // all of the voxels that are part of the current shell
   set_surface_shell(&curr_shell_voxels);
   // keeps the shell index for each of the data voxels
-  IMP_LOG_VERBOSE("reseting shell voxels\n");
+  IMP_LOG_VERBOSE("resetting shell voxels\n");
   std::vector<int> shell_voxels(num_voxels, -1);
   for (long i = 0; i < get_number_of_voxels(); i++) {
     if (data_[i] == 1) {

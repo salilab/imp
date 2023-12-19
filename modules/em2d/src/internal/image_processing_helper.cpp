@@ -110,13 +110,13 @@ int do_union(Ints &Labels, int i, int j) {
   return root;
 }
 
-//! Decission tree copy function
+//! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, cvIntMat &mat_to_label) {
 
   mat_to_label(p) = mat_to_label(a);
 }
 
-//! Decission tree copy function
+//! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, const cvPixel &c,
                   cvIntMat &mat_to_label, Ints &Labels) {
   mat_to_label(p) = do_union(Labels, mat_to_label(c), mat_to_label(a));
@@ -210,18 +210,18 @@ void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
             neighbors[3] = ns[2];
             break;
         }
-        // Decission tree strategy
-        label = get_label_using_decission_tree(p, neighbors, background, m,
-                                               mat_to_label, Labels, label);
+        // Decision tree strategy
+        label = get_label_using_decision_tree(p, neighbors, background, m,
+                                              mat_to_label, Labels, label);
       }
     }
   }
 }
 
-int get_label_using_decission_tree(const cvPixel &p, cvPixels &neighbors,
-                                   int background, const cvIntMat &m,
-                                   cvIntMat &mat_to_label, Ints &Labels,
-                                   int label) {
+int get_label_using_decision_tree(const cvPixel &p, cvPixels &neighbors,
+                                  int background, const cvIntMat &m,
+                                  cvIntMat &mat_to_label, Ints &Labels,
+                                  int label) {
   // Set the values considering the null pixels as background
   cvPixel null_pixel(NO_VALUE, NO_VALUE);
   int neigh_vals[4];
@@ -233,7 +233,7 @@ int get_label_using_decission_tree(const cvPixel &p, cvPixels &neighbors,
     }
   }
 
-  // Decission tree
+  // Decision tree
   if (neigh_vals[1] == background) {
     if (neigh_vals[2] == background) {
       if (neigh_vals[0] == background) {
@@ -264,7 +264,7 @@ int get_label_using_decission_tree(const cvPixel &p, cvPixels &neighbors,
 
 algebra::Vector2D get_peak(cv::Mat &m, double *value) {
   // Find maximum value and location
-  IMP_LOG_VERBOSE("starting peak seach on a matrix " << std::endl);
+  IMP_LOG_VERBOSE("starting peak search on a matrix " << std::endl);
 
   algebra::Vector2D peak;
   double minVal, maxVal;

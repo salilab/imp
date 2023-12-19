@@ -64,7 +64,7 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   machinestamp = h.machinestamp;
   rms = h.rms;      // RMS deviation of map from mean density
   nlabl = h.nlabl;  // Number of labels being used
-  // Fill empty coments with null character
+  // Fill empty comments with null character
   memset(&labels[0][0], 0, IMP_MRC_NUM_LABELS * IMP_MRC_LABEL_SIZE);
   // Copy comments
   for (int i = 0; i < nlabl; i++) strcpy(labels[i], h.comments[i]);
@@ -113,7 +113,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   h.mz = mz;  // Number of intervals along each dimension
   h.xlen = xlen;
   h.ylen = ylen;
-  h.zlen = zlen;  // Cell dimentions(amgstroms)
+  h.zlen = zlen;  // Cell dimensions(amgstroms)
   h.alpha = alpha;
   h.beta = beta;
   h.gamma = gamma;  // Cell angles (degrees)
@@ -150,7 +150,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   h.machinestamp = machinestamp;
   h.rms = rms;      // RMS deviation of map from mean density
   h.nlabl = nlabl;  // Number of labels being used
-  // Fill empty coments with null character
+  // Fill empty comments with null character
   memset(&h.comments[0][0], 0,
          DensityHeader::COMMENT_FIELD_NUM_OF
          * DensityHeader::COMMENT_FIELD_SINGLE_SIZE);

@@ -17,6 +17,7 @@ except NameError:
 
 log = logging.getLogger("buildxlinks")
 
+
 class Xlink:
 
     """
@@ -132,7 +133,7 @@ class XlinksDict(dict):
 
     def get_xlinks_for_pair(self, pair_ids):
         """
-            @param pair_ids Ids fo the subunits that are cross-linked
+            @param pair_ids Ids for the subunits that are cross-linked
         """
         try:
             xlinks_list = self[pair_ids]
@@ -235,7 +236,7 @@ class InitialDockingFromXlinks:
 
     def set_xlinks(self, xlinks_list):
         """
-            Sets the xlinks used for the computation fo the initial rough
+            Sets the xlinks used for the computation for the initial rough
             docking solution
             @param xlinks_list A list of Xlink classes
             residue1 belongs to the receptor and residue2 belongs to the ligand

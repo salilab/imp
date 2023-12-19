@@ -285,10 +285,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   Vector3D get_gradient_of_rotated(const Vector3D &v, unsigned int i,
                                    bool wrt_unnorm = false) const;
 
-  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12)
-  Vector3D get_derivative(const Vector3D &v, unsigned int i,
-                          bool wrt_unnorm = true) const;
-
   //! Return the Jacobian of rotated vector wrt the quaternion.
   /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
       \f$q\f$ is the quaternion of the rotation, and \f$R(q)\f$ is the
@@ -303,10 +299,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
    */
   Eigen::MatrixXd get_jacobian_of_rotated(
     const Eigen::Vector3d &v, bool wrt_unnorm = false) const;
-
-  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12)
-  Eigen::MatrixXd get_gradient(
-    const Eigen::Vector3d &v, bool wrt_unnorm = true) const;
 
   /** Return true is the rotation is valid, false if
       invalid or not initialized (e.g., only initialized by
@@ -337,12 +329,6 @@ IMP_VALUES(Rotation3D, Rotation3Ds);
 IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_first(
   const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
 
-IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12)
-IMPALGEBRAEXPORT Eigen::MatrixXd
-  get_gradient_of_composed_with_respect_to_first(
-    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
-
-
 //! Get Jacobian of quaternion product with respect to second quaternion.
 /** Given the rotation \f$R(p)\f$ followed by \f$R(q)\f$, where \f$p\f$ and
     \f$q\f$ are quaternions, the quaternion of the composed rotation
@@ -359,12 +345,6 @@ IMPALGEBRAEXPORT Eigen::MatrixXd
  */
 IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
   const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
-
-IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12)
-IMPALGEBRAEXPORT Eigen::MatrixXd
-  get_gradient_of_composed_with_respect_to_second(
-    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
-
 
 //! Return a rotation that does not do anything
 /** \see Rotation3D */

@@ -20,7 +20,7 @@
 */
 
 #include <IMP/em/em_config.h>
-#include <math.h>
+#include <cmath>
 #include <boost/version.hpp>
 
 #if BOOST_VERSION < 106900

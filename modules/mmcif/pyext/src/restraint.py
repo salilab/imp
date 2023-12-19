@@ -4,16 +4,7 @@
 
 import IMP.mmcif.metadata
 import ihm.restraint
-
-
-def _get_input_pis(r):
-    """Yield all input ParticleIndexes for a given Restraint"""
-    for inp in r.get_inputs():
-        try:
-            p = IMP.Particle.get_from(inp)
-            yield p.get_index()
-        except ValueError:
-            pass
+import operator
 
 
 def _get_by_residue(m, p):
@@ -32,10 +23,11 @@ def _get_scale(m, p):
 
 class _AsymMapper(object):
     """Map ParticleIndexes to ihm.AsymUnit"""
-    def __init__(self, m, system):
+    def __init__(self, m, components, ignore_non_structural=False):
         self.m = m
-        self.components = system.components
+        self.components = components
         self._seen_ranges = {}
+        self._ignore_non_structural = ignore_non_structural
 
     def __getitem__(self, pi):
         m = self.m
@@ -47,8 +39,9 @@ class _AsymMapper(object):
                 if IMP.atom.Chain.get_is_setup(m, h):
                     return self.components[IMP.atom.Chain(h)].asym_unit
                 h = h.get_parent()
-        raise KeyError("Could not find top-level Chain for "
-                       + m.get_particle_name(pi))
+        if not self._ignore_non_structural:
+            raise KeyError("Could not find top-level Chain for "
+                           + m.get_particle_name(pi))
 
     def get_feature(self, ps):
         """Get an ihm.restraint.Feature that covers the given particles"""
@@ -100,28 +93,135 @@ def _parse_restraint_info(info):
     return d
 
 
-class _GaussianEMRestraint(ihm.restraint.EM3DRestraint):
-    """Handle an IMP.isd.GaussianEMRestraint"""
+def _get_restraint_assembly(imp_restraint, components):
+    """Get the assembly corresponding to all input particles for
+       the restraint"""
+    asym_map = _AsymMapper(imp_restraint.get_model(), components,
+                           ignore_non_structural=True)
+    asyms = frozenset(
+        asym_map[p]
+        for p in IMP.get_input_particles(imp_restraint.get_inputs()))
+    asyms = sorted((a for a in asyms if a is not None),
+                   key=operator.attrgetter('id'))
+    return asyms
 
-    def __init__(self, imp_restraint, info, modeled_assembly, system):
-        self._imp_restraint = imp_restraint
+
+class _EM3DRestraint(ihm.restraint.EM3DRestraint):
+    def __init__(self, imp_restraint, info, components, system):
+        # If a subunit contains any density, add the entire subunit to
+        # this restraint's assembly
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
+        assembly = ihm.Assembly(
+            asyms, name="EM subassembly",
+            description="All components that fit the EM map")
+
+        self._filename = info['filename']
+        self._asyms = tuple(asyms)
         p = IMP.mmcif.metadata._GMMParser()
         r = p.parse_file(info['filename'])
-        super(_GaussianEMRestraint, self).__init__(
-                dataset=r['dataset'],
-                assembly=modeled_assembly,  # todo: fill in correct assembly
-                number_of_gaussians=r['number_of_gaussians'],
-                fitting_method='Gaussian mixture model')
+        super(_EM3DRestraint, self).__init__(
+            dataset=r['dataset'], assembly=assembly,
+            number_of_gaussians=r['number_of_gaussians'],
+            fitting_method='Gaussian mixture model')
 
-    def add_model_fit(self, model):
-        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
+    def _get_signature(self):
+        return ("EM3DRestraint", self._filename, self._asyms,
+                self.number_of_gaussians, self.fitting_method)
+
+    def add_model_fit(self, imp_restraint, model):
+        info = _parse_restraint_info(imp_restraint.get_dynamic_info())
         self.fits[model] = ihm.restraint.EM3DRestraintFit(
                 cross_correlation_coefficient=info['cross correlation'])
 
 
+def _make_em2d_restraint(imp_restraint, info, components, system):
+    for i in range(len(info['image files'])):
+        yield _EM2DRestraint(imp_restraint, info, components, i)
+
+
+class _EM2DRestraint(ihm.restraint.EM2DRestraint):
+    def __init__(self, imp_restraint, info, components, image_number):
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
+        assembly = ihm.Assembly(
+            asyms, name="2D EM subassembly",
+            description="All components that fit the EM images")
+
+        self._image_number = image_number
+        self._filename = info['image files'][image_number]
+        self._asyms = tuple(asyms)
+
+        loc = ihm.location.InputFileLocation(
+                self._filename,
+                details="Electron microscopy class average")
+        dataset = ihm.dataset.EM2DClassDataset(loc)
+
+        super(_EM2DRestraint, self).__init__(
+            dataset=dataset, assembly=assembly,
+            segment=False,
+            number_raw_micrographs=info['micrographs number'] or None,
+            pixel_size_width=info['pixel size'],
+            pixel_size_height=info['pixel size'],
+            image_resolution=info['resolution'],
+            number_of_projections=info['projection number'])
+
+    def _get_signature(self):
+        return ("EM2DRestraint", self._filename, self._asyms,
+                self.number_raw_micrographs, self.pixel_size_width,
+                self.pixel_size_height, self.image_resolution,
+                self.number_of_projections)
+
+    def add_model_fit(self, imp_restraint, model):
+        info = _parse_restraint_info(imp_restraint.get_dynamic_info())
+        ccc = info['cross correlation'][self._image_number]
+        transform = self._get_transformation(model, info, self._image_number)
+        rot = transform.get_rotation()
+        rm = [[e for e in rot.get_rotation_matrix_row(i)] for i in range(3)]
+        self.fits[model] = ihm.restraint.EM2DRestraintFit(
+            cross_correlation_coefficient=ccc, rot_matrix=rm,
+            tr_vector=transform.get_translation())
+
+    def _get_transformation(self, model, info, nimage):
+        """Get the transformation that places the model on image nimage"""
+        r = info['rotation'][nimage * 4: nimage * 4 + 4]
+        t = info['translation'][nimage * 3: nimage * 3 + 3]
+        return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
+                                            IMP.algebra.Vector3D(*t))
+
+
+class _SAXSRestraint(ihm.restraint.SASRestraint):
+    def __init__(self, imp_restraint, info, components, system):
+        asyms = _get_restraint_assembly(imp_restraint, components)
+
+        assembly = ihm.Assembly(
+            asyms, name="SAXS subassembly",
+            description="All components that fit the SAXS profile")
+
+        self._filename = info['filename']
+        self._asyms = tuple(asyms)
+        loc = ihm.location.InputFileLocation(
+            info['filename'], details='SAXS profile')
+        dataset = ihm.dataset.SASDataset(loc)
+        super(_SAXSRestraint, self).__init__(
+            dataset=dataset, assembly=assembly,
+            segment=False, fitting_method='IMP SAXS restraint',
+            fitting_atom_type=info['form factor type'],
+            multi_state=False)
+
+    def _get_signature(self):
+        return ("SAXSRestraint", self._filename, self._asyms,
+                self.segment, self.fitting_method, self.fitting_atom_type,
+                self.multi_state)
+
+    def add_model_fit(self, imp_restraint, model):
+        # We don't know the chi value; we only report a score
+        self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
+
+
 class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
-    def __init__(self, imp_restraint, info, modeled_assembly, system):
-        self._imp_restraint = imp_restraint
+    def __init__(self, imp_restraint, info, components, system):
+        self._info = info
         loc = ihm.location.InputFileLocation(
             info['filename'], details='Crosslinks')
         dataset = ihm.dataset.CXMSDataset(loc)
@@ -133,11 +233,11 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
             inchi=info.get('linker inchi'),
             inchi_key=info.get('linker inchi key'))
         super(_CrossLinkRestraint, self).__init__(
-                dataset=dataset, linker=linker)
+            dataset=dataset, linker=linker)
         # Map from IMP/RMF chain names to ihm.Entity
-        cmap = dict((e.description, e) for e in system.entities.get_all())
+        cmap = {e.description: e for e in system.entities}
         dist = ihm.restraint.UpperBoundDistanceRestraint(info['linker length'])
-        asym = _AsymMapper(imp_restraint.get_model(), system)
+        asym = _AsymMapper(imp_restraint.get_model(), components)
         self._add_all_links(IMP.RestraintSet.get_from(imp_restraint), cmap,
                             asym, dist)
 
@@ -175,60 +275,28 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
                          sigma2=_get_scale(m, info['sigmas'][1]))
                 self.cross_links.append(xl)
 
-    def add_model_fit(self, model):
+    def _get_signature(self):
+        # Assume that if we have the same restraint info (linker, csv file)
+        # and the same number of links, it is the same restraint.
+        # dict is not hashable, but a tuple of its items is.
+        return ("CXMSRestraint", tuple(self._info.items()),
+                len(self.cross_links), len(self.experimental_cross_links))
+
+    def add_model_fit(self, imp_restraint, model):
         pass  # todo
-
-
-class _EM2DRestraint(ihm.restraint.EM2DRestraint):
-    """Handle an IMP.em2d.PCAFitRestraint"""
-
-    def __init__(self, imp_restraint, info, modeled_assembly, system):
-        # todo: handle more than one image
-        self._imp_restraint = imp_restraint
-        loc = ihm.location.InputFileLocation(
-                info['image files'][0],
-                details="Electron microscopy class average")
-        dataset = ihm.dataset.EM2DClassDataset(loc)
-        super(_EM2DRestraint, self).__init__(
-            dataset=dataset,
-            assembly=modeled_assembly,  # todo: fill in correct assembly
-            segment=False,
-            number_raw_micrographs=info['micrographs number'] or None,
-            pixel_size_width=info['pixel size'],
-            pixel_size_height=info['pixel size'],
-            image_resolution=info['resolution'],
-            number_of_projections=info['projection number'])
-
-    def add_model_fit(self, model):
-        # todo: handle multiple images
-        nimage = 0
-        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
-        ccc = info['cross correlation'][nimage]
-        transform = self._get_transformation(model, info, nimage)
-        rot = transform.get_rotation()
-        rm = [[e for e in rot.get_rotation_matrix_row(i)] for i in range(3)]
-        self.fits[model] = ihm.restraint.EM2DRestraintFit(
-            cross_correlation_coefficient=ccc, rot_matrix=rm,
-            tr_vector=transform.get_translation())
-
-    def _get_transformation(self, model, info, nimage):
-        """Get the transformation that places the model on image nimage"""
-        r = info['rotation'][nimage * 4: nimage * 4 + 4]
-        t = info['translation'][nimage * 3: nimage * 3 + 3]
-        return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
-                                            IMP.algebra.Vector3D(*t))
 
 
 class _GeometricRestraint(ihm.restraint.GeometricRestraint):
     """Base for all geometric restraints"""
 
-    def __init__(self, imp_restraint, info, modeled_assembly, system):
-        self._imp_restraint = imp_restraint
-        asym = _AsymMapper(imp_restraint.get_model(), system)
+    def __init__(self, imp_restraint, info, components, system):
+        self._info = info
+        asym = _AsymMapper(imp_restraint.get_model(), components)
         super(_GeometricRestraint, self).__init__(
             dataset=None,
             geometric_object=self._geom_object,
-            feature=asym.get_feature(_get_input_pis(imp_restraint)),
+            feature=asym.get_feature(
+                IMP.get_input_particles(imp_restraint.get_inputs())),
             distance=self._get_distance(info),
             harmonic_force_constant=1. / info['sigma'],
             restrain_all=True)
@@ -236,8 +304,12 @@ class _GeometricRestraint(ihm.restraint.GeometricRestraint):
     def _get_distance(self, info):
         pass
 
-    def add_model_fit(self, model):
+    def add_model_fit(self, imp_restraint, model):
         pass
+
+    def _get_signature(self):
+        return ("GeometricRestraint", self.feature, self.geometric_object,
+                tuple(self._info.items()))
 
 
 class _ZAxialRestraint(_GeometricRestraint):
@@ -249,45 +321,44 @@ class _ZAxialRestraint(_GeometricRestraint):
             info['lower bound'], info['upper bound'])
 
 
-class _SAXSRestraint(ihm.restraint.SASRestraint):
-    """Handle an IMP.saxs.Restraint"""
-
-    def __init__(self, imp_restraint, info, modeled_assembly, system):
-        self._imp_restraint = imp_restraint
-        loc = ihm.location.InputFileLocation(
-            info['filename'], details='SAXS profile')
-        dataset = ihm.dataset.SASDataset(loc)
-        super(_SAXSRestraint, self).__init__(
-                dataset=dataset,
-                assembly=modeled_assembly,  # todo: fill in correct assembly
-                segment=False, fitting_method='IMP SAXS restraint',
-                fitting_atom_type=info['form factor type'],
-                multi_state=False)
-
-    def add_model_fit(self, model):
-        # We don't know the chi value; we only report a score
-        self.fits[model] = ihm.restraint.SASRestraintFit(chi_value=None)
-
-
-class _RestraintMapper(object):
+class _AllRestraints(object):
     """Map IMP restraints to mmCIF objects"""
-    def __init__(self, system):
-        self._typemap = {
-            "IMP.isd.GaussianEMRestraint": _GaussianEMRestraint,
-            "IMP.pmi.CrossLinkingMassSpectrometryRestraint":
-            _CrossLinkRestraint,
-            "IMP.em2d.PCAFitRestraint": _EM2DRestraint,
-            "IMP.npc.ZAxialPositionRestraint": _ZAxialRestraint,
-            "IMP.saxs.Restraint": _SAXSRestraint}
-        self._system = system
+    _typemap = {
+        "IMP.isd.GaussianEMRestraint": _EM3DRestraint,
+        "IMP.pmi.CrossLinkingMassSpectrometryRestraint": _CrossLinkRestraint,
+        "IMP.em2d.PCAFitRestraint": _make_em2d_restraint,
+        "IMP.npc.ZAxialPositionRestraint": _ZAxialRestraint,
+        "IMP.saxs.Restraint": _SAXSRestraint}
 
-    def handle(self, r, model, modeled_assembly):
+    def __init__(self, system, components):
+        self._system = system
+        self._components = components
+        self._seen_restraints = {}
+
+    def add(self, restraint):
+        """Add and return a new restraint"""
+        sig = restraint._get_signature()
+        if sig not in self._seen_restraints:
+            self._system.restraints.append(restraint)
+            self._seen_restraints[sig] = restraint
+        return self._seen_restraints[sig]
+
+    def handle(self, restraint, ihm_models):
         """Handle an individual IMP restraint.
-           @return a wrapped version of the restraint if it is handled in
-                   mmCIF, otherwise None."""
-        info = _parse_restraint_info(r.get_static_info())
+           Yield wrapped version(s) of the restraint if it is handled in
+           mmCIF (one IMP restraint may map to multiple mmCIF restraints).
+           These may be new or existing restraint objects."""
+        info = _parse_restraint_info(restraint.get_static_info())
         if 'type' in info and info['type'] in self._typemap:
-            r = self._typemap[info['type']](r, info, modeled_assembly,
-                                            self._system)
-            r.add_model_fit(model)
-            return r
+            cif_rs = self._typemap[info['type']](restraint,
+                                                 info, self._components,
+                                                 self._system)
+            try:
+                _ = iter(cif_rs)
+            except TypeError:
+                cif_rs = [cif_rs]
+            for cif_r in cif_rs:
+                cif_r = self.add(cif_r)
+                for model in ihm_models:
+                    cif_r.add_model_fit(restraint, model)
+                yield cif_r

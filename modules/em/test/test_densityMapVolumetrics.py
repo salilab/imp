@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
                                IMP.em.MRCReaderWriter())
         # 1z5s weights ~ 50 kDa
         weight_In_kD = 50000
-        # result/expactation discrepency in number of pixels
+        # result/expactation discrepancy in number of pixels
         epsilon = 4
 
         apix = dmap.get_spacing()

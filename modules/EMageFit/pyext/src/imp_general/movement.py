@@ -6,15 +6,12 @@ import IMP
 import IMP.algebra
 import IMP.atom
 import IMP.core
-import logging
 import random
 
 
 def apply_random_transform(rb, max_trans=100):
-    """
-        Apply a random transformation to the rigid body and change the reference
-        frame
-    """
+    """Apply a random transformation to the rigid body and change
+       the reference frame"""
     bb = IMP.algebra.BoundingBox3D(
                   IMP.algebra.Vector3D(-max_trans, -max_trans, -max_trans),
                   IMP.algebra.Vector3D(max_trans, max_trans, max_trans))
@@ -33,12 +30,12 @@ def apply_transformation_to_hierarchy(prot, T, fn_write=False):
     """
     R = T.get_rotation()
     t = T.get_translation()
-    xyz1 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(prot)]
+    xyz1 = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(prot)]
     coords = [p.get_coordinates() for p in xyz1]
     newvs = [R.get_rotated(v) + t for v in coords]
     for i in range(len(newvs)):
         xyz1[i].set_coordinates(newvs[i])
-    if(fn_write):
+    if fn_write:
         IMP.atom.write_pdb(prot, fn_write)
 
 

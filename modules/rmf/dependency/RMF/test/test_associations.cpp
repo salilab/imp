@@ -5,7 +5,7 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <assert.h>
+#include <cassert>
 #include <memory>
 #include <stdio.h>
 #include <exception>

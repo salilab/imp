@@ -1,6 +1,6 @@
 /**
- *  \file IMP/kernel/random_number_generation.h
- *  \brief GPU or CPU pooled random number generation
+ *  \file internal/random_number_generation_cuda.h
+ *  \brief GPU pooled random number generation
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

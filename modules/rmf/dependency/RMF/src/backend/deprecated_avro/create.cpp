@@ -36,12 +36,12 @@ namespace RMF {
 namespace avro_backend {
 namespace {
 
-typedef backends::BackwardsIO<avro_backend::AvroSharedData<
-    avro_backend::SingleAvroFile> > SingleAvroShareData;
-typedef backends::BackwardsIO<avro_backend::AvroSharedData<
-    avro_backend::MultipleAvroFileWriter> > AvroWriterShareData;
-typedef backends::BackwardsIO<avro_backend::AvroSharedData<
-    avro_backend::MultipleAvroFileReader> > AvroReaderShareData;
+using SingleAvroShareData = backends::BackwardsIO<avro_backend::AvroSharedData<
+    avro_backend::SingleAvroFile> >;
+using AvroWriterShareData = backends::BackwardsIO<avro_backend::AvroSharedData<
+    avro_backend::MultipleAvroFileWriter> >;
+using AvroReaderShareData = backends::BackwardsIO<avro_backend::AvroSharedData<
+    avro_backend::MultipleAvroFileReader> >;
 
 struct SingleTextAvroFactory : public RMF::backends::IOFactory {
   virtual std::string get_file_extension() const override {
@@ -55,7 +55,7 @@ struct SingleTextAvroFactory : public RMF::backends::IOFactory {
       const std::string& name) const override {
     return std::make_shared<SingleAvroShareData>(name, true, false);
   }
-  virtual ~SingleTextAvroFactory() {}
+  virtual ~SingleTextAvroFactory() = default;
 };
 
 struct SingleAvroFactory : public SingleTextAvroFactory {
@@ -76,7 +76,7 @@ struct SingleAvroFactory : public SingleTextAvroFactory {
       return std::shared_ptr<RMF::backends::IO>();
     }
   }
-  virtual ~SingleAvroFactory() {}
+  virtual ~SingleAvroFactory() = default;
 };
 
 struct MultipleAvroFactory : public RMF::backends::IOFactory {
@@ -91,7 +91,7 @@ struct MultipleAvroFactory : public RMF::backends::IOFactory {
       const std::string& name) const override {
     return std::make_shared<AvroWriterShareData>(name, true, false);
   }
-  virtual ~MultipleAvroFactory() {}
+  virtual ~MultipleAvroFactory() = default;
 };
 }  // namespace
 std::vector<std::shared_ptr<backends::IOFactory> > get_factories() {

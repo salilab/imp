@@ -107,7 +107,7 @@ class HexDocking(object):
 def parse_hex_transform(row):
     """
         Returns an HEX transform with the conventions used by IMP.
-        @param row A list containing a splitted line from the HEX output file
+        @param row A list containing a split line from the HEX output file
         NOTE: An HEX rotation is the inverse of the IMP convention
     """
     euler = [-float(x) for x in row[8:11]]
@@ -200,7 +200,7 @@ def get_internal_transform(Thex, rb_receptor, rb_ligand):
     """
         Get the internal transform (Ti) resulting from applying
         the transformation Thex (from HEX) that docks the ligand.
-        The relationship betwen the reference frame of the ligand docked
+        The relationship between the reference frame of the ligand docked
         (Tdock)  and the internal transformation (Ti) respect to the receptor
         (Trec) is Tdock = Trec * Tinternal
 

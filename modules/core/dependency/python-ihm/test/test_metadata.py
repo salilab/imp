@@ -45,10 +45,9 @@ class Tests(unittest.TestCase):
     def test_mrc_parser_emdb_ok(self):
         """Test MRCParser pointing to an MRC in EMDB, no network errors"""
         def mock_urlopen(url, timeout=None):
-            txt = ('{"EMD-1883":[{"deposition":'
-                   '{"map_release_date":"2011-04-21",'
-                   '"title":"test details"}}]}')
-            return StringIO(txt)
+            return StringIO(
+                '{"admin": {"key_dates": {"map_release": "2011-04-21"},'
+                '"title": "test details"}}')
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
         d = p.parse_file(fname)
@@ -167,6 +166,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
         self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
 
+    def test_bad_header(self):
+        """Test PDBParser when given a non-official PDB with HEADER line"""
+        pdbname = utils.get_input_file_name(TOPDIR, 'bad_header.pdb')
+        p = self._parse_pdb(pdbname)
+        self.assertEqual(p['templates'], {})
+        self.assertEqual(p['software'], [])
+        self.assertEqual(p['metadata'], [])
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        self.assertEqual(dataset.location.path, pdbname)
+        self.assertIsNone(dataset.location.repo)
+        self.assertEqual(dataset.location.details,
+                         'Starting model structure')
+
     def test_derived_pdb(self):
         """Test PDBarser when given a file derived from a PDB"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')
@@ -253,8 +266,11 @@ class Tests(unittest.TestCase):
             for t in templates:
                 self.assertIsNone(t.alignment_file)
 
-    def check_modeller_model(self, pdbname):
-        p = self._parse_pdb(pdbname)
+    def check_modeller_model(self, pdbname, cif=False):
+        if cif:
+            p = self._parse_cif(pdbname)
+        else:
+            p = self._parse_pdb(pdbname)
         dataset = p['dataset']
         self.assertEqual(sorted(p['templates'].keys()), ['A', 'B'])
         s1, s2 = p['templates']['A']
@@ -291,11 +307,18 @@ class Tests(unittest.TestCase):
         self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
         self.assertEqual(s.name, 'MODELLER')
-        self.assertEqual(s.version, '9.18')
-        self.assertEqual(
-            s.description,
-            'Comparative modeling by satisfaction of spatial restraints, '
-            'build 2017/02/10 22:21:34')
+        if cif:
+            self.assertEqual(s.version, '10.4')
+            self.assertEqual(
+                s.description,
+                'Comparative modeling by satisfaction of spatial restraints, '
+                'build 2023/10/23 11:26:12')
+        else:
+            self.assertEqual(s.version, '9.18')
+            self.assertEqual(
+                s.description,
+                'Comparative modeling by satisfaction of spatial restraints, '
+                'build 2017/02/10 22:21:34')
         return p
 
     def test_modeller_local(self):
@@ -454,6 +477,23 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(dataset.location, ihm.location.FileLocation)
         self.assertEqual(dataset.location.path, fname)
         self.assertEqual(dataset.location.details, 'Starting model structure')
+
+    def test_cif_modeller_model(self):
+        """Test CIFParser when given a Modeller model"""
+        fname = utils.get_input_file_name(TOPDIR, 'modeller_model.cif')
+        p = self.check_modeller_model(fname, cif=True)
+        aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
+        script = utils.get_input_file_name(TOPDIR, 'modeller_model.py')
+        self.assertEqual(p['script'].path, script)
+        for templates in p['templates'].values():
+            for t in templates:
+                self.assertEqual(t.alignment_file.path, aliname)
+
+    def test_cif_modeller_incomplete_model(self):
+        """Test CIFParser when given an incomplete Modeller model"""
+        fname = utils.get_input_file_name(TOPDIR, 'modeller_incomplete.cif')
+        p = self._parse_cif(fname)
+        self.assertIsNone(p['script'])
 
 
 if __name__ == '__main__':

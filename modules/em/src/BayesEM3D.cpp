@@ -10,7 +10,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/utility.h>
 #include <IMP/em/BayesEM3D.h>
-#include <math.h>
+#include <cmath>
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/unordered_set.hpp>
@@ -374,7 +374,7 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_get_score_and_derivative(
       bayesem3d_get_density_from_particle(em, ps, resolution);
   double *modelct = retct->get_data();
 
-  // Compute the sum and the sum^2 of the experimental EM denisty map
+  // Compute the sum and the sum^2 of the experimental EM density map
   // FloatPair em_sums = get_square_em_density(em, nvox);
 
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {

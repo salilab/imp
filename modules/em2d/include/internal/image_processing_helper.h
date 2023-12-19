@@ -59,10 +59,10 @@ int do_union(Ints &Labels, int i, int j);
 int get_new_label(const cvPixel &p, cvIntMat &mat_to_label, Ints &Labels,
                   int label);
 
-//! Decission tree copy function
+//! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, cvIntMat &mat_to_label);
 
-//! Decission tree copy function
+//! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, const cvPixel &c,
                   cvIntMat &mat_to_label, Ints &Labels);
 
@@ -86,11 +86,11 @@ void set_root(Ints &Labels, int i, int root);
 //! relabels the components
 void do_flatten_labels(Ints &Labels);
 
-//! Decission tree for neighbor exploration
-int get_label_using_decission_tree(const cvPixel &p, cvPixels &neighbors,
-                                   int background, const cvIntMat &m,
-                                   cvIntMat &mat_to_label, Ints &Labels,
-                                   int label);
+//! Decision tree for neighbor exploration
+int get_label_using_decision_tree(const cvPixel &p, cvPixels &neighbors,
+                                  int background, const cvIntMat &m,
+                                  cvIntMat &mat_to_label, Ints &Labels,
+                                  int label);
 
 //! SCT1 Scanning function
 /*!

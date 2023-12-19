@@ -309,7 +309,7 @@ void EnsembleGenerator::get_state_probabilities(const Ensemble& ensemble,
   Vector<unsigned int> states_counters(N_, 0);
   unsigned int total_state_num = 0;
 
-  // count the number of occurences of each state in MultiStateModels
+  // count the number of occurrences of each state in MultiStateModels
   // in the entire Ensemble (states_counters)
   for(unsigned int i=0; i<ensemble.size(); i++) {
     const Vector<unsigned int>& states = ensemble[i].get_states();
@@ -343,7 +343,7 @@ void EnsembleGenerator::get_weights_average_and_std(const Ensemble& ensemble,
   Vector<unsigned int> states_counters(N_, 0);
   Vector<Vector<double> > states_weights(N_);
 
-  // count the number of occurences of each state in MultiStateModels
+  // count the number of occurrences of each state in MultiStateModels
   // (states_counters) and store the weights (states_weights)
   for(unsigned int i=0; i<ensemble.size(); i++) {
     const Vector<unsigned int>& states = ensemble[i].get_states();

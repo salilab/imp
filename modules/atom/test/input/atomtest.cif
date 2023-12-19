@@ -1,0 +1,28 @@
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1    C CA  . ALA A   1  1    ? 953.312  704.510 700.259 1.00 84.31  ? 68   ALA 7  CA  1
+ATOM   2    C CA  . GLN MA  12 1    ? 862.521  620.909 612.377 1.00 10.00  ? 287  GLN K  CA  1 
+ATOM   3    C CA  . GLN B   12 1    ? 862.521  620.909 612.377 1.00 10.00  ? 287  GLN .  CA  1 
+HETATM 4    C C1  . BMC ZA  1  1    ? 953.312  704.510 700.259 1.00 84.31  ? 68   BMC Z7 C1  1
+ATOM   5    C CA  . GLN ZMA 12 1    ? 862.521  620.909 612.377 1.00 10.00  ? 287  GLN ZK CA  1 
+ATOM   6    C CA  . GLN ZB  12 1    ? 862.521  620.909 612.377 1.00 10.00  ? 287  GLN .  CA  1 

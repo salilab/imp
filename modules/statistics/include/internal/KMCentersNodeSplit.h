@@ -28,7 +28,7 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode {
  public:
   KMCentersNodeSplit() {}
-  //!Constractor
+  //! Constructor
   /**
 \param[in] dim the dimension of the points
 \param[in] bb the bounding box

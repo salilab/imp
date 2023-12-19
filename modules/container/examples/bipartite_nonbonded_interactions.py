@@ -9,7 +9,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "bipartite nonbonded interactions")
 
-# This example addes a restraint on bipartite nonbonded interactions
+# This example adds a restraint on bipartite nonbonded interactions
 # after excluding a set of bonded interactions.
 
 m = IMP.Model()

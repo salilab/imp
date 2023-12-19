@@ -5,11 +5,13 @@ import os
 import collections
 import operator
 import itertools
+import warnings
 import ihm.format
 import ihm.format_bcif
 import ihm.model
 import ihm.representation
 import ihm.source
+import ihm.multi_state_scheme
 import ihm.flr
 import ihm.dataset
 from . import util
@@ -92,8 +94,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.22",
-                     dict_location=self.URL % "ac49042")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.24",
+                     dict_location=self.URL % "9be59e1")
 
 
 class _StructDumper(Dumper):
@@ -261,13 +263,20 @@ class _ChemDescriptorDumper(Dumper):
 
 class _EntityDumper(Dumper):
     def finalize(self, system):
-        # Assign IDs and check for duplicates
+        # Assign IDs and check for duplicates or empty entities
         seen = {}
+        empty = []
         for num, entity in enumerate(system.entities):
-            if entity in seen:
+            if entity in seen and len(entity.sequence) > 0:
                 raise ValueError("Duplicate entity %s found" % entity)
+            if len(entity.sequence) == 0:
+                empty.append(entity)
             entity._id = num + 1
             seen[entity] = None
+        if empty:
+            warnings.warn(
+                "At least one empty Entity (with no sequence) was found: %s"
+                % empty)
 
     def dump(self, system, writer):
         # Count all molecules (if any) for each entity
@@ -427,7 +436,8 @@ class _StructRefDumper(Dumper):
                                  "not match that in %s (%s at position %d)"
                                  % (sd.monomer.code_canonical, entity,
                                     entseq[sd.seq_id - 1], sd.seq_id))
-            entseq[sd.seq_id - 1] = sd.db_monomer.code_canonical
+            if sd.db_monomer:
+                entseq[sd.seq_id - 1] = sd.db_monomer.code_canonical
         return ''.join(entseq)
 
     def _get_ranges(self, entity, ref, align):
@@ -525,7 +535,8 @@ class _StructRefDumper(Dumper):
                         for sd in a.seq_dif:
                             lp.write(pdbx_ordinal=next(ordinal),
                                      align_id=a._id, seq_num=sd.seq_id,
-                                     db_mon_id=sd.db_monomer.id,
+                                     db_mon_id=sd.db_monomer.id
+                                     if sd.db_monomer else ihm.unknown,
                                      mon_id=sd.monomer.id, details=sd.details)
 
 
@@ -597,7 +608,7 @@ class _EntityNonPolyDumper(Dumper):
         with writer.loop("_pdbx_entity_nonpoly",
                          ["entity_id", "name", "comp_id"]) as lp:
             for entity in system.entities:
-                if entity.is_polymeric():
+                if entity.is_polymeric() or entity.is_branched():
                     continue
                 lp.write(entity_id=entity._id, name=entity.description,
                          comp_id=entity.sequence[0].id)
@@ -653,10 +664,32 @@ class _EntityPolySegmentDumper(Dumper):
                     comp_id_end=entity.sequence[rng.seq_id_range[1] - 1].id)
 
 
+class _EntityBranchListDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_entity_branch_list",
+                         ["entity_id", "num", "comp_id", "hetero"]) as lp:
+            for entity in system.entities:
+                if not entity.is_branched():
+                    continue
+                for num, comp in enumerate(entity.sequence):
+                    lp.write(entity_id=entity._id, num=num + 1,
+                             comp_id=comp.id)
+
+
+class _EntityBranchDumper(Dumper):
+    def dump(self, system, writer):
+        # todo: we currently only support branched oligosaccharides
+        with writer.loop("_pdbx_entity_branch",
+                         ["entity_id", "type"]) as lp:
+            for entity in system.entities:
+                if not entity.is_branched():
+                    continue
+                lp.write(entity_id=entity._id, type="oligosaccharide")
+
+
 class _PolySeqSchemeDumper(Dumper):
     """Output the _pdbx_poly_seq_scheme table.
-       This is needed because it is a parent category of atom_site.
-       For now we assume we're using auth_seq_num==pdb_seq_num."""
+       This is needed because it is a parent category of atom_site."""
     def dump(self, system, writer):
         with writer.loop("_pdbx_poly_seq_scheme",
                          ["asym_id", "entity_id", "seq_id", "mon_id",
@@ -668,10 +701,11 @@ class _PolySeqSchemeDumper(Dumper):
                 if not entity.is_polymeric():
                     continue
                 for num, comp in enumerate(entity.sequence):
-                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    pdb_seq_num, auth_seq_num, ins = \
+                        asym._get_pdb_auth_seq_id_ins_code(num + 1)
                     lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
-                             seq_id=num + 1, pdb_seq_num=auth_seq_num,
+                             seq_id=num + 1, pdb_seq_num=pdb_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
                              auth_mon_id=comp.id,
@@ -689,10 +723,11 @@ class _NonPolySchemeDumper(Dumper):
                           "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
-                if entity.is_polymeric():
+                if entity.is_polymeric() or entity.is_branched():
                     continue
                 for num, comp in enumerate(asym.sequence):
-                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    pdb_seq_num, auth_seq_num, ins = \
+                        asym._get_pdb_auth_seq_id_ins_code(num + 1)
                     # ndb_seq_num is described as the "NDB/RCSB residue
                     # number". We don't have one of those but real PDBs
                     # usually seem to just count sequentially from 1, so
@@ -700,10 +735,70 @@ class _NonPolySchemeDumper(Dumper):
                     lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
                              ndb_seq_num=num + 1,
-                             pdb_seq_num=auth_seq_num,
+                             pdb_seq_num=pdb_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id,
                              auth_mon_id=comp.id, pdb_ins_code=ins)
+
+
+class _BranchSchemeDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_branch_scheme",
+                         ["asym_id", "entity_id", "mon_id", "num",
+                          "pdb_seq_num", "auth_seq_num",
+                          "auth_mon_id", "pdb_mon_id", "pdb_asym_id"]) as lp:
+            for asym in system.asym_units:
+                entity = asym.entity
+                if not entity.is_branched():
+                    continue
+                for num, comp in enumerate(asym.sequence):
+                    pdb_seq_num, auth_seq_num, ins = \
+                        asym._get_pdb_auth_seq_id_ins_code(num + 1)
+                    # Assume num counts sequentially from 1 (like seq_id)
+                    lp.write(asym_id=asym._id, pdb_asym_id=asym.strand_id,
+                             entity_id=entity._id,
+                             num=num + 1,
+                             pdb_seq_num=pdb_seq_num,
+                             auth_seq_num=auth_seq_num,
+                             mon_id=comp.id, auth_mon_id=comp.id,
+                             pdb_mon_id=comp.id)
+
+
+class _BranchDescriptorDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_entity_branch_descriptor",
+                         ["ordinal", "entity_id", "descriptor", "type",
+                          "program", "program_version"]) as lp:
+            for entity in system.entities:
+                for d in entity.branch_descriptors:
+                    lp.write(ordinal=next(ordinal), entity_id=entity._id,
+                             descriptor=d.text, type=d.type, program=d.program,
+                             program_version=d.program_version)
+
+
+class _BranchLinkDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_entity_branch_link",
+                         ["link_id", "entity_id", "entity_branch_list_num_1",
+                          "comp_id_1", "atom_id_1", "leaving_atom_id_1",
+                          "entity_branch_list_num_2", "comp_id_2", "atom_id_2",
+                          "leaving_atom_id_2", "value_order",
+                          "details"]) as lp:
+            for entity in system.entities:
+                for lnk in entity.branch_links:
+                    lp.write(
+                        link_id=next(ordinal), entity_id=entity._id,
+                        entity_branch_list_num_1=lnk.num1,
+                        comp_id_1=entity.sequence[lnk.num1 - 1].id,
+                        atom_id_1=lnk.atom_id1,
+                        leaving_atom_id_1=lnk.leaving_atom_id1,
+                        entity_branch_list_num_2=lnk.num2,
+                        comp_id_2=entity.sequence[lnk.num2 - 1].id,
+                        atom_id_2=lnk.atom_id2,
+                        leaving_atom_id_2=lnk.leaving_atom_id2,
+                        value_order=lnk.order, details=lnk.details)
 
 
 class _AsymIDProvider(object):
@@ -718,7 +813,7 @@ class _AsymIDProvider(object):
         self.index += 1
         while self.ids[self.index] in self.seen_ids:
             self.index += 1
-        # Note tha we don't need to add our own IDs to seen_ids since
+        # Note that we don't need to add our own IDs to seen_ids since
         # they are already guaranteed to be unique
         return self.ids[self.index]
 
@@ -1378,6 +1473,9 @@ class _RangeChecker(object):
         else:
             type_check = self._type_check_atom
             seq_id_range = (obj.seq_id, obj.seq_id)
+            # Allow seq_id to be either 1 or None for ligands
+            if obj.seq_id == 1 and asym.entity.type == 'non-polymer':
+                seq_id_range = (None, None)
             self._check_duplicate_atom(obj)
         self._check_assembly(obj, asym, seq_id_range)
         self._check_representation(obj, asym, type_check, seq_id_range)
@@ -1509,7 +1607,7 @@ class _ModelDumperBase(Dumper):
               "label_alt_id", "label_comp_id", "label_seq_id", "auth_seq_id",
               "pdbx_PDB_ins_code", "label_asym_id", "Cartn_x", "Cartn_y",
               "Cartn_z", "occupancy", "label_entity_id", "auth_asym_id",
-              "B_iso_or_equiv", "pdbx_PDB_model_num"]
+              "auth_comp_id", "B_iso_or_equiv", "pdbx_PDB_model_num"]
         if add_ihm:
             it.append("ihm_model_id")
         with writer.loop("_atom_site", it) as lp:
@@ -1518,8 +1616,10 @@ class _ModelDumperBase(Dumper):
                 for atom in model.get_atoms():
                     rngcheck(atom)
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
+                    label_seq_id = atom.seq_id
+                    if not atom.asym_unit.entity.is_polymeric():
+                        label_seq_id = None
                     comp = atom.asym_unit.sequence[seq_id - 1]
-                    water = isinstance(atom.asym_unit, ihm.WaterAsymUnit)
                     seen_types[atom.type_symbol] = None
                     auth_seq_id, ins = \
                         atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
@@ -1530,8 +1630,8 @@ class _ModelDumperBase(Dumper):
                              label_comp_id=comp.id,
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
-                             label_seq_id=None if water else atom.seq_id,
-                             auth_seq_id=auth_seq_id,
+                             label_seq_id=label_seq_id,
+                             auth_seq_id=auth_seq_id, auth_comp_id=comp.id,
                              pdbx_PDB_ins_code=ins or ihm.unknown,
                              auth_asym_id=atom.asym_unit.strand_id,
                              Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
@@ -2427,6 +2527,194 @@ def _assign_all_ids(all_objs_func):
     return objs_by_id
 
 
+class _MultiStateSchemeDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        s_id = itertools.count(1)
+        for s in system.multi_state_schemes:
+            if not hasattr(s, '_id'):
+                s._id = next(s_id)
+
+    def dump(self, system, writer):
+        with writer.loop('_ihm_multi_state_scheme',
+                         ['id', 'name', 'details']) as lp:
+            seen_multi_state_schemes = []
+            for s in system.multi_state_schemes:
+                if s not in seen_multi_state_schemes:
+                    seen_multi_state_schemes.append(s)
+                    lp.write(id=s._id,
+                             name=s.name,
+                             details=s.details)
+
+
+class _MultiStateSchemeConnectivityDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        c_id = itertools.count(1)
+        for c in system._all_multi_state_scheme_connectivities():
+            if not hasattr(c, '_id'):
+                c._id = next(c_id)
+
+    def dump(self, system, writer):
+        with writer.loop('_ihm_multi_state_scheme_connectivity',
+                         ['id', 'scheme_id', 'begin_state_id', 'end_state_id',
+                          'dataset_group_id', 'details']) as lp:
+            for mss in system.multi_state_schemes:
+                for c in mss.get_connectivities():
+                    end_state_id = c.end_state._id if \
+                        c.end_state is not None else None
+                    dataset_group_id = c.dataset_group._id if \
+                        c.dataset_group else None
+                    lp.write(id=c._id, scheme_id=mss._id,
+                             begin_state_id=c.begin_state._id,
+                             end_state_id=end_state_id,
+                             dataset_group_id=dataset_group_id,
+                             details=c.details)
+
+
+class _RelaxationTimeDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        r_id = itertools.count(1)
+        for r in system._all_relaxation_times():
+            if not hasattr(r, '_id'):
+                r._id = next(r_id)
+
+    def dump(self, system, writer):
+        self.dump_ihm_relaxation_time(system, writer)
+        self.dump_ihm_relaxation_time_multi_state_scheme(system, writer)
+
+    def dump_ihm_relaxation_time(self, system, writer):
+        with writer.loop('_ihm_relaxation_time',
+                         ['id', 'value', 'unit', 'amplitude',
+                          'dataset_group_id', 'external_file_id',
+                          'details']) as lp:
+            # Relaxation times that are only assigned to multi-state schemes
+            for r in system._all_relaxation_times():
+                dataset_group_id = r.dataset_group._id if \
+                    r.dataset_group else None
+                external_file_id = r.external_file._id if \
+                    r.external_file else None
+                lp.write(
+                    id=r._id,
+                    value=r.value,
+                    unit=r.unit,
+                    amplitude=r.amplitude,
+                    dataset_group_id=dataset_group_id,
+                    external_file_id=external_file_id,
+                    details=r.details)
+
+    def dump_ihm_relaxation_time_multi_state_scheme(self, system, writer):
+        with writer.loop('_ihm_relaxation_time_multi_state_scheme',
+                         ['id', 'relaxation_time_id', 'scheme_id',
+                          'scheme_connectivity_id', 'details']) as lp:
+            # Relaxation times that are only assigned to multi-state schemes
+            ordinal = itertools.count(1)
+            # Keep track of the seen relaxation times, in order to avoid
+            # writing duplicates when it comes to the flr_data
+            seen_relaxation_times = []
+            for mss in system.multi_state_schemes:
+                for r in mss.get_relaxation_times():
+                    if r not in seen_relaxation_times:
+                        seen_relaxation_times.append(r)
+                    lp.write(id=next(ordinal),
+                             relaxation_time_id=r._id,
+                             scheme_id=mss._id,
+                             scheme_connectivity_id=None,
+                             details=None)
+            # Relaxation times assigned to multi-state scheme connectivities
+            for mss in system.multi_state_schemes:
+                for mssc in mss.get_connectivities():
+                    if mssc.relaxation_time is not None:
+                        if mssc.relaxation_time not in seen_relaxation_times:
+                            seen_relaxation_times.append(mssc.relaxation_time)
+                        lp.write(
+                            id=next(ordinal),
+                            relaxation_time_id=mssc.relaxation_time._id,
+                            scheme_id=mss._id,
+                            scheme_connectivity_id=mssc._id,
+                            details=None)
+            # This case only occurs if the relaxation time was not assigned to
+            # a multi-state scheme, but occurs within the context of flr_data
+            for f in system.flr_data:
+                for c in f.relaxation_time_fret_analysis_connections:
+                    r = c.relaxation_time
+                    if r not in seen_relaxation_times:
+                        seen_relaxation_times.append(r)
+                        lp.write(id=next(ordinal),
+                                 relaxation_time_id=r._id,
+                                 scheme_id=None,
+                                 scheme_connectivity_id=None,
+                                 details=None)
+
+
+class _KineticRateDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        k_id = itertools.count(1)
+        for k in system._all_kinetic_rates():
+            if not hasattr(k, '_id'):
+                k._id = next(k_id)
+
+    def dump(self, system, writer):
+        with writer.loop('_ihm_kinetic_rate',
+                         ['id', 'transition_rate_constant',
+                          'equilibrium_constant',
+                          'equilibrium_constant_determination_method',
+                          'equilibrium_constant_unit', 'details',
+                          'scheme_connectivity_id',
+                          'dataset_group_id', 'external_file_id']) as lp:
+            ordinal = itertools.count(1)
+            seen_kinetic_rates = []
+            for mssc in system._all_multi_state_scheme_connectivities():
+                if mssc.kinetic_rate is not None:
+                    k = mssc.kinetic_rate
+                    seen_kinetic_rates.append(k)
+                    trconst = k.transition_rate_constant
+                    eqconst = k.equilibrium_constant
+                    dataset_group_id = k.dataset_group._id if \
+                        k.dataset_group else None
+                    external_file_id = k.external_file._id if \
+                        k.external_file else None
+                    lp.write(
+                        id=next(ordinal),
+                        transition_rate_constant=trconst,
+                        equilibrium_constant=None if
+                        eqconst is None else eqconst.value,
+                        equilibrium_constant_determination_method=None
+                        if eqconst is None else eqconst.method,
+                        equilibrium_constant_unit=None if
+                        eqconst is None else eqconst.unit,
+                        details=k.details,
+                        scheme_connectivity_id=mssc._id,
+                        dataset_group_id=dataset_group_id,
+                        external_file_id=external_file_id)
+            for f in system.flr_data:
+                for c in f.kinetic_rate_fret_analysis_connections:
+                    k = c.kinetic_rate
+                    if k not in seen_kinetic_rates:
+                        seen_kinetic_rates.append(k)
+                        trconst = k.transition_rate_constant
+                        eqconst = k.equilibrium_constant
+                        dataset_group_id = k.dataset_group._id if \
+                            k.dataset_group else None
+                        external_file_id = k.external_file._id if \
+                            k.external_file else None
+                        lp.write(
+                            id=next(ordinal),
+                            transition_rate_constant=trconst,
+                            equilibrium_constant=None if eqconst is None
+                            else eqconst.value,
+                            equilibrium_constant_determination_method=None
+                            if eqconst is None else eqconst.method,
+                            equilibrium_constant_unit=None if eqconst is None
+                            else eqconst.unit,
+                            details=k.details,
+                            scheme_connectivity_id=None,
+                            dataset_group_id=dataset_group_id,
+                            external_file_id=external_file_id)
+
+
 class _FLRExperimentDumper(Dumper):
     def finalize(self, system):
         def all_experiments():
@@ -3158,6 +3446,52 @@ class _FLRFPSMPPModelingDumper(Dumper):
                     mpp_atom_position_group_id=x.mpp_atom_position_group._id)
 
 
+class _FLRKineticRateFretAnalysisConnectionDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        c_id = itertools.count(1)
+        if system.flr_data:
+            for f in system.flr_data:
+                for c in f.kinetic_rate_fret_analysis_connections:
+                    if not hasattr(c, '_id'):
+                        c._id = next(c_id)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_kinetic_rate_analysis',
+                         ['id', 'fret_analysis_id',
+                          'kinetic_rate_id', 'details']) as lp:
+            if system.flr_data:
+                for f in system.flr_data:
+                    for c in f.kinetic_rate_fret_analysis_connections:
+                        lp.write(id=c._id,
+                                 fret_analysis_id=c.fret_analysis._id,
+                                 kinetic_rate_id=c.kinetic_rate._id,
+                                 details=c.details)
+
+
+class _FLRRelaxationTimeFretAnalysisConnectionDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        c_id = itertools.count(1)
+        if system.flr_data:
+            for f in system.flr_data:
+                for c in f.relaxation_time_fret_analysis_connections:
+                    if not hasattr(c, '_id'):
+                        c._id = next(c_id)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_relaxation_time_analysis',
+                         ['id', 'fret_analysis_id',
+                          'relaxation_time_id', 'details']) as lp:
+            if system.flr_data:
+                for f in system.flr_data:
+                    for c in f.relaxation_time_fret_analysis_connections:
+                        lp.write(id=c._id,
+                                 fret_analysis_id=c.fret_analysis._id,
+                                 relaxation_time_id=c.relaxation_time._id,
+                                 details=c.details)
+
+
 _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
                 _FLRExpConditionDumper, _FLRInstrumentDumper,
                 _FLREntityAssemblyDumper, _FLRSampleConditionDumper,
@@ -3169,7 +3503,9 @@ _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
                 _FLRPeakAssignmentDumper, _FLRDistanceRestraintDumper,
                 _FLRModelQualityDumper, _FLRModelDistanceDumper,
                 _FLRFPSModelingDumper, _FLRFPSAVModelingDumper,
-                _FLRFPSMPPModelingDumper]
+                _FLRFPSMPPModelingDumper,
+                _FLRKineticRateFretAnalysisConnectionDumper,
+                _FLRRelaxationTimeFretAnalysisConnectionDumper]
 
 
 class _NullLoopCategoryWriter(object):
@@ -3246,15 +3582,19 @@ class IHMVariant(Variant):
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
         _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,
-        _EntityPolySegmentDumper, _StructAsymDumper, _PolySeqSchemeDumper,
-        _NonPolySchemeDumper, _AssemblyDumper, _ExternalReferenceDumper,
+        _EntityPolySegmentDumper, _EntityBranchListDumper, _EntityBranchDumper,
+        _StructAsymDumper, _PolySeqSchemeDumper,
+        _NonPolySchemeDumper, _BranchSchemeDumper, _BranchDescriptorDumper,
+        _BranchLinkDumper, _AssemblyDumper, _ExternalReferenceDumper,
         _DatasetDumper, _ModelRepresentationDumper, _StartingModelDumper,
         _ProtocolDumper, _PostProcessDumper, _PseudoSiteDumper,
         _GeometricObjectDumper, _FeatureDumper, _CrossLinkDumper,
         _GeometricRestraintDumper, _DerivedDistanceRestraintDumper,
         _PredictedContactRestraintDumper, _EM3DDumper, _EM2DDumper, _SASDumper,
         _ModelDumper, _EnsembleDumper, _DensityDumper, _MultiStateDumper,
-        _OrderedDumper]
+        _OrderedDumper,
+        _MultiStateSchemeDumper, _MultiStateSchemeConnectivityDumper,
+        _RelaxationTimeDumper, _KineticRateDumper]
 
     def get_dumpers(self):
         return [d() for d in self._dumpers + _flr_dumpers]
@@ -3308,6 +3648,15 @@ def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
                ihm.dumper.write(fh, systems)
            with open('output.bcif', 'wb') as fh:
                ihm.dumper.write(fh, systems, format='BCIF')
+
+       If generating files for a tool that is sensitive to non-ASCII data,
+       a more restrictive encoding such as ASCII or ISO-8859-1 could also
+       be used (although note that this may lose some information such as
+       accented characters)::
+
+           with open('output.cif', 'w', encoding='ascii',
+                     errors='replace') as fh:
+               ihm.dumper.write(fh, systems)
 
        :param file fh: The file handle to write to.
        :param list systems: The list of :class:`ihm.System` objects to write.

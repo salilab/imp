@@ -2,7 +2,7 @@
  *  \file IMP/container/CloseBipartitePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -17,10 +17,12 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container_macros.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-/** \brief Return all spatially-proximals pairs of particles (a,b) from the
+/** \brief Return all spatially-proximal pairs of particles (a,b) from the
     two SingletonContainers A and B, where a is in A and b is in B.
 
     \see ClosePairContainer for a more detailed description. This
@@ -39,6 +41,13 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
     {
   typedef IMP::container::internal::CloseBipartitePairContainer P;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+            IMP::container::internal::CloseBipartitePairContainer>(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(CloseBipartitePairContainer);
+
  public:
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
@@ -54,6 +63,7 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
                               std::string name =
                                   "CloseBipartitePairContainer%1%");
 #endif
+  CloseBipartitePairContainer() {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 

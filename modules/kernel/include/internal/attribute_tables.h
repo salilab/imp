@@ -12,6 +12,7 @@
 #include <IMP/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
 #include <cereal/access.hpp>
+#include <algorithm>
 #include "../Key.h"
 #include "../utility.h"
 #include "../FloatIndex.h"
@@ -281,13 +282,139 @@ class BasicAttributeTable {
 };
 IMP_SWAP_1(BasicAttributeTable);
 
+/** a template for storing a table that holds the values of multiple attributes
+    for multiple particles, using sparse storage.
+*/
+template <class Traits>
+class SparseBasicAttributeTable {
+ public:
+  typedef typename Traits::Key Key;
+
+ private:
+  KeyVector<typename Traits::Key, typename Traits::Container> data_;
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  Mask *read_mask_, *write_mask_, *add_remove_mask_;
+#endif
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Note that we don't serialize masks; they are handled by Model
+    ar(data_);
+  }
+
+  void do_add_attribute(Key k, ParticleIndex particle,
+                        typename Traits::PassValue value) {
+    if (data_.size() <= k.get_index()) {
+      data_.resize(k.get_index() + 1);
+    }
+    data_[k.get_index()][particle] = value;
+  }
+
+ public:
+  void swap_with(SparseBasicAttributeTable<Traits> &o) {
+    IMP_SWAP_MEMBER(data_);
+  }
+
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  void set_masks(Mask *read_mask, Mask *write_mask, Mask *add_remove_mask) {
+    read_mask_ = read_mask;
+    write_mask_ = write_mask;
+    add_remove_mask_ = add_remove_mask;
+  }
+#endif
+
+  SparseBasicAttributeTable()
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+      : read_mask_(nullptr),
+        write_mask_(nullptr),
+        add_remove_mask_(nullptr)
+#endif
+  {
+  }
+
+  void add_attribute(Key k, ParticleIndex particle,
+                     typename Traits::PassValue value) {
+    IMP_CHECK_MASK(add_remove_mask_, particle, k, ADD, ATTRIBUTE);
+    do_add_attribute(k, particle, value);
+  }
+  void remove_attribute(Key k, ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle, k, REMOVE, ATTRIBUTE);
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't remove attribute if it isn't there");
+    data_[k.get_index()].erase(particle);
+  }
+
+  //! Get the size of the attribute table for the given key.
+  //! 0 is returned if the attribute does not exist in the model.
+  unsigned get_attribute_size(Key k) const {
+    if (data_.size() <= k.get_index()) {
+      return 0;
+    } else {
+      return data_[k.get_index()].size();
+    }
+  }
+
+  bool get_has_attribute(Key k, ParticleIndex particle) const {
+    if (data_.size() <= k.get_index()) {
+      return false;
+    } else {
+      return data_[k.get_index()].count(particle) > 0;
+    }
+  }
+  void set_attribute(Key k, ParticleIndex particle,
+                     typename Traits::PassValue value) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Setting invalid attribute: " << k << " of particle "
+                                                  << particle);
+    data_[k.get_index()][particle] = value;
+  }
+
+  typename Traits::PassValue get_attribute(Key k, ParticleIndex particle
+					    , bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const
+    {
+      IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
+      IMP_CHECK_MASK_IF_CHECKED(read_mask_, particle, k, GET, ATTRIBUTE );
+      return data_[k.get_index()].at(particle);
+    }
+
+  void clear_attributes(ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle, Key(0), REMOVE, ATTRIBUTE);
+    for (unsigned int i = 0; i < data_.size(); ++i) {
+      data_[i].erase(particle);
+    }
+  }
+
+  unsigned int size() const { return data_.size(); }
+  unsigned int size(unsigned int i) const { return data_[i].size(); }
+};
+IMP_SWAP_1(SparseBasicAttributeTable);
+
+// VectorD and SphereD do not support operator==, so provide our
+// own functions to test for exact equality (to be used during serialization)
+template<class T> struct vector_equal {
+  bool operator()(const T&a, const T&b) {
+    return std::equal(a.begin(), a.end(), b.begin());
+  }
+};
+
+template<class T> struct sphere_equal {
+  bool operator()(const T&a, const T&b) {
+    return a.get_radius() == b.get_radius() && std::equal(a.get_center().begin(), a.get_center().end(), b.get_center().begin());
+  }
+};
+
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
   // vector<algebra::Sphere3D> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
-  IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D>
+  IndexVector<ParticleIndexTag, algebra::Sphere3D,
+              sphere_equal<algebra::Sphere3D> > spheres_;
+  IndexVector<ParticleIndexTag, algebra::Sphere3D,
+              sphere_equal<algebra::Sphere3D> > sphere_derivatives_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D,
+              vector_equal<algebra::Vector3D> > internal_coordinates_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D,
+              vector_equal<algebra::Vector3D> >
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
@@ -369,7 +496,7 @@ class FloatAttributeTable {
     return internal_coordinates_[particle];
   }
 
-  /**  Expert function to add derviatives in v directly to xyzr_deriv[0..2],
+  /**  Expert function to add derivatives in v directly to xyzr_deriv[0..2],
        after transforming the derivative using da (static cause does not depend
        on model instance)
 
@@ -386,7 +513,7 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(xyzr_deriv[2], da(v[2]));
   }
 
-  //! add derviatives in v to xyz derivative of particle, after
+  //! add derivatives in v to xyz derivative of particle, after
   //! transforming the derivative using da
   void add_to_coordinate_derivatives(ParticleIndex particle,
                                      const algebra::Vector3D &v,
@@ -878,6 +1005,15 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
 
+typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
+    SparseStringAttributeTable;
+typedef SparseBasicAttributeTable<internal::SparseIntAttributeTableTraits>
+    SparseIntAttributeTable;
+typedef SparseBasicAttributeTable<internal::SparseFloatAttributeTableTraits>
+    SparseFloatAttributeTable;
+typedef SparseBasicAttributeTable<internal::SparseParticleAttributeTableTraits>
+    SparseParticleAttributeTable;
+
 struct Masks {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   mutable Mask read_mask_, write_mask_, add_remove_mask_,
@@ -896,8 +1032,16 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::set_attribute;       \
   using Base::get_attribute;       \
   using Base::access_attribute
+#define IMP_MODEL_SPARSE_IMPORT(Base)     \
+  using Base::add_attribute;       \
+  using Base::remove_attribute;    \
+  using Base::get_attribute_size;   \
+  using Base::get_has_attribute;   \
+  using Base::set_attribute;       \
+  using Base::get_attribute
 #else
 #define IMP_MODEL_IMPORT(Base)
+#define IMP_MODEL_SPARSE_IMPORT(Base)
 #endif
 
 #endif /* IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H */

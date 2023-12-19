@@ -260,6 +260,21 @@ _ihm_multi_state_model_group_link.model_group_id
         h1 = IMP.atom.get_by_type(nup85_2.hier, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(mapper[h1[0]]._id, 'B')
 
+    def test_asym_id_copy_order(self):
+        """Test correct ordering of AsymUnits when using copies"""
+        m = IMP.Model()
+        po = IMP.pmi.mmcif.ProtocolOutput()
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        clone = nup84.create_clone("A")
+
+        _ = s.build()
+        self.assertEqual(["Nup84.0", "Nup84.1"],
+                         [x.details for x in po.system.asym_units])
+
     def test_rna_dna(self):
         """Test handling of RNA/DNA sequences"""
         m = IMP.Model()
@@ -510,11 +525,12 @@ _atom_site.Cartn_z
 _atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
+_atom_site.auth_comp_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 . CA . MET 1 1 ? A -8.986 11.688 -5.817 . 1 A . 1 1
-ATOM 2 . CA . GLU 2 2 ? A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 1 . CA . MET 1 1 ? A -8.986 11.688 -5.817 . 1 A MET . 1 1
+ATOM 2 . CA . GLU 2 2 ? A -8.986 11.688 -5.817 . 1 A GLU . 1 1
 #
 #
 loop_
@@ -2032,6 +2048,63 @@ _ihm_model_representation_details.model_object_count
 _ihm_model_representation_details.description
 1 1 1 Nup84 A 1 sphere 1 rigid by-residue . .
 2 1 1 Nup84 A 2 sphere . flexible by-feature 1 .
+#
+""")
+
+    def test_model_repr_dump_clone(self):
+        """Test ModelRepresentationDumper with clones"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = IMP.pmi.mmcif.ProtocolOutput()
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        clone = nup84.create_clone("B")
+        _ = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_rigid_body(nup84.get_atomic_residues())
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        self.assign_entity_asym_ids(po.system)
+        self.assign_range_ids(po.system)
+        # Need this to assign starting model details
+        ihm.dumper._StartingModelDumper().finalize(po.system)
+        d = ihm.dumper._ModelRepresentationDumper()
+        d.finalize(po.system)
+        d.dump(po.system, w)
+        r, = po.system.orphan_representations
+        self.assertEqual([f.asym_unit.seq_id_range for f in r],
+                         [(1, 2), (3, 4), (1, 2), (3, 4)])
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_model_representation.id
+_ihm_model_representation.name
+_ihm_model_representation.details
+1 'Default representation' .
+#
+#
+loop_
+_ihm_model_representation_details.id
+_ihm_model_representation_details.representation_id
+_ihm_model_representation_details.entity_id
+_ihm_model_representation_details.entity_description
+_ihm_model_representation_details.entity_asym_id
+_ihm_model_representation_details.entity_poly_segment_id
+_ihm_model_representation_details.model_object_primitive
+_ihm_model_representation_details.starting_model_id
+_ihm_model_representation_details.model_mode
+_ihm_model_representation_details.model_granularity
+_ihm_model_representation_details.model_object_count
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 rigid by-residue . .
+2 1 1 Nup84 A 2 sphere . flexible by-feature 1 .
+3 1 1 Nup84 B 1 sphere 2 rigid by-residue . .
+4 1 1 Nup84 B 2 sphere . flexible by-feature 1 .
 #
 """)
 

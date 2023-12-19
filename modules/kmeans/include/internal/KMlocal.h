@@ -71,7 +71,7 @@ typedef KMlocal *KMlocalPtr;  // generic algorithm pointer
 //      circumstances (e.g., as part of a simulated annealing approach).
 //      Accepting a solution means copying the current solution to the
 //      saved solution.  In some cases, the acceptance may involve
-//      reseting the current solution to a random solution.
+//      resetting the current solution to a random solution.
 //
 //      Generic Algorithm:
 //      ------------------
@@ -218,7 +218,7 @@ class IMPKMEANSEXPORT KMlocal  // generic local search
 //      ends in failure.  The phase ends with the first failed run.
 //
 //      This multi-level algorithm is implemented as follows.  When a
-//      run is finished, we test whether the accumlated RDL exceeds the
+//      run is finished, we test whether the accumulated RDL exceeds the
 //      minAccumRDL.  If not, then the run is unsuccessful and so we
 //      need to end the phase.
 //
@@ -227,7 +227,7 @@ class IMPKMEANSEXPORT KMlocal  // generic local search
 //      maxRunStage
 //            Maximum number of stages per run.
 //      minAccumRDL
-//            Minimum accumlated RDL for stage to be considered
+//            Minimum accumulated RDL for stage to be considered
 //            successful.
 //
 //      State variables
@@ -451,7 +451,7 @@ class IMPKMEANSEXPORT KMlocalSwap : public KMlocal {
 //
 //      Simulated Annealing Choice
 //      --------------------------
-//      Following the principal of simulated annealing, we somtimes
+//      Following the principal of simulated annealing, we sometimes
 //      chose to accept a solution, even if it is not an improvement.
 //      This choice occurs with probability:
 //
@@ -506,7 +506,7 @@ class IMPKMEANSEXPORT KMlocalSwap : public KMlocal {
 //            Initial probability of accepting an solution that does
 //            not alter the distortion.
 //      tempRunLength
-//            The number of stages before chaning the temperature.
+//            The number of stages before changing the temperature.
 //      tempReducFactor
 //            The factor by which temperature is reduced at the end of
 //            a temperature run.

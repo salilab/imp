@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/evaluate_utility.h
+ *  \brief Useful utilities for scoring function evaluation.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

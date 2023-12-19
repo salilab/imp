@@ -47,7 +47,7 @@ class HeapRecord(tuple):
             comparison is transformed into a greater-than
         """
         i = self.i
-        if(self[i] > other[i]):
+        if self[i] > other[i]:
             return True
         return False
 
@@ -116,12 +116,12 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
             # Fill heap
             for d in data:
                 a = HeapRecord(d, ind)
-                if(len(best_records) < max_number):
+                if len(best_records) < max_number:
                     heapq.heappush(best_records, a)
                 else:
                     # remember that < here compares for greater em2d value,
                     # as a HeapRecord is used
-                    if(best_records[0] < a):
+                    if best_records[0] < a:
                         heapq.heapreplace(best_records, a)
         except Exception as e:
             log.error("Error for %s: %s", fn, e)
@@ -556,7 +556,7 @@ class ResultsDB(database.Database2):
     def get_solutions_from_list(self, fields=False, solutions_ids=[]):
         """
             Recover solutions for a specific list of results
-            @param fields Fields to recover fro the database
+            @param fields Fields to recover from the database
             @param solutions_ids A list with the desired solutions.
                    E.g. [0,3,6]
         """

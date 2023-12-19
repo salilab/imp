@@ -1,0 +1,19 @@
+{
+  "producer" : {
+    "file_version" : 1, "name" : "IMP.sampcon", "version" : "2.19.0"
+  },
+  "density_custom_ranges" : {
+    "all_foo" : [ "foo" ],
+    "part_bar" : [ [2, 3, "bar"] ]
+  },
+  "clusters": [
+    {
+      "name" : "cluster.0",
+      "precision" : 2.43,
+      "density" : {
+        "all_foo" : "test_1.mrc",
+        "part_bar" : "test_2.mrc"
+      }
+    }
+  ]
+}

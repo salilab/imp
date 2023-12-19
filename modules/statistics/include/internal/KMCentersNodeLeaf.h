@@ -1,5 +1,6 @@
 /**
- * \file KMCentersNode.h \brief leaf node of the kc-tree
+ * \file internal/KMCentersNodeLeaf.h
+ * \brief leaf node of the kc-tree
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
@@ -26,7 +27,7 @@ class IMPSTATISTICSEXPORT KMCentersNodeLeaf : public KMCentersNode {
 
  public:
   KMCentersNodeLeaf() {}
-  //! Constractor
+  //! Constructor
   /**
 \param[in] bb the bounding rectangle of the points that are associated
               with the node

@@ -1,7 +1,7 @@
 /**
  *  \file MovedSingletonContainer.h
  *  \brief Keep track of the maximum change of a set of attributes
- *         for e.g., incremental updateing of close pair containers.
+ *         for e.g., incremental updating of close pair containers.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

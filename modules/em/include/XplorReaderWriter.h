@@ -13,7 +13,7 @@
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include "internal/XplorHeader.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <iomanip>
 

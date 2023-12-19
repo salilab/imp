@@ -674,23 +674,6 @@ class Tests(IMP.test.TestCase):
             self.assertIn(i, a)
             self.assertIn(i, b)
 
-    def test_get_is_canonical(self):
-        """Test get PMI2 structures are canonical"""
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
-        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
-        st1 = s.create_state()
-
-        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
-        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(55,63),offset=-54)
-        m1.add_representation(a1,resolutions=[0,1])
-        hier = s.build()
-        sel0 = IMP.atom.Selection(hier,molecule="Prot1",resolution=0).get_selected_particles()
-        sel1 = IMP.atom.Selection(hier,molecule="Prot1",resolution=1).get_selected_particles()
-        for p in sel0+sel1:
-            self.assertTrue(IMP.pmi.get_is_canonical(p))
-
     def test_set_coordinates_from_rmf(self):
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)

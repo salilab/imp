@@ -1,27 +1,23 @@
-#[=======================================================================[.rst:
-FindRMF
--------
-
-Try to find RMF
-
-Result Variables
-^^^^^^^^^^^^^^^^
-
-This module defines the following variables:
-
-``RMF_FOUND``
-  system has RMF
-``RMF_INCLUDE_PATH``
-  the RMF include directory
-``RMF_SWIG_PATH``
-  the directory containing SWIG (.i) files for RMF
-``RMF_LIBRARY``
-  Link this to use RMF
-``RMF_VERSION_STRING``
-  the version of RMF found
-
-
-#]=======================================================================]
+# FindRMF
+# -------
+#
+# Try to find RMF
+#
+# Result Variables
+# ^^^^^^^^^^^^^^^^
+#
+# This module defines the following variables:
+#
+# ``RMF_FOUND``
+#   system has RMF
+# ``RMF_INCLUDE_PATH``
+#   the RMF include directory
+# ``RMF_SWIG_PATH``
+#   the directory containing SWIG (.i) files for RMF
+# ``RMF_LIBRARY``
+#   Link this to use RMF
+# ``RMF_VERSION_STRING``
+#   the version of RMF found
 
 
 find_path(RMF_INCLUDE_PATH RMF.h PATH_SUFFIXES include)
@@ -33,9 +29,15 @@ endif()
 if (RMF_INCLUDE_PATH AND EXISTS "${RMF_INCLUDE_PATH}/RMF/config.h")
   file(STRINGS "${RMF_INCLUDE_PATH}/RMF/config.h" RMF_MAJOR_H REGEX "#define RMF_VERSION_MAJOR +([0-9]+)")
   file(STRINGS "${RMF_INCLUDE_PATH}/RMF/config.h" RMF_MINOR_H REGEX "#define RMF_VERSION_MINOR +([0-9]+)")
+  file(STRINGS "${RMF_INCLUDE_PATH}/RMF/config.h" RMF_MICRO_H REGEX "#define RMF_VERSION_MICRO +([0-9]+)")
   string(REGEX REPLACE " *#define RMF_VERSION_MAJOR +([0-9]+) *" "\\1" RMF_VERSION_MAJOR "${RMF_MAJOR_H}")
   string(REGEX REPLACE " *#define RMF_VERSION_MINOR +([0-9]+) *" "\\1" RMF_VERSION_MINOR "${RMF_MINOR_H}")
-  set(RMF_VERSION_STRING "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}")
+  string(REGEX REPLACE " *#define RMF_VERSION_MICRO +([0-9]+) *" "\\1" RMF_VERSION_MICRO "${RMF_MICRO_H}")
+  if (RMF_MICRO_H)
+    set(RMF_VERSION_STRING "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}.${RMF_VERSION_MICRO}")
+  else()
+    set(RMF_VERSION_STRING "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}")
+  endif()
 endif()
 
 include(FindPackageHandleStandardArgs)

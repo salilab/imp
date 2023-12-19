@@ -1,6 +1,6 @@
 /**
  *  \file endian.cpp
- *  \brief Functions to deal with endianess
+ *  \brief Functions to deal with endianness
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */
 

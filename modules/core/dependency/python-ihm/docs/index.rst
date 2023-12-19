@@ -48,7 +48,8 @@ API Reference:
    reader
    dictionary
    flr
-   
+   multi_state_scheme
+
 
 Indices and tables
 ==================

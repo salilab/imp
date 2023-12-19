@@ -19,7 +19,7 @@
 #include "Key.h"
 #include "internal/AttributeTable.h"
 #include <IMP/Object.h>
-#include <IMP/base_utility.h>
+#include <IMP/utility.h>
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
 #include <utility>
@@ -75,6 +75,19 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object *);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object *);
+
+#define IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
+  inline void add_attribute(UCName##Key name, Value initial_value);           \
+  inline void remove_attribute(UCName##Key name);                             \
+  inline bool has_attribute(UCName##Key name) const;                          \
+  inline Value get_value(UCName##Key name) const;                             \
+  inline void set_value(UCName##Key name, Value value)
+
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseString, string, String);
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseInt, int, Int);
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseFloat, float, Float);
+  IMP_KERNEL_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DECL(SparseParticleIndex,
+                                                 particle_index, ParticleIndex);
 
   /** @name Float Attributes
        Float attributes can be optimized, meaning an Optimizer class is
@@ -244,6 +257,34 @@ IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Ints, ints, Ints);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, Object *);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, Object *);
+
+#define IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(UCName, lcname, Value)         \
+  void Particle::add_attribute(UCName##Key name, Value initial_value) {       \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->add_attribute(name, id_, initial_value);                     \
+  }                                                                           \
+  void Particle::remove_attribute(UCName##Key name) {                         \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->remove_attribute(name, id_);                                 \
+  }                                                                           \
+  bool Particle::has_attribute(UCName##Key name) const {                      \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->get_has_attribute(name, id_);                         \
+  }                                                                           \
+  Value Particle::get_value(UCName##Key name) const {                         \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->get_attribute(name, id_);                             \
+  }                                                                           \
+  void Particle::set_value(UCName##Key name, Value value) {                   \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->set_attribute(name, id_, value);                             \
+  }
+
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseString, string, String);
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseInt, int, Int);
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseFloat, float, Float);
+IMP_SPARSE_PARTICLE_ATTRIBUTE_TYPE_DEF(SparseParticleIndex, particle_index,
+                                       ParticleIndex);
 
 #endif // DOXYGEN
 

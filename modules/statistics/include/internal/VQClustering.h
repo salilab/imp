@@ -92,8 +92,8 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   Sample possible centers.
   The function is divided into runs and each run into steps.
   At each run, centers are randomly selected from the data points.
-  At each stage, the attributes of the selecteds center are then refined
-  to best match a randmoly selected data point.
+  At each stage, the attributes of the selected center are then refined
+  to best match a randomly selected data point.
   The centers are updated in the following way:
   1. The centers are first sorted from the closest to the
   farthest to the randomly selected data point
@@ -128,7 +128,7 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   VQClusteringParameters par_;
   bool show_status_bar_;
   int k_;        // number of centers
-  bool is_set_;  // is_set_ is true if the clustering was preformed
+  bool is_set_;  // is_set_ is true if the clustering was performed
   const Array1DD_VEC *data_;
   PointerMember<DataPoints> full_data_;
   Array1DD_VEC centers_;

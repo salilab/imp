@@ -16,17 +16,20 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     : Object("RigidBodiesProfileHandler%1%") {
   boost::unordered_map<ParticleIndex, Particles> rigid_bodies;
   for (unsigned int i = 0; i < particles.size(); ++i) {
-    if (core::RigidMember::get_is_setup(particles[i])) {
-      ParticleIndex pi =
+    if (atom::Atom::get_is_setup(particles[i])
+        || (ff_type == RESIDUES && atom::Residue::get_is_setup(particles[i]))) {
+      if (core::RigidMember::get_is_setup(particles[i])) {
+        ParticleIndex pi =
           core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
-      rigid_bodies[pi].push_back(particles[i]);
-    } else {
-      if (ff_type ==RESIDUES && atom::Residue::get_is_setup(particles[i])) {
-          particles_.push_back(particles[i]);
-      } 
-      else if (atom::Atom::get_is_setup(particles[i])) {
-          particles_.push_back(particles[i]);          
+        rigid_bodies[pi].push_back(particles[i]);
+      } else {
+        particles_.push_back(particles[i]);
       }
+    } else {
+      IMP_THROW("SAXS::RigidBodiesProfileHandler: invalid particle provided "
+                "(only " << (ff_type == RESIDUES ? "Atom or Residue" : "Atom")
+                << " particles are considered): " << particles[i],
+                IMP::TypeException);
     }
   }
 
@@ -174,13 +177,19 @@ ModelObjectsTemp RigidBodiesProfileHandler::do_get_inputs() const {
   ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz = pts.size();
   for (unsigned int i = 0; i < sz; ++i) {
-    pts.push_back(atom::Hierarchy(particles_[i]).get_parent());
+    atom::Hierarchy h = atom::Hierarchy(particles_[i]).get_parent();
+    if (h) {
+      pts.push_back(h);
+    }
   }
   for (unsigned int i = 0; i < rigid_bodies_.size(); ++i) {
     pts.insert(pts.end(), rigid_bodies_[i].begin(), rigid_bodies_[i].end());
     for (unsigned int j = 0; j < rigid_bodies_[i].size(); ++j) {
       // add the residue particle since that is needed too
-      pts.push_back(atom::Hierarchy(rigid_bodies_[i][j]).get_parent());
+      atom::Hierarchy h = atom::Hierarchy(rigid_bodies_[i][j]).get_parent();
+      if (h) {
+        pts.push_back(h);
+      }
     }
   }
   return pts;

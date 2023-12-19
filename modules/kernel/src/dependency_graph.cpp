@@ -22,7 +22,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 
 #include <IMP/file.h>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/vector_property_map.h>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/unordered_set.hpp>
 

@@ -8,7 +8,7 @@
 #include <IMP/macros.h>
 #include <IMP/Object.h>
 #include <IMP/constants.h>
-#include <math.h>
+#include <cmath>
 #include <IMP/log.h>
 
 IMPISD_BEGIN_NAMESPACE

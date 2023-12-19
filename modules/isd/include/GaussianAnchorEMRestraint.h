@@ -16,7 +16,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/container/CloseBipartitePairContainer.h>
 #include <map>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

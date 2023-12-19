@@ -1,6 +1,6 @@
 /**
  *  \file rotation_helper.cp
- *  \brief Funtions related with rotations in em2d
+ *  \brief Functions related with rotations in em2d
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
 */

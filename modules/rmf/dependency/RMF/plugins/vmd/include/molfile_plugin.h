@@ -298,7 +298,7 @@ typedef struct {
   int memory;  /**< amount of memory used in Mbyte. */
   int runtype; /**< flag indicating the calculation method. */
   int scftype; /**< SCF type: RHF, UHF, ROHF, GVB or MCSCF wfn. */
-  int status;  /**< indicates wether SCF and geometry optimization
+  int status;  /**< indicates whether SCF and geometry optimization
    *   have converged properly. */
   int num_electrons; /**< number of electrons.    XXX: can be fractional in some
                         DFT codes */
@@ -324,7 +324,7 @@ typedef struct {
   int *num_shells_per_atom; /**< number of shells per atom */
   int *num_prim_per_shell;  /**< number of shell primitives shell */
 
-  float *basis; /**< contraction coeffients and exponents for
+  float *basis; /**< contraction coefficients and exponents for
                  *   the basis functions in the form
                  *   {exp(1), c-coeff(1), exp(2), c-coeff(2), ...};
                  *   array size = 2*num_basis_funcs
@@ -633,7 +633,7 @@ typedef struct {
 #endif
 
   /**
-   * XXX this function will be augmented and possibly superceded by a
+   * XXX this function will be augmented and possibly superseded by a
    *     new QM-capable version named read_timestep(), when finished.
    *
    * Read the next timestep from the file.  Return MOLFILE_SUCCESS, or

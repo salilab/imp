@@ -1,9 +1,6 @@
 %pythoncode %{
 
-import math
-import imp
 import os
-import sys
 import tempfile
 import shutil
 import IMP.atom

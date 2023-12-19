@@ -15,12 +15,12 @@ import sys
 # Handle different naming of urllib in Python 2/3
 try:
     import urllib.request as urllib2
-except ImportError:
+except ImportError:    # pragma: no cover
     import urllib2
 import json
 from . import util
 
-__version__ = '0.38'
+__version__ = '0.43'
 
 
 class __UnknownValue(object):
@@ -222,6 +222,10 @@ class System(object):
         #: See :class:`~ihm.flr.FLRData`.
         self.flr_data = []
 
+        #: All multi-state schemes
+        #: See :class:`~ihm.multi_state_scheme.MultiStateScheme`.
+        self.multi_state_schemes = []
+
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
         # Clear out any existing components
@@ -243,8 +247,9 @@ class System(object):
                 yield group, model
 
     def update_locations_in_repositories(self, repos):
-        """Update all :class:`Location` objects in the system that lie within
-           a checked-out :class:`Repository` to point to that repository.
+        """Update all :class:`~ihm.location.Location` objects in the system
+           that lie within a checked-out :class:`~ihm.location.Repository`
+           to point to that repository.
 
            This is intended for the use case where the current working
            directory is a checkout of a repository which is archived somewhere
@@ -272,6 +277,19 @@ class System(object):
             if isinstance(loc, ihm.location.FileLocation):
                 ihm.location.Repository._update_in_repos(loc, repos)
 
+    def report(self, fh=sys.stdout):
+        """Print a summary report of this system. This can be used to
+           more easily spot errors or inconsistencies. It will also warn
+           about missing data that may not be technically required for a
+           compliant mmCIF file, but is usually expected to be present.
+
+           :param file fh: The file handle to print the report to, if not
+                  standard output.
+        """
+        import ihm.report
+        r = ihm.report.Reporter(self, fh)
+        r.report()
+
     def _all_restraints(self):
         """Iterate over all Restraints in the system.
            Duplicates may be present."""
@@ -297,10 +315,22 @@ class System(object):
            by a State object; otherwise, also include ModelGroups referenced
            by an OrderedProcess or Ensemble."""
         # todo: raise an error if a modelgroup is present in multiple states
+        seen_model_groups = []
         for state_group in self.state_groups:
             for state in state_group:
                 for model_group in state:
+                    seen_model_groups.append(model_group)
                     yield model_group
+        for mssc in self._all_multi_state_scheme_connectivities():
+            for model_group in mssc.begin_state:
+                if model_group not in seen_model_groups:
+                    seen_model_groups.append(model_group)
+                    yield model_group
+            if mssc.end_state:
+                for model_group in mssc.end_state:
+                    if model_group not in seen_model_groups:
+                        seen_model_groups.append(model_group)
+                        yield model_group
         if not only_in_states:
             for ensemble in self.ensembles:
                 if ensemble.model_group:
@@ -383,7 +413,14 @@ class System(object):
             (step.dataset_group for step in self._all_protocol_steps()
              if step.dataset_group),
             (step.dataset_group for step in self._all_analysis_steps()
-             if step.dataset_group))
+             if step.dataset_group),
+            (rt.dataset_group for rt in self._all_relaxation_times()
+             if rt.dataset_group),
+            (kr.dataset_group for kr in self._all_kinetic_rates()
+             if kr.dataset_group),
+            (mssc.dataset_group for mssc in
+             self._all_multi_state_scheme_connectivities()
+             if mssc.dataset_group))
 
     def _all_templates(self):
         """Iterate over all Templates in the system."""
@@ -457,7 +494,11 @@ class System(object):
             (step.script_file for step in self._all_protocol_steps()
                 if step.script_file),
             (step.script_file for step in self._all_analysis_steps()
-                if step.script_file))
+                if step.script_file),
+            (rt.external_file for rt in self._all_relaxation_times()
+                if rt.external_file),
+            (kr.external_file for kr in self._all_kinetic_rates()
+                if kr.external_file))
 
     def _all_geometric_objects(self):
         """Iterate over all GeometricObjects in the system.
@@ -549,6 +590,57 @@ class System(object):
                 for comp in f._all_entities_or_asyms()),
             (d.asym_unit for d in self._all_densities())))
 
+    def _all_multi_state_schemes(self):
+        for mss in self.multi_state_schemes:
+            yield mss
+
+    def _all_multi_state_scheme_connectivities(self):
+        """Iterate over all multi-state scheme connectivities"""
+        for mss in self.multi_state_schemes:
+            for mssc in mss.get_connectivities():
+                yield mssc
+
+    def _all_kinetic_rates(self):
+        """Iterate over all kinetic rates within multi-state schemes"""
+        return _remove_identical(itertools.chain(
+            (mssc.kinetic_rate for mssc in
+             self._all_multi_state_scheme_connectivities()
+             if mssc.kinetic_rate),
+            (c.kinetic_rate for f in
+             self.flr_data for c in f.kinetic_rate_fret_analysis_connections
+             if self.flr_data)))
+
+    def _all_relaxation_times(self):
+        """Iterate over all relaxation times.
+        This includes relaxation times from
+        :class:`ihm.multi_state_scheme.MultiStateScheme`
+        and those assigned to connectivities in
+        :class:`ihm.multi_state_scheme.Connectivity`"""
+        seen_relaxation_times = []
+        for mss in self._all_multi_state_schemes():
+            for rt in mss.get_relaxation_times():
+                if rt in seen_relaxation_times:
+                    continue
+                seen_relaxation_times.append(rt)
+                yield rt
+        for mssc in self._all_multi_state_scheme_connectivities():
+            if mssc.relaxation_time:
+                rt = mssc.relaxation_time
+                if rt in seen_relaxation_times:
+                    continue
+                seen_relaxation_times.append(rt)
+                yield rt
+        # Get the relaxation times from the
+        # flr.RelaxationTimeFRETAnalysisConnection objects
+        if self.flr_data:
+            for f in self.flr_data:
+                for c in f.relaxation_time_fret_analysis_connections:
+                    rt = c.relaxation_time
+                    if rt in seen_relaxation_times:
+                        continue
+                    seen_relaxation_times.append(rt)
+                    yield rt
+
     def _before_write(self):
         """Do any setup necessary before writing out to a file"""
         # Here, we initialize all RestraintGroups by removing any assigned ID
@@ -575,7 +667,7 @@ class Software(object):
     """Software used as part of the modeling protocol.
 
        :param str name: The name of the software.
-       :param str classification: The major function of the sofware, for
+       :param str classification: The major function of the software, for
               example 'model building', 'sample preparation',
               'data collection'.
        :param str description: A longer text description of the software.
@@ -600,6 +692,9 @@ class Software(object):
         self.type = type
         self.version = version
         self.citation = citation
+
+    def __str__(self):
+        return "<ihm.Software(%s)>" % repr(self.name)
 
     # Software compares equal if the names and versions are the same
     def _eq_vals(self):
@@ -688,7 +783,7 @@ class Citation(object):
             return rng
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
-        if sys.version_info[0] < 3:
+        if sys.version_info[0] < 3:    # pragma: no cover
             def enc(s):
                 return s.encode('ascii')
         else:
@@ -724,7 +819,10 @@ class Citation(object):
 class ChemComp(object):
     """A chemical component from which :class:`Entity` objects are constructed.
        Usually these are amino acids (see :class:`LPeptideChemComp`) or
-       nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`).
+       nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`),
+       but non-polymers such as ligands or water (see
+       :class:`NonPolymerChemComp` and :class:`WaterChemComp`) and saccharides
+       (see :class:`SaccharideChemComp`) are also supported.
 
        For standard amino and nucleic acids, it is generally easier to use
        a :class:`Alphabet` and refer to the components with their one-letter
@@ -868,6 +966,66 @@ class RNAChemComp(ChemComp):
     """A single RNA component.
        See :class:`ChemComp` for a description of the parameters."""
     type = 'RNA linking'
+
+
+class SaccharideChemComp(ChemComp):
+    """A saccharide chemical component. Usually a subclass that specifies
+       the chirality and linkage (e.g. :class:`LSaccharideBetaChemComp`)
+       is used.
+
+       :param str id: A globally unique identifier for this component.
+       :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. See :class:`ChemComp` for
+              more details.
+       :param str ccd: The chemical component dictionary (CCD) where
+              this component is defined. See :class:`ChemComp` for
+              more details.
+       :param list descriptors: Information on the component's chemistry.
+              See :class:`ChemComp` for more details.
+    """
+    type = "saccharide"
+
+    def __init__(self, id, name=None, formula=None, ccd=None,
+                 descriptors=None):
+        super(SaccharideChemComp, self).__init__(
+            id, id, id, name=name, formula=formula,
+            ccd=ccd, descriptors=descriptors)
+
+
+class LSaccharideChemComp(SaccharideChemComp):
+    """A single saccharide component with L-chirality and unspecified linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide"
+
+
+class LSaccharideAlphaChemComp(LSaccharideChemComp):
+    """A single saccharide component with L-chirality and alpha linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide, alpha linking"
+
+
+class LSaccharideBetaChemComp(LSaccharideChemComp):
+    """A single saccharide component with L-chirality and beta linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "L-saccharide, beta linking"
+
+
+class DSaccharideChemComp(SaccharideChemComp):
+    """A single saccharide component with D-chirality and unspecified linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide"
+
+
+class DSaccharideAlphaChemComp(DSaccharideChemComp):
+    """A single saccharide component with D-chirality and alpha linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide, alpha linking"
+
+
+class DSaccharideBetaChemComp(DSaccharideChemComp):
+    """A single saccharide component with D-chirality and beta linkage.
+       See :class:`SaccharideChemComp` for a description of the parameters."""
+    type = "D-saccharide, beta linking"
 
 
 class NonPolymerChemComp(ChemComp):
@@ -1086,6 +1244,8 @@ class Residue(object):
     def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
         self.asym = asym
+        if entity is None and asym:
+            self.entity = asym.entity
         # todo: check id for validity (at property read time)
         self.seq_id = seq_id
 
@@ -1106,8 +1266,7 @@ class Residue(object):
                             "for asymmetric units")
 
     def _get_comp(self):
-        entity = self.entity or self.asym.entity
-        return entity.sequence[self.seq_id - 1]
+        return self.entity.sequence[self.seq_id - 1]
     comp = property(_get_comp,
                     doc="Chemical component (residue type)")
 
@@ -1167,10 +1326,13 @@ class Entity(object):
     """  # noqa: E501
 
     _force_polymer = None
+    _hint_branched = None
 
     def __get_type(self):
         if self.is_polymeric():
             return 'polymer'
+        elif self.is_branched():
+            return 'branched'
         else:
             return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
     type = property(__get_type)
@@ -1216,6 +1378,15 @@ class Entity(object):
         self.references = []
         self.references.extend(references)
 
+        #: String descriptors of branched chemical structure.
+        #: These generally only make sense for oligosaccharide entities,
+        #: and should be a list of :class:`BranchDescriptor` objects.
+        self.branch_descriptors = []
+
+        #: Any links between components in a branched entity.
+        #: This is a list of :class:`BranchLink` objects.
+        self.branch_links = []
+
     def __str__(self):
         return "<ihm.Entity(%s)>" % self.description
 
@@ -1223,27 +1394,43 @@ class Entity(object):
         """Return True iff this entity represents a polymer, such as an
            amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
         return (self._force_polymer or
-                len(self.sequence) == 0 or
+                (len(self.sequence) == 0 and not self._hint_branched) or
                 len(self.sequence) > 1
                 and any(isinstance(x, (PeptideChemComp, DNAChemComp,
                                        RNAChemComp)) for x in self.sequence))
+
+    def is_branched(self):
+        """Return True iff this entity is branched (generally
+           an oligosaccharide)"""
+        return ((len(self.sequence) > 0
+                 and isinstance(self.sequence[0], SaccharideChemComp)) or
+                (len(self.sequence) == 0 and self._hint_branched))
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(entity=self, seq_id=seq_id)
 
-    # Entities are considered identical if they have the same sequence
+    # Entities are considered identical if they have the same sequence,
+    # unless they are branched
     def __eq__(self, other):
-        return isinstance(other, Entity) and self.sequence == other.sequence
+        if not isinstance(other, Entity):
+            return False
+        if self.is_branched() or other.is_branched():
+            return self is other
+        else:
+            return self.sequence == other.sequence
 
     def __hash__(self):
-        return hash(self.sequence)
+        if self.is_branched():
+            return hash(id(self))
+        else:
+            return hash(self.sequence)
 
     def __call__(self, seq_id_begin, seq_id_end):
         return EntityRange(self, seq_id_begin, seq_id_end)
 
     def __get_seq_id_range(self):
-        if self.is_polymeric():
+        if self.is_polymeric() or self.is_branched():
             return (1, len(self.sequence))
         else:
             # Nonpolymers don't have the concept of seq_id
@@ -1280,6 +1467,7 @@ class AsymUnitRange(object):
     _id = property(lambda self: self.asym._id)
     _ordinal = property(lambda self: self.asym._ordinal)
     entity = property(lambda self: self.asym.entity)
+    details = property(lambda self: self.asym.details)
 
 
 class AsymUnitSegment(object):
@@ -1309,7 +1497,7 @@ class AsymUnit(object):
        :type entity: :class:`Entity`
        :param str details: Longer text description of this unit.
        :param auth_seq_id_map: Mapping from internal 1-based consecutive
-              residue numbering (`seq_id`) to "author-provided" numbering
+              residue numbering (`seq_id`) to PDB "author-provided" numbering
               (`auth_seq_id` plus an optional `ins_code`). This can be either
               be an int offset, in which case
               ``auth_seq_id = seq_id + auth_seq_id_map`` with no insertion
@@ -1330,19 +1518,30 @@ class AsymUnit(object):
               IDs are automatically assigned alphabetically.
        :param str strand_id: PDB or "author-provided" strand/chain ID.
               If not specified, it will be the same as the regular ID.
-
+       :param orig_auth_seq_id_map: Mapping from internal 1-based consecutive
+              residue numbering (`seq_id`) to original "author-provided"
+              numbering. This differs from `auth_seq_id_map` as the original
+              numbering need not follow any defined scheme, while
+              `auth_seq_id_map` must follow certain PDB-defined rules. This
+              can either be a mapping type (dict, list, tuple) in which case
+              ``orig_auth_seq_id = orig_auth_seq_id_map[seq_id]``. If the
+              mapping is None (the default), or a given `seq_id` cannot be
+              found in the mapping, ``orig_auth_seq_id = auth_seq_id``.
+              This mapping is only used in the various `scheme` tables, such
+              as ``pdbx_poly_seq_scheme``.
        See :attr:`System.asym_units`.
     """
 
     number_of_molecules = 1
 
     def __init__(self, entity, details=None, auth_seq_id_map=0, id=None,
-                 strand_id=None):
+                 strand_id=None, orig_auth_seq_id_map=None):
         if (entity is not None and entity.type == 'water'
                 and not isinstance(self, WaterAsymUnit)):
             raise TypeError("Use WaterAsymUnit instead for creating waters")
         self.entity, self.details = entity, details
         self.auth_seq_id_map = auth_seq_id_map
+        self.orig_auth_seq_id_map = orig_auth_seq_id_map
         self.id = id
         self._strand_id = strand_id
 
@@ -1358,6 +1557,14 @@ class AsymUnit(object):
                     return ret
             except (KeyError, IndexError):
                 return seq_id, None
+
+    def _get_pdb_auth_seq_id_ins_code(self, seq_id):
+        pdb_seq_num, ins_code = self._get_auth_seq_id_ins_code(seq_id)
+        if self.orig_auth_seq_id_map is None:
+            auth_seq_num = pdb_seq_num
+        else:
+            auth_seq_num = self.orig_auth_seq_id_map.get(seq_id, pdb_seq_num)
+        return pdb_seq_num, auth_seq_num, ins_code
 
     def __call__(self, seq_id_begin, seq_id_end):
         return AsymUnitRange(self, seq_id_begin, seq_id_end)
@@ -1494,3 +1701,45 @@ class Collection(object):
     """
     def __init__(self, id, name=None, details=None):
         self.id, self.name, self.details = id, name, details
+
+
+class BranchDescriptor(object):
+    """String descriptor of branched chemical structure.
+       These generally only make sense for oligosaccharide entities.
+       See :attr:`Entity.branch_descriptors`.
+
+       :param str text: The value of this descriptor.
+       :param str type: The type of the descriptor; one of
+              "Glycam Condensed Core Sequence", "Glycam Condensed Sequence",
+              "LINUCS", or "WURCS".
+       :param str program: The name of the program or library used to compute
+              the descriptor.
+       :param str program_version: The version of the program or library
+              used to compute the descriptor.
+    """
+    def __init__(self, text, type, program=None, program_version=None):
+        self.text, self.type = text, type
+        self.program, self.program_version = program, program_version
+
+
+class BranchLink(object):
+    """A link between components in a branched entity.
+       These generally only make sense for oligosaccharide entities.
+       See :attr:`Entity.branch_links`.
+
+       :param int num1: 1-based index of the first component.
+       :param str atom_id1: Name of the first atom in the linkage.
+       :param str leaving_atom_id1: Name of the first leaving atom.
+       :param int num2: 1-based index of the second component.
+       :param str atom_id2: Name of the second atom in the linkage.
+       :param str leaving_atom_id2: Name of the second leaving atom.
+       :param str order: Bond order (e.g. sing, doub, trip).
+       :param str details: More information about this link.
+    """
+    def __init__(self, num1, atom_id1, leaving_atom_id1, num2, atom_id2,
+                 leaving_atom_id2, order=None, details=None):
+        self.num1, self.atom_id1 = num1, atom_id1
+        self.num2, self.atom_id2 = num2, atom_id2
+        self.leaving_atom_id1 = leaving_atom_id1
+        self.leaving_atom_id2 = leaving_atom_id2
+        self.order, self.details = order, details

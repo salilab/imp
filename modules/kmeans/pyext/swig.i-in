@@ -22,7 +22,7 @@ IMP_SWIG_OBJECT(IMP::kmeans, KMeans, KMeansList);
 namespace IMP {
   namespace kmeans {
   /* Python doesn't natively support C++ templates, so you have to manually
-     choose which template parameters you want to intantiate a template with.
+     choose which template parameters you want to instantiate a template with.
    */
   }
 }

@@ -1,5 +1,5 @@
 /**
- *  \file rigid_pair_score.h
+ *  \file internal/sinks.h
  *  \brief utilities for output "sink", including classes ParticleSink,
  *         ParticlePairSink, ParticleIndexPairSink, etc.
  *
@@ -111,7 +111,7 @@ struct ParticleIndexPairSink {
                         ParticleIndexPairs &out)
       : m_(m), filters_(filters), out_(out) {}
   //! add the pair (a,b) to out_ (if it doesn't fit any filter)
-  //! and return true on succesful addition
+  //! and return true on successful addition
   bool add(ParticleIndex a, ParticleIndex b) {
     if (get_filters_contains(m_, filters_, ParticleIndexPair(a, b)))
       return false;

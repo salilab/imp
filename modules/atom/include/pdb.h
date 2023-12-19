@@ -2,7 +2,7 @@
  *  \file IMP/atom/pdb.h
  *  \brief Functions to read PDBs
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2023 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,7 @@
 #include <IMP/Particle.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
+#include <IMP/internal/pdb.h>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <cereal/access.hpp>
@@ -28,6 +29,65 @@
 #include <cereal/types/polymorphic.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
+
+//! Represent a single ATOM/HETATM "line" in PDB or mmCIF format
+class IMPATOMEXPORT PDBRecord : public Value {
+  const std::string *line_;
+  internal::CifKeyword *group_, *element_, *atom_name_, *alt_loc_id_,
+                       *residue_name_, *auth_chain_, *chain_, *auth_seq_id_;
+  bool use_line_, use_keywords_;
+public:
+  PDBRecord() : use_line_(false), use_keywords_(false) {}
+
+#ifndef SWIG
+  //! Point the record to a line of text from a PDB file
+  /** This uses a pointer to `line` so should not be used after line is freed */
+  void set_line(const std::string &line);
+
+  //! Point the record to a single atom_site loop row from an mmCIF file
+  /** This uses pointers to the CIF keywords, so should not be used after
+      the keywords are freed. */
+  void set_keywords(internal::CifKeyword &group,
+                    internal::CifKeyword &element,
+                    internal::CifKeyword &atom_name,
+                    internal::CifKeyword &alt_loc_id,
+                    internal::CifKeyword &residue_name,
+                    internal::CifKeyword &auth_chain,
+                    internal::CifKeyword &chain,
+                    internal::CifKeyword &auth_seq_id);
+#endif
+
+  //! Returns the alternative location indicator
+  /** This is a single character in PDB, but can be longer in mmCIF. */
+  std::string get_alt_loc_indicator() const;
+
+  //! Returns true if the record is an ATOM record
+  bool get_is_atom() const;
+
+  //! Returns the atom type as a string with no leading or trailing whitespace
+  std::string get_trimmed_atom_name() const;
+
+  //! Returns the atom type in a PDB-style padded string
+  /** The atom type is at least a 4 character long field.
+      The first character is space in many cases, but not always. */
+  std::string get_padded_atom_name() const;
+
+  //! Returns the residue type
+  std::string get_residue_name() const;
+
+  //! Returns the chain ID
+  /** This is a single character in PDB format, but can be longer in mmCIF.
+      In mmCIF, the author-provided chain ID is provided if available;
+      otherwise, the mmCIF asym_id is returned. */
+  std::string get_chain_id() const;
+
+  //! Returns the element as a string
+  std::string get_element() const;
+
+  IMP_SHOWABLE_INLINE(PDBRecord, { out << "PDBRecord"; });
+};
+IMP_VALUES(PDBRecord, PDBRecords);
+
 
 //! Select which atoms to read from a PDB file
 /** Selector is a general purpose class used to select records from a PDB
@@ -44,7 +104,8 @@ class IMPATOMEXPORT PDBSelector : public IMP::Object {
  public:
   PDBSelector(std::string name) : Object(name) {}
   //! Return true if the line should be processed
-  virtual bool get_is_selected(const std::string &pdb_line) const = 0;
+  virtual bool get_is_selected(const PDBRecord &record) const = 0;
+
   virtual ~PDBSelector();
 };
 
@@ -56,9 +117,9 @@ class NonAlternativePDBSelector : public PDBSelector {
   NonAlternativePDBSelector(std::string name = "NonAlternativePDBSelector%1%")
       : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return (internal::atom_alt_loc_indicator(pdb_line) == ' ' ||
-            internal::atom_alt_loc_indicator(pdb_line) == 'A');
+  bool get_is_selected(const PDBRecord &record) const override {
+    std::string alt_loc = record.get_alt_loc_indicator();
+    return (alt_loc == " " || alt_loc == "" || alt_loc == "A");
   }
   IMP_OBJECT_METHODS(NonAlternativePDBSelector);
 };
@@ -69,9 +130,10 @@ class ATOMPDBSelector : public NonAlternativePDBSelector {
   ATOMPDBSelector(std::string name = "ATOMPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return (NonAlternativePDBSelector::get_is_selected(pdb_line) &&
-            internal::is_ATOM_rec(pdb_line));
+  bool get_is_selected(const PDBRecord &record) const override
+  {
+    return (NonAlternativePDBSelector::get_is_selected(record) &&
+            record.get_is_atom());
   }
   IMP_OBJECT_METHODS(ATOMPDBSelector)
 };
@@ -82,9 +144,9 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
   CAlphaPDBSelector(std::string name = "CAlphaPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    const std::string type = internal::atom_type(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    const std::string type = record.get_padded_atom_name();
     return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(CAlphaPDBSelector)
@@ -96,9 +158,9 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
   CBetaPDBSelector(std::string name = "CBetaPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    const std::string type = internal::atom_type(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    const std::string type = record.get_padded_atom_name();
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(CBetaPDBSelector)
@@ -118,9 +180,8 @@ class AtomTypePDBSelector : public PDBSelector {
     std::sort(atom_types_.begin(), atom_types_.end());
   }
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    std::string type = internal::atom_type(pdb_line);
-    boost::trim(type);
+  bool get_is_selected(const PDBRecord &record) const override {
+    std::string type = record.get_trimmed_atom_name();
     return std::binary_search(atom_types_.begin(), atom_types_.end(), type);
   }
   IMP_OBJECT_METHODS(AtomTypePDBSelector)
@@ -140,9 +201,8 @@ class ResidueTypePDBSelector : public PDBSelector {
     std::sort(residue_types_.begin(), residue_types_.end());
   }
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    std::string type = internal::atom_residue_name(pdb_line);
-    boost::trim(type);
+  bool get_is_selected(const PDBRecord &record) const override {
+    std::string type = record.get_residue_name();
     return std::binary_search(residue_types_.begin(), residue_types_.end(),
                               type);
   }
@@ -155,9 +215,9 @@ class CPDBSelector : public NonAlternativePDBSelector {
   CPDBSelector(std::string name = "CPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    const std::string type = internal::atom_type(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    const std::string type = record.get_padded_atom_name();
     return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(CPDBSelector)
@@ -169,9 +229,9 @@ class NPDBSelector : public NonAlternativePDBSelector {
   NPDBSelector(std::string name = "NPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    const std::string type = internal::atom_type(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    const std::string type = record.get_padded_atom_name();
     return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(NPDBSelector)
@@ -182,34 +242,58 @@ class AllPDBSelector : public PDBSelector {
  public:
   AllPDBSelector(std::string name = "AllPDBSelector%1%") : PDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return (true || pdb_line.empty());
+  bool get_is_selected(const PDBRecord &) const override {
+    return true;
   }
   IMP_OBJECT_METHODS(AllPDBSelector);
 };
 
 //! Select all ATOM and HETATM records with the given chain ids
+/** When reading mmCIF format, this will use the author-provided chain
+    ID, if available; otherwise the mmCIF "chain" ID, label_asym_id,
+    will be used.
+ */
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    for (int i = 0; i < (int)chains_.length(); i++) {
-      if (internal::atom_chain_id(pdb_line) == chains_[i]) return true;
-    }
-    return false;
+    std::string cid = record.get_chain_id();
+    return std::binary_search(chains_.begin(), chains_.end(), cid);
   }
   IMP_OBJECT_METHODS(ChainPDBSelector);
+
+  //! Allow any of the named chains
+  /** Chain IDs here, and in mmCIF files, can be any length,
+      although chains in legacy PDB files are restricted to
+      a single character.
+   */
+  ChainPDBSelector(Strings chains,
+                   std::string name = "ChainPDBSelector%1%")
+      : NonAlternativePDBSelector(name), chains_(chains) {
+    std::sort(chains_.begin(), chains_.end());
+  }
+
+#ifndef IMP_DOXYGEN
   //! The chain id can be any character in chains
   /** \note This limits the selection to single-character chain IDs
             (mmCIF files support multiple-character chain names) */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.20)
   ChainPDBSelector(const std::string &chains,
                    std::string name = "ChainPDBSelector%1%")
-      : NonAlternativePDBSelector(name), chains_(chains) {}
+        : NonAlternativePDBSelector(name) {
+    IMPATOM_DEPRECATED_METHOD_DEF(
+             2.20, "Pass a list of chain ID strings instead");
+    for (size_t i = 0; i < chains.length(); ++i) {
+      chains_.push_back(std::string(1, chains[i]));
+    }
+    std::sort(chains_.begin(), chains_.end());
+  }
+#endif
 
  private:
-  std::string chains_;
+  Strings chains_;
 };
 
 //! Select all non-water ATOM and HETATM records
@@ -218,28 +302,27 @@ class WaterPDBSelector : public NonAlternativePDBSelector {
   WaterPDBSelector(std::string name = "WaterPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    const std::string res_name = internal::atom_residue_name(pdb_line);
-    return ((res_name[0] == 'H' && res_name[1] == 'O' && res_name[2] == 'H') ||
-            (res_name[0] == 'D' && res_name[1] == 'O' && res_name[2] == 'D'));
+    std::string res_name = record.get_residue_name();
+    return (res_name == "HOH" || res_name == "DOD");
   }
   IMP_OBJECT_METHODS(WaterPDBSelector)
 };
 
 //! Select all hydrogen ATOM and HETATM records
 class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
-  bool is_hydrogen(std::string pdb_line) const;
+  bool is_hydrogen(const PDBRecord &record) const;
 
  public:
   HydrogenPDBSelector(std::string name = "HydrogenPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    return is_hydrogen(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    return is_hydrogen(record);
   }
   IMP_OBJECT_METHODS(HydrogenPDBSelector)
 };
@@ -249,11 +332,11 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> ws_, hs_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    return (!ws_->get_is_selected(pdb_line) && !hs_->get_is_selected(pdb_line));
+    return (!ws_->get_is_selected(record) && !hs_->get_is_selected(record));
   }
   IMP_OBJECT_METHODS(NonWaterNonHydrogenPDBSelector);
   NonWaterNonHydrogenPDBSelector(std::string name)
@@ -271,11 +354,11 @@ class NonHydrogenPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> hs_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    return (!hs_->get_is_selected(pdb_line));
+    return (!hs_->get_is_selected(record));
   }
   IMP_OBJECT_METHODS(NonHydrogenPDBSelector);
   NonHydrogenPDBSelector(std::string name)
@@ -291,11 +374,11 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> ws_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) {
       return false;
     }
-    return (!ws_->get_is_selected(pdb_line));
+    return (!ws_->get_is_selected(record));
   }
   IMP_OBJECT_METHODS(NonWaterPDBSelector);
   NonWaterPDBSelector(std::string name)
@@ -311,10 +394,10 @@ class BackbonePDBSelector : public NonWaterNonHydrogenPDBSelector {
   BackbonePDBSelector(std::string name = "BackbonePDBSelector%1%")
       : NonWaterNonHydrogenPDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonWaterNonHydrogenPDBSelector::get_is_selected(pdb_line))
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonWaterNonHydrogenPDBSelector::get_is_selected(record))
       return false;
-    const std::string type = internal::atom_type(pdb_line);
+    const std::string type = record.get_padded_atom_name();
     return ((type[1] == 'N' && type[2] == ' ' && type[3] == ' ') ||
             (type[1] == 'C' && type[2] == 'A' && type[3] == ' ') ||
             (type[1] == 'C' && type[2] == ' ' && type[3] == ' ') ||
@@ -329,9 +412,9 @@ class PPDBSelector : public NonAlternativePDBSelector {
   PPDBSelector(std::string name = "PPDBSelector%1%")
       : NonAlternativePDBSelector(name) {}
 
-  bool get_is_selected(const std::string &pdb_line) const override {
-    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) return false;
-    const std::string type = internal::atom_type(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    if (!NonAlternativePDBSelector::get_is_selected(record)) return false;
+    const std::string type = record.get_padded_atom_name();
     return (type[1] == 'P' && type[2] == ' ' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(PPDBSelector)
@@ -352,8 +435,8 @@ class AndPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return a_->get_is_selected(pdb_line) && b_->get_is_selected(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    return a_->get_is_selected(record) && b_->get_is_selected(record);
   }
   IMP_OBJECT_METHODS(AndPDBSelector);
   AndPDBSelector(PDBSelector *a, PDBSelector *b)
@@ -375,8 +458,8 @@ class OrPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return a_->get_is_selected(pdb_line) || b_->get_is_selected(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    return a_->get_is_selected(record) || b_->get_is_selected(record);
   }
   IMP_OBJECT_METHODS(OrPDBSelector);
   OrPDBSelector(PDBSelector *a, PDBSelector *b)
@@ -399,8 +482,8 @@ class XorPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return a_->get_is_selected(pdb_line) != b_->get_is_selected(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    return a_->get_is_selected(record) != b_->get_is_selected(record);
   }
   IMP_OBJECT_METHODS(XorPDBSelector);
   XorPDBSelector(PDBSelector *a, PDBSelector *b)
@@ -422,8 +505,8 @@ class NotPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_;
 
  public:
-  bool get_is_selected(const std::string &pdb_line) const override {
-    return !a_->get_is_selected(pdb_line);
+  bool get_is_selected(const PDBRecord &record) const override {
+    return !a_->get_is_selected(record);
   }
   IMP_OBJECT_METHODS(NotPDBSelector);
   NotPDBSelector(PDBSelector *a) : PDBSelector("NotPDBSelector%1%"), a_(a) {}

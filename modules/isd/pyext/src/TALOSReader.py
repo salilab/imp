@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function
-import sys
 import os
 from math import pi
 from IMP.isd.utils import check_residue, read_sequence_file
@@ -33,8 +32,8 @@ class TALOSReader:
         self.offset = sequence_match[1] - sequence_match[0]
 
     def add_full_datum(self, resno, phi, psi):
-        """in the case of a list of predictions for one residue, add an entry to
-        data which is:
+        """in the case of a list of predictions for one residue, add an entry
+        to data which is:
             'full' : always True
             'num'  : number of predictions
             'phi'  : the list of predictions for phi
@@ -90,6 +89,8 @@ class TALOSReader:
     def _read_predAll(self, fname):
         fl = open(fname)
         resno = -1
+        phi = []
+        psi = []
         for line in fl:
             tokens = line.split()
             if len(tokens) == 0 or not tokens[0].isdigit():
@@ -122,7 +123,8 @@ class TALOSReader:
                 continue
             resno = int(tokens[0]) + self.offset
             check_residue(resno, tokens[1])
-            phi, psi, dphi, dpsi = [2 * pi * float(a) / 360. for a in tokens[2:6]]
+            phi, psi, dphi, dpsi = [2 * pi * float(a) / 360.
+                                    for a in tokens[2:6]]
             num = int(tokens[8])
             if num == 0:
                 continue

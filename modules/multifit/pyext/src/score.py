@@ -117,7 +117,7 @@ def score_each_protein(dmap, mhs, sd):
 
 def usage():
     usage = """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinatins> <score combinations [output]>
+           <alignment.params> <combinations> <score combinations [output]>
 
 Score each of a set of combinations.
 """

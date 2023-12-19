@@ -3,7 +3,7 @@
  */
 
 #include <memory>
-#include <stddef.h>
+#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <string>

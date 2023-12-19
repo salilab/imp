@@ -12,7 +12,7 @@
 #include <string>
 #include <list>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <time.h>
 #include <IMP/check_macros.h>
 #include <IMP/flags.h>

@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/range/distance.hpp>
 #include <string>

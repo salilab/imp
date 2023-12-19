@@ -30,8 +30,11 @@ class Tests(IMP.test.TestCase):
             p1.add_attribute(radkey, 1.5 * i, False)
             p1.add_attribute(idkey, i)
             p1.add_attribute(IMP.IntKey("six"), 6)
+            p1.add_attribute(IMP.SparseIntKey("seven"), 7)
+            p1.add_attribute(IMP.SparseFloatKey("seven"), 7.1)
             p1.add_attribute(IMP.StringKey("id_str"), "name_" + str(i))
             p1.add_attribute(IMP.StringKey("six"), "b:0110")
+            p1.add_attribute(IMP.SparseStringKey("seven"), "b:0111")
 
         # add additional attributes to particle 11
         for i in range(0, 6):
@@ -98,8 +101,14 @@ class Tests(IMP.test.TestCase):
         """Asking for non-existent attributes should cause an exception"""
         p1 = particles[0]
         self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value,
+                          IMP.SparseFloatKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value,
+                          IMP.SparseIntKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value,
+                          IMP.SparseStringKey("notexist"))
         self.assertRaises(IndexError, p1.add_attribute, IMP.FloatKey(), 0)
 
     def test_get_set_methods(self):
@@ -132,9 +141,13 @@ class Tests(IMP.test.TestCase):
         p.set_is_optimized(fk, False)
         self.assertFalse(p.get_is_optimized(fk))
         self._test_add_remove(p, IMP.FloatKey("something"), 1.0)
+        self._test_add_remove(p, IMP.SparseFloatKey("something"), 1.0)
         self._test_add_remove(p, IMP.StringKey("something"), "Hello")
+        self._test_add_remove(p, IMP.SparseStringKey("something"), "Hello")
         self._test_add_remove(p, IMP.IntKey("something"), 1)
+        self._test_add_remove(p, IMP.SparseIntKey("something"), 1)
         self._test_add_remove(p, IMP.ParticleIndexKey("something"), p)
+        self._test_add_remove(p, IMP.SparseParticleIndexKey("something"), p)
         self._test_add_remove(p, IMP.IntsKey("something"), [1,2,3])
         self._test_add_remove(p, IMP.FloatsKey("something"), [1.0,2.0,3.0])
 
@@ -185,7 +198,12 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(p.get_value(IMP.StringKey("id_str")),
                              "name_" + str(i))
             self.assertEqual(p.get_value(IMP.IntKey("six")), 6)
+            self.assertEqual(p.get_value(IMP.SparseIntKey("seven")), 7)
+            self.assertAlmostEqual(p.get_value(IMP.SparseFloatKey("seven")),
+                                   7.1, delta=0.1)
             self.assertEqual(p.get_value(IMP.StringKey("six")), "b:0110")
+            self.assertEqual(p.get_value(IMP.SparseStringKey("seven")),
+                             "b:0111")
 
         # test additional attributes in particle 11
         p = particles[11]

@@ -2,12 +2,18 @@ project(IMP.%(name)s)
 
 %(tests)s
 
+if(DEFINED IMP_%(name)s_IS_CUDA OR DEFINED IMP_IS_CUDA)
+  set(CUDA_DEFINES ":IMP_%(NAME)s_CUDA_LIB")
+else()
+  set(CUDA_DEFINES "")
+endif()
+
 imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR}
                           COMMAND ${PYTHON_EXECUTABLE}
                           %(tools_dir)sbuild/setup_module.py
                           %(build_dir)s --name=%(name)s
                           --datapath=${IMP_DATAPATH}
-                          --defines=${IMP_%(name)s_CONFIG}:%(defines)s
+                          --defines=${IMP_%(name)s_CONFIG}:%(defines)s${CUDA_DEFINES}
                           --source=${CMAKE_SOURCE_DIR}
                           %(bin_names)s)
 

@@ -214,7 +214,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if IMP.cgal is available (the results will be unreliable if it is not)." \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
-                         "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
+                         "unimplemented{1}=\warning \1 has not been implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\1" \
                          "deprecated_at{1}=\deprecated As of IMP release \1. See the [IMP Deprecation Policy](@ref deprecation) for more information about deprecation in %IMP."\
                          "geometry=See \ref geometricprimitives \"geometric primitives\" for more information." \
@@ -873,7 +873,7 @@ USE_HTAGS              = NO
 VERBATIM_HEADERS       = @IS_HTML@
 
 # If CLANG_ASSISTED_PARSING is set to YES, then doxygen will use the clang parser
-# for more acurate parsing at the cost of reduced performance. This can be
+# for more accurate parsing at the cost of reduced performance. This can be
 # particularly helpful with template rich C++ code for which doxygen's built-in
 # parser lacks the necessairy type information.
 
@@ -962,7 +962,7 @@ HTML_STYLESHEET        =
 # user-defined cascading style sheet that is included after the standard
 # style sheets created by doxygen. Using this option one can overrule
 # certain style aspects. This is preferred over using HTML_STYLESHEET
-# since it does not replace the standard style sheet and is therefor more
+# since it does not replace the standard style sheet and is therefore more
 # robust against future updates. Doxygen will copy the style sheet file to
 # the output directory.
 

@@ -15,7 +15,8 @@ else:
 
 class MockGaussianEMRestraint(IMP.Restraint):
 
-    def __init__(self, m, em_filename):
+    def __init__(self, m, em_filename, particles):
+        self.particles = particles
         self.em_filename = em_filename
         IMP.Restraint.__init__(self, m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
@@ -25,7 +26,7 @@ class MockGaussianEMRestraint(IMP.Restraint):
     def do_show(self, fh):
         fh.write('MockRestraint')
     def do_get_inputs(self):
-        return []
+        return self.particles
 
     def get_static_info(self):
         i = IMP.RestraintInfo()
@@ -46,12 +47,10 @@ def _get_dumper_output(dumper, system):
     return fh.getvalue()
 
 class Tests(IMP.test.TestCase):
-    def make_model(self, system, chains=None):
+    def make_model(self, m, chains=None):
         if chains is None:
             chains = (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
                       ('baz', 'ACC', 'C'))
-        s = IMP.mmcif.State(system)
-        m = s.model
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         for name, seq, cid in chains:
             h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
@@ -63,11 +62,10 @@ class Tests(IMP.test.TestCase):
             chain = IMP.atom.Chain.setup_particle(h, cid)
             chain.set_sequence(seq)
             mol.add_child(chain)
-        return top, s
+        return top
 
-    def make_model_with_protocol(self, system, chains=None):
-        top, s = self.make_model(system, chains)
-        m = s.model
+    def make_model_with_protocol(self, m, chains=None, sampcon=False):
+        top = self.make_model(m, chains)
         prov = IMP.core.SampleProvenance.setup_particle(m, IMP.Particle(m),
                                 "Monte Carlo", 100, 5)
         IMP.core.add_provenance(m, top, prov)
@@ -85,23 +83,37 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_provenance(m, top, prov)
 
         prov = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        if sampcon:
+            prov.set_name("cluster.0")
+            prov.set_precision(42.0)
+            prov.set_density(self.get_input_file_name("sampcon.json"))
         IMP.core.add_provenance(m, top, prov)
-        return top, s
+        return top
+
+    def add_structured_residue(self, m, top, ind):
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                                  IMP.atom.ALA, ind)
+        IMP.core.XYZR.setup_particle(
+            residue, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(residue, 1.0)
+        top.add_child(residue)
+        return residue
 
     def test_software_dumper(self):
         """Test SoftwareDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
+        m = IMP.Model()
+        h = self.make_model(m)
         IMP.core.add_imp_provenance(h)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [], name="model1")
 
         # Assign ID to IMP citation
         dumper = ihm.dumper._CitationDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
 
         dumper = ihm.dumper._SoftwareDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         # Ignore line breaks, since these will be placed differently depending
         # on how long the version number is
         self.assertEqual(out.replace('\n', ' '), ("""#
@@ -119,41 +131,50 @@ _software.citation_id
 #
 """ % IMP.get_module_version()).replace('\n', ' '))
 
-    def _assign_entity_ids(self, system):
-        ihm.dumper._EntityDumper().finalize(system.system)
+    def _assign_entity_ids(self, c):
+        ihm.dumper._EntityDumper().finalize(c.system)
 
-    def _assign_range_ids(self, system):
-        ihm.dumper._EntityPolySegmentDumper().finalize(system.system)
+    def _assign_range_ids(self, c):
+        ihm.dumper._EntityPolySegmentDumper().finalize(c.system)
 
-    def _assign_asym_ids(self, system):
-        ihm.dumper._StructAsymDumper().finalize(system.system)
+    def _assign_asym_ids(self, c):
+        ihm.dumper._StructAsymDumper().finalize(c.system)
 
-    def _assign_dataset_ids(self, system):
-        ihm.dumper._DatasetDumper().finalize(system.system)
+    def _assign_dataset_ids(self, c):
+        ihm.dumper._DatasetDumper().finalize(c.system)
 
-    def _assign_location_ids(self, system):
-        ihm.dumper._ExternalReferenceDumper().finalize(system.system)
+    def _assign_location_ids(self, c):
+        ihm.dumper._ExternalReferenceDumper().finalize(c.system)
 
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system, (("foo", "AAA", 'A'),
-                                            ("bar", "AAA", 'B'),
-                                            ("baz", "AA", 'C')))
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        foo, bar, baz = state._all_modeled_components
+        m = IMP.Model()
+        h = self.make_model(m, (("foo", "AAA", 'A'),
+                                ("bar", "AAA", 'B'),
+                                ("baz", "AA", 'C')))
+        chain1, chain2, chain3 = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
+        self.add_structured_residue(m, chain1, 1)
+        self.add_structured_residue(m, chain1, 2)
+        self.add_structured_residue(m, chain1, 3)
+        self.add_structured_residue(m, chain2, 1)
+        self.add_structured_residue(m, chain2, 2)
+        self.add_structured_residue(m, chain2, 3)
+        self.add_structured_residue(m, chain3, 1)
+        self.add_structured_residue(m, chain3, 2)
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [])
 
-        system.system.orphan_assemblies.append(
-                         ihm.Assembly((foo.asym_unit, bar.asym_unit)))
-        system.system.orphan_assemblies.append(
-                         ihm.Assembly((bar.asym_unit, baz.asym_unit)))
+        foo, bar, baz = c.system.asym_units
 
-        system.system._make_complete_assembly()
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        c.system.orphan_assemblies.append(ihm.Assembly((foo, bar)))
+        c.system.orphan_assemblies.append(ihm.Assembly((bar, baz)))
+
+        c.system._make_complete_assembly()
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         d = ihm.dumper._EntityPolySegmentDumper()
-        d.finalize(system.system)
-        out = _get_dumper_output(d, system.system)
+        d.finalize(c.system)
+        out = _get_dumper_output(d, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_entity_poly_segment.id
@@ -168,8 +189,8 @@ _ihm_entity_poly_segment.comp_id_end
 """)
 
         d = ihm.dumper._AssemblyDumper()
-        d.finalize(system.system)
-        out = _get_dumper_output(d, system.system)
+        d.finalize(c.system)
+        out = _get_dumper_output(d, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_struct_assembly.id
@@ -198,102 +219,36 @@ _ihm_struct_assembly_details.entity_poly_segment_id
 #
 """)
 
-    def test_assembly_subset_modeled(self):
-        """Test AssemblyDumper, subset of components modeled"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system, (("foo", "AAA", 'A'),))
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        system.add_non_modeled_chain(name="bar", sequence="AA")
-        system.system._make_complete_assembly()
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
-        d = ihm.dumper._EntityDumper()
-        out = _get_dumper_output(d, system.system)
-        self.assertEqual(out, """#
-loop_
-_entity.id
-_entity.type
-_entity.src_method
-_entity.pdbx_description
-_entity.formula_weight
-_entity.pdbx_number_of_molecules
-_entity.details
-1 polymer man foo 267.282 1 .
-2 polymer man bar 178.188 0 .
-#
-""")
-        d = ihm.dumper._EntityPolySegmentDumper()
-        d.finalize(system.system)
-        out = _get_dumper_output(d, system.system)
-        self.assertEqual(out, """#
-loop_
-_ihm_entity_poly_segment.id
-_ihm_entity_poly_segment.entity_id
-_ihm_entity_poly_segment.seq_id_begin
-_ihm_entity_poly_segment.seq_id_end
-_ihm_entity_poly_segment.comp_id_begin
-_ihm_entity_poly_segment.comp_id_end
-1 1 1 3 ALA ALA
-#
-""")
-        d = ihm.dumper._AssemblyDumper()
-        d.finalize(system.system) # assign IDs
-        out = _get_dumper_output(d, system.system)
-        self.assertEqual(out, """#
-loop_
-_ihm_struct_assembly.id
-_ihm_struct_assembly.name
-_ihm_struct_assembly.description
-1 'Complete assembly' 'All known components & All components modeled by IMP'
-#
-#
-loop_
-_ihm_struct_assembly_details.id
-_ihm_struct_assembly_details.assembly_id
-_ihm_struct_assembly_details.parent_assembly_id
-_ihm_struct_assembly_details.entity_description
-_ihm_struct_assembly_details.entity_id
-_ihm_struct_assembly_details.asym_id
-_ihm_struct_assembly_details.entity_poly_segment_id
-1 1 1 foo 1 A 1
-#
-""")
-
     def test_model_representation_dumper(self):
         """Test ModelRepresentationDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system, (("foo", "AAAA", 'A'),))
+        m = IMP.Model()
+        h = self.make_model(m, (("foo", "AAAA", 'A'),))
         chain = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]
-        m = state.model
         # Add starting model information for residues 1-2
         ress = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         sp = IMP.core.StructureProvenance.setup_particle(IMP.Particle(m),
                 self.get_input_file_name("test.nup84.pdb"), "A")
         IMP.core.Provenanced.setup_particle(ress, sp)
         chain.add_child(ress)
-        res1 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                               IMP.atom.ALA, 1)
-        ress.add_child(res1)
-        res2 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
-                                               IMP.atom.ALA, 2)
-        ress.add_child(res2)
-        # First matching object (res1 and res2) will be used
-        frag1 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[1,2])
+        res1 = self.add_structured_residue(m, ress, 1)
+        res2 = self.add_structured_residue(m, ress, 2)
+        frag1 = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [3, 4])
+        self.add_structure(frag1)
         chain.add_child(frag1)
-        frag2 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[3,4])
-        chain.add_child(frag2)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
-        self._assign_range_ids(system)
-        r = system.system.ensembles[0].model_group[0].representation
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [])
+
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
+        self._assign_range_ids(c)
+        r = c.system.ensembles[0].model_group[0].representation
         self.assertEqual([s.asym_unit.seq_id_range for s in r], [(1,2), (3,4)])
         # Assign starting model IDs
         d = ihm.dumper._StartingModelDumper()
-        d.finalize(system.system)
+        d.finalize(c.system)
         d = ihm.dumper._ModelRepresentationDumper()
-        d.finalize(system.system)
-        out = _get_dumper_output(d, system.system)
+        d.finalize(c.system)
+        out = _get_dumper_output(d, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_model_representation.id
@@ -320,59 +275,80 @@ _ihm_model_representation_details.description
 #
 """)
 
-    def _make_residue_chain(self, name, chain_id, model):
+    def add_state(self, m, top, state_index, name):
+        h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state = IMP.atom.State.setup_particle(h, state_index)
+        state.set_name(name)
+        top.add_child(state)
+        return state
+
+    def _make_residue_chain(self, name, chain_id, model, cif=False):
         if name == 'Nup84':
-            fname = 'test.nup84.pdb'
+            if cif:
+                fname = 'test.nup84.cif'
+            else:
+                fname = 'test.nup84.pdb'
             seq = 'ME'
         else:
             fname = 'test.nup85.pdb'
             seq = 'GE'
-        h = IMP.atom.read_pdb(self.get_input_file_name(fname), model)
+        h = IMP.atom.read_pdb_or_mmcif(self.get_input_file_name(fname), model)
         for hchain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             chain = IMP.atom.Chain(hchain)
             chain.set_sequence(seq)
             chain.set_id(chain_id)
             chain.set_name(name)
         for hres in IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE):
+            # Remove all atoms, replace with a dummy sphere
             res = IMP.atom.Residue(hres)
             while res.get_number_of_children() > 0:
                 res.remove_child(0)
+            self.add_structure(res)
         return h
 
-    def test_starting_model_dumper(self):
-        """Test StartingModelDumper"""
-        m = IMP.Model()
-        system = IMP.mmcif.System()
+    def add_structure(self, p):
+        IMP.core.XYZR.setup_particle(
+            p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
+        IMP.atom.Mass.setup_particle(p, 1.0)
 
-        state1h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        h1 = self._make_residue_chain('Nup84', 'A', m)
+    def test_starting_model_dumper_pdb(self):
+        """Test StartingModelDumper with PDB starting models"""
+        self._internal_test_starting_model_dumper(cif=False)
+
+    def test_starting_model_dumper_cif(self):
+        """Test StartingModelDumper with mmCIF starting models"""
+        self._internal_test_starting_model_dumper(cif=True)
+
+    def _internal_test_starting_model_dumper(self, cif):
+        m = IMP.Model()
+
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        state1h = self.add_state(m, top, 0, "State1")
+
+        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
         state1h.add_child(h1)
 
         # Test multiple states: components that are the same in both states
         # (Nup84) should not be duplicated in the mmCIF output
-        state2h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        h1 = self._make_residue_chain('Nup84', 'A', m)
+        state2h = self.add_state(m, top, 0, "State2")
+        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
         state2h.add_child(h1)
         h2 = self._make_residue_chain('Nup85', 'B', m)
         state2h.add_child(h2)
 
-        state1 = IMP.mmcif.State(system)
-        IMP.mmcif.Ensemble(state1, "cluster 1").add_model([state1h],
-                                                          [], "model1")
-        state2 = IMP.mmcif.State(system)
-        IMP.mmcif.Ensemble(state2, "cluster 1").add_model([state2h],
-                                                          [], "model1")
+        c = IMP.mmcif.Writer()
+        c.add_model([top], [])
 
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
-        self._assign_range_ids(system)
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
+        self._assign_range_ids(c)
         # Assign dataset IDs (templates=1,2, comparative models=3,4)
-        self._assign_dataset_ids(system)
+        self._assign_dataset_ids(c)
         # assign file IDs (alignment file = 1)
-        self._assign_location_ids(system)
+        self._assign_location_ids(c)
         d = ihm.dumper._StartingModelDumper()
-        d.finalize(system.system)
-        out = _get_dumper_output(d, system.system)
+        d.finalize(c.system)
+        out = _get_dumper_output(d, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_starting_model_details.starting_model_id
@@ -432,21 +408,21 @@ _ihm_starting_model_coord.ordinal_id
 
     def test_workflow(self):
         """Test output of workflow files"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        m = state.model
+        m = IMP.Model()
+        h = self.make_model(m)
         prov = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
                                                         __file__)
         IMP.core.add_provenance(m, h, prov)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [], name="model1")
 
         root = os.path.dirname(__file__)
         repo = ihm.location.Repository(doi='foo', root=root)
-        system.system.update_locations_in_repositories([repo])
+        c.system.update_locations_in_repositories([repo])
 
         dump = ihm.dumper._ExternalReferenceDumper()
-        dump.finalize(system.system) # assign IDs
-        out = _get_dumper_output(dump, system.system)
+        dump.finalize(c.system) # assign IDs
+        out = _get_dumper_output(dump, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_external_reference_info.reference_id
@@ -473,18 +449,19 @@ _ihm_external_files.details
 
     def test_modeling_protocol(self):
         """Test ProtocolDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model_with_protocol(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        m = IMP.Model()
+        h = self.make_model_with_protocol(m)
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [], name="model1")
 
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         dumper = ihm.dumper._AssemblyDumper()
-        dumper.finalize(system.system) # Assign assembly IDs
+        dumper.finalize(c.system) # Assign assembly IDs
 
         dumper = ihm.dumper._ProtocolDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_modeling_protocol.id
@@ -519,18 +496,20 @@ _ihm_modeling_protocol_details.description
 
     def test_post_process(self):
         """Test PostProcessDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model_with_protocol(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        m = IMP.Model()
+        h = self.make_model_with_protocol(m)
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [], name="model1")
+
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         dumper = ihm.dumper._AssemblyDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._ProtocolDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._PostProcessDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_modeling_post_process.id
@@ -553,15 +532,17 @@ _ihm_modeling_post_process.details
 
     def test_ensemble_info(self):
         """Test EnsembleDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        e = IMP.mmcif.Ensemble(state, "cluster 1")
-        e.add_model([h], [], "model1")
+        m = IMP.Model()
+        h = self.make_model(m)
+        c = IMP.mmcif.Writer()
+        ens = c.add_model([h], [], name="model1")
+        ens[None].name = 'cluster 1'
+
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._EnsembleDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_ensemble_info.ensemble_id
@@ -584,20 +565,21 @@ _ihm_ensemble_info.sub_sampling_type
 
     def test_model_list(self):
         """Test ModelListDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        e = IMP.mmcif.Ensemble(state, "cluster 1")
-        e.add_model([h], [], "model1")
-        e.add_model([h], [], "model2")
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        m = IMP.Model()
+        h = self.make_model(m)
+        c = IMP.mmcif.Writer()
+        ens = c.add_model([h], [], name="model1")
+        ens[None].model_group.name = 'cluster 1'
+        c.add_model([h], [], name="model2", ensembles=ens)
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         dumper = ihm.dumper._ModelRepresentationDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._AssemblyDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_model_list.model_id
@@ -626,23 +608,27 @@ _ihm_model_group_link.model_id
 
     def test_em3d_dumper(self):
         """Test EM3DDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
+        m = IMP.Model()
+        h = self.make_model(m)
+        chain1 = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]
+        res1 = self.add_structured_residue(m, chain1, 1)
         em_filename = self.get_input_file_name('test.gmm.txt')
-        r = MockGaussianEMRestraint(state.model, em_filename)
+        r = MockGaussianEMRestraint(m, em_filename, [res1.get_particle()])
         r.set_was_used(True)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [r], name="model1")
+
         # Assign dataset ID (=2 since the gmm is derived from an MRC)
-        self._assign_dataset_ids(system)
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        self._assign_dataset_ids(c)
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._AssemblyDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._EM3DDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_3dem_restraint.id
@@ -653,21 +639,21 @@ _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 2 'Gaussian mixture model' . 2 20 1 0.400
+1 2 'Gaussian mixture model' . 3 20 1 0.400
 #
 """)
 
     def test_site_dumper_spheres_only(self):
         """Test SiteDumper, spheres only"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system, [("foo", "AA", 'A'),
-                                            ("bar", "AAA", "B")])
-        m = state.model
+        m = IMP.Model()
+        h = self.make_model(m, [("foo", "AA", 'A'),
+                                ("bar", "AAA", "B")])
 
         # Add coordinates
         chains = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
         pres = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         res = IMP.atom.Residue.setup_particle(pres, IMP.atom.ALA, 1)
+        IMP.atom.Mass.setup_particle(pres, 1.0)
         xyzr = IMP.core.XYZR.setup_particle(pres)
         xyzr.set_coordinates(IMP.algebra.Vector3D(1,2,3))
         xyzr.set_radius(4.2)
@@ -676,21 +662,25 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
         pfrag = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         frag = IMP.atom.Fragment.setup_particle(pfrag, [1,2])
+        IMP.atom.Mass.setup_particle(pfrag, 1.0)
         xyzr = IMP.core.XYZR.setup_particle(pfrag)
         xyzr.set_coordinates(IMP.algebra.Vector3D(4,5,6))
         xyzr.set_radius(9.2)
         chains[1].add_child(pfrag)
 
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        self._assign_entity_ids(system)
-        self._assign_asym_ids(system)
+        c = IMP.mmcif.Writer()
+        ens = c.add_model([h], [], name="model1")
+        ens[None].model_group.name = 'cluster 1'
+
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
         dumper = ihm.dumper._AssemblyDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._ModelRepresentationDumper()
-        dumper.finalize(system.system)
+        dumper.finalize(c.system)
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system.system)
-        out = _get_dumper_output(dumper, system.system)
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
         self.assertEqual(out, """#
 loop_
 _ihm_model_list.model_id
@@ -728,6 +718,62 @@ _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
 1 1 1 1 A 1.000 2.000 3.000 4.200 . 1
 2 2 1 2 B 4.000 5.000 6.000 9.200 . 1
+#
+""")
+
+    def test_no_localization_densities(self):
+        """Test DensityDumper with no density information"""
+        m = IMP.Model()
+        h = self.make_model_with_protocol(m)
+        c = IMP.mmcif.Writer()
+        c.add_model([h], [], name="model1")
+
+        dumper = ihm.dumper._DensityDumper()
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
+        self.assertEqual(out, "")
+
+    def test_sampcon_localization_densities(self):
+        """Test DensityDumper with IMP.sampcon output"""
+        m = IMP.Model()
+        h = self.make_model_with_protocol(m, sampcon=True)
+        c = IMP.mmcif.Writer()
+        ens = c.add_model([h], [], name="model1")
+        e = ens[None]
+
+        # Name and precision should be assigned based on sampcon output
+        self.assertEqual(e.name, "cluster.0")
+        self.assertAlmostEqual(e.precision, 42.0, delta=1e-4)
+
+        den1, den2 = e.densities
+        self.assertEqual(den1.asym_unit.details, 'foo')
+        self.assertEqual(den1.asym_unit.seq_id_range, (1, 4))
+        self.assertEqual(os.path.basename(den1.file.path), 'test_1.mrc')
+        self.assertEqual(den2.asym_unit.details, 'bar')
+        self.assertEqual(den2.asym_unit.seq_id_range, (2, 3))
+        self.assertEqual(os.path.basename(den2.file.path), 'test_2.mrc')
+
+        # assign IDs
+        self._assign_entity_ids(c)
+        self._assign_asym_ids(c)
+        self._assign_range_ids(c)
+        self._assign_location_ids(c)
+        dumper = ihm.dumper._EnsembleDumper()
+        dumper.finalize(c.system)
+
+        dumper = ihm.dumper._DensityDumper()
+        dumper.finalize(c.system)
+        out = _get_dumper_output(dumper, c.system)
+        self.assertEqual(out, """#
+loop_
+_ihm_localization_density_files.id
+_ihm_localization_density_files.file_id
+_ihm_localization_density_files.ensemble_id
+_ihm_localization_density_files.entity_id
+_ihm_localization_density_files.asym_id
+_ihm_localization_density_files.entity_poly_segment_id
+1 1 1 1 A 1
+2 2 1 1 B 3
 #
 """)
 

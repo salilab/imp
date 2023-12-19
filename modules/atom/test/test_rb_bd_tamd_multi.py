@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
         name - particle name
         T_factor - temperature factor
         F_factor - friction factor
-        k - spring contant
+        k - spring constant
 
         returns the TAMD image particle
         '''

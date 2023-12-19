@@ -21,7 +21,7 @@
 #include "IMP/Particle.h"
 #include <IMP/SingletonContainer.h>
 #include "IMP/container.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE

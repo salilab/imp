@@ -5,13 +5,15 @@ import unittest
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.restraint
+import ihm.geometry
 
 
 class Tests(unittest.TestCase):
 
     def test_restraint(self):
         """Test Restraint base class"""
-        _ = ihm.restraint.Restraint()  # does nothing
+        r = ihm.restraint.Restraint()  # does nothing
+        _ = r._get_report()
 
     def test_em3d_restraint_fit(self):
         """Test EM3DRestraintFit class"""
@@ -24,6 +26,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(),
+                         "Fit to 3D electron microscopy density map")
+        f = ihm.restraint.EM3DRestraint(
+            dataset='foo', assembly='bar',
+            fitting_method="Gaussian mixture models")
+        self.assertEqual(f._get_report(),
+                         "Fit to 3D electron microscopy density map "
+                         "using Gaussian mixture models")
 
     def test_sas_restraint_fit(self):
         """Test SASRestraintFit class"""
@@ -36,6 +46,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(), "SAS restraint")
+        f = ihm.restraint.SASRestraint(dataset='foo', assembly='bar',
+                                       multi_state=False)
+        self.assertEqual(f._get_report(), "Single-state SAS restraint")
+        f = ihm.restraint.SASRestraint(dataset='foo', assembly='bar',
+                                       multi_state=True,
+                                       fitting_atom_type='residues')
+        self.assertEqual(f._get_report(),
+                         "Multi-state SAS restraint on residues")
 
     def test_em2d_restraint_fit(self):
         """Test EM2DRestraintFit class"""
@@ -50,6 +69,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.assembly, 'bar')
         self.assertEqual(f.fits, {})
+        self.assertEqual(f._get_report(),
+                         "Fit to 2D electron microscopy class average")
 
     def test_distance_restraint(self):
         """Test DistanceRestraint class"""
@@ -93,6 +114,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.linker, dss)
         self.assertEqual(f.experimental_cross_links, [])
+        self.assertEqual(
+            f._get_report(),
+            "0 DSS cross-links from 0 experimental identifications")
 
     def test_experimental_cross_link(self):
         """Test ExperimentalCrossLink class"""
@@ -175,12 +199,15 @@ class Tests(unittest.TestCase):
 
     def test_geometric_restraint(self):
         """Test GeometricRestraint class"""
+        dist = ihm.restraint.UpperBoundDistanceRestraint(42.0)
+        geom = ihm.geometry.XAxis(name='foo', description='bar')
         f = ihm.restraint.GeometricRestraint(
-            dataset='foo', geometric_object='geom', feature='feat',
-            distance='dist')
+            dataset='foo', geometric_object=geom, feature='feat',
+            distance=dist)
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'other')
         self.assertIsNone(f.assembly)
+        self.assertEqual(f._get_report(), "Distance (upper bound) to axis")
 
     def test_center_geometric_restraint(self):
         """Test CenterGeometricRestraint class"""

@@ -28,7 +28,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   IMP::PointerMember<SingletonContainer> c_;
   IMP::PointerMember<core::ClosePairsFinder> cpf_;
-  IMP::PointerMember<core::internal::MovedSingletonContainer> moved_; // tracks particles that moved beyond a certain distance (for incremental update of data strcuture)
+  IMP::PointerMember<core::internal::MovedSingletonContainer> moved_; // tracks particles that moved beyond a certain distance (for incremental update of data structure)
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;

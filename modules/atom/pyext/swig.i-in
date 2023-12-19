@@ -5,6 +5,7 @@ namespace atom {
 }
 
 IMP_SWIG_GRAPH(IMP::atom, HierarchyTree, HierarchyTree, IMP::atom::Hierarchy);
+IMP_SWIG_VALUE(IMP::atom, PDBRecord, PDBRecords);
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
 IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
@@ -225,7 +226,6 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %include "IMP/atom/BrownianDynamicsTAMD.h"
 %include "IMP/atom/Diffusion.h"
 %include "IMP/atom/TAMDParticle.h"
-%include "IMP/atom/Chain.h"
 %include "IMP/atom/Charged.h"
 %include "IMP/atom/CoulombPairScore.h"
 %include "IMP/atom/Domain.h"
@@ -273,6 +273,7 @@ namespace IMP {
 %include "IMP/atom/dihedrals.h"
 %include "IMP/atom/Molecule.h"
 %include "IMP/atom/Copy.h"
+%include "IMP/atom/Chain.h"
 %include "IMP/atom/Selection.h"
 %include "IMP/atom/distance.h"
 %include "IMP/atom/ForceFieldParameters.h"

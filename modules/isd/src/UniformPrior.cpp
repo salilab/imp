@@ -8,7 +8,7 @@
 
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/UniformPrior.h>
-#include <math.h>
+#include <cmath>
 
 IMPISD_BEGIN_NAMESPACE
 

@@ -148,7 +148,7 @@ class Experiment (object):
                                       ]
 
         # Excluded volume restraint. Restraint preventing the components from
-        # interpenetrating. This restraints sets an all agains all excluded
+        # interpenetrating. This restraints sets an all against all excluded
         # volument restraint. The meaning of the parameters is the same as above
         #distance, weight,pairs,stddev
         self.pairs_excluded_restraint = [0, 1, 0.1, 2]
@@ -156,9 +156,9 @@ class Experiment (object):
         # Geometric complementarity restraint:
         # the parameters are the ids of the 2 components, the name of the restraint
         # maximum distance - if 2 components are apart by more than this distance,
-        #   the restraint resturns the value 0
+        #   the restraint returns the value 0
         # max_penetration. It is maximum distance that 2 rigid bodies can interpenetrate
-        #           before the restraint returns a infinte value. For values of
+        #           before the restraint returns a infinite value. For values of
         #           the interpenetration lower than maximum penetration, the
         #           restraint returns increasing positive values.
         # The value of the restraint is negative only when the subunits show

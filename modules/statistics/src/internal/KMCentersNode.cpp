@@ -81,7 +81,7 @@ void KMCentersNode::post_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
   for (int d = 0; d < centers_->get_dim(); d++) {
     (*((*sums)[center_ind]))[d] += sum_[d];
   }
-  // incremet weight
+  // increment weight
   IMP_INTERNAL_CHECK((unsigned int)center_ind < weights->size(),
                      "the center index is out of range\n");
   (*weights)[center_ind] += n_data_;
@@ -101,7 +101,7 @@ void KMCentersNode::post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
     (*((*sums)[center_ind]))[d] += p[d];
     (*sum_sqs)[center_ind] += p[d] * p[d];
   }
-  // incremet weight
+  // increment weight
   IMP_INTERNAL_CHECK((unsigned int)center_ind < weights->size(),
                      "the center index is out of range\n");
   (*weights)[center_ind] += 1;

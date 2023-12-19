@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 typedef score_functor::PointToSphereDistance<score_functor::UnaryFunctionEvaluate>
     PointToSphereDistanceScore;
 
-//! A score on the distance between a surface and a sphere.
+//! A score on the distance between a surface and a sphere surface.
 /** \see Surface
     \see XYZR
     \see DistancePairScore
@@ -37,7 +37,7 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(SurfaceDistancePairScore,
                                      "SurfaceDistancePairScore%1%"),
                                 (score_functor::UnaryFunctionEvaluate(uf)));
 
-//! A score on the height of a sphere above a surface.
+//! A score on the height of a sphere's surface above a surface.
 /** \see Surface
     \see XYZR
     \see SurfaceDistancePairScore
@@ -51,7 +51,7 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(SurfaceHeightPairScore,
                                      "SurfaceHeightPairScore%1%"),
                                 (score_functor::UnaryFunctionEvaluate(uf)));
 
-//! A score on the depth of a sphere below a surface.
+//! A score on the depth of a sphere's surface below a surface.
 /** \see Surface
     \see XYZR
     \see SurfaceDistancePairScore
@@ -69,7 +69,7 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(SurfaceDepthPairScore,
 typedef score_functor::PointToSphereDistance<
     score_functor::Shift<score_functor::Harmonic> > HarmonicSurfaceDistanceScore;
 
-//! A harmonic score on the distance between a surface and a sphere.
+//! A harmonic score on the distance between a surface and a sphere surface.
 /** \see Surface
     \see XYZR
     \see Harmonic
@@ -85,13 +85,13 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(HarmonicSurfaceDistancePairScore,
                                 (score_functor::Shift<score_functor::Harmonic>(
                                     x0, score_functor::Harmonic(k))));
 
-// //! A harmonic score on the height of a sphere above a surface.
-// /** \see Surface
-//     \see XYZR
-//     \see Harmonic
-//     \see SurfaceHeightPairScore
-//     \see DistancePairScore
-//  */
+//! A harmonic score on the height of a sphere's surface above a surface.
+/** \see Surface
+    \see XYZR
+    \see Harmonic
+    \see SurfaceHeightPairScore
+    \see DistancePairScore
+ */
 IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(HarmonicSurfaceHeightPairScore,
                                 SurfaceHeightPairScore,
                                 HarmonicSurfaceDistanceScore,
@@ -101,13 +101,13 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(HarmonicSurfaceHeightPairScore,
                                 (score_functor::Shift<score_functor::Harmonic>(
                                     x0, score_functor::Harmonic(k))));
 
-// //! A harmonic score on the depth of a sphere below a surface.
-// /** \see Surface
-//     \see XYZR
-//     \see Harmonic
-//     \see SurfaceDepthPairScore
-//     \see DistancePairScore
-//  */
+//! A harmonic score on the depth of a sphere's surface below a surface.
+/** \see Surface
+    \see XYZR
+    \see Harmonic
+    \see SurfaceDepthPairScore
+    \see DistancePairScore
+ */
 IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(HarmonicSurfaceDepthPairScore,
                                 SurfaceDepthPairScore,
                                 HarmonicSurfaceDistanceScore,
@@ -121,7 +121,7 @@ typedef score_functor::PointToSphereDistance<score_functor::HarmonicLowerBound>
     SoftSurfaceDistanceScore;
 
 
-//! A harmonic score that keeps a sphere above a surface.
+//! A harmonic score that keeps a sphere's surface above a surface.
 /** This class is equivalent to, but faster than a
     SurfaceHeightPairScore with a HarmonicLowerBound.
 
@@ -136,7 +136,7 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(SoftSuperSurfacePairScore,
                            std::string name = "SoftSuperSurfacePairScore%1%"),
                           (score_functor::HarmonicLowerBound(k)));
 
-//! A harmonic score that keeps a sphere below a surface.
+//! A harmonic score that keeps a sphere's surface below a surface.
 /** This class is equivalent to, but faster than a
     SurfaceDepthPairScore with a HarmonicLowerBound.
 

@@ -97,7 +97,7 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   }
 
   //! Convert reference frame v from global to local
-  //! (i.e. the returned reference frame is speficied in this reference frame)
+  //! (i.e. the returned reference frame is specified in this reference frame)
   ReferenceFrame3D get_local_reference_frame(const ReferenceFrame3D &v) const {
     return ReferenceFrame3D(get_inverse() * v.tr_);
   }
