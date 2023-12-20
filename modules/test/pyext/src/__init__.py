@@ -801,14 +801,20 @@ class _TestResult(unittest.TextTestResult):
         test.start_time = datetime.datetime.now()
 
     def _test_finished(self, test, state, detail=None):
-        delta = datetime.datetime.now() - test.start_time
-        try:
-            pv = delta.total_seconds()
-        except AttributeError:
-            pv = (float(delta.microseconds)
-                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
-        if pv > 1:
-            self.stream.write("in %.3fs ... " % pv)
+        if hasattr(test, 'start_time'):
+            delta = datetime.datetime.now() - test.start_time
+            try:
+                pv = delta.total_seconds()
+            except AttributeError:
+                pv = (float(delta.microseconds)
+                      + (delta.seconds
+                         + delta.days * 24 * 3600) * 10**6) / 10**6
+            if pv > 1:
+                self.stream.write("in %.3fs ... " % pv)
+        else:
+            # If entire test was skipped, startTest() may not have been
+            # called, in which case start_time won't be set
+            pv = 0
         if detail is not None and not isinstance(detail, str):
             detail = self._exc_info_to_string(detail, test)
         test_doc = self.getDescription(test)
