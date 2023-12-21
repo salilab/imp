@@ -82,7 +82,7 @@ BuildRequires: cmake >= 2.8
 %global our_cmake cmake
 %endif
 BuildRequires: boost-devel >= 1.53
-BuildRequires: RMF-devel
+BuildRequires: RMF-devel >= 1.6
 %if 0%{?with_python3}
 BuildRequires: python3-ihm
 Requires: python3-ihm
