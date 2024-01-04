@@ -103,21 +103,21 @@ IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
 
 %extend IMP::algebra::VectorD<-1> {
   double __getitem__(int index) const {
-    int D = self->get_dimension();
-    if (index >= 0 && index < D) {
+    int dim = self->get_dimension();
+    if (index >= 0 && index < dim) {
       return self->operator[](index);
-    } else if (index <= -1 && index >= -(D)) {
-      return self->operator[](index + D);
+    } else if (index <= -1 && index >= -(dim)) {
+      return self->operator[](index + dim);
     } else {
       throw IMP::IndexException("VectorD index out of range");
     }
   }
   void __setitem__(int index, double val) {
-    int D = self->get_dimension();
-    if (index >= 0 && index < D) {
+    int dim = self->get_dimension();
+    if (index >= 0 && index < dim) {
       self->operator[](index) = val;
-    } else if (index <= -1 && index >= -(D)) {
-      self->operator[](index + D) = val;
+    } else if (index <= -1 && index >= -(dim)) {
+      self->operator[](index + dim) = val;
     } else {
       throw IMP::IndexException("VectorD assignment index out of range");
     }
