@@ -99,22 +99,18 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 
 // %include "IMP/em2d/TemplateFinder.h"
 
-namespace IMP {
-  namespace em2d {
-    %template(ResultAlign2D)
-            ::std::pair< IMP::algebra::Transformation2D,double >;
+%template(ResultAlign2D)
+        ::std::pair< IMP::algebra::Transformation2D,double >;
 
 //    %template(VectorOfInts)   ::std::vector< IMP::Ints >;
 //    %template(VectorOfFloats) ::std::vector< IMP::Floats >;
 
-   %template(_do_hierarchical_clustering_single_linkage)
-          ::IMP::em2d::do_hierarchical_agglomerative_clustering<SingleLinkage>;
-   %template(_do_hierarchical_clustering_complete_linkage)
-           ::IMP::em2d::do_hierarchical_agglomerative_clustering<CompleteLinkage>;
-   %template(_do_hierarchical_clustering_average_distance_linkage)
-           ::IMP::em2d::do_hierarchical_agglomerative_clustering<AverageDistanceLinkage>;
-  }
-}
+%template(_do_hierarchical_clustering_single_linkage)
+      ::IMP::em2d::do_hierarchical_agglomerative_clustering<IMP::em2d::SingleLinkage>;
+%template(_do_hierarchical_clustering_complete_linkage)
+       ::IMP::em2d::do_hierarchical_agglomerative_clustering<IMP::em2d::CompleteLinkage>;
+%template(_do_hierarchical_clustering_average_distance_linkage)
+       ::IMP::em2d::do_hierarchical_agglomerative_clustering<IMP::em2d::AverageDistanceLinkage>;
 
 %pythoncode %{
   do_hierarchical_clustering_single_linkage = _do_hierarchical_clustering_single_linkage

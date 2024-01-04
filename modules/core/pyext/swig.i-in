@@ -379,17 +379,12 @@ IMP::Restraint *create_restraint(IMP::PairScore *ps, IMP::ParticlePair pp) {
 }
 %}
 
-namespace IMP {
-  namespace core {
-    %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
-    %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
-    %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
-    // swig screws up on scopes, I can't be bothered to fix it
-    //%template(show_named_hierarchy) show<::IMP::core::Name>;
-   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX>;
-
-  }
-}
+%template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<IMP::core::LOWER>;
+%template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<IMP::core::UPPER>;
+%template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<IMP::core::BOTH>;
+// swig screws up on scopes, I can't be bothered to fix it
+//%template(show_named_hierarchy) show<::IMP::core::Name>;
+%template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX>;
 
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);

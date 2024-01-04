@@ -247,24 +247,17 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %template(_ALoopStatisticalBase) IMP::score_functor::DistancePairScore<IMP::score_functor::LoopStatistical>;
 %template(_BLoopStatisticalBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::LoopStatisticalType,false,true,false > >;
 %template(_OrientedSoapBase) IMP::score_functor::DistancePairScoreWithCache<IMP::score_functor::OrientedSoap>;
-namespace IMP {
-  namespace atom {
-   %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
-   %template(_SPSTF) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
-   %template(_SPSFT) ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
-   %template(_SPSFTL) ::IMP::core::StatisticalPairScore< IMP::atom::LoopStatisticalType, false, true>;
-  }
-}
+%template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
+%template(_SPSTF) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
+%template(_SPSFT) ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
+%template(_SPSFTL) ::IMP::core::StatisticalPairScore< IMP::atom::LoopStatisticalType, false, true>;
 %include "IMP/atom/protein_ligand_score.h"
 
-namespace IMP {
-  namespace atom {
-   // swig has random, perplexing issues if these are higher in the file
-   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX>;
-   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX>;
-   %template(ChainType) ::IMP::Key<IMP_CHAIN_TYPE_INDEX>;
-  }
-}
+// swig has random, perplexing issues if these are higher in the file
+%template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX>;
+%template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX>;
+%template(ChainType) ::IMP::Key<IMP_CHAIN_TYPE_INDEX>;
+
 %include "IMP/atom/element.h"
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
