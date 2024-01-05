@@ -34,9 +34,8 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         # count the number of lines in output file
-        fin = open('soap_score.res', 'r')
-        text = fin.read()
-        fin.close()
+        with open('soap_score.res', 'r') as fin:
+            text = fin.read()
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 14)
         os.unlink('soap_score.res')
@@ -44,11 +43,10 @@ class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple_filenames_score(self):
         """Simple test of filenames SOAP score application"""
 
-        text_file = open("filenames.txt", "w")
-        text_file.write(self.get_input_file_name('static.pdb'))
-        text_file.write(" ")
-        text_file.write(self.get_input_file_name('transformed.pdb'))
-        text_file.close()
+        with open("filenames.txt", "w") as text_file:
+            text_file.write(self.get_input_file_name('static.pdb'))
+            text_file.write(" ")
+            text_file.write(self.get_input_file_name('transformed.pdb'))
         p = self.run_application('soap_score',
                                  ['filenames.txt'])
 
