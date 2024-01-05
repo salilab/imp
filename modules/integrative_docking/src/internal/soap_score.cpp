@@ -81,6 +81,9 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
     grid[grid_index].push_back(j);
   }
 
+  // Since we are not using a ScoringFunction we must update the Model
+  // ourselves so that everything is up to date (e.g. caches)
+  model->update();
   // score
   soap_score->check_cache_valid(model);
   double score = 0.0;
@@ -121,6 +124,10 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
   for (unsigned int i = 0; i < pis.size(); i++) {
     coordinates.push_back(IMP::core::XYZ(model, pis[i]).get_coordinates());
   }
+
+  // Since we are not using a ScoringFunction we must update the Model
+  // ourselves so that everything is up to date (e.g. caches)
+  model->update();
 
   soap_score->check_cache_valid(model);
   float distance_threshold = soap_score->get_distance_threshold();
