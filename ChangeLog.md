@@ -1,6 +1,12 @@
 ChangeLog {#changelog}
 =========
 
+# 2.20.1 - 2024-01-16 # {#changelog_2_20_1}
+- Bugfix: fix `soap_score` crash when scoring multiple models with an
+  orientation-dependent SOAP score.
+- Bugfix: allow building with SWIG 4.2.
+- Bugfix: various fixes for Python 3.12.
+
 # 2.20.0 - 2023-12-21 # {#changelog_2_20_0}
 - The Windows .exe installer now supports Python 3.7 through 3.12.
 - RPM packages for IMP for RedHat Linux (and clones such as Alma or Rocky)
