@@ -235,21 +235,17 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_D(Vector, get_vertices, UnitSimplex);
 IMP_SWIG_ALGEBRA_FUNCTION_D_DD(Vector, get_increasing_from_embedded, UnitSimplex, Vector);
 IMP_SWIG_ALGEBRA_FUNCTION_D_DD(Vector, get_embedded_from_increasing, UnitSimplex, Vector);
 
-namespace IMP {
- namespace algebra {
-   %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
+%template(_AxisAnglePair) std::pair<IMP::algebra::VectorD<3>,double>;
 
-   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::Vector<IMP::algebra::VectorD<3> >, IMP::Vector<IMP::algebra::VectorD<3> > >;
-   // rotation operations
+%template(get_transformation_aligning_first_to_second) IMP::algebra::get_transformation_aligning_first_to_second<IMP::Vector<IMP::algebra::VectorD<3> >, IMP::Vector<IMP::algebra::VectorD<3> > >;
 
-   %template(_RotatedVector3DAdjoint) ::std::pair<IMP::algebra::VectorD<3>,IMP::algebra::VectorD<4> >;
-   %template(_ComposeRotation3DAdjoint) ::std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<4> >;
+// rotation operations
+%template(_RotatedVector3DAdjoint) std::pair<IMP::algebra::VectorD<3>,IMP::algebra::VectorD<4> >;
+%template(_ComposeRotation3DAdjoint) std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<4> >;
 
-   %template(_Transformation3DAdjoint) ::std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >;
-   %template(_TransformedVector3DAdjoint) ::std::pair<IMP::algebra::VectorD<3>,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
-   %template(_ComposeTransformation3DAdjoint) ::std::pair<std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
- }
-}
+%template(_Transformation3DAdjoint) std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >;
+%template(_TransformedVector3DAdjoint) std::pair<IMP::algebra::VectorD<3>,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
+%template(_ComposeTransformation3DAdjoint) std::pair<std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
 
 %inline %{
 double get_rmsd_transforming_first(IMP::algebra::Transformation3D tr,

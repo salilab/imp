@@ -2,7 +2,7 @@
  *  \file utility.cpp
  *  \brief Various general useful functions for IMP.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,7 +37,7 @@ std::string get_unique_name(std::string name) {
 }
 
 std::string get_copyright() {
-  return "Copyright 2007-2023 IMP Inventors";
+  return "Copyright 2007-2024 IMP Inventors";
 }
 
 IMPKERNEL_END_NAMESPACE
