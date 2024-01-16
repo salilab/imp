@@ -1,5 +1,5 @@
 # On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
-# subpackage; on RHEL 9 or later, use Python 3 only).
+# subpackage for RHEL 8 or older Fedora).
 # On older systems, the IMP package uses Python 2 only.
 %if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
@@ -13,7 +13,7 @@
 %define default_python python2
 %endif
 
-%if 0%{?rhel} >= 9
+%if 0%{?rhel} >= 9 || 0%{?fedora} > 37
 %define with_python2 0
 %else
 %define with_python2 1
