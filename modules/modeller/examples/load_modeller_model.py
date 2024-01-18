@@ -12,14 +12,14 @@ import sys
 IMP.setup_from_argv(sys.argv, "Load Modeller model")
 
 # Set up Modeller and build a model from the GGCC primary sequence
-e = modeller.environ()
+e = modeller.Environ()
 e.edat.dynamic_sphere = True
 e.libs.topology.read('${LIB}/top_heav.lib')
 e.libs.parameters.read('${LIB}/par.lib')
-modmodel = modeller.model(e)
+modmodel = modeller.Model(e)
 modmodel.build_sequence('GGCC')
 # Generate Modeller stereochemistry
-sel = modeller.selection(modmodel)
+sel = modeller.Selection(modmodel)
 modmodel.restraints.make(sel, restraint_type='STEREO', spline_on_site=False)
 
 # Set up IMP and use the ModelLoader class to load the atom coordinates

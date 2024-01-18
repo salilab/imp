@@ -13,11 +13,11 @@ import sys
 IMP.setup_from_argv(sys.argv, "IMP restraints in Modeller")
 
 # Set up Modeller and build a model from the GGCC primary sequence
-e = modeller.environ()
+e = modeller.Environ()
 e.edat.dynamic_sphere = False
 e.libs.topology.read('${LIB}/top_heav.lib')
 e.libs.parameters.read('${LIB}/par.lib')
-modmodel = modeller.model(e)
+modmodel = modeller.Model(e)
 modmodel.build_sequence('GGCC')
 
 # Set up IMP and load the Modeller model in as a new Hierarchy
@@ -37,5 +37,5 @@ t = modmodel.env.edat.energy_terms
 t.append(IMP.modeller.IMPRestraints(atoms, sf))
 
 # Calculate the Modeller energy (score) for the whole protein
-sel = modeller.selection(modmodel)
+sel = modeller.Selection(modmodel)
 sel.energy()

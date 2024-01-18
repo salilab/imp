@@ -13,16 +13,16 @@ import sys
 IMP.setup_from_argv(sys.argv, "Modeller restraints in IMP")
 
 # Set up Modeller and build a model from the GGCC primary sequence
-e = modeller.environ()
+e = modeller.Environ()
 e.edat.dynamic_sphere = False
 e.libs.topology.read('${LIB}/top_heav.lib')
 e.libs.parameters.read('${LIB}/par.lib')
-modmodel = modeller.model(e)
+modmodel = modeller.Model(e)
 modmodel.build_sequence('GGCC')
 
 # Add a simple Modeller distance restraint between the first and last atoms
-feat = modeller.features.distance(modmodel.atoms[0], modmodel.atoms[-1])
-r = modeller.forms.gaussian(feature=feat, mean=10.0, stdev=1.0,
+feat = modeller.features.Distance(modmodel.atoms[0], modmodel.atoms[-1])
+r = modeller.forms.Gaussian(feature=feat, mean=10.0, stdev=1.0,
                             group=modeller.physical.xy_distance)
 modmodel.restraints.add(r)
 
