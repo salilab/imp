@@ -1,5 +1,3 @@
-%pythoncode %{
-
 import os
 import tempfile
 import shutil
@@ -616,5 +614,3 @@ class ModelLoader(object):
                 ps = IMP.atom.CoulombPairScore(sf)
                 ps.set_relative_dielectric(edat.relative_dielectric)
                 yield IMP.container.PairsRestraint(ps, nbl)
-
-%}
