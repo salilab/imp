@@ -73,16 +73,18 @@ def main():
     modname = sys.argv[1]
     if len(sys.argv) == 3:
         modpath = sys.argv[2]
-    else:
+    elif os.path.exists("modules"):
         modpath = os.path.join("modules", modname)
+    else:
+        modpath = modname
     if not re.match('[a-zA-Z0-9_]+$', modname):
         print(
             "Module names can only contain letters, numbers, and underscores")
         return
     if os.path.isdir(modpath):
-        print("Module already exists")
+        print("Module already exists in directory " + modpath)
         return
-    print("Creating a new module " + modname + " in " + modpath)
+    print("Creating a new module " + modname + " in directory: " + modpath)
     os.mkdir(modpath)
     copy_dir(os.path.join(impdir, "modules", "scratch"), modpath, modname)
     make_readme(modpath)
