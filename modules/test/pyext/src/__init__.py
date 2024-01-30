@@ -644,6 +644,12 @@ class TestCase(unittest.TestCase):
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
         all = dir(modulename)
+        if hasattr(modulename, '_raii_types'):
+            excludes = frozenset(
+                modulename._raii_types + modulename._plural_types)
+        else:
+            # Python-only modules don't have these two lists
+            excludes = frozenset()
         not_found = []
         for f in all:
             # Exclude SWIG C global variables object
@@ -659,8 +665,7 @@ class TestCase(unittest.TestCase):
                     and f not in exceptions\
                     and not f.endswith("Temp") and not f.endswith("Iterator")\
                     and not f.endswith("Exception") and\
-                    f not in modulename._raii_types and \
-                    f not in modulename._plural_types:
+                    f not in excludes:
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         self.assertEqual(
