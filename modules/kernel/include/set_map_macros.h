@@ -54,6 +54,14 @@
 #define IMP_KERNEL_LARGE_UNORDERED_SET boost::unordered_set
 #define IMP_KERNEL_LARGE_UNORDERED_MAP boost::unordered_map
 
+// Use cereal's own functions to serialize unordered_map, not those
+// provided (for Boost.Serialize) in newer Boost versions
+namespace cereal {
+  template<class Archive, class Key, class T>
+    struct specialize<Archive, boost::unordered_map<Key, T>,
+                      cereal::specialization::non_member_load_save> {};
+}
+
 #if defined(_MSC_VER) && _MSC_VER <= 1500
 #include <set>                      // IWYU pragma: export
 #include <map>                      // IWYU pragma: export
