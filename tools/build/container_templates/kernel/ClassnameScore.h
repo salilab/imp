@@ -33,7 +33,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     (e.g. ScoreStates) are preserved. Use a Restraint or ScoringFunction
     to score the model instead.
 
-    Implementers should check out IMP_CLASSNAME_SCORE().
+    Implementers should check out IMP_CLASSNAME_SCORE_METHODS().
 
     \see PredicateClassnameRestraint
 */
@@ -66,8 +66,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       @param lower_bound index of first item in o to evaluate
       @param upper_bound index one past last item in o to evaluate
 
-      @note Implementations for these are provided by
-            the IMP_CLASSNAME_SCORE() macro.
+      @note An implementation for this is provided by
+            the IMP_CLASSNAME_SCORE_METHODS() macro.
   */
   virtual double evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
                                   DerivativeAccumulator *da,
@@ -76,7 +76,11 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
 
   //! Compute the score and the derivative if needed over a set.
   /** Like regular evaluate_indexes(), but the score for each o[x] is also
-      returned as score[x]. */
+      returned as score[x].
+
+      @note An implementation for this is provided by
+            the IMP_CLASSNAME_SCORE_METHODS() macro.
+  */
   virtual double evaluate_indexes_scores(
                         Model *m, const PLURALINDEXTYPE &o,
                         DerivativeAccumulator *da,
@@ -87,7 +91,11 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   //! Compute the change in score and the derivative if needed over a set.
   /** The score for each o[indexes[x]] is updated in score[indexes[x]]
       and the total difference between the old and new score values (over the
-      set) is returned. */
+      set) is returned.
+
+      @note An implementation for this is provided by
+            the IMP_CLASSNAME_SCORE_METHODS() macro.
+  */
   virtual double evaluate_indexes_delta(
                         Model *m, const PLURALINDEXTYPE &o,
                         DerivativeAccumulator *da,
@@ -110,8 +118,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
 
       @return the score if score<= max or some arbitrary value > max otherwise.
 
-      @note Implementations for these are provided by the IMP_CLASSNAME_SCORE()
-            macro.
+      @note An implementation for this is provided by
+            the IMP_CLASSNAME_SCORE_METHODS() macro.
   */
   virtual double evaluate_if_good_indexes(Model *m,
                                           const PLURALINDEXTYPE &o,
