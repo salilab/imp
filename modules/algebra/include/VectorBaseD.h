@@ -60,8 +60,8 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
   void check_vector() const {
-    IMP_USAGE_CHECK(!data_.get_is_null(),
-                    "Attempt to use uninitialized vector.");
+    IMP_INTERNAL_CHECK(!data_.get_is_null(),
+                       "Attempt to use uninitialized vector.");
   }
   template <int OD>
   void check_compatible_vector(const VectorBaseD<OD> &o) const {
