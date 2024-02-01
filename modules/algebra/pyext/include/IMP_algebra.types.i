@@ -366,8 +366,8 @@ struct ConvertEigenMatrix {
 #if IMP_KERNEL_HAS_NUMPY
     // We are called for both float and double. Map to equivalent NumPy
     // types by checking the size of the type (a little ugly)
-    BOOST_STATIC_ASSERT(sizeof(typename M::Scalar) == sizeof(double) ||
-                        sizeof(typename M::Scalar) == sizeof(float));
+    static_assert(sizeof(typename M::Scalar) == sizeof(double) ||
+                  sizeof(typename M::Scalar) == sizeof(float));
     if (numpy_import_retval == 0) {
       npy_intp dims[2];
       dims[0] = t.rows();
@@ -442,8 +442,8 @@ struct ConvertEigenVector {
 #if IMP_KERNEL_HAS_NUMPY
     // We are called for both float and double. Map to equivalent NumPy
     // types by checking the size of the type (a little ugly)
-    BOOST_STATIC_ASSERT(sizeof(typename M::Scalar) == sizeof(double) ||
-                        sizeof(typename M::Scalar) == sizeof(float));
+    static_assert(sizeof(typename M::Scalar) == sizeof(double) ||
+                  sizeof(typename M::Scalar) == sizeof(float));
     if (numpy_import_retval == 0) {
       npy_intp dims[2];
       dims[0] = t.rows();

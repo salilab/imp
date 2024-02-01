@@ -24,7 +24,6 @@
 #include <limits>
 #include <cmath>
 #include <boost/random/normal_distribution.hpp>
-#include <boost/static_assert.hpp>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_ALGEBRA_VECTOR_CHECK check_vector()

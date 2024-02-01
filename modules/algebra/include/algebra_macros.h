@@ -2,7 +2,7 @@
  *  \file IMP/algebra/algebra_macros.h
  *  \brief Various helper macros.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,7 +34,7 @@
   template <int OD>                                                           \
   VectorD(const VectorD<OD> &o)                                               \
       : P(o) {                                                                \
-    BOOST_STATIC_ASSERT(OD == D || OD == -1 || D == -1);                      \
+    static_assert(OD == D || OD == -1 || D == -1);                      \
   }                                                                           \
   IMP_ALGEBRA_VECTOR_SWIG_METHODS(D);                                         \
   /** The distance between b and e must be equal to D.                        \

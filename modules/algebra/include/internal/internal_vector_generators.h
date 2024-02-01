@@ -1,7 +1,7 @@
 /**
  *  \file cgal_predicates.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
@@ -153,7 +153,7 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
 template <int D>
 inline Vector<VectorD<D> > native_uniform_cover_unit_sphere(
     unsigned int d, unsigned int n, bool ALL) {
-  BOOST_STATIC_ASSERT(D != 3);
+  static_assert(D != 3);
   Vector<VectorD<D> > ret(n);
   for (unsigned int i = 0; i < std::min(d, n / (ALL ? 2 : 1)); ++i) {
     VectorD<D> v = get_basis_vector_kd(d, i);

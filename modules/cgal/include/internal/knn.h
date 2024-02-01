@@ -11,7 +11,6 @@
 #include <IMP/types.h>
 #include <IMP/Pointer.h>
 #include <IMP/algebra/VectorD.h>
-#include <boost/static_assert.hpp>
 #include <IMP/Object.h>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
