@@ -26,22 +26,6 @@
 #include <cmath>
 #include <boost/random/normal_distribution.hpp>
 
-#if IMP_HAS_CHECKS >= IMP_INTERNAL
-#define IMP_ALGEBRA_VECTOR_CHECK check_vector()
-#else
-#define IMP_ALGEBRA_VECTOR_CHECK
-#endif
-
-#if IMP_HAS_CHECKS >= IMP_USAGE
-#define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
-#define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
-  check_compatible_vector(o);                  \
-  o.check_vector()
-#else
-#define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i)
-#define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o)
-#endif
-
 IMPALGEBRA_BEGIN_NAMESPACE
 //! A Cartesian vector in D-dimensions.
 /** Store a vector of Cartesian coordinates. It supports all expected
