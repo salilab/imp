@@ -12,3 +12,8 @@ To make a new release:
 - Tag the new release:
   - git tag -s -u E6414C85 x.y.z; git push origin x.y.z
 - Make new release on GitHub
+- Check that Zenodo is updated (should be automatic)
+- Build an SRPM from the spec file tools/RMF.spec and the .tar.gz from
+  the GitHub release page, and upload to COPR
+- Open PR on conda-forge to update the conda package
+- Update the Homebrew package and build bottles
