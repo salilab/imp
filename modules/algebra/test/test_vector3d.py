@@ -5,6 +5,7 @@ import io
 import math
 import sys
 import pickle
+import operator
 
 
 class Tests(IMP.test.TestCase):
@@ -92,6 +93,35 @@ class Tests(IMP.test.TestCase):
         """Check Vector3D length"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         self.assertEqual(len(v1), 3)
+
+    def test_dimension_mismatch(self):
+        """Check failure to combine with other dimension vectors"""
+        v3 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
+        v4 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
+        k3 = IMP.algebra.VectorKD(v3)
+        k4 = IMP.algebra.VectorKD(v4)
+        # Should not be able to add 3D vector to 4D (or KD with K==4) vector
+        self.assertRaises(TypeError, operator.add, v3, v4)
+        self.assertRaises(TypeError, operator.add, v3, k4)
+        self.assertRaises(TypeError, operator.add, v4, v3)
+        self.assertRaises(TypeError, operator.add, v4, k3)
+        # Should not be able to subtract 3D vector from
+        # 4D (or KD with K==4) vector
+        self.assertRaises(TypeError, operator.sub, v3, v4)
+        self.assertRaises(TypeError, operator.sub, v3, k4)
+        self.assertRaises(TypeError, operator.sub, v4, v3)
+        self.assertRaises(TypeError, operator.sub, v4, k3)
+        # Should not be able to get scalar product 3D vector with 4D
+        self.assertRaises(TypeError, v3.get_scalar_product, v4)
+        self.assertRaises(TypeError, v3.get_scalar_product, k4)
+        self.assertRaises(TypeError, v4.get_scalar_product, v3)
+        self.assertRaises(TypeError, v4.get_scalar_product, k3)
+        # 3D vector with KD (with K==3) is OK, but scalar product is
+        # not currently supported
+        _ = v3 + k3
+        _ = v3 - k3
+        self.assertRaises(TypeError, v3.get_scalar_product, k3)
+        self.assertRaises(TypeError, k3.get_scalar_product, v3)
 
     def test_scalar_product(self):
         """Check Vector3D scalar product"""
