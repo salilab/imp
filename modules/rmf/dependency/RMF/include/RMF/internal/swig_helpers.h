@@ -118,7 +118,7 @@ struct ValueOrObject {
 
 template <class T>
 struct ConvertAllBase {
-  static_assert(!is_pointer<T>::value);
+  static_assert(!is_pointer<T>::value, "is a pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st) {
     void* vp;
@@ -129,7 +129,7 @@ struct ConvertAllBase {
 
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
-  static_assert(!is_pointer<T>::value);
+  static_assert(!is_pointer<T>::value, "is a pointer");
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, SwigData st) {
     void* vp;
@@ -175,7 +175,7 @@ struct Convert : public ConvertValueBase<T> {
 template <class T, class VT, class ConvertVT>
 struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
-  static_assert(!is_pointer<T>::value);
+  static_assert(!is_pointer<T>::value, "is a pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st) {
     if (!in || !PySequence_Check(in)) {

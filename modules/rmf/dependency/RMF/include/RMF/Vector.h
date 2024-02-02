@@ -60,13 +60,13 @@ class Vector
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Vector);
 
   Vector(float x, float y, float z) {
-    static_assert(D == 3);
+    static_assert(D == 3, "Constructor only valid for Vector3");
     P::operator[](0) = x;
     P::operator[](1) = y;
     P::operator[](2) = z;
   }
   Vector(float x, float y, float z, float q) {
-    static_assert(D == 4);
+    static_assert(D == 4, "Constructor only valid for Vector4");
     P::operator[](0) = x;
     P::operator[](1) = y;
     P::operator[](2) = z;

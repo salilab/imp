@@ -28,7 +28,7 @@ const std::string typeToString[] = {
     "record", "enum",  "array", "map",  "union", "fixed",  "symbolic"};
 
 static_assert((sizeof(typeToString) / sizeof(std::string)) ==
-              (AVRO_NUM_TYPES + 1));
+              (AVRO_NUM_TYPES + 1), "type table size mismatch");
 
 }  // namespace strings
 
@@ -36,7 +36,7 @@ static_assert((sizeof(typeToString) / sizeof(std::string)) ==
 // each type,
 // and it would be a problem for this flag if we ever supported more than 32
 // types
-static_assert(AVRO_NUM_TYPES < 32);
+static_assert(AVRO_NUM_TYPES < 32, "flags should fit in 32-bit");
 
 const std::string &toString(Type type) {
   static std::string undefinedType = "Undefined type";

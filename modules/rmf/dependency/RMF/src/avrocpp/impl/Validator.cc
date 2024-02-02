@@ -140,7 +140,7 @@ void Validator::doAdvance() {
       &Validator::countingAdvance, &Validator::unionAdvance,
       &Validator::fixedAdvance};
   static_assert((sizeof(funcs) / sizeof(AdvanceFunc)) ==
-                (AVRO_NUM_TYPES));
+                (AVRO_NUM_TYPES), "function table size mismatch");
 
   expectedTypesFlag_ = 0;
   // loop until we encounter a next expected type, or we've exited all compound
@@ -197,7 +197,8 @@ void Validator::setupFlag(Type type) {
                                  typeToFlag(AVRO_ENUM), typeToFlag(AVRO_ARRAY),
                                  typeToFlag(AVRO_MAP), typeToFlag(AVRO_UNION),
                                  typeToFlag(AVRO_FIXED)};
-  static_assert((sizeof(flags) / sizeof(flag_t)) == (AVRO_NUM_TYPES));
+  static_assert((sizeof(flags) / sizeof(flag_t)) == (AVRO_NUM_TYPES),
+		"flags table size mismatch");
 
   expectedTypesFlag_ = flags[type];
 }

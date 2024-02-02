@@ -563,7 +563,7 @@ class ResolverFactory : private boost::noncopyable {
         &ResolverFactory::constructCompound<FixedParser, FixedSkipper>};
 
     static_assert((sizeof(funcs) / sizeof(BuilderFunc)) ==
-                  (AVRO_NUM_TYPES));
+                  (AVRO_NUM_TYPES), "function table size mismatch");
 
     BuilderFunc func = funcs[currentWriter->type()];
     assert(func);
@@ -595,7 +595,7 @@ class ResolverFactory : private boost::noncopyable {
         &ResolverFactory::constructCompoundSkipper<FixedSkipper>};
 
     static_assert((sizeof(funcs) / sizeof(BuilderFunc)) ==
-                  (AVRO_NUM_TYPES));
+                  (AVRO_NUM_TYPES), "function table size mismatch");
 
     BuilderFunc func = funcs[currentWriter->type()];
     assert(func);
