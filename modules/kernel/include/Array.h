@@ -172,6 +172,12 @@ namespace std {
     static_assert(I < D, "array index is within bounds");
     return *(arr.begin() + I);
   }
+
+  template <unsigned int I, unsigned int D, class Data, class SwigData>
+  Data& get(IMP::Array<D, Data, SwigData> &arr) {
+    static_assert(I < D, "array index is within bounds");
+    return *(arr.begin() + I);
+  }
 }
 
 #endif /* IMPKERNEL_ARRAY_H */
