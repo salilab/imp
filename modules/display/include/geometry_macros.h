@@ -166,8 +166,8 @@
         : display::PairGeometry(pp) {}                                 \
     display::Geometries get_components() const override {              \
       display::Geometries ret;                                         \
-      Decorator d0(get_particle_pair()[0]);                            \
-      Decorator d1(get_particle_pair()[1]);                            \
+      Decorator d0(std::get<0>(get_particle_pair()));                  \
+      Decorator d1(std::get<1>(get_particle_pair()));                  \
       action;                                                          \
       return ret;                                                      \
     }                                                                  \
@@ -180,8 +180,8 @@
     display::Geometries get_components() const override {              \
       display::Geometries ret;                                         \
       for(ParticleIndexPair pip : get_container()->get_contents()) {   \
-        Decorator d0(get_container()->get_model(), pip[0]);            \
-        Decorator d1(get_container()->get_model(), pip[1]);            \
+        Decorator d0(get_container()->get_model(), std::get<0>(pip));  \
+        Decorator d1(get_container()->get_model(), std::get<1>(pip));  \
         action;                                                        \
       }                                                                \
       return ret;                                                      \

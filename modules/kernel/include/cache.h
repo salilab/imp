@@ -96,8 +96,8 @@ class SparseSymmetricPairMemoizer {
   Generator gen_;
   Checker checker_;
 
-  static Key get_0(Entry e) { return e[0]; }
-  static Key get_1(Entry e) { return e[1]; }
+  static Key get_0(Entry e) { return std::get<0>(e); }
+  static Key get_1(Entry e) { return std::get<1>(e); }
 
   // The This:: is needed to make certain gcc versions (4.7) happier
   typedef boost::multi_index::global_fun<Entry, Key, &This::get_0> P0Member;

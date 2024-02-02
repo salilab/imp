@@ -20,7 +20,8 @@ SingletonsGeometry::SingletonsGeometry(SingletonContainerAdaptor pc, Color c)
     : Geometry(c, pc->get_name() + " geometry"), sc_(pc) {}
 
 PairGeometry::PairGeometry(const ParticlePair &p)
-    : Geometry(p.get_name() + " geometry"), p0_(p[0]), p1_(p[1]) {}
+    : Geometry(p.get_name() + " geometry"),
+      p0_(std::get<0>(p)), p1_(std::get<1>(p)) {}
 
 PairsGeometry::PairsGeometry(PairContainer *pc)
     : Geometry(pc->get_name() + " geometry"), sc_(pc) {}
