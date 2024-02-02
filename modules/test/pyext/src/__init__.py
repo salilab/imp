@@ -318,6 +318,42 @@ class TestCase(unittest.TestCase):
         msg = self._formatMessage(msg, standardMsg)
         raise self.failureException(msg)
 
+    def _read_cmake_cache(self, cmake_cache):
+        """Parse CMakeCache and extract info on the C++ compiler"""
+        cxx = flags = None
+        with open(cmake_cache) as fh:
+            for line in fh:
+                if line.startswith('CMAKE_CXX_COMPILER:'):
+                    cxx = line.split('=', 1)[1].rstrip('\r\n')
+                elif line.startswith('CMAKE_CXX_FLAGS:'):
+                    flags = line.split('=', 1)[1].rstrip('\r\n')
+        return cxx, flags
+
+    def assertCompileFails(self, includes, body):
+        """Test that the given C++ code fails to compile with a static
+           assertion."""
+        libdir = os.path.dirname(IMP.__file__)
+        cmake_cache = os.path.join(libdir, '..', '..', 'CMakeCache.txt')
+        include = os.path.join(libdir, '..', '..', 'include')
+        if not os.path.exists(cmake_cache):
+            self.skipTest("cannot find CMakeCache.txt")
+        cxx, flags = self._read_cmake_cache(cmake_cache)
+        with temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'test.cpp')
+            with open(fname, 'w') as fh:
+                for inc in includes:
+                    fh.write("#include <%s>\n" % inc)
+                fh.write("\nint main() {\n" + body + "\n  return 0;\n}\n")
+            cmdline = "%s %s -I%s %s" % (cxx, flags, include, fname)
+            print(cmdline)
+            p = subprocess.Popen(cmdline, shell=True,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 universal_newlines=True)
+            out, err = p.communicate()
+            self.assertIn('error: static assertion failed', err)
+
+
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
            add it to the model."""
