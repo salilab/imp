@@ -52,9 +52,10 @@ double CrossLinkMSRestraint::get_probability() const {
 
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
         IMP::ParticleIndexPair ppi = ppis_[k];
-        double dist ;
-        if (ppi[0] != ppi[1]) {
-            core::XYZ d0(get_model(), ppi[0]), d1(get_model(), ppi[1]);
+        double dist;
+        if (std::get<0>(ppi) != std::get<1>(ppi)) {
+            core::XYZ d0(get_model(), std::get<0>(ppi));
+            core::XYZ d1(get_model(), std::get<1>(ppi));
             dist =
             (d0.get_coordinates() - d1.get_coordinates()).get_magnitude();
         } else {
@@ -62,15 +63,17 @@ double CrossLinkMSRestraint::get_probability() const {
             // get the distance as if the residue positions were randomly
             // taken from within the sphere representing the domain
             // Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
-            double R=core::XYZR(get_model(), ppi[0]).get_radius();
+            double R=core::XYZR(get_model(), std::get<0>(ppi)).get_radius();
             dist=36.0/35.0*R;
         }
         if (dist<0.0001){dist=0.0001;}
         IMP::ParticleIndexPair sigmas = sigmass_[k];
         IMP::ParticleIndex psii = psis_[k];
         double psi = isd::Scale(get_model(), psii).get_scale();
-        double sigmai = isd::Scale(get_model(), sigmas[0]).get_scale();
-        double sigmaj = isd::Scale(get_model(), sigmas[1]).get_scale();
+        double sigmai = isd::Scale(get_model(),
+                                   std::get<0>(sigmas)).get_scale();
+        double sigmaj = isd::Scale(get_model(),
+                                   std::get<1>(sigmas)).get_scale();
 
         double voli = 4.0 / 3.0 * IMP::PI * sigmai * sigmai * sigmai;
         double volj = 4.0 / 3.0 * IMP::PI * sigmaj * sigmaj * sigmaj;
@@ -162,17 +165,17 @@ double CrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 ModelObjectsTemp CrossLinkMSRestraint::do_get_inputs() const {
     ParticlesTemp ret;
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
-        if (ppis_[k][0] == ppis_[k][1]) {
-            ret.push_back(get_model()->get_particle(ppis_[k][0]));
+        if (std::get<0>(ppis_[k]) == std::get<1>(ppis_[k])) {
+            ret.push_back(get_model()->get_particle(std::get<0>(ppis_[k])));
         } else {
-            ret.push_back(get_model()->get_particle(ppis_[k][0]));
-            ret.push_back(get_model()->get_particle(ppis_[k][1]));
+            ret.push_back(get_model()->get_particle(std::get<0>(ppis_[k])));
+            ret.push_back(get_model()->get_particle(std::get<1>(ppis_[k])));
         }
-        if ( sigmass_[k][0] == sigmass_[k][1]) {
-            ret.push_back(get_model()->get_particle(sigmass_[k][0]));
+        if (std::get<0>(sigmass_[k]) == std::get<1>(sigmass_[k])) {
+            ret.push_back(get_model()->get_particle(std::get<0>(sigmass_[k])));
         } else {
-            ret.push_back(get_model()->get_particle(sigmass_[k][0]));
-            ret.push_back(get_model()->get_particle(sigmass_[k][1]));
+            ret.push_back(get_model()->get_particle(std::get<0>(sigmass_[k])));
+            ret.push_back(get_model()->get_particle(std::get<1>(sigmass_[k])));
         }
         ret.push_back(get_model()->get_particle(psis_[k]));
     }
@@ -191,8 +194,8 @@ RestraintInfo *CrossLinkMSRestraint::get_static_info() const {
 
     ParticleIndexes ps;
     for (const auto &sigma : sigmass_) {
-      ps.push_back(sigma[0]);
-      ps.push_back(sigma[1]);
+      ps.push_back(std::get<0>(sigma));
+      ps.push_back(std::get<1>(sigma));
     }
     ri->add_particle_indexes("sigmas", ps);
 
@@ -200,8 +203,8 @@ RestraintInfo *CrossLinkMSRestraint::get_static_info() const {
 
     ps.clear();
     for (const auto &ppi : ppis_) {
-      ps.push_back(ppi[0]);
-      ps.push_back(ppi[1]);
+      ps.push_back(std::get<0>(ppi));
+      ps.push_back(std::get<1>(ppi));
     }
     ri->add_particle_indexes("endpoints", ps);
 
