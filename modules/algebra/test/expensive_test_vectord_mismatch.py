@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
         """Test combination of VectorD of different dimensions"""
         # Should be a compile-time error to combine VectorD of different sizes
         self.assertCompileFails(
-            includes=['IMP/algebra/VectorD.h'],
+            headers=['IMP/algebra/VectorD.h'],
             body="""
 IMP::algebra::Vector3D v1(1,2,3);
 IMP::algebra::Vector4D v3(7,8,9,10);

@@ -320,31 +320,42 @@ class TestCase(unittest.TestCase):
 
     def _read_cmake_cache(self, cmake_cache):
         """Parse CMakeCache and extract info on the C++ compiler"""
-        cxx = flags = None
+        cxx = flags = sysroot = None
+        includes = []
         with open(cmake_cache) as fh:
             for line in fh:
                 if line.startswith('CMAKE_CXX_COMPILER:'):
-                    cxx = line.split('=', 1)[1].rstrip('\r\n')
+                    cxx = line.split('=', 1)[1].strip()
                 elif line.startswith('CMAKE_CXX_FLAGS:'):
-                    flags = line.split('=', 1)[1].rstrip('\r\n')
-        return cxx, flags
+                    flags = line.split('=', 1)[1].strip()
+                elif line.startswith('CMAKE_OSX_SYSROOT:'):
+                    sysroot = line.split('=', 1)[1].strip()
+                elif line.startswith('Boost_INCLUDE_DIR:'):
+                    includes.append(line.split('=', 1)[1].strip())
+                elif line.startswith('EIGEN3_INCLUDE_DIR:'):
+                    includes.append(line.split('=', 1)[1].strip())
+        return cxx, flags, includes, sysroot
 
-    def assertCompileFails(self, includes, body):
+    def assertCompileFails(self, headers, body):
         """Test that the given C++ code fails to compile with a static
            assertion."""
         libdir = os.path.dirname(IMP.__file__)
         cmake_cache = os.path.join(libdir, '..', '..', 'CMakeCache.txt')
-        include = os.path.join(libdir, '..', '..', 'include')
         if not os.path.exists(cmake_cache):
             self.skipTest("cannot find CMakeCache.txt")
-        cxx, flags = self._read_cmake_cache(cmake_cache)
+        cxx, flags, includes, sysroot = self._read_cmake_cache(cmake_cache)
+        # On Mac we need to point to the SDK
+        if sys.platform == 'darwin' and sysroot:
+            flags = flags + " -isysroot" + sysroot
+        includes.append(os.path.join(libdir, '..', '..', 'include'))
+        include = " ".join("-I" + inc for inc in includes)
         with temporary_directory() as tmpdir:
             fname = os.path.join(tmpdir, 'test.cpp')
             with open(fname, 'w') as fh:
-                for inc in includes:
-                    fh.write("#include <%s>\n" % inc)
+                for h in headers:
+                    fh.write("#include <%s>\n" % h)
                 fh.write("\nint main() {\n" + body + "\n  return 0;\n}\n")
-            cmdline = "%s %s -I%s %s" % (cxx, flags, include, fname)
+            cmdline = "%s %s %s %s" % (cxx, flags, include, fname)
             print(cmdline)
             p = subprocess.Popen(cmdline, shell=True,
                                  stdout=subprocess.PIPE,

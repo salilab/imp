@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
         """Test std::get<IMP::Array>"""
         # Should be a compile-time error to access an out of range element
         self.assertCompileFails(
-            includes=['IMP/base_types.h'],
+            headers=['IMP/base_types.h'],
             body="""
 IMP::ParticleIndexPair pp(IMP::ParticleIndex(1), IMP::ParticleIndex(3));
 IMP::ParticleIndex p = std::get<2>(pp);""")
