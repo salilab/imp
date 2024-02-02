@@ -113,6 +113,14 @@ class Vector : public Value
     V::insert(V::end(), o.begin(), o.end());
     return *this;
   }
+
+  //! Allocate enough storage for `new_cap` elements
+  /** Makes sure that the vector can contain `new_cap` elements without needing
+      a reallocation. This does not change the reported size of the vector. */
+  void reserve(unsigned int new_cap) {
+    V::reserve(new_cap);
+  }
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void show(std::ostream &out = std::cout) const {
     out << "[";

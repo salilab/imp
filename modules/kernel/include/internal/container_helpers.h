@@ -39,11 +39,10 @@ inline bool is_valid(
 template <unsigned int D>
 inline ParticlesTemp flatten(const Vector<
     Array<D, WeakPointer<Particle>, Particle *> > &in) {
-  ParticlesTemp ret(in.size() * D);
+  ParticlesTemp ret;
+  ret.reserve(in.size() * D);
   for (unsigned int i = 0; i < in.size(); ++i) {
-    for (unsigned int j = 0; j < D; ++j) {
-      ret[i * D + j] = in[i][j];
-    }
+    ret += in[i];
   }
   return ret;
 }
@@ -51,11 +50,10 @@ inline ParticlesTemp flatten(const Vector<
 template <unsigned int D>
 inline ParticleIndexes flatten(
     const Vector<Array<D, ParticleIndex> > &in) {
-  ParticleIndexes ret(in.size() * D);
+  ParticleIndexes ret;
+  ret.reserve(in.size() * D);
   for (unsigned int i = 0; i < in.size(); ++i) {
-    for (unsigned int j = 0; j < D; ++j) {
-      ret[i * D + j] = in[i][j];
-    }
+    ret += in[i];
   }
   return ret;
 }
