@@ -153,7 +153,7 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
 template <int D>
 inline Vector<VectorD<D> > native_uniform_cover_unit_sphere(
     unsigned int d, unsigned int n, bool ALL) {
-  static_assert(D != 3);
+  static_assert(D != 3, "VectorD wrong size");
   Vector<VectorD<D> > ret(n);
   for (unsigned int i = 0; i < std::min(d, n / (ALL ? 2 : 1)); ++i) {
     VectorD<D> v = get_basis_vector_kd(d, i);

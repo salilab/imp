@@ -213,7 +213,8 @@ class Unit {
   template <int OEXP, class OUnits>
   Unit(Unit<Tag, OEXP, OUnits> o)
       : v_(o.v_) {
-    static_assert((boost::mpl::equal<Units, OUnits>::type::value));
+    static_assert((boost::mpl::equal<Units, OUnits>::type::value),
+                  "size mismatch");
   }
 
   template <int OEXP>
@@ -222,7 +223,8 @@ class Unit {
 
   operator double() const {
     static_assert((internal::IsNoUnits<
-        0, boost::mpl::size<Units>::type::value, Units>::value));
+        0, boost::mpl::size<Units>::type::value, Units>::value),
+        "type mismatch");
     return v_.get_normalized_value();
   }
 
@@ -262,7 +264,8 @@ inline std::ostream &operator<<(std::ostream &out, Unit<Tag, EXP, Units> o) {
 template <class U0, class U1>
 struct Divide {
   static_assert(
-      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
+      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Divide<typename U0::Units,
                                     typename U1::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
@@ -272,7 +275,8 @@ struct Divide {
 template <class U0, class U1>
 struct Multiply {
   static_assert(
-      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
+      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Multiply<typename U0::Units,
                                       typename U1::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
@@ -294,9 +298,11 @@ struct Shift {
 template <class U, class R, class A, int DEXP>
 struct Exchange {
   static_assert(
-      (boost::mpl::equal<typename U::Tag, typename R::Tag>::type::value));
+      (boost::mpl::equal<typename U::Tag, typename R::Tag>::type::value),
+      "type mismatch");
   static_assert(
-      (boost::mpl::equal<typename U::Tag, typename A::Tag>::type::value));
+      (boost::mpl::equal<typename U::Tag, typename A::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Divide<typename U::Units, typename R::Units>::type
       Div;
   typedef typename internal::Multiply<Div, typename A::Units>::type Mul;

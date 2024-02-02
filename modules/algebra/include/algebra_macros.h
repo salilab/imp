@@ -34,7 +34,8 @@
   template <int OD>                                                           \
   VectorD(const VectorD<OD> &o)                                               \
       : P(o) {                                                                \
-    static_assert(OD == D || OD == -1 || D == -1);                      \
+    static_assert(OD == D || OD == -1 || D == -1,                             \
+                  "VectorD size mismatch");                                   \
   }                                                                           \
   IMP_ALGEBRA_VECTOR_SWIG_METHODS(D);                                         \
   /** The distance between b and e must be equal to D.                        \

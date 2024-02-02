@@ -213,7 +213,7 @@ inline std::string get_convert_error(const char *err, const char *symname,
 
 template <class T>
 struct ConvertAllBase {
-  static_assert(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
     void* vp;
@@ -224,8 +224,8 @@ struct ConvertAllBase {
 
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
-  static_assert(!std::is_pointer<T>::value);
-  static_assert(!(boost::is_base_of<Object, T>::value));
+  static_assert(!std::is_pointer<T>::value, "is pointer");
+  static_assert(!(boost::is_base_of<Object, T>::value), "wrong base class");
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
                                  const char *argtype, SwigData st, SwigData,
@@ -252,9 +252,9 @@ struct ConvertValueBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertObjectBase : public ConvertAllBase<T> {
-  static_assert(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   static_assert((boost::is_base_of<Object, T>::value) ||
-                (boost::is_same<Object, T>::value));
+                (boost::is_same<Object, T>::value), "wrong base class");
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -285,7 +285,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertRAII : public ConvertAllBase<T> {
-  static_assert(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -357,7 +357,7 @@ struct Convert<T*, typename enable_if<boost::is_base_of<
 template <class T, class VT, class ConvertVT>
 struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
-  static_assert(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
@@ -666,7 +666,7 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
                              SwigData particle_st,
                              SwigData decorator_st) {
     if (numpy_import_retval == 0 && is_native_numpy_1d_array(o, NPY_INT)) {
-      static_assert(sizeof(ParticleIndex) == sizeof(int));
+      static_assert(sizeof(ParticleIndex) == sizeof(int), "size mismatch");
       int dim = PyArray_DIM((PyArrayObject*)o, 0);
       ParticleIndex *data = (ParticleIndex *)PyArray_DATA((PyArrayObject*)o);
       return ParticleIndexes(data, data+dim);
@@ -680,7 +680,7 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
   static PyObject* create_python_object(const ParticleIndexes& t, SwigData st,
                                         int OWN) {
     if (numpy_import_retval == 0) {
-      static_assert(sizeof(ParticleIndex) == sizeof(int));
+      static_assert(sizeof(ParticleIndex) == sizeof(int), "size mismatch");
       npy_intp dims[2];
       dims[0] = t.size();
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
