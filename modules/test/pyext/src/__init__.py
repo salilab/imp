@@ -353,7 +353,6 @@ class TestCase(unittest.TestCase):
             out, err = p.communicate()
             self.assertIn('error: static assertion failed', err)
 
-
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
            add it to the model."""
