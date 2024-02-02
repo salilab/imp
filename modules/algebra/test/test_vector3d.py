@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
     def test_uninit(self):
         """Check use of uninitialized Vector3D"""
         v = IMP.algebra.Vector3D()
-        self.assertRaises(IMP.UsageException, v.__getitem__, 0)
+        self.assertRaises(IMP.InternalException, v.__getitem__, 0)
 
     def test_from_floats(self):
         """Check Vector3D from floats"""
