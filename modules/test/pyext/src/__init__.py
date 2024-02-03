@@ -339,6 +339,8 @@ class TestCase(unittest.TestCase):
     def assertCompileFails(self, headers, body):
         """Test that the given C++ code fails to compile with a static
            assertion."""
+        if sys.platform == 'win32':
+            self.skipTest("No support for Windows yet")
         libdir = os.path.dirname(IMP.__file__)
         cmake_cache = os.path.join(libdir, '..', '..', 'CMakeCache.txt')
         if not os.path.exists(cmake_cache):
