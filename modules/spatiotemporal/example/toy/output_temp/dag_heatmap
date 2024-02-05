@@ -1,0 +1,19 @@
+digraph {
+	ratio=1.5
+	rotate=0
+	"graphNode(0min,1)" [label=1 fillcolor="#6d57a6" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(0min,2)" [label=2 fillcolor="#d6d6e9" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(5min,1)" [label=1 fillcolor="#f0eef6" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(5min,2)" [label=2 fillcolor="#593093" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(5min,3)" [label=3 fillcolor="#f8f7fa" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(10min,1)" [label=1 fillcolor="#9591c4" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(10min,2)" [label=2 fillcolor="#a7a4ce" fontname=Helvetica fontsize=18 height=0.6 style=filled width=0.6]
+	"graphNode(0min,1)" -> "graphNode(5min,1)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(0min,1)" -> "graphNode(5min,2)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(0min,2)" -> "graphNode(5min,2)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(0min,2)" -> "graphNode(5min,3)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(5min,1)" -> "graphNode(10min,1)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(5min,2)" -> "graphNode(10min,2)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(5min,2)" -> "graphNode(10min,1)" [arrowsize=1.2 color=black penwidth=0.6]
+	"graphNode(5min,3)" -> "graphNode(10min,2)" [arrowsize=1.2 color=black penwidth=0.6]
+}
