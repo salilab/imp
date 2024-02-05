@@ -318,22 +318,24 @@ class TestCase(unittest.TestCase):
         msg = self._formatMessage(msg, standardMsg)
         raise self.failureException(msg)
 
-    def _read_cmake_cache(self, cmake_cache):
-        """Parse CMakeCache and extract info on the C++ compiler"""
+    def _read_cmake_cfg(self, cmake_cfg):
+        """Parse IMPConfig.cmake and extract info on the C++ compiler"""
         cxx = flags = sysroot = None
         includes = []
-        with open(cmake_cache) as fh:
+        with open(cmake_cfg) as fh:
             for line in fh:
-                if line.startswith('CMAKE_CXX_COMPILER:'):
-                    cxx = line.split('=', 1)[1].strip()
-                elif line.startswith('CMAKE_CXX_FLAGS:'):
-                    flags = line.split('=', 1)[1].strip()
-                elif line.startswith('CMAKE_OSX_SYSROOT:'):
-                    sysroot = line.split('=', 1)[1].strip()
-                elif line.startswith('Boost_INCLUDE_DIR:'):
-                    includes.append(line.split('=', 1)[1].strip())
-                elif line.startswith('EIGEN3_INCLUDE_DIR:'):
-                    includes.append(line.split('=', 1)[1].strip())
+                if line.startswith('set(IMP_CXX_COMPILER '):
+                    cxx = line.split('"')[1]
+                elif line.startswith('set(IMP_CXX_FLAGS '):
+                    flags = line.split('"')[1]
+                elif line.startswith('set(IMP_OSX_SYSROOT '):
+                    sysroot = line.split('"')[1]
+                elif line.startswith('SET(Boost_INCLUDE_DIR '):
+                    includes.append(line.split('"')[1])
+                elif line.startswith('SET(EIGEN3_INCLUDE_DIR '):
+                    includes.append(line.split('"')[1])
+                elif line.startswith('SET(cereal_INCLUDE_DIRS '):
+                    includes.append(line.split('"')[1])
         return cxx, flags, includes, sysroot
 
     def assertCompileFails(self, headers, body):
@@ -342,10 +344,10 @@ class TestCase(unittest.TestCase):
         if sys.platform == 'win32':
             self.skipTest("No support for Windows yet")
         libdir = os.path.dirname(IMP.__file__)
-        cmake_cache = os.path.join(libdir, '..', '..', 'CMakeCache.txt')
-        if not os.path.exists(cmake_cache):
-            self.skipTest("cannot find CMakeCache.txt")
-        cxx, flags, includes, sysroot = self._read_cmake_cache(cmake_cache)
+        cmake_cfg = os.path.join(libdir, '..', '..', 'IMPConfig.cmake')
+        if not os.path.exists(cmake_cfg):
+            self.skipTest("cannot find IMPConfig.cmake")
+        cxx, flags, includes, sysroot = self._read_cmake_cfg(cmake_cfg)
         # On Mac we need to point to the SDK
         if sys.platform == 'darwin' and sysroot:
             flags = flags + " -isysroot" + sysroot

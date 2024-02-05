@@ -488,6 +488,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig\" )\n"
      "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/cmake_modules\" )\n"
+     "set(IMP_CXX_COMPILER \"${CMAKE_CXX_COMPILER}\" )\n"
+     "set(IMP_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}\" )\n"
+     "set(IMP_OSX_SYSROOT \"${CMAKE_OSX_SYSROOT}\" )\n"
      "set(RMF_INCLUDE_PATH \"${RMF_INCLUDE_PATH}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 # Installed locations
@@ -505,6 +508,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(RMF_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
      "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(RMF_INCLUDE_PATH \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
+     "set(IMP_CXX_COMPILER \"${CMAKE_CXX_COMPILER}\" )\n"
+     "set(IMP_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}\" )\n"
+     "set(IMP_OSX_SYSROOT \"${CMAKE_OSX_SYSROOT}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 list(REMOVE_DUPLICATES IMP_ALL_DEPENDS_VARS)
 foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
