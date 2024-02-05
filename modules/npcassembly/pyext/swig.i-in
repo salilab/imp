@@ -1,0 +1,21 @@
+IMP_SWIG_DECORATOR(IMP::npcassembly, SlabWithSphericalIndent, SlabWithSphericalIndents);
+IMP_SWIG_OBJECT(IMP::npcassembly, SlabWithSphericalIndentMBMScore, SlabWithSphericalIndentMBMScores);
+IMP_SWIG_OBJECT(IMP::npcassembly, SlabWithSphericalIndentGeometry, SlabWithSphericalIndentGeometries);
+IMP_SWIG_OBJECT(IMP::npcassembly, SphericalIndentSurfaceDepthPairScore, SphericalIndentSurfaceDepthPairScores);
+IMP_SWIG_OBJECT(IMP::npcassembly, SlabWithToroidalPoreMBMScore, SlabWithToroidalPoreMBMScores);
+IMP_SWIG_OBJECT(IMP::npcassembly, SlabWithToroidalPoreGoPairScore, SlabWithToroidalPoreGoPairScores);
+IMP_SWIG_OBJECT(IMP::npcassembly, ToroidalPoreSurfaceDepthPairScore, ToroidalPoreSurfaceDepthPairScores);
+IMP_SWIG_DECORATOR(IMP::npcassembly, SlabWithPore, SlabWithPores);
+IMP_SWIG_DECORATOR(IMP::npcassembly, SlabWithToroidalPore, SlabWithToroidalPores);
+IMP_SWIG_OBJECT(IMP::npcassembly, SlabWithToroidalPoreWireGeometry, SlabWithToroidalPoreWireGeometries);
+
+%include "IMP/npcassembly/SlabWithSphericalIndent.h"
+%include "IMP/npcassembly/SlabWithSphericalIndentMBMScore.h"
+%include "IMP/npcassembly/SlabWithSphericalIndentGeometry.h"
+%include "IMP/npcassembly/SphericalIndentSurfaceDepthPairScore.h"
+%include "IMP/npcassembly/SlabWithToroidalPoreMBMScore.h"
+%include "IMP/npcassembly/SlabWithToroidalPoreGoPairScore.h"
+%include "IMP/npcassembly/ToroidalPoreSurfaceDepthPairScore.h"
+%include "IMP/npcassembly/SlabWithPore.h"
+%include "IMP/npcassembly/SlabWithToroidalPore.h"
+%include "IMP/npcassembly/SlabWithToroidalPoreGeometry.h"
