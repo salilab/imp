@@ -798,6 +798,139 @@ public:
   IMP_OBJECT_METHODS(ProteinProximityRestraint);;
 };
 
+//! Restrain particles by their x coordinate
+/** Each particle's x coordinate is harmonically restrained to lie between
+    the given lower and upper bounds.
+  */
+class IMPNPCEXPORT XAxialPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  XAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionRestraint(Model *m,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionRestraint);;
+};
+
+//! Restrain particles by their x coordinate
+
+/** Each particle's x coordinate is harmonically restrained to lie above
+    the given lower bound.
+  */
+  
+class IMPNPCEXPORT XAxialPositionLowerRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  XAxialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
+      double lower_bound, bool consider_radius, double sigma=1);
+  XAxialPositionLowerRestraint(Model *m,
+      double lower_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionLowerRestraint);;
+};
+
+//! Restrain particles by their x coordinate
+/** Each particle's x coordinate is harmonically restrained to lie below
+    the given upper bound.
+  */
+class IMPNPCEXPORT XAxialPositionUpperRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  XAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
+      double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionUpperRestraint(Model *m,
+      double upper_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionUpperRestraint);;
+};
+
+/*#####################################################
+# Restraints setup - Restrain to a specific position
+# Added by Andrew Latham
+# X_start, Y_start, Z_start, tolerance, sigma 
+# All distances are in Angstrom
+# X_start - x position to restrain to
+# Y_start - y position to restrain to
+# Z_start - z position to restrain to
+# tolerance - range of distances where restraint=0
+# consider_radius - bool, consider the radius of the particle
+# sigma - inverse strength of harmonic potential
+#####################################################*/
+class IMPNPCEXPORT OverallPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double X_start_;
+  double Y_start_;
+  double Z_start_;
+  double tolerance_;
+  double sigma_;
+  bool consider_radius_;
+public:
+
+  OverallPositionRestraint(Model *m,
+    SingletonContainerAdaptor sc,
+    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
+  OverallPositionRestraint(Model *m,
+    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+
+  IMP_OBJECT_METHODS(OverallPositionRestraint);;
+};
+
+
 
 
 IMPNPC_END_NAMESPACE
