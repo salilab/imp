@@ -17,7 +17,7 @@ SurfaceSymmetryConstraint::SurfaceSymmetryConstraint(Model *m,
   : IMP::Constraint(m, "SurfaceSymmetryConstraint%1%")
   , spip_(ss), rbpip_(rbs) {
     IMP_USAGE_CHECK(Surface::get_is_setup(get_model(), std::get<0>(ss)) &
-                    Surface::get_is_setup(get_model(), std:get<1>(ss)),
+                    Surface::get_is_setup(get_model(), std::get<1>(ss)),
                     "First pair must be Surface particles.");
     IMP_USAGE_CHECK(RigidBody::get_is_setup(get_model(), std::get<0>(rbs)) &
                     RigidBody::get_is_setup(get_model(), std::get<1>(rbs)),
