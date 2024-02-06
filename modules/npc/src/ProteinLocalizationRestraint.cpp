@@ -2381,6 +2381,5 @@ ModelObjectsTemp OverallPositionRestraint::do_get_inputs() const {
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
 }
->>>>>>> Stashed changes
 
 IMPNPC_END_NAMESPACE

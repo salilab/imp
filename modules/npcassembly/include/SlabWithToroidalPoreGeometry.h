@@ -38,7 +38,7 @@ class IMPNPCASSEMBLYEXPORT SlabWithToroidalPoreWireGeometry : public display::Ge
 
   //! returns the set of geometric components that comprise this geometry
   //! (for e.g. storing in RMF format)
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
 
   IMP_OBJECT_METHODS(SlabWithToroidalPoreWireGeometry);
 };
