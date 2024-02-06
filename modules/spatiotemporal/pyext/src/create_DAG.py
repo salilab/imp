@@ -2,10 +2,10 @@ import numpy as np
 import sys
 import os
 import itertools
-from spatiotemporal import graphNode
-from spatiotemporal.score_graph import score_graph
-from spatiotemporal import write_output
-from spatiotemporal import composition_scoring
+from IMP.spatiotemporal import graphNode
+from IMP.spatiotemporal.score_graph import score_graph
+from IMP.spatiotemporal import write_output
+from IMP.spatiotemporal import composition_scoring
 
 # Function to read scores based on a dictionary of the number of states per time point, for which data is stored in a single directory (input_dir)
 
