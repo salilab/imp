@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   void init();
 
   bool get_contains(const ParticleIndexPair &p) const {
-    if (!get_model()->get_has_attribute(key_, p[0])) return false;
-    int ia = get_model()->get_attribute(key_, p[0]);
-    if (!get_model()->get_has_attribute(key_, p[1])) return false;
-    int ib = get_model()->get_attribute(key_, p[1]);
+    if (!get_model()->get_has_attribute(key_, std::get<0>(p))) return false;
+    int ia = get_model()->get_attribute(key_, std::get<0>(p));
+    if (!get_model()->get_has_attribute(key_, std::get<1>(p))) return false;
+    int ib = get_model()->get_attribute(key_, std::get<1>(p));
     return std::abs(ia - ib) == 1;
   }
 
@@ -117,16 +117,17 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
                            const ParticleIndexPair &pp) {
     ObjectKey ok =
         ExclusiveConsecutivePairContainer::get_exclusive_object_key();
-    bool has_eok_0 = m->get_has_attribute(ok, pp[0]);
-    bool has_eok_1= m->get_has_attribute(ok, pp[1]);
+    bool has_eok_0 = m->get_has_attribute(ok, std::get<0>(pp));
+    bool has_eok_1= m->get_has_attribute(ok, std::get<1>(pp));
     if ( !has_eok_0 || !has_eok_1 )
       return false;
-    if (m->get_attribute(ok, pp[0]) != m->get_attribute(ok, pp[1])) {
+    if (m->get_attribute(ok, std::get<0>(pp))
+        != m->get_attribute(ok, std::get<1>(pp))) {
       return false;
     }
     IntKey k = ExclusiveConsecutivePairContainer::get_exclusive_key();
-    int ia = m->get_attribute(k, pp[0]);
-    int ib = m->get_attribute(k, pp[1]);
+    int ia = m->get_attribute(k, std::get<0>(pp));
+    int ib = m->get_attribute(k, std::get<1>(pp));
     return std::abs(ia - ib) == 1;
   }
   void init();

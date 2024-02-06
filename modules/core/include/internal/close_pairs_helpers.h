@@ -46,8 +46,8 @@ inline void filter_close_pairs(C *c, ParticleIndexPairs &pips) {
 //! canonize pairs index order in pips, such that pi1>=pi0 for each pair (pi0,pi1)
 inline void fix_order(ParticleIndexPairs &pips) {
   for (unsigned int i = 0; i < pips.size(); ++i) {
-    if (pips[i][0] > pips[i][1]) {
-      pips[i] = ParticleIndexPair(pips[i][1], pips[i][0]);
+    if (std::get<0>(pips[i]) > std::get<1>(pips[i])) {
+      pips[i] = ParticleIndexPair(std::get<1>(pips[i]), std::get<0>(pips[i]));
     }
   }
 }
@@ -116,8 +116,8 @@ FarParticle
   {}
 
   bool operator()(const ParticleIndexPair &pp) const {
-    int index0= pp[0].get_index();
-    int index1= pp[1].get_index();
+    int index0 = std::get<0>(pp).get_index();
+    int index1 = std::get<1>(pp).get_index();
     return !get_are_close(model_spheres_table_[index0],
                           model_spheres_table_[index1],
                           d_);
@@ -148,9 +148,9 @@ struct InList {
       }*/
   }
   bool operator()(const ParticlePair &pp) const {
-    if (std::binary_search(ps_.begin(), ps_.end(), pp[0]))
+    if (std::binary_search(ps_.begin(), ps_.end(), std::get<0>(pp)))
       return true;
-    else if (std::binary_search(ps_.begin(), ps_.end(), pp[1]))
+    else if (std::binary_search(ps_.begin(), ps_.end(), std::get<1>(pp)))
       return true;
     return false;
     // return pp[0]->has_attribute(key_) || pp[1]->has_attribute(key_);

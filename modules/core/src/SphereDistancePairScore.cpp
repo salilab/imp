@@ -33,12 +33,12 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
 double NormalizedSphereDistancePairScore::evaluate_index(
     Model *m, const ParticleIndexPair &pip,
     DerivativeAccumulator *da) const {
-  Float ra = m->get_attribute(radius_, pip[0]);
-  Float rb = m->get_attribute(radius_, pip[1]);
+  Float ra = m->get_attribute(radius_, std::get<0>(pip));
+  Float rb = m->get_attribute(radius_, std::get<1>(pip));
   Float mr = std::min(ra, rb);
   // lambda is inefficient due to laziness
   return internal::evaluate_distance_pair_score(
-      XYZ(m, pip[0]), XYZ(m, pip[1]), da, f_.get(),
+      XYZ(m, std::get<0>(pip)), XYZ(m, std::get<1>(pip)), da, f_.get(),
       boost::lambda::_1 / mr - (ra + rb) / mr);
 }
 
@@ -54,13 +54,13 @@ WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
 double WeightedSphereDistancePairScore::evaluate_index(
     Model *m, const ParticleIndexPair &p,
     DerivativeAccumulator *da) const {
-  Float ra = m->get_attribute(radius_, p[0]);
-  Float rb = m->get_attribute(radius_, p[1]);
-  Float wa = m->get_attribute(weight_, p[0]);
-  Float wb = m->get_attribute(weight_, p[1]);
+  Float ra = m->get_attribute(radius_, std::get<0>(p));
+  Float rb = m->get_attribute(radius_, std::get<1>(p));
+  Float wa = m->get_attribute(weight_, std::get<0>(p));
+  Float wb = m->get_attribute(weight_, std::get<1>(p));
   // lambda is inefficient due to laziness
   return internal::evaluate_distance_pair_score(
-      XYZ(m, p[0]), XYZ(m, p[1]), da, f_.get(),
+      XYZ(m, std::get<0>(p)), XYZ(m, std::get<1>(p)), da, f_.get(),
       (boost::lambda::_1 - (ra + rb)) * (wa + wb));
 }
 

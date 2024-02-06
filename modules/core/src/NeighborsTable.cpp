@@ -21,8 +21,8 @@ void NeighborsTable::do_before_evaluate() {
   data_.clear();
 
   IMP_CONTAINER_FOREACH(PairContainer, input_, {
-    data_[_1[0]].push_back(_1[1]);
-    data_[_1[1]].push_back(_1[0]);
+    data_[std::get<0>(_1)].push_back(std::get<1>(_1));
+    data_[std::get<1>(_1)].push_back(std::get<0>(_1));
   });
 }
 

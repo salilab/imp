@@ -109,18 +109,20 @@ inline double HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(
     Model *m, const ParticleIndexPair &p,
     DerivativeAccumulator *da) const {
   algebra::Vector3D delta =
-      m->get_sphere(p[0]).get_center() - m->get_sphere(p[1]).get_center();
+      m->get_sphere(std::get<0>(p)).get_center()
+      - m->get_sphere(std::get<1>(p)).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance = delta.get_magnitude();
-  double shifted_distance = distance - x0_ + m->get_sphere(p[0]).get_radius() +
-                            m->get_sphere(p[1]).get_radius();
+  double shifted_distance
+        = distance - x0_ + m->get_sphere(std::get<0>(p)).get_radius() +
+                           m->get_sphere(std::get<1>(p)).get_radius();
   if (shifted_distance < 0) return 0;
   double score = .5 * k_ * square(shifted_distance);
   if (da && distance > MIN_DISTANCE) {
     double deriv = k_ * shifted_distance;
     algebra::Vector3D uv = delta / distance;
-    m->add_to_coordinate_derivatives(p[0], uv * deriv, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv * deriv, *da);
+    m->add_to_coordinate_derivatives(std::get<0>(p), uv * deriv, *da);
+    m->add_to_coordinate_derivatives(std::get<1>(p), -uv * deriv, *da);
   }
   return score;
 }

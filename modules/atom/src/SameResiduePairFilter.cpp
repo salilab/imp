@@ -16,7 +16,8 @@ SameResiduePairFilter::SameResiduePairFilter() {}
 
 int SameResiduePairFilter::get_value_index(
     Model *m, const ParticleIndexPair &p) const {
-  return Hierarchy(m, p[0]).get_parent() == Hierarchy(m, p[1]).get_parent();
+  return Hierarchy(m, std::get<0>(p)).get_parent()
+          == Hierarchy(m, std::get<1>(p)).get_parent();
 }
 
 ModelObjectsTemp SameResiduePairFilter::do_get_inputs(

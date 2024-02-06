@@ -28,8 +28,8 @@ void CoulombPairScore::calculate_multiplication_factor() {
 double CoulombPairScore::evaluate_index(Model *m,
                                         const ParticleIndexPair &p,
                                         DerivativeAccumulator *da) const {
-  Charged c0(m, p[0]);
-  Charged c1(m, p[1]);
+  Charged c0(m, std::get<0>(p));
+  Charged c1(m, std::get<1>(p));
   algebra::Vector3D delta = c0.get_coordinates() - c1.get_coordinates();
   double dist = delta.get_magnitude();
   double score =

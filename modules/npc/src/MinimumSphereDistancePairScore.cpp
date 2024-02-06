@@ -16,8 +16,8 @@ IMPNPC_BEGIN_NAMESPACE
 double MinimumSphereDistancePairScore::evaluate_index(Model *m,
                                 const ParticleIndexPair &pi,
                                 DerivativeAccumulator *da) const {
-  core::XYZR d0(m, pi[0]);
-  core::XYZR d1(m, pi[1]);
+  core::XYZR d0(m, std::get<0>(pi));
+  core::XYZR d1(m, std::get<1>(pi));
   algebra::Vector3D c0 = d0.get_coordinates();
   algebra::Vector3D c1_orig = d1.get_coordinates(), c1_min = c1_orig;
   double dist2_min = algebra::get_squared_distance(c0, c1_orig);

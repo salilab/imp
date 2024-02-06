@@ -43,8 +43,9 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp)
       const {
     return IMP::internal::get_particle(
-        pp[0]->get_model(),
-        get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
+        std::get<0>(pp)->get_model(),
+        get_close_pairs(std::get<0>(pp)->get_model(),
+                        IMP::internal::get_index(pp)));
   }
 
   Restraints create_current_decomposition(
@@ -88,8 +89,9 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp)
       const {
     return IMP::internal::get_particle(
-        pp[0]->get_model(),
-        get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
+        std::get<0>(pp)->get_model(),
+        get_close_pairs(std::get<0>(pp)->get_model(),
+                        IMP::internal::get_index(pp)));
   }
   Restraints create_current_decomposition(
       Model *m, const ParticleIndexPair &vt) const;

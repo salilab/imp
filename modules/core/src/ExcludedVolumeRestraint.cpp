@@ -246,7 +246,8 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
     double c = ssps_->evaluate_index(
         get_model(),
-        ParticleIndexPair(cur_list_[i][0], cur_list_[i][1]), da);
+        ParticleIndexPair(std::get<0>(cur_list_[i]),
+                          std::get<1>(cur_list_[i])), da);
     cur += c;
     max -= c;
     if (max < 0) {
