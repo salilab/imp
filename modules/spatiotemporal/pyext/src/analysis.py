@@ -17,11 +17,16 @@ def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_preci
         # store the path through various nodes, as well as the probability of that path
         while line:
             line_split = line.split()
-            if len(line_split) == 2:
-                trj = line_split[0]
-                prob = float(line_split[1])
-                # store in dictionary
-                prob_dict[trj] = prob
+            # assumes the first string is the trajectory string, the second string is the probability
+            if len(line_split) > 1:
+                # use # for comments
+                if line_split[0]=='#':
+                    pass
+                else:
+                    trj = line_split[0]
+                    prob = float(line_split[1])
+                    # store in dictionary
+                    prob_dict[trj] = prob
             line = old.readline()
         old.close()
         # append dictionary to dict_list
@@ -29,6 +34,9 @@ def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_preci
     # calculate
     key_list = dict_list[0].keys()
     key_list2 = dict_list[1].keys()
+    # print error if keys not found
+    if len(key_list)==0 or len(key_list2)==0:
+        print('Error reading labeled_pdf!!! Keys not found')
     # precision starts at 1
     precision = 1
     for key in key_list2:
@@ -50,4 +58,38 @@ def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_preci
     print('Temporal precision between '+labeled_pdf1_fn+' and '+labeled_pdf2_fn+':')
     print(precision)
 
+    return
+
+# Function that reads in one labeled_pdf from create_DAG and returns the purity, defined as the sum of the squared probability of all trajectories.
+# Inputs: labeled_pdf_fn - labeled_pdf from the total model
+# output_fn - name of output file (default: 'temporal_precision.txt')
+# Ouptut: temporal purity, written to output_fn
+def purity(labeled_pdf_fn,output_fn='purity.txt'):
+    # create blank dictonary to store the results
+    prob_list = []
+    # read in labeled pdf file
+    old = open(labeled_pdf_fn, 'r')
+    line = old.readline()
+    # store the path through various nodes, as well as the probability of that path
+    while line:
+        line_split = line.split()
+        # assumes the first string is the trajectory string, the second string is the probability
+        if len(line_split) > 1:
+            # use # for comments
+            if line_split[0]=='#':
+                pass
+            else:
+                prob = float(line_split[1])
+                # store in dictionary
+                prob_list.append(prob)
+            line = old.readline()
+    old.close()
+    pure=0
+    for prob in prob_list:
+        pure+=prob*prob
+    new=open(output_fn,'w')
+    new.write('Purity of '+labeled_pdf_fn+':\n')
+    new.write(str(pure))
+    print('Purity of ' + labeled_pdf_fn)
+    print(str(pure))
     return
