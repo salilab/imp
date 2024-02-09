@@ -926,18 +926,15 @@ public:
   IMP_OBJECT_METHODS(XAxialPositionUpperRestraint);;
 };
 
-/*#####################################################
-# Restraints setup - Restrain to a specific position
-# Added by Andrew Latham
-# X_start, Y_start, Z_start, tolerance, sigma 
-# All distances are in Angstrom
-# X_start - x position to restrain to
-# Y_start - y position to restrain to
-# Z_start - z position to restrain to
-# tolerance - range of distances where restraint=0
-# consider_radius - bool, consider the radius of the particle
-# sigma - inverse strength of harmonic potential
-#####################################################*/
+//! Restrain particle to a specific position
+/** All distances are in Angstrom
+\param[in] X_start	x position to restrain to
+\param[in] Y_start	y position to restrain to
+\param[in] Z_start	z position to restrain to
+\param[in] tolerance	range of distances where restraint=0
+\param[in] consider_radius	bool, consider the radius of the particle
+\param[in] sigma	inverse strength of harmonic potential
+  */
 class IMPNPCEXPORT OverallPositionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -951,7 +948,7 @@ class IMPNPCEXPORT OverallPositionRestraint : public Restraint
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<Restraint>(this),
-       X_start_, Y_start_, Z_start_, tolerance_, sigma_,consider_radius_);
+       sc_, X_start_, Y_start_, Z_start_, tolerance_, sigma_, consider_radius_);
   }
   IMP_OBJECT_SERIALIZE_DECL(OverallPositionRestraint);
   

@@ -248,8 +248,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['tolerance'], 1.0, delta=1e-4)
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.OverallPositionRestraint')
-        self.assertAlmostEqual(r.unprotected_evaluate(None), 2.203, delta=1e-3)
-        #self._check_pickle(r, score=2.203)
+        self._check_pickle(r, score=2.203)
 
 
 if __name__ == '__main__':
