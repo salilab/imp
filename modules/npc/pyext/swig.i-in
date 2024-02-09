@@ -19,7 +19,31 @@ IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, YAxialPositionLowerRestraint, YAxialPositio
 IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, YAxialPositionRestraint, YAxialPositionRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, YAxialPositionUpperRestraint, YAxialPositionUpperRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, ZAxialPositionRestraint, ZAxialPositionRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, XAxialPositionLowerRestraint, XAxialPositionLowerRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, XAxialPositionRestraint, XAxialPositionRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, XAxialPositionUpperRestraint, XAxialPositionUpperRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::npc, OverallPositionRestraint, OverallPositionRestraints);
+IMP_SWIG_DECORATOR(IMP::npc, SlabWithSphericalIndent, SlabWithSphericalIndents);
+IMP_SWIG_OBJECT(IMP::npc, SlabWithSphericalIndentMBMScore, SlabWithSphericalIndentMBMScores);
+IMP_SWIG_OBJECT(IMP::npc, SlabWithSphericalIndentGeometry, SlabWithSphericalIndentGeometries);
+IMP_SWIG_OBJECT(IMP::npc, SphericalIndentSurfaceDepthPairScore, SphericalIndentSurfaceDepthPairScores);
+IMP_SWIG_OBJECT(IMP::npc, SlabWithToroidalPoreMBMScore, SlabWithToroidalPoreMBMScores);
+IMP_SWIG_OBJECT(IMP::npc, SlabWithToroidalPoreGoPairScore, SlabWithToroidalPoreGoPairScores);
+IMP_SWIG_OBJECT(IMP::npc, ToroidalPoreSurfaceDepthPairScore, ToroidalPoreSurfaceDepthPairScores);
+IMP_SWIG_DECORATOR(IMP::npc, SlabWithPore, SlabWithPores);
+IMP_SWIG_DECORATOR(IMP::npc, SlabWithToroidalPore, SlabWithToroidalPores);
+IMP_SWIG_OBJECT(IMP::npc, SlabWithToroidalPoreWireGeometry, SlabWithToroidalPoreWireGeometries);
 
 %include "IMP/npc/ProteinLocalizationRestraint.h"
 %include "IMP/npc/CompositeRestraint.h"
 %include "IMP/npc/MinimumSphereDistancePairScore.h"
+%include "IMP/npc/SlabWithSphericalIndent.h"
+%include "IMP/npc/SlabWithSphericalIndentMBMScore.h"
+%include "IMP/npc/SlabWithSphericalIndentGeometry.h"
+%include "IMP/npc/SphericalIndentSurfaceDepthPairScore.h"
+%include "IMP/npc/SlabWithToroidalPoreMBMScore.h"
+%include "IMP/npc/SlabWithToroidalPoreGoPairScore.h"
+%include "IMP/npc/ToroidalPoreSurfaceDepthPairScore.h"
+%include "IMP/npc/SlabWithPore.h"
+%include "IMP/npc/SlabWithToroidalPore.h"
+%include "IMP/npc/SlabWithToroidalPoreGeometry.h"

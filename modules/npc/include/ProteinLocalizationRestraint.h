@@ -809,11 +809,19 @@ class IMPNPCEXPORT XAxialPositionRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionRestraint);
+  
 public:
   XAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
   XAxialPositionRestraint(Model *m,
       double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -824,6 +832,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XAxialPositionRestraint);;
 };
@@ -840,11 +851,20 @@ class IMPNPCEXPORT XAxialPositionLowerRestraint : public Restraint
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionLowerRestraint);
+  
 public:
   XAxialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
       double lower_bound, bool consider_radius, double sigma=1);
   XAxialPositionLowerRestraint(Model *m,
       double lower_bound, bool consider_radius, double sigma=1);
+  XAxialPositionLowerRestraint() {}
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -855,6 +875,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XAxialPositionLowerRestraint);;
 };
@@ -869,11 +892,23 @@ class IMPNPCEXPORT XAxialPositionUpperRestraint : public Restraint
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionUpperRestraint);
+  
 public:
   XAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
       double upper_bound, bool consider_radius, double sigma=1);
   XAxialPositionUpperRestraint(Model *m,
       double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionUpperRestraint() {}
+
+      
+  
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -884,6 +919,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(XAxialPositionUpperRestraint);;
 };
@@ -909,6 +947,14 @@ class IMPNPCEXPORT OverallPositionRestraint : public Restraint
   double tolerance_;
   double sigma_;
   bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       X_start_, Y_start_, Z_start_, tolerance_, sigma_,consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(OverallPositionRestraint);
+  
 public:
 
   OverallPositionRestraint(Model *m,
@@ -916,6 +962,8 @@ public:
     double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
   OverallPositionRestraint(Model *m,
     double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
+  OverallPositionRestraint() {}
+
 
 #ifndef IMP_DOXYGEN
   void add_particle(Particle *p);
@@ -926,6 +974,9 @@ public:
   double unprotected_evaluate(
                   IMP::DerivativeAccumulator *accum) const override;
   ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(OverallPositionRestraint);;
 };

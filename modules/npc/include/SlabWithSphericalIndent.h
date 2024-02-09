@@ -1,28 +1,28 @@
 /**
- *  \file IMP/npcassembly/SlabWithSphericalIndent.h
+ *  \file IMP/npc/SlabWithSphericalIndent.h
  *  \brief A decorator for a particle representing a slab with a spherical cap indent. 
  *
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_H
-#define IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_H
+#ifndef IMPNPC_SLAB_WITH_SPHERICAL_INDENT_H
+#define IMPNPC_SLAB_WITH_SPHERICAL_INDENT_H
 
-#include <IMP/npcassembly/npcassembly_config.h>
+#include <IMP/npc/npc_config.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/exception.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 //! A decorator for a particle that represents a slab containing a spherical cap indent. 
 /** \ingroup helper
     \ingroup decorators
 */
-class IMPNPCASSEMBLYEXPORT SlabWithSphericalIndent : public Decorator {
+class IMPNPCEXPORT SlabWithSphericalIndent : public Decorator {
   /* Decorate a particle that represents a slab with an indent 
    * that is modeled as a spherical cap. The spherical cap model is
    * specified by two paramters, a radius, R, that is the radius of the
@@ -98,6 +98,6 @@ class IMPNPCASSEMBLYEXPORT SlabWithSphericalIndent : public Decorator {
 
 IMP_DECORATORS(SlabWithSphericalIndent, SlabWithSphericalIndents, IMP::Decorators);
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 
-#endif /* IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_H */
+#endif /* IMPNPC_SLAB_WITH_SPHERICAL_INDENT_H */

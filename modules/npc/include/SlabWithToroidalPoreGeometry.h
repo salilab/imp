@@ -5,19 +5,19 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H
-#define IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H
+#ifndef IMPNPC_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H
+#define IMPNPC_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H
 
-#include "npcassembly_config.h"
+#include "npc_config.h"
 #include <IMP/display/geometry.h>
 #include <IMP/display/display_macros.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 //! XXXX
 /** XXXXXX.
  */
-class IMPNPCASSEMBLYEXPORT SlabWithToroidalPoreWireGeometry : public display::Geometry {
+class IMPNPCEXPORT SlabWithToroidalPoreWireGeometry : public display::Geometry {
   double rv_; // minor radius in vertical direction (vertical semi-axis)
   double rh_; // minor radius in horizontal direction (horizontal semi-axis)
   double R_; // major radius
@@ -44,6 +44,6 @@ class IMPNPCASSEMBLYEXPORT SlabWithToroidalPoreWireGeometry : public display::Ge
 };
 
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 
-#endif /* IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H */
+#endif /* IMPNPC_SLAB_WITH_TOROIDAL_PORE_GEOMETRY_H */

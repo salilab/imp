@@ -1,5 +1,5 @@
 /**
- *  \file IMP/npcassembly/SlabWithToroidalPoreMBMScore.h
+ *  \file IMP/npc/SlabWithToroidalPoreMBMScore.h
  *  \brief a go-like score for a slab with a toroidal pore
  *
 
@@ -7,10 +7,10 @@
  *
  */
 
-#ifndef IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H
-#define IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H
+#ifndef IMPNPC_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H
+#define IMPNPC_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H
 
-#include "npcassembly_config.h"
+#include "npc_config.h"
 #include "SlabWithToroidalPore.h"
 #include <IMP/Model.h>
 #include <IMP/Pointer.h>
@@ -19,7 +19,7 @@
 #include <IMP/pair_macros.h>
 #include "IMP/core/XYZR.h"
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 //! apply harmonic walls to the distance between a particle and the normal to toroidal membrane
 /** The source code is as follows:
@@ -28,7 +28,7 @@ IMPNPCASSEMBLY_BEGIN_NAMESPACE
  */
 
 // scores a go-like harmonic interaction based on normal distance to closest point
-class IMPNPCASSEMBLYEXPORT SlabWithToroidalPoreMBMScore : public PairScore {
+class IMPNPCEXPORT SlabWithToroidalPoreMBMScore : public PairScore {
     double x0_upper_, x0_lower_, k_;
 
 public:
@@ -52,6 +52,6 @@ IMP_OBJECT_METHODS(SlabWithToroidalPoreMBMScore);
 
 IMP_OBJECTS(SlabWithToroidalPoreMBMScore, SlabWithToroidalPoreMBMScores);
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 
-#endif /* IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H */
+#endif /* IMPNPC_SLAB_WITH_TOROIDAL_PORE_MBM_SCORE_H */

@@ -6,9 +6,9 @@
  *
  */
 
-#include "IMP/npcassembly/SlabWithPore.h"
+#include "IMP/npc/SlabWithPore.h"
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 void
 SlabWithPore::do_setup_particle(IMP::Model* m,
@@ -37,4 +37,4 @@ void SlabWithPore::show(std::ostream &out) const {
       << " ; radius=" << get_pore_radius();
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE

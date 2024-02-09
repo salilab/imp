@@ -1979,27 +1979,6 @@ ModelObjectsTemp ProteinProximityRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionLowerRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionUpperRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionLowerRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionUpperRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionLowerRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionUpperRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinContactRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinChainRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneSurfaceLocationRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(
-               IMP::npc::MembraneSurfaceLocationConditionalRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneExclusionRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PoreSideVolumeLocationRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PerinuclearVolumeLocationRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDistanceRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDihedralRestraint);
-IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinProximityRestraint);
-
 /*#####################################################
 # Restraints setup - Immuno-EM XAxialPositionRestraint - Added by Andrew P. Latham
 # Supplementary Table 7. Upper and lower bounds on X-axial restraints of C-terminal bead of nups
@@ -2100,6 +2079,14 @@ ModelObjectsTemp XAxialPositionRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *XAxialPositionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XAxialPositionRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM XAxialPositionLowerRestraint - Added by Andrew P. Latham
@@ -2184,6 +2171,13 @@ ModelObjectsTemp XAxialPositionLowerRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), all);
 }
 
+RestraintInfo *XAxialPositionLowerRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XAxialPositionLowerRestraint");
+  ri->add_float("lower bound", lower_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
 
 /*#####################################################
 # Restraints setup - Immuno-EM XAxialPositionUpperRestraint  - Added by Andrew P. Latham
@@ -2266,6 +2260,14 @@ ModelObjectsTemp XAxialPositionUpperRestraint::do_get_inputs() const {
     return ModelObjectsTemp();
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
+}
+
+RestraintInfo *XAxialPositionUpperRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.XAxialPositionUpperRestraint");
+  ri->add_float("upper bound", upper_bound_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
 }
 
 /*#####################################################
@@ -2381,5 +2383,40 @@ ModelObjectsTemp OverallPositionRestraint::do_get_inputs() const {
   ParticleIndexes all = sc_->get_all_possible_indexes();
   return IMP::get_particles(get_model(), all);
 }
+
+RestraintInfo *OverallPositionRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.npc.OverallPositionRestraint");
+  ri->add_float("X start", X_start_);
+  ri->add_float("Y start", Y_start_);
+  ri->add_float("Z start", Z_start_);
+  ri->add_float("tolerance", tolerance_);
+  ri->add_float("sigma", sigma_);
+  return ri.release();
+}
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ZAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::YAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XYRadialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinContactRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinChainRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneSurfaceLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneSurfaceLocationConditionalRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::MembraneExclusionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PoreSideVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::PerinuclearVolumeLocationRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDistanceRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::AssemblySymmetryByDihedralRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::ProteinProximityRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XAxialPositionRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XAxialPositionLowerRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::XAxialPositionUpperRestraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::npc::OverallPositionRestraint);
 
 IMPNPC_END_NAMESPACE

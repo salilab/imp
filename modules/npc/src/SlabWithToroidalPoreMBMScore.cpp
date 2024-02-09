@@ -5,12 +5,12 @@
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/npcassembly/SlabWithToroidalPoreMBMScore.h>
+#include <IMP/npc/SlabWithToroidalPoreMBMScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
 //#include <boost/lambda/lambda.hpp>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 SlabWithToroidalPoreMBMScore::SlabWithToroidalPoreMBMScore(double x0_upper, double x0_lower, double k) : x0_upper_(x0_upper), x0_lower_(x0_lower), k_(k) {}
 
@@ -162,5 +162,5 @@ ModelObjectsTemp SlabWithToroidalPoreMBMScore::do_get_inputs(
     return IMP::get_particles(m, pis);
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 

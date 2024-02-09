@@ -6,19 +6,19 @@
  *
  */
 
-#include "IMP/npcassembly/SlabWithToroidalPoreGeometry.h"
+#include "IMP/npc/SlabWithToroidalPoreGeometry.h"
 #include <IMP/display/geometry.h>
 
 #include <IMP/constants.h>
 #include <IMP/algebra/Plane3D.h>
-#ifdef IMP_NPCASSEMBLY_USE_IMP_CGAL
+#ifdef IMP_NPC_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
 #endif
 #include <boost/tuple/tuple.hpp>
 #include <algorithm>
 #include <set>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 //! Slab with specified height from top to bottom, slab_length x slab_length area,
 //! and an elliptic toroidal pore of specified major radius,
@@ -106,4 +106,4 @@ SlabWithToroidalPoreWireGeometry
   return ret;
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE

@@ -6,9 +6,9 @@
  *
  */
 
-#include "IMP/npcassembly/SlabWithToroidalPore.h"
+#include "IMP/npc/SlabWithToroidalPore.h"
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 void
 SlabWithToroidalPore::do_setup_particle(IMP::Model* m,
@@ -42,4 +42,4 @@ void SlabWithToroidalPore::show(std::ostream &out) const {
   SlabWithPore::show(out);
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE

@@ -6,13 +6,13 @@
  *
  */
 
-#include "IMP/npcassembly/SlabWithSphericalIndentGeometry.h"
+#include "IMP/npc/SlabWithSphericalIndentGeometry.h"
 #include <IMP/display/geometry.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Plane3D.h>
 #include <math.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 // length is the x-y bounds on displaying the edges of the plane
 SlabWithSphericalIndentGeometry
@@ -159,4 +159,4 @@ display::Geometries SlabWithSphericalIndentGeometry::get_components() const
 
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE

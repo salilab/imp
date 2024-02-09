@@ -5,12 +5,12 @@
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/npcassembly/SlabWithSphericalIndentMBMScore.h>
+#include <IMP/npc/SlabWithSphericalIndentMBMScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
 //#include <boost/lambda/lambda.hpp>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 SlabWithSphericalIndentMBMScore::SlabWithSphericalIndentMBMScore(double x0, double k) : x0_(x0), k_(k) {}
 
@@ -97,5 +97,5 @@ ModelObjectsTemp SlabWithSphericalIndentMBMScore::do_get_inputs(
     return IMP::get_particles(m, pis);
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 

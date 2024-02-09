@@ -5,12 +5,12 @@
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/npcassembly/SphericalIndentSurfaceDepthPairScore.h>
+#include <IMP/npc/SphericalIndentSurfaceDepthPairScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
 //#include <boost/lambda/lambda.hpp>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 SphericalIndentSurfaceDepthPairScore::SphericalIndentSurfaceDepthPairScore(double k) : k_(k) {}
 
@@ -103,5 +103,5 @@ ModelObjectsTemp SphericalIndentSurfaceDepthPairScore::do_get_inputs(
     return IMP::get_particles(m, pis);
 }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 

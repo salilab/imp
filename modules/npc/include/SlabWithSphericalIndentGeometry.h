@@ -6,16 +6,16 @@
  *
  * */
 
-#ifndef IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H
-#define IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H
+#ifndef IMPNPC_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H
+#define IMPNPC_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H
 
-#include "npcassembly_config.h"
+#include "npc_config.h"
 #include <IMP/display/geometry.h>
 #include <IMP/display/display_macros.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
-class IMPNPCASSEMBLYEXPORT SlabWithSphericalIndentGeometry : public display::Geometry {
+class IMPNPCEXPORT SlabWithSphericalIndentGeometry : public display::Geometry {
 //! Slab with specified parameters for radius and depth of the spherical indent and a length parameter
 double radius_, depth_, length_;
 
@@ -28,6 +28,6 @@ IMP_OBJECT_METHODS(SlabWithSphericalIndentGeometry);
 
 };
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 
-#endif  /* IMPNPCASSEMBLY_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H */
+#endif  /* IMPNPC_SLAB_WITH_SPHERICAL_INDENT_GEOMETRY_H */

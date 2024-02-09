@@ -1,27 +1,27 @@
 /**
- *  \file IMP/npcassembly/SlabWithToroidalPore.h
+ *  \file IMP/npc/SlabWithToroidalPore.h
  *  \brief A decorator for a particle that's a slab with a toroidal pore.
  *
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_H
-#define IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_H
+#ifndef IMPNPC_SLAB_WITH_TOROIDAL_PORE_H
+#define IMPNPC_SLAB_WITH_TOROIDAL_PORE_H
 
-#include "npcassembly_config.h"
+#include "npc_config.h"
 #include "SlabWithPore.h"
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
 //! A decorator for a particle that represents a slab containing
 //! a toroidal pore
 /** \ingroup helper
     \ingroup decorators
  */
-class IMPNPCASSEMBLYEXPORT SlabWithToroidalPore
+class IMPNPCEXPORT SlabWithToroidalPore
 : public SlabWithPore
 {
   /** Decorate a particle that represents a slab (e.g. nuclear
@@ -139,6 +139,6 @@ class IMPNPCASSEMBLYEXPORT SlabWithToroidalPore
 
 IMP_DECORATORS(SlabWithToroidalPore, SlabsWithToroidalPores, IMP::SlabsWithPores);
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
 
-#endif /* IMPNPCASSEMBLY_SLAB_WITH_TOROIDAL_PORE_H */
+#endif /* IMPNPC_SLAB_WITH_TOROIDAL_PORE_H */

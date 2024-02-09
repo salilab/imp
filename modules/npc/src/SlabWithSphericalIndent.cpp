@@ -1,15 +1,15 @@
 /**
- *  \file IMP/npcassembly/SlabWithSphericalIndent.cpp
+ *  \file IMP/npc/SlabWithSphericalIndent.cpp
  *  \brief Decorator for a surface with a spherical indent.
  *
  *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/npcassembly/SlabWithSphericalIndent.h>
+#include <IMP/npc/SlabWithSphericalIndent.h>
 #include <math.h>
 
-IMPNPCASSEMBLY_BEGIN_NAMESPACE
+IMPNPC_BEGIN_NAMESPACE
 
         void
         SlabWithSphericalIndent::do_setup_particle(IMP::Model* m,
@@ -51,4 +51,4 @@ IMPNPCASSEMBLY_BEGIN_NAMESPACE
                        << get_sphere_depth();
         }
 
-IMPNPCASSEMBLY_END_NAMESPACE
+IMPNPC_END_NAMESPACE
