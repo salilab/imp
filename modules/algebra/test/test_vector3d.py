@@ -170,6 +170,19 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual((v1 - expected_diff).get_magnitude(),
                                0, delta=.1)
 
+    def test_get_distance(self):
+        """Check Vector3D.get_distance()"""
+        v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
+        v2 = IMP.algebra.Vector3D(10.0, 1.0, 2.0)
+        dist = v1.get_distance(v2)
+        self.assertAlmostEqual(dist, 9.11, delta=0.01)
+        dist2 = (v1 - v2).get_magnitude()
+        self.assertAlmostEqual(dist, dist2, delta=0.01)
+        # Should not be able to get distance between different
+        # dimension vectors
+        v4 = IMP.algebra.Vector4D(10.0, 1.0, 2.0, 0.0)
+        self.assertRaises(TypeError, v1.get_distance, v4)
+
     def test_show(self):
         """Check vector 3D show"""
         v = IMP.algebra.Vector3D(1, 2, 3)

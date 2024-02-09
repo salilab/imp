@@ -157,6 +157,21 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 
   double get_magnitude() const { return std::sqrt(get_squared_magnitude()); }
 
+  //! Return the distance between this and another vector
+  /** This is essentially identical to (v1 - v2).get_magnitude() but
+      may be slightly more efficient as it avoids creating a temporary
+      vector object. */
+  double get_distance(const VectorBaseD<D> &o) const {
+    IMP_ALGEBRA_VECTOR_CHECK_OTHER(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    const double *data = get_data(), *odata = o.get_data();
+    double ret = 0;
+    for (unsigned int i = 0; i < get_dimension(); ++i) {
+      ret += (odata[i] - data[i]) * (odata[i] - data[i]);
+    }
+    return std::sqrt(ret);
+  }
+
 #ifndef IMP_DOXYGEN
   double operator*(const VectorBaseD<D> &o) const {
     return get_scalar_product(o);
