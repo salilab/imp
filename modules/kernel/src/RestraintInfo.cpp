@@ -11,6 +11,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+#if IMP_HAS_CHECKS >= IMP_USAGE
 namespace {
 bool is_string_key_path(std::string name) {
   return boost::algorithm::ends_with(name, "filename") ||
@@ -20,6 +21,7 @@ bool is_string_key_path(std::string name) {
          name == "path";
 }
 }
+#endif
 
 void RestraintInfo::add_int(std::string key, int value) {
   int_.push_back(IntData(key, value));
