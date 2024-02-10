@@ -57,11 +57,11 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
   // loop over the contributions and score things
   for (Ints::const_iterator nit=c.begin();nit!=c.end();++nit){
     int n = *nit;
-    core::XYZ d0(get_model(),ppis_[n][0]);
-    core::XYZ d1(get_model(),ppis_[n][1]);
+    core::XYZ d0(get_model(), std::get<0>(ppis_[n]));
+    core::XYZ d1(get_model(), std::get<1>(ppis_[n]));
 
-    Float s0 = isd::Scale(get_model(),sigmass_[n][0]).get_scale();
-    Float s1 = isd::Scale(get_model(),sigmass_[n][1]).get_scale();
+    Float s0 = isd::Scale(get_model(), std::get<0>(sigmass_[n])).get_scale();
+    Float s1 = isd::Scale(get_model(), std::get<1>(sigmass_[n])).get_scale();
 
     Float sig  = std::sqrt(s0*s0+s1*s1);
     Float sig2 = sig*sig;
@@ -103,8 +103,8 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
   if (accum){
     for (Ints::const_iterator nit=c.begin();nit!=c.end();++nit){
       int n = *nit;
-      core::XYZ d0(get_model(),ppis_[n][0]);
-      core::XYZ d1(get_model(),ppis_[n][1]);
+      core::XYZ d0(get_model(), std::get<0>(ppis_[n]));
+      core::XYZ d1(get_model(), std::get<1>(ppis_[n]));
       algebra::Vector3D v = d1.get_coordinates() - d0.get_coordinates();
       Float dist = v.get_magnitude();
       Float score_deriv = - (2*psi-1) * score_accum/tmp_scores[n] * tmp_derivs[n];
@@ -132,10 +132,10 @@ double AtomicCrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *a
 ModelObjectsTemp AtomicCrossLinkMSRestraint::do_get_inputs() const {
     ParticlesTemp ret;
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
-        ret.push_back(get_model()->get_particle(ppis_[k][0]));
-        ret.push_back(get_model()->get_particle(ppis_[k][1]));
-        ret.push_back(get_model()->get_particle(sigmass_[k][0]));
-        ret.push_back(get_model()->get_particle(sigmass_[k][1]));
+      ret.push_back(get_model()->get_particle(std::get<0>(ppis_[k])));
+      ret.push_back(get_model()->get_particle(std::get<1>(ppis_[k])));
+      ret.push_back(get_model()->get_particle(std::get<0>(sigmass_[k])));
+      ret.push_back(get_model()->get_particle(std::get<1>(sigmass_[k])));
     }
     ret.push_back(get_model()->get_particle(psi_));
     return ret;

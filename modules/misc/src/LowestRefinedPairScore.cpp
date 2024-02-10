@@ -57,8 +57,8 @@ Float LowestRefinedPairScore::evaluate_index(
   std::pair<double, ParticlePair> r = get_lowest(ps, f_);
 
   if (da) {
-    f_->evaluate_index(m, ParticleIndexPair(r.second[0]->get_index(),
-                                                    r.second[1]->get_index()),
+    f_->evaluate_index(m, ParticleIndexPair(std::get<0>(r.second)->get_index(),
+                                            std::get<1>(r.second)->get_index()),
                        da);
   }
 

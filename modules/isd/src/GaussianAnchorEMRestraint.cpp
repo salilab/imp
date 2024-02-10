@@ -26,11 +26,11 @@ GaussianAnchorEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   typedef std::map<ParticlePair,Float>::const_iterator ppiter;
   IMP_CONTAINER_FOREACH(container::CloseBipartitePairContainer,
                         md_container_,{
-         core::XYZ d1(get_model(),_1[0]);
-         core::XYZ d2(get_model(),_1[1]);
+         core::XYZ d1(get_model(), std::get<0>(_1));
+         core::XYZ d2(get_model(), std::get<1>(_1));
          Float dist=core::get_distance(d1,d2);
-         ParticlePair pp(get_model()->get_particle(_1[0]),
-                         get_model()->get_particle(_1[1]));
+         ParticlePair pp(get_model()->get_particle(std::get<0>(_1)),
+                         get_model()->get_particle(std::get<1>(_1)));
          ppiter iter_pre=md_prefactors_.find(pp);
          ppiter iter_prod=md_prods_.find(pp);
          md_score+=iter_pre->second*calc_score(dist,iter_prod->second);

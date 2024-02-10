@@ -34,23 +34,24 @@ class PointToSphereDistance : public BaseDistanceScore {
   PointToSphereDistance(BaseDistanceScore base) : P(base) {}
   double get_score(Model *m, const ParticleIndexPair &pi,
                    double distance) const {
-    return P::get_score(m, pi, distance - get_radius(m, pi[1]));
+    return P::get_score(m, pi, distance - get_radius(m, std::get<1>(pi)));
   }
   DerivativePair get_score_and_derivative(Model *m,
                                           const ParticleIndexPair &pi,
                                           double distance) const {
-    return P::get_score_and_derivative(m, pi, distance - get_radius(m, pi[1]));
+    return P::get_score_and_derivative(m, pi,
+                    distance - get_radius(m, std::get<1>(pi)));
   }
   double get_maximum_range(Model *m,
                            const ParticleIndexPair &pi) const {
-    return P::get_maximum_range(m, pi) + get_radius(m, pi[1]);
+    return P::get_maximum_range(m, pi) + get_radius(m, std::get<1>(pi));
   }
   bool get_is_trivially_zero(Model *m,
                              const ParticleIndexPair &pi,
                              double squared_distance) const {
     return squared_distance >
            algebra::get_squared(P::get_maximum_range(m, pi) +
-                                get_radius(m, pi[1]));
+                                get_radius(m, std::get<1>(pi)));
   }
 };
 

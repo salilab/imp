@@ -89,8 +89,8 @@ double ResidueProteinProximityRestraint::evaluate_for_contributions(Ints c)
     Vector<double> dists_;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[n], {
 	//! Distances
-	core::XYZ d0(get_model(), _1[0]);
-	core::XYZ d1(get_model(), _1[1]);
+	core::XYZ d0(get_model(), std::get<0>(_1));
+	core::XYZ d1(get_model(), std::get<1>(_1));
 	double dist = get_distance(d0,d1);
 	dists_.push_back(dist);
 	

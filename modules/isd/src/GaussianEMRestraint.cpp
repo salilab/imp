@@ -173,8 +173,10 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
       mm_score = kahan_sum(mm_score,2*score);
       if (accum) {
         //multiply by 2 because...
-        derivs_mm[_1[0]] = kahan_vector_sum(derivs_mm[_1[0]],-2.0*deriv);
-        derivs_mm[_1[1]] = kahan_vector_sum(derivs_mm[_1[1]],2.0*deriv);
+        derivs_mm[std::get<0>(_1)] = kahan_vector_sum(
+                              derivs_mm[std::get<0>(_1)], -2.0*deriv);
+        derivs_mm[std::get<1>(_1)] = kahan_vector_sum(
+                              derivs_mm[std::get<1>(_1)], 2.0*deriv);
       }
   });
 
@@ -182,9 +184,10 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                         md_container_,{
     Float score = score_gaussian_overlap(get_model(),_1,&deriv);
     md_score = kahan_sum(md_score,score);
-    if (local_) local_dens.insert(_1[1]);
+    if (local_) local_dens.insert(std::get<1>(_1));
     if (accum) {
-      derivs_md[_1[0]] = kahan_vector_sum(derivs_md[_1[0]],-deriv);
+      derivs_md[std::get<0>(_1)] = kahan_vector_sum(
+                                     derivs_md[std::get<0>(_1)], -deriv);
     }
   });
 

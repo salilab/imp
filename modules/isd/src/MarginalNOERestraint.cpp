@@ -47,8 +47,8 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     double mean = 0;
     Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
-      core::XYZ d0(get_model(), _1[0]);
-      core::XYZ d1(get_model(), _1[1]);
+      core::XYZ d0(get_model(), std::get<0>(_1));
+      core::XYZ d1(get_model(), std::get<1>(_1));
       double dist =
           (d1.get_coordinates() - d0.get_coordinates()).get_squared_magnitude();
       dist = 1.0 / cube(dist);
@@ -79,8 +79,8 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     for (int i = 0; i < ncontribs; ++i) {
       double deriv_mean = logterms[i] * 6 * (ncontribs - 1) / SS;
       IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
-        core::XYZ d0(get_model(), _1[0]);
-        core::XYZ d1(get_model(), _1[1]);
+        core::XYZ d0(get_model(), std::get<0>(_1));
+        core::XYZ d1(get_model(), std::get<1>(_1));
         double deriv_pair = alldists[i][_2] / meandists[i];
         if (std::abs(deriv_pair) > 1e2) {
           std::cout << "NOE derivative warning : deriv mean " << deriv_mean
