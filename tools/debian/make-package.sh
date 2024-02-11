@@ -26,6 +26,14 @@ cp -r tools/debian/ . || exit 1
 
 rm debian/make-package.sh debian/make-imp-install.py || exit 1
 perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAME/;" debian/changelog  || exit 1
+
+# Newer distributions don't have Python 2
+if [ "${CODENAME}" = "noble" ]; then
+  patch -p2 < debian/no-python2.patch || exit 1
+  rm debian/no-python2.patch debian/imp-python2.* || exit 1
+  perl -pi -e "s/python2-dev, //" debian/control || exit 1
+fi
+
 # Newer distributions don't have Python 2 modules, and renamed libgsl0
 if [ "${CODENAME}" = "jammy" ]; then
   perl -pi -e "s/, python-numpy, python-protobuf//" debian/control || exit 1

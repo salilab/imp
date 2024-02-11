@@ -53,10 +53,3 @@ Architecture: any
 Depends: imp (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: The Integrative Modeling Platform
  IMP MPI module and dependents, for openmpi.
-
-Package: imp-python2
-Section: libs
-Architecture: any
-Depends: imp (= ${binary:Version}), python-numpy, python-protobuf
-Description: The Integrative Modeling Platform
- Wrappers for Python 2 (the base IMP package contains Python 3 wrappers).
