@@ -54,5 +54,5 @@ def calc_likelihood(exp_comp_map,nodes):
         # compute the compositional likelihood of the nodes
         weight = composition_likelihood_function(mean, std, prots, node)
         # add state weight to node
-        node.add_score(weight)
+        node.add_score(float(weight))
     return nodes

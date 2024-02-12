@@ -8,7 +8,7 @@ try:
     from matplotlib import cm
     from matplotlib import colors as clr
 except ImportError:
-    print('graphviz not available, will not be able to draw graph')
+    print('matplotlib not available, will not be able to draw graph')
     print('Errors may occur in create_DAG if draw_dag==True')
 
 # Text / probability output --------------------------------------------------------------------------------------------
