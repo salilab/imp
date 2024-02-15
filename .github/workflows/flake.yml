@@ -21,4 +21,4 @@ jobs:
     - name: Test
       run: |
         pip install flake8
-        flake8 tools modules/cnmultifit/pyext modules/EMageFit/pyext modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext modules/pepdock/pyext modules/saxs_merge/bin/saxs_merge
+        flake8 tools modules/cnmultifit/pyext modules/EMageFit/pyext modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext modules/pepdock/pyext modules/saxs_merge/bin/saxs_merge modules/isd/pyext

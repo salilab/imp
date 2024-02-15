@@ -5,11 +5,9 @@
 """
 
 from __future__ import print_function
-import sys
 import os
 import IMP.isd
 from IMP.isd.utils import Load, read_sequence_file
-#from Isd.io.nomenclature import IUPAC_CONVENTION
 IUPAC_CONVENTION = 'iupac'
 TYPE_AMINO_ACID = 'AMINO_ACID'
 pseudoatoms_dict = IMP.isd.get_data_path('CHARMM_pseudoatoms.dict')
@@ -84,11 +82,11 @@ class TBLReader:
         try:
             group = self.pseudo_dict[residue_type][atom_name]
 
-        except:
+        except KeyError:
 
             key = atom_name, residue_type
 
-            if not key in self.missing_atoms:
+            if key not in self.missing_atoms:
 
                 msg = 'Could not resolve pseudoatom %s.%s.' % (
                     residue_type, atom_name)
@@ -120,11 +118,11 @@ class TBLReader:
                                                      IUPAC_CONVENTION,
                                                      TYPE_AMINO_ACID)
 
-        except:
+        except:  # noqa: E722
 
             key = atom_name, residue_type
 
-            if not key in self.missing_atoms:
+            if key not in self.missing_atoms:
 
                 if '*' in atom_name or '#' in atom_name:
 
@@ -177,8 +175,8 @@ class TBLReader:
             if atom_names == names:
                 return dihedral['name']
 
-        msg = 'Could not determine name of dihedral angles defined by atoms %s.' % str(
-            names)
+        msg = ('Could not determine name of dihedral angles defined '
+               'by atoms %s.' % str(names))
 
         if self.ignore:
             print(msg)
@@ -223,8 +221,8 @@ class TBLReader:
 
             else:
                 raise KeyError(
-                    'Value or keyword "%s" unknown. Source: "%s", decomposed into "%s"' %
-                    (word, str(a), str(words)))
+                    'Value or keyword "%s" unknown. Source: "%s", '
+                    'decomposed into "%s"' % (word, str(a), str(words)))
 
         atom['resid'] = int(atom['resid']) + self.offset
         atom['name'] = atom['name'].upper()
@@ -250,7 +248,7 @@ class TBLReader:
                 group = self.resolve_pseudoatom(res_type, atom_name)
 
             else:
-                #group = [self.to_iupac(res_type, atom_name)]
+                # group = [self.to_iupac(res_type, atom_name)]
                 group = [atom_name]
 
             groups.append(group)
@@ -281,7 +279,7 @@ class TBLReader:
 
         try:
             distances = [float(x) for x in values[:3]]
-        except:
+        except:  # noqa: E722
             distances = None
 
         # read volume from ARIA 1.x restraint files
@@ -351,10 +349,10 @@ class TBLReader:
 
                     val = selection[i]
 
-                    if not '(' in val:
+                    if '(' not in val:
                         val = '(' + val
 
-                    if not ')' in val:
+                    if ')' not in val:
                         val += ')'
 
                     selection[i] = val
@@ -368,7 +366,7 @@ class TBLReader:
 
             # find and isolate target distances
 
-            l = []
+            ll = []
 
             for i in range(len(atoms)):
 
@@ -384,9 +382,9 @@ class TBLReader:
 
                     g.append(atom)
 
-                l.append(g)
+                ll.append(g)
 
-            a, b = l
+            a, b = ll
 
             if len(a) > len(b):
                 a, b = b, a
@@ -404,7 +402,8 @@ class TBLReader:
     def create_distance_restraint(self, distances, volume, contributions):
         if distances is None and volume is None:
             raise ValueError("could not find either volume or "
-                             "distance: %s %s %s" % (distances, volume, contributions))
+                             "distance: %s %s %s"
+                             % (distances, volume, contributions))
         if distances is None:
             distances = [volume ** (-1. / 6), 0, 0]
         dist = distances[0]
@@ -461,7 +460,7 @@ class TBLReader:
 
             if decompose:
 
-                d = decompose_restraints(restraints)
+                d = decompose_restraints(restraints)  # noqa: F821
 
                 for _type in d.keys():
                     if not d[_type]:
@@ -505,14 +504,16 @@ class TBLReader:
 
             if len(new_contribs) > 1:
                 raise ValueError(
-                    'Inconsistency in data file, multiple contributions detected.')
+                    'Inconsistency in data file, multiple contributions '
+                    'detected.')
 
             atoms = self.split_contribution(new_contribs[0])
             atoms = [self.extract_atom(x) for x in atoms]
 
             name = self.resolve_dihedral_name(atoms)
 
-            r = create_dihedral_restraint(seq_number, name, values, atoms)
+            r = create_dihedral_restraint(seq_number, name,  # noqa: F821
+                                          values, atoms)
 
             restraints.append(r)
             seq_number += 1
@@ -550,7 +551,7 @@ class TBLReader:
                 contributions += self.build_contributions(atoms)
 
             if contributions:
-                r = create_rdc_restraint(
+                r = create_rdc_restraint(  # noqa: F821
                     seq_number,
                     distances[0],
                     contributions)
@@ -560,6 +561,7 @@ class TBLReader:
 
         if restraints:
             return restraints
+
 
 if __name__ == '__main__':
 

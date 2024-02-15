@@ -16,9 +16,9 @@ class Entry:
     - format: a wisely chosen format string (see below)
     - something: either something that can be formattable, a string, a number
       etc. This is a static entry. In that case all remaining arguments are
-      discarded and get_value returns the formatted string : format % something.
-      If something is a function, this is a dynamic entry, and the format
-      string is used on the result of the function call
+      discarded and get_value returns the formatted string :
+      format % something.  If something is a function, this is a dynamic
+      entry, and the format string is used on the result of the function call
       something(*args,**kwargs).
     """
 

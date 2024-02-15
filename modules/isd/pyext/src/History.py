@@ -110,6 +110,6 @@ class History:
                             "\t%20s\t%12d\t%20s\t%10f\t%10f\t%10f\t%5s\n" %
                             (name, len(ent), tp, avg, st, avg100, tend))
                         continue
-                    except:
+                    except:  # noqa: E722
                         pass
                 out.write("\t%20s\t%12d\t%20s\n" % (name, len(ent), tp))

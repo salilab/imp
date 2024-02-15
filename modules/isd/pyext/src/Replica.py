@@ -163,8 +163,8 @@ class ReplicaTracker:
         metrop = {}
         for (s1, s2) in pairslist:
             metrop[(s1, s2)] = \
-                min(1, np.exp((old_ene[s2] - old_ene[s1]) *
-                              (self.inv_temps[s2] - self.inv_temps[s1])))
+                min(1, np.exp((old_ene[s2] - old_ene[s1])
+                              * (self.inv_temps[s2] - self.inv_temps[s1])))
         return metrop
 
     def try_exchanges(self, plist, metrop):
@@ -284,10 +284,10 @@ class ReplicaTracker:
 
     def do_bookkeeping_after(self, accepted):
         if self.scheme == 'convective':
-            rep = self.stirred['replica']
-            state = self.statenums[rep]
-            dir = 2 * self.stirred['dir'] - 1
-            expected = (min(state, state + dir), max(state, state + dir))
+            # rep = self.stirred['replica']
+            # state = self.statenums[rep]
+            # dir = 2 * self.stirred['dir'] - 1
+            # expected = (min(state, state + dir), max(state, state + dir))
             if self.stirred['pair'] in accepted:
                 self.stirred['steps'] -= 1
 
