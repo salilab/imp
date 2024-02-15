@@ -27,12 +27,6 @@ import time
 import os
 import os.path
 import socket
-
-
-try:
-    from queue import Queue  # python3
-except ImportError:
-    from Queue import Queue  # python2
 from threading import Thread
 
 debug = False
@@ -234,44 +228,6 @@ class Pipe(object):
         return len(self.pipe) == self.length
 
     __repr__ = __str__
-
-
-class SortedQueue(Queue):
-
-    def sort(self):
-
-        from numpy.oldnumeric import array
-        from Isd.misc.mathutils import average
-
-        self.queue.sort(lambda a, b: cmp(average(a.time), average(b.time)))
-
-        self.times = array([average(x.time) for x in self.queue])
-
-    def _put(self, item):
-
-        Queue._put(self, item)
-        self.sort()
-
-    def _get(self):
-
-        from numpy.oldnumeric import power
-        from Isd.misc.mathutils import draw_dirichlet, rescale_uniform
-
-        # compute "probabilities"
-
-        p = 1. - rescale_uniform(self.times)
-        p = power(p, 2.)
-
-        index = draw_dirichlet(p)
-
-        val = self.queue[index]
-
-        self.queue = self.queue[:index] + self.queue[index + 1:]
-
-        if len(self.queue):
-            self.sort()
-
-        return val
 
 
 def load_pdb(filename):
