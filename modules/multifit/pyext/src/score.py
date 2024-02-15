@@ -8,6 +8,7 @@ __doc__ = "Score each of a set of combinations."
 
 # analyse the ensemble, first we will do the rmsd stuff
 
+
 def get_color_map():
     colors = {}
     colors["Rpt1"] = [0.78, 0.78, 0.73]
@@ -88,7 +89,7 @@ def decompose(dmap, mhs):
 def score_each_protein(dmap, mhs, sd):
     norm_factors = decompose(dmap, mhs)
     scores = []
-    mdl = mhs[0].get_model()
+    # mdl = mhs[0].get_model()
     for i in range(len(mhs)):
         leaves = IMP.core.get_leaves(mhs[i])
         rb = IMP.core.RigidMember(leaves[0]).get_rigid_body()
@@ -144,8 +145,8 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     threshold = asmb.get_assembly_header().get_threshold()
     combs = IMP.multifit.read_paths(combs_fn)
     # get rmsd for subunits
-    colors = get_color_map()
-    names = list(colors.keys())
+    # colors = get_color_map()
+    # names = list(colors.keys())
     print(params_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
@@ -161,7 +162,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     mapping_data = IMP.multifit.read_protein_anchors_mapping(
         prot_data, mapping_fn)
     print("=========4")
-    em_anchors = mapping_data.get_anchors()
+    _ = mapping_data.get_anchors()
     print("=========5")
     ensmb = IMP.multifit.Ensemble(asmb, mapping_data)
     print("=========6")
@@ -173,19 +174,20 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     mdl = align.get_model()
     mhs = align.get_molecules()
     align.add_states_and_filters()
-    rbs = align.get_rigid_bodies()
-    print(IMP.core.RigidMember(IMP.core.get_leaves(mhs[0])[0]).get_rigid_body())
+    # rbs = align.get_rigid_bodies()
+    print(IMP.core.RigidMember(
+        IMP.core.get_leaves(mhs[0])[0]).get_rigid_body())
     align.set_density_map(dmap, threshold)
-    gs = []
     for i, mh in enumerate(mhs):
-        ensmb.add_component_and_fits(mh,
-                                     IMP.multifit.read_fitting_solutions(asmb.get_component_header(i).get_transformations_fn()))
+        ensmb.add_component_and_fits(
+            mh, IMP.multifit.read_fitting_solutions(
+                asmb.get_component_header(i).get_transformations_fn()))
+        '''
         try:
             rgb = colors[mh.get_name()]
         except:
             rgb = colors[names[i]]
         color = IMP.display.Color(rgb[0], rgb[1], rgb[2])
-        '''
         for p in IMP.core.get_leaves(mh):
             g= IMP.display.XYZRGeometry(p)
             g.set_color(color)
@@ -276,6 +278,7 @@ def main():
     args = usage()
     run(args.assembly_file, args.proteomics_file, args.mapping_file,
         args.param_file, args.combinations_file, args.scores_file, args.max)
+
 
 if __name__ == "__main__":
     main()

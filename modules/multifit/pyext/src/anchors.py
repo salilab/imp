@@ -7,13 +7,15 @@ from IMP import ArgumentParser
 
 __doc__ = "Generate anchors for a density map."
 
+
 def parse_args():
     desc = """Generate anchors for a density map."""
     p = ArgumentParser(description=desc)
     p.add_argument("-s", "--size", type=int, dest="size", default=-1,
                    help="number of residues per bead")
     p.add_argument("assembly_file", help="assembly file name")
-    p.add_argument("anchor_prefix", help="prefix for output anchors file names")
+    p.add_argument("anchor_prefix",
+                   help="prefix for output anchors file names")
 
     return p.parse_args()
 
@@ -47,6 +49,7 @@ def main():
                                          density_threshold,
                                          output + ".pdb", output + ".cmm",
                                          "", output + ".txt")
+
 
 if __name__ == "__main__":
     main()

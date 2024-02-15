@@ -9,6 +9,7 @@ import IMP.container
 
 __doc__ = "Cluster assembly solutions."
 
+
 def get_uniques(seq):
     # Not order preserving
     keys = {}
@@ -94,15 +95,17 @@ class AlignmentClustering:
         self.ensmb.set_was_used(True)
         self.mhs = self.align.get_molecules()
         for i, mh in enumerate(self.mhs):
-            self.ensmb.add_component_and_fits(mh,
-                                              IMP.multifit.read_fitting_solutions(self.asmb.get_component_header(i).get_transformations_fn()))
+            trans_fname = \
+                self.asmb.get_component_header(i).get_transformations_fn()
+            self.ensmb.add_component_and_fits(
+                mh, IMP.multifit.read_fitting_solutions(trans_fname))
         # load the density map
         self.dmap = IMP.em.read_map(
             self.asmb.get_assembly_header().get_dens_fn())
         self.dmap.set_was_used(True)
         self.dmap.get_header().set_resolution(
             self.asmb.get_assembly_header().get_resolution())
-        threshold = self.asmb.get_assembly_header().get_threshold()
+        _ = self.asmb.get_assembly_header().get_threshold()
         self.dmap.update_voxel_size(
             self.asmb.get_assembly_header().get_spacing())
         self.dmap.set_origin(self.asmb.get_assembly_header().get_origin())
@@ -160,16 +163,19 @@ class AlignmentClustering:
     def get_placement_score_from_coordinates(
             self, model_coords, native_coords):
         """
-        Computes the position error (placement distance) and the orientation                                                                      error (placement angle) of the coordinates in model_coords respect to the coordinates in native_coords.
+        Computes the position error (placement distance) and the orientation
+        error (placement angle) of the coordinates in model_coords with
+        respect to the coordinates in native_coords.
         placement distance - translation between the centroids of the
-                           coordinates                                                                                                           placement angle - Angle in the axis-angle formulation of the rotation
-        aligning the two rigid bodies.
+            coordinates.
+        placement angle - Angle in the axis-angle formulation of the rotation
+            aligning the two rigid bodies.
         """
         native_centroid = IMP.algebra.get_centroid(native_coords)
         model_centroid = IMP.algebra.get_centroid(model_coords)
         translation_vector = native_centroid - model_centroid
         distance = translation_vector.get_magnitude()
-        if(len(model_coords) != len(native_coords)):
+        if (len(model_coords) != len(native_coords)):
             raise ValueError(
                 "Mismatch in the number of members %d %d " % (
                     len(model_coords),
@@ -197,18 +203,15 @@ class AlignmentClustering:
         bb_union = IMP.algebra.BoundingBox3D(bottom, top)
         '''
 
-        resolution = self.dmap.get_header().get_resolution()
-        voxel_size = self.dmap.get_spacing()
-
         map_solution = IMP.em.SampledDensityMap(self.dmap.get_header())
         map_solution.set_particles(ps)
         map_solution.resample()
         map_solution.set_was_used(True)
 
         map_solution.calcRMS()
-        # base the calculation of the cross_correlation coefficient on the threshold
-        # for the native map, because the threshold for the map of the model changes
-        # with each model
+        # base the calculation of the cross_correlation coefficient on the
+        # threshold for the native map, because the threshold for the map of
+        # the model changes with each model
         # map_solution.get_header().show()
         threshold = 0.01  # threshold AFTER normalization using calcRMS()
         ccc = IMP.em.get_coarse_cc_coefficient(map_solution,
@@ -259,8 +262,6 @@ class AlignmentClustering:
             angles.append([])
         best_sampled_ind = -1
         best_scored_ind = -1
-        voxel_size = 3  # check with javi
-        resolution = 20  # check with javi
         counter = -1
         for elem_ind1, cluster_ind1 in enumerate(self.cluster_inds):
             if cluster_ind1 != query_cluster_ind:
@@ -270,7 +271,8 @@ class AlignmentClustering:
                 rmsds.append(
                     IMP.atom.get_rmsd(
                         list(itertools.chain.from_iterable(mhs_native_ca)),
-                        list(itertools.chain.from_iterable(self.coords[elem_ind1]))))
+                        list(itertools.chain.from_iterable(
+                            self.coords[elem_ind1]))))
             if best_scored_ind == -1:
                 self.ensmb.load_combination(self.combs[elem_ind1])
                 best_scored_ind = counter
@@ -333,7 +335,7 @@ class AlignmentClustering:
 
 
 def usage():
-    desc =  """
+    desc = """
 Clustering of assembly solutions.
 
 This program uses the Python 'fastcluster' module, which can be obtained from
@@ -364,8 +366,7 @@ def main():
         args.mapping_file,
         args.param_file,
         args.combinations_file)
-    clusters = clust_engine.do_clustering(args.max, args.rmsd)
-    cluster_representatives = []
+    _ = clust_engine.do_clustering(args.max, args.rmsd)
     print("clustering completed")
     print("start analysis")
     clust_engine.do_analysis(args.max)
@@ -379,13 +380,21 @@ def main():
         info = clust_engine.get_cluster_stats(cluster_ind)
         repr_combs.append(
             clust_engine.get_cluster_representative_combination(cluster_ind))
-        print("==========Cluster index:", info.cluster_ind, "size:", info.cluster_size)
+        print("==========Cluster index:", info.cluster_ind, "size:",
+              info.cluster_size)
         if info.rmsd_calculated:
-            print("best sampled in cluster (index,cc,distance,angle,rmsd):", info.best_sampled_ind, info.best_sampled_cc, info.best_sampled_distance, info.best_sampled_angle, info.best_sampled_rmsd)
+            print("best sampled in cluster (index,cc,distance,angle,rmsd):",
+                  info.best_sampled_ind, info.best_sampled_cc,
+                  info.best_sampled_distance, info.best_sampled_angle,
+                  info.best_sampled_rmsd)
         if info.rmsd_calculated:
-            print("cluster representative (index,cc,distance,angle,rmsd):", info.best_scored_ind, info.best_scored_cc, info.best_scored_distance, info.best_scored_angle, info.best_scored_rmsd)
+            print("cluster representative (index,cc,distance,angle,rmsd):",
+                  info.best_scored_ind, info.best_scored_cc,
+                  info.best_scored_distance, info.best_scored_angle,
+                  info.best_scored_rmsd)
         else:
-            print("cluster representative (index,cc):", info.best_scored_ind, info.best_scored_cc)
+            print("cluster representative (index,cc):", info.best_scored_ind,
+                  info.best_scored_cc)
 
 
 if __name__ == "__main__":

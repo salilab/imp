@@ -62,5 +62,6 @@ def main():
                                   args.num_cluster, args.output, args.cmm,
                                   args.seg, args.txt)
 
+
 if __name__ == "__main__":
     main()

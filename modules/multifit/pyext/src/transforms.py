@@ -7,6 +7,7 @@ from IMP import ArgumentParser
 
 __doc__ = "Write assembly transformation file in other formats."
 
+
 class Formatter(object):
 
     def __init__(self, fh):
@@ -17,10 +18,10 @@ class Formatter(object):
 
 
 class ChimeraFormatter(Formatter):
-    __doc__ = \
-"""Each line in 'chimera' format lists the transformation index, the
-cross correlation score, and then the transformation for each component,
-as a rotation matrix (row-major order) and a translation in angstroms."""
+    """Each line in 'chimera' format lists the transformation index, the
+       cross correlation score, and then the transformation for each component,
+       as a rotation matrix (row-major order) and a translation in angstroms.
+    """
 
     def write_line(self, ind, score, transforms):
         self.fh.write(str(ind) + "\t" + score + "\t")
@@ -36,10 +37,9 @@ as a rotation matrix (row-major order) and a translation in angstroms."""
 
 
 class DockRefFormatter(Formatter):
-    __doc__ = \
-"""Each line in 'dockref' format lists the transformation for each component,
-as a set of three Euler angles (in radians about the fixed x, y and z axes)
-and a translation in angstroms."""
+    """Each line in 'dockref' format lists the transformation for each
+       component, as a set of three Euler angles (in radians about the
+       fixed x, y and z axes) and a translation in angstroms."""
 
     def write_header(self, sd):
         # write the name of the proteins
@@ -70,10 +70,10 @@ Write assembly transformation file in other formats.
 
     p = ArgumentParser(description=desc)
     p.add_argument("-f", "--format", default='chimera',
-                      choices=list(formatters.keys()),
-                      help="type of output to generate ("
-                           + ", ".join(formatters.keys())
-                           + "; default: chimera)")
+                   choices=list(formatters.keys()),
+                   help="type of output to generate ("
+                   + ", ".join(formatters.keys())
+                   + "; default: chimera)")
     p.add_argument("assembly_file", help="assembly file name")
     p.add_argument("combinations_file", help="combinations file name")
     p.add_argument("output_file", help="output file name")
@@ -102,6 +102,7 @@ def main():
     args = parse_args()
     fmt = formatters[args.format](open(args.output_file, 'w'))
     run(args.assembly_file, args.combinations_file, fmt)
+
 
 if __name__ == "__main__":
     main()

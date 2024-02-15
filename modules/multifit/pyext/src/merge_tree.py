@@ -6,8 +6,9 @@ from IMP import ArgumentParser
 
 __doc__ = "Show the DOMINO merge tree to be used in alignment."
 
+
 def parse_args():
-    desc =  """
+    desc = """
 Show the DOMINO merge tree to be used in the alignment procedure
 """
     p = ArgumentParser(description=desc)
@@ -36,7 +37,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
     mapping_data = IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                              mapping_fn)
 
-    em_anchors = mapping_data.get_anchors()
+    _ = mapping_data.get_anchors()
 
     # load all proteomics restraints
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data, asmb,
@@ -54,6 +55,7 @@ def main():
     args = parse_args()
     run(args.assembly_file, args.proteomics_file, args.mapping_file,
         args.param_file)
+
 
 if __name__ == "__main__":
     main()

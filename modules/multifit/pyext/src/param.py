@@ -61,8 +61,9 @@ def get_density_data(name, density_fn, resolution, spacing, threshold,
     sd = IMP.multifit.SettingsData()
     sd.set_was_used(True)
     msg = sd.get_density_header_line()
-    msg += density_fn + "|" + str(resolution) + "|" + str(spacing) + "|" + str(
-        threshold) + "|" + str(origin[0]) + "|" + str(origin[1]) + "|" + str(origin[2])
+    msg += (density_fn + "|" + str(resolution) + "|" + str(spacing) + "|"
+            + str(threshold) + "|" + str(origin[0]) + "|" + str(origin[1])
+            + "|" + str(origin[2]))
     msg += "|" + anchor_dir_name + name + "_em_coarse_anchors.txt|" + \
         anchor_dir_name + name + "_em_coarse_anchors_FINE.txt|"
     msg += anchor_dir_name + name + "_em_fine_anchors.txt|" + \
@@ -88,8 +89,8 @@ def get_protein_data(
             surface_fn = fnn[:-1].split()[1] + ".ms"
             # TODO - add the number of copies data
             mh = IMP.atom.read_pdb(fn, mdl)
-            num_anchors = len(IMP.atom.get_by_type(mh,
-                                     IMP.atom.RESIDUE_TYPE)) // coarse_level
+            num_anchors = len(IMP.atom.get_by_type(
+                mh, IMP.atom.RESIDUE_TYPE)) // coarse_level
             msg += name + "|" + fn + "|" + surface_fn + "|" + \
                 anchor_dir_name + name + "_anchors.txt|" + \
                 str(num_anchors) + "|"

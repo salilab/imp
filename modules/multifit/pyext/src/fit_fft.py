@@ -65,7 +65,7 @@ class Fitter(object):
         mdl = IMP.Model()
         mol2fit = IMP.atom.read_pdb(self.pdb, mdl)
         mh_xyz = IMP.core.XYZs(IMP.core.get_leaves(mol2fit))
-        rb = IMP.atom.create_rigid_body(mol2fit)
+        _ = IMP.atom.create_rigid_body(mol2fit)
         ff = IMP.multifit.FFTFitting()
         ff.set_was_used(True)
         fits = ff.do_global_fitting(dmap, self.threshold, mol2fit,
@@ -162,12 +162,13 @@ Running on a single processor.""" % multiproc_exception, file=sys.stderr)
         # No point in spawning more processes than components
         nproc = min(options.cpus, asmb_input.get_number_of_component_headers())
         p = Pool(processes=nproc)
-        out = list(p.imap_unordered(do_work, work_units))
+        _ = list(p.imap_unordered(do_work, work_units))
 
 
 def main():
     args = parse_args()
     run(args.assembly_file, args)
+
 
 if __name__ == "__main__":
     main()
