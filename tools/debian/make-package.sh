@@ -49,6 +49,13 @@ fi
 if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "trusty" ]; then
   perl -pi -e "s/, python3-protobuf//" debian/control || exit 1
 fi
+
+# Workaround gcc -frounding-math bug; see
+# https://bugzilla.redhat.com/show_bug.cgi?id=2085189
+if [ "${CODENAME}" = "noble" ]; then
+  perl -pi -e "s/CXXFLAGS :=.*/CXXFLAGS := -std=c++20/" debian/rules || exit 1
+fi
+
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp
