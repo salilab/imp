@@ -8,6 +8,8 @@ Dependencies for making spatiotemporal models:
 - sys
 - itertools
 - pandas
+
+
 Dependencies for visualizing spatiotemporal models as graphs:
 - matplotlib
 - graphviz (https://graphviz.org)
