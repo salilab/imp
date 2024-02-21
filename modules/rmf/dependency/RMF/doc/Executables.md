@@ -52,6 +52,7 @@ and how much they are used.
 
     Combine two or more rmf files.
     Usage: ./bin/rmf_cat input_1.rmf input_2.rmf ... output.rmf
+      -f [ --force ]        Combine files even if they have different structure or static frame.
       -h [ --help ]         Get help on command line arguments.
       -v [ --verbose ]      Produce more output.
       --hdf5-errors         Show hdf5 errors.

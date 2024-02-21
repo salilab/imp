@@ -21,19 +21,42 @@ std::string output;
 }
 int main(int argc, char** argv) {
   try {
+    options.add_options()("force,f",
+                          "Combine files even if they have different "
+			  "structure or static frames.");
     positional_options.add_options()(
         "input-files,i",
         boost::program_options::value<std::vector<std::string> >(&inputs),
         "input rmf file");
     positional_names.emplace_back("input_1.rmf input_2.rmf ... output.rmf");
     positional_options_description.add("input-files", -1);
-    process_options(argc, argv);
+    boost::program_options::variables_map vm(process_options(argc, argv));
+
     if (inputs.size() < 3) {
       print_help_and_exit(argv);
     }
 
     output = inputs.back();
     inputs.pop_back();
+    bool force = vm.count("force");
+    if (!force && inputs.size() > 1) {
+      RMF::FileConstHandle rh1 = RMF::open_rmf_file_read_only(inputs[0]);
+      for (unsigned int i = 1; i < inputs.size(); ++i) {
+        RMF::FileConstHandle rh2 = RMF::open_rmf_file_read_only(inputs[i]);
+	if (!RMF::get_equal_structure(rh1, rh2, true)) {
+          std::cerr << inputs[0] << " and " << inputs[i]
+                    << " have different structure, cannot concatenate "
+                    << "without --force" << std::endl;
+          exit(1);
+	}
+	if (!RMF::get_equal_static_values(rh1, rh2)) {
+          std::cerr << inputs[0] << " and " << inputs[i]
+                    << " have different static frames, cannot concatenate "
+                    << "without --force" << std::endl;
+          exit(1);
+	}
+      }
+    }
     RMF::FileHandle orh = RMF::create_rmf_file(output);
     orh.set_producer("rmf_cat");
     for (unsigned int i = 0; i < inputs.size(); ++i) {
