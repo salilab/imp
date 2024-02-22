@@ -2,33 +2,46 @@ import numpy as np
 try:
     from graphviz import Digraph
 except ImportError:
-    print('graphviz not available, will not be able to draw graph')
-    print('Errors may occur in create_DAG if draw_dag==True')
+    Digraph = None
 try:
     from matplotlib import cm
     from matplotlib import colors as clr
 except ImportError:
-    print('matplotlib not available, will not be able to draw graph')
-    print('Errors may occur in create_DAG if draw_dag==True')
+    cm=None
+    clr=None
 
 # Text / probability output --------------------------------------------------------------------------------------------
 
-# write_cdf - function to output the cumulative distribution function (cdf) if out_cdf is True
 def write_cdf(out_cdf,cdf_fn,graph_prob):
+    """
+    Function to output the cumulative distribution function (cdf)
+    @param out_cdf: bool, writes cdf if true
+    @param cdf_fn: str, filename of cdf
+    @param graph_prob: list of probabilities for each path, (path_prob from score_graph())
+    """
     if out_cdf:
         cdf = np.cumsum(np.flip(np.sort(graph_prob)))
         np.savetxt(cdf_fn, cdf)
-    return
 
-# write_pdf - function to output the probability distribution function (pdf) if out_pdf is True
 def write_pdf(out_pdf,pdf_fn,graph_prob):
+    """
+    Function to output the probability distribution function (pdf)
+    @param out_pdf: bool, writes pdf if true
+    @param pdf_fn: str, filename of pdf
+    @param graph_prob: list of probabilities for each path, (path_prob from score_graph())
+    """
     if out_pdf:
         pdf = np.flip(np.sort(graph_prob))
         np.savetxt(pdf_fn,pdf)
-    return
 
-# write_labeled_pdf - function to output the labeled probability distribution function (pdf) if out_labeled_pdf is True
 def write_labeled_pdf(out_labeled_pdf,labeled_pdf_fn,graph,graph_prob):
+    """
+    Function to output the labeled probability distribution function (pdf)
+    @param out_labeled_pdf: bool, writes labeled_pdf if true
+    @param labeled_pdf_fn: str, filename of labeled_pdf
+    @param graph: list of graphNode objects visited for each path, (all_paths from score_graph())
+    @param graph_prob: list of probabilities for each path, (path_prob from score_graph())
+    """
     if out_labeled_pdf:
         # open file
         new = open(labeled_pdf_fn, 'w')
@@ -45,10 +58,15 @@ def write_labeled_pdf(out_labeled_pdf,labeled_pdf_fn,graph,graph_prob):
             # write that path to a new file
             new.write(all_labels + '\t' + str(graph_prob[pdf_index]) + '\n')
         new.close()
-    return
 
-# function to output a file with all states for each of the n most likely paths
 def write_final_npaths(npaths,npath_fn,graph_scores,graph_prob):
+    """
+    Function to output a file with all states for each of the n most likely paths
+    @param npaths: int, number of paths to output
+    @param npath_fn: str, name of the file for all paths
+    @param graph_scores: list of tuples, where the first object is the path (list of graphNode objects for each state along the trajectory), and the second object is the score of the path, which can be used to calculate the probability. (path_scores from score_graph())
+    @param graph_prob: list of probabilities for each path, (path_prob from score_graph())
+    """
     # loop over npaths
     for i in range(-1, -1*npaths-1, -1):
         path = []
@@ -64,7 +82,6 @@ def write_final_npaths(npaths,npath_fn,graph_scores,graph_prob):
         with open(npath_fn + str(abs(i)) + ".txt", "w") as fh:
             for statename in path:
                 fh.write(statename + "\n")
-    return
 
 # Rendering DAG --------------------------------------------------------------------------------------------------------
 def draw_dag_in_graphviz(nodes, coloring=None, draw_label=True, fontname="Helvetica", fontsize="18", penscale=0.6, arrowsize=1.2, height="0.6",width="0.6"):
@@ -72,48 +89,60 @@ def draw_dag_in_graphviz(nodes, coloring=None, draw_label=True, fontname="Helvet
     Takes a list of graphNodes and initializes the nodes and edges.
     Coloring is expected to be a list of RGBA strings specifying how to color
     each node. Expected to be same length as nodes.
+    @param nodes: list of graphNode objects
+    @param coloring: list of RGBA strings to specify the color of each node. Expected to be the same length as nodes
+    @param draw_label: bool, whether or not to draw graph labels
+    @param fontname: string, name of font for graph labels
+    @param fontsize: string, size of font for graph labels
+    @param penscale: float, size of pen
+    @param arrowsize: float, size of arrows
+    @param height: string, height of nodes
+    @param width: string, width of nodes
+    @return dot: Digraph object to be rendered
     """
 
-    # create a dot object for the graph
-    dot = Digraph(format="eps",
-                  engine="dot")
-    dot.attr(ratio="1.5")
-    dot.attr(rotate="0")
+    if Digraph is None:
+        raise Exception("graphviz not available, will not be able to draw graph")
+    else:
+        # create a dot object for the graph
+        dot = Digraph(format="eps",engine="dot")
+        dot.attr(ratio="1.5")
+        dot.attr(rotate="0")
 
 
-    for ni, node in enumerate(nodes):
-        if coloring is not None:
-            color = coloring[ni]
-        else:
-            color = "#ffffff"
+        for ni, node in enumerate(nodes):
+            if coloring is not None:
+                color = coloring[ni]
+            else:
+                color = "#ffffff"
 
-        if draw_label:
-            dot.node(str(node),
-                 label=node.get_label(),
-                 style="filled",
-                 fillcolor=color,
-                 fontname=fontname,
-                 fontsize=fontsize,
-                 height=height,
-                 width=width)
-        else:
-            dot.node(str(node),
-                 label=' ',
-                 style="filled",
-                 fillcolor=color,
-                 fontname=fontname,
-                 fontsize=fontsize,
-                 height=height,
-                 width=width)
+            if draw_label:
+                dot.node(str(node),
+                     label=node.get_label(),
+                     style="filled",
+                     fillcolor=color,
+                     fontname=fontname,
+                     fontsize=fontsize,
+                     height=height,
+                     width=width)
+            else:
+                dot.node(str(node),
+                     label=' ',
+                     style="filled",
+                     fillcolor=color,
+                     fontname=fontname,
+                     fontsize=fontsize,
+                     height=height,
+                     width=width)
 
-    for ni, node in enumerate(nodes):
-        edges = node.get_edges()
-        for edge in edges:
-            dot.edge(str(node),
-                     str(edge),
-                     arrowsize=str(arrowsize),
-                     color="black",
-                     penwidth=str(penscale))
+        for ni, node in enumerate(nodes):
+            edges = node.get_edges()
+            for edge in edges:
+                dot.edge(str(node),
+                         str(edge),
+                         arrowsize=str(arrowsize),
+                         color="black",
+                         penwidth=str(penscale))
 
     return dot
 
@@ -121,41 +150,52 @@ def draw_dag_in_graphviz(nodes, coloring=None, draw_label=True, fontname="Helvet
 def draw_dag(dag_fn, nodes, paths, path_prob, keys,
              # 2nd set of parameters are for rendering the heatmap
              heatmap=True, colormap="Purples", penscale=0.6, arrowsize=1.2, fontname="Helvetica", fontsize="18", height="0.6", width="0.6", draw_label=True):
-    """Render the DAG with heatmap information.
-
-    dag_fn is a string with the filename path.
-
-    nodes is a list of graphNode objects.
-
-    paths is a list of lists containing the paths.
+    """
+    Function to render the DAG with heatmap information.
+    @param dag_fn: string, filename path
+    @param nodes: list of graphNode objects for which the graph will be drawn
+    @param paths: list of lists containing all paths visited by the graphNode objects
+    @param path_prob: list of probabilities for each path, (path_prob from score_graph())
+    @param keys: states visited in the graph (list of keys to the state_dict)
+    @param heatmap: Boolean to determine whether or not to write the dag with a heatmap based on the probability of each state (default: True)
+    @param colormap: string, colormap used by the dag to represent probability. Chooses from those available in matplotlib (https://matplotlib.org/stable/users/explain/colors/colormaps.html) (default: "Purples").
+    @param penscale: float, size of the pen used to draw arrows on the dag
+    @param arrowsize: float, size of arrows connecting states on the dag
+    @param fontname: string, font used for the labels on the dag
+    @param fontsize: string, font size used for the labels on the dag
+    @param height: string, height of each node on the dag
+    @param width: string, width of each node on the dag
+    @param draw_label: Boolean to determine whether or not to draw state labels on the dag
     """
 
     # determines if heatmap will be overlayed on top of DAG
     if heatmap:
 
-        default_cmap = cm.get_cmap(colormap)
+        if cm is None or clr is None:
+            raise Exception("matplotlib not available, will not be able to draw graph")
+        else:
 
-        # make a list of counts for each node to color
-        coloring = np.zeros(len(nodes), dtype=float)
-        for path, p in zip(paths, path_prob):
-            for n in path:
-                coloring[int(n.get_index())] += 1*p
+            default_cmap = cm.get_cmap(colormap)
 
-        # normalize probability
-        for t in keys:
-            b = np.array([t == n.get_time() for n in nodes])
-            coloring[b] /= coloring[b].sum()
+            # make a list of counts for each node to color
+            coloring = np.zeros(len(nodes), dtype=float)
+            for path, p in zip(paths, path_prob):
+                for n in path:
+                    coloring[int(n.get_index())] += 1*p
 
-        # convert probability to colors
-        cmap_colors = [clr.to_hex(default_cmap(color)) for color in coloring]
+            # normalize probability
+            for t in keys:
+                b = np.array([t == n.get_time() for n in nodes])
+                coloring[b] /= coloring[b].sum()
+
+            # convert probability to colors
+            cmap_colors = [clr.to_hex(default_cmap(color)) for color in coloring]
 
 
-        dot = draw_dag_in_graphviz(nodes, coloring=cmap_colors, draw_label=draw_label, fontname=fontname, fontsize=fontsize, penscale=penscale, arrowsize=arrowsize,   height=height, width=width)
-        dot.render(dag_fn)
+            dot = draw_dag_in_graphviz(nodes, coloring=cmap_colors, draw_label=draw_label, fontname=fontname, fontsize=fontsize, penscale=penscale, arrowsize=arrowsize,   height=height, width=width)
+            dot.render(dag_fn)
 
     # no heatmap
     else:
         dot = draw_dag_in_graphviz(nodes, coloring=None, draw_label=draw_label, fontname=fontname, fontsize=fontsize, penscale=penscale, arrowsize=arrowsize, height=height, width=width)
         dot.render(dag_fn)
-
-    return

@@ -1,11 +1,14 @@
 import numpy as np
 import sys
 
-# Function that reads in two labeled_pdfs from create_DAG and returns the temporal_precision, defined as the probability overlap between two pathway models.
-# Inputs: labaled_pdf1_fn - labeled_pdf from one independent sampling; labaled_pdf2_fn - labeled_pdf from another independent sampling
-# output_fn - name of output file (default: 'temporal_precision.txt')
-# Ouptut: temporal precision, written to output_fn
 def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_precision.txt'):
+    """
+    Function that reads in two labeled_pdfs from create_DAG and returns the temporal_precision, defined as the probability overlap between two pathway models.
+    @param labeled_pdf1_fn: string, labeled pdf file name (including the path); labeled_pdf from one independent sampling
+    @param labeled_pdf2_fn: string, labeled pdf file name (including the path); labeled_pdf from another independent sampling
+    @param output_fn: string, name of output file (default: 'temporal_precision.txt')
+    @return  temporal precision, written to output_fn
+    """
     pdf_files=[labeled_pdf1_fn,labeled_pdf2_fn]
     dict_list=[]
     for pdf_file in pdf_files:
@@ -36,7 +39,7 @@ def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_preci
     key_list2 = dict_list[1].keys()
     # print error if keys not found
     if len(key_list)==0 or len(key_list2)==0:
-        print('Error reading labeled_pdf!!! Keys not found')
+        raise Exception('Error reading labeled_pdf!!! Keys not found')
     # precision starts at 1
     precision = 1
     for key in key_list2:
@@ -52,19 +55,20 @@ def temporal_precision(labeled_pdf1_fn,labeled_pdf2_fn,output_fn='temporal_preci
         # states in key_list, but not key_list2 inherently contribute to the temporal precision
         else:
             precision -= 0.5 * np.abs(dict_list[0][key])
-    new=open(output_fn,'w')
-    new.write('Temporal precision between '+labeled_pdf1_fn+' and '+labeled_pdf2_fn+':\n')
-    new.write(str(precision))
+    with open(output_fn, 'w') as new:
+        new.write('Temporal precision between ' + labeled_pdf1_fn + ' and ' + labeled_pdf2_fn + ':\n')
+        new.write(str(precision))
     print('Temporal precision between '+labeled_pdf1_fn+' and '+labeled_pdf2_fn+':')
     print(precision)
 
-    return
 
-# Function that reads in one labeled_pdf from create_DAG and returns the purity, defined as the sum of the squared probability of all trajectories.
-# Inputs: labeled_pdf_fn - labeled_pdf from the total model
-# output_fn - name of output file (default: 'temporal_precision.txt')
-# Ouptut: temporal purity, written to output_fn
 def purity(labeled_pdf_fn,output_fn='purity.txt'):
+    """
+    Function that reads in one labeled_pdf from create_DAG and returns the purity, defined as the sum of the squared probability of all trajectories.
+    @param labeled_pdf_fn: string, labeled pdf file name (including the path); labeled_pdf from the total model
+    @param output_fn: string, name of output file (default: 'temporal_precision.txt')
+    @return temporal purity, written to output_fn
+    """
     # create blank dictonary to store the results
     prob_list = []
     # read in labeled pdf file
@@ -87,9 +91,8 @@ def purity(labeled_pdf_fn,output_fn='purity.txt'):
     pure=0
     for prob in prob_list:
         pure+=prob*prob
-    new=open(output_fn,'w')
-    new.write('Purity of '+labeled_pdf_fn+':\n')
-    new.write(str(pure))
+    with open(output_fn, 'w') as new:
+        new.write('Purity of ' + labeled_pdf_fn + ':\n')
+        new.write(str(pure))
     print('Purity of ' + labeled_pdf_fn)
     print(str(pure))
-    return

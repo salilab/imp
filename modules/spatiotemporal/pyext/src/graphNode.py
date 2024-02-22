@@ -21,18 +21,18 @@ class graphNode:
         self._components = []
         self._expected_subcomplexes = []
 
-        return
-
     def __repr__(self):
         """String representation of a graphNode
         """
         return "graphNode(" + ",".join([str(self._time), str(self._label)]) + ")"
 
     def init_graphNode(self, time, label, scorestr, subcomplexstr, expected_subcomplexes):
-        """Read files contained in the target directory and initialize graphNode.
-
-        Will look for *scores.txt files and display_all.rmf in order to initialize
-        the graphNode object.
+        """Function that initiates a graph node with specific time, label, and expected_subcomplexes. Scores and components are extracted from files named scorestr and subcomplexstr respectively. Returns a single graphNode object.
+        @param time: string, time point in the stepwise temporal process
+        @param label: string, a number label for the graphNode
+        @param scorestr: string, trailing characters at the end of the file with scores for each stage of the spatiotemporal model
+        @param subcomplexstr: string, trailing characters after the subcomplex file, which is a list of subcomplexes included in the given label/time
+        @param expected_subcomplexes: list of all possible subcomplex strings in the model
         """
 
         # Set values input from the function call
@@ -46,8 +46,7 @@ class graphNode:
         if os.path.exists(scores_fn):
             scores=np.loadtxt(scores_fn)
         else:
-            print("Error!!! Unable to find scores file: " + scores_fn + '\nClosing...')
-            exit()
+            raise Exception("Error!!! Unable to find scores file: " + scores_fn + '\nClosing...')
         self.add_score(scores.mean())
 
         if len(expected_subcomplexes)>0:
@@ -56,14 +55,11 @@ class graphNode:
 
             self.set_subcomplex_components(included_prots,label + '_' + time + subcomplexstr)
 
-        return
-
     # Index indexes over all nodes
     def set_index(self, index):
         """Set an index to label node's identity.
         """
         self._index = index
-        return
 
     def get_index(self):
         """Return the node's index.
@@ -75,7 +71,6 @@ class graphNode:
         """Set an index to label node's identity.
         """
         self._label = label
-        return
 
     def get_label(self):
         """Return the node's index.
@@ -99,17 +94,16 @@ class graphNode:
         Should be one of the standard used components.
         """
         for sc in scs:
-            assert sc in self._expected_subcomplexes, "Error!!! Did not recognize the subcomplex name " + sc + " from config file: "+fn
+            if sc not in self._expected_subcomplexes:
+                raise Exception("Error!!! Did not recognize the subcomplex name " + sc + " from config file: "+fn)
 
         self._components = scs
-        return
 
     def set_expected_subcomplexes(self, expected_subcomplexes):
         """Set the list of possible subcomplex components.
         Should include all possible components across the entire spatiotemporal model
         """
         self._expected_subcomplexes = expected_subcomplexes
-        return
 
     def add_edge(self, edge):
         """Add a directed edge to the node.
@@ -122,8 +116,6 @@ class graphNode:
         # add if not already present
         self._edges.add(edge)
 
-        return
-
     def get_edges(self):
         """Return the list of edges for this node.
         """
@@ -133,8 +125,6 @@ class graphNode:
         """Set the time.
         """
         self._time = time
-
-        return
 
     def get_time(self):
         """Return the time associated with this node.
@@ -148,8 +138,6 @@ class graphNode:
         """
         self._scores = scores
 
-        return
-
     def add_score(self, score):
         """Update the score list by appending score.
         """
@@ -158,19 +146,20 @@ class graphNode:
 
         self._scores.append(score)
 
-        return
-
     def get_scores(self):
         """Return the scores array.
         """
         return self._scores
 
 def draw_edge(nodeA, nodeB, spatio_temporal_rule):
-    """Add an edge from node A to node B if an edge should exist.
-
+    """
+    Draws an edge between graphNode objects nodeA and nodeB. If spatio_temporal_rule, node will only be drawn if the components of nodeA are a subset of the components of nodeB.
     If spatio_temporal_rule: determines if an edge should be drawn if Node A comes immediately before
     node B in time and if node B contains node A's components as a subset.
     Else: draws an edge between nodeA and nodeB regardless.
+    @param nodeA: first graphNode object
+    @param nodeB: second graphNode object
+    @param spatio_temporal_rule: Boolean, whether to consider composition when drawing edges
     """
 
     # assert both are nodes
@@ -179,8 +168,7 @@ def draw_edge(nodeA, nodeB, spatio_temporal_rule):
 
     # check subcomponents are subsets. All nodes in timestep t are also in t+1
     if spatio_temporal_rule:
-        if set(nodeA.get_subcomplex_components()).issubset(set(nodeB.get_subcomplex_components())):
+        if frozenset(nodeA.get_subcomplex_components()).issubset(set(nodeB.get_subcomplex_components())):
             nodeA.add_edge(nodeB)
     else:
         nodeA.add_edge(nodeB)
-    return
