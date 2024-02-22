@@ -1,6 +1,6 @@
 /**
  *  \file SlabWithToroidalPoreGeometry.h
- *  \brief XXXXXXXXXXXXXX
+ *  \brief A decorator for a particle representing a toroidal pore
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -14,9 +14,10 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
-//! XXXX
-/** XXXXXX.
- */
+//! A decorator for a particle that represents a toroidal pore. 
+/** \ingroup helper
+    \ingroup decorators
+*/
 class IMPNPCEXPORT SlabWithToroidalPoreWireGeometry : public display::Geometry {
   double rv_; // minor radius in vertical direction (vertical semi-axis)
   double rh_; // minor radius in horizontal direction (horizontal semi-axis)

@@ -30,7 +30,7 @@ double SlabWithToroidalPoreGoPairScore::evaluate_index(Model *m,
     SlabWithToroidalPore d1(m, pip[0]);
     core::XYZ d2(m, pip[1]);
 
-    IMP_USAGE_CHECK(d1.get_minor_radius_h2v_aspect_ratio() == 1.0, "Toroidal Go-like Score must be used with aspect ratio of 1.0.");
+    IMP_USAGE_CHECK_FLOAT_EQUAL(d1.get_minor_radius_h2v_aspect_ratio(), 1.0, "Toroidal Go-like Score must be used with aspect ratio of 1.0.");
 
     double x = d2.get_coordinate(0);
     double y = d2.get_coordinate(1);

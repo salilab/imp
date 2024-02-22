@@ -2273,22 +2273,22 @@ RestraintInfo *XAxialPositionUpperRestraint::get_static_info() const {
 /*#####################################################
 # Restraints setup - Restrain to a specific position
 # Added by Andrew Latham
-# X_start, Y_start, Z_start, tolerance, sigma 
+# x_start, y_start, z_start, tolerance, sigma 
 # All distances are in Angstrom
-# X_start - x position to restrain to
-# Y_start - y position to restrain to
-# Z_start - z position to restrain to
+# x_start - x position to restrain to
+# y_start - y position to restrain to
+# z_start - z position to restrain to
 # tolerance - range of distances where restraint=0
 # consider_radius - bool, consider the radius of the particle
 # sigma - inverse strength of harmonic potential
 #####################################################*/
 OverallPositionRestraint::OverallPositionRestraint(Model *m,
     SingletonContainerAdaptor sc,
-    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma)
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma)
   : Restraint(m, "OverallPositionRestraint %1%")
-  , X_start_(X_start)
-  , Y_start_(Y_start)
-  , Z_start_(Z_start)
+  , x_start_(x_start)
+  , y_start_(y_start)
+  , z_start_(z_start)
   , tolerance_(tolerance)
   , sigma_(sigma)
   , consider_radius_(consider_radius)
@@ -2297,11 +2297,11 @@ OverallPositionRestraint::OverallPositionRestraint(Model *m,
 }
 
 OverallPositionRestraint::OverallPositionRestraint(Model *m,
-    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma)
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma)
   : Restraint(m, "OverallPositionRestraint %1%")
-  , X_start_(X_start)
-  , Y_start_(Y_start)
-  , Z_start_(Z_start)
+  , x_start_(x_start)
+  , y_start_(y_start)
+  , z_start_(z_start)
   , tolerance_(tolerance)
   , sigma_(sigma)
   , consider_radius_(consider_radius)
@@ -2344,9 +2344,9 @@ OverallPositionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) con
     double x = core::XYZR(all_particles[i]).get_coordinate(0);
     double y = core::XYZR(all_particles[i]).get_coordinate(1);
     double z = core::XYZR(all_particles[i]).get_coordinate(2);
-    double deltaX = x-X_start_;
-    double deltaY = y-Y_start_;
-    double deltaZ = z-Z_start_;
+    double deltaX = x-x_start_;
+    double deltaY = y-y_start_;
+    double deltaZ = z-z_start_;
     double radial = std::sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
     double diff = radial - r - tolerance_;
     // if diff <0, within tolerance
@@ -2387,9 +2387,9 @@ ModelObjectsTemp OverallPositionRestraint::do_get_inputs() const {
 RestraintInfo *OverallPositionRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.npc.OverallPositionRestraint");
-  ri->add_float("X start", X_start_);
-  ri->add_float("Y start", Y_start_);
-  ri->add_float("Z start", Z_start_);
+  ri->add_float("x start", x_start_);
+  ri->add_float("y start", y_start_);
+  ri->add_float("z start", z_start_);
   ri->add_float("tolerance", tolerance_);
   ri->add_float("sigma", sigma_);
   return ri.release();

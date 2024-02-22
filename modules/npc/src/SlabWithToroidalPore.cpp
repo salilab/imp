@@ -18,8 +18,8 @@ SlabWithToroidalPore::do_setup_particle(IMP::Model* m,
                                         double minor_radius_h2v_aspect_ratio)
 {
   SlabWithPore::setup_particle(m, pi, thickness, major_radius);
-  std::cout << "Adding toroidal pore with minor radius h2v: "
-            << minor_radius_h2v_aspect_ratio << std::endl;
+  // std::cout << "Adding toroidal pore with minor radius h2v: "
+  //          << minor_radius_h2v_aspect_ratio << std::endl;
   m->add_attribute(get_minor_radius_h2v_aspect_ratio_key(),
                    pi,
                    minor_radius_h2v_aspect_ratio,

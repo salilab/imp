@@ -27,7 +27,7 @@ display::Geometries SlabWithSphericalIndentGeometry::get_components() const
     //  initialize return geometries
     display::Geometries ret;
 
-    // compute the base circe radius
+    // compute the base circe radius (at the intersection of the plane and the sphere)
     double a_sqrd = depth_*(2.0*radius_-depth_);
 
     // build the spherical cap segement

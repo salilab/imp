@@ -18,7 +18,8 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
-//! Apply a harmonic to the distance between two particles.
+//! Applies a harmonic excluded volume restraint between a SlabWithSphericalIndent object 
+//! and another Particle
 /** The source code is as follows:
     \include SphericalIndentSurfaceDepthPairScore.h
     \include SphericalIndentSurfaceDepthPairScore.cpp

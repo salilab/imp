@@ -29,7 +29,7 @@ class IMPNPCEXPORT SlabWithPore
       as any other XYZR particle, but the XYZ coordinates are ignored for now
       (assumed to be 0,0,0).
 
-      The slab is parallel to the x,y plain from z=-0.5*thickness to
+      The slab is parallel to the x,y plane from z=-0.5*thickness to
       z=0.5*thickness, and the central axis of the pore lies on the
       origin.
 
@@ -54,7 +54,7 @@ class IMPNPCEXPORT SlabWithPore
       envelope) with specified thickness and a cylindrical pore of
       specified pore_radius.
 
-      The slab is parallel to the x,y plain from z=-0.5*thickness to
+      The slab is parallel to the x,y plane from z=-0.5*thickness to
       z=0.5*thickness, and the central axis of the pore lies on the
       origin.
 
@@ -82,7 +82,7 @@ class IMPNPCEXPORT SlabWithPore
   }
 
   //! returns whether the particle last entered the transport moiety from its
-  //top
+  //!top
   Float get_thickness() const {
     return get_particle()->get_value(get_thickness_key());
   }
@@ -106,12 +106,12 @@ class IMPNPCEXPORT SlabWithPore
   bool get_pore_radius_is_optimized() const {
     return get_particle()->get_is_optimized(get_pore_radius_key());
   }
-  //! Set whether the coordinates are optimized
+  //! Set whether the pore radius is optimized
   void set_pore_radius_is_optimized(bool tf) const {
     get_particle()->set_is_optimized(get_pore_radius_key(), tf);
   }
 
-  //! Get the decorator key for is_last_entry_from_top
+  //! Get the key for the pore thickness.
   static FloatKey get_thickness_key();
 
   //! Get the key for the pore radius.

@@ -30,7 +30,7 @@ class IMPNPCEXPORT SlabWithSphericalIndent : public Decorator {
    * perpendicular from the intersecting plane to the edge of the sphere.  
    */ 
   static StringKey get_name_key();
-  //! Add a name to the particle
+  //! Returns the name of the particle, which is "SlabWithSphericalIndent" by default
   /** The create function should take arguments which allow
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
@@ -77,7 +77,7 @@ class IMPNPCEXPORT SlabWithSphericalIndent : public Decorator {
   static FloatKey get_sphere_depth_key();
 
 
-  //! Get the name added to the particle
+  //! Get the name added to the particle (Ensures decorator_name to be the same as the name_key)
   std::string get_decorator_name() const {
     return get_particle()->get_value(get_name_key());
   }
@@ -89,7 +89,7 @@ class IMPNPCEXPORT SlabWithSphericalIndent : public Decorator {
     get_particle()->set_value(get_name_key(), nm);
   }
 
-  /* Declare the basic constructors and the cast function using the standard macrcos.*/
+  /* Declare the basic constructors and the cast function.*/
   IMP_DECORATOR_METHODS(SlabWithSphericalIndent, Decorator);
   IMP_DECORATOR_SETUP_2(SlabWithSphericalIndent, double, R, double, h);
 

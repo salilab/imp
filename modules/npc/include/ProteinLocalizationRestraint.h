@@ -840,11 +840,9 @@ public:
 };
 
 //! Restrain particles by their x coordinate
-
 /** Each particle's x coordinate is harmonically restrained to lie above
     the given lower bound.
   */
-  
 class IMPNPCEXPORT XAxialPositionLowerRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -928,9 +926,11 @@ public:
 
 //! Restrain particle to a specific position
 /** All distances are in Angstrom
-\param[in] X_start	x position to restrain to
-\param[in] Y_start	y position to restrain to
-\param[in] Z_start	z position to restrain to
+While SphereDistanceToSingletonScore creates a score based on a UnaryFunction object,
+OverallPositionRestraint assumes a harmonic restraint.
+\param[in] x_start	x position to restrain to
+\param[in] y_start	y position to restrain to
+\param[in] z_start	z position to restrain to
 \param[in] tolerance	range of distances where restraint=0
 \param[in] consider_radius	bool, consider the radius of the particle
 \param[in] sigma	inverse strength of harmonic potential
@@ -938,9 +938,9 @@ public:
 class IMPNPCEXPORT OverallPositionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
-  double X_start_;
-  double Y_start_;
-  double Z_start_;
+  double x_start_;
+  double y_start_;
+  double z_start_;
   double tolerance_;
   double sigma_;
   bool consider_radius_;
@@ -948,7 +948,7 @@ class IMPNPCEXPORT OverallPositionRestraint : public Restraint
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<Restraint>(this),
-       sc_, X_start_, Y_start_, Z_start_, tolerance_, sigma_, consider_radius_);
+       sc_, x_start_, y_start_, z_start_, tolerance_, sigma_, consider_radius_);
   }
   IMP_OBJECT_SERIALIZE_DECL(OverallPositionRestraint);
   
@@ -956,9 +956,9 @@ public:
 
   OverallPositionRestraint(Model *m,
     SingletonContainerAdaptor sc,
-    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma=1);
   OverallPositionRestraint(Model *m,
-    double X_start, double Y_start, double Z_start, double tolerance, bool consider_radius, double sigma=1);
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma=1);
   OverallPositionRestraint() {}
 
 

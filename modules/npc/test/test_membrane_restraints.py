@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(prs.unprotected_evaluate(None), 8.0, delta=1e-4)
 
     def test_setup_indent_membrane(self):
-        """Test SlabWithToroidalPore"""
+        """Test SlabWithSphericalIndent"""
         m,membrane,p=setup_system_indent()
         r=membrane.get_sphere_radius()
         h=membrane.get_sphere_depth()

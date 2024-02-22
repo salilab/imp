@@ -18,7 +18,8 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
-//! Apply a harmonic to the distance between two particles.
+//! Function to apply a harmonic restraint between a SlabWithSphericalIndent object and
+//! the membrane binding motifs (MBM) of a protein
 /** The source code is as follows:
     \include SlabWithSphericalIndentMBMScore.h
     \include SlabWithSphericalIndentMBMScore.cpp
