@@ -48,7 +48,7 @@ double SphericalIndentSurfaceDepthPairScore::evaluate_index(Model *m,
     double R = d1.get_sphere_radius();
     double h = d1.get_sphere_depth();
 
-    // compute the base circe radius
+    // compute the base circle radius
     double a_sqrd = h*(2.0*R-h);
 
     // compute score for being above the indent

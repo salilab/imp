@@ -25,7 +25,7 @@ IMPNPC_BEGIN_NAMESPACE
 class IMPNPCEXPORT SlabWithSphericalIndent : public Decorator {
   /* Decorate a particle that represents a slab with an indent 
    * that is modeled as a spherical cap. The spherical cap model is
-   * specified by two paramters, a radius, R, that is the radius of the
+   * specified by two parameters, a radius, R, that is the radius of the
    * underlying sphere and a height, h, that is the distance along the
    * perpendicular from the intersecting plane to the edge of the sphere.  
    */ 
