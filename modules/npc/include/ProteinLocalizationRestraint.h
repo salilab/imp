@@ -798,6 +798,187 @@ public:
   IMP_OBJECT_METHODS(ProteinProximityRestraint);;
 };
 
+//! Restrain particles by their x coordinate
+/** Each particle's x coordinate is harmonically restrained to lie between
+    the given lower and upper bounds.
+  */
+class IMPNPCEXPORT XAxialPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionRestraint);
+  
+public:
+  XAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionRestraint(Model *m,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionRestraint() {}
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionRestraint);;
+};
+
+//! Restrain particles by their x coordinate
+/** Each particle's x coordinate is harmonically restrained to lie above
+    the given lower bound.
+  */
+class IMPNPCEXPORT XAxialPositionLowerRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double sigma_;
+  bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, lower_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionLowerRestraint);
+  
+public:
+  XAxialPositionLowerRestraint(Model *m, SingletonContainerAdaptor sc,
+      double lower_bound, bool consider_radius, double sigma=1);
+  XAxialPositionLowerRestraint(Model *m,
+      double lower_bound, bool consider_radius, double sigma=1);
+  XAxialPositionLowerRestraint() {}
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionLowerRestraint);;
+};
+
+//! Restrain particles by their x coordinate
+/** Each particle's x coordinate is harmonically restrained to lie below
+    the given upper bound.
+  */
+class IMPNPCEXPORT XAxialPositionUpperRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, upper_bound_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(XAxialPositionUpperRestraint);
+  
+public:
+  XAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc,
+      double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionUpperRestraint(Model *m,
+      double upper_bound, bool consider_radius, double sigma=1);
+  XAxialPositionUpperRestraint() {}
+
+      
+  
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
+  IMP_OBJECT_METHODS(XAxialPositionUpperRestraint);;
+};
+
+//! Restrain particle to a specific position
+/** All distances are in Angstrom
+While SphereDistanceToSingletonScore creates a score based on a UnaryFunction object,
+OverallPositionRestraint assumes a harmonic restraint.
+\param[in] x_start	x position to restrain to
+\param[in] y_start	y position to restrain to
+\param[in] z_start	z position to restrain to
+\param[in] tolerance	range of distances where restraint=0
+\param[in] consider_radius	bool, consider the radius of the particle
+\param[in] sigma	inverse strength of harmonic potential
+  */
+class IMPNPCEXPORT OverallPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double x_start_;
+  double y_start_;
+  double z_start_;
+  double tolerance_;
+  double sigma_;
+  bool consider_radius_;
+  
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Restraint>(this),
+       sc_, x_start_, y_start_, z_start_, tolerance_, sigma_, consider_radius_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(OverallPositionRestraint);
+  
+public:
+
+  OverallPositionRestraint(Model *m,
+    SingletonContainerAdaptor sc,
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma=1);
+  OverallPositionRestraint(Model *m,
+    double x_start, double y_start, double z_start, double tolerance, bool consider_radius, double sigma=1);
+  OverallPositionRestraint() {}
+
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
+  
+    //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const override;
+
+  IMP_OBJECT_METHODS(OverallPositionRestraint);;
+};
+
+
 
 
 IMPNPC_END_NAMESPACE
