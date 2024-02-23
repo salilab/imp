@@ -37,12 +37,12 @@ class RMFEXPORT Exception : public virtual std::exception,
 
 /** Use this instead of the more standard what() to get the
     message as what() presents issues for memory management
-    with dynamically generated messages like. */
+    with dynamically generated messages. */
 RMFEXPORT std::string get_message(const Exception& e);
 
 /** Usage exceptions are thrown when the library is misused in some way,
     e.g., an out of bounds element is requested from a collection. In general
-    when these are throw, the failed operation should have been cleanly
+    when these are thrown, the failed operation should have been cleanly
     aborted without changing the file.
  */
 class RMFEXPORT UsageException : public Exception {
