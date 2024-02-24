@@ -18,7 +18,7 @@ override_dh_auto_configure:
 	cd build && wget https://integrativemodeling.org/libTAU/libTAU-1.0.4.zip
 	cd build && echo "2c92a29613a422ee3f3db0cbbf1fe53c0500b5b6  libTAU-1.0.4.zip" | sha1sum -c --quiet
 	cd build && unzip libTAU-1.0.4.zip && mv libTAU-1.0.4/include libTAU
-	[ "`uname -m`" = "aarch64" ] && SUBDIR=Ubuntu18.04.arm64 || SUBDIR=Fedora23.x86_64; cd build/libTAU-1.0.4/lib && ln -sf $${SUDBIR} debian
+	[ "`uname -m`" = "aarch64" ] && SUBDIR=Ubuntu18.04.arm64 || SUBDIR=Fedora23.x86_64; cd build/libTAU-1.0.4/lib && ln -sf $${SUBDIR} debian
 	cd build/libTAU-1.0.4/lib/debian && ln -sf libTAU.so.1 libTAU.so
 	# Allow mpiexec to work inside a docker/podman container (as root)
 	perl -pi -e 's#\{MPIEXEC_PREFLAGS\}#\{MPIEXEC_PREFLAGS\};--allow-run-as-root#' modules/mpi/dependency/MPI.cmake
