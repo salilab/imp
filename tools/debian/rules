@@ -24,7 +24,7 @@ override_dh_auto_configure:
 	perl -pi -e 's#\{MPIEXEC_PREFLAGS\}#\{MPIEXEC_PREFLAGS\};--allow-run-as-root#' modules/mpi/dependency/MPI.cmake
 	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
 	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
-		-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ \
+		-DCGAL_DIR=/usr/lib/`uname -m`-linux-gnu/cmake/CGAL/ \
 	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
 	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.4/lib/debian \
