@@ -35,7 +35,7 @@ index 72e0d7009c..8a7a440813 100755
 -	    -DUSE_PYTHON2=on \
 -	   && $(MAKE) -j4 DESTDIR=$(CURDIR)/debian/tmp install
  	# Bundle libTAU so users don't have to get it separately
- 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
+ 	cp build/libTAU-1.0.4/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
  	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
 -	# Don't package MPI for Python2 or -dev
 -	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/mpi
