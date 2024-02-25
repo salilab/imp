@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import warnings
 import os
 
@@ -82,6 +81,7 @@ def calc_likelihood(exp_comp_map, nodes):
     @return nodes: editted list of graphNode objects, which now have static
             and composition scores
     """
+    import pandas as pd
     # Get list of all all proteins
     prots = list(exp_comp_map.keys())
     # Data is stored as a dictionary of dictionaries. The first dictionary
