@@ -14,7 +14,10 @@ input=spatiotemporal.get_example_path('toy/data')
 output=spatiotemporal.get_example_path('toy/output_notemp')
 
 # create DAG
-nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output)
+# Set draw_dag to True if you want to write out the DAG to a file.
+# This requires that you have the 'graphviz' Python package installed.
+draw_dag = False
+nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,draw_dag=draw_dag)
 
 # Example of model with temporal scoring -----------------------------------------------------------------
 
@@ -25,7 +28,7 @@ output=spatiotemporal.get_example_path('toy/output_temp')
 # expected_subcomplexes is a list of all possible subcomplex strings in the model. Should match the configuration files
 subcomplexes=['A1','A2','B1','B2']
 
-nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes)
+nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,draw_dag=draw_dag)
 
 # Example with stoichiometeric data -------------------------------------------------------------------------
 
@@ -38,7 +41,7 @@ subcomplexes=['A1','A2','B1','B2']
 exp_comp={'A':'exp_comp_A.csv','B':'exp_comp_B.csv'}
 
 
-nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,score_comp=True,exp_comp_map=exp_comp)
+nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,score_comp=True,exp_comp_map=exp_comp,draw_dag=draw_dag)
 
 # Example of how model precision dpends on the input data ---------------------------------------------------
 
@@ -50,4 +53,4 @@ subcomplexes=['A1','A2','B1','B2']
 exp_comp={'A':'exp_comp_A_precise.csv','B':'exp_comp_B_precise.csv'}
 
 
-nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,out_pdf=True,npaths=2,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,score_comp=True,exp_comp_map=exp_comp)
+nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,out_pdf=True,npaths=2,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,score_comp=True,exp_comp_map=exp_comp,draw_dag=draw_dag)
