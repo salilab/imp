@@ -108,6 +108,11 @@ class Tests(IMP.test.TestCase):
         """
         Tests composition scoring functionality. Found in composition_scoring.py, calc_likelihood
         """
+        try:
+            import pandas
+        except ImportError:
+            self.skipTest(
+                'pandas not available, will not test composition scoring')
         state_dict, expected_subcomplexes, exp_comp_map = setup_system()
         # set input dir
         with IMP.test.temporary_directory() as tmpdir:
