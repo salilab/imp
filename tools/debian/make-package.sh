@@ -56,6 +56,11 @@ if [ "${CODENAME}" = "noble" ]; then
   perl -pi -e "s/CXXFLAGS :=.*/CXXFLAGS := -std=c++20/" debian/rules || exit 1
 fi
 
+# On low memory machines, don't run multiple simultaneous gcc processes
+if [ `grep MemTotal /proc/meminfo |cut -b10-25` -lt 7340032 ]; then
+  perl -pi -e 's/-j4/-j1/g' debian/rules || exit 1
+fi
+
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp
