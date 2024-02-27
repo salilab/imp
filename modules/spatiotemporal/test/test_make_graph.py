@@ -44,6 +44,7 @@ class Tests(IMP.test.TestCase):
             # keys correspond to all timepoints
             keys = list(state_dict.keys())
             # Go to input_dir, if it exists
+            orig_dir = os.getcwd()
             if len(input_dir) > 0:
                 if os.path.exists(input_dir):
                     os.chdir(input_dir)
@@ -73,6 +74,8 @@ class Tests(IMP.test.TestCase):
             # check that all nodes are graphNode objects
             for node in nodes:
                 self.assertIsInstance(node,graphNode.graphNode)
+            # Restore original working directory
+            os.chdir(orig_dir)
 
     def test_graph_scoring(self):
         """
