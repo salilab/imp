@@ -23,7 +23,7 @@ def write_cdf(out_cdf, cdf_fn, graph_prob):
            from score_graph())
     """
     if out_cdf:
-        cdf = np.cumsum(np.flip(np.sort(graph_prob)))
+        cdf = np.cumsum(np.flip(np.sort(graph_prob), axis=0))
         np.savetxt(cdf_fn, cdf)
 
 
@@ -36,7 +36,7 @@ def write_pdf(out_pdf, pdf_fn, graph_prob):
            from score_graph())
     """
     if out_pdf:
-        pdf = np.flip(np.sort(graph_prob))
+        pdf = np.flip(np.sort(graph_prob), axis=0)
         np.savetxt(pdf_fn, pdf)
 
 
@@ -57,7 +57,7 @@ def write_labeled_pdf(out_labeled_pdf, labeled_pdf_fn, graph, graph_prob):
         # loop over all paths in the graph
         for i in range(0, len(graph_prob)):
             # get index for the ith most likely path
-            pdf_index = np.flip(np.argsort(graph_prob))[i]
+            pdf_index = np.flip(np.argsort(graph_prob), axis=0)[i]
             path = graph[pdf_index]
             # get all labels / time for the ith most likely path
             all_labels = ''
