@@ -1,8 +1,9 @@
 /**
- *  \file SlabWithSphericalIndentGeometry.h
- *  \brief A geometry for displaying a wireframe model of the surface with a spherical cap indent.
+ *  \file IMP/npc/SlabWithSphericalIndentGeometry.h
+ *  \brief A geometry for displaying a wireframe model of the surface
+ *         with a spherical cap indent.
  *
- *  Copyright 2007-2018.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  * */
 
@@ -15,16 +16,17 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
+//! Geometry for displaying a wireframe model of the surface with a
+//! spherical cap indent.
 class IMPNPCEXPORT SlabWithSphericalIndentGeometry : public display::Geometry {
-//! Slab with specified parameters for radius and depth of the spherical indent and a length parameter
-double radius_, depth_, length_;
+  double radius_, depth_, length_;
 
 public:
-SlabWithSphericalIndentGeometry(double radius, double depth, double length);
+  SlabWithSphericalIndentGeometry(double radius, double depth, double length);
 
-virtual IMP::display::Geometries get_components() const override;
+  virtual IMP::display::Geometries get_components() const override;
 
-IMP_OBJECT_METHODS(SlabWithSphericalIndentGeometry);
+  IMP_OBJECT_METHODS(SlabWithSphericalIndentGeometry);
 
 };
 
