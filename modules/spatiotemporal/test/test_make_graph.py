@@ -4,6 +4,7 @@ import IMP.spatiotemporal as spatiotemporal
 import IMP.spatiotemporal.graphNode as graphNode
 import shutil
 import os
+import sys
 import itertools
 import numpy as np
 
@@ -88,6 +89,8 @@ class Tests(IMP.test.TestCase):
                 if trajectory[0][0].get_label() == '1' and trajectory[0][1].get_label() == '1' and trajectory[0][2].get_label() == '1':
                     self.assertAlmostEqual(trajectory[1], 2.0, delta=1e-4)
 
+    @unittest.skipIf(sys.version_info[0] < 3,
+                     "Does not work with ancient numpy in Python 2")
     def test_temporal_scoring(self):
         """
         Tests spatiotemporal rule functionality. Found in draw_edge function of graphNode
@@ -123,6 +126,8 @@ class Tests(IMP.test.TestCase):
                 if trajectory[0][0].get_label() == '1' and trajectory[0][1].get_label() == '2' and trajectory[0][2].get_label() == '1':
                     self.assertAlmostEqual(trajectory[1], 6.701131199228036, delta=1e-4)
 
+    @unittest.skipIf(sys.version_info[0] < 3,
+                     "Does not work with ancient numpy in Python 2")
     def test_writing_output(self):
         """
         Tests writing text output. From write_output.py
