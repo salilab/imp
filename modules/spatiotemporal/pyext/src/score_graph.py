@@ -1,5 +1,5 @@
 """@namespace IMP.spatiotemporal.score_graph
-   Function to traverse and score the graph.
+   Functions to traverse and score the spatiotemporal graphs.
 """
 
 import numpy as np

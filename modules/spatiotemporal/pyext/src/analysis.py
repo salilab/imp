@@ -1,3 +1,6 @@
+"""@namespace IMP.spatiotemporal.analysis
+   Functions to analyze spatiotemporal models.
+"""
 import numpy as np
 
 

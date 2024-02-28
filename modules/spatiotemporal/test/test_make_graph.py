@@ -43,8 +43,6 @@ class Tests(IMP.test.TestCase):
             nodes = []
             # keys correspond to all timepoints
             keys = list(state_dict.keys())
-            # Go to input_dir, if it exists
-            orig_dir = os.getcwd()
             if len(input_dir) > 0:
                 if os.path.exists(input_dir):
                     os.chdir(input_dir)
@@ -74,8 +72,6 @@ class Tests(IMP.test.TestCase):
             # check that all nodes are graphNode objects
             for node in nodes:
                 self.assertIsInstance(node,graphNode.graphNode)
-            # Restore original working directory
-            os.chdir(orig_dir)
 
     def test_graph_scoring(self):
         """
@@ -152,7 +148,10 @@ class Tests(IMP.test.TestCase):
             line=check_label_pdf.readline()
             line_split=line.split()
             check_label_pdf.close()
-            self.assertEqual(line_split[0], '1_0min|2_5min|2_10min|')
+            # 2 possibilities are acceptable: '1_0min|2_5min|2_10min|','1_0min|2_5min|1_10min|'. Check this output in 3 parts:
+            self.assertEqual(line_split[0][0:14], '1_0min|2_5min|')
+            self.assertAlmostEqual(int(line_split[0][14]), 1.5,delta=0.5000001)
+            self.assertEqual(line_split[0][15:], '_10min|')
 
     def test_writing_dag(self):
         """

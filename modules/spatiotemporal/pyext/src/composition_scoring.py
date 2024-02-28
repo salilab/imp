@@ -1,3 +1,6 @@
+"""@namespace IMP.spatiotemporal.composition_scoring
+   Functions for weighting graphNode objects based on stoichiometry data.
+"""
 import numpy as np
 import warnings
 import os
