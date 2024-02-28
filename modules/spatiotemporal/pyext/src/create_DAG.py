@@ -1,3 +1,6 @@
+"""@namespace IMP.spatiotemporal.create_DAG
+   Simplified function for creating a spatiotemporal model.
+"""
 import os
 import itertools
 import warnings

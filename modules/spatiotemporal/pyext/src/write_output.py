@@ -1,3 +1,7 @@
+"""@namespace IMP.spatiotemporal.write_output
+   Functions to write spatiotemporal graph information to files.
+"""
+
 import numpy as np
 try:
     from graphviz import Digraph

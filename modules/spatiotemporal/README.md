@@ -32,7 +32,7 @@ Here, we describe the spatiotemporal modeling package. The goal of this package 
 
 ## create_DAG.py
 
-### create_DAG(state_dict)
+### create_DAG(state_dict,input_dir='', scorestr='_scores.log', output_dir='',spatio_temporal_rule=False, subcomplexstr='.config',expected_subcomplexes=[],score_comp=False, exp_comp_map={},out_cdf=True, out_labeled_pdf=True, out_pdf=False, npaths=0,draw_dag=True)
 This functions streamlines the process of creating a graph by performing all the necessary steps and saving relevant input to files. Features of this function are walked through in example/toy/Simple_spatiotemporal_example.ipynb
 
 #### Possible inputs:

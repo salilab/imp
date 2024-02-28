@@ -1,3 +1,7 @@
+"""@namespace IMP.spatiotemporal.graphNode
+   Defines the graphNode class. Each node corresponds to a snapshot model.
+   Nodes can be connected to create spatiotemporal models.
+"""
 import numpy as np
 import os
 
