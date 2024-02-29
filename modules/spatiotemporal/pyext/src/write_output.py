@@ -8,7 +8,10 @@ try:
 except ImportError:
     Digraph = None
 try:
-    from matplotlib import cm
+    try:
+        from matplotlib import colormaps as cm  # matplotlib 3.7+
+    except ImportError:
+        from matplotlib import cm
     from matplotlib import colors as clr
 except ImportError:
     cm = None
