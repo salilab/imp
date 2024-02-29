@@ -847,6 +847,11 @@ class _TestResult(unittest.TextTestResult):
             protocol = min(pickle.HIGHEST_PROTOCOL, 4)
             fname = (Path(os.environ['IMP_TEST_DETAIL_DIR'])
                      / Path(sys.argv[0]).name)
+            # In Wine builds, we may have cd'd to a different drive, e.g. C:
+            # in which case we will no longer be able to see /tmp. In this
+            # case, try to disambiguate by adding a drive.
+            if not fname.exists():
+                fname = Path("Z:") / fname
             with open(str(fname), 'wb') as fh:
                 pickle.dump(self.all_tests, fh, protocol)
         super(_TestResult, self).stopTestRun()
