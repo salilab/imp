@@ -138,7 +138,7 @@ class Tests(IMP.test.TestCase):
             input = os.path.join(tmpdir, 'data')
             shutil.copytree(self.get_input_file_name('data'), input)
             # set output dir
-            output=self.get_tmp_file_name('output')
+            output = os.path.join(tmpdir, 'output')
             spatiotemporal.create_DAG(state_dict, input_dir=input,output_dir=output,out_labeled_pdf=True,out_cdf=True,out_pdf=True,draw_dag=False)
             # Read in input files
             cdf=np.loadtxt(output+'/cdf.txt')
