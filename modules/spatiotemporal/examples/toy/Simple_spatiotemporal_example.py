@@ -5,6 +5,10 @@ import os
 
 # Example of model without temporal scoring -----------------------------------------------------------------
 
+if sys.version_info[0] < 3:
+    print("Sorry, this example needs Python 3 and a recent version of numpy")
+    sys.exit(0)
+
 # Input variables. 
 # dict is a the state dictionary, which returns the number of states at each time point, for each time point.
 # Input is the directory where the data is stored. 
