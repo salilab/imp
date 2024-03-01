@@ -413,7 +413,7 @@ inline void show(Hierarchy h, std::ostream &out = std::cout) {
 
     A name can be passed as it is not easy to automatically pick
     a decent name.
-    \see create_aligned_rigid_body()
+    \see create_compatible_rigid_body()
     \see Hierarchy
     \see IMP::core::RigidBody
 */
