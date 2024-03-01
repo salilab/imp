@@ -107,7 +107,9 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     unsigned int number_of_collisions_;
   };
 
+#ifndef SWIG
   friend std::ostream& operator<<(std::ostream& s, const Parameters& p);
+#endif
 
  public:
   //! Constructor
