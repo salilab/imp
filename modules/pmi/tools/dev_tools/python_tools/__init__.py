@@ -174,8 +174,8 @@ def get_modules(source):
 
 
 def split(string, sep=":"):
-    return([x.replace("@", ":")
-            for x in string.replace("\\:", "@").split(sep) if x != ""])
+    return ([x.replace("@", ":")
+             for x in string.replace("\\:", "@").split(sep) if x != ""])
 
 
 def get_project_info(path):

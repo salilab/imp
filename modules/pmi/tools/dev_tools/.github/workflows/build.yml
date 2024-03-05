@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [2.7, 3.7, 3.8, 3.9, "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -20,8 +20,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install 'pytest-flake8<1.1' pytest-cov
+        pip install pytest flake8 pytest-cov
     - name: Test
       run: |
-        py.test --cov=. --cov-branch --cov-report=xml -v --flake8 .
+        py.test --cov=. --cov-branch --cov-report=xml -v .
+        flake8 --ignore=E402,W503 --exclude python_tools/reindent.py
     - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
