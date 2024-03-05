@@ -4,21 +4,21 @@ import sys
 import os.path
 import subprocess
 import glob
-from optparse import OptionParser
+from argparse import ArgumentParser
 import shutil
 
 dev_tools_path = os.path.join("tools", "dev_tools")
 
 
-opt = OptionParser()
-opt.add_option("-g", "--global",
-               action="store_true", dest="glob", default=False,
-               help="Set global git settings instead of repo "
-                    "settings [default]")
+opt = ArgumentParser()
+opt.add_argument("-g", "--global",
+                 action="store_true", dest="glob", default=False,
+                 help="Set global git settings instead of repo "
+                      "settings [default]")
 
-(options, args) = opt.parse_args()
+args = opt.parse_args()
 
-if options.glob:
+if args.glob:
     git_config = "git config --global --replace-all"
     config_contents = ""
 else:
