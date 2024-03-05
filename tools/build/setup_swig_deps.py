@@ -17,15 +17,11 @@ parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("-s", "--swig",
                   dest="swig", default="swig",
                   help="The name of the swig command.")
-parser.add_option("-b", "--build_system",
-                  dest="build_system", help="The build system being used.")
 
 
-def _fix(name, bs):
+def _fix(name):
     if os.path.isabs(name):
         return name
-    elif bs == "scons":
-        return "#/build/" + name
     else:
         return os.path.join(os.getcwd(), "%s") % name
 
@@ -42,7 +38,7 @@ def get_dep_merged(finder, modules, name, extra_data_path):
     return ret
 
 
-def setup_one(finder, module, build_system, swig, extra_data_path, include):
+def setup_one(finder, module, swig, extra_data_path, include):
     includepath = get_dep_merged(finder, [module], "includepath",
                                  extra_data_path)
     swigpath = get_dep_merged(finder, [module], "swigpath", extra_data_path)
@@ -69,7 +65,7 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
             continue
         names.append(x)
 
-    final_names = [_fix(x, build_system) for x in names]
+    final_names = [_fix(x) for x in names]
     final_list = "\n".join(final_names)
     tools.rewrite("src/%s_swig.deps" % module.name, final_list)
 
@@ -83,7 +79,7 @@ def main():
     for m in [x for x in mf.values()
               if not isinstance(x, tools.ExternalModule) and x.ok
               and not x.python_only]:
-        pool.add_task(setup_one, mf, m, options.build_system, options.swig,
+        pool.add_task(setup_one, mf, m, options.swig,
                       options.build_dir, options.include)
     err = pool.wait_completion()
     if err:

@@ -153,7 +153,7 @@ if __name__ == '__main__':
 """)
 
 
-def generate_tests(modules, scons):
+def generate_tests(modules):
     template = """import IMP
 import IMP.test
 import %(module)s
@@ -222,30 +222,6 @@ if __name__ == '__main__':
                                "medium_test_standards.py"),
                   test, show_diff=False)
 
-        cpptests = tools.get_glob([os.path.join(module.path, "test",
-                                                "test_*.cpp")])
-        ecpptests = tools.get_glob(
-            [os.path.join(module.path, "test", "expensive_test_*.cpp")])
-        cppexamples = tools.get_glob([os.path.join(module.path, "examples",
-                                                   "*.cpp")])
-
-        if len(cpptests) > 0 and scons:
-            _make_test_driver(
-                os.path.join(
-                    targetdir,
-                    "test_cpp_tests.py"),
-                cpptests)
-        if len(ecpptests) > 0 and scons:
-            _make_test_driver(
-                os.path.join(targetdir,
-                             "expensive_test_cpp_tests.py"),
-                cpptests)
-        if len(cppexamples) > 0 and scons:
-            _make_test_driver(
-                os.path.join(targetdir,
-                             "cpp_examples_test.py"),
-                cppexamples)
-
 
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):
@@ -270,8 +246,6 @@ parser.add_argument("-d", "--datapath", dest="datapath",
                     help="Extra data path for IMP.")
 parser.add_argument("-m", "--disabled", dest="disabled",
                     help="Disabled modules.")
-parser.add_argument("--scons", default=False, action="store_true",
-                    help="Set if we are running scons.")
 
 
 def main():
@@ -291,7 +265,7 @@ def main():
     link_swig(all_modules)
     link_python(all_modules)
     link_data(all_modules)
-    generate_tests(all_modules, args.scons)
+    generate_tests(all_modules)
     generate_src_dirs(all_modules)
 
 
