@@ -65,6 +65,15 @@ def make_version_check(args):
   version = '%s'
   _check_one('%s', version, myversion)
   """
+    if args.name == 'kernel':
+        template += """
+  import sys
+  if sys.version_info[0] < 3:
+      import warnings
+      warnings.warn(
+            "Python 2 support is deprecated in IMP and will be removed in "
+            "the next major release. Please port your workflows to Python 3.")
+"""
     g = tools.PythonFileGenerator()
     g.write(outf, template % (version, args.name))
 
