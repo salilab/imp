@@ -5,7 +5,7 @@
 import os.path
 import tools
 import shutil
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 def build_init(module, source, infname, outfname):
@@ -41,22 +41,21 @@ def get_example_path(fname):
 
 
 def main():
-    parser = OptionParser()
-    parser.add_option("--build_dir", help="IMP build directory", default=None)
-    parser.add_option("-s", "--source",
-                      dest="source", help="Where to find IMP source.")
+    parser = ArgumentParser()
+    parser.add_argument("--build_dir", help="IMP build directory",
+                        default=None)
+    parser.add_argument("-s", "--source",
+                        dest="source", help="Where to find IMP source.")
+    parser.add_argument("module", help="IMP module name")
 
-    options, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("You must specify an IMP module")
-    module, = args
+    args = parser.parse_args()
 
-    mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir,
-                             module_name=module)
-    module = mf[module]
+    mf = tools.ModulesFinder(source_dir=args.source,
+                             external_dir=args.build_dir,
+                             module_name=args.module)
+    module = mf[args.module]
     build_init(
-        module, options.source,
+        module, args.source,
         os.path.join(module.path, "pyext", "src", "__init__.py"),
         os.path.join("lib", "IMP", module.name, '__init__.py'))
 
