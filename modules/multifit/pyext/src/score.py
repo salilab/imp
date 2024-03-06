@@ -117,12 +117,8 @@ def score_each_protein(dmap, mhs, sd):
 
 
 def usage():
-    usage = """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinations> <score combinations [output]>
-
-Score each of a set of combinations.
-"""
-    p = ArgumentParser(usage)
+    desc = "Score each of a set of combinations."
+    p = ArgumentParser(description=desc)
     p.add_argument("-m", "--max", dest="max", type=int, default=999999999,
                    help="maximum number of fits considered")
     p.add_argument("assembly_file", help="assembly file name")
