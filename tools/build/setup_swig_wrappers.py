@@ -6,7 +6,7 @@
 import os.path
 import datetime
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 def write_module_cpp(m, contents):
@@ -152,28 +152,28 @@ __version__ = get_module_version()
     g.write(target, "\n".join(contents))
 
 
-parser = OptionParser()
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("-d", "--datapath",
-                  dest="datapath", default="", help="Extra data path.")
-parser.add_option("-s", "--source",
-                  dest="source", help="Where to find IMP source.")
-parser.add_option("-m", "--module",
-                  dest="module", default="", help="Only run on one module.")
+parser = ArgumentParser()
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("-d", "--datapath",
+                    dest="datapath", default="", help="Extra data path.")
+parser.add_argument("-s", "--source",
+                    dest="source", help="Where to find IMP source.")
+parser.add_argument("-m", "--module",
+                    dest="module", default="", help="Only run on one module.")
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
     sorted_order = tools.get_sorted_order()
 
-    if options.module != "":
-        mf = tools.ModulesFinder(source_dir=options.source,
-                                 external_dir=options.build_dir,
-                                 module_name=options.module)
-        module = mf[options.module]
+    if args.module != "":
+        mf = tools.ModulesFinder(source_dir=args.source,
+                                 external_dir=args.build_dir,
+                                 module_name=args.module)
+        module = mf[args.module]
         build_wrapper(module, mf, sorted_order,
                       os.path.join("swig", "IMP_" + module.name + ".i"),
-                      options.source)
+                      args.source)
 
 
 if __name__ == '__main__':

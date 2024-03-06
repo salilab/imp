@@ -12,7 +12,7 @@ import os
 import os.path
 import tools
 import pickle
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 class DoxConfigFileGenerator(tools.FileGenerator):
@@ -141,26 +141,26 @@ See also the [command line tools provided by RMF](https://integrativemodeling.or
     g.write(name, "\n".join(contents))
 
 
-parser = OptionParser()
-parser.add_option("-s", "--source", dest="source",
-                  help="IMP source directory.")
+parser = ArgumentParser()
+parser.add_argument("-s", "--source", dest="source",
+                    help="IMP source directory.")
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
-    generate_overview_pages(options.source)
-    generate_doxyfile(options.source,
+    generate_overview_pages(args.source)
+    generate_doxyfile(args.source,
                       os.path.join("doxygen", "ref.html"),
                       is_html=True, is_xml=False)
-    generate_doxyfile(options.source,
+    generate_doxyfile(args.source,
                       os.path.join("doxygen", "ref.xml"),
                       is_html=False, is_xml=True)
-    generate_doxyfile(options.source,
+    generate_doxyfile(args.source,
                       os.path.join("doxygen", "manual.html"),
                       is_html=True, is_xml=False,
                       manual=True)
-    generate_doxyfile(options.source,
+    generate_doxyfile(args.source,
                       os.path.join("doxygen", "manual.xml"),
                       is_html=False, is_xml=True,
                       manual=True)

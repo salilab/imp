@@ -4,19 +4,19 @@
 """
 
 import sys
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os.path
 import tools
 import tools.thread_pool
 
 
-parser = OptionParser()
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("--module_name", help="Module name", default=None)
-parser.add_option("--include", help="Extra header include path", default=None)
-parser.add_option("-s", "--swig",
-                  dest="swig", default="swig",
-                  help="The name of the swig command.")
+parser = ArgumentParser()
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("--module_name", help="Module name", default=None)
+parser.add_argument("--include", help="Extra header include path",
+                    default=None)
+parser.add_argument("-s", "--swig", dest="swig", default="swig",
+                    help="The name of the swig command.")
 
 
 def _fix(name):
@@ -71,16 +71,16 @@ def setup_one(finder, module, swig, extra_data_path, include):
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
     mf = tools.ModulesFinder(configured_dir="build_info",
-                             external_dir=options.build_dir,
-                             module_name=options.module_name)
+                             external_dir=args.build_dir,
+                             module_name=args.module_name)
     pool = tools.thread_pool.ThreadPool()
     for m in [x for x in mf.values()
               if not isinstance(x, tools.ExternalModule) and x.ok
               and not x.python_only]:
-        pool.add_task(setup_one, mf, m, options.swig,
-                      options.build_dir, options.include)
+        pool.add_task(setup_one, mf, m, args.swig,
+                      args.build_dir, args.include)
     err = pool.wait_completion()
     if err:
         sys.stderr.write(err + '\n')

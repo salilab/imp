@@ -10,7 +10,7 @@ import sys
 import os.path
 import tools
 import subprocess
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 TOPDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -287,34 +287,34 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     return out
 
 
-parser = OptionParser()
-parser.add_option("--include", help="Extra header include path", default=None)
-parser.add_option("--swig_include", help="Extra SWIG include path(s)",
-                  default=[], action="append")
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("--module_name", help="Module name", default=None)
-parser.add_option("--tools_dir", help="IMP tools directory", default=None)
-parser.add_option("--required", action="store_true", default=False,
-                  help="Whether to fail the build if a module cannot "
-                       "be configured")
+parser = ArgumentParser()
+parser.add_argument("--include", help="Extra header include path",
+                    default=None)
+parser.add_argument("--swig_include", help="Extra SWIG include path(s)",
+                    default=[], action="append")
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("--module_name", help="Module name", default=None)
+parser.add_argument("--tools_dir", help="IMP tools directory", default=None)
+parser.add_argument("--required", action="store_true", default=False,
+                    help="Whether to fail the build if a module cannot "
+                         "be configured")
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
     main = []
-    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir,
-                             module_name=options.module_name)
-    tools_dir = options.tools_dir \
-        if options.tools_dir else '${CMAKE_SOURCE_DIR}/tools'
-    extra_include = ' "--include=%s"' % options.include \
-                    if options.include else ""
+    mf = tools.ModulesFinder(source_dir='', external_dir=args.build_dir,
+                             module_name=args.module_name)
+    tools_dir = args.tools_dir \
+        if args.tools_dir else '${CMAKE_SOURCE_DIR}/tools'
+    extra_include = ' "--include=%s"' % args.include if args.include else ""
     extra_swig = ''.join(' "--swig_include=%s"' % s
-                         for s in options.swig_include) \
-                 if options.swig_include else ""
+                         for s in args.swig_include) \
+                 if args.swig_include else ""
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m, tools_dir, extra_include,
-                                     extra_swig, options.required))
+                                     extra_swig, args.required))
 
 
 if __name__ == '__main__':
