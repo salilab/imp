@@ -1,3 +1,9 @@
+imp (2.20.1-2~@CODENAME@) @CODENAME@; urgency=low
+
+  * Add protobuf-compiler (protoc) to builddeps
+
+ -- IMP Developers <imp@salilab.org>  Fri, 08 Mar 2024 18:49:23 -0800
+
 imp (2.20.1-1~@CODENAME@) @CODENAME@; urgency=low
 
   * Initial .deb release
