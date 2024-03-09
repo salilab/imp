@@ -1,0 +1,42 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# Don't use Debian-provided flags for now; they slow down the build
+CFLAGS :=
+CXXFLAGS :=
+LDFLAGS :=
+
+%:
+	dh $@ 
+
+override_dh_auto_configure:
+	mkdir build
+	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
+	        -DCGAL_DIR=/usr/lib/`uname -m`-linux-gnu/cmake/CGAL/ \
+	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
+	        -DCMAKE_INSTALL_PREFIX=/usr \
+	        -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
+	        -DIMP_USE_SYSTEM_RMF=on -DIMP_USE_SYSTEM_IHM=on \
+	        -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=off
+
+override_dh_auto_build:
+	$(MAKE) -C build
+
+override_dh_install:
+	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
+	# Make sure all Python applications use the system Python in /usr/bin
+	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python3@' debian/tmp/usr/bin/*
+	# Don't distribute example application or dependency
+	rm -rf debian/tmp/usr/bin/imp_example_app \
+	       debian/tmp/usr/lib/*/libexample* \
+	       debian/tmp/usr/include/example*
+	dh_install
+	dh_missing --fail-missing
+
+override_dh_compress:
+	# Don't compress example files, since then they won't work!
+	dh_compress -Xexamples
