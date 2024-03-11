@@ -2,6 +2,7 @@ import IMP
 import IMP.core
 import IMP.example
 import IMP.atom
+import IMP.isd
 import IMP.container
 import unittest
 import subprocess
@@ -117,6 +118,13 @@ class IMPInstallTests(unittest.TestCase):
             self.assertEqual(len(n), 0)  # no int key for this model
         else:
             self.assertRaises(NotImplementedError, m1.get_ints_numpy, k)
+
+    def test_isd_bessel(self):
+        """Test use of Bessel functions in IMP.isd"""
+        v = IMP.isd.vonMises(0., 0., 40.)
+        # A gcc bug can cause this to return nan in some cases:
+        # https://bugzilla.redhat.com/show_bug.cgi?id=2085189
+        self.assertAlmostEqual(v.evaluate(), -0.9, delta=0.1)
 
 
 if __name__ == '__main__':
