@@ -37,6 +37,19 @@ override_dh_install:
 	dh_install
 	dh_missing --fail-missing
 
+execute_after_dh_install:
+	# Run basic tests on the installation
+	TOPDIR=`pwd`/debian/tmp \
+	  && cd tools/nightly-tests/test-install \
+	  && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	  && scons libpath="$${TOPDIR}/usr/lib/`uname -m`-linux-gnu" \
+	           cpppath="$${TOPDIR}/usr/include" \
+	           pypath="$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages" \
+	           datapath="$${TOPDIR}/usr/share/IMP/" \
+	           examplepath="$${TOPDIR}/usr/share/doc/imp/examples/" \
+	           python=python3 mock_config=ubuntu-`lsb_release -c -s`-ppa \
+	           cxxflags="${CXXFLAGS} -I/usr/include/hdf5/serial/ -I/usr/include/eigen3"
+
 override_dh_compress:
 	# Don't compress example files, since then they won't work!
 	dh_compress -Xexamples
