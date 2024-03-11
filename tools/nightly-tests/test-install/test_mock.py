@@ -35,6 +35,7 @@ class IMPMockTests(unittest.TestCase):
             _ = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
+        import IMP.cnmultifit
         import IMP.domino
         import IMP.em
         import IMP.gsl
@@ -51,9 +52,6 @@ class IMPMockTests(unittest.TestCase):
         import IMP.test
         import IMP.pmi1
         import IMP.bayesianem
-        # Ubuntu PPA builds do not include cnmultifit
-        if '-ppa' not in mock_config:
-            import IMP.cnmultifit
 
     def test_applications_installed(self):
         """Check install of a fairly comprehensive list of applications"""
@@ -65,7 +63,7 @@ class IMPMockTests(unittest.TestCase):
                       'interface_cross_links', 'em3d_score',
                       'em3d_single_score', 'saxs_score', 'interface_rtc',
                       'nmr_rtc_score', 'soap_score']
-        apps = ['cluster_profiles',
+        apps = ['cluster_profiles', 'cnmultifit',
                 'complex_to_anchor_graph', 'compute_chi',
                 'estimate_threshold_from_molecular_mass', 'foxs',
                 'ligand_score', 'map2pca', 'mol2pca',
@@ -77,9 +75,6 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_validate', 'rmf_xml', 'saxs_merge',
                 'simulate_density_from_pdb',
                 'validate_profile', 'view_density_header']
-        # Ubuntu PPA builds do not include cnmultifit
-        if '-ppa' not in mock_config:
-            apps.append('cnmultifit')
         # Everyone should have EMageFit and idock now
         apps.extend(emagefit_apps)
         apps.extend(idock_apps)

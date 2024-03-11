@@ -10,9 +10,6 @@ import os
 import sys
 
 
-mock_config = os.environ.get('MOCK_CONFIG')
-
-
 def find_path(exe):
     """Find `exe` in the PATH and return the fully-qualified path to it."""
     path_comps = os.environ['PATH'].split(os.pathsep)
@@ -74,14 +71,11 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of basic applications"""
-        apps = [App('foxs'), App('ligand_score'), App('multifit', python=True),
+        apps = [App('cnmultifit', python=True), App('foxs'),
+                App('ligand_score'), App('multifit', python=True),
                 App('pdb_check'), App('pdb_rmf'),
                 App('rmf_cat', can_exit_1=True),
                 App('saxs_merge', python=True, can_exit_1=True)]
-
-        # Ubuntu PPA builds do not include cnmultifit
-        if not mock_config or '-ppa' not in mock_config:
-            apps.append(App('cnmultifit', python=True))
 
         for app in apps:
             ret, out = app.test()

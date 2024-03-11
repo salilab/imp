@@ -47,7 +47,7 @@ execute_after_dh_install:
 	           pypath="$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages" \
 	           datapath="$${TOPDIR}/usr/share/IMP/" \
 	           examplepath="$${TOPDIR}/usr/share/doc/imp/examples/" \
-	           python=python3 mock_config=ubuntu-`lsb_release -c -s`-ppa \
+	           python=python3 mock_config=ubuntu-`lsb_release -c -s` \
 	           cxxflags="${CXXFLAGS} -I/usr/include/hdf5/serial/ -I/usr/include/eigen3"
 
 override_dh_compress:
