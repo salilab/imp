@@ -1,0 +1,3 @@
+#!/bin/sh
+python3 -m compileall -q /usr/lib/python3.*/dist-packages/RMF.py
+python3 -m compileall -q /usr/lib/python3.*/dist-packages/RMF_HDF5.py

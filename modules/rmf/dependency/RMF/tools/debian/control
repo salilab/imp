@@ -1,0 +1,24 @@
+Source: rmf
+Priority: optional
+Maintainer: Ben Webb <ben@salilab.org>
+Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-thread-dev, libhdf5-dev, python3-dev, python3-numpy
+Standards-Version: 4.6.2
+Section: libs
+Homepage: https://integrativemodeling.org/rmf
+Vcs-Browser: https://github.com/salilab/rmf/
+
+Package: rmf-dev
+Section: libdevel
+Architecture: any
+Depends: rmf (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-thread-dev, libhdf5-dev, python3-dev, python3-numpy
+Description: Library to support reading and writing of RMF files
+ Headers to compile against RMF.
+
+Package: rmf
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-numpy
+Description: Library to support reading and writing of RMF files
+  The library provides support for the RMF file format for storing hierarchical
+  molecular data (such as atomic or coarse grained representations of proteins),
+  along with markup, including geometry and score data.

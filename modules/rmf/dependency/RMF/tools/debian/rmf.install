@@ -1,0 +1,16 @@
+usr/lib/*/libRMF*.so.*
+usr/lib/python3*/dist-packages/RMF*
+usr/lib/python3*/dist-packages/_RMF*
+usr/bin/rmf3_dump
+usr/bin/rmf_cat
+usr/bin/rmf_frames
+usr/bin/rmf_info
+usr/bin/rmf_interpolate
+usr/bin/rmf_pdb
+usr/bin/rmf_show
+usr/bin/rmf_signature
+usr/bin/rmf_slice
+usr/bin/rmf_transform
+usr/bin/rmf_update
+usr/bin/rmf_validate
+usr/bin/rmf_xml
