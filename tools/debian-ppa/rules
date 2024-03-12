@@ -50,7 +50,7 @@ execute_after_dh_install:
 	           examplepath="$${TOPDIR}/usr/share/doc/imp/examples/" \
 	           python=python3 mock_config=ubuntu-`lsb_release -c -s` \
 	           cxxflags="${CXXFLAGS} -I/usr/include/hdf5/serial/ -I/usr/include/eigen3" \
-	  && rm -rf "$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages/__pycache__"
+	  && find "$${TOPDIR}" -depth -name __pycache__ -exec rm -rf \{\} \;
 
 override_dh_compress:
 	# Don't compress example files, since then they won't work!
