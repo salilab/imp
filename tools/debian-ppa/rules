@@ -42,7 +42,8 @@ execute_after_dh_install:
 	TOPDIR=`pwd`/debian/tmp \
 	  && cd tools/nightly-tests/test-install \
 	  && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
-	  && scons libpath="$${TOPDIR}/usr/lib/`uname -m`-linux-gnu" \
+	  && scons path="$${TOPDIR}/usr/bin" \
+	           libpath="$${TOPDIR}/usr/lib/`uname -m`-linux-gnu" \
 	           cpppath="$${TOPDIR}/usr/include" \
 	           pypath="$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages" \
 	           datapath="$${TOPDIR}/usr/share/IMP/" \
