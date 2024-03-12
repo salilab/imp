@@ -1,0 +1,39 @@
+diff --git a/tools/nightly-tests/test-install/SConstruct b/tools/nightly-tests/test-install/SConstruct
+index 87c0110455..dc41d4f688 100644
+--- a/tools/nightly-tests/test-install/SConstruct
++++ b/tools/nightly-tests/test-install/SConstruct
+@@ -3,6 +3,10 @@ vars.Add('libpath',
+          'Directory/ies where IMP or dependency libraries are installed', None)
+ vars.Add('cpppath',
+          'Directory/ies where IMP or dependency headers are installed', None)
++vars.Add('datapath',
++         'Directory where IMP data are installed', None)
++vars.Add('examplepath',
++         'Directory where IMP examples are installed', None)
+ vars.Add('cxxflags', 'C++ compile flags', '')
+ vars.Add('linkflags', 'Link flags', '')
+ vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
+@@ -29,6 +33,8 @@ if cpppath is not None:
+     cpppath = cpppath.split(':')
+ pypath = env.get('pypath', None)
+ path = env.get('path', None)
++datapath = env.get('datapath', None)
++examplepath = env.get('examplepath', None)
+ mock = env.get('mock_config', None)
+ mpi = env.get('mpi_module', None)
+ cxxflags = env.get('cxxflags', '').split(' ')
+@@ -43,9 +49,13 @@ env['ENV']['LIBPATH'] = libpath             # AIX
+ # Set Python search path
+ env['ENV']['PYTHONPATH'] = '%s:%s' % (pypath, libpath)
+ 
+-# Set path
++# Set paths
+ if path:
+     env['ENV']['PATH'] = path + ':' + env['ENV']['PATH']
++if datapath:
++    env['ENV']['IMP_DATA'] = datapath
++if examplepath:
++    env['ENV']['IMP_EXAMPLE_DATA'] = examplepath
+ 
+ # Test compiling and running a C++ program that links against IMP
+ testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
