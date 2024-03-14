@@ -105,10 +105,7 @@ typedef PyPointer<false> PyOwnerPointer;
     }                                                                   \
   }
 
-using boost::mpl::and_;
-using boost::mpl::not_;
 // using namespace boost;
-// using namespace boost::mpl;
 
 template <class V>
 void assign(V*& a, const V& b) {
@@ -223,7 +220,7 @@ struct ConvertAllBase {
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
   static_assert(!std::is_pointer<T>::value, "is pointer");
-  static_assert(!(boost::is_base_of<Object, T>::value), "wrong base class");
+  static_assert(!(std::is_base_of<Object, T>::value), "wrong base class");
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
                                  const char *argtype, SwigData st, SwigData,
@@ -251,8 +248,8 @@ struct ConvertValueBase : public ConvertAllBase<T> {
 template <class T>
 struct ConvertObjectBase : public ConvertAllBase<T> {
   static_assert(!std::is_pointer<T>::value, "is pointer");
-  static_assert((boost::is_base_of<Object, T>::value) ||
-                (boost::is_same<Object, T>::value), "wrong base class");
+  static_assert((std::is_base_of<Object, T>::value) ||
+                (std::is_same<Object, T>::value), "wrong base class");
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,

@@ -105,10 +105,8 @@ struct GetPointer {
 #if(defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
     !defined(nullptr)
 template <class O, class OO>
-struct GetPointer<O, OO,
-                  typename std::enable_if<boost::mpl::and_<
-                      boost::mpl::not_<std::is_integral<OO>::value>,
-                      boost::mpl::not_<std::is_pointer<OO>::value> > >::type> {
+struct GetPointer<O, OO, typename std::enable_if<
+        !std::is_integral<OO>::value && !std::is_pointer<OO>::value>::type> {
   static O* get_pointer(const OO& o) { return o; }
   static const O* get_const_pointer(const OO& o) { return o; }
 };
