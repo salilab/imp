@@ -20,7 +20,7 @@
 #include <IMP/QuadModifier.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/check_macros.h>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <boost/dynamic_bitset.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -56,8 +56,8 @@ get_container_indexes(
 // Specialization for SingletonContainer, where each content entry is
 // a ParticleIndex, not a fixed-size array of indexes
 template<typename Score> inline
-typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
-                          std::vector<unsigned> >::type
+typename std::enable_if<boost::is_base_of<SingletonScore, Score>,
+                        std::vector<unsigned> >::type
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument> &contents,

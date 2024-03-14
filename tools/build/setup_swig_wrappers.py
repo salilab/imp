@@ -74,7 +74,6 @@ from __future__ import print_function, division, absolute_import
 #include <boost/exception/all.hpp>
 
 #include <type_traits>
-#include <boost/utility/enable_if.hpp>
 #include <exception>
 // for serialization/pickle support
 #include <cereal/archives/binary.hpp>

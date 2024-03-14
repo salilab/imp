@@ -22,7 +22,6 @@
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
 #endif
@@ -107,7 +106,7 @@ struct GetPointer {
     !defined(nullptr)
 template <class O, class OO>
 struct GetPointer<O, OO,
-                  typename boost::enable_if<boost::mpl::and_<
+                  typename std::enable_if<boost::mpl::and_<
                       boost::mpl::not_<std::is_integral<OO>::value>,
                       boost::mpl::not_<std::is_pointer<OO>::value> > >::type> {
   static O* get_pointer(const OO& o) { return o; }
@@ -115,14 +114,14 @@ struct GetPointer<O, OO,
 };
 template <class O, class OO>
 struct GetPointer<O, OO*,
-                typename boost::enable_if<std::is_pointer<OO*>::value>::type> {
+                typename std::enable_if<std::is_pointer<OO*>::value>::type> {
   static O* get_pointer(OO* o) { return o; }
   static const O* get_const_pointer(const OO* o) { return o; }
 };
 
 template <class O, class OO>
 struct GetPointer<O, OO,
-                typename boost::enable_if<std::is_integral<OO>::value>::type> {
+                typename std::enable_if<std::is_integral<OO>::value>::type> {
   static O* get_pointer(const OO& o) {
     IMP_INTERNAL_CHECK_VARIABLE(o)
     IMP_INTERNAL_CHECK(o == 0, "Non-zero pointer constant found.");

@@ -128,7 +128,7 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
 
 template <class T>
 struct Convert<
-    T, typename enable_if<and_<boost::is_base_of<Decorator, T>,
+    T, typename std::enable_if<and_<boost::is_base_of<Decorator, T>,
                                not_<typename T::DecoratorHasTraits> > >::
            type> : public ConvertValueBase<T> {
   static const int converter = 3;
@@ -163,7 +163,7 @@ struct Convert<
 
 template <class T>
 struct Convert<
-    T, typename enable_if<
+    T, typename std::enable_if<
            typename T::DecoratorHasTraits>::type> : public ConvertValueBase<T> {
   static const int converter = 4;
   template <class SwigData>

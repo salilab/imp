@@ -105,7 +105,6 @@ typedef PyPointer<false> PyOwnerPointer;
     }                                                                   \
   }
 
-using boost::enable_if;
 using boost::mpl::and_;
 using boost::mpl::not_;
 // using namespace boost;
@@ -164,7 +163,7 @@ struct ValueOrObject {
 
 template <class T>
 struct ValueOrObject<T,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+                 typename std::enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -172,7 +171,7 @@ struct ValueOrObject<T,
 
 template <class T>
 struct ValueOrObject<T*,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+                typename std::enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -180,7 +179,7 @@ struct ValueOrObject<T*,
 
 template <class T>
 struct ValueOrObject<Pointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+                typename std::enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -188,7 +187,7 @@ struct ValueOrObject<Pointer<T>,
 
 template <class T>
 struct ValueOrObject<WeakPointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+                typename std::enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -196,7 +195,7 @@ struct ValueOrObject<WeakPointer<T>,
 
 template <class T>
 struct ValueOrObject<UncheckedWeakPointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+                typename std::enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -330,7 +329,7 @@ struct Convert : public ConvertValueBase<T> {
 };
 
 template <class T>
-struct Convert<T, typename enable_if<boost::is_base_of<
+struct Convert<T, typename std::enable_if<boost::is_base_of<
                       Object, T> >::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
@@ -343,7 +342,7 @@ struct Convert<Object> : public ConvertObjectBase<Object> {
 };
 
 template <class T>
-struct Convert<T*, typename enable_if<boost::is_base_of<
+struct Convert<T*, typename std::enable_if<boost::is_base_of<
                        Object, T> >::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
