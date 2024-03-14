@@ -27,8 +27,8 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! Get indexes of container contents that involve any of the given particles
 template<typename Score> inline
-typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
-                           std::vector<unsigned> >::type
+typename std::enable_if<!std::is_base_of<SingletonScore, Score>::value,
+                        std::vector<unsigned> >::type
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument> &contents,
@@ -56,7 +56,7 @@ get_container_indexes(
 // Specialization for SingletonContainer, where each content entry is
 // a ParticleIndex, not a fixed-size array of indexes
 template<typename Score> inline
-typename std::enable_if<boost::is_base_of<SingletonScore, Score>,
+typename std::enable_if<std::is_base_of<SingletonScore, Score>::value,
                         std::vector<unsigned> >::type
 get_container_indexes(
             Model *m,
