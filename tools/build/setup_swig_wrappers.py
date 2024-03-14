@@ -73,7 +73,7 @@ from __future__ import print_function, division, absolute_import
 #include <boost/version.hpp>
 #include <boost/exception/all.hpp>
 
-#include <boost/type_traits/is_convertible.hpp>
+#include <type_traits>
 #include <boost/utility/enable_if.hpp>
 #include <exception>
 // for serialization/pickle support

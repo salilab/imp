@@ -108,7 +108,6 @@ typedef PyPointer<false> PyOwnerPointer;
 using boost::enable_if;
 using boost::mpl::and_;
 using boost::mpl::not_;
-using boost::is_convertible;
 // using namespace boost;
 // using namespace boost::mpl;
 

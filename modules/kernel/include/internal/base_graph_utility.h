@@ -28,7 +28,6 @@ namespace OWN {
 using boost::enable_if;
 using boost::mpl::and_;
 using boost::mpl::not_;
-using boost::is_convertible;
 using boost::is_base_of;
 using std::is_pointer;
 
