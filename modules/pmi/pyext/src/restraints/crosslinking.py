@@ -455,6 +455,14 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         return output
 
+    def get_likelihood(self):
+        """Get the unweighted likelihood of the restraint"""
+        likelihood = 1
+        for restraint in self.xl_restraints:
+            likelihood *= restraint.get_probability()
+
+        return likelihood
+
     def get_movers(self):
         """ Get all need data to construct a mover in IMP.pmi.dof class"""
         movers = []
