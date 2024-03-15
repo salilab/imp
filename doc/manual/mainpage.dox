@@ -59,6 +59,8 @@ complex might want to skip ahead to
 
  - [Bug reports](@ref bugs)
 
+ - [GPU support](@ref gpu)
+
  - [Applying IMP to a new biological system](@ref biosystem)
 
  - [Developing the IMP source code](@ref developing)
