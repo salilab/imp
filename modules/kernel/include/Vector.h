@@ -28,6 +28,14 @@
 #include <vector>
 #endif
 
+// Use unified memory to back vectors when building with CUDA
+#ifdef IMP_KERNEL_CUDA_LIB
+# include <IMP/internal/UnifiedAllocator.h>
+# define IMP_VECTOR_ALLOCATOR internal::UnifiedAllocator
+#else
+# define IMP_VECTOR_ALLOCATOR std::allocator
+#endif
+
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! A more \imp-like version of the \c std::vector.
@@ -43,17 +51,17 @@ class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
                ,
-               public __gnu_debug::vector<T>
+               public __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>>
 #else
                ,
-               public std::vector<T>
+               public std::vector<T, IMP_VECTOR_ALLOCATOR<T>>
 #endif
 #endif
                {
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-  typedef __gnu_debug::vector<T> V;
+  typedef __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
 #else
-  typedef std::vector<T> V;
+  typedef std::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
 #endif
 
   friend class cereal::access;

@@ -2,7 +2,7 @@
  *  \file internal/KeyVector.h
  *  \brief A class for storing data indexed by a Key.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,9 +28,9 @@ template <class Key, class T>
 class KeyVector : public Vector<T>
 {
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-  typedef __gnu_debug::vector<T> V;
+  typedef __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
 #else
-  typedef std::vector<T> V;
+  typedef std::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
 #endif
 
   friend class cereal::access;
