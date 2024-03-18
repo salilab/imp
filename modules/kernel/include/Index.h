@@ -24,7 +24,10 @@ IMPKERNEL_BEGIN_NAMESPACE
     around to help avoid bugs caused by mixing them up. Care has been taken
     so that it can be replaced by an integer everywhere, if needed. */
 template <class Tag>
-class Index : public Value {
+class Index {
+  // We should really derive from Value, but this seems to confuse gcc at least
+  // into padding the struct and wasting memory,
+  // e.g. sizeof(ParticleIndexPair) should be 8 (2*int) but is actually 12.
   int i_;
 
   friend class cereal::access;
