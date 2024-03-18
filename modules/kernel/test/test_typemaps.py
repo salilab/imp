@@ -4,6 +4,9 @@ import IMP.core
 import IMP.test
 import io
 
+if IMP.IMP_KERNEL_HAS_NUMPY:
+    import numpy
+
 
 class Tests(IMP.test.TestCase):
 
@@ -104,6 +107,13 @@ class Tests(IMP.test.TestCase):
             pp = (IMP.ParticleIndex(i), IMP.ParticleIndex(i + 1))
         pso = IMP._pass_particle_index_pairs(ps)
         self._equal_lists(ps, pso)
+
+    @IMP.test.skipUnless(IMP.IMP_KERNEL_HAS_NUMPY, "Needs numpy")
+    def test_index_pairs_numpy(self):
+        """Check particle index pairs using NumPy arrays"""
+        pis = numpy.array([[0,1], [1,2], [2,3], [3,4]], dtype=numpy.int32)
+        piso = IMP._pass_particle_index_pairs(pis)
+        self.assertTrue(numpy.array_equal(piso, pis))
 
     def test_failure(self):
         """Checking bad list"""

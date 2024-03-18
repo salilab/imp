@@ -700,8 +700,14 @@ static IndexArray create_index_array_cpp(PyObject *o) {
   IndexArray arr(sz);
   if (sz > 0) {
     char *data = (char *)PyArray_DATA(a);
-    for (npy_intp i = 0; i < sz; ++i) {
-      memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
+    if (sizeof(typename IndexArray::value_type) == sizeof(int) * D) {
+      /* If no padding, we can just do a single copy since std::vector
+         is contiguous */
+      memcpy(arr[0].data(), data, sizeof(int) * D * sz);
+    } else {
+      for (npy_intp i = 0; i < sz; ++i) {
+        memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
+      }
     }
   }
   return arr;
@@ -717,8 +723,14 @@ static PyObject* create_index_array_numpy(const IndexArray &t) {
   if (t.size() > 0) {
     PyObject *obj = ret;
     char *data = (char *)PyArray_DATA((PyArrayObject*)obj);
-    for (size_t i = 0; i < t.size(); ++i) {
-      memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+    if (sizeof(typename IndexArray::value_type) == sizeof(int) * D) {
+      /* If no padding, we can just do a single copy since std::vector
+         is contiguous */
+      memcpy(data, t[0].data(), sizeof(int) * D * t.size());
+    } else {
+      for (size_t i = 0; i < t.size(); ++i) {
+        memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+      }
     }
   }
   return ret.release();
