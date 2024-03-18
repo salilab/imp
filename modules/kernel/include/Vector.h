@@ -46,22 +46,22 @@ IMPKERNEL_BEGIN_NAMESPACE
     - implicit conversion when the contents are implicitly convertible
     - bounds checking in debug mode
  */
-template <class T>
+template <class T, class Allocator = std::allocator<T>>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
                ,
-               public __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>>
+               public __gnu_debug::vector<T, Allocator>
 #else
                ,
-               public std::vector<T, IMP_VECTOR_ALLOCATOR<T>>
+               public std::vector<T, Allocator>
 #endif
 #endif
                {
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-  typedef __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
+  typedef __gnu_debug::vector<T, Allocator> V;
 #else
-  typedef std::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
+  typedef std::vector<T, Allocator> V;
 #endif
 
   friend class cereal::access;

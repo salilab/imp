@@ -24,13 +24,13 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
     indexes). Instead, we must include the Key string names in the serialized
     data.
  */
-template <class Key, class T>
+template <class Key, class T, class Allocator = std::allocator<T>>
 class KeyVector : public Vector<T>
 {
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-  typedef __gnu_debug::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
+  typedef __gnu_debug::vector<T, Allocator> V;
 #else
-  typedef std::vector<T, IMP_VECTOR_ALLOCATOR<T>> V;
+  typedef std::vector<T, Allocator> V;
 #endif
 
   friend class cereal::access;

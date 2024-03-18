@@ -85,9 +85,10 @@ namespace {
     run-length encoding, as these vectors are often sparse. For objects that
     do not implement operator== (e.g. VectorD, SphereD), a custom comparison
     functor should be provided. */
-template <class Tag, class T, class Equal = std::equal_to<T> >
-class IndexVector : public Vector<T> {
-  typedef Vector<T> P;
+template <class Tag, class T, class Allocator = std::allocator<T>,
+          class Equal = std::equal_to<T> >
+class IndexVector : public Vector<T, Allocator> {
+  typedef Vector<T, Allocator> P;
 
   template<class Archive> void write_no_compression(
                        Archive &ar, typename P::const_iterator start,
