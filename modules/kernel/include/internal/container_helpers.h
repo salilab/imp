@@ -50,7 +50,8 @@ inline ParticlesTemp flatten(const Vector<
 
 template <unsigned int D>
 inline ParticleIndexes flatten(
-    const Vector<Array<D, ParticleIndex> > &in) {
+    const Vector<Array<D, ParticleIndex>,
+                 IMP_VECTOR_ALLOCATOR<Array<D, ParticleIndex>>> &in) {
   ParticleIndexes ret(in.size() * D);
   for (unsigned int i = 0; i < in.size(); ++i) {
     for (unsigned int j = 0; j < D; ++j) {
@@ -118,7 +119,8 @@ inline ParticlesTemp get_particle(Model *m, const ParticleIndexes &ps) {
 template <unsigned int D>
 inline Vector<Array<D, WeakPointer<Particle>, Particle *> >
 get_particle(Model *m,
-             const Vector<Array<D, ParticleIndex> > &ps) {
+             const Vector<Array<D, ParticleIndex>,
+                          IMP_VECTOR_ALLOCATOR<Array<D, ParticleIndex>>> &ps) {
   Vector<Array<D, WeakPointer<Particle>, Particle *> > ret(
       ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -149,9 +151,11 @@ inline ParticleIndexes get_index(const ParticlesTemp &p) {
   return ret;
 }
 template <unsigned int D>
-Vector<Array<D, ParticleIndex> > get_index(const Vector<
+Vector<Array<D, ParticleIndex>,
+       IMP_VECTOR_ALLOCATOR<Array<D, ParticleIndex>>> get_index(const Vector<
     Array<D, WeakPointer<Particle>, Particle *> > &in) {
-  Vector<Array<D, ParticleIndex> > ret(in.size());
+  Vector<Array<D, ParticleIndex>,
+         IMP_VECTOR_ALLOCATOR<Array<D, ParticleIndex>>> ret(in.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     Array<D, ParticleIndex> c;
     for (unsigned int j = 0; j < D; ++j) {

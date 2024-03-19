@@ -77,9 +77,9 @@ struct DefaultTraits {
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
-template <class T, class K>
+template <class T, class K, class Allocator = std::allocator<T>>
 struct ArrayTraits {
-  typedef IMP::Vector<T> Value;
+  typedef IMP::Vector<T, Allocator> Value;
   typedef IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value &PassValue;
   typedef K Key;
@@ -131,7 +131,8 @@ struct ParticleAttributeTableTraits
 };
 
 struct ParticlesAttributeTableTraits
-    : public ArrayTraits<ParticleIndex, ParticleIndexesKey> {};
+    : public ArrayTraits<ParticleIndex, ParticleIndexesKey,
+                         IMP_VECTOR_ALLOCATOR<ParticleIndex>> {};
 
 struct ObjectAttributeTableTraits {
   typedef Object *Value;

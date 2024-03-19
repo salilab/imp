@@ -176,15 +176,16 @@ class ParticleIndexTag {};
     Model::get_particle().
 */
 typedef Index<ParticleIndexTag> ParticleIndex;
-typedef Vector<ParticleIndex> ParticleIndexes;
+typedef Vector<ParticleIndex,
+               IMP_VECTOR_ALLOCATOR<ParticleIndex>> ParticleIndexes;
 
 typedef Array<2, ParticleIndex> ParticleIndexPair;
 typedef Array<3, ParticleIndex> ParticleIndexTriplet;
 typedef Array<4, ParticleIndex> ParticleIndexQuad;
 
-IMP_VALUES(ParticleIndexPair, ParticleIndexPairs);
-IMP_VALUES(ParticleIndexTriplet, ParticleIndexTriplets);
-IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
+IMP_VALUES_UNIFIED(ParticleIndexPair, ParticleIndexPairs);
+IMP_VALUES_UNIFIED(ParticleIndexTriplet, ParticleIndexTriplets);
+IMP_VALUES_UNIFIED(ParticleIndexQuad, ParticleIndexQuads);
 
 IMPKERNEL_END_NAMESPACE
 

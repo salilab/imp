@@ -23,6 +23,11 @@
 #define IMP_VALUES(Name, PluralName) \
   /** Pass or store a set of Name. */ typedef IMP::Vector<Name> PluralName
 
+//! Like IMP_VALUES but using CUDA unified memory
+#define IMP_VALUES_UNIFIED(Name, PluralName) \
+  /** Pass or store a set of Name using CUDA unified memory. */ \
+  typedef IMP::Vector<Name, IMP_VECTOR_ALLOCATOR<Name>> PluralName
+
 /** To be used with native types.*/
 #define IMP_BUILTIN_VALUES(Name, PluralName) \
   IMP_VALUES(Name, PluralName);              \
