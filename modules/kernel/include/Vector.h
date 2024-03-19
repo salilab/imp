@@ -146,13 +146,14 @@ class Vector : public Value
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-template <class T>
-void swap(Vector<T> &a, Vector<T> &b) {
+template <class T, class Allocator>
+void swap(Vector<T, Allocator> &a, Vector<T, Allocator> &b) {
   a.swap(b);
 }
 
-template <class T>
-inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
+template <class T, class Allocator>
+inline Vector<T, Allocator> operator+(Vector<T, Allocator> ret,
+                                      const Vector<T, Allocator> &o) {
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }
@@ -160,8 +161,8 @@ inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
 #endif
 
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-template <class T>
-inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
+template <class T, class Allocator>
+inline std::size_t hash_value(const __gnu_debug::vector<T, Allocator> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
 #endif
@@ -169,8 +170,8 @@ inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
 IMPKERNEL_END_NAMESPACE
 
 namespace cereal {
-  template <class Archive, class T>
-  struct specialize<Archive, IMP::Vector<T>,
+  template <class Archive, class T, class Allocator>
+  struct specialize<Archive, IMP::Vector<T, Allocator>,
                     cereal::specialization::member_load_save> {};
 }
 
