@@ -13,7 +13,7 @@ __doc__ = "Fit subunits into a density map with FFT."
 
 multiproc_exception = None
 try:
-    from multiprocessing import Pool
+    import multiprocessing
     # Detect whether we are running Windows Python via Wine. Wine does not
     # currently support some named pipe functions which the multiprocessing
     # module needs: http://bugs.winehq.org/show_bug.cgi?id=17273
@@ -21,6 +21,15 @@ try:
         multiproc_exception = "Wine does not currently support multiprocessing"
 except ImportError as detail:
     multiproc_exception = str(detail)
+
+
+def _get_context():
+    # Use 'forkserver' rather than 'fork' start method if we can; 'fork' does
+    # not work well with multithreaded processes or CUDA
+    if 'forkserver' in multiprocessing.get_all_start_methods():
+        return multiprocessing.get_context('forkserver')
+    else:
+        return multiprocessing.get_context()
 
 
 class Fitter(object):
@@ -161,8 +170,10 @@ Running on a single processor.""" % multiproc_exception, file=sys.stderr)
     if multiproc_exception is None and options.cpus > 1:
         # No point in spawning more processes than components
         nproc = min(options.cpus, asmb_input.get_number_of_component_headers())
-        p = Pool(processes=nproc)
+        ctx = _get_context()
+        p = ctx.Pool(processes=nproc)
         _ = list(p.imap_unordered(do_work, work_units))
+        p.close()
 
 
 def main():
