@@ -27,7 +27,6 @@ import warnings
 import math
 
 import pickle
-import RMF
 
 
 class _MockMPIValues(object):
@@ -427,9 +426,10 @@ class ReplicaExchange(object):
         if self.rmf_output_objects is not None:
             self.rmf_output_objects.append(sw)
 
+        output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
+
         if not self.nest:
             print("Setting up stat file")
-            output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
             low_temp_stat_file = globaldir + \
                 self.vars["stat_file_name_suffix"] + "." + \
                 str(myindex) + ".out"
@@ -529,6 +529,15 @@ class ReplicaExchange(object):
             if self._rmf_restraints:
                 output.add_restraints_to_rmf(rmfname, self._rmf_restraints)
 
+        if not self.test_mode and self.nest:
+            print("Setting up NestOR rmf files")
+            nestor_rmf_fname = str(self.nestor_rmf_fname) + '_' + \
+                str(self.replica_exchange_object.get_my_index()) + '.rmf3'
+
+            output.init_rmf(nestor_rmf_fname, output_hierarchies,
+                            geometries=self.vars["geometries"],
+                            listofobjects=self.rmf_output_objects)
+
         ntimes_at_low_temp = 0
 
         if myindex == 0 and not self.nest:
@@ -584,6 +593,7 @@ class ReplicaExchange(object):
                         for rstrnt in self.nestor_restraints:
                             likelihood_for_sample *= rstrnt.get_likelihood()
                         sampled_likelihoods.append(likelihood_for_sample)
+                        output.write_rmf(nestor_rmf_fname)
 
                 if not self.test_mode and not self.nest:
                     if i % self.vars["nframes_write_coordinates"] == 0:
@@ -612,16 +622,7 @@ class ReplicaExchange(object):
                       "wb") as lif:
                 pickle.dump(sampled_likelihoods, lif)
 
-            nestor_rmf_fname = str(self.nestor_rmf_fname) + '_' + \
-                str(self.replica_exchange_object.get_my_index()) + '.rmf3'
-
-            self.rmf_h = RMF.create_rmf_file(nestor_rmf_fname)
-            IMP.rmf.add_hierarchy(self.rmf_h, self.root_hier)
-            try:
-                IMP.rmf.save_frame(self.rmf_h)
-            except Exception as e:
-                print(e)
-                pass
+            output.close_rmf(nestor_rmf_fname)
 
         for p, state in IMP.pmi.tools._all_protocol_outputs(self.root_hier):
             p.add_replica_exchange(state, self)
