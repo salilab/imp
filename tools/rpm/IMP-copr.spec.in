@@ -514,6 +514,9 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
 %endif
 
 %changelog
+* Thu Apr 04 2024 Ben Webb <ben@salilab.org>   2.20.2-1
+- 2.20.2 release.
+
 * Tue Jan 16 2024 Ben Webb <ben@salilab.org>   2.20.1-1
 - 2.20.1 release.
 
