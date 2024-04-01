@@ -1,6 +1,12 @@
 ChangeLog {#changelog}
 =========
 
+# 2.20.2 - 2024-04-04 # {#changelog_2_20_2}
+- Add support for building ARM64 .deb packages.
+- Bugfix: fix use of nested classes with latest SWIG.
+- Bugfix: allow building with Boost 1.84.
+- Bugfix: minor documentation corrections.
+
 # 2.20.1 - 2024-01-16 # {#changelog_2_20_1}
 - Bugfix: fix `soap_score` crash when scoring multiple models with an
   orientation-dependent SOAP score.
