@@ -212,6 +212,7 @@ class IMPSAXSEXPORT FormFactorTable {
     double excl_vol_;
   };
 
+#ifndef SWIG
   // read entry
   friend std::istream& operator>>(
       std::istream& s, AtomFactorCoefficients& atom_factor_coefficients);
@@ -219,6 +220,7 @@ class IMPSAXSEXPORT FormFactorTable {
   // write entry
   friend std::ostream& operator<<(
       std::ostream& s, const AtomFactorCoefficients& atom_factor_coefficients);
+#endif
 
  private:
   int read_form_factor_table(const std::string& table_name);

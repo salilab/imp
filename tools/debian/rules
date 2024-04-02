@@ -15,19 +15,19 @@ LDFLAGS :=
 override_dh_auto_configure:
 	mkdir build
 	# Get libTAU (for cnmultifit) and put in search path
-	cd build && wget https://integrativemodeling.org/libTAU/libTAU-1.0.1.zip
-	cd build && echo "d2530291628081ee404b30da5c47ec6dc4302479  libTAU-1.0.1.zip" | sha1sum -c --quiet
-	cd build && unzip libTAU-1.0.1.zip && mv libTAU-1.0.1/include libTAU
-	cd build/libTAU-1.0.1/lib && ln -sf Fedora23.x86_64 debian
-	cd build/libTAU-1.0.1/lib/debian && ln -sf libTAU.so.1 libTAU.so
+	cd build && wget https://integrativemodeling.org/libTAU/libTAU-1.0.4.zip
+	cd build && echo "2c92a29613a422ee3f3db0cbbf1fe53c0500b5b6  libTAU-1.0.4.zip" | sha1sum -c --quiet
+	cd build && unzip libTAU-1.0.4.zip && mv libTAU-1.0.4/include libTAU
+	[ "`uname -m`" = "aarch64" ] && SUBDIR=Ubuntu18.04.arm64 || SUBDIR=Fedora23.x86_64; cd build/libTAU-1.0.4/lib && ln -sf $${SUBDIR} debian
+	cd build/libTAU-1.0.4/lib/debian && ln -sf libTAU.so.1 libTAU.so
 	# Allow mpiexec to work inside a docker/podman container (as root)
 	perl -pi -e 's#\{MPIEXEC_PREFLAGS\}#\{MPIEXEC_PREFLAGS\};--allow-run-as-root#' modules/mpi/dependency/MPI.cmake
 	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
 	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
-		-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ \
+		-DCGAL_DIR=/usr/lib/`uname -m`-linux-gnu/cmake/CGAL/ \
 	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
-	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.1/lib/debian \
+	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.4/lib/debian \
                 -DCMAKE_INSTALL_PREFIX=/usr \
                 -DIMP_TIMEOUT_FACTOR=4 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
@@ -53,7 +53,7 @@ override_dh_install:
 	    -DUSE_PYTHON2=on \
 	   && $(MAKE) -j4 DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
-	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
+	cp build/libTAU-1.0.4/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
 	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
 	# Don't package MPI for Python2 or -dev
 	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/mpi
