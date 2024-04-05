@@ -1,3 +1,9 @@
+imp (2.20.2-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * IMP 2.20.2 release
+
+ -- IMP Developers <imp@salilab.org>  Thu, 04 Apr 2024 18:33:05 -0700
+
 imp (2.20.1-4~@CODENAME@) @CODENAME@; urgency=low
 
   * Add missing dependencies in order to test the install
