@@ -207,7 +207,7 @@ This package contains wrappers for Python 2 (the base package already
 includes Python 3 wrappers).
 %endif
 
-%define MPI_MODULES mpi spb
+%define MPI_MODULES mpi spb nestor
 
 %if 0%{?with_mpich}
 %package mpich
@@ -223,7 +223,7 @@ BuildRequires: mpich-devel
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
 using the mpich library. It also includes all IMP modules that depend
-on IMP.mpi (IMP.spb).
+on IMP.mpi (IMP.spb, IMP.nestor).
 
 %package mpich-devel
 Group:         Applications/Engineering
@@ -243,13 +243,19 @@ Requires:      %{name} = %{version}-%{release}
 Requires:      openmpi
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:      python3-openmpi
+BuildRequires: python3-mpi4py-openmpi
 %endif
 BuildRequires: openmpi-devel
+# Need for nestor module
+%if 0%{?with_python3}
+BuildRequires: python3-pyyaml
+Requires:      python3-pyyaml
+%endif
 
 %description openmpi
 This package contains an IMP.mpi module to add MPI support,
 using the openmpi library. It also includes all IMP modules that depend
-on IMP.mpi (IMP.spb).
+on IMP.mpi (IMP.spb, IMP.nestor).
 
 %package openmpi-devel
 Group:         Applications/Engineering
@@ -476,6 +482,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
+%exclude %{_libdir}/%{default_python}*/site-packages/IMP/nestor
 %endif
 
 %if 0%{?with_python2} && 0%{?with_python3}
@@ -499,8 +506,11 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%{_prefix}/share/IMP/build_info/IMP.nestor
+%{_prefix}/share/IMP/build_info/IMP_nestor.pck
 %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %{_libdir}/%{default_python}*/site-packages/IMP/spb
+%{_libdir}/%{default_python}*/site-packages/IMP/nestor
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
@@ -528,6 +538,8 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_prefix}/share/IMP/build_info/IMP.spb
 %exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.nestor
+%exclude %{_prefix}/share/IMP/build_info/IMP_nestor.pck
 %endif
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
