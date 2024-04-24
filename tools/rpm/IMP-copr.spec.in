@@ -216,6 +216,7 @@ includes Python 3 wrappers).
 %endif
 
 %define MPI_MODULES mpi spb nestor
+%define MPI_CPP_MODULES mpi spb
 
 %if 0%{?with_mpich}
 %package mpich
@@ -375,7 +376,7 @@ done
 (cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
 (cd %{buildroot}%{_libdir} && mkdir -p mpich/bin mpich/lib)
 (cd %{buildroot}%{_bindir} && mv spb* %{buildroot}%{_libdir}/mpich/bin)
-for mod in %{MPI_MODULES}; do
+for mod in %{MPI_CPP_MODULES}; do
   (cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
   (cd %{buildroot}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
