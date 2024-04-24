@@ -1,7 +1,7 @@
 Source: imp
 Priority: optional
 Maintainer: Ben Webb <ben@salilab.org>
-Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, libopenmpi-dev, rmf-dev (>= 1.6), python3-ihm, scons, lsb-release, python3-protobuf python3-yaml
+Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, libopenmpi-dev, rmf-dev (>= 1.6), python3-ihm, scons, lsb-release, python3-protobuf, python3-yaml, python3-mpi4py
 Standards-Version: 4.6.2
 Section: libs
 Homepage: https://integrativemodeling.org/
@@ -48,6 +48,6 @@ Description: The Integrative Modeling Platform
 Package: imp-openmpi
 Section: libs
 Architecture: any
-Depends: imp (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: imp (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3-mpi4py
 Description: The Integrative Modeling Platform - support for OpenMPI
  IMP MPI module and dependents, for openmpi.
