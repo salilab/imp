@@ -218,8 +218,14 @@ Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:      python3-mpich
+BuildRequires: python3-mpi4py-mpich
 %endif
 BuildRequires: mpich-devel
+# Need for nestor module
+%if 0%{?with_python3}
+BuildRequires: python3-pyyaml
+Requires:      python3-pyyaml
+%endif
 
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
