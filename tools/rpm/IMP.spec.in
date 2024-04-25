@@ -364,9 +364,12 @@ module purge
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
+%if 0%{?with_python2}
+py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+%endif
+
 %if 0%{?with_python2} && 0%{?with_python3}
 # Build Python 2 wrappers
-py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py2_lib=`echo %{_libdir}/libpython2.*.so`
 py2_inc=`echo /usr/include/python2.*`
