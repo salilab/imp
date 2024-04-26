@@ -457,6 +457,7 @@ cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 # Don't include Python 3-only modules in Python 2 package
 %if 0%{?with_python2}
 rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/nestor
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples/nestor
 %endif
 
 # Don't distribute example application or dependency
