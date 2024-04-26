@@ -29,22 +29,23 @@ function(imp_find_python)
       endif()
       set(PYTHON_EXECUTABLE ${python_full_path} CACHE INTERNAL "" FORCE)
       set(PYTHON_TEST_EXECUTABLE ${python_full_path} CACHE STRING "")
-      execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
-                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                      OUTPUT_VARIABLE python_full_version
-                      OUTPUT_STRIP_TRAILING_WHITESPACE)
-      string(REGEX REPLACE "^([0-9])+\\.[0-9]+.*" "\\1" major
-             "${python_full_version}")
-      string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" minor
-             "${python_full_version}")
-      string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" patch
-             "${python_full_version}")
-      set(PYTHON_VERSION ${python_full_version} CACHE INTERNAL "" FORCE)
-      set(PYTHON_VERSION_MAJOR ${major} CACHE INTERNAL "" FORCE)
-      set(PYTHON_VERSION_MINOR ${minor} CACHE INTERNAL "" FORCE)
-      set(PYTHON_VERSION_PATCH ${patch} CACHE INTERNAL "" FORCE)
-      message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
-
+    endif()
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
+                    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                    OUTPUT_VARIABLE python_full_version
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REGEX REPLACE "^([0-9])+\\.[0-9]+.*" "\\1" major
+           "${python_full_version}")
+    string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" minor
+           "${python_full_version}")
+    string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" patch
+           "${python_full_version}")
+    set(PYTHON_VERSION ${python_full_version} CACHE INTERNAL "" FORCE)
+    set(PYTHON_VERSION_MAJOR ${major} CACHE INTERNAL "" FORCE)
+    set(PYTHON_VERSION_MINOR ${minor} CACHE INTERNAL "" FORCE)
+    set(PYTHON_VERSION_PATCH ${patch} CACHE INTERNAL "" FORCE)
+    message(STATUS "Python binary is " ${PYTHON_EXECUTABLE} " (version " ${python_full_version} ")")
+    if(NOT DEFINED PYTHON_INCLUDE_DIRS)
       find_package(PythonLibs ${python_full_version} EXACT REQUIRED)
       # Make sure PYTHON_INCLUDE_DIRS is in the cache so it can be
       # used elsewhere
