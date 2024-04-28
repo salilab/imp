@@ -455,7 +455,7 @@ cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 
 # Don't include Python 3-only modules in Python 2 package
-%if 0%{?with_python2}
+%if 0%{?with_python3} == 0
 rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/nestor
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples/nestor
 %endif
@@ -517,11 +517,13 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%if 0%{?with_python3}
 %{_prefix}/share/IMP/build_info/IMP.nestor
 %{_prefix}/share/IMP/build_info/IMP_nestor.pck
+%{_libdir}/%{default_python}*/site-packages/IMP/nestor
+%endif
 %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %{_libdir}/%{default_python}*/site-packages/IMP/spb
-%{_libdir}/%{default_python}*/site-packages/IMP/nestor
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
