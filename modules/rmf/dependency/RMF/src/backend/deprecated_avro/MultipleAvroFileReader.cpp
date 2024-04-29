@@ -7,6 +7,7 @@
  */
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/directory.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/functional/hash/hash.hpp>
 #include <boost/iterator/iterator_facade.hpp>

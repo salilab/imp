@@ -54,7 +54,7 @@ find_package(Boost COMPONENTS system filesystem thread program_options iostreams
   REQUIRED)
 
 include(FindHDF5)
-find_package(HDF5 1.8)
+find_package(HDF5)
 
 if("${HDF5_INCLUDE_DIRS}" MATCHES .*NOTFOUND)
 set(RMF_DEPRECATED_BACKENDS 0 CACHE BOOL "Whether to build deprecated backends.")

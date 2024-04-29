@@ -7,6 +7,7 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/directory.hpp>
 #include <exception>
 #include <iostream>
 #include <chrono>
