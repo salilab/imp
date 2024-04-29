@@ -6,8 +6,11 @@
  */
 
 #include <boost/iterator/iterator_facade.hpp>
+#include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
+#if BOOST_VERSION >= 107200
 #include <boost/filesystem/directory.hpp>
+#endif
 #include <exception>
 #include <iostream>
 #include <chrono>
