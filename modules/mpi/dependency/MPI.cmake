@@ -1,7 +1,3 @@
-# We don't need the deprecated C++ bindings, so try to suppress linkage
-# against them
-set(MPI_CXX_SKIP_MPICXX TRUE CACHE BOOL "" FORCE)
-
 find_package(MPI)
 
 if("${MPI_CXX_FOUND}")
