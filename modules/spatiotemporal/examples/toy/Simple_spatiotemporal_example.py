@@ -1,13 +1,16 @@
-# import relevant modules
 import sys
-import IMP.spatiotemporal as spatiotemporal
-import os
 
 # Example of model without temporal scoring -----------------------------------------------------------------
 
 if sys.version_info[0] < 3:
     print("Sorry, this example needs Python 3 and a recent version of numpy")
     sys.exit(0)
+
+
+# import relevant modules
+import pandas
+import IMP.spatiotemporal as spatiotemporal
+import os
 
 # Input variables. 
 # dict is a the state dictionary, which returns the number of states at each time point, for each time point.
