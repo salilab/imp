@@ -57,6 +57,11 @@ if(POLICY CMP0056)
 cmake_policy(SET CMP0056 NEW)
 endif(POLICY CMP0056)
 
+# Don't complain about our use of FindCUDA for now
+if(POLICY CMP0146)
+cmake_policy(SET CMP0146 OLD)
+endif(POLICY CMP0146)
+
 include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPExecuteProcess.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPAddTests.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake_modules/CheckCompiles.cmake)
