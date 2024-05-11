@@ -16,6 +16,11 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+// We only want the C API, so try to suppress the C++ API
+#define MPICH_SKIP_MPICXX
+#define OMPI_SKIP_MPICXX
+#define _MPICC_H
 #include "mpi.h"
 
 using namespace IMP;
