@@ -1,6 +1,14 @@
 Change Log {#changelog}
 ==========
 
+# 1.6.1 - 2024-05-13 # {#changelog_1_6_1}
+- .deb packages for RMF for Ubuntu are now provided via the
+  [Ubuntu PPA](https://launchpad.net/~salilab/+archive/ubuntu/ppa) mechanism.
+- `rmf_cat` now checks that all of the files it has been asked to concatenate
+  have the same structure and static frame, and exits with an error if they
+  don't. A new `--force` option is provided to override this check.
+- Bugfix: fixes to build with Boost 1.85
+
 # 1.6.0 - 2023-12-14 # {#changelog_1_6_0}
 - RPM packages for RMF for RedHat Linux (and clones such as Alma or Rocky)
   and for Fedora are now provided by the
