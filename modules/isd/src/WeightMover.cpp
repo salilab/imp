@@ -9,7 +9,6 @@
 #include <IMP/isd/Weight.h>
 #include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
-#include <boost/random/uniform_real.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 

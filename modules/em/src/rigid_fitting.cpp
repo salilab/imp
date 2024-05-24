@@ -240,7 +240,8 @@ FittingSolutions local_rigid_fitting_grid_search(
   for (int i = 0; i < number_of_rotations; i++) {
     algebra::Vector3D axis = algebra::get_random_vector_on(
         algebra::Sphere3D(algebra::Vector3D(0.0, 0.0, 0.0), 1.));
-    ::boost::uniform_real<> rand(-max_angle_in_radians, max_angle_in_radians);
+    ::boost::random::uniform_real_distribution<> rand(-max_angle_in_radians,
+                                                      max_angle_in_radians);
     Float angle = rand(random_number_generator);
     algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
     rots.push_back(r);

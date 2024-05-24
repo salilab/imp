@@ -27,7 +27,7 @@ BoxedMover::BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers)
 core::MonteCarloMoverResult BoxedMover::do_propose() {
   /*IMP_LOG(VERBOSE,"BoxedMover:: propose move f is  : " << f <<std::endl);
   {
-    ::boost::uniform_real<> rand(0,1);
+    ::boost::random::uniform_real_distribution<> rand(0,1);
     double fc =rand(random_number_generator);
     if (fc > f) return ParticlesTemp();
   }

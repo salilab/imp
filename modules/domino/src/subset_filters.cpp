@@ -682,7 +682,7 @@ void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
 namespace {
 class ProbabilisticSubsetFilter : public SubsetFilter {
   double p_;
-  mutable boost::uniform_real<> r_;
+  mutable boost::random::uniform_real_distribution<> r_;
 
  public:
   ProbabilisticSubsetFilter(double p)

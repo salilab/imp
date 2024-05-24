@@ -24,7 +24,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     IMP_NEW(Model, m, ());
     ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
     ParticleIndexes psi = IMP::internal::get_index(ps);
-    ::boost::uniform_real<> rand(rmin, rmax);
+    ::boost::random::uniform_real_distribution<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
@@ -45,7 +45,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
     ParticleIndexes ps0i = IMP::internal::get_index(ps0);
     ParticleIndexes ps1i = IMP::internal::get_index(ps1);
-    ::boost::uniform_real<> rand(rmin, rmax);
+    ::boost::random::uniform_real_distribution<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps0.size(); ++i) {
       XYZ(ps0[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));

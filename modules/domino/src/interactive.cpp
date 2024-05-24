@@ -6,7 +6,7 @@
  */
 #include <IMP/domino/interactive.h>
 #include <IMP/domino/internal/tree_inference.h>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -52,8 +52,8 @@ void load_merged_assignments_random_order(const Subset &first_subset,
   Assignments nd1a =
       second->get_assignments(IntRange(0, second->get_number_of_assignments()));
 
-  boost::uniform_int<> dist0(0, nd0a.size() - 1);
-  boost::uniform_int<> dist1(0, nd1a.size() - 1);
+  boost::random::uniform_int_distribution<> dist0(0, nd0a.size() - 1);
+  boost::random::uniform_int_distribution<> dist1(0, nd1a.size() - 1);
   IMP_PROGRESS_DISPLAY("Merge " << first_subset << " and " << second_subset,
                        maximum_tries);
   for (unsigned int t = 0; t < maximum_tries; ++t) {

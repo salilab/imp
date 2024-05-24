@@ -7,7 +7,7 @@
 
 #include <IMP/saxs/RatioVolatilityScore.h>
 #include <IMP/saxs/ChiScore.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <algorithm>
 
 IMPSAXS_BEGIN_NAMESPACE

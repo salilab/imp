@@ -12,7 +12,7 @@
 #include <IMP/kinematics/kinematics_config.h>
 #include "DOFsSampler.h"
 #include "revolute_joints.h"
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -42,7 +42,7 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
 
  private:
   //  boost::mt19937 rng_; // init random number generator
-  mutable std::vector<boost::uniform_real<> > u_rand_;
+  mutable std::vector<boost::random::uniform_real_distribution<> > u_rand_;
   DihedralAngleRevoluteJoints joints_;
 };
 

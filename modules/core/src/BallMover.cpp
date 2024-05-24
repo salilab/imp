@@ -10,7 +10,6 @@
 #include <IMP/random.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
-#include <boost/random/uniform_real.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 

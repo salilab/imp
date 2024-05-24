@@ -16,7 +16,7 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
 
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -210,7 +210,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   bool score_moved_;
   double min_score_;
   IMP::PointerMember<Configuration> best_;
-  ::boost::uniform_real<> rand_;
+  ::boost::random::uniform_real_distribution<> rand_;
 };
 
 //! This variant of Monte Carlo that relaxes after each move

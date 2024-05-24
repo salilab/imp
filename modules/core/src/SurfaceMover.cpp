@@ -70,14 +70,14 @@ MonteCarloMoverResult SurfaceMover::do_propose() {
   if (max_angle_ > 0) {
     algebra::Vector3D axis =
         algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
-    ::boost::uniform_real<> rand1(-max_angle_, max_angle_);
+    ::boost::random::uniform_real_distribution<> rand1(-max_angle_, max_angle_);
     Float angle = rand1(random_number_generator);
     algebra::Rotation3D rt = algebra::get_rotation_about_axis(axis, angle);
     s.set_normal(rt.get_rotated(s.get_normal()));
   }
 
   if (reflect_prob_ > 0) {
-    ::boost::uniform_real<> rand2(0, 1);
+    ::boost::random::uniform_real_distribution<> rand2(0, 1);
     Float test = rand2(random_number_generator);
     if (test < reflect_prob_) {
       s.reflect();

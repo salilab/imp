@@ -13,7 +13,7 @@
 #include <IMP/flags.h>
 #include <IMP/test/test_macros.h>
 #include <IMP/random.h>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <numeric>
 
 // Skip test on g++ 4.2, since it fails to compile due to a g++ bug
@@ -191,8 +191,8 @@ int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test memoizer");
   IMP::set_log_level(IMP::VERBOSE);
   const int n = 5;
-  boost::uniform_int<> ui(0, n * 2);
-  boost::uniform_int<> pi(0, n - 1);
+  boost::random::uniform_int_distribution<> ui(0, n * 2);
+  boost::random::uniform_int_distribution<> pi(0, n - 1);
 
   for (int i = 0; i < n; ++i) {
     values.push_back(ui(IMP::random_number_generator));

@@ -157,7 +157,7 @@ TransformationSymmetryMover::get_random_rotation_about_point(
   // First, get a random rotation about the origin
   algebra::Vector3D axis =
       algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
-  ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+  ::boost::random::uniform_real_distribution<> rand(-max_angle_, max_angle_);
   Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
 

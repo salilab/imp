@@ -12,7 +12,7 @@
 #include <IMP/exception.h>
 #include <cmath>
 #include <IMP/random.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <Eigen/Dense>
 #include <IMP/flags.h>
 
@@ -20,7 +20,7 @@ namespace {
 
 using namespace IMP::isd;
 
-boost::uniform_real<> uniform(0, 1);
+boost::random::uniform_real_distribution<> uniform(0, 1);
 
 #define rand() uniform(IMP::random_number_generator)
 

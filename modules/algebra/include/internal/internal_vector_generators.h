@@ -18,8 +18,8 @@
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
 #include <limits>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/exponential_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 
@@ -28,7 +28,8 @@ template <int D>
 inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret = bb.get_corner(0);  // some appropriate vector
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
-    ::boost::uniform_real<> rand(bb.get_corner(0)[i], bb.get_corner(1)[i]);
+    ::boost::random::uniform_real_distribution<> rand(bb.get_corner(0)[i],
+                                                      bb.get_corner(1)[i]);
     ret[i] = rand(random_number_generator);
   }
   return ret;
@@ -61,7 +62,7 @@ inline VectorD<-1> get_random_vector_on(const SphereD<-1> &s) {
 }
 
 inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
-  ::boost::uniform_real<> rand(0, 2 * PI);
+  ::boost::random::uniform_real_distribution<> rand(0, 2 * PI);
   double angle = rand(random_number_generator);
   VectorD<2> ret(s.get_radius() * sin(angle), s.get_radius() * cos(angle));
   return ret + s.get_center();
@@ -70,7 +71,7 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
 //! returns a random vector on a sphere of radius 1
 //! with implementation optimized for the 3D unit vector case
 inline VectorD<3> get_random_vector_on_unit_sphere() {
-  //  ::boost::uniform_real<> rand(-1, 1);
+  //  ::boost::random::uniform_real_distribution<> rand(-1, 1);
   do {
     //    double x1 = rand(random_number_generator);
     //    double x2 = rand(random_number_generator);
@@ -117,12 +118,12 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   Floats up(s.get_center().get_dimension());
   for (unsigned int i=s.get_dimension()-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
-    ::boost::uniform_real<> rand(-r, r);
+    ::boost::random::uniform_real_distribution<> rand(-r, r);
     up[i]= rand(random_number_generator);
     // radius of circle
     cur_radius2= cur_radius2-get_squared(up[i]);
   }
-  ::boost::uniform_int<> rand(0, 1);
+  ::boost::random::uniform_int_distribution<> rand(0, 1);
   double x= std::sqrt(cur_radius2);
   if (rand(random_number_generator)) {
     x=-x;
@@ -293,7 +294,8 @@ struct RandomVectorOnBB {
     /*for (unsigned int i=0; i< D*2; ++i) {
       std::cout << areas[i] << " ";
       }*/
-    ::boost::uniform_real<> rand(0, areas[2 * bb.get_dimension() - 1]);
+    ::boost::random::uniform_real_distribution<> rand(
+                                  0, areas[2 * bb.get_dimension() - 1]);
     double a = rand(random_number_generator);
     // std::cout << ": " << a << std::endl;
     unsigned int side;
@@ -335,7 +337,7 @@ struct RandomVectorOnBB {
 template <>
 struct RandomVectorOnBB<1> {
   static VectorD<1> get(BoundingBoxD<1> bb) {
-    ::boost::uniform_int<> rand(0, 1);
+    ::boost::random::uniform_int_distribution<> rand(0, 1);
     return bb.get_corner(rand(random_number_generator));
   }
 };

@@ -16,7 +16,7 @@
 #include <cmath>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ void LognormalAmbiguousRestraint::draw_k_from_posterior(double kt)
     pi.push_back(xi[k]/sumi);
   }
 
-  boost::uniform_real<> rand(0.0,1.0);
+  boost::random::uniform_real_distribution<> rand(0.0,1.0);
   double a =rand(IMP::random_number_generator);
 
   sumi=0.0;

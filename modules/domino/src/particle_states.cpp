@@ -11,7 +11,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/random.h>
 #include <algorithm>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
@@ -178,7 +178,7 @@ namespace {
 struct RandomWrapper {
   int operator()(int i) {
     IMP_INTERNAL_CHECK(i > 0, "Zero i");
-    boost::uniform_int<unsigned int> ri(0, i - i);
+    boost::random::uniform_int_distribution<unsigned int> ri(0, i - i);
     unsigned int ret = ri(random_number_generator);
     return ret;
   }

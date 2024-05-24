@@ -23,8 +23,9 @@ FibrilSampler::FibrilSampler(
   // TODO: Ensure that first DOF is a Transformation Joint
   // init random number generators
   for (unsigned int i = 0; i < get_number_of_dofs(); i++) {
-    boost::uniform_real<> u_rand_i(get_dof(i)->get_range().first,
-                                   get_dof(i)->get_range().second);
+    boost::random::uniform_real_distribution<> u_rand_i(
+                    get_dof(i)->get_range().first,
+                    get_dof(i)->get_range().second);
     u_rand_.push_back(u_rand_i);
   }
 }
