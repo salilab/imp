@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "0.43"
+VERSION = "1.1"
 
 copy_args = sys.argv[1:]
 
@@ -52,7 +52,7 @@ setup(name='ihm',
       author_email='ben@salilab.org',
       url='https://github.com/ihmwg/python-ihm',
       ext_modules=mod,
-      packages=['ihm'],
+      packages=['ihm', 'ihm.util'],
       install_requires=['msgpack'],
       classifiers=[
           "Programming Language :: Python :: 2.7",

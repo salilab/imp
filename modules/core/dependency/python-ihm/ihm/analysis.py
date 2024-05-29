@@ -8,9 +8,10 @@ from ihm.util import _text_choice_property
 class Step(object):
     """A single step in an :class:`Analysis`.
 
-       Normally one of the base classes is used; see :class:`FilterStep`,
-       :class:`ClusterStep`, :class:`RescoreStep`, :class:`ValidationStep`,
-       :class:`OtherStep`, and :class:`EmptyStep`.
+       Normally one of the more specific derived classes is used;
+       see :class:`FilterStep`, :class:`ClusterStep`, :class:`RescoreStep`,
+       :class:`ValidationStep`, and :class:`EmptyStep`, although this base
+       class can be used for a generic 'other' step.
 
        :param str feature: feature energy/score;RMSD;dRMSD;other
        :param int num_models_begin: The number of models at the beginning

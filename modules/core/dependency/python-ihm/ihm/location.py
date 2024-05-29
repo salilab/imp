@@ -19,8 +19,8 @@ class Location(object):
            experimental dataset may be found;
          - an :class:`~ihm.model.Ensemble` to point to coordinates for an
            entire ensemble, for example as a DCD file;
-         - a :class:`LocalizationDensity` to point to an external localization
-           density, for example in MRC format;
+         - a :class:`ihm.model.LocalizationDensity` to point to an external
+           localization density, for example in MRC format;
          - :data:`ihm.System.locations` to point to other files relating
            to the modeling in general, such as a modeling control script
            (:class:`WorkflowFileLocation`) or a command script for a
@@ -191,15 +191,16 @@ class FileLocation(Location):
               containing the file, or `None` if it is stored on the local disk
        :type repo: :class:`Repository`
        :param str details: optional description of the file
+       :param str file_format: optional file type (e.g. TXT, PNG, FASTA)
     """
 
     _eq_keys = Location._eq_keys + ['repo', 'path', 'content_type']
 
-    content_type = None
+    content_type = 'Other'
 
-    def __init__(self, path, repo=None, details=None):
+    def __init__(self, path, repo=None, details=None, file_format=None):
         super(FileLocation, self).__init__(details)
-        self.repo = repo
+        self.repo, self.file_format = repo, file_format
         if repo:
             self.path = path
             # Cannot determine file size if non-local

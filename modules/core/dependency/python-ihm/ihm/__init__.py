@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '0.43'
+__version__ = '1.1'
 
 
 class __UnknownValue(object):
@@ -74,14 +74,22 @@ class System(object):
        :param str id: Unique identifier for this system in the mmCIF file.
        :param str model_details: Detailed description of the system, like an
                                  abstract.
+       :param databases: If this system is part of one or more official
+              databases (e.g. PDB, PDB-Dev, SwissModel), details of
+              the database identifiers.
+       :type databases: sequence of :class:`Database`
     """
 
     structure_determination_methodology = "integrative"
 
-    def __init__(self, title=None, id='model', model_details=None):
+    def __init__(self, title=None, id='model', model_details=None,
+                 databases=[]):
         self.id = id
         self.title = title
         self.model_details = model_details
+        self.databases = []
+        self.databases.extend(databases)
+        self._database_status = {}
 
         #: List of plain text comments. These will be added to the top of
         #: the mmCIF file.
@@ -93,7 +101,7 @@ class System(object):
         #: List of all authors of this system, as a list of strings (last name
         #: followed by initials, e.g. "Smith, A.J."). When writing out a file,
         #: if this list is empty, the set of all citation authors (see
-        #: :attr:`Citation.authors`) is used instead.
+        #: :class:`Citation`) is used instead.
         self.authors = []
 
         #: List of all grants that supported this work. See :class:`Grant`.
@@ -663,6 +671,24 @@ class System(object):
                     "can be grouped." % g)
 
 
+class Database(object):
+    """Information about a System that is part of an official database.
+
+       If a :class:`System` is part of one or more official databases
+       (e.g. PDB, PDB-Dev, SwissModel), this class contains details of the
+       database identifiers. It should be passed to the :class:`System`
+       constructor.
+
+       :param str id: Abbreviated name of the database (e.g. PDB).
+       :param str code: Identifier from the database (e.g. 1abc).
+       :param str doi: Digital Object Identifier of the database entry.
+       :param str accession: Extended accession code of the database entry.
+       """
+    def __init__(self, id, code, doi=None, accession=None):
+        self.id, self.code = id, code
+        self.doi, self.accession = doi, accession
+
+
 class Software(object):
     """Software used as part of the modeling protocol.
 
@@ -681,7 +707,7 @@ class Software(object):
        passed to :class:`ihm.startmodel.StartingModel`,
        :class:`ihm.protocol.Step`,
        :class:`ihm.analysis.Step`, or
-       :class:`ihm.restraint.PredictedContactResstraint` objects.
+       :class:`ihm.restraint.PredictedContactRestraint` objects.
     """
     def __init__(self, name, classification, description, location,
                  type='program', version=None, citation=None):
@@ -902,7 +928,7 @@ class ChemComp(object):
 
     def __get_weight(self):
         # Calculate weight from formula
-        if self.formula is None:
+        if self.formula in (None, unknown):
             return
         spl = self.formula.split()
         # Remove formal charge if present
@@ -1250,7 +1276,7 @@ class Residue(object):
         self.seq_id = seq_id
 
     def atom(self, atom_id):
-        """Get a :class:`Atom` in this residue with the given name."""
+        """Get a :class:`~ihm.Atom` in this residue with the given name."""
         return Atom(residue=self, id=atom_id)
 
     def _get_auth_seq_id(self):
@@ -1380,11 +1406,11 @@ class Entity(object):
 
         #: String descriptors of branched chemical structure.
         #: These generally only make sense for oligosaccharide entities,
-        #: and should be a list of :class:`BranchDescriptor` objects.
+        #: and should be a list of :class:`~ihm.BranchDescriptor` objects.
         self.branch_descriptors = []
 
         #: Any links between components in a branched entity.
-        #: This is a list of :class:`BranchLink` objects.
+        #: This is a list of :class:`~ihm.BranchLink` objects.
         self.branch_links = []
 
     def __str__(self):
@@ -1402,7 +1428,7 @@ class Entity(object):
     def is_branched(self):
         """Return True iff this entity is branched (generally
            an oligosaccharide)"""
-        return ((len(self.sequence) > 0
+        return ((len(self.sequence) > 1
                  and isinstance(self.sequence[0], SaccharideChemComp)) or
                 (len(self.sequence) == 0 and self._hint_branched))
 
@@ -1491,7 +1517,7 @@ class AsymUnit(object):
        was modeled.
 
        Note that this class should not be used to describe crystal waters;
-       for that, see :class:`WaterAsymUnit`.
+       for that, see :class:`ihm.WaterAsymUnit`.
 
        :param entity: The unique sequence of this asymmetric unit.
        :type entity: :class:`Entity`
@@ -1523,12 +1549,13 @@ class AsymUnit(object):
               numbering. This differs from `auth_seq_id_map` as the original
               numbering need not follow any defined scheme, while
               `auth_seq_id_map` must follow certain PDB-defined rules. This
-              can either be a mapping type (dict, list, tuple) in which case
+              can be any mapping type (dict, list, tuple) in which case
               ``orig_auth_seq_id = orig_auth_seq_id_map[seq_id]``. If the
               mapping is None (the default), or a given `seq_id` cannot be
               found in the mapping, ``orig_auth_seq_id = auth_seq_id``.
               This mapping is only used in the various `scheme` tables, such
               as ``pdbx_poly_seq_scheme``.
+
        See :attr:`System.asym_units`.
     """
 
@@ -1544,6 +1571,11 @@ class AsymUnit(object):
         self.orig_auth_seq_id_map = orig_auth_seq_id_map
         self.id = id
         self._strand_id = strand_id
+
+        #: For branched entities read from files, mapping from provisional
+        #: to final internal numbering (`seq_id`), or None if no mapping is
+        #: necessary. See :meth:`ihm.model.Model.add_atom`.
+        self.num_map = None
 
     def _get_auth_seq_id_ins_code(self, seq_id):
         if isinstance(self.auth_seq_id_map, int):
@@ -1604,13 +1636,14 @@ class WaterAsymUnit(AsymUnit):
     """
 
     def __init__(self, entity, number, details=None, auth_seq_id_map=0,
-                 id=None, strand_id=None):
+                 id=None, strand_id=None, orig_auth_seq_id_map=None):
         if entity.type != 'water':
             raise TypeError(
                 "WaterAsymUnit can only be used for water entities")
         super(WaterAsymUnit, self).__init__(
             entity, details=details, auth_seq_id_map=auth_seq_id_map,
-            id=id, strand_id=strand_id)
+            id=id, strand_id=strand_id,
+            orig_auth_seq_id_map=orig_auth_seq_id_map)
         self.number = number
         self._water_sequence = [entity.sequence[0]] * number
 

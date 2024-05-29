@@ -135,6 +135,12 @@ class Model(object):
         """Add to the model's set of :class:`Atom` objects.
 
            See :meth:`get_spheres` for more details.
+
+           Note that for branched entities, the `seq_id` of the new atom
+           is provisional. It should be mapped to the correct ID once the
+           input file is completely read, using :attr:`ihm.AsymUnit.num_map`.
+           This is done automatically by ihm.reader when using the default
+           implementation.
         """
         self._atoms.append(atom)
 

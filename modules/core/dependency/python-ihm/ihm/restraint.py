@@ -587,14 +587,14 @@ class Feature(object):
 class ResidueFeature(Feature):
     """Selection of one or more residues from the system.
 
-       Residues can be selected from both :class:`AsymUnit` and
-       :class:`Entity` (the latter implies that it selects residues
+       Residues can be selected from both :class:`ihm.AsymUnit` and
+       :class:`ihm.Entity` (the latter implies that it selects residues
        in all instances of that entity). Individual residues can
-       also be selected by passing :class:`Residue` objects.
+       also be selected by passing :class:`ihm.Residue` objects.
 
-       :param sequence ranges: A list of :class:`AsymUnitRange`,
-              :class:`AsymUnit`, :class:`EntityRange`, :class:`Residue`,
-              and/or :class:`Entity` objects.
+       :param sequence ranges: A list of :class:`ihm.AsymUnitRange`,
+              :class:`ihm.AsymUnit`, :class:`ihm.EntityRange`,
+              :class:`ihm.Residue`, and/or :class:`ihm.Entity` objects.
        :param str details: Additional text describing this feature.
     """
 
@@ -628,8 +628,8 @@ class ResidueFeature(Feature):
 class AtomFeature(Feature):
     """Selection of one or more atoms from the system.
        Atoms can be selected from polymers or non-polymers (but not both).
-       Atoms can also be selected from both :class:`AsymUnit` and
-       :class:`Entity` (the latter implies that it selects atoms
+       Atoms can also be selected from both :class:`ihm.AsymUnit` and
+       :class:`ihm.Entity` (the latter implies that it selects atoms
        in all instances of that entity).
        For selecting an entire polymer or residue(s),
        see :class:`ResidueFeature`. For selecting an entire non-polymer,
@@ -659,12 +659,12 @@ class NonPolyFeature(Feature):
     """Selection of one or more non-polymers from the system.
        To select individual atoms from a non-polymer, see :class:`AtomFeature`.
 
-       Features can include both :class:`AsymUnit` and
-       :class:`Entity` (the latter implies that it selects non-polymers
+       Features can include both :class:`ihm.AsymUnit` and
+       :class:`ihm.Entity` (the latter implies that it selects non-polymers
        in all instances of that entity).
 
-       :param sequence objs: A list of :class:`AsymUnit` and/or
-              :class:`Entity` objects.
+       :param sequence objs: A list of :class:`ihm.AsymUnit` and/or
+              :class:`ihm.Entity` objects.
        :param str details: Additional text describing this feature.
     """
 

@@ -156,3 +156,6 @@ texinfo_documents = [
      author, 'Python-IHM', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+# Warn about broken links to classes, etc.
+nitpicky = True

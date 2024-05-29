@@ -1,3 +1,33 @@
+1.1 - 2024-05-09
+================
+  - :class:`ihm.System` now allows for one or more official database IDs to
+    be associated with the system using the new :class:`ihm.Database` class.
+    This maps to the mmCIF ``_database_2`` category (#135).
+  - :class:`ihm.location.FileLocation` now allows for an optional file format
+    to be specified (#139).
+  - The ``util/make-mmcif.py`` script is now included in the installed package,
+    so can be run if desired with ``python3 -m ihm.util.make_mmcif`` (#134).
+  - Bugfix: allow for file sizes in input mmCIF files to be floating point
+    values (#138).
+  - Bugfix: the 'Other' content type is now handled correctly when reading
+    information about external files from an mmCIF file (#139).
+
+1.0 - 2024-02-13
+================
+  - Support for multi-state schemes (such as kinetic rates and relaxation
+    times for conversions between states) was added;
+    see :mod:`ihm.multi_state_scheme`.
+  - Residue numbering in non-polymer, water, and branched entities should
+    now be better handled, no longer requiring the various scheme tables
+    to precede ``atom_site``. If you subclass :class:`ihm.model.Model`, atoms
+    may need to be renumbered; see :meth:`ihm.model.Model.add_atom` (#130).
+  - Original author-provided numbering can now be provided for waters,
+    using the ``orig_auth_seq_id_map`` argument to :class:`ihm.WaterAsymUnit`.
+  - The make-mmcif.py utility script now has basic functionality for
+    combining multiple input files into one, relabeling chain IDs if necessary.
+  - An :class:`ihm.Entity` containing just a single sugar is now classified
+    as a nonpolymer, not branched.
+
 0.43 - 2023-12-08
 =================
   - Branched and polymeric empty entities are now distinguished

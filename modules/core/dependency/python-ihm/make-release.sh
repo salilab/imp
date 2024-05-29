@@ -4,7 +4,8 @@
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
 # - Run util/validate-outputs.py to make sure all example outputs validate
 #   (cd util; PYTHONPATH=.. python3 ./validate-outputs.py)
-# - Update ChangeLog.rst and util/python-ihm.spec with the release number
+# - Update ChangeLog.rst, util/debian/changelog, and util/python-ihm.spec
+#   with the release number and date
 # - Update release number in ihm/__init__.py, MANIFEST.in, and setup.py
 # - Commit, tag, and push
 # - Make release on GitHub
@@ -23,4 +24,4 @@ python3 setup.py sdist
 rm -f "src/ihm_format_wrap_${VERSION}.c"
 
 echo "Now use 'twine upload dist/ihm-${VERSION}.tar.gz' to publish the release on PyPi."
-echo "Then, update the conda-forge, COPR, and Homebrew packages to match."
+echo "Then, update the conda-forge, COPR, PPA, and Homebrew packages to match."

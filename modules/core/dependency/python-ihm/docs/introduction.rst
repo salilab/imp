@@ -20,11 +20,11 @@ application with a set of Python objects. This includes
 
 Once created, this set of Python objects can be written to an mmCIF file
 that is compliant with the
-`IHM extension <https://github.com/ihmwg/IHM-dictionary>`_
-to the `PDBx/mmCIF dictionary <http://mmcif.wwpdb.org/>`_,
+`IHMCIF extension <https://github.com/ihmwg/IHMCIF>`_
+to the `PDBx/mmCIF dictionary <https://mmcif.wwpdb.org/>`_,
 suitable for deposition in the
 `PDB-Dev repository <https://pdb-dev.wwpdb.org/>`_. The files are best viewed
-in a viewer that supports IHM mmCIF, such as
+in a viewer that supports IHMCIF, such as
 `UCSF ChimeraX <https://www.cgl.ucsf.edu/chimerax/>`_, although they may be
 partially viewable in regular PDBx mmCIF viewers (likely only the atomic
 coordinates will be visible).

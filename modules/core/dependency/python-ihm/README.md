@@ -6,9 +6,9 @@
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/5o28oe477ii8ur4h?svg=true)](https://ci.appveyor.com/project/benmwebb/python-ihm)
 [![codecov](https://codecov.io/gh/ihmwg/python-ihm/branch/main/graph/badge.svg)](https://codecov.io/gh/ihmwg/python-ihm)
 
-This is a Python package to assist in handling [mmCIF](http://mmcif.wwpdb.org/)
+This is a Python package to assist in handling [mmCIF](https://mmcif.wwpdb.org/)
 and [BinaryCIF](https://github.com/dsehnal/BinaryCIF) files compliant with the
-[integrative/hybrid modeling (IHM)](http://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Index/)
+[integrative/hybrid modeling (IHM)](https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Index/)
 extension. It works with Python 2.7 or Python 3.
 
 To handle non-integrative theoretical models (for example, homology models),
@@ -40,6 +40,14 @@ On a Fedora or RedHat Enterprise Linux box, install with
 
 ```
 dnf copr enable salilab/salilab; dnf install python3-ihm
+```
+
+On an Ubuntu LTS box, install from
+[our PPA](https://launchpad.net/~salilab/+archive/ubuntu/ppa) with
+
+```
+apt install software-properties-common; add-apt-repository ppa:salilab/ppa;
+apt install python3-ihm
 ```
 
 Alternatively, install with pip:

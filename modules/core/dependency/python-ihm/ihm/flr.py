@@ -203,7 +203,7 @@ class EntityAssembly(object):
     """The assembly of the entities that are in the system.
 
        :param entity: The entity to add.
-       :type entity: :class:`Entity`
+       :type entity: :class:`ihm.Entity`
        :param num_copies: The number of copies for the entity in the assembly.
     """
 
@@ -382,7 +382,7 @@ class FRETAnalysis(object):
        :type lifetime_fit_model: :class:`LifetimeFitModel`
        :param ref_measurement_group: The group of reference measurements
              in case of lifetime-based analyses.
-       :type ref_measurement_group: :class:`LifetimeRefMeasurementGroup`
+       :type ref_measurement_group: :class:`RefMeasurementGroup`
        :param str method_name: The method used for the analysis.
        :param float chi_square_reduced: The chi-square reduced as a quality
               measure for the fit.

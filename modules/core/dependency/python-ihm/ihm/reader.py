@@ -163,7 +163,7 @@ class _ChemCompIDMapper(IDMapper):
 
 class RangeIDMapper(object):
     """Utility class to handle mapping from mmCIF IDs to
-       :class:`ihm.AsymUnitRange` or :class:`EntityRange` objects."""
+       :class:`ihm.AsymUnitRange` or :class:`ihm.EntityRange` objects."""
 
     def __init__(self):
         self._id_map = {}
@@ -451,7 +451,7 @@ class SystemReader(object):
         self.assemblies = IDMapper(self.system.orphan_assemblies, ihm.Assembly)
 
         #: Mapping from ID to :class:`ihm.AsymUnitRange`
-        #: or :class:`EntityRange` objects
+        #: or :class:`ihm.EntityRange` objects
         self.ranges = RangeIDMapper()
 
         #: Mapping from ID to :class:`ihm.location.Repository` objects
@@ -634,7 +634,7 @@ class SystemReader(object):
             ihm.multi_state_scheme.KineticRate)
 
         #: Mapping from ID to
-        #: :class:`ihm.multi_state_schene.RelaxationTime` objects
+        #: :class:`ihm.multi_state_scheme.RelaxationTime` objects
         self.relaxation_times = IDMapper(
             None,
             ihm.multi_state_scheme.RelaxationTime,
@@ -801,7 +801,7 @@ class SystemReader(object):
             self.flr_data, ihm.flr.FPSMPPModeling, *(None,) * 3)
 
         #: Mapping from ID to
-        #: :class:`ihm.flr.KineticRateFRETAnalysisConnection` objects
+        #: :class:`ihm.flr.KineticRateFretAnalysisConnection` objects
         self.flr_kinetic_rate_fret_analysis_connection = _FLRIDMapper(
             '_collection_flr_kinetic_rate_fret_analysis_connection',
             'kinetic_rate_fret_analysis_connections',
@@ -810,7 +810,7 @@ class SystemReader(object):
             *(None,) * 3)
 
         #: Mapping from ID to
-        #: :class:`ihm.flr.KineticRateFRETAnalysisConnection` objects
+        #: :class:`ihm.flr.RelaxationTimeFretAnalysisConnection` objects
         self.flr_relaxation_time_fret_analysis_connection = _FLRIDMapper(
             '_collection_flr_relaxation_time_fret_analysis_connection',
             'relaxation_time_fret_analysis_connections',
@@ -1023,6 +1023,53 @@ class _CitationAuthorHandler(Handler):
         s = self.sysr.citations.get_by_id(citation_id)
         if name is not None:
             s.authors.append(name)
+
+
+class _DatabaseHandler(Handler):
+    category = '_database_2'
+
+    def __call__(self, database_code, database_id, pdbx_doi,
+                 pdbx_database_accession):
+        d = ihm.Database(id=database_id, code=database_code,
+                         doi=pdbx_doi, accession=pdbx_database_accession)
+        self.system.databases.append(d)
+
+
+class _DatabaseStatusHandler(Handler):
+    category = '_pdbx_database_status'
+
+    # placeholder; the reader will otherwise only return strings or None
+    not_in_file = 0
+    _keys = ['entry_id', 'sg_entry', 'author_approval_type',
+             'author_release_status_code', 'date_author_approval',
+             'date_author_release_request', 'date_begin_deposition',
+             'date_begin_processing', 'date_begin_release_preparation',
+             'date_chemical_shifts', 'date_coordinates',
+             'date_deposition_form', 'date_end_processing',
+             'date_hold_chemical_shifts', 'date_hold_coordinates',
+             'date_hold_nmr_constraints', 'date_hold_struct_fact',
+             'date_manuscript', 'date_nmr_constraints', 'date_of_pdb_release',
+             'date_of_cs_release', 'date_of_mr_release', 'date_of_sf_release',
+             'date_struct_fact', 'date_submitted',
+             'dep_release_code_chemical_shifts',
+             'dep_release_code_coordinates',
+             'dep_release_code_nmr_constraints', 'dep_release_code_sequence',
+             'dep_release_code_struct_fact', 'deposit_site',
+             'hold_for_publication', 'methods_development_category',
+             'name_depositor', 'pdb_date_of_author_approval',
+             'pdb_format_compatible', 'process_site', 'rcsb_annotator',
+             'recvd_author_approval', 'recvd_chemical_shifts',
+             'recvd_coordinates', 'recvd_deposit_form',
+             'recvd_initial_deposition_date', 'recvd_internal_approval',
+             'recvd_manuscript', 'recvd_nmr_constraints', 'recvd_struct_fact',
+             'status_code', 'status_code_cs', 'status_code_mr',
+             'status_code_sf']
+
+    def __call__(self, *args):
+        # Just pass through all data items present in the file, as a dict
+        self.system._database_status = dict(
+            (k, v) for (k, v) in zip(self._keys, args)
+            if v != self.not_in_file)
 
 
 class _ChemCompHandler(Handler):
@@ -1404,14 +1451,20 @@ class _ExtFileHandler(Handler):
             and x[1] is not ihm.location.FileLocation)
 
     def __call__(self, content_type, id, reference_id, details, file_path,
-                 file_size_bytes):
+                 file_format, file_size_bytes):
         typ = None if content_type is None else content_type.lower()
         f = self.sysr.external_files.get_by_id(
             id, self.type_map.get(typ, ihm.location.FileLocation))
         f.repo = self.sysr.repos.get_by_id(reference_id)
-        f.file_size = self.get_int(file_size_bytes)
+        # IHMCIF dictionary defines file size as a float, although only int
+        # values make sense, so allow for either ints or floats here
+        try:
+            f.file_size = self.get_int(file_size_bytes)
+        except ValueError:
+            f.file_size = self.get_float(file_size_bytes)
         self.copy_if_present(
-            f, locals(), keys=['details'], mapkeys={'file_path': 'path'})
+            f, locals(), keys=['details', 'file_format'],
+            mapkeys={'file_path': 'path'})
         # Handle DOI that is itself a file
         if file_path is None:
             f.path = '.'
@@ -2043,24 +2096,28 @@ class _AtomSiteHandler(Handler):
     def __init__(self, *args):
         super(_AtomSiteHandler, self).__init__(*args)
         self._missing_sequence = collections.defaultdict(dict)
+        # Mapping from asym+auth_seq_id to internal ID
         self._seq_id_map = {}
 
     def _get_seq_id_from_auth(self, auth_seq_id, pdbx_pdb_ins_code, asym):
         """Get an internal seq_id for something not a polymer (nonpolymer,
            water, branched), given author-provided info"""
         if asym._id not in self._seq_id_map:
-            m = {}
-            # Make reverse mapping from author-provided info to seq_id
-            if isinstance(asym.auth_seq_id_map, dict):
-                for key, val in asym.auth_seq_id_map.items():
-                    m[val] = key
-            self._seq_id_map[asym._id] = m
+            self._seq_id_map[asym._id] = {}
         m = self._seq_id_map[asym._id]
         # Treat ? and . missing insertion codes equivalently
         if pdbx_pdb_ins_code is ihm.unknown:
             pdbx_pdb_ins_code = None
-        # If no match, use the author-provided numbering as-is
-        return m.get((auth_seq_id, pdbx_pdb_ins_code), auth_seq_id)
+        auth = (auth_seq_id, pdbx_pdb_ins_code)
+        if auth not in m:
+            # Assign a new ID starting from 1
+            seq_id = len(m) + 1
+            m[auth] = seq_id
+            # Add this info to the seq_id -> auth_seq_id mapping too
+            if asym.auth_seq_id_map == 0:
+                asym.auth_seq_id_map = {}
+            asym.auth_seq_id_map[seq_id] = (auth_seq_id, pdbx_pdb_ins_code)
+        return m[auth]
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
@@ -2081,7 +2138,7 @@ class _AtomSiteHandler(Handler):
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
         auth_seq_id = self.get_int_or_string(auth_seq_id)
         if seq_id is None:
-            # Fill in our internal seq_id if possible
+            # Fill in our internal seq_id using author-provided info
             our_seq_id = self._get_seq_id_from_auth(
                 auth_seq_id, pdbx_pdb_ins_code, asym)
         else:
@@ -2497,18 +2554,13 @@ class _PolySeqSchemeHandler(Handler):
     def _get_auth_seq_id_offset(self, asym):
         """Get the offset from seq_id to auth_seq_id. Return None if no
            consistent offset exists."""
-        # Do nothing if the entity is not polymeric or branched
-        if asym.entity is None or (not asym.entity.is_polymeric()
-                                   and not asym.entity.is_branched()):
+        # Do nothing if the entity is not polymeric
+        if asym.entity is None or not asym.entity.is_polymeric():
             return
         # Do nothing if no map exists
         if asym.auth_seq_id_map == 0:
             return
-        if asym.entity.is_branched():
-            # Hack, as branched entities don't technically have seq_ids
-            rng = (1, len(asym.entity.sequence))
-        else:
-            rng = asym.seq_id_range
+        rng = asym.seq_id_range
         offset = None
         for seq_id in range(rng[0], rng[1] + 1):
             # If a residue isn't in the map, it has an effective offset of 0,
@@ -2535,6 +2587,10 @@ class _PolySeqSchemeHandler(Handler):
 class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
+    def __init__(self, *args):
+        super(_NonPolySchemeHandler, self).__init__(*args)
+        self._scheme = {}
+
     def __call__(self, asym_id, entity_id, pdb_seq_num, mon_id, pdb_ins_code,
                  pdb_strand_id, ndb_seq_num, auth_seq_num):
         entity = self.sysr.entities.get_by_id(entity_id)
@@ -2550,71 +2606,137 @@ class _NonPolySchemeHandler(Handler):
                     mon_id, name=entity.description)
             entity.sequence.append(s)
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        if entity.type == 'water' and not isinstance(asym, ihm.WaterAsymUnit):
-            # Replace AsymUnit with WaterAsymUnit if necessary
-            asym.__class__ = ihm.WaterAsymUnit
-            asym._water_sequence = [entity.sequence[0]]
-            asym.number = 1
         if pdb_strand_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_strand_id
         pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        if entity.type == 'water':
-            # For waters, assume ndb_seq_num counts starting from 1,
-            # so use as our internal seq_id. Make sure the WaterAsymUnit
-            # is long enough to handle all ids
-            seq_id = self.get_int(ndb_seq_num)
-            if seq_id is None:
-                # If no ndb_seq_num, we cannot map
-                return
-            # Don't bother adding a 1->1 mapping
-            if (pdb_seq_num != seq_id
-                    or pdb_ins_code not in (None, ihm.unknown)):
-                asym.number = max(asym.number, seq_id)
-                asym._water_sequence = [entity.sequence[0]] * asym.number
-                if asym.auth_seq_id_map == 0:
-                    asym.auth_seq_id_map = {}
-                asym.auth_seq_id_map[seq_id] = (pdb_seq_num, pdb_ins_code)
-            # Note any residues that have different pdb_seq_num & auth_seq_num
-            if (auth_seq_num is not None and pdb_seq_num is not None
-                    and auth_seq_num != pdb_seq_num):
-                if asym.orig_auth_seq_id_map is None:
-                    asym.orig_auth_seq_id_map = {}
-                asym.orig_auth_seq_id_map[seq_id] = auth_seq_num
-        else:
-            # For nonpolymers, assume a single ChemComp with seq_id=1,
-            # but don't bother adding a 1->1 mapping
-            if pdb_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
-                asym.auth_seq_id_map = {1: (pdb_seq_num, pdb_ins_code)}
-            # Note any residues that have different pdb_seq_num & auth_seq_num
-            if (auth_seq_num is not None and pdb_seq_num is not None
-                    and auth_seq_num != pdb_seq_num):
-                asym.orig_auth_seq_id_map = {1: auth_seq_num}
+        ndb_seq_num = self.get_int(ndb_seq_num)
+        # Make mapping from author-provided numbering (*pdb_seq_num*, not
+        # auth_seq_num) to original and NDB numbering. We will use this at
+        # finalize time to map internal ID ("seq_id") to auth, orig_auth,
+        # and NDB numbering.
+        if asym_id not in self._scheme:
+            self._scheme[asym_id] = []
+        self._scheme[asym_id].append((pdb_seq_num, pdb_ins_code,
+                                      auth_seq_num, ndb_seq_num))
+
+    def finalize(self):
+        for asym in self.system.asym_units:
+            entity = asym.entity
+            if entity is None or entity.is_polymeric() or entity.is_branched():
+                continue
+            self._finalize_asym(asym)
+
+    def _finalize_asym(self, asym):
+        # Add mapping info from scheme tables (to that already extracted
+        # from atom_site); if a mismatch we use atom_site info
+        scheme = self._scheme.get(asym._id)
+        if scheme:
+            if not asym.auth_seq_id_map:
+                asym.auth_seq_id_map = {}
+            if not asym.orig_auth_seq_id_map:
+                asym.orig_auth_seq_id_map = {}
+            # Make reverse mapping from author-provided info to internal ID
+            auth_map = {}
+            for key, val in asym.auth_seq_id_map.items():
+                auth_map[val] = key
+            for pdb_seq_num, pdb_ins_code, auth_seq_num, ndb_seq_num in scheme:
+                auth = (pdb_seq_num, pdb_ins_code)
+                seq_id = auth_map.get(auth)
+                if seq_id is None:
+                    seq_id = len(asym.auth_seq_id_map) + 1
+                    asym.auth_seq_id_map[seq_id] = auth
+                if pdb_seq_num != auth_seq_num:
+                    asym.orig_auth_seq_id_map[seq_id] = auth_seq_num
+            if not asym.orig_auth_seq_id_map:
+                asym.orig_auth_seq_id_map = None
+        if asym.entity.type == 'water':
+            # Replace AsymUnit with WaterAsymUnit if necessary
+            if not isinstance(asym, ihm.WaterAsymUnit):
+                asym.__class__ = ihm.WaterAsymUnit
+            asym.number = len(asym.auth_seq_id_map)
+            asym._water_sequence = [asym.entity.sequence[0]] * asym.number
+        # todo: add mapping from seq_id to ndb numbering?
 
 
 class _BranchSchemeHandler(Handler):
     category = '_pdbx_branch_scheme'
 
-    def __call__(self, asym_id, num, pdb_seq_num, auth_seq_num, pdb_asym_id):
+    def __init__(self, *args):
+        super(_BranchSchemeHandler, self).__init__(*args)
+        self._scheme = {}
+
+    def __call__(self, asym_id, num, pdb_seq_num, auth_seq_num, pdb_asym_id,
+                 pdb_ins_code):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         if pdb_asym_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_asym_id
         pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
         num = self.get_int(num)
-        # Note any residues that have different num and auth_seq_id
-        # These will be finalized by _PolySeqSchemeHandler
-        if num is not None and pdb_seq_num is not None \
-                and num != pdb_seq_num:
-            if asym.auth_seq_id_map == 0:
-                asym.auth_seq_id_map = {}
-            asym.auth_seq_id_map[num] = pdb_seq_num, None
-        # Note any residues that have different pdb_seq_num and auth_seq_num
-        if (num is not None and auth_seq_num is not None
-                and pdb_seq_num is not None and auth_seq_num != pdb_seq_num):
-            if asym.orig_auth_seq_id_map is None:
-                asym.orig_auth_seq_id_map = {}
-            asym.orig_auth_seq_id_map[num] = auth_seq_num
+        # Make mapping from author-provided numbering (*pdb_seq_num*, not
+        # auth_seq_num) to original and "num" numbering. We will use this at
+        # finalize time to map internal ID ("seq_id") to auth, orig_auth,
+        # and "num" numbering.
+        if asym_id not in self._scheme:
+            self._scheme[asym_id] = []
+        self._scheme[asym_id].append((pdb_seq_num, pdb_ins_code,
+                                      auth_seq_num, num))
+
+    def finalize(self):
+        need_map_num = False
+        for asym in self.system.asym_units:
+            entity = asym.entity
+            if entity is None or not entity.is_branched():
+                continue
+            self._finalize_asym(asym)
+            if asym.num_map:
+                need_map_num = True
+        if need_map_num:
+            self._reassign_seq_ids()
+
+    def _reassign_seq_ids(self):
+        """Change provisional seq_ids so that they match
+           _pdbx_branch_scheme.num"""
+        for m in self.sysr.models.get_all():
+            for atom in m._atoms:
+                if atom.asym_unit.num_map:
+                    atom.seq_id = atom.asym_unit.num_map[atom.seq_id]
+
+    def _finalize_asym(self, asym):
+        # Populate auth_seq_id mapping from scheme tables, and correct
+        # any incorrect seq_ids assigned in atom_site to use num
+        scheme = self._scheme.get(asym._id, [])
+        # Make reverse mapping from atom_site author-provided info
+        # to internal ID
+        auth_map = {}
+        if asym.auth_seq_id_map:
+            for key, val in asym.auth_seq_id_map.items():
+                auth_map[val] = key
+        asym.auth_seq_id_map = {}
+        asym.orig_auth_seq_id_map = {}
+        asym.num_map = {}
+        for pdb_seq_num, pdb_ins_code, auth_seq_num, num in scheme:
+            asym.auth_seq_id_map[num] = (pdb_seq_num, pdb_ins_code)
+            if pdb_seq_num != auth_seq_num:
+                asym.orig_auth_seq_id_map[num] = auth_seq_num
+            as_seq_id = auth_map.get((pdb_seq_num, pdb_ins_code))
+            if as_seq_id is not None:
+                if as_seq_id != num:
+                    asym.num_map[as_seq_id] = num
+                del auth_map[(pdb_seq_num, pdb_ins_code)]
+        if not asym.orig_auth_seq_id_map:
+            asym.orig_auth_seq_id_map = None
+        if not asym.num_map:
+            asym.num_map = None
+        # If any residues from atom_site are left, we can't assign a num
+        # for them, so raise an error
+        if auth_map:
+            raise ValueError(
+                "For branched asym %s, the following author-provided "
+                "residue numbers (atom_site.auth_seq_id) are not present in "
+                "the pdbx_branch_scheme table: %s"
+                % (asym._id, ", ".join(repr(x[0]) for x in auth_map.keys())))
 
 
 class _EntityBranchListHandler(Handler):
@@ -3622,6 +3744,7 @@ class IHMVariant(Variant):
 
     _handlers = [
         _CollectionHandler, _StructHandler, _SoftwareHandler, _CitationHandler,
+        _DatabaseHandler, _DatabaseStatusHandler,
         _AuditAuthorHandler, _GrantHandler, _CitationAuthorHandler,
         _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
         _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,

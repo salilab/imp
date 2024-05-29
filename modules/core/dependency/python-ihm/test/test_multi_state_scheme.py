@@ -386,7 +386,7 @@ class Tests(unittest.TestCase):
             'equilibrium constant is determined from kinetic rates, kAB/kBA')
 
     def test_equilibrium_constant_eq(self):
-        """Test equality of EquilibriumConstant objetcs"""
+        """Test equality of EquilibriumConstant objects"""
         e_ref1 = ihm.multi_state_scheme.EquilibriumConstant(
             value='1.0',
             unit='a')
@@ -550,7 +550,7 @@ class Tests(unittest.TestCase):
             unit='wrong_unit')
 
     def test_relaxationtime_eq(self):
-        """Test equality of RelaxationTime objetcs"""
+        """Test equality of RelaxationTime objects"""
         r_ref = ihm.multi_state_scheme.RelaxationTime(
             value=1.0,
             unit='milliseconds',

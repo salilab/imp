@@ -114,7 +114,7 @@ class Tests(unittest.TestCase):
         lines = sorted(out.split('\n'))
         self.assertEqual(lines[1].split()[0], "_audit_conform.dict_location")
         self.assertEqual(lines[2].rstrip('\r\n'),
-                         "_audit_conform.dict_name ihm-extension.dic")
+                         "_audit_conform.dict_name mmcif_ihm.dic")
         self.assertEqual(lines[3].split()[0], "_audit_conform.dict_version")
 
     def test_struct_dumper(self):
@@ -426,9 +426,10 @@ _entity.details
     def test_entity_duplicate_branched(self):
         """Test EntityDumper with duplicate branched entities"""
         system = ihm.System()
-        sacc = ihm.SaccharideChemComp('NAG')
-        system.entities.append(ihm.Entity([sacc]))
-        system.entities.append(ihm.Entity([sacc]))
+        sacc1 = ihm.SaccharideChemComp('NAG')
+        sacc2 = ihm.SaccharideChemComp('FUC')
+        system.entities.append(ihm.Entity([sacc1, sacc2]))
+        system.entities.append(ihm.Entity([sacc1, sacc2]))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
@@ -863,7 +864,8 @@ _entity_poly.pdbx_seq_one_letter_code_can
         e2 = ihm.Entity([ihm.NonPolymerChemComp('HEM')], description='heme')
         e3 = ihm.Entity([ihm.WaterChemComp()])
         # Branched entity
-        e4 = ihm.Entity([ihm.SaccharideChemComp('NAG')])
+        e4 = ihm.Entity([ihm.SaccharideChemComp('NAG'),
+                         ihm.SaccharideChemComp('FUC')])
         system.entities.extend((e1, e2, e3, e4))
 
         ed = ihm.dumper._EntityDumper()
@@ -1197,7 +1199,8 @@ _ihm_struct_assembly_details.entity_poly_segment_id
                                                                    'bar'))
         repo3 = ihm.location.Repository(doi="10.5281/zenodo.58025",
                                         url='foo.spd')
-        loc = ihm.location.InputFileLocation(repo=repo1, path='bar')
+        loc = ihm.location.InputFileLocation(repo=repo1, path='bar',
+                                             file_format='TXT')
         system.locations.append(loc)
         # Duplicates should be ignored
         loc = ihm.location.InputFileLocation(repo=repo1, path='bar')
@@ -1259,14 +1262,15 @@ _ihm_external_files.id
 _ihm_external_files.reference_id
 _ihm_external_files.file_path
 _ihm_external_files.content_type
+_ihm_external_files.file_format
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 bar 'Input data or restraints' . .
-2 1 baz 'Input data or restraints' . .
-3 2 foo/bar/baz 'Modeling or post-processing output' . .
-4 3 foo.spd 'Input data or restraints' . 'EM micrographs'
-5 3 . 'Input data or restraints' . 'EM micrographs'
-6 4 %s 'Modeling workflow or script' 4 .
+1 1 bar 'Input data or restraints' TXT . .
+2 1 baz 'Input data or restraints' . . .
+3 2 foo/bar/baz 'Modeling or post-processing output' . . .
+4 3 foo.spd 'Input data or restraints' . . 'EM micrographs'
+5 3 . 'Input data or restraints' . . 'EM micrographs'
+6 4 %s 'Modeling workflow or script' . 4 .
 #
 """ % bar.replace(os.sep, '/'))
 
@@ -5064,7 +5068,8 @@ _software.citation_id
         """Test EntityBranchListDumper"""
         system = ihm.System()
         system.entities.append(ihm.Entity(
-            [ihm.SaccharideChemComp('NAG')]))
+            [ihm.SaccharideChemComp('NAG'),
+             ihm.SaccharideChemComp('FUC')]))
         # Non-branched entity
         system.entities.append(ihm.Entity('ACGT'))
         ed = ihm.dumper._EntityDumper()
@@ -5078,6 +5083,7 @@ _pdbx_entity_branch_list.num
 _pdbx_entity_branch_list.comp_id
 _pdbx_entity_branch_list.hetero
 1 1 NAG .
+1 2 FUC .
 #
 """)
 
@@ -5085,7 +5091,8 @@ _pdbx_entity_branch_list.hetero
         """Test EntityBranchDumper"""
         system = ihm.System()
         system.entities.append(ihm.Entity(
-            [ihm.SaccharideChemComp('NAG')]))
+            [ihm.SaccharideChemComp('NAG'),
+             ihm.SaccharideChemComp('FUC')]))
         # Non-branched entity
         system.entities.append(ihm.Entity('ACGT'))
         ed = ihm.dumper._EntityDumper()
@@ -5103,14 +5110,21 @@ _pdbx_entity_branch.type
     def test_branch_scheme_dumper(self):
         """Test BranchSchemeDumper"""
         system = ihm.System()
-        e1 = ihm.Entity([ihm.SaccharideChemComp('NAG')])
-        e2 = ihm.Entity([ihm.SaccharideChemComp('FUC')])
+        e1 = ihm.Entity([ihm.SaccharideChemComp('NAG'),
+                         ihm.SaccharideChemComp('FUC')])
+        e2 = ihm.Entity([ihm.SaccharideChemComp('FUC'),
+                         ihm.SaccharideChemComp('BGC')])
+        e3 = ihm.Entity([ihm.SaccharideChemComp('NAG'),
+                         ihm.SaccharideChemComp('BGC')])
         # Non-branched entity
-        e3 = ihm.Entity('ACT')
-        system.entities.extend((e1, e2, e3))
+        e4 = ihm.Entity('ACT')
+        system.entities.extend((e1, e2, e3, e4))
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
         system.asym_units.append(ihm.AsymUnit(e2, 'bar', auth_seq_id_map=5))
-        system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
+        system.asym_units.append(ihm.AsymUnit(
+            e3, 'bar', auth_seq_id_map={1: 6, 2: (7, 'A')},
+            orig_auth_seq_id_map={1: 100}))
+        system.asym_units.append(ihm.AsymUnit(e4, 'baz'))
         ihm.dumper._EntityDumper().finalize(system)
         ihm.dumper._StructAsymDumper().finalize(system)
         dumper = ihm.dumper._BranchSchemeDumper()
@@ -5122,12 +5136,17 @@ _pdbx_branch_scheme.entity_id
 _pdbx_branch_scheme.mon_id
 _pdbx_branch_scheme.num
 _pdbx_branch_scheme.pdb_seq_num
+_pdbx_branch_scheme.pdb_ins_code
 _pdbx_branch_scheme.auth_seq_num
 _pdbx_branch_scheme.auth_mon_id
 _pdbx_branch_scheme.pdb_mon_id
 _pdbx_branch_scheme.pdb_asym_id
-A 1 NAG 1 1 1 NAG NAG A
-B 2 FUC 1 6 6 FUC FUC B
+A 1 NAG 1 1 . 1 NAG NAG A
+A 1 FUC 2 2 . 2 FUC FUC A
+B 2 FUC 1 6 . 6 FUC FUC B
+B 2 BGC 2 7 . 7 BGC BGC B
+C 3 NAG 1 6 . 100 NAG NAG C
+C 3 BGC 2 7 A 7 BGC BGC C
 #
 """)
 
@@ -5190,6 +5209,50 @@ _pdbx_entity_branch_link.details
 2 1 2 BMC CA H1 3 FUC N H2 . .
 #
 """)
+
+    def test_database_dumper(self):
+        """Test DatabaseDumper"""
+        system = ihm.System()
+        dumper = ihm.dumper._DatabaseDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, '')
+
+        system = ihm.System(
+            databases=[ihm.Database(id='foo', code='bar'),
+                       ihm.Database(id='baz', code='1abc', accession='1abcxyz',
+                                    doi='1.2.3.4')])
+        dumper = ihm.dumper._DatabaseDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_database_2.database_id
+_database_2.database_code
+_database_2.pdbx_database_accession
+_database_2.pdbx_DOI
+foo bar . .
+baz 1abc 1abcxyz 1.2.3.4
+#
+""")
+
+    def test_database_status_dumper(self):
+        """Test DatabaseStatusDumper"""
+        system = ihm.System()
+        system._database_status = {
+            'status_code': 'REL', 'entry_id': '5FD1',
+            'recvd_initial_deposition_date': '1993-06-29',
+            'deposit_site': ihm.unknown, 'process_site': 'BNL',
+            'sg_entry': None}
+        dumper = ihm.dumper._DatabaseStatusDumper()
+        out = _get_dumper_output(dumper, system)
+        # sort to remove dict order
+        self.assertEqual("\n".join(sorted(out.split('\n'))),
+                         """
+_pdbx_database_status.deposit_site ?
+_pdbx_database_status.entry_id 5FD1
+_pdbx_database_status.process_site BNL
+_pdbx_database_status.recvd_initial_deposition_date 1993-06-29
+_pdbx_database_status.sg_entry .
+_pdbx_database_status.status_code REL""")
 
 
 if __name__ == '__main__':

@@ -55,7 +55,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 70)
+        self.assertEqual(len(contents), 71)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)
