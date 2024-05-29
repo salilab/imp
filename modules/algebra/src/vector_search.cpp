@@ -77,8 +77,7 @@ void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   Ints &it = grid_[ind];
   IMP_INTERNAL_CHECK(std::find(it.begin(), it.end(), id) != it.end(),
                      "Item not found in list");
-  std::remove(it.begin(), it.end(), id);
-  it.pop_back();
+  it.erase(std::remove(it.begin(), it.end(), id), it.end());
   IMP_INTERNAL_CHECK(std::find(it.begin(), it.end(), id) == it.end(),
                      "Item found in list");
   set_coordinates_internal(id, nc);
