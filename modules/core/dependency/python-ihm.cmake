@@ -18,39 +18,47 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E rm -rf
 
 else(IMP_USE_SYSTEM_IHM)
 
-execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
-                ${CMAKE_BINARY_DIR}/lib/ihm
-                RESULT_VARIABLE setup)
-if(NOT ${setup} EQUAL 0)
-  message(FATAL_ERROR "Failed making ${CMAKE_BINARY_DIR}/lib/ihm directory")
-endif()
+function(link_python_ihm_pys srcdir bindir)
+  set(srcdir ${ARGV0})
+  set(bindir ${ARGV1})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
+                  ${CMAKE_BINARY_DIR}/${bindir}
+                  RESULT_VARIABLE setup)
+  if(NOT ${setup} EQUAL 0)
+    message(FATAL_ERROR "Failed making ${CMAKE_BINARY_DIR}/${bindir} directory")
+  endif()
 
-FILE(GLOB ihmpys
-     "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/ihm/*.py")
-if (WIN32)
-  foreach(ihmpy ${ihmpys})
-    get_filename_component(ihmpyname ${ihmpy} NAME)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy
-                    ${ihmpy} ${CMAKE_BINARY_DIR}/lib/ihm/${ihmpyname}
-                    RESULT_VARIABLE setup)
-    if(NOT ${setup} EQUAL 0)
-      message(FATAL_ERROR "Failed copying ${ihmpy}")
-    endif()
-  endforeach()
-else()
-  foreach(ihmpy ${ihmpys})
-    get_filename_component(ihmpyname ${ihmpy} NAME)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-                    ${ihmpy} ${CMAKE_BINARY_DIR}/lib/ihm/${ihmpyname}
-                    RESULT_VARIABLE setup)
-    if(NOT ${setup} EQUAL 0)
-      message(FATAL_ERROR "Failed symlinking ${ihmpy}")
-    endif()
-  endforeach()
-endif()
+  FILE(GLOB ihmpys
+       "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/${srcdir}/*.py")
+  if (WIN32)
+    foreach(ihmpy ${ihmpys})
+      get_filename_component(ihmpyname ${ihmpy} NAME)
+      execute_process(COMMAND ${CMAKE_COMMAND} -E copy
+                      ${ihmpy} ${CMAKE_BINARY_DIR}/${bindir}/${ihmpyname}
+                      RESULT_VARIABLE setup)
+      if(NOT ${setup} EQUAL 0)
+        message(FATAL_ERROR "Failed copying ${ihmpy}")
+      endif()
+    endforeach()
+  else()
+    foreach(ihmpy ${ihmpys})
+      get_filename_component(ihmpyname ${ihmpy} NAME)
+      execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+                      ${ihmpy} ${CMAKE_BINARY_DIR}/${bindir}/${ihmpyname}
+                      RESULT_VARIABLE setup)
+      if(NOT ${setup} EQUAL 0)
+        message(FATAL_ERROR "Failed symlinking ${ihmpy}")
+      endif()
+    endforeach()
+  endif()
+endfunction(link_python_ihm_pys)
+
+link_python_ihm_pys("ihm" "lib/ihm")
+link_python_ihm_pys("ihm/util" "lib/ihm/util")
 
 # Install Python modules
 install_deref(${CMAKE_BINARY_DIR}/lib/ihm * ${CMAKE_INSTALL_PYTHONDIR}/ihm)
+install_deref(${CMAKE_BINARY_DIR}/lib/ihm/util * ${CMAKE_INSTALL_PYTHONDIR}/ihm/util)
 
 # Build C extension
 
