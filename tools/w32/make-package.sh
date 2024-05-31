@@ -55,6 +55,7 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
 mkdir ${ROOT}/python/ihm || exit 1
+mkdir ${ROOT}/python/ihm/util || exit 1
 
 # Drop Python 2
 rm -rf ${ROOT}/pylib/2.7/
@@ -65,8 +66,9 @@ find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
 # Put pure Python files in correct location
 mv ${ROOT}/pylib/3.9/*.py ${ROOT}/pylib/3.9/IMP ${ROOT}/python || exit 1
 mv ${ROOT}/pylib/3.9/ihm/*.py ${ROOT}/python/ihm || exit 1
+mv ${ROOT}/pylib/3.9/ihm/util/*.py ${ROOT}/python/ihm/util || exit 1
 
-rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
+rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/ihm/util/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py, ihm/__init__.py, and RMF.py so they can find Python
 # version-specific extensions and the IMP/RMF DLLs
@@ -96,6 +98,7 @@ for PYVER in ${PYVERS}; do
   echo "pass" > ${ROOT}/python/python${PYVER}/_ihm_pyd/__init__.py || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/ihm/*.pyd ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
+  rmdir ${ROOT}/pylib/${PYVER}/ihm/util || exit 1
   rmdir ${ROOT}/pylib/${PYVER}/ihm || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
