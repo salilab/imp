@@ -440,9 +440,10 @@ _ihm_external_files.id
 _ihm_external_files.reference_id
 _ihm_external_files.file_path
 _ihm_external_files.content_type
+_ihm_external_files.file_format
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 %s 'Modeling workflow or script' %d
+1 1 %s 'Modeling workflow or script' . %d
 'Integrative modeling Python script'
 #
 """ % (os.path.basename(__file__), os.stat(__file__).st_size))
