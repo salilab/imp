@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.21.0 - 2024-06-13 # {#changelog_2_21_0}
 - The new IMP::spatiotemporal module can be used to assist in building stepwise
   spatiotemporal models, such as those we used to compute our model of
   NPC assembly.
