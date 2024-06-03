@@ -39,7 +39,6 @@ set of the full options available to PMI users
 (rigid bodies only, fixed resolutions).
 """  # noqa: E501
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.algebra

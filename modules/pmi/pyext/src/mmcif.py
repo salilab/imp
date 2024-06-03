@@ -9,7 +9,6 @@
    generated models and metadata are collected and output as mmCIF.
 """
 
-from __future__ import print_function
 import copy
 import RMF
 import IMP.core
@@ -26,10 +25,6 @@ import re
 import ast
 import sys
 import os
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path  # noqa: F401
 import weakref
 import ihm.location
 import ihm.dataset
@@ -141,11 +136,7 @@ class _AllSoftware(object):
         # Only recent versions of python-ihm support adding citations for
         # software
         if hasattr(self.imp, 'citation'):
-            if sys.version_info[0] > 2:
-                # Don't include UTF8 characters in source; it confuses Python 2
-                javi = 'Vel\u00e1zquez-Muriel J'
-            else:
-                javi = 'Velazquez-Muriel J'
+            javi = 'Vel\u00e1zquez-Muriel J'
             self.imp.citation = ihm.Citation(
                 pmid='22272186',
                 title='Putting the pieces together: integrative modeling '

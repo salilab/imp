@@ -7,7 +7,6 @@ through a set of residues predicted to be required
 for binding in mutagensis studies.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.rmf

@@ -2,7 +2,6 @@
    Classes for writing output files and processing them.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.core
@@ -20,10 +19,7 @@ import warnings
 import string
 import ihm.format
 import collections
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 
 
 class _ChainIDs(object):

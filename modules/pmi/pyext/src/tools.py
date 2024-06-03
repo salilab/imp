@@ -4,24 +4,16 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.algebra
 import IMP.isd
 import IMP.pmi
 import IMP.pmi.topology
-try:
-    from collections.abc import MutableSet  # needs Python 3.3 or later
-except ImportError:
-    from collections import MutableSet
+from collections.abc import MutableSet
 import itertools
 import math
-import sys
 import ast
-try:
-    from time import process_time  # needs python 3.3 or later
-except ImportError:
-    from time import clock as process_time
+from time import process_time
 import RMF
 import IMP.rmf
 from collections import defaultdict, OrderedDict
@@ -475,14 +467,9 @@ def select_by_tuple_2(hier, tuple_selection, resolution):
 
 
 def get_db_from_csv(csvfilename, encoding=None):
-    if sys.version_info[0] == 2:
-        def open_with_encoding(fname, encoding):
-            return open(fname)
-    else:
-        open_with_encoding = open
     import csv
     outputlist = []
-    with open_with_encoding(csvfilename, encoding=encoding) as fh:
+    with open(csvfilename, encoding=encoding) as fh:
         csvr = csv.DictReader(fh)
         for ls in csvr:
             outputlist.append(ls)
@@ -851,10 +838,7 @@ class OrderedDefaultDict(OrderedDict):
 
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
-        if sys.version_info[0] >= 3:
-            return self.__class__, args, None, None, self.items()
-        else:
-            return self.__class__, args, None, None, self.iteritems()
+        return self.__class__, args, None, None, self.items()
 
 
 # -------------- PMI2 Tools --------------- #

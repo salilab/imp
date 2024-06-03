@@ -2,7 +2,6 @@
    Mapping between FASTA one-letter codes and residue types.
 """
 
-from __future__ import print_function
 import IMP.atom
 
 

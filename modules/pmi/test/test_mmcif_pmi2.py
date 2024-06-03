@@ -1,15 +1,10 @@
-from __future__ import print_function
-
 import ihm.format
 import IMP.test
 import IMP.pmi.topology
 import IMP.pmi.mmcif
+from io import StringIO
 import sys
 
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
 
 class MockMsgPack(object):
     @staticmethod

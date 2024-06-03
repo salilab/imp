@@ -2,7 +2,6 @@
 Restraints for handling small angle x-ray (SAXS) data.
 """
 
-from __future__ import print_function
 import math
 import IMP
 import IMP.core

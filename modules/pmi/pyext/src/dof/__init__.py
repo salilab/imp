@@ -3,7 +3,6 @@
    See the documentation of the DegreesOfFreedom class for more information.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.algebra

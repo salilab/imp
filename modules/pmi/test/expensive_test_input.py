@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.pmi
 import IMP.pmi.io
 import IMP.pmi.analysis

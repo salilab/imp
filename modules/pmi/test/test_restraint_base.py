@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import math
 import IMP
 import IMP.algebra

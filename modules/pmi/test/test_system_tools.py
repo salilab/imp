@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 from IMP.pmi.topology.system_tools import _get_color_for_representation
 

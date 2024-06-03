@@ -2,7 +2,6 @@
 Restraints for handling cross-linking data.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra

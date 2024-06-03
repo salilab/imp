@@ -2,7 +2,6 @@
 Protocols for sampling structures and analyzing them.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.pmi.tools
 import IMP.pmi.samplers
@@ -14,10 +13,7 @@ import IMP.rmf
 import IMP.isd
 import IMP.pmi.dof
 import os
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 import glob
 from operator import itemgetter
 from collections import defaultdict
@@ -1817,10 +1813,7 @@ class AnalysisReplicaExchange(object):
         Save the clusters into a pickle file
         @param filename string
         """
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
+        import pickle
         fl = open(filename, 'wb')
         pickle.dump(self.clusters, fl)
 
@@ -1831,10 +1824,7 @@ class AnalysisReplicaExchange(object):
         @param append bool (Default=False), if True. append the clusters
                to the ones currently present
         """
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
+        import pickle
         fl = open(filename, 'rb')
         self.clean_clusters()
         if append:

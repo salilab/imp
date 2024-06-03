@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import IMP.pmi.restraints.em
 import IMP.pmi.mmcif
@@ -6,17 +5,11 @@ import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
 import sys
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 import ihm.format
 import ihm.location
 import ihm.dataset
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 
 class DummyState(object):

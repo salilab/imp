@@ -2,7 +2,6 @@
    Utility classes and functions for reading and storing PMI files
 """
 
-from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.atom
@@ -15,10 +14,7 @@ import RMF
 import os
 import numpy as np
 from collections import defaultdict
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 
 
 def parse_dssp(dssp_fn, limit_to_chains='', name_map=None):

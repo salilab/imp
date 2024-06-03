@@ -5,7 +5,6 @@
    contain cross-links.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.pmi
 import IMP.pmi.output
@@ -18,7 +17,6 @@ import RMF
 import IMP.display
 import operator
 import math
-import sys
 import ihm.location
 import ihm.dataset
 from collections import defaultdict
@@ -35,20 +33,10 @@ def set_json_default(obj):
 
 
 # Handle and return data that must be a string
-if sys.version_info[0] >= 3:
-    def _handle_string_input(inp):
-        if not isinstance(inp, str):
-            raise TypeError("expecting a string")
-        return inp
-else:
-    def _handle_string_input(inp):
-        if not isinstance(inp, (str, unicode)):   # noqa: F821
-            raise TypeError("expecting a string or unicode")
-        # Coerce to non-unicode representation (str)
-        if isinstance(inp, unicode):   # noqa: F821
-            return str(inp)
-        else:
-            return inp
+def _handle_string_input(inp):
+    if not isinstance(inp, str):
+        raise TypeError("expecting a string")
+    return inp
 
 
 class _CrossLinkDataBaseStandardKeys(object):
@@ -728,15 +716,10 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             '''
             if FixedFormatParser  is defined
             '''
-            if sys.version_info[0] == 2:
-                def open_with_encoding(fname, mode, encoding):
-                    return open(fname, mode)
-            else:
-                open_with_encoding = open
 
             new_xl_dict = {}
             nxl = 0
-            with open_with_encoding(file_name, "r", encoding=encoding) as f:
+            with open(file_name, "r", encoding=encoding) as f:
                 for line in f:
                     xl = FixedFormatParser.get_data(line)
                     if xl:
@@ -1380,16 +1363,6 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         with open(json_filename, 'r') as fp:
             self.data_base = json.load(fp)
         self._update()
-        # getting rid of unicode
-        # (can't do this in Python 3, since *everything* is Unicode there)
-        if sys.version_info[0] < 3:
-            for xl in self:
-                for k, v in xl.iteritems():
-                    if type(k) is unicode:   # noqa: F821
-                        k = str(k)
-                    if type(v) is unicode:   # noqa: F821
-                        v = str(v)
-                    xl[k] = v
 
     def save_csv(self, filename):
         import csv

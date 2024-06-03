@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import IMP.test
 import IMP.pmi
 import IMP.pmi.topology

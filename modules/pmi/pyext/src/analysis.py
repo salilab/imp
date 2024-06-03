@@ -3,7 +3,6 @@
 """@namespace IMP.pmi.analysis
    Tools for clustering and cluster analysis
 """
-from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.em

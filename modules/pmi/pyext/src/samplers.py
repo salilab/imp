@@ -2,7 +2,6 @@
    Sampling of the system.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 from IMP.pmi.tools import get_restraint_set

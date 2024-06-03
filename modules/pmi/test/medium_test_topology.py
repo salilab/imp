@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.pmi
