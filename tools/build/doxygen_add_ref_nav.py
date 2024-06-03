@@ -4,7 +4,6 @@
    to what is done for the manual (see doxygen_add_nav.py).
 """
 
-from __future__ import print_function
 from doxygen_add_nav import Docs, Page
 import tools
 import sys

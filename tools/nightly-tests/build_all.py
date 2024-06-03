@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 """Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""
 
@@ -14,10 +12,7 @@ import tempfile
 import xml.sax
 import xml.sax.saxutils
 from xml.sax.saxutils import XMLGenerator
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
 import tools  # noqa: E402
 

@@ -7,7 +7,6 @@
    human-readable text, and runs it through the enchant spellchecker.
 """
 
-from __future__ import print_function
 import sys
 import os
 import xml.etree.ElementTree as ET
