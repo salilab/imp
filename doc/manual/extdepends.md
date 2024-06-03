@@ -29,7 +29,7 @@ macros so that your code works with both old and new versions of a dependency;
 for examples, look in the C++ code for `BOOST_VERSION`.) We try to make %IMP
 work with the versions of packages available in the oldest supported versions
 of RedHat Enterprise Linux (RHEL), Ubuntu LTS, and macOS. For example, RHEL 7
-ships with Boost 1.53 and Python 2.7, so %IMP works with both of those.
+ships with Boost 1.66 and Python 3.6, so %IMP works with both of those.
 
 # Simple dependencies # {#extdep_simple}
 

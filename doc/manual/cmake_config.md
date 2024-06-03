@@ -52,7 +52,6 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_MAX_LOG`: One of `SILENT`, `PROGRESS`, `TERSE`, `VERBOSE` to control what log levels are supported.
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time, or `ALL` to do this for all modules.
 - `IMP_CUDA`: A colon-separated list of modules to build with CUDA (GPU) support, or `ALL` to do this for all modules. This is experimental and is currently in development. See [here](@ref gpu) for more details.
-- `USE_PYTHON2`: Set to `on` to have CMake build %IMP with Python 2 (by default it will use Python 3 if available).
 - `IMP_USE_SYSTEM_RMF`: Set to `on` to build %IMP using an external (system) copy of the RMF library, instead of that bundled with IMP itself.
 - `IMP_USE_SYSTEM_IHM`: Set to `on` to build %IMP using an external (system) copy of the python-ihm library, instead of that bundled with IMP itself.
 
@@ -74,7 +73,7 @@ which control the build. For example:
 ## Python binary/header mismatch {#cmake_python}
 
 In order to build %IMP Python extensions, CMake needs to find the Python header
-and library files that match the `python3`, `python2` or `python` binary. If using a
+and library files that match the `python3` or `python` binary. If using a
 recent version of CMake (3.14 or later) it should have no issues in doing so.
 However, old versions of CMake might get confused if you have multiple versions
 of Python installed (for example on a Mac with [Homebrew](https://brew.sh/)),
@@ -88,7 +87,7 @@ For example, on a Mac with Homebrew, where `python` is Homebrew's
 headers. This can be resolved (if you cannot upgrade CMake to 3.14 or later)
 by telling CMake where the Homebrew Python headers and library
 are, by adding to your CMake invocation something like
-`-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
+`-DPYTHON_LIBRARY=/usr/local/opt/python@3/Frameworks/Python.framework/Versions/Current/lib/libpython3.12.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@3/Frameworks/Python.framework/Versions/Current/Headers`
 
 ## Wrong version of Python found {#cmake_pyver}
 
