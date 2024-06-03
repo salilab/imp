@@ -21,7 +21,7 @@ override_dh_auto_configure:
 	        -DCMAKE_INSTALL_PREFIX=/usr \
 	        -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
 	        -DIMP_USE_SYSTEM_RMF=on -DIMP_USE_SYSTEM_IHM=on \
-	        -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=off
+	        -DIMP_DISABLED_MODULES=scratch
 
 override_dh_auto_build:
 	$(MAKE) -C build

@@ -217,7 +217,7 @@ CXXFLAGS="$CXXFLAGS -std=c++20"
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=off \
+             -DIMP_TIMEOUT_FACTOR=4 \
              -DIMP_USE_SYSTEM_RMF=on -DIMP_USE_SYSTEM_IHM=on \
              -DIMP_DISABLED_MODULES=scratch:cnmultifit
 
