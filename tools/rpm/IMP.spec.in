@@ -1,29 +1,3 @@
-# On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
-# subpackage for RHEL 8 or older Fedora).
-# On older systems, the IMP package uses Python 2 only.
-%if 0%{?fedora} > 12 || 0%{?rhel} >= 8
-%define with_python3 1
-%define cmake_use_python2 off
-%define default_python python3
-%else
-%define with_python3 0
-%define cmake_use_python2 on
-%define default_python python2
-%endif
-
-%if 0%{?rhel} >= 9 || 0%{?fedora} > 37
-%define with_python2 0
-%else
-%define with_python2 1
-%endif
-
-# Old RHEL only has a python-devel package, but RHEL8 only has python2-devel
-%if 0%{?fedora} || 0%{?rhel} >= 8
-%define PYTHON2 python2
-%else
-%define PYTHON2 python
-%endif
-
 %define with_mpich 1
 # Not yet functional
 %define with_openmpi 0
@@ -41,20 +15,9 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-%if 0%{?with_python2}
-BuildRequires: %{PYTHON2}-devel >= 2.7
-%endif
-%if 0%{?with_python3}
-BuildRequires: python3-devel, symlinks
-%endif
+BuildRequires: python3-devel
 BuildRequires: gcc-c++, hdf5-devel >= 1.8
-%if 0%{?rhel} == 7
-# The default SWIG package in RHEL7 is SWIG 2, but SWIG 3 is provided
-# (in the CentOS Extras repository)
-BuildRequires: swig3 >= 3.0
-%else
 BuildRequires: swig >= 3.0
-%endif
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl, eigen3-devel, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
@@ -70,9 +33,6 @@ BuildRequires: protobuf-devel
 # No Python protobuf package in RHEL8
 %if 0%{?fedora} || 0%{?rhel} == 9
 Requires: python3-protobuf
-%endif
-%if 0%{?rhel} == 7
-Requires: protobuf-python
 %endif
 
 BuildRequires: cmake >= 2.8
@@ -107,20 +67,11 @@ BuildRequires: CGAL-nogui-devel
 %define bundled libTAU\\.so
 %endif
 
-# The IMP kernel (both with Python 2 and Python3) links with numpy, so
-# pull that in if available (the Python 2 variant is no longer shipped
-# with modern Fedora). Many modules also use Python's scipy module, so
-# pull that in (at build time for tests; at install time for using the modules).
-%if 0%{?with_python3}
+# The IMP kernel links with numpy, so pull that in if available. Many modules
+# also use Python's scipy module, so pull that in (at build time for tests;
+# at install time for using the modules).
 BuildRequires: python3-numpy, python3-scipy
 Requires: python3-numpy, python3-scipy
-%if 0%{?with_python2} && (0%{?fedora} < 34 || 0%{?rhel})
-BuildRequires: python2-numpy
-%endif
-%else
-BuildRequires: numpy, scipy
-Requires: numpy, scipy
-%endif
 
 %define cmake_opts -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
@@ -172,11 +123,7 @@ Requires:      boost-devel, hdf5-devel, protobuf-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 Requires:      ann-devel
 %endif
-%if 0%{?with_python3}
 Requires:      python3-devel
-%else
-Requires:      %{PYTHON2}-devel
-%endif
 %if 0%{?fedora}
 Requires:      CGAL-devel
 %endif
@@ -187,25 +134,6 @@ Requires:      opencv-devel
 %description devel
 This package contains the include files for building applications that link
 against IMP.
-
-%if 0%{?with_python2} && 0%{?with_python3}
-%package python2
-Group:         Applications/Engineering
-Summary:       Python wrappers for Python 2
-Requires:      %{name} = %{version}-%{release}
-Requires:      python2
-# No Python protobuf package in RHEL8 or Fedora 32
-%if 0%{?fedora} > 0 && 0%{?fedora} < 32
-Requires: python2-protobuf
-%endif
-%if 0%{?fedora} < 34 || 0%{?rhel}
-Requires: python2-numpy
-%endif
-
-%description python2
-This package contains wrappers for Python 2 (the base package already
-includes Python 3 wrappers).
-%endif
 
 %define MPI_MODULES mpi spb nestor
 %define MPI_CPP_MODULES mpi spb
@@ -222,10 +150,8 @@ BuildRequires: python3-mpi4py-mpich
 %endif
 BuildRequires: mpich-devel
 # Need for nestor module
-%if 0%{?with_python3}
 BuildRequires: python3-pyyaml
 Requires:      python3-pyyaml
-%endif
 
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
@@ -254,10 +180,8 @@ BuildRequires: python3-mpi4py-openmpi
 %endif
 BuildRequires: openmpi-devel
 # Need for nestor module
-%if 0%{?with_python3}
 BuildRequires: python3-pyyaml
 Requires:      python3-pyyaml
-%endif
 
 %description openmpi
 This package contains an IMP.mpi module to add MPI support,
@@ -342,7 +266,7 @@ CXXFLAGS="$CXXFLAGS -std=c++20"
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=%{cmake_use_python2} \
+             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=off \
              -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -352,7 +276,7 @@ cmake ../imp -DCMAKE_BUILD_TYPE=Release \
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-%{default_python} ../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="ctest --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
+python3 ../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="ctest --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
@@ -364,53 +288,13 @@ module purge
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
-%if 0%{?with_python2}
-py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
-%endif
-
-%if 0%{?with_python2} && 0%{?with_python3}
-# Build Python 2 wrappers
-py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
-py2_lib=`echo %{_libdir}/libpython2.*.so`
-py2_inc=`echo /usr/include/python2.*`
-%if 0%{?with_mpich}
-module load %{mpiprefix}mpich-%{_arch}
-%endif
-cmake ../imp \
-      -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-      -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py2_ver}/site-packages \
-      -DSWIG_PYTHON_LIBRARIES=${py2_lib} \
-      -DPYTHON_INCLUDE_DIRS=${py2_inc} \
-      -DPYTHON_INCLUDE_PATH=${py2_inc} \
-      -DPYTHON_LIBRARIES=${py2_lib} -DUSE_PYTHON2=on
-make DESTDIR=${RPM_BUILD_ROOT} install
-%if 0%{?with_mpich}
-module purge
-%endif
-
-# Don't build Python 2 MPI for now
-for mod in %{MPI_MODULES}; do
-  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/${mod}
-  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/_IMP_${mod}.so
-done
-
-# Replace .py files with symlinks to Python 3 files (since they are the same)
-# but not the SWIG-generated __init__.py files (since these contain config
-# information which might be different; e.g. on Fedora the Python 3 wrappers
-# include numpy support but the Python 2 wrappers do not)
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver} \
- && find site-packages -name '*.py' -a ! -name __init__.py \
-      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
- && symlinks -rc .)
-%endif
-
 # Put MPI-dependent libraries and binaries in mpich directories
 %if 0%{?with_mpich}
-(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python3*/site-packages/ && mkdir mpich)
 (cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir -p mpich/bin mpich/lib)
 (cd ${RPM_BUILD_ROOT}%{_bindir} && mv spb* ${RPM_BUILD_ROOT}%{_libdir}/mpich/bin)
 for mod in %{MPI_CPP_MODULES}; do
-  (cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ \
+  (cd ${RPM_BUILD_ROOT}%{_libdir}/python3*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
   (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
@@ -454,12 +338,6 @@ cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 %endif
 
-# Don't include Python 3-only modules in Python 2 package
-%if 0%{?with_python3} == 0
-rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/nestor
-rm -rf ${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/examples/nestor
-%endif
-
 # Don't distribute example application or dependency
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
@@ -467,8 +345,8 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
 
 # Make sure all Python applications and build tools use the same Python
 # we built with
-perl -pi -e 's@^#!.*python.*$@#!/usr/bin/%{default_python}@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
-find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env %{default_python}#' \{\} \;
+perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python3@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
+find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env python3#' \{\} \;
 
 %files
 %defattr(-,root,root)
@@ -481,29 +359,17 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so.*
 %{_libdir}/IMP
-%{_libdir}/%{default_python}*/site-packages/IMP
-%{_libdir}/%{default_python}*/site-packages/_IMP*so
-%{_libdir}/%{default_python}*/site-packages/RMF*
-%{_libdir}/%{default_python}*/site-packages/_RMF*so
-%{_libdir}/%{default_python}*/site-packages/ihm
-%if 0%{?with_python3}
+%{_libdir}/python3*/site-packages/IMP
+%{_libdir}/python3*/site-packages/_IMP*so
+%{_libdir}/python3*/site-packages/RMF*
+%{_libdir}/python3*/site-packages/_RMF*so
+%{_libdir}/python3*/site-packages/ihm
 %{_libdir}/python3*/site-packages/__pycache__
-%endif
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
-%exclude %{_libdir}/%{default_python}*/site-packages/IMP/mpi
-%exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
-%exclude %{_libdir}/%{default_python}*/site-packages/IMP/nestor
-%endif
-
-%if 0%{?with_python2} && 0%{?with_python3}
-%files python2
-%defattr(-,root,root)
-%{_libdir}/python2*/site-packages/IMP
-%{_libdir}/python2*/site-packages/_IMP*so
-%{_libdir}/python2*/site-packages/RMF*
-%{_libdir}/python2*/site-packages/_RMF*so
-%{_libdir}/python2*/site-packages/ihm
+%exclude %{_libdir}/python3*/site-packages/IMP/mpi
+%exclude %{_libdir}/python3*/site-packages/IMP/spb
+%exclude %{_libdir}/python3*/site-packages/IMP/nestor
 %endif
 
 %if 0%{?with_mpich}
@@ -517,15 +383,13 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
-%if 0%{?with_python3}
 %{_prefix}/share/IMP/build_info/IMP.nestor
 %{_prefix}/share/IMP/build_info/IMP_nestor.pck
-%{_libdir}/%{default_python}*/site-packages/IMP/nestor
-%endif
-%{_libdir}/%{default_python}*/site-packages/IMP/mpi
-%{_libdir}/%{default_python}*/site-packages/IMP/spb
-%{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
-%{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
+%{_libdir}/python3*/site-packages/IMP/nestor
+%{_libdir}/python3*/site-packages/IMP/mpi
+%{_libdir}/python3*/site-packages/IMP/spb
+%{_libdir}/python3*/site-packages/mpich/_IMP_mpi.so
+%{_libdir}/python3*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
 %{_libdir}/mpich/lib/libimp_spb.so.*
 %{_libdir}/mpich/bin/spb*
