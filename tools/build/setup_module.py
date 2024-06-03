@@ -32,9 +32,6 @@ parser.add_argument("-s", "--source",
                     required=True)
 parser.add_argument("-d", "--datapath",
                     dest="datapath", default="", help="An extra IMP datapath.")
-parser.add_argument("--python_version_major", type=int,
-                    help="The major version of Python (2 or 3) that "
-                         "IMP is configured to use.")
 parser.add_argument("apps", metavar="BIN", type=str, nargs="*",
                     help="Module command line Python tool(s)")
 
@@ -233,13 +230,8 @@ def write_ok(module, modules, unfound_modules, dependencies,
                   "\n".join(config))
 
 
-def setup_module(module, finder, python_version_major):
+def setup_module(module, finder):
     sys.stdout.write("Configuring module %s ..." % module.name)
-    if module.python3_only and python_version_major < 3:
-        print("Module requires Python 3, but IMP is configured with Python %d"
-              % python_version_major)
-        write_no_ok(module.name)
-        return False, []
     for d in module.required_dependencies:
         if not finder.get_dependency_info(d)["ok"]:
             print("Required dependency %s not found" % d)
@@ -435,7 +427,7 @@ def main():
                              external_dir=args.build_dir,
                              module_name=args.name)
     module = mf[args.name]
-    success, modules = setup_module(module, mf, args.python_version_major)
+    success, modules = setup_module(module, mf)
     if success:
         make_header(args, module)
         make_doxygen(args, module, modules, mf)

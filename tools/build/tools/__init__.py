@@ -381,8 +381,7 @@ class SourceModule(Module):
             return self._info[attr]
         d = {'required_modules': "", 'optional_modules': "",
              'required_dependencies': "", 'optional_dependencies': "",
-             'lib_only_required_modules': "", 'python_only': False,
-             'python3_only': False}
+             'lib_only_required_modules': "", 'python_only': False}
         with open(self.depends_file) as fh:
             exec(fh.read(), d)
         self._info = {"required_modules":
@@ -395,8 +394,7 @@ class SourceModule(Module):
                       split(d['required_dependencies']),
                       "optional_dependencies":
                       split(d['optional_dependencies']),
-                      "python_only": d['python_only'],
-                      "python3_only": d['python3_only']}
+                      "python_only": d['python_only']}
         return self._info[attr]
 
     required_modules = property(
@@ -410,7 +408,6 @@ class SourceModule(Module):
     optional_dependencies = property(
         lambda self: self._read_dep_file('optional_dependencies'))
     python_only = property(lambda self: self._read_dep_file('python_only'))
-    python3_only = property(lambda self: self._read_dep_file('python3_only'))
 
 
 class ModulesFinder(object):
