@@ -21,10 +21,7 @@ import datetime
 import pickle
 import contextlib
 import subprocess
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 
 
 # Expose some unittest decorators for convenience
