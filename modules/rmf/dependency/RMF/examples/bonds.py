@@ -1,6 +1,5 @@
 ## \example bonds.py
 # Show how to extract bonds from a file.
-from __future__ import print_function
 import RMF
 
 

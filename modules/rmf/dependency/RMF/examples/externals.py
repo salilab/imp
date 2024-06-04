@@ -1,7 +1,6 @@
 ## \example externals.py
 # Show how to create an RMF file that has references to external files.
 # And how to read it back, sort of.
-from __future__ import print_function
 import RMF
 import os.path
 import sys

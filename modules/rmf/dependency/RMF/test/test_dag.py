@@ -1,4 +1,3 @@
-from __future__ import print_function
 import RMF
 RMF.set_log_level("trace")
 for suffix in RMF.suffixes:

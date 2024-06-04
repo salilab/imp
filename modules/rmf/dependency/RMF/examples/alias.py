@@ -1,7 +1,6 @@
 ## \example alias.py
 # Show using aliases to provide two different organization schemes
 # for manipulating a hierarchy.
-from __future__ import print_function
 import RMF
 
 # find the name for a temporary file to use to for writing the hdf5 file

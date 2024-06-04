@@ -2,7 +2,6 @@
 # \brief Benchmark operations on the RMF from python to see how much overhead
 #        that adds
 
-from __future__ import print_function
 import RMF
 import datetime
 

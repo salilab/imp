@@ -1,7 +1,6 @@
 ## \example motion.py
 # Do a silly little simulation to show things moving around
 
-from __future__ import print_function
 import RMF
 import random
 

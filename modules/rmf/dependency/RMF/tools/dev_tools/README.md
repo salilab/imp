@@ -18,5 +18,5 @@ In particular it provides tools to deal with
   only modifying files that are changed (sed touches all passed files).
 - git support: see the `git` subdir.
 
-Most of the scripts are Python scripts, and should work with Python 2.7 or
-later (including Python 3).
+Most of the scripts are Python scripts, and should work with Python 3.6 or
+later.
