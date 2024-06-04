@@ -84,6 +84,7 @@ def add_search_path(filename):
     # IMP C++ extensions). Any blank lines or comments are considered to
     # be part of the block.
     r = re.compile('(from [^.]|import (?!_IMP_))')
+    imp_import = re.compile('(from|import) _IMP_')
     non_statement = re.compile(r'(\s*$|\s*#)')
     in_imports = False
     imports_done = False
@@ -96,6 +97,11 @@ def add_search_path(filename):
                         and not non_statement.match(line):
                     fh.write(patch)
                     in_imports = False
+                    imports_done = True
+                elif not in_imports and imp_import.match(line):
+                    # If no standard module imports, insert patch before
+                    # first import of an IMP .pyd module
+                    fh.write(patch)
                     imports_done = True
             fh.write(line)
 
