@@ -9,7 +9,4 @@
   bool __bool__() {
     return self->get_is_valid();
   }
-  %pythoncode %{
-    __nonzero__ = __bool__
-  %}
 }

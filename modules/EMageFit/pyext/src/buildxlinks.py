@@ -7,13 +7,8 @@ import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.core as core
 import logging
-
 import networkx as nx
 
-try:
-    set = set
-except NameError:
-    from sets import Set as set
 
 log = logging.getLogger("buildxlinks")
 

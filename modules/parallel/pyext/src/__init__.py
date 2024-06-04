@@ -5,10 +5,7 @@ import os
 import re
 import random
 import struct
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 import IMP
 from IMP.parallel import workerstate
 from IMP.parallel.subproc import _run_background, _Popen4

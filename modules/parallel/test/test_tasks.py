@@ -40,14 +40,8 @@ class Tests(IMP.test.TestCase):
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
 
-        try:
-            inf = float('inf')
-            nan = float('nan')
-        except ValueError:
-            # Python 2.5 on Windows reports 'invalid literal', so use another
-            # method to get inf and nan:
-            inf = 1e300 * 1e300
-            nan = inf - inf
+        inf = float('inf')
+        nan = float('nan')
         for f in (inf, nan):
             c.add_task(_tasks.SimpleTask(f))
         results = list(c.get_results_unordered())

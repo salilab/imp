@@ -1,24 +1,11 @@
 #!/usr/bin/env python
 
-try:
-    from configparser import ConfigParser # python3
-except ImportError:
-    from ConfigParser import SafeConfigParser as ConfigParser # python2
+from configparser import ConfigParser
 import sys
 import os
 import time
 import logging
-try:
-    # Python 3
-    from importlib.machinery import SourceFileLoader
-except ImportError:
-    # Python 2
-    class SourceFileLoader(object):
-        def __init__(self, name, path):
-            self.name, self.path = name, path
-        def load_module(self):
-            import imp
-            return imp.load_source(self.name, self.path)
+from importlib.machinery import SourceFileLoader
 
 log = logging.getLogger("domino_model")
 
