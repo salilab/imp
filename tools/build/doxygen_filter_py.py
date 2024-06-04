@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Extract doxygen-compatible documentation from a Python file.
 
