@@ -26,7 +26,8 @@ except ImportError as detail:
 def _get_context():
     # Use 'forkserver' rather than 'fork' start method if we can; 'fork' does
     # not work well with multithreaded processes or CUDA
-    if 'forkserver' in multiprocessing.get_all_start_methods():
+    if (hasattr(multiprocessing, 'get_all_start_methods')
+            and 'forkserver' in multiprocessing.get_all_start_methods()):
         return multiprocessing.get_context('forkserver')
     else:
         return multiprocessing.get_context()
