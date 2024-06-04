@@ -15,11 +15,7 @@
 """
 
 import sys
-try:
-    import ast
-except ImportError:
-    # Fail gracefully on older Pythons (ast needs Python 2.6)
-    sys.exit(0)
+import ast
 
 
 # ast.Constant replaces ast.Num and ast.Str in newer Python (3.8+)
