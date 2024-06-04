@@ -2,7 +2,6 @@
 # This example shows how to use the multiresolution support available in
 # IMP.atom via the IMP.atom.Resolution decorator and IMP.atom.Selection
 
-from __future__ import print_function
 import IMP.atom
 import sys
 

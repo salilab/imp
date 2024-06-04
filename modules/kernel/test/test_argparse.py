@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import sys
 if sys.version_info[0] >= 3:

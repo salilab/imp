@@ -3,7 +3,6 @@
 # forcefield. For more control over the setup of the forcefield, see
 # the 'charmm_forcefield_verbose.py' example.
 
-from __future__ import print_function
 import IMP.atom
 import IMP.container
 import sys

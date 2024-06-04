@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 from IMP import ArgumentParser
 import itertools
 import math

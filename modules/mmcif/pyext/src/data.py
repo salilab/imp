@@ -2,7 +2,6 @@
    @brief Classes to represent data structures used in mmCIF.
 """
 
-from __future__ import print_function
 import IMP.atom
 import ihm.location
 import ihm.metadata

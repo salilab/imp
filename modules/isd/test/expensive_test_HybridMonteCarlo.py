@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 # general imports
 from numpy import *
 from random import uniform

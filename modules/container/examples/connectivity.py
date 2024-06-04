@@ -1,7 +1,6 @@
 ## \example container/connectivity.py
 # Shows how to use and visualize the IMP::container::ConnectingPairContainer.
 
-from __future__ import print_function
 import IMP.container
 import IMP.rmf
 import RMF

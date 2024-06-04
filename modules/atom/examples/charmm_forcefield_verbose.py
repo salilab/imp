@@ -6,7 +6,6 @@
 # is applied.
 #
 
-from __future__ import print_function
 import IMP.atom
 import IMP.container
 import sys

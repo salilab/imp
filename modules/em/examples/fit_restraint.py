@@ -3,7 +3,6 @@
 # spheres and resolution are randomly chosen and so should not be
 # considered significant.
 
-from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom

@@ -2,7 +2,6 @@
 # Shows how to generate a density map of fixed dimension and how to sample
 # particles within this density map.
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.em

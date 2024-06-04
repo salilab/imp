@@ -4,7 +4,6 @@
 # step is likely to be sufficiently short given the forces and particle
 # sizes involved.
 
-from __future__ import print_function
 import IMP.atom
 import sys
 

@@ -5,7 +5,6 @@
 # be centered among the markers. This can be used for testing for
 # registration errors when reading and writing density maps.
 
-from __future__ import print_function
 import IMP.em
 import IMP.display
 import IMP.rmf

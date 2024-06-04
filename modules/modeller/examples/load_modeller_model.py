@@ -3,7 +3,6 @@
 # Modeller restraints (both static and dynamic) into equivalent IMP restraints.
 #
 
-from __future__ import print_function
 import modeller
 import IMP
 import IMP.modeller

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.atom
 m = IMP.Model()
 all = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))

@@ -24,7 +24,6 @@ shutil.copy('%s', outfname)
 
         with open('interface_cluster.linux', 'w') as fh:
             fh.write("#!" + sys.executable + """
-from __future__ import print_function
 import sys
 receptor, ligand, trans_in, dummy, clustered_out = sys.argv[1:]
 

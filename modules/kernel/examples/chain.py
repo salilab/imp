@@ -3,7 +3,6 @@
 # particles constrained to be connected in a loop. It uses non bonded
 # lists and a variety of restraints.
 
-from __future__ import print_function
 import IMP.atom
 import IMP.core
 import RMF

@@ -4,7 +4,6 @@
    Classes to handle TBL files.
 """
 
-from __future__ import print_function
 import os
 import IMP.isd
 from IMP.isd.utils import Load, read_sequence_file

@@ -7,7 +7,6 @@
 # please adjust the parameters of the function IMP.em.local_rigid_fitting
 # accordingly.
 
-from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom

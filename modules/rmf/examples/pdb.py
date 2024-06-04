@@ -2,7 +2,6 @@
 # Write a PDB to an RMF file.
 #
 
-from __future__ import print_function
 import IMP.atom
 import IMP.rmf
 import RMF

@@ -2,7 +2,6 @@
 # IMP.algebra provides a set of geometric primitives and basic operations
 # on them.
 
-from __future__ import print_function
 import IMP.algebra
 import sys
 

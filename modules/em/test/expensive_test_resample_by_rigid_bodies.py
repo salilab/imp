@@ -1,4 +1,3 @@
-from __future__ import print_function
 # Test case:
 # Open three proteins
 # Generate density maps for each

@@ -16,7 +16,6 @@
    or any __future__ imports (which must come first).
 """
 
-from __future__ import print_function
 import re
 import sys
 

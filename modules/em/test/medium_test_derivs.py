@@ -1,4 +1,3 @@
-from __future__ import print_function
 # test that derivatives agree with numerical ones
 try:
     import modeller

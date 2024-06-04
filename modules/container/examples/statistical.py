@@ -2,7 +2,6 @@
 # This example shows how to create a simple statistical potential using
 # the PredicatePairsRestraint.
 
-from __future__ import division
 import IMP
 import IMP.core
 import IMP.atom

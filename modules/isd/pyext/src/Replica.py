@@ -2,7 +2,6 @@
 # inspired by ISD Replica.py
 # Yannick
 
-from __future__ import print_function, division
 import numpy as np
 from numpy.random import random, randint
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K

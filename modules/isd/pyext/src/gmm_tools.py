@@ -2,7 +2,6 @@
    Tools for handling Gaussian Mixture Models.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra

@@ -2,7 +2,6 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function
 #
 # The Inferential Structure Determination (ISD) software library
 #

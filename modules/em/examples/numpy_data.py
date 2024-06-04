@@ -1,7 +1,6 @@
 ## \example em/numpy_data.py
 # Accessing density map data directly using NumPy.
 
-from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom

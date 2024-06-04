@@ -2,7 +2,6 @@
 # In this example a pdb is converted into a multiresolution model,
 # somewhat painfully.
 
-from __future__ import print_function, division
 import IMP.atom
 import sys
 import RMF

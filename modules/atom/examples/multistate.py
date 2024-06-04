@@ -1,7 +1,6 @@
 ## \example multistate.py
 #
 
-from __future__ import print_function
 import IMP.atom
 import sys
 

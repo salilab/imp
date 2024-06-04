@@ -5,7 +5,6 @@
 # probably be implemented in C++, for speed but implementing the filter in
 # Python is good for prototyping.
 
-from __future__ import print_function
 import IMP
 import IMP.container
 import IMP.core
