@@ -22,13 +22,13 @@ except ImportError:
     sys.exit(0)
 
 
+# ast.Constant replaces ast.Num and ast.Str in newer Python (3.8+)
+has_constant = hasattr(ast, 'Constant')
+
+
 def format_value(val):
     """Get a string representation of an ast node."""
-    if isinstance(val, ast.Num):
-        return str(val.n)
-    elif isinstance(val, ast.Str):
-        return repr(val.s)
-    elif isinstance(val, ast.Name):
+    if isinstance(val, ast.Name):
         return val.id
     elif isinstance(val, ast.Add):
         return '+'
@@ -77,6 +77,12 @@ def format_value(val):
             + " " + format_value(val.right)
     elif isinstance(val, ast.UnaryOp):
         return format_value(val.op) + format_value(val.operand)
+    elif has_constant and isinstance(val, ast.Constant):
+        return repr(val.value)
+    elif not has_constant and isinstance(val, ast.Num):
+        return str(val.n)
+    elif not has_constant and isinstance(val, ast.Str):
+        return repr(val.s)
     elif isinstance(val, ast.Call):
         args = [format_value(x) for x in val.args] + \
                ["%s=%s" % (x.arg, format_value(x.value)) for x in val.keywords]
