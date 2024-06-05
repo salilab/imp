@@ -31,7 +31,7 @@ skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
 
-class _TempDir(object):
+class _TempDir:
     def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
 
@@ -110,7 +110,7 @@ def xyz_numerical_derivatives(sf, xyz, step):
     """Calculate the x,y and z derivatives of the scoring function `sf`
        on the `xyz` particle. The derivatives are approximated numerically
        using the numerical_derivatives() function."""
-    class _XYZDerivativeFunc(object):
+    class _XYZDerivativeFunc:
         def __init__(self, sf, xyz, basis_vector):
             self._xyz = xyz
             self._sf = sf
@@ -804,7 +804,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(out, "")
 
 
-class _ExecDictProxy(object):
+class _ExecDictProxy:
     """exec returns a Python dictionary, which contains IMP objects, other
        Python objects, as well as base Python modules (such as sys and
        __builtins__). If we just delete this dictionary, it is entirely
@@ -1060,7 +1060,7 @@ class ApplicationTestCase(TestCase):
             raise OSError("%s failed with exit value %d" % (cmd, p))
 
 
-class RefCountChecker(object):
+class RefCountChecker:
     """Check to make sure the number of C++ object references is as expected"""
 
     def __init__(self, testcase):
@@ -1087,7 +1087,7 @@ class RefCountChecker(object):
                           + str(newnames))
 
 
-class DirectorObjectChecker(object):
+class DirectorObjectChecker:
     """Check to make sure the number of director references is as expected"""
 
     def __init__(self, testcase):

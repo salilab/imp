@@ -42,7 +42,7 @@ def check_for_hexdock():
             raise e
 
 
-class HexDocking(object):
+class HexDocking:
 
     def __init__(self, ):
         # commands for HEX (the %s are filled when calling self.dock)

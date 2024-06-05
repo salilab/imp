@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
 
     def test_assign_id(self):
         """Test _assign_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
             def __eq__(self, other):
@@ -193,7 +193,7 @@ class Tests(IMP.test.TestCase):
 
     def test_representation_same_rigid_body(self):
         """Test RepSegmentFactory._same_rigid_body()"""
-        class MockComp(object):
+        class MockComp:
             auth_seq_id_map = 0
 
         m = IMP.Model()

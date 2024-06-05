@@ -9,7 +9,7 @@ from IMP import ArgumentParser
 __doc__ = "Refine fitting subunits into a density map with FFT."
 
 
-class Fitter(object):
+class Fitter:
 
     def __init__(
         self,

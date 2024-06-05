@@ -3,7 +3,7 @@
 import sys
 import os
 
-class CommandDispatcher(object):
+class CommandDispatcher:
     """Allow command line tools to easily implement multiple commands.
        Typically, an IMP command line tool will use an instance of this class
        to provide a consistent interface to multiple distinct commands

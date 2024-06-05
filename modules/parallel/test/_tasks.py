@@ -1,4 +1,4 @@
-class SimpleTask(object):
+class SimpleTask:
 
     """Simply return the input argument"""
 

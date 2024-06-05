@@ -24,7 +24,7 @@ class DominoParams:
         self.heap_solutions = 1000
 
 
-class TestParameters(object):
+class TestParameters:
 
     def __init__(self, ):
         self.do_test = False
@@ -45,7 +45,7 @@ class Benchmark:
         self.model_component = "3sfdB"
 
 
-class Experiment (object):
+class Experiment:
 
     def __init__(self,):
 

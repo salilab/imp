@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_io(self):
         """Check I/O of Vector3Ds"""
-        class NotAFile(object):
+        class NotAFile:
             pass
         vs1 = [
             IMP.algebra.Vector3D(

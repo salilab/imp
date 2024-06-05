@@ -21,7 +21,7 @@ def _get_scale(m, p):
     return IMP.isd.Scale(m, p).get_scale()
 
 
-class _AsymMapper(object):
+class _AsymMapper:
     """Map ParticleIndexes to ihm.AsymUnit"""
     def __init__(self, m, components, ignore_non_structural=False):
         self.m = m
@@ -321,7 +321,7 @@ class _ZAxialRestraint(_GeometricRestraint):
             info['lower bound'], info['upper bound'])
 
 
-class _AllRestraints(object):
+class _AllRestraints:
     """Map IMP restraints to mmCIF objects"""
     _typemap = {
         "IMP.isd.GaussianEMRestraint": _EM3DRestraint,

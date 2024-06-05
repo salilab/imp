@@ -8,7 +8,7 @@ import tempfile
 import shutil
 
 
-class FakeSGEEnvironment(object):
+class FakeSGEEnvironment:
 
     def __init__(self, jobid=None):
         self.tmpdir = tempfile.mkdtemp()

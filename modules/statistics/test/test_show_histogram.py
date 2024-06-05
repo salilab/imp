@@ -7,7 +7,7 @@ import sys
 import os
 
 
-class MockAxes(object):
+class MockAxes:
 
     def __init__(self, events):
         self.events = events
@@ -30,7 +30,7 @@ class MockAxes(object):
         self.events.append('set_autoscaley_on ' + str(b))
 
 
-class MockMatplotlib(object):
+class MockMatplotlib:
 
     def __init__(self):
         self.events = []
@@ -38,11 +38,11 @@ class MockMatplotlib(object):
         self.mlab = MockMlab()
 
 
-class MockMlab(object):
+class MockMlab:
     pass
 
 
-class MockPyplot(object):
+class MockPyplot:
 
     def __init__(self, events):
         self.events = events
@@ -55,7 +55,7 @@ class MockPyplot(object):
         self.events.append('plot.show')
 
 
-class MockFigure(object):
+class MockFigure:
 
     def __init__(self, events):
         self.events = events

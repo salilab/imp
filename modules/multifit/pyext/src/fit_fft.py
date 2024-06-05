@@ -31,7 +31,7 @@ def _get_context():
         return multiprocessing.get_context()
 
 
-class Fitter(object):
+class Fitter:
 
     def __init__(
         self,

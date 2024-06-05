@@ -176,7 +176,7 @@ class SpinWheel:
         self.state = (self.state + 1) % len(self.symbols)
 
 
-class Pipe(object):
+class Pipe:
 
     """implements a FIFO pipe that merges lists (see self.put)"""
 

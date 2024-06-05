@@ -2,19 +2,11 @@ import IMP.test
 import IMP.mmcif.metadata
 import IMP.mmcif.data
 import ihm
-try:
-    import urllib.request as urlrequest
-    import urllib.error as urlerror
-except ImportError:
-    import urllib2 as urlrequest
-    urlerror = urlrequest
+import urllib.request
 import sys
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
-class MockSystem(object):
+class MockSystem:
     def __init__(self):
         self.system = ihm.System()
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
@@ -64,12 +56,12 @@ class Tests(IMP.test.TestCase):
         # Need to mock out urllib.request so we don't hit the network
         # (expensive) every time we test
         try:
-            orig_urlopen = urlrequest.urlopen
-            urlrequest.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             self.assertEqual(parent.location.version, '2011-04-21')
             self.assertEqual(parent.location.details, 'test details')
         finally:
-            urlrequest.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
 
 if __name__ == '__main__':
     IMP.test.main()

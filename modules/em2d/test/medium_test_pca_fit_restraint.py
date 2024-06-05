@@ -6,7 +6,7 @@ import os
 import numpy
 
 
-class PGM(object):
+class PGM:
     def __init__(self, width, height, scale):
         self.width, self.height, self.scale = width, height, scale
         self._data = numpy.zeros((width, height))

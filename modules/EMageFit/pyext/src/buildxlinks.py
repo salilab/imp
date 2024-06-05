@@ -163,7 +163,7 @@ class XlinksDict(dict):
         """
 
 
-class DockOrder (object):
+class DockOrder:
 
     """
         Compute the order of the docking experiments. The order is derived

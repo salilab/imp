@@ -52,7 +52,7 @@ For small numbers of director objects (our expected usage) this works well.
 
 %pythoncode %{
 import sys
-class _DirectorObjects(object):
+class _DirectorObjects:
     """@internal Simple class to keep references to director objects
        to prevent premature deletion."""
     def __init__(self):

@@ -13,7 +13,7 @@ if not hasattr(modeller.terms, 'EnergyTerm'):
     modeller.Selection = modeller.selection
 
 
-class _TempDir(object):
+class _TempDir:
     """Make a temporary directory that is deleted when the object is."""
 
     def __init__(self):
@@ -374,7 +374,7 @@ def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
                 IMP.core.XYZR.setup_particle(p, radius)
 
 
-class ModelLoader(object):
+class ModelLoader:
     """Read a Modeller model into IMP. After creating this object, the atoms
        in the Modeller model can be loaded into IMP using the load_atoms()
        method, then optionally any Modeller static restraints can be read in
@@ -525,7 +525,7 @@ class ModelLoader(object):
            @return A Python generator of the newly-created IMP::Restraint
                    objects.
         """
-        class _RestraintGenerator(object):
+        class _RestraintGenerator:
             """Simple generator wrapper"""
             def __init__(self, gen):
                 self._gen = gen

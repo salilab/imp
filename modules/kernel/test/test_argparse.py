@@ -1,9 +1,6 @@
 import IMP.test
 import sys
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 # argparse processing terminates early for --help or --version
 class HelpTermination(Exception): pass
@@ -19,7 +16,7 @@ def get_test_argparse():
 def parse_args(parser, args):
     """Run parser.parse_args() on args; return its result plus the command line
        that was passed on to IMP's internal Boost-based parser"""
-    class MockSetup(object):
+    class MockSetup:
         def __init__(self):
             self.argv = []
         def __call__(self, argv, desc, posdesc, num_pos):

@@ -25,7 +25,7 @@ else:
     _string_type = str
 
 
-class _ChainIDs(object):
+class _ChainIDs:
     """Map indices to multi-character chain IDs.
        We label the first 26 chains A-Z, then we move to two-letter
        chain IDs: AA through AZ, then BA through BZ, through to ZZ.
@@ -41,7 +41,7 @@ class _ChainIDs(object):
         return "".join(reversed(ids))
 
 
-class Writer(object):
+class Writer:
     """Convert one or more IMP Models and/or RMF frames to mmCIF
        or BinaryCIF.
 

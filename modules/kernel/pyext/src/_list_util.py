@@ -12,7 +12,7 @@ def _handle_seq_indx(seqtype, indx):
         raise TypeError("expecting an integer index")
 
 
-class VarListIterator(object):
+class VarListIterator:
     def __init__(self, varlist, getfunc):
         self.__varlist = varlist
         self.__count = len(varlist)
@@ -26,7 +26,7 @@ class VarListIterator(object):
         return self.__getfunc(self.__n)
 
 
-class VarList(object):
+class VarList:
     """A list-like object that wraps IMP C++ object accessor methods"""
     def __init__(self, getdimfunc, getfunc, erasefunc, appendfunc, extendfunc,
                  clearfunc, indexfunc):

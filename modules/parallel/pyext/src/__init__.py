@@ -50,7 +50,7 @@ class RemoteError(Error):
                % (errstr, str(self.exc), str(self.worker), self.traceback)
 
 
-class _Communicator(object):
+class _Communicator:
     """Simple support for sending Python pickled objects over the network"""
 
     # Number of bytes used to pack the length of a string
@@ -174,7 +174,7 @@ class Worker(_Communicator):
                and self._context == context
 
 
-class WorkerArray(object):
+class WorkerArray:
     """Representation of an array of workers.
        This is similar to Worker, except that it represents a collection of
        workers that are controlled together, such as a batch submission system
@@ -327,7 +327,7 @@ class SGEPEWorkerArray(WorkerArray):
         return workers
 
 
-class Context(object):
+class Context:
     """A collection of tasks that run in the same environment.
        Context objects are typically created by calling Manager::get_context().
     """
@@ -364,7 +364,7 @@ class Context(object):
         return self._manager._get_results_unordered(self)
 
 
-class Manager(object):
+class Manager:
     """Manages workers and contexts.
     """
 

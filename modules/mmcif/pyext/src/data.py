@@ -149,7 +149,7 @@ def _assign_id(obj, seen_objs, obj_by_id):
         obj.id = seen_objs[obj]
 
 
-class _Component(object):
+class _Component:
     """An mmCIF component. This is an instance of an _Entity. Multiple
        _Components may map to the same _Entity but must have unique
        asym_ids. A _Component is similar to an IMP Chain but multiple
@@ -162,7 +162,7 @@ class _Component(object):
         self.entity, self.asym_id, self.name = entity, asym_id, name
 
 
-class _ComponentMapper(object):
+class _ComponentMapper:
     """Handle mapping from IMP Chains to CIF AsymUnits."""
     def __init__(self, system):
         super(_ComponentMapper, self).__init__()
@@ -223,7 +223,7 @@ class _ComponentMapper(object):
         return self._all_components
 
 
-class _RepSegmentFactory(object):
+class _RepSegmentFactory:
     """Make ihm.representation.Segment objects for each set of contiguous
        particles with the same representation"""
     def __init__(self, asym):
@@ -319,7 +319,7 @@ def _get_all_structure_provenance(p):
     return IMP.core.get_all_provenance(p, types=[IMP.core.StructureProvenance])
 
 
-class _StartingModelAtomHandler(object):
+class _StartingModelAtomHandler:
     def __init__(self, templates, asym):
         self._seq_dif = []
         self._last_res_index = None
@@ -459,7 +459,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
         self._seq_dif = mh._seq_dif
 
 
-class _StartingModelFinder(object):
+class _StartingModelFinder:
     """Map IMP particles to starting model objects"""
     def __init__(self, asym, existing_starting_models, system, datasets):
         self._seen_particles = {}
@@ -516,7 +516,7 @@ class _StartingModelFinder(object):
                 h = h.get_parent()
 
 
-class _Datasets(object):
+class _Datasets:
     """Store all datasets used."""
     def __init__(self, system):
         super(_Datasets, self).__init__()
@@ -552,7 +552,7 @@ class _Datasets(object):
         return self._datasets.keys()
 
 
-class _AllSoftware(object):
+class _AllSoftware:
     """Keep track of all Software objects."""
 
     # IMP/RMF doesn't store citation info for software, so provide it
@@ -594,7 +594,7 @@ class _AllSoftware(object):
             prov = prov.get_previous()
 
 
-class _ExternalFiles(object):
+class _ExternalFiles:
     """Track all externally-referenced files
        (i.e. anything that refers to a Location that isn't
        a DatabaseLocation)."""
@@ -681,7 +681,7 @@ class _Protocol(ihm.protocol.Protocol):
         return pp.num_models_end
 
 
-class _Protocols(object):
+class _Protocols:
     """Track all modeling protocols used."""
     def __init__(self, system):
         self.system = system
@@ -739,7 +739,7 @@ class _Protocols(object):
             return self._add_protocol(prot)
 
 
-class _CoordinateHandler(object):
+class _CoordinateHandler:
     def __init__(self, system, datasets):
         self._system = system
         self._datasets = datasets
@@ -852,7 +852,7 @@ class _CoordinateHandler(object):
         return [p[1] for p in sorted(ps, key=operator.itemgetter(0))]
 
 
-class _ModelAssemblies(object):
+class _ModelAssemblies:
     def __init__(self, system):
         self.system = system
         self._seen_assemblies = {}
@@ -869,7 +869,7 @@ class _ModelAssemblies(object):
         return self._seen_assemblies[asyms]
 
 
-class _Representations(object):
+class _Representations:
     def __init__(self, system):
         self.system = system
 

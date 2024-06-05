@@ -7,7 +7,7 @@ from IMP import ArgumentParser
 __doc__ = "Write assembly transformation file in other formats."
 
 
-class Formatter(object):
+class Formatter:
 
     def __init__(self, fh):
         self.fh = fh
