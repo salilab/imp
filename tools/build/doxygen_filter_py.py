@@ -73,6 +73,8 @@ def format_value(val):
             + " " + format_value(val.right)
     elif isinstance(val, ast.UnaryOp):
         return format_value(val.op) + format_value(val.operand)
+    elif isinstance(val, ast.Starred):
+        return "*" + format_value(val.value)
     elif has_constant and isinstance(val, ast.Constant):
         return repr(val.value)
     elif not has_constant and isinstance(val, ast.Num):
@@ -80,12 +82,14 @@ def format_value(val):
     elif not has_constant and isinstance(val, ast.Str):
         return repr(val.s)
     elif isinstance(val, ast.Call):
-        args = [format_value(x) for x in val.args] + \
-               ["%s=%s" % (x.arg, format_value(x.value)) for x in val.keywords]
-        if val.starargs:
-            args.append('*' + val.starargs.id)
-        if val.kwargs:
-            args.append('**' + val.kwargs.id)
+        args = [format_value(x)
+                for x in val.args if not isinstance(x, ast.Starred)] + \
+               ["%s=%s" % (x.arg, format_value(x.value))
+                for x in val.keywords if x.arg is not None] + \
+               [format_value(x)
+                for x in val.args if isinstance(x, ast.Starred)] + \
+               ["**" + format_value(x.value)
+                for x in val.keywords if x.arg is None]
         return format_value(val.func) + '(' + ", ".join(args) + ')'
     raise ValueError("Do not know how to format %s while running %s"
                      % (str(val), str(sys.argv)))
@@ -119,9 +123,9 @@ def get_function_signature(m):
     args = [format_arg(x) for x in args]
     sig += ", ".join(args)
     if m.args.vararg:
-        sig += ", *" + m.args.vararg
+        sig += ", *" + m.args.vararg.arg
     if m.args.kwarg:
-        sig += ", **" + m.args.kwarg
+        sig += ", **" + m.args.kwarg.arg
     return sig + '):'
 
 
