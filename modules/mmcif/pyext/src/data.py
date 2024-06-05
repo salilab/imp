@@ -84,7 +84,7 @@ class _EntityMapper(dict):
        share sequence."""
     def __init__(self, system):
         self.system = system
-        super(_EntityMapper, self).__init__()
+        super().__init__()
         self._sequence_dict = {}
         self._entities = []
         self._alphabet_map = {
@@ -165,7 +165,7 @@ class _Component:
 class _ComponentMapper:
     """Handle mapping from IMP Chains to CIF AsymUnits."""
     def __init__(self, system):
-        super(_ComponentMapper, self).__init__()
+        super().__init__()
         self.system = system
         self._used_entities = set()
         self._all_components = []
@@ -385,12 +385,12 @@ class _StartingModel(ihm.startmodel.StartingModel):
 
     def __init__(self, asym_unit, struc_prov):
         self.filename = struc_prov[0].get_filename()
-        super(_StartingModel, self).__init__(
-                asym_unit=asym_unit(0, 0),  # will update in _add_residue()
-                # will fill in later with _set_sources_datasets()
-                dataset=None,
-                asym_id=struc_prov[0].get_chain_id(),
-                offset=struc_prov[0].get_residue_offset())
+        super().__init__(
+            asym_unit=asym_unit(0, 0),  # will update in _add_residue()
+            # will fill in later with _set_sources_datasets()
+            dataset=None,
+            asym_id=struc_prov[0].get_chain_id(),
+            offset=struc_prov[0].get_residue_offset())
 
     def _add_residue(self, resind):
         # Update seq_id_range to accommodate this residue
@@ -519,7 +519,7 @@ class _StartingModelFinder:
 class _Datasets:
     """Store all datasets used."""
     def __init__(self, system):
-        super(_Datasets, self).__init__()
+        super().__init__()
         self._datasets = {}
         self._groups = {}
         self.system = system
@@ -563,7 +563,7 @@ class _AllSoftware:
     def __init__(self, system):
         self.system = system
         self._by_namever = {}
-        super(_AllSoftware, self).__init__()
+        super().__init__()
 
     def add_hierarchy(self, h, top_h=None):
         # todo: if no SoftwareProvenance available, use RMF producer field
@@ -627,18 +627,18 @@ class _ProtocolStep(ihm.protocol.Step):
         method = prov.get_method()
         if prov.get_number_of_replicas() > 1:
             method = "Replica exchange " + method
-        super(_ProtocolStep, self).__init__(
-                assembly=assembly,
-                # todo: fill in useful value for dataset_group
-                dataset_group=None,
-                method=method, name='Sampling',
-                num_models_begin=num_models_begin,
-                num_models_end=prov.get_number_of_frames(),
-                # todo: support multiple states, time ordered
-                multi_state=False, ordered=False,
-                # todo: revisit assumption all models are multiscale
-                multi_scale=True,
-                software=all_software._add_previous_provenance(prov))
+        super().__init__(
+            assembly=assembly,
+            # todo: fill in useful value for dataset_group
+            dataset_group=None,
+            method=method, name='Sampling',
+            num_models_begin=num_models_begin,
+            num_models_end=prov.get_number_of_frames(),
+            # todo: support multiple states, time ordered
+            multi_state=False, ordered=False,
+            # todo: revisit assumption all models are multiscale
+            multi_scale=True,
+            software=all_software._add_previous_provenance(prov))
 
     def add_combine(self, prov):
         self.num_models_end = prov.get_number_of_frames()

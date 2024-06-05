@@ -65,7 +65,7 @@ class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         # Don't add --help option (since the Boost option parser handles it)
         kwargs['add_help'] = False
-        super(ArgumentParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for ntoken in (0, 1):
             flags = _get_all_flags(ntoken)
             for f in flags:
@@ -85,7 +85,7 @@ class ArgumentParser(argparse.ArgumentParser):
            @returns   args
         """
         self._boost_command_line = [sys.argv[0]]
-        ret = super(ArgumentParser, self).parse_args(args, namespace)
+        ret = super().parse_args(args, namespace)
         if len(self._boost_command_line) > 1:
             self._handle_boost()
         return ret

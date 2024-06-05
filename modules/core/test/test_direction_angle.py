@@ -12,7 +12,7 @@ class AngleRestraint(IMP.Restraint):
     """Harmonically restrain an angle between two directions to a value."""
 
     def __init__(self, m, pi, a, k):
-        super(AngleRestraint, self).__init__(m, "AngleRestraint%1%")
+        super().__init__(m, "AngleRestraint%1%")
         self.pi = pi
         self.a = a
         self.k = k

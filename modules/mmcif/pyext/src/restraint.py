@@ -120,7 +120,7 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
         self._asyms = tuple(asyms)
         p = IMP.mmcif.metadata._GMMParser()
         r = p.parse_file(info['filename'])
-        super(_EM3DRestraint, self).__init__(
+        super().__init__(
             dataset=r['dataset'], assembly=assembly,
             number_of_gaussians=r['number_of_gaussians'],
             fitting_method='Gaussian mixture model')
@@ -157,7 +157,7 @@ class _EM2DRestraint(ihm.restraint.EM2DRestraint):
                 details="Electron microscopy class average")
         dataset = ihm.dataset.EM2DClassDataset(loc)
 
-        super(_EM2DRestraint, self).__init__(
+        super().__init__(
             dataset=dataset, assembly=assembly,
             segment=False,
             number_raw_micrographs=info['micrographs number'] or None,
@@ -203,7 +203,7 @@ class _SAXSRestraint(ihm.restraint.SASRestraint):
         loc = ihm.location.InputFileLocation(
             info['filename'], details='SAXS profile')
         dataset = ihm.dataset.SASDataset(loc)
-        super(_SAXSRestraint, self).__init__(
+        super().__init__(
             dataset=dataset, assembly=assembly,
             segment=False, fitting_method='IMP SAXS restraint',
             fitting_atom_type=info['form factor type'],
@@ -232,7 +232,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
             smiles_canonical=info.get('linker smiles canonical'),
             inchi=info.get('linker inchi'),
             inchi_key=info.get('linker inchi key'))
-        super(_CrossLinkRestraint, self).__init__(
+        super().__init__(
             dataset=dataset, linker=linker)
         # Map from IMP/RMF chain names to ihm.Entity
         cmap = {e.description: e for e in system.entities}
@@ -292,7 +292,7 @@ class _GeometricRestraint(ihm.restraint.GeometricRestraint):
     def __init__(self, imp_restraint, info, components, system):
         self._info = info
         asym = _AsymMapper(imp_restraint.get_model(), components)
-        super(_GeometricRestraint, self).__init__(
+        super().__init__(
             dataset=None,
             geometric_object=self._geom_object,
             feature=asym.get_feature(
