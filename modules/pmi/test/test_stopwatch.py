@@ -16,7 +16,7 @@ def get_times(outkey, *args, **kwargs):
     """Get a sequence of times by calling Stopwatch repeatedly. Ensure that
        times are reliable by overriding time.clock() to always return whole
        seconds."""
-    class MockClock(object):
+    class MockClock:
         count = 0
         def __call__(self):
             self.count += 1

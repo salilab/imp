@@ -27,8 +27,7 @@ class XYRadialPositionRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(XYRadialPositionRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         xyr = IMP.npc.XYRadialPositionRestraint(
             self.model, lower_bound, upper_bound, consider_radius, sigma)
@@ -65,8 +64,7 @@ class XYRadialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(XYRadialPositionLowerRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         xyr = IMP.npc.XYRadialPositionLowerRestraint(
             self.model, lower_bound, consider_radius, sigma)
@@ -88,8 +86,7 @@ class XYRadialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(XYRadialPositionUpperRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         xyr = IMP.npc.XYRadialPositionUpperRestraint(
             self.model, upper_bound, consider_radius, sigma)
@@ -112,8 +109,7 @@ class ZAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(ZAxialPositionRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         zax = IMP.npc.ZAxialPositionRestraint(
             self.model, lower_bound, upper_bound, consider_radius, sigma)
@@ -150,8 +146,7 @@ class ZAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(ZAxialPositionLowerRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         zax = IMP.npc.ZAxialPositionLowerRestraint(
             self.model, lower_bound, consider_radius, sigma)
@@ -173,8 +168,7 @@ class ZAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(ZAxialPositionUpperRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         zax = IMP.npc.ZAxialPositionUpperRestraint(
             self.model, upper_bound, consider_radius, sigma)
@@ -197,8 +191,7 @@ class YAxialPositionRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(YAxialPositionRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         yax = IMP.npc.YAxialPositionRestraint(
             self.model, lower_bound, upper_bound, consider_radius, sigma)
@@ -235,8 +228,7 @@ class YAxialPositionLowerRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(YAxialPositionLowerRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         yax = IMP.npc.YAxialPositionLowerRestraint(
             self.model, lower_bound, consider_radius, sigma)
@@ -258,8 +250,7 @@ class YAxialPositionUpperRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(YAxialPositionUpperRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         yax = IMP.npc.YAxialPositionUpperRestraint(
             self.model, upper_bound, consider_radius, sigma)
@@ -282,8 +273,7 @@ class MembraneSurfaceLocationRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(MembraneSurfaceLocationRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         msl = IMP.npc.MembraneSurfaceLocationRestraint(
             self.model, tor_R, tor_r, tor_th, sigma)
@@ -318,8 +308,7 @@ class MembraneSurfaceLocationConditionalRestraint(
         """Constructor
         """
 
-        super(MembraneSurfaceLocationConditionalRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         msl = IMP.npc.MembraneSurfaceLocationConditionalRestraint(
             self.model, tor_R, tor_r, tor_th, sigma)
@@ -355,8 +344,7 @@ class MembraneExclusionRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor
         """
 
-        super(MembraneExclusionRestraint, self).__init__(
-            hier.get_model(), label=label, weight=weight)
+        super().__init__(hier.get_model(), label=label, weight=weight)
 
         mex = IMP.npc.MembraneExclusionRestraint(
             self.model, tor_R, tor_r, tor_th, sigma)

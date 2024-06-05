@@ -9,7 +9,7 @@ import IMP.pmi.samplers
 class SurfaceRestraint(IMP.pmi.restraints.RestraintBase):
 
     def __init__(self, m, surface, sphere, weight=1, label=None):
-        super(SurfaceRestraint, self).__init__(m, weight=weight, label=label)
+        super().__init__(m, weight=weight, label=label)
         self.surf = surface
         ss = IMP.core.HarmonicSurfaceHeightPairScore(0, 1)
         r = IMP.core.PairRestraint(

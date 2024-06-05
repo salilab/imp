@@ -356,13 +356,6 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
 class Tests(IMP.test.TestCase):
 
-    # assertWarns needs Python 3.3; replace with a noop on older Pythons
-    if not hasattr(IMP.test.TestCase, 'assertWarns'):
-        import contextlib
-        @contextlib.contextmanager
-        def assertWarns(self, warncls):
-            yield None
-
     def test_read_sequences(self):
         """Test if the sequence reader returns correct strings"""
         # test without name map

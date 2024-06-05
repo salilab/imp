@@ -12,19 +12,19 @@ import ihm.dataset
 from io import StringIO
 
 
-class DummyState(object):
+class DummyState:
     short_name = None
     long_name = None
 
 
-class DummyRepr(object):
+class DummyRepr:
     def __init__(self, short_name, long_name):
         self.state = DummyState()
         self.state.short_name = short_name
         self.state.long_name = long_name
 
 
-class EmptyObject(object):
+class EmptyObject:
     state = DummyState()
 
 
@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
 
     def test_assign_id(self):
         """Test _assign_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
 
@@ -854,7 +854,7 @@ _imp_replica_exchange_protocol.replica_exchange_maximum_temperature
 
     def test_simple_postprocessing(self):
         """Test add_simple_postprocessing"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         po = IMP.pmi.mmcif.ProtocolOutput()
         po._add_state(DummyRepr(None, None))
@@ -911,7 +911,7 @@ _ihm_modeling_post_process.details
 
     def test_no_postprocessing(self):
         """Test add_no_postprocessing"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         po = IMP.pmi.mmcif.ProtocolOutput()
         po._add_state(DummyRepr(None, None))
@@ -973,7 +973,7 @@ _ihm_modeling_post_process.details
 
     def test_rex_postproces(self):
         """Test ReplicaExchangeAnalysisPostProcess"""
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 2
         d = DummyRex()
         with IMP.test.temporary_directory() as tmpdir:
@@ -992,25 +992,25 @@ _ihm_modeling_post_process.details
 
     def test_rex_ensemble(self):
         """Test ReplicaExchangeAnalysisEnsemble"""
-        class DummyModel(object):
+        class DummyModel:
             def parse_rmsf_file(self, fname, comp):
                 self.comp = comp
 
-        class DummyRepresentation(object):
+        class DummyRepresentation:
             def set_coordinates_from_rmf(self, comp, fname, frame,
                                          force_rigid_update):
                 pass
 
-        class DummySimo(object):
+        class DummySimo:
             all_modeled_components = ['Nup84', 'Nup85']
 
-        class DummyState(object):
+        class DummyState:
             all_modeled_components = ['Nup84', 'Nup85']
 
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 1
 
-        class DummyGroup(object):
+        class DummyGroup:
             name = 'dgroup'
         comp_to_asym = {'Nup84': None}
         with IMP.test.temporary_directory() as tmpdir:
@@ -1081,10 +1081,10 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
     def test_add_rex(self):
         """Test add_replica_exchange_analysis"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
 
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 1
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1112,7 +1112,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
     def test_ensemble_dumper(self):
         """Test dumping of simple ensembles"""
-        class DummyPostProcess(object):
+        class DummyPostProcess:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1159,7 +1159,7 @@ _ihm_ensemble_info.sub_sampling_type
 
     def test_density_dumper(self):
         """Test DensityDumper"""
-        class DummyEnsemble(object):
+        class DummyEnsemble:
             pass
 
         m = IMP.Model()
@@ -1202,10 +1202,10 @@ _ihm_localization_density_files.entity_poly_segment_id
 
     def test_cross_link_dumper(self):
         """Test the CrossLinkDumper"""
-        class DummyDataset(object):
+        class DummyDataset:
             pass
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1313,10 +1313,10 @@ _ihm_cross_link_restraint.pseudo_site_flag
         nup84.add_representation(resolutions=[1])
         _ = s.build()
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
 
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         pr = DummyRestraint()
         pr.datasets = [None]
@@ -1452,7 +1452,7 @@ _ihm_geometric_object_axis.transformation_id
 """)
 
     def _check_geom_restraint(self, method_name, expected_output):
-        class MockObject(object):
+        class MockObject:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1560,7 +1560,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
                    "'lower bound' 0.500 0 .")
 
     def _check_membrane_restraint(self, method_name, expected_dist_rsr):
-        class MockObject(object):
+        class MockObject:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1692,7 +1692,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
 
     def test_sas_dumper(self):
         """Test SASDumper class"""
-        class DummyModel(object):
+        class DummyModel:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1750,10 +1750,10 @@ _ihm_sas_restraint.details
 
         p = IMP.atom.get_by_type(hier, IMP.atom.FRAGMENT_TYPE)[0]
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
 
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             assembly = None
         pr = DummyRestraint()
         pr.dataset = None
@@ -2105,7 +2105,7 @@ _ihm_model_representation_details.description
         """Test get_dumpers() and  ProtocolOutput.flush()"""
         class MockSystem(ihm.System):
             def __init__(self):
-                super(MockSystem, self).__init__()
+                super().__init__()
                 self.actions = []
 
         fh = StringIO()

@@ -39,7 +39,7 @@ def _handle_string_input(inp):
     return inp
 
 
-class _CrossLinkDataBaseStandardKeys(object):
+class _CrossLinkDataBaseStandardKeys:
     '''
     This class setup all the standard keys needed to
     identify the cross-link features from the data sets
@@ -197,7 +197,7 @@ class _ProteinsResiduesArray(tuple):
         return outstr
 
 
-class FilterOperator(object):
+class FilterOperator:
     '''
     This class allows to create filter functions that can be passed to
     the CrossLinkDataBase in this way:
@@ -1397,7 +1397,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         return len(list(praset))
 
 
-class JaccardDistanceMatrix(object):
+class JaccardDistanceMatrix:
     """This class allows to compute and plot the distance between datasets"""
 
     def __init__(self, cldb_dictionary):
@@ -1480,7 +1480,7 @@ class JaccardDistanceMatrix(object):
         pl.close(fig)
 
 
-class MapCrossLinkDataBaseOnStructure(object):
+class MapCrossLinkDataBaseOnStructure:
     '''
     This class maps a CrossLinkDataBase on a given structure
     and save an rmf file with color-coded cross-links
@@ -1684,7 +1684,7 @@ class MapCrossLinkDataBaseOnStructure(object):
         return violations
 
 
-class CrossLinkDataBaseFromStructure(object):
+class CrossLinkDataBaseFromStructure:
     '''
     This class generates a CrossLinkDataBase from a given structure
     '''

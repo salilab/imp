@@ -25,13 +25,13 @@ import math
 import pickle
 
 
-class _MockMPIValues(object):
+class _MockMPIValues:
     """Replace samplers.MPI_values when in test mode"""
     def get_percentile(self, name):
         return 0.
 
 
-class _RMFRestraints(object):
+class _RMFRestraints:
     """All restraints that are written out to the RMF file"""
     def __init__(self, model, user_restraints):
         self._rmf_rs = IMP.pmi.tools.get_restraint_set(model, rmf=True)
@@ -43,10 +43,9 @@ class _RMFRestraints(object):
 
     def __bool__(self):
         return len(self) > 0
-    __nonzero__ = __bool__  # Python 2 compatibility
 
     def __getitem__(self, i):
-        class FakePMIWrapper(object):
+        class FakePMIWrapper:
             def __init__(self, r):
                 self.r = IMP.RestraintSet.get_from(r)
 
@@ -63,7 +62,7 @@ class _RMFRestraints(object):
             raise IndexError("Out of range")
 
 
-class ReplicaExchange(object):
+class ReplicaExchange:
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
     Produces trajectory RMF files, best PDB structures,
@@ -628,7 +627,7 @@ class ReplicaExchange(object):
             output.close_rmf(rmfname)
 
 
-class BuildSystem(object):
+class BuildSystem:
     """A macro to build a IMP::pmi::topology::System based on a
        TopologyReader object.
 
@@ -935,7 +934,7 @@ class BuildSystem(object):
 
 
 @IMP.deprecated_object("2.8", "Use AnalysisReplicaExchange instead")
-class AnalysisReplicaExchange0(object):
+class AnalysisReplicaExchange0:
     """A macro for running all the basic operations of analysis.
     Includes clustering, precision analysis, and making ensemble density maps.
     A number of plots are also supported.
@@ -1621,7 +1620,7 @@ class AnalysisReplicaExchange0(object):
         return objects
 
 
-class AnalysisReplicaExchange(object):
+class AnalysisReplicaExchange:
 
     """
     This class contains analysis utilities to investigate ReplicaExchange

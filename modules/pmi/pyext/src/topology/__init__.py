@@ -104,7 +104,7 @@ def _build_ideal_helix(model, residues, coord_finder):
     coord_finder.add_residues(created_hiers)
 
 
-class _SystemBase(object):
+class _SystemBase:
     """The base class for System, State and Molecule
     classes. It contains shared functions in common to these classes
     """
@@ -133,7 +133,7 @@ class _SystemBase(object):
         pass
 
 
-class _OurWeakRef(object):
+class _OurWeakRef:
     """A simple wrapper around weakref.ref which can be pickled.
        Note that we throw the reference away at pickle time. It should
        be able to be reconstructed from System._all_systems anyway."""
@@ -331,7 +331,7 @@ class State(_SystemBase):
 _PDBElement = namedtuple('PDBElement', ['offset', 'filename', 'chain_id'])
 
 
-class _RepresentationHandler(object):
+class _RepresentationHandler:
     """Handle PMI representation and use it to populate that of any attached
        ProtocolOutput objects"""
     def __init__(self, name, pos, pdb_elements):
@@ -933,7 +933,7 @@ class Molecule(_SystemBase):
         return ps
 
 
-class _Representation(object):
+class _Representation:
     """Private class just to store a representation request"""
     def __init__(self,
                  residues,
@@ -962,7 +962,7 @@ class _Representation(object):
         self.color = color
 
 
-class _FindCloseStructure(object):
+class _FindCloseStructure:
     """Utility to get the nearest observed coordinate"""
     def __init__(self):
         self.coords = []
@@ -1005,7 +1005,7 @@ class _FindCloseStructure(object):
         return ret[1]
 
 
-class Sequences(object):
+class Sequences:
     """A dictionary-like wrapper for reading and storing sequence data.
        Keys are FASTA sequence names, and each value a string of one-letter
        codes.
@@ -1084,7 +1084,7 @@ class Sequences(object):
             self.sequences[code] = seq.strip('*')
 
 
-class PDBSequences(object):
+class PDBSequences:
     """Data structure for reading and storing sequence data from PDBs.
 
        @see fasta_pdb_alignments."""
@@ -1239,7 +1239,7 @@ def fasta_pdb_alignments(fasta_sequences, pdb_sequences, show=False):
     return offsets
 
 
-class TempResidue(object):
+class TempResidue:
     "Temporarily stores residue information, even without structure available."
     # Consider implementing __hash__ so you can select.
     def __init__(self, molecule, code, index, internal_index, alphabet):
@@ -1336,7 +1336,7 @@ class TempResidue(object):
         self._structured = True
 
 
-class TopologyReader(object):
+class TopologyReader:
     """Automatically setup System and Degrees of Freedom with a formatted
        text file.
     The file is read in and each part of the topology is stored as a
@@ -1736,7 +1736,7 @@ class TopologyReader(object):
         return rbl.values()
 
 
-class _TempMolecule(object):
+class _TempMolecule:
     """Store the Components and any requests for copies"""
     def __init__(self, init_c):
         self.molname = init_c.molname
@@ -1754,7 +1754,7 @@ class _TempMolecule(object):
                         % (k, len(self.domains[k])) for k in self.domains)
 
 
-class _Component(object):
+class _Component:
     """Stores the components required to build a standard IMP hierarchy
     using IMP.pmi.BuildModel()
     """

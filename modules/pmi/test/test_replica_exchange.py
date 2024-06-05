@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.pmi.macros
 
-class MockSampler(object):
+class MockSampler:
     def get_number_of_replicas(self):
         return 3
 

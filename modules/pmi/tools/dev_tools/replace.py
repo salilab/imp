@@ -3,7 +3,6 @@
 """Replace all instances of argv[1] with argv[2], only updating the file if
    changes were made. """
 
-from __future__ import print_function
 import sys
 import os
 

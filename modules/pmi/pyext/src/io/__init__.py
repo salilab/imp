@@ -243,7 +243,7 @@ def save_best_models(model, out_dir, stat_files,
         print('wrote rmfs to', out_rmf_fn)
 
 
-class _TempProvenance(object):
+class _TempProvenance:
     """Placeholder to track provenance information added to the IMP model.
        This is since we typically don't preserve the IMP::Model object
        throughout a PMI protocol."""
@@ -541,7 +541,7 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
     return rmsd_bead_size_dict
 
 
-class TotalScoreOutput(object):
+class TotalScoreOutput:
     """A helper output for model evaluation"""
     def __init__(self, model):
         self.model = model

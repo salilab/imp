@@ -6,13 +6,13 @@ from io import StringIO
 import sys
 
 
-class MockMsgPack(object):
+class MockMsgPack:
     @staticmethod
     def pack(data, fh, use_bin_type=True):
         fh.data = data
 
 
-class MockFh(object):
+class MockFh:
     pass
 
 
