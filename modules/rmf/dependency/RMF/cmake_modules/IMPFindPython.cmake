@@ -1,17 +1,10 @@
 # Like cmake's FindPython but allows the user to override; should also
 # work (to some degree) with older cmake
 function(imp_find_python)
-  set(USE_PYTHON2 off CACHE BOOL
-      "Force use of Python2 (by default Python3 is used if available)")
-
   if (${CMAKE_VERSION} VERSION_LESS "3.14.0")
     message(WARNING "Using old Python detection logic. Recommended to upgrade to cmake 3.14.0 or later")
     if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-      if (USE_PYTHON2)
-        set(_SEARCH_PYTHON_BINARIES python2 python)
-      else()
-        set(_SEARCH_PYTHON_BINARIES python3 python2 python)
-      endif()
+      set(_SEARCH_PYTHON_BINARIES python3 python)
 
       foreach(pybinary ${_SEARCH_PYTHON_BINARIES})
         execute_process(COMMAND ${pybinary} -c "import sys; print(sys.executable)"
@@ -44,6 +37,9 @@ function(imp_find_python)
       set(PYTHON_VERSION_MINOR ${minor} CACHE INTERNAL "" FORCE)
       set(PYTHON_VERSION_PATCH ${patch} CACHE INTERNAL "" FORCE)
       message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
+      if(${major} EQUAL 2)
+        message(FATAL_ERROR "Only Python 2 was found; Python 3 is required to build")
+      endif()
 
       find_package(PythonLibs ${python_full_version} EXACT REQUIRED)
       # Make sure PYTHON_INCLUDE_DIRS is in the cache so it can be
@@ -69,12 +65,9 @@ function(imp_find_python)
     endif()
 
   else()
-    if (NOT USE_PYTHON2)
-      find_package(Python3 COMPONENTS Interpreter Development NumPy)
-    endif()
+    find_package(Python3 COMPONENTS Interpreter Development NumPy)
 
-    if(NOT USE_PYTHON2
-       AND Python3_Interpreter_FOUND AND Python3_Development_FOUND)
+    if(Python3_Interpreter_FOUND AND Python3_Development_FOUND)
       # Use Python 3 tools
       set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE} CACHE INTERNAL "" FORCE)
       set(PYTHON_TEST_EXECUTABLE ${Python3_EXECUTABLE} CACHE STRING "")
@@ -89,26 +82,7 @@ function(imp_find_python)
       set(PYTHON_VERSION_MINOR ${Python3_VERSION_MINOR} CACHE INTERNAL "" FORCE)
       set(PYTHON_VERSION_PATCH ${Python3_VERSION_PATCH} CACHE INTERNAL "" FORCE)
     else()
-      find_package(Python2 COMPONENTS Interpreter Development NumPy)
-      if(Python2_Interpreter_FOUND AND Python2_Development_FOUND)
-        set(PYTHON_EXECUTABLE ${Python2_EXECUTABLE} CACHE INTERNAL "" FORCE)
-        set(PYTHON_TEST_EXECUTABLE ${Python2_EXECUTABLE} CACHE STRING "")
-        set(PYTHON_LIBRARIES ${Python2_LIBRARIES} CACHE INTERNAL "" FORCE)
-        set(PYTHON_INCLUDE_DIRS ${Python2_INCLUDE_DIRS} CACHE INTERNAL "" FORCE)
-        set(PYTHON_LIBRARY_DIRS ${Python2_LIBRARY_DIRS} CACHE INTERNAL "" FORCE)
-        set(PYTHON_NUMPY_FOUND ${Python2_NumPy_FOUND} CACHE INTERNAL "" FORCE)
-        set(PYTHON_NUMPY_INCLUDE_DIR ${Python2_NumPy_INCLUDE_DIRS}
-            CACHE INTERNAL "" FORCE)
-        set(PYTHON_VERSION ${Python2_VERSION} CACHE INTERNAL "" FORCE)
-        set(PYTHON_VERSION_MAJOR ${Python2_VERSION_MAJOR}
-            CACHE INTERNAL "" FORCE)
-        set(PYTHON_VERSION_MINOR ${Python2_VERSION_MINOR}
-            CACHE INTERNAL "" FORCE)
-        set(PYTHON_VERSION_PATCH ${Python2_VERSION_PATCH}
-            CACHE INTERNAL "" FORCE)
-      else()
-        message(FATAL_ERROR "Could not find a Python interpreter and matching headers/libraries. Python is required to build.")
-      endif()
+      message(FATAL_ERROR "Could not find a Python interpreter and matching headers/libraries. Python is required to build.")
     endif()
   endif()
 endfunction(imp_find_python)
