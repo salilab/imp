@@ -914,12 +914,14 @@ _ihm_external_files.id
 _ihm_external_files.reference_id
 _ihm_external_files.file_path
 _ihm_external_files.content_type
+_ihm_external_files.file_format
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 scripts/test.py 'Modeling workflow or script' 180 'Test script'
-2 2 foo/bar.txt 'Input data or restraints' . 'Test text'
-3 3 . 'Modeling or post-processing output' . 'Ensemble structures'
-4 3 . . . .
+1 1 scripts/test.py 'Modeling workflow or script' TXT 180 'Test script'
+2 2 foo/bar.txt 'Input data or restraints' TXT 42.0 'Test text'
+3 3 . 'Modeling or post-processing output' . . 'Ensemble structures'
+4 3 . . . . .
+5 3 foo.txt Other . . 'Other file'
 """
         # Order of the categories shouldn't matter
         cif1 = ext_ref_cat + ext_file_cat
@@ -927,11 +929,13 @@ _ihm_external_files.details
         for cif in cif1, cif2:
             for fh in cif_file_handles(cif):
                 s, = ihm.reader.read(fh)
-                l1, l2, l3, l4 = s.locations
+                l1, l2, l3, l4, l5 = s.locations
                 self.assertEqual(l1.path, 'scripts/test.py')
                 self.assertEqual(l1.details, 'Test script')
                 self.assertEqual(l1.repo.doi, '10.5281/zenodo.1218053')
+                self.assertIsInstance(l1.file_size, int)
                 self.assertEqual(l1.file_size, 180)
+                self.assertEqual(l1.file_format, 'TXT')
                 self.assertEqual(l1.repo.details, 'test repo')
                 self.assertEqual(l1.__class__,
                                  ihm.location.WorkflowFileLocation)
@@ -939,21 +943,28 @@ _ihm_external_files.details
                 self.assertEqual(l2.path, 'foo/bar.txt')
                 self.assertEqual(l2.details, 'Test text')
                 self.assertIsNone(l2.repo)
-                self.assertIsNone(l2.file_size)
+                self.assertIsInstance(l2.file_size, float)
+                self.assertAlmostEqual(l2.file_size, 42.0, delta=0.01)
+                self.assertEqual(l2.file_format, 'TXT')
                 self.assertEqual(l2.__class__, ihm.location.InputFileLocation)
 
                 self.assertEqual(l3.path, '.')
                 self.assertEqual(l3.details, 'Ensemble structures')
                 self.assertIsNone(l3.file_size)
+                self.assertIsNone(l3.file_format)
                 self.assertEqual(l3.repo.doi, '10.5281/zenodo.1218058')
                 self.assertEqual(l3.__class__, ihm.location.OutputFileLocation)
 
                 self.assertEqual(l4.path, '.')
                 self.assertIsNone(l4.file_size)
+                self.assertIsNone(l4.file_format)
                 self.assertIsNone(l4.details)
                 self.assertEqual(l4.repo.doi, '10.5281/zenodo.1218058')
                 # Type is unspecified
                 self.assertEqual(l4.__class__, ihm.location.FileLocation)
+
+                self.assertEqual(l5.content_type, 'Other')
+                self.assertEqual(l5.__class__, ihm.location.FileLocation)
 
     def test_dataset_list_handler(self):
         """Test DatasetListHandler"""
@@ -1993,7 +2004,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
         self.assertIsNone(a1.occupancy)
 
         self.assertEqual(a2.asym_unit._id, 'B')
-        self.assertIsNone(a2.seq_id)
+        self.assertEqual(a2.seq_id, 1)
         self.assertEqual(a2.atom_id, 'CA')
         self.assertEqual(a2.type_symbol, 'C')
         self.assertEqual(a2.het, True)
@@ -2123,6 +2134,12 @@ loop_
 _entity.id
 _entity.type
 1 water
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 Water
+B 1 Water
 #
 loop_
 _pdbx_nonpoly_scheme.asym_id
@@ -2134,7 +2151,7 @@ _pdbx_nonpoly_scheme.auth_seq_num
 _pdbx_nonpoly_scheme.auth_mon_id
 _pdbx_nonpoly_scheme.pdb_strand_id
 _pdbx_nonpoly_scheme.pdb_ins_code
-A 1 HOH 1 6 6 HOH A .
+A 1 HOH 1 50 500 HOH A .
 #
 loop_
 _atom_site.group_PDB
@@ -2156,17 +2173,93 @@ _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-HETATM 1 O O . HOH . 6 ? A 10.000 10.000 10.000 . 1 A . 1 1
-HETATM 2 O O . HOH . 7 . A 20.000 20.000 20.000 . 1 A . 1 1
+HETATM 1 O O . HOH . 40 ? A 10.000 10.000 10.000 . 1 A . 1 1
+HETATM 2 O O . HOH . 50 ? A 10.000 10.000 10.000 . 1 A . 1 1
+HETATM 3 O O . HOH . 60 . A 20.000 20.000 20.000 . 1 A . 1 1
+HETATM 4 O O . HOH . 70 . B 20.000 20.000 20.000 . 1 B . 1 1
 """)
         s, = ihm.reader.read(fh)
         m = s.state_groups[0][0][0][0]
-        a1, a2 = m._atoms
-        # First atom is in pdbx_nonpoly_scheme with
-        # ndb_seq_num=1, pdb_seq_num=6
+        a1, a2, a3, b1 = m._atoms
+        # Should include info from both atom_site and scheme table
+        self.assertEqual(a1.asym_unit.auth_seq_id_map,
+                         {1: (40, None), 2: (50, None), 3: (60, None)})
+        self.assertEqual(a1.asym_unit.orig_auth_seq_id_map,
+                         {2: 500})
+        self.assertEqual(b1.asym_unit.auth_seq_id_map, {1: (70, None)})
+        self.assertIsNone(b1.asym_unit.orig_auth_seq_id_map)
+        # seq_id should be assigned based on atom_site
         self.assertEqual(a1.seq_id, 1)
-        # Second atom is not in pdbx_nonpoly_scheme, so we keep auth_seq_id
-        self.assertEqual(a2.seq_id, 7)
+        self.assertEqual(a2.seq_id, 2)
+        self.assertEqual(a3.seq_id, 3)
+        self.assertEqual(b1.seq_id, 1)
+
+    def test_atom_site_handler_branched(self):
+        """Test AtomSiteHandler reading branched molecules"""
+        cif = """
+loop_
+_entity.id
+_entity.type
+1 branched
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 .
+#
+loop_
+_pdbx_branch_scheme.asym_id
+_pdbx_branch_scheme.entity_id
+_pdbx_branch_scheme.mon_id
+_pdbx_branch_scheme.num
+_pdbx_branch_scheme.pdb_seq_num
+_pdbx_branch_scheme.auth_seq_num
+_pdbx_branch_scheme.auth_mon_id
+_pdbx_branch_scheme.pdb_asym_id
+A 1 BGC 1 51 501 BGC A
+A 1 BGC 2 52 502 BGC A
+A 1 BGC 3 53 503 BGC A
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.label_entity_id
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+HETATM 1 C C . BGC . 52 ? A 10.000 10.000 10.000 . 1 A . 1 1
+HETATM 2 C C . BGC . 53 ? A 10.000 10.000 10.000 . 1 A . 1 1
+"""
+        # Should fail since residue #60 is not in the scheme table
+        badline = "HETATM 3 C C . BGC . 60 . A 20.00 20.00 20.00 . 1 A . 1 1"
+        fh = StringIO(cif + badline)
+        self.assertRaises(ValueError, ihm.reader.read, fh)
+
+        fh = StringIO(cif)
+        s, = ihm.reader.read(fh)
+        m = s.state_groups[0][0][0][0]
+        a1, a2 = m._atoms
+        # seq_id should match num, i.e. start at 2 since residue 51 is missing
+        self.assertEqual(a1.seq_id, 2)
+        self.assertEqual(a2.seq_id, 3)
+        self.assertEqual(a1.asym_unit.auth_seq_id_map,
+                         {1: (51, None), 2: (52, None), 3: (53, None)})
+        self.assertEqual(a1.asym_unit.orig_auth_seq_id_map,
+                         {1: 501, 2: 502, 3: 503})
+        self.assertEqual(a1.asym_unit.num_map, {1: 2, 2: 3})
 
     def test_derived_distance_restraint_handler(self):
         """Test DerivedDistanceRestraintHandler"""
@@ -2679,18 +2772,18 @@ _pdbx_poly_seq_scheme.pdb_strand_id
 _pdbx_poly_seq_scheme.pdb_ins_code
 A 1 1 6 6 ? .
 A 1 2 7 12 ? .
-A 1 3 8 24 ? X
+A 1 3 8 24 ? .
 A 1 4 9A 48A ? .
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertIsNone(asym._strand_id)
         self.assertEqual(asym.auth_seq_id_map, {1: (6, None), 2: (7, None),
-                                                3: (8, 'X'), 4: ('9A', None)})
+                                                3: (8, None), 4: ('9A', None)})
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, '9A'])
         self.assertIsNone(asym.residue(1).ins_code)
-        self.assertEqual(asym.residue(3).ins_code, 'X')
+        self.assertIsNone(asym.residue(3).ins_code)
         self.assertEqual(asym.orig_auth_seq_id_map, {2: 12, 3: 24, 4: '48A'})
 
     def test_nonpoly_scheme_handler(self):
@@ -2733,13 +2826,13 @@ _pdbx_nonpoly_scheme.pdb_seq_num
 _pdbx_nonpoly_scheme.auth_seq_num
 _pdbx_nonpoly_scheme.pdb_strand_id
 _pdbx_nonpoly_scheme.pdb_ins_code
-A 1 FOO 1 1 1 . .
 A 1 BAR 1 101 202 . .
 B 2 BAR 1 1 1 Q X
 C 3 HOH . 1 1 . .
 C 3 HOH 2 2 2 . .
 C 3 HOH 3 5 10 . .
 C 3 HOH 4 1 20 . .
+C 3 HOH 5 7 7 . .
 """)
         s, = ihm.reader.read(fh)
         e1, e2, e3 = s.entities
@@ -2767,10 +2860,9 @@ C 3 HOH 4 1 20 . .
         self.assertEqual(a2._strand_id, 'Q')
         self.assertIsNone(a2.orig_auth_seq_id_map)
 
-        # For waters, the first row should be ignored since ndb_seq_num
-        # is missing; the second row should also be ignored because it
-        # is a one-to-one mapping; only the last two rows should be used
-        self.assertEqual(a3.auth_seq_id_map, {3: (5, None), 4: (1, None)})
+        self.assertEqual(a3.auth_seq_id_map, {1: (1, None), 2: (2, None),
+                                              3: (5, None), 4: (1, None),
+                                              5: (7, None)})
         self.assertEqual(a3.orig_auth_seq_id_map, {3: 10, 4: 20})
 
     def test_cross_link_list_handler(self):
@@ -4941,23 +5033,31 @@ C 1 BGC 4 8 . BGC .
 """)
         s, = ihm.reader.read(fh)
         asym_a, asym_b, asym_c = s.asym_units
-        self.assertEqual(asym_a.auth_seq_id_map, 4)
+        self.assertEqual(asym_a.auth_seq_id_map,
+                         {1: (5, None), 2: (6, None), 3: (7, None),
+                          4: (8, None)})
         self.assertEqual(asym_a._strand_id, '0')
         self.assertEqual(asym_a.residue(1).auth_seq_id, 5)
         self.assertIsNone(asym_a.orig_auth_seq_id_map)
+        self.assertIsNone(asym_a.num_map)
 
-        self.assertEqual(asym_b.auth_seq_id_map, 0)
+        self.assertEqual(asym_b.auth_seq_id_map,
+                         {1: (1, None), 2: (2, None), 3: (3, None),
+                          4: (4, None)})
         self.assertIsNone(asym_b._strand_id)
         self.assertEqual(asym_b.residue(1).auth_seq_id, 1)
         self.assertEqual(asym_b.orig_auth_seq_id_map,
                          {1: 11, 2: 12, 3: 13, 4: 14})
+        self.assertIsNone(asym_b.num_map)
 
         self.assertEqual(asym_c.auth_seq_id_map,
                          {1: (2, None), 2: (4, None), 3: (6, None),
                           4: (8, None)})
         self.assertIsNone(asym_c._strand_id)
         self.assertEqual(asym_c.residue(1).auth_seq_id, 2)
-        self.assertIsNone(asym_c.orig_auth_seq_id_map)
+        self.assertEqual(asym_c.orig_auth_seq_id_map,
+                         {1: None, 2: None, 3: None, 4: None})
+        self.assertIsNone(asym_c.num_map)
 
     def test_entity_branch_list_handler(self):
         """Test EntityBranchListHandler"""
@@ -5040,6 +5140,48 @@ _pdbx_entity_branch_link.details
         self.assertEqual(lnk2.leaving_atom_id2, 'H2')
         self.assertIsNone(lnk2.order)
         self.assertIsNone(lnk2.details)
+
+    def test_database_handler(self):
+        """Test DatabaseHandler"""
+        fh = StringIO("""
+loop_
+_database_2.database_id
+_database_2.database_code
+_database_2.pdbx_database_accession
+_database_2.pdbx_DOI
+foo bar . ?
+baz 1abc 1abcxyz 1.2.3.4
+""")
+        s, = ihm.reader.read(fh)
+        d1, d2 = s.databases
+        self.assertEqual(d1.id, 'foo')
+        self.assertEqual(d1.code, 'bar')
+        self.assertIsNone(d1.accession)
+        self.assertIs(d1.doi, ihm.unknown)
+        self.assertEqual(d2.id, 'baz')
+        self.assertEqual(d2.code, '1abc')
+        self.assertEqual(d2.accession, '1abcxyz')
+        self.assertEqual(d2.doi, '1.2.3.4')
+
+    def test_database_status_handler(self):
+        """Test DatabaseStatusHandler"""
+        fh = StringIO("""
+_pdbx_database_status.status_code                     REL
+_pdbx_database_status.entry_id                        5FD1
+_pdbx_database_status.recvd_initial_deposition_date   1993-06-29
+_pdbx_database_status.deposit_site                    ?
+_pdbx_database_status.process_site                    BNL
+_pdbx_database_status.SG_entry                        .
+""")
+        s, = ihm.reader.read(fh)
+        # Should pass through to a dict
+        self.assertEqual(s._database_status,
+                         {'status_code': 'REL',
+                          'entry_id': '5FD1',
+                          'recvd_initial_deposition_date': '1993-06-29',
+                          'deposit_site': ihm.unknown,
+                          'process_site': 'BNL',
+                          'sg_entry': None})
 
 
 if __name__ == '__main__':

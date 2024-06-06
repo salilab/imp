@@ -25,7 +25,7 @@
 %endif
 
 Name:          RMF
-Version:       1.6.0
+Version:       1.6.1
 Release:       1%{?dist}
 License:       Apache 2.0
 Summary:       Library to support reading and writing of RMF files
@@ -193,6 +193,9 @@ ${RPM_BUILD_ROOT}%{_prefix}/bin/rmf3_dump --version
 %{_libdir}/libRMF*.so
 
 %changelog
+* Mon May 13 2024 Ben Webb <ben@salilab.org>   1.6.1-1
+- Update for 1.6.1 release.
+
 * Thu Dec 14 2023 Ben Webb <ben@salilab.org>   1.6.0-1
 - Update for 1.6.0 release.
 

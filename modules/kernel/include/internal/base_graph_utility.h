@@ -17,19 +17,11 @@
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/not.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/property_map/property_map.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 namespace OWN {
-using boost::enable_if;
-using boost::mpl::and_;
-using boost::mpl::not_;
-using boost::is_convertible;
-using boost::is_base_of;
 using std::is_pointer;
 
 template <class Graph, class ShowFunction>

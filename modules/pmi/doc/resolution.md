@@ -18,9 +18,8 @@ a bead for every 10 residues, while resolution 1 uses a bead for each residue.
 An all-atom representation is assigned a resolution of 0.
 
 Many PMI functions take a `resolution` parameter to specify which resolution
-to act on. These functions use IMP::pmi::tools::HierarchyDatabase to get
-the closest resolution if the exact resolution requested is not available.
+to act on. These functions will use the closest resolution if the exact
+resolution requested is not available.
 
-@note currently resolution is stored in the particle name. Ultimately it
-is intended to use the IMP::atom::Representation decorator for this purpose
-instead.
+@note Internally, the IMP::atom::Representation decorator is used to keep track
+of all system representations at the desired resolutions.

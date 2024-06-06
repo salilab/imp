@@ -18,7 +18,7 @@ except ImportError:
     print("Pygments (http://pygments.org/) library: please install.")
     print()
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 def _check_do_not_commit(line, filename, num, errors):
@@ -187,15 +187,18 @@ def get_all_files():
 
 
 def main():
-    parser = OptionParser()
-    options, args = parser.parse_args()
+    parser = ArgumentParser()
+    parser.add_argument("patterns", metavar="PATTERN", nargs="*",
+                        help="File patterns to check; if unspecified, "
+                             "check all files")
+    args = parser.parse_args()
 
     errors = []
-    if len(args) == 0:
+    if len(args.patterns) == 0:
         modfiles = get_all_files()
         print("usage:", sys.argv[0], "file_patterns")
     else:
-        modfiles = args
+        modfiles = args.patterns
     for pattern in modfiles:
         expanded = glob.glob(pattern)
         # rint pattern, expanded

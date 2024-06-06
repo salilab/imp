@@ -37,8 +37,8 @@ class SoapChainSeparation {
     if (!enabled()) {
       return true;
     }
-    Atom a1(m, p[0]);
-    Atom a2(m, p[1]);
+    Atom a1(m, std::get<0>(p));
+    Atom a2(m, std::get<1>(p));
     Residue r1 = get_residue(a1);
     Residue r2 = get_residue(a2);
     Hierarchy p1 = r1.get_parent();

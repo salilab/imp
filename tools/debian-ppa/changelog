@@ -1,0 +1,37 @@
+imp (2.21.0-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * IMP 2.21.0 release
+
+ -- IMP Developers <imp@salilab.org>  Thu, 13 Jun 2024 11:19:52 -0700
+
+imp (2.20.2-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * IMP 2.20.2 release
+
+ -- IMP Developers <imp@salilab.org>  Thu, 04 Apr 2024 18:33:05 -0700
+
+imp (2.20.1-4~@CODENAME@) @CODENAME@; urgency=low
+
+  * Add missing dependencies in order to test the install
+  * Recommend python3-protobuf for IMP.npctransport
+
+ -- IMP Developers <imp@salilab.org>  Tue, 12 Mar 2024 15:09:28 -0700
+
+imp (2.20.1-3~@CODENAME@) @CODENAME@; urgency=low
+
+  * Add tests of the installed package
+  * Fix package removal
+
+ -- IMP Developers <imp@salilab.org>  Tue, 12 Mar 2024 10:23:47 -0700
+
+imp (2.20.1-2~@CODENAME@) @CODENAME@; urgency=low
+
+  * Add protobuf-compiler (protoc) to builddeps
+
+ -- IMP Developers <imp@salilab.org>  Fri, 08 Mar 2024 18:49:23 -0800
+
+imp (2.20.1-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * Initial .deb release
+
+ -- IMP Developers <imp@salilab.org>  Fri, 08 Mar 2024 10:34:17 -0800

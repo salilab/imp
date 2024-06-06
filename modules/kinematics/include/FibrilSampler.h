@@ -13,7 +13,7 @@
 #include "DOFsSampler.h"
 #include "revolute_joints.h"
 #include "TransformationJoint.h"
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -47,7 +47,7 @@ class IMPKINEMATICSEXPORT FibrilSampler : public DOFsSampler {
 
  private:
   //  boost::mt19937 rng_; // init random number generator
-  mutable std::vector<boost::uniform_real<> > u_rand_;
+  mutable std::vector<boost::random::uniform_real_distribution<> > u_rand_;
   DihedralAngleRevoluteJoints dihedral_joints_;
   TransformationJoints trans_joint_;
 };

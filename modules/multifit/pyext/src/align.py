@@ -9,6 +9,7 @@ __doc__ = "Align proteomics graph with the EM map."
 
 # analyse the ensemble, first we will do the rmsd stuff
 
+
 class progressBar:
 
     def __init__(self, minValue=0, maxValue=10, totalWidth=12):
@@ -57,7 +58,7 @@ class progressBar:
 
 
 def parse_args():
-    desc =  """Align proteomics graph with the EM map."""
+    desc = """Align proteomics graph with the EM map."""
     p = ArgumentParser(description=desc)
     p.add_argument("-m", "--max", type=int, dest="max", default=999999999,
                    help="maximum number of fits considered")
@@ -139,7 +140,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     mapping_data = IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                              mapping_fn)
     print("=========4")
-    em_anchors = mapping_data.get_anchors()
+    _ = mapping_data.get_anchors()
     print("=========5")
     # load all proteomics restraints
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data, asmb,
@@ -171,6 +172,7 @@ def main():
     args = parse_args()
     run(args.assembly_file, args.proteomics_file, args.mapping_file,
         args.param_file, args.combinations_file, args.scores_file, args.max)
+
 
 if __name__ == "__main__":
     main()

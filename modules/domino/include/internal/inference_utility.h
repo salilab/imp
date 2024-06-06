@@ -37,8 +37,8 @@ class IMPDOMINOEXPORT InferenceStatistics {
   };
   Data get_data(const Subset &s, AssignmentContainer *ss) const;
   boost::unordered_map<Subset, Data> subsets_;
-  mutable boost::uniform_real<double> select_;
-  mutable boost::uniform_int<> place_;
+  mutable boost::random::uniform_real_distribution<double> select_;
+  mutable boost::random::uniform_int_distribution<> place_;
   const Data &get_data(const Subset &s) const;
 
  public:

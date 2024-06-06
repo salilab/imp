@@ -1,7 +1,7 @@
 /**
  *  \file Unit.h     \brief Classes to help with converting between units.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,7 +17,6 @@
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/equal.hpp>
 #include <boost/mpl/placeholders.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/mpl/divides.hpp>
 #include <boost/mpl/multiplies.hpp>
 #include <boost/mpl/plus.hpp>
@@ -214,7 +213,8 @@ class Unit {
   template <int OEXP, class OUnits>
   Unit(Unit<Tag, OEXP, OUnits> o)
       : v_(o.v_) {
-    BOOST_STATIC_ASSERT((boost::mpl::equal<Units, OUnits>::type::value));
+    static_assert((boost::mpl::equal<Units, OUnits>::type::value),
+                  "size mismatch");
   }
 
   template <int OEXP>
@@ -222,8 +222,9 @@ class Unit {
       : v_(o.v_) {}
 
   operator double() const {
-    BOOST_STATIC_ASSERT((internal::IsNoUnits<
-        0, boost::mpl::size<Units>::type::value, Units>::value));
+    static_assert((internal::IsNoUnits<
+        0, boost::mpl::size<Units>::type::value, Units>::value),
+        "type mismatch");
     return v_.get_normalized_value();
   }
 
@@ -262,8 +263,9 @@ inline std::ostream &operator<<(std::ostream &out, Unit<Tag, EXP, Units> o) {
 
 template <class U0, class U1>
 struct Divide {
-  BOOST_STATIC_ASSERT(
-      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
+  static_assert(
+      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Divide<typename U0::Units,
                                     typename U1::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
@@ -272,8 +274,9 @@ struct Divide {
 
 template <class U0, class U1>
 struct Multiply {
-  BOOST_STATIC_ASSERT(
-      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value));
+  static_assert(
+      (boost::mpl::equal<typename U0::Tag, typename U1::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Multiply<typename U0::Units,
                                       typename U1::Units>::type raw_units;
   typedef typename internal::Normalize<raw_units>::type units;
@@ -294,10 +297,12 @@ struct Shift {
 
 template <class U, class R, class A, int DEXP>
 struct Exchange {
-  BOOST_STATIC_ASSERT(
-      (boost::mpl::equal<typename U::Tag, typename R::Tag>::type::value));
-  BOOST_STATIC_ASSERT(
-      (boost::mpl::equal<typename U::Tag, typename A::Tag>::type::value));
+  static_assert(
+      (boost::mpl::equal<typename U::Tag, typename R::Tag>::type::value),
+      "type mismatch");
+  static_assert(
+      (boost::mpl::equal<typename U::Tag, typename A::Tag>::type::value),
+      "type mismatch");
   typedef typename internal::Divide<typename U::Units, typename R::Units>::type
       Div;
   typedef typename internal::Multiply<Div, typename A::Units>::type Mul;

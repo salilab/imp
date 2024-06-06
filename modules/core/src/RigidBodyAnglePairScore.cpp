@@ -22,9 +22,9 @@ Float RigidBodyAnglePairScore::evaluate_index(Model *m,
   IMP_USAGE_CHECK(!da, "Derivatives not implemented");
 
   // check if rigid body
-  IMP_USAGE_CHECK(RigidBody::get_is_setup(m, pi[0]),
+  IMP_USAGE_CHECK(RigidBody::get_is_setup(m, std::get<0>(pi)),
                   "Particle is not a rigid body");
-  IMP_USAGE_CHECK(RigidBody::get_is_setup(m, pi[1]),
+  IMP_USAGE_CHECK(RigidBody::get_is_setup(m, std::get<1>(pi)),
                   "Particle is not a rigid body");
 
   // principal axis of inertia is aligned to z axis when creating rigid body
@@ -32,8 +32,10 @@ Float RigidBodyAnglePairScore::evaluate_index(Model *m,
   algebra::Vector3D  origin=algebra::Vector3D(0.0,0.0,0.0);
 
   // get the two references frames
-  algebra::ReferenceFrame3D rf0 = RigidBody(m, pi[0]).get_reference_frame();
-  algebra::ReferenceFrame3D rf1 = RigidBody(m, pi[1]).get_reference_frame();
+  algebra::ReferenceFrame3D rf0
+          = RigidBody(m, std::get<0>(pi)).get_reference_frame();
+  algebra::ReferenceFrame3D rf1
+          = RigidBody(m, std::get<1>(pi)).get_reference_frame();
 
   // rigid body 0
   algebra::Vector3D i0 = rf0.get_global_coordinates(inertia);

@@ -20,18 +20,19 @@
 #include <IMP/QuadModifier.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/check_macros.h>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <boost/dynamic_bitset.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! Get indexes of container contents that involve any of the given particles
 template<typename Score> inline
-typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
-                           std::vector<unsigned> >::type
+typename std::enable_if<!std::is_base_of<SingletonScore, Score>::value,
+                        std::vector<unsigned> >::type
 get_container_indexes(
             Model *m,
-            const Vector<typename Score::IndexArgument> &contents,
+            const Vector<typename Score::IndexArgument,
+                IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &contents,
             const ParticleIndexes &ps) {
   boost::dynamic_bitset<> bps(m->get_particles_size());
   for (ParticleIndex pi : ps) {
@@ -40,7 +41,8 @@ get_container_indexes(
 
   std::vector<unsigned> ret;
   unsigned i = 0;
-  for (typename Vector<typename Score::IndexArgument>::const_iterator
+  for (typename Vector<typename Score::IndexArgument,
+          IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>>::const_iterator
        cit = contents.begin(); cit != contents.end(); ++cit, ++i) {
     for (typename Score::IndexArgument::const_iterator pit = cit->begin();
          pit != cit->end(); ++pit) {
@@ -56,11 +58,12 @@ get_container_indexes(
 // Specialization for SingletonContainer, where each content entry is
 // a ParticleIndex, not a fixed-size array of indexes
 template<typename Score> inline
-typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
-                          std::vector<unsigned> >::type
+typename std::enable_if<std::is_base_of<SingletonScore, Score>::value,
+                        std::vector<unsigned> >::type
 get_container_indexes(
             Model *m,
-            const Vector<typename Score::IndexArgument> &contents,
+            const Vector<typename Score::IndexArgument,
+               IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &contents,
             const ParticleIndexes &ps) {
   boost::dynamic_bitset<> bps(m->get_particles_size());
   for (ParticleIndex pi : ps) {
@@ -69,8 +72,9 @@ get_container_indexes(
 
   std::vector<unsigned> ret;
   unsigned i = 0;
-  for (Vector<ParticleIndex>::const_iterator cit = contents.begin();
-       cit != contents.end(); ++cit, ++i) {
+  for (typename Vector<typename Score::IndexArgument,
+          IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>>::const_iterator
+       cit = contents.begin(); cit != contents.end(); ++cit, ++i) {
     if (bps[cit->get_index()]) {
       ret.push_back(i);
     }
@@ -179,7 +183,8 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply_indexes(
-      Model *m, const Vector<typename Score::IndexArgument> &a,
+      Model *m, const Vector<typename Score::IndexArgument,
+                       IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &a,
       unsigned int lower_bound, unsigned int upper_bound) const override {
     double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
                                          lower_bound, upper_bound);
@@ -189,7 +194,8 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply_indexes_moved(
-      Model *m, const Vector<typename Score::IndexArgument> &a,
+      Model *m, const Vector<typename Score::IndexArgument,
+                   IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &a,
       unsigned int lower_bound, unsigned int upper_bound,
       const ParticleIndexes &moved_pis,
       const ParticleIndexes &reset_pis) const override {

@@ -385,15 +385,6 @@ class Tests(IMP.test.TestCase):
         """Check reading single chain with multi-char ID from an mmCIF file"""
         m = IMP.Model()
 
-        # Try deprecated method, will select chains "Z" and "K"
-        with IMP.allow_deprecated():
-            s = IMP.atom.ChainPDBSelector("ZK")
-        mp = IMP.atom.read_mmcif(
-            self.get_input_file_name('chaintest.cif'), m, s)
-        chains = [IMP.atom.Chain(x)
-                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual([c.get_id() for c in chains], ['K'])
-
         mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
                                  IMP.atom.ChainPDBSelector(["Z", "K"]))
         chains = [IMP.atom.Chain(x)

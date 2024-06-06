@@ -6,6 +6,17 @@
  */
 
 #include <IMP/mpi/internal/mpi_helpers.h>
+
+// We only want the C API, so try to suppress the C++ API
+#ifndef MPICH_SKIP_MPICXX
+#define MPICH_SKIP_MPICXX
+#endif
+#ifndef OMPI_SKIP_MPICXX
+#define OMPI_SKIP_MPICXX
+#endif
+#ifndef _MPICC_H
+#define _MPICC_H
+#endif
 #include "mpi.h"
 
 #if defined(OMPI_MAJOR_VERSION) && !defined(_MSC_VER)
@@ -48,7 +59,7 @@ namespace {
 
   void dlopen_libmpi() {
 #if defined(OMPI_MAJOR_VERSION) && !defined(_MSC_VER)
-#if OMPI_MAJOR_VERSION == 3 || OMPI_MAJOR_VERSION == 4
+#if OMPI_MAJOR_VERSION >= 3
     ompi_dlopen("40");
 #elif OMPI_MAJOR_VERSION == 2
     ompi_dlopen("20");

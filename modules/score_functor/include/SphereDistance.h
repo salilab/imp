@@ -33,8 +33,8 @@ class SphereDistance : public BaseDistanceScore {
   typedef BaseDistanceScore P;
   static double get_rsum(Model *m,
                          const ParticleIndexPair &pi) {
-    return m->get_sphere(pi[0]).get_radius() +
-           m->get_sphere(pi[1]).get_radius();
+    return m->get_sphere(std::get<0>(pi)).get_radius() +
+           m->get_sphere(std::get<1>(pi)).get_radius();
   }
 
  public:

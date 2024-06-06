@@ -27,8 +27,6 @@
 
 #include <boost/unordered_set.hpp>
 
-#include <boost/random/uniform_int.hpp>
-
 #include <sstream>
 
 IMPATOM_BEGIN_NAMESPACE

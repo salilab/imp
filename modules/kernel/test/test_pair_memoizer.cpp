@@ -13,7 +13,7 @@
 #include <IMP/flags.h>
 #include <IMP/test/test_macros.h>
 #include <IMP/random.h>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <numeric>
 
 // Skip test on g++ 4.2, since it fails to compile due to a g++ bug
@@ -108,7 +108,7 @@ struct SortedPairs {
     }
     std::cout << "Returning ";
     for (unsigned int i = 0; i < ret.size(); ++i) {
-      std::cout << *ret[i][0] << "-" << *ret[i][1] << " ";
+      std::cout << *std::get<0>(ret[i]) << "-" << *std::get<1>(ret[i]) << " ";
     }
     std::cout << std::endl;
     return ret;
@@ -118,16 +118,21 @@ struct SortedPairs {
 struct SetEquals {
   struct LessPair {
     bool operator()(IMP::Entry a, IMP::Entry b) const {
-      if (a[0] > a[1]) std::swap(a[0], a[1]);
-      if (b[0] > b[1]) std::swap(b[0], b[1]);
-      if (a[0] < b[0])
+      if (std::get<0>(a) > std::get<1>(a)) {
+        std::swap(std::get<0>(a), std::get<1>(a));
+      }
+      if (std::get<0>(b) > std::get<1>(b)) {
+        std::swap(std::get<0>(b), std::get<1>(b));
+      }
+      if (std::get<0>(a) < std::get<0>(b)) {
         return true;
-      else if (a[0] > b[0])
+      } else if (std::get<0>(a) > std::get<0>(b)) {
         return false;
-      else if (a[1] < b[1])
+      } else if (std::get<1>(a) < std::get<1>(b)) {
         return true;
-      else
+      } else {
         return false;
+      }
     }
   };
   bool operator()(SortedPairs::result_type t0) const {
@@ -136,11 +141,11 @@ struct SetEquals {
     std::sort(t1.begin(), t1.end(), LessPair());
     std::cout << "Comparing " << t0 << " and " << t1 << "= ";
     for (unsigned int i = 0; i < t0.size(); ++i) {
-      std::cout << *t0[i][0] << "-" << *t0[i][1] << " ";
+      std::cout << *std::get<0>(t0[i]) << "-" << *std::get<1>(t0[i]) << " ";
     }
     std::cout << " and ";
     for (unsigned int i = 0; i < t1.size(); ++i) {
-      std::cout << *t1[i][0] << "-" << *t1[i][1] << " ";
+      std::cout << *std::get<0>(t1[i]) << "-" << *std::get<1>(t1[i]) << " ";
     }
     std::cout << std::endl;
     if (t0.size() != t1.size()) return false;
@@ -156,12 +161,12 @@ typedef IMP::SparseSymmetricPairMemoizer<SortedPairs, SetEquals> Table;
 struct Sum {
   int value;
   Sum() : value(0) {}
-  void operator()(IMP::Entry a) { value += *a[0] + *a[1]; }
+  void operator()(IMP::Entry a) { value += *std::get<0>(a) + *std::get<1>(a); }
 };
 
 struct Show {
   void operator()(IMP::Entry a) {
-    std::cout << *a[0] << "-" << *a[1] << ", ";
+    std::cout << *std::get<0>(a) << "-" << *std::get<1>(a) << ", ";
   }
 };
 
@@ -186,8 +191,8 @@ int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test memoizer");
   IMP::set_log_level(IMP::VERBOSE);
   const int n = 5;
-  boost::uniform_int<> ui(0, n * 2);
-  boost::uniform_int<> pi(0, n - 1);
+  boost::random::uniform_int_distribution<> ui(0, n * 2);
+  boost::random::uniform_int_distribution<> pi(0, n - 1);
 
   for (int i = 0; i < n; ++i) {
     values.push_back(ui(IMP::random_number_generator));

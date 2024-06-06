@@ -2,25 +2,26 @@
 
 import subprocess
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os
 
 
 def main():
-    parser = OptionParser()
-    parser.add_option("--build_dir", help="IMP build directory", default=None)
-    parser.add_option("--module_name", help="Module name", default=None)
-    parser.add_option("-s", "--source", dest="source",
-                      help="IMP source directory.")
-    options, args = parser.parse_args()
+    parser = ArgumentParser()
+    parser.add_argument("--build_dir", help="IMP build directory",
+                        default=None)
+    parser.add_argument("--module_name", help="Module name", default=None)
+    parser.add_argument("-s", "--source", dest="source",
+                        help="IMP source directory.")
+    args = parser.parse_args()
 
     # Top-level version
-    make_version(options.source, '.')
+    make_version(args.source, '.')
 
     # Submodule versions
-    mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir,
-                             module_name=options.module_name)
+    mf = tools.ModulesFinder(source_dir=args.source,
+                             external_dir=args.build_dir,
+                             module_name=args.module_name)
     all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
     for module in all_modules:
         if os.path.exists(os.path.join(module.path, ".git")):

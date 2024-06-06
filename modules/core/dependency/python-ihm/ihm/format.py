@@ -12,6 +12,7 @@ from __future__ import print_function
 import sys
 import textwrap
 import operator
+import ihm
 # getargspec is deprecated in Python 3, but getfullargspec has a very
 # similar interface
 try:
@@ -189,7 +190,7 @@ class CifWriter(_Writer):
     def write_comment(self, comment):
         """Write a simple comment to the CIF file.
            The comment will be wrapped if necessary for readability.
-           See :meth:`set_line_wrap`."""
+           See :meth:`_set_line_wrap`."""
         if self._line_wrap:
             for line in textwrap.wrap(comment, 78):
                 self.fh.write('# ' + line + '\n')
@@ -251,20 +252,34 @@ class _ValueToken(_Token):
 
 class _OmittedValueToken(_ValueToken):
     """A value that is deliberately omitted (the '.' string in mmCIF)"""
-    pass
+    def as_mmcif(self):
+        return "."
 
 
 class _UnknownValueToken(_ValueToken):
     """A value that is unknown (the '?' string in mmCIF)"""
-    pass
+    def as_mmcif(self):
+        return "?"
 
 
 class _TextValueToken(_ValueToken):
     """The value of a variable in mmCIF as a piece of text"""
-    __slots__ = ['txt']
+    __slots__ = ['txt', 'quote']
 
-    def __init__(self, txt):
+    def __init__(self, txt, quote):
         self.txt = txt
+        self.quote = quote
+
+    def as_mmcif(self):
+        if '\n' in self.txt or self.quote == ';':
+            suffix = ";\n" if self.txt.endswith('\n') else "\n;\n"
+            return ";" + self.txt + suffix
+        elif self.quote == "'":
+            return "'" + self.txt + "'"
+        elif self.quote == '"' or ' ' in self.txt:
+            return '"' + self.txt + '"'
+        else:
+            return self.txt
 
 
 class _VariableToken(_Token):
@@ -281,14 +296,65 @@ class _VariableToken(_Token):
                                  "(%s) on line %d" % (val, linenum))
 
 
+class _PreservingVariableToken(_VariableToken):
+    """A variable name that preserves the original case of the keyword"""
+
+    __slots__ = ['category', 'keyword', 'orig_keyword']
+
+    def __init__(self, val, linenum):
+        super(_PreservingVariableToken, self).__init__(val, linenum)
+        _, _, self.orig_keyword = val.partition('.')
+
+    def as_mmcif(self):
+        if self.orig_keyword and self.orig_keyword.lower() == self.keyword:
+            return self.category + '.' + self.orig_keyword
+        else:
+            return self.category + '.' + self.keyword
+
+
+class _CommentToken(_Token):
+    """A comment in mmCIF without the leading '#'"""
+    __slots__ = ['txt']
+
+    def __init__(self, txt):
+        self.txt = txt
+
+    def as_mmcif(self):
+        return "#" + self.txt
+
+
+class _WhitespaceToken(_Token):
+    """Space between other mmCIF tokens"""
+    __slots__ = ['txt']
+
+    def __init__(self, txt):
+        self.txt = txt
+
+    def as_mmcif(self):
+        return self.txt
+
+
+class _EndOfLineToken(_Token):
+    """End of a line in an mmCIF file"""
+    def as_mmcif(self):
+        return "\n"
+
+
 class _DataToken(_Token):
     """A data_* keyword in mmCIF, denoting a new data block"""
-    pass
+    __slots__ = ['txt']
+
+    def __init__(self, txt):
+        self.txt = txt
+
+    def as_mmcif(self):
+        return 'data_' + self.txt
 
 
 class _LoopToken(_Token):
     """A loop_ keyword in mmCIF, denoting the start of a loop construct"""
-    pass
+    def as_mmcif(self):
+        return "loop_"
 
 
 class _SaveToken(_Token):
@@ -314,7 +380,423 @@ class _Reader(object):
                            for x in getargspec(h.__call__)[0][1:]]
 
 
-class CifReader(_Reader):
+class _CifTokenizer(object):
+    def __init__(self, fh):
+        self.fh = fh
+        self._tokens = []
+        self._token_index = 0
+        self._linenum = 0
+
+    # Read a line from the file. Treat it as ASCII (not Unicode)
+    # but be tolerant of 8-bit characters by assuming latin-1 encoding
+    if sys.version_info[0] == 2:    # pragma: no cover
+        def _read_line(self):
+            return self.fh.readline()
+    else:
+        def _read_line(self):
+            line = self.fh.readline()
+            if isinstance(line, bytes):
+                return line.decode('latin-1')
+            else:
+                return line
+
+    def _read_multiline_token(self, first_line, ignore_multiline):
+        """Read a semicolon-delimited (multiline) token"""
+        lines = [first_line[1:]]  # Skip initial semicolon
+        start_linenum = self._linenum
+        while True:
+            self._linenum += 1
+            nextline = self._read_line()
+            if nextline == '':
+                raise CifParserError(
+                    "End of file while reading multiline "
+                    "string which started on line %d" % start_linenum)
+            elif nextline.startswith(';'):
+                # Strip last newline
+                lines[-1] = lines[-1].rstrip('\r\n')
+                self._tokens = [_TextValueToken("".join(lines), ';')]
+                return
+            elif not ignore_multiline:
+                lines.append(nextline)
+
+    def _handle_quoted_token(self, line, strlen, start_pos, quote_type):
+        """Given the start of a quoted string, find the end and add a token
+           for it"""
+        quote = line[start_pos]
+        # Get the next quote that is followed by whitespace (or line end).
+        # In mmCIF a quote within a string is not considered an end quote as
+        # long as it is not followed by whitespace.
+        end = start_pos
+        while True:
+            end = line.find(quote, end + 1)
+            if end == -1:
+                raise CifParserError("%s-quoted string not terminated "
+                                     "at line %d"
+                                     % (quote_type, self._linenum))
+            elif end == strlen - 1 or line[end + 1] in _WHITESPACE:
+                # A quoted string is always a literal string, even if it is
+                # "?" or ".", not an unknown/omitted value
+                self._tokens.append(_TextValueToken(line[start_pos + 1:end],
+                                                    quote))
+                return end + 1  # Step past the closing quote
+
+    def _skip_initial_whitespace(self, line, strlen, start_pos):
+        while start_pos < strlen and line[start_pos] in _WHITESPACE:
+            start_pos += 1
+        return start_pos
+
+    def _extract_line_token(self, line, strlen, start_pos):
+        """Extract the next token from the given line starting at start_pos,
+           populating self._tokens. The new start_pos is returned."""
+        start_pos = self._skip_initial_whitespace(line, strlen, start_pos)
+        if start_pos >= strlen:
+            return strlen
+        if line[start_pos] == '"':
+            return self._handle_quoted_token(line, strlen, start_pos, "Double")
+        elif line[start_pos] == "'":
+            return self._handle_quoted_token(line, strlen, start_pos, "Single")
+        elif line[start_pos] == "#":
+            # Comment - discard the rest of the line
+            self._handle_comment(line, start_pos)
+            return strlen
+        else:
+            # Find end of token (whitespace or end of line)
+            end_pos = start_pos
+            while end_pos < strlen and line[end_pos] not in _WHITESPACE:
+                end_pos += 1
+            val = line[start_pos:end_pos]
+            if val == 'loop_':
+                tok = _LoopToken()
+            elif val.startswith('data_'):
+                tok = _DataToken(val[5:])
+            elif val.startswith('save_'):
+                tok = _SaveToken()
+            elif val.startswith('_'):
+                tok = self._handle_variable_token(val, self._linenum)
+            elif val == '.':
+                tok = _OmittedValueToken()
+            elif val == '?':
+                tok = _UnknownValueToken()
+            else:
+                # Note that we do no special processing for other reserved
+                # words (global_, save_, stop_). But the probability of
+                # them occurring where we expect a value is pretty small.
+                tok = _TextValueToken(val, None)  # don't alter case of values
+            self._tokens.append(tok)
+            return end_pos
+
+    def _handle_variable_token(self, val, linenum):
+        return _VariableToken(val, linenum)
+
+    def _handle_comment(self, line, start_pos):
+        """Potentially handle a comment that spans line[start_pos:]."""
+        pass
+
+    def _tokenize(self, line):
+        """Break up a line into tokens, populating self._tokens"""
+        self._tokens = []
+        if line.startswith('#'):
+            self._handle_comment(line, 0)
+            return  # Skip comment lines
+        start_pos = 0
+        strlen = len(line)
+        while start_pos < strlen:
+            start_pos = self._extract_line_token(line, strlen, start_pos)
+
+    def _unget_token(self):
+        """Push back the last token returned by _get_token() so it can
+           be read again"""
+        self._token_index -= 1
+
+    def _get_token(self, ignore_multiline=False):
+        """Get the next :class:`_Token` from an mmCIF file, or None
+           on end of file.
+           If ignore_multiline is TRUE, the string contents of any multiline
+           value tokens (those that are semicolon-delimited) are not stored
+           in memory.
+        """
+        while len(self._tokens) <= self._token_index:
+            # No tokens left - read the next non-blank line in
+            self._linenum += 1
+            line = self._read_line()
+            if line == '':  # End of file
+                return
+            if line.startswith(';'):
+                self._read_multiline_token(line, ignore_multiline)
+            else:
+                self._tokenize(line.rstrip('\r\n'))
+            self._token_index = 0
+        self._token_index += 1
+        return self._tokens[self._token_index - 1]
+
+
+class _PreservingCifTokenizer(_CifTokenizer):
+    """A tokenizer subclass which preserves comments, case and whitespace"""
+
+    def _tokenize(self, line):
+        _CifTokenizer._tokenize(self, line)
+        self._tokens.append(_EndOfLineToken())
+
+    def _handle_comment(self, line, start_pos):
+        self._tokens.append(_CommentToken(line[start_pos + 1:]))
+
+    def _handle_variable_token(self, val, linenum):
+        return _PreservingVariableToken(val, linenum)
+
+    def _skip_initial_whitespace(self, line, strlen, start_pos):
+        end_pos = start_pos
+        while end_pos < strlen and line[end_pos] in _WHITESPACE:
+            end_pos += 1
+        if end_pos > start_pos:
+            self._tokens.append(_WhitespaceToken(line[start_pos:end_pos]))
+        return end_pos
+
+
+class _CategoryTokenGroup(object):
+    """A group of tokens which set a single data item"""
+    def __init__(self, vartoken, valtoken):
+        self.vartoken, self.valtoken = vartoken, valtoken
+
+    def __str__(self):
+        return ("<_CategoryTokenGroup(%s, %s)>"
+                % (self.vartoken.as_mmcif(), self.valtoken.token.as_mmcif()))
+
+    def as_mmcif(self):
+        return self.vartoken.as_mmcif() + self.valtoken.as_mmcif() + "\n"
+
+    def __set_value(self, val):
+        self.valtoken.value = val
+
+    category = property(lambda self: self.vartoken.category)
+    keyword = property(lambda self: self.vartoken.keyword)
+    value = property(lambda self: self.valtoken.value, __set_value)
+
+
+class _LoopHeaderTokenGroup(object):
+    """A group of tokens that form the start of a loop_ construct"""
+    def __init__(self, looptoken, category, keywords, end_spacers):
+        self._loop, self.category = looptoken, category
+        self.keywords = keywords
+        self.end_spacers = end_spacers
+
+    def keyword_index(self, keyword):
+        """Get the zero-based index of the given keyword, or ValueError"""
+        return [k.token.keyword for k in self.keywords].index(keyword)
+
+    def __str__(self):
+        return ("<_LoopHeaderTokenGroup(%s, %s)>"
+                % (self.category,
+                   str([k.token.keyword for k in self.keywords])))
+
+    def as_mmcif(self):
+        all_tokens = [self._loop] + self.keywords + self.end_spacers
+        return "".join(x.as_mmcif() for x in all_tokens)
+
+
+class _LoopRowTokenGroup(object):
+    """A group of tokens that represent one row in a loop_ construct"""
+    def __init__(self, items):
+        self.items = items
+
+    def as_mmcif(self):
+        return "".join(x.as_mmcif() for x in self.items)
+
+
+class _SpacedToken(object):
+    """A token with zero or more leading whitespace or newline tokens"""
+    def __init__(self, spacers, token):
+        self.spacers, self.token = spacers, token
+
+    def as_mmcif(self):
+        return ("".join(x.as_mmcif() for x in self.spacers)
+                + self.token.as_mmcif())
+
+    def __get_value(self):
+        if isinstance(self.token, _OmittedValueToken):
+            return None
+        elif isinstance(self.token, _UnknownValueToken):
+            return ihm.unknown
+        else:
+            return self.token.txt
+
+    def __set_value(self, val):
+        if val is None:
+            self.token = _OmittedValueToken()
+        elif val is ihm.unknown:
+            self.token = _UnknownValueToken()
+        elif isinstance(self.token, _TextValueToken):
+            self.token.txt = val
+        else:
+            self.token = _TextValueToken(val, quote=None)
+
+    value = property(__get_value, __set_value)
+
+
+class _ChangeValueFilter(object):
+    def __init__(self, target, old, new):
+        ts = target.split('.')
+        if len(ts) == 1 or not ts[0]:
+            self.category = None
+        else:
+            self.category = ts[0]
+        self.keyword = ts[-1]
+        self.old, self.new = old, new
+
+    def filter_category(self, tok):
+        if ((self.category is None or tok.category == self.category)
+                and tok.keyword == self.keyword and tok.value == self.old):
+            tok.value = self.new
+        return tok
+
+    def get_loop_filter(self, tok):
+        if self.category is None or tok.category == self.category:
+            try:
+                keyword_index = tok.keyword_index(self.keyword)
+            except ValueError:
+                return
+
+            def loop_filter(t):
+                if t.items[keyword_index].value == self.old:
+                    t.items[keyword_index].value = self.new
+                return t
+            return loop_filter
+
+
+class _PreservingCifReader(_PreservingCifTokenizer):
+    """Read an mmCIF file and break it into tokens"""
+    def __init__(self, fh):
+        super(_PreservingCifReader, self).__init__(fh)
+
+    def read_file(self, filters=None):
+        """Read the file and yield tokens and/or token groups"""
+        if filters is None:
+            return self._read_file_internal()
+        else:
+            return self._read_file_with_filters(filters)
+
+    def _read_file_with_filters(self, filters):
+        loop_filters = None
+        for tok in self._read_file_internal():
+            if isinstance(tok, _CategoryTokenGroup):
+                tok = self._filter_category(tok, filters)
+            elif isinstance(tok, ihm.format._LoopHeaderTokenGroup):
+                loop_filters = [f.get_loop_filter(tok) for f in filters]
+                loop_filters = [f for f in loop_filters if f is not None]
+            elif (isinstance(tok, ihm.format._LoopRowTokenGroup)
+                  and loop_filters):
+                tok = self._filter_loop(tok, loop_filters)
+            if tok is not None:
+                yield tok
+
+    def _filter_category(self, tok, filters):
+        for f in filters:
+            tok = f.filter_category(tok)
+            if tok is None:
+                return
+        return tok
+
+    def _filter_loop(self, tok, filters):
+        for f in filters:
+            tok = f(tok)
+            if tok is None:
+                return
+        return tok
+
+    def _read_file_internal(self):
+        while True:
+            token = self._get_token()
+            if token is None:
+                break
+            if isinstance(token, _VariableToken):
+                yield self._read_value(token)
+            elif isinstance(token, _LoopToken):
+                for tok in self._read_loop(token):
+                    yield tok
+                # Did we hit the end of the file?
+                if self._token_index < 0:
+                    break
+            else:
+                yield token
+
+    def _get_spaced_token(self):
+        """Get the next token plus any number of leading space/EOL tokens"""
+        spacers = []
+        while True:
+            token = self._get_token()
+            if isinstance(token, (_EndOfLineToken, _WhitespaceToken)):
+                spacers.append(token)
+            else:
+                return _SpacedToken(spacers, token)
+
+    def _read_value(self, vartoken):
+        """Read a line that sets a single value, e.g. "_entry.id   1YTI"""
+        spval = self._get_spaced_token()
+        if not isinstance(spval.token, _ValueToken):
+            raise CifParserError(
+                "No valid value found for %s.%s on line %d"
+                % (vartoken.category, vartoken.keyword, self._linenum))
+        eoltok = self._get_token()
+        if not isinstance(eoltok, _EndOfLineToken):
+            raise CifParserError(
+                "No end of line after %s.%s on line %d"
+                % (vartoken.category, vartoken.keyword, self._linenum))
+        return _CategoryTokenGroup(vartoken, spval)
+
+    def _read_loop(self, looptoken):
+        """Handle a loop_ construct"""
+        header = self._read_loop_header(looptoken)
+        yield header
+        for line in self._read_loop_data(header.keywords):
+            yield line
+
+    def _read_loop_header(self, looptoken):
+        """Read the set of keywords for a loop_ construct"""
+        category = None
+        keywords = []
+        while True:
+            spt = self._get_spaced_token()
+            if isinstance(spt.token, _VariableToken):
+                if category is None:
+                    category = spt.token.category
+                elif category != spt.token.category:
+                    raise CifParserError(
+                        "mmCIF files cannot contain multiple "
+                        "categories within a single loop at line %d"
+                        % self._linenum)
+                keywords.append(spt)
+            elif isinstance(spt.token, _ValueToken):
+                # OK, end of keywords; proceed on to values
+                self._unget_token()
+                return _LoopHeaderTokenGroup(looptoken, category, keywords,
+                                             spt.spacers)
+            else:
+                raise CifParserError("Was expecting a keyword or value for "
+                                     "loop at line %d" % self._linenum)
+
+    def _read_loop_data(self, keywords):
+        """Read the data for a loop_ construct"""
+        while True:
+            items = []
+            for i, keyword in enumerate(keywords):
+                spt = self._get_spaced_token()
+                if isinstance(spt.token, _ValueToken):
+                    items.append(spt)
+                elif i == 0:
+                    # OK, end of the loop
+                    for s in spt.spacers:
+                        yield s
+                    if spt.token is not None:
+                        self._unget_token()
+                    return
+                else:
+                    raise CifParserError(
+                        "Wrong number of data values in loop "
+                        "(should be an exact multiple of the number "
+                        "of keys) at line %d" % self._linenum)
+            yield _LoopRowTokenGroup(items)
+
+
+class CifReader(_Reader, _CifTokenizer):
     """Class to read an mmCIF file and extract some or all of its data.
 
        Use :meth:`read_file` to actually read the file.
@@ -356,143 +838,11 @@ class CifReader(_Reader):
         self.unknown_category_handler = unknown_category_handler
         self.unknown_keyword_handler = unknown_keyword_handler
         self._category_data = {}
-        self.fh = fh
-        self._tokens = []
-        self._token_index = 0
-        self._linenum = 0
-
-    # Read a line from the file. Treat it as ASCII (not Unicode)
-    # but be tolerant of 8-bit characters by assuming latin-1 encoding
-    if sys.version_info[0] == 2:    # pragma: no cover
-        def _read_line(self):
-            return self.fh.readline()
-    else:
-        def _read_line(self):
-            line = self.fh.readline()
-            if isinstance(line, bytes):
-                return line.decode('latin-1')
-            else:
-                return line
+        _CifTokenizer.__init__(self, fh)
 
     def __del__(self):
         if hasattr(self, '_c_format'):
             _format.ihm_reader_free(self._c_format)
-
-    def _read_multiline_token(self, first_line, ignore_multiline):
-        """Read a semicolon-delimited (multiline) token"""
-        lines = [first_line[1:]]  # Skip initial semicolon
-        start_linenum = self._linenum
-        while True:
-            self._linenum += 1
-            nextline = self._read_line()
-            if nextline == '':
-                raise CifParserError(
-                    "End of file while reading multiline "
-                    "string which started on line %d" % start_linenum)
-            elif nextline.startswith(';'):
-                # Strip last newline
-                lines[-1] = lines[-1].rstrip('\r\n')
-                self._tokens = [_TextValueToken("".join(lines))]
-                return
-            elif not ignore_multiline:
-                lines.append(nextline)
-
-    def _handle_quoted_token(self, line, strlen, start_pos, quote_type):
-        """Given the start of a quoted string, find the end and add a token
-           for it"""
-        quote = line[start_pos]
-        # Get the next quote that is followed by whitespace (or line end).
-        # In mmCIF a quote within a string is not considered an end quote as
-        # long as it is not followed by whitespace.
-        end = start_pos
-        while True:
-            end = line.find(quote, end + 1)
-            if end == -1:
-                raise CifParserError("%s-quoted string not terminated "
-                                     "at line %d"
-                                     % (quote_type, self._linenum))
-            elif end == strlen - 1 or line[end + 1] in _WHITESPACE:
-                # A quoted string is always a literal string, even if it is
-                # "?" or ".", not an unknown/omitted value
-                self._tokens.append(_TextValueToken(line[start_pos + 1:end]))
-                return end + 1  # Step past the closing quote
-
-    def _extract_line_token(self, line, strlen, start_pos):
-        """Extract the next token from the given line starting at start_pos,
-           populating self._tokens. The new start_pos is returned."""
-        # Skip initial whitespace
-        while start_pos < strlen and line[start_pos] in _WHITESPACE:
-            start_pos += 1
-        if start_pos >= strlen:
-            return strlen
-        if line[start_pos] == '"':
-            return self._handle_quoted_token(line, strlen, start_pos, "Double")
-        elif line[start_pos] == "'":
-            return self._handle_quoted_token(line, strlen, start_pos, "Single")
-        elif line[start_pos] == "#":
-            # Comment - discard the rest of the line
-            return strlen
-        else:
-            # Find end of token (whitespace or end of line)
-            end_pos = start_pos
-            while end_pos < strlen and line[end_pos] not in _WHITESPACE:
-                end_pos += 1
-            val = line[start_pos:end_pos]
-            if val == 'loop_':
-                tok = _LoopToken()
-            elif val.startswith('data_'):
-                tok = _DataToken()
-            elif val.startswith('save_'):
-                tok = _SaveToken()
-            elif val.startswith('_'):
-                tok = _VariableToken(val, self._linenum)
-            elif val == '.':
-                tok = _OmittedValueToken()
-            elif val == '?':
-                tok = _UnknownValueToken()
-            else:
-                # Note that we do no special processing for other reserved
-                # words (global_, save_, stop_). But the probability of
-                # them occurring where we expect a value is pretty small.
-                tok = _TextValueToken(val)  # don't alter case of values
-            self._tokens.append(tok)
-            return end_pos
-
-    def _tokenize(self, line):
-        """Break up a line into tokens, populating self._tokens"""
-        self._tokens = []
-        if line.startswith('#'):
-            return  # Skip comment lines
-        start_pos = 0
-        strlen = len(line)
-        while start_pos < strlen:
-            start_pos = self._extract_line_token(line, strlen, start_pos)
-
-    def _unget_token(self):
-        """Push back the last token returned by _get_token() so it can
-           be read again"""
-        self._token_index -= 1
-
-    def _get_token(self, ignore_multiline=False):
-        """Get the next :class:`_Token` from an mmCIF file, or None
-           on end of file.
-           If ignore_multiline is TRUE, the string contents of any multiline
-           value tokens (those that are semicolon-delimited) are not stored
-           in memory.
-        """
-        while len(self._tokens) <= self._token_index:
-            # No tokens left - read the next non-blank line in
-            self._linenum += 1
-            line = self._read_line()
-            if line == '':  # End of file
-                return
-            if line.startswith(';'):
-                self._read_multiline_token(line, ignore_multiline)
-            else:
-                self._tokenize(line.rstrip('\r\n'))
-            self._token_index = 0
-        self._token_index += 1
-        return self._tokens[self._token_index - 1]
 
     def _read_value(self, vartoken):
         """Read a line that sets a single value, e.g. "_entry.id   1YTI"""

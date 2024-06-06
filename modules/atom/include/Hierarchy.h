@@ -194,7 +194,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
  public:
 #ifndef IMP_DOXYGEN
-  typedef boost::false_type DecoratorHasTraits;
+  typedef std::false_type DecoratorHasTraits;
 
   //! Setup the particle as a hierarchy; add the passed particles as children.
   static Hierarchy setup_particle(Particle *p,

@@ -2,7 +2,7 @@
  *  \file IMP/Array.h
  *  \brief Classes to handle static sized arrays of things.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,6 +25,11 @@ IMPKERNEL_BEGIN_NAMESPACE
 //! A class to store a fixed array of same-typed values.
 /** Only the constructor with the correct number of arguments for the
     dimensionality can be used.
+
+    Elements can be accessed using [] notation or std::get. The latter
+    is more efficient when the index is a constant, since the bounds check
+    can be done at compile time rather than runtime, e.g. x = std::get<0>(array)
+    is more efficient than x = array[0].
 
     \note These are mapped to/from Python tuples, so there is
     no need to use types that are typedefs of this on the Python side.
@@ -159,5 +164,20 @@ inline std::size_t hash_value(const Array<D, Data, SwigData> &t) {
 #endif
 
 IMPKERNEL_END_NAMESPACE
+
+/* Overload std::get to work on IMP::Array similarly to std::array */
+namespace std {
+  template <unsigned int I, unsigned int D, class Data, class SwigData>
+  const Data& get(const IMP::Array<D, Data, SwigData> &arr) {
+    static_assert(I < D, "array index is within bounds");
+    return *(arr.begin() + I);
+  }
+
+  template <unsigned int I, unsigned int D, class Data, class SwigData>
+  Data& get(IMP::Array<D, Data, SwigData> &arr) {
+    static_assert(I < D, "array index is within bounds");
+    return *(arr.begin() + I);
+  }
+}
 
 #endif /* IMPKERNEL_ARRAY_H */

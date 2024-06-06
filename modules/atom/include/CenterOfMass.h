@@ -102,7 +102,7 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
 
 
 
-    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
+    IMP_NO_DOXYGEN(typedef std::false_type DecoratorHasTraits);
 
   };
 

@@ -4,7 +4,7 @@
    files."""
 
 from __future__ import print_function
-from optparse import OptionParser
+from argparse import ArgumentParser
 import subprocess
 import os
 import sys
@@ -24,8 +24,8 @@ import python_tools
 from python_tools.reindent import Reindenter
 
 
-parser = OptionParser(usage="%prog [options] [FILENAME ...]",
-                      description="""Reformat the given C++ and Python files
+parser = ArgumentParser(
+    description="""Reformat the given C++ and Python files
 (using the clang-format tool if available and
 reindent.py, respectively). If the --all option is given, reformat all such
 files under the current directory.
@@ -34,46 +34,48 @@ If the autopep8 tool is also available, it can be used instead of reindent.py
 by giving the -a option. autopep8 is much more aggressive than reindent.py
 and will fix other issues, such as use of old-style Python syntax.
 """)
-parser.add_option("-c", "--clang-format", dest="clang_format",
-                  default="auto", metavar="EXE",
-                  help="The clang-format command.")
-parser.add_option("-a", dest="use_ap", action="store_true", default=False,
-                  help="Use autopep8 rather than reindent.py for "
-                       "Python files.")
-parser.add_option("--all", dest="all_files", action="store_true",
-                  default=False,
-                  help="Reformat all files under current directory")
-parser.add_option("--autopep8", dest="autopep8",
-                  default="auto", metavar="EXE",
-                  help="The autopep8 command.")
-parser.add_option("-e", "--exclude", dest="exclude",
-                  default="eigen3:config_templates", metavar="DIRS",
-                  help="Colon-separated list of dirnames to ignore.")
-parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
-                  default=False,
-                  help="Print extra info.")
-(options, args) = parser.parse_args()
-if not args and not options.all_files:
+parser.add_argument("-c", "--clang-format", dest="clang_format",
+                    default="auto", metavar="EXE",
+                    help="The clang-format command.")
+parser.add_argument("-a", dest="use_ap", action="store_true", default=False,
+                    help="Use autopep8 rather than reindent.py for "
+                         "Python files.")
+parser.add_argument("--all", dest="all_files", action="store_true",
+                    default=False,
+                    help="Reformat all files under current directory")
+parser.add_argument("--autopep8", dest="autopep8",
+                    default="auto", metavar="EXE",
+                    help="The autopep8 command.")
+parser.add_argument("-e", "--exclude", dest="exclude",
+                    default="eigen3:config_templates", metavar="DIRS",
+                    help="Colon-separated list of dirnames to ignore.")
+parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
+                    default=False,
+                    help="Print extra info.")
+parser.add_argument("files", metavar="FILENAME", nargs="*",
+                    help="C++ and Python files to reformat.")
+args = parser.parse_args()
+if not args.files and not args.all_files:
     parser.error("No files selected")
 
 # clang-format-3.4",
 # autopep8
 
 # search for executables
-if options.clang_format == "auto":
-    options.clang_format = None
+if args.clang_format == "auto":
+    args.clang_format = None
     for name in ["clang-format-3.4", "clang-format"]:
         if which(name):
-            options.clang_format = name
+            args.clang_format = name
             break
-if options.autopep8 == "auto":
-    options.autopep8 = None
+if args.autopep8 == "auto":
+    args.autopep8 = None
     for name in ["autopep8"]:
         if which(name):
-            options.autopep8 = name
+            args.autopep8 = name
             break
 
-exclude = options.exclude.split(":")
+exclude = args.exclude.split(":")
 
 error = None
 
@@ -137,10 +139,10 @@ def _do_get_files(glb, cur):
 
 def _get_files(glb):
     match = []
-    if len(args) == 0:
+    if len(args.files) == 0:
         match = _do_get_files(glb, ".")
     else:
-        for a in args:
+        for a in args.files:
             if os.path.isdir(a):
                 match += _do_get_files(glb, a)
             elif a.endswith(glb):
@@ -163,8 +165,8 @@ def clean_cpp(path):
     # skip code that isn't ours
     if "dependency" in path or "/eigen3/" in path:
         return
-    if options.clang_format:
-        contents = _run([options.clang_format, "--style=Google", path])
+    if args.clang_format:
+        contents = _run([args.clang_format, "--style=Google", path])
     else:
         contents = open(path, "r").read()
     contents = contents.replace("% template", "%template")
@@ -172,8 +174,8 @@ def clean_cpp(path):
 
 
 def clean_py(path):
-    if options.use_ap and options.autopep8:
-        contents = _run([options.autopep8, "--aggressive", "--aggressive",
+    if args.use_ap and args.autopep8:
+        contents = _run([args.autopep8, "--aggressive", "--aggressive",
                          path])
     else:
         r = Reindenter(open(path))
@@ -185,25 +187,25 @@ def clean_py(path):
 
 
 def main():
-    if options.verbose:
-        if options.autopep8 is None:
+    if args.verbose:
+        if args.autopep8 is None:
             print("autopep8 not found")
         else:
-            print("autopep8 is `%s`" % options.autopep8)
-        if options.clang_format is None:
+            print("autopep8 is `%s`" % args.autopep8)
+        if args.clang_format is None:
             print("clang-format not found")
         else:
-            print("clang-format is `%s`" % options.clang_format)
+            print("clang-format is `%s`" % args.clang_format)
 
     tp = ThreadPool()
 
-    if args:
-        for f in args:
+    if args.files:
+        for f in args.files:
             if f.endswith(".py"):
                 tp.add_task(clean_py, f)
             elif f.endswith(".h") or f.endswith(".cpp"):
                 tp.add_task(clean_cpp, f)
-    elif options.all_files:
+    elif args.all_files:
         for f in _get_files(".py"):
             tp.add_task(clean_py, f)
         for f in _get_files(".h") + _get_files(".cpp"):

@@ -12,7 +12,7 @@
 #include <IMP/kernel_config.h>
 #include <IMP/random.h>
 #include <boost/random/normal_distribution.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <iostream>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -51,7 +51,7 @@ template<typename RealType>
 void get_random_numbers_uniform_boost(RealType* p_random_array,
                                           unsigned int n)
 {
-  boost::uniform_real<RealType> ud(0.0, 1.0);
+  boost::random::uniform_real_distribution<RealType> ud(0.0, 1.0);
   for(unsigned int i=0; i<n; i++)
     {
       *(p_random_array++) = ud(IMP::random_number_generator);

@@ -23,7 +23,7 @@ class IMPSTATISTICSEXPORT VQClusteringParameters {
   int number_of_runs_;
   int number_of_steps_;
   double ei_, ef_;        // parameters for epsilon updates
-  double li_, lf_;        // parameters for lamda updates
+  double li_, lf_;        // parameters for lambda updates
   double random_offset_;  // random offset for point sampling
   bool eq_clusters_;      // should the clusters have equal size
   void show(std::ostream &out = std::cout) const {
@@ -31,7 +31,7 @@ class IMPSTATISTICSEXPORT VQClusteringParameters {
     out << "Number of runs : " << number_of_runs_ << std::endl;
     out << "Number of steps: " << number_of_steps_ << std::endl;
     out << "Epsilon updates: " << ei_ << " " << ef_ << std::endl;
-    out << "Lamda updates  : " << li_ << " " << lf_ << std::endl;
+    out << "Lambda updates  : " << li_ << " " << lf_ << std::endl;
     out << "Random offset  : " << random_offset_ << std::endl;
   }
   VQClusteringParameters(int dim, int k) : dim_(dim), k_(k) { init(); }

@@ -1,5 +1,5 @@
 # On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
-# subpackage; on RHEL 9 or later, use Python 3 only).
+# subpackage for RHEL 8 or older Fedora).
 # On older systems, the IMP package uses Python 2 only.
 %if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
@@ -13,7 +13,7 @@
 %define default_python python2
 %endif
 
-%if 0%{?rhel} >= 9
+%if 0%{?rhel} >= 9 || 0%{?fedora} > 37
 %define with_python2 0
 %else
 %define with_python2 1
@@ -215,7 +215,8 @@ This package contains wrappers for Python 2 (the base package already
 includes Python 3 wrappers).
 %endif
 
-%define MPI_MODULES mpi spb
+%define MPI_MODULES mpi spb nestor
+%define MPI_CPP_MODULES mpi spb
 
 %if 0%{?with_mpich}
 %package mpich
@@ -225,13 +226,19 @@ Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:      python3-mpich
+BuildRequires: python3-mpi4py-mpich
 %endif
 BuildRequires: mpich-devel
+# Need for nestor module
+%if 0%{?with_python3}
+BuildRequires: python3-pyyaml
+Requires:      python3-pyyaml
+%endif
 
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
 using the mpich library. It also includes all IMP modules that depend
-on IMP.mpi (IMP.spb).
+on IMP.mpi (IMP.spb, IMP.nestor).
 
 %package mpich-devel
 Group:         Applications/Engineering
@@ -251,13 +258,19 @@ Requires:      %{name} = %{version}-%{release}
 Requires:      openmpi
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:      python3-openmpi
+BuildRequires: python3-mpi4py-openmpi
 %endif
 BuildRequires: openmpi-devel
+# Need for nestor module
+%if 0%{?with_python3}
+BuildRequires: python3-pyyaml
+Requires:      python3-pyyaml
+%endif
 
 %description openmpi
 This package contains an IMP.mpi module to add MPI support,
 using the openmpi library. It also includes all IMP modules that depend
-on IMP.mpi (IMP.spb).
+on IMP.mpi (IMP.spb, IMP.nestor).
 
 %package openmpi-devel
 Group:         Applications/Engineering
@@ -369,7 +382,7 @@ done
 (cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
 (cd %{buildroot}%{_libdir} && mkdir -p mpich/bin mpich/lib)
 (cd %{buildroot}%{_bindir} && mv spb* %{buildroot}%{_libdir}/mpich/bin)
-for mod in %{MPI_MODULES}; do
+for mod in %{MPI_CPP_MODULES}; do
   (cd %{buildroot}%{_libdir}/%{default_python}*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
   (cd %{buildroot}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
@@ -451,6 +464,7 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
+%exclude %{_libdir}/%{default_python}*/site-packages/IMP/nestor
 %endif
 
 %if 0%{?with_python2} && 0%{?with_python3}
@@ -472,8 +486,11 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%{_prefix}/share/IMP/build_info/IMP.nestor
+%{_prefix}/share/IMP/build_info/IMP_nestor.pck
 %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %{_libdir}/%{default_python}*/site-packages/IMP/spb
+%{_libdir}/%{default_python}*/site-packages/IMP/nestor
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
@@ -501,6 +518,8 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_prefix}/share/IMP/build_info/IMP.spb
 %exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.nestor
+%exclude %{_prefix}/share/IMP/build_info/IMP_nestor.pck
 %endif
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
@@ -514,6 +533,9 @@ export PYTHONPATH=%{buildroot}%{_libdir}/python${py2_ver}/site-packages
 %endif
 
 %changelog
+* Thu Jun 13 2024 Ben Webb <ben@salilab.org>   2.21.0-1
+- 2.21.0 release.
+
 * Thu Apr 04 2024 Ben Webb <ben@salilab.org>   2.20.2-1
 - 2.20.2 release.
 

@@ -199,6 +199,57 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p2ind, p2.get_particle_index())
         self._check_pickle(r, score=1352.0)
 
+    def test_x_axial(self):
+        """Test XAxialPositionRestraint"""
+        m, p = setup_system()
+        p.set_coordinates([0.0,2.0,2.0])
+        r = IMP.npc.XAxialPositionRestraint(m, [p], 1.0, 2.0, True, 0.5)
+        info = _parse_restraint_info(r.get_static_info())
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['upper bound'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
+        self.assertEqual(info['type'], 'IMP.npc.XAxialPositionRestraint')
+        self._check_pickle(r, score=3.920)
+
+
+    def test_x_axial_lower(self):
+        """Test XAxialPositionLowerRestraint"""
+        m, p = setup_system()
+        p.set_coordinates([0.0,2.0,2.0])
+        r = IMP.npc.XAxialPositionLowerRestraint(m, [p], 1.0, True, 0.5)
+        info = _parse_restraint_info(r.get_static_info())
+        self.assertAlmostEqual(info['lower bound'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
+        self.assertEqual(info['type'], 'IMP.npc.XAxialPositionLowerRestraint')
+        self._check_pickle(r, score=3.920)
+
+
+    def test_x_axial_upper(self):
+        """Test XAxialPositionUpperRestraint"""
+        m, p = setup_system()
+        p.set_coordinates([0.0,2.0,2.0])
+        r = IMP.npc.XAxialPositionUpperRestraint(m, [p], -2.0, True, 0.5)
+        info = _parse_restraint_info(r.get_static_info())
+        self.assertAlmostEqual(info['upper bound'], -2.0, delta=1e-4)
+        self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
+        self.assertEqual(info['type'], 'IMP.npc.XAxialPositionUpperRestraint')
+        self._check_pickle(r, score=11.52)
+
+
+    def test_overall(self):
+        """Test OverallPositionRestraint"""
+        m, p = setup_system()
+        p.set_coordinates([0.0,1.0,2.0])
+        r = IMP.npc.OverallPositionRestraint(m, [p], 2.0, 0.0, 3.0, 1.0, True, 0.5)
+        info = _parse_restraint_info(r.get_static_info())
+        self.assertAlmostEqual(info['x start'], 2.0, delta=1e-4)
+        self.assertAlmostEqual(info['y start'], 0.0, delta=1e-4)
+        self.assertAlmostEqual(info['z start'], 3.0, delta=1e-4)
+        self.assertAlmostEqual(info['tolerance'], 1.0, delta=1e-4)
+        self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
+        self.assertEqual(info['type'], 'IMP.npc.OverallPositionRestraint')
+        self._check_pickle(r, score=2.203)
+
 
 if __name__ == '__main__':
     IMP.test.main()

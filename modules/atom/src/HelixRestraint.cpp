@@ -86,8 +86,8 @@ ModelObjectsTemp HelixRestraint::do_get_inputs() const {
   }
   for (ParticleIndexPairs::const_iterator tb = bonds_ON_.begin();
        tb != bonds_ON_.end(); ++tb) {
-    ps.push_back(m->get_particle((*tb)[0]));
-    ps.push_back(m->get_particle((*tb)[1]));
+    ps.push_back(m->get_particle(std::get<0>(*tb)));
+    ps.push_back(m->get_particle(std::get<1>(*tb)));
   }
 
   return ps;

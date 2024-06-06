@@ -4,21 +4,22 @@
 """
 
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os.path
 
-parser = OptionParser()
-parser.add_option("--include", help="Extra header include path", default=None)
-parser.add_option("--swig_include", help="Extra SWIG include path",
-                  default=[], action="append")
-parser.add_option("-s", "--swig", dest="swig", default="swig",
-                  help="Swig command to use.")
-parser.add_option("-m", "--module",
-                  dest="module", help="Module to run.")
-parser.add_option("-p", "--swigpath", dest="swigpath", action="append",
-                  default=[], help="Module to run.")
-parser.add_option("-i", "--includepath", dest="includepath", action="append",
-                  default=[], help="Module to run.")
+parser = ArgumentParser()
+parser.add_argument("--include", help="Extra header include path",
+                    default=None)
+parser.add_argument("--swig_include", help="Extra SWIG include path",
+                    default=[], action="append")
+parser.add_argument("-s", "--swig", dest="swig", default="swig",
+                    help="Swig command to use.")
+parser.add_argument("-m", "--module",
+                    dest="module", help="Module to run.")
+parser.add_argument("-p", "--swigpath", dest="swigpath", action="append",
+                    default=[], help="Module to run.")
+parser.add_argument("-i", "--includepath", dest="includepath", action="append",
+                    default=[], help="Module to run.")
 
 
 def run_swig(outputdir, options):
@@ -127,18 +128,18 @@ def patch_file(infile, out, options):
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
     outputdir = os.path.abspath(
         os.path.join(
             "src",
             "%s_swig" %
-            options.module))
+            args.module))
     tools.mkdir(outputdir, clean=False)
-    run_swig(outputdir, options)
+    run_swig(outputdir, args)
     patch_file(os.path.join(outputdir, "wrap.cpp-in"),
-               os.path.join(outputdir, "wrap.cpp"), options)
+               os.path.join(outputdir, "wrap.cpp"), args)
     patch_file(os.path.join(outputdir, "wrap.h-in"),
-               os.path.join(outputdir, "wrap.h"), options)
+               os.path.join(outputdir, "wrap.h"), args)
 
 
 if __name__ == '__main__':

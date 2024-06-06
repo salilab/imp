@@ -154,7 +154,7 @@ class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
 //! Return true (1) with a fixed probability.
 class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
   double p_;
-  mutable boost::uniform_real<double> rng_;
+  mutable boost::random::uniform_real_distribution<double> rng_;
 
  public:
   CoinFlipClassnamePredicate(double p, std::string name =

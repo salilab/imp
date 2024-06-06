@@ -42,8 +42,8 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   double vol = 0;
   Floats vols;
   IMP_CONTAINER_FOREACH(PairContainer, pc_, {
-    core::XYZ d0(get_model(), _1[0]);
-    core::XYZ d1(get_model(), _1[1]);
+    core::XYZ d0(get_model(), std::get<0>(_1));
+    core::XYZ d1(get_model(), std::get<1>(_1));
     algebra::Vector3D c0 = d0.get_coordinates();
     algebra::Vector3D c1 = d1.get_coordinates();
     // will raise an error if c0 == c1
@@ -75,8 +75,8 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     /* derivative for coordinates */
     double factor = -6 / vol;
     IMP_CONTAINER_FOREACH(PairContainer, pc_, {
-      core::XYZ d0(get_model(), _1[0]);
-      core::XYZ d1(get_model(), _1[1]);
+      core::XYZ d0(get_model(), std::get<0>(_1));
+      core::XYZ d1(get_model(), std::get<1>(_1));
       algebra::Vector3D c0 = d0.get_coordinates();
       algebra::Vector3D c1 = d1.get_coordinates();
       algebra::Vector3D deriv = DFM * factor * (c0 - c1) * vols[_2] /

@@ -6,10 +6,9 @@ import IMP.multifit
 import IMP.atom
 import IMP.em
 from IMP import ArgumentParser
-import os
-import sys
 
 __doc__ = "Refine fitting subunits into a density map with FFT."
+
 
 class Fitter(object):
 
@@ -66,14 +65,15 @@ class Fitter(object):
         #
         fits = ff.do_local_fitting(dmap, self.threshold, mol2fit,
                                    self.angle / 180.0 * math.pi,
-                                   self.max_angle / 180.0 *
-                                   math.pi, self.max_trans, num_fits_to_report,
+                                   self.max_angle / 180.0 * math.pi,
+                                   self.max_trans, num_fits_to_report,
                                    do_cluster_fits, self.angles_per_voxel,
-                                   max_clustering_translation, max_clustering_rotation)
+                                   max_clustering_translation,
+                                   max_clustering_rotation)
         fits.set_was_used(True)
         final_fits = fits.best_fits_
         if self.ref_pdb != '':
-            ref_mh = IMP.atom.read_pdb(self.ref_pdb, mdl)
+            ref_mh = IMP.atom.read_pdb(self.ref_pdb, mdl)  # noqa: F821
             ref_mh_xyz = IMP.core.XYZs(IMP.core.get_leaves(ref_mh))
             cur_low = [1e4, 0]
         for i, fit in enumerate(final_fits):
@@ -155,7 +155,7 @@ def run(
 
     ensmb_ref = IMP.multifit.load_ensemble(asmb_input, mdl2, mapping_data)
     ensmb_ref.set_was_used(True)
-    mhs_ref = ensmb_ref.get_molecules()
+    _ = ensmb_ref.get_molecules()
 
     ensmb.load_combination(combs[comb_ind])
 
@@ -175,17 +175,16 @@ def run(
         rb_ref = rbs_ref[i]
         rb = rbs[i]
 
-        initial_transformation = IMP.algebra.get_transformation_from_first_to_second(
-            rb_ref.get_reference_frame(),
-            rb.get_reference_frame())
+        initial_transformation = \
+            IMP.algebra.get_transformation_from_first_to_second(
+                rb_ref.get_reference_frame(), rb.get_reference_frame())
 
         pdb_fn = asmb_input.get_component_header(i).get_filename()
 
-        f = Fitter(
-            em_map, spacing, resolution, origin, asmb_input.get_assembly_header(
-            ).get_threshold(
-            ), pdb_fn, fits_fn, options.angle, options.num, options.angle_voxel,
-            options.max_trans, options.max_angle)
+        f = Fitter(em_map, spacing, resolution, origin,
+                   asmb_input.get_assembly_header().get_threshold(), pdb_fn,
+                   fits_fn, options.angle, options.num, options.angle_voxel,
+                   options.max_trans, options.max_angle)
         f.run_local_fitting(mh, rb, initial_transformation)
 
 
@@ -194,6 +193,7 @@ def main():
     run(args.assembly_file, args.ref_assembly_file, args.proteomics_file,
         args.mapping_file, args.combinations_file, args.combination_index,
         args)
+
 
 if __name__ == "__main__":
     main()

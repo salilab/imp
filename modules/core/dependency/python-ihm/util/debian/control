@@ -1,0 +1,16 @@
+Source: python-ihm
+Priority: optional
+Maintainer: Ben Webb <ben@salilab.org>
+Build-Depends: debhelper-compat (= 13), dh-python, swig, python3-dev
+Standards-Version: 4.6.2
+Section: libs
+Homepage: https://github.com/ihmwg/python-ihm
+Vcs-Browser: https://github.com/ihmwg/python-ihm
+
+Package: python3-ihm
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-msgpack
+Description: Package for handling IHM mmCIF and BinaryCIF files
+  This is a Python package to assist in handling mmCIF and BinaryCIF files
+  compliant with the integrative/hybrid modeling (IHM) extension.

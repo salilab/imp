@@ -52,7 +52,7 @@ core::MonteCarloMoverResult RigidBodyNewMover::do_propose() {
 
   algebra::VectorD<3> axis = algebra::get_random_vector_on(
       algebra::Sphere3D(algebra::VectorD<3>(0.0, 0.0, 0.0), 1.));
-  ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+  ::boost::random::uniform_real_distribution<> rand(-max_angle_, max_angle_);
   Float angle = rand(IMP::random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
   algebra::Rotation3D rc =

@@ -11,8 +11,8 @@
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -36,14 +36,14 @@ void RelativePositionMover::add_internal_transformations(
 
 core::MonteCarloMoverResult RelativePositionMover::do_propose() {
   last_transformation_ = rbA_.get_reference_frame().get_transformation_to();
-  ::boost::uniform_real<> zeroone(0., 1.);
+  ::boost::random::uniform_real_distribution<> zeroone(0., 1.);
   double p = zeroone(random_number_generator);
   if (p < probability_of_random_move_) {
     algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(rbA_.get_coordinates(), max_translation_));
     algebra::Vector3D axis = algebra::get_random_vector_on(
         algebra::Sphere3D(algebra::Vector3D(0.0, 0.0, 0.0), 1.));
-    ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+    ::boost::random::uniform_real_distribution<> rand(-max_angle_, max_angle_);
     Float angle = rand(random_number_generator);
     algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
     algebra::Rotation3D rc =
@@ -54,10 +54,12 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
     //         << rbA_ << " Transformation " <<  t << std::endl;
     rbA_.set_reference_frame(algebra::ReferenceFrame3D(t));
   } else {
-    ::boost::uniform_int<> randi(0, reference_rbs_.size() - 1);
+    ::boost::random::uniform_int_distribution<> randi(
+                                        0, reference_rbs_.size() - 1);
     unsigned int i = randi(random_number_generator);
 
-    ::boost::uniform_int<> randj(0, transformations_map_[i].size() - 1);
+    ::boost::random::uniform_int_distribution<> randj(
+                                        0, transformations_map_[i].size() - 1);
     unsigned int j = randj(random_number_generator);
 
     algebra::Transformation3D Tint = transformations_map_[i][j];

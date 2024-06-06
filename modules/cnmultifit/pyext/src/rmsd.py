@@ -7,9 +7,7 @@ from IMP import ArgumentParser
 
 
 def parse_args():
-    desc = """%prog [options] <parameter file> <transformations file>
-        <reference PDB>
-
+    desc = """
 This program calculates the RMSD between modeled cyclic symmetric complexes and
 the reference structure. The RMSD and cross correlation of each complex is
 written into a file called rmsd.output.

@@ -7,7 +7,7 @@
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/internal/rotation_helper.h"
 #include <IMP/constants.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -60,7 +60,7 @@ void write_registration_results(String filename,
 
 void RegistrationResult::set_random_registration(unsigned int index,
                                                  double maximum_shift) {
-  ::boost::uniform_real<> rand(0., 1.);
+  ::boost::random::uniform_real_distribution<> rand(0., 1.);
   // Random point in the sphere, pick to ensure even distribution
   double u = rand(random_number_generator);
   double v = rand(random_number_generator);

@@ -29,6 +29,41 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(da[0], d, 2)
         self.assertAlmostEqual(da[1], a, 2)
 
+    def test_pairwise_rmsd_score(self):
+        """Test pairwise RMSD score"""
+        m = IMP.Model()
+        # Get reference orientation ref1, ref2
+        mpref = atom.read_pdb(self.get_input_file_name("mini.pdb"),
+                              m, atom.NonWaterPDBSelector())
+        leaves = atom.get_leaves(mpref)
+        ref1 = core.XYZs(leaves[:30])
+        ref2 = core.XYZs(leaves[30:])
+        # Transform the complex
+        mpmdl = atom.read_pdb(self.get_input_file_name("mini.pdb"),
+                              m, atom.NonWaterPDBSelector())
+        leaves = atom.get_leaves(mpmdl)
+        mdl1 = core.XYZs(leaves[:30])
+        mdl2 = core.XYZs(leaves[30:])
+        t = IMP.algebra.Transformation3D(
+                IMP.algebra.get_random_rotation_3d(),
+                IMP.algebra.get_random_vector_in(
+                    IMP.algebra.get_unit_bounding_box_3d()))
+        for d in mdl1 + mdl2:
+            core.transform(d, t)
+        # Both components were transformed together, so RMSD ~= 0
+        self.assertAlmostEqual(
+            IMP.atom.get_pairwise_rmsd_score(ref1, ref2, mdl1, mdl2),
+            0.0, delta=1e-6)
+        # Transform second component
+        t2 = IMP.algebra.Transformation3D(
+                IMP.algebra.get_identity_rotation_3d(),
+                IMP.algebra.Vector3D(5.0, 0.0, 0.0))
+        for d in mdl2:
+            core.transform(d, t2)
+        self.assertAlmostEqual(
+            IMP.atom.get_pairwise_rmsd_score(ref1, ref2, mdl1, mdl2),
+            5.0, delta=1e-6)
+
     def test_drms(self):
         """ Test drms measure """
         m = IMP.Model()

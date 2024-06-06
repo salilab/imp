@@ -17,7 +17,8 @@ SoftCylinderPairScore::SoftCylinderPairScore(double k) : k_(k) {}
 Float SoftCylinderPairScore::evaluate_index(
     Model *m, const ParticleIndexPair &pip,
     DerivativeAccumulator *da) const {
-  atom::Bond b[2] = {atom::Bond(m, pip[0]), atom::Bond(m, pip[1])};
+  atom::Bond b[2] = {atom::Bond(m, std::get<0>(pip)),
+                     atom::Bond(m, std::get<1>(pip))};
 
   core::XYZR d[2][2] = {
       {core::XYZR(b[0].get_bonded(0)), core::XYZR(b[0].get_bonded(1))},

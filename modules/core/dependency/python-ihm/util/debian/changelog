@@ -1,0 +1,11 @@
+python-ihm (1.1-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 1.1 release
+
+ -- Ben Webb <ben@salilab.org>  Thu, 09 May 2024 12:44:51 -0700
+
+python-ihm (1.0-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * Initial .deb release
+
+ -- Ben Webb <ben@salilab.org>  Thu, 07 Mar 2024 00:19:35 +0000

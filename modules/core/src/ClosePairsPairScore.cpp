@@ -71,8 +71,8 @@ ParticleIndexPairs ClosePairsPairScore::get_close_pairs(
     Model *m, const ParticleIndexPair &p) const {
   ParticleIndexPairs ppt;
   Floats dists;
-  ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
-  ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
+  ParticleIndexes ps0 = expand(m->get_particle(std::get<0>(p)), r_);
+  ParticleIndexes ps1 = expand(m->get_particle(std::get<1>(p)), r_);
   fill_close_pairs(cpf_, m, th_, ps0, ps1, ppt);
   return ppt;
 }
@@ -98,14 +98,16 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
   IMP_OBJECT_LOG;
   // double mr= std::max(max_radius(psa), max_radius(psb));
   ParticleIndexPairs ppt;
-  ParticleIndexes ps0 = expand(m->get_particle(p[0]), r_);
-  ParticleIndexes ps1 = expand(m->get_particle(p[1]), r_);
+  ParticleIndexes ps0 = expand(m->get_particle(std::get<0>(p)), r_);
+  ParticleIndexes ps1 = expand(m->get_particle(std::get<1>(p)), r_);
 
   if (ps0.size() + ps1.size() > 50) {
     Floats dists;
     double dist = last_distance_;
-    IMP_USAGE_CHECK(ps0.size() > 0, "Empty set of particles used for " << p[0]);
-    IMP_USAGE_CHECK(ps1.size() > 0, "Empty set of particles used for " << p[1]);
+    IMP_USAGE_CHECK(ps0.size() > 0, "Empty set of particles used for "
+                    << std::get<0>(p));
+    IMP_USAGE_CHECK(ps1.size() > 0, "Empty set of particles used for "
+                    << std::get<1>(p));
     do {
       IMP_LOG_VERBOSE("Searching for close pairs " << dist << std::endl);
       fill_close_pairs(cpf_, m, dist, ps0, ps1, ppt);
@@ -115,8 +117,8 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     } while (ppt.size() < static_cast<unsigned int>(k_));
     algebra::internal::MinimalSet<double, ParticleIndexPair> ms(k_);
     for (unsigned int i = 0; i < ppt.size(); ++i) {
-      double d = algebra::get_distance(m->get_sphere(ppt[i][0]),
-                                       m->get_sphere(ppt[i][1]));
+      double d = algebra::get_distance(m->get_sphere(std::get<0>(ppt[i])),
+                                       m->get_sphere(std::get<1>(ppt[i])));
       // std::cout << "Trying " << d << " " << ppt[i] << std::endl;
       ms.insert(d, ppt[i]);
     }
@@ -136,7 +138,8 @@ ParticleIndexPairs KClosePairsPairScore::get_close_pairs(
     IMP_IF_CHECK(USAGE) {
       if (k_ == 1) {
         double distance =
-            get_distance(XYZR(m, retps[0][0]), XYZR(m, retps[0][1]));
+            get_distance(XYZR(m, std::get<0>(retps[0])),
+                         XYZR(m, std::get<1>(retps[0])));
         for (unsigned int i = 0; i < ps0.size(); ++i) {
           for (unsigned int j = 0; j < ps1.size(); ++j) {
             double cdistance = get_distance(XYZR(m, ps0[i]), XYZR(m, ps1[j]));

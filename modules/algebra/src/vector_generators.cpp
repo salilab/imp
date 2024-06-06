@@ -21,7 +21,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \relatesalso SphereD
 */
 VectorD<2> get_random_vector_in(const SphereD<2> &s) {
-  ::boost::uniform_real<> rand(0, 1);
+  ::boost::random::uniform_real_distribution<> rand(0, 1);
   double angle = 2 * PI * rand(random_number_generator);
   // sample the radius uniformly with respect to the circle area PI * R^2
   double R2 = std::pow(s.get_radius(), 2);
@@ -35,7 +35,7 @@ VectorD<2> get_random_vector_in(const SphereD<2> &s) {
     \relatesalso Cylinder3D
  */
 Vector3D get_random_vector_in(const Cylinder3D &c) {
-  ::boost::uniform_real<> rand(0, 1);
+  ::boost::random::uniform_real_distribution<> rand(0, 1);
   // relative height and radius are between 0 (0%) and 1 (100%):
   double relative_h = rand(random_number_generator);
   // sqrt[rand(0,1)] is uniform with respect to the circle area PI*r^2

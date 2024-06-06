@@ -225,7 +225,7 @@ class IMPKERNELEXPORT Decorator : public Value {
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  typedef boost::false_type DecoratorHasTraits;
+  typedef std::false_type DecoratorHasTraits;
 #endif
 };
 

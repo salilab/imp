@@ -20,12 +20,12 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 \param[in] n , the range is [0,n-1]
  */
 inline int random_int(int n) {
-  ::boost::uniform_int<> rand(0, n - 1);
+  ::boost::random::uniform_int_distribution<> rand(0, n - 1);
   return rand(random_number_generator);
 }
 //! Generate a random number in the range [lo,hi]
 inline double random_uniform(double lo = 0.0, double hi = 1.0) {
-  ::boost::uniform_real<> rand(lo, hi);
+  ::boost::random::uniform_real_distribution<> rand(lo, hi);
   return rand(random_number_generator);
 }
 //! Gaussian random number generator

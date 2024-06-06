@@ -28,6 +28,14 @@
 #include <vector>
 #endif
 
+// Use unified memory to back vectors when building with CUDA
+#ifdef IMP_KERNEL_CUDA_LIB
+# include <IMP/internal/UnifiedAllocator.h>
+# define IMP_VECTOR_ALLOCATOR internal::UnifiedAllocator
+#else
+# define IMP_VECTOR_ALLOCATOR std::allocator
+#endif
+
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! A more \imp-like version of the \c std::vector.
@@ -38,22 +46,22 @@ IMPKERNEL_BEGIN_NAMESPACE
     - implicit conversion when the contents are implicitly convertible
     - bounds checking in debug mode
  */
-template <class T>
+template <class T, class Allocator = std::allocator<T>>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
                ,
-               public __gnu_debug::vector<T>
+               public __gnu_debug::vector<T, Allocator>
 #else
                ,
-               public std::vector<T>
+               public std::vector<T, Allocator>
 #endif
 #endif
                {
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-  typedef __gnu_debug::vector<T> V;
+  typedef __gnu_debug::vector<T, Allocator> V;
 #else
-  typedef std::vector<T> V;
+  typedef std::vector<T, Allocator> V;
 #endif
 
   friend class cereal::access;
@@ -138,13 +146,14 @@ class Vector : public Value
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-template <class T>
-void swap(Vector<T> &a, Vector<T> &b) {
+template <class T, class Allocator>
+void swap(Vector<T, Allocator> &a, Vector<T, Allocator> &b) {
   a.swap(b);
 }
 
-template <class T>
-inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
+template <class T, class Allocator>
+inline Vector<T, Allocator> operator+(Vector<T, Allocator> ret,
+                                      const Vector<T, Allocator> &o) {
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }
@@ -152,8 +161,8 @@ inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
 #endif
 
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
-template <class T>
-inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
+template <class T, class Allocator>
+inline std::size_t hash_value(const __gnu_debug::vector<T, Allocator> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
 #endif
@@ -161,8 +170,8 @@ inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
 IMPKERNEL_END_NAMESPACE
 
 namespace cereal {
-  template <class Archive, class T>
-  struct specialize<Archive, IMP::Vector<T>,
+  template <class Archive, class T, class Allocator>
+  struct specialize<Archive, IMP::Vector<T, Allocator>,
                     cereal::specialization::member_load_save> {};
 }
 

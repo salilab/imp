@@ -21,7 +21,6 @@
 
 #include <memory>
 #include <boost/shared_array.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
 #ifdef HAVE_BOOST_ASIO
@@ -325,7 +324,7 @@ class BufferImpl : boost::noncopyable {
   /// and will compile-time assert.
   template <typename T>
   void writeTo(T val, const boost::false_type &) {
-    BOOST_STATIC_ASSERT(sizeof(T) == 0);
+    static_assert(sizeof(T) == 0, "val should be empty");
   }
 
   /// Write a block of data to the buffer, adding new chunks if necessary.

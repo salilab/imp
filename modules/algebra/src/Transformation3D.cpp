@@ -74,7 +74,8 @@ Transformation3D get_random_local_transformation(Vector3D origin,
       algebra::Sphere3D(algebra::Vector3D(0, 0, 0), max_translation));
   algebra::Vector3D axis =
       algebra::get_random_vector_on(algebra::Sphere3D(origin, 1.));
-  ::boost::uniform_real<> rand(-max_angle_in_rad, max_angle_in_rad);
+  ::boost::random::uniform_real_distribution<> rand(-max_angle_in_rad,
+                                                    max_angle_in_rad);
   Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
   return algebra::Transformation3D(r, translation);

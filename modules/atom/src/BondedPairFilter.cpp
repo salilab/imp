@@ -14,11 +14,12 @@ BondedPairFilter::BondedPairFilter() : PairPredicate("BondedPairFilter%1%") {}
 
 int BondedPairFilter::get_value_index(
     Model *m, const ParticleIndexPair &pip) const {
-  if (!Bonded::get_is_setup(m, pip[0]) || !Bonded::get_is_setup(m, pip[1])) {
+  if (!Bonded::get_is_setup(m, std::get<0>(pip))
+      || !Bonded::get_is_setup(m, std::get<1>(pip))) {
     return false;
   }
-  Bonded ba(m, pip[0]);
-  Bonded bb(m, pip[1]);
+  Bonded ba(m, std::get<0>(pip));
+  Bonded bb(m, std::get<1>(pip));
   Bond bd = get_bond(ba, bb);
   return bd != Bond();
 }

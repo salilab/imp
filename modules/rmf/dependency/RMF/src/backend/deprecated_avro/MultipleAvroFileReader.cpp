@@ -6,7 +6,11 @@
  *
  */
 
+#include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
+#if BOOST_VERSION >= 107200
+#include <boost/filesystem/directory.hpp>
+#endif
 #include <boost/filesystem/path.hpp>
 #include <boost/functional/hash/hash.hpp>
 #include <boost/iterator/iterator_facade.hpp>

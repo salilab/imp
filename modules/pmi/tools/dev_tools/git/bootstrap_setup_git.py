@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Update submodules and then call the main setup_git.py. This should be
 copied to the main directory of your project and named setup_git.py."""

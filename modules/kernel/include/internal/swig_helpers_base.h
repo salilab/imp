@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers_base.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_HELPERS_BASE_H
@@ -105,12 +105,7 @@ typedef PyPointer<false> PyOwnerPointer;
     }                                                                   \
   }
 
-using boost::enable_if;
-using boost::mpl::and_;
-using boost::mpl::not_;
-using boost::is_convertible;
 // using namespace boost;
-// using namespace boost::mpl;
 
 template <class V>
 void assign(V*& a, const V& b) {
@@ -165,7 +160,7 @@ struct ValueOrObject {
 
 template <class T>
 struct ValueOrObject<T,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+           typename std::enable_if<std::is_base_of<Object, T>::value>::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -173,7 +168,7 @@ struct ValueOrObject<T,
 
 template <class T>
 struct ValueOrObject<T*,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+           typename std::enable_if<std::is_base_of<Object, T>::value>::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -181,7 +176,7 @@ struct ValueOrObject<T*,
 
 template <class T>
 struct ValueOrObject<Pointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+           typename std::enable_if<std::is_base_of<Object, T>::value>::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -189,7 +184,7 @@ struct ValueOrObject<Pointer<T>,
 
 template <class T>
 struct ValueOrObject<WeakPointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+           typename std::enable_if<std::is_base_of<Object, T>::value>::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -197,7 +192,7 @@ struct ValueOrObject<WeakPointer<T>,
 
 template <class T>
 struct ValueOrObject<UncheckedWeakPointer<T>,
-                     typename enable_if<boost::is_base_of<Object, T> >::type> {
+           typename std::enable_if<std::is_base_of<Object, T>::value>::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;
   typedef T* store_type;
@@ -213,7 +208,7 @@ inline std::string get_convert_error(const char *err, const char *symname,
 
 template <class T>
 struct ConvertAllBase {
-  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
     void* vp;
@@ -224,8 +219,8 @@ struct ConvertAllBase {
 
 template <class T>
 struct ConvertValueBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
-  BOOST_STATIC_ASSERT(!(boost::is_base_of<Object, T>::value));
+  static_assert(!std::is_pointer<T>::value, "is pointer");
+  static_assert(!(std::is_base_of<Object, T>::value), "wrong base class");
   template <class SwigData>
   static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
                                  const char *argtype, SwigData st, SwigData,
@@ -252,9 +247,9 @@ struct ConvertValueBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertObjectBase : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
-  BOOST_STATIC_ASSERT((boost::is_base_of<Object, T>::value) ||
-                      (boost::is_same<Object, T>::value));
+  static_assert(!std::is_pointer<T>::value, "is pointer");
+  static_assert((std::is_base_of<Object, T>::value) ||
+                (std::is_same<Object, T>::value), "wrong base class");
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -285,7 +280,7 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
 // T should not be a pointer to the object
 template <class T>
 struct ConvertRAII : public ConvertAllBase<T> {
-  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
                            const char *argtype, SwigData st, SwigData,
@@ -331,8 +326,8 @@ struct Convert : public ConvertValueBase<T> {
 };
 
 template <class T>
-struct Convert<T, typename enable_if<boost::is_base_of<
-                      Object, T> >::type> : public ConvertObjectBase<T> {
+struct Convert<T, typename std::enable_if<std::is_base_of<
+                      Object, T>::value>::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
 
@@ -344,8 +339,8 @@ struct Convert<Object> : public ConvertObjectBase<Object> {
 };
 
 template <class T>
-struct Convert<T*, typename enable_if<boost::is_base_of<
-                       Object, T> >::type> : public ConvertObjectBase<T> {
+struct Convert<T*, typename std::enable_if<std::is_base_of<
+                      Object, T>::value>::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
 
@@ -357,7 +352,7 @@ struct Convert<T*, typename enable_if<boost::is_base_of<
 template <class T, class VT, class ConvertVT>
 struct ConvertSequenceHelper {
   typedef typename ValueOrObject<VT>::type V;
-  BOOST_STATIC_ASSERT(!std::is_pointer<T>::value);
+  static_assert(!std::is_pointer<T>::value, "is pointer");
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
@@ -666,7 +661,7 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
                              SwigData particle_st,
                              SwigData decorator_st) {
     if (numpy_import_retval == 0 && is_native_numpy_1d_array(o, NPY_INT)) {
-      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      static_assert(sizeof(ParticleIndex) == sizeof(int), "size mismatch");
       int dim = PyArray_DIM((PyArrayObject*)o, 0);
       ParticleIndex *data = (ParticleIndex *)PyArray_DATA((PyArrayObject*)o);
       return ParticleIndexes(data, data+dim);
@@ -680,7 +675,7 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
   static PyObject* create_python_object(const ParticleIndexes& t, SwigData st,
                                         int OWN) {
     if (numpy_import_retval == 0) {
-      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      static_assert(sizeof(ParticleIndex) == sizeof(int), "size mismatch");
       npy_intp dims[2];
       dims[0] = t.size();
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
@@ -705,8 +700,14 @@ static IndexArray create_index_array_cpp(PyObject *o) {
   IndexArray arr(sz);
   if (sz > 0) {
     char *data = (char *)PyArray_DATA(a);
-    for (npy_intp i = 0; i < sz; ++i) {
-      memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
+    if (sizeof(typename IndexArray::value_type) == sizeof(int) * D) {
+      /* If no padding, we can just do a single copy since std::vector
+         is contiguous */
+      memcpy(arr[0].data(), data, sizeof(int) * D * sz);
+    } else {
+      for (npy_intp i = 0; i < sz; ++i) {
+        memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
+      }
     }
   }
   return arr;
@@ -722,8 +723,14 @@ static PyObject* create_index_array_numpy(const IndexArray &t) {
   if (t.size() > 0) {
     PyObject *obj = ret;
     char *data = (char *)PyArray_DATA((PyArrayObject*)obj);
-    for (size_t i = 0; i < t.size(); ++i) {
-      memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+    if (sizeof(typename IndexArray::value_type) == sizeof(int) * D) {
+      /* If no padding, we can just do a single copy since std::vector
+         is contiguous */
+      memcpy(data, t[0].data(), sizeof(int) * D * t.size());
+    } else {
+      for (size_t i = 0; i < t.size(); ++i) {
+        memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+      }
     }
   }
   return ret.release();

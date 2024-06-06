@@ -11,12 +11,8 @@
 
 #include <IMP/kernel_config.h>
 #include <boost/program_options.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_fundamental.hpp>
+#include <type_traits>
 #include <boost/type_traits/is_enum.hpp>
-#include <boost/mpl/negate.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/or.hpp>
 #include <boost/noncopyable.hpp>
 #include <string>
 
@@ -47,11 +43,9 @@ class FlagImpl<bool, ENABLED> : public boost::noncopyable {
 };
 
 template <class T, bool ENABLED>
-class FlagImpl<T, ENABLED, typename boost::enable_if<boost::mpl::and_<
-                               boost::mpl::not_<boost::is_enum<T> >,
-                               boost::mpl::not_<boost::is_fundamental<T> > > >::
-                               type> : public T,
-                                       public boost::noncopyable {
+class FlagImpl<T, ENABLED, typename std::enable_if<
+   !std::is_enum<T>::value && !std::is_fundamental<T>::value>::type>
+        : public T, public boost::noncopyable {
  public:
   FlagImpl(boost::program_options::options_description &opt, std::string name,
            std::string description, T default_value)
@@ -64,9 +58,9 @@ class FlagImpl<T, ENABLED, typename boost::enable_if<boost::mpl::and_<
 };
 
 template <class T, bool ENABLED>
-class FlagImpl<T, ENABLED, typename boost::enable_if<boost::mpl::or_<
-                               boost::is_fundamental<T>, boost::is_enum<T> > >::
-                               type> : public boost::noncopyable {
+class FlagImpl<T, ENABLED, typename std::enable_if<
+      std::is_fundamental<T>::value || std::is_enum<T>::value>::type>
+            : public boost::noncopyable {
   T v_;
 
  public:

@@ -87,10 +87,8 @@ const Particles &_give_particles(Model *m) {
 const Particles &_pass_particles(const Particles &ps) { return ps; }
 Particle *_pass_particle(Particle *ps) { return ps; }
 const ParticlePair &_pass_particle_pair(const ParticlePair &pp) {
-  for (unsigned int i = 0; i < 2; ++i) {
-    std::cout << pp[i]->get_name() << " ";
-  }
-  std::cout << std::endl;
+  std::cout << std::get<0>(pp)->get_name() << " ";
+  std::cout << std::get<1>(pp)->get_name() << std::endl;
   return pp;
 }
 Particles _give_particles_copy(Model *m) {
@@ -148,7 +146,8 @@ ParticleIndexes _create_particles_from_pdb(std::string name, Model *m) {
 
 Float _LogPairScore::evaluate_index(Model *m, const ParticleIndexPair &ipp,
                                     DerivativeAccumulator *) const {
-  ParticlePair pp(m->get_particle(ipp[0]), m->get_particle(ipp[1]));
+  ParticlePair pp(m->get_particle(std::get<0>(ipp)),
+                  m->get_particle(std::get<1>(ipp)));
   if (map_.find(pp) == map_.end()) {
     map_[pp] = 0;
   }

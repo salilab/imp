@@ -7,6 +7,7 @@ from IMP import ArgumentParser
 
 # analyse the ensemble, first we will do the rmsd stuff
 
+
 def parse_args():
     desc = "A script for clustering an ensemble of solutions"
     p = ArgumentParser(description=desc)
@@ -33,12 +34,14 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
     # load all proteomics restraints
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(
         mapping_data, asmb_data, alignment_params)
-    mdl = align.get_model()
+    _ = align.get_model()
     mhs = align.get_molecules()
     ensb = IMP.multifit.Ensemble(asmb_data, mapping_data)
     for i, mh in enumerate(mhs):
-        ensb.add_component_and_fits(mh,
-                                    IMP.multifit.read_fitting_solutions(asmb_data.get_component_header(i).get_transformations_fn()))
+        ensb.add_component_and_fits(
+            mh,
+            IMP.multifit.read_fitting_solutions(
+                asmb_data.get_component_header(i).get_transformations_fn()))
 
     mol_path_centers = []  # save the molecule centers for each path
     # iterate over the molecules
@@ -82,13 +85,15 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
         key=operator.itemgetter(0),
         reverse=True)
     cluster_reps = []
-    for ind, [cluster_size, cluster_ind, cluster_elems] in enumerate(cluster_stat):
+    for ind, [cluster_size, cluster_ind,
+              cluster_elems] in enumerate(cluster_stat):
         print("cluster index:", ind, "with", cluster_size, "combinations")
         cluster_reps.append(combs[cluster_elems[0]])
     print("============clustering============")
     print("Number of clusters found " + str(len(cluster_reps)))
     print("==================================")
     IMP.multifit.write_paths(cluster_reps, output_comb_fn)
+
 
 if __name__ == "__main__":
     args = parse_args()

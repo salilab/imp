@@ -19,25 +19,25 @@ namespace {
 struct LowerBound {
   double operator()(IMP::Model *m,
                     const IMP::ParticleIndexPair &pip) const {
-    return IMP::core::get_distance(IMP::core::XYZR(m, pip[0]),
-                                   IMP::core::XYZR(m, pip[1]));
+    return IMP::core::get_distance(IMP::core::XYZR(m, std::get<0>(pip)),
+                                   IMP::core::XYZR(m, std::get<1>(pip)));
   }
 };
 
 struct UpperBound {
   double operator()(IMP::Model *m,
                     const IMP::ParticleIndexPair &pip) const {
-    return IMP::core::get_distance(IMP::core::XYZ(m, pip[0]),
-                                   IMP::core::XYZ(m, pip[1])) +
-           IMP::core::XYZR(m, pip[0]).get_radius() +
-           IMP::core::XYZR(m, pip[1]).get_radius();
+    return IMP::core::get_distance(IMP::core::XYZ(m, std::get<0>(pip)),
+                                   IMP::core::XYZ(m, std::get<1>(pip))) +
+           IMP::core::XYZR(m, std::get<0>(pip)).get_radius() +
+           IMP::core::XYZR(m, std::get<1>(pip)).get_radius();
   }
 };
 
 void canonicalize(IMP::ParticleIndexPairs &pip) {
   for (unsigned int i = 0; i < pip.size(); ++i) {
-    if (pip[i][0] > pip[i][1]) {
-      pip[i] = IMP::ParticleIndexPair(pip[i][1], pip[i][0]);
+    if (std::get<0>(pip[i]) > std::get<1>(pip[i])) {
+      pip[i] = IMP::ParticleIndexPair(std::get<1>(pip[i]), std::get<0>(pip[i]));
     }
   }
 }

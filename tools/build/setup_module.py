@@ -11,7 +11,7 @@ If the module cannot be configured, the script exits with an error.
 """
 
 import sys
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os.path
 import tools
 import glob
@@ -20,16 +20,23 @@ import re
 
 TOPDIR = os.path.abspath(os.path.dirname(__file__))
 
-parser = OptionParser()
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("-D", "--defines", dest="defines", default="",
-                  help="Colon separated list of defines.")
-parser.add_option("-n", "--name",
-                  dest="name", help="The name of the module.")
-parser.add_option("-s", "--source",
-                  dest="source", help="The root for IMP source.")
-parser.add_option("-d", "--datapath",
-                  dest="datapath", default="", help="An extra IMP datapath.")
+parser = ArgumentParser()
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("-D", "--defines", dest="defines", default="",
+                    help="Colon separated list of defines.")
+parser.add_argument("-n", "--name",
+                    dest="name", help="The name of the module.",
+                    required=True)
+parser.add_argument("-s", "--source",
+                    dest="source", help="The root for IMP source.",
+                    required=True)
+parser.add_argument("-d", "--datapath",
+                    dest="datapath", default="", help="An extra IMP datapath.")
+parser.add_argument("--python_version_major", type=int,
+                    help="The major version of Python (2 or 3) that "
+                         "IMP is configured to use.")
+parser.add_argument("apps", metavar="BIN", type=str, nargs="*",
+                    help="Module command line Python tool(s)")
 
 
 def add_list_to_defines(cppdefines, data, sym, val, names):
@@ -41,7 +48,7 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
                           % (data["name"].upper(), nn, val))
 
 
-def make_header(options, module):
+def make_header(args, module):
     if module.python_only:
         return
     if module.name == 'kernel':
@@ -92,8 +99,8 @@ using ::IMP::hash_value;
     else:
         data["showable"] = ""
     cppdefines = []
-    if options.defines != "":
-        for define in tools.split(options.defines):
+    if args.defines != "":
+        for define in tools.split(args.defines):
             parts = define.split("=")
             if len(parts) == 2:
                 cppdefines.append("#define %s %s" % (parts[0], parts[1]))
@@ -123,11 +130,11 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         self.finder = finder
         tools.FileGenerator.__init__(self, template_file, '#')
 
-    def get_output_file_contents(self, options):
+    def get_output_file_contents(self, args):
         template = self.template
         module = self.module
         modules = self.modules
-        template = template.replace("@IMP_SOURCE_PATH@", options.source)
+        template = template.replace("@IMP_SOURCE_PATH@", args.source)
         template = template.replace("@VERSION@", "NONE")
         template = template.replace("@NAME@", module.name)
         template = template.replace("@PROJECT_BRIEF@",
@@ -144,7 +151,7 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         template = template.replace("@GENERATE_TAGFILE@", "tags")
         template = template.replace(
             "@LAYOUT_FILE@",
-            "%s/doc/doxygen/module_layout.xml" % options.source)
+            "%s/doc/doxygen/module_layout.xml" % args.source)
         template = template.replace("@MAINPAGE@", "README.md")
         template = template.replace("@INCLUDE_PATH@", "include")
         template = template.replace("@FILE_PATTERNS@",
@@ -174,7 +181,7 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         inputs.append("../generated/IMP_%s.dox" % module.name)
         template = template.replace(
             "@INPUT_PATH@", " \\\n                         ".join(inputs))
-        tags = [os.path.join(options.source, 'doc', 'doxygen',
+        tags = [os.path.join(args.source, 'doc', 'doxygen',
                              'dummy_module_tags.xml')]
         for m in modules:
             tags.append(os.path.join("../", m.name, "tags")
@@ -184,19 +191,19 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         if module.name == "example":
             template = template.replace(
                 "@EXAMPLE_PATH@",
-                "examples/example %s/modules/example" % options.source)
+                "examples/example %s/modules/example" % args.source)
         else:
             template = template.replace("@EXAMPLE_PATH@",
                                         "examples/" + module.name)
         return template
 
 
-def make_doxygen(options, module, modules, finder):
+def make_doxygen(args, module, modules, finder):
     file = os.path.join("doxygen", module.name, "Doxyfile")
     g = ModuleDoxFileGenerator(
         os.path.join(TOPDIR, "doxygen_templates", "Doxyfile.in"),
         module, modules, finder)
-    g.write(file, options)
+    g.write(file, args)
 
 
 def write_no_ok(module):
@@ -226,8 +233,13 @@ def write_ok(module, modules, unfound_modules, dependencies,
                   "\n".join(config))
 
 
-def setup_module(module, finder):
+def setup_module(module, finder, python_version_major):
     sys.stdout.write("Configuring module %s ..." % module.name)
+    if module.python3_only and python_version_major < 3:
+        print("Module requires Python 3, but IMP is configured with Python %d"
+              % python_version_major)
+        write_no_ok(module.name)
+        return False, []
     for d in module.required_dependencies:
         if not finder.get_dependency_info(d)["ok"]:
             print("Required dependency %s not found" % d)
@@ -294,8 +306,8 @@ with open(fname) as fh:
         os.chmod(dest_bin, 493)  # 493 = 0755, i.e. executable
 
 
-def link_bin(options, module):
-    path = os.path.join("module_bin", options.name)
+def link_bin(args, module):
+    path = os.path.join("module_bin", args.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
@@ -303,8 +315,8 @@ def link_bin(options, module):
                    path, clean=False, match=["*.py"])
 
 
-def link_benchmark(options, module):
-    path = os.path.join("benchmark", options.name)
+def link_benchmark(args, module):
+    path = os.path.join("benchmark", args.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
@@ -409,33 +421,33 @@ def make_overview(module, cmdline_tools):
 
 
 def main():
-    options, apps = parser.parse_args()
+    args = parser.parse_args()
     with open("build_info/disabled", "r") as fh:
         disabled = tools.split(fh.read(), "\n")
-    if options.name in disabled:
-        print("%s is disabled" % options.name)
-        write_no_ok(options.name)
-        tools.rmdir(os.path.join("module_bin", options.name))
-        tools.rmdir(os.path.join("benchmark", options.name))
-        tools.rmdir(os.path.join("lib", "IMP", options.name))
+    if args.name in disabled:
+        print("%s is disabled" % args.name)
+        write_no_ok(args.name)
+        tools.rmdir(os.path.join("module_bin", args.name))
+        tools.rmdir(os.path.join("benchmark", args.name))
+        tools.rmdir(os.path.join("lib", "IMP", args.name))
         sys.exit(1)
-    mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir,
-                             module_name=options.name)
-    module = mf[options.name]
-    success, modules = setup_module(module, mf)
+    mf = tools.ModulesFinder(source_dir=args.source,
+                             external_dir=args.build_dir,
+                             module_name=args.name)
+    module = mf[args.name]
+    success, modules = setup_module(module, mf, args.python_version_major)
     if success:
-        make_header(options, module)
-        make_doxygen(options, module, modules, mf)
-        make_overview(module, apps)
-        link_bin(options, module)
+        make_header(args, module)
+        make_doxygen(args, module, modules, mf)
+        make_overview(module, args.apps)
+        link_bin(args, module)
         link_py_apps(module)
-        link_benchmark(options, module)
+        link_benchmark(args, module)
         sys.exit(0)
     else:
-        tools.rmdir(os.path.join("module_bin", options.name))
-        tools.rmdir(os.path.join("benchmark", options.name))
-        tools.rmdir(os.path.join("lib", "IMP", options.name))
+        tools.rmdir(os.path.join("module_bin", args.name))
+        tools.rmdir(os.path.join("benchmark", args.name))
+        tools.rmdir(os.path.join("lib", "IMP", args.name))
         sys.exit(1)
 
 

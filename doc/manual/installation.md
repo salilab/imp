@@ -21,9 +21,7 @@ to see if the code is currently stable enough for your purposes.
 To experiment with IMP on [Google Colaboratory](https://colab.research.google.com), use the following code snippet:
 
 \code{.unparsed}
-!echo "deb https://integrativemodeling.org/latest/download $(lsb_release -cs)/" > /etc/apt/sources.list.d/salilab.list
-!wget -O /etc/apt/trusted.gpg.d/salilab.asc https://salilab.org/~ben/pubkey256.asc
-!apt update
+!add-apt-repository -y ppa:salilab/ppa
 !apt install imp
 import sys, os, glob
 sys.path.append(os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[0]))

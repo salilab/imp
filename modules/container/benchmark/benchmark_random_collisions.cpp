@@ -58,7 +58,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   IMP_NEW(Model, m, ());
   ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
   ParticleIndexes pis = IMP::internal::get_index(ps);
-  ::boost::uniform_real<> rand(rmin, rmax);
+  ::boost::random::uniform_real_distribution<> rand(rmin, rmax);
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }

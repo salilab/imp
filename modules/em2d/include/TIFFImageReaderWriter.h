@@ -76,7 +76,7 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
             "discards image header "
                 << std::endl);
     // check extension
-    String ext = boost::filesystem::extension(filename);
+    String ext = boost::filesystem::path(filename).extension().string();
     IMP_LOG_VERBOSE("TIFFImageReaderWriter writing to " << filename
                                                          << std::endl);
     if (ext != ".tiff" && ext != ".tif") {

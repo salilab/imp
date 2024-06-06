@@ -318,6 +318,56 @@ class TestCase(unittest.TestCase):
         msg = self._formatMessage(msg, standardMsg)
         raise self.failureException(msg)
 
+    def _read_cmake_cfg(self, cmake_cfg):
+        """Parse IMPConfig.cmake and extract info on the C++ compiler"""
+        cxx = flags = sysroot = None
+        includes = []
+        with open(cmake_cfg) as fh:
+            for line in fh:
+                if line.startswith('set(IMP_CXX_COMPILER '):
+                    cxx = line.split('"')[1]
+                elif line.startswith('set(IMP_CXX_FLAGS '):
+                    flags = line.split('"')[1]
+                elif line.startswith('set(IMP_OSX_SYSROOT '):
+                    sysroot = line.split('"')[1]
+                elif line.startswith('SET(Boost_INCLUDE_DIR '):
+                    includes.append(line.split('"')[1])
+                elif line.startswith('SET(EIGEN3_INCLUDE_DIR '):
+                    includes.append(line.split('"')[1])
+                elif line.startswith('SET(cereal_INCLUDE_DIRS '):
+                    includes.append(line.split('"')[1])
+        return cxx, flags, includes, sysroot
+
+    def assertCompileFails(self, headers, body):
+        """Test that the given C++ code fails to compile with a static
+           assertion."""
+        if sys.platform == 'win32':
+            self.skipTest("No support for Windows yet")
+        libdir = os.path.dirname(IMP.__file__)
+        cmake_cfg = os.path.join(libdir, '..', '..', 'IMPConfig.cmake')
+        if not os.path.exists(cmake_cfg):
+            self.skipTest("cannot find IMPConfig.cmake")
+        cxx, flags, includes, sysroot = self._read_cmake_cfg(cmake_cfg)
+        # On Mac we need to point to the SDK
+        if sys.platform == 'darwin' and sysroot:
+            flags = flags + " -isysroot" + sysroot
+        includes.append(os.path.join(libdir, '..', '..', 'include'))
+        include = " ".join("-I" + inc for inc in includes)
+        with temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'test.cpp')
+            with open(fname, 'w') as fh:
+                for h in headers:
+                    fh.write("#include <%s>\n" % h)
+                fh.write("\nint main() {\n" + body + "\n  return 0;\n}\n")
+            cmdline = "%s %s %s %s" % (cxx, flags, include, fname)
+            print(cmdline)
+            p = subprocess.Popen(cmdline, shell=True,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 universal_newlines=True)
+            out, err = p.communicate()
+            self.assertIn('error: static assertion failed', err)
+
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
            add it to the model."""
@@ -644,6 +694,12 @@ class TestCase(unittest.TestCase):
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
         all = dir(modulename)
+        if hasattr(modulename, '_raii_types'):
+            excludes = frozenset(
+                modulename._raii_types + modulename._plural_types)
+        else:
+            # Python-only modules don't have these two lists
+            excludes = frozenset()
         not_found = []
         for f in all:
             # Exclude SWIG C global variables object
@@ -659,8 +715,7 @@ class TestCase(unittest.TestCase):
                     and f not in exceptions\
                     and not f.endswith("Temp") and not f.endswith("Iterator")\
                     and not f.endswith("Exception") and\
-                    f not in modulename._raii_types and \
-                    f not in modulename._plural_types:
+                    f not in excludes:
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         self.assertEqual(
@@ -792,6 +847,11 @@ class _TestResult(unittest.TextTestResult):
             protocol = min(pickle.HIGHEST_PROTOCOL, 4)
             fname = (Path(os.environ['IMP_TEST_DETAIL_DIR'])
                      / Path(sys.argv[0]).name)
+            # In Wine builds, we may have cd'd to a different drive, e.g. C:
+            # in which case we will no longer be able to see /tmp. In this
+            # case, try to disambiguate by adding a drive.
+            if not fname.exists():
+                fname = Path("Z:") / fname
             with open(str(fname), 'wb') as fh:
                 pickle.dump(self.all_tests, fh, protocol)
         super(_TestResult, self).stopTestRun()

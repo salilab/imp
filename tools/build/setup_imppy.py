@@ -5,7 +5,7 @@ Create the imppy.sh script using the passed parameters.
 """
 
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os.path
 import os
 import platform
@@ -31,38 +31,38 @@ class FileGenerator(object):
             "@IMP_BIN_DIR@", "",
             "@PATH@", "", "@PRECOMMAND@", "", "@TMPDIR@"]
 
-    def __init__(self, options):
-        self.options = options
+    def __init__(self, args):
+        self.args = args
 
     def native_paths(self, paths, also_with_suffix=False):
         """Convert cmake-provided paths into native paths"""
         ret = [tools.from_cmake_path(x) for x in paths]
-        if self.options.suffix and also_with_suffix:
+        if self.args.suffix and also_with_suffix:
             ret += [os.path.join(tools.from_cmake_path(x),
-                                 self.options.suffix) for x in paths]
+                                 self.args.suffix) for x in paths]
         return ret
 
     def get_abs_binary_path(self, reldir):
         """Get an absolute path to a binary directory"""
-        if self.options.suffix:
-            reldir = os.path.join(reldir, self.options.suffix)
+        if self.args.suffix:
+            reldir = os.path.join(reldir, self.args.suffix)
         return os.path.abspath(reldir)
 
     def get_path(self):
         modbin = [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]
-        if self.options.suffix:
-            modbin += [os.path.join(x, self.options.suffix) for x in modbin]
+        if self.args.suffix:
+            modbin += [os.path.join(x, self.args.suffix) for x in modbin]
         return (modbin + [self.get_abs_binary_path("bin")]
-                + self.native_paths(self.options.path, True))
+                + self.native_paths(self.args.path, True))
 
     def write_file(self):
-        pypathsep = ";" if self.options.python_pathsep == 'w32' else os.pathsep
-        outfile = self.options.output
-        pythonpath = self.native_paths(self.options.python_path, True)
-        ldpath = self.native_paths(self.options.ld_path)
-        precommand = self.options.precommand
+        pypathsep = ";" if self.args.python_pathsep == 'w32' else os.pathsep
+        outfile = self.args.output
+        pythonpath = self.native_paths(self.args.python_path, True)
+        ldpath = self.native_paths(self.args.ld_path)
+        precommand = self.args.precommand
         path = self.get_path()
-        externdata = self.native_paths(self.options.external_data)
+        externdata = self.native_paths(self.args.external_data)
 
         libdir = self.get_abs_binary_path("lib")
         bindir = self.get_abs_binary_path("bin")
@@ -101,7 +101,7 @@ class FileGenerator(object):
                 val = lines[line]
                 if val[0] and len(val[1]) > 0:
                     # ick
-                    if self.options.propagate == "no" or not val[3]:
+                    if self.args.propagate == "no" or not val[3]:
                         contents.extend(self.set_variable(val[0], val[1],
                                                           val[2]))
                     else:
@@ -152,38 +152,38 @@ class BatchFileGenerator(FileGenerator):
     def get_path(self):
         # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
         return FileGenerator.get_path(self) \
-            + self.native_paths(self.options.ld_path, True)
+            + self.native_paths(self.args.ld_path, True)
 
 
-parser = OptionParser()
-parser.add_option("-p", "--python_path", dest="python_path", default=[],
-                  action="append", help="PYTHONPATH.")
-parser.add_option("-l", "--ld_path", dest="ld_path", default=[],
-                  action="append", help="LD_LIB_PATH.")
-parser.add_option("-c", "--precommand", dest="precommand", default="",
-                  help="Command to run before all executables.")
-parser.add_option("-P", "--path", dest="path", default=[],
-                  action="append", help="The PATH.")
-parser.add_option("--python_pathsep", default="",
-                  help="The Python path separator style "
-                       "to use ('w32' or empty)")
-parser.add_option("-d", "--external_data", dest="external_data", default=[],
-                  action="append", help="External data.")
-parser.add_option("-e", "--propagate", dest="propagate", default="no",
-                  help="Whether to pass the relevant environment variables "
-                       "through.")
-parser.add_option("-o", "--output", dest="output", default="imppy.sh",
-                  help="Name of the file to produce.")
-parser.add_option("--suffix", default="",
-                  help="Subdirectory to suffix to binary directories")
+parser = ArgumentParser()
+parser.add_argument("-p", "--python_path", dest="python_path", default=[],
+                    action="append", help="PYTHONPATH.")
+parser.add_argument("-l", "--ld_path", dest="ld_path", default=[],
+                    action="append", help="LD_LIB_PATH.")
+parser.add_argument("-c", "--precommand", dest="precommand", default="",
+                    help="Command to run before all executables.")
+parser.add_argument("-P", "--path", dest="path", default=[],
+                    action="append", help="The PATH.")
+parser.add_argument("--python_pathsep", default="",
+                    help="The Python path separator style "
+                         "to use ('w32' or empty)")
+parser.add_argument("-d", "--external_data", dest="external_data", default=[],
+                    action="append", help="External data.")
+parser.add_argument("-e", "--propagate", dest="propagate", default="no",
+                    help="Whether to pass the relevant environment variables "
+                         "through.")
+parser.add_argument("-o", "--output", dest="output", default="imppy.sh",
+                    help="Name of the file to produce.")
+parser.add_argument("--suffix", default="",
+                    help="Subdirectory to suffix to binary directories")
 
 
 def main():
-    (options, args) = parser.parse_args()
-    if options.output.endswith('.bat'):
-        gen = BatchFileGenerator(options)
+    args = parser.parse_args()
+    if args.output.endswith('.bat'):
+        gen = BatchFileGenerator(args)
     else:
-        gen = ShellScriptFileGenerator(options)
+        gen = ShellScriptFileGenerator(args)
     gen.write_file()
 
 

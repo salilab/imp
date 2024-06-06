@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     point as passed to a UnaryFunction. This is useful for anchoring
     constraining particles within a sphere.
 
-    To restrain a set of particles store in SingletonContainer pc in a sphere
+    To restrain a set of particles stored in SingletonContainer pc in a sphere
     do the following:
     \include core/restrain_in_sphere.py
  */
@@ -96,7 +96,7 @@ IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
     point as passed to a UnaryFunction. This is useful for anchoring
     constraining particles within a sphere.
 
-    To restrain a set of particles store in SingletonContainer pc in a sphere
+    To restrain a set of particles stored in SingletonContainer pc in a sphere
     do the following:
     \include core/restrain_in_sphere.py
  */

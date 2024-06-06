@@ -17,11 +17,10 @@ class MultiStateScheme(object):
        :param str details: Details on the scheme.
        :param connectivities: A list of connectivities that belong to
         the scheme.
-       :type connectivities: List of
-        :class:`ìhm.multi_state_scheme.Connectivity`
+       :type connectivities: List of :class:`Connectivity`
        :param relaxation_times: A list of relaxation times not assigned
         to specific connectivities, but to the scheme
-       :type relaxation_times: List of :class:`ihm.RelaxationTime`
+       :type relaxation_times: List of :class:`RelaxationTime`
     """
     def __init__(self, name, details=None, connectivities=None,
                  relaxation_times=None):
@@ -149,11 +148,11 @@ class Connectivity(object):
     :type begin_state: :class:`ihm.model.State`
     :param end_state: The end state of the connectivity. Can be None in case
      of states that are not connected to others.
-    :type end_state: :class:`ìhm.model.State`
+    :type end_state: :class:`ihm.model.State`
     :param details: Details to the connectivity.
     :param dataset_group: The DatasetGroup that was used to obtain information
      on the connectivity.
-    :type dataset_group: :class:`ìhm.dataset.DatasetGroup`
+    :type dataset_group: :class:`ihm.dataset.DatasetGroup`
     :param kinetic_rate: A kinetic rate assigned to the connectivity.
     :type kinetic_rate: :class:`KineticRate`
     :param relaxation_time: A relaxation time assigned to the connectivity.

@@ -15,12 +15,12 @@ CommonEndpointPairFilter::CommonEndpointPairFilter() {}
 
 int CommonEndpointPairFilter::get_value_index(
     Model *m, const ParticleIndexPair &p) const {
-  if (!IMP::atom::Bond::get_is_setup(m, p[0]) ||
-      !IMP::atom::Bond::get_is_setup(m, p[1])) {
+  if (!IMP::atom::Bond::get_is_setup(m, std::get<0>(p)) ||
+      !IMP::atom::Bond::get_is_setup(m, std::get<1>(p))) {
     return false;
   } else {
-    IMP::atom::Bond b0(m, p[0]);
-    IMP::atom::Bond b1(m, p[1]);
+    IMP::atom::Bond b0(m, std::get<0>(p));
+    IMP::atom::Bond b1(m, std::get<1>(p));
     return b0.get_bonded(0) == b1.get_bonded(1) ||
            b0.get_bonded(1) == b1.get_bonded(0) ||
            b0.get_bonded(0) == b1.get_bonded(0) ||

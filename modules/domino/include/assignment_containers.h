@@ -19,8 +19,8 @@
 #include <IMP/statistics/metric_clustering.h>
 
 #include <algorithm>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/shared_array.hpp>
 #include <cstdio>
 #include <queue>
@@ -149,8 +149,8 @@ class IMPDOMINOEXPORT SampleAssignmentContainer : public AssignmentContainer {
   int width_;
   unsigned int k_;
   unsigned int i_;
-  boost::uniform_real<double> select_;
-  boost::uniform_int<> place_;
+  boost::random::uniform_real_distribution<double> select_;
+  boost::random::uniform_int_distribution<> place_;
 
  public:
   SampleAssignmentContainer(unsigned int k,

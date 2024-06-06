@@ -74,9 +74,10 @@ inline double SurfaceDistancePairScore<DistanceScore>::evaluate_index(
     DerivativeAccumulator *da) const {
   algebra::Vector3D delta; // normal vector from surface to point
 
-  double dist = get_distance(m->get_sphere(p[0]).get_center(),
-                             internal::get_direction(m, p[0]),
-                             m->get_sphere(p[1]).get_center(), &delta);
+  double dist = get_distance(
+           m->get_sphere(std::get<0>(p)).get_center(),
+                         internal::get_direction(m, std::get<0>(p)),
+           m->get_sphere(std::get<1>(p)).get_center(), &delta);
 
   // Using squared distance for trivial check currently doesn't work for surfaces
   // if (ds_.get_is_trivially_zero(m, p, dist * dist)) {
@@ -85,8 +86,8 @@ inline double SurfaceDistancePairScore<DistanceScore>::evaluate_index(
 
   if (da) {
     std::pair<double, double> sp = ds_.get_score_and_derivative(m, p, dist);
-    m->add_to_coordinate_derivatives(p[0], -delta * sp.second, *da);
-    m->add_to_coordinate_derivatives(p[1], delta * sp.second, *da);
+    m->add_to_coordinate_derivatives(std::get<0>(p), -delta * sp.second, *da);
+    m->add_to_coordinate_derivatives(std::get<1>(p), delta * sp.second, *da);
     return sp.first;
   } else {
     return ds_.get_score(m, p, dist);

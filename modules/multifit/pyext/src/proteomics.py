@@ -76,5 +76,6 @@ def main():
     args = parse_args()
     run(args.assembly_file, args.anchors_file, args.proteomics_file)
 
+
 if __name__ == "__main__":
     main()

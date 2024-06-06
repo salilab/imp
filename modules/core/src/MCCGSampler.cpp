@@ -16,7 +16,7 @@
 #include <IMP/log.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/algebra/vector_generators.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
@@ -154,7 +154,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
     IMP_LOG(SILENT, std::endl);
     };*/
   while (true) {
-    ::boost::uniform_real<> rand(0, 1);
+    ::boost::random::uniform_real_distribution<> rand(0, 1);
     for (unsigned int i = 0; i < weights.size(); ++i) {
       if (rand(random_number_generator) < weights[i]) {
         moved_.push_back(ps_[i]);

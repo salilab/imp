@@ -71,12 +71,12 @@ algebra::Vector3D CellMover::get_transformed(Float cf, algebra::Vector3D oc) {
 core::MonteCarloMoverResult CellMover::do_propose() {
   /*IMP_LOG(VERBOSE,"CellMover::f is  : " << f <<std::endl);
   {
-    ::boost::uniform_real<> rand(0,1);
+    ::boost::random::uniform_real_distribution<> rand(0,1);
     double fc =rand(IMP::random_number_generator);
     if (fc > f) return ParticlesTemp();
   }
   */
-  boost::uniform_real<> rand(0, 1);
+  boost::random::uniform_real_distribution<> rand(0, 1);
   boost::normal_distribution<double> mrng(0, max_translation_);
   boost::variate_generator<IMP::RandomNumberGenerator &,
                            boost::normal_distribution<double> >

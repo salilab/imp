@@ -12,15 +12,16 @@ IMPCORE_BEGIN_NAMESPACE
 Float TypedPairScore::evaluate_index(Model *m,
                                      const ParticleIndexPair &pip,
                                      DerivativeAccumulator *da) const {
-  ParticlePair p(m->get_particle(pip[0]), m->get_particle(pip[1]));
+  ParticlePair p(m->get_particle(std::get<0>(pip)),
+                 m->get_particle(std::get<1>(pip)));
   PairScore *ps = get_pair_score(p);
   if (!ps) {
     if (!allow_invalid_types_) {
       IMP_THROW(
           "Attempt to evaluate TypedPairScore on "
           "particles with invalid types ("
-              << p[0]->get_value(typekey_) << ", " << p[1]->get_value(typekey_)
-              << ")",
+              << std::get<0>(p)->get_value(typekey_) << ", "
+              << std::get<1>(p)->get_value(typekey_) << ")",
           ValueException);
     } else {
       return 0.0;
@@ -31,14 +32,14 @@ Float TypedPairScore::evaluate_index(Model *m,
 }
 
 PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
-  if (!p[0]->has_attribute(typekey_)) {
-    set_particle_type(p[0]);
+  if (!std::get<0>(p)->has_attribute(typekey_)) {
+    set_particle_type(std::get<0>(p));
   }
-  if (!p[1]->has_attribute(typekey_)) {
-    set_particle_type(p[1]);
+  if (!std::get<1>(p)->has_attribute(typekey_)) {
+    set_particle_type(std::get<1>(p));
   }
-  Int atype = p[0]->get_value(typekey_);
-  Int btype = p[1]->get_value(typekey_);
+  Int atype = std::get<0>(p)->get_value(typekey_);
+  Int btype = std::get<1>(p)->get_value(typekey_);
 
   ScoreMap::const_iterator psit = score_map_.find(
       std::pair<Int, Int>(std::min(atype, btype), std::max(atype, btype)));

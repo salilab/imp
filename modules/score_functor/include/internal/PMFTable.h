@@ -54,8 +54,8 @@ struct PMFTable : public Object {
   }
   const RawOpenCubicSpline &get(int i, int j) const {
     Array<2, int> is;
-    is[0] = i;
-    is[1] = j;
+    std::get<0>(is) = i;
+    std::get<1>(is) = j;
     typename Storage::ExtendedIndex ei(is.begin(), is.end());
     return data_[data_.get_index(ei)];
   }
@@ -137,8 +137,8 @@ struct PMFTable : public Object {
       }
       order(i, j);
       Array<2, int> is;
-      is[0] = i;
-      is[1] = j;
+      std::get<0>(is) = i;
+      std::get<1>(is) = j;
       typename Storage::ExtendedIndex ei(is.begin(), is.end());
       if (!data_.get_has_index(ei)) {
         data_.add_voxel(ei, score_functor::internal::RawOpenCubicSpline(

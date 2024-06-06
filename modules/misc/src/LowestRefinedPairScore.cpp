@@ -51,14 +51,14 @@ std::pair<double, ParticlePair> get_lowest(ParticlesTemp ps[2],
 Float LowestRefinedPairScore::evaluate_index(
     Model *m, const ParticleIndexPair &pi,
     DerivativeAccumulator *da) const {
-  ParticlesTemp ps[2] = {get_set(m->get_particle(pi[0]), r_),
-                                 get_set(m->get_particle(pi[1]), r_)};
+  ParticlesTemp ps[2] = {get_set(m->get_particle(std::get<0>(pi)), r_),
+                         get_set(m->get_particle(std::get<1>(pi)), r_)};
 
   std::pair<double, ParticlePair> r = get_lowest(ps, f_);
 
   if (da) {
-    f_->evaluate_index(m, ParticleIndexPair(r.second[0]->get_index(),
-                                                    r.second[1]->get_index()),
+    f_->evaluate_index(m, ParticleIndexPair(std::get<0>(r.second)->get_index(),
+                                            std::get<1>(r.second)->get_index()),
                        da);
   }
 

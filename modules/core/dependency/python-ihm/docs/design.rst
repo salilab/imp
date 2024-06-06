@@ -27,7 +27,7 @@ Types rather than enums
 Where the underlying IHM mmCIF dictionary uses an enumeration, generally this
 corresponds to separate sibling classes in this package. For example, two
 datasets which differ only in their ``data_type``
-`in the dictionary <http://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Items/_ihm_dataset_list.data_type.html>`_
+`in the dictionary <https://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Items/_ihm_dataset_list.data_type.html>`_
 (such as a electron microscopy density map and small angle scattering data)
 are represented with two classes in this package:
 :class:`ihm.dataset.EMDensityDataset` and :class:`ihm.dataset.SASDataset`.
@@ -42,7 +42,7 @@ This is naturally represented in Python as a hierarchy of classes, with
 members pointing to other objects as appropriate. IDs are not used to look
 up other objects, and are only used internally to populate the tables.
 For example, to group multiple models together, the dictionary assigns all of
-the models the same `model_group_id <http://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Items/_ihm_model_list.model_group_id.html>`_
+the models the same `model_group id <https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Categories/ihm_model_group.html>`_
 while in the Python package the :class:`ihm.model.Model` objects are placed
 into a :class:`ihm.model.ModelGroup` object, which acts like a simple Python
 list.
@@ -71,7 +71,7 @@ mmCIF backend
 =============
 
 The classes in this package roughly correspond to
-`categories <http://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Categories/index.html>`_
+`categories <https://mmcif.wwpdb.org/dictionaries/mmcif_ihm.dic/Categories/index.html>`_
 in the underlying IHM mmCIF dictionary. This allows for simple output of
 mmCIF formatted files, but also allows for the potential future support for
 other file formats that support the dictionary or a subset of it, such

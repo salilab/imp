@@ -52,8 +52,8 @@ double MarginalHBondRestraint::unprotected_evaluate(
     double mean = 0;
     Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
-      core::XYZ d0(get_model(), _1[0]);
-      core::XYZ d1(get_model(), _1[1]);
+      core::XYZ d0(get_model(), std::get<0>(_1));
+      core::XYZ d1(get_model(), std::get<1>(_1));
       double dist =
           (d1.get_coordinates() - d0.get_coordinates()).get_squared_magnitude();
       dist = 1.0 / cube(dist);
@@ -76,8 +76,8 @@ double MarginalHBondRestraint::unprotected_evaluate(
                           pow(meandists[i], 1. / 6) * 6;
       IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
         double deriv_pair = pow(alldists[i][_2] / meandists[i], -7. / 6);
-        core::XYZ d0(get_model(), _1[0]);
-        core::XYZ d1(get_model(), _1[1]);
+        core::XYZ d0(get_model(), std::get<0>(_1));
+        core::XYZ d1(get_model(), std::get<1>(_1));
         algebra::Vector3D dev = (d1.get_coordinates() - d0.get_coordinates());
         double dist = dev.get_magnitude();
         algebra::Vector3D deriv = deriv_mean * deriv_pair * dev / dist;

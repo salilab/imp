@@ -28,7 +28,7 @@ def decorate_gmm_from_text(in_fn, ps, mdl, transform=None, radius_scale=1.0,
     with open(in_fn, 'r') as inf:
         for line in inf:
             if line[0] != '#':
-                if ncomp > len(ps)-1:
+                if ncomp > len(ps) - 1:
                     ps.append(IMP.Particle(mdl, "GMM%d" % next(added_ps)))
                 p = ps[ncomp]
                 fields = line.split('|')
@@ -44,10 +44,10 @@ def decorate_gmm_from_text(in_fn, ps, mdl, transform=None, radius_scale=1.0,
                     g = IMP.core.Gaussian(ps[ncomp])
                     g.set_gaussian(shape)
                 if not IMP.atom.Mass.get_is_setup(p):
-                    IMP.atom.Mass.setup_particle(p, weight*mass_scale)
+                    IMP.atom.Mass.setup_particle(p, weight * mass_scale)
                 else:
-                    IMP.atom.Mass(p).set_mass(weight*mass_scale)
-                rmax = sqrt(max(g.get_variances()))*radius_scale
+                    IMP.atom.Mass(p).set_mass(weight * mass_scale)
+                rmax = sqrt(max(g.get_variances())) * radius_scale
                 if not IMP.core.XYZR.get_is_setup(ps[ncomp]):
                     IMP.core.XYZR.setup_particle(ps[ncomp], rmax)
                 else:
@@ -82,7 +82,7 @@ def gmm2map(to_draw, voxel_size, bounding_box=None, origin=None, fast=False,
     if type(to_draw[0]) in (IMP.Particle, IMP.atom.Hierarchy,
                             IMP.core.Hierarchy):
         ps = to_draw
-    elif type(to_draw[0]) == IMP.core.Gaussian:
+    elif type(to_draw[0]) is IMP.core.Gaussian:
         ps = [g.get_particle() for g in to_draw]
     else:
         print('ps must be Particles or Gaussians')
@@ -94,7 +94,8 @@ def gmm2map(to_draw, voxel_size, bounding_box=None, origin=None, fast=False,
             s2 = IMP.algebra.Sphere3D(s.get_center(), s.get_radius() * 3)
         else:
             g = IMP.core.Gaussian(ps[0]).get_gaussian()
-            s2 = IMP.algebra.Sphere3D(g.get_center(), max(g.get_variances())*3)
+            s2 = IMP.algebra.Sphere3D(g.get_center(),
+                                      max(g.get_variances()) * 3)
         bounding_box = IMP.algebra.get_bounding_box(s2)
     shapes = []
     weights = []
@@ -170,7 +171,7 @@ def draw_points(pts, out_fn,
             colors = ['0 1 0', '0 0 1', '0 1 1']
         for nt, t in enumerate(pts[start:]):
             if use_colors and nt % 2 == 0:
-                outf.write('.color %s\n' % colors[nt/2])
+                outf.write('.color %s\n' % colors[nt / 2])
             pt = trans.get_transformed(IMP.algebra.Vector3D(t))
             outf.write('.dotat %.2f %.2f %.2f\n' % (pt[0], pt[1], pt[2]))
 
@@ -291,12 +292,12 @@ def fit_gmm_to_points(points,
         if force_radii != -1.0:
             print('warning: radii can no longer be forced, but setting '
                   'initial values to ', force_radii)
-            precisions_init = np.array([[1./force_radii]*3
+            precisions_init = np.array([[1. / force_radii] * 3
                                        for i in range(n_components)])
         if force_weight != -1.0:
             print('warning: weights can no longer be forced, but setting '
                   'initial values to ', force_weight)
-            weights_init = np.array([force_weight]*n_components)
+            weights_init = np.array([force_weight] * n_components)
 
         gmm = GaussianMixture(n_components=n_components,
                               max_iter=num_iter,
@@ -348,7 +349,7 @@ def fit_gmm_to_points(points,
         else:
             covar = covar.tolist()
         center = list(gmm.means_[ng])
-        weight = mass_multiplier*gmm.weights_[ng]
+        weight = mass_multiplier * gmm.weights_[ng]
         if ng >= len(ps):
             ps.append(IMP.Particle(mdl))
         shape = IMP.algebra.get_gaussian_from_covariance(
@@ -390,9 +391,9 @@ def fit_dirichlet_gmm_to_points(
     print('using dirichlet prior')
     if new_sklearn:
         gmm = BayesianGaussianMixture(
-                weight_concentration_prior_type='dirichlet_process',
-                n_components=n_components, max_iter=num_iter,
-                covariance_type=covariance_type)
+            weight_concentration_prior_type='dirichlet_process',
+            n_components=n_components, max_iter=num_iter,
+            covariance_type=covariance_type)
     else:
         gmm = DPGMM(n_components=n_components, n_iter=num_iter,
                     covariance_type=covariance_type)
@@ -410,7 +411,7 @@ def fit_dirichlet_gmm_to_points(
         else:
             covar = covar.tolist()
         center = list(gmm.means_[ng])
-        weight = mass_multiplier*gmm.weights_[ng]
+        weight = mass_multiplier * gmm.weights_[ng]
         if ng >= len(ps):
             ps.append(IMP.Particle(mdl))
         shape = IMP.algebra.get_gaussian_from_covariance(

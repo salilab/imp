@@ -108,7 +108,7 @@ def run(args):
         print('fitting gmm')
 
         if args.force_weight_frac:
-            force_weight = 1.0/ncenters
+            force_weight = 1.0 / ncenters
         else:
             force_weight = args.force_weight
         if force_weight != -1:

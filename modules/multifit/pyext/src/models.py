@@ -8,6 +8,7 @@ __doc__ = "Write output models as PDB files."
 
 # analyse the ensemble, first we will do the rmsd stuff
 
+
 def parse_args():
     desc = """Write output models."""
     p = ArgumentParser(description=desc)
@@ -46,6 +47,7 @@ def main():
     args = parse_args()
     run(args.assembly_file, args.proteomics_file, args.mapping_file,
         args.combinations_file, args.model_prefix, args.max)
+
 
 if __name__ == "__main__":
     main()

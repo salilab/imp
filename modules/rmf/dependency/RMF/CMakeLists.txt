@@ -54,7 +54,7 @@ find_package(Boost COMPONENTS system filesystem thread program_options iostreams
   REQUIRED)
 
 include(FindHDF5)
-find_package(HDF5 1.8)
+find_package(HDF5)
 
 if("${HDF5_INCLUDE_DIRS}" MATCHES .*NOTFOUND)
 set(RMF_DEPRECATED_BACKENDS 0 CACHE BOOL "Whether to build deprecated backends.")
@@ -140,7 +140,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 # Version information
 set (RMF_VERSION_MAJOR 1)
 set (RMF_VERSION_MINOR 6)
-set (RMF_VERSION_MICRO 0)
+set (RMF_VERSION_MICRO 1)
 math (EXPR RMF_VERSION "${RMF_VERSION_MAJOR} * 100000 + ${RMF_VERSION_MINOR} * 100 + ${RMF_VERSION_MICRO}")
 
 set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)

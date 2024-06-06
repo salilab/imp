@@ -62,7 +62,7 @@ double get_pairwise_rmsd_score(const core::XYZs& ref1, const core::XYZs& ref2,
     }*/
   algebra::Transformation3D t =
       algebra::get_transformation_aligning_first_to_second(mdl1, ref1);
-  Float rmsd_score = get_rmsd_transforming_first(t, ref2, mdl2);
+  Float rmsd_score = get_rmsd_transforming_first(t, mdl2, ref2);
   return rmsd_score;
 }
 

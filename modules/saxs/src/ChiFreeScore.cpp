@@ -7,7 +7,7 @@
 
 #include <IMP/saxs/ChiFreeScore.h>
 #include <IMP/random.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <algorithm>
 
 IMPSAXS_BEGIN_NAMESPACE
@@ -29,9 +29,10 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
   }
 
   const_cast<ChiFreeScore*>(this)->last_scale_updated_ = false;
-  boost::uniform_real<> uni_dist(0, 1);
+  boost::random::uniform_real_distribution<> uni_dist(0, 1);
   boost::variate_generator<IMP::RandomNumberGenerator&,
-       boost::uniform_real<> > uni(IMP::random_number_generator, uni_dist);
+       boost::random::uniform_real_distribution<> > uni(
+                               IMP::random_number_generator, uni_dist);
 
   Vector<std::pair<double, double> > chis(K_);
   unsigned int bin_size = std::floor((double)exp_profile->size()) / ns_;

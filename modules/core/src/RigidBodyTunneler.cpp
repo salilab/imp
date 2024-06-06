@@ -7,7 +7,7 @@
  */
 #include <IMP/core/RigidBodyTunneler.h>
 #include <IMP/random.h>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
@@ -92,7 +92,8 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       // pick another entry point at random
       IMP_LOG_TERSE("New iteration, entry_nums.size() == " << entry_nums.size()
                                                            << std::endl);
-      ::boost::uniform_int<unsigned> randint(0, entry_nums.size() - 1);
+      ::boost::random::uniform_int_distribution<unsigned> randint(
+                                                0, entry_nums.size() - 1);
       unsigned dnum = randint(random_number_generator);
       distant = entry_nums[dnum];
       IMP_LOG_TERSE("distant entry point is number " << distant << std::endl);

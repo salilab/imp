@@ -12,6 +12,7 @@
 #include "particle_index.h"
 #include "Particle.h"
 #include "Decorator.h"
+#include <type_traits>
 #include <IMP/check_macros.h>
 #include <IMP/log_macros.h>
 #include <IMP/showable_macros.h>
@@ -73,7 +74,7 @@
     comparison
     macros*/ IMP_NO_DOXYGEN( \
       typedef Parent ParentDecorator);                                                     \
-  IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);                             \
+  IMP_NO_DOXYGEN(typedef std::true_type DecoratorHasTraits);                             \
   Name() : Parent() {}                                                                     \
   Name(::IMP::Model *m, ::IMP::ParticleIndex id,                           \
        const TraitsType &tr = default_traits)                                              \
@@ -560,7 +561,7 @@
     static bool get_is_setup(Model *m, ParticleIndex pi) {    \
       return m->get_has_attribute(get_constraint_key(), pi);          \
     }                                                                 \
-    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);     \
+    IMP_NO_DOXYGEN(typedef std::false_type DecoratorHasTraits);       \
                                                                       \
    private:                                                           \
     /* hide set methods*/                                             \

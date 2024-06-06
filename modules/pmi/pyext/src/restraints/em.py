@@ -358,6 +358,11 @@ class GaussianEMRestraint(object):
                self.label] = str(self.sigmaglobal.get_scale())
         return output
 
+    def get_likelihood(self):
+        """Get the unweighted likelihood of the restraint"""
+        likelihood = self.gaussianEM_restraint.get_probability()
+        return likelihood
+
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
 

@@ -10,7 +10,7 @@
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
-#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -74,7 +74,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
             "discards image header "
                 << std::endl);
     // check extension
-    String ext = boost::filesystem::extension(filename);
+    String ext = boost::filesystem::path(filename).extension().string();
     IMP_LOG_VERBOSE("JPGImageReaderWriter writing to " << filename
                                                         << std::endl);
     if (ext != ".jpg" && ext != ".jpeg") {

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 import sys
 
-parser = OptionParser()
-parser.add_option("-w", "--warnings", dest="warnings",
-                  help="The warnings file.")
+parser = ArgumentParser()
+parser.add_argument("-w", "--warnings", dest="warnings",
+                    help="The warnings file.")
 
 suppress_strings = ["not generated, too many nodes",
                     "introduction_values",
@@ -17,8 +17,8 @@ suppress_strings = ["not generated, too many nodes",
 
 
 def main():
-    (options, args) = parser.parse_args()
-    with open(options.warnings, "r") as fh:
+    args = parser.parse_args()
+    with open(args.warnings, "r") as fh:
         input = fh.readlines()
     found = False
     for line in input:

@@ -23,7 +23,7 @@
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 
 using namespace IMP::integrative_docking::internal;
@@ -31,9 +31,10 @@ using namespace IMP::integrative_docking::internal;
 namespace {
 void select_cross_links(const std::vector<CrossLink>& cross_links,
                         std::vector<CrossLink>& selected_cross_links) {
-  boost::uniform_real<> uni_dist(0, 1);
+  boost::random::uniform_real_distribution<> uni_dist(0, 1);
   boost::variate_generator<IMP::RandomNumberGenerator&,
-        boost::uniform_real<> > uni(IMP::random_number_generator, uni_dist);
+        boost::random::uniform_real_distribution<> > uni(
+                        IMP::random_number_generator, uni_dist);
 
   for (unsigned int i = 0; i < cross_links.size(); i++) {
     if (cross_links[i].get_actual_distance() <= 15.0)

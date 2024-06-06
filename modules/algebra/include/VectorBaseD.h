@@ -24,19 +24,22 @@
 #include <limits>
 #include <cmath>
 #include <boost/random/normal_distribution.hpp>
-#include <boost/static_assert.hpp>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_ALGEBRA_VECTOR_CHECK check_vector()
+#define IMP_ALGEBRA_VECTOR_CHECK_OTHER(o) o.check_vector()
 #else
 #define IMP_ALGEBRA_VECTOR_CHECK
+#define IMP_ALGEBRA_VECTOR_CHECK_OTHER(o)
 #endif
 
+/* Should only need to check for "compatible" (same dimension) vectors
+   when using variable-dimension vectors; otherwise, it is checked at
+   compile time */
 #if IMP_HAS_CHECKS >= IMP_USAGE
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i) check_index(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o) \
-  check_compatible_vector(o);                  \
-  o.check_vector()
+  if (D == -1) { check_compatible_vector(o); }
 #else
 #define IMP_ALGEBRA_VECTOR_CHECK_INDEX(i)
 #define IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o)
@@ -61,8 +64,8 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
   void check_vector() const {
-    IMP_USAGE_CHECK(!data_.get_is_null(),
-                    "Attempt to use uninitialized vector.");
+    IMP_INTERNAL_CHECK(!data_.get_is_null(),
+                       "Attempt to use uninitialized vector.");
   }
   template <int OD>
   void check_compatible_vector(const VectorBaseD<OD> &o) const {
@@ -129,9 +132,10 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   //! Default constructor
   VectorBaseD() {}
 
-  double get_scalar_product(const VectorBaseD<D> &o) const {
-    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+  double get_scalar_product(const VectorBaseD &o) const {
     IMP_ALGEBRA_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_OTHER(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     double ret = 0;
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       ret += operator[](i) * o.operator[](i);
@@ -153,14 +157,30 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 
   double get_magnitude() const { return std::sqrt(get_squared_magnitude()); }
 
+  //! Return the distance between this and another vector
+  /** This is essentially identical to (v1 - v2).get_magnitude() but
+      may be slightly more efficient as it avoids creating a temporary
+      vector object. */
+  double get_distance(const VectorBaseD<D> &o) const {
+    IMP_ALGEBRA_VECTOR_CHECK_OTHER(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
+    const double *data = get_data(), *odata = o.get_data();
+    double ret = 0;
+    for (unsigned int i = 0; i < get_dimension(); ++i) {
+      ret += (odata[i] - data[i]) * (odata[i] - data[i]);
+    }
+    return std::sqrt(ret);
+  }
+
 #ifndef IMP_DOXYGEN
   double operator*(const VectorBaseD<D> &o) const {
     return get_scalar_product(o);
   }
 
   VectorBaseD &operator+=(const VectorBaseD &o) {
-    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     IMP_ALGEBRA_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_OTHER(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) += o[i];
     }
@@ -168,8 +188,9 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
   VectorBaseD &operator-=(const VectorBaseD &o) {
-    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     IMP_ALGEBRA_VECTOR_CHECK;
+    IMP_ALGEBRA_VECTOR_CHECK_OTHER(o);
+    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       operator[](i) -= o[i];
     }

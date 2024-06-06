@@ -377,7 +377,7 @@ class sfo_common:
             self.__memoized = {prot: {}}
         try:
             return self.__memoized[prot][atom]
-        except:
+        except KeyError:
             pass
         try:
             sel = IMP.atom.Selection(hierarchy=prot,

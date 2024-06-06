@@ -1,0 +1,45 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# Don't use Debian-provided flags for now; they slow down the build
+CFLAGS :=
+CXXFLAGS :=
+LDFLAGS :=
+
+%:
+	dh $@ 
+
+override_dh_auto_configure:
+	mkdir build
+	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
+	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
+                -DCMAKE_INSTALL_PREFIX=/usr -DUSE_PYTHON2=off
+
+override_dh_auto_build:
+	$(MAKE) -C build
+
+override_dh_install:
+	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
+	# Make sure all Python applications use the system Python in /usr/bin
+	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python3@' debian/tmp/usr/bin/*
+	dh_install
+	dh_missing --fail-missing
+
+execute_after_dh_install:
+	# Run basic tests on the installation
+	TOPDIR=`pwd`/debian/tmp \
+	  && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	  && export LD_LIBRARY_PATH="$${TOPDIR}/usr/lib/`uname -m`-linux-gnu" \
+	  && export PYTHONPATH="$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages" \
+	  && "$${TOPDIR}/usr/bin/rmf3_dump" --version \
+	  && python3 -c "import RMF; assert(hasattr(RMF, '__version__'))" \
+	  && python3 -c "import RMF; assert(hasattr(RMF, 'get_all_global_coordinates'))" \
+	  && rm -rf "$${TOPDIR}/usr/lib/python$${py3_ver}/dist-packages/__pycache__"
+
+override_dh_compress:
+	# Don't compress example files, since then they won't work!
+	dh_compress -Xexamples

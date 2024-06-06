@@ -1,6 +1,26 @@
 ChangeLog {#changelog}
 =========
 
+# 2.21.0 - 2024-06-13 # {#changelog_2_21_0}
+- The new IMP::spatiotemporal module can be used to assist in building stepwise
+  spatiotemporal models, such as those we used to compute our model of
+  NPC assembly.
+- The new IMP::nestor module performs nested sampling-based optimization of
+  representation.
+- This is the last version of IMP to support Python 2. Please port your
+  workflows to Python 3.
+- The IMP::atom::ChainPDBSelector constructor that takes a single string has
+  been removed; pass a list of chain IDs instead.
+- The IMP::pmi::get_is_canonical function has been removed; PMI no longer
+  supports the older PMI1-style hierarchies.
+- .deb packages for IMP for Ubuntu LTS, for both amd64 and arm64 architectures,
+  are now provided by an
+  [Ubuntu PPA](https://launchpad.net/~salilab/+archive/ubuntu/ppa)
+- Many runtime checks on the VectorD and Array (e.g. used by ParticleIndexPair)
+  classes have now been moved to compile-time checks, which makes restraint
+  evaluation significantly faster in release builds, without sacrificing
+  correctness.
+
 # 2.20.2 - 2024-04-04 # {#changelog_2_20_2}
 - Add support for building ARM64 .deb packages.
 - Bugfix: fix use of nested classes with latest SWIG.

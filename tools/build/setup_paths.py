@@ -4,7 +4,7 @@
 it is installed.
 """
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 import tools
 
 template = """
@@ -16,22 +16,22 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 IMPKERNEL_END_INTERNAL_NAMESPACE
 """
 
-parser = OptionParser()
-parser.add_option("-d", "--datapath", dest="datapath",
-                  help="The install data path.")
-parser.add_option("-e", "--examplepath", dest="examplepath",
-                  help="The install example path.")
-parser.add_option("-o", "--output", dest="output",
-                  help="Where to put the file.")
+parser = ArgumentParser()
+parser.add_argument("-d", "--datapath", dest="datapath",
+                    help="The install data path.")
+parser.add_argument("-e", "--examplepath", dest="examplepath",
+                    help="The install example path.")
+parser.add_argument("-o", "--output", dest="output",
+                    help="Where to put the file.")
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
     data = {}
-    data["examplepath"] = options.examplepath
-    data["datapath"] = options.datapath
+    data["examplepath"] = args.examplepath
+    data["datapath"] = args.datapath
     g = tools.CPPFileGenerator()
-    g.write(options.output, template % data)
+    g.write(args.output, template % data)
 
 
 if __name__ == '__main__':

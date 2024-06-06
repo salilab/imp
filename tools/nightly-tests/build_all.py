@@ -402,11 +402,11 @@ def get_comps_to_build(all_comps, exclude):
         return comps
 
 
-def build_all(builder, opts):
+def build_all(builder, args):
     all_comps = get_all_components()
-    comps = get_comps_to_build(all_comps, opts.exclude)
+    comps = get_comps_to_build(all_comps, args.exclude)
 
-    summary_writer = SummaryWriter(opts.summary, opts.all, comps)
+    summary_writer = SummaryWriter(args.summary, args.all, comps)
     summary_writer.write()
 
     try:
@@ -425,13 +425,13 @@ def build_all(builder, opts):
                 m.build_result = 'circdep'
         summary_writer.write()
         builder.setup_coverage()
-        if opts.tests == 'fast':
+        if args.tests == 'fast':
             test_all(comps, builder, 'test', summary_writer, expensive=False)
-        elif opts.tests == 'all':
+        elif args.tests == 'all':
             test_all(comps, builder, 'test', summary_writer, expensive=True)
-        if opts.examples:
+        if args.examples:
             test_all(comps, builder, 'example', summary_writer)
-        if opts.benchmarks:
+        if args.benchmarks:
             test_all(comps, builder, 'benchmark', summary_writer)
     except Exception:
         summary_writer.complete(1)
@@ -445,9 +445,8 @@ def build_all(builder, opts):
 
 
 def parse_args():
-    from optparse import OptionParser
-    usage = """%prog [options] makecmd
-
+    from argparse import ArgumentParser
+    desc = """
 Build (and optionally test) all components (modules, dependencies) using the
 given makecmd (e.g. "make", "ninja", "make -j8").
 
@@ -462,63 +461,61 @@ be distinguished from errors in IMP.rmf.)
 Exit value is 1 if a build or benchmark failed, or 0 otherwise (test or example
 failures are considered to be non-fatal).
 """
-    parser = OptionParser(usage=usage)
-    parser.add_option("--summary",
-                      default=None,
-                      help="Dump summary info as a Python pickle to the "
-                           "named file. For each component, the time taken to "
-                           "run makecmd is recorded, plus the build result, "
-                           "which is either the return value of makecmd, or "
-                           "'circdep' (the component was not built due to a "
-                           "dependency problem), 'depfail' (not built because "
-                           "a dependency failed to build), 'disabled', "
-                           "or 'running' (the build hasn't finished yet). "
-                           "(If the build hasn't started yet, the key is "
-                           "missing.) The summary info is updated after each "
-                           "component build.")
-    parser.add_option("--all", default=None,
-                      help="Record information on the entire build in the "
-                           "summary pickle (see --summary) with the "
-                           "given key.")
-    parser.add_option("--outdir",
-                      default=None,
-                      help="Direct build output to the given directory; one "
-                           "file for each component is generated in the "
-                           "directory. If not given, output is sent to "
-                           "standard output.")
-    parser.add_option("--run-tests", metavar='TESTS', type='choice',
-                      dest="tests", choices=['none', 'fast', 'all'],
-                      default='none',
-                      help="none: don't run tests (default); fast: run only "
-                           "fast tests; all: run expensive and fast tests")
-    parser.add_option("--run-benchmarks", action="store_true",
-                      dest="benchmarks", default=False,
-                      help="If set, run benchmarks")
-    parser.add_option("--run-examples", action="store_true",
-                      dest="examples", default=False,
-                      help="If set, run examples")
-    parser.add_option("--ctest", default="ctest",
-                      help="Command (and optional arguments) to use to run "
-                           "tests/benchmarks/examples, e.g. \"ctest -j8\", "
-                           "\"ctest28\". Defaults to '%default'.")
-    parser.add_option("--coverage", action="store_true",
-                      dest="coverage", default=False,
-                      help="If set, capture Python coverage information when "
-                           "running tests.")
-    parser.add_option("--exclude",
-                      default=None,
-                      help="Build only those modules *not* mentioned in the "
-                           "named file (which should be the output of a "
-                           "previous run with --summary).")
-    opts, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("incorrect number of arguments")
-    return opts, args
+    parser = ArgumentParser(description=desc)
+    parser.add_argument(
+        "--summary", default=None,
+        help="Dump summary info as a Python pickle to the named file. For "
+             "each component, the time taken to run makecmd is recorded, "
+             "plus the build result, which is either the return value of "
+             "makecmd, or 'circdep' (the component was not built due to a "
+             "dependency problem), 'depfail' (not built because a dependency "
+             "failed to build), 'disabled', or 'running' (the build hasn't "
+             "finished yet). (If the build hasn't started yet, the key is "
+             "missing.) The summary info is updated after each component "
+             "build.")
+    parser.add_argument("--all", default=None,
+                        help="Record information on the entire build in the "
+                             "summary pickle (see --summary) with the "
+                             "given key.")
+    parser.add_argument("--outdir",
+                        default=None,
+                        help="Direct build output to the given directory; one "
+                             "file for each component is generated in the "
+                             "directory. If not given, output is sent to "
+                             "standard output.")
+    parser.add_argument("--run-tests", metavar='TESTS',
+                        dest="tests", choices=['none', 'fast', 'all'],
+                        default='none',
+                        help="none: don't run tests (default); fast: run only "
+                             "fast tests; all: run expensive and fast tests")
+    parser.add_argument("--run-benchmarks", action="store_true",
+                        dest="benchmarks", default=False,
+                        help="If set, run benchmarks")
+    parser.add_argument("--run-examples", action="store_true",
+                        dest="examples", default=False,
+                        help="If set, run examples")
+    parser.add_argument("--ctest", default="ctest",
+                        help="Command (and optional arguments) to use to run "
+                             "tests/benchmarks/examples, e.g. \"ctest -j8\", "
+                             "\"ctest28\". Defaults to '%(default)s'.")
+    parser.add_argument("--coverage", action="store_true",
+                        dest="coverage", default=False,
+                        help="If set, capture Python coverage information "
+                             "when running tests.")
+    parser.add_argument("--exclude",
+                        default=None,
+                        help="Build only those modules *not* mentioned in the "
+                             "named file (which should be the output of a "
+                             "previous run with --summary).")
+    parser.add_argument("makecmd", help="Command used to 'make' IMP")
+    args = parser.parse_args()
+    return args
 
 
 def main():
-    opts, args = parse_args()
-    build_all(Builder(args[0], opts.ctest, opts.outdir, opts.coverage), opts)
+    args = parse_args()
+    build_all(Builder(args.makecmd, args.ctest, args.outdir, args.coverage),
+              args)
 
 
 if __name__ == '__main__':

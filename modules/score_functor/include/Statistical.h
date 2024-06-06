@@ -90,8 +90,8 @@ class Statistical : public Score {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
     }
-    int pt = m->get_attribute(key_, pp[0]);
-    int lt = m->get_attribute(key_, pp[1]);
+    int pt = m->get_attribute(key_, std::get<0>(pp));
+    int lt = m->get_attribute(key_, std::get<1>(pp));
     if (pt == -1 || lt == -1) return 0;
     return table_->get_score(pt, lt, distance);
   }
@@ -101,8 +101,8 @@ class Statistical : public Score {
     if (distance >= threshold_ || distance < 0.001) {
       return DerivativePair(0, 0);
     }
-    int pt = m->get_attribute(key_, pp[0]);
-    int lt = m->get_attribute(key_, pp[1]);
+    int pt = m->get_attribute(key_, std::get<0>(pp));
+    int lt = m->get_attribute(key_, std::get<1>(pp));
     if (pt == -1 || lt == -1) return DerivativePair(0, 0);
     return table_->get_score_with_derivative(pt, lt, distance);
   }

@@ -90,7 +90,7 @@ ObjectKey Direction::get_constraint_key() {
 
 void DirectionAngle::do_setup_particle(Model *m, ParticleIndex pi,
                                        const ParticleIndexPair &ds) {
-  DirectionAngle::do_setup_particle(m, pi, ds[0], ds[1]);
+  DirectionAngle::do_setup_particle(m, pi, std::get<0>(ds), std::get<1>(ds));
 }
 
 void DirectionAngle::do_setup_particle(Model *m, ParticleIndex pi,

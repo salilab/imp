@@ -140,15 +140,16 @@ void ClosePairContainer::check_list(bool check_slack) const {
     core::internal::filter_close_pairs(this, found);
     IMP_LOG_TERSE("In check found " << found << std::endl);
     for (unsigned int i = 0; i < found.size(); ++i) {
-      ParticleIndexPair pi(found[i][0], found[i][1]);
-      ParticleIndexPair pii(found[i][1], found[i][0]);
+      ParticleIndexPair pi(std::get<0>(found[i]), std::get<1>(found[i]));
+      ParticleIndexPair pii(std::get<1>(found[i]), std::get<0>(found[i]));
       IMP_INTERNAL_CHECK(
           existings.find(pi) != existings.end() ||
               existings.find(pii) != existings.end(),
           "Pair " << pi << " not found in close pairs list"
                   << " at distance "
-          << core::get_distance(core::XYZR(get_model(), found[i][0]),
-                                core::XYZR(get_model(), found[i][1])));
+          << core::get_distance(
+                  core::XYZR(get_model(), std::get<0>(found[i])),
+                  core::XYZR(get_model(), std::get<1>(found[i]))));
     }
   }
 }

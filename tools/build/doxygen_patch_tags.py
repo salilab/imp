@@ -1,27 +1,27 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 
-parser = OptionParser()
-parser.add_option("-m", "--module", dest="module",
-                  help="The module name.")
-parser.add_option("-f", "--file", dest="file",
-                  help="The tags file.")
+parser = ArgumentParser()
+parser.add_argument("-m", "--module", dest="module",
+                    help="The module name.")
+parser.add_argument("-f", "--file", dest="file",
+                    help="The tags file.")
 
 
 def main():
-    (options, args) = parser.parse_args()
-    with open(options.file, "r") as fh:
+    args = parser.parse_args()
+    with open(args.file, "r") as fh:
         input = fh.read()
     input = input.replace(
         "<name>index</name>",
         "<name>IMP.%s</name>" %
-        options.module)
+        args.module)
     input = input.replace(
         "<title></title>",
         "<title>IMP.%s</title>" %
-        options.module)
-    with open(options.file, "w") as fh:
+        args.module)
+    with open(args.file, "w") as fh:
         fh.write(input)
 
 

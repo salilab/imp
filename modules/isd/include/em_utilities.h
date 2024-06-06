@@ -16,7 +16,7 @@
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/DensityHeader.h>
 #include <IMP/random.h>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 
 IMPISD_BEGIN_NAMESPACE
@@ -28,10 +28,10 @@ inline Float score_gaussian_overlap(Model *m,
   double determinant;
   bool invertible;
   Eigen::Matrix3d inverse = Eigen::Matrix3d::Zero();
-  Float mass12 = atom::Mass(m,pp[0]).get_mass() *
-                  atom::Mass(m,pp[1]).get_mass();
-  core::Gaussian g1(m,pp[0]);
-  core::Gaussian g2(m,pp[1]);
+  Float mass12 = atom::Mass(m, std::get<0>(pp)).get_mass() *
+                  atom::Mass(m, std::get<1>(pp)).get_mass();
+  core::Gaussian g1(m, std::get<0>(pp));
+  core::Gaussian g2(m, std::get<1>(pp));
   Eigen::Matrix3d covar = g1.get_global_covariance() +
                                g2.get_global_covariance();
   Eigen::Vector3d v = Eigen::Vector3d(g2.get_coordinates().get_data())
@@ -58,9 +58,10 @@ inline FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
 
     // setup random number generator
     FloatsList ret;
-    boost::uniform_real<> uni_dist(0,1);
+    boost::random::uniform_real_distribution<> uni_dist(0,1);
     boost::variate_generator<
-         IMP::RandomNumberGenerator&, boost::uniform_real<> >
+         IMP::RandomNumberGenerator&,
+         boost::random::uniform_real_distribution<> >
                 uni(IMP::random_number_generator, uni_dist);
     for (int i=0;i<npoints;i++){
       algebra::Vector3D vs = algebra::get_random_vector_in(bbox);

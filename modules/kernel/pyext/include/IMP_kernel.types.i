@@ -98,8 +98,9 @@
    so copy the typemaps. */
 %apply IMP::ParticleIndex { ::IMP::ParticleIndex };
 /*%{
-  BOOST_STATIC_ASSERT(Convert<IMP::Particle>::converter ==2);
-  BOOST_STATIC_ASSERT(Convert<IMP::internal::_TrivialDecorator>::converter ==3);
+  static_assert(Convert<IMP::Particle>::converter ==2, "wrong converter");
+  static_assert(Convert<IMP::internal::_TrivialDecorator>::converter ==3,
+                "wrong converter");
   %}*/
 
 
@@ -622,7 +623,7 @@ IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name);
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name);
 %{
-  BOOST_STATIC_ASSERT(Convert< Namespace::Name >::converter==3);
+  static_assert(Convert< Namespace::Name >::converter==3, "wrong converter");
 %}
 %pythoncode %{
 _value_types.append(#Name)
@@ -637,7 +638,7 @@ _value_types.append(#Name)
 %define IMP_SWIG_DECORATOR_WITH_TRAITS(Namespace, Name, PluralName)
 IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 %{
-  BOOST_STATIC_ASSERT(Convert< Namespace::Name >::converter==4);
+  static_assert(Convert< Namespace::Name >::converter==4, "wrong converter");
 %}
 %pythoncode %{
 _value_types.append(#Name)
@@ -965,7 +966,7 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name)
 
 %define IMP_SWIG_RAII_INSTANCE(Namespace, Name, NiceName)
   %typemap(in) Namespace::Name* {
-  BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
+  static_assert($argnum==1, "wrong number of args"); // RAII object Namespace::Name cannot be passed as an argument
 try {
   $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, "$symname", $argnum, "$1_type", $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
 } catch (const IMP::Exception &e) {

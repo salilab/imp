@@ -118,7 +118,11 @@ of the data used in modeling:
 
  - *Internal numbering*. Residues are always numbered sequentially starting at
    1 in an :class:`~ihm.Entity`. All references to residues or residue ranges in
-   the library use this numbering.
+   the library use this numbering. For polymers, this internal numbering matches
+   the ``seq_id`` used in the mmCIF dictionary, while for branched entities,
+   this matches ``num`` in the dictionary. (For other types of entities
+   (non-polymers, waters) ``seq_id`` is not used in mmCIF,
+   but the residues are still numbered sequentially from 1 in this library.)
  - *Author-provided numbering*. If a different numbering scheme is used by the
    authors, for example to correspond to the numbering of the original sequence
    that is modeled, this can be given as an author-provided numbering for

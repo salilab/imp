@@ -21,7 +21,7 @@ import os
 import os.path
 import platform
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 # main loops
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 """)
 
 
-def generate_tests(modules, scons):
+def generate_tests(modules):
     template = """import IMP
 import IMP.test
 import %(module)s
@@ -222,30 +222,6 @@ if __name__ == '__main__':
                                "medium_test_standards.py"),
                   test, show_diff=False)
 
-        cpptests = tools.get_glob([os.path.join(module.path, "test",
-                                                "test_*.cpp")])
-        ecpptests = tools.get_glob(
-            [os.path.join(module.path, "test", "expensive_test_*.cpp")])
-        cppexamples = tools.get_glob([os.path.join(module.path, "examples",
-                                                   "*.cpp")])
-
-        if len(cpptests) > 0 and scons:
-            _make_test_driver(
-                os.path.join(
-                    targetdir,
-                    "test_cpp_tests.py"),
-                cpptests)
-        if len(ecpptests) > 0 and scons:
-            _make_test_driver(
-                os.path.join(targetdir,
-                             "expensive_test_cpp_tests.py"),
-                cpptests)
-        if len(cppexamples) > 0 and scons:
-            _make_test_driver(
-                os.path.join(targetdir,
-                             "cpp_examples_test.py"),
-                cppexamples)
-
 
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):
@@ -261,37 +237,35 @@ def generate_src_dirs(modules):
         tools.mkdir(os.path.join("src", module.name), clean=False)
 
 
-parser = OptionParser()
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("--module_name", help="Module name", default=None)
-parser.add_option("-s", "--source", dest="source",
-                  help="IMP source directory.")
-parser.add_option("-d", "--datapath", dest="datapath",
-                  help="Extra data path for IMP.")
-parser.add_option("-m", "--disabled", dest="disabled",
-                  help="Disabled modules.")
-parser.add_option("--scons", default=False, action="store_true",
-                  help="Set if we are running scons.")
+parser = ArgumentParser()
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("--module_name", help="Module name", default=None)
+parser.add_argument("-s", "--source", dest="source",
+                    help="IMP source directory.")
+parser.add_argument("-d", "--datapath", dest="datapath",
+                    help="Extra data path for IMP.")
+parser.add_argument("-m", "--disabled", dest="disabled",
+                    help="Disabled modules.")
 
 
 def main():
-    (options, args) = parser.parse_args()
-    mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir,
-                             module_name=options.module_name)
+    args = parser.parse_args()
+    mf = tools.ModulesFinder(source_dir=args.source,
+                             external_dir=args.build_dir,
+                             module_name=args.module_name)
     all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
-    clean_pyc(options.source)
+    clean_pyc(args.source)
     tools.mkdir(os.path.join("build_info"))
     tools.mkdir(os.path.join("cmake_tests"))
     tools.rewrite(os.path.join("build_info", "disabled"),
-                  options.disabled.replace(":", "\n"))
+                  args.disabled.replace(":", "\n"))
     tools.set_sorted_order([m.name for m in mf.get_ordered()])
     link_headers(all_modules)
     link_examples(all_modules)
     link_swig(all_modules)
     link_python(all_modules)
     link_data(all_modules)
-    generate_tests(all_modules, options.scons)
+    generate_tests(all_modules)
     generate_src_dirs(all_modules)
 
 

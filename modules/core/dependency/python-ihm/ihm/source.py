@@ -29,7 +29,7 @@ class Details(object):
 
 class Manipulated(Source):
     """An entity isolated from a genetically manipulated source.
-       See :class:`Entity`.
+       See :class:`ihm.Entity`.
 
        :param gene: Details about the gene source.
        :type gene: :class:`Details`
@@ -43,12 +43,12 @@ class Manipulated(Source):
 
 
 class Natural(Source, Details):
-    """An entity isolated from a natural source. See :class:`Entity`.
+    """An entity isolated from a natural source. See :class:`ihm.Entity`.
        See :class:`Details` for a description of the parameters."""
     src_method = 'nat'
 
 
 class Synthetic(Source, Details):
-    """An entity obtained synthetically. See :class:`Entity`.
+    """An entity obtained synthetically. See :class:`ihm.Entity`.
        See :class:`Details` for a description of the parameters."""
     src_method = 'syn'

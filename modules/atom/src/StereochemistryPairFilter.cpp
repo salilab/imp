@@ -17,8 +17,9 @@ StereochemistryPairFilter::StereochemistryPairFilter() {}
 
 int StereochemistryPairFilter::get_value_index(
     Model *m, const ParticleIndexPair &pp) const {
-  return excluded_map_.find(internal::ExcludedPair(m->get_particle(pp[0]),
-                                                   m->get_particle(pp[1]))) !=
+  return excluded_map_.find(
+            internal::ExcludedPair(m->get_particle(std::get<0>(pp)),
+                                   m->get_particle(std::get<1>(pp)))) !=
          excluded_map_.end();
 }
 

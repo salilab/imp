@@ -22,9 +22,9 @@ Float AngleTripletScore::evaluate_index(Model *m,
                                         const ParticleIndexTriplet &pi,
                                         DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(f_.get());
-  XYZ d0 = XYZ(m, pi[0]);
-  XYZ d1 = XYZ(m, pi[1]);
-  XYZ d2 = XYZ(m, pi[2]);
+  XYZ d0 = XYZ(m, std::get<0>(pi));
+  XYZ d1 = XYZ(m, std::get<1>(pi));
+  XYZ d2 = XYZ(m, std::get<2>(pi));
 
   Float score;
 

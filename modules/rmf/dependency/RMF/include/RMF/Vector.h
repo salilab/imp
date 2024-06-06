@@ -16,7 +16,6 @@
 #include <boost/range/end.hpp>
 #include <type_traits>
 #include <array>
-#include <boost/static_assert.hpp>
 #include <algorithm>
 
 RMF_ENABLE_WARNINGS
@@ -61,13 +60,13 @@ class Vector
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Vector);
 
   Vector(float x, float y, float z) {
-    BOOST_STATIC_ASSERT(D == 3);
+    static_assert(D == 3, "Constructor only valid for Vector3");
     P::operator[](0) = x;
     P::operator[](1) = y;
     P::operator[](2) = z;
   }
   Vector(float x, float y, float z, float q) {
-    BOOST_STATIC_ASSERT(D == 4);
+    static_assert(D == 4, "Constructor only valid for Vector4");
     P::operator[](0) = x;
     P::operator[](1) = y;
     P::operator[](2) = z;

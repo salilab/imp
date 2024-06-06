@@ -2,13 +2,15 @@
  *  \file TransformMover.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/pmi/TransformMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
+#include <boost/random/uniform_real_distribution.hpp>
+
 IMPPMI_BEGIN_NAMESPACE
 
 TransformMover::TransformMover(Model *m,
@@ -84,7 +86,7 @@ core::MonteCarloMoverResult TransformMover::do_propose() {
     axis_=(d2.get_coordinates()-d1.get_coordinates()).get_unit_vector();
   }
 
-  ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+  ::boost::random::uniform_real_distribution<> rand(-max_angle_, max_angle_);
   Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis_, angle);
   algebra::Transformation3D t(r, translation);

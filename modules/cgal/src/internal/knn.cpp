@@ -9,7 +9,6 @@
 #include <CGAL/Orthogonal_k_neighbor_search.h>
 #include <CGAL/K_neighbor_search.h>
 #include <CGAL/Fuzzy_sphere.h>
-#include <boost/static_assert.hpp>
 #include <IMP/utility.h>
 #include <limits>
 

@@ -58,6 +58,14 @@ class Tests(unittest.TestCase):
         expected_coord = numpy.array([[1., 2., 3.]])
         self.assertLess(numpy.linalg.norm(coord - expected_coord), 1e-4)
 
+    @unittest.skipIf(RMF.RMF_HAS_NUMPY, "We have numpy")
+    def test_numpy_is_missing(self):
+        """Check that the numpy library is missing"""
+        # This test is a noop; it is here simply so that not all tests are
+        # skipped when numpy is missing (Python 3.12 flags all tests being
+        # skipped as an error)
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

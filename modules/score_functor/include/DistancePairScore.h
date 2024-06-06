@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/DistancePairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2024 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_H
@@ -70,7 +70,8 @@ inline double DistancePairScore<DistanceScore>::evaluate_index(
     Model *m, const ParticleIndexPair &p,
     DerivativeAccumulator *da) const {
   algebra::Vector3D delta =
-      m->get_sphere(p[0]).get_center() - m->get_sphere(p[1]).get_center();
+      m->get_sphere(std::get<0>(p)).get_center()
+      - m->get_sphere(std::get<1>(p)).get_center();
   double sq = delta.get_squared_magnitude();
   if (ds_.get_is_trivially_zero(m, p, sq)) {
     return 0;
@@ -85,8 +86,8 @@ inline double DistancePairScore<DistanceScore>::evaluate_index(
     } else {
       uv = algebra::get_zero_vector_d<3>();
     }
-    m->add_to_coordinate_derivatives(p[0], uv * sp.second, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv * sp.second, *da);
+    m->add_to_coordinate_derivatives(std::get<0>(p), uv * sp.second, *da);
+    m->add_to_coordinate_derivatives(std::get<1>(p), -uv * sp.second, *da);
     return sp.first;
   } else {
     return ds_.get_score(m, p, dist);

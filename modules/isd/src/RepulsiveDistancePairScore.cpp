@@ -17,7 +17,7 @@ RepulsiveDistancePairScore::RepulsiveDistancePairScore(double d0, double k)
 double RepulsiveDistancePairScore::evaluate_index(
     Model *m, const ParticleIndexPair &p,
     DerivativeAccumulator *da) const {
-  core::XYZR d0(m, p[0]), d1(m, p[1]);
+  core::XYZR d0(m, std::get<0>(p)), d1(m, std::get<1>(p));
   algebra::VectorD<3> delta;
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);

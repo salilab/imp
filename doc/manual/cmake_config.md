@@ -51,6 +51,7 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_MAX_CHECKS`: One of `NONE`, `USAGE`, `INTERNAL` to control what check levels will be supported. The default is `USAGE` for release builds and `INTERNAL` for debug builds (setting this to `INTERNAL` will impact performance; `NONE` is not recommended as all sanity checks will be skipped).
 - `IMP_MAX_LOG`: One of `SILENT`, `PROGRESS`, `TERSE`, `VERBOSE` to control what log levels are supported.
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time, or `ALL` to do this for all modules.
+- `IMP_CUDA`: A colon-separated list of modules to build with CUDA (GPU) support, or `ALL` to do this for all modules. This is experimental and is currently in development. See [here](@ref gpu) for more details.
 - `USE_PYTHON2`: Set to `on` to have CMake build %IMP with Python 2 (by default it will use Python 3 if available).
 - `IMP_USE_SYSTEM_RMF`: Set to `on` to build %IMP using an external (system) copy of the RMF library, instead of that bundled with IMP itself.
 - `IMP_USE_SYSTEM_IHM`: Set to `on` to build %IMP using an external (system) copy of the python-ihm library, instead of that bundled with IMP itself.

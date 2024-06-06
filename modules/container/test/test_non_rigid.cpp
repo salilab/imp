@@ -122,8 +122,8 @@ void check_close_pairs(IMP::Model *m,
     for (unsigned int j = 0; j < i; ++j) {
       IMP::ParticleIndexPair pp(ps[i], ps[j]);
       IMP::ParticleIndexPair ppi(ps[j], ps[i]);
-      IMP::core::XYZR d0(m, pp[0]);
-      IMP::core::XYZR d1(m, pp[1]);
+      IMP::core::XYZR d0(m, std::get<0>(pp));
+      IMP::core::XYZR d1(m, std::get<1>(pp));
       if (IMP::core::RigidMember::get_is_setup(m, ps[i]) &&
           IMP::core::RigidMember::get_is_setup(m, ps[j]) &&
           IMP::core::RigidMember(m, ps[i]).get_rigid_body() ==

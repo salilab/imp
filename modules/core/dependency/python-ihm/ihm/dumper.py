@@ -89,13 +89,13 @@ class _CollectionDumper(Dumper):
 
 class _AuditConformDumper(Dumper):
     URL = ("https://raw.githubusercontent.com/" +
-           "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
+           "ihmwg/IHMCIF/%s/dist/mmcif_ihm.dic")
 
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.24",
-                     dict_location=self.URL % "9be59e1")
+            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.25",
+                     dict_location=self.URL % "460a278")
 
 
 class _StructDumper(Dumper):
@@ -217,6 +217,24 @@ class _GrantDumper(Dumper):
                 lp.write(funding_organization=grant.funding_organization,
                          country=grant.country,
                          grant_number=grant.grant_number, ordinal=n + 1)
+
+
+class _DatabaseDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_database_2",
+                         ["database_id", "database_code",
+                          "pdbx_database_accession", "pdbx_DOI"]) as lp:
+            for d in system.databases:
+                lp.write(database_id=d.id, database_code=d.code,
+                         pdbx_DOI=d.doi,
+                         pdbx_database_accession=d.accession)
+
+
+class _DatabaseStatusDumper(Dumper):
+    def dump(self, system, writer):
+        with writer.category("_pdbx_database_status") as lp:
+            # Pass through all data items from a Python dict
+            lp.write(**system._database_status)
 
 
 class _ChemCompDumper(Dumper):
@@ -745,7 +763,7 @@ class _BranchSchemeDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_pdbx_branch_scheme",
                          ["asym_id", "entity_id", "mon_id", "num",
-                          "pdb_seq_num", "auth_seq_num",
+                          "pdb_seq_num", "pdb_ins_code", "auth_seq_num",
                           "auth_mon_id", "pdb_mon_id", "pdb_asym_id"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
@@ -758,7 +776,7 @@ class _BranchSchemeDumper(Dumper):
                     lp.write(asym_id=asym._id, pdb_asym_id=asym.strand_id,
                              entity_id=entity._id,
                              num=num + 1,
-                             pdb_seq_num=pdb_seq_num,
+                             pdb_seq_num=pdb_seq_num, pdb_ins_code=ins,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, auth_mon_id=comp.id,
                              pdb_mon_id=comp.id)
@@ -979,7 +997,7 @@ class _ExternalReferenceDumper(Dumper):
     def dump_refs(self, writer):
         with writer.loop("_ihm_external_files",
                          ["id", "reference_id", "file_path", "content_type",
-                          "file_size_bytes", "details"]) as lp:
+                          "file_format", "file_size_bytes", "details"]) as lp:
             for r in self._ref_by_id:
                 repo = r.repo or self._local_files
                 if r.path is None:
@@ -988,6 +1006,7 @@ class _ExternalReferenceDumper(Dumper):
                     file_path = self._posix_path(repo._get_full_path(r.path))
                 lp.write(id=r._id, reference_id=repo._id,
                          file_path=file_path, content_type=r.content_type,
+                         file_format=r.file_format,
                          file_size_bytes=r.file_size, details=r.details)
 
     # On Windows systems, convert native paths to POSIX-like (/-separated)
@@ -3576,8 +3595,8 @@ class IHMVariant(Variant):
     """Used to select typical PDBx/IHM file output. See :func:`write`."""
     _dumpers = [
         _EntryDumper,  # must be first
-        _CollectionDumper,
-        _StructDumper, _CommentDumper, _AuditConformDumper, _CitationDumper,
+        _CollectionDumper, _StructDumper, _CommentDumper, _AuditConformDumper,
+        _DatabaseDumper, _DatabaseStatusDumper, _CitationDumper,
         _SoftwareDumper, _AuditAuthorDumper, _GrantDumper, _ChemCompDumper,
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,

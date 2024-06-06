@@ -3,7 +3,7 @@
 import os
 import os.path
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 # main loops
 
@@ -23,18 +23,18 @@ def generate_all_cpp(modules):
                             % os.path.abspath(s) for s in sources) + '\n')
 
 
-parser = OptionParser()
-parser.add_option("--build_dir", help="IMP build directory", default=None)
-parser.add_option("--module_name", help="Module name", default=None)
-parser.add_option("-s", "--source", dest="source",
-                  help="IMP source directory.")
+parser = ArgumentParser()
+parser.add_argument("--build_dir", help="IMP build directory", default=None)
+parser.add_argument("--module_name", help="Module name", default=None)
+parser.add_argument("-s", "--source", dest="source",
+                    help="IMP source directory.")
 
 
 def main():
-    (options, args) = parser.parse_args()
-    mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir,
-                             module_name=options.module_name)
+    args = parser.parse_args()
+    mf = tools.ModulesFinder(source_dir=args.source,
+                             external_dir=args.build_dir,
+                             module_name=args.module_name)
     generate_all_cpp([x for x in mf.values()
                       if isinstance(x, tools.SourceModule)])
 

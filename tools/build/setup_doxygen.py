@@ -11,7 +11,7 @@ No repository directories are changed.
 import os
 import os.path
 import tools
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 # link all the dox files and other documentation related files from the
 # source tree into the build tree
@@ -29,15 +29,15 @@ def link_dox(source):
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
 
 
-parser = OptionParser()
-parser.add_option("-s", "--source", dest="source",
-                  help="IMP source directory.")
+parser = ArgumentParser()
+parser.add_argument("-s", "--source", dest="source",
+                    help="IMP source directory.")
 
 
 def main():
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
-    link_dox(options.source)
+    link_dox(args.source)
 
 
 if __name__ == '__main__':

@@ -3,23 +3,18 @@
 from __future__ import print_function
 
 __doc__ = """
-This module provides a few methods to improve the efficiency of a replica-exchange simulation
-by tuning its parameters.
+This module provides a few methods to improve the efficiency of a
+replica-exchange simulation by tuning its parameters.
 Author: Yannick Spill
 """
 
 import sys
-#from mpmath import erf, erfinv
-#from math import sqrt
-#from random import randint
-from numpy import *
-from numpy.random import randint
 import rpy2.robjects as robjects
 
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
 # here for float comparison. Floats are equal if their difference
+# is smaller than EPSILON
 EPSILON = 1e-8
-                # is smaller than EPSILON
 debug = False
 
 
@@ -27,8 +22,8 @@ def prdb(arg):
     if debug:
         print(arg)
 
-# R compatibility functions
 
+# R compatibility functions
 r = robjects.r
 robjects.globalenv["kB"] = kB
 _rinverf = r('invErf <-  function(x) {qnorm((1 + x) /2) / sqrt(2)}')
@@ -57,13 +52,14 @@ def spline(xy, mean, method=None):
     robjects.globalenv["x"] = robjects.FloatVector(x)
     robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
-    #_rinterp = r.splinefun(x,y)
+    # _rinterp = r.splinefun(x,y)
     if method is None:
         r('cvsplinenonbounded <- splinefun(x,y)')
     else:
         r('cvsplinenonbounded <- splinefun(x,y,method="%s")' % method)
     _rinterp = r(
-        'cvspline <- function(x) { tmp = cvsplinenonbounded(x); if (tmp>0) {tmp} else {%f}}' %
+        'cvspline <- function(x) { tmp = cvsplinenonbounded(x); '
+        'if (tmp>0) {tmp} else {%f}}' %
         mean)
 
     def interpolated(x):
@@ -79,7 +75,7 @@ def linear_interpolation(xy, mean):
     robjects.globalenv["x"] = robjects.FloatVector(x)
     robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
-    #_rinterp = r.splinefun(x,y)
+    # _rinterp = r.splinefun(x,y)
     _rinterp = r('cvspline <- approxfun(x,y)')
 
     def interpolated(x):
@@ -91,10 +87,11 @@ def linear_interpolation(xy, mean):
 # R testing functions
 
 def anova(*args):
-    """perform anova using R and return statistic, p-value, between and within variance"""
+    """perform anova using R and return statistic, p-value, between and
+       within variance"""
     ngroups = len(args)  # number of groups
     # nreps = len(args[0]) #number of repetitions
-    #group = r.gl(ngroups,nreps)
+    # group = r.gl(ngroups,nreps)
     reps = r.rep(0, len(args[0]))
     weight = robjects.FloatVector(args[0])
     for i in range(1, len(args)):
@@ -120,8 +117,8 @@ def anova(*args):
 def kruskal(*args):
     """perform kruskal-wallis rank test"""
     ngroups = len(args)
-    #nreps = len(args[0])
-    #group = r.gl(ngroups,nreps)
+    # nreps = len(args[0])
+    # group = r.gl(ngroups,nreps)
     reps = r.rep(0, len(args[0]))
     weight = robjects.FloatVector(args[0])
     for i in range(1, len(args)):
@@ -153,7 +150,8 @@ def binom(obs, target):
 
 
 def bartlett(*args):
-    """perform bartlett's test on the equality of variances of the observations"""
+    """perform bartlett's test on the equality of variances of the
+       observations"""
     ngroups = len(args)
     nreps = len(args[0])
     group = r.gl(ngroups, nreps)
@@ -183,24 +181,27 @@ def fligner(*args):
 def power_test(ar, power=0.8, alpha=0.05):
     """perform an anova power test and return
     - the power of the test with this input data
-    - the number of points that would be needed to achieve a default power of 0.8
+    - the number of points that would be needed to achieve a default
+      power of 0.8
     ar: the output of anova()
     """
     result = r('power.anova.test')(groups=ar['nreps'], n=min(ar['nsteps']),
-                                   between=ar['between'], within=ar['within'], sig=alpha)
+                                   between=ar['between'], within=ar['within'],
+                                   sig=alpha)
     prdb('the power of this anova was: %.3f' % result[5][0])
     result = r('power.anova.test')(groups=ar['nreps'],
-                                   between=ar['between'], within=ar['within'], sig=alpha, pow=power)
-    prdb(
-        'To have a power of %.3f, there should be at least %d exchange attempts.' %
-        (power, result[1][0]))
+                                   between=ar['between'], within=ar['within'],
+                                   sig=alpha, pow=power)
+    prdb('To have a power of %.3f, there should be at least %d exchange '
+         'attempts.' % (power, result[1][0]))
     return
 
 
 def minimum_n(ar, alpha=0.05):
-    """This routine tries to return an estimate of the additional number of exchange trials that
-    could lead to a positive result of the anova (e.g. the average ARs are not the same). It is
-    still very crude. It also assumes that a one-way anova was made.
+    """This routine tries to return an estimate of the additional number of
+    exchange trials that could lead to a positive result of the anova (e.g.
+    the average ARs are not the same). It is still very crude. It also assumes
+    that a one-way anova was made.
     ar: the output of anova()
     alpha: type I error
     """
@@ -208,13 +209,11 @@ def minimum_n(ar, alpha=0.05):
     nsteps = ar['nsteps']
     try:
         nsteps = min(nsteps)
-    except:
+    except:  # noqa: E722
         pass
     fstat = ar['fstat']
-    return (
-        nsteps *
-        (sqrt(Finv(1 - alpha, nreps - 1, nreps * (nsteps - 1)) / fstat) - 1)
-    )
+    return nsteps * (numpy.sqrt(Finv(1 - alpha, nreps - 1,
+                                     nreps * (nsteps - 1)) / fstat) - 1)
 
 
 # Heat capacity class
@@ -230,7 +229,6 @@ class CvEstimator:
     def __init__(self, params, energies=None, indicators=None,
                  method="constant", temps=None, write_cv=False):
 
-        kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
         self.__initialized = False
         self.__cv = []
         self.method = method
@@ -258,12 +256,12 @@ class CvEstimator:
         if write_cv:
             fl = open('cv', 'w')
             fl.write("".join(["%f %f\n" % (x, self.get(x))
-                     for x in linspace(params[0] / 2, 2 * params[-1])]))
+                     for x in numpy.linspace(params[0] / 2, 2 * params[-1])]))
             fl.close()
 
     def estimate_cv_interpolate(self, params, indicators):
-        """interpolate using previous values, by reversing the approximate overlap
-        function
+        """interpolate using previous values, by reversing the approximate
+        overlap function
         """
         if self.__initialized:
             return
@@ -272,7 +270,8 @@ class CvEstimator:
                 "the length of indicators and params does not match!")
         if params != tuple(sorted(params)):
             raise NotImplementedError(
-                "unable to work on parameters that do not change monotonically")
+                "unable to work on parameters that do not change "
+                "monotonically")
 
         prdb("storing params and means")
         self.__params = params
@@ -285,7 +284,8 @@ class CvEstimator:
             p1 = params[i]
             p2 = params[i + 1]
             self.__cv.append(
-                (self.__pmeans[i], (p1 ** 2 + p2 ** 2) * float(Y2) / (p2 - p1) ** 2))
+                (self.__pmeans[i],
+                 (p1 ** 2 + p2 ** 2) * float(Y2) / (p2 - p1) ** 2))
         prdb(self.__params)
         prdb(self.__cv)
         self.__cvmean = sum([i[1] for i in self.__cv]) / float(len(self.__cv))
@@ -306,23 +306,23 @@ class CvEstimator:
         if not self.__initialized:
             raise RuntimeError("Class was not initialized correctly!")
 
-    def estimate_cv_mbar(params, energies, temps):
+    def estimate_cv_mbar(self, params, energies, temps):
         "use MBAR to get the heat capacity"
-        raise NotImplementedError(method)
-        if self.__initialized:
-            return
+        raise NotImplementedError("estimate_cv_mbar")
 
     def _isinbounds(self, p, params):
-        """returns True if p is within params, else false. the params list must be sorted ascendingly."""
+        """returns True if p is within params, else false. the params list
+           must be sorted ascendingly."""
         if p < params[0] - EPSILON or p > params[-1] + EPSILON:
-            #prdb("Warning: value %f is outside of bounds, extrapolating." % p)
+            # prdb("Warning: value %f is outside of bounds, "
+            #      "extrapolating." % p)
             return False
         else:
             return True
 
     def _interpolate(self, xval, xlist):
-        """return interpolation of Cv at point xval, and return the average instead
-        if this value is negative.
+        """return interpolation of Cv at point xval, and return the average
+        instead if this value is negative.
         """
         self._isinbounds(xval, xlist)
         val = self.__cvfun(xval)
@@ -332,16 +332,16 @@ class CvEstimator:
             return self.__cvmean
 
     def get_interp(self, param):
-        """returns the point estimate of the first derivative of the energy with
-        respect to the replica exchange parameter (usually T or q).
+        """returns the point estimate of the first derivative of the energy
+        with respect to the replica exchange parameter (usually T or q).
         This version assumes that the means of cv are given.
         """
         self.needs_init()
         return self._interpolate(param, self.__pmeans)
 
     def get_mbar(self, param):
-        """returns the point estimate of the first derivative of the energy with
-        respect to the replica exchange parameter (usually T or q).
+        """returns the point estimate of the first derivative of the energy
+        with respect to the replica exchange parameter (usually T or q).
         This version assumes that the values of cv are given.
         """
         self.needs_init()
@@ -368,8 +368,8 @@ def update_good_dumb(newp, oldp, *args, **kwargs):
     In the "dumb" method, the Cv and targetAR keywords are ignored.
     Here the newp[1] parameter is modified because prior changes have set
     newp[0] to a different value than oldp[0]. Thus, we should move newp[1] by
-    minimizing the effect on the AR since it is supposedly equal to targetAR. In
-    this simple method, the parameter is just translated.
+    minimizing the effect on the AR since it is supposedly equal to targetAR.
+    In this simple method, the parameter is just translated.
     """
     prdb(
         "newp[0] has moved (%.3f -> %.3f), adjusting the position of newp[1]" %
@@ -400,12 +400,13 @@ def update_bad_dumb(newp, oldp, ind, targetAR=0.4, scale=0.1, **kwargs):
 
 def update_any_cv_step(newp, oldp, ind, targetAR=0.4, Cv=None, **kwargs):
     """here we use the average AR formula of two gaussians to get newp[1] as a
-    function of newp[1], knowing the targetAR and estimating the Cv. If targetAR
-    is negative, consider that mean(ind) equals the target AR and skip any
-    calculation in the case that oldp[0] equals newp[0].
+    function of newp[1], knowing the targetAR and estimating the Cv. If
+    targetAR is negative, consider that mean(ind) equals the target AR and
+    skip any calculation in the case that oldp[0] equals newp[0].
     step: suppose the heat capacity is stepwise constant, i.e. use the heat
-    capacity at position newp[0] as an estimate of the mean of the heat capacity
-    between newp[0] and newp[1]. This does not require any self-consistent loop.
+    capacity at position newp[0] as an estimate of the mean of the heat
+    capacity between newp[0] and newp[1]. This does not require any
+    self-consistent loop.
     """
 
     global kB
@@ -415,11 +416,11 @@ def update_any_cv_step(newp, oldp, ind, targetAR=0.4, Cv=None, **kwargs):
     if targetAR < 0:
         targetAR = sum(ind) / float(len(ind))
     cv = Cv.get(newp[0])
-    Y = sqrt(2 * kB) * float(erfinv(1 - targetAR))
+    Y = numpy.sqrt(2 * kB) * float(erfinv(1 - targetAR))
     if Y ** 2 >= cv:
         raise ValueError("""targetAR too small for this approximate method, use
         the full self-consistent method instead.""")
-    return newp[0] * (cv + Y * sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2)
+    return newp[0] * (cv + Y * numpy.sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2)
 
 
 def update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
@@ -433,21 +434,23 @@ def update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
     if targetAR < 0:
         targetAR = sum(ind) / float(len(ind))
     cv = Cv.get(newp[0])
-    Y = sqrt(2 * kB) * float(erfinv(1 - targetAR))
+    Y = numpy.sqrt(2 * kB) * float(erfinv(1 - targetAR))
     if Y ** 2 >= cv:
         raise ValueError("""targetAR too small for this approximate method, use
         the full self-consistent method instead.""")
-    targetp = newp[0] * (cv + Y * sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2)
+    targetp = newp[0] * (cv + Y * numpy.sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2)
     for i in range(maxiter):
         cv = Cv.mean(newp[0], targetp)
         (oldtargetp, targetp) = (
-            targetp, newp[0] * (cv + Y * sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2))
+            targetp, newp[0] * (cv + Y * numpy.sqrt(2 * cv - Y ** 2))
+            / (cv - Y ** 2))
         if abs(targetp - oldtargetp) <= tol:
             break
-        if isnan(targetp):
+        if numpy.isnan(targetp):
             if Y ** 2 >= cv:
-                raise ValueError("""targetAR too small for this approximate method, use
-                the full self-consistent method instead.""")
+                raise ValueError(
+                    "targetAR too small for this approximate method, use the "
+                    "full self-consistent method instead.")
             else:
                 raise ValueError("""something unexpected happened""")
     if i == maxiter - 1:
@@ -464,17 +467,17 @@ def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
     """self-consistent solver version, on the exact average AR equation"""
 
     # create helper functions and overlap function
-    #_ru21 = r('u21 <- function(t1,t2) { (t2-t1)*(cvspline(t2)-cvspline(t1))/2. }')
-    _ru21 = r(
-        'u21 <- function(t1,t2) { integrate(Vectorize(cvspline),t1,t2)$value }')
-    _rb21 = r('b21 <- function(t1,t2) { 1./(kB*t2) - 1./(kB*t1) }')
-    _rsigma2 = r('sigma2 <- function(t) {cvspline(t)*kB*t**2}')
+    _ = r('u21 <- function(t1,t2) { integrate(Vectorize(cvspline),'
+          't1,t2)$value }')
+    _ = r('b21 <- function(t1,t2) { 1./(kB*t2) - 1./(kB*t1) }')
+    _ = r('sigma2 <- function(t) {cvspline(t)*kB*t**2}')
     _rovboltz = r('ovboltz <- function(t1,t2) {\
-            1/2*( 1-erf(\
-                    u21(t1,t2)/sqrt(2*(sigma2(t1)+sigma2(t2))))\
-                + exp(b21(t1,t2)*(u21(t1,t2)+b21(t1,t2)*(sigma2(t1)+sigma2(t2))/2))\
-                    * (1+erf((u21(t1,t2)+b21(t1,t2)*(sigma2(t1)+sigma2(t2)))/(sqrt(2*(sigma2(t1)+sigma2(t2))))))\
-                )}')
+       1/2*( 1-erf(\
+               u21(t1,t2)/sqrt(2*(sigma2(t1)+sigma2(t2))))\
+           + exp(b21(t1,t2)*(u21(t1,t2)+b21(t1,t2)*(sigma2(t1)+sigma2(t2))/2))\
+               * (1+erf((u21(t1,t2)+b21(t1,t2)*(sigma2(t1)+sigma2(t2)))\
+               /(sqrt(2*(sigma2(t1)+sigma2(t2))))))\
+            )}')
     _rrootfn = r(
         'rootfn <- function(t2) {ovboltz(%f,t2)-%f}' %
         (newp[0], targetAR))
@@ -494,12 +497,11 @@ def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
             raise RuntimeError('could not find zero of function!')
 
     # find root
-    _runiroot = r(
-        'uniroot(rootfn,c(%f,%f),f.lower = %f, f.upper = %f, tol = %f, maxiter = %d)' % (newp[0], tmp,
-                                                                                         1 - targetAR, -targetAR, tol, maxiter))
-    prdb(
-        "self-consistent solver converged after %s iterations and an estimated precision of %s " %
-        (_runiroot[2][0], _runiroot[3][0]))
+    _runiroot = r('uniroot(rootfn,c(%f,%f),f.lower = %f, f.upper = %f, '
+                  'tol = %f, maxiter = %d)'
+                  % (newp[0], tmp, 1 - targetAR, -targetAR, tol, maxiter))
+    prdb("self-consistent solver converged after %s iterations and an "
+         "estimated precision of %s " % (_runiroot[2][0], _runiroot[3][0]))
     prdb(
         ["root:",
          _runiroot[0][0],
@@ -523,8 +525,8 @@ def are_equal_to_targetAR(
     targetAR=0.4,
     alpha=0.05,
         method="binom"):
-    """here, all indicators have same average, we want to know if it is equal to
-    targetAR
+    """here, all indicators have same average, we want to know if it is
+    equal to targetAR
     """
 
     # calculate sample mean deviation of each indicator function from targetAR
@@ -534,16 +536,16 @@ def are_equal_to_targetAR(
 
     # perform t-test
     if method == "ttest":
-        #from statlib.stats import ttest_1samp as ttest
-        ttest = ttest
+        # from statlib.stats import ttest_1samp as ttest
+        our_ttest = ttest
     elif method == "binom":
-        ttest = binom
+        our_ttest = binom
     else:
         raise NotImplementedError
 
     try:
-        test, pval = ttest(deviant[1], targetAR)
-    except:
+        test, pval = our_ttest(deviant[1], targetAR)
+    except:  # noqa: E722
         if abs(targetAR - sum(deviant[1]) / len(deviant[1])) > EPSILON:
             pval = 0
         else:
@@ -555,8 +557,9 @@ def are_equal_to_targetAR(
 
 
 def are_stationnary(indicators, alpha=0.05, method="anova"):
-    """test on the stationarity of the observations (block analysis). Done so by
-    launching an anova on the difference between the two halves of each observations.
+    """test on the stationarity of the observations (block analysis). Done
+    so by launching an anova on the difference between the two halves of
+    each observations.
     """
 
     if method == "kruskal":
@@ -564,7 +567,7 @@ def are_stationnary(indicators, alpha=0.05, method="anova"):
     else:
         test = anova
 
-    tmp = array(indicators)
+    tmp = numpy.array(indicators)
     blocklen = len(indicators[0]) / 2
     block = tmp[:, :blocklen] - tmp[:, blocklen:2 * blocklen]
     if test(*block)['pval'] < alpha:
@@ -592,7 +595,7 @@ def are_equal(indicators, targetAR=0.4, alpha=0.05,
         if varMethod == "bartlett":
             pval = bartlett(*indicators)[1]
         elif varMethod == "fligner":
-            pval = killeen(*indicators)[1]
+            pval = fligner(*indicators)[1]
         else:
             raise NotImplementedError(
                 "variance testing method unknown: %s" %
@@ -610,13 +613,6 @@ def are_equal(indicators, targetAR=0.4, alpha=0.05,
     # p-value < alpha => H0 rejected => result == False
     tr['result'] = tr['pval'] >= alpha
 
-    # if tr['test'] == 'anova':
-        # try:
-        #    power_test(tr, power=power, alpha=alpha)
-        # except:
-        #    prdb("power test failed")
-        #    pass
-
     return tr
 
 
@@ -632,10 +628,10 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
 
     # perform t-test
     if method == "ttest":
-        #from statlib.stats import ttest_1samp as ttest
-        ttest = ttest
+        # from statlib.stats import ttest_1samp as ttest
+        our_ttest = ttest
     elif method == "binom":
-        ttest = binom
+        our_ttest = binom
     else:
         raise NotImplementedError
 
@@ -643,12 +639,11 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
     # start from the lowest means and stop when they are ok
     prdb("starting left")
     for (i, (mean, pos, ind)) in enumerate(means):
-        prdb(
-            "performing t-test on couple %d having average AR %f, position %d" %
-            (pos, mean, i))
+        prdb("performing t-test on couple %d having average AR %f, "
+             "position %d" % (pos, mean, i))
         try:
-            test, pval = ttest(ind, targetAR)
-        except:
+            test, pval = our_ttest(ind, targetAR)
+        except:  # noqa: E722
             if abs(targetAR - mean) > EPSILON:
                 pval = 0
             else:
@@ -664,7 +659,7 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
     for (i, (mean, pos, ind)) in enumerate(reversed(means)):
         prdb("performing t-test on couple %d having average AR %f, position %d"
              % (pos, mean, len(means) - 1 - i))
-        if ttest(ind, targetAR)[1] < alpha:
+        if our_ttest(ind, targetAR)[1] < alpha:
             # means are different
             isGoodTuple.append((pos, False))
         else:
@@ -710,7 +705,6 @@ def mean_first_passage_times(
     """
 
     from numpy import array, zeros
-    from pprint import pprint, pformat
     replicanums = array(replicanums_ori)[:, start::subs]
     N = len(replicanums)
     tauN = [0] * N
@@ -729,7 +723,7 @@ def mean_first_passage_times(
         return tau0, tauN, None, None, None
 
     else:
-        #prdb('not using average AR')
+        # prdb('not using average AR')
         if sys.version_info[0] >= 3:
             izip = zip
         else:
@@ -747,7 +741,7 @@ def mean_first_passage_times(
         alreadyN = [False for i in range(N)]
         timesN = [[] for i in range(N)]
 
-        #prdb('looping over replicanums')
+        # prdb('looping over replicanums')
         for time, frame in enumerate(izip(*replicanums)):
             # case of the replica in state 0
             if not already0[frame[0]]:
@@ -774,8 +768,8 @@ def mean_first_passage_times(
                     storeN[rep, state] = False
                     # store time since this replica left state N
                     timesN[state].append(time - lastN[rep])
-        #prdb([replicanums.shape, len(storeN), len(last0)])
-        times = [[] for i in range(N)]
+        # prdb([replicanums.shape, len(storeN), len(last0)])
+        # times = [[] for i in range(N)]
         chose_N = [len(timesN[state]) > len(times0[state]) for state in
                    range(N)]
         for state in range(N):
@@ -838,19 +832,19 @@ def spline_diffusivity(pup, params):
     robjects.globalenv["hetax"] = robjects.FloatVector(params)
     robjects.globalenv["pupx"] = robjects.FloatVector(params)
     robjects.globalenv["pupy"] = robjects.FloatVector(pup)
-    heta = r('heta <- splinefun(hetax,hetay,method="monoH.FC")')
-    eff = r('eff <- splinefun(pupx,pupy,method="monoH.FC")')
+    _ = r('heta <- splinefun(hetax,hetay,method="monoH.FC")')
+    _ = r('eff <- splinefun(pupx,pupy,method="monoH.FC")')
     diff = r('diff <- function(x) {-1/(heta(x,deriv=1)*eff(x,deriv=1))}')
     return lambda x: diff(x)[0]
 
 
 # Misc
 def compute_indicators(replicanums, subs=1, start=0):
-    """input: replicanums : a list of N lists of size M, where N is the number of
-    states and M is the length of the simulation. Each element is an integer,
-    and corresponds to the label of a replica.
-    output: an indicator function of exchanges (size (N-1)x(M-1)), 1 if exchange and
-    0 if not.
+    """input: replicanums : a list of N lists of size M, where N is the number
+    of states and M is the length of the simulation. Each element is an
+    integer, and corresponds to the label of a replica.
+    output: an indicator function of exchanges (size (N-1)x(M-1)), 1 if
+    exchange and 0 if not.
     """
     def exchange(n, m):
         if replicanums[n][m] == replicanums[n + 1][m + 1] \
@@ -861,8 +855,9 @@ def compute_indicators(replicanums, subs=1, start=0):
 
     indicators = []
     for n in range(len(replicanums) - 1):
-        indicators.append([exchange(n, m)
-                           for m in range(len(replicanums[n]) - 1)][start::subs])
+        indicators.append(
+            [exchange(n, m)
+             for m in range(len(replicanums[n]) - 1)][start::subs])
     return indicators
 
 # Main routines
@@ -871,7 +866,7 @@ def compute_indicators(replicanums, subs=1, start=0):
 def update_params_nonergodic(pup, params, write_g=False, num=False):
 
     from numpy import linspace
-    #g = spline(zip(pup,params),0,method='monoH.FC')
+    # g = spline(zip(pup,params),0,method='monoH.FC')
     g = linear_interpolation(list(zip(pup, params)), 0)
     if write_g:
         d = spline_diffusivity(pup, params)
@@ -963,11 +958,11 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha=0.05,
         raise NotImplementedError
 
     prdb("computing mean first passage times")
-    tau0, tauN, chose_N, times0, timesN = mean_first_passage_times(replicanums,
-                                                                   subs=subs, start=start, use_avgAR=use_avgAR)
+    tau0, tauN, chose_N, times0, timesN = mean_first_passage_times(
+        replicanums, subs=subs, start=start, use_avgAR=use_avgAR)
 
     prdb("average round trip time: %.2f (%d+%d events)" %
-        (tau0[-1] + tauN[0], len(times0[-1]), len(timesN[0])))
+         (tau0[-1] + tauN[0], len(times0[-1]), len(timesN[0])))
     prdb("checking if the parameterset needs to be improved")
     N = len(replicanums)
     if chose_N is None:
@@ -990,7 +985,7 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha=0.05,
         prdb("flux is constant, nothing to do!")
         min_n = minimum_n(anova_result, alpha)
         prdb('Try to rerun this test with at least %d more samples.' %
-             ceil(min_n))
+             numpy.ceil(min_n))
         return (False, min_n)
 
     # the flux is not constant so the parameters need improvement.
@@ -1005,10 +1000,11 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha=0.05,
     return (True, params)
 
 
-def tune_params_ar(
-    indicators, params, targetAR=0.4, alpha=0.05, immobilePoint=1, CvMethod="skip", badMethod="dumb", goodMethod="dumb",
-    varMethod="skip", testMethod="anova", meanMethod="binom",
-        energies=None, temps=None, power=0.8, dumb_scale=0.1):
+def tune_params_ar(indicators, params, targetAR=0.4, alpha=0.05,
+                   immobilePoint=1, CvMethod="skip", badMethod="dumb",
+                   goodMethod="dumb", varMethod="skip", testMethod="anova",
+                   meanMethod="binom", energies=None, temps=None, power=0.8,
+                   dumb_scale=0.1):
     """Tune the replica-exchange parameters and return a new set.
 
     Arguments:
@@ -1028,12 +1024,13 @@ def tune_params_ar(
             "skip", other options: "mbar", "spline", "constant")
         badMethod -- how to correct the (j+1)th parameter if the
             acceptance ratio between replicas j and j+1 is off the
-            target value (default: "dumb", options: "step", "sc", "scfull", "nr")
+            target value (default: "dumb", options: "step", "sc",
+            "scfull", "nr")
         goodMethod -- how to update the value of the (j+1)th parameter
             in the case of a correctly exchanging couple, but if the jth
             parameter has been modified (default: "dumb",options: "step",
-            "sc" self-consistent, "scfull" self-consistent using the exact equation,
-            "nr" newton-raphson solver for the exact equation)
+            "sc" self-consistent, "scfull" self-consistent using the exact
+            equation, "nr" newton-raphson solver for the exact equation)
         dumb_scale -- (0.0-1.0) in the "dumb" method, scale wrong temperature
             intervals by this amount. (default: 0.1)
         testMethod -- how to test for the difference of the means,
@@ -1046,7 +1043,8 @@ def tune_params_ar(
             "bartlett" for Bartlett's test, "skip" to pass.
         energies -- if CvMethod is set to "mbar", the energies of each
             state as a function of time are used to estimate the heat capacity.
-        temps -- the temperatures of the simulations, if estimating with "mbar".
+        temps -- the temperatures of the simulations, if estimating
+            with "mbar".
 
     Return Value:
         returns a tuple: (bool, params). bool is True if params have
@@ -1058,13 +1056,14 @@ def tune_params_ar(
     prdb("performing ANOVA")
     anova_result = are_equal(indicators, targetAR, alpha, method=testMethod,
                              varMethod=varMethod, power=power)
-    if (anova_result['result'] and
-            are_equal_to_targetAR(indicators, targetAR, alpha, method=meanMethod)):
+    if (anova_result['result']
+            and are_equal_to_targetAR(indicators, targetAR, alpha,
+                                      method=meanMethod)):
         prdb("all means are equal to target AR, nothing to do!")
         min_n = minimum_n(anova_result, alpha)
         prdb(
             'Try to rerun this test with at least %d more samples.' %
-            ceil(min_n))
+            numpy.ceil(min_n))
         return (False, min_n)
     prdb("some means are different, performing t-tests")
 
@@ -1102,35 +1101,41 @@ def tune_params_ar(
     # update the current parameter set to match the target AR
     params = update_params(indicators, params, isGood, targetAR=targetAR,
                            immobilePoint=immobilePoint, Cv=Cv,
-                           badMethod=badMethod, goodMethod=goodMethod, dumb_scale=dumb_scale)
+                           badMethod=badMethod, goodMethod=goodMethod,
+                           dumb_scale=dumb_scale)
 
     prdb('Done')
     return (True, params)
 
+
 if __name__ == '__main__':
-    from numpy import *
+    import numpy
     replicanums = []
     for i in range(1, 8):
-        replicanums.append(tuple(fromfile('data/replica-indices/%d.rep' % i,
-                                          dtype=int, sep='\n')))
+        replicanums.append(
+            tuple(numpy.fromfile('data/replica-indices/%d.rep' % i,
+                                 dtype=int, sep='\n')))
 
     prdb("replicanums: %dx%d" % (len(replicanums), len(replicanums[0])))
-    params = tuple(fromfile('data/temperatures', sep=' '))
+    params = tuple(numpy.fromfile('data/temperatures', sep=' '))
 
     prdb(params)
     indicators = compute_indicators(replicanums, subs=1, start=0)
     prdb("indicators: %dx%d" % (len(indicators), len(indicators[0])))
     prdb("Exchange rate:")
-    prdb(array([sum(ind) / float(len(ind)) for ind in indicators]))
-    array([sum(ind) / float(len(ind)) for ind in
-           indicators]).tofile('xchgs', sep='\n')
-    changed, newparams = tune_params(indicators, params, targetAR=0.25,
-                                     badMethod="dumb", goodMethod="dumb", CvMethod="skip", testMethod="anova", alpha=0.05)
+    prdb(numpy.array([sum(ind) / float(len(ind)) for ind in indicators]))
+    numpy.array([sum(ind) / float(len(ind))
+                 for ind in indicators]).tofile('xchgs', sep='\n')
+    changed, newparams = tune_params_ar(
+        indicators, params, targetAR=0.25,
+        badMethod="dumb", goodMethod="dumb", CvMethod="skip",
+        testMethod="anova", alpha=0.05)
     if not changed:
         print("Parameter set seems optimal.")
     else:
-        if not True in [abs(newparams[i + 1] - newparams[i]) < 1e-3 for i in range(len(newparams) - 1)]:
-            array(newparams).tofile('data/temperatures', sep=' ')
+        if True not in [abs(newparams[i + 1] - newparams[i]) < 1e-3
+                        for i in range(len(newparams) - 1)]:
+            numpy.array(newparams).tofile('data/temperatures', sep=' ')
         else:
             print("PROBLEM IN NEW PARAMETERSET -> not saved")
     print("params    :", params)

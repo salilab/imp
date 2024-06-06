@@ -1,0 +1,4 @@
+#!/bin/sh
+rm -f /usr/lib/python3.*/dist-packages/__pycache__/RMF.*.pyc
+rm -f /usr/lib/python3.*/dist-packages/__pycache__/RMF_HDF5.*.pyc
+rmdir /usr/lib/python3.*/dist-packages/__pycache__ 2>&1 || :

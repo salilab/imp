@@ -491,7 +491,7 @@ void add_noise(cv::Mat &v, double op1, double op2, const String &mode,
                double /*df*/) {
   IMP_LOG_TERSE("Adding noise: mean " << op1 << " Stddev " << op2 << std::endl);
   // Distribution types
-  typedef boost::uniform_real<> unif_distribution;
+  typedef boost::random::uniform_real_distribution<> unif_distribution;
   typedef boost::normal_distribution<> norm_distribution;
   // Variate generators (put generator and distributions together)
   typedef boost::variate_generator<IMP::RandomNumberGenerator&,

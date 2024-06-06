@@ -208,8 +208,8 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     IMP_LOG_VERBOSE("Minimum subtree is [");
     for (const ParticleIndexPair &it : pis) {
       IMP_UNUSED(it);
-      IMP_LOG_VERBOSE("(" << get_model()->get_particle_name(it[0])
-                      << ", " << get_model()->get_particle_name(it[1])
+      IMP_LOG_VERBOSE("(" << get_model()->get_particle_name(std::get<0>(it))
+                      << ", " << get_model()->get_particle_name(std::get<1>(it))
                       << ") ");
     }
     IMP_LOG_VERBOSE("]" << std::endl);

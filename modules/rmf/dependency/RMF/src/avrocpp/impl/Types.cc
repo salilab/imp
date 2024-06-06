@@ -18,7 +18,6 @@
 
 #include <iostream>
 #include <string>
-#include <boost/static_assert.hpp>
 #include "Types.hh"
 
 namespace internal_avro {
@@ -28,8 +27,8 @@ const std::string typeToString[] = {
     "string", "bytes", "int",   "long", "float", "double", "boolean", "null",
     "record", "enum",  "array", "map",  "union", "fixed",  "symbolic"};
 
-BOOST_STATIC_ASSERT((sizeof(typeToString) / sizeof(std::string)) ==
-                    (AVRO_NUM_TYPES + 1));
+static_assert((sizeof(typeToString) / sizeof(std::string)) ==
+              (AVRO_NUM_TYPES + 1), "type table size mismatch");
 
 }  // namespace strings
 
@@ -37,7 +36,7 @@ BOOST_STATIC_ASSERT((sizeof(typeToString) / sizeof(std::string)) ==
 // each type,
 // and it would be a problem for this flag if we ever supported more than 32
 // types
-BOOST_STATIC_ASSERT(AVRO_NUM_TYPES < 32);
+static_assert(AVRO_NUM_TYPES < 32, "flags should fit in 32-bit");
 
 const std::string &toString(Type type) {
   static std::string undefinedType = "Undefined type";

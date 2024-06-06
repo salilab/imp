@@ -8,6 +8,7 @@ __doc__ = "Compare output models to a reference structure."
 
 # analyse the ensemble, first we will do the rmsd stuff
 
+
 def get_placement_scores_from_coordinates(model_components_coords,
                                           native_components_coords):
     """
@@ -42,7 +43,7 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
     model_centroid = IMP.algebra.get_centroid(model_coords)
     translation_vector = native_centroid - model_centroid
     distance = translation_vector.get_magnitude()
-    if(len(model_coords) != len(native_coords)):
+    if (len(model_coords) != len(native_coords)):
         raise ValueError(
             "Mismatch in the number of members %d %d " % (
                 len(model_coords),
@@ -55,8 +56,8 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
 
 
 def get_rmsd(hierarchy1, hierarchy2):
-    xyz1 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy1)]
-    xyz2 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy2)]
+    xyz1 = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(hierarchy1)]
+    xyz2 = [IMP.core.XYZ(leaf) for leaf in IMP.atom.get_leaves(hierarchy2)]
     return IMP.atom.get_rmsd(xyz1, xyz2)
 
 
@@ -73,17 +74,17 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
                 placement distances of the children. The second list contains
                 the placement angles
     """
-    model_coords_per_child = [get_coordinates(c)
+    model_coords_per_child = [get_coordinates(c)  # noqa: F821
                               for c in assembly.get_children()]
-    native_coords_per_child = [get_coordinates(c)
+    native_coords_per_child = [get_coordinates(c)  # noqa: F821
                                for c in native_assembly.get_children()]
     if align:
         model_coords = []
-        nil = [model_coords.extend(x) for x in model_coords_per_child]
+        _ = [model_coords.extend(x) for x in model_coords_per_child]
         native_coords = []
-        nil = [native_coords.extend(x) for x in native_coords_per_child]
-        T = alg.get_transformation_aligning_first_to_second(model_coords,
-                                                            native_coords)
+        _ = [native_coords.extend(x) for x in native_coords_per_child]
+        T = IMP.algebra.get_transformation_aligning_first_to_second(
+            model_coords, native_coords)
         # get aligned coordinates
         new_model_coords_per_child = []
         for c in model_coords_per_child:
@@ -162,6 +163,7 @@ def main():
     args = parse_args()
     return run(args.assembly_file, args.proteomics_file, args.mapping_file,
                args.combinations_file, args.max)
+
 
 if __name__ == "__main__":
     main()

@@ -6,6 +6,7 @@ from IMP import ArgumentParser
 
 __doc__ = "Generate indexes of fitting solutions."
 
+
 def parse_args():
     desc = """Generate indexes of fitting solutions."""
     p = ArgumentParser(description=desc)
@@ -35,8 +36,7 @@ def run(assembly_name, asmb_fn, num_fits, mapping_fn=""):
         for i in range(min(num_fits, len(fits))):
             indexes.append([i])
         IMP.multifit.write_paths(indexes, index_fn)
-        mapping_data.write("|protein|" + name +
-                           "|" + index_fn + "|\n")
+        mapping_data.write("|protein|" + name + "|" + index_fn + "|\n")
     mapping_data.close()
 
 
@@ -44,6 +44,7 @@ def main():
     args = parse_args()
     run(args.assembly_name, args.assembly_file, args.num_fits,
         args.indexes_file)
+
 
 if __name__ == "__main__":
     main()
