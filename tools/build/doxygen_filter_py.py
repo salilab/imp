@@ -152,7 +152,8 @@ def get_deprecation_docstring(node):
     if hasattr(node, 'decorator_list'):
         for d in node.decorator_list:
             if hasattr(d, 'func') and d.func.attr.startswith('deprecated_'):
-                return '\n@deprecated_at{%s} %s' % (d.args[0].s, d.args[1].s)
+                return '\n@deprecated_at{%s} %s' % (d.args[0].value,
+                                                    d.args[1].value)
     return ''
 
 
