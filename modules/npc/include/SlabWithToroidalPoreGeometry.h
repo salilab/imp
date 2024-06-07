@@ -1,5 +1,5 @@
 /**
- *  \file SlabWithToroidalPoreGeometry.h
+ *  \file IMP/npc/SlabWithToroidalPoreGeometry.h
  *  \brief A decorator for a particle representing a toroidal pore
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
