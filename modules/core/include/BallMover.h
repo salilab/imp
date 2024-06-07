@@ -53,7 +53,8 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   BallMover(Model *m, ParticleIndex pi, double radius);
 
   //! Move specified variables of particles within a ball of specified radius
-  /** \param[in] pis The set of particles to perturb.
+  /** \param[in] m The model containing the particles.
+      \param[in] pis The set of particles to perturb.
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
@@ -62,6 +63,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
 
   //! Move the x,y,z coordinates of pis within a ball of specified radius
   /** The x,y,z coordinates of each particle are perturbed within a ball.
+      \param[in] m The model containing the particles.
       \param[in] pis The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
