@@ -12,7 +12,8 @@
 
 #ifndef IMPISD_RESIDUE_PROTEIN_PROXIMITY_RESTRAINT_H
 #define IMPISD_RESIDUE_PROTEIN_PROXIMITY_RESTRAINT_H
-#include "isd_config.h"
+
+#include <IMP/isd/isd_config.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
 #include <IMP/PairContainer.h>
