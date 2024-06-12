@@ -2403,6 +2403,32 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertAlmostEqual(r4.feature1.site.radius, 4.0, delta=0.1)
             self.assertEqual(r4.feature1.site.description, 'centroid')
 
+    def test_hdx_restraint_handler(self):
+        """Test HDXRestraintHandler"""
+        rsr = """
+loop_
+_ihm_hdx_restraint.id
+_ihm_hdx_restraint.feature_id
+_ihm_hdx_restraint.protection_factor
+_ihm_hdx_restraint.dataset_list_id
+_ihm_hdx_restraint.details
+1 1 1.000 2 foo
+2 2 . . .
+"""
+        fh = StringIO(rsr)
+        s, = ihm.reader.read(fh)
+        self.assertEqual(len(s.orphan_features), 2)
+        r1, r2 = s.restraints
+        self.assertEqual(r1.feature._id, '1')
+        self.assertAlmostEqual(r1.protection_factor, 1.0, delta=1e-4)
+        self.assertEqual(r1.dataset._id, '2')
+        self.assertEqual(r1.details, 'foo')
+
+        self.assertEqual(r2.feature._id, '2')
+        self.assertIsNone(r2.protection_factor)
+        self.assertIsNone(r2.dataset)
+        self.assertIsNone(r2.details)
+
     def test_sphere_handler(self):
         """Test SphereHandler"""
         obj_list = CENTERS_TRANSFORMS + """

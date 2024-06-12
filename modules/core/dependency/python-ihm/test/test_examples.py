@@ -102,6 +102,11 @@ class Tests(unittest.TestCase):
         subprocess.check_call([sys.executable, "stream_parser.py"],
                               cwd=get_example_dir())
 
+    def test_token_reader_example(self):
+        """Test token_reader example"""
+        subprocess.check_call([sys.executable, "token_reader.py"],
+                              cwd=get_example_dir())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -38,6 +38,20 @@ _entity_poly_seq.hetero
         sout = StringIO()
         ihm.dumper.write(sout, [s])
 
+    def test_orphan(self):
+        """Make sure orphaned objects are preserved"""
+        incif = utils.get_input_file_name(TOPDIR, 'orphan.cif')
+        with open(incif) as fh:
+            s, = ihm.reader.read(fh)
+        sout = StringIO()
+        ihm.dumper.write(sout, [s])
+        newcif = sout.getvalue()
+        # Make sure orphan object tables show up in the output
+        self.assertIn('_ihm_geometric_object_center', newcif)
+        self.assertIn('_ihm_relaxation_time', newcif)
+        self.assertIn('_ihm_external_reference_info', newcif)
+        self.assertIn('_chem_comp.', newcif)
+
 
 if __name__ == '__main__':
     unittest.main()

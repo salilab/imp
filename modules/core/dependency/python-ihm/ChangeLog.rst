@@ -1,3 +1,15 @@
+1.2 - 2024-06-12
+================
+  - :class:`ihm.format.CifTokenReader` allows for reading an mmCIF file
+    and breaking it into tokens. This can be used for various housekeeping
+    tasks directly on an mmCIF file, such as changing chain IDs or renaming
+    categories or data items, while preserving most other formatting such
+    as comments and whitespace (#141).
+  - :class:`ihm.restraint.HDXRestraint` adds support for restraints
+    derived from Hydrogen-Deuterium Exchange experiments (#143).
+  - The ``make_mmcif`` utility script now preserves more "orphan" data from
+    the input file that is not referenced by other tables (#144).
+
 1.1 - 2024-05-09
 ================
   - :class:`ihm.System` now allows for one or more official database IDs to

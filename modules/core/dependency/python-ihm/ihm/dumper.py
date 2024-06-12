@@ -239,7 +239,9 @@ class _DatabaseStatusDumper(Dumper):
 
 class _ChemCompDumper(Dumper):
     def dump(self, system, writer):
-        comps = frozenset(comp for e in system.entities for comp in e.sequence)
+        comps = frozenset(itertools.chain(
+            (comp for e in system.entities for comp in e.sequence),
+            system._orphan_chem_comps))
 
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as lp:
@@ -971,12 +973,16 @@ class _ExternalReferenceDumper(Dumper):
             util._remove_id(r)
             if r.repo:
                 util._remove_id(r.repo)
+        for r in system._orphan_repos:
+            util._remove_id(r)
         for r in self._refs:
             # Assign a unique ID to the reference
             util._assign_id(r, seen_refs, self._ref_by_id)
             # Assign a unique ID to the repository
             util._assign_id(r.repo or self._local_files,
                             seen_repos, self._repo_by_id)
+        for r in system._orphan_repos:
+            util._assign_id(r, seen_repos, self._repo_by_id)
 
     def dump(self, system, writer):
         self.dump_repos(writer)
@@ -1037,11 +1043,16 @@ class _DatasetDumper(Dumper):
                 # since they live in different tables they need different IDs
                 util._remove_id(t, attr='_dtid')
             util._remove_id(d)
+        for t in system._orphan_dataset_transforms:
+            util._remove_id(t, attr='_dtid')
         for d in system._all_datasets():
             util._assign_id(d, seen_datasets, self._dataset_by_id)
             for t in _all_transforms(d):
                 util._assign_id(t, seen_transforms, self._transform_by_id,
                                 attr='_dtid')
+        for t in system._orphan_dataset_transforms:
+            util._assign_id(t, seen_transforms, self._transform_by_id,
+                            attr='_dtid')
 
         # Assign IDs to all groups and remove duplicates
         seen_group_ids = {}
@@ -1887,6 +1898,10 @@ class _GeometricObjectDumper(Dumper):
                 util._remove_id(o.center)
             if hasattr(o, 'transformation') and o.transformation:
                 util._remove_id(o.transformation)
+        for t in system._orphan_geometric_transforms:
+            util._remove_id(t)
+        for c in system._orphan_centers:
+            util._remove_id(c)
 
         for o in system._all_geometric_objects():
             util._assign_id(o, seen_objects, self._objects_by_id)
@@ -1895,6 +1910,11 @@ class _GeometricObjectDumper(Dumper):
             if hasattr(o, 'transformation') and o.transformation:
                 util._assign_id(o.transformation, seen_transformations,
                                 self._transformations_by_id)
+        for t in system._orphan_geometric_transforms:
+            util._assign_id(t, seen_transformations,
+                            self._transformations_by_id)
+        for c in system._orphan_centers:
+            util._assign_id(c, seen_centers, self._centers_by_id)
 
     def dump(self, system, writer):
         self.dump_centers(writer)
@@ -2344,6 +2364,26 @@ class _DerivedDistanceRestraintDumper(Dumper):
                          distance_upper_limit=r.distance.distance_upper_limit,
                          probability=r.probability, mic_value=r.mic_value,
                          group_conditionality=condmap[r.restrain_all],
+                         dataset_list_id=r.dataset._id if r.dataset else None)
+
+
+class _HDXRestraintDumper(Dumper):
+    def _all_restraints(self, system):
+        return [r for r in system._all_restraints()
+                if isinstance(r, restraint.HDXRestraint)]
+
+    def finalize(self, system):
+        for nr, r in enumerate(self._all_restraints(system)):
+            r._id = nr + 1
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_hdx_restraint",
+                         ["id", "feature_id", "protection_factor",
+                          "dataset_list_id", "details"]) as lp:
+            for r in self._all_restraints(system):
+                lp.write(id=r._id, feature_id=r.feature._id,
+                         protection_factor=r.protection_factor,
+                         details=r.details,
                          dataset_list_id=r.dataset._id if r.dataset else None)
 
 
@@ -3609,6 +3649,7 @@ class IHMVariant(Variant):
         _ProtocolDumper, _PostProcessDumper, _PseudoSiteDumper,
         _GeometricObjectDumper, _FeatureDumper, _CrossLinkDumper,
         _GeometricRestraintDumper, _DerivedDistanceRestraintDumper,
+        _HDXRestraintDumper,
         _PredictedContactRestraintDumper, _EM3DDumper, _EM2DDumper, _SASDumper,
         _ModelDumper, _EnsembleDumper, _DensityDumper, _MultiStateDumper,
         _OrderedDumper,

@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 
 class __UnknownValue(object):
@@ -233,6 +233,13 @@ class System(object):
         #: All multi-state schemes
         #: See :class:`~ihm.multi_state_scheme.MultiStateScheme`.
         self.multi_state_schemes = []
+
+        self._orphan_centers = []
+        self._orphan_dataset_transforms = []
+        self._orphan_geometric_transforms = []
+        self._orphan_relaxation_times = []
+        self._orphan_repos = []
+        self._orphan_chem_comps = []
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
@@ -648,6 +655,11 @@ class System(object):
                         continue
                     seen_relaxation_times.append(rt)
                     yield rt
+        for rt in self._orphan_relaxation_times:
+            if rt in seen_relaxation_times:
+                continue
+            seen_relaxation_times.append(rt)
+            yield rt
 
     def _before_write(self):
         """Do any setup necessary before writing out to a file"""

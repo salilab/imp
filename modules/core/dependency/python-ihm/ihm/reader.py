@@ -142,7 +142,11 @@ class _ChemCompIDMapper(IDMapper):
     def get_by_id(self, objid, newcls=None):
         # Don't modify class of standard residue types
         if objid in self._standard_by_id:
-            return self._standard_by_id[objid]
+            obj = self._standard_by_id[objid]
+            if objid not in self._obj_by_id:
+                self._obj_by_id[objid] = obj
+                self.system_list.append(obj)
+            return obj
         else:
             # Assign nonpolymer class based on the ID
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
@@ -435,7 +439,8 @@ class SystemReader(object):
         self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
 
         #: Mapping from ID to :class:`ihm.ChemComp` objects
-        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
+        self.chem_comps = _ChemCompIDMapper(self.system._orphan_chem_comps,
+                                            ihm.ChemComp, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.reference.Alignment` objects
         self.alignments = IDMapper(None, ihm.reference.Alignment)
@@ -455,7 +460,8 @@ class SystemReader(object):
         self.ranges = RangeIDMapper()
 
         #: Mapping from ID to :class:`ihm.location.Repository` objects
-        self.repos = IDMapper(None, ihm.location.Repository, None)
+        self.repos = IDMapper(self.system._orphan_repos,
+                              ihm.location.Repository, None)
 
         #: Mapping from ID to :class:`ihm.location.FileLocation` objects
         self.external_files = IDMapper(self.system.locations,
@@ -546,6 +552,11 @@ class SystemReader(object):
             self.system.restraints, ihm.restraint.DerivedDistanceRestraint,
             *(None,) * 4)
 
+        #: Mapping from ID to :class:`ihm.restraint.HDXRestraint` objects
+        self.hdx_restraints = IDMapper(
+            self.system.restraints, ihm.restraint.HDXRestraint,
+            *(None,) * 2)
+
         #: Mapping from ID to :class:`ihm.restraint.PredictedContactRestraint`
         #: objects
         self.pred_cont_restraints = IDMapper(
@@ -567,18 +578,21 @@ class SystemReader(object):
             self.system.orphan_geometric_objects, ihm.geometry.GeometricObject)
 
         #: Mapping from ID to :class:`ihm.geometry.Center` objects
-        self.centers = IDMapper(None, ihm.geometry.Center, *(None,) * 3)
+        self.centers = IDMapper(self.system._orphan_centers,
+                                ihm.geometry.Center, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
-        self.transformations = IDMapper(None, ihm.geometry.Transformation,
-                                        *(None,) * 2)
+        self.transformations = IDMapper(
+            self.system._orphan_geometric_transforms,
+            ihm.geometry.Transformation, *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
         #: used by :class:`ihm.dataset.TransformedDataset` objects (this is
         #: distinct from :attr:`transformations` since they are stored in
         #: separate tables, with different IDs, in the mmCIF file).
         self.data_transformations = IDMapper(
-            None, ihm.geometry.Transformation, *(None,) * 2)
+            self.system._orphan_dataset_transforms,
+            ihm.geometry.Transformation, *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.restraint.GeometricRestraint` objects
         self.geom_restraints = IDMapper(
@@ -636,7 +650,7 @@ class SystemReader(object):
         #: Mapping from ID to
         #: :class:`ihm.multi_state_scheme.RelaxationTime` objects
         self.relaxation_times = IDMapper(
-            None,
+            self.system._orphan_relaxation_times,
             ihm.multi_state_scheme.RelaxationTime,
             *(None,) * 2)
 
@@ -2342,6 +2356,18 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.mic_value = self.get_float(mic_value)
 
 
+class _HDXRestraintHandler(Handler):
+    category = '_ihm_hdx_restraint'
+
+    def __call__(self, id, dataset_list_id, feature_id, protection_factor,
+                 details):
+        r = self.sysr.hdx_restraints.get_by_id(id)
+        r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        r.feature = self.sysr.features.get_by_id(feature_id)
+        r.protection_factor = self.get_float(protection_factor)
+        r.details = details
+
+
 class _PredictedContactRestraintHandler(Handler):
     category = '_ihm_predicted_contact_restraint'
 
@@ -3765,7 +3791,8 @@ class IHMVariant(Variant):
         _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
         _PolyResidueFeatureHandler, _PolyAtomFeatureHandler,
         _NonPolyFeatureHandler, _PseudoSiteFeatureHandler, _PseudoSiteHandler,
-        _DerivedDistanceRestraintHandler, _PredictedContactRestraintHandler,
+        _DerivedDistanceRestraintHandler, _HDXRestraintHandler,
+        _PredictedContactRestraintHandler,
         _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
         _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
         _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,

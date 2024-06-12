@@ -13,6 +13,17 @@ The :mod:`ihm.format` Python module
 .. autoclass:: CifReader
    :members:
 
-.. autoexception:: CifParserError
+.. autoclass:: CifTokenReader
    :members:
 
+.. autoclass:: Filter
+   :members:
+
+.. autoclass:: ChangeValueFilter
+
+.. autoclass:: RemoveItemFilter
+
+.. autoclass:: ChangeKeywordFilter
+
+.. autoexception:: CifParserError
+   :members:

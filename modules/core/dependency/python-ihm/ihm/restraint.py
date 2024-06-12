@@ -821,3 +821,23 @@ class PredictedContactRestraint(Restraint):
         self.resatom1, self.resatom2 = resatom1, resatom2
         self.distance, self.by_residue = distance, by_residue
         self.probability, self.software = probability, software
+
+
+class HDXRestraint(Restraint):
+    """A restraint derived from Hydrogen-Deuterium Exchange experiments.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param feature: The part of the system to restrain.
+       :type feature: :class:`Feature`
+       :param float protection_factor: Unitless scaling factor.
+       :param str details: Additional details regarding the restraint.
+    """
+    assembly = None  # no struct_assembly_id for HDX restraints
+
+    def __init__(self, dataset, feature, protection_factor=None, details=None):
+        self.dataset, self.feature = dataset, feature
+        self.protection_factor = protection_factor
+        self.details = details
+    _all_features = property(lambda self: (self.feature,))

@@ -1421,6 +1421,11 @@ _ihm_external_files.details
         ds4 = ihm.dataset.PDBDataset(None)
         system.orphan_datasets.append(ds4)
 
+        # Transformation not referenced by any object
+        trans2 = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                             [4., 5., 6.])
+        system._orphan_dataset_transforms.append(trans2)
+
         d = ihm.dumper._DatasetDumper()
         d.finalize(system)  # Assign IDs
         out = _get_dumper_output(d, system)
@@ -1500,6 +1505,8 @@ _ihm_data_transformation.tr_vector[2]
 _ihm_data_transformation.tr_vector[3]
 1 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000 0.640000
 0.010000 1.000 2.000 3.000
+2 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 4.000 5.000 6.000
 #
 """)
 
@@ -3100,16 +3107,25 @@ _ihm_cross_link_result_parameters.sigma_2
         system.orphan_geometric_objects.extend((sphere, torus, half_torus,
                                                 axis, plane))
 
+        # Transformation not referenced by any object
+        trans2 = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                             [4., 5., 6.])
+        system._orphan_geometric_transforms.append(trans2)
+
+        # Center not referenced by any object
+        center2 = ihm.geometry.Center(8., 9., 10.)
+        system._orphan_centers.append(center2)
+
         dumper = ihm.dumper._GeometricObjectDumper()
         dumper.finalize(system)  # assign IDs
         self.assertEqual(len(dumper._objects_by_id), 5)
-        self.assertEqual(len(dumper._centers_by_id), 1)
-        self.assertEqual(len(dumper._transformations_by_id), 1)
+        self.assertEqual(len(dumper._centers_by_id), 2)
+        self.assertEqual(len(dumper._transformations_by_id), 2)
         # Repeated calls to finalize should yield identical results
         dumper.finalize(system)
         self.assertEqual(len(dumper._objects_by_id), 5)
-        self.assertEqual(len(dumper._centers_by_id), 1)
-        self.assertEqual(len(dumper._transformations_by_id), 1)
+        self.assertEqual(len(dumper._centers_by_id), 2)
+        self.assertEqual(len(dumper._transformations_by_id), 2)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -3118,6 +3134,7 @@ _ihm_geometric_object_center.xcoord
 _ihm_geometric_object_center.ycoord
 _ihm_geometric_object_center.zcoord
 1 1.000 2.000 3.000
+2 8.000 9.000 10.000
 #
 #
 loop_
@@ -3136,6 +3153,8 @@ _ihm_geometric_object_transformation.tr_vector[2]
 _ihm_geometric_object_transformation.tr_vector[3]
 1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
 1.000000 1.000 2.000 3.000
+2 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 4.000 5.000 6.000
 #
 #
 loop_
@@ -3439,6 +3458,39 @@ _ihm_derived_distance_restraint.dataset_list_id
         dumper = ihm.dumper._DerivedDistanceRestraintDumper()
         # r1 cannot be in multiple groups (rg1 and rg2)
         self.assertRaises(ValueError, dumper.finalize, system)
+
+    def test_hdx_restraint_dumper(self):
+        """Test HDXRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+
+        feat = MockObject()
+        feat._id = 44
+        dataset = MockObject()
+        dataset._id = 97
+
+        r1 = ihm.restraint.HDXRestraint(
+            dataset=dataset, feature=feat, protection_factor=1.0,
+            details="foo")
+        r2 = ihm.restraint.HDXRestraint(dataset=None, feature=feat)
+        system.restraints.extend((r1, r2))
+
+        dumper = ihm.dumper._HDXRestraintDumper()
+        dumper.finalize(system)  # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_hdx_restraint.id
+_ihm_hdx_restraint.feature_id
+_ihm_hdx_restraint.protection_factor
+_ihm_hdx_restraint.dataset_list_id
+_ihm_hdx_restraint.details
+1 44 1.000 97 foo
+2 44 . . .
+#
+""")
 
     def test_bad_restraint_groups(self):
         """Test RestraintGroups containing unsupported restraints"""
