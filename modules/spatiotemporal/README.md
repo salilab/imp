@@ -272,7 +272,7 @@ Function used by draw_dag() to render the graph using graphviz. Takes a list of 
 
 ### prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels, template_topology='', template_dict={}, match_final_state=True)
 Function that reads in experimental stoicheometery data and calculates which compositions and location assignments should be sampled for spatiotemporal modeling, which are saved as config files. Optionally, a PMI topology file can be provided, in which case topology files for each composition and location assignment are also written.
-The output is 3 types of files: 1. *_time.config - configuration files, which list the proteins included at each time point for each model 2. time.txt - protein copy number files. Each row is a protein copy number state and each column is the protein copy number in that state. Note that each protein copy number state can result in multiple location assignments. 3. *_-_time-topol.txt - topology files for each copy number and location assignment.
+The output is 3 types of files: 1. *_time.config - configuration files, which list the proteins included at each time point for each model 2. time.txt - protein copy number files. Each row is a protein copy number state and each column is the protein copy number in that state. Note that each protein copy number state can result in multiple location assignments. 3. *_time_topol.txt - topology files for each copy number and location assignment.
 
 times - list of strings, the times at which the stoicheometery data should be read.
 
