@@ -55,7 +55,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment &a) {
   }
 }
 
-#if IMP_DOMINO_HAS_RMF
+#if RMF_HAS_DEPRECATED_BACKENDS
 WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
     RMF::HDF5::Group parent, const Subset &s,
     const ParticlesTemp &all_particles, std::string name)

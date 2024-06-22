@@ -23,7 +23,10 @@
 #include <IMP/statistics/metric_clustering.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <RMF/HDF5/Group.h>
+# include <RMF/config.h>
+# if RMF_HAS_DEPRECATED_BACKENDS
+#  include <RMF/HDF5/Group.h>
+# endif
 #endif
 
 IMPDOMINO_BEGIN_NAMESPACE
