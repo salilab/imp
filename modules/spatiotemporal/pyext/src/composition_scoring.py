@@ -139,9 +139,10 @@ def calc_likelihood_state(exp_comp_map, t, state):
     @param t: string, time at which the composition likelihood should be
             calculated. Should match one a possible value in the first column
             of the exp_comp_map.
-    @param state: list of integers, an array of the number of protein copy numbers
-            for which the likelihood will be calculated. This array should list
-            the proteins in the same order as the exp_comp_map.
+    @param state: list of integers, an array of the number of protein copy
+            numbers for which the likelihood will be calculated.
+            This array should list the proteins in the same order as
+            the exp_comp_map.
     @return weight: float, the weight of the graphNode according to the composition
             likelihood function.
     """
