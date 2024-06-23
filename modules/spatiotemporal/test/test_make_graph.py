@@ -6,6 +6,7 @@ import IMP
 import IMP.test
 import IMP.spatiotemporal as spatiotemporal
 import IMP.spatiotemporal.graphNode as graphNode
+import IMP.spatiotemporal.prepare_protein_library as prepare_protein_library
 import shutil
 import os
 import sys
@@ -17,13 +18,40 @@ def setup_system():
     Function to set up initial variables
     """
     # Input variables.
-    dict = {'0min': 2, '5min': 3, '10min': 2}
+    time_dict = {'0min': 2, '5min': 3, '10min': 2}
     subcomplexes = ['A1', 'A2', 'B1', 'B2']
     # exp_comp_map is a dictionary that describes protein stoicheometery. The key describes the protein, which should correspond to names within the expected_subcomplexes. For each of these proteins, a csv file should be provided with protein copy number data
     exp_comp = {'A': 'exp_comp_A.csv', 'B': 'exp_comp_B.csv'}
-    return dict, subcomplexes, exp_comp
+    return time_dict, subcomplexes, exp_comp
 
 class Tests(IMP.test.TestCase):
+
+    def test_prepare_protein_library(self):
+        """
+        Test setting up a preparing a protein library for spatiotemporal library
+        """
+        # set input dir
+        state_dict, expected_subcomplexes, exp_comp_map = setup_system()
+        with IMP.test.temporary_directory() as tmpdir:
+            input = os.path.join(tmpdir, 'data/')
+            shutil.copytree(self.get_input_file_name('data/'), input)
+            # set output dir
+            output = self.get_tmp_file_name('output')
+            # run code
+            exp_comp_map = {'A': input+'exp_comp_A.csv', 'B': input+'exp_comp_B.csv'}
+            prepare_protein_library.prepare_protein_library(list(state_dict.keys()), exp_comp_map, expected_subcomplexes, 2, output_dir=output)
+            # check copy numbers
+            CN_0min=np.loadtxt(output+'/0min.txt')
+            self.assertAlmostEqual(np.sum(CN_0min[0][:]), 1.0, delta=1e-4)
+            self.assertAlmostEqual(CN_0min[0][0], 1.0, delta=1e-4)
+            # check configuration file
+            check_config=open(output+'/4_0min.config','r')
+            line1=check_config.readline()
+            line2=check_config.readline()
+            check_config.close()
+            self.assertEqual(line1[0:2], 'A1')
+            self.assertEqual(line2[0:2], 'B2')
+
 
     def test_graph_setup(self):
         """

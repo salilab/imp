@@ -5,8 +5,9 @@ import numpy as np
 import itertools
 import pandas as pd
 from IMP.spatiotemporal import composition_scoring
+import os
 
-def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels, template_topology='', template_dict={}, match_final_state=True):
+def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels, output_dir='', template_topology='', template_dict={}, match_final_state=True):
     """
         Function that reads in experimental stoicheometery data and calculates which compositions and location
         assignments should be sampled for spatiotemporal modeling, which are saved as config files. Optionally, a PMI
@@ -34,6 +35,8 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels,
            in the model. Should be a list without duplicates of
            all components in the subcomplex configuration files.
         @param nmodels: int, number of models with different protein copy numbers to generate at each time point.
+        @param output_dir: string, directory where the output will be written.
+           Empty string assumes the current working directory.
         @param template_topology: string, name of the topology file for the complete complex.
             (default: '', no topology files are output)
         @param template_dict: dictionary for connecting the spatiotemporal model to the topology file.
@@ -50,19 +53,30 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels,
         raise TypeError("times should be of type list")
     if not isinstance(exp_comp_map, dict):
         raise TypeError("times should be of type dict")
+    if not isinstance(expected_subcomplexes, list):
+        raise TypeError("nmodels should be of type list")
     if not isinstance(nmodels, int):
         raise TypeError("nmodels should be of type int")
+    if not isinstance(output_dir, str):
+        raise TypeError("output_dir should be of type str")
     if not isinstance(template_topology, str):
         raise TypeError("template_topology should be of type str")
     if not isinstance(template_dict, dict):
         raise TypeError("template_dict should be of type dict")
     if not isinstance(match_final_state, bool):
         raise TypeError("match_final_state should be of type bool")
+    # make output_dir if necessary
+    if len(output_dir) > 0:
+        if os.path.exists(output_dir):
+            os.chdir(output_dir)
+        else:
+            os.mkdir(output_dir)
+            os.chdir(output_dir)
     # Whether or not topology files should be written
     include_topology = False
     # calculate final copy numbers based on the expected complexes
-    final_CN=np.zeros(len(exp_comp.keys()),dtype=int)
-    for i, key in enumerate(exp_comp.keys()):
+    final_CN=np.zeros(len(exp_comp_map.keys()),dtype=int)
+    for i, key in enumerate(exp_comp_map.keys()):
         for subcomplex in expected_subcomplexes:
             if key in subcomplex:
                 final_CN[i] += 1
@@ -95,9 +109,6 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels,
             for state in all_library:
                 unnormalized_weights.append(composition_scoring.calc_likelihood_state(exp_comp_map,time,state))
             unw = np.array(unnormalized_weights)
-            print(time)
-            print(all_library)
-            print(unw)
             # get top scoring nmodels
             mindx = np.argsort(unw)[0:nmodels]
             # write out library with the top scoring models
@@ -141,13 +152,13 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels,
         # write top "scoring" compositions to file
         oary = np.array(olist, dtype=int)
         header=''
-        for prot_name in exp_comp.keys():
+        for prot_name in exp_comp_map.keys():
             header=header+str(prot_name)+'\t\t\t\t'
-        np.savetxt( time + ".txt", oary,header=header)
+        np.savetxt(time + ".txt", oary, header=header)
 
         # write protein config library to file
         for indx,prot_list in enumerate(state_list):
-            with open(str(indx+1) + "_" + time + ".config", "w") as fh:
+            with open(str(indx + 1) + "_" + time + ".config", "w") as fh:
                 for prot in prot_list:
                     fh.write(prot +"\n")
 
@@ -164,7 +175,7 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels,
                     else:
                         raise Exception("Protein " + prot + ' does not exist in template_dict\nClosing...')
                 # open new topology file
-                with open(str(indx+1) + "_" + time + "_topol.txt", "w") as fh:
+                with open(str(indx + 1) + "_" + time + "_topol.txt", "w") as fh:
                     old=open(template_topology,'r')
                     line=old.readline()
                     while line:

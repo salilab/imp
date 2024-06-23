@@ -282,6 +282,8 @@ expected_subcomplexes - list of all possible subcomplex strings in the model. Sh
 
 nmodels - int, number of models with different protein copy numbers to generate at each time point.
 
+output_dir - string, directory where the output will be written. Empty string assumes the current working directory. (default: '')
+
 template_topology: string, name of the topology file for the complete complex (default: '', no topology files are output)
 
 template_dict: dictionary for connecting the spatiotemporal model to the topology file. The keys (string) are the names of the proteins, defined by the expected_complexes variable. The values (list) are the names of all proteins in the topology file that should have the same copy number as the labeled protein, specifically the "molecule_name." (default: {}, no topology files are output)
