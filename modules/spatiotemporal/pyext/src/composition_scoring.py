@@ -100,7 +100,7 @@ def calc_likelihood(exp_comp_map, nodes):
         if os.path.exists(exp_comp_map[prot]):
             exp = pd.read_csv(exp_comp_map[prot])
         else:
-            raise Exception(
+            raise FileNotFoundError(
                 "Error!!! Check exp_comp_map. Unable to find composition "
                 "file: " + exp_comp_map[prot] + '\nClosing...')
         for i in range(len(exp)):
@@ -115,6 +115,7 @@ def calc_likelihood(exp_comp_map, nodes):
         # add state weight to node
         node.add_score(float(weight))
     return nodes
+
 
 def calc_likelihood_state(exp_comp_map, t, state):
     """
@@ -143,8 +144,8 @@ def calc_likelihood_state(exp_comp_map, t, state):
             numbers for which the likelihood will be calculated.
             This array should list the proteins in the same order as
             the exp_comp_map.
-    @return weight: float, the weight of the graphNode according to the composition
-            likelihood function.
+    @return weight: float, the weight of the graphNode according to the
+            composition likelihood function.
     """
     import pandas as pd
     # Data is stored as a dictionary of dictionaries. The first dictionary
@@ -153,17 +154,17 @@ def calc_likelihood_state(exp_comp_map, t, state):
     # is the mean or standard deviation of the protein copy number
     mean = {}
     std = {}
-    state_cn={}
-    count=0
+    state_cn = {}
+    count = 0
     # import csv file as pandas data frame
     for prot in exp_comp_map.keys():
         prot_dict_mean = {}
         prot_dict_std = {}
-        state_cn[prot]=state[count]
+        state_cn[prot] = state[count]
         if os.path.exists(exp_comp_map[prot]):
             exp = pd.read_csv(exp_comp_map[prot])
         else:
-            raise Exception(
+            raise FileNotFoundError(
                 "Error!!! Check exp_comp_map. Unable to find composition "
                 "file: " + exp_comp_map[prot] + '\nClosing...')
         for i in range(len(exp)):
@@ -173,7 +174,7 @@ def calc_likelihood_state(exp_comp_map, t, state):
         std[prot] = prot_dict_std
         count += 1
     # compute the compositional likelihood of the nodes
-    weight=0
+    weight = 0
     for prot in exp_comp_map.keys():
         # x counts the number of proteins of a given type in the node
         x = state_cn[prot]
@@ -185,5 +186,6 @@ def calc_likelihood_state(exp_comp_map, t, state):
                 'WARNING!!! Standard deviation of protein ' + prot
                 + ' 0 or less at time ' + t
                 + '. May lead to illogical results.')
-        weight += (0.5 * ((x - mean[prot][t]) / std[prot][t]) ** 2 + np.log(std[prot][t] * np.sqrt(2 * np.pi)))
+        weight += (0.5 * ((x - mean[prot][t]) / std[prot][t]) ** 2 +
+                   np.log(std[prot][t] * np.sqrt(2 * np.pi)))
     return weight
