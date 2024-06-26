@@ -30,6 +30,9 @@ class Tests(IMP.test.TestCase):
         """
         Test setting up a preparing a protein library for spatiotemporal library
         """
+        if pandas is None:
+            self.skipTest(
+                'pandas not available, will not test preparing protein library')
         # set input dir
         state_dict, expected_subcomplexes, exp_comp_map = setup_system()
         with IMP.test.temporary_directory() as tmpdir:
