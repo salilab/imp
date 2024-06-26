@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
             input = os.path.join(tmpdir, 'data/')
             shutil.copytree(self.get_input_file_name('data/'), input)
             # set output dir
-            output = self.get_tmp_file_name('output')
+            output = os.path.join(tmpdir, 'output')
             # run code
             exp_comp_map = {'A': input+'exp_comp_A.csv', 'B': input+'exp_comp_B.csv'}
             prepare_protein_library.prepare_protein_library(list(state_dict.keys()), exp_comp_map, expected_subcomplexes, 2, output_dir=output)
