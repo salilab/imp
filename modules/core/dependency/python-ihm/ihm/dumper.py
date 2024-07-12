@@ -1358,10 +1358,12 @@ class _ProtocolDumper(Dumper):
 
     def dump_summary(self, system, writer):
         with writer.loop("_ihm_modeling_protocol",
-                         ["id", "protocol_name", "num_steps"]) as lp:
+                         ["id", "protocol_name", "num_steps",
+                          "details"]) as lp:
             for p in system._all_protocols():
                 lp.write(id=p._id,
-                         protocol_name=p.name, num_steps=len(p.steps))
+                         protocol_name=p.name, num_steps=len(p.steps),
+                         details=p.details)
 
     def dump_details(self, system, writer):
         ordinal = itertools.count(1)
@@ -1657,6 +1659,7 @@ class _ModelDumperBase(Dumper):
                              type_symbol=atom.type_symbol,
                              group_PDB='HETATM' if atom.het else 'ATOM',
                              label_atom_id=atom.atom_id,
+                             label_alt_id=atom.alt_id,
                              label_comp_id=comp.id,
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,

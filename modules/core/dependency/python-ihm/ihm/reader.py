@@ -1738,9 +1738,10 @@ class _ProtocolHandler(Handler):
     category = '_ihm_modeling_protocol'
     ignored_keywords = ['ordinal_id', 'struct_assembly_description']
 
-    def __call__(self, id, protocol_name, num_steps):
+    def __call__(self, id, protocol_name, num_steps, details):
         p = self.sysr.protocols.get_by_id(id)
-        self.copy_if_present(p, locals(), mapkeys={'protocol_name': 'name'})
+        self.copy_if_present(p, locals(), mapkeys={'protocol_name': 'name'},
+                             keys=['details'])
 
 
 class _ProtocolDetailsHandler(Handler):
@@ -2136,7 +2137,7 @@ class _AtomSiteHandler(Handler):
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
                  cartn_z, occupancy, group_pdb, auth_seq_id,
-                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id):
+                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id, label_alt_id):
         # seq_id can be None for non-polymers (HETATM)
         seq_id = self.get_int(label_seq_id)
         # todo: handle fields other than those output by us
@@ -2164,7 +2165,7 @@ class _AtomSiteHandler(Handler):
             asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
             z=float(cartn_z), het=group != 'ATOM', biso=biso,
-            occupancy=occupancy)
+            occupancy=occupancy, alt_id=label_alt_id)
         model.add_atom(a)
 
         # Note any residues that have different seq_id and auth_seq_id

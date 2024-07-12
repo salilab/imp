@@ -2,6 +2,10 @@ import utils
 import os
 import unittest
 import sys
+try:
+    import numpy
+except ImportError:
+    numpy = None
 
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -226,6 +230,11 @@ x
         # Literal . must be quoted to distinguish from the omitted value
         self.assertEqual(w._repr('.foo'), ".foo")
         self.assertEqual(w._repr('.'), "'.'")
+        # Make sure that numpy ints are treated like plain ints,
+        # not rendered as "np.int32(42)" or similar
+        if numpy is not None:
+            self.assertEqual(w._repr(numpy.int32(42)), '42')
+            self.assertEqual(w._repr(numpy.int64(42)), '42')
 
     def test_reader_base(self):
         """Test Reader base class"""

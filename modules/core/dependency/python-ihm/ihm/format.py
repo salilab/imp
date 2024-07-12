@@ -228,8 +228,10 @@ class CifWriter(_Writer):
         # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
         elif isinstance(obj, _long_type):
             return "%d" % obj
-        else:
+        elif isinstance(obj, str):
             return repr(obj)
+        else:
+            return str(obj)
 
 
 # Acceptable 'whitespace' characters in CIF

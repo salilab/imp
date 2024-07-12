@@ -65,9 +65,13 @@ class Protocol(object):
        Normally a protocol is passed to one or more :class:`~ihm.model.Model`
        objects, although unused protocols can still be included in the file
        if desired by adding them to :attr:`~ihm.System.orphan_protocols`.
+
+       :param str name: Optional name for the protocol
+       :param str details: Additional text describing the protocol
     """
-    def __init__(self, name=None):
+    def __init__(self, name=None, details=None):
         self.name = name
+        self.details = details
 
         #: All modeling steps (:class:`Step` objects)
         self.steps = []
