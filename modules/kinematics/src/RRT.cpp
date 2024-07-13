@@ -7,6 +7,7 @@
  */
 #include <IMP/kinematics/RRT.h>
 #include <IMP/random.h>
+#include <boost/version.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -21,14 +22,16 @@ std::ostream& operator<<(std::ostream& s, const RRT::Parameters& p) {
 
 namespace {
 
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
 int myrandom (int i) { return std::rand()%i;}
 #endif
 
 std::vector<bool> select_k_out_of_n_dofs(unsigned int k, unsigned int n) {
   std::vector<unsigned int> arr(n);
   for(unsigned int i=0; i<n; i++) arr[i] = i;
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
+  // Older Boost RNG has non-constexpr min(), max() which won't compile
+  // with std::shuffle, so use the older random_shuffle instead
   std::random_shuffle(arr.begin(), arr.end(), myrandom);
 #else
   std::shuffle(arr.begin(), arr.end(), random_number_generator);

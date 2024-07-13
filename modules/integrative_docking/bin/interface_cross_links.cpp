@@ -21,6 +21,7 @@
 #include <string>
 #include <algorithm>
 
+#include <boost/version.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 #include <boost/random/uniform_real_distribution.hpp>
@@ -232,7 +233,9 @@ int main(int argc, char** argv) {
   }
 
   select_cross_links(cross_links, selected_cross_links);
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
+  // Older Boost RNG has non-constexpr min(), max() which won't compile
+  // with std::shuffle, so use the older random_shuffle instead
   std::random_shuffle(selected_cross_links.begin(), selected_cross_links.end());
 #else
   std::shuffle(selected_cross_links.begin(), selected_cross_links.end(),
