@@ -467,8 +467,9 @@ loop_
 _ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
 _ihm_modeling_protocol.num_steps
-1 . 1
-2 . 1
+_ihm_modeling_protocol.details
+1 . 1 .
+2 . 1 .
 #
 #
 loop_
