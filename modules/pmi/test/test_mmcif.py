@@ -783,7 +783,8 @@ loop_
 _ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
 _ihm_modeling_protocol.num_steps
-1 . 2
+_ihm_modeling_protocol.details
+1 . 2 .
 #
 #
 loop_
