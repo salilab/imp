@@ -21,4 +21,4 @@
 [submodule "modules/nestor"]
 	path = modules/nestor
 	url = https://github.com/isblab/nestor.git
-	branch = imp-integration
+	branch = main
