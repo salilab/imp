@@ -38,12 +38,16 @@ public:
                             (currently spherically symmetric)
       \param[in] density_weights weights for the density GMM
       \param[in] global_sigma Particle to modulate the uncertainty
+      \param[in] cutoff_dist Only consider model-density interactions
+                 up to this distance
       \param[in] rigid Set to true if the model is rigid (faster)
+      \param[in] tabexp Use pre-calculated tabulated exponential
+      \param[in] name User-visible name of the restraint, if desired
    */
   GaussianAnchorEMRestraint(ParticlesTemp model_ps, Floats model_sigs,
                       Floats model_weights, ParticlesTemp density_ps,
                       Floats density_sigs, Floats density_weights,
-                      Particle *global_sigma,Float cutoff_dist,
+                      Particle *global_sigma, Float cutoff_dist,
                       bool rigid, bool tabexp,
                       std::string name="GaussianAnchorEMRestraint%1%"):
   ISDRestraint(model_ps[0]->get_model(),name),
