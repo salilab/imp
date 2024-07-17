@@ -445,6 +445,7 @@ def read_coordinates_of_rmfs(model,
     @param alignment_components Tuples to specify what you're aligning on
     @param rmsd_calculation_components Tuples to specify what components
            are used for RMSD calc
+    @param state_number The state to extract from the file
     """
     all_coordinates = []
     rmsd_coordinates = []
@@ -516,6 +517,7 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
     @param rmf_tuple  score,filename,frame number,original order number, rank
     @param rmsd_calculation_components Tuples to specify what components
            are used for RMSD calc
+    @param state_number The state to extract from the file
     '''
     if rmsd_calculation_components is None:
         return {}

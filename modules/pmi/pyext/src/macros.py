@@ -686,6 +686,8 @@ class BuildSystem:
            IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
+        @param keep_chain_id If True, keep the chain IDs from the
+               original PDB files, if available
         @param fasta_name_map dictionary for converting protein names
                found in the fasta file
         @param chain_ids A list or string of chain IDs for assigning to
@@ -1640,6 +1642,8 @@ class AnalysisReplicaExchange:
                rmf files names
         @param best_models Integer. Number of best scoring models,
                if None: all models will be read
+        @param score_key Use the provided stat key keyword as the score
+               (by default, the total score is used)
         @param alignment boolean (Default=True). Align before computing
                the rmsd.
         """
@@ -2400,7 +2404,10 @@ class AnalysisReplicaExchange:
     def merge_aggregates(self, rmsd_cutoff, metric=IMP.atom.get_rmsd):
         """
         merge the clusters that have close members
+
         @param rmsd_cutoff cutoff distance in Angstorms
+        @param metric Function to calculate distance between two Selections
+               (by default, IMP.atom.get_rmsd is used)
         """
         # before merging, clusters are spheres of radius rmsd_cutoff
         # centered on the 1st element
@@ -2540,6 +2547,7 @@ class AnalysisReplicaExchange:
         @param reference can be either "Absolute" (cluster center of the
                first cluster) or Relative (cluster center of the current
                cluster)
+        #param cluster the reference IMP.pmi.output.Cluster object
         """
         if reference == "Absolute":
             _ = self.stath0[0]
