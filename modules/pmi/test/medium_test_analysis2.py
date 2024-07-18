@@ -378,7 +378,7 @@ class Tests(IMP.test.TestCase):
                          "Integrative Modeling Platform (IMP)")
 
     def test_precision(self):
-        """Test correct calcluation of precision and RMSF"""
+        """Test correct calculation of precision and RMSF"""
         if not nicemodules:
             self.skipTest("missing scipy or sklearn")
 

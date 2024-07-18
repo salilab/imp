@@ -194,7 +194,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # with the expected behaviour. We expect that the sixth column is identical to the fifth and the second;
         # and we expect that the first is equal to the first. But this is not obtained :-)
         # The results are not intuitive at this stage, we think that mol has changed after build,
-        # and mol.get_represented() is not changed correspondigly.
+        # and mol.get_represented() is not changed correspondingly.
 
         #for n, x in enumerate(mol):
         #    print(x, status_1[n], status_2[n], x in mol_beads_1,
