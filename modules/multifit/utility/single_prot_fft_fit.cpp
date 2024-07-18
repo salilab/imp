@@ -207,9 +207,8 @@ bool parse_input(int argc, char *argv[], std::string &density_filename,
                  int &num_top_fits_to_store_for_each_rotation, bool &cluster_on,
                  int &num_angle_per_voxel, double &max_clustering_translation,
                  double &max_clustering_angle, bool &local_fitting) {
-  local_fitting = false;  // will be set to true is the user asked to restict
-                          // the
-  // rotational or translational search
+  local_fitting = false;  // will be set to true if the user asked to restrict
+                          // the rotational or translational search
   max_clustering_translation = 5;
   max_clustering_angle = 20;
   max_clustering_translation = 3;

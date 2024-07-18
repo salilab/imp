@@ -196,7 +196,7 @@ def draw_dag(dag_fn, nodes, paths, path_prob, keys,
            labels on the dag
     """
 
-    # determines if heatmap will be overlayed on top of DAG
+    # determines if heatmap will be overlaid on top of DAG
     if heatmap:
 
         if cm is None or clr is None:

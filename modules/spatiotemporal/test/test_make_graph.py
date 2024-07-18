@@ -102,7 +102,8 @@ class Tests(IMP.test.TestCase):
                 # draw edges between pairs. Include whether or not to include spatio_temporal_rule
                 for na, nb in itertools.product(anode, bnode):
                     graphNode.draw_edge(na, nb, False)
-            # set indeces for all nodes. These are unique for each node, unlike labels, which can overlap
+            # set indices for all nodes. These are unique for each node,
+            # unlike labels, which can overlap
             for ni, node in enumerate(nodes):
                 node.set_index(ni)
             # check that all nodes are graphNode objects

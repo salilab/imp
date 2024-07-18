@@ -1007,7 +1007,7 @@ domino::Assignments ProteomicsEMAlignmentAtomic::get_combinations(
 void ProteomicsEMAlignmentAtomic::load_combination_of_states(
     const Ints &state4particles) {
   IMP_USAGE_CHECK(state4particles.size() == mhs_.size(),
-                  "comb size is not euqal to the number of molecules \n");
+                  "comb size is not equal to the number of molecules \n");
   IMP_USAGE_CHECK(states_set_, "states were not initialized \n");
   for (int i = 0; i < (int)mhs_.size(); i++) {
     //      std::cout<<"Molecule "<<i<<" is: "<<mhs_[i]->get_name()

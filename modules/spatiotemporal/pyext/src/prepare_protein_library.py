@@ -122,7 +122,7 @@ def prepare_protein_library(times, exp_comp_map, expected_subcomplexes,
         # otherwise, calculate the nmodels most likely copy numbers
         # for each time point
         else:
-            # caclulate the weights for each state
+            # calculate the weights for each state
             unnormalized_weights = []
             for state in all_library:
                 unnormalized_weights.append(

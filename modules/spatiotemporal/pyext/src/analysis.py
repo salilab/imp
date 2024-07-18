@@ -22,7 +22,7 @@ def temporal_precision(labeled_pdf1_fn, labeled_pdf2_fn,
     pdf_files = [labeled_pdf1_fn, labeled_pdf2_fn]
     dict_list = []
     for pdf_file in pdf_files:
-        # create blank dictonary to store the results
+        # create blank dictionary to store the results
         prob_dict = {}
         # read in labeled pdf file
         old = open(pdf_file, 'r')
@@ -89,7 +89,7 @@ def purity(labeled_pdf_fn, output_fn='purity.txt'):
            (default: 'temporal_precision.txt')
     @return temporal purity, written to output_fn
     """
-    # create blank dictonary to store the results
+    # create blank dictionary to store the results
     prob_list = []
     # read in labeled pdf file
     old = open(labeled_pdf_fn, 'r')

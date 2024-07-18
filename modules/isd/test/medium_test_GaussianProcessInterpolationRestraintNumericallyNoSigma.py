@@ -36,7 +36,7 @@ class MockFunc:
 class Tests(IMP.test.TestCase):
 
     """test of the GPI restraint with two data points, linear prior mean and
-    gaussian prior covariances. Sigma is not optimzed.
+    gaussian prior covariances. Sigma is not optimized.
     """
 
     def setUp(self):

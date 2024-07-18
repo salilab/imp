@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
     class UF to a particle based on the distance of its center from
     the bounding box walls.  The radius of the particle is ignored. If
     the particle is within the bounding box, the score is always
-    0. Logically, it is exepcted that f(0) = 0 and f(x) > 0 if x>0.
+    0. Logically, it is expected that f(0) = 0 and f(x) > 0 if x>0.
 
     In Python, use the templated \ref BoundingBox3DSingletonScore class
     as in the following example. In the example, 10 particles of
@@ -69,7 +69,7 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
   /**
     @param f an unary function applied to particles that are outside the box. 
             f is passed the distance of the particle center from the bounding 
-            box walls, ignoring the particle radius. Logically, it is exepcted 
+            box walls, ignoring the particle radius. Logically, it is expected
             to satisfy f(0) = 0 and f(x) > 0 if x>0.
     @param bb the bounding box to which f is applied
    */

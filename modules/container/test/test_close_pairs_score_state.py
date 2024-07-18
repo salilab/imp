@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
                     IMP.algebra.get_unit_sphere_3d())
                 d = IMP.core.XYZ(m, p)
                 d.set_coordinates(d.get_coordinates() + r)
-            # make sure internal checks in continer pass
+            # make sure internal checks in container pass
 
             m.update()
 

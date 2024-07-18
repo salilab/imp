@@ -63,7 +63,7 @@ class SimulationParameters;
     altered slightly to apply the SKT scheme.
 
     _Time step_
-    The time step is always equal precisely to Simulater::get_maximum_time_step() 
+    The time step is always equal precisely to Simulator::get_maximum_time_step()
     when using either Simulator::simulate() or Optimizer::optimize()
 
     \see Diffusion

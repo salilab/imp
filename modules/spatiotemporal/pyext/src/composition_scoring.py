@@ -81,15 +81,15 @@ def calc_likelihood(exp_comp_map, nodes):
            protein copy number from experiment.
     @param nodes: list of graphNode objects, which have been already been
            initiated with static scores
-    @return nodes: editted list of graphNode objects, which now have static
+    @return nodes: edited list of graphNode objects, which now have static
             and composition scores
     """
     import pandas as pd
     # Get list of all all proteins
     prots = list(exp_comp_map.keys())
     # Data is stored as a dictionary of dictionaries. The first dictionary
-    # references which protein you are refering to.
-    # the 2nd dictionary references which time you are refering to. The return
+    # references which protein you are referring to.
+    # the 2nd dictionary references which time you are referring to. The return
     # is the mean or standard deviation of the protein copy number
     mean = {}
     std = {}
@@ -149,8 +149,8 @@ def calc_likelihood_state(exp_comp_map, t, state):
     """
     import pandas as pd
     # Data is stored as a dictionary of dictionaries. The first dictionary
-    # references which protein you are refering to.
-    # the 2nd dictionary references which time you are refering to. The return
+    # references which protein you are referring to.
+    # the 2nd dictionary references which time you are referring to. The return
     # is the mean or standard deviation of the protein copy number
     mean = {}
     std = {}
