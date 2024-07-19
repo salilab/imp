@@ -3,7 +3,7 @@ Building from source code on Windows {#install_windows}
 
 We build and test %IMP on
 Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-2015 for both the 32-bit and 64-bit Windows `.exe` installers; for the
+2017 for both the 32-bit and 64-bit Windows `.exe` installers; for the
 [Anaconda packages](https://integrativemodeling.org/download-anaconda.html),
 which are built by [conda-forge](https://conda-forge.org/), VS 2019 is used).
 One complication is that different packages are compiled
