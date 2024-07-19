@@ -21,12 +21,12 @@ To configure and build as simply as possible do
     cmake ../imp
     make -j8
 
-To make a debug build of %IMP with the `cgal` and `membrane` modules disabled
+To make a debug build of %IMP with the `cgal` and `misc` modules disabled
 and `core` compiled in per-cpp mode, and to use
 [Ninja](https://ninja-build.org/) instead of `make` as your build
 command do:
 
-    cmake ../imp -DCMAKE_BUILD_TYPE=Debug -G Ninja -DIMP_DISABLED_MODULES=cgal:membrane -DIMP_PER_CPP_COMPILATION=core
+    cmake ../imp -DCMAKE_BUILD_TYPE=Debug -G Ninja -DIMP_DISABLED_MODULES=cgal:misc -DIMP_PER_CPP_COMPILATION=core
     ninja -j8
 
 # Configuring using ccmake {#ccmake_config}
