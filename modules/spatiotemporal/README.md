@@ -87,8 +87,8 @@ labaled_pdf2_fn - labeled_pdf from another independent sampling
 
 output_fn - name of output file (default: 'temporal_precision.txt')
 
-### purity(labeled_pdf_fn,output_fn)
-Function that reads in one labeled_pdf from create_DAG and returns the purity, defined as the sum of the squared probability of all trajectories.
+### precision(labeled_pdf_fn,output_fn)
+Function that reads in one labeled_pdf from create_DAG and returns the precision, defined as the sum of the squared probability of all trajectories.
 
 labeled_pdf_fn - labeled_pdf from the total model
 
