@@ -81,7 +81,7 @@ def temporal_precision(labeled_pdf1_fn, labeled_pdf2_fn,
 def precision(labeled_pdf_fn, output_fn='precision.txt'):
     """
     Function that reads in one labeled_pdf from create_DAG and returns the
-    precision, defined as the sum of the squared 
+    precision, defined as the sum of the squared
     probability of all trajectories.
 
     @param labeled_pdf_fn: string, labeled pdf file name (including the path);
