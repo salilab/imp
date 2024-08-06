@@ -19,7 +19,7 @@ BuildRequires: python3-devel
 BuildRequires: gcc-c++, hdf5-devel >= 1.8
 BuildRequires: swig >= 3.0
 BuildRequires: gsl-devel, fftw-devel
-BuildRequires: zlib-devel, perl, eigen3-devel, cereal-devel
+BuildRequires: zlib-devel, sed, eigen3-devel, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 BuildRequires: ann-devel
 %endif
@@ -350,8 +350,8 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
 
 # Make sure all Python applications and build tools use the same Python
 # we built with
-perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python3@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
-find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env python3#' \{\} \;
+sed -i -e 's@^#!.*python.*$@#!/usr/bin/python3@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
+find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec sed -i -e 's#/usr/bin/env python\b#/usr/bin/env python3#' \{\} \;
 
 %files
 %defattr(-,root,root)
