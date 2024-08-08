@@ -13,6 +13,7 @@ import ihm.citations
 import ihm.reference
 import operator
 import inspect
+import warnings
 
 
 # Map from IMP ResidueType to ihm ChemComp
@@ -52,9 +53,10 @@ def get_molecule(h):
 def _check_sequential(fragment, resinds):
     for i in range(1, len(resinds)):
         if resinds[i - 1] + 1 != resinds[i]:
-            raise ValueError(
-                "%s: non-sequential residue indices are not supported"
-                % str(fragment))
+            warnings.warn(
+                "%s: non-sequential residue indices; mmCIF bead will cover "
+                "indices [%d-%d]"
+                % (str(fragment), resinds[0], resinds[-1]))
 
 
 def _get_all_state_provenance(state_h, top_h, types):

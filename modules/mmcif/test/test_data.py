@@ -379,13 +379,20 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(ps[1], IMP.atom.Atom)
         self.assertIsInstance(ps[2], IMP.atom.Fragment)
 
-        # Non-sequential fragments are not supported
+    def test_coordinate_handler_get_structure_particles_nonseq(self):
+        """Test get_structure_particles() with non-sequential fragment"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6, 7, 9])
         IMP.core.XYZR.setup_particle(
             frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(frag, 1.0)
         top.add_child(frag)
-        self.assertRaises(ValueError, ch.get_structure_particles, top)
+        ch = IMP.mmcif.data._CoordinateHandler(None, None)
+        with self.assertWarns(UserWarning):
+            ps = ch.get_structure_particles(top)
+        self.assertEqual(len(ps), 1)
+        self.assertIsInstance(ps[0], IMP.atom.Fragment)
 
     def test_coordinate_handler_add_chain(self):
         """Test CoordinateHandler.add_chain()"""
