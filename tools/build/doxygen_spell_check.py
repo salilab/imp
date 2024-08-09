@@ -50,7 +50,7 @@ class IMPNameFilter(Filter):
                or self._pattern.match(word) is not None
 
 
-class SpellChecker(object):
+class SpellChecker:
     def __init__(self, exceptions_file):
         self.chkr = enchant.checker.SpellChecker(
             "en_US", filters=[EmailFilter, URLFilter, IMPNameFilter])

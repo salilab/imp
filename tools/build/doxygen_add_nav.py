@@ -86,7 +86,7 @@ def get_page_from_source(source, id_re, id_to_page):
     raise ValueError("Cannot find page id in %s" % source)
 
 
-class Page(object):
+class Page:
     """Representation of a single page in the documentation"""
     def __init__(self, id):
         self.id = id
@@ -148,7 +148,7 @@ class Page(object):
                 % (root, os.path.sep.join(sp)))
 
 
-class Docs(object):
+class Docs:
     """Representation of all doxygen documentation"""
 
     def __init__(self, xml_dir, html_dir, top_source_dir, source_subdirs):

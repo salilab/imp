@@ -212,7 +212,7 @@ def handle_class(c, indent, printer):
     dump_class(c, meths, indent, printer)
 
 
-class OutputPrinter(object):
+class OutputPrinter:
 
     def __init__(self):
         # The number of the next line to be written (1-based)

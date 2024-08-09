@@ -100,7 +100,7 @@ def rewrite(filename, contents, verbose=True):
         fh.write(contents)
 
 
-class FileGenerator(object):
+class FileGenerator:
     """Auto-generate an output file.
        The file is marked as being auto-generated with a suitable comment.
        `template_file` names an input file containing a suitable template
@@ -272,7 +272,7 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
                 os.unlink(ln)
 
 
-class Module(object):
+class Module:
     """An IMP module"""
     _info = None
 
@@ -412,7 +412,7 @@ class SourceModule(Module):
     python_only = property(lambda self: self._read_dep_file('python_only'))
 
 
-class ModulesFinder(object):
+class ModulesFinder:
     """Class for finding IMP modules.
        Acts like a dict with module names as keys and Module objects as values.
 
