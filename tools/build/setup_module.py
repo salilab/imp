@@ -330,7 +330,7 @@ def find_cmdline_links(mod, docdir, cmdline_tools):
     for g in [os.path.join(docdir, "README.md")] \
             + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
             + glob.glob(os.path.join(docdir, "doc", "*.md")):
-        for line in tools.open_utf8(g):
+        for line in open(g, encoding='UTF8'):
             if todo and len(line.rstrip('\r\n ')) > 0 \
                and line[0] not in " =-\\":
                 (k, v) = todo.popitem()
@@ -397,7 +397,9 @@ def make_overview(module, cmdline_tools):
     pickle.dump(cmdline_links,
                 open(os.path.join("build_info",
                                   "IMP_%s.pck" % module.name), 'wb'), -1)
-    rmd = tools.open_utf8(os.path.join(module.path, "README.md"), "r").read()
+    with open(os.path.join(module.path, "README.md"), "r",
+              encoding='UTF8') as fh:
+        rmd = fh.read()
     # Since we wrap everything in a C++ comment, make sure nothing in the
     # Markdown closes this comment (and thus truncates the page). This fixes
     # truncation of the help page for IMP.sampcon.

@@ -78,7 +78,8 @@ def rewrite(filename, contents, verbose=True):
         if verbose:
             print("    Was symlink - now new file: " + filename)
     try:
-        old = open_utf8(filename, "r").read()
+        with open(filename, "r", encoding='UTF8') as fh:
+            old = fh.read()
         if old == contents:
             return
         elif verbose:
@@ -95,7 +96,8 @@ def rewrite(filename, contents, verbose=True):
     dirpath = os.path.split(filename)[0]
     if dirpath != "":
         mkdir(dirpath, False)
-    open_utf8(filename, "w").write(contents)
+    with open(filename, "w", encoding='UTF8') as fh:
+        fh.write(contents)
 
 
 class FileGenerator(object):
@@ -728,13 +730,6 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
-
-# Treat an open file as UTF8-encoded, regardless of the locale
-if sys.version_info[0] >= 3:
-    def open_utf8(fname, *args):
-        return open(fname, *args, encoding='UTF8')
-else:
-    open_utf8 = open
 
 _subprocesses = []
 
