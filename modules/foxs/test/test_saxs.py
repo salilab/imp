@@ -17,10 +17,11 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'6lyz\.pdb.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt',
+                    '6lyz.plt', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_cif(self):
@@ -32,12 +33,43 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        m = re.search(r'6lyz\.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
         for out in ('6lyz.cif.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt',
-                    '6lyz.plt'):
+                    '6lyz.plt', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
+
+    def test_simple_cif_multimodel(self):
+        """Test of SAXS profile application with multimodel mmCIF input"""
+        p = self.run_application('foxs',
+                                 ['-g', '-m', '2',
+                                  self.get_input_file_name('6lyz.cif'),
+                                  self.get_input_file_name('lyzexp.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        # Should have three fits for the three models
+        m = re.search(r'6lyz_m1.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
+
+        m = re.search(r'6lyz_m2.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 149.67, delta=0.01)
+
+        m = re.search(r'6lyz_m3.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 134.08, delta=0.01)
+
+        for model in ('_m1', '_m2', '_m3'):
+            for out in ('6lyz%s.cif.dat' % model, '6lyz%s_lyzexp.dat' % model,
+                        '6lyz%s_lyzexp.fit' % model,
+                        '6lyz%s_lyzexp.plt' % model,
+                        '6lyz%s.plt' % model):
+                os.unlink(self.get_input_file_name(out))
+        os.unlink('fit.plt')
+        os.unlink('profiles.plt')
 
     def test_simple_exp_data_nm(self):
         """Simple test of SAXS profile application"""
@@ -53,7 +85,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp_nm.dat', '6lyz_lyzexp_nm.plt', '6lyz.plt'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp_nm.dat', '6lyz_lyzexp_nm.plt',
+                    '6lyz.plt', '6lyz_lyzexp_nm.fit'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_no_fit(self):
@@ -70,7 +103,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.289, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_residue(self):
@@ -87,7 +120,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.67, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_js(self):
@@ -104,7 +137,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search(r'Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
         for out in ('jmoltable.pdb', 'jmoltable.html', 'canvas.plt'):
