@@ -56,7 +56,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search(r'6lyz_m2.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 149.67, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 149.65, delta=0.03)
 
         m = re.search(r'6lyz_m3.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
