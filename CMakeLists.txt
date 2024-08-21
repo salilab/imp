@@ -97,6 +97,12 @@ if(POLICY CMP0058)
   cmake_policy(SET CMP0058 NEW)
 endif(POLICY CMP0058)
 
+# Use FindBoost module rather than BoostConfig.cmake (which requires
+# Boost 1.70 or later)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif(POLICY CMP0167)
+
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
