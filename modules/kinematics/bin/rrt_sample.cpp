@@ -36,12 +36,6 @@ using namespace IMP::kinematics;
 namespace {
 int rrt_sample(int argc, char **argv)
 {
-  // output arguments
-  for (int i=0; i<argc; i++) {
-    std::cerr << argv[i] << " ";
-  }
-  std::cerr << std::endl;
-
   int number_of_iterations = 100;
   int number_of_nodes = 100;
   int save_configuration_number = 10;
