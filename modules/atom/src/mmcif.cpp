@@ -133,13 +133,15 @@ public:
     return true;
   }
 
-  void get_chain_particle(const std::string &chain) {
+  void get_chain_particle(const std::string &chain,
+                          const std::string &label_asym_id) {
     if (cp_ == nullptr || chain != curr_chain_) {
       curr_chain_ = chain;
       std::pair<Particle *, std::string> root_chain(root_p_, chain);
       // Check if new chain (for this root)
       if (chain_map_.find(root_chain) == chain_map_.end()) {
         cp_ = internal::chain_particle(model_, chain, filename_);
+        Chain(cp_).set_label_asym_id(label_asym_id);
         Hierarchy(root_p_).add_child(Chain(cp_));
         chain_map_[root_chain] = cp_;
       } else {
@@ -177,9 +179,9 @@ public:
     // Use author-provided chain ID if available
     std::string label_asym_id = chain_.as_str();
     if (strlen(auth_chain_.as_str()) > 0) {
-      get_chain_particle(auth_chain_.as_str());
+      get_chain_particle(auth_chain_.as_str(), label_asym_id);
     } else {
-      get_chain_particle(label_asym_id);
+      get_chain_particle(label_asym_id, label_asym_id);
     }
     std::string auth_seq_id_str = auth_seq_id_.as_str();
     // Check if new residue

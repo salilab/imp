@@ -26,6 +26,12 @@ class Tests(IMP.test.TestCase):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(chains), 3)
+        self.assertEqual(chains[0].get_id(), "")
+        self.assertEqual(chains[0].get_label_asym_id(), "")
+        self.assertEqual(chains[1].get_id(), "X")
+        self.assertEqual(chains[1].get_label_asym_id(), "B")
+        self.assertEqual(chains[2].get_id(), "A")
+        self.assertEqual(chains[2].get_label_asym_id(), "A")
         self.assertEqual(len(m.get_particle_indexes()), 435)
 
     def test_read_pdb_or_mmcif_no_num(self):

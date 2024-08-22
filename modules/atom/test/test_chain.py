@@ -20,12 +20,15 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(c.get_sequence(), "")
         self.assertEqual(c.get_sequence_offset(), 0)
         self.assertEqual(c.get_uniprot_accession(), "")
+        self.assertEqual(c.get_label_asym_id(), "")
         c.set_sequence("CCY")
         c.set_sequence_offset(10)
         c.set_uniprot_accession("Q13098")
+        c.set_label_asym_id("X")
         self.assertEqual(c.get_sequence(), "CCY")
         self.assertEqual(c.get_sequence_offset(), 10)
         self.assertEqual(c.get_uniprot_accession(), "Q13098")
+        self.assertEqual(c.get_label_asym_id(), "X")
 
     def test_chain_type(self):
         """Test Chain type"""

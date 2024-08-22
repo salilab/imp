@@ -30,6 +30,11 @@ SparseStringKey Chain::get_id_key() {
   return k;
 }
 
+SparseStringKey Chain::get_label_asym_id_key() {
+  static SparseStringKey k("label_asym_id");
+  return k;
+}
+
 SparseStringKey Chain::get_sequence_key() {
   static SparseStringKey k("sequence");
   return k;

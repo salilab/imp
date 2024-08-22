@@ -66,6 +66,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
     m->add_attribute(get_sequence_key(), pi, "");
     m->add_attribute(get_sequence_offset_key(), pi, 0);
     m->add_attribute(get_uniprot_accession_key(), pi, "");
+    m->add_attribute(get_label_asym_id_key(), pi, "");
     m->add_attribute(get_chain_type_key(), pi, UnknownChainType.get_index());
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
@@ -90,17 +91,30 @@ class IMPATOMEXPORT Chain : public Hierarchy {
            m->get_has_attribute(get_sequence_offset_key(), pi) &&
            m->get_has_attribute(get_uniprot_accession_key(), pi) &&
            m->get_has_attribute(get_chain_type_key(), pi) &&
+           m->get_has_attribute(get_label_asym_id_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }
 
-  //! Return the chain id
+  //! Return the (author-provided) chain id
   std::string get_id() const {
     return get_model()->get_attribute(get_id_key(), get_particle_index());
   }
 
-  //! Set the chain id
+  //! Set the (author-provided) chain id
   void set_id(std::string c) {
     get_model()->set_attribute(get_id_key(), get_particle_index(), c);
+  }
+
+  //! Return the mmCIF asym ID
+  std::string get_label_asym_id() const {
+    return get_model()->get_attribute(get_label_asym_id_key(),
+                                      get_particle_index());
+  }
+
+  //! Set the mmCIF asym ID
+  void set_label_asym_id(std::string c) {
+    get_model()->set_attribute(get_label_asym_id_key(),
+                               get_particle_index(), c);
   }
 
   //! Return the primary sequence (or any empty string)
@@ -174,8 +188,11 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   }
 
 
-  //! The key used to store the chain
+  //! The key used to store the author-provided chain ID
   static SparseStringKey get_id_key();
+
+  //! The key used to store the mmCIF asym ID
+  static SparseStringKey get_label_asym_id_key();
 
   //! The key used to store the primary sequence
   static SparseStringKey get_sequence_key();
