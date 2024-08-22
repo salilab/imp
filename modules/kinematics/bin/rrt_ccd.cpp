@@ -7,7 +7,7 @@
 
 #include <IMP/core/SphereDistancePairScore.h>
 
-#include <IMP/atom/pdb.h>
+#include <IMP/atom/mmcif.h>
 #include <IMP/atom/dihedrals.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/CHARMMParameters.h>
@@ -115,12 +115,12 @@ int main(int argc, char **argv)
 
   // read in the input protein
   IMP::Pointer<IMP::Model> model = new IMP::Model();
-  std::cerr << "Starting reading pdb file " << pdb_name << std::endl;
+  std::cerr << "Starting reading PDB or mmCIF file " << pdb_name << std::endl;
   IMP::atom::Hierarchy mhd =
-    IMP::atom::read_pdb(pdb_name, model,
-                        new IMP::atom::NonWaterNonHydrogenPDBSelector(),
-                        // don't add radii
-                        true, true);
+    IMP::atom::read_pdb_or_mmcif(
+            pdb_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
+            // don't add radii
+            true, true);
 
   IMP::ParticlesTemp atoms = IMP::atom::get_by_type(mhd, IMP::atom::ATOM_TYPE);
   IMP::ParticlesTemp residues = IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
