@@ -133,8 +133,9 @@ public:
     return true;
   }
 
-  void get_chain_particle(const std::string &chain,
+  bool get_chain_particle(const std::string &chain,
                           const std::string &label_asym_id) {
+    bool new_chain = false;
     if (cp_ == nullptr || chain != curr_chain_) {
       curr_chain_ = chain;
       std::pair<Particle *, std::string> root_chain(root_p_, chain);
@@ -144,11 +145,13 @@ public:
         Chain(cp_).set_label_asym_id(label_asym_id);
         Hierarchy(root_p_).add_child(Chain(cp_));
         chain_map_[root_chain] = cp_;
+        new_chain = true;
       } else {
         cp_ = chain_map_[root_chain];
       }
       rp_ = nullptr; // make sure we get a new residue
     }
+    return new_chain;
   }
 
   // Replace at most maxlen chars in dest, starting at pos, with repl
@@ -178,10 +181,11 @@ public:
 
     // Use author-provided chain ID if available
     std::string label_asym_id = chain_.as_str();
+    bool new_chain;
     if (strlen(auth_chain_.as_str()) > 0) {
-      get_chain_particle(auth_chain_.as_str(), label_asym_id);
+      new_chain = get_chain_particle(auth_chain_.as_str(), label_asym_id);
     } else {
-      get_chain_particle(label_asym_id, label_asym_id);
+      new_chain = get_chain_particle(label_asym_id, label_asym_id);
     }
     std::string auth_seq_id_str = auth_seq_id_.as_str();
     // Check if new residue
@@ -200,6 +204,12 @@ public:
       // if auth_seq_id is blank, use seq_id instead
       if (endptr == start) auth_seq_id = seq_id;
       char one_icode = 32; // default insertion code (space)
+
+      // Set the chain's sequence offset based on the first residue numbering
+      if (new_chain) {
+        Chain(cp_).set_sequence_offset(auth_seq_id - seq_id);
+      }
+
       // if auth_seq_id is not blank and contains something after the number,
       // use the first character of that as the insertion code
       if (endptr != start && *endptr) {

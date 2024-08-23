@@ -415,6 +415,16 @@ class Tests(IMP.test.TestCase):
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains], ['ZB'])
 
+    def test_chain_read_offset(self):
+        """Check reading of chain sequence offset from an mmCIF file"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["ZK"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(chains[0].get_sequence_offset(), 286)
+
 
 if __name__ == '__main__':
     IMP.test.main()
