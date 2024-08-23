@@ -140,7 +140,11 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
-        for out in ('jmoltable.pdb', 'jmoltable.html', 'canvas.plt'):
+        with open('jmoltable.cif') as fh:
+            cif_lines = fh.readlines()
+        self.assertEqual(cif_lines[0].rstrip('\r\n'), 'loop_')
+        self.assertEqual(len(cif_lines), 1020)
+        for out in ('jmoltable.cif', 'jmoltable.html', 'canvas.plt'):
             os.unlink(out)
 
 if __name__ == '__main__':

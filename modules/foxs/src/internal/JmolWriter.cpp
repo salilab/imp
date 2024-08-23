@@ -1,7 +1,7 @@
 /**
  * \file IMP/foxs/JmolWriter.cpp \brief outputs javascript for jmol display
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2024 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,7 @@
 #include <IMP/saxs/utility.h>
 
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/internal/mmcif.h>
 
 #include <fstream>
 #include <boost/lexical_cast.hpp>
@@ -33,7 +34,7 @@ void JmolWriter::prepare_jmol_script(
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
-  std::string pdb_filename = filename + ".pdb";
+  std::string pdb_filename = filename + ".cif";
 
   unsigned int model_num = std::min((unsigned int)fps.size(), MAX_DISPLAY_NUM_);
   std::string pdb_colors = prepare_coloring_string(model_num);
@@ -120,7 +121,7 @@ void JmolWriter::prepare_jmol_script(
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
-  std::string pdb_filename = filename + ".pdb";
+  std::string pdb_filename = filename + ".cif";
 
   unsigned int model_num =
       std::min((unsigned int)pdbs.size(), MAX_DISPLAY_NUM_);
@@ -187,6 +188,7 @@ void JmolWriter::prepare_PDB_file(
     const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
+  IMP::atom::internal::AtomSiteDumper atom_site(out_file);
   // center coordinates and join into a single PDB
   for (unsigned int i = 0; i < fps.size() && i < MAX_DISPLAY_NUM_; i++) {
     int mol_index = fps[i].get_mol_index();
@@ -199,23 +201,13 @@ void JmolWriter::prepare_PDB_file(
                                           algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[mol_index].size();
 
-    // output file
-    out_file << "MODEL    " << i + 1 << std::endl;
     for (unsigned int j = 0; j < particles_vec[mol_index].size(); j++) {
       // centering
       IMP::algebra::Vector3D v =
           IMP::core::XYZ(particles_vec[mol_index][j]).get_coordinates() - m;
       IMP::atom::Atom ad(particles_vec[mol_index][j]);
-      IMP::atom::Residue rd = get_residue(ad);
-      IMP::atom::Chain c = get_chain(rd);
-      char chain = c.get_id()[0];
-      out_file << IMP::atom::get_pdb_string(
-                      v, ad.get_input_index(), ad.get_atom_type(),
-                      rd.get_residue_type(), chain, rd.get_index(),
-                      rd.get_insertion_code(), ad.get_occupancy(),
-                      ad.get_temperature_factor(), ad.get_element());
+      atom_site.write(v, ad, i + 1);
     }
-    out_file << "ENDMDL" << std::endl;
   }
   out_file.close();
 }
@@ -224,6 +216,7 @@ void JmolWriter::prepare_PDB_file(
     const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
+  IMP::atom::internal::AtomSiteDumper atom_site(out_file);
   // center coordinates and join into a single PDB
   for (unsigned int i = 0; i < particles_vec.size() && i < MAX_DISPLAY_NUM_;
        i++) {
@@ -236,23 +229,13 @@ void JmolWriter::prepare_PDB_file(
                                           algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[i].size();
 
-    // output file
-    out_file << "MODEL    " << i + 1 << std::endl;
     for (unsigned int j = 0; j < particles_vec[i].size(); j++) {
       // centering
       IMP::algebra::Vector3D v =
           IMP::core::XYZ(particles_vec[i][j]).get_coordinates() - m;
       IMP::atom::Atom ad(particles_vec[i][j]);
-      IMP::atom::Residue rd = get_residue(ad);
-      IMP::atom::Chain c = get_chain(rd);
-      char chain = c.get_id()[0];
-      out_file << IMP::atom::get_pdb_string(
-                      v, ad.get_input_index(), ad.get_atom_type(),
-                      rd.get_residue_type(), chain, rd.get_index(),
-                      rd.get_insertion_code(), ad.get_occupancy(),
-                      ad.get_temperature_factor(), ad.get_element());
+      atom_site.write(v, ad, i + 1);
     }
-    out_file << "ENDMDL" << std::endl;
   }
   out_file.close();
 }
