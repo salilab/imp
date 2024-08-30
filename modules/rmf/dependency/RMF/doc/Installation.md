@@ -42,7 +42,7 @@ In order to build from source, you will need:
 
 If you want to be able to read older format RMF files, you will also need:
 
-- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
+- [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (1.8 or later; 1.10 or 1.12
   should also work)
 
 ## Download {#installation_download}

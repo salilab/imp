@@ -48,6 +48,12 @@ if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif(POLICY CMP0086)
 
+# Use FindBoost module rather than BoostConfig.cmake (which requires
+# Boost 1.70 or later)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif(POLICY CMP0167)
+
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options iostreams

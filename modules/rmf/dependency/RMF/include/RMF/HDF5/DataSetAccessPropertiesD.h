@@ -28,7 +28,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
    public:
     hid_t get_handle() const { return *h_; }
     /* Set the chunk cache to a certain size. See
-       \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetChunkCache,H5Pset_chunk_cache}.
+       \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___d_a_p_l.html#ga104d00442c31714ee073dee518f661f1,H5Pset_chunk_cache}.
      */
     void set_chunk_cache_size(unsigned int entries, unsigned int size_bytes,
                               double policy = .75) {

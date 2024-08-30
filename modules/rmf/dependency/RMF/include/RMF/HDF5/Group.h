@@ -24,7 +24,7 @@ typedef std::vector<GroupAttributes> GroupAttributesList;
 #endif
 
 /** Wrap an HDF5 Group. See
-    \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5G.html,
+    \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___h5_g.html,
     the HDF5 manual} for more information.
  */
 class RMFEXPORT Group : public MutableAttributes<ConstGroup> {
