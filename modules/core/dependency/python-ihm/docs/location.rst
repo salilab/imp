@@ -55,6 +55,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: AlphaFoldDBLocation
    :members:
 
+.. autoclass:: ProteomeXchangeLocation
+   :members:
+
 .. autoclass:: FileLocation
    :members:
 

@@ -597,7 +597,15 @@ _entity_src_gen.pdbx_host_org_strain
             db_code='testcode3', accession='testacc3', sequence=ihm.unknown)
         r4.alignments.append(ihm.reference.Alignment(
             db_begin=4, db_end=5, entity_begin=2, entity_end=3))
-        system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4]))
+        # Duplicate reference; should be omitted even though details differ
+        r5 = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='other test sequence')
+        r5.alignments.append(ihm.reference.Alignment(db_begin=3,
+                                                     seq_dif=[sd, sd2]))
+
+        system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4,
+                                                              r5]))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign entity IDs
 
@@ -1435,8 +1443,8 @@ _ihm_dataset_list.id
 _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
-1 'CX-MS data' NO .
-2 'CX-MS data' NO .
+1 'Crosslinking-MS data' NO .
+2 'Crosslinking-MS data' NO .
 3 Other YES bar
 4 Other YES baz
 5 'Experimental model' YES 'test dataset details'
@@ -1621,8 +1629,14 @@ _ihm_model_representation_details.description
             sequence_identity=ihm.startmodel.SequenceIdentity(ihm.unknown,
                                                               ihm.unknown),
             alignment_file=ali)
+        s4 = ihm.startmodel.Template(
+            dataset=dstemplate, asym_id='D',
+            seq_id_range=(None, None),
+            template_seq_id_range=(None, None),
+            sequence_identity=ihm.startmodel.SequenceIdentity(None, None),
+            alignment_file=ali)
 
-        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2, s3],
+        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2, s3, s4],
                                offset=10, script_file=script,
                                software=software)
         system.orphan_starting_models.append(sm)
@@ -1697,6 +1711,7 @@ _ihm_starting_comparative_models.alignment_file_id
 1 1 A 1 10 C 101 110 30.000 1 101 .
 2 1 A 5 12 D 201 210 40.000 . 101 5
 3 1 A 5 12 D 201 210 ? ? 101 5
+4 1 A . . D . . . . 101 5
 #
 #
 loop_
@@ -2061,6 +2076,16 @@ _ihm_model_group_link.model_id
         # Error to write another atom with same atom_id to same seq_id
         atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom)
+        # It's fine though if alt_id is different
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='A')
+        rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='B')
+        rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='A')
         self.assertRaises(ValueError, rngcheck, atom)
 
     def test_range_checker_duplicate_atoms_water(self):
@@ -2750,15 +2775,15 @@ _ihm_multi_state_model_group_link.model_group_id
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
-_ihm_ordered_ensemble.process_id
-_ihm_ordered_ensemble.process_description
-_ihm_ordered_ensemble.ordered_by
-_ihm_ordered_ensemble.step_id
-_ihm_ordered_ensemble.step_description
-_ihm_ordered_ensemble.edge_id
-_ihm_ordered_ensemble.edge_description
-_ihm_ordered_ensemble.model_group_id_begin
-_ihm_ordered_ensemble.model_group_id_end
+_ihm_ordered_model.process_id
+_ihm_ordered_model.process_description
+_ihm_ordered_model.ordered_by
+_ihm_ordered_model.step_id
+_ihm_ordered_model.step_description
+_ihm_ordered_model.edge_id
+_ihm_ordered_model.edge_description
+_ihm_ordered_model.model_group_id_begin
+_ihm_ordered_model.model_group_id_end
 1 . 'time steps' 1 'Linear reaction' 1 . 42 82
 2 'Proc 2' 'time steps' 1 'Branched reaction' 1 . 42 82
 2 'Proc 2' 'time steps' 1 'Branched reaction' 2 . 42 92
@@ -3224,6 +3249,12 @@ _ihm_geometric_object_plane.transformation_id
         f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
                                          details='test feature')
         system.orphan_features.append(f)
+
+        # Duplicate feature, should be pruned from output
+        f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
+                                         details='other details')
+        system.orphan_features.append(f)
+
         # Cannot make a ResidueFeature that includes a non-polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.ResidueFeature, [a1, a3])
 
@@ -3249,6 +3280,11 @@ _ihm_geometric_object_plane.transformation_id
         # Pseudo site feature
         ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         ps._id = 89
+        f = ihm.restraint.PseudoSiteFeature(site=ps)
+        system.orphan_features.append(f)
+
+        # Duplicate Pseudo site feature
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
@@ -3323,13 +3359,28 @@ _ihm_pseudo_site_feature.pseudo_site_id
 #
 """)
 
+    def test_feature_dumper_no_residues(self):
+        """Test FeatureDumper with an empty ResidueFeature"""
+        system = ihm.System()
+
+        f = ihm.restraint.ResidueFeature([])
+        system.orphan_features.append(f)
+
+        dumper = ihm.dumper._FeatureDumper()
+        dumper.finalize(system)  # assign IDs
+        self.assertEqual(len(dumper._features_by_id), 1)
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+
     def test_pseudo_site_dumper(self):
         """Test PseudoSiteDumper"""
         system = ihm.System()
         ps1 = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         ps2 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
                                        radius=40., description="test pseudo")
-        system.orphan_pseudo_sites.extend((ps1, ps2))
+        # Duplicate pseudo site, should be pruned
+        ps3 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
+                                       radius=40., description="other pseudo")
+        system.orphan_pseudo_sites.extend((ps1, ps2, ps3))
 
         dumper = ihm.dumper._PseudoSiteDumper()
         dumper.finalize(system)  # assign IDs
@@ -3842,7 +3893,6 @@ _ihm_multi_state_scheme_connectivity.details
         dumper = ihm.dumper._RelaxationTimeDumper()
         dumper.finalize(system)
         out = _get_dumper_output(dumper, system)
-        self.maxDiff = None
         self.assertEqual(out, """#
 loop_
 _ihm_relaxation_time.id

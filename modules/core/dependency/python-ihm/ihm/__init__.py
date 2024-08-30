@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.2'
+__version__ = '1.3'
 
 
 class __UnknownValue(object):
@@ -795,11 +795,13 @@ class Citation(object):
         self.is_primary = is_primary
 
     @classmethod
-    def from_pubmed_id(cls, pubmed_id):
+    def from_pubmed_id(cls, pubmed_id, is_primary=False):
         """Create a Citation from just a PubMed ID.
            This is done by querying NCBI's web API, so requires network access.
 
            :param int pubmed_id: The PubMed identifier.
+           :param bool is_primary: Denotes the most pertinent publication for
+                  the modeling itself; see :class:`Citation` for more info.
            :return: A new Citation for the given identifier.
            :rtype: :class:`Citation`
         """
@@ -851,7 +853,8 @@ class Citation(object):
                    volume=enc(ref['volume']) or None,
                    page_range=get_page_range(ref),
                    year=enc(ref['pubdate']).split()[0],
-                   authors=authors, doi=get_doi(ref))
+                   authors=authors, doi=get_doi(ref),
+                   is_primary=is_primary)
 
 
 class ChemComp(object):

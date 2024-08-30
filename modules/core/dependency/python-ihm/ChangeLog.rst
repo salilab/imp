@@ -1,3 +1,18 @@
+1.3 - 2024-07-16
+================
+  - The new class :class:`ihm.location.ProteomeXchangeLocation` can be used
+    for datasets stored in the ProteomeXchange database.
+  - Support is added for changes in the IHMCIF dictionary, specifically
+    the renaming of "CX-MS data" to "Crosslinking-MS data" and the
+    ``_ihm_ordered_ensemble`` category to ``_ihm_ordered_model``. python-ihm
+    will output the new names, but for backwards compatibility will read both
+    old and new names.
+  - :class:`ihm.protocol.Protocol` can now be given additional text to
+    describe the protocol.
+  - :class:`ihm.model.Atom` now takes an ``alt_id`` argument to support
+    alternate conformations (#146).
+  - Support added for NumPy 2.0.
+
 1.2 - 2024-06-12
 ================
   - :class:`ihm.format.CifTokenReader` allows for reading an mmCIF file

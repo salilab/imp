@@ -101,7 +101,7 @@ class Tests(unittest.TestCase):
         """Test CXMSDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')
         d = ihm.dataset.CXMSDataset(loc)
-        self.assertEqual(d.data_type, 'CX-MS data')
+        self.assertEqual(d.data_type, 'Crosslinking-MS data')
 
     def test_hdx_dataset(self):
         """Test HDXDataset"""

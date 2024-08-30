@@ -1,0 +1,79 @@
+data_model
+#
+_entry.id model
+_exptl.entry_id model
+_exptl.method "THEORETICAL MODEL"
+#
+_modeller.version should-be-ignored
+_modeller.produced_by 'MODELLER Version 10.5 2024/01/23 11:31:44'
+_modeller.objective_function        266.4716
+_modeller.best_template_pct_seq_id  37.037
+_modeller.sequence 1fdx
+_modeller.alignment modeller_model.ali
+_modeller.script modeller_model.py
+#
+loop_
+_citation.id
+_citation.title
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+primary 'Comparative protein modelling by satisfaction of spatial restraints.'
+'J Mol Biol' 234 779 815 1993 8254673 10.1006/jmbi.1993.1626
+#
+loop_
+_citation_author.citation_id
+_citation_author.name
+_citation_author.ordinal
+primary 'Sali, A.' 1
+primary 'Blundell, T.L.' 2
+#
+loop_
+_software.pdbx_ordinal
+_software.name
+_software.classification
+_software.description
+_software.version
+_software.type
+_software.location
+_software.citation_id
+1 MODELLER 'comparative modeling'
+'Comparative modeling by satisfaction of spatial restraints, build 2023/10/23 11:26:12' 10.4 program
+https://salilab.org/modeller/ primary
+#
+loop_
+_modeller_template.id
+_modeller_template.name
+_modeller_template.template_begin
+_modeller_template.template_end
+_modeller_template.target_begin
+_modeller_template.target_end
+_modeller_template.pct_seq_id
+1 3jroC 33:C 424:C 33:A 424:A 100.0
+2 3f3fG 482:G 551:G 429:A 488:A 10.0
+3 1abcA 1:A 10:A 1:B 20:B 10.0
+#
+loop_
+_atom_site.group_PDB
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.auth_asym_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.label_entity_id
+_atom_site.id
+_atom_site.pdbx_PDB_model_num
+ATOM C CA . ALA A A 1 1 ? 25.847 14.655 5.416 1.000 21.304 1 2 1

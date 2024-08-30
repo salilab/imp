@@ -62,6 +62,11 @@ class Sequence(Reference):
         #: alignment is assumed.
         self.alignments = []
 
+    def _signature(self):
+        # Ignore "details"
+        return ((self.db_name, self.db_code, self.accession, self.sequence)
+                + tuple(a._signature() for a in self.alignments))
+
     def _get_alignments(self):
         if self.alignments:
             return self.alignments
@@ -146,6 +151,11 @@ class Alignment(object):
         self.seq_dif = []
         self.seq_dif.extend(seq_dif)
 
+    def _signature(self):
+        return ((self.db_begin, self.db_end, self.entity_begin,
+                 self.entity_end)
+                + tuple(s._signature() for s in self.seq_dif))
+
 
 class SeqDif(object):
     """Annotate a sequence difference between a reference and entity sequence.
@@ -163,3 +173,7 @@ class SeqDif(object):
     def __init__(self, seq_id, db_monomer, monomer, details=None):
         self.seq_id, self.db_monomer = seq_id, db_monomer
         self.monomer, self.details = monomer, details
+
+    def _signature(self):
+        # Ignore "details"
+        return (self.seq_id, self.db_monomer, self.monomer)

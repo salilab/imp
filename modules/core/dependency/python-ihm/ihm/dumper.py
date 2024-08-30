@@ -94,8 +94,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.25",
-                     dict_location=self.URL % "460a278")
+            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.26",
+                     dict_location=self.URL % "1a0ec62")
 
 
 class _StructDumper(Dumper):
@@ -422,11 +422,19 @@ def _prettyprint_seq(seq, width):
 
 class _StructRefDumper(Dumper):
     def finalize(self, system):
-        ref_id = itertools.count(1)
+        self._refs_by_id = {}
         align_id = itertools.count(1)
         for e in system.entities:
             for r in e.references:
-                r._id = next(ref_id)
+                util._remove_id(r)
+
+        for e in system.entities:
+            seen_refs = {}
+            # Two refs are not considered duplicated if they relate to
+            # different entities, so keep list per entity
+            self._refs_by_id[id(e)] = by_id = []
+            for r in e.references:
+                util._assign_id(r, seen_refs, by_id, seen_obj=r._signature())
                 for a in r._get_alignments():
                     a._id = next(align_id)
 
@@ -513,7 +521,7 @@ class _StructRefDumper(Dumper):
                  "pdbx_align_begin", "pdbx_seq_one_letter_code",
                  "details"]) as lp:
             for e in system.entities:
-                for r in e.references:
+                for r in self._refs_by_id[id(e)]:
                     self._check_reference_sequence(e, r)
                     db_begin = min(a.db_begin for a in r._get_alignments())
                     lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
@@ -526,7 +534,7 @@ class _StructRefDumper(Dumper):
     def dump_seq(self, system, writer):
         def _all_alignments():
             for e in system.entities:
-                for r in e.references:
+                for r in self._refs_by_id[id(e)]:
                     for a in r._get_alignments():
                         yield e, r, a
         with writer.loop(
@@ -550,7 +558,7 @@ class _StructRefDumper(Dumper):
                 ["pdbx_ordinal", "align_id", "seq_num", "db_mon_id", "mon_id",
                  "details"]) as lp:
             for e in system.entities:
-                for r in e.references:
+                for r in self._refs_by_id[id(e)]:
                     for a in r._get_alignments():
                         for sd in a.seq_dif:
                             lp.write(pdbx_ordinal=next(ordinal),
@@ -1282,11 +1290,18 @@ class _StartingModelDumper(Dumper):
         denom = template.sequence_identity.denominator
         if denom is not None and denom is not ihm.unknown:
             denom = int(denom)
+        # Add offset only if seq_id_range isn't . or ?
+        seq_id_begin = template.seq_id_range[0]
+        if isinstance(template.seq_id_range[0], int):
+            seq_id_begin += off
+        seq_id_end = template.seq_id_range[1]
+        if isinstance(template.seq_id_range[1], int):
+            seq_id_end += off
         lp.write(id=next(ordinal),
                  starting_model_id=sm._id,
                  starting_model_auth_asym_id=sm.asym_id,
-                 starting_model_seq_id_begin=template.seq_id_range[0] + off,
-                 starting_model_seq_id_end=template.seq_id_range[1] + off,
+                 starting_model_seq_id_begin=seq_id_begin,
+                 starting_model_seq_id_end=seq_id_end,
                  template_auth_asym_id=template.asym_id,
                  template_seq_id_begin=template.template_seq_id_range[0],
                  template_seq_id_end=template.template_seq_id_range[1],
@@ -1516,12 +1531,12 @@ class _RangeChecker(object):
         # e.g. multiple bulk water oxygen atoms can have "same" seq_id (None)
         if atom.seq_id is None:
             return
-        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
+        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id, atom.alt_id)
         if k in self._seen_atoms:
             raise ValueError(
-                "Multiple atoms with same atom_id (%s) and seq_id (%d) "
-                "found in asym ID %s"
-                % (atom.atom_id, atom.seq_id, atom.asym_unit._id))
+                "Multiple atoms with same atom_id (%s), seq_id (%d) "
+                "and alt_id (%s) found in asym ID %s"
+                % (atom.atom_id, atom.seq_id, atom.alt_id, atom.asym_unit._id))
         self._seen_atoms.add(k)
 
     def _check_assembly(self, obj, asym, seq_id_range):
@@ -1868,7 +1883,7 @@ class _OrderedDumper(Dumper):
                     edge._id = next(edge_id)
 
     def dump(self, system, writer):
-        with writer.loop("_ihm_ordered_ensemble",
+        with writer.loop("_ihm_ordered_model",
                          ["process_id", "process_description", "ordered_by",
                           "step_id", "step_description",
                           "edge_id", "edge_description",
@@ -2019,7 +2034,9 @@ class _FeatureDumper(Dumper):
         for f in system._all_features():
             util._remove_id(f)
         for f in system._all_features():
-            util._assign_id(f, seen_features, self._features_by_id)
+            util._assign_id(f, seen_features, self._features_by_id,
+                            seen_obj=f._signature()
+                            if hasattr(f, '_signature') else f)
 
     def dump(self, system, writer):
         self.dump_list(writer)
@@ -2052,6 +2069,8 @@ class _FeatureDumper(Dumper):
             for f in self._features_by_id:
                 if not isinstance(f, restraint.ResidueFeature):
                     continue
+                if not f.ranges:
+                    raise ValueError("%s selects no residues" % f)
                 for r in f.ranges:
                     entity = _get_entity(r)
                     seq = entity.sequence
@@ -2127,7 +2146,8 @@ class _PseudoSiteDumper(Dumper):
         for f in system._all_pseudo_sites():
             util._remove_id(f)
         for f in system._all_pseudo_sites():
-            util._assign_id(f, seen_sites, self._sites_by_id)
+            util._assign_id(f, seen_sites, self._sites_by_id,
+                            seen_obj=f._signature())
 
     def dump(self, system, writer):
         with writer.loop("_ihm_pseudo_site",

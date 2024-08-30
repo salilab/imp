@@ -48,9 +48,10 @@ class Template(object):
 
        :param dataset: Pointer to where this template is stored.
        :type dataset: :class:`~ihm.dataset.Dataset`
-       :param str asym_id: The asymmetric unit (chain) to use from the template
-              dataset (not necessarily the same as the starting model's asym_id
-              or the ID of the asym_unit in the final IHM model).
+       :param str asym_id: The author-provided asymmetric unit (chain) to use
+              from the template dataset (not necessarily the same as the
+              starting model's asym_id or the ID of the asym_unit in the
+              final IHM model).
        :param tuple seq_id_range: The sequence range in the dataset that
               is modeled by this template. Note that this numbering may differ
               from the IHM numbering. See `offset` in :class:`StartingModel`.

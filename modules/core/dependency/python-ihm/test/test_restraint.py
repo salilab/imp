@@ -248,6 +248,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.feature2, 'feat2')
         self.assertEqual(f._all_features, ('feat1', 'feat2'))
 
+    def test_pseudo_site_signature(self):
+        """Test signature of PseudoSite"""
+        p = ihm.restraint.PseudoSite(1.0, 2.0, 3.0)
+        self.assertEqual(p._signature(), ('1.000', '2.000', '3.000', None))
+
 
 if __name__ == '__main__':
     unittest.main()

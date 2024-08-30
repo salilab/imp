@@ -7,7 +7,7 @@ import ihm
 class PseudoSite(object):
     """Selection of a pseudo position in the system.
        Pseudo positions are typically used to reference a point or sphere
-       that is not explcitly represented, in a :class:`PseudoSiteFeature`
+       that is not explicitly represented, in a :class:`PseudoSiteFeature`
        or :class:`CrossLinkPseudoSite`.
 
        :param float x: Cartesian X coordinate of this site.
@@ -21,6 +21,10 @@ class PseudoSite(object):
         self.x, self.y, self.z = x, y, z
         self.radius = radius
         self.description = description
+
+    def _signature(self):
+        return tuple("%.3f" % v if v else None
+                     for v in (self.x, self.y, self.z, self.radius))
 
 
 class Restraint(object):
@@ -611,6 +615,9 @@ class ResidueFeature(Feature):
         self.ranges, self.details = ranges, details
         _ = self._get_entity_type()
 
+    def _signature(self):
+        return tuple(self.ranges)
+
     def _all_entities_or_asyms(self):
         return self.ranges
 
@@ -701,6 +708,9 @@ class PseudoSiteFeature(Feature):
 
     def _get_entity_type(self):
         return 'other'
+
+    def _signature(self):
+        return self.site._signature()
 
 
 class GeometricRestraint(Restraint):

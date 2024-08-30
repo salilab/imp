@@ -182,6 +182,13 @@ class AlphaFoldDBLocation(DatabaseLocation):
     db_name = 'AlphaFoldDB'
 
 
+class ProteomeXchangeLocation(DatabaseLocation):
+    """Something stored in the ProteomeXchange database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    db_name = 'ProteomeXchange'
+
+
 class FileLocation(Location):
     """Base class for an individual file or directory stored externally.
 

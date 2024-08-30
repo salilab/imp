@@ -978,10 +978,12 @@ _ihm_dataset_list.details
 2 'COMPARATIVE MODEL' YES .
 3 'EM raw micrographs' YES 'test details'
 4 . YES .
+5 'Crosslinking-MS data' YES .
+6 'CX-MS data' YES .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            d1, d2, d3, d4 = s.orphan_datasets
+            d1, d2, d3, d4, d5, d6 = s.orphan_datasets
             self.assertEqual(d1.__class__, ihm.dataset.PDBDataset)
             self.assertEqual(d2.__class__, ihm.dataset.ComparativeModelDataset)
             self.assertEqual(d3.__class__, ihm.dataset.EMMicrographsDataset)
@@ -992,6 +994,10 @@ _ihm_dataset_list.details
             self.assertEqual(d4.__class__, ihm.dataset.Dataset)
             self.assertIsNone(d1.details)
             self.assertEqual(d3.details, 'test details')
+            # Both new and old data_types should map to the same
+            # crosslink class
+            self.assertEqual(d5.__class__, ihm.dataset.CXMSDataset)
+            self.assertEqual(d6.__class__, ihm.dataset.CXMSDataset)
 
     def test_dataset_group_handler(self):
         """Test DatasetGroupHandler"""
@@ -1297,11 +1303,12 @@ _ihm_starting_comparative_models.alignment_file_id
 1 1 A 7 436 C 9 438 90.000 1 3 2
 2 1 A 33 424 C 33 424 100.000 1 1 .
 3 1 A 33 424 C . ? 100.000 1 1 .
+4 1 A . . C . . . . 1 .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             m1, = s.orphan_starting_models
-            t1, t2, t3 = m1.templates
+            t1, t2, t3, t4 = m1.templates
             self.assertEqual(t1.dataset._id, '3')
             self.assertEqual(t1.asym_id, 'C')
             self.assertEqual(t1.seq_id_range, (7, 436))
@@ -1312,6 +1319,8 @@ _ihm_starting_comparative_models.alignment_file_id
             self.assertEqual(t1.alignment_file._id, '2')
             self.assertIsNone(t2.alignment_file)
             self.assertEqual(t3.template_seq_id_range, (None, ihm.unknown))
+            self.assertEqual(t4.seq_id_range, (None, None))
+            self.assertEqual(t4.template_seq_id_range, (None, None))
 
     def test_protocol_handler(self):
         """Test ProtocolHandler"""
@@ -3170,9 +3179,23 @@ _ihm_cross_link_result_parameters.sigma_2
             self.assertIsNone(fits[1][1].sigma1)
             self.assertIsNone(fits[1][1].sigma2)
 
-    def test_ordered_ensemble_handler(self):
-        """Test OrderedEnsembleHandler"""
+    def test_ordered_model_handler(self):
+        """Test OrderedModelHandler"""
+        # Test both old and new category names
         fh = StringIO("""
+loop_
+_ihm_ordered_model.process_id
+_ihm_ordered_model.process_description
+_ihm_ordered_model.ordered_by
+_ihm_ordered_model.step_id
+_ihm_ordered_model.step_description
+_ihm_ordered_model.edge_id
+_ihm_ordered_model.edge_description
+_ihm_ordered_model.model_group_id_begin
+_ihm_ordered_model.model_group_id_end
+1 pdesc 'steps in a reaction pathway' 1 'step 1 desc' 1 .  1 2
+1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 2 'edge 2 desc'  1 3
+#
 loop_
 _ihm_ordered_ensemble.process_id
 _ihm_ordered_ensemble.process_description
@@ -3183,8 +3206,6 @@ _ihm_ordered_ensemble.edge_id
 _ihm_ordered_ensemble.edge_description
 _ihm_ordered_ensemble.model_group_id_begin
 _ihm_ordered_ensemble.model_group_id_end
-1 pdesc 'steps in a reaction pathway' 1 'step 1 desc' 1 .  1 2
-1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 2 'edge 2 desc'  1 3
 1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 3 .  1 4
 """)
         s, = ihm.reader.read(fh)

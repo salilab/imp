@@ -352,7 +352,7 @@ class Tests(unittest.TestCase):
                          pmid='1234')
         self.assertEqual(s.title, 'Test paper')
 
-    def _get_from_pubmed_id(self, json_fname):
+    def _get_from_pubmed_id(self, json_fname, is_primary=False):
         def mock_urlopen(url):
             self.assertTrue(url.endswith('&id=29539637'))
             fname = utils.get_input_file_name(TOPDIR, json_fname)
@@ -362,7 +362,7 @@ class Tests(unittest.TestCase):
         try:
             orig_urlopen = urllib2.urlopen
             urllib2.urlopen = mock_urlopen
-            return ihm.Citation.from_pubmed_id(29539637)
+            return ihm.Citation.from_pubmed_id(29539637, is_primary=is_primary)
         finally:
             urllib2.urlopen = orig_urlopen
 
@@ -381,6 +381,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.doi, '10.1038/nature26003')
         self.assertEqual(len(c.authors), 32)
         self.assertEqual(c.authors[0], 'Kim, S.J.')
+        self.assertFalse(c.is_primary)
+        c = self._get_from_pubmed_id('pubmed_api.json', is_primary=True)
+        self.assertTrue(c.is_primary)
 
     def test_citation_from_pubmed_id_one_page(self):
         """Test Citation.from_pubmed_id() with page rather than range"""

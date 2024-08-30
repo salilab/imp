@@ -812,7 +812,7 @@ class CifTokenReader(_PreservingCifTokenizer):
            of the tokens is subject to change and is not currently documented;
            however, each token or group object has an ``as_mmcif`` method
            which returns the corresponding text in mmCIF format. Thus, the
-           file can be reconstructed by concatentating the result of
+           file can be reconstructed by concatenating the result of
            ``as_mmcif`` for all tokens.
 
            :exc:`CifParserError` will be raised if the file cannot be parsed.
@@ -982,7 +982,7 @@ class CifReader(_Reader, _CifTokenizer):
               and ] characters, since these are not valid for Python
               identifiers). The object will be called with the data from
               the file as a set of strings, or `not_in_file`, `omitted` or
-              `unkonwn` for any keyword that is not present in the file,
+              `unknown` for any keyword that is not present in the file,
               the mmCIF omitted value (.), or mmCIF unknown value (?)
               respectively. (mmCIF keywords are case insensitive, so this
               class always treats them as lowercase regardless of the
