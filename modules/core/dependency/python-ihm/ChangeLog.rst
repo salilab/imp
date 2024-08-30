@@ -1,3 +1,16 @@
+1.4 - 2024-08-30
+================
+  - :class:`ihm.metadata.CIFParser` now extracts metadata from mmCIF starting
+    models from Model Archive or compliant with the ModelCIF dictionary.
+  - :meth:`ihm.Citation.from_pubmed_id` now takes an ``is_primary`` argument,
+    to allow denoting the publication as the most pertinent for the modeling.
+  - Duplicate references, pseudo sites, and features are now pruned on
+    output (#148).
+  - :class:`ihm.restraint.ResidueFeature` now reports an error if it is
+    given zero residue ranges (#147).
+  - Bugfix: allow for :class:`ihm.startmodel.Template` ``seq_id_range``
+    or ``template_seq_id_range`` to be empty.
+
 1.3 - 2024-07-16
 ================
   - The new class :class:`ihm.location.ProteomeXchangeLocation` can be used

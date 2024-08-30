@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.3'
+__version__ = '1.4'
 
 
 class __UnknownValue(object):
