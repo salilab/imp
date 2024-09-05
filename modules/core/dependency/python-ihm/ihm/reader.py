@@ -197,7 +197,8 @@ class RangeIDMapper(object):
         if range_id is None:
             return asym_or_entity
         else:
-            return asym_or_entity(*self._id_map[range_id])
+            # Allow reading out-of-range ranges
+            return asym_or_entity(*self._id_map[range_id], _check=False)
 
 
 class _AnalysisIDMapper(IDMapper):
@@ -2239,7 +2240,8 @@ class _PolyResidueFeatureHandler(Handler):
         asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
-        f.ranges.append(asym_or_entity(r1, r2))
+        # allow out-of-range ranges
+        f.ranges.append(asym_or_entity(r1, r2, _check=False))
 
 
 class _FeatureListHandler(Handler):

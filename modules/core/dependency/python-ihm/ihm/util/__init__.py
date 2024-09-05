@@ -64,3 +64,15 @@ def _text_choice_property(attr, choices, doc=None):
         setattr(obj, "_" + attr, val)
 
     return property(getfunc, setfunc, doc=doc)
+
+
+def _check_residue_range(rng):
+    """Make sure that a residue range is not out of range of its Entity"""
+    if rng.seq_id_range[1] < rng.seq_id_range[0]:
+        raise ValueError("Range %d-%d is invalid; end is before start"
+                         % rng.seq_id_range)
+    if (rng.seq_id_range[1] > len(rng.entity.sequence)
+            or rng.seq_id_range[0] < 1):
+        raise IndexError("Range %d-%d out of range for %s (1-%d)"
+                         % (rng.seq_id_range[0], rng.seq_id_range[1],
+                            rng.entity, len(rng.entity.sequence)))

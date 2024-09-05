@@ -2663,6 +2663,26 @@ _ihm_entity_poly_segment.comp_id_end
 #
 """)
 
+    def test_entity_poly_segment_dumper_bad_range(self):
+        """Test EntityPolySegmentDumper with bad residue ranges"""
+        for badrng, exc in [((10, 14), IndexError),
+                            ((-4, 1), IndexError),
+                            ((3, 1), ValueError)]:
+            system = ihm.System()
+            e1 = ihm.Entity('AHCD')
+            system.entities.append(e1)
+            # Disable construction-time check so that we
+            # can see dump time check
+            system.orphan_features.append(
+                ihm.restraint.ResidueFeature([e1(*badrng, _check=False)]))
+
+            dumper = ihm.dumper._EntityDumper()
+            dumper.finalize(system)  # assign IDs
+            dumper = ihm.dumper._EntityPolySegmentDumper()
+            dumper.finalize(system)  # assign IDs
+
+            self.assertRaises(exc, _get_dumper_output, dumper, system)
+
     def test_single_state(self):
         """Test MultiStateDumper with a single state"""
         system = ihm.System()

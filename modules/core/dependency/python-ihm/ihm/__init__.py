@@ -1235,12 +1235,13 @@ class EntityRange(object):
            entity = ihm.Entity(sequence=...)
            rng = entity(4,7)
     """
-    def __init__(self, entity, seq_id_begin, seq_id_end):
+    def __init__(self, entity, seq_id_begin, seq_id_end, _check=True):
         if not entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.entity = entity
-        # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
+        if _check:
+            util._check_residue_range(self)
 
     def __eq__(self, other):
         try:
@@ -1467,8 +1468,8 @@ class Entity(object):
         else:
             return hash(self.sequence)
 
-    def __call__(self, seq_id_begin, seq_id_end):
-        return EntityRange(self, seq_id_begin, seq_id_end)
+    def __call__(self, seq_id_begin, seq_id_end, _check=True):
+        return EntityRange(self, seq_id_begin, seq_id_end, _check=_check)
 
     def __get_seq_id_range(self):
         if self.is_polymeric() or self.is_branched():
@@ -1487,12 +1488,13 @@ class AsymUnitRange(object):
            asym = ihm.AsymUnit(entity)
            rng = asym(4,7)
     """
-    def __init__(self, asym, seq_id_begin, seq_id_end):
+    def __init__(self, asym, seq_id_begin, seq_id_end, _check=True):
         if asym.entity is not None and not asym.entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.asym = asym
-        # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
+        if _check:
+            util._check_residue_range(self)
 
     def __eq__(self, other):
         try:
@@ -1613,8 +1615,8 @@ class AsymUnit(object):
             auth_seq_num = self.orig_auth_seq_id_map.get(seq_id, pdb_seq_num)
         return pdb_seq_num, auth_seq_num, ins_code
 
-    def __call__(self, seq_id_begin, seq_id_end):
-        return AsymUnitRange(self, seq_id_begin, seq_id_end)
+    def __call__(self, seq_id_begin, seq_id_end, _check=True):
+        return AsymUnitRange(self, seq_id_begin, seq_id_end, _check=_check)
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""

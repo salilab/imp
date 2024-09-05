@@ -683,7 +683,11 @@ class _EntityPolySegmentDumper(Dumper):
                          ["id", "entity_id", "seq_id_begin", "seq_id_end",
                           "comp_id_begin", "comp_id_end"]) as lp:
             for rng in self._ranges_by_id:
-                entity = rng.entity if hasattr(rng, 'entity') else rng
+                if hasattr(rng, 'entity'):
+                    entity = rng.entity
+                    util._check_residue_range(rng)
+                else:
+                    entity = rng
                 lp.write(
                     id=rng._range_id, entity_id=entity._id,
                     seq_id_begin=rng.seq_id_range[0],

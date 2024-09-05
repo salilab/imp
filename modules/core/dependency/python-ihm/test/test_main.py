@@ -486,6 +486,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(hash(r), hash(samer))
         self.assertNotEqual(r, otherr)
         self.assertNotEqual(r, e)  # entity_range != entity
+        # Cannot create reversed range
+        self.assertRaises(ValueError, e.__call__, 3, 1)
+        # Cannot create out-of-range range
+        self.assertRaises(IndexError, e.__call__, -3, 1)
+        self.assertRaises(IndexError, e.__call__, 1, 10)
 
     def test_asym_range(self):
         """Test AsymUnitRange class"""
@@ -518,6 +523,11 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(r, a)        # asym_range != asym
         self.assertNotEqual(r, e(3, 4))  # asym_range != entity_range
         self.assertNotEqual(r, e)        # asym_range != entity
+        # Cannot create reversed range
+        self.assertRaises(ValueError, a.__call__, 3, 1)
+        # Cannot create out-of-range range
+        self.assertRaises(IndexError, a.__call__, -3, 1)
+        self.assertRaises(IndexError, a.__call__, 1, 10)
 
     def test_asym_segment(self):
         """Test AsymUnitSegment class"""
