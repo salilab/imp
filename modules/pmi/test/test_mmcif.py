@@ -1882,10 +1882,10 @@ _ihm_starting_model_seq_dif.details
 
     def test_beads_fragment(self):
         """Test _BeadsFragment class"""
-        e = ihm.Entity('A' * 40)
+        e = ihm.Entity('A' * 50)
         asym = ihm.AsymUnit(e)
         m = None
-        bf1 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+        bf1 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=1,
                                            end=10, count=2, hier=None,
                                            asym_unit=asym)
         bf2 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
@@ -1897,11 +1897,11 @@ _ihm_starting_model_seq_dif.details
         self.assertFalse(bf1.combine(None))
         self.assertFalse(bf1.combine(bf3))
         self.assertTrue(bf1.combine(bf2))
-        self.assertEqual(bf1.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(bf1.asym_unit.seq_id_range[0], 1)
         self.assertEqual(bf1.asym_unit.seq_id_range[1], 30)
         self.assertEqual(bf1.count, 5)
         self.assertTrue(bf1.combine(bf3))
-        self.assertEqual(bf1.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(bf1.asym_unit.seq_id_range[0], 1)
         self.assertEqual(bf1.asym_unit.seq_id_range[1], 50)
         self.assertEqual(bf1.count, 9)
 
@@ -1915,14 +1915,14 @@ _ihm_starting_model_seq_dif.details
         with IMP.allow_deprecated():
             rep1 = ihm.representation.Representation()
         d = IMP.pmi.mmcif._AllModelRepresentations(EmptyObject())
-        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=1,
                                          end=10, count=2, hier=None,
                                          asym_unit=asym)
         d.add_fragment(state1, rep1, b)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1']), 1)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1'][state1]), 1)
         frag = d.fragments[id(rep1)]['comp1'][state1][0]
-        self.assertEqual(frag.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(frag.asym_unit.seq_id_range[0], 1)
         self.assertEqual(frag.asym_unit.seq_id_range[1], 10)
 
         b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
@@ -1932,7 +1932,7 @@ _ihm_starting_model_seq_dif.details
         self.assertEqual(len(d.fragments[id(rep1)]['comp1']), 1)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1'][state1]), 1)
         frag = d.fragments[id(rep1)]['comp1'][state1][0]
-        self.assertEqual(frag.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(frag.asym_unit.seq_id_range[0], 1)
         self.assertEqual(frag.asym_unit.seq_id_range[1], 30)
 
         d.add_fragment(state2, rep1, b)
