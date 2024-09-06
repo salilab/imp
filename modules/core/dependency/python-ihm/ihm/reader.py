@@ -2261,7 +2261,7 @@ class _PolyAtomFeatureHandler(Handler):
             feature_id, ihm.restraint.AtomFeature)
         asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         seq_id = int(seq_id)
-        atom = asym_or_entity.residue(seq_id).atom(atom_id)
+        atom = asym_or_entity.residue(seq_id, _check=False).atom(atom_id)
         f.atoms.append(atom)
 
 
@@ -2278,7 +2278,7 @@ class _NonPolyFeatureHandler(Handler):
             f = self.sysr.features.get_by_id(
                 feature_id, ihm.restraint.AtomFeature)
             # todo: handle multiple copies, e.g. waters?
-            atom = asym_or_entity.residue(1).atom(atom_id)
+            atom = asym_or_entity.residue(1, _check=False).atom(atom_id)
             f.atoms.append(atom)
 
 
@@ -2379,7 +2379,7 @@ class _PredictedContactRestraintHandler(Handler):
     def _get_resatom(self, asym_id, seq_id, atom_id):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         seq_id = self.get_int(seq_id)
-        resatom = asym.residue(seq_id)
+        resatom = asym.residue(seq_id, _check=False)
         if atom_id:
             resatom = resatom.atom(atom_id)
         return resatom
@@ -2859,7 +2859,7 @@ class _CrossLinkListHandler(Handler):
 
     def _get_entity_residue(self, entity_id, seq_id):
         entity = self.sysr.entities.get_by_id(entity_id)
-        return entity.residue(int(seq_id))
+        return entity.residue(int(seq_id), _check=False)
 
     def finalize(self):
         # If any ChemDescriptor has an empty name, fill it in using linker_type
@@ -3304,7 +3304,7 @@ class _FLRPolyProbePositionHandler(Handler):
             asym.entity = entity
             asym.id = asym_id
         seq_id = self.get_int(seq_id)
-        resatom = entity.residue(seq_id)
+        resatom = entity.residue(seq_id, _check=False)
         if asym is not None:
             resatom.asym = asym
         if atom_id:
@@ -3664,7 +3664,7 @@ class _FLRFPSMPPAtomPositionHandler(Handler):
         seq_id = self.get_int(seq_id)
 
         p = self.sysr.flr_fps_mpp_atom_positions.get_by_id(id)
-        p.atom = asym.residue(seq_id).atom(atom_id)
+        p.atom = asym.residue(seq_id, _check=False).atom(atom_id)
         p.x = self.get_float(xcoord)
         p.y = self.get_float(ycoord)
         p.z = self.get_float(zcoord)

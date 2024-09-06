@@ -1283,13 +1283,14 @@ class Residue(object):
 
     __slots__ = ['entity', 'asym', 'seq_id', '_range_id']
 
-    def __init__(self, seq_id, entity=None, asym=None):
+    def __init__(self, seq_id, entity=None, asym=None, _check=True):
         self.entity = entity
         self.asym = asym
         if entity is None and asym:
             self.entity = asym.entity
-        # todo: check id for validity (at property read time)
         self.seq_id = seq_id
+        if _check:
+            util._check_residue(self)
 
     def atom(self, atom_id):
         """Get a :class:`~ihm.Atom` in this residue with the given name."""
@@ -1448,9 +1449,9 @@ class Entity(object):
                  and isinstance(self.sequence[0], SaccharideChemComp)) or
                 (len(self.sequence) == 0 and self._hint_branched))
 
-    def residue(self, seq_id):
+    def residue(self, seq_id, _check=True):
         """Get a :class:`Residue` at the given sequence position"""
-        return Residue(entity=self, seq_id=seq_id)
+        return Residue(entity=self, seq_id=seq_id, _check=_check)
 
     # Entities are considered identical if they have the same sequence,
     # unless they are branched
@@ -1618,9 +1619,9 @@ class AsymUnit(object):
     def __call__(self, seq_id_begin, seq_id_end, _check=True):
         return AsymUnitRange(self, seq_id_begin, seq_id_end, _check=_check)
 
-    def residue(self, seq_id):
+    def residue(self, seq_id, _check=True):
         """Get a :class:`Residue` at the given sequence position"""
-        return Residue(asym=self, seq_id=seq_id)
+        return Residue(asym=self, seq_id=seq_id, _check=_check)
 
     def segment(self, gapped_sequence, seq_id_begin, seq_id_end):
         """Get an object representing the alignment of part of this sequence.

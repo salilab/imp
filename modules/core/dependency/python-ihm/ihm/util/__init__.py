@@ -76,3 +76,10 @@ def _check_residue_range(rng):
         raise IndexError("Range %d-%d out of range for %s (1-%d)"
                          % (rng.seq_id_range[0], rng.seq_id_range[1],
                             rng.entity, len(rng.entity.sequence)))
+
+
+def _check_residue(r):
+    """Make sure that a residue is not out of range of its Entity"""
+    if r.seq_id > len(r.entity.sequence) or r.seq_id < 1:
+        raise IndexError("Residue %d out of range for %s (1-%d)"
+                         % (r.seq_id, r.entity, len(r.entity.sequence)))
