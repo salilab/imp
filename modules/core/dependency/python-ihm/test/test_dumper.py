@@ -606,6 +606,15 @@ _entity_src_gen.pdbx_host_org_strain
 
         system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4,
                                                               r5]))
+
+        # Duplicate reference, but should be included as it pertains to a
+        # different Entity
+        r3a = ihm.reference.UniProtSequence(
+            db_code='testcode2', accession='testacc2', sequence=None)
+        r3a.alignments.append(ihm.reference.Alignment(
+            db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+        system.entities.append(ihm.Entity('LSPTW', references=[r3a]))
+
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign entity IDs
 
@@ -626,6 +635,7 @@ _struct_ref.details
 2 1 UNP testcode testacc 4 SPTYQT test2
 3 1 UNP testcode2 testacc2 4 . .
 4 1 UNP testcode3 testacc3 4 ? .
+5 2 UNP testcode2 testacc2 4 . .
 #
 #
 loop_
@@ -640,6 +650,7 @@ _struct_ref_seq.db_align_end
 3 2 4 4 9 9
 4 3 2 3 4 5
 5 4 2 3 4 5
+7 5 2 3 4 5
 #
 #
 loop_

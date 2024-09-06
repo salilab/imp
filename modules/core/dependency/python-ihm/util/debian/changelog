@@ -1,3 +1,9 @@
+python-ihm (1.5-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 1.5 release
+
+ -- Ben Webb <ben@salilab.org>  Fri, 06 Sep 2024 14:15:12 -0700
+
 python-ihm (1.4-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.4 release

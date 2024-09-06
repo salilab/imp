@@ -422,19 +422,21 @@ def _prettyprint_seq(seq, width):
 
 class _StructRefDumper(Dumper):
     def finalize(self, system):
-        self._refs_by_id = {}
+        # List of (entity, ref) by ID
+        self._refs_by_id = []
+        seen_refs = {}
         align_id = itertools.count(1)
         for e in system.entities:
             for r in e.references:
                 util._remove_id(r)
 
         for e in system.entities:
-            seen_refs = {}
             # Two refs are not considered duplicated if they relate to
-            # different entities, so keep list per entity
-            self._refs_by_id[id(e)] = by_id = []
+            # different entities, so add entity to reference signature
             for r in e.references:
-                util._assign_id(r, seen_refs, by_id, seen_obj=r._signature())
+                sig = (id(e), r._signature())
+                util._assign_id(r, seen_refs, self._refs_by_id, seen_obj=sig,
+                                by_id_obj=(e, r))
                 for a in r._get_alignments():
                     a._id = next(align_id)
 
@@ -520,23 +522,21 @@ class _StructRefDumper(Dumper):
                 ["id", "entity_id", "db_name", "db_code", "pdbx_db_accession",
                  "pdbx_align_begin", "pdbx_seq_one_letter_code",
                  "details"]) as lp:
-            for e in system.entities:
-                for r in self._refs_by_id[id(e)]:
-                    self._check_reference_sequence(e, r)
-                    db_begin = min(a.db_begin for a in r._get_alignments())
-                    lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
-                             db_code=r.db_code, pdbx_db_accession=r.accession,
-                             pdbx_align_begin=db_begin, details=r.details,
-                             pdbx_seq_one_letter_code=self._get_sequence(r))
+            for e, r in self._refs_by_id:
+                self._check_reference_sequence(e, r)
+                db_begin = min(a.db_begin for a in r._get_alignments())
+                lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
+                         db_code=r.db_code, pdbx_db_accession=r.accession,
+                         pdbx_align_begin=db_begin, details=r.details,
+                         pdbx_seq_one_letter_code=self._get_sequence(r))
         self.dump_seq(system, writer)
         self.dump_seq_dif(system, writer)
 
     def dump_seq(self, system, writer):
         def _all_alignments():
-            for e in system.entities:
-                for r in self._refs_by_id[id(e)]:
-                    for a in r._get_alignments():
-                        yield e, r, a
+            for e, r in self._refs_by_id:
+                for a in r._get_alignments():
+                    yield e, r, a
         with writer.loop(
                 "_struct_ref_seq",
                 ["align_id", "ref_id", "seq_align_beg", "seq_align_end",
@@ -557,15 +557,14 @@ class _StructRefDumper(Dumper):
                 "_struct_ref_seq_dif",
                 ["pdbx_ordinal", "align_id", "seq_num", "db_mon_id", "mon_id",
                  "details"]) as lp:
-            for e in system.entities:
-                for r in self._refs_by_id[id(e)]:
-                    for a in r._get_alignments():
-                        for sd in a.seq_dif:
-                            lp.write(pdbx_ordinal=next(ordinal),
-                                     align_id=a._id, seq_num=sd.seq_id,
-                                     db_mon_id=sd.db_monomer.id
-                                     if sd.db_monomer else ihm.unknown,
-                                     mon_id=sd.monomer.id, details=sd.details)
+            for e, r in self._refs_by_id:
+                for a in r._get_alignments():
+                    for sd in a.seq_dif:
+                        lp.write(pdbx_ordinal=next(ordinal),
+                                 align_id=a._id, seq_num=sd.seq_id,
+                                 db_mon_id=sd.db_monomer.id
+                                 if sd.db_monomer else ihm.unknown,
+                                 mon_id=sd.monomer.id, details=sd.details)
 
 
 class _EntityPolyDumper(Dumper):

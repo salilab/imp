@@ -27,13 +27,16 @@ def _remove_id(obj, attr='_id'):
         delattr(obj, attr)
 
 
-def _assign_id(obj, seen_objs, obj_by_id, attr='_id', seen_obj=None):
+def _assign_id(obj, seen_objs, obj_by_id, attr='_id', seen_obj=None,
+               by_id_obj=None):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
     if seen_obj is None:
         seen_obj = obj
+    if by_id_obj is None:
+        by_id_obj = obj
     if seen_obj not in seen_objs:
         if not hasattr(obj, attr):
-            obj_by_id.append(obj)
+            obj_by_id.append(by_id_obj)
             setattr(obj, attr, len(obj_by_id))
         seen_objs[seen_obj] = getattr(obj, attr)
     else:

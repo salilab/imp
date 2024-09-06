@@ -1,3 +1,12 @@
+1.5 - 2024-09-06
+================
+  - Trying to create a :class:`ihm.Residue`, :class:`ihm.EntityRange`, or
+    :class:`ihm.AsymUnitRange` that references out-of-range residues (i.e.
+    ``seq_id`` less than 1 or beyond the length of the :class:`ihm.Entity`
+    sequence) will now raise an error.
+  - Bugfix: :class:`ihm.reference.Reference` objects are no longer given
+    erroneous duplicate IDs on output (#149).
+
 1.4 - 2024-08-30
 ================
   - :class:`ihm.metadata.CIFParser` now extracts metadata from mmCIF starting
