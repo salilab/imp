@@ -397,7 +397,7 @@ class Tests(IMP.test.TestCase):
     def test_coordinate_handler_add_chain(self):
         """Test CoordinateHandler.add_chain()"""
         s = ihm.System()
-        ent = ihm.Entity('ACGT')
+        ent = ihm.Entity('ACGTACGT')
         # Check that IMP residue numbering (11-18) maps to IHM (1-8)
         asym = ihm.AsymUnit(ent, auth_seq_id_map=10)
         m = IMP.Model()

@@ -388,7 +388,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
     def __init__(self, asym_unit, struc_prov):
         self.filename = struc_prov[0].get_filename()
         super().__init__(
-            asym_unit=asym_unit(0, 0),  # will update in _add_residue()
+            asym_unit=asym_unit(1, 1),  # will update in _add_residue()
             # will fill in later with _set_sources_datasets()
             dataset=None,
             asym_id=struc_prov[0].get_chain_id(),
