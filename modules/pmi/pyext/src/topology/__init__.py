@@ -1368,11 +1368,18 @@ class TopologyReader:
       from the file is assumed to be a protein sequence. If it should instead
       be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
       a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
-      FASTA file and treat it as RNA.
+      FASTA file and treat it as RNA. The FASTA header may contain multiple
+      fields split by pipe (|) characters. If so, the FASTA sequence name is
+      the first field and the second field (if present) is the UniProt
+      accession. For example, ">cop9|Q13098" yields a FASTA sequence name
+      of "cop9" and UniProt accession of "Q13098". If such an accession is
+      present, it is added to the generated structure (and ultimately
+      recorded in any output RMF file).
     - `pdb_fn`: Name of PDB or mmCIF file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
-    - `chain`: Chain ID of this domain in the PDB file.
+    - `chain`: Chain ID of this domain in the PDB or mmCIF file. This is
+      the "author-provided" chain ID for mmCIF files, not the asym_id.
     - `residue_range`: Comma delimited pair defining range.
        Can leave empty or use 'all' for entire sequence from PDB file.
        The second item in the pair can be END to select the last residue in the
