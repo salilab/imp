@@ -13,7 +13,15 @@ static int numpy_import_retval;
 
 %init {
   numpy_import_retval = _import_array();
-  /* If numpy was not found, continue anyway without numpy support */
+  /* If numpy was not found, continue anyway without numpy support, but warn
+     the user */
   PyErr_Clear();
+  if (numpy_import_retval < 0) {
+    PyErr_WarnEx(PyExc_RuntimeWarning,
+        "IMP's NumPy support did not initialize correctly. Some NumPy-related "
+        "functionality will be unavailable. This is usually caused by "
+        "building IMP with a newer version of NumPy than is available "
+        "at runtime.", 1);
+  }
 }
 #endif
