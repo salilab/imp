@@ -437,7 +437,7 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
                                         void *data, struct ihm_error **err)
 {
   int i, seq_id, pdb_seq_num, auth_seq_num;
-  char *seq_id_endptr, *pdb_seq_num_endptr;
+  char *seq_id_endptr, *pdb_seq_num_endptr, *auth_seq_num_endptr;
   struct category_handler_data *hd = data;
   struct ihm_keyword **keys;
 
@@ -451,9 +451,11 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
     return;
   }
 
-  for (i = 0, keys = hd->keywords; i < 3; ++i, ++keys) {
-    /* Do nothing if any of asym_id, seq_id, or pdb_seq_num are missing */
+  for (i = 0, keys = hd->keywords; i < 4; ++i, ++keys) {
+    /* Call Python handler if any of asym_id, seq_id, pdb_seq_num,
+       or auth_seq_num are missing */
     if (!(*keys)->in_file || (*keys)->omitted || (*keys)->unknown) {
+      handle_category_data(reader, data, err);
       return;
     }
   }
@@ -464,15 +466,9 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
      nothing needs to be done */
   seq_id = strtol(hd->keywords[1]->data, &seq_id_endptr, 10);
   pdb_seq_num = strtol(hd->keywords[2]->data, &pdb_seq_num_endptr, 10);
-  if (!hd->keywords[3]->in_file || hd->keywords[3]->omitted
-      || hd->keywords[3]->unknown) {
-    /* If auth_seq_num is missing, assume identical to pdb_seq_num */
-    auth_seq_num = pdb_seq_num;
-  } else {
-    auth_seq_num = strtol(hd->keywords[3]->data, &pdb_seq_num_endptr, 10);
-  }
-  if (!*seq_id_endptr && !*pdb_seq_num_endptr && seq_id == pdb_seq_num
-      && seq_id == auth_seq_num
+  auth_seq_num = strtol(hd->keywords[3]->data, &auth_seq_num_endptr, 10);
+  if (!*seq_id_endptr && !*pdb_seq_num_endptr && !*auth_seq_num_endptr
+      && seq_id == pdb_seq_num && seq_id == auth_seq_num
       && (!hd->keywords[4]->in_file || hd->keywords[4]->omitted
           || hd->keywords[4]->unknown)) {
     return;

@@ -1,3 +1,19 @@
+1.6 - 2024-09-27
+================
+  - The new class :class:`ihm.model.NotModeledResidueRange` allows for
+    the annotation of residue ranges that were explicitly not modeled.
+    These are written to the ``_ihm_residues_not_modeled`` mmCIF table,
+    and any residue marked as not-modeled in all models will also be
+    excluded from the ``pdbx_poly_seq_scheme`` table.
+  - The ``make_mmcif`` utility script will now automatically add any
+    missing :class:`ihm.model.NotModeledResidueRange` objects for
+    not-modeled residue ranges (#150).
+  - Bugfix: the residue range checks introduced in version 1.5 broke the
+    API used by python-modelcif. They have been reimplemented using the
+    original API.
+  - Bugfix: an unknown (?) value for ``pdbx_poly_seq_scheme.auth_seq_num``
+    is now preserved, not silently removed, when reading an mmCIF file.
+
 1.5 - 2024-09-06
 ================
   - Trying to create a :class:`ihm.Residue`, :class:`ihm.EntityRange`, or

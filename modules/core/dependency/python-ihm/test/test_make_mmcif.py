@@ -210,6 +210,27 @@ class Tests(unittest.TestCase):
         self.assertEqual(ret, 1)
         os.unlink(addcif_multi)
 
+    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
+    def test_not_modeled(self):
+        """Check addition of not-modeled residue information"""
+        incif = utils.get_input_file_name(TOPDIR, 'not_modeled.cif')
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        # Residues 5 and 6 in chain A, and 2 in chain B, are missing from
+        # atom_site. But the file already has an _ihm_residues_not_modeled
+        # table listing residue 5:A, so we expect to see just 6:A and 2:B
+        # added
+        m = s.state_groups[0][0][0][0]
+        r1, r2, r3 = m.not_modeled_residue_ranges
+        self.assertEqual((r1.seq_id_begin, r1.seq_id_end), (5, 5))
+        self.assertEqual(r1.asym_unit._id, 'A')
+        self.assertEqual((r2.seq_id_begin, r2.seq_id_end), (6, 6))
+        self.assertEqual(r2.asym_unit._id, 'A')
+        self.assertEqual((r3.seq_id_begin, r3.seq_id_end), (2, 2))
+        self.assertEqual(r3.asym_unit._id, 'B')
+        os.unlink('output.cif')
+
 
 if __name__ == '__main__':
     unittest.main()

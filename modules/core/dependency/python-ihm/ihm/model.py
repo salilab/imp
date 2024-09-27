@@ -4,7 +4,7 @@
 
 import struct
 import itertools
-from ihm.util import _text_choice_property
+from ihm.util import _text_choice_property, _check_residue_range
 
 
 class Sphere(object):
@@ -94,10 +94,17 @@ class Model(object):
        :param str name: Descriptive name for this model.
     """
     def __init__(self, assembly, protocol, representation, name=None):
+        # Note that a similar Model class is used in python-modelcif but it
+        # is not a subclass. So be careful when modifying this class to not
+        # break the API (e.g. by adding new members).
         self.assembly, self.protocol = assembly, protocol
         self.representation, self.name = representation, name
         self._atoms = []
         self._spheres = []
+
+        #: List of residue ranges that were explicitly not modeled. See
+        #: :class:`NotModeledResidueRange`.
+        self.not_modeled_residue_ranges = []
 
     def get_spheres(self):
         """Yield :class:`Sphere` objects that represent this model.
@@ -261,6 +268,30 @@ class Ensemble(object):
     clustering_feature = _text_choice_property(
         "clustering_feature", ["RMSD", "dRMSD", "other"],
         doc="The feature used for clustering the models, if applicable")
+
+
+class NotModeledResidueRange(object):
+    """A range of residues that were explicitly not modeled.
+       See :attr:`Model.not_modeled_residue_ranges`.
+
+       :param asym_unit: The asymmetric unit to which the residues belong.
+       :type asym_unit: :class:`~ihm.AsymUnit`
+       :param int seq_id_begin: Starting residue in the range.
+       :param int seq_id_end: Ending residue in the range.
+       :param str reason: Optional text describing why the residues were
+              not modeled.
+    """
+    def __init__(self, asym_unit, seq_id_begin, seq_id_end, reason=None):
+        self.asym_unit = asym_unit
+        self.seq_id_begin, self.seq_id_end = seq_id_begin, seq_id_end
+        self.reason = reason
+        _check_residue_range((seq_id_begin, seq_id_end), asym_unit.entity)
+
+    reason = _text_choice_property(
+        "reason",
+        ["Highly variable models with poor precision",
+         "Models do not adequately satisfy input data", "Other"],
+        doc="Reason why the residues were not modeled.")
 
 
 class OrderedProcess(object):

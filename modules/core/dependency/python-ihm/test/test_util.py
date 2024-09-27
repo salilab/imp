@@ -65,6 +65,62 @@ class Tests(unittest.TestCase):
             self.assertEqual(ihm.util._get_relative_path('/foo/bar', 'baz'),
                              '/foo/baz')
 
+    def test_invert_ranges(self):
+        """Test _invert_ranges function"""
+        inrng = [(2, 3)]
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 4)),
+                         [(1, 1), (4, 4)])
+        inrng = [(1, 1), (4, 7)]
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 8)),
+                         [(2, 3), (8, 8)])
+        inrng = [(2, 2), (4, 7)]
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 7)),
+                         [(1, 1), (3, 3)])
+        # Test with non-default start value
+        inrng = [(5, 8)]
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 10, start=3)),
+                         [(3, 4), (9, 10)])
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 20, start=10)),
+                         [(9, 20)])
+        self.assertEqual(list(ihm.util._invert_ranges(inrng, 4, start=1)),
+                         [(1, 4)])
+
+    def test_pred_ranges(self):
+        """Test _pred_ranges function"""
+        inrng = [(2, 3)]
+        self.assertEqual(list(ihm.util._pred_ranges(inrng, 4)),
+                         [(1, 1, False), (2, 3, True), (4, 4, False)])
+        inrng = [(1, 1), (4, 7)]
+        self.assertEqual(list(ihm.util._pred_ranges(inrng, 8)),
+                         [(1, 1, True), (2, 3, False), (4, 7, True),
+                          (8, 8, False)])
+        inrng = [(2, 2), (4, 7)]
+        self.assertEqual(list(ihm.util._pred_ranges(inrng, 7)),
+                         [(1, 1, False), (2, 2, True), (3, 3, False),
+                          (4, 7, True)])
+
+    def test_combine_ranges(self):
+        """Test _combine_ranges function"""
+        inrng = [(8, 10), (1, 2), (3, 4)]
+        self.assertEqual(list(ihm.util._combine_ranges(inrng)),
+                         [(1, 4), (8, 10)])
+        inrng = [(1, 10), (3, 4)]
+        self.assertEqual(list(ihm.util._combine_ranges(inrng)), [(1, 10)])
+        inrng = [(1, 2), (1, 4)]
+        self.assertEqual(list(ihm.util._combine_ranges(inrng)), [(1, 4)])
+        inrng = [(1, 2), (4, 4)]
+        self.assertEqual(list(ihm.util._combine_ranges(inrng)),
+                         [(1, 2), (4, 4)])
+        self.assertEqual(list(ihm.util._combine_ranges([])), [])
+
+    def test_make_range_from_list(self):
+        """Test _make_range_from_list function"""
+        rr = []
+        self.assertEqual(list(ihm.util._make_range_from_list(rr)), [])
+        rr = [1, 2, 5, 6, 10, 11, 20]
+        self.assertEqual(list(ihm.util._make_range_from_list(rr)),
+                         [[1, 2], [5, 6], [10, 11], [20, 20]])
+
 
 if __name__ == '__main__':
     unittest.main()

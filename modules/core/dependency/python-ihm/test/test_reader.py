@@ -1592,6 +1592,40 @@ _ihm_multi_state_model_group_link.model_group_id
             self.assertEqual(len(s2), 1)
             self.assertEqual(len(s3), 2)
 
+    def test_not_modeled_residue_range_handler(self):
+        """Test NotModeledResidueRangeHandler"""
+        cif = """
+loop_
+_ihm_residues_not_modeled.id
+_ihm_residues_not_modeled.model_id
+_ihm_residues_not_modeled.entity_description
+_ihm_residues_not_modeled.entity_id
+_ihm_residues_not_modeled.asym_id
+_ihm_residues_not_modeled.seq_id_begin
+_ihm_residues_not_modeled.seq_id_end
+_ihm_residues_not_modeled.comp_id_begin
+_ihm_residues_not_modeled.comp_id_end
+_ihm_residues_not_modeled.reason
+1 1 Nup84 9 X 1 2 ALA CYS .
+2 1 Nup84 9 X 3 4 GLY THR 'Highly variable models with poor precision'
+3 1 Nup84 9 X 5 6 ALA CYS INVALID
+#
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            m, = s.state_groups[0][0][0]
+            rr1, rr2, rr3 = m.not_modeled_residue_ranges
+            self.assertEqual(rr1.asym_unit._id, 'X')
+            self.assertEqual(rr1.seq_id_begin, 1)
+            self.assertEqual(rr1.seq_id_end, 2)
+            self.assertIsNone(rr1.reason)
+            self.assertEqual(rr2.asym_unit._id, 'X')
+            self.assertEqual(rr2.seq_id_begin, 3)
+            self.assertEqual(rr2.seq_id_end, 4)
+            self.assertEqual(rr2.reason,
+                             "Highly variable models with poor precision")
+            self.assertEqual(rr3.reason, "Other")
+
     def test_ensemble_handler(self):
         """Test EnsembleHandler"""
         cif = """
@@ -2797,6 +2831,26 @@ A 1 4 10 X
                          [6, 7, 8, 10])
         self.assertIsNone(asym.residue(1).ins_code)
         self.assertIsNone(asym.orig_auth_seq_id_map)
+
+    def test_poly_seq_scheme_handler_unknown_auth_seq(self):
+        """Test PolySeqSchemeHandler with explicit unknown auth_seq_num"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_strand_id
+A 1 1 1 1 A
+A 1 2 2 2 A
+A 1 3 3 ? A
+A 1 4 4 4 A
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, 0)
+        self.assertEqual(asym.orig_auth_seq_id_map, {3: ihm.unknown})
 
     def test_poly_seq_scheme_handler_str_seq_id(self):
         """Test PolySeqSchemeHandler with a non-integer pdb_seq_num"""

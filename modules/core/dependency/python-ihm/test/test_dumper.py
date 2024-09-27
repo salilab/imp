@@ -982,6 +982,119 @@ D 4 2 DC 1 1 DC DC X B
 #
 """)
 
+    def test_poly_seq_scheme_unknown_auth_seq(self):
+        """Test PolySeqSchemeDumper with explicit unknown auth_seq_num"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        system.entities.append(e1)
+        a1 = ihm.AsymUnit(e1, 'foo',
+                          orig_auth_seq_id_map={1: 3, 2: 4,
+                                                3: ihm.unknown, 4: 6})
+        system.asym_units.append(a1)
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # If auth_seq_num is ?, so should pdb_mon_id and auth_mon_id;
+        # see, e.g. PDB ID 8qb4
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 3 ALA ALA A .
+A 1 2 CYS 2 4 CYS CYS A .
+A 1 3 GLY 3 ? ? ? A .
+A 1 4 THR 4 6 THR THR A .
+#
+""")
+
+    def test_poly_seq_scheme_dumper_not_modeled(self):
+        """Test PolySeqSchemeDumper with not-modeled residues"""
+        system, m1, asym = self._make_test_model()
+        rr = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        m1.not_modeled_residue_ranges.append(rr)
+
+        m2 = ihm.model.Model(assembly=m1.assembly, protocol=m1.protocol,
+                             representation=m1.representation,
+                             name='2nd test model')
+        rr = ihm.model.NotModeledResidueRange(asym, 2, 4)
+        m2.not_modeled_residue_ranges.append(rr)
+
+        m3 = ihm.model.Model(assembly=m1.assembly, protocol=m1.protocol,
+                             representation=m1.representation,
+                             name='3rd test model')
+        rr = ihm.model.NotModeledResidueRange(asym, 2, 3)
+        m3.not_modeled_residue_ranges.append(rr)
+
+        mg = system.state_groups[0][0][0]
+        mg.extend((m1, m2, m3))
+
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # Only residue 2 is not-modeled in all three Models
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 1 ALA ALA A .
+A 1 2 CYS 2 ? ? ? A .
+A 1 3 GLY 3 3 GLY GLY A .
+A 1 4 THR 4 4 THR THR A .
+#
+""")
+
+    def test_poly_seq_scheme_dumper_no_not_modeled(self):
+        """Test PolySeqSchemeDumper with no not-modeled residue list"""
+        # Older model with no not_modeled_residue_ranges member (e.g.
+        # older versions of python-modelcif)
+        system, m1, asym = self._make_test_model()
+        del m1.not_modeled_residue_ranges
+
+        mg = system.state_groups[0][0][0]
+        mg.append(m1)
+
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # all residues are modeled
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 1 ALA ALA A .
+A 1 2 CYS 2 2 CYS CYS A .
+A 1 3 GLY 3 3 GLY GLY A .
+A 1 4 THR 4 4 THR THR A .
+#
+""")
+
     def test_nonpoly_scheme_dumper(self):
         """Test NonPolySchemeDumper"""
         system = ihm.System()
@@ -1964,7 +2077,7 @@ _ihm_model_group_link.model_id
         if water:
             e1 = ihm.Entity([ihm.WaterChemComp()])
         else:
-            e1 = ihm.Entity('ACGT')
+            e1 = ihm.Entity('ACGT', description="Nup84")
         e1._id = 9
         system.entities.append(e1)
         if water:
@@ -2513,6 +2626,56 @@ N
              'HETATM 2 O O . HOH . 99 ? X 4.000 5.000 6.000 . 9 X HOH . 1 1',
              'HETATM 3 O O . HOH . 3 ? X 7.000 8.000 9.000 . 9 X HOH . 1 1'])
 
+    def test_not_modeled_residue_range_dumper(self):
+        """Test NotModeledResidueRangeDumper"""
+        system, model, asym = self._make_test_model()
+
+        rr1 = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        rr2 = ihm.model.NotModeledResidueRange(
+            asym, 3, 4, reason="Highly variable models with poor precision")
+        model.not_modeled_residue_ranges.extend((rr1, rr2))
+
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system)  # assign model/group IDs
+
+        dumper = ihm.dumper._NotModeledResidueRangeDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_residues_not_modeled.id
+_ihm_residues_not_modeled.model_id
+_ihm_residues_not_modeled.entity_description
+_ihm_residues_not_modeled.entity_id
+_ihm_residues_not_modeled.asym_id
+_ihm_residues_not_modeled.seq_id_begin
+_ihm_residues_not_modeled.seq_id_end
+_ihm_residues_not_modeled.comp_id_begin
+_ihm_residues_not_modeled.comp_id_end
+_ihm_residues_not_modeled.reason
+1 1 Nup84 9 X 1 2 ALA CYS .
+2 1 Nup84 9 X 3 4 GLY THR 'Highly variable models with poor precision'
+#
+""")
+
+    def test_not_modeled_residue_range_bad_range(self):
+        """Test NotModeledResidueRangeDumper with bad residue ranges"""
+        for badrng, exc in [((10, 14), IndexError),
+                            ((-4, 1), IndexError),
+                            ((3, 1), ValueError)]:
+            system, model, asym = self._make_test_model()
+            # Disable construction-time check so that we
+            # can see dump time check
+            asym.entity._range_check = False
+            rr1 = ihm.model.NotModeledResidueRange(asym, *badrng)
+            asym.entity._range_check = True
+            model.not_modeled_residue_ranges.append(rr1)
+
+            dumper = ihm.dumper._ModelDumper()
+            dumper.finalize(system)  # assign model/group IDs
+
+            dumper = ihm.dumper._NotModeledResidueRangeDumper()
+            self.assertRaises(exc, _get_dumper_output, dumper, system)
+
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""
         class MockObject(object):
@@ -2684,8 +2847,10 @@ _ihm_entity_poly_segment.comp_id_end
             system.entities.append(e1)
             # Disable construction-time check so that we
             # can see dump time check
+            e1._range_check = False
             system.orphan_features.append(
-                ihm.restraint.ResidueFeature([e1(*badrng, _check=False)]))
+                ihm.restraint.ResidueFeature([e1(*badrng)]))
+            e1._range_check = True
 
             dumper = ihm.dumper._EntityDumper()
             dumper.finalize(system)  # assign IDs

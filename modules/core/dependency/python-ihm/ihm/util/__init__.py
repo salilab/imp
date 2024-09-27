@@ -69,20 +69,84 @@ def _text_choice_property(attr, choices, doc=None):
     return property(getfunc, setfunc, doc=doc)
 
 
-def _check_residue_range(rng):
+def _check_residue_range(seq_id_range, entity):
     """Make sure that a residue range is not out of range of its Entity"""
-    if rng.seq_id_range[1] < rng.seq_id_range[0]:
+    if not entity or not entity._range_check:
+        return
+    if seq_id_range[1] < seq_id_range[0]:
         raise ValueError("Range %d-%d is invalid; end is before start"
-                         % rng.seq_id_range)
-    if (rng.seq_id_range[1] > len(rng.entity.sequence)
-            or rng.seq_id_range[0] < 1):
+                         % seq_id_range)
+    if (seq_id_range[1] > len(entity.sequence)
+            or seq_id_range[0] < 1):
         raise IndexError("Range %d-%d out of range for %s (1-%d)"
-                         % (rng.seq_id_range[0], rng.seq_id_range[1],
-                            rng.entity, len(rng.entity.sequence)))
+                         % (seq_id_range[0], seq_id_range[1],
+                            entity, len(entity.sequence)))
 
 
 def _check_residue(r):
     """Make sure that a residue is not out of range of its Entity"""
+    if not r.entity or not r.entity._range_check:
+        return
     if r.seq_id > len(r.entity.sequence) or r.seq_id < 1:
         raise IndexError("Residue %d out of range for %s (1-%d)"
                          % (r.seq_id, r.entity, len(r.entity.sequence)))
+
+
+def _invert_ranges(ranges, end, start=1):
+    """Given a sorted list of non-overlapping ranges, yield a new list which
+       contains every range in the range start-end which was not in the
+       original list.  For example, if end=4,
+       [(2, 3)] -> [(1, 1), (4, 4)]"""
+    for r in ranges:
+        if r[0] > start:
+            yield (start, r[0] - 1)
+        start = r[1] + 1
+    if end >= start:
+        yield (start, end)
+
+
+def _pred_ranges(ranges, end):
+    """Given a sorted list of non-overlapping ranges, yield a new list which
+       covers the range 1-end. Each element in the new list contains a new
+       third bool member which is True iff the element was in the original
+       list. For example, if end=4,
+       [(2, 3)] -> [(1, 1, False), (2, 3, True), (4, 4, False)]"""
+    start = 1
+    for r in ranges:
+        if r[0] > start:
+            yield (start, r[0] - 1, False)
+        yield (r[0], r[1], True)
+        start = r[1] + 1
+    if end >= start:
+        yield (start, end, False)
+
+
+def _combine_ranges(ranges):
+    """Sort the input ranges and remove any overlaps; yield the result.
+       For example, [(8, 10), (1, 2), (3, 4)] -> [(1, 4), (8, 10)]"""
+    ranges = sorted(ranges)
+    if not ranges:
+        return
+    current = ranges[0]
+    for r in ranges[1:]:
+        if current[1] + 1 >= r[0]:
+            current = (current[0], max(r[1], current[1]))
+        else:
+            yield current
+            current = r
+    yield current
+
+
+def _make_range_from_list(rr):
+    """Yield a list of ranges given a sorted list of values.
+       For example, [1, 2, 5, 6] -> [[1, 2], [5, 6]]"""
+    if not rr:
+        return
+    current = [rr[0], rr[0]]
+    for r in rr[1:]:
+        if current[1] + 1 == r:
+            current[1] = r
+        else:
+            yield current
+            current = [r, r]
+    yield current

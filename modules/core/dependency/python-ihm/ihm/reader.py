@@ -36,7 +36,20 @@ def _make_new_entity():
     e = ihm.Entity([])
     # make sequence mutable (see also SystemReader.finalize)
     e.sequence = list(e.sequence)
+    # disable residue range checks during file read (see also
+    # _finalize_entities)
+    e._range_check = False
     return e
+
+
+def _finalize_entities(system):
+    """Finalize all Entities in the given System.
+       This is done here and not in SystemReader.finalize so that it happens
+       both for python-ihm and for python-modelcif; it is also not done in
+       _EntityHandler.finalize as we want to be sure all other finalization
+       is done first."""
+    for e in system.entities:
+        e._range_check = True
 
 
 def _get_vector3(d, key):
@@ -198,7 +211,7 @@ class RangeIDMapper(object):
             return asym_or_entity
         else:
             # Allow reading out-of-range ranges
-            return asym_or_entity(*self._id_map[range_id], _check=False)
+            return asym_or_entity(*self._id_map[range_id])
 
 
 class _AnalysisIDMapper(IDMapper):
@@ -1965,6 +1978,24 @@ class _EnsembleHandler(Handler):
                 del e._sub_sampling_type
 
 
+class _NotModeledResidueRangeHandler(Handler):
+    category = '_ihm_residues_not_modeled'
+
+    def __call__(self, model_id, asym_id, seq_id_begin, seq_id_end,
+                 reason):
+        model = self.sysr.models.get_by_id(model_id)
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        # Allow for out-of-range seq_ids for now
+        rr = ihm.model.NotModeledResidueRange(
+            asym, int(seq_id_begin), int(seq_id_end))
+        # Default to "Other" if invalid reason read
+        try:
+            rr.reason = reason
+        except ValueError:
+            rr.reason = "Other"
+        model.not_modeled_residue_ranges.append(rr)
+
+
 class _SubsampleHandler(Handler):
     category = '_ihm_ensemble_sub_sample'
 
@@ -2241,7 +2272,7 @@ class _PolyResidueFeatureHandler(Handler):
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
         # allow out-of-range ranges
-        f.ranges.append(asym_or_entity(r1, r2, _check=False))
+        f.ranges.append(asym_or_entity(r1, r2))
 
 
 class _FeatureListHandler(Handler):
@@ -2261,7 +2292,7 @@ class _PolyAtomFeatureHandler(Handler):
             feature_id, ihm.restraint.AtomFeature)
         asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         seq_id = int(seq_id)
-        atom = asym_or_entity.residue(seq_id, _check=False).atom(atom_id)
+        atom = asym_or_entity.residue(seq_id).atom(atom_id)
         f.atoms.append(atom)
 
 
@@ -2278,7 +2309,7 @@ class _NonPolyFeatureHandler(Handler):
             f = self.sysr.features.get_by_id(
                 feature_id, ihm.restraint.AtomFeature)
             # todo: handle multiple copies, e.g. waters?
-            atom = asym_or_entity.residue(1, _check=False).atom(atom_id)
+            atom = asym_or_entity.residue(1).atom(atom_id)
             f.atoms.append(atom)
 
 
@@ -2379,7 +2410,7 @@ class _PredictedContactRestraintHandler(Handler):
     def _get_resatom(self, asym_id, seq_id, atom_id):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         seq_id = self.get_int(seq_id)
-        resatom = asym.residue(seq_id, _check=False)
+        resatom = asym.residue(seq_id)
         if atom_id:
             resatom = resatom.atom(atom_id)
         return resatom
@@ -2859,7 +2890,7 @@ class _CrossLinkListHandler(Handler):
 
     def _get_entity_residue(self, entity_id, seq_id):
         entity = self.sysr.entities.get_by_id(entity_id)
-        return entity.residue(int(seq_id), _check=False)
+        return entity.residue(int(seq_id))
 
     def finalize(self):
         # If any ChemDescriptor has an empty name, fill it in using linker_type
@@ -3304,7 +3335,7 @@ class _FLRPolyProbePositionHandler(Handler):
             asym.entity = entity
             asym.id = asym_id
         seq_id = self.get_int(seq_id)
-        resatom = entity.residue(seq_id, _check=False)
+        resatom = entity.residue(seq_id)
         if asym is not None:
             resatom.asym = asym
         if atom_id:
@@ -3664,7 +3695,7 @@ class _FLRFPSMPPAtomPositionHandler(Handler):
         seq_id = self.get_int(seq_id)
 
         p = self.sysr.flr_fps_mpp_atom_positions.get_by_id(id)
-        p.atom = asym.residue(seq_id, _check=False).atom(atom_id)
+        p.atom = asym.residue(seq_id).atom(atom_id)
         p.x = self.get_float(xcoord)
         p.y = self.get_float(ycoord)
         p.z = self.get_float(zcoord)
@@ -3797,6 +3828,7 @@ class IHMVariant(Variant):
         _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
         _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
         _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
+        _NotModeledResidueRangeHandler,
         _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,
         _EM2DRestraintHandler, _EM2DFittingHandler, _SASRestraintHandler,
         _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
@@ -3930,6 +3962,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
         for h in hs:
             h.finalize()
         s.finalize()
+        _finalize_entities(s.system)
         systems.append(s.system)
         if not more_data:
             break

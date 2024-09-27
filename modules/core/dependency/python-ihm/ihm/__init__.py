@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.5'
+__version__ = '1.6'
 
 
 class __UnknownValue(object):
@@ -1235,13 +1235,12 @@ class EntityRange(object):
            entity = ihm.Entity(sequence=...)
            rng = entity(4,7)
     """
-    def __init__(self, entity, seq_id_begin, seq_id_end, _check=True):
+    def __init__(self, entity, seq_id_begin, seq_id_end):
         if not entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.entity = entity
         self.seq_id_range = (seq_id_begin, seq_id_end)
-        if _check:
-            util._check_residue_range(self)
+        util._check_residue_range(self.seq_id_range, self.entity)
 
     def __eq__(self, other):
         try:
@@ -1283,14 +1282,13 @@ class Residue(object):
 
     __slots__ = ['entity', 'asym', 'seq_id', '_range_id']
 
-    def __init__(self, seq_id, entity=None, asym=None, _check=True):
+    def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
         self.asym = asym
         if entity is None and asym:
             self.entity = asym.entity
         self.seq_id = seq_id
-        if _check:
-            util._check_residue(self)
+        util._check_residue(self)
 
     def atom(self, atom_id):
         """Get a :class:`~ihm.Atom` in this residue with the given name."""
@@ -1370,6 +1368,9 @@ class Entity(object):
 
     _force_polymer = None
     _hint_branched = None
+    # Set to False to allow invalid seq_ids for residue or residue_range;
+    # this is done, for example, when reading a file.
+    _range_check = True
 
     def __get_type(self):
         if self.is_polymeric():
@@ -1449,9 +1450,9 @@ class Entity(object):
                  and isinstance(self.sequence[0], SaccharideChemComp)) or
                 (len(self.sequence) == 0 and self._hint_branched))
 
-    def residue(self, seq_id, _check=True):
+    def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
-        return Residue(entity=self, seq_id=seq_id, _check=_check)
+        return Residue(entity=self, seq_id=seq_id)
 
     # Entities are considered identical if they have the same sequence,
     # unless they are branched
@@ -1469,8 +1470,8 @@ class Entity(object):
         else:
             return hash(self.sequence)
 
-    def __call__(self, seq_id_begin, seq_id_end, _check=True):
-        return EntityRange(self, seq_id_begin, seq_id_end, _check=_check)
+    def __call__(self, seq_id_begin, seq_id_end):
+        return EntityRange(self, seq_id_begin, seq_id_end)
 
     def __get_seq_id_range(self):
         if self.is_polymeric() or self.is_branched():
@@ -1489,13 +1490,12 @@ class AsymUnitRange(object):
            asym = ihm.AsymUnit(entity)
            rng = asym(4,7)
     """
-    def __init__(self, asym, seq_id_begin, seq_id_end, _check=True):
+    def __init__(self, asym, seq_id_begin, seq_id_end):
         if asym.entity is not None and not asym.entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.asym = asym
         self.seq_id_range = (seq_id_begin, seq_id_end)
-        if _check:
-            util._check_residue_range(self)
+        util._check_residue_range(self.seq_id_range, self.entity)
 
     def __eq__(self, other):
         try:
@@ -1616,12 +1616,12 @@ class AsymUnit(object):
             auth_seq_num = self.orig_auth_seq_id_map.get(seq_id, pdb_seq_num)
         return pdb_seq_num, auth_seq_num, ins_code
 
-    def __call__(self, seq_id_begin, seq_id_end, _check=True):
-        return AsymUnitRange(self, seq_id_begin, seq_id_end, _check=_check)
+    def __call__(self, seq_id_begin, seq_id_end):
+        return AsymUnitRange(self, seq_id_begin, seq_id_end)
 
-    def residue(self, seq_id, _check=True):
+    def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
-        return Residue(asym=self, seq_id=seq_id, _check=_check)
+        return Residue(asym=self, seq_id=seq_id)
 
     def segment(self, gapped_sequence, seq_id_begin, seq_id_end):
         """Get an object representing the alignment of part of this sequence.
