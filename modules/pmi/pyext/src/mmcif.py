@@ -1184,12 +1184,21 @@ class _State(ihm.model.State):
 
 
 class Entity(ihm.Entity):
-    """A single entity in the system.
+    """A single entity in the system. This contains information (such as
+       database identifiers) specific to a particular sequence rather than
+       a copy (for example, when modeling a homodimer, two AsymUnits will
+       point to the same Entity).
+
        This functions identically to the base ihm.Entity class, but it
-       allows identifying residues by either the IHM numbering scheme
-       (seq_id, which is always contiguous starting at 1) or by the PMI
-       scheme (which is similar, but may not start at 1 if the sequence in
-       the FASTA file has one or more N-terminal gaps"""
+       allows identifying residues by either the PMI numbering scheme
+       (which is always contiguous starting at 1, covering the entire
+       sequence in the FASTA files, or the IHM scheme (seq_id, which also
+       starts at 1, but which only covers the modeled subset of the full
+       sequence, with non-modeled N-terminal or C-terminal residues
+       removed). The actual offset (which is the integer to be added to the
+       IHM numbering to get PMI numbering, or equivalently the number of
+       not-represented N-terminal residues in the PMI sequence) is
+       available in the `pmi_offset` member."""
     def __init__(self, sequence, pmi_offset, *args, **keys):
         # Offset between PMI numbering and IHM; <pmi_#> = <ihm_#> + pmi_offset
         # (pmi_offset is also the number of N-terminal gaps in the FASTA file)
@@ -1207,12 +1216,22 @@ class Entity(ihm.Entity):
 
 
 class AsymUnit(ihm.AsymUnit):
-    """A single asymmetric unit in the system.
+    """A single asymmetric unit in the system. This roughly corresponds to
+       a single PMI subunit (sequence, copy, or clone).
+
        This functions identically to the base ihm.AsymUnit class, but it
-       allows identifying residues by either the IHM numbering scheme
-       (seq_id, which is always contiguous starting at 1) or by the PMI
-       scheme (which is similar, but may not start at 1 if the sequence in
-       the FASTA file has one or more N-terminal gaps"""
+       allows identifying residues by either the PMI numbering scheme
+       (which is always contiguous starting at 1, covering the entire
+       sequence in the FASTA files, or the IHM scheme (seq_id, which also
+       starts at 1, but which only covers the modeled subset of the full
+       sequence, with non-modeled N-terminal or C-terminal residues
+       removed).
+
+       The `entity` member of this class points to an Entity object, which
+       contains information (such as database identifiers) specific to
+       a particular sequence rather than a copy (for example, when modeling
+       a homodimer, two AsymUnits will point to the same Entity).
+       """
 
     def __init__(self, entity, *args, **keys):
         super().__init__(
@@ -1243,7 +1262,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     [python-ihm API](https://python-ihm.readthedocs.io/en/latest/dumper.html#ihm.dumper.write)
     to write out files in mmCIF or BinaryCIF format.
 
-    See also get_handlers(), get_dumpers().
+    Each PMI subunit will be mapped to an IHM AsymUnit class which contains the
+    subset of the sequence that was represented. Use the `asym_units` dict to
+    get this object given a PMI subunit name. Each unique sequence will be
+    mapped to an IHM Entity class (for example when modeling a homodimer
+    there will be two AsymUnits which both point to the same Entity). Use
+    the `entities` dict to get this object from a PMI subunit name.
+
+    See also Entity, AsymUnit, get_handlers(), get_dumpers().
     """  # noqa: E501
     def __init__(self):
         # Ultimately, collect data in an ihm.System object
@@ -1375,18 +1401,15 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         if asym_name is None:
             asym_name = name
 
-        def get_offset(seq):
-            # Count length of gaps at start of sequence
-            for i in range(len(seq)):
-                if seq[i] != '-':
-                    return seq[i:], i
-        seq, offset = get_offset(seq)
         if name in self.sequence_dict:
             if self.sequence_dict[name] != seq:
                 raise ValueError("Sequence mismatch for component %s" % name)
         else:
             self.sequence_dict[name] = seq
-            self.entities.add(name, seq, offset, alphabet)
+            # Offset is always zero to start with; this may be modified
+            # later in finalize_build() if any non-modeled N-terminal
+            # residues are removed
+            self.entities.add(name, seq, 0, alphabet)
         if asym_name in self.asym_units:
             if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component
@@ -1395,6 +1418,12 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 self.system.asym_units.append(asym)
                 self.asym_units[asym_name] = asym
             state.modeled_assembly.append(self.asym_units[asym_name])
+
+    def finalize_build(self):
+        """Called immediately after the PMI system is built"""
+        for entity in self.system.entities:
+            _trim_unrep_termini(entity, self.system.asym_units,
+                                self.system.orphan_representations)
 
     def _add_restraint_model_fits(self):
         """Add fits to restraints for all known models"""
@@ -1740,3 +1769,54 @@ class GMMParser(ihm.metadata.Parser):
                 elif line.startswith('# ncenters: '):
                     ret['number_of_gaussians'] = int(line[12:])
         return ret
+
+
+def _trim_unrep_termini(entity, asyms, representations):
+    """Trim Entity sequence to only cover represented residues.
+
+       PDB policy is for amino acid Entity sequences to be polymers (so
+       they should include any loops or other gaps in the midst of the
+       sequence) but for the termini to be trimmed of any not-modeled
+       residues. Here, we modify the Entity sequence to remove any parts
+       that are not included in any representation. This may change the
+       numbering if any N-terminal residues are removed, and thus the offset
+       between PMI and IHM numbering, as both count from 1."""
+    rep_range = None
+    for rep in representations:
+        for seg in rep:
+            if seg.asym_unit.entity is entity:
+                seg_range = seg.asym_unit.seq_id_range
+                if rep_range is None:
+                    rep_range = list(seg_range)
+                else:
+                    rep_range[0] = min(rep_range[0], seg_range[0])
+                    rep_range[1] = max(rep_range[1], seg_range[1])
+    # Do nothing if no representations or if everything is represented
+    if rep_range is None or rep_range == [1, len(entity.sequence)]:
+        return
+    # Update offset (= number of unrepresented N terminal entity residues)
+    # in entity and all asyms
+    pmi_offset = rep_range[0] - 1
+    entity.pmi_offset = pmi_offset
+    for asym in asyms:
+        if asym.entity is entity:
+            asym.auth_seq_id_map = entity.pmi_offset
+    # Modify entity sequence to only include represented residues
+    entity.sequence = entity.sequence[rep_range[0] - 1:rep_range[1]]
+
+    # If N terminal deletions, we must fix the numbering of all segments
+    # and starting models
+    if pmi_offset != 0:
+        for rep in representations:
+            for seg in rep:
+                if seg.asym_unit.entity is entity:
+                    seg_range = seg.asym_unit.seq_id_range
+                    seg.asym_unit.seq_id_range = (seg_range[0] - pmi_offset,
+                                                  seg_range[1] - pmi_offset)
+                    if seg.starting_model:
+                        model = seg.starting_model
+                        seg_range = model.asym_unit.seq_id_range
+                        model.asym_unit.seq_id_range = \
+                            (seg_range[0] - pmi_offset,
+                             seg_range[1] - pmi_offset)
+                        model.offset = model.offset - pmi_offset

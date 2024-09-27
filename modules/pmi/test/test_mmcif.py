@@ -661,11 +661,19 @@ _ihm_sphere_obj_site.model_id
         nup84_2.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
         nup84_2.add_representation(resolutions=[1])
 
-        nup85 = st2.create_molecule("Nup85", "SELM", "B")
+        nup85 = st2.create_molecule("Nup85", "GGGGSELMGG", "B")
+        # Residues S, E should be residues 8, 9 in test.nup85.pdb; map them
+        # to FASTA sequence
         nup85.add_structure(self.get_input_file_name('test.nup85.pdb'), 'A',
-                            res_range=(8, 9), offset=-7)
-        nup85.add_representation(resolutions=[1])
+                            res_range=(8, 9), offset=-3)
+        nup85.add_representation(residues=nup85[4:8], resolutions=[1])
         _ = s.build()
+        # Since we didn't represent the first 4 or last 2 residues in nup85,
+        # the IHM sequence should just be "SELM", and the PDB offset should be
+        # modified to match (from -3 to -7)
+        self.assertEqual(''.join(x.code
+                                 for x in po.system.entities[1].sequence),
+                         'SELM')
 
         self.assign_entity_asym_ids(po.system)
 
@@ -1214,26 +1222,27 @@ _ihm_localization_density_files.entity_poly_segment_id
         s.add_protocol_output(po)
         state = s.create_state()
         po_state = state._protocol_output[0][1]
-        nup84 = state.create_molecule("Nup84", "MELS", "A")
-        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
-        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
-        nup84.add_representation(nup84.get_non_atomic_residues(),
-                                 resolutions=[10])
+        # First 10 residues are not represented, so PMI residue indexes
+        # range from 11 to 14, but IHM seq_ids from 1 to 4
+        nup84 = state.create_molecule("Nup84", "P" * 10 + "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A',
+                            offset=10)
+        nup84.add_representation(nup84[10:], resolutions=[1])
         hier = s.build()
 
         r = DummyRestraint()
         r.dataset = DummyDataset()
         r.dataset._id = 42
         xl_group = po.get_cross_link_group(r)
-        ex_xl = po.add_experimental_cross_link(1, 'Nup84',
-                                               2, 'Nup84', xl_group)
-        _ = po.add_experimental_cross_link(1, 'Nup84',
-                                           3, 'Nup84', xl_group)
+        ex_xl = po.add_experimental_cross_link(11, 'Nup84',
+                                               12, 'Nup84', xl_group)
+        _ = po.add_experimental_cross_link(11, 'Nup84',
+                                           13, 'Nup84', xl_group)
         # Duplicates should be ignored
-        po.add_experimental_cross_link(1, 'Nup84', 3, 'Nup84', xl_group)
+        po.add_experimental_cross_link(11, 'Nup84', 13, 'Nup84', xl_group)
         # Non-modeled component should be ignored
-        nm_ex_xl = po.add_experimental_cross_link(1, 'Nup85',
-                                                  2, 'Nup84', xl_group)
+        nm_ex_xl = po.add_experimental_cross_link(11, 'Nup85',
+                                                  12, 'Nup84', xl_group)
         self.assertEqual(nm_ex_xl, None)
         sel = IMP.atom.Selection(hier, molecule='Nup84',
                                  resolution=1)

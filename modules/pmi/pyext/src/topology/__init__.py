@@ -201,6 +201,8 @@ class System(_SystemBase):
             for state in self.states:
                 state.build(**kwargs)
             self.built = True
+            for po in self._protocol_output:
+                po.finalize_build()
         return self.hier
 
     def add_protocol_output(self, p):
