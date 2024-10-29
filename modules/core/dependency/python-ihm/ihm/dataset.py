@@ -17,7 +17,7 @@ class Dataset(object):
        :param str details: Text giving more information about the dataset.
     """
 
-    _eq_keys = ['location']
+    _eq_keys = ['_locations']
     _allow_duplicates = False
 
     # Datasets compare equal iff they are the same class, have the
@@ -38,12 +38,33 @@ class Dataset(object):
     data_type = 'Other'
 
     def __init__(self, location, details=None):
+        # The dictionary actually allows for multiple locations for a given
+        # dataset. Support this via a private attribute so we can at least
+        # handle reading existing files. 'location' just references the
+        # first location in this list.
+        self._locations = ()
+
         self.location, self.details = location, details
 
         #: A list of :class:`Dataset` and/or :class:`TransformedDataset`
         #: objects from which this one was derived.
         #: For example, a 3D EM map may be derived from a set of 2D images.
         self.parents = []
+
+    def _add_location(self, loc):
+        if self.location is None:
+            self.location = loc
+        else:
+            self._locations += (loc,)
+
+    def __get_location(self):
+        return self._locations[0]
+
+    def __set_location(self, val):
+        self._locations = (val, )
+
+    location = property(__get_location, __set_location,
+                        doc="A pointer to where the dataset is stored")
 
     def add_primary(self, dataset):
         """Add another Dataset from which this one was ultimately derived,

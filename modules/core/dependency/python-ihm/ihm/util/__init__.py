@@ -92,6 +92,13 @@ def _check_residue(r):
                          % (r.seq_id, r.entity, len(r.entity.sequence)))
 
 
+def _check_transform(t):
+    if t.rot_matrix in (None, ihm.unknown):
+        raise ValueError("Transformation %s is missing rotation" % t)
+    if t.tr_vector in (None, ihm.unknown):
+        raise ValueError("Transformation %s is missing translation" % t)
+
+
 def _invert_ranges(ranges, end, start=1):
     """Given a sorted list of non-overlapping ranges, yield a new list which
        contains every range in the range start-end which was not in the
@@ -150,3 +157,22 @@ def _make_range_from_list(rr):
             yield current
             current = [r, r]
     yield current
+
+
+def _get_codes(codestr):
+    """Convert a one-letter-code string into a sequence of individual
+       codes"""
+    if codestr is None or codestr is ihm.unknown:
+        return
+    i = 0
+    while i < len(codestr):
+        # Strip out linebreaks
+        if codestr[i] == '\n':
+            pass
+        elif codestr[i] == '(':
+            end = codestr.index(')', i)
+            yield codestr[i + 1:end]
+            i = end
+        else:
+            yield codestr[i]
+        i += 1

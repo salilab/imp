@@ -574,7 +574,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`ResidueFeature`, :class:`AtomFeature`,
+       This class should not be used itself; instead,
+       see :class:`ResidueFeature`, :class:`AtomFeature`,
        :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
@@ -582,10 +583,14 @@ class Feature(object):
        :class:`~ihm.restraint.DerivedDistanceRestraint` objects.
     """
     details = None
+    type = ihm.unknown
 
     def _all_entities_or_asyms(self):
         # Get all Entities or AsymUnits referenced by this object
         return []
+
+    def _get_entity_type(self):
+        return ihm.unknown
 
 
 class ResidueFeature(Feature):

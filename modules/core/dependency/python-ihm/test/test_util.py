@@ -121,6 +121,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(list(ihm.util._make_range_from_list(rr)),
                          [[1, 2], [5, 6], [10, 11], [20, 20]])
 
+    def test_get_codes(self):
+        """Test _get_codes function"""
+        self.assertEqual(tuple(ihm.util._get_codes(None)), ())
+        self.assertEqual(tuple(ihm.util._get_codes(ihm.unknown)), ())
+        self.assertEqual(tuple(ihm.util._get_codes("TWC\nAA(FOO)T")),
+                         ('T', 'W', 'C', 'A', 'A', 'FOO', 'T'))
+
 
 if __name__ == '__main__':
     unittest.main()

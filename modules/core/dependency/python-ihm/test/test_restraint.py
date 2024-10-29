@@ -173,6 +173,8 @@ class Tests(unittest.TestCase):
         """Test Feature base class"""
         f = ihm.restraint.Feature()  # does nothing
         self.assertEqual(f._all_entities_or_asyms(), [])
+        self.assertIs(f.type, ihm.unknown)
+        self.assertIs(f._get_entity_type(), ihm.unknown)
 
     def test_residue_feature(self):
         """Test ResidueFeature class"""

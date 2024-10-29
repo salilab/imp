@@ -435,6 +435,10 @@ class Tests(unittest.TestCase):
         self.assertRaises(TypeError, ihm.AsymUnit, water)
         self.assertRaises(TypeError, ihm.WaterAsymUnit, e, number=3)
 
+        # Residue range checks are not done for waters, currently
+        _ = a.residue(-3)
+        _ = a.residue(30)
+
     def test_asym_unit_residue(self):
         """Test Residue derived from an AsymUnit"""
         e = ihm.Entity('AHCDAH')

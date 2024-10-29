@@ -326,7 +326,7 @@ class Repository(object):
     reference = property(lambda self: self.doi)
 
     def __get_reference_provider(self):
-        if 'zenodo' in self.reference:
+        if self.reference and 'zenodo' in self.reference:
             return 'Zenodo'
     reference_provider = property(__get_reference_provider)
 

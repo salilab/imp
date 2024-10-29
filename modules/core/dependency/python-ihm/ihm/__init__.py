@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.6'
+__version__ = '1.7'
 
 
 class __UnknownValue(object):
@@ -120,6 +120,9 @@ class System(object):
         #: These are used to group depositions of related entries.
         #: See :class:`Collection`.
         self.collections = []
+
+        #: Revision/update history. See :class:`Revision`.
+        self.revisions = []
 
         #: All orphaned chemical descriptors in the system.
         #: See :class:`ChemDescriptor`. This can be used to track descriptors
@@ -1288,7 +1291,8 @@ class Residue(object):
         if entity is None and asym:
             self.entity = asym.entity
         self.seq_id = seq_id
-        util._check_residue(self)
+        if self.entity is not None and self.entity.is_polymeric():
+            util._check_residue(self)
 
     def atom(self, atom_id):
         """Get a :class:`~ihm.Atom` in this residue with the given name."""
@@ -1794,3 +1798,43 @@ class BranchLink(object):
         self.leaving_atom_id1 = leaving_atom_id1
         self.leaving_atom_id2 = leaving_atom_id2
         self.order, self.details = order, details
+
+
+class Revision(object):
+    """Represent part of the history of a :class:`System`.
+
+       :param str data_content_type: The type of file that was changed.
+       :param int major: Major version number.
+       :param int minor: Minor version number.
+       :param date: Release date.
+       :type date: :class:`datetime.date`
+
+       Generally these objects are added to :attr:`System.revisions`.
+    """
+    def __init__(self, data_content_type, minor, major, date):
+        self.data_content_type = data_content_type
+        self.minor, self.major = minor, major
+        self.date = date
+        #: More details of the changes, as :class:`RevisionDetails` objects
+        self.details = []
+        #: Collection of categories (as strings) updated with this revision
+        self.groups = []
+        #: Categories (as strings) updated with this revision
+        self.categories = []
+        #: Items (as strings) updated with this revision
+        self.items = []
+
+
+class RevisionDetails(object):
+    """More information on the changes in a given :class:`Revision`.
+
+       :param str provider: The provider (author, repository) of the revision.
+       :param str type: Classification of the revision.
+       :param str description: Additional details describing the revision.
+
+      These objects are typically stored in :attr:`Revision.details`.
+    """
+    def __init__(self, provider, type, description):
+        self.provider = provider
+        self.type = type
+        self.description = description

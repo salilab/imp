@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
 # First, do
+# - Check spelling with
+#   codespell . --skip '*.cif' -L assertIn
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
 # - Run util/validate-outputs.py to make sure all example outputs validate
 #   (cd util; PYTHONPATH=.. python3 ./validate-outputs.py)

@@ -1,3 +1,19 @@
+1.7 - 2024-10-22
+================
+  - Sanity checks when writing out a file can now be disabled if desired,
+    using the new ``check`` argument to :func:`ihm.dumper.write` (#153).
+  - Data that have been split over multiple mmCIF or BinaryCIF files can now
+    be combined into a single :class:`ihm.System` object using the new
+    ``add_to_system`` argument to :func:`ihm.reader.read`.
+  - Input files that assign multiple :class:`ihm.location.Location` objects
+    to a single :class:`ihm.dataset.Dataset` can now be read (#151).
+  - Bugfix: multiple :class:`ihm.restraint.EM3DRestraint` and
+    :class:`ihm.restraint.SASRestraint` objects can now be created for a
+    single dataset, as long as they act on different assemblies, as allowed
+    by the dictionary.
+  - Bugfix: allow for non-standard residues in the ``struct_ref`` table (#154).
+
+
 1.6 - 2024-09-27
 ================
   - The new class :class:`ihm.model.NotModeledResidueRange` allows for
