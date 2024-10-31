@@ -632,10 +632,12 @@ _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
 _ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.map_segment_flag
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 2 'Gaussian mixture model' . 3 20 1 0.400
+_ihm_3dem_restraint.details
+1 2 'Gaussian mixture model' . 3 . 20 1 0.400 .
 #
 """)
 
