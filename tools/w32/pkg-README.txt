@@ -4,7 +4,7 @@ so can be run simply by opening a Command Prompt, changing to this bin
 directory (or adding it to your PATH), and typing 'foxs'.
 
 The IMP Python libraries are automatically set up to work with any version of
-Python 3 from 3.7 to 3.12. (You need to download Python separately from
+Python 3 from 3.8 to 3.13. (You need to download Python separately from
 www.python.org and install it; be sure to get the 64-bit version of Python
 if you installed the 64-bit version of IMP, and likewise for the 32-bit
 version - you can't mix and match.)
