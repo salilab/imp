@@ -79,15 +79,12 @@ RMF_ENABLE_WARNINGS
 
 //! Implement a hash function for the class
 #define RMF_HASHABLE(name, hashret)
-/** @} */
 #else
 
 #define RMF_HASHABLE(name, hashret) \
   std::size_t __hash__() const { hashret; }
 
 #endif
-
-/** @} */
 
 #ifdef SWIG
 #define RMF_SHOWABLE(Name, streamed) \

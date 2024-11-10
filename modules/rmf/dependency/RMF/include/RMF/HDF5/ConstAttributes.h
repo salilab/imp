@@ -20,7 +20,7 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace HDF5 {
 
-/** Wrap an gettings the attributes from an HDF5 Object. Each data set or
+/** Wrap getting the attributes from an HDF5 Object. Each data set or
     group can have associated data. These data should be relatively small
     (a few k at most). See MutableAttributes for the methods to change
     the attribute data.
