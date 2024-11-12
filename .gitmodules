@@ -22,3 +22,6 @@
 	path = modules/nestor
 	url = https://github.com/isblab/nestor.git
 	branch = main
+[submodule "modules/bff"]
+	path = modules/bff
+	url = https://github.com/Fluorescence-Tools/IMP.bff.git
