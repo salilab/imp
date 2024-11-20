@@ -100,6 +100,9 @@ class DoxConfigFileGenerator(tools.FileGenerator):
                 # Don't document obsolete modules
                 if m == 'pmi1':
                     continue
+                # IMP.bff has stuff in doc that trips up doxygen
+                if m == 'bff':
+                    continue
                 doc = os.path.join(p, "doc")
                 if os.path.exists(doc):
                     inputsh.append(doc + "/")
