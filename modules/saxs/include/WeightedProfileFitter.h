@@ -46,6 +46,18 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
     Wb_ = W_.asDiagonal() * Wb_;
   }
 
+// When used from Python, compute_score will return the weights as a second
+// return value, rather than modifying a passed-in vector
+#ifdef SWIG
+%typemap(in, numinputs=0) Vector<double>& weights (Vector<double> temp) {
+  $1 = &temp;
+}
+%typemap(argout) Vector<double>& weights {
+  PyObject *obj = ConvertSequence<Vector<double>, Convert<double>>::create_python_object(ValueOrObject<Vector<double>>::get(*$1), $descriptor(double*), SWIG_POINTER_OWN);
+  $result = SWIG_AppendOutput($result, obj);
+}
+#endif
+
   //! compute a weighted score that minimizes chi
   /**
      it is assumed that the q values of the profiles are the same as
@@ -55,6 +67,10 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
   */
   double compute_score(const ProfilesTemp& profiles, Vector<double>& weights,
                        bool use_offset = false, bool NNLS = true) const;
+
+#ifdef SWIG
+%clear Vector<double>& weights;
+#endif
 
   //! fit profiles by optimization of c1/c2 and weights
   /**

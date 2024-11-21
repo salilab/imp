@@ -58,6 +58,19 @@ class Tests(IMP.test.TestCase):
         saxs_score = IMP.saxs.WeightedProfileFitterChi(weighted_profile)
 
         profile_list = [resampled_profile1, resampled_profile2]
+        # Get score for single profile
+        score, weights = saxs_score.compute_score(profile_list[:1],
+                                                  False, False)
+        self.assertAlmostEqual(score, 81.765, delta=0.001)
+        self.assertEqual(len(weights), 1)
+        self.assertAlmostEqual(weights[0], 1.0, delta=0.001)
+
+        # Get score for both profiles
+        score, weights = saxs_score.compute_score(profile_list, False, False)
+        self.assertAlmostEqual(score, 3.031, delta=0.001)
+        self.assertEqual(len(weights), 2)
+        self.assertAlmostEqual(weights[0], 0.297, delta=0.001)
+        self.assertAlmostEqual(weights[1], 0.703, delta=0.001)
 
         wfp = saxs_score.fit_profile(profile_list, 0.95, 1.05, -2.0, 4.0)
         chi = wfp.get_chi_square()
