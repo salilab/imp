@@ -485,7 +485,7 @@ ChangeLog {#changelog}
   structures and transport through these structures, respectively, although
   may also be useful for other modeling applications.
 - IMP's mmCIF support for deposition of models in
-  [PDB-Dev](https://pdb-dev.wwpdb.org/), in the IMP::pmi and IMP::mmcif modules,
+  [PDB-IHM](https://pdb-ihm.org/), in the IMP::pmi and IMP::mmcif modules,
   now utilizes the [python-ihm](https://github.com/ihmwg/python-ihm) library,
   a copy of which is included with IMP.
 - RMF files now store additional metadata, such as the primary sequence of
@@ -527,7 +527,7 @@ ChangeLog {#changelog}
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
 - Preview of mmCIF support for deposition of integrative models in
-  [PDB-Dev](https://pdb-dev.wwpdb.org/). See the IMP::pmi::mmcif
+  [PDB-IHM](https://pdb-ihm.org/). See the IMP::pmi::mmcif
   module for more details.
 - This will be the last release that includes packages for RedHat Enterprise
   Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end
