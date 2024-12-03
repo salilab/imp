@@ -1,3 +1,18 @@
+1.8 - 2024-11-26
+================
+  - Support added for datasets containing EPR, X-ray diffraction, footprinting
+    or predicted contacts using the :class:`ihm.dataset.EPRDataset`,
+    :class:`ihm.dataset.XRayDiffractionDataset`,
+    :class:`ihm.dataset.HydroxylRadicalFootprintingDataset`,
+    :class:`ihm.dataset.DNAFootprintingDataset` and
+    :class:`ihm.dataset.PredictedContactsDataset` classes (#157).
+  - Revision information (in the ``pdbx_audit_revision_*`` mmCIF tables)
+    can now be read or written using the new :class:`ihm.Revision`
+    and :class:`ihm.RevisionDetails` classes (#156).
+  - The new :class:`ihm.location.BMRbigLocation` class allows for
+    referencing datasets stored in the BMRbig database.
+  - All references to the old PDB-Dev database are now updated to PDB-IHM.
+
 1.7 - 2024-10-22
 ================
   - Sanity checks when writing out a file can now be disabled if desired,
@@ -12,7 +27,6 @@
     single dataset, as long as they act on different assemblies, as allowed
     by the dictionary.
   - Bugfix: allow for non-standard residues in the ``struct_ref`` table (#154).
-
 
 1.6 - 2024-09-27
 ================

@@ -66,3 +66,18 @@ The :mod:`ihm.dataset` Python module
 
 .. autoclass:: GeneticInteractionsDataset
    :members:
+
+.. autoclass:: EPRDataset
+   :members:
+
+.. autoclass:: XRayDiffractionDataset
+   :members:
+
+.. autoclass:: HydroxylRadicalFootprintingDataset
+   :members:
+
+.. autoclass:: DNAFootprintingDataset
+   :members:
+
+.. autoclass:: PredictedContactsDataset
+   :members:

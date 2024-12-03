@@ -200,6 +200,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(
             d.data_type, 'Quantitative measurements of genetic interactions')
 
+    def test_epr_dataset(self):
+        """Test EPRDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.EPRDataset(loc)
+        self.assertEqual(d.data_type, 'EPR data')
+
+    def test_xray_diffraction_dataset(self):
+        """Test XRayDiffractionDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.XRayDiffractionDataset(loc)
+        self.assertEqual(d.data_type, 'X-ray diffraction data')
+
+    def test_hydroxyl_radical_footprinting_dataset(self):
+        """Test HydroxylRadicalFootprintingDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.HydroxylRadicalFootprintingDataset(loc)
+        self.assertEqual(d.data_type, 'Hydroxyl radical footprinting data')
+
+    def test_dna_footprinting_dataset(self):
+        """Test DNAFootprintingDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.DNAFootprintingDataset(loc)
+        self.assertEqual(d.data_type, 'DNA footprinting data')
+
+    def test_predicted_contacts_dataset(self):
+        """Test PredictedContactsDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.PredictedContactsDataset(loc)
+        self.assertEqual(d.data_type, 'Predicted contacts')
+
     def test_duplicate_datasets_details(self):
         """Datasets with differing details should be considered duplicates"""
         with utils.temporary_directory() as tmpdir:

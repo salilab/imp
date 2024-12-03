@@ -459,7 +459,7 @@ class DCDWriter(object):
                 b'Produced by python-ihm, https://github.com/ihmwg/python-ihm',
                 b'This file is designed to be used in combination with an '
                 b'mmCIF file',
-                b'See PDB-Dev at https://pdb-dev.wwpdb.org/ for more details']
+                b'See PDB-IHM at https://pdb-ihm.org/ for more details']
             self._write_header(self.ncoord, remarks)
         else:
             if len(x) != self.ncoord:

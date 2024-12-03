@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.7'
+__version__ = '1.8'
 
 
 class __UnknownValue(object):
@@ -75,7 +75,7 @@ class System(object):
        :param str model_details: Detailed description of the system, like an
                                  abstract.
        :param databases: If this system is part of one or more official
-              databases (e.g. PDB, PDB-Dev, SwissModel), details of
+              databases (e.g. PDB, SwissModel), details of
               the database identifiers.
        :type databases: sequence of :class:`Database`
     """
@@ -690,7 +690,7 @@ class Database(object):
     """Information about a System that is part of an official database.
 
        If a :class:`System` is part of one or more official databases
-       (e.g. PDB, PDB-Dev, SwissModel), this class contains details of the
+       (e.g. PDB, SwissModel), this class contains details of the
        database identifiers. It should be passed to the :class:`System`
        constructor.
 

@@ -3,4 +3,4 @@ include LICENSE
 include examples/*
 include src/ihm_format.h
 include src/ihm_format.i
-include src/ihm_format_wrap_1.7.c
+include src/ihm_format_wrap_1.8.c

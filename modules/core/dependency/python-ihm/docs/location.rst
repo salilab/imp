@@ -58,6 +58,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: ProteomeXchangeLocation
    :members:
 
+.. autoclass:: BMRbigLocation
+   :members:
+
 .. autoclass:: FileLocation
    :members:
 

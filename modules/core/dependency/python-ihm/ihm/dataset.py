@@ -209,3 +209,28 @@ class YeastTwoHybridDataset(Dataset):
 class GeneticInteractionsDataset(Dataset):
     """Quantitative measurements of genetic interactions"""
     data_type = 'Quantitative measurements of genetic interactions'
+
+
+class EPRDataset(Dataset):
+    """Electron paramagnetic resonance (EPR) data"""
+    data_type = 'EPR data'
+
+
+class XRayDiffractionDataset(Dataset):
+    """Data from X-ray diffraction"""
+    data_type = 'X-ray diffraction data'
+
+
+class HydroxylRadicalFootprintingDataset(Dataset):
+    """Data from hydroxyl radical footprinting"""
+    data_type = 'Hydroxyl radical footprinting data'
+
+
+class DNAFootprintingDataset(Dataset):
+    """Data from DNA footprinting"""
+    data_type = 'DNA footprinting data'
+
+
+class PredictedContactsDataset(Dataset):
+    """A collection of predicted contacts"""
+    data_type = 'Predicted contacts'

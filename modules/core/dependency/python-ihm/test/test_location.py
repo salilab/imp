@@ -123,6 +123,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_bmr_big_location(self):
+        """Test BMRbigLocation class"""
+        d = ihm.location.BMRbigLocation(
+            'abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'BMRbig')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_empiar_location(self):
         """Test EMPIARLocation class"""
         d = ihm.location.EMPIARLocation('abc', version=1, details='foo')

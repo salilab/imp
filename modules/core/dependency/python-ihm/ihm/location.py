@@ -100,6 +100,10 @@ class PDBLocation(DatabaseLocation):
 
 class PDBDevLocation(DatabaseLocation):
     """Something stored in the PDB-Dev database.
+       This should only be used for legacy entries. All former PDB-Dev entries
+       (now PDB-IHM) should now have PDB identifiers; use :class:`PDBLocation`
+       instead.
+
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     db_name = 'PDB-Dev'
@@ -187,6 +191,13 @@ class ProteomeXchangeLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     db_name = 'ProteomeXchange'
+
+
+class BMRbigLocation(DatabaseLocation):
+    """Something stored in the BMRbig database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    db_name = 'BMRbig'
 
 
 class FileLocation(Location):
