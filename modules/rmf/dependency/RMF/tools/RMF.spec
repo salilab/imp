@@ -1,5 +1,5 @@
 Name:          RMF
-Version:       1.6.1
+Version:       1.7.0
 Release:       1%{?dist}
 License:       Apache 2.0
 Summary:       Library to support reading and writing of RMF files
@@ -10,7 +10,7 @@ Source0:       rmf-%{version}.tar.gz
 BuildRequires: python3-devel, symlinks
 BuildRequires: gcc-c++, hdf5-devel >= 1.8
 BuildRequires: swig >= 3.0
-BuildRequires: cmake >= 2.8
+BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
 
 BuildRequires: python3-numpy
@@ -83,6 +83,9 @@ python3 -c "import RMF; assert(hasattr(RMF, 'get_all_global_coordinates'))"
 %{_libdir}/libRMF*.so
 
 %changelog
+* Wed Dec 04 2024 Ben Webb <ben@salilab.org>   1.7.0-1
+- Update for 1.7.0 release.
+
 * Mon May 13 2024 Ben Webb <ben@salilab.org>   1.6.1-1
 - Update for 1.6.1 release.
 

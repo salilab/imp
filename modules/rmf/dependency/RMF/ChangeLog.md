@@ -1,6 +1,12 @@
 Change Log {#changelog}
 ==========
 
+# 1.7.0 - 2024-12-04 # {#changelog_1_7_0}
+- Python 2 is no longer supported; the minimum supported Python version is 3.6.
+- CMake 2 is no longer supported; the minimum supported CMake version is 3.14.
+- RMF::decorator::Chain can now store the mmCIF asym ID, which need not be
+  the same as the (author-provided) chain ID.
+
 # 1.6.1 - 2024-05-13 # {#changelog_1_6_1}
 - .deb packages for RMF for Ubuntu are now provided via the
   [Ubuntu PPA](https://launchpad.net/~salilab/+archive/ubuntu/ppa) mechanism.

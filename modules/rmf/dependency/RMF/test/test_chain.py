@@ -20,12 +20,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.get_sequence(), '')
         self.assertEqual(c.get_sequence_offset(), 0)
         self.assertEqual(c.get_uniprot_accession(), '')
+        self.assertEqual(c.get_label_asym_id(), '')
         # Check setters
         c.set_chain_type('LPolypeptide')
         c.set_sequence('CGY')
         c.set_sequence_offset(10)
         c.set_uniprot_accession('Q13098')
         c.set_chain_id('X')
+        c.set_label_asym_id('AA')
 
         # Check both const and non-const getters
         self.check_rmf(cf, c0, c1)
@@ -40,6 +42,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.get_sequence_offset(), 10)
         self.assertEqual(c.get_uniprot_accession(), 'Q13098')
         self.assertEqual(c.get_chain_id(), 'X')
+        self.assertEqual(c.get_label_asym_id(), 'AA')
 
 if __name__ == '__main__':
     unittest.main()

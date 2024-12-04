@@ -1,3 +1,9 @@
+rmf (1.7.0-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * RMF 1.7.0 release
+
+ -- IMP Developers <imp@salilab.org>  Wed, 04 Dec 2024 10:04:14 -0800
+
 rmf (1.6.1-1~@CODENAME@) @CODENAME@; urgency=low
 
   * RMF 1.6.1 release
