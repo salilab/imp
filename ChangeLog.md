@@ -1,7 +1,20 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.22.0 - 2024-12-12 # {#changelog_2_22_0}
+- IMP now includes the Bayesian Fluorescence Framework, as the IMP::bff module.
+- Python 2 is no longer supported; the minimum supported Python version is 3.6.
+- CMake 2 is no longer supported; the minimum supported CMake version is 3.14.
+- IMP::atom::Chain objects now track the mmCIF asym ID (if any), which often
+  differs from the author-provided chain ID. This information is also stored
+  in RMF files if using RMF 1.7 or later.
+- FoXS's JSmol output now includes mmCIF files rather than PDB, so can now
+  support visualization of structures containing multi-character chain IDs
+  or large numbers of atoms or residues.
+- The `rrt_ccd` and `rrt_sample` command line tools can now read structures
+  in both mmCIF and PDB formats.
+- IMP::pmi::mmcif::ProtocolOutput now trims any non-represented C-terminal
+  or N-terminal residues from each chain when outputting an mmCIF file.
 - The Windows .exe installer now supports Python 3.8 through 3.13.
 
 # 2.21.0 - 2024-06-13 # {#changelog_2_21_0}
