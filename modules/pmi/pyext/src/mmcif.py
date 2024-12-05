@@ -38,6 +38,7 @@ import ihm.analysis
 import ihm.representation
 import ihm.geometry
 import ihm.cross_linkers
+import ihm.reference
 
 
 def _assign_id(obj, seen_objs, obj_by_id):
@@ -1082,7 +1083,7 @@ class _EntityMapper(dict):
         else:
             raise TypeError("Don't know how to handle %s" % alphabet)
 
-    def add(self, component_name, sequence, offset, alphabet):
+    def add(self, component_name, sequence, offset, alphabet, uniprot):
         def entity_seq(sequence):
             # Map X to UNK
             if 'X' in sequence:
@@ -1095,7 +1096,8 @@ class _EntityMapper(dict):
             d = component_name.split("@")[0].split(".")[0]
             entity = Entity(entity_seq(sequence), description=d,
                             pmi_offset=offset,
-                            alphabet=self._get_alphabet(alphabet))
+                            alphabet=self._get_alphabet(alphabet),
+                            uniprot=uniprot)
             self.system.entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[component_name] = self._sequence_dict[sequence]
@@ -1198,11 +1200,18 @@ class Entity(ihm.Entity):
        removed). The actual offset (which is the integer to be added to the
        IHM numbering to get PMI numbering, or equivalently the number of
        not-represented N-terminal residues in the PMI sequence) is
-       available in the `pmi_offset` member."""
-    def __init__(self, sequence, pmi_offset, *args, **keys):
+       available in the `pmi_offset` member.
+
+       If a UniProt accession was provided for the sequence (either when
+       State.create_molecule() was called, or in the FASTA alignment file
+       header) then that is available in the `uniprot` member, and can be
+       added to the IHM system with the add_uniprot_reference method.
+       """
+    def __init__(self, sequence, pmi_offset, uniprot, *args, **keys):
         # Offset between PMI numbering and IHM; <pmi_#> = <ihm_#> + pmi_offset
         # (pmi_offset is also the number of N-terminal gaps in the FASTA file)
         self.pmi_offset = pmi_offset
+        self.uniprot = uniprot
         super().__init__(sequence, *args, **keys)
 
     def pmi_residue(self, res_id):
@@ -1213,6 +1222,24 @@ class Entity(ihm.Entity):
         """Return a range of IHM residues indexed using PMI numbering"""
         off = self.pmi_offset
         return self(res_id_begin - off, res_id_end - off)
+
+    def add_uniprot_reference(self):
+        """Add UniProt accession (if available) to the IHM system.
+           If a UniProt accession was provided for the sequence (either when
+           State.create_molecule() was called, or in the FASTA alignment file
+           header), then look this up at the UniProt web site (requires
+           network access) to get full information, and add it to the IHM
+           system. The resulting reference object is returned. If the IMP
+           and UniProt sequences are not identical, then this object may
+           need to be modified by specifying an alignment and/or
+           single-point mutations.
+        """
+        if self.uniprot:
+            print('Adding UniProt accession %s reference for entity %s'
+                  % (self.uniprot, self.description))
+            ref = ihm.reference.UniProtSequence.from_accession(self.uniprot)
+            self.references.append(ref)
+            return ref
 
 
 class AsymUnit(ihm.AsymUnit):
@@ -1397,7 +1424,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 self.all_modeled_components.append(name)
 
     def add_component_sequence(self, state, name, seq, asym_name=None,
-                               alphabet=None):
+                               alphabet=None, uniprot=None):
         if asym_name is None:
             asym_name = name
 
@@ -1409,7 +1436,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             # Offset is always zero to start with; this may be modified
             # later in finalize_build() if any non-modeled N-terminal
             # residues are removed
-            self.entities.add(name, seq, 0, alphabet)
+            self.entities.add(name, seq, 0, alphabet, uniprot)
         if asym_name in self.asym_units:
             if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component

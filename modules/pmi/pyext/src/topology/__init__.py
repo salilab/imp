@@ -809,7 +809,8 @@ class Molecule(_SystemBase):
                                     asym_name=self._name_with_copy)
                 po.add_component_sequence(state, name, self.sequence,
                                           asym_name=self._name_with_copy,
-                                          alphabet=self.alphabet)
+                                          alphabet=self.alphabet,
+                                          uniprot=self.uniprot)
 
     def _finalize_build(self):
         # For clones, pass the representation of the original molecule

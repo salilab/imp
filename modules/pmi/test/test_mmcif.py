@@ -315,20 +315,42 @@ _ihm_multi_state_model_group_link.model_group_id
         """Test _EntityMapper class"""
         system = ihm.System()
         c = IMP.pmi.mmcif._EntityMapper(system)
-        c.add('foo', 'MELS', 0, alphabet=None)
-        c.add('bar', 'SELM', 0, alphabet=IMP.pmi.alphabets.amino_acid)
-        c.add('foo_2', 'MELS', 0, alphabet=None)
+        c.add('foo', 'MELS', 0, alphabet=None, uniprot=None)
+        c.add('bar', 'SELM', 0, alphabet=IMP.pmi.alphabets.amino_acid,
+              uniprot='baracc')
+        c.add('foo_2', 'MELS', 0, alphabet=None, uniprot=None)
         self.assertRaises(TypeError, c.add, 'baz', 'MELSXX', 0,
-                          alphabet='garbage')
+                          alphabet='garbage', uniprot=None)
         self.assertEqual(len(system.entities), 2)
         self.assertIs(c['foo'], c['foo_2'])
         self.assertIsNot(c['foo'], c['bar'])
         a = system.entities
         self.assertEqual(len(a), 2)
         self.assertEqual(a[0].description, 'foo')
+        self.assertIsNone(a[0].uniprot)
         self.assertEqual(''.join(x.code for x in a[0].sequence), 'MELS')
         self.assertEqual(a[1].description, 'bar')
+        self.assertEqual(a[1].uniprot, 'baracc')
         self.assertEqual(''.join(x.code for x in a[1].sequence), 'SELM')
+
+    def test_entity_add_uniprot_reference(self):
+        """Test Entity.add_uniprot_reference()"""
+        system = ihm.System()
+        c = IMP.pmi.mmcif._EntityMapper(system)
+        c.add('foo', 'MELS', 0, alphabet=None, uniprot=None)
+        c.add('bar', 'SELM', 0, alphabet=None, uniprot='baracc')
+        # Mock out UniProtSequence.from_accession
+        orig = ihm.reference.UniProtSequence.from_accession
+        def mock_from_acc(acc):
+            return "mock+" + acc
+        try:
+            ihm.reference.UniProtSequence.from_accession = mock_from_acc
+            ref = c['foo'].add_uniprot_reference()
+            self.assertIsNone(ref)
+            ref = c['bar'].add_uniprot_reference()
+            self.assertEqual(ref, 'mock+baracc')
+        finally:
+            ihm.reference.UniProtSequence.from_accession = orig
 
     def test_all_datasets_all_group(self):
         """Test AllDatasets.get_all_group()"""
