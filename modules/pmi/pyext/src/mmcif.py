@@ -1823,7 +1823,9 @@ def _trim_unrep_termini(entity, asyms, representations):
         return
     # Update offset (= number of unrepresented N terminal entity residues)
     # in entity and all asyms
-    pmi_offset = rep_range[0] - 1
+    # Force offset to be a real Python int (not numpy.int64) as python-ihm
+    # up to version 1.8 requires auth_seq_id_map to be int.
+    pmi_offset = int(rep_range[0]) - 1
     entity.pmi_offset = pmi_offset
     for asym in asyms:
         if asym.entity is entity:
