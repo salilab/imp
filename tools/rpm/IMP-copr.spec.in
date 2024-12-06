@@ -30,7 +30,7 @@ BuildRequires: protobuf-devel
 BuildRequires: python3-protobuf
 Requires: python3-protobuf
 
-BuildRequires: cmake >= 2.8
+BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
 BuildRequires: RMF-devel >= 1.6
 BuildRequires: python3-ihm
@@ -376,6 +376,9 @@ python3 test_mock.py -v
 %endif
 
 %changelog
+* Thu Dec 12 2024 Ben Webb <ben@salilab.org>   2.22.0-1
+- 2.22.0 release.
+
 * Thu Jun 13 2024 Ben Webb <ben@salilab.org>   2.21.0-1
 - 2.21.0 release.
 

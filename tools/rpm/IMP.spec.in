@@ -35,7 +35,7 @@ BuildRequires: protobuf-devel
 Requires: python3-protobuf
 %endif
 
-BuildRequires: cmake >= 2.8
+BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL.
@@ -433,6 +433,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec sed -i -e 's
 %endif
 
 %changelog
+* Thu Dec 12 2024 Ben Webb <ben@salilab.org>   2.22.0-1
+- 2.22.0 release.
+
 * Thu Jun 13 2024 Ben Webb <ben@salilab.org>   2.21.0-1
 - 2.21.0 release.
 
