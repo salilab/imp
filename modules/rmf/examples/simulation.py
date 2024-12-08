@@ -2,7 +2,6 @@
 # This example shows writing a brownian dynamics simulation to a rmf file.
 # It includes a bounding box, restraints and a hierarchy of particles.
 
-from __future__ import print_function, division
 import IMP.atom
 import IMP.rmf
 import RMF

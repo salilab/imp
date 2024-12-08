@@ -1,23 +1,18 @@
-from __future__ import print_function
-
 import ihm.format
 import IMP.test
 import IMP.pmi.topology
 import IMP.pmi.mmcif
+from io import StringIO
 import sys
 
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
 
-class MockMsgPack(object):
+class MockMsgPack:
     @staticmethod
     def pack(data, fh, use_bin_type=True):
         fh.data = data
 
 
-class MockFh(object):
+class MockFh:
     pass
 
 
@@ -136,6 +131,9 @@ class Tests(IMP.test.TestCase):
         w = ihm.format.CifWriter(fh)
         d = ihm.dumper._EntityDumper()
         d.finalize(po.system)
+        self.assertEqual(''.join(x.code
+                                 for x in po.system.entities[0].sequence),
+                         'MELS')
         d.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -151,6 +149,24 @@ _entity.details
 #
 """)
 
+    def test_entity_trimmed(self):
+        """Test that Entity sequence is trimmed to represented region"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = IMP.pmi.mmcif.ProtocolOutput()
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "GGGMELSGGGG", "A")
+        # Only "MELS" is represented, so the output entity should be of
+        # length 4 and weigh 532, not the full PMI sequence
+        nup84.add_representation(residues=nup84[3:7], resolutions=[1])
+        hier = s.build()
+        self.assertEqual(''.join(x.code
+                                 for x in po.system.entities[0].sequence),
+                         'MELS')
+        self.assertAlmostEqual(po.system.entities[0].formula_weight,
+                               532.606, delta=1e-2)
+
     def test_model_representation(self):
         """Test ModelRepresentationDumper with PMI2-style init"""
         m = IMP.Model()
@@ -158,10 +174,12 @@ _entity.details
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
         state = s.create_state()
-        nup84 = state.create_molecule("Nup84", "MELS", "A")
-        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
-        nup84.add_representation(resolutions=[1])
+        nup84 = state.create_molecule("Nup84", "GGGGMELSGG", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A',
+                            offset=4)
+        nup84.add_representation(resolutions=[1], residues=nup84[4:8])
         hier = s.build()
+        print([x.code for x in po.system.entities[0].sequence])
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
@@ -200,6 +218,53 @@ _ihm_model_representation_details.description
 2 1 1 Nup84 A 2 sphere . flexible by-feature 2 .
 #
 """)
+
+    def test_poly_seq_scheme_trimmed(self):
+        """Test that non-modeled termini are trimmed in scheme tables"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = IMP.pmi.mmcif.ProtocolOutput()
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84_a = state.create_molecule("Nup84a", "PWYACMELSWAG", "A")
+        nup84_a.add_representation(residues=nup84_a[4:7], resolutions=[1])
+        nup84_b = state.create_molecule("Nup84b", "PWYACMELSWAG", "A")
+        nup84_b.add_representation(residues=nup84_b[2:5], resolutions=[1])
+        hier = s.build()
+        self.assertEqual(len(po.system.entities), 1)
+        self.assertEqual(po.system.entities[0].pmi_offset, 2)
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        self.assign_entity_asym_ids(po.system)
+        self.assign_range_ids(po.system)
+        d = ihm.dumper._PolySeqSchemeDumper()
+        d.dump(po.system, w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 TYR 3 3 TYR TYR A .
+A 1 2 ALA 4 4 ALA ALA A .
+A 1 3 CYS 5 5 CYS CYS A .
+A 1 4 MET 6 6 MET MET A .
+A 1 5 GLU 7 7 GLU GLU A .
+B 1 1 TYR 3 3 TYR TYR B .
+B 1 2 ALA 4 4 ALA ALA B .
+B 1 3 CYS 5 5 CYS CYS B .
+B 1 4 MET 6 6 MET MET B .
+B 1 5 GLU 7 7 GLU GLU B .
+#
+""")
+
 
 if __name__ == '__main__':
     IMP.test.main()

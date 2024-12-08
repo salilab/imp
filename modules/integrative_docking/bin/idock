@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import IMP
 import IMP.saxs
 import os
@@ -47,7 +46,7 @@ def _run_binary(path, binary, args, out_file=None):
         raise OSError("subprocess failed with exit code %d" % ret)
 
 
-class Scorer(object):
+class Scorer:
 
     """Score transformations using a type of data.
        To add support for a new type of data, simply create a new Scorer
@@ -329,7 +328,7 @@ class CXMSScorer(ExperimentalScorer):
                      self.cross_links_file, '-o', self.output_file])
 
 
-class IDock(object):
+class IDock:
 
     """Handle all stages of the integrative docking protocol"""
 

@@ -20,7 +20,7 @@ except ImportError:    # pragma: no cover
 import json
 from . import util
 
-__version__ = '1.1'
+__version__ = '1.8'
 
 
 class __UnknownValue(object):
@@ -75,7 +75,7 @@ class System(object):
        :param str model_details: Detailed description of the system, like an
                                  abstract.
        :param databases: If this system is part of one or more official
-              databases (e.g. PDB, PDB-Dev, SwissModel), details of
+              databases (e.g. PDB, SwissModel), details of
               the database identifiers.
        :type databases: sequence of :class:`Database`
     """
@@ -120,6 +120,9 @@ class System(object):
         #: These are used to group depositions of related entries.
         #: See :class:`Collection`.
         self.collections = []
+
+        #: Revision/update history. See :class:`Revision`.
+        self.revisions = []
 
         #: All orphaned chemical descriptors in the system.
         #: See :class:`ChemDescriptor`. This can be used to track descriptors
@@ -233,6 +236,13 @@ class System(object):
         #: All multi-state schemes
         #: See :class:`~ihm.multi_state_scheme.MultiStateScheme`.
         self.multi_state_schemes = []
+
+        self._orphan_centers = []
+        self._orphan_dataset_transforms = []
+        self._orphan_geometric_transforms = []
+        self._orphan_relaxation_times = []
+        self._orphan_repos = []
+        self._orphan_chem_comps = []
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
@@ -648,6 +658,11 @@ class System(object):
                         continue
                     seen_relaxation_times.append(rt)
                     yield rt
+        for rt in self._orphan_relaxation_times:
+            if rt in seen_relaxation_times:
+                continue
+            seen_relaxation_times.append(rt)
+            yield rt
 
     def _before_write(self):
         """Do any setup necessary before writing out to a file"""
@@ -675,7 +690,7 @@ class Database(object):
     """Information about a System that is part of an official database.
 
        If a :class:`System` is part of one or more official databases
-       (e.g. PDB, PDB-Dev, SwissModel), this class contains details of the
+       (e.g. PDB, SwissModel), this class contains details of the
        database identifiers. It should be passed to the :class:`System`
        constructor.
 
@@ -783,11 +798,13 @@ class Citation(object):
         self.is_primary = is_primary
 
     @classmethod
-    def from_pubmed_id(cls, pubmed_id):
+    def from_pubmed_id(cls, pubmed_id, is_primary=False):
         """Create a Citation from just a PubMed ID.
            This is done by querying NCBI's web API, so requires network access.
 
            :param int pubmed_id: The PubMed identifier.
+           :param bool is_primary: Denotes the most pertinent publication for
+                  the modeling itself; see :class:`Citation` for more info.
            :return: A new Citation for the given identifier.
            :rtype: :class:`Citation`
         """
@@ -839,7 +856,8 @@ class Citation(object):
                    volume=enc(ref['volume']) or None,
                    page_range=get_page_range(ref),
                    year=enc(ref['pubdate']).split()[0],
-                   authors=authors, doi=get_doi(ref))
+                   authors=authors, doi=get_doi(ref),
+                   is_primary=is_primary)
 
 
 class ChemComp(object):
@@ -1224,8 +1242,8 @@ class EntityRange(object):
         if not entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.entity = entity
-        # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
+        util._check_residue_range(self.seq_id_range, self.entity)
 
     def __eq__(self, other):
         try:
@@ -1272,8 +1290,9 @@ class Residue(object):
         self.asym = asym
         if entity is None and asym:
             self.entity = asym.entity
-        # todo: check id for validity (at property read time)
         self.seq_id = seq_id
+        if self.entity is not None and self.entity.is_polymeric():
+            util._check_residue(self)
 
     def atom(self, atom_id):
         """Get a :class:`~ihm.Atom` in this residue with the given name."""
@@ -1353,6 +1372,9 @@ class Entity(object):
 
     _force_polymer = None
     _hint_branched = None
+    # Set to False to allow invalid seq_ids for residue or residue_range;
+    # this is done, for example, when reading a file.
+    _range_check = True
 
     def __get_type(self):
         if self.is_polymeric():
@@ -1476,8 +1498,8 @@ class AsymUnitRange(object):
         if asym.entity is not None and not asym.entity.is_polymeric():
             raise TypeError("Can only create ranges for polymeric entities")
         self.asym = asym
-        # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
+        util._check_residue_range(self.seq_id_range, self.entity)
 
     def __eq__(self, other):
         try:
@@ -1776,3 +1798,43 @@ class BranchLink(object):
         self.leaving_atom_id1 = leaving_atom_id1
         self.leaving_atom_id2 = leaving_atom_id2
         self.order, self.details = order, details
+
+
+class Revision(object):
+    """Represent part of the history of a :class:`System`.
+
+       :param str data_content_type: The type of file that was changed.
+       :param int major: Major version number.
+       :param int minor: Minor version number.
+       :param date: Release date.
+       :type date: :class:`datetime.date`
+
+       Generally these objects are added to :attr:`System.revisions`.
+    """
+    def __init__(self, data_content_type, minor, major, date):
+        self.data_content_type = data_content_type
+        self.minor, self.major = minor, major
+        self.date = date
+        #: More details of the changes, as :class:`RevisionDetails` objects
+        self.details = []
+        #: Collection of categories (as strings) updated with this revision
+        self.groups = []
+        #: Categories (as strings) updated with this revision
+        self.categories = []
+        #: Items (as strings) updated with this revision
+        self.items = []
+
+
+class RevisionDetails(object):
+    """More information on the changes in a given :class:`Revision`.
+
+       :param str provider: The provider (author, repository) of the revision.
+       :param str type: Classification of the revision.
+       :param str description: Additional details describing the revision.
+
+      These objects are typically stored in :attr:`Revision.details`.
+    """
+    def __init__(self, provider, type, description):
+        self.provider = provider
+        self.type = type
+        self.description = description

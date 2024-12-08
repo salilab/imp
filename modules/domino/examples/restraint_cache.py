@@ -10,7 +10,6 @@
 # those restraints. You can also extract scores from the table
 # directly, using it to manage the loading of particle states.
 
-from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container

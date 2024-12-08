@@ -707,16 +707,198 @@ class _ModellerTemplateHandler(ihm.reader.Handler):
         self.m['modeller_templates'].append(t)
 
 
+class _ModelCifAlignment(object):
+    """Store alignment information from a ModelCIF file"""
+
+    def __init__(self):
+        self.target = self.template = self.seq_id = None
+
+    def get_template_object(self, target_dataset):
+        """Convert the alignment information into an IHM Template object"""
+        return self.template.template.get_template_object(target_dataset,
+                                                          aln=self)
+
+
+class _TemplateRange(object):
+    """Store information about a template residue range from a ModelCIF file"""
+    def __init__(self):
+        self.seq_id_range = None
+        self.template = None
+
+
+class _TargetRange(object):
+    """Store information about a target residue range from a ModelCIF file"""
+    def __init__(self):
+        self.seq_id_range = None
+        self.asym_id = None
+
+
+class _Template(object):
+    """Store template information from a ModelCIF file"""
+
+    # Map ModelCIF ma_template_ref_db_details.db_name to IHMCIF equivalents
+    _modelcif_dbmap = {'PDB': (dataset.PDBDataset, location.PDBLocation),
+                       'PDB-DEV': (dataset.IntegrativeModelDataset,
+                                   location.PDBDevLocation),
+                       'MA': (dataset.DeNovoModelDataset,
+                              location.ModelArchiveLocation),
+                       'ALPHAFOLDDB': (dataset.DeNovoModelDataset,
+                                       location.AlphaFoldDBLocation)}
+
+    def __init__(self):
+        self.auth_asym_id = self.db_name = self.db_accession_code = None
+        self.db_version_date = self.target_asym_id = None
+
+    def get_template_object(self, target_dataset, aln=None):
+        """Convert the template information into an IHM Template object"""
+        dsetcls, loccls = self._modelcif_dbmap.get(
+            self.db_name.upper(),
+            (dataset.Dataset, location.DatabaseLocation))
+        loc = loccls(db_code=self.db_accession_code,
+                     version=self.db_version_date)
+        d = dsetcls(location=loc)
+        # Make the computed model dataset derive from the template's
+        target_dataset.parents.append(d)
+
+        t = startmodel.Template(
+            dataset=d, asym_id=self.auth_asym_id,
+            seq_id_range=aln.target.seq_id_range if aln else (None, None),
+            template_seq_id_range=aln.template.seq_id_range
+            if aln else (None, None),
+            sequence_identity=aln.seq_id if aln else None)
+        return aln.target.asym_id if aln else self.target_asym_id, t
+
+
+class _SystemReader(object):
+    """A minimal implementation, so we can use some of the Handlers
+       in ihm.reader but get outputs in the results dict."""
+    def __init__(self, m):
+        self.software = ihm.reader.IDMapper(m['software'], ihm.Software,
+                                            *(None,) * 4)
+        self.citations = ihm.reader.IDMapper(None, ihm.Citation, *(None,) * 8)
+        self.alignments = ihm.reader.IDMapper(m['alignments'],
+                                              _ModelCifAlignment)
+        self.template_ranges = ihm.reader.IDMapper(None, _TemplateRange)
+        self.target_ranges = ihm.reader.IDMapper(None, _TargetRange)
+        self.templates = ihm.reader.IDMapper(m['templates'], _Template)
+
+
+class _TemplateDetailsHandler(ihm.reader.Handler):
+    """Extract template information from a ModelCIF file"""
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, template_id, target_asym_id, template_auth_asym_id):
+        template = self.sysr.templates.get_by_id(template_id)
+        template.auth_asym_id = template_auth_asym_id
+        template.target_asym_id = target_asym_id
+
+
+class _TemplateRefDBDetailsHandler(ihm.reader.Handler):
+    """Extract template database information from a ModelCIF file"""
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, template_id, db_name, db_accession_code,
+                 db_version_date):
+        template = self.sysr.templates.get_by_id(template_id)
+        template.db_name = db_name
+        template.db_accession_code = db_accession_code
+        template.db_version_date = db_version_date
+
+
+class _TemplatePolySegmentHandler(ihm.reader.Handler):
+    """Extract template residue range information from a ModelCIF file"""
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, id, template_id, residue_number_begin,
+                 residue_number_end):
+        tr = self.sysr.template_ranges.get_by_id(id)
+        tr.seq_id_range = (self.get_int(residue_number_begin),
+                           self.get_int(residue_number_end))
+        tr.template = self.sysr.templates.get_by_id(template_id)
+
+
+class _TemplatePolyMappingHandler(ihm.reader.Handler):
+    """Extract target residue range information from a ModelCIF file"""
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, id, template_segment_id, target_asym_id,
+                 target_seq_id_begin, target_seq_id_end):
+        m = self.sysr.target_ranges.get_by_id((template_segment_id,
+                                               target_asym_id))
+        m.seq_id_range = (self.get_int(target_seq_id_begin),
+                          self.get_int(target_seq_id_end))
+
+
+class _SeqIDMapper(object):
+    """Map ModelCIF sequence identity to IHMCIF equivalent"""
+
+    identity_map = {
+        "length of the shorter sequence":
+        SequenceIdentityDenominator.SHORTER_LENGTH,
+        "number of aligned positions (including gaps)":
+        SequenceIdentityDenominator.NUM_ALIGNED_WITH_GAPS}
+
+    def __call__(self, pct_id, denom):
+        denom = self.identity_map.get(
+            denom.lower() if denom else None,
+            SequenceIdentityDenominator.OTHER)
+        return startmodel.SequenceIdentity(
+            value=pct_id, denominator=denom)
+
+
+class _AlignmentDetailsHandler(ihm.reader.Handler):
+    """Read pairwise alignments (ma_alignment_details table)"""
+
+    def __init__(self, sysr):
+        self.sysr = sysr
+        self.seq_id_mapper = _SeqIDMapper()
+
+    def __call__(self, alignment_id, template_segment_id, target_asym_id,
+                 percent_sequence_identity, sequence_identity_denominator):
+        aln = self.sysr.alignments.get_by_id(alignment_id)
+        aln.seq_id = self.seq_id_mapper(
+            self.get_float(percent_sequence_identity),
+            sequence_identity_denominator)
+        tgt_rng = self.sysr.target_ranges.get_by_id((template_segment_id,
+                                                     target_asym_id))
+        tmpl_rng = self.sysr.template_ranges.get_by_id(template_segment_id)
+        aln.target = tgt_rng
+        aln.target.asym_id = target_asym_id
+        aln.template = tmpl_rng
+
+
+class _ModBaseLocation(location.DatabaseLocation):
+    """A model deposited in ModBase"""
+    def __init__(self, db_code, version=None, details=None):
+        # Use details to describe ModBase, ignoring the file title
+        super(_ModBaseLocation, self).__init__(
+            db_code, version=version,
+            details="ModBase database of comparative protein structure models")
+
+
 class CIFParser(Parser):
-    """Extract metadata from an mmCIF file. Currently, this does not handle
-       information from comparative modeling packages such as MODELLER
-       (see :class:`PDBParser`).
+    """Extract metadata (e.g. PDB ID, comparative modeling templates)
+       from an mmCIF file. This currently handles mmCIF files from the PDB
+       database itself, models compliant with the ModelCIF dictionary,
+       plus files from Model Archive or the outputs from the
+       MODELLER comparative modeling package.
 
        See also :class:`PDBParser` for coordinate files in legacy PDB format.
     """
+
+    # Map PDBx database_2.database_name to IHMCIF equivalents
     dbmap = {'PDB': (location.PDBLocation, dataset.PDBDataset),
+             'PDB-DEV': (location.PDBDevLocation,
+                         dataset.IntegrativeModelDataset),
              'MODELARCHIVE': (location.ModelArchiveLocation,
-                              dataset.DeNovoModelDataset)}
+                              dataset.DeNovoModelDataset),
+             'ALPHAFOLDDB': (location.AlphaFoldDBLocation,
+                             dataset.DeNovoModelDataset),
+             'MODBASE': (_ModBaseLocation, dataset.ComparativeModelDataset)}
 
     def parse_file(self, filename):
         """Extract metadata. See :meth:`Parser.parse_file` for details.
@@ -737,7 +919,7 @@ class CIFParser(Parser):
                     objects).
         """
         m = {'db': {}, 'title': 'Starting model structure',
-             'software': []}
+             'software': [], 'templates': [], 'alignments': []}
         with open(filename) as fh:
             dbh = _Database2Handler(m)
             structh = _StructHandler(m)
@@ -745,11 +927,24 @@ class CIFParser(Parser):
             exptlh = _ExptlHandler(m)
             modellerh = _ModellerHandler(m, filename)
             modtmplh = _ModellerTemplateHandler(m)
+            sysr = _SystemReader(m)
             r = ihm.format.CifReader(
                 fh, {'_database_2': dbh, '_struct': structh,
                      '_pdbx_audit_revision_history': arevhisth,
                      '_exptl': exptlh, '_modeller': modellerh,
-                     '_modeller_template': modtmplh})
+                     '_modeller_template': modtmplh,
+                     '_software': ihm.reader._SoftwareHandler(sysr),
+                     '_citation': ihm.reader._CitationHandler(sysr),
+                     '_citation_author':
+                     ihm.reader._CitationAuthorHandler(sysr),
+                     '_ma_template_details': _TemplateDetailsHandler(sysr),
+                     '_ma_template_ref_db_details':
+                     _TemplateRefDBDetailsHandler(sysr),
+                     '_ma_template_poly_segment':
+                     _TemplatePolySegmentHandler(sysr),
+                     '_ma_target_template_poly_mapping':
+                     _TemplatePolyMappingHandler(sysr),
+                     '_ma_alignment_details': _AlignmentDetailsHandler(sysr)})
             r.read_file()
         dset = self._get_dataset(filename, m)
         return {'dataset': dset, 'software': m['software'],
@@ -774,9 +969,25 @@ class CIFParser(Parser):
         alnfile = m['alnfile']
         template_path_map = {}
         templates = {}
-        for t in m['modeller_templates']:
-            chain, template = _handle_modeller_template(t, template_path_map,
-                                                        dset, alnfile)
+
+        def _handle_templates():
+            # Use Modeller-provided templates if available
+            if m['modeller_templates']:
+                for t in m['modeller_templates']:
+                    yield _handle_modeller_template(
+                        t, template_path_map, dset, alnfile)
+            # Otherwise, use ModelCIF templates
+            else:
+                seen_templates = set()
+                for aln in m['alignments']:
+                    seen_templates.add(aln.template.template)
+                    yield aln.get_template_object(dset)
+                # Handle any unaligned templates (e.g. AlphaFold)
+                for t in m['templates']:
+                    if t not in seen_templates:
+                        yield t.get_template_object(dset)
+
+        for chain, template in _handle_templates():
             if chain not in templates:
                 templates[chain] = []
             templates[chain].append(template)

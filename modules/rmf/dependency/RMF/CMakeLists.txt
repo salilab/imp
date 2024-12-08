@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12...3.6.0)
+cmake_minimum_required(VERSION 3.14.0)
 project(RMF)
 
 # needs to be in main CMakeLists.txt
@@ -47,6 +47,12 @@ endif(POLICY CMP0078)
 if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif(POLICY CMP0086)
+
+# Use FindBoost module rather than BoostConfig.cmake (which requires
+# Boost 1.70 or later)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif(POLICY CMP0167)
 
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
@@ -139,8 +145,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 # Version information
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 6)
-set (RMF_VERSION_MICRO 1)
+set (RMF_VERSION_MINOR 7)
+set (RMF_VERSION_MICRO 0)
 math (EXPR RMF_VERSION "${RMF_VERSION_MAJOR} * 100000 + ${RMF_VERSION_MINOR} * 100 + ${RMF_VERSION_MICRO}")
 
 set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)

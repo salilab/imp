@@ -2,7 +2,6 @@
 Restraints for handling electron microscopy maps.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -15,7 +14,7 @@ import IMP.isd.gmm_tools
 from math import sqrt
 
 
-class GaussianEMRestraint(object):
+class GaussianEMRestraint:
     """Fit Gaussian-decorated particles to an EM map
     (also represented with a set of Gaussians)
     @note This class wraps an isd::GaussianEMRestraint

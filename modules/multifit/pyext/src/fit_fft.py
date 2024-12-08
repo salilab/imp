@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import math
 import IMP.multifit
 import IMP.atom
@@ -24,19 +23,15 @@ except ImportError as detail:
 
 
 def _get_context():
-    if hasattr(multiprocessing, 'get_context'):
-        # Use 'forkserver' rather than 'fork' start method if we can;
-        # 'fork' does not work well with multithreaded processes or CUDA
-        if 'forkserver' in multiprocessing.get_all_start_methods():
-            return multiprocessing.get_context('forkserver')
-        else:
-            return multiprocessing.get_context()
+    # Use 'forkserver' rather than 'fork' start method if we can; 'fork' does
+    # not work well with multithreaded processes or CUDA
+    if 'forkserver' in multiprocessing.get_all_start_methods():
+        return multiprocessing.get_context('forkserver')
     else:
-        # For Python < 3.4, just use the original module
-        return multiprocessing
+        return multiprocessing.get_context()
 
 
-class Fitter(object):
+class Fitter:
 
     def __init__(
         self,

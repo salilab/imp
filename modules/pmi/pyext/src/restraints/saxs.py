@@ -2,7 +2,6 @@
 Restraints for handling small angle x-ray (SAXS) data.
 """
 
-from __future__ import print_function
 import math
 import IMP
 import IMP.core
@@ -56,7 +55,7 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
         hiers = IMP.pmi.tools.input_adaptor(input_objects,
                                             flatten=True)
         model = list(hiers)[0].get_model()
-        super(SAXSRestraint, self).__init__(model, label=label, weight=weight)
+        super().__init__(model, label=label, weight=weight)
 
         # Determine maxq to compare computed and experimental profiles
         if maxq == "standard":
@@ -120,8 +119,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
                               "Cannot use SAXSISDRestraint")
 
         model = representation.prot.get_model()
-        super(SAXSISDRestraint, self).__init__(model, label=label,
-                                               weight=weight)
+        super().__init__(model, label=label, weight=weight)
 
         self.taumaxtrans = 0.05
         self.prof = IMP.saxs.Profile(profile)
@@ -256,7 +254,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
             fl.write('\n')
 
     def get_output(self):
-        output = super(SAXSISDRestraint, self).get_output()
+        output = super().get_output()
         suffix = self._get_label_suffix()
         output["SAXSISDRestraint_Sigma" +
                suffix] = str(self.sigma.get_scale())

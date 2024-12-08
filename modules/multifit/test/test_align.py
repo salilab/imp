@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
             def unload_combination(self, comb):
                 pass
 
-        class DummyFitRestraint(object):
+        class DummyFitRestraint:
 
             def __init__(self, leaves, dmap):
                 self.scores = [1.0, 0.0, 0.5, 0.2]

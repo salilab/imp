@@ -23,7 +23,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
  * The indices are increased from last to first, and the increment is always +1
  * If the last set of indices has been reached, false is returned.
  * \param[in] inds class with the list of indices to roll. It must be a class
- * admiting access via [], and the function .size()
+ * admitting access via [], and the function .size()
  * \param[in] dims class with the list of sizes the array for each dimension
  * \param[in] inds class with the list of starting indices for the array
  */

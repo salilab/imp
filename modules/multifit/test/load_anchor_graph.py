@@ -1,4 +1,3 @@
-from __future__ import print_function
 from xml.dom import minidom
 import sys
 import IMP.algebra

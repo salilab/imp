@@ -185,6 +185,22 @@ class Tests(unittest.TestCase):
                 d.add_model(m1)
                 self.assertRaises(ValueError, d.add_model, m2)
 
+    def test_not_modeled_residue_range(self):
+        """Test construction of NotModeledResidueRange"""
+        e = ihm.Entity('ACGT')
+        asym = ihm.AsymUnit(e, 'foo')
+        rr = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        self.assertEqual(rr.seq_id_begin, 1)
+        self.assertEqual(rr.seq_id_end, 2)
+        # Cannot create reversed range
+        self.assertRaises(ValueError, ihm.model.NotModeledResidueRange,
+                          asym, 3, 1)
+        # Cannot create out-of-range range
+        self.assertRaises(IndexError, ihm.model.NotModeledResidueRange,
+                          asym, -3, 1)
+        self.assertRaises(IndexError, ihm.model.NotModeledResidueRange,
+                          asym, 1, 10)
+
 
 if __name__ == '__main__':
     unittest.main()

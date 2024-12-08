@@ -1,9 +1,5 @@
-from __future__ import print_function
 import RMF
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 
 b = RMF.BufferHandle()
 f = RMF.create_rmf_buffer(b)

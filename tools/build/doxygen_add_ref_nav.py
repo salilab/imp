@@ -4,7 +4,6 @@
    to what is done for the manual (see doxygen_add_nav.py).
 """
 
-from __future__ import print_function
 from doxygen_add_nav import Docs, Page
 import tools
 import sys
@@ -29,7 +28,8 @@ def get_module_readme(module):
 
 def main():
     source = sys.argv[1]
-    modules = [m[0] for m in tools.get_modules(source)]
+    # Exclude obsolete modules
+    modules = [m[0] for m in tools.get_modules(source) if m[0] != 'pmi1']
     docs = Docs(xml_dir='doxygen/ref/xml',
                 html_dir='doc/ref',
                 top_source_dir=source,

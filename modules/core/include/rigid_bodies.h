@@ -210,7 +210,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   }
 
   //! Get the reference frame of this rigid body, which enables
-  //! trnasformation between the local rigid body coordinates
+  //! transformation between the local rigid body coordinates
   //! global coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
     algebra::VectorD<4> v(

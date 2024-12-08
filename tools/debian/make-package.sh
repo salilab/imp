@@ -27,23 +27,13 @@ cp -r tools/debian/ . || exit 1
 rm debian/make-package.sh debian/make-imp-install.py || exit 1
 perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAME/;" debian/changelog  || exit 1
 
-# Newer distributions don't have Python 2
-if [ "${CODENAME}" = "noble" ]; then
-  patch -p2 < debian/no-python2.patch || exit 1
-  rm debian/no-python2.patch debian/imp-python2.* || exit 1
-  perl -pi -e "s/python2-dev, //" debian/control || exit 1
-fi
-
-# Newer distributions don't have Python 2 modules, and renamed libgsl0
+# Newer distributions renamed libgsl0
 if [ "${CODENAME}" = "jammy" ]; then
-  perl -pi -e "s/, python-numpy, python-protobuf//" debian/control || exit 1
   perl -pi -e "s/libgsl0-dev/libgsl-dev/" debian/control || exit 1
 fi
 if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "bionic" ]; then
   # CGAL cmake support on Xenial or later requires Qt5 headers too
   perl -pi -e "s/libcgal\-dev/libcgal-dev, libcgal-qt5-dev/g" debian/control || exit 1
-  # python2-dev is called python-dev on older Ubuntu
-  perl -pi -e "s/python2\-dev/python-dev/g" debian/control || exit 1
 fi
 # Older distributions don't support python3-protobuf
 if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "trusty" ]; then

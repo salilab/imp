@@ -17,8 +17,10 @@ import ihm.cross_linkers
 import ihm.multi_state_scheme
 import ihm.flr
 import inspect
+import datetime
 import warnings
 import collections
+from . import util
 try:
     from . import _format
 except ImportError:
@@ -36,7 +38,20 @@ def _make_new_entity():
     e = ihm.Entity([])
     # make sequence mutable (see also SystemReader.finalize)
     e.sequence = list(e.sequence)
+    # disable residue range checks during file read (see also
+    # _finalize_entities)
+    e._range_check = False
     return e
+
+
+def _finalize_entities(system):
+    """Finalize all Entities in the given System.
+       This is done here and not in SystemReader.finalize so that it happens
+       both for python-ihm and for python-modelcif; it is also not done in
+       _EntityHandler.finalize as we want to be sure all other finalization
+       is done first."""
+    for e in system.entities:
+        e._range_check = True
 
 
 def _get_vector3(d, key):
@@ -60,6 +75,15 @@ def _get_matrix33(d, key):
                 for i in (1, 2, 3)]
 
 
+def _get_iso_date(iso_date_str):
+    """Get a datetime.date obj for a string in isoformat."""
+    if not iso_date_str:
+        return iso_date_str
+    return datetime.date(int(iso_date_str[0:4]),
+                         int(iso_date_str[5:7]),
+                         int(iso_date_str[8:10]))
+
+
 class IDMapper(object):
     """Utility class to handle mapping from mmCIF IDs to Python objects.
 
@@ -77,6 +101,14 @@ class IDMapper(object):
         self._cls = cls
         self._cls_args = cls_args
         self._cls_keys = cls_keys
+        # Fill in any existing IDs if available, so that we can add objects
+        # to an existing system
+        # todo: handle objects where system_list is None
+        # e.g. some handlers use FLRListAdapter, which doesn't
+        # support iteration
+        if system_list and hasattr(system_list, '__iter__'):
+            for obj in system_list:
+                self._obj_by_id[getattr(obj, self.id_attr)] = obj
 
     def get_all(self):
         """Yield all objects seen so far (unordered)"""
@@ -142,7 +174,11 @@ class _ChemCompIDMapper(IDMapper):
     def get_by_id(self, objid, newcls=None):
         # Don't modify class of standard residue types
         if objid in self._standard_by_id:
-            return self._standard_by_id[objid]
+            obj = self._standard_by_id[objid]
+            if objid not in self._obj_by_id:
+                self._obj_by_id[objid] = obj
+                self.system_list.append(obj)
+            return obj
         else:
             # Assign nonpolymer class based on the ID
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
@@ -193,6 +229,7 @@ class RangeIDMapper(object):
         if range_id is None:
             return asym_or_entity
         else:
+            # Allow reading out-of-range ranges
             return asym_or_entity(*self._id_map[range_id])
 
 
@@ -349,7 +386,7 @@ class _FLRIDMapper(IDMapper):
         super(_FLRIDMapper, self).__init__(system_list, cls, *args, **keys)
 
 
-class _DatasetIDMapper(object):
+class _DatasetAssemblyIDMapper(object):
     """Handle mapping from mmCIF dataset IDs to Python objects.
 
        This is similar to IDMapper but is intended for objects like restraints
@@ -369,14 +406,15 @@ class _DatasetIDMapper(object):
         self._cls_args = cls_args
         self._cls_keys = cls_keys
 
-    def get_by_dataset(self, dataset_id):
+    def get_by_dataset(self, dataset_id, assembly_id):
         dataset = self.datasets.get_by_id(dataset_id)
-        if dataset._id not in self._obj_by_id:
+        k = (dataset._id, assembly_id)
+        if k not in self._obj_by_id:
             r = self._cls(dataset, *self._cls_args, **self._cls_keys)
             self.system_list.append(r)
-            self._obj_by_id[dataset._id] = r
+            self._obj_by_id[k] = r
         else:
-            r = self._obj_by_id[dataset._id]
+            r = self._obj_by_id[k]
         return r
 
 
@@ -407,9 +445,9 @@ class SystemReader(object):
        being read from a file, such as the mapping from IDs to objects
        (as :class:`IDMapper` objects). This can be used by :class:`Handler`
        subclasses."""
-    def __init__(self, model_class, starting_model_class):
+    def __init__(self, model_class, starting_model_class, system=None):
         #: The :class:`ihm.System` object being read in
-        self.system = ihm.System()
+        self.system = system or ihm.System()
 
         #: Mapping from ID to :class:`ihm.Software` objects
         self.software = IDMapper(self.system.software, ihm.Software,
@@ -418,6 +456,10 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.Citation` objects
         self.citations = IDMapper(self.system.citations, ihm.Citation,
                                   *(None,) * 8)
+
+        #: Mapping from ID to :class:`ihm.Revision` objects
+        self.revisions = IDMapper(self.system.revisions, ihm.Revision,
+                                  *(None,) * 4)
 
         #: Mapping from ID to :class:`ihm.Entity` objects
         self.entities = IDMapper(self.system.entities, _make_new_entity)
@@ -435,7 +477,8 @@ class SystemReader(object):
         self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
 
         #: Mapping from ID to :class:`ihm.ChemComp` objects
-        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
+        self.chem_comps = _ChemCompIDMapper(self.system._orphan_chem_comps,
+                                            ihm.ChemComp, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.reference.Alignment` objects
         self.alignments = IDMapper(None, ihm.reference.Alignment)
@@ -455,7 +498,8 @@ class SystemReader(object):
         self.ranges = RangeIDMapper()
 
         #: Mapping from ID to :class:`ihm.location.Repository` objects
-        self.repos = IDMapper(None, ihm.location.Repository, None)
+        self.repos = IDMapper(self.system._orphan_repos,
+                              ihm.location.Repository, None)
 
         #: Mapping from ID to :class:`ihm.location.FileLocation` objects
         self.external_files = IDMapper(self.system.locations,
@@ -516,10 +560,9 @@ class SystemReader(object):
                                   ihm.model.LocalizationDensity, *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.restraint.EM3DRestraint` objects
-        self.em3d_restraints = _DatasetIDMapper(self.system.restraints,
-                                                self.datasets,
-                                                ihm.restraint.EM3DRestraint,
-                                                None)
+        self.em3d_restraints = _DatasetAssemblyIDMapper(
+            self.system.restraints, self.datasets,
+            ihm.restraint.EM3DRestraint, None)
 
         #: Mapping from ID to :class:`ihm.restraint.EM2DRestraint` objects
         self.em2d_restraints = IDMapper(self.system.restraints,
@@ -527,10 +570,9 @@ class SystemReader(object):
                                         *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.restraint.SASRestraint` objects
-        self.sas_restraints = _DatasetIDMapper(self.system.restraints,
-                                               self.datasets,
-                                               ihm.restraint.SASRestraint,
-                                               None)
+        self.sas_restraints = _DatasetAssemblyIDMapper(
+            self.system.restraints, self.datasets,
+            ihm.restraint.SASRestraint, None)
 
         #: Mapping from ID to :class:`ihm.restraint.Feature` objects
         self.features = _FeatureIDMapper(self.system.orphan_features,
@@ -545,6 +587,11 @@ class SystemReader(object):
         self.dist_restraints = IDMapper(
             self.system.restraints, ihm.restraint.DerivedDistanceRestraint,
             *(None,) * 4)
+
+        #: Mapping from ID to :class:`ihm.restraint.HDXRestraint` objects
+        self.hdx_restraints = IDMapper(
+            self.system.restraints, ihm.restraint.HDXRestraint,
+            *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.restraint.PredictedContactRestraint`
         #: objects
@@ -567,18 +614,21 @@ class SystemReader(object):
             self.system.orphan_geometric_objects, ihm.geometry.GeometricObject)
 
         #: Mapping from ID to :class:`ihm.geometry.Center` objects
-        self.centers = IDMapper(None, ihm.geometry.Center, *(None,) * 3)
+        self.centers = IDMapper(self.system._orphan_centers,
+                                ihm.geometry.Center, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
-        self.transformations = IDMapper(None, ihm.geometry.Transformation,
-                                        *(None,) * 2)
+        self.transformations = IDMapper(
+            self.system._orphan_geometric_transforms,
+            ihm.geometry.Transformation, *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
         #: used by :class:`ihm.dataset.TransformedDataset` objects (this is
         #: distinct from :attr:`transformations` since they are stored in
         #: separate tables, with different IDs, in the mmCIF file).
         self.data_transformations = IDMapper(
-            None, ihm.geometry.Transformation, *(None,) * 2)
+            self.system._orphan_dataset_transforms,
+            ihm.geometry.Transformation, *(None,) * 2)
 
         #: Mapping from ID to :class:`ihm.restraint.GeometricRestraint` objects
         self.geom_restraints = IDMapper(
@@ -636,7 +686,7 @@ class SystemReader(object):
         #: Mapping from ID to
         #: :class:`ihm.multi_state_scheme.RelaxationTime` objects
         self.relaxation_times = IDMapper(
-            None,
+            self.system._orphan_relaxation_times,
             ihm.multi_state_scheme.RelaxationTime,
             *(None,) * 2)
 
@@ -1006,6 +1056,52 @@ class _AuditAuthorHandler(Handler):
         self.system.authors.append(name)
 
 
+class _AuditRevisionHistoryHandler(Handler):
+    category = '_pdbx_audit_revision_history'
+
+    def __call__(self, ordinal, data_content_type, major_revision,
+                 minor_revision, revision_date):
+        r = self.sysr.revisions.get_by_id(ordinal)
+        r.data_content_type = data_content_type
+        r.major = self.get_int(major_revision)
+        r.minor = self.get_int(minor_revision)
+        r.date = _get_iso_date(revision_date)
+
+
+class _AuditRevisionDetailsHandler(Handler):
+    category = '_pdbx_audit_revision_details'
+
+    def __call__(self, revision_ordinal, provider, type, description):
+        r = self.sysr.revisions.get_by_id(revision_ordinal)
+        d = ihm.RevisionDetails(provider=provider, type=type,
+                                description=description)
+        r.details.append(d)
+
+
+class _AuditRevisionGroupHandler(Handler):
+    category = '_pdbx_audit_revision_group'
+
+    def __call__(self, revision_ordinal, group):
+        r = self.sysr.revisions.get_by_id(revision_ordinal)
+        r.groups.append(group)
+
+
+class _AuditRevisionCategoryHandler(Handler):
+    category = '_pdbx_audit_revision_category'
+
+    def __call__(self, revision_ordinal, category):
+        r = self.sysr.revisions.get_by_id(revision_ordinal)
+        r.categories.append(category)
+
+
+class _AuditRevisionItemHandler(Handler):
+    category = '_pdbx_audit_revision_item'
+
+    def __call__(self, revision_ordinal, item):
+        r = self.sysr.revisions.get_by_id(revision_ordinal)
+        r.items.append(item)
+
+
 class _GrantHandler(Handler):
     category = '_pdbx_audit_support'
 
@@ -1225,7 +1321,7 @@ class _StructRefSeqDifHandler(Handler):
     def __call__(self, align_id, seq_num, db_mon_id, mon_id, details):
         align = self.sysr.alignments.get_by_id(align_id)
         db_monomer = self.sysr.chem_comps.get_by_id_or_none(db_mon_id)
-        monomer = self.sysr.chem_comps.get_by_id(mon_id)
+        monomer = self.sysr.chem_comps.get_by_id_or_none(mon_id)
         sd = ihm.reference.SeqDif(self.get_int(seq_num), db_monomer, monomer,
                                   details)
         align.seq_dif.append(sd)
@@ -1271,31 +1367,13 @@ class _EntityPolyHandler(Handler):
         super(_EntityPolyHandler, self).__init__(*args)
         self._entity_info = {}
 
-    def _get_codes(self, codestr):
-        """Convert a one-letter-code string into a sequence of individual
-           codes"""
-        if codestr is None:
-            return
-        i = 0
-        while i < len(codestr):
-            # Strip out linebreaks
-            if codestr[i] == '\n':
-                pass
-            elif codestr[i] == '(':
-                end = codestr.index(')', i)
-                yield codestr[i + 1:end]
-                i = end
-            else:
-                yield codestr[i]
-            i += 1
-
     def __call__(self, entity_id, type, pdbx_seq_one_letter_code,
                  pdbx_seq_one_letter_code_can):
         class EntityInfo(object):
             pass
         e = EntityInfo()
-        e.one_letter = tuple(self._get_codes(pdbx_seq_one_letter_code))
-        e.one_letter_can = tuple(self._get_codes(pdbx_seq_one_letter_code_can))
+        e.one_letter = tuple(util._get_codes(pdbx_seq_one_letter_code))
+        e.one_letter_can = tuple(util._get_codes(pdbx_seq_one_letter_code_can))
         e.sequence_type = type
         self._entity_info[entity_id] = e
 
@@ -1481,6 +1559,8 @@ class _DatasetListHandler(Handler):
             (x[1].data_type.lower(), x[1])
             for x in inspect.getmembers(ihm.dataset, inspect.isclass)
             if issubclass(x[1], ihm.dataset.Dataset))
+        # Map old 'CX-MS' data to new class
+        self.type_map['cx-ms data'] = ihm.dataset.CXMSDataset
 
     def __call__(self, data_type, id, details):
         typ = None if data_type is None else data_type.lower()
@@ -1515,7 +1595,7 @@ class _DatasetExtRefHandler(Handler):
     def __call__(self, file_id, dataset_list_id):
         ds = self.sysr.datasets.get_by_id(dataset_list_id)
         f = self.sysr.external_files.get_by_id(file_id)
-        ds.location = f
+        ds._add_location(f)
 
 
 class _DatasetDBRefHandler(Handler):
@@ -1540,7 +1620,7 @@ class _DatasetDBRefHandler(Handler):
         # Preserve user-provided name for unknown databases
         if dbloc.db_name == 'Other' and db_name is not None:
             dbloc.db_name = db_name
-        ds.location = dbloc
+        ds._add_location(dbloc)
         self.copy_if_present(
             dbloc, locals(), keys=['version', 'details'],
             mapkeys={'accession_code': 'access_code'})
@@ -1707,8 +1787,8 @@ class _StartingComparativeModelsHandler(Handler):
         dataset = self.sysr.datasets.get_by_id(template_dataset_list_id)
         aln = self.sysr.external_files.get_by_id_or_none(alignment_file_id)
         asym_id = template_auth_asym_id
-        seq_id_range = (int(starting_model_seq_id_begin),
-                        int(starting_model_seq_id_end))
+        seq_id_range = (self.get_int(starting_model_seq_id_begin),
+                        self.get_int(starting_model_seq_id_end))
         template_seq_id_range = (self.get_int(template_seq_id_begin),
                                  self.get_int(template_seq_id_end))
         identity = ihm.startmodel.SequenceIdentity(
@@ -1724,9 +1804,10 @@ class _ProtocolHandler(Handler):
     category = '_ihm_modeling_protocol'
     ignored_keywords = ['ordinal_id', 'struct_assembly_description']
 
-    def __call__(self, id, protocol_name, num_steps):
+    def __call__(self, id, protocol_name, num_steps, details):
         p = self.sysr.protocols.get_by_id(id)
-        self.copy_if_present(p, locals(), mapkeys={'protocol_name': 'name'})
+        self.copy_if_present(p, locals(), mapkeys={'protocol_name': 'name'},
+                             keys=['details'])
 
 
 class _ProtocolDetailsHandler(Handler):
@@ -1947,6 +2028,24 @@ class _EnsembleHandler(Handler):
                 del e._sub_sampling_type
 
 
+class _NotModeledResidueRangeHandler(Handler):
+    category = '_ihm_residues_not_modeled'
+
+    def __call__(self, model_id, asym_id, seq_id_begin, seq_id_end,
+                 reason):
+        model = self.sysr.models.get_by_id(model_id)
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        # Allow for out-of-range seq_ids for now
+        rr = ihm.model.NotModeledResidueRange(
+            asym, int(seq_id_begin), int(seq_id_end))
+        # Default to "Other" if invalid reason read
+        try:
+            rr.reason = reason
+        except ValueError:
+            rr.reason = "Other"
+        model.not_modeled_residue_ranges.append(rr)
+
+
 class _SubsampleHandler(Handler):
     category = '_ihm_ensemble_sub_sample'
 
@@ -1996,14 +2095,18 @@ class _EM3DRestraintHandler(Handler):
     category = '_ihm_3dem_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
-                 fitting_method_citation_id, fitting_method,
-                 number_of_gaussians, model_id, cross_correlation_coefficient):
-        # EM3D restraints don't have their own IDs - they use the dataset id
-        r = self.sysr.em3d_restraints.get_by_dataset(dataset_list_id)
+                 fitting_method_citation_id, map_segment_flag, fitting_method,
+                 number_of_gaussians, model_id, cross_correlation_coefficient,
+                 details):
+        # EM3D restraints don't have their own IDs - they use the dataset
+        # and assembly IDs
+        r = self.sysr.em3d_restraints.get_by_dataset(dataset_list_id,
+                                                     struct_assembly_id)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(struct_assembly_id)
         r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
             fitting_method_citation_id)
-        self.copy_if_present(r, locals(), keys=('fitting_method',))
+        self.copy_if_present(r, locals(), keys=('fitting_method', 'details'))
+        r.segment = self.get_bool(map_segment_flag)
         r.number_of_gaussians = self.get_int(number_of_gaussians)
 
         model = self.sysr.models.get_by_id(model_id)
@@ -2055,8 +2158,10 @@ class _SASRestraintHandler(Handler):
                  profile_segment_flag, fitting_atom_type, fitting_method,
                  details, fitting_state, radius_of_gyration,
                  number_of_gaussians, model_id, chi_value):
-        # SAS restraints don't have their own IDs - they use the dataset id
-        r = self.sysr.sas_restraints.get_by_dataset(dataset_list_id)
+        # SAS restraints don't have their own IDs - they use the dataset and
+        # assembly IDs
+        r = self.sysr.sas_restraints.get_by_dataset(dataset_list_id,
+                                                    struct_assembly_id)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
         r.segment = self.get_bool(profile_segment_flag)
@@ -2122,7 +2227,7 @@ class _AtomSiteHandler(Handler):
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
                  cartn_z, occupancy, group_pdb, auth_seq_id,
-                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id):
+                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id, label_alt_id):
         # seq_id can be None for non-polymers (HETATM)
         seq_id = self.get_int(label_seq_id)
         # todo: handle fields other than those output by us
@@ -2150,7 +2255,7 @@ class _AtomSiteHandler(Handler):
             asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
             z=float(cartn_z), het=group != 'ATOM', biso=biso,
-            occupancy=occupancy)
+            occupancy=occupancy, alt_id=label_alt_id)
         model.add_atom(a)
 
         # Note any residues that have different seq_id and auth_seq_id
@@ -2222,6 +2327,7 @@ class _PolyResidueFeatureHandler(Handler):
         asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
+        # allow out-of-range ranges
         f.ranges.append(asym_or_entity(r1, r2))
 
 
@@ -2340,6 +2446,18 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.restrain_all = self._cond_map[group_conditionality]
         r.probability = self.get_float(probability)
         r.mic_value = self.get_float(mic_value)
+
+
+class _HDXRestraintHandler(Handler):
+    category = '_ihm_hdx_restraint'
+
+    def __call__(self, id, dataset_list_id, feature_id, protection_factor,
+                 details):
+        r = self.sysr.hdx_restraints.get_by_id(id)
+        r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        r.feature = self.sysr.features.get_by_id(feature_id)
+        r.protection_factor = self.get_float(protection_factor)
+        r.details = details
 
 
 class _PredictedContactRestraintHandler(Handler):
@@ -2920,8 +3038,8 @@ class _CrossLinkResultHandler(Handler):
             sigma2=self.get_float(sigma_2))
 
 
-class _OrderedEnsembleHandler(Handler):
-    category = '_ihm_ordered_ensemble'
+class _OrderedModelHandler(Handler):
+    category = '_ihm_ordered_model'
 
     def __call__(self, process_id, step_id, model_group_id_begin,
                  model_group_id_end, edge_description, ordered_by,
@@ -2944,6 +3062,12 @@ class _OrderedEnsembleHandler(Handler):
             mapkeys={'process_description': 'description'})
         self.copy_if_present(
             step, locals(), mapkeys={'step_description': 'description'})
+
+
+# Handle the old name for the ihm_ordered_model category. This is a separate
+# object so relies on _OrderedModelHandler not storing any state.
+class _OrderedEnsembleHandler(_OrderedModelHandler):
+    category = '_ihm_ordered_ensemble'
 
 
 class UnknownCategoryWarning(Warning):
@@ -3745,7 +3869,10 @@ class IHMVariant(Variant):
     _handlers = [
         _CollectionHandler, _StructHandler, _SoftwareHandler, _CitationHandler,
         _DatabaseHandler, _DatabaseStatusHandler,
-        _AuditAuthorHandler, _GrantHandler, _CitationAuthorHandler,
+        _AuditAuthorHandler, _AuditRevisionHistoryHandler,
+        _AuditRevisionDetailsHandler, _AuditRevisionGroupHandler,
+        _AuditRevisionCategoryHandler, _AuditRevisionItemHandler,
+        _GrantHandler, _CitationAuthorHandler,
         _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
         _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,
         _StructRefHandler, _StructRefSeqHandler, _StructRefSeqDifHandler,
@@ -3760,12 +3887,14 @@ class IHMVariant(Variant):
         _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
         _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
         _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
+        _NotModeledResidueRangeHandler,
         _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,
         _EM2DRestraintHandler, _EM2DFittingHandler, _SASRestraintHandler,
         _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
         _PolyResidueFeatureHandler, _PolyAtomFeatureHandler,
         _NonPolyFeatureHandler, _PseudoSiteFeatureHandler, _PseudoSiteHandler,
-        _DerivedDistanceRestraintHandler, _PredictedContactRestraintHandler,
+        _DerivedDistanceRestraintHandler, _HDXRestraintHandler,
+        _PredictedContactRestraintHandler,
         _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
         _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
         _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,
@@ -3773,7 +3902,7 @@ class IHMVariant(Variant):
         _BranchDescriptorHandler, _BranchLinkHandler, _CrossLinkListHandler,
         _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
         _CrossLinkResultHandler, _StartingModelSeqDifHandler,
-        _OrderedEnsembleHandler,
+        _OrderedModelHandler, _OrderedEnsembleHandler,
         _MultiStateSchemeHandler, _MultiStateSchemeConnectivityHandler,
         _KineticRateHandler,
         _RelaxationTimeHandler, _RelaxationTimeMultiStateSchemeHandler
@@ -3790,7 +3919,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
          warn_unknown_category=False, warn_unknown_keyword=False,
          read_starting_model_coord=True,
          starting_model_class=ihm.startmodel.StartingModel,
-         reject_old_file=False, variant=IHMVariant):
+         reject_old_file=False, variant=IHMVariant,
+         add_to_system=None):
     """Read data from the file handle `fh`.
 
        Note that the reader currently expects to see a file compliant
@@ -3863,6 +3993,15 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               read from the file. In most cases the default
               :class:`IHMVariant` should be used.
        :type variant: :class:`Variant`
+       :param add_to_system: If provided, all data read from the file are added
+              to the existing System, rather than being placed in new System
+              objects. This System must itself have previously been read from
+              a file (so that objects have IDs, which can be used to map data
+              in the new file to the existing System). Note however that this
+              will not handle duplicate IDs (it is intended for depositions
+              where the data are split between multiple files) so cannot be
+              used to combine two disparate mmCIF files into one.
+       :type add_to_system: :class:`ihm.System`
        :return: A list of :class:`ihm.System` objects.
     """
     if isinstance(variant, type):
@@ -3877,7 +4016,12 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
     r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
                            unknown_keyword_handler=ukhandler)
     while True:
-        s = variant.system_reader(model_class, starting_model_class)
+        if add_to_system:
+            s = variant.system_reader(model_class, starting_model_class,
+                                      system=add_to_system)
+        else:
+            # e.g. older ModelCIF's SystemReader doesn't support add_to_system
+            s = variant.system_reader(model_class, starting_model_class)
         hs = variant.get_handlers(s) + [h(s) for h in handlers]
         if reject_old_file:
             hs.append(variant.get_audit_conform_handler(s))
@@ -3892,6 +4036,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
         for h in hs:
             h.finalize()
         s.finalize()
+        _finalize_entities(s.system)
         systems.append(s.system)
         if not more_data:
             break

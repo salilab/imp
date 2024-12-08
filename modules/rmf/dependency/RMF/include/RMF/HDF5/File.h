@@ -20,7 +20,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       regards to data type conversions and resource management
       - It is very easy to use the C interface incorrectly without knowing it.
       - The
-      \external{https://support.hdfgroup.org/HDF5/, standard HDF5 C++ interface}
+      \external{https://www.hdfgroup.org/solutions/hdf5/, standard HDF5 C++ interface}
       doesn't really simplify use of the HDF5 library and doesn't make use
       of the features of C++.
 
@@ -50,7 +50,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
   namespace HDF5 {
 
   /** Store a handle to an HDF5 file. See
-     \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5F.html,
+     \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___h5_f.html,
      the HDF5 manual} for more information.*/
   class RMFEXPORT File : public Group {
    public:

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import IMP.mmcif
 import RMF
@@ -6,12 +5,8 @@ import IMP.rmf
 import ihm
 import ihm.reader
 import os
-import sys
 from test_restraints import MockGaussianEMRestraint
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 
 class Tests(IMP.test.TestCase):

@@ -7,7 +7,7 @@ import ihm
 class PseudoSite(object):
     """Selection of a pseudo position in the system.
        Pseudo positions are typically used to reference a point or sphere
-       that is not explcitly represented, in a :class:`PseudoSiteFeature`
+       that is not explicitly represented, in a :class:`PseudoSiteFeature`
        or :class:`CrossLinkPseudoSite`.
 
        :param float x: Cartesian X coordinate of this site.
@@ -21,6 +21,10 @@ class PseudoSite(object):
         self.x, self.y, self.z = x, y, z
         self.radius = radius
         self.description = description
+
+    def _signature(self):
+        return tuple("%.3f" % v if v else None
+                     for v in (self.x, self.y, self.z, self.radius))
 
 
 class Restraint(object):
@@ -570,7 +574,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`ResidueFeature`, :class:`AtomFeature`,
+       This class should not be used itself; instead,
+       see :class:`ResidueFeature`, :class:`AtomFeature`,
        :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
@@ -578,10 +583,14 @@ class Feature(object):
        :class:`~ihm.restraint.DerivedDistanceRestraint` objects.
     """
     details = None
+    type = ihm.unknown
 
     def _all_entities_or_asyms(self):
         # Get all Entities or AsymUnits referenced by this object
         return []
+
+    def _get_entity_type(self):
+        return ihm.unknown
 
 
 class ResidueFeature(Feature):
@@ -610,6 +619,9 @@ class ResidueFeature(Feature):
     def __init__(self, ranges, details=None):
         self.ranges, self.details = ranges, details
         _ = self._get_entity_type()
+
+    def _signature(self):
+        return tuple(self.ranges)
 
     def _all_entities_or_asyms(self):
         return self.ranges
@@ -701,6 +713,9 @@ class PseudoSiteFeature(Feature):
 
     def _get_entity_type(self):
         return 'other'
+
+    def _signature(self):
+        return self.site._signature()
 
 
 class GeometricRestraint(Restraint):
@@ -821,3 +836,23 @@ class PredictedContactRestraint(Restraint):
         self.resatom1, self.resatom2 = resatom1, resatom2
         self.distance, self.by_residue = distance, by_residue
         self.probability, self.software = probability, software
+
+
+class HDXRestraint(Restraint):
+    """A restraint derived from Hydrogen-Deuterium Exchange experiments.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param feature: The part of the system to restrain.
+       :type feature: :class:`Feature`
+       :param float protection_factor: Unitless scaling factor.
+       :param str details: Additional details regarding the restraint.
+    """
+    assembly = None  # no struct_assembly_id for HDX restraints
+
+    def __init__(self, dataset, feature, protection_factor=None, details=None):
+        self.dataset, self.feature = dataset, feature
+        self.protection_factor = protection_factor
+        self.details = details
+    _all_features = property(lambda self: (self.feature,))

@@ -1,11 +1,4 @@
-import sys
-
 # Example of model without temporal scoring -----------------------------------------------------------------
-
-if sys.version_info[0] < 3:
-    print("Sorry, this example needs Python 3 and a recent version of numpy")
-    sys.exit(0)
-
 
 # import relevant modules
 import pandas
@@ -50,7 +43,7 @@ exp_comp={'A':'exp_comp_A.csv','B':'exp_comp_B.csv'}
 
 nodes,graph,graph_prob,graph_scores=spatiotemporal.create_DAG(dict,input_dir=input,output_dir=output,spatio_temporal_rule=True,expected_subcomplexes=subcomplexes,score_comp=True,exp_comp_map=exp_comp,draw_dag=draw_dag)
 
-# Example of how model precision dpends on the input data ---------------------------------------------------
+# Example of how model precision depends on the input data ---------------------------------------------------
 
 # Input variables. 
 dict={'0min':2,'5min':3,'10min':2}

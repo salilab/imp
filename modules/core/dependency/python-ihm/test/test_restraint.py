@@ -173,6 +173,8 @@ class Tests(unittest.TestCase):
         """Test Feature base class"""
         f = ihm.restraint.Feature()  # does nothing
         self.assertEqual(f._all_entities_or_asyms(), [])
+        self.assertIs(f.type, ihm.unknown)
+        self.assertIs(f._get_entity_type(), ihm.unknown)
 
     def test_residue_feature(self):
         """Test ResidueFeature class"""
@@ -247,6 +249,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.feature1, 'feat1')
         self.assertEqual(f.feature2, 'feat2')
         self.assertEqual(f._all_features, ('feat1', 'feat2'))
+
+    def test_pseudo_site_signature(self):
+        """Test signature of PseudoSite"""
+        p = ihm.restraint.PseudoSite(1.0, 2.0, 3.0)
+        self.assertEqual(p._signature(), ('1.000', '2.000', '3.000', None))
 
 
 if __name__ == '__main__':

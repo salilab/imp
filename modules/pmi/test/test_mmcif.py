@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import IMP.pmi.restraints.em
 import IMP.pmi.mmcif
@@ -6,32 +5,26 @@ import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
 import sys
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 import ihm.format
 import ihm.location
 import ihm.dataset
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 
-class DummyState(object):
+class DummyState:
     short_name = None
     long_name = None
 
 
-class DummyRepr(object):
+class DummyRepr:
     def __init__(self, short_name, long_name):
         self.state = DummyState()
         self.state.short_name = short_name
         self.state.long_name = long_name
 
 
-class EmptyObject(object):
+class EmptyObject:
     state = DummyState()
 
 
@@ -44,7 +37,7 @@ class Tests(IMP.test.TestCase):
 
     def test_assign_id(self):
         """Test _assign_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
 
@@ -322,20 +315,42 @@ _ihm_multi_state_model_group_link.model_group_id
         """Test _EntityMapper class"""
         system = ihm.System()
         c = IMP.pmi.mmcif._EntityMapper(system)
-        c.add('foo', 'MELS', 0, alphabet=None)
-        c.add('bar', 'SELM', 0, alphabet=IMP.pmi.alphabets.amino_acid)
-        c.add('foo_2', 'MELS', 0, alphabet=None)
+        c.add('foo', 'MELS', 0, alphabet=None, uniprot=None)
+        c.add('bar', 'SELM', 0, alphabet=IMP.pmi.alphabets.amino_acid,
+              uniprot='baracc')
+        c.add('foo_2', 'MELS', 0, alphabet=None, uniprot=None)
         self.assertRaises(TypeError, c.add, 'baz', 'MELSXX', 0,
-                          alphabet='garbage')
+                          alphabet='garbage', uniprot=None)
         self.assertEqual(len(system.entities), 2)
         self.assertIs(c['foo'], c['foo_2'])
         self.assertIsNot(c['foo'], c['bar'])
         a = system.entities
         self.assertEqual(len(a), 2)
         self.assertEqual(a[0].description, 'foo')
+        self.assertIsNone(a[0].uniprot)
         self.assertEqual(''.join(x.code for x in a[0].sequence), 'MELS')
         self.assertEqual(a[1].description, 'bar')
+        self.assertEqual(a[1].uniprot, 'baracc')
         self.assertEqual(''.join(x.code for x in a[1].sequence), 'SELM')
+
+    def test_entity_add_uniprot_reference(self):
+        """Test Entity.add_uniprot_reference()"""
+        system = ihm.System()
+        c = IMP.pmi.mmcif._EntityMapper(system)
+        c.add('foo', 'MELS', 0, alphabet=None, uniprot=None)
+        c.add('bar', 'SELM', 0, alphabet=None, uniprot='baracc')
+        # Mock out UniProtSequence.from_accession
+        orig = ihm.reference.UniProtSequence.from_accession
+        def mock_from_acc(acc):
+            return "mock+" + acc
+        try:
+            ihm.reference.UniProtSequence.from_accession = mock_from_acc
+            ref = c['foo'].add_uniprot_reference()
+            self.assertIsNone(ref)
+            ref = c['bar'].add_uniprot_reference()
+            self.assertEqual(ref, 'mock+baracc')
+        finally:
+            ihm.reference.UniProtSequence.from_accession = orig
 
     def test_all_datasets_all_group(self):
         """Test AllDatasets.get_all_group()"""
@@ -668,11 +683,19 @@ _ihm_sphere_obj_site.model_id
         nup84_2.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
         nup84_2.add_representation(resolutions=[1])
 
-        nup85 = st2.create_molecule("Nup85", "SELM", "B")
+        nup85 = st2.create_molecule("Nup85", "GGGGSELMGG", "B")
+        # Residues S, E should be residues 8, 9 in test.nup85.pdb; map them
+        # to FASTA sequence
         nup85.add_structure(self.get_input_file_name('test.nup85.pdb'), 'A',
-                            res_range=(8, 9), offset=-7)
-        nup85.add_representation(resolutions=[1])
+                            res_range=(8, 9), offset=-3)
+        nup85.add_representation(residues=nup85[4:8], resolutions=[1])
         _ = s.build()
+        # Since we didn't represent the first 4 or last 2 residues in nup85,
+        # the IHM sequence should just be "SELM", and the PDB offset should be
+        # modified to match (from -3 to -7)
+        self.assertEqual(''.join(x.code
+                                 for x in po.system.entities[1].sequence),
+                         'SELM')
 
         self.assign_entity_asym_ids(po.system)
 
@@ -790,7 +813,8 @@ loop_
 _ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
 _ihm_modeling_protocol.num_steps
-1 . 2
+_ihm_modeling_protocol.details
+1 . 2 .
 #
 #
 loop_
@@ -861,7 +885,7 @@ _imp_replica_exchange_protocol.replica_exchange_maximum_temperature
 
     def test_simple_postprocessing(self):
         """Test add_simple_postprocessing"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         po = IMP.pmi.mmcif.ProtocolOutput()
         po._add_state(DummyRepr(None, None))
@@ -918,7 +942,7 @@ _ihm_modeling_post_process.details
 
     def test_no_postprocessing(self):
         """Test add_no_postprocessing"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         po = IMP.pmi.mmcif.ProtocolOutput()
         po._add_state(DummyRepr(None, None))
@@ -980,7 +1004,7 @@ _ihm_modeling_post_process.details
 
     def test_rex_postproces(self):
         """Test ReplicaExchangeAnalysisPostProcess"""
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 2
         d = DummyRex()
         with IMP.test.temporary_directory() as tmpdir:
@@ -999,25 +1023,25 @@ _ihm_modeling_post_process.details
 
     def test_rex_ensemble(self):
         """Test ReplicaExchangeAnalysisEnsemble"""
-        class DummyModel(object):
+        class DummyModel:
             def parse_rmsf_file(self, fname, comp):
                 self.comp = comp
 
-        class DummyRepresentation(object):
+        class DummyRepresentation:
             def set_coordinates_from_rmf(self, comp, fname, frame,
                                          force_rigid_update):
                 pass
 
-        class DummySimo(object):
+        class DummySimo:
             all_modeled_components = ['Nup84', 'Nup85']
 
-        class DummyState(object):
+        class DummyState:
             all_modeled_components = ['Nup84', 'Nup85']
 
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 1
 
-        class DummyGroup(object):
+        class DummyGroup:
             name = 'dgroup'
         comp_to_asym = {'Nup84': None}
         with IMP.test.temporary_directory() as tmpdir:
@@ -1088,10 +1112,10 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
     def test_add_rex(self):
         """Test add_replica_exchange_analysis"""
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
 
-        class DummyRex(object):
+        class DummyRex:
             _number_of_clusters = 1
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1119,7 +1143,9 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
     def test_ensemble_dumper(self):
         """Test dumping of simple ensembles"""
-        class DummyPostProcess(object):
+        class DummyPostProcess:
+            pass
+        class DummyModel:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1129,10 +1155,14 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
         pp = DummyPostProcess()
         pp._id = 99
-        po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1,
-                                {}, None)
-        po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1,
-                                {}, None)
+        e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1,
+                                    {}, None)
+        # Work around python-ihm 1.7 not handling IDs of empty model
+        # groups properly
+        e.model_group.append(DummyModel())
+        e = po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1,
+                                    {}, None)
+        e.model_group.append(DummyModel())
         loc = ihm.location.InputFileLocation(repo='foo', path='bar')
         po.set_ensemble_file(1, loc)
         loc._id = 42
@@ -1166,7 +1196,7 @@ _ihm_ensemble_info.sub_sampling_type
 
     def test_density_dumper(self):
         """Test DensityDumper"""
-        class DummyEnsemble(object):
+        class DummyEnsemble:
             pass
 
         m = IMP.Model()
@@ -1209,10 +1239,10 @@ _ihm_localization_density_files.entity_poly_segment_id
 
     def test_cross_link_dumper(self):
         """Test the CrossLinkDumper"""
-        class DummyDataset(object):
+        class DummyDataset:
             pass
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1220,26 +1250,27 @@ _ihm_localization_density_files.entity_poly_segment_id
         s.add_protocol_output(po)
         state = s.create_state()
         po_state = state._protocol_output[0][1]
-        nup84 = state.create_molecule("Nup84", "MELS", "A")
-        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
-        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
-        nup84.add_representation(nup84.get_non_atomic_residues(),
-                                 resolutions=[10])
+        # First 10 residues are not represented, so PMI residue indexes
+        # range from 11 to 14, but IHM seq_ids from 1 to 4
+        nup84 = state.create_molecule("Nup84", "P" * 10 + "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A',
+                            offset=10)
+        nup84.add_representation(nup84[10:], resolutions=[1])
         hier = s.build()
 
         r = DummyRestraint()
         r.dataset = DummyDataset()
         r.dataset._id = 42
         xl_group = po.get_cross_link_group(r)
-        ex_xl = po.add_experimental_cross_link(1, 'Nup84',
-                                               2, 'Nup84', xl_group)
-        _ = po.add_experimental_cross_link(1, 'Nup84',
-                                           3, 'Nup84', xl_group)
+        ex_xl = po.add_experimental_cross_link(11, 'Nup84',
+                                               12, 'Nup84', xl_group)
+        _ = po.add_experimental_cross_link(11, 'Nup84',
+                                           13, 'Nup84', xl_group)
         # Duplicates should be ignored
-        po.add_experimental_cross_link(1, 'Nup84', 3, 'Nup84', xl_group)
+        po.add_experimental_cross_link(11, 'Nup84', 13, 'Nup84', xl_group)
         # Non-modeled component should be ignored
-        nm_ex_xl = po.add_experimental_cross_link(1, 'Nup85',
-                                                  2, 'Nup84', xl_group)
+        nm_ex_xl = po.add_experimental_cross_link(11, 'Nup85',
+                                                  12, 'Nup84', xl_group)
         self.assertEqual(nm_ex_xl, None)
         sel = IMP.atom.Selection(hier, molecule='Nup84',
                                  resolution=1)
@@ -1320,10 +1351,10 @@ _ihm_cross_link_restraint.pseudo_site_flag
         nup84.add_representation(resolutions=[1])
         _ = s.build()
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
 
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             pass
         pr = DummyRestraint()
         pr.datasets = [None]
@@ -1459,7 +1490,7 @@ _ihm_geometric_object_axis.transformation_id
 """)
 
     def _check_geom_restraint(self, method_name, expected_output):
-        class MockObject(object):
+        class MockObject:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1567,7 +1598,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
                    "'lower bound' 0.500 0 .")
 
     def _check_membrane_restraint(self, method_name, expected_dist_rsr):
-        class MockObject(object):
+        class MockObject:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1699,7 +1730,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
 
     def test_sas_dumper(self):
         """Test SASDumper class"""
-        class DummyModel(object):
+        class DummyModel:
             pass
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
@@ -1757,10 +1788,10 @@ _ihm_sas_restraint.details
 
         p = IMP.atom.get_by_type(hier, IMP.atom.FRAGMENT_TYPE)[0]
 
-        class DummyRestraint(object):
+        class DummyRestraint:
             label = 'foo'
 
-        class DummyProtocolStep(object):
+        class DummyProtocolStep:
             assembly = None
         pr = DummyRestraint()
         pr.dataset = None
@@ -1798,11 +1829,13 @@ _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
 _ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.map_segment_flag
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 4 'Gaussian mixture models' . 2 2 5 0.100
-2 4 'Gaussian mixture models' . 2 2 9 0.200
+_ihm_3dem_restraint.details
+1 4 'Gaussian mixture models' . 2 . 2 5 0.100 .
+2 4 'Gaussian mixture models' . 2 . 2 9 0.200 .
 #
 """)
 
@@ -1888,10 +1921,10 @@ _ihm_starting_model_seq_dif.details
 
     def test_beads_fragment(self):
         """Test _BeadsFragment class"""
-        e = ihm.Entity('A' * 40)
+        e = ihm.Entity('A' * 50)
         asym = ihm.AsymUnit(e)
         m = None
-        bf1 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+        bf1 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=1,
                                            end=10, count=2, hier=None,
                                            asym_unit=asym)
         bf2 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
@@ -1903,11 +1936,11 @@ _ihm_starting_model_seq_dif.details
         self.assertFalse(bf1.combine(None))
         self.assertFalse(bf1.combine(bf3))
         self.assertTrue(bf1.combine(bf2))
-        self.assertEqual(bf1.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(bf1.asym_unit.seq_id_range[0], 1)
         self.assertEqual(bf1.asym_unit.seq_id_range[1], 30)
         self.assertEqual(bf1.count, 5)
         self.assertTrue(bf1.combine(bf3))
-        self.assertEqual(bf1.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(bf1.asym_unit.seq_id_range[0], 1)
         self.assertEqual(bf1.asym_unit.seq_id_range[1], 50)
         self.assertEqual(bf1.count, 9)
 
@@ -1921,14 +1954,14 @@ _ihm_starting_model_seq_dif.details
         with IMP.allow_deprecated():
             rep1 = ihm.representation.Representation()
         d = IMP.pmi.mmcif._AllModelRepresentations(EmptyObject())
-        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=1,
                                          end=10, count=2, hier=None,
                                          asym_unit=asym)
         d.add_fragment(state1, rep1, b)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1']), 1)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1'][state1]), 1)
         frag = d.fragments[id(rep1)]['comp1'][state1][0]
-        self.assertEqual(frag.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(frag.asym_unit.seq_id_range[0], 1)
         self.assertEqual(frag.asym_unit.seq_id_range[1], 10)
 
         b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
@@ -1938,7 +1971,7 @@ _ihm_starting_model_seq_dif.details
         self.assertEqual(len(d.fragments[id(rep1)]['comp1']), 1)
         self.assertEqual(len(d.fragments[id(rep1)]['comp1'][state1]), 1)
         frag = d.fragments[id(rep1)]['comp1'][state1][0]
-        self.assertEqual(frag.asym_unit.seq_id_range[0], 0)
+        self.assertEqual(frag.asym_unit.seq_id_range[0], 1)
         self.assertEqual(frag.asym_unit.seq_id_range[1], 30)
 
         d.add_fragment(state2, rep1, b)
@@ -2112,7 +2145,7 @@ _ihm_model_representation_details.description
         """Test get_dumpers() and  ProtocolOutput.flush()"""
         class MockSystem(ihm.System):
             def __init__(self):
-                super(MockSystem, self).__init__()
+                super().__init__()
                 self.actions = []
 
         fh = StringIO()

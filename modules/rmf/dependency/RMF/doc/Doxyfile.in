@@ -226,12 +226,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "rmfattributetable_end=</table>" \
                          "rmfattribute{4}=<tr><td><tt>\1</tt></td><td>\2</td><td>\3</td><td>\4</td></tr>"
 
-# This tag can be used to specify a number of word-keyword mappings (TCL only).
-# A mapping has the form "name=value". For example adding "class=itcl::class"
-# will allow you to use the command class in the itcl::class meaning.
-
-TCL_SUBST              =
-
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
 # instance, some of the names that are used will be different. The list of all
@@ -1004,13 +998,6 @@ VERBATIM_HEADERS       = YES
 
 ALPHABETICAL_INDEX     = YES
 
-# The COLS_IN_ALPHA_INDEX tag can be used to specify the number of columns in
-# which the alphabetical index list will be split.
-# Minimum value: 1, maximum value: 20, default value: 5.
-# This tag requires that the tag ALPHABETICAL_INDEX is set to YES.
-
-COLS_IN_ALPHA_INDEX    = 5
-
 # In case all classes in a project start with a common prefix, all classes will
 # be put under the same header in the alphabetical index. The IGNORE_PREFIX tag
 # can be used to specify a prefix (or a list of prefixes) that should be ignored
@@ -1413,17 +1400,6 @@ EXT_LINKS_IN_WINDOW    = NO
 
 FORMULA_FONTSIZE       = 10
 
-# Use the FORMULA_TRANPARENT tag to determine whether or not the images
-# generated for formulas are transparent PNGs. Transparent PNGs are not
-# supported properly for IE 6.0, but are supported on all modern browsers.
-#
-# Note that when changing this option you need to delete any form_*.png files in
-# the HTML output directory before the changes have effect.
-# The default value is: YES.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-FORMULA_TRANSPARENT    = YES
-
 # Enable the USE_MATHJAX option to render LaTeX formulas using MathJax (see
 # http://www.mathjax.org) which uses client side Javascript for the rendering
 # instead of using prerendered bitmaps. Use this if you do not have LaTeX
@@ -1602,15 +1578,6 @@ MAKEINDEX_CMD_NAME     = makeindex
 
 COMPACT_LATEX          = NO
 
-# The PAPER_TYPE tag can be used to set the paper type that is used by the
-# printer.
-# Possible values are: a4 (210 x 297 mm), letter (8.5 x 11 inches), legal (8.5 x
-# 14 inches) and executive (7.25 x 10.5 inches).
-# The default value is: a4.
-# This tag requires that the tag GENERATE_LATEX is set to YES.
-
-PAPER_TYPE             = a4wide
-
 # The EXTRA_PACKAGES tag can be used to specify one or more LaTeX package names
 # that should be included in the LaTeX output. To get the times font for
 # instance you can specify
@@ -1685,16 +1652,6 @@ LATEX_BATCHMODE        = YES
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
 LATEX_HIDE_INDICES     = NO
-
-# If the LATEX_SOURCE_CODE tag is set to YES then doxygen will include source
-# code with syntax highlighting in the LaTeX output.
-#
-# Note that which sources are shown also depends on other settings such as
-# SOURCE_BROWSER.
-# The default value is: NO.
-# This tag requires that the tag GENERATE_LATEX is set to YES.
-
-LATEX_SOURCE_CODE      = NO
 
 # The LATEX_BIB_STYLE tag can be used to specify the style to use for the
 # bibliography, e.g. plainnat, or ieeetr. See
@@ -2016,12 +1973,6 @@ EXTERNAL_GROUPS        = NO
 
 EXTERNAL_PAGES         = YES
 
-# The PERL_PATH should be the absolute path and name of the perl script
-# interpreter (i.e. the result of 'which perl').
-# The default file (with absolute path) is: /usr/bin/perl.
-
-PERL_PATH              = /usr/bin/perl
-
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
@@ -2034,15 +1985,6 @@ PERL_PATH              = /usr/bin/perl
 # The default value is: YES.
 
 CLASS_DIAGRAMS         = YES
-
-# You can define message sequence charts within doxygen comments using the \msc
-# command. Doxygen will then run the mscgen tool (see:
-# http://www.mcternan.me.uk/mscgen/)) to produce the chart and insert it in the
-# documentation. The MSCGEN_PATH tag allows you to specify the directory where
-# the mscgen tool resides. If left empty the tool is assumed to be found in the
-# default search path.
-
-MSCGEN_PATH            =
 
 # You can include diagrams made with dia in doxygen documentation. Doxygen will
 # then run dia to produce the diagram and insert it in the documentation. The
@@ -2075,23 +2017,6 @@ HAVE_DOT               = YES
 # This tag requires that the tag HAVE_DOT is set to YES.
 
 DOT_NUM_THREADS        = 0
-
-# When you want a differently looking font n the dot files that doxygen
-# generates you can specify the font name using DOT_FONTNAME. You need to make
-# sure dot is able to find the font, which can be done by putting it in a
-# standard location or by setting the DOTFONTPATH environment variable or by
-# setting DOT_FONTPATH to the directory containing the font.
-# The default value is: Helvetica.
-# This tag requires that the tag HAVE_DOT is set to YES.
-
-DOT_FONTNAME           =
-
-# The DOT_FONTSIZE tag can be used to set the size (in points) of the font of
-# dot graphs.
-# Minimum value: 4, maximum value: 24, default value: 10.
-# This tag requires that the tag HAVE_DOT is set to YES.
-
-DOT_FONTSIZE           = 10
 
 # By default doxygen will tell dot to use the default font as specified with
 # DOT_FONTNAME. If you specify a different font using DOT_FONTNAME you can set

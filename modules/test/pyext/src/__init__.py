@@ -21,10 +21,7 @@ import datetime
 import pickle
 import contextlib
 import subprocess
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 
 
 # Expose some unittest decorators for convenience
@@ -34,7 +31,7 @@ skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
 
-class _TempDir(object):
+class _TempDir:
     def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
 
@@ -113,7 +110,7 @@ def xyz_numerical_derivatives(sf, xyz, step):
     """Calculate the x,y and z derivatives of the scoring function `sf`
        on the `xyz` particle. The derivatives are approximated numerically
        using the numerical_derivatives() function."""
-    class _XYZDerivativeFunc(object):
+    class _XYZDerivativeFunc:
         def __init__(self, sf, xyz, basis_vector):
             self._xyz = xyz
             self._sf = sf
@@ -807,7 +804,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(out, "")
 
 
-class _ExecDictProxy(object):
+class _ExecDictProxy:
     """exec returns a Python dictionary, which contains IMP objects, other
        Python objects, as well as base Python modules (such as sys and
        __builtins__). If we just delete this dictionary, it is entirely
@@ -837,7 +834,7 @@ class _ExecDictProxy(object):
 class _TestResult(unittest.TextTestResult):
 
     def __init__(self, stream=None, descriptions=None, verbosity=None):
-        super(_TestResult, self).__init__(stream, descriptions, verbosity)
+        super().__init__(stream, descriptions, verbosity)
         self.all_tests = []
 
     def stopTestRun(self):
@@ -854,10 +851,10 @@ class _TestResult(unittest.TextTestResult):
                 fname = Path("Z:") / fname
             with open(str(fname), 'wb') as fh:
                 pickle.dump(self.all_tests, fh, protocol)
-        super(_TestResult, self).stopTestRun()
+        super().stopTestRun()
 
     def startTest(self, test):
-        super(_TestResult, self).startTest(test)
+        super().startTest(test)
         test.start_time = datetime.datetime.now()
 
     def _test_finished(self, test, state, detail=None):
@@ -887,27 +884,27 @@ class _TestResult(unittest.TextTestResult):
 
     def addSuccess(self, test):
         self._test_finished(test, 'OK')
-        super(_TestResult, self).addSuccess(test)
+        super().addSuccess(test)
 
     def addError(self, test, err):
         self._test_finished(test, 'ERROR', err)
-        super(_TestResult, self).addError(test, err)
+        super().addError(test, err)
 
     def addFailure(self, test, err):
         self._test_finished(test, 'FAIL', err)
-        super(_TestResult, self).addFailure(test, err)
+        super().addFailure(test, err)
 
     def addSkip(self, test, reason):
         self._test_finished(test, 'SKIP', reason)
-        super(_TestResult, self).addSkip(test, reason)
+        super().addSkip(test, reason)
 
     def addExpectedFailure(self, test, err):
         self._test_finished(test, 'EXPFAIL', err)
-        super(_TestResult, self).addExpectedFailure(test, err)
+        super().addExpectedFailure(test, err)
 
     def addUnexpectedSuccess(self, test):
         self._test_finished(test, 'UNEXPSUC')
-        super(_TestResult, self).addUnexpectedSuccess(test)
+        super().addUnexpectedSuccess(test)
 
     def getDescription(self, test):
         doc_first_line = test.shortDescription()
@@ -993,18 +990,11 @@ class ApplicationTestCase(TestCase):
         """Import an installed Python application, rather than running it.
            This is useful to directly test components of the application.
            @return the Python module object."""
-        try:
-            import importlib.machinery
-            imp = None
-        except ImportError:
-            import imp
+        import importlib.machinery
         name = os.path.splitext(app)[0]
         pathname = os.path.join(os.environ['IMP_BIN_DIR'], app)
-        if imp is None:
-            return importlib.machinery.SourceFileLoader(name,
-                                                        pathname).load_module()
-        else:
-            return imp.load_source(name, pathname)
+        return importlib.machinery.SourceFileLoader(name,
+                                                    pathname).load_module()
 
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
@@ -1070,7 +1060,7 @@ class ApplicationTestCase(TestCase):
             raise OSError("%s failed with exit value %d" % (cmd, p))
 
 
-class RefCountChecker(object):
+class RefCountChecker:
     """Check to make sure the number of C++ object references is as expected"""
 
     def __init__(self, testcase):
@@ -1097,7 +1087,7 @@ class RefCountChecker(object):
                           + str(newnames))
 
 
-class DirectorObjectChecker(object):
+class DirectorObjectChecker:
     """Check to make sure the number of director references is as expected"""
 
     def __init__(self, testcase):

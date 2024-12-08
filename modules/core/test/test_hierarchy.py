@@ -5,7 +5,7 @@ import pickle
 
 class TestVisitor(IMP.core.HierarchyVisitor):
     def __init__(self, descend=True):
-        super(TestVisitor, self).__init__()
+        super().__init__()
         self.descend = descend
         self.seen = []
     def __call__(self, h):

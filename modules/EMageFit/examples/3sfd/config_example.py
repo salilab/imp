@@ -63,7 +63,7 @@ class DominoParams:
 # it unless you know the code for the application well.
 
 
-class TestParameters(object):
+class TestParameters:
 
     def __init__(self, ):
         self.do_test = False
@@ -87,7 +87,7 @@ class Benchmark:
 
 
 # this is the main class containing all the parameters of the experiment
-class Experiment (object):
+class Experiment:
 
     def __init__(self,):
 

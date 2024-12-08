@@ -3,7 +3,6 @@
 # best scoring conformation.
 #
 
-from __future__ import print_function
 import IMP.container
 import IMP.statistics
 import sys

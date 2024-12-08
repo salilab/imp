@@ -2,7 +2,6 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function
 #
 # The Inferential Structure Determination (ISD) software library
 #
@@ -177,7 +176,7 @@ class SpinWheel:
         self.state = (self.state + 1) % len(self.symbols)
 
 
-class Pipe(object):
+class Pipe:
 
     """implements a FIFO pipe that merges lists (see self.put)"""
 
@@ -357,10 +356,7 @@ def Dump(this, filename, gzip=0, mode='w', bin=1):
     """
 
     import os
-    try:
-        import cPickle as pickle
-    except ImportError:
-        import pickle
+    import pickle
 
     filename = os.path.expanduser(filename)
 

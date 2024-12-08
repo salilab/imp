@@ -11,6 +11,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/random.h>
 #include <algorithm>
+#include <boost/version.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -173,7 +174,7 @@ void RecursiveStates::load_particle_state(unsigned int i,
   }
 }
 
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
 namespace {
 struct RandomWrapper {
   int operator()(int i) {
@@ -193,7 +194,9 @@ PermutationStates::PermutationStates(ParticleStates *inner)
   for (unsigned int i = 0; i < permutation_.size(); ++i) {
     permutation_[i] = i;
   }
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
+  // Older Boost RNG has non-constexpr min(), max() which won't compile
+  // with std::shuffle, so use the older random_shuffle instead
   RandomWrapper rr;
   std::random_shuffle(permutation_.begin(), permutation_.end(), rr);
 #else

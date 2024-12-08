@@ -6,6 +6,8 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
+    PyErr_SetString(PyExc_ImportError,
+                    "IMP's NumPy support did not initialize correctly");
     return NULL;
   }
 
@@ -41,6 +43,8 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
+    PyErr_SetString(PyExc_ImportError,
+                    "IMP's NumPy support did not initialize correctly");
     return NULL;
   }
 
@@ -108,6 +112,8 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
+    PyErr_SetString(PyExc_ImportError,
+                    "IMP's NumPy support did not initialize correctly");
     return NULL;
   }
 

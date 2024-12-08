@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
@@ -6,7 +5,7 @@ import numpy as np
 
 
 def add_logabssumprodexp(a, b):
-    s = - np.Inf
+    s = - np.inf
     ss = -1
     for i in range(len(a)):
         s, ss = IMP.em.bayesem3d_get_logabssumprodexp(s, a[i], ss, b[i])

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Extract doxygen-compatible documentation from a Python file.
 
@@ -15,20 +15,16 @@
 """
 
 import sys
-try:
-    import ast
-except ImportError:
-    # Fail gracefully on older Pythons (ast needs Python 2.6)
-    sys.exit(0)
+import ast
+
+
+# ast.Constant replaces ast.Num and ast.Str in newer Python (3.8+)
+has_constant = hasattr(ast, 'Constant')
 
 
 def format_value(val):
     """Get a string representation of an ast node."""
-    if isinstance(val, ast.Num):
-        return str(val.n)
-    elif isinstance(val, ast.Str):
-        return repr(val.s)
-    elif isinstance(val, ast.Name):
+    if isinstance(val, ast.Name):
         return val.id
     elif isinstance(val, ast.Add):
         return '+'
@@ -77,13 +73,23 @@ def format_value(val):
             + " " + format_value(val.right)
     elif isinstance(val, ast.UnaryOp):
         return format_value(val.op) + format_value(val.operand)
+    elif isinstance(val, ast.Starred):
+        return "*" + format_value(val.value)
+    elif has_constant and isinstance(val, ast.Constant):
+        return repr(val.value)
+    elif not has_constant and isinstance(val, ast.Num):
+        return str(val.n)
+    elif not has_constant and isinstance(val, ast.Str):
+        return repr(val.s)
     elif isinstance(val, ast.Call):
-        args = [format_value(x) for x in val.args] + \
-               ["%s=%s" % (x.arg, format_value(x.value)) for x in val.keywords]
-        if val.starargs:
-            args.append('*' + val.starargs.id)
-        if val.kwargs:
-            args.append('**' + val.kwargs.id)
+        args = [format_value(x)
+                for x in val.args if not isinstance(x, ast.Starred)] + \
+               ["%s=%s" % (x.arg, format_value(x.value))
+                for x in val.keywords if x.arg is not None] + \
+               [format_value(x)
+                for x in val.args if isinstance(x, ast.Starred)] + \
+               ["**" + format_value(x.value)
+                for x in val.keywords if x.arg is None]
         return format_value(val.func) + '(' + ", ".join(args) + ')'
     raise ValueError("Do not know how to format %s while running %s"
                      % (str(val), str(sys.argv)))
@@ -117,9 +123,9 @@ def get_function_signature(m):
     args = [format_arg(x) for x in args]
     sig += ", ".join(args)
     if m.args.vararg:
-        sig += ", *" + m.args.vararg
+        sig += ", *" + m.args.vararg.arg
     if m.args.kwarg:
-        sig += ", **" + m.args.kwarg
+        sig += ", **" + m.args.kwarg.arg
     return sig + '):'
 
 
@@ -146,7 +152,8 @@ def get_deprecation_docstring(node):
     if hasattr(node, 'decorator_list'):
         for d in node.decorator_list:
             if hasattr(d, 'func') and d.func.attr.startswith('deprecated_'):
-                return '\n@deprecated_at{%s} %s' % (d.args[0].s, d.args[1].s)
+                return '\n@deprecated_at{%s} %s' % (d.args[0].value,
+                                                    d.args[1].value)
     return ''
 
 
@@ -205,7 +212,7 @@ def handle_class(c, indent, printer):
     dump_class(c, meths, indent, printer)
 
 
-class OutputPrinter(object):
+class OutputPrinter:
 
     def __init__(self):
         # The number of the next line to be written (1-based)

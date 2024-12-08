@@ -2,7 +2,6 @@
 Some miscellaneous simple restraints.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -34,8 +33,7 @@ class ExternalBarrier(IMP.pmi.restraints.RestraintBase):
         model = hiers[0].get_model()
         particles = [h.get_particle() for h in hiers]
 
-        super(ExternalBarrier, self).__init__(model, label=label,
-                                              weight=weight)
+        super().__init__(model, label=label, weight=weight)
         self.radius = radius
 
         if center is None:
@@ -102,8 +100,7 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
                                   copy_index=copy_num2)
         particles2 = sel2.get_selected_particles()
 
-        super(DistanceRestraint, self).__init__(model, label=label,
-                                                weight=weight)
+        super().__init__(model, label=label, weight=weight)
         print(self.name)
 
         print("Created distance restraint between "
@@ -283,8 +280,7 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
         if len(ps) > 1:
             raise ValueError("More than one particle selected")
 
-        super(DistanceToPointRestraint, self).__init__(model, label=label,
-                                                       weight=weight)
+        super().__init__(model, label=label, weight=weight)
         self.radius = radius
 
         ub3 = IMP.core.HarmonicUpperBound(self.radius, kappa)
@@ -335,7 +331,7 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
         self.hier = hier
         model = self.hier.get_model()
 
-        super(MembraneRestraint, self).__init__(
+        super().__init__(
             model, name="MembraneRestraint", label=label, weight=weight)
 
         self.center = center
@@ -471,7 +467,7 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
         self.hier = hier
         m = self.hier.get_model()
 
-        super(ResidueProteinProximityRestraint, self).__init__(
+        super().__init__(
             m, name="ResidueProteinProximityRestraint", label=label,
             weight=weight)
 

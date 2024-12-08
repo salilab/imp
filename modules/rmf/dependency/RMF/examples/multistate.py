@@ -2,7 +2,6 @@
 # Show how to create an detect files where frames represent multiple
 # states of the same thing.
 
-from __future__ import print_function
 import RMF
 
 tfn = RMF._get_temporary_file_path("multistate.rmf3")

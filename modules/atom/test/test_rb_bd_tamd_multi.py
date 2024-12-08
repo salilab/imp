@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -63,7 +62,7 @@ class Tests(IMP.test.TestCase):
         -------
         m - model
         nlevels - number of levels in the hierarchy, if 1 -
-                  return signleton particles
+                  return singleton particles
         d - the out degree of each non-leaf node (# of children)
         T_factors - a list of length nlevels-1 with temperature at each level
                     from top to bottom

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -20,6 +19,12 @@ class Tests(IMP.test.TestCase):
             name = self.get_tmp_file_name("test_round_trip" + suffix)
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
+            chain = h.get_child(0)
+            self.assertTrue(IMP.atom.Chain.get_is_setup(chain))
+            chain = IMP.atom.Chain(chain)
+            chain.set_uniprot_accession('foobar')
+            chain.set_sequence_offset(-10)
+            chain.set_label_asym_id('AAA')
             h.get_is_valid(True)
             IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
@@ -57,6 +62,16 @@ class Tests(IMP.test.TestCase):
                                        IMP.atom.get_surface_area(h2[0]), delta=1e-4)
                 self.assertAlmostEqual(IMP.atom.get_volume(h),
                                        IMP.atom.get_volume(h2[0]), delta=1e-4)
+            chain = h2[0].get_child(0)
+            self.assertTrue(IMP.atom.Chain.get_is_setup(chain))
+            chain = IMP.atom.Chain(chain)
+            # Accession and sequence offset requires RMF >= 1.6
+            if hasattr(RMF.Chain, 'get_uniprot_accession'):
+                self.assertEqual(chain.get_uniprot_accession(), 'foobar')
+                self.assertEqual(chain.get_sequence_offset(), -10)
+            # asym ID requires RMF >= 1.7
+            if hasattr(RMF.Chain, 'get_label_asym_id'):
+                self.assertEqual(chain.get_label_asym_id(), 'AAA')
 
     def test_part1(self):
         """Test round trip 1"""

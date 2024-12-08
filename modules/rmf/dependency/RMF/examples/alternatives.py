@@ -5,7 +5,6 @@
 # biological entity. Different representations can be used for different
 # purposes based on resolution or other criteria.
 
-from __future__ import print_function
 import RMF
 
 tfn = RMF._get_temporary_file_path("alternatives.rmf3")

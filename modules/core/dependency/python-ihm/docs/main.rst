@@ -119,3 +119,9 @@ The :mod:`ihm` Python module
 
 .. autoclass:: BranchLink
    :members:
+
+.. autoclass:: Revision
+   :members:
+
+.. autoclass:: RevisionDetails
+   :members:

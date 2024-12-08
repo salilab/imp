@@ -2,7 +2,6 @@
 
 """Print out any violations of IMP-specific standards."""
 
-from __future__ import print_function
 import sys
 import os.path
 import glob

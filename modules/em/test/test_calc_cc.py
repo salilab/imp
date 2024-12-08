@@ -1,4 +1,3 @@
-from __future__ import print_function
 # test that impEM is able to sample IMP particles on a grid.
 import IMP
 import IMP.test

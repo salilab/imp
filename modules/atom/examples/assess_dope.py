@@ -1,7 +1,6 @@
 ## \example atom/assess_dope.py
 # The script shows how to assess a protein conformation using DOPE.
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.container

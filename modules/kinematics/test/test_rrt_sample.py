@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -6,10 +5,17 @@ import os
 
 class Tests(IMP.test.ApplicationTestCase):
 
-    def test_simple(self):
-        """Simple test of rrt_sample application"""
+    def test_simple_pdb(self):
+        """Simple test of rrt_sample application, PDB format"""
+        return self._test_simple('three.pdb')
+
+    def test_simple_mmcif(self):
+        """Simple test of rrt_sample application, mmCIF format"""
+        return self._test_simple('three.cif')
+
+    def _test_simple(self, infile):
         p = self.run_application('rrt_sample',
-                                 [self.get_input_file_name('three.pdb'),
+                                 [self.get_input_file_name(infile),
                                   self.get_input_file_name('hinges.txt'),
                                   '-n', '1'])
         out, err = p.communicate()

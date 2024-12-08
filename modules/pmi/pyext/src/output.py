@@ -2,7 +2,6 @@
    Classes for writing output files and processing them.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.core
@@ -20,13 +19,10 @@ import warnings
 import string
 import ihm.format
 import collections
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 
 
-class _ChainIDs(object):
+class _ChainIDs:
     """Map indices to multi-character chain IDs.
        We label the first 26 chains A-Z, then we move to two-letter
        chain IDs: AA through AZ, then BA through BZ, through to ZZ.
@@ -42,7 +38,7 @@ class _ChainIDs(object):
         return "".join(reversed(ids))
 
 
-class ProtocolOutput(object):
+class ProtocolOutput:
     """Base class for capturing a modeling protocol.
        Unlike simple output of model coordinates, a complete
        protocol includes the input data used, details on the restraints,
@@ -200,7 +196,7 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
                 ordinal += 1
 
 
-class Output(object):
+class Output:
     """Class for easy writing of PDBs, RMFs, and stat files
 
     @note Model should be updated prior to writing outputs.
@@ -921,7 +917,7 @@ class Output(object):
             self.write_stat2(stat)
 
 
-class OutputStatistics(object):
+class OutputStatistics:
     """Collect statistics from ProcessOutput.get_fields().
        Counters of the total number of frames read, plus the models that
        passed the various filters used in get_fields(), are provided."""
@@ -932,7 +928,7 @@ class OutputStatistics(object):
         self.passed_filtertuple = 0
 
 
-class ProcessOutput(object):
+class ProcessOutput:
     """A class for reading stat files (either rmf or ascii v1 and v2)"""
     def __init__(self, filename):
         self.filename = filename
@@ -1197,7 +1193,7 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
                 yield self[nframe]
 
 
-class CacheHierarchyCoordinates(object):
+class CacheHierarchyCoordinates:
     def __init__(self, StatHierarchyHandler):
         self.xyzs = []
         self.nrms = []
@@ -1485,7 +1481,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         return scores, rmf_files, rmf_frame_indexes, features
 
 
-class DataEntry(object):
+class DataEntry:
     '''
     A class to store data associated to a model
     '''
@@ -1507,7 +1503,7 @@ class DataEntry(object):
         return s
 
 
-class Cluster(object):
+class Cluster:
     '''
     A container for models organized into clusters
     '''
@@ -1617,7 +1613,7 @@ def plot_clusters_scores(clusters):
                           xlabels=None, scale_plot_length=1.0)
 
 
-class CrossLinkIdentifierDatabase(object):
+class CrossLinkIdentifierDatabase:
     def __init__(self):
         self.clidb = dict()
 

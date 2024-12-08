@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -104,7 +103,6 @@ class Tests(IMP.test.TestCase):
                                   encoding=encoding)
         return cldb
 
-    @IMP.test.skipIf(sys.version_info[0] == 2, "Only works with Python 3")
     def test_encoding(self):
         """Test create_set_from_file with non-standard encoding"""
         cldb = self.setup_cldb("xl_dataset_test_utf16.dat", encoding='utf-16')

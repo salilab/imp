@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import IMP.atom
 import IMP.mmcif.data
@@ -59,7 +58,7 @@ class Tests(IMP.test.TestCase):
 
     def test_assign_id(self):
         """Test _assign_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
             def __eq__(self, other):
@@ -194,7 +193,7 @@ class Tests(IMP.test.TestCase):
 
     def test_representation_same_rigid_body(self):
         """Test RepSegmentFactory._same_rigid_body()"""
-        class MockComp(object):
+        class MockComp:
             auth_seq_id_map = 0
 
         m = IMP.Model()
@@ -380,18 +379,25 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(ps[1], IMP.atom.Atom)
         self.assertIsInstance(ps[2], IMP.atom.Fragment)
 
-        # Non-sequential fragments are not supported
+    def test_coordinate_handler_get_structure_particles_nonseq(self):
+        """Test get_structure_particles() with non-sequential fragment"""
+        m = IMP.Model()
+        top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         frag = IMP.atom.Fragment.setup_particle(IMP.Particle(m), [5, 6, 7, 9])
         IMP.core.XYZR.setup_particle(
             frag, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(frag, 1.0)
         top.add_child(frag)
-        self.assertRaises(ValueError, ch.get_structure_particles, top)
+        ch = IMP.mmcif.data._CoordinateHandler(None, None)
+        with self.assertWarns(UserWarning):
+            ps = ch.get_structure_particles(top)
+        self.assertEqual(len(ps), 1)
+        self.assertIsInstance(ps[0], IMP.atom.Fragment)
 
     def test_coordinate_handler_add_chain(self):
         """Test CoordinateHandler.add_chain()"""
         s = ihm.System()
-        ent = ihm.Entity('ACGT')
+        ent = ihm.Entity('ACGTACGT')
         # Check that IMP residue numbering (11-18) maps to IHM (1-8)
         asym = ihm.AsymUnit(ent, auth_seq_id_map=10)
         m = IMP.Model()

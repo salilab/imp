@@ -81,15 +81,15 @@ def calc_likelihood(exp_comp_map, nodes):
            protein copy number from experiment.
     @param nodes: list of graphNode objects, which have been already been
            initiated with static scores
-    @return nodes: editted list of graphNode objects, which now have static
+    @return nodes: edited list of graphNode objects, which now have static
             and composition scores
     """
     import pandas as pd
     # Get list of all all proteins
     prots = list(exp_comp_map.keys())
     # Data is stored as a dictionary of dictionaries. The first dictionary
-    # references which protein you are refering to.
-    # the 2nd dictionary references which time you are refering to. The return
+    # references which protein you are referring to.
+    # the 2nd dictionary references which time you are referring to. The return
     # is the mean or standard deviation of the protein copy number
     mean = {}
     std = {}
@@ -100,7 +100,7 @@ def calc_likelihood(exp_comp_map, nodes):
         if os.path.exists(exp_comp_map[prot]):
             exp = pd.read_csv(exp_comp_map[prot])
         else:
-            raise Exception(
+            raise FileNotFoundError(
                 "Error!!! Check exp_comp_map. Unable to find composition "
                 "file: " + exp_comp_map[prot] + '\nClosing...')
         for i in range(len(exp)):
@@ -115,3 +115,77 @@ def calc_likelihood(exp_comp_map, nodes):
         # add state weight to node
         node.add_score(float(weight))
     return nodes
+
+
+def calc_likelihood_state(exp_comp_map, t, state):
+    """
+    Function that adds a score for the compositional likelihood for all
+    states, similar to how composition_likelihood_function calculates the
+    composition likelihood of a node. Used by prepare_protein_library.
+    The composition likelihood assumes a Gaussian distribution for copy
+    number of each protein or subcomplex with means and standard
+    deviatiations derived from experiment. Returns the nodes, with the
+    new weights added.
+
+    @param exp_comp_map: dictionary, which describes protein stoicheometery.
+           The key describes the protein, which should correspond to names
+           within the expected_subcomplexes. Only copy numbers for proteins
+           or subcomplexes included in this dictionary will be scored. For
+           each of these proteins, a csv file should be provided with protein
+           copy number data. The csv file should have 3 columns,
+           1) "Time", which matches up to the possible times in the graph,
+           2) "mean", the average protein copy number at that time point
+           from experiment, and 3) "std", the standard deviation of that
+           protein copy number from experiment.
+    @param t: string, time at which the composition likelihood should be
+            calculated. Should match one a possible value in the first column
+            of the exp_comp_map.
+    @param state: list of integers, an array of the number of protein copy
+            numbers for which the likelihood will be calculated.
+            This array should list the proteins in the same order as
+            the exp_comp_map.
+    @return weight: float, the weight of the graphNode according to the
+            composition likelihood function.
+    """
+    import pandas as pd
+    # Data is stored as a dictionary of dictionaries. The first dictionary
+    # references which protein you are referring to.
+    # the 2nd dictionary references which time you are referring to. The return
+    # is the mean or standard deviation of the protein copy number
+    mean = {}
+    std = {}
+    state_cn = {}
+    count = 0
+    # import csv file as pandas data frame
+    for prot in exp_comp_map.keys():
+        prot_dict_mean = {}
+        prot_dict_std = {}
+        state_cn[prot] = state[count]
+        if os.path.exists(exp_comp_map[prot]):
+            exp = pd.read_csv(exp_comp_map[prot])
+        else:
+            raise FileNotFoundError(
+                "Error!!! Check exp_comp_map. Unable to find composition "
+                "file: " + exp_comp_map[prot] + '\nClosing...')
+        for i in range(len(exp)):
+            prot_dict_mean[exp['Time'][i]] = exp['mean'][i]
+            prot_dict_std[exp['Time'][i]] = exp['std'][i]
+        mean[prot] = prot_dict_mean
+        std[prot] = prot_dict_std
+        count += 1
+    # compute the compositional likelihood of the nodes
+    weight = 0
+    for prot in exp_comp_map.keys():
+        # x counts the number of proteins of a given type in the node
+        x = state_cn[prot]
+        # check std is greater than 0
+        if std[prot][t] > 0:
+            pass
+        else:
+            warnings.warn(
+                'WARNING!!! Standard deviation of protein ' + prot
+                + ' 0 or less at time ' + t
+                + '. May lead to illogical results.')
+        weight += (0.5 * ((x - mean[prot][t]) / std[prot][t]) ** 2 +
+                   np.log(std[prot][t] * np.sqrt(2 * np.pi)))
+    return weight

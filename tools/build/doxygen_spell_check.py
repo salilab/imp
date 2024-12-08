@@ -7,7 +7,6 @@
    human-readable text, and runs it through the enchant spellchecker.
 """
 
-from __future__ import print_function
 import sys
 import os
 import xml.etree.ElementTree as ET
@@ -51,7 +50,7 @@ class IMPNameFilter(Filter):
                or self._pattern.match(word) is not None
 
 
-class SpellChecker(object):
+class SpellChecker:
     def __init__(self, exceptions_file):
         self.chkr = enchant.checker.SpellChecker(
             "en_US", filters=[EmailFilter, URLFilter, IMPNameFilter])
@@ -90,9 +89,6 @@ class SpellChecker(object):
                 self.fname = fname
             print("    %s:" % location, file=sys.stderr)
             joined = ", ".join(misspelled)
-            # Need to convert from Unicode to plain string for Python 2
-            if sys.version_info[0] == 2:
-                joined = joined.encode('utf8')
             print("       " + joined, file=sys.stderr)
 
 

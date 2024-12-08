@@ -3,7 +3,6 @@
 # simple model and then displays the derivatives, em score and how well
 # conjugate gradients converges under various displacements of the model.
 
-from __future__ import print_function
 import IMP.display
 import IMP.em
 import sys

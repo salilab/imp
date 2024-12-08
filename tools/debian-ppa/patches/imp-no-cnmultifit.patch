@@ -16,7 +16,7 @@ index 82162c8f18..83f9102f34 100644
 --- a/tools/nightly-tests/test-install/test_mock.py
 +++ b/tools/nightly-tests/test-install/test_mock.py
 @@ -35,7 +35,6 @@ class IMPMockTests(unittest.TestCase):
-             _ = IMP.npctransport.Configuration
+         _ = IMP.npctransport.Configuration
          # Check that most other modules (particularly those with many
          # dependencies) are present
 -        import IMP.cnmultifit

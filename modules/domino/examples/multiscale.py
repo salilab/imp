@@ -2,7 +2,6 @@
 # We are interested in applying domino to problems systematically in a
 # multiscale manner. This script experiments with those approaches.
 
-from __future__ import print_function
 import IMP.domino
 import IMP.core
 import sys

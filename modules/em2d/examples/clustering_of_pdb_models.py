@@ -8,7 +8,6 @@
 # After the clustering procedure, a linkage matrix is generated.
 #
 
-from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.core

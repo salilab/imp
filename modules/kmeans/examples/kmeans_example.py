@@ -2,7 +2,6 @@
 # Create a set and points and cluster it, printing the resulting cluster
 # centers
 
-from __future__ import print_function
 import IMP
 import IMP.kmeans
 import sys

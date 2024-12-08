@@ -3,7 +3,6 @@
    basic sampling.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.rmf

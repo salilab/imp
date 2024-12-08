@@ -6,7 +6,6 @@
 # bodies). To save space, the models have had their sidechain atoms
 # removed.
 
-from __future__ import print_function
 import IMP.display
 import IMP.atom
 import sys

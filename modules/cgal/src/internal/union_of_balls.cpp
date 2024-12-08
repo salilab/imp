@@ -1138,8 +1138,8 @@ inline double SpacefillingVolumetric<Gt>::capInter3_A(Wpoint const &i,
  * \param k a third sphere
  * \param l a fourth sphere
  * \return the area of the spherical part of the intersection of the three caps
- * less the areas of the three susequent spherical parts of the intersections of
- * two caps:
+ * less the areas of the three subsequent spherical parts of the intersections
+ * of two caps:
  * part of i in j <b>inter</b> part of i in k <b>inter</b> part of i in l
  * less part of i in j <b>inter</b> part of i in k
  * less part of i in j <b>inter</b> part of i in l

@@ -34,30 +34,30 @@ class _ListenSocket(socket.socket):
         return port
 
 
-class _ContextWrapper(object):
+class _ContextWrapper:
 
     def __init__(self, obj):
         self.obj = obj
 
 
-class _TaskWrapper(object):
+class _TaskWrapper:
 
     def __init__(self, obj):
         self.obj = obj
 
 
-class _ErrorWrapper(object):
+class _ErrorWrapper:
 
     def __init__(self, obj, traceback):
         self.obj = obj
         self.traceback = traceback
 
 
-class _HeartBeat(object):
+class _HeartBeat:
     pass
 
 
-class _WorkerAction(object):
+class _WorkerAction:
     pass
 
 

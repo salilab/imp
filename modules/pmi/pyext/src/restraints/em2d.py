@@ -2,7 +2,6 @@
 Restraints for handling electron microscopy images.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -12,7 +11,7 @@ import ihm.location
 import ihm.dataset
 
 
-class ElectronMicroscopy2D(object):
+class ElectronMicroscopy2D:
     """Fit particles against a set of class averages by principal components.
     Compares how well the principal components of the segmented class
     average fit to the principal components of the particles.
@@ -114,7 +113,7 @@ class ElectronMicroscopy2D(object):
         return output
 
 
-class ElectronMicroscopy2D_FFT(object):
+class ElectronMicroscopy2D_FFT:
     """FFT based image alignment, developed by Javier Velazquez-Muriel"""
     def __init__(self, hier, images=None, pixel_size=None,
                  image_resolution=None, projection_number=None,

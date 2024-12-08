@@ -26,6 +26,7 @@ import ihm.reader
 import ihm.dumper
 import ihm.model
 import ihm.protocol
+import ihm.util
 import os
 import argparse
 
@@ -55,7 +56,43 @@ def add_ihm_info(s):
                         model.representation = default_representation
                     if not model.protocol:
                         model.protocol = default_protocol
+                    model.not_modeled_residue_ranges.extend(
+                        _get_not_modeled_residues(model))
     return s
+
+
+def _get_not_modeled_residues(model):
+    """Yield NotModeledResidueRange objects for all residue ranges in the
+       Model that are not referenced by Atom, Sphere, or pre-existing
+       NotModeledResidueRange objects"""
+    for assem in model.assembly:
+        asym = assem.asym if hasattr(assem, 'asym') else assem
+        if not asym.entity.is_polymeric():
+            continue
+        # Make a set of all residue indices of this asym "handled" either
+        # by being modeled (with Atom or Sphere objects) or by being
+        # explicitly marked as not-modeled
+        handled_residues = set()
+        for rr in model.not_modeled_residue_ranges:
+            if rr.asym_unit is asym:
+                for seq_id in range(rr.seq_id_begin, rr.seq_id_end + 1):
+                    handled_residues.add(seq_id)
+        for atom in model._atoms:
+            if atom.asym_unit is asym:
+                handled_residues.add(atom.seq_id)
+        for sphere in model._spheres:
+            if sphere.asym_unit is asym:
+                for seq_id in range(sphere.seq_id_range[0],
+                                    sphere.seq_id_range[1] + 1):
+                    handled_residues.add(seq_id)
+        # Convert set to a list of residue ranges
+        handled_residues = ihm.util._make_range_from_list(
+            sorted(handled_residues))
+        # Return not-modeled for each non-handled range
+        for r in ihm.util._invert_ranges(handled_residues,
+                                         end=assem.seq_id_range[1],
+                                         start=assem.seq_id_range[0]):
+            yield ihm.model.NotModeledResidueRange(asym, r[0], r[1])
 
 
 def add_ihm_info_one_system(fname):

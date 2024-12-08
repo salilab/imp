@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import os
 import IMP.test
@@ -18,7 +17,7 @@ import IMP.rmf
 import sys
 from math import *
 
-class MockCommunicator(object):
+class MockCommunicator:
     def __init__(self, numproc, rank):
         self.size, self.rank = numproc, rank
         # Data in transit from rank x to rank y; key is (x,y), value is data
@@ -40,12 +39,12 @@ class MockCommunicator(object):
         return self.sent_data[(source, self.rank)].pop(0)
 
 
-class MockMPI(object):
+class MockMPI:
     def __init__(self, numproc, rank):
         self.COMM_WORLD = MockCommunicator(numproc, rank)
 
 
-class MockMPI4Py(object):
+class MockMPI4Py:
     def __init__(self, numproc, rank):
         self.MPI = MockMPI(numproc, rank)
 

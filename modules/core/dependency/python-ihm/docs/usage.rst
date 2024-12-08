@@ -140,6 +140,12 @@ of the data used in modeling:
    line up with the internal numbering. In this case an offset from starting
    model numbering to internal numbering can be provided - see the ``offset``
    parameter to :class:`~ihm.startmodel.StartingModel`.
+ - *Reference sequence numbering*. The modeled sequence may differ from that
+   in a database such as UniProt, which is itself numbered sequentially from 1
+   (for example, the modeled sequence may be a subset of the UniProt sequence,
+   such that the first modeled residue is not the first residue in UniProt).
+   The correspondence between the internal and reference sequences is given
+   with :class:`ihm.reference.Alignment` objects.
 
 Output
 ======

@@ -1,3 +1,98 @@
+1.8 - 2024-11-26
+================
+  - Support added for datasets containing EPR, X-ray diffraction, footprinting
+    or predicted contacts using the :class:`ihm.dataset.EPRDataset`,
+    :class:`ihm.dataset.XRayDiffractionDataset`,
+    :class:`ihm.dataset.HydroxylRadicalFootprintingDataset`,
+    :class:`ihm.dataset.DNAFootprintingDataset` and
+    :class:`ihm.dataset.PredictedContactsDataset` classes (#157).
+  - Revision information (in the ``pdbx_audit_revision_*`` mmCIF tables)
+    can now be read or written using the new :class:`ihm.Revision`
+    and :class:`ihm.RevisionDetails` classes (#156).
+  - The new :class:`ihm.location.BMRbigLocation` class allows for
+    referencing datasets stored in the BMRbig database.
+  - All references to the old PDB-Dev database are now updated to PDB-IHM.
+
+1.7 - 2024-10-22
+================
+  - Sanity checks when writing out a file can now be disabled if desired,
+    using the new ``check`` argument to :func:`ihm.dumper.write` (#153).
+  - Data that have been split over multiple mmCIF or BinaryCIF files can now
+    be combined into a single :class:`ihm.System` object using the new
+    ``add_to_system`` argument to :func:`ihm.reader.read`.
+  - Input files that assign multiple :class:`ihm.location.Location` objects
+    to a single :class:`ihm.dataset.Dataset` can now be read (#151).
+  - Bugfix: multiple :class:`ihm.restraint.EM3DRestraint` and
+    :class:`ihm.restraint.SASRestraint` objects can now be created for a
+    single dataset, as long as they act on different assemblies, as allowed
+    by the dictionary.
+  - Bugfix: allow for non-standard residues in the ``struct_ref`` table (#154).
+
+1.6 - 2024-09-27
+================
+  - The new class :class:`ihm.model.NotModeledResidueRange` allows for
+    the annotation of residue ranges that were explicitly not modeled.
+    These are written to the ``_ihm_residues_not_modeled`` mmCIF table,
+    and any residue marked as not-modeled in all models will also be
+    excluded from the ``pdbx_poly_seq_scheme`` table.
+  - The ``make_mmcif`` utility script will now automatically add any
+    missing :class:`ihm.model.NotModeledResidueRange` objects for
+    not-modeled residue ranges (#150).
+  - Bugfix: the residue range checks introduced in version 1.5 broke the
+    API used by python-modelcif. They have been reimplemented using the
+    original API.
+  - Bugfix: an unknown (?) value for ``pdbx_poly_seq_scheme.auth_seq_num``
+    is now preserved, not silently removed, when reading an mmCIF file.
+
+1.5 - 2024-09-06
+================
+  - Trying to create a :class:`ihm.Residue`, :class:`ihm.EntityRange`, or
+    :class:`ihm.AsymUnitRange` that references out-of-range residues (i.e.
+    ``seq_id`` less than 1 or beyond the length of the :class:`ihm.Entity`
+    sequence) will now raise an error.
+  - Bugfix: :class:`ihm.reference.Reference` objects are no longer given
+    erroneous duplicate IDs on output (#149).
+
+1.4 - 2024-08-30
+================
+  - :class:`ihm.metadata.CIFParser` now extracts metadata from mmCIF starting
+    models from Model Archive or compliant with the ModelCIF dictionary.
+  - :meth:`ihm.Citation.from_pubmed_id` now takes an ``is_primary`` argument,
+    to allow denoting the publication as the most pertinent for the modeling.
+  - Duplicate references, pseudo sites, and features are now pruned on
+    output (#148).
+  - :class:`ihm.restraint.ResidueFeature` now reports an error if it is
+    given zero residue ranges (#147).
+  - Bugfix: allow for :class:`ihm.startmodel.Template` ``seq_id_range``
+    or ``template_seq_id_range`` to be empty.
+
+1.3 - 2024-07-16
+================
+  - The new class :class:`ihm.location.ProteomeXchangeLocation` can be used
+    for datasets stored in the ProteomeXchange database.
+  - Support is added for changes in the IHMCIF dictionary, specifically
+    the renaming of "CX-MS data" to "Crosslinking-MS data" and the
+    ``_ihm_ordered_ensemble`` category to ``_ihm_ordered_model``. python-ihm
+    will output the new names, but for backwards compatibility will read both
+    old and new names.
+  - :class:`ihm.protocol.Protocol` can now be given additional text to
+    describe the protocol.
+  - :class:`ihm.model.Atom` now takes an ``alt_id`` argument to support
+    alternate conformations (#146).
+  - Support added for NumPy 2.0.
+
+1.2 - 2024-06-12
+================
+  - :class:`ihm.format.CifTokenReader` allows for reading an mmCIF file
+    and breaking it into tokens. This can be used for various housekeeping
+    tasks directly on an mmCIF file, such as changing chain IDs or renaming
+    categories or data items, while preserving most other formatting such
+    as comments and whitespace (#141).
+  - :class:`ihm.restraint.HDXRestraint` adds support for restraints
+    derived from Hydrogen-Deuterium Exchange experiments (#143).
+  - The ``make_mmcif`` utility script now preserves more "orphan" data from
+    the input file that is not referenced by other tables (#144).
+
 1.1 - 2024-05-09
 ================
   - :class:`ihm.System` now allows for one or more official database IDs to

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import coverage
 from argparse import ArgumentParser
 import subprocess

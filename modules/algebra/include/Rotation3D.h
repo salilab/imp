@@ -277,6 +277,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
       more efficient to call that function if all columns are needed.
 
       \param[in] v vector to be rotated by rotation \f$R(q)\f$
+      \param[in] i the quaternion element
       \param[in] wrt_unnorm Gradient is computed wrt unnormalized quaternion.
                             Rotation includes a normalization operation, and
                             the gradient is projected to the tangent space at

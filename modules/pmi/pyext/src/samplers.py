@@ -2,13 +2,12 @@
    Sampling of the system.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 from IMP.pmi.tools import get_restraint_set
 
 
-class _SerialReplicaExchange(object):
+class _SerialReplicaExchange:
     """Dummy replica exchange class used in non-MPI builds.
        It should act similarly to IMP.mpi.ReplicaExchange
        on a single processor.
@@ -44,7 +43,7 @@ class _SerialReplicaExchange(object):
         self.was_used = was_used
 
 
-class MonteCarlo(object):
+class MonteCarlo:
     """Sample using Monte Carlo"""
 
     # check that isd is installed
@@ -324,7 +323,7 @@ class MonteCarlo(object):
         return output
 
 
-class MolecularDynamics(object):
+class MolecularDynamics:
     """Sample using molecular dynamics"""
 
     def __init__(self, model, objects, kt, gamma=0.01, maximum_time_step=1.0,
@@ -397,7 +396,7 @@ class MolecularDynamics(object):
         return output
 
 
-class ConjugateGradients(object):
+class ConjugateGradients:
     """Sample using conjugate gradients"""
 
     def __init__(self, model, objects):
@@ -429,7 +428,7 @@ class ConjugateGradients(object):
         return output
 
 
-class ReplicaExchange(object):
+class ReplicaExchange:
     """Sample using replica exchange"""
 
     def __init__(self, model, tempmin, tempmax, samplerobjects, test=True,
@@ -544,7 +543,7 @@ class ReplicaExchange(object):
         return output
 
 
-class MPI_values(object):
+class MPI_values:
     def __init__(self, replica_exchange_object=None):
         """Query values (ie score, and others)
         from a set of parallel jobs"""

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.domino
 import IMP.core
@@ -683,7 +682,7 @@ class AtomicDomino:
             filteredAssignments = self.filterAssignments(
                 assignments, subset, nodeIndex, rssft)
 
-            # add assignemtns to container and listAssignmentTable
+            # add assignments to container and listAssignmentTable
             packedAssignmentContainer = IMP.domino.PackedAssignmentContainer()
             for assignment in filteredAssignments:
                 packedAssignmentContainer.add_assignment(assignment)

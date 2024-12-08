@@ -25,9 +25,12 @@
 #include <cstdio>
 #include <queue>
 
-#if IMP_DOMINO_HAS_RMF
-#include <RMF/HDF5/Group.h>
-#include <RMF/HDF5/File.h>
+#ifdef IMP_DOMINO_USE_IMP_RMF
+# include <RMF/config.h>
+# if RMF_HAS_DEPRECATED_BACKENDS
+#  include <RMF/HDF5/Group.h>
+#  include <RMF/HDF5/File.h>
+# endif
 #endif
 
 #ifdef _MSC_VER
@@ -175,7 +178,7 @@ inline Assignment SampleAssignmentContainer::get_assignment(unsigned int i)
 }
 #endif
 
-#if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
+#if RMF_HAS_DEPRECATED_BACKENDS || defined(IMP_DOXYGEN)
 //! Store the assignments in an HDF5DataSet.
 /** Make sure to delete this container before trying to read from the
     same data set (unless you pass the data set explicitly, in which

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import matplotlib.pyplot
 import numpy as np
 from IMP.isd.History import History

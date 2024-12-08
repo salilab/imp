@@ -4,7 +4,6 @@
    Classes to store output from replicas.
 """
 
-from __future__ import print_function
 import numpy
 import sys
 

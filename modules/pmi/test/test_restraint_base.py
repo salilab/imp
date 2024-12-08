@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import math
 import IMP
 import IMP.algebra
@@ -13,8 +12,7 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
 
     def __init__(self, p1, p2, d, k, name=None, label=None, weight=1.):
         m = p1.get_model()
-        super(DistanceRestraint, self).__init__(m, name=name, label=label,
-                                                weight=weight)
+        super().__init__(m, name=name, label=label, weight=weight)
         f = IMP.core.Harmonic(d, k)
         s = IMP.core.DistancePairScore(f)
         r = IMP.core.PairRestraint(self.model, s, (p1, p2))
@@ -110,8 +108,7 @@ class Tests(IMP.test.TestCase):
 
             def __init__(self, p, mean_val, label=None, weight=1.):
                 m = p.get_model()
-                super(GaussianRestraint, self).__init__(m, label=label,
-                                                        weight=weight)
+                super().__init__(m, label=label, weight=weight)
 
                 self.mu = self._create_nuisance(mean_val, None, None, None,
                                                 "Mu", is_sampled=False)

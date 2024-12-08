@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import os.path
 import sys
@@ -37,13 +36,12 @@ class Tests(IMP.test.TestCase):
         s = BytesIO()
         IMP._test_ofile(s)
         self.assertTrue(s.getvalue().startswith(b"hi\n"))
-        if sys.version_info[0] >= 3:
-            s = StringIO()
-            IMP._test_ofile(s)
-            self.assertTrue(s.getvalue().startswith("hi\n"))
+        s = StringIO()
+        IMP._test_ofile(s)
+        self.assertTrue(s.getvalue().startswith("hi\n"))
         self.assertRaises(TypeError, IMP._test_ofile, 1)
 
-        class NoMethods(object):
+        class NoMethods:
             pass
         self.assertRaises(TypeError, IMP._test_ofile, NoMethods)
         del f

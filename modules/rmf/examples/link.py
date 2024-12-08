@@ -5,7 +5,6 @@
 # conformations for scoring or other analysis without having to set up
 # restraints and things each time.
 
-from __future__ import print_function
 import IMP.atom
 import IMP.rmf
 import RMF

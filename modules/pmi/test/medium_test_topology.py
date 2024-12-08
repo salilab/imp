@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.pmi
@@ -195,7 +194,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # with the expected behaviour. We expect that the sixth column is identical to the fifth and the second;
         # and we expect that the first is equal to the first. But this is not obtained :-)
         # The results are not intuitive at this stage, we think that mol has changed after build,
-        # and mol.get_represented() is not changed correspondigly.
+        # and mol.get_represented() is not changed correspondingly.
 
         #for n, x in enumerate(mol):
         #    print(x, status_1[n], status_2[n], x in mol_beads_1,
@@ -356,13 +355,6 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
 
 class Tests(IMP.test.TestCase):
-
-    # assertWarns needs Python 3.3; replace with a noop on older Pythons
-    if not hasattr(IMP.test.TestCase, 'assertWarns'):
-        import contextlib
-        @contextlib.contextmanager
-        def assertWarns(self, warncls):
-            yield None
 
     def test_read_sequences(self):
         """Test if the sequence reader returns correct strings"""

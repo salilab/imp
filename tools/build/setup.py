@@ -88,7 +88,7 @@ def link_swig(modules):
 
 # Don't link __init__.py from the top-level of any module (it is generated
 # either by SWIG or by make_python_init.py)
-class _ExcludeTopLevelPythonInit(object):
+class _ExcludeTopLevelPythonInit:
     def __init__(self, topdir):
         self.pyinit = os.path.join(topdir, '__init__.py')
 

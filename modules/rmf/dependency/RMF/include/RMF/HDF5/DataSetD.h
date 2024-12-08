@@ -26,7 +26,7 @@ namespace HDF5 {
    named as
     RMF::HDF5::IndexDataSet2D (or RMF.HDF5.IndexDataSet2).
    See
-   \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5D.html,
+   \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___h5_d.html,
    the HDF5 manual} for more information.
  */
 template <class TypeTraits, unsigned int D>

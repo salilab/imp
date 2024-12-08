@@ -1,4 +1,5 @@
 import utils
+import datetime
 import os
 import unittest
 import gzip
@@ -276,6 +277,77 @@ auth3 3
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.authors, ['auth1', 'auth2', 'auth3'])
+
+    def test_audit_revision_handler(self):
+        """Test AuditRevisionHistoryHandler and related handlers"""
+        cif = """
+loop_
+_pdbx_audit_revision_history.ordinal
+_pdbx_audit_revision_history.data_content_type
+_pdbx_audit_revision_history.major_revision
+_pdbx_audit_revision_history.minor_revision
+_pdbx_audit_revision_history.revision_date
+40 'Structure model' 1 0 ?
+41 'Structure model' 1 0 .
+42 'Structure model' 2 0 1979-05-03
+#
+#
+loop_
+_pdbx_audit_revision_details.ordinal
+_pdbx_audit_revision_details.revision_ordinal
+_pdbx_audit_revision_details.data_content_type
+_pdbx_audit_revision_details.provider
+_pdbx_audit_revision_details.type
+_pdbx_audit_revision_details.description
+1 42 'Structure model' repository 'Initial release' 'Test desc'
+#
+#
+loop_
+_pdbx_audit_revision_group.ordinal
+_pdbx_audit_revision_group.revision_ordinal
+_pdbx_audit_revision_group.data_content_type
+_pdbx_audit_revision_group.group
+1 42 'Structure model' group1
+2 42 'Structure model' group2
+#
+#
+loop_
+_pdbx_audit_revision_category.ordinal
+_pdbx_audit_revision_category.revision_ordinal
+_pdbx_audit_revision_category.data_content_type
+_pdbx_audit_revision_category.category
+1 42 'Structure model' cat1
+2 42 'Structure model' cat2
+#
+#
+loop_
+_pdbx_audit_revision_item.ordinal
+_pdbx_audit_revision_item.revision_ordinal
+_pdbx_audit_revision_item.data_content_type
+_pdbx_audit_revision_item.item
+1 42 'Structure model' item1
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            r1, r2, r = s.revisions
+            self.assertIs(r1.date, ihm.unknown)
+            self.assertEqual(len(r1.details), 0)
+            self.assertEqual(len(r1.groups), 0)
+            self.assertEqual(len(r1.categories), 0)
+            self.assertEqual(len(r1.items), 0)
+            self.assertIsNone(r2.date)
+            self.assertIsInstance(r, ihm.Revision)
+            self.assertEqual(r.data_content_type, "Structure model")
+            self.assertEqual(r.major, 2)
+            self.assertEqual(r.minor, 0)
+            self.assertEqual(r.date, datetime.date(1979, 5, 3))
+            self.assertEqual(len(r.details), 1)
+            self.assertEqual(r.details[0].provider, 'repository')
+            self.assertEqual(r.details[0].type, 'Initial release')
+            self.assertEqual(r.details[0].description, 'Test desc')
+            self.assertEqual(r.groups, ['group1', 'group2'])
+            self.assertEqual(r.categories, ['cat1', 'cat2'])
+            self.assertEqual(r.items, ['item1'])
 
     def test_grant_handler(self):
         """Test GrantHandler"""
@@ -708,6 +780,7 @@ _struct_ref_seq_dif.db_mon_id
 _struct_ref_seq_dif.mon_id
 _struct_ref_seq_dif.details
 1 1 2 TRP SER 'Test mutation'
+2 1 2 . . 'Test mutation'
 #
 """
         # Order of the categories shouldn't matter
@@ -731,13 +804,17 @@ _struct_ref_seq_dif.details
                 self.assertEqual(a1.db_end, 6)
                 self.assertEqual(a1.entity_begin, 1)
                 self.assertEqual(a1.entity_end, 4)
-                sd, = a1.seq_dif
+                sd, sd2 = a1.seq_dif
                 self.assertEqual(sd.seq_id, 2)
                 self.assertIsInstance(sd.db_monomer, ihm.ChemComp)
                 self.assertIsInstance(sd.monomer, ihm.ChemComp)
                 self.assertEqual(sd.db_monomer.id, 'TRP')
                 self.assertEqual(sd.monomer.id, 'SER')
                 self.assertEqual(sd.details, 'Test mutation')
+                # Both mon_id and db_mon_id are optional, so could be empty
+                self.assertIsNone(sd2.db_monomer)
+                self.assertIsNone(sd2.monomer)
+
                 self.assertEqual(a2.db_begin, 8)
                 self.assertEqual(a2.db_end, 8)
                 self.assertEqual(a2.entity_begin, 5)
@@ -978,10 +1055,12 @@ _ihm_dataset_list.details
 2 'COMPARATIVE MODEL' YES .
 3 'EM raw micrographs' YES 'test details'
 4 . YES .
+5 'Crosslinking-MS data' YES .
+6 'CX-MS data' YES .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            d1, d2, d3, d4 = s.orphan_datasets
+            d1, d2, d3, d4, d5, d6 = s.orphan_datasets
             self.assertEqual(d1.__class__, ihm.dataset.PDBDataset)
             self.assertEqual(d2.__class__, ihm.dataset.ComparativeModelDataset)
             self.assertEqual(d3.__class__, ihm.dataset.EMMicrographsDataset)
@@ -992,6 +1071,10 @@ _ihm_dataset_list.details
             self.assertEqual(d4.__class__, ihm.dataset.Dataset)
             self.assertIsNone(d1.details)
             self.assertEqual(d3.details, 'test details')
+            # Both new and old data_types should map to the same
+            # crosslink class
+            self.assertEqual(d5.__class__, ihm.dataset.CXMSDataset)
+            self.assertEqual(d6.__class__, ihm.dataset.CXMSDataset)
 
     def test_dataset_group_handler(self):
         """Test DatasetGroupHandler"""
@@ -1030,6 +1113,41 @@ _ihm_dataset_group_link.dataset_list_id
             # No type specified yet
             self.assertEqual(d1.__class__, ihm.dataset.Dataset)
             self.assertEqual(d2.__class__, ihm.dataset.Dataset)
+
+    def test_dataset_multiple_locations(self):
+        """Check handling of a dataset with multiple locations"""
+        cif = """
+loop_
+_ihm_dataset_external_reference.id
+_ihm_dataset_external_reference.dataset_list_id
+_ihm_dataset_external_reference.file_id
+1 1 11
+2 1 12
+#
+loop_
+_ihm_dataset_related_db_reference.id
+_ihm_dataset_related_db_reference.dataset_list_id
+_ihm_dataset_related_db_reference.db_name
+_ihm_dataset_related_db_reference.accession_code
+_ihm_dataset_related_db_reference.version
+_ihm_dataset_related_db_reference.details
+1 1 PDB 3JRO . .
+2 1 PDB 1ABC . .
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            d, = s.orphan_datasets
+            # "location" should match first _locations
+            self.assertEqual(d.location._id, '11')
+            loc1, loc2, loc3, loc4 = d._locations
+            self.assertEqual(loc1._id, '11')
+            self.assertEqual(loc2._id, '12')
+            self.assertEqual(loc3._id, '1')
+            self.assertEqual(loc4._id, '2')
+            self.assertIsInstance(loc1, ihm.location.FileLocation)
+            self.assertIsInstance(loc2, ihm.location.FileLocation)
+            self.assertIsInstance(loc3, ihm.location.PDBLocation)
+            self.assertIsInstance(loc4, ihm.location.PDBLocation)
 
     def test_dataset_extref_handler(self):
         """Test DatasetExtRefHandler"""
@@ -1297,11 +1415,12 @@ _ihm_starting_comparative_models.alignment_file_id
 1 1 A 7 436 C 9 438 90.000 1 3 2
 2 1 A 33 424 C 33 424 100.000 1 1 .
 3 1 A 33 424 C . ? 100.000 1 1 .
+4 1 A . . C . . . . 1 .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             m1, = s.orphan_starting_models
-            t1, t2, t3 = m1.templates
+            t1, t2, t3, t4 = m1.templates
             self.assertEqual(t1.dataset._id, '3')
             self.assertEqual(t1.asym_id, 'C')
             self.assertEqual(t1.seq_id_range, (7, 436))
@@ -1312,6 +1431,8 @@ _ihm_starting_comparative_models.alignment_file_id
             self.assertEqual(t1.alignment_file._id, '2')
             self.assertIsNone(t2.alignment_file)
             self.assertEqual(t3.template_seq_id_range, (None, ihm.unknown))
+            self.assertEqual(t4.seq_id_range, (None, None))
+            self.assertEqual(t4.template_seq_id_range, (None, None))
 
     def test_protocol_handler(self):
         """Test ProtocolHandler"""
@@ -1320,12 +1441,14 @@ loop_
 _ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
 _ihm_modeling_protocol.num_steps
-1 Prot1 5
+_ihm_modeling_protocol.details
+1 Prot1 5 'extra details'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             p1, = s.orphan_protocols
             self.assertEqual(p1.name, "Prot1")
+            self.assertEqual(p1.details, "extra details")
             # no step objects read yet, num_steps ignored
             self.assertEqual(len(p1.steps), 0)
 
@@ -1581,6 +1704,40 @@ _ihm_multi_state_model_group_link.model_group_id
             self.assertEqual(len(s2), 1)
             self.assertEqual(len(s3), 2)
 
+    def test_not_modeled_residue_range_handler(self):
+        """Test NotModeledResidueRangeHandler"""
+        cif = """
+loop_
+_ihm_residues_not_modeled.id
+_ihm_residues_not_modeled.model_id
+_ihm_residues_not_modeled.entity_description
+_ihm_residues_not_modeled.entity_id
+_ihm_residues_not_modeled.asym_id
+_ihm_residues_not_modeled.seq_id_begin
+_ihm_residues_not_modeled.seq_id_end
+_ihm_residues_not_modeled.comp_id_begin
+_ihm_residues_not_modeled.comp_id_end
+_ihm_residues_not_modeled.reason
+1 1 Nup84 9 X 1 2 ALA CYS .
+2 1 Nup84 9 X 3 4 GLY THR 'Highly variable models with poor precision'
+3 1 Nup84 9 X 5 6 ALA CYS INVALID
+#
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            m, = s.state_groups[0][0][0]
+            rr1, rr2, rr3 = m.not_modeled_residue_ranges
+            self.assertEqual(rr1.asym_unit._id, 'X')
+            self.assertEqual(rr1.seq_id_begin, 1)
+            self.assertEqual(rr1.seq_id_end, 2)
+            self.assertIsNone(rr1.reason)
+            self.assertEqual(rr2.asym_unit._id, 'X')
+            self.assertEqual(rr2.seq_id_begin, 3)
+            self.assertEqual(rr2.seq_id_end, 4)
+            self.assertEqual(rr2.reason,
+                             "Highly variable models with poor precision")
+            self.assertEqual(rr3.reason, "Other")
+
     def test_ensemble_handler(self):
         """Test EnsembleHandler"""
         cif = """
@@ -1695,27 +1852,40 @@ _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
 _ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.map_segment_flag
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 26 'Gaussian mixture models' 9 2 400 1 .
-2 26 'Gaussian mixture models' 9 2 400 2 0.9
+_ihm_3dem_restraint.details
+1 26 'Gaussian mixture models' 9 2 YES 400 1 . details
+2 26 'Gaussian mixture models' 9 2 YES 400 2 0.9 details
+3 26 'Gaussian mixture models' 9 3 NO 400 1 0.8 'other assembly'
+4 27 'Gaussian mixture models' 9 2 NO 400 1 0.8 'other dataset'
 """)
         s, = ihm.reader.read(fh)
-        r, = s.restraints
-        self.assertEqual(r.dataset._id, '26')
-        self.assertEqual(r.fitting_method, 'Gaussian mixture models')
-        self.assertEqual(r.fitting_method_citation._id, '9')
-        self.assertEqual(r.assembly._id, '2')
-        self.assertEqual(r.number_of_gaussians, 400)
+        r1, r2, r3 = s.restraints
+        self.assertEqual(r1.dataset._id, '26')
+        self.assertEqual(r1.fitting_method, 'Gaussian mixture models')
+        self.assertEqual(r1.fitting_method_citation._id, '9')
+        self.assertEqual(r1.assembly._id, '2')
+        self.assertTrue(r1.segment)
+        self.assertEqual(r1.number_of_gaussians, 400)
+        self.assertEqual(r1.details, 'details')
         # Sort fits by model ID
-        fits = sorted(r.fits.items(), key=lambda x: x[0]._id)
+        fits = sorted(r1.fits.items(), key=lambda x: x[0]._id)
         self.assertEqual(len(fits), 2)
         self.assertEqual(fits[0][0]._id, '1')
         self.assertIsNone(fits[0][1].cross_correlation_coefficient)
         self.assertEqual(fits[1][0]._id, '2')
         self.assertAlmostEqual(fits[1][1].cross_correlation_coefficient,
                                0.9, delta=0.1)
+        # r2 acts on same dataset but a different assembly, so should be a
+        # distinct restraint object
+        self.assertEqual(r2.details, 'other assembly')
+        self.assertFalse(r2.segment)
+        # r3 acts on different dataset, so should be a distinct
+        # restraint object
+        self.assertEqual(r3.details, 'other dataset')
 
     def test_get_int(self):
         """Test _get_int method"""
@@ -1877,9 +2047,11 @@ _ihm_sas_restraint.radius_of_gyration
 _ihm_sas_restraint.chi_value
 _ihm_sas_restraint.details
 1 27 8 3 NO 'Heavy atoms' FoXS Single 27.9 1.36 .
+2 27 8 4 NO 'Heavy atoms' FoXS Single 27.9 1.4 'different assembly'
+2 28 8 3 NO 'Heavy atoms' FoXS Single 27.9 1.6 'different dataset'
 """)
         s, = ihm.reader.read(fh)
-        r, = s.restraints
+        r, r2, r3 = s.restraints
         self.assertEqual(r.dataset._id, '27')
         self.assertEqual(r.assembly._id, '3')
         self.assertEqual(r.segment, False)
@@ -1890,6 +2062,12 @@ _ihm_sas_restraint.details
         fit, = list(r.fits.items())
         self.assertEqual(fit[0]._id, '8')
         self.assertAlmostEqual(fit[1].chi_value, 1.36, delta=0.01)
+        # r2 acts on same dataset but a different assembly, so should be
+        # a distinct restraint object
+        self.assertEqual(r2.details, 'different assembly')
+        # r3 acts on different dataset, so should be a distinct
+        # restraint object
+        self.assertEqual(r3.details, 'different dataset')
 
     def test_sphere_obj_site_handler(self):
         """Test SphereObjSiteHandler"""
@@ -1987,7 +2165,7 @@ _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
 ATOM 1 N N . SER 1 A 54.401 -49.984 -35.287 . 1 A . 1 1
-HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
+HETATM 2 C CA A SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
 """)
         s, = ihm.reader.read(fh)
         m = s.state_groups[0][0][0][0]
@@ -2002,6 +2180,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
         self.assertEqual(a1.het, False)
         self.assertIsNone(a1.biso)
         self.assertIsNone(a1.occupancy)
+        self.assertIsNone(a1.alt_id)
 
         self.assertEqual(a2.asym_unit._id, 'B')
         self.assertEqual(a2.seq_id, 1)
@@ -2010,6 +2189,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
         self.assertEqual(a2.het, True)
         self.assertAlmostEqual(a2.biso, 42.0, delta=1.0)
         self.assertAlmostEqual(a2.occupancy, 0.2, delta=0.1)
+        self.assertEqual(a2.alt_id, 'A')
 
     def test_atom_site_handler_auth_seq_id(self):
         """Test AtomSiteHandler handling of auth_seq_id and ins_code"""
@@ -2403,6 +2583,32 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertAlmostEqual(r4.feature1.site.radius, 4.0, delta=0.1)
             self.assertEqual(r4.feature1.site.description, 'centroid')
 
+    def test_hdx_restraint_handler(self):
+        """Test HDXRestraintHandler"""
+        rsr = """
+loop_
+_ihm_hdx_restraint.id
+_ihm_hdx_restraint.feature_id
+_ihm_hdx_restraint.protection_factor
+_ihm_hdx_restraint.dataset_list_id
+_ihm_hdx_restraint.details
+1 1 1.000 2 foo
+2 2 . . .
+"""
+        fh = StringIO(rsr)
+        s, = ihm.reader.read(fh)
+        self.assertEqual(len(s.orphan_features), 2)
+        r1, r2 = s.restraints
+        self.assertEqual(r1.feature._id, '1')
+        self.assertAlmostEqual(r1.protection_factor, 1.0, delta=1e-4)
+        self.assertEqual(r1.dataset._id, '2')
+        self.assertEqual(r1.details, 'foo')
+
+        self.assertEqual(r2.feature._id, '2')
+        self.assertIsNone(r2.protection_factor)
+        self.assertIsNone(r2.dataset)
+        self.assertIsNone(r2.details)
+
     def test_sphere_handler(self):
         """Test SphereHandler"""
         obj_list = CENTERS_TRANSFORMS + """
@@ -2758,6 +2964,26 @@ A 1 4 10 X
                          [6, 7, 8, 10])
         self.assertIsNone(asym.residue(1).ins_code)
         self.assertIsNone(asym.orig_auth_seq_id_map)
+
+    def test_poly_seq_scheme_handler_unknown_auth_seq(self):
+        """Test PolySeqSchemeHandler with explicit unknown auth_seq_num"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_strand_id
+A 1 1 1 1 A
+A 1 2 2 2 A
+A 1 3 3 ? A
+A 1 4 4 4 A
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, 0)
+        self.assertEqual(asym.orig_auth_seq_id_map, {3: ihm.unknown})
 
     def test_poly_seq_scheme_handler_str_seq_id(self):
         """Test PolySeqSchemeHandler with a non-integer pdb_seq_num"""
@@ -3140,9 +3366,23 @@ _ihm_cross_link_result_parameters.sigma_2
             self.assertIsNone(fits[1][1].sigma1)
             self.assertIsNone(fits[1][1].sigma2)
 
-    def test_ordered_ensemble_handler(self):
-        """Test OrderedEnsembleHandler"""
+    def test_ordered_model_handler(self):
+        """Test OrderedModelHandler"""
+        # Test both old and new category names
         fh = StringIO("""
+loop_
+_ihm_ordered_model.process_id
+_ihm_ordered_model.process_description
+_ihm_ordered_model.ordered_by
+_ihm_ordered_model.step_id
+_ihm_ordered_model.step_description
+_ihm_ordered_model.edge_id
+_ihm_ordered_model.edge_description
+_ihm_ordered_model.model_group_id_begin
+_ihm_ordered_model.model_group_id_end
+1 pdesc 'steps in a reaction pathway' 1 'step 1 desc' 1 .  1 2
+1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 2 'edge 2 desc'  1 3
+#
 loop_
 _ihm_ordered_ensemble.process_id
 _ihm_ordered_ensemble.process_description
@@ -3153,8 +3393,6 @@ _ihm_ordered_ensemble.edge_id
 _ihm_ordered_ensemble.edge_description
 _ihm_ordered_ensemble.model_group_id_begin
 _ihm_ordered_ensemble.model_group_id_end
-1 pdesc 'steps in a reaction pathway' 1 'step 1 desc' 1 .  1 2
-1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 2 'edge 2 desc'  1 3
 1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 3 .  1 4
 """)
         s, = ihm.reader.read(fh)
@@ -5182,6 +5420,27 @@ _pdbx_database_status.SG_entry                        .
                           'deposit_site': ihm.unknown,
                           'process_site': 'BNL',
                           'sg_entry': None})
+
+    def test_add_to_system(self):
+        """Test adding new mmCIF input to existing System"""
+        s = ihm.System()
+        e = ihm.Entity('AHC')
+        e._id = '42'
+        s.entities.append(e)
+        fh = StringIO("""
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 42 foo
+B 99 bar
+""")
+        s2, = ihm.reader.read(fh, add_to_system=s)
+        self.assertIs(s2, s)
+        self.assertEqual(len(s.asym_units), 2)
+        # asym A should point to existing entity
+        self.assertEqual(s.asym_units[0].id, 'A')
+        self.assertIs(s.asym_units[0].entity, e)
 
 
 if __name__ == '__main__':

@@ -3,21 +3,14 @@
 """Use clang-format and autopep8 when available to clean up the listed source
    files."""
 
-from __future__ import print_function
 from argparse import ArgumentParser
 import subprocess
 import os
 import sys
 import multiprocessing
-try:
-    from queue import Queue  # python3
-except ImportError:
-    from Queue import Queue  # python2
+from queue import Queue
 from threading import Thread
-try:
-    from shutil import which  # python3.3 or later
-except ImportError:
-    from distutils.spawn import find_executable as which
+from shutil import which
 
 sys.path.append(os.path.split(sys.argv[0]))
 import python_tools

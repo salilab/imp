@@ -306,6 +306,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(p2.location.access_code, '3F3F')
         self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
+        self.assertEqual(len(s.citation.authors), 2)
         self.assertEqual(s.name, 'MODELLER')
         if cif:
             self.assertEqual(s.version, '10.4')
@@ -478,8 +479,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(dataset.location.path, fname)
         self.assertEqual(dataset.location.details, 'Starting model structure')
 
-    def test_cif_modeller_model(self):
-        """Test CIFParser when given a Modeller model"""
+    def test_cif_modeller_model_old(self):
+        """Test CIFParser when given a Modeller model, old style"""
         fname = utils.get_input_file_name(TOPDIR, 'modeller_model.cif')
         p = self.check_modeller_model(fname, cif=True)
         aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
@@ -494,6 +495,76 @@ class Tests(unittest.TestCase):
         fname = utils.get_input_file_name(TOPDIR, 'modeller_incomplete.cif')
         p = self._parse_cif(fname)
         self.assertIsNone(p['script'])
+
+    def test_cif_modeller_modelcif(self):
+        """Test CIFParser when given a Modeller ModelCIF-compliant model"""
+        # For new-style Modeller models, should read software info directly
+        # from the _software table, not _exptl
+        fname = utils.get_input_file_name(TOPDIR, 'modeller_modelcif.cif')
+        p = self.check_modeller_model(fname, cif=True)
+        aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
+        script = utils.get_input_file_name(TOPDIR, 'modeller_model.py')
+        self.assertEqual(p['script'].path, script)
+        for templates in p['templates'].values():
+            for t in templates:
+                self.assertEqual(t.alignment_file.path, aliname)
+
+    def test_cif_modbase_modelcif(self):
+        """Test CIFParser when given a ModBase ModelCIF-compliant model"""
+        fname = utils.get_input_file_name(
+            TOPDIR, 'modbase-model_e224ef5d7f96947a99dd618618021328.cif')
+        p = self._parse_cif(fname)
+        dataset = p['dataset']
+        # ModBase isn't in IHMCIF's official set of databases, so should
+        # be reported as "Other"
+        self.assertEqual(dataset.location.db_name, 'Other')
+        self.assertEqual(dataset.location.access_code,
+                         'e224ef5d7f96947a99dd618618021328')
+        self.assertEqual(dataset.location.details,
+                         "ModBase database of comparative protein "
+                         "structure models")
+        self.assertEqual(sorted(p['templates'].keys()), ['A'])
+        s1, = p['templates']['A']
+        self.assertEqual(s1.asym_id, 'B')
+        self.assertEqual(s1.seq_id_range, (1, 149))
+        self.assertEqual(s1.template_seq_id_range, (18, 166))
+        self.assertAlmostEqual(s1.sequence_identity.value, 99.0, delta=0.1)
+        self.assertEqual(
+            s1.sequence_identity.denominator,
+            ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        p1, = dataset.parents
+        self.assertEqual(p1.data_type, 'Experimental model')
+        self.assertEqual(p1.location.db_name, 'PDB')
+        self.assertEqual(p1.location.access_code, '2fom')
+        self.assertEqual([s.name for s in p['software']],
+                         ['ModPipe', 'MODELLER', 'modbase_pdb_to_cif.py'])
+
+    def test_cif_alphafold_modelcif(self):
+        """Test CIFParser when given an AlphaFoldDB ModelCIF-compliant model"""
+        fname = utils.get_input_file_name(TOPDIR, 'AF-O78126-F1-model_v4.cif')
+        p = self._parse_cif(fname)
+        dataset = p['dataset']
+        self.assertEqual(dataset.location.db_name, 'AlphaFoldDB')
+        self.assertEqual(dataset.location.access_code, 'AF-O78126-F1')
+        self.assertEqual(dataset.location.details, "Starting model structure")
+        self.assertEqual(dataset.data_type, 'De Novo model')
+        self.assertEqual(len(dataset.parents), 4)
+        p1, p2, p3, p4 = dataset.parents
+        self.assertEqual(p1.data_type, 'Experimental model')
+        self.assertEqual(p1.location.db_name, 'PDB')
+        self.assertEqual(p1.location.access_code, '6ENY')
+        self.assertEqual(p2.location.access_code, '6FGB')
+        self.assertEqual(p3.location.access_code, '1MHC')
+        self.assertEqual(p4.location.access_code, '1K5N')
+        self.assertEqual([s.name for s in p['software']],
+                         ['AlphaFold', 'dssp'])
+        self.assertEqual(sorted(p['templates'].keys()), ['A'])
+        s1, s2, s3, s4 = p['templates']['A']
+        self.assertEqual(s1.asym_id, 'F')
+        self.assertEqual(s1.seq_id_range, (None, None))
+        self.assertEqual(s1.template_seq_id_range, (None, None))
+        self.assertIsNone(s1.sequence_identity)
 
 
 if __name__ == '__main__':

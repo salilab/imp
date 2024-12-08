@@ -21,9 +21,13 @@
 #include <IMP/log.h>
 #include <boost/unordered_map.hpp>
 
-#if IMP_DOMINO_HAS_RMF
-#include <RMF/HDF5/Group.h>
+#ifdef IMP_DOMINO_USE_IMP_RMF
+# include <RMF/config.h>
+# if RMF_HAS_DEPRECATED_BACKENDS
+#  include <RMF/HDF5/Group.h>
+# endif
 #endif
+
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -197,7 +201,7 @@ class IMPDOMINOEXPORT RestraintCache : public Object {
 
   RestraintsTemp get_restraints() const;
 
-#if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
+#if RMF_HAS_DEPRECATED_BACKENDS || defined(IMP_DOXYGEN)
   /** This assumes that restraints are always added to the cache
       in the same order.
       \param[in] particle_ordering An ordering for the particles.

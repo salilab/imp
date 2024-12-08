@@ -117,6 +117,9 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     imp_chain.set_sequence_offset(chain.get_sequence_offset());
     imp_chain.set_uniprot_accession(chain.get_uniprot_accession());
 #endif
+#if RMF_VERSION >= 100700
+    imp_chain.set_label_asym_id(chain.get_label_asym_id());
+#endif
   }
   if (typed_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("typed " << std::endl);
@@ -226,6 +229,9 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     imp_chain.set_sequence_offset(chain.get_sequence_offset());
     imp_chain.set_uniprot_accession(chain.get_uniprot_accession());
 #endif
+#if RMF_VERSION >= 100700
+    imp_chain.set_label_asym_id(chain.get_label_asym_id());
+#endif
   }
   IMP_CHECK_CODE
     (
@@ -328,6 +334,9 @@ void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
 #if RMF_VERSION >= 100600
     chain.set_sequence_offset(d.get_sequence_offset());
     chain.set_uniprot_accession(d.get_uniprot_accession());
+#endif
+#if RMF_VERSION >= 100700
+    chain.set_label_asym_id(d.get_label_asym_id());
 #endif
   }
   if (atom::Diffusion::get_is_setup(m, p)) {

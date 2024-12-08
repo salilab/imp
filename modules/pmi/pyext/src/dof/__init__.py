@@ -3,7 +3,6 @@
    See the documentation of the DegreesOfFreedom class for more information.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.algebra
@@ -23,7 +22,7 @@ def create_rigid_body_movers(dof, maxtrans, maxrot):
     return mvs
 
 
-class DegreesOfFreedom(object):
+class DegreesOfFreedom:
     """Simplify creation of constraints and movers for an IMP Hierarchy.
 
        * The various "create X" functions make movers for system components

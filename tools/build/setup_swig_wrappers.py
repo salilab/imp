@@ -56,7 +56,6 @@ def build_wrapper(module, finder, sorted, target, source):
 # This wrapper is part of IMP,
 # Copyright 2007-%d IMP Inventors. All rights reserved.
 
-from __future__ import print_function, division, absolute_import
 %%}
 
 /* '#' formats in parsing or building Python values

@@ -4,24 +4,16 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.algebra
 import IMP.isd
 import IMP.pmi
 import IMP.pmi.topology
-try:
-    from collections.abc import MutableSet  # needs Python 3.3 or later
-except ImportError:
-    from collections import MutableSet
+from collections.abc import MutableSet
 import itertools
 import math
-import sys
 import ast
-try:
-    from time import process_time  # needs python 3.3 or later
-except ImportError:
-    from time import clock as process_time
+from time import process_time
 import RMF
 import IMP.rmf
 from collections import defaultdict, OrderedDict
@@ -124,7 +116,7 @@ def get_restraint_set(model, rmf=False):
         return IMP.RestraintSet.get_from(model.get_data(mk))
 
 
-class Stopwatch(object):
+class Stopwatch:
     """Collect timing information.
        Add an instance of this class to outputobjects to get timing information
        in a stat file."""
@@ -153,7 +145,7 @@ class Stopwatch(object):
         return output
 
 
-class SetupNuisance(object):
+class SetupNuisance:
 
     def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True,
                  name=None):
@@ -175,7 +167,7 @@ class SetupNuisance(object):
         return self.nuisance
 
 
-class SetupWeight(object):
+class SetupWeight:
 
     def __init__(self, m, isoptimized=True, nweights_or_weights=None):
         pw = IMP.Particle(m)
@@ -197,7 +189,7 @@ class SetupWeight(object):
         return self.weight
 
 
-class SetupSurface(object):
+class SetupSurface:
 
     def __init__(self, m, center, normal, isoptimized=True):
         p = IMP.Particle(m)
@@ -406,7 +398,7 @@ def get_residue_gaps_in_hierarchy(hierarchy, start, end):
     return gaps
 
 
-class map(object):
+class map:
 
     def __init__(self):
         self.map = {}
@@ -475,14 +467,9 @@ def select_by_tuple_2(hier, tuple_selection, resolution):
 
 
 def get_db_from_csv(csvfilename, encoding=None):
-    if sys.version_info[0] == 2:
-        def open_with_encoding(fname, encoding):
-            return open(fname)
-    else:
-        open_with_encoding = open
     import csv
     outputlist = []
-    with open_with_encoding(csvfilename, encoding=encoding) as fh:
+    with open(csvfilename, encoding=encoding) as fh:
         csvr = csv.DictReader(fh)
         for ls in csvr:
             outputlist.append(ls)
@@ -620,7 +607,7 @@ def chunk_list_into_segments(seq, num):
     return out
 
 
-class Segments(object):
+class Segments:
 
     ''' This class stores integers
     in ordered compact lists eg:
@@ -746,7 +733,7 @@ def print_multicolumn(list_of_strings, ncolumns=2, truncate=40):
         print("".join(str.ljust(i, truncate) for i in row))
 
 
-class ColorChange(object):
+class ColorChange:
     '''Change color code to hexadecimal to rgb'''
     def __init__(self):
         self._NUMERALS = '0123456789abcdefABCDEF'
@@ -841,7 +828,7 @@ class OrderedDefaultDict(OrderedDict):
                 raise TypeError('first argument must be callable or None')
             self.default_factory = args[0]
             args = args[1:]
-        super(OrderedDefaultDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __missing__(self, key):
         if self.default_factory is None:
@@ -851,10 +838,7 @@ class OrderedDefaultDict(OrderedDict):
 
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
-        if sys.version_info[0] >= 3:
-            return self.__class__, args, None, None, self.items()
-        else:
-            return self.__class__, args, None, None, self.iteritems()
+        return self.__class__, args, None, None, self.items()
 
 
 # -------------- PMI2 Tools --------------- #
@@ -1472,7 +1456,7 @@ def shuffle_configuration(objects,
         return debug
 
 
-class ColorHierarchy(object):
+class ColorHierarchy:
 
     def __init__(self, hier):
         import matplotlib as mpl

@@ -4,7 +4,6 @@
 # Copy this example and modify as needed.
 #
 
-from __future__ import print_function
 import IMP
 import sys
 

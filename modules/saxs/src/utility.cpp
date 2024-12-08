@@ -76,6 +76,9 @@ void read_pdb(Model *model, const std::string file,
       selector = new IMP::atom::NonWaterPDBSelector();
   }
 
+  // Use same "cif or pdb" logic as in atom::read_multimodel_pdb_or_mmcif
+  bool mmcif = file.find(".cif") == file.size() - 4;
+
   if (multi_model_pdb == 2) {
     mhds = read_multimodel_pdb_or_mmcif(file, model, selector, true);
   } else {
@@ -98,7 +101,7 @@ void read_pdb(Model *model, const std::string file,
       if (mhds.size() > 1) {
         pdb_id = trim_extension(file) + "_m" +
                  std::string(boost::lexical_cast<std::string>(h_index + 1)) +
-                 ".pdb";
+                 (mmcif ? ".cif" : ".pdb");
       }
       pdb_file_names.push_back(pdb_id);
       particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));

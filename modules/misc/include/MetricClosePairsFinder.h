@@ -14,6 +14,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/random.h>
 #include <IMP/particle_index.h>
+#include <boost/version.hpp>
 #include <boost/unordered_map.hpp>
 #include <algorithm>
 #include <limits>
@@ -51,7 +52,9 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   Index get_index(Model *m, ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));
-#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE && BOOST_VERSION < 107500
+    // Older Boost RNG has non-constexpr min(), max() which won't compile
+    // with std::shuffle, so use the older random_shuffle instead
     std::random_shuffle(inputs.begin(), inputs.end());
 #else
     std::shuffle(inputs.begin(), inputs.end(), random_number_generator);

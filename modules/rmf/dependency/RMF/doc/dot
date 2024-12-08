@@ -1,36 +1,39 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-"""Tidy up .dot files to remove links to internal headers and full path names"""
+"""Tidy up .dot files to remove links to internal headers and
+   full path names"""
 
 import sys
 import os
 import re
 
-labelre = re.compile('\s*Node(\d+)\s+\[label="[^"]*internal[^"]*"')
-stripre = re.compile('(\s*Node\d+\s+\[label=")[^"]*include/(.*)$')
-linkre = re.compile('\s*Node(\d+)\s+\->Node(\d+)\s+')
+labelre = re.compile(r'\s*Node(\d+)\s+\[label="[^"]*internal[^"]*"')
+stripre = re.compile(r'(\s*Node\d+\s+\[label=")[^"]*include/(.*)$')
+linkre = re.compile(r'\s*Node(\d+)\s+\->Node(\d+)\s+')
 
 # Get a dict of all nodes that correspond to internal headers
 nodes_to_remove = {}
-file_contents = open(sys.argv[1]).readlines()
+with open(sys.argv[1]) as fh:
+    file_contents = fh.readlines()
 for line in file_contents:
     m = labelre.match(line)
     if m:
         nodes_to_remove[m.group(1)] = None
 
 # Rewrite the .dot file
-fh = open(sys.argv[1], 'w')
-for line in file_contents:
-    # Remove any nodes corresponding to internal headers, and links between them
-    m = labelre.match(line)
-    if m and m.group(1) in nodes_to_remove:
-        continue
-    m = linkre.match(line)
-    if m and (m.group(1) in nodes_to_remove or m.group(2) in nodes_to_remove):
-        continue
-    # Strip out full paths (sometimes doxygen lets these slip through)
-    fh.write(stripre.sub(r'\1\2', line))
-fh.close()
+with open(sys.argv[1], 'w') as fh:
+    for line in file_contents:
+        # Remove any nodes corresponding to internal headers,
+        # and links between them
+        m = labelre.match(line)
+        if m and m.group(1) in nodes_to_remove:
+            continue
+        m = linkre.match(line)
+        if m and (m.group(1) in nodes_to_remove
+                  or m.group(2) in nodes_to_remove):
+            continue
+        # Strip out full paths (sometimes doxygen lets these slip through)
+        fh.write(stripre.sub(r'\1\2', line))
 
 # Now pass control to the real 'dot' binary
 sys.argv[0] = 'dot'

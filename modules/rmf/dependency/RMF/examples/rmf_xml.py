@@ -8,7 +8,6 @@
 # the same as other values). See the source code of rmf_xml for a
 # similar example in C++.
 
-from __future__ import print_function
 import RMF
 
 # don't bother with command line arguments, to keep in simple

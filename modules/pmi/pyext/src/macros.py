@@ -2,7 +2,6 @@
 Protocols for sampling structures and analyzing them.
 """
 
-from __future__ import print_function, division
 import IMP
 import IMP.pmi.tools
 import IMP.pmi.samplers
@@ -14,10 +13,7 @@ import IMP.rmf
 import IMP.isd
 import IMP.pmi.dof
 import os
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 import glob
 from operator import itemgetter
 from collections import defaultdict
@@ -29,13 +25,13 @@ import math
 import pickle
 
 
-class _MockMPIValues(object):
+class _MockMPIValues:
     """Replace samplers.MPI_values when in test mode"""
     def get_percentile(self, name):
         return 0.
 
 
-class _RMFRestraints(object):
+class _RMFRestraints:
     """All restraints that are written out to the RMF file"""
     def __init__(self, model, user_restraints):
         self._rmf_rs = IMP.pmi.tools.get_restraint_set(model, rmf=True)
@@ -47,10 +43,9 @@ class _RMFRestraints(object):
 
     def __bool__(self):
         return len(self) > 0
-    __nonzero__ = __bool__  # Python 2 compatibility
 
     def __getitem__(self, i):
-        class FakePMIWrapper(object):
+        class FakePMIWrapper:
             def __init__(self, r):
                 self.r = IMP.RestraintSet.get_from(r)
 
@@ -67,7 +62,7 @@ class _RMFRestraints(object):
             raise IndexError("Out of range")
 
 
-class ReplicaExchange(object):
+class ReplicaExchange:
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
     Produces trajectory RMF files, best PDB structures,
@@ -632,7 +627,7 @@ class ReplicaExchange(object):
             output.close_rmf(rmfname)
 
 
-class BuildSystem(object):
+class BuildSystem:
     """A macro to build a IMP::pmi::topology::System based on a
        TopologyReader object.
 
@@ -691,6 +686,8 @@ class BuildSystem(object):
            IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
+        @param keep_chain_id If True, keep the chain IDs from the
+               original PDB files, if available
         @param fasta_name_map dictionary for converting protein names
                found in the fasta file
         @param chain_ids A list or string of chain IDs for assigning to
@@ -939,7 +936,7 @@ class BuildSystem(object):
 
 
 @IMP.deprecated_object("2.8", "Use AnalysisReplicaExchange instead")
-class AnalysisReplicaExchange0(object):
+class AnalysisReplicaExchange0:
     """A macro for running all the basic operations of analysis.
     Includes clustering, precision analysis, and making ensemble density maps.
     A number of plots are also supported.
@@ -1625,7 +1622,7 @@ class AnalysisReplicaExchange0(object):
         return objects
 
 
-class AnalysisReplicaExchange(object):
+class AnalysisReplicaExchange:
 
     """
     This class contains analysis utilities to investigate ReplicaExchange
@@ -1645,6 +1642,8 @@ class AnalysisReplicaExchange(object):
                rmf files names
         @param best_models Integer. Number of best scoring models,
                if None: all models will be read
+        @param score_key Use the provided stat key keyword as the score
+               (by default, the total score is used)
         @param alignment boolean (Default=True). Align before computing
                the rmsd.
         """
@@ -1817,10 +1816,7 @@ class AnalysisReplicaExchange(object):
         Save the clusters into a pickle file
         @param filename string
         """
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
+        import pickle
         fl = open(filename, 'wb')
         pickle.dump(self.clusters, fl)
 
@@ -1831,10 +1827,7 @@ class AnalysisReplicaExchange(object):
         @param append bool (Default=False), if True. append the clusters
                to the ones currently present
         """
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
+        import pickle
         fl = open(filename, 'rb')
         self.clean_clusters()
         if append:
@@ -2411,7 +2404,10 @@ class AnalysisReplicaExchange(object):
     def merge_aggregates(self, rmsd_cutoff, metric=IMP.atom.get_rmsd):
         """
         merge the clusters that have close members
+
         @param rmsd_cutoff cutoff distance in Angstorms
+        @param metric Function to calculate distance between two Selections
+               (by default, IMP.atom.get_rmsd is used)
         """
         # before merging, clusters are spheres of radius rmsd_cutoff
         # centered on the 1st element
@@ -2551,6 +2547,7 @@ class AnalysisReplicaExchange(object):
         @param reference can be either "Absolute" (cluster center of the
                first cluster) or Relative (cluster center of the current
                cluster)
+        #param cluster the reference IMP.pmi.output.Cluster object
         """
         if reference == "Absolute":
             _ = self.stath0[0]

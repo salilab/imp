@@ -27,7 +27,7 @@ def setup():
 # manager to the workers.
 
 
-class Task(object):
+class Task:
 
     def __init__(self, dist):
         self.dist = dist

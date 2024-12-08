@@ -7,7 +7,7 @@ import IMP.test
 import sys
 import os
 
-class MockArgs(object):
+class MockArgs:
     pass
 
 class Tests(IMP.test.TestCase):

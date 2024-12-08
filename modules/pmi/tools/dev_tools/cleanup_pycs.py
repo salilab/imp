@@ -3,7 +3,6 @@
 """Traverses the directory tree deleting any .pyc's who do not have a
    source .py. Helpful when switching between revisions with source control."""
 
-from __future__ import print_function
 from os.path import join
 from os import walk, unlink
 import re

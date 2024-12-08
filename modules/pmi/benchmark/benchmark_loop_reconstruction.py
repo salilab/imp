@@ -7,10 +7,7 @@ import IMP.benchmark
 import time
 import sys
 import os
-try:
-    from time import process_time  # needs python 3.3 or later
-except ImportError:
-    from time import clock as process_time
+from time import process_time
 
 import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.topology
@@ -26,7 +23,7 @@ IMP.set_log_level(IMP.SILENT)
 # Redirect chatty PMI output so we can see benchmark output
 old_stdout = sys.stdout
 
-class DummyFile(object):
+class DummyFile:
     def flush(self):
         pass
     def write(self, txt):

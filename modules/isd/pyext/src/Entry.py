@@ -3,7 +3,6 @@
 """@namespace IMP.isd.Entry
    Classes to handle ISD statistics files.
 """
-from __future__ import print_function
 import collections
 
 

@@ -3,7 +3,7 @@ Building from source code on Windows {#install_windows}
 
 We build and test %IMP on
 Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-2015 for both the 32-bit and 64-bit Windows `.exe` installers; for the
+2017 for both the 32-bit and 64-bit Windows `.exe` installers; for the
 [Anaconda packages](https://integrativemodeling.org/download-anaconda.html),
 which are built by [conda-forge](https://conda-forge.org/), VS 2019 is used).
 One complication is that different packages are compiled
@@ -63,7 +63,7 @@ we employed is as follows:
        `set INCLUDE=C:\Program Files\GnuWin32\include`
      - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
   - Get and install [SWIG for Windows](https://www.swig.org)
-  - Get the [HDF5 source code](https://www.hdfgroup.org/downloads/hdf5/)
+  - Get the [HDF5 source code](https://www.hdfgroup.org/solutions/hdf5/)
      - Make a 'build' subdirectory, then run from a command prompt in
        that subdirectory something similar to
        `cmake.exe -G "Visual Studio 10" -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DHDF5_BUILD_HL_LIB:BOOL=ON -DZLIB_INCLUDE_DIR="C:\Program Files\GnuWin32\include" -DZLIB_LIBRARY="C:\Program Files\GnuWin32\lib\zlib.lib" -DBUILD_SHARED_LIBS:BOOL=ON ..`

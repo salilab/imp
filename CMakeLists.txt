@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12...3.6.0)
+cmake_minimum_required(VERSION 3.14.0)
 
 project(IMP)
 
@@ -21,7 +21,7 @@ endif(POLICY CMP0053)
 include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
-# Check Python version early so we can use Python >= 2.7 features in other
+# Check Python version early so we can use Python >= 3.6 features in other
 # build scripts
 execute_process(COMMAND ${PYTHON_EXECUTABLE}
                         "tools/build/check_python_version.py"
@@ -96,6 +96,12 @@ set(CMAKE_MACOSX_RPATH 0)
 if(POLICY CMP0058)
   cmake_policy(SET CMP0058 NEW)
 endif(POLICY CMP0058)
+
+# Use FindBoost module rather than BoostConfig.cmake (which requires
+# Boost 1.70 or later)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif(POLICY CMP0167)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")

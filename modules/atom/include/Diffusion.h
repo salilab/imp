@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for a diffusing particle with a diffusion coefficient.
 /** Diffusion is used to decorate a particle with XYZ coordinates (since it
-    inhertis from XYZ) and a translational diffusion coefficient D.
+    inherits from XYZ) and a translational diffusion coefficient D.
     D is specified in units of \f$A^2/fs\f$, and it is used by eg 
     IMP's Brownian dynamics simulator. It can be set explicitly or inferred
     implicitly from the radius.

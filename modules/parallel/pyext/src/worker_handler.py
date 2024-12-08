@@ -1,4 +1,3 @@
-from __future__ import print_function
 import sys
 import traceback
 import socket
@@ -33,7 +32,7 @@ class _HeartBeatThread(threading.Thread):
                 self._manager._send(_HeartBeat())
 
 
-class WorkerHandler(object):
+class WorkerHandler:
 
     def __init__(self, manager_addr):
         self._manager_addr = manager_addr

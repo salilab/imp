@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -9,7 +8,7 @@ import IMP.pmi.output
 from collections import defaultdict
 
 
-class TopologyPlot(object):
+class TopologyPlot:
     """A class to read RMF files and make a network contact map"""
     def __init__(self, model, selections, cutoff, frequency_cutoff,
                  colors=None, fixed=None, pos=None, proteomic_edges=None,

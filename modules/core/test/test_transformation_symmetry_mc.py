@@ -13,7 +13,7 @@ This tests that NonRigidMembers, along with other invariants,
 are correctly updated when a TransformationSymmetry is applied in a MonteCarlo trajectory
 """
 
-class RigidBodyTransformation(object):
+class RigidBodyTransformation:
     '''Utility class to keep track of RB transformations'''
     def __init__(self,rb):
         self.rb=rb
@@ -37,7 +37,7 @@ class RigidBodyTransformation(object):
         q=(self.rot1/self.rot0).get_quaternion()
         return get_angle_and_axis(q)
 
-class RigidBodyPairTransformation(object):
+class RigidBodyPairTransformation:
     '''Utility class to monitor transformations between RBs'''
     def __init__(self,rb0,rb1):
         self.rb0=rb0

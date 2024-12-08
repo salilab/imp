@@ -4,7 +4,6 @@
 # simply randomly drawn from the surface of a sphere, but they could be
 # taken from something more interesting.
 
-from __future__ import print_function
 import IMP.algebra
 import sys
 

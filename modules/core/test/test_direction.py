@@ -12,7 +12,7 @@ class DirectionRestraint(IMP.Restraint):
     """Harmonically restrain a Direction to a vector."""
 
     def __init__(self, m, pi, v, k):
-        super(DirectionRestraint, self).__init__(m, "DirectionRestraint%1%")
+        super().__init__(m, "DirectionRestraint%1%")
         self.pi, self.u = pi, v.get_unit_vector()
         self.uf = IMP.core.Cosine(k, 1, 0)
 

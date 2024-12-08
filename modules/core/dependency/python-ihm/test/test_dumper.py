@@ -1,4 +1,5 @@
 import utils
+import datetime
 import os
 import unittest
 import warnings
@@ -28,7 +29,8 @@ import ihm.multi_state_scheme
 from test_format_bcif import MockFh, MockMsgPack
 
 
-def _get_dumper_output(dumper, system):
+def _get_dumper_output(dumper, system, check=True):
+    dumper._check = check
     fh = StringIO()
     writer = ihm.format.CifWriter(fh)
     dumper.dump(system, writer)
@@ -55,6 +57,21 @@ class Tests(unittest.TestCase):
         self.assertEqual(lines[:2], ["data_system1", "_entry.id system1"])
         self.assertEqual(lines[16:18],
                          ["data_system23", "_entry.id 'system 2+3'"])
+
+    def test_write_checks(self):
+        """Test write() function with checks enabled or disabled"""
+        s = ihm.System(id='system1')
+        s.entities.append(ihm.Entity('AHC'))
+        # Duplicate entity
+        s.entities.append(ihm.Entity('AHC'))
+        fh = StringIO()
+        # Duplicate entity should cause a check failure by default
+        self.assertRaises(ValueError, ihm.dumper.write, fh, [s])
+        # But OK if checks are disabled
+        fh = StringIO()
+        ihm.dumper.write(fh, [s], check=False)
+        self.assertEqual(s.entities[0]._id, 1)
+        self.assertEqual(s.entities[1]._id, 2)
 
     def test_write_custom_dumper(self):
         """Test write() function with custom dumper"""
@@ -358,6 +375,78 @@ auth3 3
 #
 """)
 
+    def test_audit_revision_dumper(self):
+        """Test AuditRevisionDumper"""
+        system = ihm.System()
+        rev = ihm.Revision(data_content_type='Structure model',
+                           minor=2, major=0,
+                           date=datetime.date(year=1979, month=5, day=3))
+        rev.groups.extend(('group1', 'group2'))
+        rev.categories.extend(('cat1', 'cat2'))
+        rev.items.append('item1')
+        d = ihm.RevisionDetails(provider="repository", type="Initial release",
+                                description="Test desc")
+        rev.details.append(d)
+        system.revisions.append(rev)
+        rev = ihm.Revision(data_content_type=None, major=None, minor=None,
+                           date=None)
+        system.revisions.append(rev)
+        rev = ihm.Revision(data_content_type=None, major=None, minor=None,
+                           date=ihm.unknown)
+        system.revisions.append(rev)
+
+        dumper = ihm.dumper._AuditRevisionDumper()
+        dumper.finalize(system)
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_audit_revision_history.ordinal
+_pdbx_audit_revision_history.data_content_type
+_pdbx_audit_revision_history.major_revision
+_pdbx_audit_revision_history.minor_revision
+_pdbx_audit_revision_history.revision_date
+1 'Structure model' 0 2 1979-05-03
+2 . . . .
+3 . . . ?
+#
+#
+loop_
+_pdbx_audit_revision_details.ordinal
+_pdbx_audit_revision_details.revision_ordinal
+_pdbx_audit_revision_details.data_content_type
+_pdbx_audit_revision_details.provider
+_pdbx_audit_revision_details.type
+_pdbx_audit_revision_details.description
+1 1 'Structure model' repository 'Initial release' 'Test desc'
+#
+#
+loop_
+_pdbx_audit_revision_group.ordinal
+_pdbx_audit_revision_group.revision_ordinal
+_pdbx_audit_revision_group.data_content_type
+_pdbx_audit_revision_group.group
+1 1 'Structure model' group1
+2 1 'Structure model' group2
+#
+#
+loop_
+_pdbx_audit_revision_category.ordinal
+_pdbx_audit_revision_category.revision_ordinal
+_pdbx_audit_revision_category.data_content_type
+_pdbx_audit_revision_category.category
+1 1 'Structure model' cat1
+2 1 'Structure model' cat2
+#
+#
+loop_
+_pdbx_audit_revision_item.ordinal
+_pdbx_audit_revision_item.revision_ordinal
+_pdbx_audit_revision_item.data_content_type
+_pdbx_audit_revision_item.item
+1 1 'Structure model' item1
+#
+""")
+
     def test_grant(self):
         """Test GrantDumper"""
         system = ihm.System()
@@ -422,6 +511,11 @@ _entity.details
         system.entities.append(ihm.Entity('AHC'))
         dumper = ihm.dumper._EntityDumper()
         self.assertRaises(ValueError, dumper.finalize, system)
+        # Also test with checks skipped
+        dumper._check = False
+        dumper.finalize(system)
+        self.assertEqual(system.entities[0]._id, 1)
+        self.assertEqual(system.entities[1]._id, 2)
 
     def test_entity_duplicate_branched(self):
         """Test EntityDumper with duplicate branched entities"""
@@ -574,9 +668,9 @@ _entity_src_gen.pdbx_host_org_strain
         lpep = ihm.LPeptideAlphabet()
         sd = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
                                   monomer=lpep['S'], details='Test mutation')
-        # Test non-mandatory db_monomer
+        # Test non-mandatory db_monomer and monomer
         sd2 = ihm.reference.SeqDif(seq_id=3, db_monomer=None,
-                                   monomer=lpep['P'], details='Test mutation')
+                                   monomer=None, details='Test mutation')
         r1 = ihm.reference.UniProtSequence(
             db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
             details='test sequence')
@@ -597,7 +691,31 @@ _entity_src_gen.pdbx_host_org_strain
             db_code='testcode3', accession='testacc3', sequence=ihm.unknown)
         r4.alignments.append(ihm.reference.Alignment(
             db_begin=4, db_end=5, entity_begin=2, entity_end=3))
-        system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4]))
+        # Duplicate reference; should be omitted even though details differ
+        r5 = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='other test sequence')
+        r5.alignments.append(ihm.reference.Alignment(db_begin=3,
+                                                     seq_dif=[sd, sd2]))
+
+        system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4,
+                                                              r5]))
+
+        # Duplicate reference, but should be included as it pertains to a
+        # different Entity
+        r3a = ihm.reference.UniProtSequence(
+            db_code='testcode2', accession='testacc2', sequence=None)
+        r3a.alignments.append(ihm.reference.Alignment(
+            db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+        system.entities.append(ihm.Entity('LSPTW', references=[r3a]))
+
+        # Reference containing non-standard residues
+        r6 = ihm.reference.UniProtSequence(
+            db_code='testcode4', accession='testacc4',
+            sequence='AA(FOO)ALS(BAR)TW')
+        system.entities.append(ihm.Entity('LSATW', references=[r6]))
+        r6.alignments.append(ihm.reference.Alignment(db_begin=5, db_end=9))
+
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign entity IDs
 
@@ -618,6 +736,8 @@ _struct_ref.details
 2 1 UNP testcode testacc 4 SPTYQT test2
 3 1 UNP testcode2 testacc2 4 . .
 4 1 UNP testcode3 testacc3 4 ? .
+5 2 UNP testcode2 testacc2 4 . .
+6 3 UNP testcode4 testacc4 5 LS(BAR)TW .
 #
 #
 loop_
@@ -632,6 +752,8 @@ _struct_ref_seq.db_align_end
 3 2 4 4 9 9
 4 3 2 3 4 5
 5 4 2 3 4 5
+7 5 2 3 4 5
+8 6 1 5 5 9
 #
 #
 loop_
@@ -642,7 +764,7 @@ _struct_ref_seq_dif.db_mon_id
 _struct_ref_seq_dif.mon_id
 _struct_ref_seq_dif.details
 1 1 2 TRP SER 'Test mutation'
-2 1 3 ? PRO 'Test mutation'
+2 1 3 ? ? 'Test mutation'
 #
 """)
 
@@ -662,13 +784,15 @@ _struct_ref_seq_dif.details
         with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
         self.assertIn('is (90-4), out of range 1-4', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_struct_ref_bad_db_align(self):
         """Test StructRefDumper with bad db align"""
         system = ihm.System()
         r = ihm.reference.UniProtSequence(
-            db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-            details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891',
+            sequence='M(FOO)LSPTYQT', details='test sequence')
         r.alignments.append(ihm.reference.Alignment(db_begin=90))
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
@@ -679,6 +803,8 @@ _struct_ref_seq_dif.details
         with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
         self.assertIn('is (90-9), out of range 1-9', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_struct_ref_seq_mismatch(self):
         """Test StructRefDumper with sequence mismatch"""
@@ -696,6 +822,8 @@ _struct_ref_seq_dif.details
             _get_dumper_output(dumper, system)
         self.assertIn('does not match entity canonical sequence',
                       str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_struct_ref_seq_dif_outrange(self):
         """Test StructRefDumper with SeqDif out of range"""
@@ -716,6 +844,8 @@ _struct_ref_seq_dif.details
         with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
         self.assertIn('is 40, out of range 1-4', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_struct_ref_seq_dif_mismatch(self):
         """Test StructRefDumper with SeqDif code mismatch"""
@@ -737,6 +867,8 @@ _struct_ref_seq_dif.details
             _get_dumper_output(dumper, system)
         self.assertIn('one-letter code (Y) does not match', str(cm.exception))
         self.assertIn('(S at position 2)', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
@@ -960,6 +1092,119 @@ C 3 1 A 1 1 A A C .
 C 3 2 C 2 2 C C C .
 D 4 1 DA 1 1 DA DA X A
 D 4 2 DC 1 1 DC DC X B
+#
+""")
+
+    def test_poly_seq_scheme_unknown_auth_seq(self):
+        """Test PolySeqSchemeDumper with explicit unknown auth_seq_num"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        system.entities.append(e1)
+        a1 = ihm.AsymUnit(e1, 'foo',
+                          orig_auth_seq_id_map={1: 3, 2: 4,
+                                                3: ihm.unknown, 4: 6})
+        system.asym_units.append(a1)
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # If auth_seq_num is ?, so should pdb_mon_id and auth_mon_id;
+        # see, e.g. PDB ID 8qb4
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 3 ALA ALA A .
+A 1 2 CYS 2 4 CYS CYS A .
+A 1 3 GLY 3 ? ? ? A .
+A 1 4 THR 4 6 THR THR A .
+#
+""")
+
+    def test_poly_seq_scheme_dumper_not_modeled(self):
+        """Test PolySeqSchemeDumper with not-modeled residues"""
+        system, m1, asym = self._make_test_model()
+        rr = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        m1.not_modeled_residue_ranges.append(rr)
+
+        m2 = ihm.model.Model(assembly=m1.assembly, protocol=m1.protocol,
+                             representation=m1.representation,
+                             name='2nd test model')
+        rr = ihm.model.NotModeledResidueRange(asym, 2, 4)
+        m2.not_modeled_residue_ranges.append(rr)
+
+        m3 = ihm.model.Model(assembly=m1.assembly, protocol=m1.protocol,
+                             representation=m1.representation,
+                             name='3rd test model')
+        rr = ihm.model.NotModeledResidueRange(asym, 2, 3)
+        m3.not_modeled_residue_ranges.append(rr)
+
+        mg = system.state_groups[0][0][0]
+        mg.extend((m1, m2, m3))
+
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # Only residue 2 is not-modeled in all three Models
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 1 ALA ALA A .
+A 1 2 CYS 2 ? ? ? A .
+A 1 3 GLY 3 3 GLY GLY A .
+A 1 4 THR 4 4 THR THR A .
+#
+""")
+
+    def test_poly_seq_scheme_dumper_no_not_modeled(self):
+        """Test PolySeqSchemeDumper with no not-modeled residue list"""
+        # Older model with no not_modeled_residue_ranges member (e.g.
+        # older versions of python-modelcif)
+        system, m1, asym = self._make_test_model()
+        del m1.not_modeled_residue_ranges
+
+        mg = system.state_groups[0][0][0]
+        mg.append(m1)
+
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        # all residues are modeled
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 1 ALA ALA A .
+A 1 2 CYS 2 2 CYS CYS A .
+A 1 3 GLY 3 3 GLY GLY A .
+A 1 4 THR 4 4 THR THR A .
 #
 """)
 
@@ -1421,6 +1666,20 @@ _ihm_external_files.details
         ds4 = ihm.dataset.PDBDataset(None)
         system.orphan_datasets.append(ds4)
 
+        # Dataset with multiple locations
+        ds5 = ihm.dataset.PDBDataset(None)
+        loc = ihm.location.PDBLocation('2xyz', '1.0', 'other details')
+        ds5._add_location(loc)
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        loc._id = 102
+        ds5._add_location(loc)
+        system.orphan_datasets.append(ds5)
+
+        # Transformation not referenced by any object
+        trans2 = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                             [4., 5., 6.])
+        system._orphan_dataset_transforms.append(trans2)
+
         d = ihm.dumper._DatasetDumper()
         d.finalize(system)  # Assign IDs
         out = _get_dumper_output(d, system)
@@ -1430,12 +1689,13 @@ _ihm_dataset_list.id
 _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
-1 'CX-MS data' NO .
-2 'CX-MS data' NO .
+1 'Crosslinking-MS data' NO .
+2 'Crosslinking-MS data' NO .
 3 Other YES bar
 4 Other YES baz
 5 'Experimental model' YES 'test dataset details'
 6 'Experimental model' NO .
+7 'Experimental model' YES .
 #
 #
 loop_
@@ -1461,6 +1721,7 @@ _ihm_dataset_external_reference.dataset_list_id
 _ihm_dataset_external_reference.file_id
 1 1 97
 2 2 98
+3 7 102
 #
 #
 loop_
@@ -1473,6 +1734,7 @@ _ihm_dataset_related_db_reference.details
 1 3 PDB 1cde foo bar
 2 4 PDB 1cdf foo bar
 3 5 PDB 1abc 1.0 'test details'
+4 7 PDB 2xyz 1.0 'other details'
 #
 #
 loop_
@@ -1500,8 +1762,33 @@ _ihm_data_transformation.tr_vector[2]
 _ihm_data_transformation.tr_vector[3]
 1 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000 0.640000
 0.010000 1.000 2.000 3.000
+2 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 4.000 5.000 6.000
 #
 """)
+
+    def test_dataset_dumper_dump_invalid_transform(self):
+        """Test DatasetDumper.dump() with invalid transformed dataset"""
+        system = ihm.System()
+
+        loc = ihm.location.PDBLocation('1cdf', version='foo', details='bar')
+        loc._id = 1
+        dst = ihm.dataset.Dataset(loc, details='baz')
+        t = ihm.geometry.Transformation(
+            rot_matrix=None, tr_vector=[1., 2., 3.])
+        td = ihm.dataset.TransformedDataset(dst, transform=t)
+
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        loc._id = 2
+        ds2 = ihm.dataset.CXMSDataset(loc)
+        ds2.parents.append(td)
+        system.orphan_datasets.append(ds2)
+
+        d = ihm.dumper._DatasetDumper()
+        d.finalize(system)  # Assign IDs
+        self.assertRaises(ValueError, _get_dumper_output, d, system)
+        # OK if checks are disabled
+        _ = _get_dumper_output(d, system, check=False)
 
     def test_model_representation_dump(self):
         """Test ModelRepresentationDumper"""
@@ -1614,8 +1901,14 @@ _ihm_model_representation_details.description
             sequence_identity=ihm.startmodel.SequenceIdentity(ihm.unknown,
                                                               ihm.unknown),
             alignment_file=ali)
+        s4 = ihm.startmodel.Template(
+            dataset=dstemplate, asym_id='D',
+            seq_id_range=(None, None),
+            template_seq_id_range=(None, None),
+            sequence_identity=ihm.startmodel.SequenceIdentity(None, None),
+            alignment_file=ali)
 
-        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2, s3],
+        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2, s3, s4],
                                offset=10, script_file=script,
                                software=software)
         system.orphan_starting_models.append(sm)
@@ -1690,6 +1983,7 @@ _ihm_starting_comparative_models.alignment_file_id
 1 1 A 1 10 C 101 110 30.000 1 101 .
 2 1 A 5 12 D 201 210 40.000 . 101 5
 3 1 A 5 12 D 201 210 ? ? 101 5
+4 1 A . . D . . . . 101 5
 #
 #
 loop_
@@ -1729,6 +2023,41 @@ _ihm_starting_model_seq_dif.details
 #
 """)
 
+    def test_starting_model_dumper_atom_range(self):
+        """Test StartingModelDumper with invalid atom seq_id"""
+        class TestStartingModel(ihm.startmodel.StartingModel):
+            def get_atoms(self):
+                asym = self.asym_unit
+                return [ihm.model.Atom(asym_unit=asym, seq_id=99, atom_id='CA',
+                                       type_symbol='C', x=-8.0, y=-5.0, z=91.0,
+                                       biso=42.)]
+
+        system = ihm.System()
+        e1 = ihm.Entity('ACG', description='foo')
+        system.entities.append(e1)
+        asym = ihm.AsymUnit(e1, 'bar')
+        system.asym_units.append(asym)
+
+        loc = ihm.location.PDBLocation('2xyz', '1.0', 'test details')
+        dstarget = ihm.dataset.PDBDataset(loc)
+        sm = TestStartingModel(asym(1, 3), dstarget, 'A', [])
+        system.orphan_starting_models.append(sm)
+
+        e1._id = 42
+        asym._id = 99
+        dstarget._id = 8
+        sm._id = 5
+        # Assign and check segment IDs
+        dumper = ihm.dumper._EntityPolySegmentDumper()
+        dumper.finalize(system)
+        dumper = ihm.dumper._StartingModelDumper()
+        with self.assertRaises(IndexError) as cm:
+            _get_dumper_output(dumper, system)
+        self.assertIn('Starting model 5 atom seq_id (99) out of range (1-3)',
+                      str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
     def test_modeling_protocol(self):
         """Test ProtocolDumper"""
         class MockObject(object):
@@ -1755,7 +2084,7 @@ _ihm_starting_model_seq_dif.details
             num_models_end=2000, multi_scale=True, ensemble=False))
         system.orphan_protocols.append(p1)
 
-        p2 = ihm.protocol.Protocol('sampling')
+        p2 = ihm.protocol.Protocol('sampling', details='extra details')
         p2.steps.append(ihm.protocol.Step(
             assembly=assembly, dataset_group=dsg2,
             method='Replica exchange', num_models_begin=2000,
@@ -1772,8 +2101,9 @@ loop_
 _ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
 _ihm_modeling_protocol.num_steps
-1 equilibration 2
-2 sampling 1
+_ihm_modeling_protocol.details
+1 equilibration 2 .
+2 sampling 1 'extra details'
 #
 #
 loop_
@@ -1930,7 +2260,7 @@ _ihm_model_group_link.model_id
         if water:
             e1 = ihm.Entity([ihm.WaterChemComp()])
         else:
-            e1 = ihm.Entity('ACGT')
+            e1 = ihm.Entity('ACGT', description="Nup84")
         e1._id = 9
         system.entities.append(e1)
         if water:
@@ -1974,6 +2304,7 @@ _ihm_model_group_link.model_id
             model.representation.append(s)
 
         rngcheck = ihm.dumper._RangeChecker(model)
+        rngcheck_nocheck = ihm.dumper._RangeChecker(model, check=False)
         # Atom is OK (good asym)
         atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='C',
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
@@ -1987,11 +2318,13 @@ _ihm_model_group_link.model_id
         atom = ihm.model.Atom(asym_unit=asym2, seq_id=1, atom_id='C',
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
         self.assertRaises(ValueError, rngcheck, atom)
+        rngcheck_nocheck(atom)
 
         # Sphere is not OK (bad asym)
         sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
+        rngcheck_nocheck(sphere)
 
     def test_range_checker_asmb_seq_id(self):
         """Test RangeChecker class checking assembly seq_id range"""
@@ -2053,6 +2386,16 @@ _ihm_model_group_link.model_id
         # Error to write another atom with same atom_id to same seq_id
         atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom)
+        # It's fine though if alt_id is different
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='A')
+        rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='B')
+        rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0, alt_id='A')
         self.assertRaises(ValueError, rngcheck, atom)
 
     def test_range_checker_duplicate_atoms_water(self):
@@ -2350,7 +2693,7 @@ _ihm_sphere_obj_site.model_id
                                        het=True),
                         ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='N',
                                        type_symbol='N', x=4.0, y=5.0, z=6.0,
-                                       biso=42.0, occupancy=0.2)]
+                                       biso=42.0, occupancy=0.2, alt_id='A')]
 
         dumper = ihm.dumper._ModelDumper()
         dumper.finalize(system)  # assign model/group IDs
@@ -2403,7 +2746,7 @@ _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
 ATOM 1 C C . ALA 1 1 ? X 1.000 2.000 3.000 . 9 X ALA . 1 1
 HETATM 2 C CA . ALA 1 1 ? X 10.000 20.000 30.000 . 9 X ALA . 1 1
-ATOM 3 N N . CYS 2 2 ? X 4.000 5.000 6.000 0.200 9 X CYS 42.000 1 1
+ATOM 3 N N A CYS 2 2 ? X 4.000 5.000 6.000 0.200 9 X CYS 42.000 1 1
 #
 #
 loop_
@@ -2424,7 +2767,7 @@ N
         self.assertEqual(
             out.split('\n')[44:47:2],
             ["ATOM 1 C C . ALA 1 0 ? X 1.000 2.000 3.000 . 9 X ALA . 1 1",
-             "ATOM 3 N N . CYS 2 1 ? X 4.000 5.000 6.000 "
+             "ATOM 3 N N A CYS 2 1 ? X 4.000 5.000 6.000 "
              "0.200 9 X CYS 42.000 1 1"])
 
         # With auth_seq_id map
@@ -2433,8 +2776,14 @@ N
         self.assertEqual(
             out.split('\n')[44:47:2],
             ["ATOM 1 C C . ALA 1 42 ? X 1.000 2.000 3.000 . 9 X ALA . 1 1",
-             "ATOM 3 N N . CYS 2 99 ? X 4.000 5.000 6.000 "
+             "ATOM 3 N N A CYS 2 99 ? X 4.000 5.000 6.000 "
              "0.200 9 X CYS 42.000 1 1"])
+
+        # With duplicate atom IDs (atoms[0] is already 'C')
+        model._atoms[1].atom_id = 'C'
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Should work though if checks are disabled
+        _ = _get_dumper_output(dumper, system, check=False)
 
     def test_model_dumper_water_atoms(self):
         """Test ModelDumper with water atoms"""
@@ -2469,6 +2818,58 @@ N
              'HETATM 2 O O . HOH . 99 ? X 4.000 5.000 6.000 . 9 X HOH . 1 1',
              'HETATM 3 O O . HOH . 3 ? X 7.000 8.000 9.000 . 9 X HOH . 1 1'])
 
+    def test_not_modeled_residue_range_dumper(self):
+        """Test NotModeledResidueRangeDumper"""
+        system, model, asym = self._make_test_model()
+
+        rr1 = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        rr2 = ihm.model.NotModeledResidueRange(
+            asym, 3, 4, reason="Highly variable models with poor precision")
+        model.not_modeled_residue_ranges.extend((rr1, rr2))
+
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system)  # assign model/group IDs
+
+        dumper = ihm.dumper._NotModeledResidueRangeDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_residues_not_modeled.id
+_ihm_residues_not_modeled.model_id
+_ihm_residues_not_modeled.entity_description
+_ihm_residues_not_modeled.entity_id
+_ihm_residues_not_modeled.asym_id
+_ihm_residues_not_modeled.seq_id_begin
+_ihm_residues_not_modeled.seq_id_end
+_ihm_residues_not_modeled.comp_id_begin
+_ihm_residues_not_modeled.comp_id_end
+_ihm_residues_not_modeled.reason
+1 1 Nup84 9 X 1 2 ALA CYS .
+2 1 Nup84 9 X 3 4 GLY THR 'Highly variable models with poor precision'
+#
+""")
+
+    def test_not_modeled_residue_range_bad_range(self):
+        """Test NotModeledResidueRangeDumper with bad residue ranges"""
+        for badrng, exc in [((10, 14), IndexError),
+                            ((-4, 1), IndexError),
+                            ((3, 1), ValueError)]:
+            system, model, asym = self._make_test_model()
+            # Disable construction-time check so that we
+            # can see dump time check
+            asym.entity._range_check = False
+            rr1 = ihm.model.NotModeledResidueRange(asym, *badrng)
+            asym.entity._range_check = True
+            model.not_modeled_residue_ranges.append(rr1)
+
+            dumper = ihm.dumper._ModelDumper()
+            dumper.finalize(system)  # assign model/group IDs
+
+            dumper = ihm.dumper._NotModeledResidueRangeDumper()
+            self.assertRaises(exc, _get_dumper_output, dumper, system)
+            # Should be OK if checks are disabled
+            _ = _get_dumper_output(dumper, system, check=False)
+
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""
         class MockObject(object):
@@ -2496,7 +2897,11 @@ N
                                              model_group=group, file=loc)
         ss3 = ihm.model.RandomSubsample(name='ss3', num_models=5)
         e2.subsamples.extend((ss1, ss2, ss3))
-        system.ensembles.extend((e1, e2))
+
+        # Ensemble without a model group
+        e3 = ihm.model.Ensemble(model_group=None, num_models=10,
+                                details='no-group details')
+        system.ensembles.extend((e1, e2, e3))
 
         dumper = ihm.dumper._EnsembleDumper()
         dumper.finalize(system)  # assign IDs
@@ -2524,6 +2929,7 @@ _ihm_ensemble_info.sub_sample_flag
 _ihm_ensemble_info.sub_sampling_type
 1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . . YES NO .
 2 . . 42 . . 10 2 . 3 'test details' . YES independent
+3 . . . . . 10 . . . 'no-group details' . NO .
 #
 #
 loop_
@@ -2629,6 +3035,30 @@ _ihm_entity_poly_segment.comp_id_end
 3 2 2 2 CYS CYS
 #
 """)
+
+    def test_entity_poly_segment_dumper_bad_range(self):
+        """Test EntityPolySegmentDumper with bad residue ranges"""
+        for badrng, exc in [((10, 14), IndexError),
+                            ((-4, 1), IndexError),
+                            ((3, 1), ValueError)]:
+            system = ihm.System()
+            e1 = ihm.Entity('AHCD')
+            system.entities.append(e1)
+            # Disable construction-time check so that we
+            # can see dump time check
+            e1._range_check = False
+            system.orphan_features.append(
+                ihm.restraint.ResidueFeature([e1(*badrng)]))
+            e1._range_check = True
+
+            dumper = ihm.dumper._EntityDumper()
+            dumper.finalize(system)  # assign IDs
+            dumper = ihm.dumper._EntityPolySegmentDumper()
+            dumper.finalize(system)  # assign IDs
+
+            self.assertRaises(exc, _get_dumper_output, dumper, system)
+            # Should be OK though if checks are disabled
+            _ = _get_dumper_output(dumper, system, check=False)
 
     def test_single_state(self):
         """Test MultiStateDumper with a single state"""
@@ -2742,15 +3172,15 @@ _ihm_multi_state_model_group_link.model_group_id
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
-_ihm_ordered_ensemble.process_id
-_ihm_ordered_ensemble.process_description
-_ihm_ordered_ensemble.ordered_by
-_ihm_ordered_ensemble.step_id
-_ihm_ordered_ensemble.step_description
-_ihm_ordered_ensemble.edge_id
-_ihm_ordered_ensemble.edge_description
-_ihm_ordered_ensemble.model_group_id_begin
-_ihm_ordered_ensemble.model_group_id_end
+_ihm_ordered_model.process_id
+_ihm_ordered_model.process_description
+_ihm_ordered_model.ordered_by
+_ihm_ordered_model.step_id
+_ihm_ordered_model.step_description
+_ihm_ordered_model.edge_id
+_ihm_ordered_model.edge_description
+_ihm_ordered_model.model_group_id_begin
+_ihm_ordered_model.model_group_id_end
 1 . 'time steps' 1 'Linear reaction' 1 . 42 82
 2 'Proc 2' 'time steps' 1 'Branched reaction' 1 . 42 82
 2 'Proc 2' 'time steps' 1 'Branched reaction' 2 . 42 92
@@ -2777,9 +3207,9 @@ _ihm_ordered_ensemble.model_group_id_end
             number_of_gaussians=40, details='GMM fitting')
         r2 = ihm.restraint.EM3DRestraint(
             dataset=dataset2, assembly=assembly,
-            segment=False, fitting_method='Gaussian mixture model',
+            segment=True, fitting_method='Gaussian mixture model',
             fitting_method_citation=citation,
-            number_of_gaussians=30, details='GMM fitting')
+            number_of_gaussians=30, details='Other details')
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m._id = 42
@@ -2803,12 +3233,14 @@ _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
 _ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.map_segment_flag
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 97 'Gaussian mixture model' . 99 40 42 0.400
-2 97 'Gaussian mixture model' . 99 40 44 .
-3 87 'Gaussian mixture model' 8 99 30 44 .
+_ihm_3dem_restraint.details
+1 97 'Gaussian mixture model' . 99 NO 40 42 0.400 'GMM fitting'
+2 97 'Gaussian mixture model' . 99 NO 40 44 . 'GMM fitting'
+3 87 'Gaussian mixture model' 8 99 YES 30 44 . 'Other details'
 #
 """)
 
@@ -3079,6 +3511,44 @@ _ihm_cross_link_result_parameters.sigma_2
 #
 """)
 
+    def test_cross_link_restraint_dumper_range_check(self):
+        """Test CrossLinkRestraintDumper with out-of-range residue"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+        e1 = ihm.Entity('ATC', description='foo')
+        system.entities.append(e1)
+        asym1 = ihm.AsymUnit(e1)
+        system.asym_units.append(asym1)
+
+        dataset = MockObject()
+        dataset._id = 97
+        dss = ihm.ChemDescriptor('DSS')
+        r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker=dss)
+        # Disable construction-time check so that we
+        # can see dump time check
+        e1._range_check = False
+        xxl1 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(2), e1.residue(300))
+        e1._range_check = True
+        r.experimental_cross_links.append([xxl1])
+        system.restraints.append(r)
+
+        d = ihm.restraint.UpperBoundDistanceRestraint(25.0)
+        xl1 = ihm.restraint.ResidueCrossLink(
+            xxl1, asym1, asym1, d, psi=0.5, sigma1=1.0, sigma2=2.0,
+            restrain_all=True)
+        r.cross_links.append(xl1)
+
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
+        ihm.dumper._ChemDescriptorDumper().finalize(system)  # descriptor IDs
+        dumper = ihm.dumper._CrossLinkDumper()
+        dumper.finalize(system)  # assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Should work though if checks are disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
     def test_geometric_object_dumper(self):
         """Test GeometricObjectDumper"""
         system = ihm.System()
@@ -3100,16 +3570,25 @@ _ihm_cross_link_result_parameters.sigma_2
         system.orphan_geometric_objects.extend((sphere, torus, half_torus,
                                                 axis, plane))
 
+        # Transformation not referenced by any object
+        trans2 = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                             [4., 5., 6.])
+        system._orphan_geometric_transforms.append(trans2)
+
+        # Center not referenced by any object
+        center2 = ihm.geometry.Center(8., 9., 10.)
+        system._orphan_centers.append(center2)
+
         dumper = ihm.dumper._GeometricObjectDumper()
         dumper.finalize(system)  # assign IDs
         self.assertEqual(len(dumper._objects_by_id), 5)
-        self.assertEqual(len(dumper._centers_by_id), 1)
-        self.assertEqual(len(dumper._transformations_by_id), 1)
+        self.assertEqual(len(dumper._centers_by_id), 2)
+        self.assertEqual(len(dumper._transformations_by_id), 2)
         # Repeated calls to finalize should yield identical results
         dumper.finalize(system)
         self.assertEqual(len(dumper._objects_by_id), 5)
-        self.assertEqual(len(dumper._centers_by_id), 1)
-        self.assertEqual(len(dumper._transformations_by_id), 1)
+        self.assertEqual(len(dumper._centers_by_id), 2)
+        self.assertEqual(len(dumper._transformations_by_id), 2)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -3118,6 +3597,7 @@ _ihm_geometric_object_center.xcoord
 _ihm_geometric_object_center.ycoord
 _ihm_geometric_object_center.zcoord
 1 1.000 2.000 3.000
+2 8.000 9.000 10.000
 #
 #
 loop_
@@ -3136,6 +3616,8 @@ _ihm_geometric_object_transformation.tr_vector[2]
 _ihm_geometric_object_transformation.tr_vector[3]
 1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
 1.000000 1.000 2.000 3.000
+2 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 4.000 5.000 6.000
 #
 #
 loop_
@@ -3190,6 +3672,39 @@ _ihm_geometric_object_plane.transformation_id
 #
 """)
 
+    def test_geometric_object_dumper_invalid_rotation(self):
+        """Test GeometricObjectDumper with invalid rotation"""
+        system = ihm.System()
+        center = ihm.geometry.Center(1., 2., 3.)
+        trans = ihm.geometry.Transformation(None, [1., 2., 3.])
+        sphere = ihm.geometry.Sphere(center=center, transformation=trans,
+                                     radius=2.2, name='my sphere',
+                                     description='a test sphere')
+        system.orphan_geometric_objects.append(sphere)
+
+        dumper = ihm.dumper._GeometricObjectDumper()
+        dumper.finalize(system)
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # OK if checks are disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
+    def test_geometric_object_dumper_invalid_translation(self):
+        """Test GeometricObjectDumper with invalid translation"""
+        system = ihm.System()
+        center = ihm.geometry.Center(1., 2., 3.)
+        trans = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                            ihm.unknown)
+        sphere = ihm.geometry.Sphere(center=center, transformation=trans,
+                                     radius=2.2, name='my sphere',
+                                     description='a test sphere')
+        system.orphan_geometric_objects.append(sphere)
+
+        dumper = ihm.dumper._GeometricObjectDumper()
+        dumper.finalize(system)
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # OK if checks are disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
     def test_feature_dumper(self):
         """Test FeatureDumper"""
         system = ihm.System()
@@ -3204,6 +3719,12 @@ _ihm_geometric_object_plane.transformation_id
         f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
                                          details='test feature')
         system.orphan_features.append(f)
+
+        # Duplicate feature, should be pruned from output
+        f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
+                                         details='other details')
+        system.orphan_features.append(f)
+
         # Cannot make a ResidueFeature that includes a non-polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.ResidueFeature, [a1, a3])
 
@@ -3229,6 +3750,11 @@ _ihm_geometric_object_plane.transformation_id
         # Pseudo site feature
         ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         ps._id = 89
+        f = ihm.restraint.PseudoSiteFeature(site=ps)
+        system.orphan_features.append(f)
+
+        # Duplicate Pseudo site feature
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
@@ -3303,13 +3829,51 @@ _ihm_pseudo_site_feature.pseudo_site_id
 #
 """)
 
+    def test_feature_dumper_no_residues(self):
+        """Test FeatureDumper with an empty ResidueFeature"""
+        system = ihm.System()
+
+        f = ihm.restraint.ResidueFeature([])
+        system.orphan_features.append(f)
+
+        dumper = ihm.dumper._FeatureDumper()
+        dumper.finalize(system)  # assign IDs
+        self.assertEqual(len(dumper._features_by_id), 1)
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+
+    def test_feature_dumper_base_class(self):
+        """Test FeatureDumper with a Feature base class"""
+        system = ihm.System()
+
+        f = ihm.restraint.Feature()
+        system.orphan_features.append(f)
+
+        dumper = ihm.dumper._FeatureDumper()
+        dumper.finalize(system)  # assign IDs
+        self.assertEqual(len(dumper._features_by_id), 1)
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Should be OK if checks are disabled
+        out = _get_dumper_output(dumper, system, check=False)
+        self.assertEqual(out, """#
+loop_
+_ihm_feature_list.feature_id
+_ihm_feature_list.feature_type
+_ihm_feature_list.entity_type
+_ihm_feature_list.details
+1 ? ? .
+#
+""")
+
     def test_pseudo_site_dumper(self):
         """Test PseudoSiteDumper"""
         system = ihm.System()
         ps1 = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         ps2 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
                                        radius=40., description="test pseudo")
-        system.orphan_pseudo_sites.extend((ps1, ps2))
+        # Duplicate pseudo site, should be pruned
+        ps3 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
+                                       radius=40., description="other pseudo")
+        system.orphan_pseudo_sites.extend((ps1, ps2, ps3))
 
         dumper = ihm.dumper._PseudoSiteDumper()
         dumper.finalize(system)  # assign IDs
@@ -3439,6 +4003,39 @@ _ihm_derived_distance_restraint.dataset_list_id
         dumper = ihm.dumper._DerivedDistanceRestraintDumper()
         # r1 cannot be in multiple groups (rg1 and rg2)
         self.assertRaises(ValueError, dumper.finalize, system)
+
+    def test_hdx_restraint_dumper(self):
+        """Test HDXRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+
+        feat = MockObject()
+        feat._id = 44
+        dataset = MockObject()
+        dataset._id = 97
+
+        r1 = ihm.restraint.HDXRestraint(
+            dataset=dataset, feature=feat, protection_factor=1.0,
+            details="foo")
+        r2 = ihm.restraint.HDXRestraint(dataset=None, feature=feat)
+        system.restraints.extend((r1, r2))
+
+        dumper = ihm.dumper._HDXRestraintDumper()
+        dumper.finalize(system)  # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_hdx_restraint.id
+_ihm_hdx_restraint.feature_id
+_ihm_hdx_restraint.protection_factor
+_ihm_hdx_restraint.dataset_list_id
+_ihm_hdx_restraint.details
+1 44 1.000 97 foo
+2 44 . . .
+#
+""")
 
     def test_bad_restraint_groups(self):
         """Test RestraintGroups containing unsupported restraints"""
@@ -3789,7 +4386,6 @@ _ihm_multi_state_scheme_connectivity.details
         dumper = ihm.dumper._RelaxationTimeDumper()
         dumper.finalize(system)
         out = _get_dumper_output(dumper, system)
-        self.maxDiff = None
         self.assertEqual(out, """#
 loop_
 _ihm_relaxation_time.id

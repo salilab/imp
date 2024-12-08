@@ -40,7 +40,7 @@ class Tests(IMP.test.ApplicationTestCase):
            subprocesses, rather than actually running them."""
         app = self.import_python_application('idock')
 
-        class Opts(object):
+        class Opts:
             pass
         d = app.IDock()
         d.opts = Opts()
@@ -74,10 +74,10 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_run_binary(self):
         """Test _run_binary()"""
-        class DummySubprocess(object):
+        class DummySubprocess:
             args = None
 
-            class Popen(object):
+            class Popen:
 
                 def __init__(self, *args, **keys):
                     DummySubprocess.args = self.args = args
@@ -149,7 +149,7 @@ class Tests(IMP.test.ApplicationTestCase):
         """Test get_filename()"""
         app = self.import_python_application('idock')
 
-        class Opts(object):
+        class Opts:
             pass
         dock = app.IDock()
         dock.opts = Opts()
@@ -199,7 +199,7 @@ class Tests(IMP.test.ApplicationTestCase):
         """Test make_transformation_file()"""
         app = self.import_python_application('idock')
 
-        class Opts(object):
+        class Opts:
             pass
         dock = app.IDock()
         dock.opts = Opts()
@@ -248,7 +248,7 @@ Program parameters
                 self.calls.append('transforms')
                 return 42
 
-        class Opts(object):
+        class Opts:
             pass
         dock = Dummy()
         dock.opts = Opts()
@@ -310,7 +310,7 @@ Program parameters
         """Test IDock.get_scorers()"""
         app = self.import_python_application('idock')
 
-        class Opts(object):
+        class Opts:
             pass
         d = app.IDock()
         d.opts = Opts()
@@ -338,7 +338,7 @@ Program parameters
             def _run_score_binary(self):
                 self.run_score = True
 
-        class MockIDock(object):
+        class MockIDock:
             receptor = 'testrecep'
             ligand = 'testlig'
 
@@ -415,7 +415,7 @@ ligandPdb (str) antibody_cut.pdb
     def get_dummy_idock_for_scorer(self):
         app = self.import_python_application('idock')
 
-        class Opts(object):
+        class Opts:
             pass
         idock = app.IDock()
         idock.opts = Opts()
@@ -691,7 +691,7 @@ ligandPdb (str) antibody_cut.pdb
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.prefix = ''
 
-        class MockScorer(object):
+        class MockScorer:
             short_name = 'mock'
         with open('comb_final', 'w') as fh:
             fh.write("""

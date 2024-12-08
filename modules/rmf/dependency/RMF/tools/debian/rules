@@ -17,7 +17,7 @@ override_dh_auto_configure:
 	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
 	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
 	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
-                -DCMAKE_INSTALL_PREFIX=/usr -DUSE_PYTHON2=off
+                -DCMAKE_INSTALL_PREFIX=/usr
 
 override_dh_auto_build:
 	$(MAKE) -C build

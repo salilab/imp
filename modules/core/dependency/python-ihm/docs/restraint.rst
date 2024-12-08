@@ -105,3 +105,6 @@ The :mod:`ihm.restraint` Python module
 
 .. autoclass:: PredictedContactRestraint
    :members:
+
+.. autoclass:: HDXRestraint
+   :members:

@@ -21,7 +21,7 @@ def uniq(ls):
             yield obj
 
 
-class FileGenerator(object):
+class FileGenerator:
     body = ["@LDPATH@", "", "@PYTHONPATH@", "",
             "# Where to find data for the various modules",
             "@IMP_DATA@", "",

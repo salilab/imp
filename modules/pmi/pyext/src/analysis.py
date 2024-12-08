@@ -3,7 +3,6 @@
 """@namespace IMP.pmi.analysis
    Tools for clustering and cluster analysis
 """
-from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.em
@@ -19,7 +18,7 @@ import itertools
 import numpy as np
 
 
-class Alignment(object):
+class Alignment:
     """Performs alignment and RMSD calculation for two sets of coordinates
 
     The class also takes into account non-equal stoichiometry of the proteins.
@@ -152,7 +151,7 @@ else: print 'ERROR!'; exit()
 
 
 # ----------------------------------
-class Violations(object):
+class Violations:
 
     def __init__(self, filename):
 
@@ -181,7 +180,7 @@ class Violations(object):
         return num_violated
 
 
-class Clustering(object):
+class Clustering:
     """A class to cluster structures.
     Uses scipy's cdist function to compute distance matrices
     and sklearn's kmeans clustering module.
@@ -459,7 +458,7 @@ class Clustering(object):
         return raw_distance_dict, transformation_distance_dict
 
 
-class RMSD(object):
+class RMSD:
     """Compute the RMSD (without alignment) taking into account the copy
        ambiguity.
     To be used with pmi2 hierarchies. Can be used for instance as follows:
@@ -593,7 +592,7 @@ class RMSD(object):
                 "RMSD_assignments_" + self.label: str(assignments_out)}
 
 
-class Precision(object):
+class Precision:
     """A class to evaluate the precision of an ensemble.
 
     Also can evaluate the cross-precision of multiple ensembles.
@@ -1152,7 +1151,7 @@ class Precision(object):
             raise ValueError("No such style")
 
 
-class GetModelDensity(object):
+class GetModelDensity:
     """Compute mean density maps from structures.
 
     Keeps a dictionary of density maps,
@@ -1276,7 +1275,7 @@ class GetModelDensity(object):
                              IMP.em.MRCReaderWriter())
 
 
-class GetContactMap(object):
+class GetContactMap:
 
     def __init__(self, distance=15.):
         self.distance = distance
@@ -1628,7 +1627,7 @@ def get_particles_at_resolution_ten(prot):
     return particle_dict
 
 
-class CrossLinkTable(object):
+class CrossLinkTable:
     """Visualization of cross-links"""
     def __init__(self):
         self.crosslinks = []

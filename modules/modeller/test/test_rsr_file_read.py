@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
         # Test periodic splined restraint:
         r = modeller.forms.Spline(
             feature=modeller.features.Dihedral(at[0], at[1], at[2], at[3]),
-            open=False, low=0.0, high=6.2832, delta=1.2566,
+            open=False, low=-3.1416, high=3.1416, delta=1.2566,
             group=modeller.physical.xy_distance,
             lowderiv=0.0, highderiv=0.0,
             values=[100.0, 200.0, 300.0, 400.0, 300.0])

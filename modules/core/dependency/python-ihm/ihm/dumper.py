@@ -6,6 +6,7 @@ import collections
 import operator
 import itertools
 import warnings
+import datetime
 import ihm.format
 import ihm.format_bcif
 import ihm.model
@@ -32,6 +33,10 @@ def _is_subrange(rng1, rng2):
 class Dumper(object):
     """Base class for helpers to dump output to mmCIF or BinaryCIF.
        See :func:`write`."""
+
+    # Set to False to disable dump-time sanity checks
+    _check = True
+
     def __init__(self):
         pass
 
@@ -58,10 +63,15 @@ class Dumper(object):
 def _get_transform(rot_matrix, tr_vector):
     """Return a dict encoding a transform, suitable for passing to
        loop.write()"""
-    # mmCIF writer usually outputs floats to 3 decimal
-    # places, but we need more precision for rotation
-    # matrices
-    rm = [["%.6f" % e for e in rot_matrix[i]] for i in range(3)]
+    if rot_matrix in (None, ihm.unknown):
+        rm = [[rot_matrix for _ in range(3)] for _ in range(3)]
+    else:
+        # mmCIF writer usually outputs floats to 3 decimal
+        # places, but we need more precision for rotation
+        # matrices
+        rm = [["%.6f" % e for e in rot_matrix[i]] for i in range(3)]
+    if tr_vector in (None, ihm.unknown):
+        tr_vector = [tr_vector for _ in range(3)]
 
     return {'rot_matrix11': rm[0][0], 'rot_matrix21': rm[1][0],
             'rot_matrix31': rm[2][0], 'rot_matrix12': rm[0][1],
@@ -94,8 +104,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.25",
-                     dict_location=self.URL % "460a278")
+            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.27",
+                     dict_location=self.URL % "ad4a00e")
 
 
 class _StructDumper(Dumper):
@@ -208,6 +218,75 @@ class _AuditAuthorDumper(Dumper):
                 lp.write(name=author, pdbx_ordinal=n + 1)
 
 
+class _AuditRevisionDumper(Dumper):
+    def finalize(self, system):
+        for n, rev in enumerate(system.revisions):
+            rev._id = n + 1
+
+    def dump(self, system, writer):
+        self._dump_history(system, writer)
+        self._dump_details(system, writer)
+        self._dump_groups(system, writer)
+        self._dump_categories(system, writer)
+        self._dump_items(system, writer)
+
+    def _dump_history(self, system, writer):
+        with writer.loop("_pdbx_audit_revision_history",
+                         ["ordinal", "data_content_type", "major_revision",
+                          "minor_revision", "revision_date"]) as lp:
+            for rev in system.revisions:
+                lp.write(ordinal=rev._id,
+                         data_content_type=rev.data_content_type,
+                         major_revision=rev.major, minor_revision=rev.minor,
+                         revision_date=datetime.date.isoformat(rev.date)
+                         if rev.date else rev.date)
+
+    def _dump_details(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_audit_revision_details",
+                         ["ordinal", "revision_ordinal", "data_content_type",
+                          "provider", "type", "description"]) as lp:
+            for rev in system.revisions:
+                for d in rev.details:
+                    lp.write(ordinal=next(ordinal), revision_ordinal=rev._id,
+                             data_content_type=rev.data_content_type,
+                             provider=d.provider, type=d.type,
+                             description=d.description)
+
+    def _dump_groups(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_audit_revision_group",
+                         ["ordinal", "revision_ordinal", "data_content_type",
+                          "group"]) as lp:
+            for rev in system.revisions:
+                for group in rev.groups:
+                    lp.write(ordinal=next(ordinal), revision_ordinal=rev._id,
+                             data_content_type=rev.data_content_type,
+                             group=group)
+
+    def _dump_categories(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_audit_revision_category",
+                         ["ordinal", "revision_ordinal", "data_content_type",
+                          "category"]) as lp:
+            for rev in system.revisions:
+                for category in rev.categories:
+                    lp.write(ordinal=next(ordinal), revision_ordinal=rev._id,
+                             data_content_type=rev.data_content_type,
+                             category=category)
+
+    def _dump_items(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_audit_revision_item",
+                         ["ordinal", "revision_ordinal", "data_content_type",
+                          "item"]) as lp:
+            for rev in system.revisions:
+                for item in rev.items:
+                    lp.write(ordinal=next(ordinal), revision_ordinal=rev._id,
+                             data_content_type=rev.data_content_type,
+                             item=item)
+
+
 class _GrantDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_pdbx_audit_support",
@@ -239,7 +318,9 @@ class _DatabaseStatusDumper(Dumper):
 
 class _ChemCompDumper(Dumper):
     def dump(self, system, writer):
-        comps = frozenset(comp for e in system.entities for comp in e.sequence)
+        comps = frozenset(itertools.chain(
+            (comp for e in system.entities for comp in e.sequence),
+            system._orphan_chem_comps))
 
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as lp:
@@ -285,7 +366,7 @@ class _EntityDumper(Dumper):
         seen = {}
         empty = []
         for num, entity in enumerate(system.entities):
-            if entity in seen and len(entity.sequence) > 0:
+            if self._check and entity in seen and len(entity.sequence) > 0:
                 raise ValueError("Duplicate entity %s found" % entity)
             if len(entity.sequence) == 0:
                 empty.append(entity)
@@ -418,13 +499,31 @@ def _prettyprint_seq(seq, width):
         yield ''.join(line)
 
 
+def _get_comp_id(entity, seq_id):
+    """Get the component ID for a given seq_id, or ? if it is out of range"""
+    if 1 <= seq_id <= len(entity.sequence):
+        return entity.sequence[seq_id - 1].id
+    else:
+        return ihm.unknown
+
+
 class _StructRefDumper(Dumper):
     def finalize(self, system):
-        ref_id = itertools.count(1)
+        # List of (entity, ref) by ID
+        self._refs_by_id = []
+        seen_refs = {}
         align_id = itertools.count(1)
         for e in system.entities:
             for r in e.references:
-                r._id = next(ref_id)
+                util._remove_id(r)
+
+        for e in system.entities:
+            # Two refs are not considered duplicated if they relate to
+            # different entities, so add entity to reference signature
+            for r in e.references:
+                sig = (id(e), r._signature())
+                util._assign_id(r, seen_refs, self._refs_by_id, seen_obj=sig,
+                                by_id_obj=(e, r))
                 for a in r._get_alignments():
                     a._id = next(align_id)
 
@@ -436,9 +535,11 @@ class _StructRefDumper(Dumper):
         # our entities
         db_begin = min(a.db_begin for a in reference._get_alignments())
         db_end = max(a.db_end for a in reference._get_alignments())
+        fullrefseq = list(util._get_codes(reference.sequence))
         # Split into lines to get tidier CIF output
         return "\n".join(_prettyprint_seq(
-            reference.sequence[db_begin - 1:db_end], 70))
+            (code if len(code) == 1 else '(%s)' % code
+             for code in fullrefseq[db_begin - 1:db_end]), 70))
 
     def _check_seq_dif(self, entity, ref, align):
         """Check all SeqDif objects for the Entity sequence. Return the mutated
@@ -449,22 +550,23 @@ class _StructRefDumper(Dumper):
                 raise IndexError("SeqDif.seq_id for %s is %d, out of "
                                  "range 1-%d"
                                  % (entity, sd.seq_id, len(entseq)))
-            if sd.monomer.code_canonical != entseq[sd.seq_id - 1]:
+            if (sd.monomer
+                    and sd.monomer.code_canonical != entseq[sd.seq_id - 1]):
                 raise ValueError("SeqDif.monomer one-letter code (%s) does "
                                  "not match that in %s (%s at position %d)"
                                  % (sd.monomer.code_canonical, entity,
                                     entseq[sd.seq_id - 1], sd.seq_id))
             if sd.db_monomer:
                 entseq[sd.seq_id - 1] = sd.db_monomer.code_canonical
-        return ''.join(entseq)
+        return entseq
 
-    def _get_ranges(self, entity, ref, align):
+    def _get_ranges(self, entity, fullrefseq, align):
         """Get the sequence ranges for an Entity and Reference"""
         return ((align.entity_begin,
                  len(entity.sequence) if align.entity_end is None
                  else align.entity_end),
                 (align.db_begin,
-                 len(ref.sequence) if align.db_end is None else align.db_end))
+                 len(fullrefseq) if align.db_end is None else align.db_end))
 
     def _check_reference_sequence(self, entity, ref):
         """Make sure that the Entity and Reference sequences match"""
@@ -477,20 +579,29 @@ class _StructRefDumper(Dumper):
             # We just have to trust the range if the ref sequence is blank
             return
         entseq = self._check_seq_dif(entity, ref, align)
+        # Reference sequence may contain non-standard residues, so parse them
+        # out; e.g. "FLGHGGN(WP9)LHFVQLAS"
+        fullrefseq = list(util._get_codes(ref.sequence))
 
         def check_rng(rng, seq, rngstr, obj):
             if any(r < 1 or r > len(seq) for r in rng):
                 raise IndexError("Alignment.%s for %s is (%d-%d), "
                                  "out of range 1-%d"
                                  % (rngstr, obj, rng[0], rng[1], len(seq)))
-        entity_rng, db_rng = self._get_ranges(entity, ref, align)
+        entity_rng, db_rng = self._get_ranges(entity, fullrefseq, align)
         check_rng(entity_rng, entseq, "entity_begin,entity_end", entity)
-        check_rng(db_rng, ref.sequence, "db_begin,db_end", ref)
+        check_rng(db_rng, fullrefseq, "db_begin,db_end", ref)
 
         matchlen = min(entity_rng[1] - entity_rng[0], db_rng[1] - db_rng[0])
         entseq = entseq[entity_rng[0] - 1:entity_rng[0] + matchlen - 1]
-        refseq = ref.sequence[db_rng[0] - 1:db_rng[0] + matchlen - 1]
-        if refseq != entseq:
+        refseq = fullrefseq[db_rng[0] - 1:db_rng[0] + matchlen - 1]
+
+        # Entity sequence is canonical so likely won't match any non-standard
+        # residue (anything of length > 1), so just skip checks of these
+        def matchseq(a, b):
+            return a == b or len(a) > 1 or len(b) > 1
+        if (len(refseq) != len(entseq)
+                or not all(matchseq(a, b) for (a, b) in zip(refseq, entseq))):
             raise ValueError(
                 "Reference sequence from %s does not match entity canonical"
                 " sequence (after mutations) for %s - you may need to "
@@ -500,8 +611,12 @@ class _StructRefDumper(Dumper):
                 "Reference: %s\nEntity:    %s\n"
                 "Match:     %s"
                 % (ref, entity, db_rng[0], db_rng[1],
-                   entity_rng[0], entity_rng[1], refseq, entseq,
-                   ''.join('*' if a == b else ' '
+                   entity_rng[0], entity_rng[1],
+                   # Use "X" for any non-standard residue so the alignment
+                   # lines up
+                   ''.join(x if len(x) == 1 else 'X' for x in refseq),
+                   ''.join(entseq),
+                   ''.join('*' if matchseq(a, b) else ' '
                            for (a, b) in zip(refseq, entseq))))
 
     def dump(self, system, writer):
@@ -510,29 +625,29 @@ class _StructRefDumper(Dumper):
                 ["id", "entity_id", "db_name", "db_code", "pdbx_db_accession",
                  "pdbx_align_begin", "pdbx_seq_one_letter_code",
                  "details"]) as lp:
-            for e in system.entities:
-                for r in e.references:
+            for e, r in self._refs_by_id:
+                if self._check:
                     self._check_reference_sequence(e, r)
-                    db_begin = min(a.db_begin for a in r._get_alignments())
-                    lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
-                             db_code=r.db_code, pdbx_db_accession=r.accession,
-                             pdbx_align_begin=db_begin, details=r.details,
-                             pdbx_seq_one_letter_code=self._get_sequence(r))
+                db_begin = min(a.db_begin for a in r._get_alignments())
+                lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
+                         db_code=r.db_code, pdbx_db_accession=r.accession,
+                         pdbx_align_begin=db_begin, details=r.details,
+                         pdbx_seq_one_letter_code=self._get_sequence(r))
         self.dump_seq(system, writer)
         self.dump_seq_dif(system, writer)
 
     def dump_seq(self, system, writer):
         def _all_alignments():
-            for e in system.entities:
-                for r in e.references:
-                    for a in r._get_alignments():
-                        yield e, r, a
+            for e, r in self._refs_by_id:
+                for a in r._get_alignments():
+                    yield e, r, a
         with writer.loop(
                 "_struct_ref_seq",
                 ["align_id", "ref_id", "seq_align_beg", "seq_align_end",
                  "db_align_beg", "db_align_end"]) as lp:
             for e, r, a in _all_alignments():
-                entity_rng, db_rng = self._get_ranges(e, r, a)
+                fullrefseq = list(util._get_codes(r.sequence))
+                entity_rng, db_rng = self._get_ranges(e, fullrefseq, a)
                 matchlen = min(entity_rng[1] - entity_rng[0],
                                db_rng[1] - db_rng[0])
                 lp.write(align_id=a._id, ref_id=r._id,
@@ -547,15 +662,16 @@ class _StructRefDumper(Dumper):
                 "_struct_ref_seq_dif",
                 ["pdbx_ordinal", "align_id", "seq_num", "db_mon_id", "mon_id",
                  "details"]) as lp:
-            for e in system.entities:
-                for r in e.references:
-                    for a in r._get_alignments():
-                        for sd in a.seq_dif:
-                            lp.write(pdbx_ordinal=next(ordinal),
-                                     align_id=a._id, seq_num=sd.seq_id,
-                                     db_mon_id=sd.db_monomer.id
-                                     if sd.db_monomer else ihm.unknown,
-                                     mon_id=sd.monomer.id, details=sd.details)
+            for e, r in self._refs_by_id:
+                for a in r._get_alignments():
+                    for sd in a.seq_dif:
+                        lp.write(pdbx_ordinal=next(ordinal),
+                                 align_id=a._id, seq_num=sd.seq_id,
+                                 db_mon_id=sd.db_monomer.id
+                                 if sd.db_monomer else ihm.unknown,
+                                 mon_id=sd.monomer.id
+                                 if sd.monomer else ihm.unknown,
+                                 details=sd.details)
 
 
 class _EntityPolyDumper(Dumper):
@@ -673,13 +789,18 @@ class _EntityPolySegmentDumper(Dumper):
                          ["id", "entity_id", "seq_id_begin", "seq_id_end",
                           "comp_id_begin", "comp_id_end"]) as lp:
             for rng in self._ranges_by_id:
-                entity = rng.entity if hasattr(rng, 'entity') else rng
+                if hasattr(rng, 'entity'):
+                    entity = rng.entity
+                    if self._check:
+                        util._check_residue_range(rng.seq_id_range, entity)
+                else:
+                    entity = rng
                 lp.write(
                     id=rng._range_id, entity_id=entity._id,
                     seq_id_begin=rng.seq_id_range[0],
                     seq_id_end=rng.seq_id_range[1],
-                    comp_id_begin=entity.sequence[rng.seq_id_range[0] - 1].id,
-                    comp_id_end=entity.sequence[rng.seq_id_range[1] - 1].id)
+                    comp_id_begin=_get_comp_id(entity, rng.seq_id_range[0]),
+                    comp_id_end=_get_comp_id(entity, rng.seq_id_range[1]))
 
 
 class _EntityBranchListDumper(Dumper):
@@ -718,16 +839,59 @@ class _PolySeqSchemeDumper(Dumper):
                 entity = asym.entity
                 if not entity.is_polymeric():
                     continue
-                for num, comp in enumerate(entity.sequence):
-                    pdb_seq_num, auth_seq_num, ins = \
-                        asym._get_pdb_auth_seq_id_ins_code(num + 1)
-                    lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
-                             entity_id=entity._id,
-                             seq_id=num + 1, pdb_seq_num=pdb_seq_num,
-                             auth_seq_num=auth_seq_num,
-                             mon_id=comp.id, pdb_mon_id=comp.id,
-                             auth_mon_id=comp.id,
-                             pdb_ins_code=ins)
+                for start, end, modeled in self._get_ranges(system, asym):
+                    for num in range(start, end + 1):
+                        comp = entity.sequence[num - 1]
+                        auth_comp_id = comp.id
+                        pdb_seq_num, auth_seq_num, ins = \
+                            asym._get_pdb_auth_seq_id_ins_code(num)
+                        if not modeled:
+                            # If a residue wasn't modeled, PDB convention is
+                            # to state ? for auth_seq_num, pdb_mon_id,
+                            # auth_mon_id.
+                            # See, e.g., https://files.rcsb.org/view/8QB4.cif
+                            auth_comp_id = ihm.unknown
+                            auth_seq_num = ihm.unknown
+                        elif auth_seq_num is ihm.unknown:
+                            # If we don't know the seq num, we can't know
+                            # the component ID either
+                            auth_comp_id = ihm.unknown
+                        lp.write(asym_id=asym._id,
+                                 pdb_strand_id=asym.strand_id,
+                                 entity_id=entity._id, seq_id=num,
+                                 pdb_seq_num=pdb_seq_num,
+                                 auth_seq_num=auth_seq_num, mon_id=comp.id,
+                                 pdb_mon_id=auth_comp_id,
+                                 auth_mon_id=auth_comp_id, pdb_ins_code=ins)
+
+    def _get_ranges(self, system, asym):
+        """Get a list of (seq_id_begin, seq_id_end, modeled) residue ranges
+           for the given asym. The list is guaranteed to be sorted and to cover
+           all residues in the asym. `modeled` is True if no Model has any
+           residue in that range in a NotModeledResidueRange."""
+        _all_modeled = []
+        num_models = 0
+        for group, model in system._all_models():
+            num_models += 1
+            # Handle Model-like objects with no not-modeled member (e.g.
+            # older versions of python-modelcif)
+            if hasattr(model, 'not_modeled_residue_ranges'):
+                ranges = model.not_modeled_residue_ranges
+            else:
+                ranges = []
+            # Get a sorted non-overlapping list of all not-modeled ranges
+            _all_not_modeled = util._combine_ranges(
+                (rr.seq_id_begin, rr.seq_id_end)
+                for rr in ranges if rr.asym_unit is asym)
+            # Invert to get a list of modeled ranges for this model
+            _all_modeled.extend(util._invert_ranges(_all_not_modeled,
+                                                    len(asym.entity.sequence)))
+        # If no models, there are no "not modeled residues", so say everything
+        # was modeled
+        if num_models == 0:
+            _all_modeled = [(1, len(asym.entity.sequence))]
+        return util._pred_ranges(util._combine_ranges(_all_modeled),
+                                 len(asym.entity.sequence))
 
 
 class _NonPolySchemeDumper(Dumper):
@@ -971,12 +1135,16 @@ class _ExternalReferenceDumper(Dumper):
             util._remove_id(r)
             if r.repo:
                 util._remove_id(r.repo)
+        for r in system._orphan_repos:
+            util._remove_id(r)
         for r in self._refs:
             # Assign a unique ID to the reference
             util._assign_id(r, seen_refs, self._ref_by_id)
             # Assign a unique ID to the repository
             util._assign_id(r.repo or self._local_files,
                             seen_repos, self._repo_by_id)
+        for r in system._orphan_repos:
+            util._assign_id(r, seen_repos, self._repo_by_id)
 
     def dump(self, system, writer):
         self.dump_repos(writer)
@@ -1037,11 +1205,16 @@ class _DatasetDumper(Dumper):
                 # since they live in different tables they need different IDs
                 util._remove_id(t, attr='_dtid')
             util._remove_id(d)
+        for t in system._orphan_dataset_transforms:
+            util._remove_id(t, attr='_dtid')
         for d in system._all_datasets():
             util._assign_id(d, seen_datasets, self._dataset_by_id)
             for t in _all_transforms(d):
                 util._assign_id(t, seen_transforms, self._transform_by_id,
                                 attr='_dtid')
+        for t in system._orphan_dataset_transforms:
+            util._assign_id(t, seen_transforms, self._transform_by_id,
+                            attr='_dtid')
 
         # Assign IDs to all groups and remove duplicates
         seen_group_ids = {}
@@ -1061,18 +1234,12 @@ class _DatasetDumper(Dumper):
                           "details"]) as lp:
             for d in self._dataset_by_id:
                 lp.write(id=d._id, data_type=d.data_type, details=d.details,
-                         database_hosted=isinstance(d.location,
-                                                    location.DatabaseLocation))
+                         database_hosted=any(isinstance(
+                             loc, location.DatabaseLocation)
+                             for loc in d._locations))
         self.dump_groups(writer)
-        self.dump_other((d for d in self._dataset_by_id
-                         if d.location is not None
-                         and not isinstance(d.location,
-                                            location.DatabaseLocation)),
-                        writer)
-        self.dump_rel_dbs((d for d in self._dataset_by_id
-                           if isinstance(d.location,
-                                         location.DatabaseLocation)),
-                          writer)
+        self.dump_other(writer)
+        self.dump_rel_dbs(writer)
         self.dump_related(system, writer)
         self.dump_related_transform(system, writer)
 
@@ -1095,25 +1262,31 @@ class _DatasetDumper(Dumper):
                 for dataset_id in sorted(set(d._id for d in g)):
                     lp.write(group_id=g._id, dataset_list_id=dataset_id)
 
-    def dump_other(self, datasets, writer):
+    def dump_other(self, writer):
         ordinal = itertools.count(1)
         with writer.loop("_ihm_dataset_external_reference",
                          ["id", "dataset_list_id", "file_id"]) as lp:
-            for d in datasets:
-                lp.write(id=next(ordinal), dataset_list_id=d._id,
-                         file_id=d.location._id)
+            for d in self._dataset_by_id:
+                for loc in d._locations:
+                    if (loc is not None and
+                            not isinstance(loc, location.DatabaseLocation)):
+                        lp.write(id=next(ordinal), dataset_list_id=d._id,
+                                 file_id=loc._id)
 
-    def dump_rel_dbs(self, datasets, writer):
+    def dump_rel_dbs(self, writer):
         ordinal = itertools.count(1)
         with writer.loop("_ihm_dataset_related_db_reference",
                          ["id", "dataset_list_id", "db_name",
                           "accession_code", "version", "details"]) as lp:
-            for d in datasets:
-                lp.write(id=next(ordinal), dataset_list_id=d._id,
-                         db_name=d.location.db_name,
-                         accession_code=d.location.access_code,
-                         version=d.location.version,
-                         details=d.location.details)
+            for d in self._dataset_by_id:
+                for loc in d._locations:
+                    if (loc is not None
+                            and isinstance(loc, location.DatabaseLocation)):
+                        lp.write(id=next(ordinal), dataset_list_id=d._id,
+                                 db_name=loc.db_name,
+                                 accession_code=loc.access_code,
+                                 version=loc.version,
+                                 details=loc.details)
 
     def dump_related(self, system, writer):
         with writer.loop("_ihm_related_datasets",
@@ -1144,6 +1317,8 @@ class _DatasetDumper(Dumper):
                  "rot_matrix[1][3]", "rot_matrix[2][3]", "rot_matrix[3][3]",
                  "tr_vector[1]", "tr_vector[2]", "tr_vector[3]"]) as lp:
             for t in self._transform_by_id:
+                if self._check:
+                    util._check_transform(t)
                 lp.write(id=t._dtid,
                          **_get_transform(t.rot_matrix, t.tr_vector))
 
@@ -1191,6 +1366,23 @@ class _ModelRepresentationDumper(Dumper):
                         model_granularity=segment.granularity,
                         model_object_count=segment.count,
                         description=segment.description)
+
+
+class _StartingModelRangeChecker(object):
+    """Check Atoms in StartingModels to make sure they match the Entities"""
+    def __init__(self, model, check):
+        self.model = model
+        self._check = check
+
+    def __call__(self, atom):
+        if not self._check:
+            return
+        # Check that atom seq_id is in range
+        e = atom.asym_unit.entity
+        if atom.seq_id > len(e.sequence) or atom.seq_id < 1:
+            raise IndexError(
+                "Starting model %d atom seq_id (%d) out of range (1-%d) for %s"
+                % (self.model._id, atom.seq_id, len(e.sequence), e))
 
 
 class _StartingModelDumper(Dumper):
@@ -1271,11 +1463,18 @@ class _StartingModelDumper(Dumper):
         denom = template.sequence_identity.denominator
         if denom is not None and denom is not ihm.unknown:
             denom = int(denom)
+        # Add offset only if seq_id_range isn't . or ?
+        seq_id_begin = template.seq_id_range[0]
+        if isinstance(template.seq_id_range[0], int):
+            seq_id_begin += off
+        seq_id_end = template.seq_id_range[1]
+        if isinstance(template.seq_id_range[1], int):
+            seq_id_end += off
         lp.write(id=next(ordinal),
                  starting_model_id=sm._id,
                  starting_model_auth_asym_id=sm.asym_id,
-                 starting_model_seq_id_begin=template.seq_id_range[0] + off,
-                 starting_model_seq_id_end=template.seq_id_range[1] + off,
+                 starting_model_seq_id_begin=seq_id_begin,
+                 starting_model_seq_id_end=seq_id_end,
                  template_auth_asym_id=template.asym_id,
                  template_seq_id_begin=template.template_seq_id_range[0],
                  template_seq_id_end=template.template_seq_id_range[1],
@@ -1296,14 +1495,16 @@ class _StartingModelDumper(Dumper):
                  "seq_id", "Cartn_x", "Cartn_y", "Cartn_z", "B_iso_or_equiv",
                  "ordinal_id"]) as lp:
             for model in system._all_starting_models():
+                rngcheck = _StartingModelRangeChecker(model, self._check)
                 for natom, atom in enumerate(model.get_atoms()):
-                    comp = atom.asym_unit.entity.sequence[atom.seq_id - 1]
+                    rngcheck(atom)
                     lp.write(starting_model_id=model._id,
                              group_PDB='HETATM' if atom.het else 'ATOM',
                              id=natom + 1,
                              type_symbol=atom.type_symbol,
                              atom_id=atom.atom_id,
-                             comp_id=comp.id,
+                             comp_id=_get_comp_id(atom.asym_unit.entity,
+                                                  atom.seq_id),
                              asym_id=atom.asym_unit._id,
                              entity_id=atom.asym_unit.entity._id,
                              seq_id=atom.seq_id,
@@ -1347,10 +1548,12 @@ class _ProtocolDumper(Dumper):
 
     def dump_summary(self, system, writer):
         with writer.loop("_ihm_modeling_protocol",
-                         ["id", "protocol_name", "num_steps"]) as lp:
+                         ["id", "protocol_name", "num_steps",
+                          "details"]) as lp:
             for p in system._all_protocols():
                 lp.write(id=p._id,
-                         protocol_name=p.name, num_steps=len(p.steps))
+                         protocol_name=p.name, num_steps=len(p.steps),
+                         details=p.details)
 
     def dump_details(self, system, writer):
         ordinal = itertools.count(1)
@@ -1431,7 +1634,8 @@ class _PostProcessDumper(Dumper):
 class _RangeChecker(object):
     """Check Atom or Sphere objects to make sure they match the
        Representation and Assembly"""
-    def __init__(self, model):
+    def __init__(self, model, check=True):
+        self.check = check
         self._setup_representation(model)
         self._setup_assembly(model)
         self._seen_atoms = set()
@@ -1485,6 +1689,8 @@ class _RangeChecker(object):
 
     def __call__(self, obj):
         """Check the given Atom or Sphere object"""
+        if not self.check:
+            return
         asym = obj.asym_unit
         if isinstance(obj, ihm.model.Sphere):
             type_check = self._type_check_sphere
@@ -1503,12 +1709,12 @@ class _RangeChecker(object):
         # e.g. multiple bulk water oxygen atoms can have "same" seq_id (None)
         if atom.seq_id is None:
             return
-        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
+        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id, atom.alt_id)
         if k in self._seen_atoms:
             raise ValueError(
-                "Multiple atoms with same atom_id (%s) and seq_id (%d) "
-                "found in asym ID %s"
-                % (atom.atom_id, atom.seq_id, atom.asym_unit._id))
+                "Multiple atoms with same atom_id (%s), seq_id (%d) "
+                "and alt_id (%s) found in asym ID %s"
+                % (atom.atom_id, atom.seq_id, atom.alt_id, atom.asym_unit._id))
         self._seen_atoms.add(k)
 
     def _check_assembly(self, obj, asym, seq_id_range):
@@ -1631,7 +1837,7 @@ class _ModelDumperBase(Dumper):
             it.append("ihm_model_id")
         with writer.loop("_atom_site", it) as lp:
             for group, model in system._all_models():
-                rngcheck = _RangeChecker(model)
+                rngcheck = _RangeChecker(model, self._check)
                 for atom in model.get_atoms():
                     rngcheck(atom)
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
@@ -1646,6 +1852,7 @@ class _ModelDumperBase(Dumper):
                              type_symbol=atom.type_symbol,
                              group_PDB='HETATM' if atom.het else 'ATOM',
                              label_atom_id=atom.atom_id,
+                             label_alt_id=atom.alt_id,
                              label_comp_id=comp.id,
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
@@ -1705,7 +1912,7 @@ class _ModelDumper(_ModelDumperBase):
                           "Cartn_y", "Cartn_z", "object_radius", "rmsf",
                           "model_id"]) as lp:
             for group, model in system._all_models():
-                rngcheck = _RangeChecker(model)
+                rngcheck = _RangeChecker(model, self._check)
                 for sphere in model.get_spheres():
                     rngcheck(sphere)
                     lp.write(id=next(ordinal),
@@ -1716,6 +1923,30 @@ class _ModelDumper(_ModelDumperBase):
                              Cartn_x=sphere.x, Cartn_y=sphere.y,
                              Cartn_z=sphere.z, object_radius=sphere.radius,
                              rmsf=sphere.rmsf, model_id=model._id)
+
+
+class _NotModeledResidueRangeDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_ihm_residues_not_modeled",
+                         ["id", "model_id", "entity_description",
+                          "entity_id", "asym_id", "seq_id_begin", "seq_id_end",
+                          "comp_id_begin", "comp_id_end", "reason"]) as lp:
+            for group, model in system._all_models():
+                for rr in model.not_modeled_residue_ranges:
+                    e = rr.asym_unit.entity
+                    if self._check:
+                        util._check_residue_range(
+                            (rr.seq_id_begin, rr.seq_id_end), e)
+                    lp.write(id=next(ordinal), model_id=model._id,
+                             entity_description=e.description,
+                             entity_id=e._id,
+                             asym_id=rr.asym_unit._id,
+                             seq_id_begin=rr.seq_id_begin,
+                             seq_id_end=rr.seq_id_end,
+                             comp_id_begin=_get_comp_id(e, rr.seq_id_begin),
+                             comp_id_end=_get_comp_id(e, rr.seq_id_end),
+                             reason=rr.reason)
 
 
 class _EnsembleDumper(Dumper):
@@ -1747,7 +1978,8 @@ class _EnsembleDumper(Dumper):
                 lp.write(ensemble_id=e._id, ensemble_name=e.name,
                          post_process_id=e.post_process._id if e.post_process
                          else None,
-                         model_group_id=e.model_group._id,
+                         model_group_id=e.model_group._id
+                         if e.model_group is not None else None,
                          ensemble_clustering_method=e.clustering_method,
                          ensemble_clustering_feature=e.clustering_feature,
                          num_ensemble_models=e.num_models,
@@ -1854,7 +2086,7 @@ class _OrderedDumper(Dumper):
                     edge._id = next(edge_id)
 
     def dump(self, system, writer):
-        with writer.loop("_ihm_ordered_ensemble",
+        with writer.loop("_ihm_ordered_model",
                          ["process_id", "process_description", "ordered_by",
                           "step_id", "step_description",
                           "edge_id", "edge_description",
@@ -1887,6 +2119,10 @@ class _GeometricObjectDumper(Dumper):
                 util._remove_id(o.center)
             if hasattr(o, 'transformation') and o.transformation:
                 util._remove_id(o.transformation)
+        for t in system._orphan_geometric_transforms:
+            util._remove_id(t)
+        for c in system._orphan_centers:
+            util._remove_id(c)
 
         for o in system._all_geometric_objects():
             util._assign_id(o, seen_objects, self._objects_by_id)
@@ -1895,6 +2131,11 @@ class _GeometricObjectDumper(Dumper):
             if hasattr(o, 'transformation') and o.transformation:
                 util._assign_id(o.transformation, seen_transformations,
                                 self._transformations_by_id)
+        for t in system._orphan_geometric_transforms:
+            util._assign_id(t, seen_transformations,
+                            self._transformations_by_id)
+        for c in system._orphan_centers:
+            util._assign_id(c, seen_centers, self._centers_by_id)
 
     def dump(self, system, writer):
         self.dump_centers(writer)
@@ -1921,6 +2162,8 @@ class _GeometricObjectDumper(Dumper):
                  "rot_matrix[1][3]", "rot_matrix[2][3]", "rot_matrix[3][3]",
                  "tr_vector[1]", "tr_vector[2]", "tr_vector[3]"]) as lp:
             for t in self._transformations_by_id:
+                if self._check:
+                    util._check_transform(t)
                 lp.write(id=t._id, **_get_transform(t.rot_matrix, t.tr_vector))
 
     def dump_generic(self, writer):
@@ -1996,7 +2239,9 @@ class _FeatureDumper(Dumper):
         for f in system._all_features():
             util._remove_id(f)
         for f in system._all_features():
-            util._assign_id(f, seen_features, self._features_by_id)
+            util._assign_id(f, seen_features, self._features_by_id,
+                            seen_obj=f._signature()
+                            if hasattr(f, '_signature') else f)
 
     def dump(self, system, writer):
         self.dump_list(writer)
@@ -2010,6 +2255,8 @@ class _FeatureDumper(Dumper):
                          ["feature_id", "feature_type", "entity_type",
                           "details"]) as lp:
             for f in self._features_by_id:
+                if self._check and f.type is ihm.unknown:
+                    raise ValueError("Invalid null feature %s" % f)
                 lp.write(feature_id=f._id, feature_type=f.type,
                          entity_type=f._get_entity_type(),
                          details=f.details)
@@ -2029,6 +2276,8 @@ class _FeatureDumper(Dumper):
             for f in self._features_by_id:
                 if not isinstance(f, restraint.ResidueFeature):
                     continue
+                if not f.ranges:
+                    raise ValueError("%s selects no residues" % f)
                 for r in f.ranges:
                     entity = _get_entity(r)
                     seq = entity.sequence
@@ -2104,7 +2353,8 @@ class _PseudoSiteDumper(Dumper):
         for f in system._all_pseudo_sites():
             util._remove_id(f)
         for f in system._all_pseudo_sites():
-            util._assign_id(f, seen_sites, self._sites_by_id)
+            util._assign_id(f, seen_sites, self._sites_by_id,
+                            seen_obj=f._signature())
 
     def dump(self, system, writer):
         with writer.loop("_ihm_pseudo_site",
@@ -2182,17 +2432,18 @@ class _CrossLinkDumper(Dumper):
             for r, xl in self._ex_xls_by_id:
                 entity1 = xl.residue1.entity
                 entity2 = xl.residue2.entity
-                seq1 = entity1.sequence
-                seq2 = entity2.sequence
+                if self._check:
+                    util._check_residue(xl.residue1)
+                    util._check_residue(xl.residue2)
                 lp.write(id=xl._id, group_id=xl._group_id,
                          entity_description_1=entity1.description,
                          entity_id_1=entity1._id,
                          seq_id_1=xl.residue1.seq_id,
-                         comp_id_1=seq1[xl.residue1.seq_id - 1].id,
+                         comp_id_1=_get_comp_id(entity1, xl.residue1.seq_id),
                          entity_description_2=entity2.description,
                          entity_id_2=entity2._id,
                          seq_id_2=xl.residue2.seq_id,
-                         comp_id_2=seq2[xl.residue2.seq_id - 1].id,
+                         comp_id_2=_get_comp_id(entity2, xl.residue2.seq_id),
                          linker_chem_comp_descriptor_id=r.linker._id,
                          linker_type=r.linker.auth_name,
                          dataset_list_id=r.dataset._id,
@@ -2214,8 +2465,6 @@ class _CrossLinkDumper(Dumper):
                 ex_xl = xl.experimental_cross_link
                 entity1 = ex_xl.residue1.entity
                 entity2 = ex_xl.residue2.entity
-                seq1 = entity1.sequence
-                seq2 = entity2.sequence
                 pseudo = False
                 for np, ps in enumerate((xl.pseudo1, xl.pseudo2)):
                     if ps:
@@ -2225,10 +2474,12 @@ class _CrossLinkDumper(Dumper):
                 lp.write(id=xl._id, group_id=ex_xl._id,
                          entity_id_1=entity1._id, asym_id_1=xl.asym1._id,
                          seq_id_1=ex_xl.residue1.seq_id,
-                         comp_id_1=seq1[ex_xl.residue1.seq_id - 1].id,
+                         comp_id_1=_get_comp_id(entity1,
+                                                ex_xl.residue1.seq_id),
                          entity_id_2=entity2._id, asym_id_2=xl.asym2._id,
                          seq_id_2=ex_xl.residue2.seq_id,
-                         comp_id_2=seq2[ex_xl.residue2.seq_id - 1].id,
+                         comp_id_2=_get_comp_id(entity2,
+                                                ex_xl.residue2.seq_id),
                          atom_id_1=xl.atom1, atom_id_2=xl.atom2,
                          restraint_type=xl.distance.restraint_type,
                          conditional_crosslink_flag=condmap[xl.restrain_all],
@@ -2347,6 +2598,26 @@ class _DerivedDistanceRestraintDumper(Dumper):
                          dataset_list_id=r.dataset._id if r.dataset else None)
 
 
+class _HDXRestraintDumper(Dumper):
+    def _all_restraints(self, system):
+        return [r for r in system._all_restraints()
+                if isinstance(r, restraint.HDXRestraint)]
+
+    def finalize(self, system):
+        for nr, r in enumerate(self._all_restraints(system)):
+            r._id = nr + 1
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_hdx_restraint",
+                         ["id", "feature_id", "protection_factor",
+                          "dataset_list_id", "details"]) as lp:
+            for r in self._all_restraints(system):
+                lp.write(id=r._id, feature_id=r.feature._id,
+                         protection_factor=r.protection_factor,
+                         details=r.details,
+                         dataset_list_id=r.dataset._id if r.dataset else None)
+
+
 class _PredictedContactRestraintDumper(Dumper):
     def finalize(self, system):
         (self._restraints_by_id,
@@ -2406,9 +2677,9 @@ class _EM3DDumper(Dumper):
         with writer.loop("_ihm_3dem_restraint",
                          ["id", "dataset_list_id", "fitting_method",
                           "fitting_method_citation_id",
-                          "struct_assembly_id",
+                          "struct_assembly_id", "map_segment_flag",
                           "number_of_gaussians", "model_id",
-                          "cross_correlation_coefficient"]) as lp:
+                          "cross_correlation_coefficient", "details"]) as lp:
             for r in self._all_restraints(system):
                 if r.fitting_method_citation:
                     citation_id = r.fitting_method_citation._id
@@ -2423,9 +2694,11 @@ class _EM3DDumper(Dumper):
                              fitting_method=r.fitting_method,
                              fitting_method_citation_id=citation_id,
                              struct_assembly_id=r.assembly._id,
+                             map_segment_flag=r.segment,
                              number_of_gaussians=r.number_of_gaussians,
                              model_id=model._id,
-                             cross_correlation_coefficient=ccc)
+                             cross_correlation_coefficient=ccc,
+                             details=r.details)
 
 
 class _EM2DDumper(Dumper):
@@ -3597,7 +3870,8 @@ class IHMVariant(Variant):
         _EntryDumper,  # must be first
         _CollectionDumper, _StructDumper, _CommentDumper, _AuditConformDumper,
         _DatabaseDumper, _DatabaseStatusDumper, _CitationDumper,
-        _SoftwareDumper, _AuditAuthorDumper, _GrantDumper, _ChemCompDumper,
+        _SoftwareDumper, _AuditAuthorDumper, _AuditRevisionDumper,
+        _GrantDumper, _ChemCompDumper,
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
         _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,
@@ -3609,8 +3883,10 @@ class IHMVariant(Variant):
         _ProtocolDumper, _PostProcessDumper, _PseudoSiteDumper,
         _GeometricObjectDumper, _FeatureDumper, _CrossLinkDumper,
         _GeometricRestraintDumper, _DerivedDistanceRestraintDumper,
+        _HDXRestraintDumper,
         _PredictedContactRestraintDumper, _EM3DDumper, _EM2DDumper, _SASDumper,
-        _ModelDumper, _EnsembleDumper, _DensityDumper, _MultiStateDumper,
+        _ModelDumper, _NotModeledResidueRangeDumper,
+        _EnsembleDumper, _DensityDumper, _MultiStateDumper,
         _OrderedDumper,
         _MultiStateSchemeDumper, _MultiStateSchemeConnectivityDumper,
         _RelaxationTimeDumper, _KineticRateDumper]
@@ -3654,7 +3930,8 @@ def set_line_wrap(line_wrap):
     ihm.format.CifWriter._set_line_wrap(line_wrap)
 
 
-def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
+def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant,
+          check=True):
     """Write out all `systems` to the file handle `fh`.
        Files can be written in either the text-based mmCIF format or the
        BinaryCIF format. The BinaryCIF writer needs the msgpack Python
@@ -3689,6 +3966,12 @@ def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
               written to the file. In most cases the default
               :class:`IHMVariant` should be used.
        :type variant: :class:`Variant`
+       :param bool check: If True (the default), check the output objects
+              for self-consistency. If this is set to False, disabling some of
+              these checks, the output files may not correctly validate against
+              the mmCIF dictionaries. (Note that some checks are always
+              performed, as the library cannot function correctly without
+              these.)
     """
     if isinstance(variant, type):
         variant = variant()
@@ -3702,6 +3985,7 @@ def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
         system._before_write()
 
         for d in dumpers:
+            d._check = check
             d.finalize(system)
         system._check_after_write()
         for d in dumpers:

@@ -2,7 +2,6 @@
 # This example shows how to write basic geometric primitives to a file
 # with color and name.
 
-from __future__ import print_function
 import IMP.display
 import sys
 

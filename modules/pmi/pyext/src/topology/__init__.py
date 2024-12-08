@@ -39,7 +39,6 @@ set of the full options available to PMI users
 (rigid bodies only, fixed resolutions).
 """  # noqa: E501
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.algebra
@@ -105,7 +104,7 @@ def _build_ideal_helix(model, residues, coord_finder):
     coord_finder.add_residues(created_hiers)
 
 
-class _SystemBase(object):
+class _SystemBase:
     """The base class for System, State and Molecule
     classes. It contains shared functions in common to these classes
     """
@@ -134,7 +133,7 @@ class _SystemBase(object):
         pass
 
 
-class _OurWeakRef(object):
+class _OurWeakRef:
     """A simple wrapper around weakref.ref which can be pickled.
        Note that we throw the reference away at pickle time. It should
        be able to be reconstructed from System._all_systems anyway."""
@@ -202,6 +201,8 @@ class System(_SystemBase):
             for state in self.states:
                 state.build(**kwargs)
             self.built = True
+            for po in self._protocol_output:
+                po.finalize_build()
         return self.hier
 
     def add_protocol_output(self, p):
@@ -332,7 +333,7 @@ class State(_SystemBase):
 _PDBElement = namedtuple('PDBElement', ['offset', 'filename', 'chain_id'])
 
 
-class _RepresentationHandler(object):
+class _RepresentationHandler:
     """Handle PMI representation and use it to populate that of any attached
        ProtocolOutput objects"""
     def __init__(self, name, pos, pdb_elements):
@@ -808,7 +809,8 @@ class Molecule(_SystemBase):
                                     asym_name=self._name_with_copy)
                 po.add_component_sequence(state, name, self.sequence,
                                           asym_name=self._name_with_copy,
-                                          alphabet=self.alphabet)
+                                          alphabet=self.alphabet,
+                                          uniprot=self.uniprot)
 
     def _finalize_build(self):
         # For clones, pass the representation of the original molecule
@@ -934,7 +936,7 @@ class Molecule(_SystemBase):
         return ps
 
 
-class _Representation(object):
+class _Representation:
     """Private class just to store a representation request"""
     def __init__(self,
                  residues,
@@ -963,7 +965,7 @@ class _Representation(object):
         self.color = color
 
 
-class _FindCloseStructure(object):
+class _FindCloseStructure:
     """Utility to get the nearest observed coordinate"""
     def __init__(self):
         self.coords = []
@@ -1006,7 +1008,7 @@ class _FindCloseStructure(object):
         return ret[1]
 
 
-class Sequences(object):
+class Sequences:
     """A dictionary-like wrapper for reading and storing sequence data.
        Keys are FASTA sequence names, and each value a string of one-letter
        codes.
@@ -1085,7 +1087,7 @@ class Sequences(object):
             self.sequences[code] = seq.strip('*')
 
 
-class PDBSequences(object):
+class PDBSequences:
     """Data structure for reading and storing sequence data from PDBs.
 
        @see fasta_pdb_alignments."""
@@ -1240,7 +1242,7 @@ def fasta_pdb_alignments(fasta_sequences, pdb_sequences, show=False):
     return offsets
 
 
-class TempResidue(object):
+class TempResidue:
     "Temporarily stores residue information, even without structure available."
     # Consider implementing __hash__ so you can select.
     def __init__(self, molecule, code, index, internal_index, alphabet):
@@ -1337,7 +1339,7 @@ class TempResidue(object):
         self._structured = True
 
 
-class TopologyReader(object):
+class TopologyReader:
     """Automatically setup System and Degrees of Freedom with a formatted
        text file.
     The file is read in and each part of the topology is stored as a
@@ -1369,11 +1371,18 @@ class TopologyReader(object):
       from the file is assumed to be a protein sequence. If it should instead
       be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
       a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
-      FASTA file and treat it as RNA.
+      FASTA file and treat it as RNA. The FASTA header may contain multiple
+      fields split by pipe (|) characters. If so, the FASTA sequence name is
+      the first field and the second field (if present) is the UniProt
+      accession. For example, ">cop9|Q13098" yields a FASTA sequence name
+      of "cop9" and UniProt accession of "Q13098". If such an accession is
+      present, it is added to the generated structure (and ultimately
+      recorded in any output RMF file).
     - `pdb_fn`: Name of PDB or mmCIF file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
-    - `chain`: Chain ID of this domain in the PDB file.
+    - `chain`: Chain ID of this domain in the PDB or mmCIF file. This is
+      the "author-provided" chain ID for mmCIF files, not the asym_id.
     - `residue_range`: Comma delimited pair defining range.
        Can leave empty or use 'all' for entire sequence from PDB file.
        The second item in the pair can be END to select the last residue in the
@@ -1737,7 +1746,7 @@ class TopologyReader(object):
         return rbl.values()
 
 
-class _TempMolecule(object):
+class _TempMolecule:
     """Store the Components and any requests for copies"""
     def __init__(self, init_c):
         self.molname = init_c.molname
@@ -1755,7 +1764,7 @@ class _TempMolecule(object):
                         % (k, len(self.domains[k])) for k in self.domains)
 
 
-class _Component(object):
+class _Component:
     """Stores the components required to build a standard IMP hierarchy
     using IMP.pmi.BuildModel()
     """

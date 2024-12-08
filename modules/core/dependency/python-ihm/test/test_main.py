@@ -352,7 +352,7 @@ class Tests(unittest.TestCase):
                          pmid='1234')
         self.assertEqual(s.title, 'Test paper')
 
-    def _get_from_pubmed_id(self, json_fname):
+    def _get_from_pubmed_id(self, json_fname, is_primary=False):
         def mock_urlopen(url):
             self.assertTrue(url.endswith('&id=29539637'))
             fname = utils.get_input_file_name(TOPDIR, json_fname)
@@ -362,7 +362,7 @@ class Tests(unittest.TestCase):
         try:
             orig_urlopen = urllib2.urlopen
             urllib2.urlopen = mock_urlopen
-            return ihm.Citation.from_pubmed_id(29539637)
+            return ihm.Citation.from_pubmed_id(29539637, is_primary=is_primary)
         finally:
             urllib2.urlopen = orig_urlopen
 
@@ -381,6 +381,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.doi, '10.1038/nature26003')
         self.assertEqual(len(c.authors), 32)
         self.assertEqual(c.authors[0], 'Kim, S.J.')
+        self.assertFalse(c.is_primary)
+        c = self._get_from_pubmed_id('pubmed_api.json', is_primary=True)
+        self.assertTrue(c.is_primary)
 
     def test_citation_from_pubmed_id_one_page(self):
         """Test Citation.from_pubmed_id() with page rather than range"""
@@ -412,6 +415,8 @@ class Tests(unittest.TestCase):
         self.assertIsNone(r.asym)
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.comp.id, 'CYS')
+        self.assertRaises(IndexError, e.residue, -3)
+        self.assertRaises(IndexError, e.residue, 30)
 
     def test_water_asym(self):
         """Test WaterAsymUnit class"""
@@ -430,6 +435,10 @@ class Tests(unittest.TestCase):
         self.assertRaises(TypeError, ihm.AsymUnit, water)
         self.assertRaises(TypeError, ihm.WaterAsymUnit, e, number=3)
 
+        # Residue range checks are not done for waters, currently
+        _ = a.residue(-3)
+        _ = a.residue(30)
+
     def test_asym_unit_residue(self):
         """Test Residue derived from an AsymUnit"""
         e = ihm.Entity('AHCDAH')
@@ -441,6 +450,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.auth_seq_id, 8)
         self.assertIsNone(r.ins_code)
         self.assertEqual(r.comp.id, 'CYS')
+        self.assertRaises(IndexError, e.residue, -3)
+        self.assertRaises(IndexError, e.residue, 30)
 
     def test_atom_entity(self):
         """Test Atom class built from an Entity"""
@@ -483,6 +494,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(hash(r), hash(samer))
         self.assertNotEqual(r, otherr)
         self.assertNotEqual(r, e)  # entity_range != entity
+        # Cannot create reversed range
+        self.assertRaises(ValueError, e.__call__, 3, 1)
+        # Cannot create out-of-range range
+        self.assertRaises(IndexError, e.__call__, -3, 1)
+        self.assertRaises(IndexError, e.__call__, 1, 10)
 
     def test_asym_range(self):
         """Test AsymUnitRange class"""
@@ -515,6 +531,11 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(r, a)        # asym_range != asym
         self.assertNotEqual(r, e(3, 4))  # asym_range != entity_range
         self.assertNotEqual(r, e)        # asym_range != entity
+        # Cannot create reversed range
+        self.assertRaises(ValueError, a.__call__, 3, 1)
+        # Cannot create out-of-range range
+        self.assertRaises(IndexError, a.__call__, -3, 1)
+        self.assertRaises(IndexError, a.__call__, 1, 10)
 
     def test_asym_segment(self):
         """Test AsymUnitSegment class"""

@@ -18,14 +18,7 @@ import sys
 from IMP.mmcif.data import _get_all_state_provenance
 
 
-if sys.version_info[0] == 2:
-    # basestring is base for both str and unicode (used by json)
-    _string_type = basestring  # noqa: F821
-else:
-    _string_type = str
-
-
-class _ChainIDs(object):
+class _ChainIDs:
     """Map indices to multi-character chain IDs.
        We label the first 26 chains A-Z, then we move to two-letter
        chain IDs: AA through AZ, then BA through BZ, through to ZZ.
@@ -41,7 +34,7 @@ class _ChainIDs(object):
         return "".join(reversed(ids))
 
 
-class Writer(object):
+class Writer:
     """Convert one or more IMP Models and/or RMF frames to mmCIF
        or BinaryCIF.
 
@@ -235,7 +228,7 @@ class Writer(object):
         asym_map = {}
         for asym in self.system.asym_units:
             asym_map[asym.details] = asym
-        if isinstance(t, _string_type):
+        if isinstance(t, str):
             return asym_map[t]
         elif isinstance(t, (list, tuple)) and len(t) == 3:
             return asym_map[t[2]](t[0], t[1])

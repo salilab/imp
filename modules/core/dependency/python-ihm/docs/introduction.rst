@@ -23,7 +23,7 @@ that is compliant with the
 `IHMCIF extension <https://github.com/ihmwg/IHMCIF>`_
 to the `PDBx/mmCIF dictionary <https://mmcif.wwpdb.org/>`_,
 suitable for deposition in the
-`PDB-Dev repository <https://pdb-dev.wwpdb.org/>`_. The files are best viewed
+`PDB-IHM repository <https://pdb-ihm.org/>`_. The files are best viewed
 in a viewer that supports IHMCIF, such as
 `UCSF ChimeraX <https://www.cgl.ucsf.edu/chimerax/>`_, although they may be
 partially viewable in regular PDBx mmCIF viewers (likely only the atomic

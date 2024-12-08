@@ -4,7 +4,6 @@
 # point, you have a list of everything computed so far and so can get a
 # better idea of what is going on.
 
-from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container

@@ -4,7 +4,6 @@
 # combination with new IMP restraints and optimization protocols.
 #
 
-from __future__ import print_function
 import modeller
 import IMP
 import IMP.modeller

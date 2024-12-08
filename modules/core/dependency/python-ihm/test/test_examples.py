@@ -24,11 +24,11 @@ class Tests(unittest.TestCase):
     @unittest.skipIf('APPVEYOR' in os.environ,
                      "AppVeyor environments have old SSL certs")
     @unittest.skipIf('GITHUB_ACTIONS' in os.environ,
-                     "Example is slow and fails when PDB-Dev is down")
+                     "Example is slow and fails when PDB-IHM is down")
     def test_validator_example(self):
         """Test validator example"""
         subprocess.check_call([sys.executable,
-                               get_example_path("validate_pdb_dev.py")])
+                               get_example_path("validate_pdb_ihm.py")])
 
     def test_simple_docking_example(self):
         """Test simple-docking example"""
@@ -41,7 +41,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 318)
+            self.assertEqual(len(contents), 321)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -70,7 +70,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 254)
+        self.assertEqual(len(contents), 255)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         # Make sure that resulting Python objects are picklable
@@ -100,6 +100,11 @@ class Tests(unittest.TestCase):
     def test_stream_parser_example(self):
         """Test stream_parser example"""
         subprocess.check_call([sys.executable, "stream_parser.py"],
+                              cwd=get_example_dir())
+
+    def test_token_reader_example(self):
+        """Test token_reader example"""
+        subprocess.check_call([sys.executable, "token_reader.py"],
                               cwd=get_example_dir())
 
 

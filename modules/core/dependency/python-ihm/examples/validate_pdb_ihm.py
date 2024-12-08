@@ -1,5 +1,5 @@
 # This example demonstrates the use of the Python IHM library's validator.
-# A structure is downloaded from the PDB-Dev database and checked against
+# A structure is downloaded from the PDB-IHM database and checked against
 # the PDBx and IHM dictionaries for compliance. This validator can be used
 # to perform basic integrity checking against any mmCIF dictionary; for an
 # example of using it to validate homology models against the ModelCIF
@@ -36,9 +36,9 @@ pdbx_ihm = d_pdbx + d_ihm
 # Validate a structure against PDBx+IHM.
 # A correct structure here should result in no output; an invalid structure
 # will result in a ValidatorError Python exception.
-# Here, a structure from PDB-Dev (which should be valid) is used.
-acc = 'PDBDEV_00000001'
-cif = urllib2.urlopen('https://pdb-dev.wwpdb.org/cif/%s.cif' % acc).read()
+# Here, a structure from PDB-IHM (which should be valid) is used.
+acc = '8zz1'
+cif = urllib2.urlopen('https://pdb-ihm.org/cif/%s.cif' % acc).read()
 
 # The encoding for mmCIF files isn't strictly defined, so first try UTF-8
 # and if that fails, strip out any non-ASCII characters. This ensures that

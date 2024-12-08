@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -36,7 +35,7 @@ class Tests(IMP.test.TestCase):
                     IMP.algebra.Sphere3D(IMP.algebra.get_zero_vector_3d(), 5))
                 d = IMP.core.XYZ(m, p)
                 d.set_coordinates(d.get_coordinates() + r)
-            # make sure internal checks in continer pass
+            # make sure internal checks in container pass
             m.update()
             self.assertEqual(n, len(cpss.get_contents()))
 

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.core
 import IMP
 import IMP.test

@@ -1,7 +1,6 @@
 ## \example kernel/graph.py
 # A simple example showing how to use the graph interface in Python.
 
-from __future__ import print_function
 import IMP
 import sys
 

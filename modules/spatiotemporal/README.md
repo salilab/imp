@@ -87,8 +87,8 @@ labaled_pdf2_fn - labeled_pdf from another independent sampling
 
 output_fn - name of output file (default: 'temporal_precision.txt')
 
-### purity(labeled_pdf_fn,output_fn)
-Function that reads in one labeled_pdf from create_DAG and returns the purity, defined as the sum of the squared probability of all trajectories.
+### precision(labeled_pdf_fn,output_fn)
+Function that reads in one labeled_pdf from create_DAG and returns the precision, defined as the sum of the squared probability of all trajectories.
 
 labeled_pdf_fn - labeled_pdf from the total model
 
@@ -146,6 +146,17 @@ function to calculate how many times a protein appears in a list of proteins
 prot - string, protein or subcomplex we are interested in finding
 
 subcomplex_components - subcomplexes or components in a given node, which can be accessed by graphNode.get_subcomplex_components()
+
+### calc_likelihood_state(exp_comp_map, t, state)
+Function that calculates the likelihood of an individual state, used by prepare_protein_library. Returns a single float, the weight of the protein copy number based on a Gaussian likelihood function.
+
+exp_comp_map - dictionary, which describes protein stoicheometery. The key describes the protein, which should correspond to names within the expected_subcomplexes. Only copy numbers for proteins
+or subcomplexes included in this dictionary will be scored. For each of these proteins, a csv file should be provided with protein copy number data. The csv file should have 3 columns,
+1) "Time", which matches up to the possible times in the graph, 2) "mean", the average protein copy number at that time point from experiment, and 3) "std", the standard deviation of that protein copy number from experiment.
+
+t - string, time at which the composition likelihood should be calculated. Should match one a possible value in the first column of the exp_comp_map.
+
+state - list of integers, an array of the number of protein copy numbers for which the likelihood will be calculated. This array should list the proteins in the same order as the exp_comp_map.
 
 ## score_graph.py
 
@@ -257,4 +268,24 @@ width - string, width of each node on the dag
 ### draw_dag_in_graphviz(nodes, coloring=None, draw_label=True, fontname="Helvetica", fontsize="18", penscale=0.6, arrowsize=1.2, height="0.6",width="0.6"):
 Function used by draw_dag() to render the graph using graphviz. Takes a list of graphNodes (nodes) and initializes the nodes and edges. Coloring is expected to be a list of RGBA strings specifying how to color each node. Expected to be same length as nodes.
 
+## prepare_protein_library.py
 
+### prepare_protein_library(times, exp_comp_map, expected_subcomplexes, nmodels, template_topology='', template_dict={}, match_final_state=True)
+Function that reads in experimental stoicheometery data and calculates which compositions and location assignments should be sampled for spatiotemporal modeling, which are saved as config files. Optionally, a PMI topology file can be provided, in which case topology files for each composition and location assignment are also written.
+The output is 3 types of files: 1. *_time.config - configuration files, which list the proteins included at each time point for each model 2. time.txt - protein copy number files. Each row is a protein copy number state and each column is the protein copy number in that state. Note that each protein copy number state can result in multiple location assignments. 3. *_time_topol.txt - topology files for each copy number and location assignment.
+
+times - list of strings, the times at which the stoicheometery data should be read.
+
+exp_comp_map - dictionary, which describes protein stoicheometery. The key describes the protein, which should correspond to names within the expected_subcomplexes. Only copy numbers for proteins or subcomplexes included in this dictionary will be scored. For each of these proteins, a csv file should be provided with protein copy number data. The csv file should have 3 columns, 1) "Time", which matches up to the possible times in the graph, 2) "mean", the average protein copy number at that time point from experiment, and 3) "std", the standard deviation of that protein copy number from experiment.
+
+expected_subcomplexes - list of all possible subcomplex strings in the model. Should be a list without duplicates of all components in the subcomplex configuration files.
+
+nmodels - int, number of models with different protein copy numbers to generate at each time point.
+
+output_dir - string, directory where the output will be written. Empty string assumes the current working directory. (default: '')
+
+template_topology: string, name of the topology file for the complete complex (default: '', no topology files are output)
+
+template_dict: dictionary for connecting the spatiotemporal model to the topology file. The keys (string) are the names of the proteins, defined by the expected_complexes variable. The values (list) are the names of all proteins in the topology file that should have the same copy number as the labeled protein, specifically the "molecule_name." (default: {}, no topology files are output)
+
+match_final_state: Boolean, determines whether to fix the final state to the state defined by expected_subcomplexes. True enforces this match and thus ensures that the final time has only one state. (default: True)

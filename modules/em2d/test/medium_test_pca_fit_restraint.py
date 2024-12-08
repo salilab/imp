@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.atom
@@ -7,7 +6,7 @@ import os
 import numpy
 
 
-class PGM(object):
+class PGM:
     def __init__(self, width, height, scale):
         self.width, self.height, self.scale = width, height, scale
         self._data = numpy.zeros((width, height))

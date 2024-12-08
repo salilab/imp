@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.test
 import io
@@ -138,7 +137,7 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check Model.show() method"""
-        class BrokenFile(object):
+        class BrokenFile:
 
             def write(self, str):
                 raise NotImplementedError()

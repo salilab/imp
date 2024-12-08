@@ -2,7 +2,6 @@
    Utility functions to handle IO.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.core

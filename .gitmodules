@@ -21,4 +21,8 @@
 [submodule "modules/nestor"]
 	path = modules/nestor
 	url = https://github.com/isblab/nestor.git
-	branch = imp-integration
+	branch = main
+[submodule "modules/bff"]
+	path = modules/bff
+	url = https://github.com/salilab/IMP.bff.git
+        branch = salilab

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import io
 import IMP
 import IMP.test
@@ -27,6 +26,12 @@ class Tests(IMP.test.TestCase):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(chains), 3)
+        self.assertEqual(chains[0].get_id(), "")
+        self.assertEqual(chains[0].get_label_asym_id(), "")
+        self.assertEqual(chains[1].get_id(), "X")
+        self.assertEqual(chains[1].get_label_asym_id(), "B")
+        self.assertEqual(chains[2].get_id(), "A")
+        self.assertEqual(chains[2].get_label_asym_id(), "A")
         self.assertEqual(len(m.get_particle_indexes()), 435)
 
     def test_read_pdb_or_mmcif_no_num(self):
@@ -409,6 +414,16 @@ class Tests(IMP.test.TestCase):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains], ['ZB'])
+
+    def test_chain_read_offset(self):
+        """Check reading of chain sequence offset from an mmCIF file"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name('chaintest.cif'), m,
+                                 IMP.atom.ChainPDBSelector(["ZK"]))
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(chains[0].get_sequence_offset(), 286)
 
 
 if __name__ == '__main__':

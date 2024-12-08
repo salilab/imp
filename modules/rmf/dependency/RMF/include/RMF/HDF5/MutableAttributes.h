@@ -18,7 +18,7 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace HDF5 {
 /** Wrap a set of HDF5 Attributes. See
-    \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5A.html,
+    \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___h5_a.html,
     the HDF5 manual} for more information.
  */
 template <class Base>

@@ -78,7 +78,8 @@ def rewrite(filename, contents, verbose=True):
         if verbose:
             print("    Was symlink - now new file: " + filename)
     try:
-        old = open_utf8(filename, "r").read()
+        with open(filename, "r", encoding='UTF8') as fh:
+            old = fh.read()
         if old == contents:
             return
         elif verbose:
@@ -95,10 +96,11 @@ def rewrite(filename, contents, verbose=True):
     dirpath = os.path.split(filename)[0]
     if dirpath != "":
         mkdir(dirpath, False)
-    open_utf8(filename, "w").write(contents)
+    with open(filename, "w", encoding='UTF8') as fh:
+        fh.write(contents)
 
 
-class FileGenerator(object):
+class FileGenerator:
     """Auto-generate an output file.
        The file is marked as being auto-generated with a suitable comment.
        `template_file` names an input file containing a suitable template
@@ -270,7 +272,7 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
                 os.unlink(ln)
 
 
-class Module(object):
+class Module:
     """An IMP module"""
     _info = None
 
@@ -381,8 +383,7 @@ class SourceModule(Module):
             return self._info[attr]
         d = {'required_modules': "", 'optional_modules': "",
              'required_dependencies': "", 'optional_dependencies': "",
-             'lib_only_required_modules': "", 'python_only': False,
-             'python3_only': False}
+             'lib_only_required_modules': "", 'python_only': False}
         with open(self.depends_file) as fh:
             exec(fh.read(), d)
         self._info = {"required_modules":
@@ -395,8 +396,7 @@ class SourceModule(Module):
                       split(d['required_dependencies']),
                       "optional_dependencies":
                       split(d['optional_dependencies']),
-                      "python_only": d['python_only'],
-                      "python3_only": d['python3_only']}
+                      "python_only": d['python_only']}
         return self._info[attr]
 
     required_modules = property(
@@ -410,10 +410,9 @@ class SourceModule(Module):
     optional_dependencies = property(
         lambda self: self._read_dep_file('optional_dependencies'))
     python_only = property(lambda self: self._read_dep_file('python_only'))
-    python3_only = property(lambda self: self._read_dep_file('python3_only'))
 
 
-class ModulesFinder(object):
+class ModulesFinder:
     """Class for finding IMP modules.
        Acts like a dict with module names as keys and Module objects as values.
 
@@ -731,13 +730,6 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
-
-# Treat an open file as UTF8-encoded, regardless of the locale
-if sys.version_info[0] >= 3:
-    def open_utf8(fname, *args):
-        return open(fname, *args, encoding='UTF8')
-else:
-    open_utf8 = open
 
 _subprocesses = []
 

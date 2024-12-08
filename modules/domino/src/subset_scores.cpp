@@ -11,7 +11,10 @@
 #include <IMP/domino/Order.h>
 #include <IMP/input_output.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <RMF/HDF5/DataSetD.h>
+# include <RMF/config.h>
+# if RMF_HAS_DEPRECATED_BACKENDS
+#  include <RMF/HDF5/DataSetD.h>
+# endif
 #endif
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -230,7 +233,7 @@ void RestraintCache::validate() const {
    one for all the scores and one for the assignments.
 
  */
-#if IMP_DOMINO_HAS_RMF
+#if RMF_HAS_DEPRECATED_BACKENDS
 namespace {
 Ints get_ids(const boost::unordered_map<Particle *, int> &map,
              const Subset &s) {

@@ -3,7 +3,6 @@
 # written in Python, it is often useful when prototyping or testing code.
 # Copy this example and modify as needed.
 
-from __future__ import print_function
 import IMP
 import sys
 

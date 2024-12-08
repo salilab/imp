@@ -1,6 +1,5 @@
 ## \example reference_frames.py
 # Show how to properly extract coordinates in the presence of rigid bodies.
-from __future__ import print_function
 import RMF
 
 # print out transformed coordinates

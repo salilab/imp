@@ -1,11 +1,10 @@
-from __future__ import print_function
 import IMP.test
 import IMP.pmi.macros
 
 class Tests(IMP.test.TestCase):
     def test_rmf_restraints(self):
         """Test RMFRestraints class"""
-        class MockPMIRestraint(object):
+        class MockPMIRestraint:
             def __init__(self, r):
                 self.r = r
             get_restraint = lambda self: self.r

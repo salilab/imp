@@ -1,6 +1,5 @@
 ## \example add_bonds.py
 # Show how to add bonds to a file.
-from __future__ import print_function
 import RMF
 
 

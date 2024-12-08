@@ -22,7 +22,7 @@ def temporal_precision(labeled_pdf1_fn, labeled_pdf2_fn,
     pdf_files = [labeled_pdf1_fn, labeled_pdf2_fn]
     dict_list = []
     for pdf_file in pdf_files:
-        # create blank dictonary to store the results
+        # create blank dictionary to store the results
         prob_dict = {}
         # read in labeled pdf file
         old = open(pdf_file, 'r')
@@ -78,18 +78,19 @@ def temporal_precision(labeled_pdf1_fn, labeled_pdf2_fn,
     print(precision)
 
 
-def purity(labeled_pdf_fn, output_fn='purity.txt'):
+def precision(labeled_pdf_fn, output_fn='precision.txt'):
     """
     Function that reads in one labeled_pdf from create_DAG and returns the
-    purity, defined as the sum of the squared probability of all trajectories.
+    precision, defined as the sum of the squared
+    probability of all trajectories.
 
     @param labeled_pdf_fn: string, labeled pdf file name (including the path);
            labeled_pdf from the total model
     @param output_fn: string, name of output file
            (default: 'temporal_precision.txt')
-    @return temporal purity, written to output_fn
+    @return temporal precision, written to output_fn
     """
-    # create blank dictonary to store the results
+    # create blank dictionary to store the results
     prob_list = []
     # read in labeled pdf file
     old = open(labeled_pdf_fn, 'r')
@@ -114,7 +115,7 @@ def purity(labeled_pdf_fn, output_fn='purity.txt'):
     for prob in prob_list:
         pure += prob * prob
     with open(output_fn, 'w') as new:
-        new.write('Purity of ' + labeled_pdf_fn + ':\n')
+        new.write('Precision of ' + labeled_pdf_fn + ':\n')
         new.write(str(pure))
-    print('Purity of ' + labeled_pdf_fn)
+    print('Precision of ' + labeled_pdf_fn)
     print(str(pure))

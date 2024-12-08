@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.pmi.restraints.em2d

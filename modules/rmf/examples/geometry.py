@@ -2,7 +2,6 @@
 # This example shows writing one piece of geometry to an RMF file and then
 # reading it back.
 
-from __future__ import print_function
 import IMP.display
 import IMP.rmf
 import RMF

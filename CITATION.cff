@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Russel"
+  given-names: "Daniel"
+- family-names: "Lasker"
+  given-names: "Keren"
+- family-names: "Webb"
+  given-names: "Ben"
+- family-names: "Velázquez-Muriel"
+  given-names: "Javier"
+- family-names: "Tjioe"
+  given-names: "Elina"
+- family-names: "Schneidman-Duhovny"
+  given-names: "Dina"
+- family-names: "Peterson"
+  given-names: "Bret"
+- family-names: "Sali"
+  given-names: "Andrej"
+title: "IMP"
+url: "https://github.com/salilab/imp"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Russel"
+    given-names: "Daniel"
+  - family-names: "Lasker"
+    given-names: "Keren"
+  - family-names: "Webb"
+    given-names: "Ben"
+  - family-names: "Velázquez-Muriel"
+    given-names: "Javier"
+  - family-names: "Tjioe"
+    given-names: "Elina"
+  - family-names: "Schneidman-Duhovny"
+    given-names: "Dina"
+  - family-names: "Peterson"
+    given-names: "Bret"
+  - family-names: "Sali"
+    given-names: "Andrej"
+  doi: "10.1371/journal.pbio.1001244"
+  journal: "PLoS Biol"
+  month: 1
+  start: "e1001244"
+  title: "Putting the pieces together: integrative modeling platform software for structure determination of macromolecular assemblies"
+  volume: 10
+  issue: 1
+  year: 2012

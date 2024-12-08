@@ -2,7 +2,6 @@
 # Show how to score a number of ligand conformations loaded from a file
 # against a protein loaded from a pdb.
 
-from __future__ import print_function
 import IMP.atom
 import sys
 

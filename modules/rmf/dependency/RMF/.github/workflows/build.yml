@@ -63,5 +63,7 @@ jobs:
     - name: Combine coverage
       run: |
         cd build/coverage
-        coverage combine && mv .coverage ../..
-    - uses: codecov/codecov-action@v1
+        coverage combine && coverage xml && mv coverage.xml ../..
+    - uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

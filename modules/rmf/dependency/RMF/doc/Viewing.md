@@ -10,7 +10,7 @@ There are currently several molecular viewers that support RMFs:
 # Chimera # {#chimera}
 
 The [Chimera](https://www.cgl.ucsf.edu/chimera/) research group has
-provided support for loading and interacing with RMF files. Chimera
+provided support for loading and interacting with RMF files. Chimera
 supports
 - interactive display of restraints and restraint scores
 - geometry

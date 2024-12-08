@@ -1,4 +1,3 @@
-from __future__ import division
 import IMP
 import IMP.test
 import IMP.core

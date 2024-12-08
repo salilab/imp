@@ -2,7 +2,6 @@
 Restraints for handling various kinds of proteomics data.
 """
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -17,7 +16,7 @@ import sys
 import warnings
 
 
-class ConnectivityRestraint(object):
+class ConnectivityRestraint:
 
     '''
     generate a connectivity restraint between domains
@@ -76,7 +75,7 @@ class ConnectivityRestraint(object):
 #
 
 
-class CompositeRestraint(object):
+class CompositeRestraint:
 
     '''
     handleparticles a list of particles
@@ -135,7 +134,7 @@ class CompositeRestraint(object):
 
 
 #
-class AmbiguousCompositeRestraint(object):
+class AmbiguousCompositeRestraint:
 
     '''
     this restraint allows ambiguous cross-linking between multiple copies
@@ -320,7 +319,7 @@ class AmbiguousCompositeRestraint(object):
 
 
 #
-class SimplifiedPEMAP(object):
+class SimplifiedPEMAP:
 
     def __init__(self, root_hier, restraints_file, expdistance, strength,
                  resolution=None):
@@ -458,7 +457,7 @@ class SimplifiedPEMAP(object):
         return output
 
 
-class SetupConnectivityNetworkRestraint(object):
+class SetupConnectivityNetworkRestraint:
 
     '''
     generates and wraps a IMP.pmi.ConnectivityRestraint between domains
@@ -604,7 +603,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         return self.particle_list
 
 
-class FuzzyBoolean(object):
+class FuzzyBoolean:
 
     '''
     Fully Ambiguous Restraint that can be built using boolean logic

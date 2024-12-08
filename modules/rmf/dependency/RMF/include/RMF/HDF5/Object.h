@@ -24,7 +24,7 @@ namespace HDF5 {
 class File;
 
 /** Wrap an HDF5 Object. See
-    \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5O.html,
+    \external{https://docs.hdfgroup.org/releases/hdf5/v1_14/v1_14_4/documentation/doxygen/group___h5_o.html,
     the HDF5 manual} for more information.
  */
 class RMFEXPORT Object {

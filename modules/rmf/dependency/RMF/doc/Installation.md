@@ -33,17 +33,15 @@ IMP: Download an IMP binary (which includes RMF) from the
 
 In order to build from source, you will need:
 
-- [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
+- [CMake](https://cmake.org) (3.14 or later)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
-- [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
-- [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
-  if you want to use Python 3)
+- [Python](https://www.python.org) (3.6 or later)
+- [SWIG](http://www.swig.org) (2.0.4 or later)
 
 If you want to be able to read older format RMF files, you will also need:
 
-- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
-  should also work)
+- [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (1.8 or later)
 
 ## Download {#installation_download}
 

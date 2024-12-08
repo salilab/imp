@@ -1,6 +1,5 @@
 import unittest
 import os
-import sys
 import subprocess
 
 mock_config = os.environ['MOCK_CONFIG']
@@ -21,18 +20,7 @@ class IMPMockTests(unittest.TestCase):
         # Make sure that npctransport is included and that the underlying
         # protobuf stuff also works
         import IMP.npctransport
-        # Ubuntu only supports protobuf with Python 3 in 18.04 or later;
-        # our Windows protobuf install is Python 2 only;
-        # for RHEL8/9, Fedora and Ubuntu 22.04 or later we only have Python 3
-        # protobuf wrappers.
-        py2only_pb = frozenset(('ubuntu-trusty', 'ubuntu-xenial',
-                                'w32', 'w64'))
-        py3only_pb = frozenset(('epel-8-x86_64', 'ubuntu-jammy',
-                                'epel-9-x86_64'))
-        if ((sys.version_info[0] == 3 and mock_config not in py2only_pb)
-            or (sys.version_info[0] == 2 and mock_config not in py3only_pb
-                and not mock_config.startswith('fedora'))):
-            _ = IMP.npctransport.Configuration
+        _ = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
         import IMP.cnmultifit

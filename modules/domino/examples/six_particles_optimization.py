@@ -4,7 +4,6 @@
 # it only a single conformation. To remove flips, the first particle is
 # restrained to have a positive x coordinate.
 
-from __future__ import print_function
 import IMP
 import IMP.domino
 import IMP.core

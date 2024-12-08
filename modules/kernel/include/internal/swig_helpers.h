@@ -118,9 +118,14 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
 
 #if IMP_KERNEL_HAS_NUMPY
   template <class SwigData>
-  static PyObject* create_python_object(ParticleIndex f, SwigData, int) {
-    int ind = f.get_index();
-    return PyArray_Scalar(&ind, PyArray_DescrFromType(NPY_INT), NULL);
+  static PyObject* create_python_object(ParticleIndex f, SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      int ind = f.get_index();
+      return PyArray_Scalar(&ind, PyArray_DescrFromType(NPY_INT), NULL);
+    } else {
+      PyReceivePointer o(SWIG_NewPointerObj(new ParticleIndex(f), st, OWN));
+      return o.release();
+    }
   }
 #endif
 

@@ -28,6 +28,9 @@ The :mod:`ihm.model` Python module
 .. autoclass:: Ensemble
    :members:
 
+.. autoclass:: NotModeledResidueRange
+   :members:
+
 .. autoclass:: OrderedProcess
    :members:
 

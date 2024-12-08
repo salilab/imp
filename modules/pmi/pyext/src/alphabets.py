@@ -2,11 +2,10 @@
    Mapping between FASTA one-letter codes and residue types.
 """
 
-from __future__ import print_function
 import IMP.atom
 
 
-class ResidueAlphabet(object):
+class ResidueAlphabet:
     """Map between FASTA codes and residue types.
        Typically one would use the `amino_acid`, `rna`, or `dna` objects."""
     def __init__(self, charmm_to_one, chain_type=IMP.atom.UnknownChainType):

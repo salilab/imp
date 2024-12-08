@@ -7,7 +7,6 @@
 # IMP::domino::get_assignments() and IMP::domino::set_assignments()
 # functions to save the states to a file.
 
-from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container

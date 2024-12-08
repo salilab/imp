@@ -4,7 +4,6 @@
    Classes to handle TALOS files or folders.
 """
 
-from __future__ import print_function
 import os
 from math import pi
 from IMP.isd.utils import check_residue, read_sequence_file

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP.test
 import IMP.mmcif.restraint
 import ihm.dataset
@@ -248,8 +247,8 @@ class Tests(IMP.test.TestCase):
         """Test _AllRestraints with cross-link restraint"""
         conv = IMP.mmcif.Writer()
         m = IMP.Model()
-        h = make_model(m, chains=[("Rpb1", "AMT", "X"),
-                                  ("Rpb2", "ACC", "Z")])
+        h = make_model(m, chains=[("Rpb1", "A" * 50, "X"),
+                                  ("Rpb2", "C" * 50, "Z")])
         conv.add_model([h], [])
 
         xl_csv = self.get_input_file_name('test.xlms.csv')

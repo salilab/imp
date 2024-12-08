@@ -2,7 +2,6 @@
 # Example of optimizing an EM2D restraint using Monte Carlo.
 #
 
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.atom

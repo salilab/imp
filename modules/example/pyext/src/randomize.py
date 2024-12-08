@@ -3,11 +3,7 @@
 #
 # i.e. the function below can be accessed as
 # IMP.example.randomize.randomize_particle().
-#
-# It is recommended to add this set of __future__ imports so that your
-# code works similarly in Python 2 and Python 3.
 
-from __future__ import print_function, division, absolute_import
 
 import IMP.core
 import IMP.algebra

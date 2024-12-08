@@ -15,7 +15,6 @@ imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_%(name)s_CONFIG}:%(defines)s${CUDA_DEFINES}
                           --source=${CMAKE_SOURCE_DIR}
-                          --python_version_major=${PYTHON_VERSION_MAJOR}
                           %(bin_names)s)
 
 if(${status} EQUAL 0)

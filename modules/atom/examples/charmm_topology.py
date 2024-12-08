@@ -4,7 +4,6 @@
 # primary sequence, and to apply topology patches.
 #
 
-from __future__ import print_function
 import IMP.atom
 import sys
 

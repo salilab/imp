@@ -1,6 +1,22 @@
 ChangeLog {#changelog}
 =========
 
+# 2.22.0 - 2024-12-12 # {#changelog_2_22_0}
+- IMP now includes the Bayesian Fluorescence Framework, as the IMP::bff module.
+- Python 2 is no longer supported; the minimum supported Python version is 3.6.
+- CMake 2 is no longer supported; the minimum supported CMake version is 3.14.
+- IMP::atom::Chain objects now track the mmCIF asym ID (if any), which often
+  differs from the author-provided chain ID. This information is also stored
+  in RMF files if using RMF 1.7 or later.
+- FoXS's JSmol output now includes mmCIF files rather than PDB, so can now
+  support visualization of structures containing multi-character chain IDs
+  or large numbers of atoms or residues.
+- The `rrt_ccd` and `rrt_sample` command line tools can now read structures
+  in both mmCIF and PDB formats.
+- IMP::pmi::mmcif::ProtocolOutput now trims any non-represented C-terminal
+  or N-terminal residues from each chain when outputting an mmCIF file.
+- The Windows .exe installer now supports Python 3.8 through 3.13.
+
 # 2.21.0 - 2024-06-13 # {#changelog_2_21_0}
 - The new IMP::spatiotemporal module can be used to assist in building stepwise
   spatiotemporal models, such as those we used to compute our model of
@@ -482,7 +498,7 @@ ChangeLog {#changelog}
   structures and transport through these structures, respectively, although
   may also be useful for other modeling applications.
 - IMP's mmCIF support for deposition of models in
-  [PDB-Dev](https://pdb-dev.wwpdb.org/), in the IMP::pmi and IMP::mmcif modules,
+  [PDB-IHM](https://pdb-ihm.org/), in the IMP::pmi and IMP::mmcif modules,
   now utilizes the [python-ihm](https://github.com/ihmwg/python-ihm) library,
   a copy of which is included with IMP.
 - RMF files now store additional metadata, such as the primary sequence of
@@ -524,7 +540,7 @@ ChangeLog {#changelog}
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
 - Preview of mmCIF support for deposition of integrative models in
-  [PDB-Dev](https://pdb-dev.wwpdb.org/). See the IMP::pmi::mmcif
+  [PDB-IHM](https://pdb-ihm.org/). See the IMP::pmi::mmcif
   module for more details.
 - This will be the last release that includes packages for RedHat Enterprise
   Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end

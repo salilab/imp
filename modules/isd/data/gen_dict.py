@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 
 di = {'ALA': {'HB': ('HB1', 'HB2', 'HB3'),
               'HB%': ('HB1', 'HB2', 'HB3'),

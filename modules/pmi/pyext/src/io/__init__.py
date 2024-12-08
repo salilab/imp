@@ -2,7 +2,6 @@
    Utility classes and functions for reading and storing PMI files
 """
 
-from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.atom
@@ -15,10 +14,7 @@ import RMF
 import os
 import numpy as np
 from collections import defaultdict
-try:
-    from pathlib import Path
-except ImportError:  # Use bundled pathlib on Python 2 without pathlib
-    from IMP._compat_pathlib import Path
+from pathlib import Path
 
 
 def parse_dssp(dssp_fn, limit_to_chains='', name_map=None):
@@ -247,7 +243,7 @@ def save_best_models(model, out_dir, stat_files,
         print('wrote rmfs to', out_rmf_fn)
 
 
-class _TempProvenance(object):
+class _TempProvenance:
     """Placeholder to track provenance information added to the IMP model.
        This is since we typically don't preserve the IMP::Model object
        throughout a PMI protocol."""
@@ -449,6 +445,7 @@ def read_coordinates_of_rmfs(model,
     @param alignment_components Tuples to specify what you're aligning on
     @param rmsd_calculation_components Tuples to specify what components
            are used for RMSD calc
+    @param state_number The state to extract from the file
     """
     all_coordinates = []
     rmsd_coordinates = []
@@ -520,6 +517,7 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
     @param rmf_tuple  score,filename,frame number,original order number, rank
     @param rmsd_calculation_components Tuples to specify what components
            are used for RMSD calc
+    @param state_number The state to extract from the file
     '''
     if rmsd_calculation_components is None:
         return {}
@@ -545,7 +543,7 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
     return rmsd_bead_size_dict
 
 
-class TotalScoreOutput(object):
+class TotalScoreOutput:
     """A helper output for model evaluation"""
     def __init__(self, model):
         self.model = model

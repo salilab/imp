@@ -1,4 +1,3 @@
-from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.isd
@@ -46,7 +45,7 @@ def make_test_restraint():
     return m, p1, p2, sigma1, sigma2, psi, dr
 
 
-class CrossLinkMS(object):
+class CrossLinkMS:
     """Defining a dummy python restraint
     with the same interface as the one that has to be tested
     """

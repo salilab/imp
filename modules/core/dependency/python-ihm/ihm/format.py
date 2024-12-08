@@ -5,7 +5,8 @@
    the set of tables or the mapping to ihm objects. For that,
    see :mod:`ihm.dumper` for writing and :mod:`ihm.reader` for reading.
 
-   See also the `stream parser example <https://github.com/ihmwg/python-ihm/blob/main/examples/stream_parser.py>`_.
+   See also the `stream parser example <https://github.com/ihmwg/python-ihm/blob/main/examples/stream_parser.py>`_
+   and the `token reader example <https://github.com/ihmwg/python-ihm/blob/main/examples/token_reader.py>`_.
 """  # noqa: E501
 
 from __future__ import print_function
@@ -227,8 +228,10 @@ class CifWriter(_Writer):
         # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
         elif isinstance(obj, _long_type):
             return "%d" % obj
-        else:
+        elif isinstance(obj, str):
             return repr(obj)
+        else:
+            return str(obj)
 
 
 # Acceptable 'whitespace' characters in CIF
@@ -338,6 +341,15 @@ class _EndOfLineToken(_Token):
     """End of a line in an mmCIF file"""
     def as_mmcif(self):
         return "\n"
+
+
+class _NullToken(_Token):
+    """Null token"""
+    def as_mmcif(self):
+        return ""
+
+    # Return dummy values for filters that expect a variable or value token
+    keyword = property(lambda self: None)
 
 
 class _DataToken(_Token):
@@ -632,24 +644,82 @@ class _SpacedToken(object):
     value = property(__get_value, __set_value)
 
 
-class _ChangeValueFilter(object):
-    def __init__(self, target, old, new):
-        ts = target.split('.')
+class Filter(object):
+    """Base class for filters used by :meth:`CifTokenReader.read_file`.
+
+       Typically, a subclass such as :class:`ChangeValueFilter` is used when
+       reading an mmCIF file.
+
+       :param str target: the mmCIF data item this filter should act on.
+              It can be the full name of the data item (including category)
+              such as ``_entity.type``; or just the attribute or keyword name
+              such as ``.type_symbol`` which would match any category
+              (e.g. ``_atom_site.type_symbol``).
+    """
+    def __init__(self, target):
+        ts = target.lower().split('.')
         if len(ts) == 1 or not ts[0]:
             self.category = None
-        else:
+        elif ts[0].startswith('_'):
             self.category = ts[0]
+        else:
+            self.category = '_' + ts[0]
         self.keyword = ts[-1]
+
+    def match_token_category(self, tok):
+        """Return true iff the given token matches the target's category"""
+        return self.category is None or tok.category == self.category
+
+    def match_token_keyword(self, tok):
+        """Return true iff the given token matches the target's category
+           and keyword"""
+        return self.match_token_category(tok) and tok.keyword == self.keyword
+
+    def filter_category(self, tok):
+        """Filter the given category token.
+
+           :return: the original token (which may have been modified),
+                    a replacement token, or None if the token should be
+                    deleted.
+        """
+        raise NotImplementedError
+
+    def get_loop_filter(self, tok):
+        """Given a loop header token, potentially return a handler for each
+           loop row token. This function is also permitted to alter the
+           header in place (but not replace or remove it). Keywords should
+           not be removed from the header (as that may confuse other filters)
+           but can be replaced with null tokens.
+
+           :return: a callable which will be called for each loop row token
+                    (and acts like :meth:`filter_category`), or None if no
+                    filtering is needed for this loop.
+        """
+        raise NotImplementedError
+
+
+class ChangeValueFilter(Filter):
+    """Change any token that sets a data item to ``old`` to be ``new``.
+
+       For example, this could be used to rename certain chains, or change
+       all residues of a certain type.
+
+       :param str old: The existing value of the data item.
+       :param str new: The new value of the data item.
+
+       See :class:`Filter` for a description of the ``target`` parameter.
+    """
+    def __init__(self, target, old, new):
+        super(ChangeValueFilter, self).__init__(target)
         self.old, self.new = old, new
 
     def filter_category(self, tok):
-        if ((self.category is None or tok.category == self.category)
-                and tok.keyword == self.keyword and tok.value == self.old):
+        if self.match_token_keyword(tok) and tok.value == self.old:
             tok.value = self.new
         return tok
 
     def get_loop_filter(self, tok):
-        if self.category is None or tok.category == self.category:
+        if self.match_token_category(tok):
             try:
                 keyword_index = tok.keyword_index(self.keyword)
             except ValueError:
@@ -662,13 +732,98 @@ class _ChangeValueFilter(object):
             return loop_filter
 
 
-class _PreservingCifReader(_PreservingCifTokenizer):
-    """Read an mmCIF file and break it into tokens"""
+class RemoveItemFilter(Filter):
+    """Remove any token from the file that sets the given data item.
+
+       See :class:`Filter` for a description of the ``target`` parameter.
+    """
+    def filter_category(self, tok):
+        if self.match_token_keyword(tok):
+            return None
+        else:
+            return tok
+
+    def get_loop_filter(self, tok):
+        if self.match_token_category(tok):
+            try:
+                keyword_index = tok.keyword_index(self.keyword)
+            except ValueError:
+                return
+            # Remove keyword from loop header
+            tok.keywords[keyword_index].spacers = []
+            tok.keywords[keyword_index].token = _NullToken()
+
+            def loop_filter(t):
+                # Remove item from loop row (we don't want to pop from
+                # t.items as other filters may reference later indexes)
+                spc = t.items[keyword_index].spacers
+                if len(spc) > 0 and isinstance(spc[0], _EndOfLineToken):
+                    del spc[1:]
+                else:
+                    t.items[keyword_index].spacers = []
+                t.items[keyword_index].token = _NullToken()
+                return t
+            return loop_filter
+
+
+class ChangeKeywordFilter(Filter):
+    """Change the keyword in any applicable token to be ``new``.
+
+       :param str new: The new keyword.
+
+       See :class:`Filter` for a description of the ``target`` parameter.
+    """
+    def __init__(self, target, new):
+        super(ChangeKeywordFilter, self).__init__(target)
+        self.new = new
+
+    def filter_category(self, tok):
+        if self.match_token_keyword(tok):
+            tok.vartoken.keyword = self.new
+        return tok
+
+    def get_loop_filter(self, tok):
+        if self.match_token_category(tok):
+            try:
+                keyword_index = tok.keyword_index(self.keyword)
+            except ValueError:
+                return
+            tok.keywords[keyword_index].token.keyword = self.new
+
+
+class CifTokenReader(_PreservingCifTokenizer):
+    """Read an mmCIF file and break it into tokens.
+
+       Unlike :class:`CifReader` which extracts selected data from an mmCIF
+       file, this class operates on the file at a lower level, splitting
+       it into tokens, and preserving data such as comments and whitespace.
+       This can be used for various housekeeping tasks directly on an mmCIF
+       file, such as changing chain IDs or renaming categories or data items.
+
+       Use :meth:`read_file` to actually read the file.
+
+       :param file fh: Open handle to the mmCIF file
+    """
     def __init__(self, fh):
-        super(_PreservingCifReader, self).__init__(fh)
+        super(CifTokenReader, self).__init__(fh)
 
     def read_file(self, filters=None):
-        """Read the file and yield tokens and/or token groups"""
+        """Read the file and yield tokens and/or token groups. The exact type
+           of the tokens is subject to change and is not currently documented;
+           however, each token or group object has an ``as_mmcif`` method
+           which returns the corresponding text in mmCIF format. Thus, the
+           file can be reconstructed by concatenating the result of
+           ``as_mmcif`` for all tokens.
+
+           :exc:`CifParserError` will be raised if the file cannot be parsed.
+
+           :param filters: if a list of :class:`Filter` objects is provided,
+                  the read tokens will be modified or removed by each of these
+                  filters before being returned.
+           :type filters: sequence of :class:`Filter`
+
+           :return: tokens and/or token groups.
+        """
         if filters is None:
             return self._read_file_internal()
         else:
@@ -676,15 +831,23 @@ class _PreservingCifReader(_PreservingCifTokenizer):
 
     def _read_file_with_filters(self, filters):
         loop_filters = None
+        remove_all_loop_rows = False
         for tok in self._read_file_internal():
             if isinstance(tok, _CategoryTokenGroup):
                 tok = self._filter_category(tok, filters)
             elif isinstance(tok, ihm.format._LoopHeaderTokenGroup):
+                remove_all_loop_rows = False
                 loop_filters = [f.get_loop_filter(tok) for f in filters]
                 loop_filters = [f for f in loop_filters if f is not None]
-            elif (isinstance(tok, ihm.format._LoopRowTokenGroup)
-                  and loop_filters):
-                tok = self._filter_loop(tok, loop_filters)
+                # Did filters remove all keywords from the loop?
+                if all(isinstance(k.token, _NullToken) for k in tok.keywords):
+                    tok = None
+                    remove_all_loop_rows = True
+            elif isinstance(tok, ihm.format._LoopRowTokenGroup):
+                if remove_all_loop_rows:
+                    tok = None
+                elif loop_filters:
+                    tok = self._filter_loop(tok, loop_filters)
             if tok is not None:
                 yield tok
 
@@ -745,8 +908,11 @@ class _PreservingCifReader(_PreservingCifTokenizer):
     def _read_loop(self, looptoken):
         """Handle a loop_ construct"""
         header = self._read_loop_header(looptoken)
+        # Record original number of keywords, in case the header token
+        # is filtered
+        num_keywords = len(header.keywords)
         yield header
-        for line in self._read_loop_data(header.keywords):
+        for line in self._read_loop_data(num_keywords):
             yield line
 
     def _read_loop_header(self, looptoken):
@@ -773,11 +939,11 @@ class _PreservingCifReader(_PreservingCifTokenizer):
                 raise CifParserError("Was expecting a keyword or value for "
                                      "loop at line %d" % self._linenum)
 
-    def _read_loop_data(self, keywords):
+    def _read_loop_data(self, num_keywords):
         """Read the data for a loop_ construct"""
         while True:
             items = []
-            for i, keyword in enumerate(keywords):
+            for i in range(num_keywords):
                 spt = self._get_spaced_token()
                 if isinstance(spt.token, _ValueToken):
                     items.append(spt)
@@ -801,6 +967,10 @@ class CifReader(_Reader, _CifTokenizer):
 
        Use :meth:`read_file` to actually read the file.
 
+       See also :class:`CifTokenReader` for a class that operates on the
+       lower-level structure of an mmCIF file, preserving data such as
+       comments and whitespace.
+
        :param file fh: Open handle to the mmCIF file
        :param dict category_handler: A dict to handle data
               extracted from the file. Keys are category names
@@ -812,7 +982,7 @@ class CifReader(_Reader, _CifTokenizer):
               and ] characters, since these are not valid for Python
               identifiers). The object will be called with the data from
               the file as a set of strings, or `not_in_file`, `omitted` or
-              `unkonwn` for any keyword that is not present in the file,
+              `unknown` for any keyword that is not present in the file,
               the mmCIF omitted value (.), or mmCIF unknown value (?)
               respectively. (mmCIF keywords are case insensitive, so this
               class always treats them as lowercase regardless of the

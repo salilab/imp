@@ -71,7 +71,7 @@ class DoxConfigFileGenerator(tools.FileGenerator):
                                       "doxygen/manual-tags.xml=../manual")
             doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/ref/xml/")
             doxygen = doxygen.replace("@EXCLUDE@",
-                                      "lib/IMP/kernel lib/IMP/base")
+                                      "lib/IMP/pmi1")
         doxygen = doxygen.replace("@NAME@", "IMP")
         doxygen = doxygen.replace("@IMP_SOURCE_PATH@", source) \
                          .replace("@VERSION@", version)
@@ -97,6 +97,12 @@ class DoxConfigFileGenerator(tools.FileGenerator):
             inputsh = ["doxygen/generated", source + "/doc/ref",
                        "include", "doc/examples", "lib/IMP"]
             for m, p in tools.get_modules(source):
+                # Don't document obsolete modules
+                if m == 'pmi1':
+                    continue
+                # IMP.bff has stuff in doc that trips up doxygen
+                if m == 'bff':
+                    continue
                 doc = os.path.join(p, "doc")
                 if os.path.exists(doc):
                     inputsh.append(doc + "/")
@@ -123,6 +129,9 @@ def generate_overview_pages(source):
 IMP modules provide a number of command line tools.
 These are listed below under their parent module:""")
     for bs, g in tools.get_modules(source):
+        # Don't document obsolete modules
+        if bs == 'pmi1':
+            continue
         if tools.get_module_info(bs, '')['ok']:
             with open(os.path.join("build_info", "IMP_%s.pck" % bs),
                       'rb') as fh:

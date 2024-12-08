@@ -2,7 +2,6 @@
 # Use the IMP::misc::DecayPairContainerOptimizerState to gradually break
 # the bonds in a bd simulation.
 
-from __future__ import print_function
 import IMP.atom
 import IMP.container
 import IMP.misc

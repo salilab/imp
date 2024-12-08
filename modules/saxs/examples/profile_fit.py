@@ -12,7 +12,6 @@
 # (www.embl-hamburg.de/ExternalInfo/Research/Sax/crysol.html)
 #
 
-from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.core

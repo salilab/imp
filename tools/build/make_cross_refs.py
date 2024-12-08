@@ -255,7 +255,8 @@ def main():
         try:
             et = ET.parse(f)
         except ET.ParseError:
-            sys.stderr.write("ERROR parsing", f, "\n")
+            print("ERROR parsing", f, file=sys.stderr)
+            raise
         fname = os.path.basename(f)
         if fname.startswith("namespaceIMP"):
             if verbose:

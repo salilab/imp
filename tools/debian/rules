@@ -31,7 +31,7 @@ override_dh_auto_configure:
                 -DCMAKE_INSTALL_PREFIX=/usr \
                 -DIMP_TIMEOUT_FACTOR=4 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
-                -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=off
+                -DIMP_DISABLED_MODULES=scratch
 
 override_dh_auto_build:
 	mkdir build/logs
@@ -39,39 +39,12 @@ override_dh_auto_build:
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
-	# Install Python 2 extension modules
-	cd build \
-	   && py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
-	   && unamem=`uname -m` \
-	   && py2_lib=`echo /usr/lib/$${unamem}-*/libpython2*.so` \
-	   && py2_inc=/usr/include/python$${py2_ver} \
-	   && cmake .. \
-	    -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
-	    -DSWIG_PYTHON_LIBRARIES=$${py2_lib} \
-	    -DPYTHON_INCLUDE_DIRS=$${py2_inc} \
-	    -DPYTHON_INCLUDE_PATH=$${py2_inc} -DPYTHON_LIBRARIES=$${py2_lib} \
-	    -DUSE_PYTHON2=on \
-	   && $(MAKE) -j4 DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.4/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
 	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
-	# Don't package MPI for Python2 or -dev
-	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/mpi
-	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/spb
-	rm -f debian/tmp/usr/lib/python2*/dist-packages/_IMP_mpi*
-	rm -f debian/tmp/usr/lib/python2*/dist-packages/_IMP_spb*
+	# Don't package MPI for -dev
 	rm -f debian/tmp/usr/lib/*/libimp_mpi*.so
 	rm -f debian/tmp/usr/lib/*/libimp_spb*.so
-	# Replace Python 2 .py files with symlinks to Python 3 files
-	# (since they are the same) but not the SWIG-generated __init__.py
-	# files (since these contain config information which might be
-	# different; e.g. in Ubuntu 22.04 the Python 3 wrappers include numpy
-	# support but the Python 2 wrappers do not)
-	(cd debian/tmp/usr/lib/python2* \
-         && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
-	 && find dist-packages -name '*.py' -a ! -name __init__.py \
-	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python$${py3_ver}/\{\} \{\} \; \
-	 && symlinks -rc .)
 	# Make sure all Python applications use the system Python in /usr/bin
 	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python3@' debian/tmp/usr/bin/*
 	# Don't distribute example application or dependency
