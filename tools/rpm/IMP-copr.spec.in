@@ -32,7 +32,7 @@ Requires: python3-protobuf
 
 BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
-BuildRequires: RMF-devel >= 1.6
+BuildRequires: RMF-devel >= 1.7
 BuildRequires: python3-ihm
 Requires: python3-ihm
 
