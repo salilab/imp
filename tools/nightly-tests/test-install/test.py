@@ -102,6 +102,11 @@ class IMPInstallTests(unittest.TestCase):
         p1.add_attribute(k, 1)
         p2.add_attribute(k, 2)
 
+        # Our WINE test environment does not currently work with numpy 1.26.4
+        # and Python 3.12
+        if sys.platform == 'win32' and sys.version_info[:2] == (3, 12):
+            self.skipTest("environment does not support NumPy and Python 3.12")
+
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1.get_ints_numpy(k)
             self.assertIs(n.base, m1)
