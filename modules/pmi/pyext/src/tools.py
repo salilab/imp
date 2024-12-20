@@ -18,7 +18,7 @@ import RMF
 import IMP.rmf
 from collections import defaultdict, OrderedDict
 import warnings
-import numpy
+import numbers
 
 
 def _get_system_for_hier(hier):
@@ -637,7 +637,7 @@ class Segments:
 
     def add(self, index):
         '''index can be a integer or a list of integers '''
-        if isinstance(index, (int, numpy.int32, numpy.int64)):
+        if isinstance(index, numbers.Integral):
             mergeleft = None
             mergeright = None
             for n, s in enumerate(self.segs):
