@@ -17,14 +17,14 @@ import re
 
 
 FILES = ["README.md", "doc/manual/licenses.md", "tools/debian/copyright",
-         "modules/kernel/src/utility.cpp"]
+         "tools/debian-ppa/copyright", "modules/kernel/src/utility.cpp"]
 YEAR = datetime.datetime.now().year
 
 
 def patch_file(f):
     with open(f) as fh:
         old_contents = fh.read()
-    new_contents = re.sub(r"Copyright 2007\-\d+", "Copyright 2007-%d" % YEAR,
+    new_contents = re.sub(r"(Copyright:?) 2007\-\d+", r"\1 2007-%d" % YEAR,
                           old_contents)
     if new_contents == old_contents:
         print("WARNING: nothing substituted in " + f)
