@@ -2215,7 +2215,8 @@ _ihm_modeling_post_process.details
         # Group contains multiple copies of model - should be pruned on output
         group = ihm.model.ModelGroup([model, model, model2], name='Group1')
         state.append(group)
-        group2 = ihm.model.ModelGroup([model3], name='Group 2')
+        group2 = ihm.model.ModelGroup([model3], name='Group 2',
+                                      details='group 2 details')
         state.append(group2)
 
         dumper = ihm.dumper._ModelDumper()
@@ -2239,7 +2240,7 @@ _ihm_model_group.id
 _ihm_model_group.name
 _ihm_model_group.details
 1 Group1 .
-2 'Group 2' .
+2 'Group 2' 'group 2 details'
 #
 #
 loop_

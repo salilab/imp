@@ -2,6 +2,7 @@
 
 import re
 import os
+import numbers
 import collections
 import operator
 import itertools
@@ -1465,10 +1466,10 @@ class _StartingModelDumper(Dumper):
             denom = int(denom)
         # Add offset only if seq_id_range isn't . or ?
         seq_id_begin = template.seq_id_range[0]
-        if isinstance(template.seq_id_range[0], int):
+        if isinstance(template.seq_id_range[0], numbers.Integral):
             seq_id_begin += off
         seq_id_end = template.seq_id_range[1]
-        if isinstance(template.seq_id_range[1], int):
+        if isinstance(template.seq_id_range[1], numbers.Integral):
             seq_id_end += off
         lp.write(id=next(ordinal),
                  starting_model_id=sm._id,
@@ -1895,7 +1896,7 @@ class _ModelDumper(_ModelDumperBase):
     def dump_model_group_summary(self, system, writer):
         with writer.loop("_ihm_model_group", ["id", "name", "details"]) as lp:
             for group in system._all_model_groups():
-                lp.write(id=group._id, name=group.name)
+                lp.write(id=group._id, name=group.name, details=group.details)
 
     def dump_model_group_link(self, system, writer):
         with writer.loop("_ihm_model_group_link",

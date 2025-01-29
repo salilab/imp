@@ -70,8 +70,9 @@ class Tests(unittest.TestCase):
         """Test ModelGroup class"""
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
-        g = ihm.model.ModelGroup([m], name='foo')
+        g = ihm.model.ModelGroup([m], name='foo', details='d')
         self.assertEqual(g.name, 'foo')
+        self.assertEqual(g.details, 'd')
         self.assertEqual(g[0].protocol, 'bar')
 
     def test_ensemble(self):

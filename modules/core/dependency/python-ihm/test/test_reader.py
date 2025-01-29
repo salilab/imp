@@ -15,6 +15,11 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.reader
 
+try:
+    from ihm import _format
+except ImportError:
+    _format = None
+
 
 def cif_file_handles(cif):
     """Yield both in-memory and real-file handles for the given mmCIF text.
@@ -1588,7 +1593,7 @@ _ihm_model_group.id
 _ihm_model_group.name
 _ihm_model_group.details
 1 "Cluster 1" .
-2 "Cluster 2" .
+2 "Cluster 2" 'cluster 2 details'
 #
 loop_
 _ihm_model_group_link.group_id
@@ -1625,6 +1630,7 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             mg1, mg2 = state
             self.assertEqual(mg1.name, 'Cluster 1')
             self.assertEqual(mg1._id, '1')
+            self.assertIsNone(mg1.details)
             m, = mg1
             self.assertEqual(m._id, '1')
             self.assertEqual(m.name, 'Best scoring model')
@@ -1632,6 +1638,7 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             self.assertEqual(m.protocol._id, '2')
             self.assertEqual(m.representation._id, '3')
             self.assertEqual(mg2.name, 'Cluster 2')
+            self.assertEqual(mg2.details, 'cluster 2 details')
             self.assertEqual(mg2._id, '2')
             m, = mg2
             self.assertEqual(m._id, '2')
@@ -3418,13 +3425,42 @@ _ihm_ordered_ensemble.model_group_id_end
         self.assertEqual(e2.group_begin._id, '1')
         self.assertEqual(e2.group_end._id, '4')
 
-    def test_read_full_pdbx(self):
-        """Test reading a full PDBx file"""
+    def _check_pdbx(self, s):
+        self.assertEqual(
+            s.title, 'Enterococcus faecalis FIC protein in complex '
+            'with AMP and calcium ion.')
+        self.assertEqual(len(s.databases), 2)
+        self.assertEqual(s.databases[0].code, '6EP0')
+        self.assertEqual(s.databases[1].code, 'D_1200006994')
+        self.assertEqual(s.authors, ['Veyron, S.', 'Cherfils, J.'])
+        self.assertEqual(s.citations[0].doi, '10.1038/s41467-019-09023-1')
+        self.assertEqual(s.grants[0].funding_organization, 'DIM Malinf')
+        self.assertEqual(len(s.revisions), 4)
+        self.assertEqual(len(s.entities), 5)
+        self.assertEqual(len(s.asym_units), 14)
+        self.assertEqual(
+            [x.name for x in s.software],
+            ['BUSTER', 'autoPROC', 'XDS', 'PHENIX'])
+        m = s.state_groups[0][0][0][0]
+        self.assertEqual(len(m._atoms), 3528)
+        self.assertAlmostEqual(m._atoms[0].x, -23.51, delta=0.01)
+        self.assertAlmostEqual(m._atoms[0].y, 15.583, delta=0.01)
+        self.assertAlmostEqual(m._atoms[0].z, 17.773, delta=0.01)
+
+    def test_read_full_pdbx_mmcif(self):
+        """Test reading a full PDBx file in mmCIF format"""
         fname = utils.get_input_file_name(TOPDIR, '6ep0.cif.gz')
-        # We can't use 'with' here because that requires Python >= 2.7
-        f = gzip.open(fname, 'rt' if sys.version_info[0] >= 3 else 'rb')
-        s, = ihm.reader.read(f)
-        f.close()
+        with gzip.open(fname, 'rt' if sys.version_info[0] >= 3 else 'rb') as f:
+            s, = ihm.reader.read(f)
+        self._check_pdbx(s)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_full_pdbx_bcif(self):
+        """Test reading a full PDBx file in BinaryCIF format"""
+        fname = utils.get_input_file_name(TOPDIR, '6ep0.bcif.gz')
+        with gzip.open(fname, 'rb') as f:
+            s, = ihm.reader.read(f, format='BCIF')
+        self._check_pdbx(s)
 
     def test_old_file_read_default(self):
         """Test default handling of old files"""

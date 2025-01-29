@@ -6,7 +6,7 @@
 %}
 
 /* Get simple return values */
-%apply int *OUTPUT { int * };
+%apply bool *OUTPUT { bool * };
 
 %ignore ihm_keyword;
 %ignore ihm_error_set;
@@ -58,9 +58,9 @@ static void handle_error(struct ihm_error *err)
 
 %{
 
-/* Read data from a Python filelike object */
-static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
-                                    void *data, struct ihm_error **err)
+/* Read data from a Python filelike object, in text mode */
+static ssize_t pyfile_text_read_callback(char *buffer, size_t buffer_len,
+                                         void *data, struct ihm_error **err)
 {
   Py_ssize_t read_len;
   char *read_str;
@@ -152,6 +152,52 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
   return read_len;
 }
 
+/* Read data from a Python filelike object, in binary mode */
+static ssize_t pyfile_binary_read_callback(char *buffer, size_t buffer_len,
+                                           void *data, struct ihm_error **err)
+{
+  Py_ssize_t read_len;
+  char *read_str;
+  static char fmt[] = "(n)";
+  PyObject *read_method = data;
+  PyObject *result = PyObject_CallFunction(read_method, fmt, buffer_len);
+  if (!result) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "read failed");
+    return -1;
+  }
+
+#if PY_VERSION_HEX < 0x03000000
+  if (PyString_Check(result)) {
+    if (PyString_AsStringAndSize(result, &read_str, &read_len) < 0) {
+      ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
+      Py_DECREF(result);
+      return -1;
+    }
+#else
+  if (PyBytes_Check(result)) {
+    if (PyBytes_AsStringAndSize(result, &read_str, &read_len) < 0) {
+      ihm_error_set(err, IHM_ERROR_VALUE, "PyBytes_AsStringAndSize failed");
+      return -1;
+    }
+#endif
+  } else {
+    ihm_error_set(err, IHM_ERROR_VALUE, "read method should return bytes");
+    Py_DECREF(result);
+    return -1;
+  }
+
+  if (read_len > buffer_len) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "Python read method returned too many bytes");
+    Py_DECREF(result);
+    return -1;
+  }
+
+  memcpy(buffer, read_str, read_len);
+  Py_DECREF(result);
+  return read_len;
+}
+
 static void pyfile_free(void *data)
 {
   PyObject *read_method = data;
@@ -163,7 +209,7 @@ static void pyfile_free(void *data)
 
 %inline %{
 /* Wrap a Python file object as an ihm_file */
-struct ihm_file *ihm_file_new_from_python(PyObject *pyfile,
+struct ihm_file *ihm_file_new_from_python(PyObject *pyfile, bool binary,
                                           struct ihm_error **err)
 {
   PyObject *read_method;
@@ -187,7 +233,11 @@ struct ihm_file *ihm_file_new_from_python(PyObject *pyfile,
     return NULL;
   }
 
-  return ihm_file_new(pyfile_read_callback, read_method, pyfile_free);
+  if (binary) {
+    return ihm_file_new(pyfile_binary_read_callback, read_method, pyfile_free);
+  } else {
+    return ihm_file_new(pyfile_text_read_callback, read_method, pyfile_free);
+  }
 }
 
 %}

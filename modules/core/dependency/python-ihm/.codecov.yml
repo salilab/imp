@@ -1,3 +1,5 @@
 ignore:
   - test
   - util
+  - src/cmp.c
+  - src/cmp.h

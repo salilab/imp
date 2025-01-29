@@ -2,7 +2,7 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: python-ihm
 Source: https://github.com/ihmwg/python-ihm
 
-Copyright: 2018-2024 IHM Working Group
+Copyright: 2018-2025 IHM Working Group
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

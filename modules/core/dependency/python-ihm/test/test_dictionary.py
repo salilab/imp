@@ -2,7 +2,7 @@ import utils
 import os
 import unittest
 import sys
-from test_format_bcif import MockMsgPack, MockFh
+from test_format_bcif import MockMsgPack, MockFh, _add_msgpack
 
 if sys.version_info[0] >= 3:
     from io import StringIO, BytesIO
@@ -13,6 +13,11 @@ else:
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.dictionary
+
+try:
+    from ihm import _format
+except ImportError:
+    _format = None
 
 
 def add_keyword(name, mandatory, category):
@@ -309,6 +314,12 @@ save_
         with writer.category('_test_optional_category') as loc:
             loc.write(bar='enum1')
         writer.flush()
+        if _format:
+            # Convert Python object into msgpack format for the C parser
+            bio = BytesIO()
+            _add_msgpack(fh.data, bio)
+            bio.seek(0)
+            fh.data = bio
         d.validate(fh.data, format='BCIF')
 
     def test_validate_multi_data_ok(self):

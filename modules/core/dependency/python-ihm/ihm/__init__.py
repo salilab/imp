@@ -10,6 +10,7 @@
 """
 
 import itertools
+import numbers
 import re
 import sys
 # Handle different naming of urllib in Python 2/3
@@ -1600,12 +1601,12 @@ class AsymUnit(object):
         self.num_map = None
 
     def _get_auth_seq_id_ins_code(self, seq_id):
-        if isinstance(self.auth_seq_id_map, int):
+        if isinstance(self.auth_seq_id_map, numbers.Integral):
             return seq_id + self.auth_seq_id_map, None
         else:
             try:
                 ret = self.auth_seq_id_map[seq_id]
-                if isinstance(ret, (int, str)):
+                if isinstance(ret, (numbers.Integral, str)):
                     return ret, None
                 else:
                     return ret

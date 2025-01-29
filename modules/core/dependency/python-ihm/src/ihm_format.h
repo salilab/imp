@@ -1,10 +1,15 @@
-/** \file ihm_format.h      Routines for handling mmCIF format files.
+/** \file ihm_format.h Routines for handling mmCIF or BinaryCIF format files.
  *
  *  The file is read sequentially. All values for desired keywords in
- *  desired categories are collected (other parts of the file are ignored)
- *  At the end of the file and each save frame a callback function for
- *  each category is called to process the data. In the case of mmCIF loops,
- *  this callback will be called multiple times, one for each entry in the loop.
+ *  desired categories are collected (other parts of the file are ignored).
+ *
+ *  For mmCIF, at the end of the file and each save frame a callback function
+ *  for each category is called to process the data. In the case of mmCIF
+ *  loops, this callback will be called multiple times, once for each entry
+ *  in the loop.
+ *
+ *  For BinaryCIF, the category callback will be called as each category
+ *  is encountered in the file, once per row.
  */
 
 #ifndef IHM_FORMAT_H
@@ -14,7 +19,15 @@
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
+#if _MSC_VER > 1800
+#include <stdbool.h> /* For bool */
 #else
+typedef int bool;
+#define true 1
+#define false 0
+#endif
+#else
+#include <stdbool.h> /* For bool */
 #include <unistd.h> /* For ssize_t */
 #endif
 
@@ -45,37 +58,37 @@ void ihm_error_free(struct ihm_error *err);
 void ihm_error_set(struct ihm_error **err, IHMErrorCode code,
                    const char *format, ...);
 
-/* A keyword in an mmCIF file. Holds a description of its format and any
-   value read from the file. */
+/* A keyword in an mmCIF or BinaryCIF file. Holds a description of its
+   format and any value read from the file. */
 struct ihm_keyword {
   char *name;
   /* Last value read from the file */
   char *data;
-  /* If TRUE, we own the memory for data */
-  int own_data;
-  /* TRUE iff this keyword is in the file (not necessarily with a value) */
-  int in_file;
-  /* TRUE iff the keyword is in the file but the value is omitted ('.') */
-  int omitted;
-  /* TRUE iff the keyword is in the file but the value is unknown ('?') */
-  int unknown;
+  /* If true, we own the memory for data */
+  bool own_data;
+  /* true iff this keyword is in the file (not necessarily with a value) */
+  bool in_file;
+  /* true iff the keyword is in the file but the value is omitted ('.') */
+  bool omitted;
+  /* true iff the keyword is in the file but the value is unknown ('?') */
+  bool unknown;
 };
 
 /* Opaque types */
 struct ihm_reader;
 struct ihm_category;
 
-/* Callback for mmCIF category data. Should set err on failure */
+/* Callback for mmCIF/BinaryCIF category data. Should set err on failure */
 typedef void (*ihm_category_callback)(struct ihm_reader *reader,
                                       void *data, struct ihm_error **err);
 
-/* Callback for unknown mmCIF categories. Should set err on failure */
+/* Callback for unknown mmCIF/BinaryCIF categories. Should set err on failure */
 typedef void (*ihm_unknown_category_callback)(struct ihm_reader *reader,
                                               const char *category, int linenum,
                                               void *data,
                                               struct ihm_error **err);
 
-/* Callback for unknown mmCIF keywords. Should set err on failure */
+/* Callback for unknown mmCIF/BinaryCIF keywords. Should set err on failure */
 typedef void (*ihm_unknown_keyword_callback)(struct ihm_reader *reader,
                                              const char *category,
                                              const char *keyword, int linenum,
@@ -156,19 +169,21 @@ struct ihm_file *ihm_file_new(ihm_file_read_callback read_callback,
 /* Make a new ihm_file that will read data from the given file descriptor */
 struct ihm_file *ihm_file_new_from_fd(int fd);
 
-/* Make a new struct ihm_reader */
-struct ihm_reader *ihm_reader_new(struct ihm_file *fh);
+/* Make a new struct ihm_reader.
+   To read an mmCIF file, set binary=false; to read BinaryCIF, set binary=true.
+ */
+struct ihm_reader *ihm_reader_new(struct ihm_file *fh, bool binary);
 
 /* Free memory used by a struct ihm_reader.
    Note that this does not close the
    underlying file descriptor or object that is wrapped by ihm_file. */
 void ihm_reader_free(struct ihm_reader *reader);
 
-/* Read a data block from an mmCIF file.
-   *more_data is set TRUE iff more data blocks are available after this one.
-   Return FALSE and set err on error. */
-int ihm_read_file(struct ihm_reader *reader, int *more_data,
-                  struct ihm_error **err);
+/* Read a data block from an mmCIF or BinaryCIF file.
+   *more_data is set true iff more data blocks are available after this one.
+   Return false and set err on error. */
+bool ihm_read_file(struct ihm_reader *reader, bool *more_data,
+                   struct ihm_error **err);
 
 #ifdef  __cplusplus
 }

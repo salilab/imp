@@ -5,7 +5,9 @@
 #   codespell . --skip '*.cif' -L assertIn
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
 # - Run util/validate-outputs.py to make sure all example outputs validate
-#   (cd util; PYTHONPATH=.. python3 ./validate-outputs.py)
+#   (cd util; PYTHONPATH=.. python3 validate-outputs.py)
+# - Run util/check-db-entries.py to check against some real archive structures
+#   (cd util; PYTHONPATH=.. python3 check-db-entries.py)
 # - Make sure all python-modelcif tests work using new IHM version
 # - Update ChangeLog.rst, util/debian/changelog, and util/python-ihm.spec
 #   with the release number and date

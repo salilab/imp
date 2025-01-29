@@ -14,6 +14,10 @@ import sys
 import textwrap
 import operator
 import ihm
+if sys.version_info[0] >= 3:
+    from io import StringIO
+else:
+    from io import BytesIO as StringIO
 # getargspec is deprecated in Python 3, but getfullargspec has a very
 # similar interface
 try:
@@ -666,6 +670,13 @@ class Filter(object):
             self.category = '_' + ts[0]
         self.keyword = ts[-1]
 
+    def _set_category_from_target(self, target):
+        if target.startswith('_'):
+            self.category = target
+        else:
+            self.category = '_' + target
+        self.keyword = None
+
     def match_token_category(self, tok):
         """Return true iff the given token matches the target's category"""
         return self.category is None or tok.category == self.category
@@ -683,6 +694,16 @@ class Filter(object):
                     deleted.
         """
         raise NotImplementedError
+
+    def filter_loop_header(self, tok):
+        """Filter the given loop header token.
+
+           :return: the original token (which must not have been modified),
+                    a replacement token, or None if the token should be
+                    deleted. If the header token is replaced or deleted,
+                    all of the original loop rows will also be deleted.
+        """
+        return tok
 
     def get_loop_filter(self, tok):
         """Given a loop header token, potentially return a handler for each
@@ -791,6 +812,67 @@ class ChangeKeywordFilter(Filter):
             tok.keywords[keyword_index].token.keyword = self.new
 
 
+class ReplaceCategoryFilter(Filter):
+    """Replace any token from the file that sets the given category.
+
+       This can also be used to completely remove a category if no
+       replacement is given.
+
+       :param str target: the mmCIF category name this filter should act on,
+              such as ``_entity``.
+       :param str raw_cif: if given, text in mmCIF format which should replace
+              the first instance of the category.
+       :param dumper: if given, a dumper object that should generate mmCIF
+              output to replace the first instance of the category.
+       :type dumper: :class:`ihm.dumper.Dumper`
+       :param system: the System that the given dumper will work on.
+       :type system: :class:`ihm.System`
+    """
+
+    class _RawCifToken(_Token):
+        __slots__ = ['txt']
+        category = keyword = None
+
+        def __init__(self, txt):
+            self.txt = txt
+
+        def as_mmcif(self):
+            return self.txt
+
+    def __init__(self, target, raw_cif=None, dumper=None, system=None):
+        self._set_category_from_target(target)
+        self.raw_cif = raw_cif
+        self.dumper = dumper
+        self.system = system
+        #: The number of times the category was found in the mmCIF file
+        self.num_matches = 0
+
+    def _get_replacement_token(self):
+        if self.num_matches > 1:
+            return None
+        if self.raw_cif:
+            return self._RawCifToken(self.raw_cif)
+        elif self.dumper and self.system:
+            fh = StringIO()
+            writer = CifWriter(fh)
+            self.dumper.finalize(self.system)
+            self.dumper.dump(self.system, writer)
+            return self._RawCifToken(fh.getvalue())
+
+    def filter_category(self, tok):
+        if self.match_token_category(tok):
+            self.num_matches += 1
+            return self._get_replacement_token()
+        else:
+            return tok
+
+    def filter_loop_header(self, tok):
+        return self.filter_category(tok)
+
+    def get_loop_filter(self, tok):
+        return None
+
+
 class CifTokenReader(_PreservingCifTokenizer):
     """Read an mmCIF file and break it into tokens.
 
@@ -836,13 +918,19 @@ class CifTokenReader(_PreservingCifTokenizer):
             if isinstance(tok, _CategoryTokenGroup):
                 tok = self._filter_category(tok, filters)
             elif isinstance(tok, ihm.format._LoopHeaderTokenGroup):
-                remove_all_loop_rows = False
-                loop_filters = [f.get_loop_filter(tok) for f in filters]
-                loop_filters = [f for f in loop_filters if f is not None]
-                # Did filters remove all keywords from the loop?
-                if all(isinstance(k.token, _NullToken) for k in tok.keywords):
-                    tok = None
+                new_tok = self._filter_loop_header(tok, filters)
+                if new_tok is not tok:
+                    tok = new_tok
                     remove_all_loop_rows = True
+                else:
+                    remove_all_loop_rows = False
+                    loop_filters = [f.get_loop_filter(tok) for f in filters]
+                    loop_filters = [f for f in loop_filters if f is not None]
+                    # Did filters remove all keywords from the loop?
+                    if all(isinstance(k.token, _NullToken)
+                           for k in tok.keywords):
+                        tok = None
+                        remove_all_loop_rows = True
             elif isinstance(tok, ihm.format._LoopRowTokenGroup):
                 if remove_all_loop_rows:
                     tok = None
@@ -856,6 +944,14 @@ class CifTokenReader(_PreservingCifTokenizer):
             tok = f.filter_category(tok)
             if tok is None:
                 return
+        return tok
+
+    def _filter_loop_header(self, tok, filters):
+        orig_tok = tok
+        for f in filters:
+            tok = f.filter_loop_header(tok)
+            if tok is not orig_tok:
+                break
         return tok
 
     def _filter_loop(self, tok, filters):
@@ -1002,8 +1098,8 @@ class CifReader(_Reader, _CifTokenizer):
     def __init__(self, fh, category_handler, unknown_category_handler=None,
                  unknown_keyword_handler=None):
         if _format is not None:
-            c_file = _format.ihm_file_new_from_python(fh)
-            self._c_format = _format.ihm_reader_new(c_file)
+            c_file = _format.ihm_file_new_from_python(fh, False)
+            self._c_format = _format.ihm_reader_new(c_file, False)
         self.category_handler = category_handler
         self.unknown_category_handler = unknown_category_handler
         self.unknown_keyword_handler = unknown_keyword_handler
@@ -1181,8 +1277,8 @@ class CifReader(_Reader, _CifTokenizer):
             _format.add_unknown_keyword_handler(self._c_format,
                                                 self.unknown_keyword_handler)
         try:
-            eof, more_data = _format.ihm_read_file(self._c_format)
+            ret_ok, more_data = _format.ihm_read_file(self._c_format)
         except _format.FileFormatError as exc:
             # Convert to the same exception used by the Python code
             raise CifParserError(str(exc))
-        return more_data != 0
+        return more_data

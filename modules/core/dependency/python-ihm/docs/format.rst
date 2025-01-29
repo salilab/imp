@@ -25,5 +25,7 @@ The :mod:`ihm.format` Python module
 
 .. autoclass:: ChangeKeywordFilter
 
+.. autoclass:: ReplaceCategoryFilter
+
 .. autoexception:: CifParserError
    :members:

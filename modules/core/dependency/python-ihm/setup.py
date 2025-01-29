@@ -31,7 +31,7 @@ if build_ext:
     if not os.path.exists(wrap):
         wrap = "src/ihm_format.i"
     mod = [Extension("ihm._format",
-                     sources=["src/ihm_format.c", wrap],
+                     sources=["src/ihm_format.c", "src/cmp.c", wrap],
                      include_dirs=['src'],
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',

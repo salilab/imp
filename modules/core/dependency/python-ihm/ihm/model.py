@@ -164,9 +164,11 @@ class ModelGroup(list):
 
        :param elements: Initial set of models in the group.
        :param str name: Descriptive name for the group.
+       :param str details: Additional text describing this group.
     """
-    def __init__(self, elements=(), name=None):
+    def __init__(self, elements=(), name=None, details=None):
         self.name = name
+        self.details = details
         super(ModelGroup, self).__init__(elements)
 
 

@@ -15,6 +15,7 @@ else:
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.format
+import ihm.dumper
 
 try:
     from ihm import _format
@@ -610,7 +611,7 @@ x y
     def test_file_new_python_no_read_method(self):
         """Test ihm_file_new_from_python with object with no read method"""
         self.assertRaises(AttributeError, _format.ihm_file_new_from_python,
-                          None)
+                          None, False)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_exception(self):
@@ -622,8 +623,8 @@ x y
             def read(self, numbytes):
                 raise MyError("some error")
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
         self.assertRaises(MyError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
@@ -634,8 +635,8 @@ x y
             def read(self, numbytes):
                 return 42
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
@@ -646,8 +647,8 @@ x y
             def read(self, numbytes):
                 return " " * (numbytes * 4 + 10)
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
@@ -793,8 +794,8 @@ x y
                 pass
         uc = Handler()
         fh = StringIO()
-        c_file = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(c_file)
+        c_file = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(c_file, False)
         # Handler must be a callable object
         self.assertRaises(ValueError, _format.add_unknown_category_handler,
                           reader, None)
@@ -956,6 +957,56 @@ _foo.bar
 _foo.baz
 newa b c d
 x y
+""")
+
+    def test_cif_token_reader_replace_category_filter(self):
+        """Test CifTokenReader class with ReplaceCategoryFilter"""
+        cif = """
+data_foo_bar
+#
+_cat1.bar old
+#
+loop_
+_cat2.bar
+_cat2.baz
+a b c d
+x y
+#
+_cat3.x 1
+_cat3.y 2
+#
+_cat4.z 1
+#
+loop_
+_cat5.bar
+_cat5.baz
+a b
+"""
+        d = ihm.dumper._CommentDumper()
+        s = ihm.System()
+        s.comments.extend(['comment1', 'comment2'])
+        r = ihm.format.CifTokenReader(StringIO(cif))
+        filters = [ihm.format.ReplaceCategoryFilter("cat1"),
+                   ihm.format.ReplaceCategoryFilter("_cat2", raw_cif='FOO'),
+                   ihm.format.ReplaceCategoryFilter("cat3", dumper=d,
+                                                    system=s)]
+        tokens = list(r.read_file(filters))
+        new_cif = "".join(x.as_mmcif() for x in tokens)
+        self.assertEqual(new_cif, """
+data_foo_bar
+#
+#
+FOO
+#
+# comment1
+# comment2
+#
+_cat4.z 1
+#
+loop_
+_cat5.bar
+_cat5.baz
+a b
 """)
 
     def test_category_token_group(self):
@@ -1152,7 +1203,8 @@ a b c d
 """
         r = ihm.format.CifTokenReader(StringIO(cif))
         filters = [ihm.format.ChangeKeywordFilter(".bar", "newbar"),
-                   ihm.format.ChangeKeywordFilter(".baz", "newbaz")]
+                   ihm.format.ChangeKeywordFilter(".baz", "newbaz"),
+                   ihm.format.ChangeKeywordFilter("x.y", "newy")]
         new_cif = "".join(t.as_mmcif() for t in r.read_file(filters))
         self.assertEqual(new_cif, """
 _bar.id 1
