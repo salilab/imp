@@ -1,5 +1,3 @@
-#!/ usr / bin / env python
-
 # imp general
 import IMP
 import IMP.core

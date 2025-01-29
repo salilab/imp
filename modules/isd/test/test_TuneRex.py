@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import numpy.random as random
 from numpy import *

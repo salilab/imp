@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # general imports
 import gzip
 import sys

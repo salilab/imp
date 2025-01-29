@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import IMP.test
 import IMP.isd.shared_functions as sf
 import math
