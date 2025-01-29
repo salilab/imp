@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 __doc__ = "Generate a suitable parameter file for build_models."
 

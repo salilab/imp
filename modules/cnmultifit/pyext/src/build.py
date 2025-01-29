@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 __doc__ = "Build cyclic symmetric complexes in their density map."
 

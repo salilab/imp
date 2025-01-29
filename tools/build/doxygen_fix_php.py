@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Fix doxygen PHP that doesn't work with PHP 7:
 

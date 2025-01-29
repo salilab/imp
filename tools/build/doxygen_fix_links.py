@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Fix some broken links in the documentation that result from doxygen bugs:
 

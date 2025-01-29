@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""

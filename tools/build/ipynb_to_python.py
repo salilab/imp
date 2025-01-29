@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Convert an ipython notebook (.ipynb) file to plain Python (.py)"""
 

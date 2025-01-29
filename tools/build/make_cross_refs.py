@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """ Parse the doxygen xml files to create cross-ref files that will be read by
 doxygen to build web pages. These currently link examples to classes

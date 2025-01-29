@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Check one or more directories for world- or group-writeable files and
    dangling symlinks.

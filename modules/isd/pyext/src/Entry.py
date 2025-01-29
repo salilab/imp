@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """@namespace IMP.isd.Entry
    Classes to handle ISD statistics files.

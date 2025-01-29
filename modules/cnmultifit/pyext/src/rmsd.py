@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 __doc__ = "Calculate RMSD between a model and the reference."
 

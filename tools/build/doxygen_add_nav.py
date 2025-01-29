@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Parse the manual's XML output to get the contents. Then patch each page
    in the HTML output to add navigation links (next page, previous page,

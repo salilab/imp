@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Like cmake -E copy_directory, but dereference any symlinks"""
 

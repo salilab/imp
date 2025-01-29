@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """ Create the swig wrapper files from setup.i-in files.
 """
