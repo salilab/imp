@@ -264,7 +264,7 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
   AtomSiteCategory asc(r, name, filename, model, &ret, selector,
                        read_all_models, honor_model_num);
 
-  int more_data;
+  bool more_data;
   if (!ihm_read_file(r, &more_data, &err)) {
     std::string errmsg(err->msg);
     ihm_error_free(err);
