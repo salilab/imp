@@ -19,6 +19,7 @@
 #include <boost/lexical_cast.hpp>
 
 extern "C" {
+#include "cmp.c"
 #include "ihm_format.c"
 }
 
