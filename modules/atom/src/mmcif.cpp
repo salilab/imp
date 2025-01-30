@@ -258,7 +258,7 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
   struct ihm_error *err = nullptr;
   struct ihm_file *fh = ihm_file_new(read_callback, &in, nullptr);
 
-  struct ihm_reader *r = ihm_reader_new(fh);
+  struct ihm_reader *r = ihm_reader_new(fh, false);
   Hierarchies ret;
 
   AtomSiteCategory asc(r, name, filename, model, &ret, selector,
