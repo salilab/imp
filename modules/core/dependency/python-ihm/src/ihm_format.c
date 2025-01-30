@@ -1535,7 +1535,7 @@ static bool read_bcif_binary_dup(struct ihm_reader *reader, char **bin,
   if (!ihm_file_read_bytes(reader->fh, &buf, binsz, err)) return false;
   /* memcpy into new buffer */
   free(*bin);
-  *bin = ihm_malloc(binsz);
+  *bin = (char *)ihm_malloc(binsz);
   *bin_size = binsz;
   memcpy(*bin, buf, binsz);
   return true;
@@ -2540,7 +2540,7 @@ static bool process_bcif_category(struct ihm_reader *reader,
         || !process_column_mask(col, err)) return false;
     /* Make buffer for value as a string; should be long enough to
        store any int or double */
-    col->str = ihm_malloc(80);
+    col->str = (char *)ihm_malloc(80);
     if (n_rows == 0) {
       n_rows = col->data.size;
     } else if (col->data.size != n_rows) {
