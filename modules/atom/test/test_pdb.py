@@ -48,7 +48,17 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         with self.open_input_file("input.pdb") as fh:
-            mp = IMP.atom.read_pdb_or_mmcif(
+            with IMP.allow_deprecated():
+                mp = IMP.atom.read_pdb_or_mmcif(
+                    fh, m, IMP.atom.NonWaterPDBSelector())
+        self.assertEqual(len(m.get_particle_indexes()), 1133)
+
+    def test_read_pdb_any(self):
+        """Check reading a PDB with read_pdb_any()"""
+        m = IMP.Model()
+
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb_any(
                 fh, m, IMP.atom.NonWaterPDBSelector())
         self.assertEqual(len(m.get_particle_indexes()), 1133)
 
@@ -273,12 +283,22 @@ class Tests(IMP.test.TestCase):
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 1)
 
+    def test_read_multimodel_pdb_any(self):
+        """Check reading PDB with read_multimodel_pdb_any"""
+        m = IMP.Model()
+        with self.open_input_file("multimodel.pdb") as fh:
+            h = IMP.atom.read_multimodel_pdb_any(
+                fh, m, IMP.atom.AllPDBSelector())
+        ln = IMP.atom.get_leaves(h)
+        self.assertEqual(len(ln), 19740)
+
     def test_read_multimodel_pdb_or_mmcif(self):
         """Check reading PDB with read_multimodel_pdb_or_mmcif"""
         m = IMP.Model()
         with self.open_input_file("multimodel.pdb") as fh:
-            h = IMP.atom.read_multimodel_pdb_or_mmcif(
-                fh, m, IMP.atom.AllPDBSelector())
+            with IMP.allow_deprecated():
+                h = IMP.atom.read_multimodel_pdb_or_mmcif(
+                    fh, m, IMP.atom.AllPDBSelector())
         ln = IMP.atom.get_leaves(h)
         self.assertEqual(len(ln), 19740)
 
