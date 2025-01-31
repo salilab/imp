@@ -38,7 +38,7 @@ std::string description("Generate a new file that interpolates an old one.");
     double mag2 = 0.0;                                             \
     for (unsigned int i = 0; i < D; ++i) {                         \
       result[i] = (1.0 - frac) * c0[i] + frac * c1[i] + noise();   \
-      mag2 += result[i] * result[i];                               \
+      mag2 += static_cast<double>(result[i]) * result[i];          \
     }                                                              \
     if (normalize) {                                               \
       for (unsigned int i = 0; i < D; ++i) {                       \
