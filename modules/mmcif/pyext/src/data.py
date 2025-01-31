@@ -421,6 +421,9 @@ class _StartingModel(ihm.startmodel.StartingModel):
         if (hasattr(ihm.metadata, 'CIFParser')
                 and self.filename.endswith('.cif')):
             p = ihm.metadata.CIFParser()
+        elif (hasattr(ihm.metadata, 'BinaryCIFParser')
+              and self.filename.endswith('.bcif')):
+            p = ihm.metadata.BinaryCIFParser()
         else:
             p = ihm.metadata.PDBParser()
         r = p.parse_file(self.filename)
@@ -443,7 +446,7 @@ class _StartingModel(ihm.startmodel.StartingModel):
         # todo: support reading other subsets of the atoms (e.g. CA/CB)
         slt = IMP.atom.ChainPDBSelector([self.asym_id]) \
             & IMP.atom.NonWaterNonHydrogenPDBSelector()
-        hier = IMP.atom.read_pdb_or_mmcif(self.filename, m, slt)
+        hier = IMP.atom.read_pdb_any(self.filename, m, slt)
         rng = self.asym_unit.seq_id_range
         sel = IMP.atom.Selection(
             hier, residue_indexes=list(range(rng[0] - self.offset,
