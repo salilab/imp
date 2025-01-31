@@ -8,14 +8,17 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_score_pdb(self):
         """Simple test of ligand_score_multiple application, PDB input"""
-        self._run_score_test(cif=False)
+        self._run_score_test(ext='pdb')
 
     def test_score_cif(self):
         """Simple test of ligand_score_multiple application, mmCIF input"""
-        self._run_score_test(cif=True)
+        self._run_score_test(ext='cif')
 
-    def _run_score_test(self, cif):
-        ext = 'cif' if cif else 'pdb'
+    def test_score_bcif(self):
+        """Simple test of ligand_score_multiple application, BinaryCIF input"""
+        self._run_score_test(ext='bcif')
+
+    def _run_score_test(self, ext):
         # Make transforms file from PatchDock output
         with open(self.get_input_file_name('ligscore_test.res')) as fh:
             data = fh.readlines()
@@ -41,7 +44,7 @@ class Tests(IMP.test.ApplicationTestCase):
         p = self.run_application('ligand_score_multiple', ['--help'])
         out, err = p.communicate()
         self.assertApplicationExitedCleanly(p.returncode, err)
-        self.assertIn('Usage: <pdb|mmcif> <mol2>', out)
+        self.assertIn('Usage: <pdb|mmcif|bcif> <mol2>', out)
 
     def test_version(self):
         """Test ligand_score_multiple --version"""
