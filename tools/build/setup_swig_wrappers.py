@@ -83,12 +83,7 @@ extern "C"
 
 // suppress warning
 SWIGEXPORT
-#if PY_VERSION_HEX >= 0x03000000
-PyObject*
-#else
-void
-#endif
-SWIG_init();
+PyObject* SWIG_init();
 %%}
 """ % (swig_module_name, year))  # noqa: E501
     # some of the typemap code ends up before this is swig sees the
