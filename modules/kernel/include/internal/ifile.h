@@ -21,6 +21,7 @@ struct IOStorage {
   std::string get_name() const {
     return name_;
   };
+  virtual void set_binary_open_mode(bool) {}
   virtual ~IOStorage() {}
 };
 }

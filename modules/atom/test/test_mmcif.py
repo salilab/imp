@@ -50,9 +50,27 @@ class Tests(IMP.test.TestCase):
         """Check reading an mmCIF file with one protein"""
         m = IMP.Model()
 
-        #! read PDB
         with self.open_input_file("input.cif") as fh:
             mp = IMP.atom.read_mmcif(fh, m)
+        self._check_test_read(m, mp)
+
+    def test_read_bcif_name(self):
+        """Check reading a BinaryCIF file with one protein from filename"""
+        m = IMP.Model()
+
+        fname = self.get_input_file_name("input.bcif")
+        mp = IMP.atom.read_bcif(fname, m)
+        self._check_test_read(m, mp)
+
+    def test_read_bcif_filelike(self):
+        """Check reading a BinaryCIF file with one protein from filelike obj"""
+        m = IMP.Model()
+
+        with self.open_input_file("input.bcif", "rb") as fh:
+            mp = IMP.atom.read_bcif(fh, m)
+        self._check_test_read(m, mp)
+
+    def _check_test_read(self, m, mp):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(m.get_particle_indexes()), 435)
@@ -96,9 +114,19 @@ class Tests(IMP.test.TestCase):
         """Check reading a multimodel mmCIF file"""
         m = IMP.Model()
 
-        #! read PDB
         with self.open_input_file("input.cif") as fh:
             mps = IMP.atom.read_multimodel_mmcif(fh, m)
+        self._check_read_multimodel(m, mps)
+
+    def test_read_multimodel_bcif(self):
+        """Check reading a multimodel BinaryCIF file"""
+        m = IMP.Model()
+
+        with self.open_input_file("input.bcif", "rb") as fh:
+            mps = IMP.atom.read_multimodel_bcif(fh, m)
+        self._check_read_multimodel(m, mps)
+
+    def _check_read_multimodel(self, m, mps):
         mp1, mp2 = mps
         chains1 = [IMP.atom.Chain(x)
                    for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]

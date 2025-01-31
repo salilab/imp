@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/mmcif.h
- *  \brief Functions to read PDBs in mmCIF format
+ *  \brief Functions to read PDBs in mmCIF or BinaryCIF format
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
@@ -25,6 +25,24 @@ IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model,
 
 //! Read all the molecules in the first model of the mmCIF file.
 IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
+                         PDBSelector *selector = get_default_pdb_selector(),
+                         bool select_first_model = true
+#ifndef IMP_DOXYGEN
+                         , bool noradii = false
+#endif
+                        );
+
+
+//! Read all models from the BinaryCIF file.
+IMPATOMEXPORT Hierarchies read_multimodel_bcif(TextInput input, Model *model,
+                         PDBSelector *selector = get_default_pdb_selector()
+#ifndef IMP_DOXYGEN
+                         , bool noradii = false
+#endif
+                        );
+
+//! Read all the molecules in the first model of the BinaryCIF file.
+IMPATOMEXPORT Hierarchy read_bcif(TextInput input, Model *model,
                          PDBSelector *selector = get_default_pdb_selector(),
                          bool select_first_model = true
 #ifndef IMP_DOXYGEN
