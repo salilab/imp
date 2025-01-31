@@ -18,3 +18,6 @@ The :mod:`ihm.metadata` Python module
 
 .. autoclass:: CIFParser
    :members:
+
+.. autoclass:: BinaryCIFParser
+   :members:

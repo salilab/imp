@@ -17,6 +17,7 @@ import ihm.source
 import ihm.citations
 import ihm.reader
 import ihm.format
+import ihm.format_bcif
 
 import operator
 import struct
@@ -266,7 +267,8 @@ class PDBParser(Parser):
        some custom headers that can be used to indicate that a file has been
        locally modified in some way.
 
-       See also :class:`CIFParser` for coordinate files in mmCIF format.
+       See also :class:`CIFParser` for coordinate files in mmCIF format,
+       or :class:`BinaryCIFParser` for BinaryCIF format.
     """
 
     def parse_file(self, filename):
@@ -880,16 +882,7 @@ class _ModBaseLocation(location.DatabaseLocation):
             details="ModBase database of comparative protein structure models")
 
 
-class CIFParser(Parser):
-    """Extract metadata (e.g. PDB ID, comparative modeling templates)
-       from an mmCIF file. This currently handles mmCIF files from the PDB
-       database itself, models compliant with the ModelCIF dictionary,
-       plus files from Model Archive or the outputs from the
-       MODELLER comparative modeling package.
-
-       See also :class:`PDBParser` for coordinate files in legacy PDB format.
-    """
-
+class _CIFParserBase(Parser):
     # Map PDBx database_2.database_name to IHMCIF equivalents
     dbmap = {'PDB': (location.PDBLocation, dataset.PDBDataset),
              'PDB-DEV': (location.PDBDevLocation,
@@ -901,26 +894,9 @@ class CIFParser(Parser):
              'MODBASE': (_ModBaseLocation, dataset.ComparativeModelDataset)}
 
     def parse_file(self, filename):
-        """Extract metadata. See :meth:`Parser.parse_file` for details.
-
-           :param str filename: the file to extract metadata from.
-           :return: a dict with key `dataset` pointing to the coordinate file,
-                    as an entry in the PDB or Model Archive databases if the
-                    file contains appropriate headers, otherwise to the
-                    file itself;
-                    'templates' pointing to a dict with keys the asym (chain)
-                    IDs in the PDB file and values the list of comparative
-                    model templates used to model that chain as
-                    :class:`ihm.startmodel.Template` objects;
-                    'software' pointing to a list of software used to generate
-                    the file (as :class:`ihm.Software` objects);
-                    'script' pointing to the script used to generate the
-                    file, if any (as :class:`ihm.location.WorkflowFileLocation`
-                    objects).
-        """
         m = {'db': {}, 'title': 'Starting model structure',
              'software': [], 'templates': [], 'alignments': []}
-        with open(filename) as fh:
+        with self._open_file(filename) as fh:
             dbh = _Database2Handler(m)
             structh = _StructHandler(m)
             arevhisth = _AuditRevHistHandler(m)
@@ -928,7 +904,7 @@ class CIFParser(Parser):
             modellerh = _ModellerHandler(m, filename)
             modtmplh = _ModellerTemplateHandler(m)
             sysr = _SystemReader(m)
-            r = ihm.format.CifReader(
+            r = self._reader_class(
                 fh, {'_database_2': dbh, '_struct': structh,
                      '_pdbx_audit_revision_history': arevhisth,
                      '_exptl': exptlh, '_modeller': modellerh,
@@ -996,3 +972,51 @@ class CIFParser(Parser):
             templates[chain] = sorted(templates[chain],
                                       key=operator.attrgetter('seq_id_range'))
         return templates
+
+
+class CIFParser(_CIFParserBase):
+    """Extract metadata (e.g. PDB ID, comparative modeling templates)
+       from an mmCIF file. This currently handles mmCIF files from the PDB
+       database itself, models compliant with the ModelCIF dictionary,
+       plus files from Model Archive or the outputs from the
+       MODELLER comparative modeling package.
+
+       See also :class:`PDBParser` for coordinate files in legacy PDB format,
+       or :class:`BinaryCIFParser` for BinaryCIF format.
+    """
+
+    _reader_class = ihm.format.CifReader
+
+    def _open_file(self, filename):
+        return open(filename)
+
+    def parse_file(self, filename):
+        """Extract metadata. See :meth:`Parser.parse_file` for details.
+
+           :param str filename: the file to extract metadata from.
+           :return: a dict with key `dataset` pointing to the coordinate file,
+                    as an entry in the PDB or Model Archive databases if the
+                    file contains appropriate headers, otherwise to the
+                    file itself;
+                    'templates' pointing to a dict with keys the asym (chain)
+                    IDs in the PDB file and values the list of comparative
+                    model templates used to model that chain as
+                    :class:`ihm.startmodel.Template` objects;
+                    'software' pointing to a list of software used to generate
+                    the file (as :class:`ihm.Software` objects);
+                    'script' pointing to the script used to generate the
+                    file, if any (as :class:`ihm.location.WorkflowFileLocation`
+                    objects).
+        """
+        return super(CIFParser, self).parse_file(filename)
+
+
+class BinaryCIFParser(_CIFParserBase):
+    """Extract metadata from a BinaryCIF file. This works in a very similar
+       fashion to :class:`CIFParser`; see that class for more information.
+    """
+
+    _reader_class = ihm.format_bcif.BinaryCifReader
+
+    def _open_file(self, filename):
+        return open(filename, 'rb')
