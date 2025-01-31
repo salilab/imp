@@ -330,7 +330,7 @@ protected:
     } else {
       if (PyString_Check(result)) {
         if (PyString_Size(result) == 1) {
-          int c = peeked_ = PyString_AsString(result)[0];
+          int c = peeked_ = (unsigned char)(PyString_AsString(result)[0]);
           Py_DECREF(result);
           return c;
         } else {
