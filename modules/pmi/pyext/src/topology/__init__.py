@@ -13,8 +13,8 @@
    like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues().
    These functions all return Python sets for easy set arithmetic using
    & (and), | (or), - (difference)
- * Molecule.add_structure() to add structural information from an mmCIF
-   or PDB file.
+ * Molecule.add_structure() to add structural information from an mmCIF,
+   BinaryCIF, or PDB file.
  * Molecule.add_representation() to create a representation unit - here you
    can choose bead resolutions as well as alternate representations like
    densities or ideal helices.
@@ -556,7 +556,7 @@ class Molecule(_SystemBase):
                       soft_check=False):
         """Read a structure and store the coordinates.
         @return the atomic residues (as a set)
-        @param pdb_fn     The file to read (in PDB or mmCIF format)
+        @param pdb_fn     The file to read (in PDB, mmCIF or BinaryCIF format)
         @param chain_id   Chain ID to read
         @param res_range  Add only a specific set of residues from the PDB
                           file. res_range[0] is the starting and res_range[1]
@@ -1378,11 +1378,12 @@ class TopologyReader:
       of "cop9" and UniProt accession of "Q13098". If such an accession is
       present, it is added to the generated structure (and ultimately
       recorded in any output RMF file).
-    - `pdb_fn`: Name of PDB or mmCIF file with coordinates (if available).
-       If left empty, will set up as BEADS (you can also specify "BEADS")
-       Can also write "IDEAL_HELIX".
-    - `chain`: Chain ID of this domain in the PDB or mmCIF file. This is
-      the "author-provided" chain ID for mmCIF files, not the asym_id.
+    - `pdb_fn`: Name of PDB, mmCIF, or BinaryCIF file with coordinates
+      (if available). If left empty, will set up as BEADS (you can also
+      specify "BEADS") Can also write "IDEAL_HELIX".
+    - `chain`: Chain ID of this domain in the PDB, mmCIF or BinaryCIF file.
+      This is the "author-provided" chain ID for mmCIF or BinaryCIF files,
+      not the asym_id.
     - `residue_range`: Comma delimited pair defining range.
        Can leave empty or use 'all' for entire sequence from PDB file.
        The second item in the pair can be END to select the last residue in the

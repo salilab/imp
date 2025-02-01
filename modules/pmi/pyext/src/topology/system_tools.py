@@ -54,7 +54,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
                   model_num=None, ca_only=False):
     """read a structure from a PDB file and return a list of residues
     @param model The IMP model
-    @param pdb_fn    The file to read (in traditional PDB or mmCIF format)
+    @param pdb_fn  The file to read (in mmCIF, BinaryCIF, or legacy PDB format)
     @param chain_id  Chain ID to read
     @param res_range Add only a specific set of residues.
            res_range[0] is the starting and res_range[1] is the ending
@@ -66,10 +66,13 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
     @param model_num Read multi-model PDB and return that model (0-based index)
     @param ca_only Read only CA atoms (by default, all non-waters are read)
     """
-    # Read file in mmCIF format if requested
+    # Read file in mmCIF or BinaryCIF format if requested
     if pdb_fn.endswith('.cif'):
         read_file = IMP.atom.read_mmcif
         read_multi_file = IMP.atom.read_multimodel_mmcif
+    elif pdb_fn.endswith('.bcif'):
+        read_file = IMP.atom.read_bcif
+        read_multi_file = IMP.atom.read_multimodel_bcif
     else:
         read_file = IMP.atom.read_pdb
         read_multi_file = IMP.atom.read_multimodel_pdb
