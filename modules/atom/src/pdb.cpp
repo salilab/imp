@@ -39,14 +39,14 @@ void PDBRecord::set_line(const std::string &line) {
   use_line_ = true;
 }
 
-void PDBRecord::set_keywords(internal::CifKeyword &group,
-                             internal::CifKeyword &element,
-                             internal::CifKeyword &atom_name,
-                             internal::CifKeyword &alt_loc_id,
-                             internal::CifKeyword &residue_name,
-                             internal::CifKeyword &auth_chain,
-                             internal::CifKeyword &chain,
-                             internal::CifKeyword &auth_seq_id) {
+void PDBRecord::set_keywords(internal::StringCifKeyword &group,
+                             internal::StringCifKeyword &element,
+                             internal::StringCifKeyword &atom_name,
+                             internal::StringCifKeyword &alt_loc_id,
+                             internal::StringCifKeyword &residue_name,
+                             internal::StringCifKeyword &auth_chain,
+                             internal::StringCifKeyword &chain,
+                             internal::StringCifKeyword &auth_seq_id) {
   group_ = &group;
   element_ = &element;
   atom_name_ = &atom_name;
@@ -66,7 +66,7 @@ std::string PDBRecord::get_alt_loc_indicator() const {
     char alt_loc = internal::atom_alt_loc_indicator(*line_);
     return std::string(1, alt_loc);
   } else {
-    return alt_loc_id_->as_str();
+    return alt_loc_id_->get();
   }
 }
 
@@ -76,7 +76,7 @@ bool PDBRecord::get_is_atom() const {
   if (use_line_) {
     return internal::is_ATOM_rec(*line_);
   } else {
-    return strcmp(group_->as_str(), "ATOM") == 0;
+    return strcmp(group_->get(), "ATOM") == 0;
   }
 }
 
@@ -88,7 +88,7 @@ std::string PDBRecord::get_trimmed_atom_name() const {
     boost::trim(ret);
     return ret;
   } else {
-    return atom_name_->as_str();
+    return atom_name_->get();
   }
 }
 
@@ -101,10 +101,10 @@ std::string PDBRecord::get_padded_atom_name() const {
     std::string ret;
     // left align atom names with 2-character element names to distinguish
     // calcium from C-alpha; otherwise pad with a space
-    if (strlen(atom_name_->as_str()) < 4 && strlen(element_->as_str()) < 2) {
+    if (strlen(atom_name_->get()) < 4 && strlen(element_->get()) < 2) {
       ret.append(" ");
     }
-    ret.append(atom_name_->as_str());
+    ret.append(atom_name_->get());
     if (ret.size() < 4) {
       ret.resize(4, ' ');
     }
@@ -120,7 +120,7 @@ std::string PDBRecord::get_residue_name() const {
     boost::trim(ret);
     return ret;
   } else {
-    return residue_name_->as_str();
+    return residue_name_->get();
   }
 }
 
@@ -132,10 +132,10 @@ std::string PDBRecord::get_chain_id() const {
     return std::string(1, cid);
   } else {
     // Use author-provided ID if available
-    if (strlen(auth_chain_->as_str()) > 0) {
-      return auth_chain_->as_str();
+    if (strlen(auth_chain_->get()) > 0) {
+      return auth_chain_->get();
     } else {
-      return chain_->as_str();
+      return chain_->get();
     }
   }
 }
@@ -148,7 +148,7 @@ std::string PDBRecord::get_element() const {
     boost::trim(ret);
     return ret;
   } else {
-    return element_->as_str();
+    return element_->get();
   }
 }
 
