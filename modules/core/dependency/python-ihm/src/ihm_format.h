@@ -58,12 +58,25 @@ void ihm_error_free(struct ihm_error *err);
 void ihm_error_set(struct ihm_error **err, IHMErrorCode code,
                    const char *format, ...);
 
+#ifndef SWIG
+typedef enum {
+  IHM_STRING = 1,
+  IHM_INT,
+  IHM_FLOAT
+} ihm_keyword_type;
+
 /* A keyword in an mmCIF or BinaryCIF file. Holds a description of its
    format and any value read from the file. */
 struct ihm_keyword {
   char *name;
+  /* Type of value (string, int, float) */
+  ihm_keyword_type type;
   /* Last value read from the file */
-  char *data;
+  union {
+    char *str;
+    int ival;
+    double fval;
+  } data;
   /* If true, we own the memory for data */
   bool own_data;
   /* true iff this keyword is in the file (not necessarily with a value) */
@@ -73,6 +86,7 @@ struct ihm_keyword {
   /* true iff the keyword is in the file but the value is unknown ('?') */
   bool unknown;
 };
+#endif
 
 /* Opaque types */
 struct ihm_reader;
@@ -128,9 +142,17 @@ void ihm_reader_unknown_keyword_callback_set(struct ihm_reader *reader,
  */
 void ihm_reader_remove_all_categories(struct ihm_reader *reader);
 
-/* Add a new struct ihm_keyword to a category. */
-struct ihm_keyword *ihm_keyword_new(struct ihm_category *category,
-                                    const char *name);
+/* Add a new integer ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_int_new(struct ihm_category *category,
+                                        const char *name);
+
+/* Add a new floating-point ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_float_new(struct ihm_category *category,
+                                          const char *name);
+
+/* Add a new string ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_str_new(struct ihm_category *category,
+                                        const char *name);
 
 struct ihm_file;
 struct ihm_string;

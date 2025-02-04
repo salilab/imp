@@ -40,7 +40,9 @@ class GenericHandler(object):
     unknown = "?"
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
-             'var2', 'var3')
+             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2')
+    _int_keys = frozenset(('intkey1', 'intkey2'))
+    _float_keys = frozenset(('floatkey1', 'floatkey2'))
 
     def __init__(self):
         self.data = []
@@ -51,6 +53,20 @@ class GenericHandler(object):
             if v is not None:
                 d[k] = v
         self.data.append(d)
+
+
+def _encode_int(rows):
+    d = {u'data': struct.pack('%db' % len(rows), *rows),
+         u'encoding': [{u'kind': u'ByteArray',
+                        u'type': ihm.format_bcif._Uint8}]}
+    return d, None
+
+
+def _encode_float(rows):
+    d = {u'data': struct.pack('<%dd' % len(rows), *rows),
+         u'encoding': [{u'kind': u'ByteArray',
+                        u'type': ihm.format_bcif._Float64}]}
+    return d, None
 
 
 def _encode(rows):
@@ -100,7 +116,12 @@ class Category(object):
         self.data = data
 
     def _encode_rows(self, rows):
-        return _encode(rows)
+        if len(rows) and isinstance(rows[0], int):
+            return _encode_int(rows)
+        elif len(rows) and isinstance(rows[0], float):
+            return _encode_float(rows)
+        else:
+            return _encode(rows)
 
     def get_bcif(self):
         nrows = 0
@@ -122,6 +143,13 @@ if sys.version_info[0] == 2:
     UNICODE_STRING_TYPE = unicode  # noqa: F821
 else:
     UNICODE_STRING_TYPE = str
+
+
+class _BadMsgPackType(object):
+    pass
+
+
+BAD_MSGPACK_TYPE = _BadMsgPackType()
 
 
 def _add_msgpack(d, fh):
@@ -146,6 +174,9 @@ def _add_msgpack(d, fh):
         fh.write(struct.pack('>Bi', 0xce, d))
     elif d is None:
         fh.write(b'\xc0')
+    elif d is BAD_MSGPACK_TYPE:
+        # 0xc1 is not used in msgpack
+        fh.write(b'\xc1')
     else:
         raise TypeError("Cannot handle %s" % type(d))
 
@@ -269,7 +300,13 @@ class Tests(unittest.TestCase):
 
         # Raw data not a multiple of type size
         self.assertRaises(_format.FileFormatError, get_decoded,
+                          ihm.format_bcif._Int16, b'\x00\x01\x01')
+        self.assertRaises(_format.FileFormatError, get_decoded,
+                          ihm.format_bcif._Uint16, b'\x00\x01\x01')
+        self.assertRaises(_format.FileFormatError, get_decoded,
                           ihm.format_bcif._Int32, b'\x00\x01\x01')
+        self.assertRaises(_format.FileFormatError, get_decoded,
+                          ihm.format_bcif._Uint32, b'\x00\x01\x01')
         self.assertRaises(_format.FileFormatError, get_decoded,
                           ihm.format_bcif._Float64, b'\x00\x00\x00\x00')
         self.assertRaises(_format.FileFormatError, get_decoded,
@@ -379,6 +416,62 @@ class Tests(unittest.TestCase):
             self._read_bcif([Block([cat])], {'_exptl': h})
         self.assertEqual(h.data, [{u'method': u'foo'}])
 
+    def test_int_keys(self):
+        """Check handling of integer keywords"""
+        cat = Category(u'_foo', {u'intkey1': [42]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{u'intkey1': 42}])
+
+        # Float will be truncated to int
+        cat = Category(u'_foo', {u'intkey1': [42.34]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{u'intkey1': 42}])
+
+        # Can coerce an intlike string to int
+        cat = Category(u'_foo', {u'intkey1': [u"42"]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{u'intkey1': 42}])
+
+        # Cannot coerce arbitrary string to int
+        cat = Category(u'_foo', {u'intkey1': [u"some string"]})
+        h = GenericHandler()
+        self.assertRaises(ValueError, self._read_bcif,
+                          [Block([cat])], {'_foo': h})
+
+    def test_float_keys(self):
+        """Check handling of floating-point keywords"""
+        cat = Category(u'_foo', {u'floatkey1': [42.340]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        val = h.data[0][u'floatkey1']
+        self.assertIsInstance(val, float)
+        self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+        # int will be coerced to float
+        cat = Category(u'_foo', {u'floatkey1': [42]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        val = h.data[0][u'floatkey1']
+        self.assertIsInstance(val, float)
+        self.assertAlmostEqual(val, 42.0, delta=0.01)
+
+        # Can coerce a floatlike string to float
+        cat = Category(u'_foo', {u'floatkey1': [u"42.340"]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        val = h.data[0][u'floatkey1']
+        self.assertIsInstance(val, float)
+        self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+        # Cannot coerce arbitary string to float
+        cat = Category(u'_foo', {u'floatkey1': [u"some string"]})
+        h = GenericHandler()
+        self.assertRaises(ValueError, self._read_bcif,
+                          [Block([cat])], {'_foo': h})
+
     def test_omitted_unknown(self):
         """Test handling of omitted/unknown data"""
         cat = Category(u'_foo',
@@ -395,8 +488,8 @@ class Tests(unittest.TestCase):
         r.read_file()
 
     @unittest.skipIf(_format is None, "No C tokenizer")
-    def test_bad_header(self):
-        """Test handling of various bad BinaryCIF headers"""
+    def test_read_header_c(self):
+        """Test handling of various BinaryCIF headers"""
         # No header
         d = 42
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
@@ -405,6 +498,15 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
         # Data blocks not a list
         d = {u'dataBlocks': 42}
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
+        # Empty header
+        d = {}
+        self._read_bcif_raw(d, {})
+        # Unknown keys should be ignored
+        d = {u'unknown-key': None}
+        self._read_bcif_raw(d, {})
+        # Skipped object of bad type
+        d = {u'unknown-keyword': BAD_MSGPACK_TYPE}
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
@@ -415,6 +517,9 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
         # Block keys not strings
         d = {u'dataBlocks': [{42: 50}]}
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
+        # Skipped object of bad type
+        d = {u'dataBlocks': [{u'unknown-keyword': BAD_MSGPACK_TYPE}]}
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
@@ -439,6 +544,9 @@ class Tests(unittest.TestCase):
         # Category name not a string
         d = make_bcif({u'name': 42})
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
+        # Skipped object of bad type
+        d = make_bcif({u'name': u'bar', u'unknown-key': BAD_MSGPACK_TYPE})
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_bad_columns(self):
@@ -458,8 +566,8 @@ class Tests(unittest.TestCase):
                           d, {'_foo': h})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
-    def test_bad_column(self):
-        """Test handling of various bad BinaryCIF columns"""
+    def test_read_column(self):
+        """Test handling of various BinaryCIF columns"""
         def make_bcif(c):
             return {u'dataBlocks': [{u'categories': [{u'name': u'_foo',
                                                       u'columns': [c]}]}]}
@@ -480,15 +588,214 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})
 
+        # Skipped unknown key contains invalid data
+        d = make_bcif({u'name': u'bar',
+                       u'data': {u'data': b'\x00\x00\x00\x00',
+                                 u'encoding':
+                                 [{u'kind': u'ByteArray',
+                                   u'type': ihm.format_bcif._Int32}]},
+                       u'unknown-key': BAD_MSGPACK_TYPE})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Normal usage; unknown keys should be skipped
+        d = make_bcif({u'name': u'bar',
+                       u'data': {u'data': b'\x00\x00\x00\x00',
+                                 u'encoding':
+                                 [{u'kind': u'ByteArray',
+                                   u'type': ihm.format_bcif._Int32}]},
+                       u'unknown-key': None})
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_mask(self):
+        """Test handling of BinaryCIF mask"""
+        def make_bcif(mask):
+            c = {u'name': u'bar',
+                 u'data': {u'data': b'\x00\x00\x00\x00',
+                           u'encoding':
+                           [{u'kind': u'ByteArray',
+                             u'type': ihm.format_bcif._Int32}]},
+                 u'mask': mask}
+            return {u'dataBlocks': [{u'categories': [{u'name': u'_foo',
+                                                      u'columns': [c]}]}]}
+        # Bad mask type
+        d = make_bcif('foo')
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Null mask
+        d = make_bcif(None)
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
+        # Map keys not strings
+        d = make_bcif({42: 50})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Encodings not an array
+        d = make_bcif({u'encoding': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad data
+        d = make_bcif({u'data': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Skipped unknown key contains invalid data
+        d = make_bcif({u'unknown-key': BAD_MSGPACK_TYPE})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Unknown map keys should be ignored
+        d = make_bcif({u'unknown-key': None})
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
+        # Bad data type
+        d = make_bcif({u'data': b'\x00\x00\x01\x00\x02\x00',
+                       u'encoding': [{u'kind': u'ByteArray',
+                                      u'type': ihm.format_bcif._Uint16}]})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Normal usage
+        d = make_bcif({u'data': b'\x00\x01\x02',
+                       u'encoding': [{u'kind': u'ByteArray',
+                                      u'type': ihm.format_bcif._Uint8}]})
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_data(self):
+        """Test handling of BinaryCIF data"""
+        def make_bcif(data):
+            c = {u'name': u'bar',
+                 u'data': data}
+            return {u'dataBlocks': [{u'categories': [{u'name': u'_foo',
+                                                      u'columns': [c]}]}]}
+        # Data not a map
+        d = make_bcif('foo')
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Map keys not strings
+        d = make_bcif({42: 50})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad data
+        d = make_bcif({u'data': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Skipped unknown key contains invalid data
+        d = make_bcif({u'unknown-key': BAD_MSGPACK_TYPE})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Unknown map keys should be ignored
+        d = make_bcif({u'unknown-key': None,
+                       u'data': b'\x00\x00\x00\x00',
+                       u'encoding': [{u'kind': u'ByteArray',
+                                      u'type': ihm.format_bcif._Int32}]})
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_encoding(self):
+        """Test handling of BinaryCIF encoding information"""
+        def make_bcif(encoding):
+            c = {u'name': u'bar',
+                 u'data': {u'data': b'\x00\x00\x00\x00',
+                           u'encoding': [encoding]}}
+            return {u'dataBlocks': [{u'categories': [{u'name': u'_foo',
+                                                      u'columns': [c]}]}]}
+        # Encoding not a map
+        d = make_bcif('foo')
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Map keys not strings
+        d = make_bcif({42: 50})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad kind
+        d = make_bcif({u'kind': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad dataEncoding
+        d = make_bcif({u'dataEncoding': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad offsetEncoding
+        d = make_bcif({u'offsetEncoding': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad stringData
+        d = make_bcif({u'stringData': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad offsets
+        d = make_bcif({u'offsets': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Bad type
+        d = make_bcif({u'type': None})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Skipped unknown key contains invalid data
+        d = make_bcif({u'unknown-key': BAD_MSGPACK_TYPE})
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Normal usage; unknown keys should be ignored
+        d = make_bcif({u'kind': u'ByteArray',
+                       u'type': ihm.format_bcif._Int32,
+                       u'unknown-key': None})
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_string_array_encoding_c(self):
         """Test handling of various BinaryCIF StringArray encodings"""
-        def make_bcif(data, data_type, offsets, offsets_type):
+        def make_bcif(data, data_type, offsets, offsets_type,
+                      data_encoding=u'ByteArray'):
             c = {u'name': u'bar',
                  u'data': {u'data': data,
                            u'encoding':
                            [{u'kind': u'StringArray', u'stringData': u'aAB',
-                             u'dataEncoding': [{u'kind': u'ByteArray',
+                             u'dataEncoding': [{u'kind': data_encoding,
                                                 u'type': data_type}],
                              u'offsetEncoding': [{u'kind': u'ByteArray',
                                                   u'type': offsets_type}],
@@ -509,6 +816,15 @@ class Tests(unittest.TestCase):
             h = GenericHandler()
             self._read_bcif_raw(d, {'_foo': h})
             self.assertEqual(h.data, [{'bar': 'a'}, {'bar': 'AB'}])
+
+        # StringArray decoding can't be used for offset or data
+        d = make_bcif(data=b'\x00\x01', data_type=ihm.format_bcif._Uint8,
+                      offsets=b'\x00\x01\x03',
+                      offsets_type=ihm.format_bcif._Uint8,
+                      data_encoding=u'StringArray')
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
 
         # Indices must be int, not float
         d = make_bcif(data=b'\x00\x00(B', data_type=ihm.format_bcif._Float32,
@@ -535,12 +851,13 @@ class Tests(unittest.TestCase):
                           d, {'_foo': h})
 
         # Indices must be in range
-        d = make_bcif(data=b'\x00\xcc', data_type=ihm.format_bcif._Uint8,
-                      offsets=b'\x00\x01\x03',
-                      offsets_type=ihm.format_bcif._Uint8)
-        h = GenericHandler()
-        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
-                          d, {'_foo': h})
+        for data in (struct.pack('2b', 0, 40), struct.pack('b', -32)):
+            d = make_bcif(data=data, data_type=ihm.format_bcif._Int8,
+                          offsets=b'\x00\x01\x03',
+                          offsets_type=ihm.format_bcif._Uint8)
+            h = GenericHandler()
+            self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                              d, {'_foo': h})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_fixed_point_encoding_c(self):
@@ -687,6 +1004,48 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})
 
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_process_bcif_category_c(self):
+        """Test processing of BinaryCIF category"""
+        def make_bcif(data1, data2, data_type):
+            c1 = {u'name': u'bar',
+                  u'data': {u'data': data1,
+                            u'encoding':
+                            [{u'kind': u'IntegerPacking'},
+                             {u'kind': u'ByteArray', u'type': data_type}]}}
+            c2 = {u'name': u'baz',
+                  u'data': {u'data': data2,
+                            u'encoding':
+                            [{u'kind': u'IntegerPacking'},
+                             {u'kind': u'ByteArray', u'type': data_type}]}}
+            return {u'dataBlocks': [{u'categories': [{u'name': u'_foo',
+                                                      u'columns': [c1, c2]}]}]}
+
+        class _ThrowHandler(GenericHandler):
+            def __call__(self, *args):
+                raise ValueError("some error")
+
+        # Normal operation
+        d = make_bcif(data1=struct.pack('2b', 1, 42),
+                      data2=struct.pack('2b', 8, 4),
+                      data_type=ihm.format_bcif._Int8)
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+        self.assertEqual(h.data,
+                         [{'bar': '1', 'baz': '8'}, {'bar': '42', 'baz': '4'}])
+
+        # Handler errors should be propagated
+        h = _ThrowHandler()
+        self.assertRaises(ValueError, self._read_bcif_raw, d, {'_foo': h})
+
+        # Mismatched column size
+        d = make_bcif(data1=struct.pack('3b', 1, 42, 9),
+                      data2=struct.pack('2b', 8, 4),
+                      data_type=ihm.format_bcif._Int8)
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
     def test_omitted_unknown_not_in_file_explicit(self):
         """Test explicit handling of omitted/unknown/not in file data"""
         cat = Category(u'_foo',
@@ -696,6 +1055,8 @@ class Tests(unittest.TestCase):
         h.unknown = 'UNK'
         h.not_in_file = 'NOT'
         h._keys = ('var1', 'var2')
+        h._int_keys = frozenset()
+        h._float_keys = frozenset()
         self._read_bcif([Block([cat])], {'_foo': h})
         self.assertEqual(h.data,
                          [{u'var1': u'test1', u'var2': u'NOT'},

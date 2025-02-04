@@ -30,7 +30,9 @@ class GenericHandler(object):
     unknown = ihm.unknown
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
-             'var2', 'var3')
+             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2')
+    _int_keys = frozenset(('intkey1', 'intkey2'))
+    _float_keys = frozenset(('floatkey1', 'floatkey2'))
 
     def __init__(self):
         self.data = []
@@ -239,7 +241,32 @@ x
 
     def test_reader_base(self):
         """Test Reader base class"""
-        _ = ihm.format._Reader()  # noop
+        class _MockHandler(object):
+            def __call__(self, a, b):
+                pass
+
+        # Test handler with no _int_keys, _float_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        r.category_handler = {'foo': m}
+        r._add_category_keys()
+        self.assertEqual(m._keys, ['a', 'b'])
+        self.assertEqual(m._int_keys, frozenset())
+        self.assertEqual(m._float_keys, frozenset())
+
+        # Test handler with typos in _int_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        m._int_keys = ['bar']
+        r.category_handler = {'foo': m}
+        self.assertRaises(ValueError, r._add_category_keys)
+
+        # Test handler with typos in _float_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        m._float_keys = ['bar']
+        r.category_handler = {'foo': m}
+        self.assertRaises(ValueError, r._add_category_keys)
 
     def _check_bad_cif(self, cif, real_file, category_handlers={}):
         """Ensure that the given bad cif results in a parser error"""
@@ -427,7 +454,9 @@ save_
                 h.data,
                 [{'var1': 'NOT', 'var3': 'NOT', 'var2': 'NOT',
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
-                  'method': 'NOT', 'baz': 'x'}])
+                  'method': 'NOT', 'baz': 'x',
+                  'intkey1': 'NOT', 'intkey2': 'NOT',
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT'}])
 
             h = GenericHandler()
             h.not_in_file = 'NOT'
@@ -437,7 +466,9 @@ save_
                 h.data,
                 [{'var1': 'NOT', 'var3': 'NOT', 'var2': 'NOT',
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
-                  'method': 'NOT', 'baz': 'x'}])
+                  'method': 'NOT', 'baz': 'x',
+                  'intkey1': 'NOT', 'intkey2': 'NOT',
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT'}])
 
     def test_loop_linebreak(self):
         """Make sure that linebreaks are ignored in loop data"""
@@ -551,6 +582,65 @@ _atom_site.x
 _atom_site.y
 oneval
 """, real_file, {'_atom_site': h})
+
+    def test_int_keys(self):
+        """Check handling of integer keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # intkey1, intkey2 should be returned as ints, not strings
+            self._read_cif("_foo.var1 42\n_foo.intkey1 42",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "42", 'intkey1': 42}])
+
+            # float cannot be coerced to int
+            self.assertRaises(ValueError, self._read_cif, "_foo.intkey1 42.34",
+                              real_file, {'_foo': h})
+
+            # string cannot be coerced to int
+            self.assertRaises(ValueError, self._read_cif, "_foo.intkey1 str",
+                              real_file, {'_foo': h})
+
+    def test_int_keys_loop(self):
+        """Check handling of integer keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.intkey1\n_foo.x\n_foo.bar\n"
+                           "42 xval barval", real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'bar': 'barval', 'intkey1': 42}])
+
+    def test_float_keys(self):
+        """Check handling of floating-point keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # floatkey1, floatkey2 should be returned as floats, not strings
+            self._read_cif("_foo.floatkey1 42.340",
+                           real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+            # int will be coerced to float
+            h = GenericHandler()
+            self._read_cif("_foo.floatkey1 42",
+                           real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.0, delta=0.01)
+
+            # string cannot be coerced to float
+            h = GenericHandler()
+            self.assertRaises(ValueError, self._read_cif, "_foo.floatkey1 str",
+                              real_file, {'_foo': h})
+
+    def test_float_keys_loop(self):
+        """Check handling of float keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.x\n_foo.bar\n_foo.floatkey1\n"
+                           "xval barval 42.34", real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.34, delta=0.01)
 
     def test_first_data_block(self):
         """Only information from the first data block should be read"""

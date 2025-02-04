@@ -345,8 +345,8 @@ static void ihm_keyword_free(void *value)
 {
   struct ihm_keyword *key = (struct ihm_keyword *)value;
   free(key->name);
-  if (key->own_data && key->in_file) {
-    free(key->data);
+  if (key->own_data && key->in_file && key->type == IHM_STRING) {
+    free(key->data.str);
   }
   free(key);
 }
@@ -457,9 +457,9 @@ struct ihm_category *ihm_category_new(struct ihm_reader *reader,
   return category;
 }
 
-/* Add a new struct ihm_keyword to a category. */
-struct ihm_keyword *ihm_keyword_new(struct ihm_category *category,
-                                    const char *name)
+/* Add a new struct ihm_keyword (of undefined type) to a category. */
+static struct ihm_keyword *ihm_keyword_new(struct ihm_category *category,
+                                           const char *name)
 {
   struct ihm_keyword *key =
           (struct ihm_keyword *)ihm_malloc(sizeof(struct ihm_keyword));
@@ -467,36 +467,88 @@ struct ihm_keyword *ihm_keyword_new(struct ihm_category *category,
   key->own_data = false;
   key->in_file = false;
   ihm_mapping_insert(category->keyword_map, key->name, key);
-  key->data = NULL;
   key->own_data = false;
+  return key;
+}
+
+/* Add a new integer ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_int_new(struct ihm_category *category,
+                                        const char *name)
+{
+  struct ihm_keyword *key = ihm_keyword_new(category, name);
+  key->type = IHM_INT;
+  return key;
+}
+
+/* Add a new floating-point ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_float_new(struct ihm_category *category,
+                                          const char *name)
+{
+  struct ihm_keyword *key = ihm_keyword_new(category, name);
+  key->type = IHM_FLOAT;
+  return key;
+}
+
+/* Add a new string ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_str_new(struct ihm_category *category,
+                                        const char *name)
+{
+  struct ihm_keyword *key = ihm_keyword_new(category, name);
+  key->type = IHM_STRING;
   return key;
 }
 
 static void set_keyword_to_default(struct ihm_keyword *key)
 {
-  key->data = NULL;
+  if (key->type == IHM_STRING) {
+    key->data.str = NULL;
+  }
   key->own_data = false;
 }
 
 /* Set the value of a given keyword from the given string */
-static void set_value(struct ihm_reader *reader,
-                      struct ihm_category *category,
-                      struct ihm_keyword *key, char *str, bool own_data)
+static void set_value_from_string(struct ihm_reader *reader,
+                                  struct ihm_category *category,
+                                  struct ihm_keyword *key, char *str,
+                                  bool own_data, struct ihm_error **err)
 {
+  char *ch;
   /* If a key is duplicated, overwrite it with the new value */
-  if (key->in_file && key->own_data) {
-    free(key->data);
+  if (key->in_file && key->type == IHM_STRING && key->own_data) {
+    free(key->data.str);
+    key->data.str = NULL;
+  }
+
+  switch(key->type) {
+  case IHM_STRING:
+    key->own_data = own_data;
+    if (own_data) {
+      key->data.str = strdup(str);
+    } else {
+      key->data.str = str;
+    }
+    break;
+  case IHM_INT:
+    key->data.ival = strtol(str, &ch, 10);
+    if (*ch) {
+      ihm_error_set(err, IHM_ERROR_VALUE,
+                    "Cannot parse '%s' as integer in file, line %d",
+                    str, reader->linenum);
+      return;
+    }
+    break;
+  case IHM_FLOAT:
+    key->data.fval = strtod(str, &ch);
+    if (*ch) {
+      ihm_error_set(err, IHM_ERROR_VALUE,
+                    "Cannot parse '%s' as float in file, line %d",
+                    str, reader->linenum);
+      return;
+    }
+    break;
   }
 
   key->omitted = key->unknown = false;
-
-  key->own_data = own_data;
-  if (own_data) {
-    key->data = strdup(str);
-  } else {
-    key->data = str;
-  }
-
   key->in_file = true;
 }
 
@@ -504,8 +556,8 @@ static void set_value(struct ihm_reader *reader,
 static void set_omitted_value(struct ihm_keyword *key)
 {
   /* If a key is duplicated, overwrite it with the new value */
-  if (key->in_file && key->own_data) {
-    free(key->data);
+  if (key->in_file && key->own_data && key->type == IHM_STRING) {
+    free(key->data.str);
   }
 
   key->omitted = true;
@@ -518,8 +570,8 @@ static void set_omitted_value(struct ihm_keyword *key)
 static void set_unknown_value(struct ihm_keyword *key)
 {
   /* If a key is duplicated, overwrite it with the new value */
-  if (key->in_file && key->own_data) {
-    free(key->data);
+  if (key->in_file && key->own_data && key->type == IHM_STRING) {
+    free(key->data.str);
   }
 
   key->omitted = false;
@@ -970,7 +1022,7 @@ static void read_value(struct ihm_reader *reader,
     if (key) {
       struct ihm_token *val_token = get_token(reader, false, err);
       if (val_token && val_token->type == MMCIF_TOKEN_VALUE) {
-        set_value(reader, category, key, val_token->str, true);
+        set_value_from_string(reader, category, key, val_token->str, true, err);
       } else if (val_token && val_token->type == MMCIF_TOKEN_OMITTED) {
         set_omitted_value(key);
       } else if (val_token && val_token->type == MMCIF_TOKEN_UNKNOWN) {
@@ -1054,8 +1106,8 @@ static void check_keywords_in_file(void *k, void *value, void *user_data)
 static void clear_keywords(void *k, void *value, void *user_data)
 {
   struct ihm_keyword *key = (struct ihm_keyword *)value;
-  if (key->own_data) {
-    free(key->data);
+  if (key->own_data && key->type == IHM_STRING) {
+    free(key->data.str);
   }
   key->in_file = false;
   set_keyword_to_default(key);
@@ -1135,7 +1187,8 @@ static void read_loop_data(struct ihm_reader *reader,
         break;
       } else if (token && token->type == MMCIF_TOKEN_VALUE) {
         if (keywords[i]) {
-          set_value(reader, category, keywords[i], token->str, !oneline);
+          set_value_from_string(reader, category, keywords[i], token->str,
+                                !oneline, err);
         }
       } else if (token && token->type == MMCIF_TOKEN_OMITTED) {
         if (keywords[i]) {
@@ -2475,6 +2528,115 @@ static bool process_column_mask(struct bcif_column *col,
   return true;
 }
 
+static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
+                                       struct ihm_error **err)
+{
+  char *ch;
+  switch(key->type) {
+  case IHM_STRING:
+    /* In BinaryCIF the string is always owned by the file buffer,
+       not the keyword */
+    key->own_data = false;
+    key->data.str = str;
+    break;
+  case IHM_INT:
+    key->data.ival = strtol(str, &ch, 10);
+    if (*ch) {
+      ihm_error_set(err, IHM_ERROR_VALUE,
+                    "Cannot parse '%s' as integer in file", str);
+    }
+    break;
+  case IHM_FLOAT:
+    key->data.fval = strtod(str, &ch);
+    if (*ch) {
+      ihm_error_set(err, IHM_ERROR_VALUE,
+                    "Cannot parse '%s' as float in file", str);
+    }
+    break;
+  }
+}
+
+static void set_value_from_bcif_double(struct ihm_keyword *key, double fval,
+                                       char *buffer)
+{
+  switch(key->type) {
+  case IHM_STRING:
+    /* We (not the keyword) own buffer */
+    key->own_data = false;
+    sprintf(buffer, "%g", fval);
+    key->data.str = buffer;
+    break;
+  case IHM_INT:
+    /* Truncate float to int. This matches Python's behavior
+       of int(some_float) */
+    key->data.ival = (int)fval;
+    break;
+  case IHM_FLOAT:
+    key->data.fval = fval;
+    break;
+  }
+}
+
+static void set_value_from_bcif_int(struct ihm_keyword *key, int32_t ival,
+                                    char *buffer)
+{
+  switch(key->type) {
+  case IHM_STRING:
+    /* We (not the keyword) own buffer */
+    key->own_data = false;
+    sprintf(buffer, "%d", ival);
+    key->data.str = buffer;
+    break;
+  case IHM_INT:
+    key->data.ival = ival;
+    break;
+  case IHM_FLOAT:
+    key->data.fval = ival;
+    break;
+  }
+}
+
+/* Set the value of a given keyword from the given BinaryCIF data */
+static void set_value_from_data(struct ihm_reader *reader,
+                                struct ihm_category *category,
+                                struct ihm_keyword *key, struct bcif_data *data,
+                                size_t irow, char *buffer,
+                                struct ihm_error **err)
+{
+  /* If a key is duplicated, overwrite it with the new value */
+  if (key->in_file && key->type == IHM_STRING && key->own_data) {
+    free(key->data.str);
+    key->data.str = NULL;
+  }
+
+  /* BinaryCIF data is typed (not always a string like mmCIF), so we may
+     need to convert to the desired output type. */
+  switch(data->type) {
+  case BCIF_DATA_STRING:
+    set_value_from_bcif_string(key, data->data.string[irow], err);
+    break;
+  case BCIF_DATA_DOUBLE:
+    set_value_from_bcif_double(key, data->data.float64[irow], buffer);
+    break;
+  case BCIF_DATA_UINT8:
+    /* promote to int32 */
+    set_value_from_bcif_int(key, data->data.uint8[irow], buffer);
+    break;
+  case BCIF_DATA_INT32:
+    set_value_from_bcif_int(key, data->data.int32[irow], buffer);
+    break;
+  default:
+    ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
+                  "Unhandled data type %d", data->type);
+    break;
+  }
+
+  if (!*err) {
+    key->omitted = key->unknown = false;
+    key->in_file = true;
+  }
+}
+
 /* Send the data for one category row to the callback */
 static bool process_bcif_row(struct ihm_reader *reader,
                              struct bcif_category *cat,
@@ -2492,22 +2654,9 @@ static bool process_bcif_row(struct ihm_reader *reader,
                && col->mask_data.data.uint8[irow] == 2) {
       set_unknown_value(col->keyword);
     } else {
-      char *str;
-      /* BinaryCIF data is typed but mmCIF data is not (and is always a string)
-         so for backwards compatibility, coerce to string for now */
-      if (col->data.type == BCIF_DATA_STRING) {
-        str = col->data.data.string[irow];
-      } else if (col->data.type == BCIF_DATA_DOUBLE) {
-        str = col->str;
-        sprintf(str, "%g", col->data.data.float64[irow]);
-      } else if (col->data.type == BCIF_DATA_UINT8) {
-        str = col->str;
-        sprintf(str, "%d", col->data.data.uint8[irow]);
-      } else {
-        str = col->str;
-        sprintf(str, "%d", col->data.data.int32[irow]);
-      }
-      set_value(reader, ihm_cat, col->keyword, str, false);
+      set_value_from_data(reader, ihm_cat, col->keyword, &col->data, irow,
+                          col->str, err);
+      if (*err) return false;
     }
   }
 

@@ -394,6 +394,18 @@ class _Reader(object):
             if not hasattr(h, '_keys'):
                 h._keys = [python_to_cif(x)
                            for x in getargspec(h.__call__)[0][1:]]
+            if not hasattr(h, '_int_keys'):
+                h._int_keys = frozenset()
+            if not hasattr(h, '_float_keys'):
+                h._float_keys = frozenset()
+            extra = frozenset(h._int_keys) - frozenset(h._keys)
+            if extra:
+                raise ValueError("For %s, _int_keys not in _keys: %s"
+                                 % (h, ", ".join(extra)))
+            extra = frozenset(h._float_keys) - frozenset(h._keys)
+            if extra:
+                raise ValueError("For %s, _float_keys not in _keys: %s"
+                                 % (h, ", ".join(extra)))
 
 
 class _CifTokenizer(object):
@@ -1058,6 +1070,24 @@ class CifTokenReader(_PreservingCifTokenizer):
             yield _LoopRowTokenGroup(items)
 
 
+def _int_type_handler(txt, linenum):
+    try:
+        return int(txt)
+    except ValueError as exc:
+        raise ValueError("%s at line %d" % (str(exc), linenum))
+
+
+def _float_type_handler(txt, linenum):
+    try:
+        return float(txt)
+    except ValueError as exc:
+        raise ValueError("%s at line %d" % (str(exc), linenum))
+
+
+def _str_type_handler(txt, linenum):
+    return txt
+
+
 class CifReader(_Reader, _CifTokenizer):
     """Class to read an mmCIF file and extract some or all of its data.
 
@@ -1126,7 +1156,8 @@ class CifReader(_Reader, _CifTokenizer):
                     elif isinstance(valtoken, _UnknownValueToken):
                         val = ch.unknown
                     else:
-                        val = valtoken.txt
+                        tc = self._get_type_handler(ch, vartoken.keyword)
+                        val = tc(valtoken.txt, self._linenum)
                     self._category_data[vartoken.category][vartoken.keyword] \
                         = val
                 else:
@@ -1166,7 +1197,8 @@ class CifReader(_Reader, _CifTokenizer):
                 raise CifParserError("Was expecting a keyword or value for "
                                      "loop at line %d" % self._linenum)
 
-    def _read_loop_data(self, handler, num_wanted_keys, keyword_indices):
+    def _read_loop_data(self, handler, num_wanted_keys, keyword_indices,
+                        type_handlers):
         """Read the data for a loop_ construct"""
         data = [handler.not_in_file] * num_wanted_keys
         while True:
@@ -1179,7 +1211,8 @@ class CifReader(_Reader, _CifTokenizer):
                         elif isinstance(token, _UnknownValueToken):
                             data[index] = handler.unknown
                         else:
-                            data[index] = token.txt
+                            data[index] = type_handlers[index](token.txt,
+                                                               self._linenum)
                 elif i == 0:
                     # OK, end of the loop
                     self._unget_token()
@@ -1191,6 +1224,15 @@ class CifReader(_Reader, _CifTokenizer):
                         "of keys) at line %d" % self._linenum)
             handler(*data)
 
+    def _get_type_handler(self, category_handler, keyword):
+        """Return a function that converts keyword string into desired type"""
+        if keyword in category_handler._int_keys:
+            return _int_type_handler
+        elif keyword in category_handler._float_keys:
+            return _float_type_handler
+        else:
+            return _str_type_handler
+
     def _read_loop(self):
         """Handle a loop_ construct"""
         (category, keywords,
@@ -1198,6 +1240,7 @@ class CifReader(_Reader, _CifTokenizer):
         # Skip data if we don't have a handler for it
         if category in self.category_handler:
             ch = self.category_handler[category]
+            type_handlers = [self._get_type_handler(ch, k) for k in ch._keys]
             wanted_key_index = {}
             for i, k in enumerate(ch._keys):
                 wanted_key_index[k] = i
@@ -1206,7 +1249,7 @@ class CifReader(_Reader, _CifTokenizer):
                 for k, i, line in zip(keywords, indices, keyword_lines):
                     if i == -1:
                         self.unknown_keyword_handler(category, k, line)
-            self._read_loop_data(ch, len(ch._keys), indices)
+            self._read_loop_data(ch, len(ch._keys), indices, type_handlers)
         elif self.unknown_category_handler is not None:
             self.unknown_category_handler(category, first_line)
 
@@ -1269,7 +1312,9 @@ class CifReader(_Reader, _CifTokenizer):
         for category, handler in self.category_handler.items():
             func = getattr(handler, '_add_c_handler', None) \
                 or _format.add_category_handler
-            func(self._c_format, category, handler._keys, handler)
+            func(self._c_format, category, handler._keys,
+                 frozenset(handler._int_keys), frozenset(handler._float_keys),
+                 handler)
         if self.unknown_category_handler is not None:
             _format.add_unknown_category_handler(self._c_format,
                                                  self.unknown_category_handler)

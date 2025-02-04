@@ -299,15 +299,25 @@ static void handle_category_data(struct ihm_reader *reader, void *data,
       val = hd->unknown;
       Py_INCREF(val);
     } else {
+      switch((*keys)->type) {
+      case IHM_STRING:
 #if PY_VERSION_HEX < 0x03000000
-      val = PyString_FromString((*keys)->data);
+        val = PyString_FromString((*keys)->data.str);
 #else
-      val = PyUnicode_FromString((*keys)->data);
+        val = PyUnicode_FromString((*keys)->data.str);
 #endif
-      if (!val) {
-        ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
-        Py_DECREF(tuple);
-        return;
+        if (!val) {
+          ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
+          Py_DECREF(tuple);
+          return;
+        }
+        break;
+      case IHM_INT:
+        val = PyLong_FromLong((*keys)->data.ival);
+        break;
+      case IHM_FLOAT:
+        val = PyFloat_FromDouble((*keys)->data.fval);
+        break;
       }
     }
     /* Steals ref to val */
@@ -343,7 +353,8 @@ static void end_frame_category(struct ihm_reader *reader, void *data,
 
 static struct category_handler_data *do_add_handler(
                         struct ihm_reader *reader, char *name,
-                        PyObject *keywords, PyObject *callable,
+                        PyObject *keywords, PyObject *int_keywords,
+                        PyObject *float_keywords, PyObject *callable,
                         ihm_category_callback data_callback,
                         ihm_category_callback end_frame_callback,
                         ihm_category_callback finalize_callback,
@@ -355,6 +366,14 @@ static struct category_handler_data *do_add_handler(
 
   if (!PySequence_Check(keywords)) {
     ihm_error_set(err, IHM_ERROR_VALUE, "'keywords' should be a sequence");
+    return NULL;
+  }
+  if (!PyAnySet_Check(int_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'int_keywords' should be a set");
+    return NULL;
+  }
+  if (!PyAnySet_Check(float_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'float_keywords' should be a set");
     return NULL;
   }
   if (!PyCallable_Check(callable)) {
@@ -381,14 +400,22 @@ static struct category_handler_data *do_add_handler(
     return NULL;
   }
   for (i = 0; i < seqlen; ++i) {
+    const char *key_name;
     PyObject *o = PySequence_GetItem(keywords, i);
 #if PY_VERSION_HEX < 0x03000000
     if (PyString_Check(o)) {
-      hd->keywords[i] = ihm_keyword_new(category, PyString_AsString(o));
+      key_name = PyString_AsString(o);
 #else
     if (PyUnicode_Check(o)) {
-      hd->keywords[i] = ihm_keyword_new(category, PyUnicode_AsUTF8(o));
+      key_name = PyUnicode_AsUTF8(o);
 #endif
+      if (PySet_Contains(int_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_int_new(category, key_name);
+      } else if (PySet_Contains(float_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_float_new(category, key_name);
+      } else {
+        hd->keywords[i] = ihm_keyword_str_new(category, key_name);
+      }
       Py_DECREF(o);
     } else {
       Py_XDECREF(o);
@@ -473,11 +500,12 @@ void add_unknown_keyword_handler(struct ihm_reader *reader,
 /* Add a generic category handler which collects all specified keywords for
    the given category and passes them to a Python callable */
 void add_category_handler(struct ihm_reader *reader, char *name,
-                          PyObject *keywords, PyObject *callable,
+                          PyObject *keywords, PyObject *int_keywords,
+                          PyObject *float_keywords, PyObject *callable,
                           struct ihm_error **err)
 {
-  do_add_handler(reader, name, keywords, callable, handle_category_data,
-                 end_frame_category, NULL, err);
+  do_add_handler(reader, name, keywords, int_keywords, float_keywords, callable,
+                 handle_category_data, end_frame_category, NULL, err);
 }
 %}
 
@@ -496,7 +524,7 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
   if (hd->keywords[0]->in_file && hd->keywords[5]->in_file &&
       !hd->keywords[0]->omitted && !hd->keywords[5]->omitted &&
       !hd->keywords[0]->unknown && !hd->keywords[5]->unknown &&
-      strcmp(hd->keywords[0]->data, hd->keywords[5]->data) != 0) {
+      strcmp(hd->keywords[0]->data.str, hd->keywords[5]->data.str) != 0) {
     handle_category_data(reader, data, err);
     return;
   }
@@ -514,9 +542,9 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
      auth_seq_num (4th keyword) are identical integers, and
      pdb_ins_code (5th keyword) is blank or missing,
      nothing needs to be done */
-  seq_id = strtol(hd->keywords[1]->data, &seq_id_endptr, 10);
-  pdb_seq_num = strtol(hd->keywords[2]->data, &pdb_seq_num_endptr, 10);
-  auth_seq_num = strtol(hd->keywords[3]->data, &auth_seq_num_endptr, 10);
+  seq_id = strtol(hd->keywords[1]->data.str, &seq_id_endptr, 10);
+  pdb_seq_num = strtol(hd->keywords[2]->data.str, &pdb_seq_num_endptr, 10);
+  auth_seq_num = strtol(hd->keywords[3]->data.str, &auth_seq_num_endptr, 10);
   if (!*seq_id_endptr && !*pdb_seq_num_endptr && !*auth_seq_num_endptr
       && seq_id == pdb_seq_num && seq_id == auth_seq_num
       && (!hd->keywords[4]->in_file || hd->keywords[4]->omitted
@@ -535,12 +563,13 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
    the common case where seq_id==pdb_seq_num==auth_seq_num,
    asym_id==pdb_strand_id, and pdb_ins_code is blank */
 void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
-                                 PyObject *keywords, PyObject *callable,
+                                 PyObject *keywords, PyObject *int_keywords,
+                                 PyObject *float_keywords, PyObject *callable,
                                  struct ihm_error **err)
 {
   struct category_handler_data *hd;
-  hd = do_add_handler(reader, name, keywords, callable,
-                      handle_poly_seq_scheme_data, NULL, NULL, err);
+  hd = do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                      callable, handle_poly_seq_scheme_data, NULL, NULL, err);
   if (hd) {
     /* Make sure the Python handler and the C handler agree on the order
        of the keywords */
@@ -555,11 +584,13 @@ void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
 
 /* Test function so we can make sure finalize callbacks work */
 void _test_finalize_callback(struct ihm_reader *reader, char *name,
-                             PyObject *keywords, PyObject *callable,
+                             PyObject *keywords, PyObject *int_keywords,
+                             PyObject *float_keywords, PyObject *callable,
                              struct ihm_error **err)
 {
-  do_add_handler(reader, name, keywords, callable,
-                 handle_category_data, NULL, handle_category_data, err);
+  do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                 callable, handle_category_data, NULL, handle_category_data,
+                 err);
 }
 
 %}
