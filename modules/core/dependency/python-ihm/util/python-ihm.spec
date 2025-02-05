@@ -18,7 +18,7 @@ BuildRequires: sed
 %description
 This is a Python package to assist in handling mmCIF and BinaryCIF files
 compliant with the integrative/hybrid modeling (IHM) extension. It works
-with Python 2.7 or Python 3.
+with Python 3.6 or later.
 
 %prep
 %setup -n ihm-%{version}

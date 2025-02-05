@@ -24,19 +24,10 @@ import struct
 import json
 import string
 import warnings
-import sys
 import re
 import collections
-
-# Handle different naming of urllib in Python 2/3
-try:
-    import urllib.request
-    import urllib.error
-except ImportError:    # pragma: no cover
-    class MockUrlLib(object):
-        pass
-    urllib = MockUrlLib()
-    urllib.request = urllib.error = __import__('urllib2')
+import urllib.request
+import urllib.error
 
 
 def _get_modeller(version, date):
@@ -89,7 +80,7 @@ def _handle_modeller_template(info, template_path_map, target_dataset,
                 alignment_file=alnfile))
 
 
-class Parser(object):
+class Parser:
     """Base class for all metadata parsers."""
 
     def parse_file(self, filename):
@@ -139,10 +130,7 @@ class MRCParser(Parser):
                 label = fh.read(80).strip()
                 m = r.search(label)
                 if m:
-                    if sys.version_info[0] < 3:    # pragma: no cover
-                        return m.group(1)
-                    else:
-                        return m.group(1).decode('ascii')
+                    return m.group(1).decode('ascii')
 
 
 class _ParsedEMDBLocation(location.EMDBLocation):
@@ -188,15 +176,7 @@ class _ParsedEMDBLocation(location.EMDBLocation):
             return
         contents = json.load(response)
         info = contents['admin']
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:    # pragma: no cover
-            self.__emdb_info = [
-                info['key_dates']['map_release'].encode('ascii'),
-                info['title'].encode('ascii')]
-        else:
-            self.__emdb_info = [info['key_dates']['map_release'],
-                                info['title']]
+        self.__emdb_info = [info['key_dates']['map_release'], info['title']]
 
     version = property(__get_version, __set_version)
     details = property(__get_details, __set_details)
@@ -709,7 +689,7 @@ class _ModellerTemplateHandler(ihm.reader.Handler):
         self.m['modeller_templates'].append(t)
 
 
-class _ModelCifAlignment(object):
+class _ModelCifAlignment:
     """Store alignment information from a ModelCIF file"""
 
     def __init__(self):
@@ -721,21 +701,21 @@ class _ModelCifAlignment(object):
                                                           aln=self)
 
 
-class _TemplateRange(object):
+class _TemplateRange:
     """Store information about a template residue range from a ModelCIF file"""
     def __init__(self):
         self.seq_id_range = None
         self.template = None
 
 
-class _TargetRange(object):
+class _TargetRange:
     """Store information about a target residue range from a ModelCIF file"""
     def __init__(self):
         self.seq_id_range = None
         self.asym_id = None
 
 
-class _Template(object):
+class _Template:
     """Store template information from a ModelCIF file"""
 
     # Map ModelCIF ma_template_ref_db_details.db_name to IHMCIF equivalents
@@ -771,7 +751,7 @@ class _Template(object):
         return aln.target.asym_id if aln else self.target_asym_id, t
 
 
-class _SystemReader(object):
+class _SystemReader:
     """A minimal implementation, so we can use some of the Handlers
        in ihm.reader but get outputs in the results dict."""
     def __init__(self, m):
@@ -835,7 +815,7 @@ class _TemplatePolyMappingHandler(ihm.reader.Handler):
                           self.get_int(target_seq_id_end))
 
 
-class _SeqIDMapper(object):
+class _SeqIDMapper:
     """Map ModelCIF sequence identity to IHMCIF equivalent"""
 
     identity_map = {

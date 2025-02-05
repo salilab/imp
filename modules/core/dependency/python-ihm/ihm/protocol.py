@@ -2,7 +2,7 @@
 """
 
 
-class Step(object):
+class Step:
     """A single step in a :class:`Protocol`.
 
        :param assembly: The part of the system modeled in this step
@@ -57,7 +57,7 @@ class Step(object):
                    self.num_models_begin, self.num_models_end))
 
 
-class Protocol(object):
+class Protocol:
     """A modeling protocol.
        Each protocol consists of a number of protocol steps (e.g. sampling,
        refinement) followed by a number of analyses.

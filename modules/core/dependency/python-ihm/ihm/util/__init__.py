@@ -5,7 +5,7 @@ import os
 import ihm
 
 
-class _AsymIDs(object):
+class _AsymIDs:
     """Map indices to multi-character asym (chain) IDs.
        We label the first 26 chains A-Z, then we move to two-letter
        chain IDs: AA through AZ, then BA through BZ, through to ZZ.

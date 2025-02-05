@@ -15,8 +15,6 @@ jobs:
           python-version: '3.6'
         - os: macos-latest
           python-version: '3.10'
-    env:
-      PY2: ${{ startsWith(matrix.python-version, 2) && 'on' || 'off' }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -32,11 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ "${{ env.PY2 }}" == "on" ]; then
-          pip install coverage pytest-cov flake8 setuptools
-        else
-          pip install coverage pytest-cov flake8 setuptools pep8-naming
-        fi
+        pip install coverage pytest-cov flake8 setuptools pep8-naming
     - name: Test
       run: |
         # Test with Python tokenizer
@@ -44,11 +38,7 @@ jobs:
         CFLAGS="-coverage" python setup.py build_ext --inplace -t build
         # Test with C tokenizer
         py.test --cov=ihm --cov-branch --cov-report=xml --cov-append -v .
-        if [ "${{ env.PY2 }}" == "on" ]; then
-          flake8 --ignore E402,W503,W504 --exclude util/make-mmcif.py
-        else
-          flake8 --ignore E402,W503,W504,N816
-        fi
+        flake8 --ignore E402,W503,W504,N816
     - uses: codecov/codecov-action@v4
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -13,18 +13,14 @@ import itertools
 import numbers
 import re
 import sys
-# Handle different naming of urllib in Python 2/3
-try:
-    import urllib.request as urllib2
-except ImportError:    # pragma: no cover
-    import urllib2
+import urllib.request
 import json
 from . import util
 
 __version__ = '1.8'
 
 
-class __UnknownValue(object):
+class __UnknownValue:
     # Represent the mmCIF 'unknown' special value
 
     def __str__(self):
@@ -33,8 +29,6 @@ class __UnknownValue(object):
 
     def __bool__(self):
         return False
-    # Python2 compatibility
-    __nonzero__ = __bool__
 
     # Needs to be hashable so that classes like Software (that might
     # use unknown values as attributes) are hashable
@@ -68,7 +62,7 @@ def _remove_identical(gen):
         yield obj
 
 
-class System(object):
+class System:
     """Top-level class representing a complete modeled system.
 
        :param str title: Title (longer text description) of the system.
@@ -687,7 +681,7 @@ class System(object):
                     "can be grouped." % g)
 
 
-class Database(object):
+class Database:
     """Information about a System that is part of an official database.
 
        If a :class:`System` is part of one or more official databases
@@ -705,7 +699,7 @@ class Database(object):
         self.doi, self.accession = doi, accession
 
 
-class Software(object):
+class Software:
     """Software used as part of the modeling protocol.
 
        :param str name: The name of the software.
@@ -749,7 +743,7 @@ class Software(object):
         return hash(self._eq_vals())
 
 
-class Grant(object):
+class Grant:
     """Information on funding support for the modeling.
        See :attr:`System.grants`.
 
@@ -766,7 +760,7 @@ class Grant(object):
         self.grant_number = grant_number
 
 
-class Citation(object):
+class Citation:
     """A publication that describes the modeling.
 
        Generally citations are added to :attr:`System.citations` or
@@ -812,10 +806,10 @@ class Citation(object):
         def get_doi(ref):
             for art_id in ref['articleids']:
                 if art_id['idtype'] == 'doi':
-                    return enc(art_id['value'])
+                    return art_id['value']
 
         def get_page_range(ref):
-            rng = enc(ref['pages']).split('-')
+            rng = ref['pages'].split('-')
             if len(rng) == 2 and len(rng[1]) < len(rng[0]):
                 # map ranges like "2730-43" to 2730,2743 not 2730, 43
                 rng[1] = rng[0][:len(rng[0]) - len(rng[1])] + rng[1]
@@ -825,22 +819,14 @@ class Citation(object):
             if rng == '':
                 rng = None
             return rng
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:    # pragma: no cover
-            def enc(s):
-                return s.encode('ascii')
-        else:
-            def enc(s):
-                return s
 
         url = ('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
                '?db=pubmed&retmode=json&rettype=abstract&id=%s' % pubmed_id)
-        fh = urllib2.urlopen(url)
+        fh = urllib.request.urlopen(url)
         j = json.load(fh)
         fh.close()
         ref = j['result'][str(pubmed_id)]
-        authors = [enc(x['name']) for x in ref['authors']
+        authors = [x['name'] for x in ref['authors']
                    if x['authtype'] == 'Author']
 
         # PubMed authors are usually of the form "Lastname AB" but PDB uses
@@ -852,16 +838,16 @@ class Citation(object):
                                                for initial in m.group(2))
         authors = [r.sub(auth_sub, auth) for auth in authors]
 
-        return cls(pmid=pubmed_id, title=enc(ref['title']),
-                   journal=enc(ref['source']),
-                   volume=enc(ref['volume']) or None,
+        return cls(pmid=pubmed_id, title=ref['title'],
+                   journal=ref['source'],
+                   volume=ref['volume'] or None,
                    page_range=get_page_range(ref),
-                   year=enc(ref['pubdate']).split()[0],
+                   year=ref['pubdate'].split()[0],
                    authors=authors, doi=get_doi(ref),
                    is_primary=is_primary)
 
 
-class ChemComp(object):
+class ChemComp:
     """A chemical component from which :class:`Entity` objects are constructed.
        Usually these are amino acids (see :class:`LPeptideChemComp`) or
        nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`),
@@ -1107,7 +1093,7 @@ class WaterChemComp(NonPolymerChemComp):
                                             formula="H2 O")
 
 
-class Alphabet(object):
+class Alphabet:
     """A mapping from codes (usually one-letter, or two-letter for DNA) to
        chemical components.
        These classes can be used to construct sequences of components
@@ -1231,7 +1217,7 @@ class DNAAlphabet(Alphabet):
                        'C10 H15 N2 O8 P')])
 
 
-class EntityRange(object):
+class EntityRange:
     """Part of an entity. Usually these objects are created from
        an :class:`Entity`, e.g. to get a range covering residues 4 through
        7 in `entity` use::
@@ -1260,7 +1246,7 @@ class EntityRange(object):
     _id = property(lambda self: self.entity._id)
 
 
-class Atom(object):
+class Atom:
     """A single atom in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Residue.atom`.
 
@@ -1278,7 +1264,7 @@ class Atom(object):
     seq_id = property(lambda self: self.residue.seq_id)
 
 
-class Residue(object):
+class Residue:
     """A single residue in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Entity.residue` or
        :meth:`AsymUnit.residue`.
@@ -1321,7 +1307,7 @@ class Residue(object):
     seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
 
 
-class Entity(object):
+class Entity:
     """Represent a CIF entity (with a unique sequence)
 
        :param sequence sequence: The primary sequence, as a sequence of
@@ -1487,7 +1473,7 @@ class Entity(object):
     seq_id_range = property(__get_seq_id_range, doc="Sequence range")
 
 
-class AsymUnitRange(object):
+class AsymUnitRange:
     """Part of an asymmetric unit. Usually these objects are created from
        an :class:`AsymUnit`, e.g. to get a range covering residues 4 through
        7 in `asym` use::
@@ -1519,7 +1505,7 @@ class AsymUnitRange(object):
     details = property(lambda self: self.asym.details)
 
 
-class AsymUnitSegment(object):
+class AsymUnitSegment:
     """An aligned part of an asymmetric unit.
 
        Usually these objects are created from
@@ -1535,7 +1521,7 @@ class AsymUnitSegment(object):
         self.seq_id_range = (seq_id_begin, seq_id_end)
 
 
-class AsymUnit(object):
+class AsymUnit:
     """An asymmetric unit, i.e. a unique instance of an Entity that
        was modeled.
 
@@ -1710,7 +1696,7 @@ class Assembly(list):
         self.name, self.description = name, description
 
 
-class ChemDescriptor(object):
+class ChemDescriptor:
     """Description of a non-polymeric chemical component used in the
        experiment. For example, this might be a fluorescent probe or
        cross-linking agent. This class describes the chemical structure of
@@ -1742,7 +1728,7 @@ class ChemDescriptor(object):
         self.inchi, self.inchi_key = inchi, inchi_key
 
 
-class Collection(object):
+class Collection:
     """A collection of entries belonging to single deposition or group.
        These are used by the archive to group multiple related entries,
        e.g. all entries deposited as part of a given study, or all
@@ -1759,7 +1745,7 @@ class Collection(object):
         self.id, self.name, self.details = id, name, details
 
 
-class BranchDescriptor(object):
+class BranchDescriptor:
     """String descriptor of branched chemical structure.
        These generally only make sense for oligosaccharide entities.
        See :attr:`Entity.branch_descriptors`.
@@ -1778,7 +1764,7 @@ class BranchDescriptor(object):
         self.program, self.program_version = program, program_version
 
 
-class BranchLink(object):
+class BranchLink:
     """A link between components in a branched entity.
        These generally only make sense for oligosaccharide entities.
        See :attr:`Entity.branch_links`.
@@ -1801,7 +1787,7 @@ class BranchLink(object):
         self.order, self.details = order, details
 
 
-class Revision(object):
+class Revision:
     """Represent part of the history of a :class:`System`.
 
        :param str data_content_type: The type of file that was changed.
@@ -1826,7 +1812,7 @@ class Revision(object):
         self.items = []
 
 
-class RevisionDetails(object):
+class RevisionDetails:
     """More information on the changes in a given :class:`Revision`.
 
        :param str provider: The provider (author, repository) of the revision.

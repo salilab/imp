@@ -11,7 +11,7 @@ class Tests(unittest.TestCase):
 
     def test_multistatescheme_init(self):
         """Test the initialization of MultiStateScheme"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()
@@ -86,7 +86,7 @@ class Tests(unittest.TestCase):
 
     def test_multistatescheme_add_connectivity(self):
         """Test addition of a connectivity to a MultiStateScheme"""
-        class MockObject(object):
+        class MockObject:
             pass
         mss1 = ihm.multi_state_scheme.MultiStateScheme(name='n',
                                                        details='d')
@@ -142,7 +142,7 @@ class Tests(unittest.TestCase):
 
     def test_multistatesscheme_get_connectivities(self):
         """Test the return of connectivities from a MultiStateScheme"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()
@@ -187,7 +187,7 @@ class Tests(unittest.TestCase):
 
     def test_multistatescheme_get_states(self):
         """Test the return of states from a MultiStateScheme"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()
@@ -215,7 +215,7 @@ class Tests(unittest.TestCase):
 
     def test_multistatescheme_eq(self):
         """Test equality of MultiStateScheme objects"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()
@@ -273,7 +273,7 @@ class Tests(unittest.TestCase):
 
     def test_multistateschemeconnectivity_init(self):
         """Test initialization of Connectivity"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()
@@ -296,7 +296,7 @@ class Tests(unittest.TestCase):
 
     def test_multistateschemeconnectivity_eq(self):
         """Test equality of Connectivity objects"""
-        class MockObject(object):
+        class MockObject:
             pass
         s1 = MockObject()
         s2 = MockObject()

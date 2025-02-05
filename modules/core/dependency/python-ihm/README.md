@@ -9,7 +9,7 @@
 This is a Python package to assist in handling [mmCIF](https://mmcif.wwpdb.org/)
 and [BinaryCIF](https://github.com/molstar/BinaryCIF) files compliant with the
 [integrative/hybrid modeling (IHM)](https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Index/)
-extension. It works with Python 2.7 or Python 3.
+extension. It works with Python 3.6 or later.
 
 To handle non-integrative theoretical models (for example, homology models),
 see the [python-modelcif](https://github.com/ihmwg/python-modelcif) package
@@ -72,8 +72,8 @@ python setup.py install
 ```
 
 Note that a C extension module is built for faster reading of mmCIF and
-BinaryCIF files. This requires that your system has a C compiler
-and [SWIG](http://www.swig.org/). If either of these components are missing, you
+BinaryCIF files. This requires that your system has a C compiler and
+[SWIG](https://www.swig.org/). If either of these components are missing, you
 can choose to build without the extension by adding `--without-ext` to both
 `setup.py` command lines above, and then the library will read files using
 pure Python instead.

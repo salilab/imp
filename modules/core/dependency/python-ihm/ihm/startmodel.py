@@ -1,12 +1,9 @@
 """Classes to handle starting models."""
 
-try:
-    from enum import IntEnum
-except ImportError:    # pragma: no cover
-    IntEnum = object
+import enum
 
 
-class SequenceIdentityDenominator(IntEnum):
+class SequenceIdentityDenominator(enum.IntEnum):
     """The denominator used while calculating the sequence identity.
        One of these constants can be passed to :class:`SequenceIdentity`."""
 
@@ -26,7 +23,7 @@ class SequenceIdentityDenominator(IntEnum):
     OTHER = 5
 
 
-class SequenceIdentity(object):
+class SequenceIdentity:
     """Describe the identity between template and target sequences.
        See :class:`Template`.
 
@@ -40,7 +37,7 @@ class SequenceIdentity(object):
         self.denominator = denominator
 
 
-class Template(object):
+class Template:
     """A PDB file used as a comparative modeling template for part of a
        starting model.
 
@@ -77,7 +74,7 @@ class Template(object):
         self.alignment_file = alignment_file
 
 
-class StartingModel(object):
+class StartingModel:
     """A starting guess for modeling of an asymmetric unit
 
        See :class:`ihm.representation.Segment` and
@@ -163,7 +160,7 @@ class StartingModel(object):
         self._seq_difs.append(seq_dif)
 
 
-class PDBHelix(object):
+class PDBHelix:
     """Represent a HELIX record from a PDB file."""
     def __init__(self, line):
         self.helix_id = line[11:14].strip()
@@ -177,7 +174,7 @@ class PDBHelix(object):
         self.length = int(line[71:76])
 
 
-class SeqDif(object):
+class SeqDif:
     """Annotate a sequence difference between a dataset and starting model.
        See :meth:`StartingModel.get_seq_dif` and :class:`MSESeqDif`.
 
@@ -192,7 +189,7 @@ class SeqDif(object):
         self.db_comp_id, self.details = db_comp_id, details
 
 
-class MSESeqDif(object):
+class MSESeqDif:
     """Denote that a residue was mutated from MSE to MET.
        See :class:`SeqDif` for a description of the parameters.
     """

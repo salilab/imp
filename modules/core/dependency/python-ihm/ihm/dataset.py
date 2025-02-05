@@ -4,7 +4,7 @@
 """
 
 
-class Dataset(object):
+class Dataset:
     """A set of input data, for example, a crystal structure or EM map.
 
        :param location: a pointer to where the
@@ -79,7 +79,7 @@ class Dataset(object):
         root.parents.append(dataset)
 
 
-class TransformedDataset(object):
+class TransformedDataset:
     """A :class:`Dataset` that should be rotated or translated before using.
        This is typically used for derived datasets
        (see :attr:`Dataset.parents`) where the derived dataset lies in a

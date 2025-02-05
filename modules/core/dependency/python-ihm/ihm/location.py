@@ -4,7 +4,7 @@
 import os
 
 
-class Location(object):
+class Location:
     """Identifies the location where a resource can be found.
 
        Do not use this class itself, but one of its subclasses.
@@ -281,7 +281,7 @@ class VisualizationFileLocation(FileLocation):
     content_type = "Visualization script"
 
 
-class Repository(object):
+class Repository:
     """A repository containing modeling files, i.e. a collection of related
        files at a remote, public location. This can include code repositories
        such as GitHub, file archival services such as Zenodo, or any other

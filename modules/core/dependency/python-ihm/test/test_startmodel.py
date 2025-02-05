@@ -11,7 +11,7 @@ class Tests(unittest.TestCase):
 
     def test_template(self):
         """Test Template class"""
-        class MockObject(object):
+        class MockObject:
             pass
         dataset = MockObject()
         p = ihm.startmodel.Template(

@@ -7,7 +7,7 @@ from ihm.model import _text_choice_property
     together with information on kinetic schemes"""
 
 
-class MultiStateScheme(object):
+class MultiStateScheme:
     """MultiStateScheme collects information about a collection of
        multiple states, that can form a connected/ordered scheme.
        A special case is a kinetic scheme, for which kinetic rates and
@@ -137,7 +137,7 @@ class MultiStateScheme(object):
                      other._relaxation_time_list))
 
 
-class Connectivity(object):
+class Connectivity:
     """A connectivity between states. Used to describe the directed
     edge of graph.
     If no end_state is given, the state is not connected to another state.
@@ -178,7 +178,7 @@ class Connectivity(object):
         return self.__dict__ == other.__dict__
 
 
-class KineticRate(object):
+class KineticRate:
     """A base class for a kinetic rate that can be assigned to a connectivity.
     The kinetic rate could be a transition_rate_constant or
     an equilibrium_constant. Alternatively, both could be provided.
@@ -214,7 +214,7 @@ class KineticRate(object):
         return self.__dict__ == other.__dict__
 
 
-class EquilibriumConstant(object):
+class EquilibriumConstant:
     """Base class for an equilibrium constant.
     This class handles the case that none of the derived classes is applicable.
 
@@ -248,7 +248,7 @@ class KineticRateEquilibriumConstant(EquilibriumConstant):
                       'rates, kAB/kBA'
 
 
-class RelaxationTime(object):
+class RelaxationTime:
     """A relaxation time determined for a scheme.
     The relaxation time can either be connected to a specific connectivity
     in the scheme or to the scheme in general if no assignment is possible.

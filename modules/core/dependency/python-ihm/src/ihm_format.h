@@ -93,7 +93,7 @@ struct ihm_reader;
 struct ihm_category;
 
 /* Callback for mmCIF/BinaryCIF category data. Should set err on failure */
-typedef void (*ihm_category_callback)(struct ihm_reader *reader,
+typedef void (*ihm_category_callback)(struct ihm_reader *reader, int linenum,
                                       void *data, struct ihm_error **err);
 
 /* Callback for unknown mmCIF/BinaryCIF categories. Should set err on failure */

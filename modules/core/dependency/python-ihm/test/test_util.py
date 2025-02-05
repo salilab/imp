@@ -22,7 +22,7 @@ class Tests(unittest.TestCase):
 
     def test_remove_id(self):
         """Test _remove_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             pass
         o = DummyObj()
         ihm.util._remove_id(o)
@@ -32,7 +32,7 @@ class Tests(unittest.TestCase):
 
     def test_assign_id(self):
         """Test _assign_id utility function"""
-        class DummyObj(object):
+        class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
 

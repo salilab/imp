@@ -9,32 +9,16 @@
    and the `token reader example <https://github.com/ihmwg/python-ihm/blob/main/examples/token_reader.py>`_.
 """  # noqa: E501
 
-from __future__ import print_function
-import sys
 import textwrap
 import operator
 import ihm
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
-# getargspec is deprecated in Python 3, but getfullargspec has a very
-# similar interface
-try:
-    from inspect import getfullargspec as getargspec
-except ImportError:    # pragma: no cover
-    from inspect import getargspec
+from io import StringIO
+import inspect
 import re
 try:
     from . import _format
 except ImportError:
     _format = None
-
-# Python 3 has no 'long' type, so use 'int' instead
-if sys.version_info[0] >= 3:
-    _long_type = int
-else:    # pragma: no cover
-    _long_type = long   # noqa: F821
 
 
 def _write_multiline(val, fh):
@@ -45,7 +29,7 @@ def _write_multiline(val, fh):
     fh.write(";\n")
 
 
-class _LineWriter(object):
+class _LineWriter:
     def __init__(self, writer, line_len=80):
         self.writer = writer
         self.line_len = line_len
@@ -68,7 +52,7 @@ class _LineWriter(object):
         self.column += len(val)
 
 
-class _CifCategoryWriter(object):
+class _CifCategoryWriter:
     def __init__(self, writer, category):
         self.writer = writer
         self.category = category
@@ -83,7 +67,7 @@ class _CifCategoryWriter(object):
         pass
 
 
-class _CifLoopWriter(object):
+class _CifLoopWriter:
     def __init__(self, writer, category, keys, line_wrap=True):
         self._line_wrap = line_wrap
         self.writer = writer
@@ -113,7 +97,7 @@ class _CifLoopWriter(object):
             self.writer.fh.write("#\n")
 
 
-class _Writer(object):
+class _Writer:
     """Base class for all writers"""
 
     omitted = '.'
@@ -228,10 +212,6 @@ class CifWriter(_Writer):
                 return "%.3f" % obj
         elif isinstance(obj, bool):
             return self._boolmap[obj]
-        # Don't use repr(x) if type(x) == long since that adds an 'L' suffix,
-        # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
-        elif isinstance(obj, _long_type):
-            return "%d" % obj
         elif isinstance(obj, str):
             return repr(obj)
         else:
@@ -247,7 +227,7 @@ class CifParserError(Exception):
     pass
 
 
-class _Token(object):
+class _Token:
     """A token in an mmCIF file"""
     pass
 
@@ -378,7 +358,7 @@ class _SaveToken(_Token):
     pass
 
 
-class _Reader(object):
+class _Reader:
     """Base class for reading a file and extracting some or all of its data."""
 
     def _add_category_keys(self):
@@ -391,13 +371,22 @@ class _Reader(object):
             else:
                 return field
         for h in self.category_handler.values():
+            s = inspect.getfullargspec(h.__call__)
             if not hasattr(h, '_keys'):
-                h._keys = [python_to_cif(x)
-                           for x in getargspec(h.__call__)[0][1:]]
+                h._keys = [python_to_cif(x) for x in s.args[1:]]
             if not hasattr(h, '_int_keys'):
-                h._int_keys = frozenset()
+                h._int_keys = frozenset(
+                    python_to_cif(k) for k, v in s.annotations.items()
+                    if v is int)
             if not hasattr(h, '_float_keys'):
-                h._float_keys = frozenset()
+                h._float_keys = frozenset(
+                    python_to_cif(k) for k, v in s.annotations.items()
+                    if v is float)
+            bad_keys = frozenset(k for k, v in s.annotations.items()
+                                 if v not in (int, float, str))
+            if bad_keys:
+                raise ValueError("For %s, bad annotations: %s"
+                                 % (h, ", ".join(bad_keys)))
             extra = frozenset(h._int_keys) - frozenset(h._keys)
             if extra:
                 raise ValueError("For %s, _int_keys not in _keys: %s"
@@ -408,7 +397,7 @@ class _Reader(object):
                                  % (h, ", ".join(extra)))
 
 
-class _CifTokenizer(object):
+class _CifTokenizer:
     def __init__(self, fh):
         self.fh = fh
         self._tokens = []
@@ -417,16 +406,12 @@ class _CifTokenizer(object):
 
     # Read a line from the file. Treat it as ASCII (not Unicode)
     # but be tolerant of 8-bit characters by assuming latin-1 encoding
-    if sys.version_info[0] == 2:    # pragma: no cover
-        def _read_line(self):
-            return self.fh.readline()
-    else:
-        def _read_line(self):
-            line = self.fh.readline()
-            if isinstance(line, bytes):
-                return line.decode('latin-1')
-            else:
-                return line
+    def _read_line(self):
+        line = self.fh.readline()
+        if isinstance(line, bytes):
+            return line.decode('latin-1')
+        else:
+            return line
 
     def _read_multiline_token(self, first_line, ignore_multiline):
         """Read a semicolon-delimited (multiline) token"""
@@ -580,7 +565,7 @@ class _PreservingCifTokenizer(_CifTokenizer):
         return end_pos
 
 
-class _CategoryTokenGroup(object):
+class _CategoryTokenGroup:
     """A group of tokens which set a single data item"""
     def __init__(self, vartoken, valtoken):
         self.vartoken, self.valtoken = vartoken, valtoken
@@ -600,7 +585,7 @@ class _CategoryTokenGroup(object):
     value = property(lambda self: self.valtoken.value, __set_value)
 
 
-class _LoopHeaderTokenGroup(object):
+class _LoopHeaderTokenGroup:
     """A group of tokens that form the start of a loop_ construct"""
     def __init__(self, looptoken, category, keywords, end_spacers):
         self._loop, self.category = looptoken, category
@@ -621,7 +606,7 @@ class _LoopHeaderTokenGroup(object):
         return "".join(x.as_mmcif() for x in all_tokens)
 
 
-class _LoopRowTokenGroup(object):
+class _LoopRowTokenGroup:
     """A group of tokens that represent one row in a loop_ construct"""
     def __init__(self, items):
         self.items = items
@@ -630,7 +615,7 @@ class _LoopRowTokenGroup(object):
         return "".join(x.as_mmcif() for x in self.items)
 
 
-class _SpacedToken(object):
+class _SpacedToken:
     """A token with zero or more leading whitespace or newline tokens"""
     def __init__(self, spacers, token):
         self.spacers, self.token = spacers, token
@@ -660,7 +645,7 @@ class _SpacedToken(object):
     value = property(__get_value, __set_value)
 
 
-class Filter(object):
+class Filter:
     """Base class for filters used by :meth:`CifTokenReader.read_file`.
 
        Typically, a subclass such as :class:`ChangeValueFilter` is used when

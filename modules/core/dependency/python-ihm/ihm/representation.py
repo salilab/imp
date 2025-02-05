@@ -12,7 +12,7 @@ def _starting_model_report(seg):
         return ""
 
 
-class Segment(object):
+class Segment:
     """Base class for part of a :class:`Representation`.
        See :class:`AtomicSegment`, :class:`ResidueSegment`,
        :class:`MultiResidueSegment`, and :class:`FeatureSegment`.

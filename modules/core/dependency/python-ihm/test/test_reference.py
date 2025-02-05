@@ -1,10 +1,7 @@
 import utils
 import os
 import unittest
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib2
+import urllib.request
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -81,14 +78,14 @@ class Tests(unittest.TestCase):
             self.assertTrue(url.endswith('/testacc.fasta'))
             fname = utils.get_input_file_name(TOPDIR, fasta_fname)
             return open(fname, 'rb')
-        # Need to mock out urllib2 so we don't hit the network (expensive)
-        # every time we test
+        # Need to mock out urllib.request so we don't hit the network
+        # (expensive) every time we test
         try:
-            orig_urlopen = urllib2.urlopen
-            urllib2.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             return ihm.reference.UniProtSequence.from_accession('testacc')
         finally:
-            urllib2.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
 
     def test_uniprot_sequence_from_accession(self):
         """Test UniProtSequence.from_accession()"""

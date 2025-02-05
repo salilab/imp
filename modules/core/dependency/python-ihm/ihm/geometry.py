@@ -5,7 +5,7 @@
 """
 
 
-class Center(object):
+class Center:
     """Define the center of a geometric object in Cartesian space.
 
        :param float x: x coordinate
@@ -16,7 +16,7 @@ class Center(object):
         self.x, self.y, self.z = x, y, z
 
 
-class Transformation(object):
+class Transformation:
     """Rotation and translation applied to an object.
 
        Transformation objects are typically used in subclasses of
@@ -40,7 +40,7 @@ class Transformation(object):
         return cls([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], [0., 0., 0.])
 
 
-class GeometricObject(object):
+class GeometricObject:
     """A generic geometric object. See also :class:`Sphere`, :class:`Torus`,
        :class:`Axis`, :class:`Plane`.
 

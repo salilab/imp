@@ -7,7 +7,7 @@
 """
 
 
-class Probe(object):
+class Probe:
     """Defines a fluorescent probe.
 
        This class is not in the FLR dictionary, but it collects all the
@@ -27,7 +27,7 @@ class Probe(object):
         return self.__dict__ == other.__dict__
 
 
-class ProbeDescriptor(object):
+class ProbeDescriptor:
     """Collects the chemical descriptors for a fluorescent probe.
 
        This includes the chemical descriptor of the reactive probe and
@@ -53,7 +53,7 @@ class ProbeDescriptor(object):
         return self.__dict__ == other.__dict__
 
 
-class ProbeList(object):
+class ProbeList:
     """Store the chromophore name, whether there is a reactive probe
        available, the origin of the probe and the type of linkage of the probe.
 
@@ -80,7 +80,7 @@ class ProbeList(object):
         return self.__dict__ == other.__dict__
 
 
-class SampleProbeDetails(object):
+class SampleProbeDetails:
     """Connects a probe to a sample.
 
        :param sample: The sample.
@@ -107,7 +107,7 @@ class SampleProbeDetails(object):
         return self.__dict__ == other.__dict__
 
 
-class PolyProbeConjugate(object):
+class PolyProbeConjugate:
     """Describes the conjugate of polymer residue and probe (including
        possible linker)
 
@@ -134,7 +134,7 @@ class PolyProbeConjugate(object):
         return self.__dict__ == other.__dict__
 
 
-class PolyProbePosition(object):
+class PolyProbePosition:
     """Describes a position on the polymer used for attaching the probe.
 
        This class combines Poly_probe_position, Poly_probe_position_modified,
@@ -172,7 +172,7 @@ class PolyProbePosition(object):
         return self.__dict__ == other.__dict__
 
 
-class Sample(object):
+class Sample:
     """Sample corresponds to a measurement.
 
        :param entity_assembly: The assembly of the entities that was measured.
@@ -199,7 +199,7 @@ class Sample(object):
         return self.__dict__ == other.__dict__
 
 
-class EntityAssembly(object):
+class EntityAssembly:
     """The assembly of the entities that are in the system.
 
        :param entity: The entity to add.
@@ -224,7 +224,7 @@ class EntityAssembly(object):
         return self.__dict__ == other.__dict__
 
 
-class SampleCondition(object):
+class SampleCondition:
     """Description of the sample conditions.
 
        *Currently this is only text, but will be extended in the future.*
@@ -239,7 +239,7 @@ class SampleCondition(object):
         return self.__dict__ == other.__dict__
 
 
-class Experiment(object):
+class Experiment:
     """The Experiment collects combinations of instrument, experimental
        settings and sample.
 
@@ -314,7 +314,7 @@ class Experiment(object):
         return False
 
 
-class Instrument(object):
+class Instrument:
     """Description of the Instrument used for the measurements.
 
        *Currently this is only text, but will be extended in the future.*
@@ -328,7 +328,7 @@ class Instrument(object):
         return self.__dict__ == other.__dict__
 
 
-class InstSetting(object):
+class InstSetting:
     """Description of the instrument settings.
 
        *Currently this is only text, but will be extended in the future.*
@@ -344,7 +344,7 @@ class InstSetting(object):
         return self.__dict__ == other.__dict__
 
 
-class ExpCondition(object):
+class ExpCondition:
     """Description of the experimental conditions.
 
     * Currently this is only text, but will be extended in the future.*
@@ -359,7 +359,7 @@ class ExpCondition(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETAnalysis(object):
+class FRETAnalysis:
     """An analysis of FRET data that was performed.
 
        :param experiment: The Experiment object for this FRET analysis.
@@ -427,7 +427,7 @@ class FRETAnalysis(object):
         return self.__dict__ == other.__dict__
 
 
-class LifetimeFitModel(object):
+class LifetimeFitModel:
     """A lifetime-fit model used for lifetime-based analysis.
 
         :param str name: The name of the fit model.
@@ -448,7 +448,7 @@ class LifetimeFitModel(object):
         return self.__dict__ == other.__dict__
 
 
-class RefMeasurementGroup(object):
+class RefMeasurementGroup:
     """A Group containing reference measurements for lifetime-based analysis.
 
         :param str details: Details on the Group of reference measurements.
@@ -470,7 +470,7 @@ class RefMeasurementGroup(object):
         return self.__dict__ == other.__dict__
 
 
-class RefMeasurement(object):
+class RefMeasurement:
     """A reference measurement for lifetime-based analysis.
 
         :param ref_sample_probe: The combination of sample and probe used
@@ -497,7 +497,7 @@ class RefMeasurement(object):
         return self.__dict__ == other.__dict__
 
 
-class RefMeasurementLifetime(object):
+class RefMeasurementLifetime:
     """Lifetime for a species in a reference measurement.
 
         :param float species_fraction: The species-fraction for the
@@ -514,7 +514,7 @@ class RefMeasurementLifetime(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETDistanceRestraintGroup(object):
+class FRETDistanceRestraintGroup:
     """A collection of FRET distance restraints that are used together.
     """
     def __init__(self):
@@ -531,7 +531,7 @@ class FRETDistanceRestraintGroup(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETDistanceRestraint(object):
+class FRETDistanceRestraint:
     """A distance restraint from FRET.
 
        :param sample_probe_1: The combination of sample and probe for
@@ -580,7 +580,7 @@ class FRETDistanceRestraint(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETForsterRadius(object):
+class FRETForsterRadius:
     """The FRET Förster radius between two probes.
 
        :param donor_probe: The donor probe.
@@ -603,7 +603,7 @@ class FRETForsterRadius(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETCalibrationParameters(object):
+class FRETCalibrationParameters:
     """The calibration parameter from the FRET measurements.
         For the definitions of the parameters see
         Hellenkamp et al. Nat. Methods 2018.
@@ -635,7 +635,7 @@ class FRETCalibrationParameters(object):
         return self.__dict__ == other.__dict__
 
 
-class PeakAssignment(object):
+class PeakAssignment:
     """The method of peak assignment in case of multiple peaks,
         e.g. by population.
 
@@ -650,7 +650,7 @@ class PeakAssignment(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETModelQuality(object):
+class FRETModelQuality:
     """The quality measure for a Model based on FRET data.
 
        :param model: The model being described.
@@ -677,7 +677,7 @@ class FRETModelQuality(object):
         return self.__dict__ == other.__dict__
 
 
-class FRETModelDistance(object):
+class FRETModelDistance:
     """The distance in a model for a certain distance restraint.
 
        :param restraint: The Distance restraint.
@@ -713,7 +713,7 @@ class FRETModelDistance(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSModeling(object):
+class FPSModeling:
     """Collect the modeling parameters for different steps of FPS,
        e.g. Docking, Refinement, or Error estimation.
 
@@ -740,7 +740,7 @@ class FPSModeling(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSGlobalParameters(object):
+class FPSGlobalParameters:
     """The global parameters in the FPS program.
 
        *For a description of the parameters, see also the FPS manual.*
@@ -805,7 +805,7 @@ class FPSGlobalParameters(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSAVModeling(object):
+class FPSAVModeling:
     """FPS modeling using AV.
        This object connects the FPS_modeling step, the sample_probe and
        the respective AV parameters.
@@ -830,7 +830,7 @@ class FPSAVModeling(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSAVParameter(object):
+class FPSAVParameter:
     """The AV parameters used for the modeling using FPS.
 
        :param int num_linker_atoms: The number of atoms in the linker.
@@ -856,7 +856,7 @@ class FPSAVParameter(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSMPPModeling(object):
+class FPSMPPModeling:
     """Maps the FPSModeling object to a mean probe position and connects it
        to the reference coordinate system.
 
@@ -880,7 +880,7 @@ class FPSMPPModeling(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSMeanProbePosition(object):
+class FPSMeanProbePosition:
     """The mean probe position of an AV, which can be used instead of an AV.
 
        *It is usually not recommended to use this. Use AVs instead.*
@@ -902,7 +902,7 @@ class FPSMeanProbePosition(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSMPPAtomPositionGroup(object):
+class FPSMPPAtomPositionGroup:
     """A group of atom positions used to define the coordinate system
        of a mean probe position.
        *Not part of the FLR dictionary.*
@@ -917,7 +917,7 @@ class FPSMPPAtomPositionGroup(object):
         return self.__dict__ == other.__dict__
 
 
-class FPSMPPAtomPosition(object):
+class FPSMPPAtomPosition:
     """An atom used to describe the coordinate system for a mean probe position
 
        :param atom: The atom being described.
@@ -935,7 +935,7 @@ class FPSMPPAtomPosition(object):
         return self.__dict__ == other.__dict__
 
 
-class KineticRateFretAnalysisConnection(object):
+class KineticRateFretAnalysisConnection:
     """Connects a kinetic rate with a FRET analysis.
 
     :param fret_analysis: The FRETAnalysis object assigned to a kinetic rate
@@ -954,7 +954,7 @@ class KineticRateFretAnalysisConnection(object):
         return self.__dict__ == other.__dict__
 
 
-class RelaxationTimeFretAnalysisConnection(object):
+class RelaxationTimeFretAnalysisConnection:
     """Connects a relaxation time with a FRET analysis.
 
     :param fret_analysis: The FRETAnalysis object assigned to a kinetic rate
@@ -973,7 +973,7 @@ class RelaxationTimeFretAnalysisConnection(object):
         return self.__dict__ == other.__dict__
 
 
-class FLRData(object):
+class FLRData:
     """A collection of the fluorescence data to be added to the system.
 
        Instances of this class are generally added to

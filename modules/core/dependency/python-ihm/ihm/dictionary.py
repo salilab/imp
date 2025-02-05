@@ -10,7 +10,7 @@ from ihm.reader import Handler
 
 
 # Handle special values for CIF data items ('.', '?', or missing entirely)
-class _CifSpecialValue(object):
+class _CifSpecialValue:
     pass
 
 
@@ -76,7 +76,7 @@ class _ValidatorCategoryHandler(Handler):
                                 self.link_keys)
 
 
-class _ValidatorReader(object):
+class _ValidatorReader:
     """Track information used for validation while reading an mmCIF file"""
     def __init__(self, dictionary):
         self.dictionary = dictionary
@@ -170,7 +170,7 @@ class _ValidatorReader(object):
             raise ValidatorError("\n\n".join(self.errors))
 
 
-class _UnknownCategoryHandler(object):
+class _UnknownCategoryHandler:
     def __init__(self, sysr):
         self.sysr = sysr
 
@@ -178,7 +178,7 @@ class _UnknownCategoryHandler(object):
         self.sysr._unknown_categories.add(catname)
 
 
-class _UnknownKeywordHandler(object):
+class _UnknownKeywordHandler:
     def __init__(self, sysr):
         self.sysr = sysr
 
@@ -186,7 +186,7 @@ class _UnknownKeywordHandler(object):
         self.sysr._unknown_keywords.add("%s.%s" % (catname, keyname))
 
 
-class Dictionary(object):
+class Dictionary:
     """Representation of an mmCIF dictionary.
        See :func:`read` to create a Dictionary from a file.
 
@@ -246,7 +246,7 @@ class Dictionary(object):
         s.report_errors()
 
 
-class Category(object):
+class Category:
     """Representation of a single category in a :class:`Dictionary`."""
     def __init__(self):
         #: Category name
@@ -271,13 +271,13 @@ class Category(object):
             self.mandatory = self.mandatory or other.mandatory
 
 
-class _DoNothingRegEx(object):
+class _DoNothingRegEx:
     """A mock regex object which always matches"""
     def match(self, value):
         return True
 
 
-class ItemType(object):
+class ItemType:
     """Represent the type of a data item.
        This keeps the set of valid strings for values of a given
        :class:`Keyword`. For example, integer values can only contain
@@ -300,7 +300,7 @@ class ItemType(object):
                               doc='True iff this type is case sensitive')
 
 
-class Keyword(object):
+class Keyword:
     """Representation of a single keyword in a :class:`Category`."""
     def __init__(self):
         #: Keyword name
@@ -313,7 +313,7 @@ class Keyword(object):
         self.item_type = None
 
 
-class _DictionaryReader(object):
+class _DictionaryReader:
     """Track information for a Dictionary being read from a file."""
     def __init__(self):
         self.dictionary = Dictionary()

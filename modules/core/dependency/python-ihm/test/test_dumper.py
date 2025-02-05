@@ -4,10 +4,7 @@ import os
 import unittest
 import warnings
 import sys
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -156,7 +153,7 @@ _struct.title 'test model'
 """)
         # Comments should be ignored in BinaryCIF output
         out = _get_dumper_bcif_output(dumper, system)
-        self.assertEqual(out[u'dataBlocks'], [])
+        self.assertEqual(out['dataBlocks'], [])
 
     def test_software(self):
         """Test SoftwareDumper"""
@@ -2060,7 +2057,7 @@ _ihm_starting_model_seq_dif.details
 
     def test_modeling_protocol(self):
         """Test ProtocolDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         p1 = ihm.protocol.Protocol('equilibration')
@@ -2131,7 +2128,7 @@ _ihm_modeling_protocol_details.description
 
     def test_post_process(self):
         """Test PostProcessDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         p1 = ihm.protocol.Protocol('refinement')
@@ -2190,7 +2187,7 @@ _ihm_modeling_post_process.details
 
     def test_model_dumper(self):
         """Test ModelDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         state = ihm.model.State()
@@ -2253,7 +2250,7 @@ _ihm_model_group_link.model_id
 """)
 
     def _make_test_model(self, water=False):
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         state = ihm.model.State()
@@ -2873,7 +2870,7 @@ _ihm_residues_not_modeled.reason
 
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         pp = MockObject()
         pp._id = 99
@@ -2948,7 +2945,7 @@ _ihm_ensemble_sub_sample.file_id
 
     def test_density_dumper(self):
         """Test DensityDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         e1 = ihm.Entity('AHCD')
@@ -3190,7 +3187,7 @@ _ihm_ordered_model.model_group_id_end
 
     def test_em3d_restraint_dumper(self):
         """Test EM3DRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -3247,7 +3244,7 @@ _ihm_3dem_restraint.details
 
     def test_sas_restraint_dumper(self):
         """Test SASRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -3295,7 +3292,7 @@ _ihm_sas_restraint.details
 
     def test_em2d_restraint_dumper(self):
         """Test EM2DRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -3367,7 +3364,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 
     def test_cross_link_restraint_dumper(self):
         """Test CrossLinkRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         e1 = ihm.Entity('ATC', description='foo')
@@ -3514,7 +3511,7 @@ _ihm_cross_link_result_parameters.sigma_2
 
     def test_cross_link_restraint_dumper_range_check(self):
         """Test CrossLinkRestraintDumper with out-of-range residue"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         e1 = ihm.Entity('ATC', description='foo')
@@ -3895,7 +3892,7 @@ _ihm_pseudo_site.description
 
     def test_geometric_restraint_dumper(self):
         """Test GeometricRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -3934,7 +3931,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
 
     def test_derived_distance_restraint_dumper(self):
         """Test DerivedDistanceRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -3985,7 +3982,7 @@ _ihm_derived_distance_restraint.dataset_list_id
 
     def test_derived_distance_restraint_dumper_fail(self):
         """Test DerivedDistanceRestraintDumper multi-group failure"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -4007,7 +4004,7 @@ _ihm_derived_distance_restraint.dataset_list_id
 
     def test_hdx_restraint_dumper(self):
         """Test HDXRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
 
@@ -4040,7 +4037,7 @@ _ihm_hdx_restraint.details
 
     def test_bad_restraint_groups(self):
         """Test RestraintGroups containing unsupported restraints"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -4069,7 +4066,7 @@ _ihm_hdx_restraint.details
 
     def test_predicted_contact_restraint_dumper(self):
         """Test PredictedContactRestraintDumper"""
-        class MockObject(object):
+        class MockObject:
             pass
         system = ihm.System()
         e1 = ihm.Entity('AHC')
@@ -4135,7 +4132,7 @@ _ihm_predicted_contact_restraint.software_id
 
     def test_multi_state_scheme_dumper(self):
         """ Test MultiStateScheme dumper"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         cur_connectivity_1 = \
@@ -4174,7 +4171,7 @@ _ihm_multi_state_scheme.details
 
     def test_multi_state_scheme_connectivity_dumper(self):
         """ Test MultiStateSchemeConnectivity dumper"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         cur_state_1 = MockObject()
@@ -4280,7 +4277,7 @@ _ihm_multi_state_scheme_connectivity.details
     def test_relaxation_time_dumper(self):
         """Test RelaxationTime dumpers. Tests both, _ihm_relaxation_time
         and _ihm_relaxation_time_multi_state_scheme"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         cur_dataset_group_1 = MockObject()
@@ -4422,7 +4419,7 @@ _ihm_relaxation_time_multi_state_scheme.details
     def test_kinetic_rate_dumper(self):
         """"Test KineticRate dumper"""
 
-        class MockObject(object):
+        class MockObject:
             pass
 
         cur_dataset_group_1 = MockObject()
@@ -4595,7 +4592,7 @@ unit7 'equilibrium constant 5' 5 . .
     def test_flr_dumper(self):
         """Test FLR dumpers"""
 
-        class MockObject(object):
+        class MockObject:
             pass
 
         cur_state = MockObject()
@@ -5600,7 +5597,7 @@ _flr_relaxation_time_analysis.details
 
     def test_ignore_writer(self):
         """Test _IgnoreWriter utility class"""
-        class BaseWriter(object):
+        class BaseWriter:
             def flush(self):
                 return 'flush called'
 

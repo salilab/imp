@@ -14,7 +14,6 @@ MAKE_MMCIF = os.path.join(TOPDIR, 'ihm', 'util', 'make_mmcif.py')
 
 
 class Tests(unittest.TestCase):
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_simple(self):
         """Simple test of make_mmcif utility script"""
         incif = utils.get_input_file_name(TOPDIR, 'struct_only.cif')
@@ -26,7 +25,6 @@ class Tests(unittest.TestCase):
                          'of transcription regulation by Gdown1')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_non_default_output(self):
         """Simple test of make_mmcif with non-default output name"""
         incif = utils.get_input_file_name(TOPDIR, 'struct_only.cif')
@@ -39,7 +37,6 @@ class Tests(unittest.TestCase):
                          'of transcription regulation by Gdown1')
         os.unlink('non-default-output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_no_title(self):
         """Check that make_mmcif adds missing title"""
         incif = utils.get_input_file_name(TOPDIR, 'no_title.cif')
@@ -49,20 +46,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.title, 'Auto-generated system')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_bad_usage(self):
         """Bad usage of make_mmcif utility script"""
         ret = subprocess.call([sys.executable, MAKE_MMCIF])
         self.assertEqual(ret, 2)
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_same_file(self):
         """Check that make_mmcif fails if input and output are the same"""
         incif = utils.get_input_file_name(TOPDIR, 'struct_only.cif')
         ret = subprocess.call([sys.executable, MAKE_MMCIF, incif, incif])
         self.assertEqual(ret, 1)
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_mini(self):
         """Check that make_mmcif works given only basic atom info"""
         incif = utils.get_input_file_name(TOPDIR, 'mini.cif')
@@ -83,7 +77,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.title, 'Auto-generated system')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_pass_through(self):
         """Check that make_mmcif passes through already-compliant files"""
         incif = utils.get_input_file_name(TOPDIR, 'docking.cif')
@@ -105,7 +98,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.title, 'Output from simple-docking example')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_add_polymers(self):
         """Check that make_mmcif combines polymer information"""
         # mini.cif contains two chains A, B
@@ -149,7 +141,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.title, 'Auto-generated system')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_add_non_polymers(self):
         """Check that make_mmcif combines non-polymer information"""
         # mini_nonpoly.cif contains two hemes A, B
@@ -194,7 +185,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.title, 'Auto-generated system')
         os.unlink('output.cif')
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_add_multi_data(self):
         """make_mmcif should fail to add system with multiple data blocks"""
         incif = utils.get_input_file_name(TOPDIR, 'mini.cif')
@@ -210,7 +200,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(ret, 1)
         os.unlink(addcif_multi)
 
-    @unittest.skipIf(sys.version_info[0] < 3, "make_mmcif.py needs Python 3")
     def test_not_modeled(self):
         """Check addition of not-modeled residue information"""
         incif = utils.get_input_file_name(TOPDIR, 'not_modeled.cif')

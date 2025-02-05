@@ -31,7 +31,7 @@ def _is_subrange(rng1, rng2):
         return rng1[0] >= rng2[0] and rng1[1] <= rng2[1]
 
 
-class Dumper(object):
+class Dumper:
     """Base class for helpers to dump output to mmCIF or BinaryCIF.
        See :func:`write`."""
 
@@ -984,7 +984,7 @@ class _BranchLinkDumper(Dumper):
                         value_order=lnk.order, details=lnk.details)
 
 
-class _AsymIDProvider(object):
+class _AsymIDProvider:
     """Provide unique asym IDs"""
     def __init__(self, seen_ids):
         self.seen_ids = seen_ids
@@ -1105,7 +1105,7 @@ class _ExternalReferenceDumper(Dumper):
        (i.e. anything that refers to a Location that isn't
        a DatabaseLocation)."""
 
-    class _LocalFiles(object):
+    class _LocalFiles:
         reference_provider = None
         reference_type = 'Supplementary Files'
         reference = None
@@ -1369,7 +1369,7 @@ class _ModelRepresentationDumper(Dumper):
                         description=segment.description)
 
 
-class _StartingModelRangeChecker(object):
+class _StartingModelRangeChecker:
     """Check Atoms in StartingModels to make sure they match the Entities"""
     def __init__(self, model, check):
         self.model = model
@@ -1632,7 +1632,7 @@ class _PostProcessDumper(Dumper):
                             details=s.details)
 
 
-class _RangeChecker(object):
+class _RangeChecker:
     """Check Atom or Sphere objects to make sure they match the
        Representation and Assembly"""
     def __init__(self, model, check=True):
@@ -3801,7 +3801,7 @@ _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
                 _FLRRelaxationTimeFretAnalysisConnectionDumper]
 
 
-class _NullLoopCategoryWriter(object):
+class _NullLoopCategoryWriter:
     """A do-nothing replacement for format._CifLoopWriter
        or format._CifCategoryWriter"""
     def write(self, *args, **keys):
@@ -3814,7 +3814,7 @@ class _NullLoopCategoryWriter(object):
         pass
 
 
-class _IgnoreWriter(object):
+class _IgnoreWriter:
     """Utility class which normally just passes through to the default
        ``base_writer``, but ignores selected categories."""
     def __init__(self, base_writer, ignores):
@@ -3849,7 +3849,7 @@ class _IgnoreWriter(object):
         return self._base_writer.write_comment(comment)
 
 
-class Variant(object):
+class Variant:
     """Utility class to select the type of file to output by :func:`write`."""
 
     def get_dumpers(self):

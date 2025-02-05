@@ -9,7 +9,6 @@
    see :mod:`ihm.reader`.
 """
 
-from __future__ import division
 import struct
 import sys
 import inspect
@@ -30,26 +29,8 @@ _Uint32 = 6
 _Float32 = 32
 _Float64 = 33
 
-# msgpack data is UTF-8 strings; need to convert to/from Unicode in Python 2
-# All mmCIF data is ASCII
-if sys.version_info[0] >= 3:
-    def _decode_bytes(bs):
-        return bs
 
-    def _encode_str(s):
-        return s
-else:    # pragma: no cover
-    def _decode_bytes(bs):
-        if isinstance(bs, unicode):  # noqa: F821
-            return bs.encode('ascii', errors='replace')
-        else:
-            return bs
-
-    def _encode_str(s):
-        return s.decode('ascii', errors='replace')
-
-
-class _Decoder(object):
+class _Decoder:
     """Base class for all decoders."""
 
     _kind = None  # Encoder kind (in BinaryCIF specification)
@@ -70,7 +51,7 @@ class _StringArrayDecoder(_Decoder):
         offsets = list(_decode(enc['offsets'], enc['offsetEncoding']))
         indices = _decode(data, enc['dataEncoding'])
         substr = []
-        string_data = _decode_bytes(enc['stringData'])
+        string_data = enc['stringData']
         for i in range(0, len(offsets) - 1):
             substr.append(string_data[offsets[i]:offsets[i + 1]])
         # todo: return a listlike class instead?
@@ -231,7 +212,7 @@ class BinaryCifReader(ihm.format._Reader):
             self._file_blocks = self._read_msgpack()
         if len(self._file_blocks) > 0:
             for category in self._file_blocks[0]['categories']:
-                cat_name = _decode_bytes(category['name']).lower()
+                cat_name = category['name'].lower()
                 handler = self.category_handler.get(cat_name, None)
                 if handler:
                     self._handle_category(handler, category, cat_name)
@@ -282,7 +263,7 @@ class BinaryCifReader(ihm.format._Reader):
             key_index[key] = i
         column_indices = []
         for c in category['columns']:
-            key_name = _decode_bytes(c['name']).lower()
+            key_name = c['name'].lower()
             ki = key_index.get(key_name, None)
             if ki is not None:
                 column_indices.append(ki)
@@ -318,7 +299,7 @@ class BinaryCifReader(ihm.format._Reader):
         return d['dataBlocks']
 
 
-class _CategoryWriter(object):
+class _CategoryWriter:
     def __init__(self, writer, category):
         self.writer = writer
         self.category = category
@@ -336,7 +317,7 @@ class _CategoryWriter(object):
         self.writer._add_category(self.category, self._data)
 
 
-class _LoopWriter(object):
+class _LoopWriter:
     def __init__(self, writer, category, keys):
         self.writer = writer
         self.category = category
@@ -367,7 +348,7 @@ class EncodeError(Exception):
     pass
 
 
-class _Encoder(object):
+class _Encoder:
     """Base class for all encoders"""
     _kind = None  # Encoder kind (in BinaryCIF specification)
 
@@ -409,7 +390,7 @@ class _ByteArrayEncoder(_Encoder):
 
     def __call__(self, data):
         ba_type = _get_int_float_type(data)
-        encdict = {u'kind': u'ByteArray', u'type': ba_type}
+        encdict = {'kind': 'ByteArray', 'type': ba_type}
         fmt = self._struct_map[ba_type]
         # All data is encoded little-endian in bcif
         return struct.pack('<' + fmt * len(data), *data), encdict
@@ -423,8 +404,8 @@ class _DeltaEncoder(_Encoder):
         if len(data) <= 40:
             return data, None
         data_type = _get_int_float_type(data)
-        encdict = {u'kind': u'Delta', u'origin': data[0],
-                   u'srcType': data_type}
+        encdict = {'kind': 'Delta', 'origin': data[0],
+                   'srcType': data_type}
         encdata = [0] + [data[i] - data[i - 1] for i in range(1, len(data))]
         return encdata, encdict
 
@@ -437,8 +418,8 @@ class _RunLengthEncoder(_Encoder):
         if len(data) <= 40:
             return data, None
         data_type = _get_int_float_type(data)
-        encdict = {u'kind': u'RunLength',
-                   u'srcType': data_type, u'srcSize': len(data)}
+        encdict = {'kind': 'RunLength',
+                   'srcType': data_type, 'srcSize': len(data)}
         encdata = []
         val = None
         for d in data:
@@ -468,7 +449,7 @@ def _encode(data, encoders):
     return data, encdicts
 
 
-class _MaskedEncoder(object):
+class _MaskedEncoder:
     """Base class for all encoders that handle potentially masked data"""
 
     def __call__(self, data, mask):
@@ -507,11 +488,11 @@ class _StringArrayMaskedEncoder(_MaskedEncoder):
         data_offsets, enc_offsets = _encode(offsets, self._int_encoders)
         data_indices, enc_indices = _encode(indices, self._int_encoders)
 
-        enc_dict = {u'kind': u'StringArray',
-                    u'dataEncoding': enc_indices,
-                    u'stringData': _encode_str(''.join(sorted_substrs)),
-                    u'offsetEncoding': enc_offsets,
-                    u'offsets': data_offsets}
+        enc_dict = {'kind': 'StringArray',
+                    'dataEncoding': enc_indices,
+                    'stringData': ''.join(sorted_substrs),
+                    'offsetEncoding': enc_offsets,
+                    'offsets': data_offsets}
         return data_indices, [enc_dict]
 
 
@@ -560,10 +541,6 @@ def _get_mask_and_type(data):
         return mask, float
     elif int in seen_types:
         return mask, int
-    elif sys.version_info[0] < 3 and long in seen_types:   # noqa: F821
-        # Handle long like int (we don't have a 64-bit int type in BCIF anyway,
-        # so hopefully the data can be represented in an int)
-        return mask, int
     for t in seen_types:
         # Handle numpy float types like Python float
         # todo: this is a hack
@@ -610,18 +587,18 @@ class BinaryCifWriter(ihm.format._Writer):
         encdata, encs = enc(data, mask)
         if mask:
             data_mask, enc_mask = _encode(mask, self._mask_encoders)
-            mask = {u'data': data_mask, u'encoding': enc_mask}
+            mask = {'data': data_mask, 'encoding': enc_mask}
         return mask, encdata, encs
 
     def _encode_column(self, name, data):
         mask, encdata, encs = self._encode_data(data)
-        return {u'name': _encode_str(name), u'mask': mask,
-                u'data': {u'data': encdata, u'encoding': encs}}
+        return {'name': name, 'mask': mask,
+                'data': {'data': encdata, 'encoding': encs}}
 
     def start_block(self, name):
         """See :meth:`ihm.format.CifWriter.start_block`."""
-        block = {u'header': _encode_str(name), u'categories': []}
-        self._categories = block[u'categories']
+        block = {'header': name, 'categories': []}
+        self._categories = block['categories']
         self._blocks.append(block)
 
     def end_block(self):
@@ -637,13 +614,13 @@ class BinaryCifWriter(ihm.format._Writer):
             if row_count == 0:
                 return
             cols.append(self._encode_column(k, v))
-        self._categories.append({u'name': _encode_str(category),
-                                 u'columns': cols, u'rowCount': row_count})
+        self._categories.append({'name': category,
+                                 'columns': cols, 'rowCount': row_count})
 
     def flush(self):
-        data = {u'version': _encode_str(ihm.__version__),
-                u'encoder': u'python-ihm library',
-                u'dataBlocks': self._blocks}
+        data = {'version': ihm.__version__,
+                'encoder': 'python-ihm library',
+                'dataBlocks': self._blocks}
         self._write_msgpack(data)
 
     def _write_msgpack(self, data):

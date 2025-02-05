@@ -3,13 +3,9 @@ import datetime
 import os
 import unittest
 import gzip
-import sys
 import operator
 import warnings
-if sys.version_info[0] >= 3:
-    from io import StringIO, BytesIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO, BytesIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -88,10 +84,9 @@ class Tests(unittest.TestCase):
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'testid')
-        if sys.version_info[0] >= 3:
-            # Make sure we can read the file in binary mode too
-            s, = ihm.reader.read(BytesIO(cif.encode('latin-1')))
-            self.assertEqual(s.id, 'testid')
+        # Make sure we can read the file in binary mode too
+        s, = ihm.reader.read(BytesIO(cif.encode('latin-1')))
+        self.assertEqual(s.id, 'testid')
 
     def test_read_unicode(self):
         """Test that Unicode characters are handled sensibly"""
@@ -100,26 +95,24 @@ class Tests(unittest.TestCase):
         cif = "data_model\n_struct.entry_id test\u00dc\U0001f600\n"
         s, = ihm.reader.read(StringIO(cif))
         self.assertEqual(s.id, 'test\u00dc\U0001f600')
-        # Full Unicode support requires Python 3
-        if sys.version_info[0] >= 3:
-            s, = ihm.reader.read(BytesIO(cif.encode('utf-8')))
-            # Reading in binary mode should give us the raw text (latin-1)
-            self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
-            with utils.temporary_directory() as tmpdir:
-                fname = os.path.join(tmpdir, 'test')
-                with open(fname, 'w', encoding='utf-8') as fh:
-                    fh.write(cif)
-                # Should get the input back if we use the right UTF-8 encoding
-                with open(fname, encoding='utf-8') as fh:
-                    s, = ihm.reader.read(fh)
-                    self.assertEqual(s.id, 'test\u00dc\U0001f600')
-                # Should get a decode error if we treat it as ASCII:
-                with open(fname, encoding='ascii') as fh:
-                    self.assertRaises(UnicodeDecodeError, ihm.reader.read, fh)
-                # A permissive 8-bit encoding should work but give us garbage
-                with open(fname, encoding='latin-1') as fh:
-                    s, = ihm.reader.read(fh)
-                    self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
+        s, = ihm.reader.read(BytesIO(cif.encode('utf-8')))
+        # Reading in binary mode should give us the raw text (latin-1)
+        self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
+        with utils.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'test')
+            with open(fname, 'w', encoding='utf-8') as fh:
+                fh.write(cif)
+            # Should get the input back if we use the right UTF-8 encoding
+            with open(fname, encoding='utf-8') as fh:
+                s, = ihm.reader.read(fh)
+                self.assertEqual(s.id, 'test\u00dc\U0001f600')
+            # Should get a decode error if we treat it as ASCII:
+            with open(fname, encoding='ascii') as fh:
+                self.assertRaises(UnicodeDecodeError, ihm.reader.read, fh)
+            # A permissive 8-bit encoding should work but give us garbage
+            with open(fname, encoding='latin-1') as fh:
+                s, = ihm.reader.read(fh)
+                self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
 
     def test_read_custom_handler(self):
         """Test read() function with custom Handler"""
@@ -143,7 +136,7 @@ class Tests(unittest.TestCase):
 
     def test_id_mapper(self):
         """Test IDMapper class"""
-        class MockObject(object):
+        class MockObject:
             def __init__(self, x, y):
                 self.x, self.y = x, y
 
@@ -158,7 +151,7 @@ class Tests(unittest.TestCase):
 
     def test_handler(self):
         """Test Handler base class"""
-        class MockObject(object):
+        class MockObject:
             pass
         o = MockObject()
         o.system = 'foo'
@@ -167,7 +160,7 @@ class Tests(unittest.TestCase):
 
     def test_handler_copy_if_present(self):
         """Test copy_if_present method"""
-        class MockObject(object):
+        class MockObject:
             pass
         # Keys = namedtuple('Keys', 'foo bar t test x')
         o = MockObject()
@@ -3450,7 +3443,7 @@ _ihm_ordered_ensemble.model_group_id_end
     def test_read_full_pdbx_mmcif(self):
         """Test reading a full PDBx file in mmCIF format"""
         fname = utils.get_input_file_name(TOPDIR, '6ep0.cif.gz')
-        with gzip.open(fname, 'rt' if sys.version_info[0] >= 3 else 'rb') as f:
+        with gzip.open(fname, 'rt') as f:
             s, = ihm.reader.read(f)
         self._check_pdbx(s)
 

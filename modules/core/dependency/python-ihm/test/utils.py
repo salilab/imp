@@ -3,14 +3,6 @@ import sys
 import tempfile
 import contextlib
 import shutil
-import unittest
-
-
-# Allow using assertWarns unittest method even in Python 2
-if not hasattr(unittest.TestCase, 'assertWarns'):
-    def assertWarns(self, warning, f, *args, **keys):  # noqa: N802
-        f(*args, **keys)
-    unittest.TestCase.assertWarns = assertWarns
 
 
 def set_search_paths(topdir):

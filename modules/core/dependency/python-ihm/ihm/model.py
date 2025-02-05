@@ -7,7 +7,7 @@ import itertools
 from ihm.util import _text_choice_property, _check_residue_range
 
 
-class Sphere(object):
+class Sphere:
     """Coordinates of part of the model represented by a sphere.
 
        See :meth:`Model.get_spheres` for more details.
@@ -33,7 +33,7 @@ class Sphere(object):
         self.radius, self.rmsf = radius, rmsf
 
 
-class Atom(object):
+class Atom:
     """Coordinates of part of the model represented by an atom.
 
        See :meth:`Model.get_atoms` for more details. Note that this class
@@ -75,7 +75,7 @@ class Atom(object):
         self.alt_id = alt_id
 
 
-class Model(object):
+class Model:
     """A single set of coordinates (conformation).
 
        Models are added to the system by placing them inside
@@ -199,7 +199,7 @@ class StateGroup(list):
         super(StateGroup, self).__init__(elements)
 
 
-class Ensemble(object):
+class Ensemble:
     """Details about a model cluster or ensemble.
        See :attr:`ihm.System.ensembles`.
 
@@ -272,7 +272,7 @@ class Ensemble(object):
         doc="The feature used for clustering the models, if applicable")
 
 
-class NotModeledResidueRange(object):
+class NotModeledResidueRange:
     """A range of residues that were explicitly not modeled.
        See :attr:`Model.not_modeled_residue_ranges`.
 
@@ -296,7 +296,7 @@ class NotModeledResidueRange(object):
         doc="Reason why the residues were not modeled.")
 
 
-class OrderedProcess(object):
+class OrderedProcess:
     """Details about a process that orders two or more model groups.
 
        A process is represented as a directed graph, where the nodes
@@ -332,7 +332,7 @@ class ProcessStep(list):
         super(ProcessStep, self).__init__(elements)
 
 
-class ProcessEdge(object):
+class ProcessEdge:
     """A single directed edge in the graph for a :class:`OrderedProcess`,
        representing the transition from one :class:`ModelGroup` to another.
        These objects are added to :class:`ProcessStep` objects.
@@ -348,7 +348,7 @@ class ProcessEdge(object):
         self.description = description
 
 
-class LocalizationDensity(object):
+class LocalizationDensity:
     """Localization density of part of the system, over all models
        in an ensemble.
 
@@ -365,7 +365,7 @@ class LocalizationDensity(object):
         self.file, self.asym_unit = file, asym_unit
 
 
-class Subsample(object):
+class Subsample:
     """Base class for a subsample within an ensemble.
 
        In some cases the models that make up an :class:`Ensemble` may be
@@ -416,7 +416,7 @@ class IndependentSubsample(Subsample):
     sub_sampling_type = 'independent'
 
 
-class DCDWriter(object):
+class DCDWriter:
     """Utility class to write model coordinates to a binary DCD file.
 
        See :class:`Ensemble` and :class:`Model`. Since mmCIF is a text-based

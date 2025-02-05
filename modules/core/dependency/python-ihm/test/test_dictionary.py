@@ -2,13 +2,8 @@ import utils
 import os
 import unittest
 import sys
+from io import StringIO, BytesIO
 from test_format_bcif import MockMsgPack, MockFh, _add_msgpack
-
-if sys.version_info[0] >= 3:
-    from io import StringIO, BytesIO
-else:
-    from io import BytesIO
-    StringIO = BytesIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -206,12 +201,11 @@ save_
         self.assertEqual(d.linked_items,
                          {'_test_category2.baz': '_test_category1.bar'})
 
-        if sys.version_info[0] >= 3:
-            # Make sure that files can be read in binary mode
-            d = ihm.dictionary.read(BytesIO(cif.encode('latin-1')))
-            self.assertEqual(sorted(d.categories.keys()),
-                             ['test_category1', 'test_category2',
-                              'test_category3', 'test_category4'])
+        # Make sure that files can be read in binary mode
+        d = ihm.dictionary.read(BytesIO(cif.encode('latin-1')))
+        self.assertEqual(sorted(d.categories.keys()),
+                         ['test_category1', 'test_category2',
+                          'test_category3', 'test_category4'])
 
     def test_add(self):
         """Test adding two Dictionaries"""
