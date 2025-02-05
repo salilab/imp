@@ -60,7 +60,8 @@ class AtomSiteCategory : public Category {
   std::map<int, Particle *> root_map_;
   PDBRecord pdb_record_;
 
-  static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
+  static void callback(struct ihm_reader *, int, void *data,
+                       struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
   }
 
