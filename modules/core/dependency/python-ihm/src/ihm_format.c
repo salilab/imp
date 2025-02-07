@@ -92,6 +92,24 @@ void ihm_error_set(struct ihm_error **err, IHMErrorCode code,
   (*err)->msg = msg;
 }
 
+/* Move error info from `from_err` to `to_err`, if `from_err` is set.
+   `to_err` must not have already been set with an error. Return true
+   iff info was moved. */
+static bool ihm_error_move(struct ihm_error **to_err,
+                           struct ihm_error **from_err)
+{
+  assert(to_err && !*to_err);
+  assert(from_err);
+
+  if (*from_err) {
+    *to_err = *from_err;
+    *from_err = NULL;
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /* A variable-sized array of elements */
 struct ihm_array {
   /* The array data itself */
@@ -405,6 +423,8 @@ struct ihm_reader {
   /* Number of BinaryCIF data blocks left to read, or -1 if header
      not read yet */
   int num_blocks_left;
+  /* Any errors raised in the CMP read callback */
+  struct ihm_error *cmp_read_err;
 };
 
 typedef enum {
@@ -723,6 +743,7 @@ struct ihm_reader *ihm_reader_new(struct ihm_file *fh, bool binary)
   reader->unknown_keyword_free_func = NULL;
 
   reader->num_blocks_left = -1;
+  reader->cmp_read_err = NULL;
   return reader;
 }
 
@@ -738,6 +759,9 @@ void ihm_reader_free(struct ihm_reader *reader)
   }
   if (reader->unknown_keyword_free_func) {
     (*reader->unknown_keyword_free_func) (reader->unknown_keyword_data);
+  }
+  if (reader->cmp_read_err) {
+    ihm_error_free(reader->cmp_read_err);
   }
   free(reader);
 }
@@ -1394,10 +1418,8 @@ static bool ihm_file_read_bytes(struct ihm_file *fh, char **buf, size_t sz,
 static bool bcif_cmp_read(cmp_ctx_t *ctx, void *data, size_t limit)
 {
   char *buf;
-  struct ihm_error *err = NULL;
   struct ihm_reader *reader = (struct ihm_reader *)ctx->buf;
-  if (!ihm_file_read_bytes(reader->fh, &buf, limit, &err)) {
-    ihm_error_free(err); /* todo: pass IO error back */
+  if (!ihm_file_read_bytes(reader->fh, &buf, limit, &reader->cmp_read_err)) {
     return false;
   } else {
     memcpy(data, buf, limit);
@@ -1409,10 +1431,8 @@ static bool bcif_cmp_read(cmp_ctx_t *ctx, void *data, size_t limit)
 static bool bcif_cmp_skip(cmp_ctx_t *ctx, size_t count)
 {
   char *buf;
-  struct ihm_error *err = NULL;
   struct ihm_reader *reader = (struct ihm_reader *)ctx->buf;
-  if (!ihm_file_read_bytes(reader->fh, &buf, count, &err)) {
-    ihm_error_free(err); /* todo: pass IO error back */
+  if (!ihm_file_read_bytes(reader->fh, &buf, count, &reader->cmp_read_err)) {
     return false;
   } else {
     return true;
@@ -1427,8 +1447,10 @@ static bool read_bcif_map(struct ihm_reader *reader, uint32_t *map_size,
                           struct ihm_error **err)
 {
   if (!cmp_read_map(&reader->cmp, map_size)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a map; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a map; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   } else {
     return true;
@@ -1442,7 +1464,10 @@ static bool read_bcif_map_or_nil(struct ihm_reader *reader, uint32_t *map_size,
 {
   cmp_object_t obj;
   if (!cmp_read_object(&reader->cmp, &obj)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "%s", cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "%s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   }
   switch(obj.type) {
@@ -1468,8 +1493,10 @@ static bool read_bcif_array(struct ihm_reader *reader, uint32_t *array_size,
                             struct ihm_error **err)
 {
   if (!cmp_read_array(&reader->cmp, array_size)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting an array; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting an array; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   } else {
     return true;
@@ -1511,8 +1538,10 @@ static bool read_bcif_int(struct ihm_reader *reader, int32_t *value,
                           struct ihm_error **err)
 {
   if (!cmp_read_int(&reader->cmp, value)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting an integer; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting an integer; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   } else {
     return true;
@@ -1527,8 +1556,10 @@ static bool read_bcif_string(struct ihm_reader *reader, char **str,
   char *buf;
   uint32_t strsz;
   if (!cmp_read_str_size(&reader->cmp, &strsz)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   }
   if (!ihm_file_read_bytes(reader->fh, &buf, strsz, err)) return false;
@@ -1546,8 +1577,10 @@ static bool read_bcif_string_dup(struct ihm_reader *reader, char **str,
   char *buf;
   uint32_t strsz;
   if (!cmp_read_str_size(&reader->cmp, &strsz)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   }
   if (!ihm_file_read_bytes(reader->fh, &buf, strsz, err)) return false;
@@ -1568,8 +1601,10 @@ static bool read_bcif_exact_string(struct ihm_reader *reader, const char *str,
   char *buf;
   uint32_t actual_len, want_len = strlen(str);
   if (!cmp_read_str_size(&reader->cmp, &actual_len)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting a string; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   }
   if (!ihm_file_read_bytes(reader->fh, &buf, actual_len, err)) return false;
@@ -1585,8 +1620,10 @@ static bool read_bcif_binary_dup(struct ihm_reader *reader, char **bin,
   char *buf;
   uint32_t binsz;
   if (!cmp_read_bin_size(&reader->cmp, &binsz)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting binary; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Was expecting binary; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   }
   if (!ihm_file_read_bytes(reader->fh, &buf, binsz, err)) return false;

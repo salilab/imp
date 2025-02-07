@@ -786,10 +786,7 @@ x y
         fh = MyFileLike()
         f = _format.ihm_file_new_from_python(fh, True)
         reader = _format.ihm_reader_new(f, True)
-        # Should really be a ValueError, but CMP does not propagate IHM
-        # errors raised in read callback, so we'll get a CMP error instead
-        self.assertRaises(_format.FileFormatError, _format.ihm_read_file,
-                          reader)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
@@ -797,14 +794,11 @@ x y
         """Test that binary read() returning too many bytes is handled"""
         class MyFileLike:
             def read(self, numbytes):
-                return " " * (numbytes + 10)
+                return b" " * (numbytes + 10)
         fh = MyFileLike()
         f = _format.ihm_file_new_from_python(fh, True)
         reader = _format.ihm_reader_new(f, True)
-        # Should really be a ValueError, but CMP does not propagate IHM
-        # errors raised in read callback, so we'll get a CMP error instead
-        self.assertRaises(_format.FileFormatError, _format.ihm_read_file,
-                          reader)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
@@ -831,10 +825,7 @@ x y
         fh = MyFileLike()
         f = _format.ihm_file_new_from_python(fh, True)
         reader = _format.ihm_reader_new(f, True)
-        # Should really be a ValueError, but CMP does not propagate IHM
-        # errors raised in read callback, so we'll get a CMP error instead
-        self.assertRaises(_format.FileFormatError, _format.ihm_read_file,
-                          reader)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
@@ -846,10 +837,7 @@ x y
         fh = MyFileLike()
         f = _format.ihm_file_new_from_python(fh, True)
         reader = _format.ihm_reader_new(f, True)
-        # Should really be a ValueError, but CMP does not propagate IHM
-        # errors raised in read callback, so we'll get a CMP error instead
-        self.assertRaises(_format.FileFormatError, _format.ihm_read_file,
-                          reader)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None or sys.platform == 'win32',
