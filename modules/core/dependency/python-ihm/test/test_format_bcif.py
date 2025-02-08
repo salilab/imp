@@ -621,6 +621,12 @@ class Tests(unittest.TestCase):
         h = GenericHandler()
         self._read_bcif_raw(d, {'_foo': h})
 
+        # Mask of bad type
+        d = make_bcif("foo")
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
         # Map keys not strings
         d = make_bcif({42: 50})
         h = GenericHandler()
@@ -1034,6 +1040,85 @@ class Tests(unittest.TestCase):
         h = GenericHandler()
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_error(self):
+        """Test handling of errors from filelike read()"""
+        def make_bcif():
+            c1 = {'name': 'bar',
+                  'data': {'data': struct.pack('2b', 1, 42),
+                           'encoding':
+                           [{'kind': 'IntegerPacking'},
+                            {'kind': 'ByteArray',
+                             'type': ihm.format_bcif._Int8}]},
+                  'mask': None}
+            return {'dataBlocks': [{'categories': [{'name': '_foo',
+                                                    'columns': [c1]}]}]}
+
+        class ReadError:
+            """Filelike object that returns defined-size blocks from read,
+               or errors out if empty"""
+            def __init__(self, read_sz):
+                self.read_sz = read_sz
+                self.data = b''
+
+            def write(self, b):
+                self.data += b
+
+            def read(self, sz):
+                if not self.read_sz:
+                    raise IndexError("foo")
+                rsz = self.read_sz.pop(0)
+                assert sz >= rsz
+                ret = self.data[:rsz]
+                self.data = self.data[rsz:]
+                return ret
+
+        def run_test(read_sz, ind=-1, cat='_foo'):
+            d = make_bcif()
+            h = GenericHandler()
+            fh = ReadError(read_sz)
+            _add_msgpack(d, fh)
+            # If ind is given, just read up to the first instance of that
+            # msgpack type
+            if ind > 0:
+                fh.read_sz = [fh.data.index(ind)]
+            r = ihm.format_bcif.BinaryCifReader(fh, {cat: h})
+            r.read_file()
+
+        # Less data read than requested
+        with self.assertRaises(OSError) as cm:
+            run_test([0])
+        self.assertIn('Less data read than requested', str(cm.exception))
+
+        # Exception in read_map_or_nil (None=0xc0 in msgpack)
+        self.assertRaises(IndexError, run_test, [], ind=0xc0)
+
+        # Exception in read_array (array=0xdd)
+        self.assertRaises(IndexError, run_test, [], ind=0xdd)
+
+        # Exception in read_int (int=0xce)
+        self.assertRaises(IndexError, run_test, [], ind=0xce)
+
+        # Exception in read_bcif_exact_string (str=0xdb)
+        self.assertRaises(IndexError, run_test, [], ind=0xdb)
+
+        # Exception in read_bcif_string_dup (107=index of column name's
+        # string size)
+        self.assertRaises(IndexError, run_test, [107])
+
+        # Exception in read_bcif_string (168=index of encoding name's
+        # string size)
+        self.assertRaises(IndexError, run_test, [168])
+
+        # Exception in read_map (25=index of second map)
+        self.assertRaises(IndexError, run_test, [25])
+
+        # Exception in read_binary (137=index of data's binary size)
+        self.assertRaises(IndexError, run_test, [137])
+
+        # Exception in skip_no_limit
+        self.assertRaises(IndexError, run_test, [147], cat='_bar')
 
     def test_omitted_unknown_not_in_file_explicit(self):
         """Test explicit handling of omitted/unknown/not in file data"""

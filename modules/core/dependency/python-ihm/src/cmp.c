@@ -2739,7 +2739,9 @@ bool cmp_skip_object(cmp_ctx_t *ctx, cmp_object_t *obj) {
             break;
         }
 
-        skip_bytes(ctx, size);
+        if (!skip_bytes(ctx, size)) {
+          return false;
+        }
       }
   }
 
@@ -2806,7 +2808,9 @@ bool cmp_skip_object_flat(cmp_ctx_t *ctx, cmp_object_t *obj) {
               break;
           }
 
-          skip_bytes(ctx, size);
+          if (!skip_bytes(ctx, size)) {
+            return false;
+          }
         }
     }
 
@@ -2883,7 +2887,9 @@ bool cmp_skip_object_no_limit(cmp_ctx_t *ctx) {
               break;
           }
 
-          skip_bytes(ctx, size);
+          if (!skip_bytes(ctx, size)) {
+            return false;
+          }
         }
     }
 
@@ -2975,7 +2981,9 @@ bool cmp_skip_object_limit(cmp_ctx_t *ctx, cmp_object_t *obj, uint32_t limit) {
               break;
           }
 
-          skip_bytes(ctx, size);
+          if (!skip_bytes(ctx, size)) {
+            return false;
+          }
         }
     }
 

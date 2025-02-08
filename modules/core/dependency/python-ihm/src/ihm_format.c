@@ -1509,8 +1509,10 @@ static bool read_bcif_array(struct ihm_reader *reader, uint32_t *array_size,
 static bool skip_bcif_object(struct ihm_reader *reader, struct ihm_error **err)
 {
   if (!cmp_skip_object(&reader->cmp, NULL)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Could not skip object; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Could not skip object; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   } else {
     return true;
@@ -1524,8 +1526,10 @@ static bool skip_bcif_object_no_limit(struct ihm_reader *reader,
                                       struct ihm_error **err)
 {
   if (!cmp_skip_object_no_limit(&reader->cmp)) {
-    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Could not skip object; %s",
-                  cmp_strerror(&reader->cmp));
+    if (!ihm_error_move(err, &reader->cmp_read_err)) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Could not skip object; %s",
+                    cmp_strerror(&reader->cmp));
+    }
     return false;
   } else {
     return true;
