@@ -17,7 +17,6 @@ import ihm.cross_linkers
 import ihm.multi_state_scheme
 import ihm.flr
 import inspect
-import datetime
 import warnings
 import collections
 from . import util
@@ -73,15 +72,6 @@ def _get_matrix33(d, key):
         # Assume if one element is present, all are
         return [[float(d[key + "%d%d" % (i, j)]) for j in (1, 2, 3)]
                 for i in (1, 2, 3)]
-
-
-def _get_iso_date(iso_date_str):
-    """Get a datetime.date obj for a string in isoformat."""
-    if not iso_date_str:
-        return iso_date_str
-    return datetime.date(int(iso_date_str[0:4]),
-                         int(iso_date_str[5:7]),
-                         int(iso_date_str[8:10]))
 
 
 class IDMapper:
@@ -1065,7 +1055,7 @@ class _AuditRevisionHistoryHandler(Handler):
         r.data_content_type = data_content_type
         r.major = major_revision
         r.minor = minor_revision
-        r.date = _get_iso_date(revision_date)
+        r.date = util._get_iso_date(revision_date)
 
 
 class _AuditRevisionDetailsHandler(Handler):
@@ -1163,7 +1153,7 @@ class _DatabaseStatusHandler(Handler):
 
     def __call__(self, *args):
         # Just pass through all data items present in the file, as a dict
-        self.system._database_status = dict(
+        self.system.database_status._map = dict(
             (k, v) for (k, v) in zip(self._keys, args)
             if v != self.not_in_file)
 
@@ -1810,28 +1800,24 @@ class _ProtocolDetailsHandler(Handler):
     category = '_ihm_modeling_protocol_details'
 
     def __call__(self, protocol_id, step_id, num_models_begin: int,
-                 num_models_end: int, multi_scale_flag, multi_state_flag,
-                 ordered_flag, ensemble_flag, struct_assembly_id,
+                 num_models_end: int, multi_scale_flag: bool,
+                 multi_state_flag: bool, ordered_flag: bool,
+                 ensemble_flag: bool, struct_assembly_id,
                  dataset_group_id, software_id, script_file_id, step_name,
                  step_method, description):
         p = self.sysr.protocols.get_by_id(protocol_id)
-        nbegin = num_models_begin
-        nend = num_models_end
-        mscale = self.get_bool(multi_scale_flag)
-        mstate = self.get_bool(multi_state_flag)
-        ensemble = self.get_bool(ensemble_flag)
-        ordered = self.get_bool(ordered_flag)
-        assembly = self.sysr.assemblies.get_by_id_or_none(
-            struct_assembly_id)
+        assembly = self.sysr.assemblies.get_by_id_or_none(struct_assembly_id)
         dg = self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
         software = self.sysr.software.get_by_id_or_none(software_id)
         script = self.sysr.external_files.get_by_id_or_none(script_file_id)
         s = ihm.protocol.Step(assembly=assembly, dataset_group=dg,
-                              method=None, num_models_begin=nbegin,
-                              num_models_end=nend, multi_scale=mscale,
-                              multi_state=mstate, ordered=ordered,
-                              ensemble=ensemble, software=software,
-                              script_file=script, description=description)
+                              method=None, num_models_begin=num_models_begin,
+                              num_models_end=num_models_end,
+                              multi_scale=multi_scale_flag,
+                              multi_state=multi_state_flag,
+                              ordered=ordered_flag, ensemble=ensemble_flag,
+                              software=software, script_file=script,
+                              description=description)
         s._id = step_id
         self.copy_if_present(
             s, locals(),
@@ -1984,7 +1970,7 @@ class _EnsembleHandler(Handler):
                  ensemble_clustering_method, ensemble_clustering_feature,
                  details, sub_sampling_type,
                  num_ensemble_models_deposited: int,
-                 model_group_superimposed_flag):
+                 model_group_superimposed_flag: bool):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -2001,7 +1987,7 @@ class _EnsembleHandler(Handler):
         ensemble.post_process = pp
         ensemble.file = f
         ensemble.details = details
-        ensemble.superimposed = self.get_bool(model_group_superimposed_flag)
+        ensemble.superimposed = model_group_superimposed_flag
         # Default to "other" if invalid method/feature read
         try:
             ensemble.clustering_method = ensemble_clustering_method
@@ -2092,8 +2078,8 @@ class _EM3DRestraintHandler(Handler):
     category = '_ihm_3dem_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
-                 fitting_method_citation_id, map_segment_flag, fitting_method,
-                 number_of_gaussians: int, model_id,
+                 fitting_method_citation_id, map_segment_flag: bool,
+                 fitting_method, number_of_gaussians: int, model_id,
                  cross_correlation_coefficient: float, details):
         # EM3D restraints don't have their own IDs - they use the dataset
         # and assembly IDs
@@ -2103,7 +2089,7 @@ class _EM3DRestraintHandler(Handler):
         r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
             fitting_method_citation_id)
         self.copy_if_present(r, locals(), keys=('fitting_method', 'details'))
-        r.segment = self.get_bool(map_segment_flag)
+        r.segment = map_segment_flag
         r.number_of_gaussians = number_of_gaussians
 
         model = self.sysr.models.get_by_id(model_id)
@@ -2116,7 +2102,7 @@ class _EM2DRestraintHandler(Handler):
 
     def __call__(self, id, dataset_list_id, number_raw_micrographs: int,
                  pixel_size_width: float, pixel_size_height: float,
-                 image_resolution: float, image_segment_flag,
+                 image_resolution: float, image_segment_flag: bool,
                  number_of_projections: int, struct_assembly_id, details):
         r = self.sysr.em2d_restraints.get_by_id(id)
         r.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
@@ -2124,7 +2110,7 @@ class _EM2DRestraintHandler(Handler):
         r.pixel_size_width = pixel_size_width
         r.pixel_size_height = pixel_size_height
         r.image_resolution = image_resolution
-        r.segment = self.get_bool(image_segment_flag)
+        r.segment = image_segment_flag
         r.number_of_projections = number_of_projections
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
@@ -2153,7 +2139,7 @@ class _SASRestraintHandler(Handler):
     category = '_ihm_sas_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
-                 profile_segment_flag, fitting_atom_type, fitting_method,
+                 profile_segment_flag: bool, fitting_atom_type, fitting_method,
                  details, fitting_state, radius_of_gyration: float,
                  number_of_gaussians: int, model_id, chi_value: float):
         # SAS restraints don't have their own IDs - they use the dataset and
@@ -2162,7 +2148,7 @@ class _SASRestraintHandler(Handler):
                                                     struct_assembly_id)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
-        r.segment = self.get_bool(profile_segment_flag)
+        r.segment = profile_segment_flag
         self.copy_if_present(
             r, locals(),
             keys=('fitting_atom_type', 'fitting_method', 'details'))
@@ -3321,10 +3307,9 @@ class _FLRSampleHandler(Handler):
 class _FLRProbeListHandler(Handler):
     category = '_flr_probe_list'
 
-    def __call__(self, probe_id, chromophore_name, reactive_probe_flag,
+    def __call__(self, probe_id, chromophore_name, reactive_probe_flag: bool,
                  reactive_probe_name, probe_origin, probe_link_type):
         cur_probe = self.sysr.flr_probes.get_by_id(probe_id)
-        reactive_probe_flag = self.get_bool(reactive_probe_flag)
         cur_probe.probe_list_entry = ihm.flr.ProbeList(
             chromophore_name=chromophore_name,
             reactive_probe_flag=reactive_probe_flag,
@@ -3379,11 +3364,11 @@ class _FLRPolyProbePositionHandler(Handler):
         return resatom
 
     def __call__(self, id, entity_id, asym_id, seq_id: int, atom_id,
-                 mutation_flag, modification_flag, auth_name):
+                 mutation_flag: bool, modification_flag: bool, auth_name):
         ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
         ppos.resatom = self._get_resatom(entity_id, asym_id, seq_id, atom_id)
-        ppos.mutation_flag = self.get_bool(mutation_flag)
-        ppos.modification_flag = self.get_bool(modification_flag)
+        ppos.mutation_flag = mutation_flag
+        ppos.modification_flag = modification_flag
         ppos.auth_name = auth_name
 
 
@@ -3409,14 +3394,14 @@ class _FLRPolyProbeConjugateHandler(Handler):
     category = '_flr_poly_probe_conjugate'
 
     def __call__(self, id, sample_probe_id, chem_descriptor_id,
-                 ambiguous_stoichiometry_flag, probe_stoichiometry: float):
+                 ambiguous_stoichiometry_flag: bool,
+                 probe_stoichiometry: float):
         ppc = self.sysr.flr_poly_probe_conjugates.get_by_id(id)
         ppc.sample_probe = self.sysr.flr_sample_probe_details.get_by_id(
             sample_probe_id)
         ppc.chem_descriptor = self.sysr.chem_descriptors.get_by_id(
             chem_descriptor_id)
-        ppc.ambiguous_stoichiometry = self.get_bool(
-            ambiguous_stoichiometry_flag)
+        ppc.ambiguous_stoichiometry = ambiguous_stoichiometry_flag
         ppc.probe_stoichiometry = probe_stoichiometry
 
 

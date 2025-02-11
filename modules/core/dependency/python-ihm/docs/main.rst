@@ -12,6 +12,9 @@ The :mod:`ihm` Python module
 .. autoclass:: System
    :members:
 
+.. autoclass:: DatabaseStatus
+   :members:
+
 .. autoclass:: Database
    :members:
 

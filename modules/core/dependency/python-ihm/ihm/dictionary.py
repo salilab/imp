@@ -362,10 +362,10 @@ class _DictionaryReader:
 class _CategoryHandler(Handler):
     category = '_category'
 
-    def __call__(self, id, description, mandatory_code):
+    def __call__(self, id, description, mandatory_code: bool):
         c = self.sysr.category
         c.name, c.description = id, description
-        c.mandatory = self.get_bool(mandatory_code)
+        c.mandatory = mandatory_code
         self.sysr.category_good = True
 
     def end_save_frame(self):
@@ -375,14 +375,14 @@ class _CategoryHandler(Handler):
 class _ItemHandler(Handler):
     category = '_item'
 
-    def __call__(self, name, category_id, mandatory_code):
+    def __call__(self, name, category_id, mandatory_code: bool):
         cat, name = name.split('.')
         ki = self.sysr._keyword_info
         # If category_id is missing, strip leading _ from the keyword's
         # own category name and use that instead
         if category_id is None:
             category_id = cat[1:]
-        ki.append((name, category_id, self.get_bool(mandatory_code)))
+        ki.append((name, category_id, mandatory_code))
         self.sysr.keyword_good = True
 
 

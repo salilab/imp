@@ -62,7 +62,8 @@ void ihm_error_set(struct ihm_error **err, IHMErrorCode code,
 typedef enum {
   IHM_STRING = 1,
   IHM_INT,
-  IHM_FLOAT
+  IHM_FLOAT,
+  IHM_BOOL
 } ihm_keyword_type;
 
 /* A keyword in an mmCIF or BinaryCIF file. Holds a description of its
@@ -76,6 +77,7 @@ struct ihm_keyword {
     char *str;
     int ival;
     double fval;
+    bool bval;
   } data;
   /* If true, we own the memory for data */
   bool own_data;
@@ -149,6 +151,10 @@ struct ihm_keyword *ihm_keyword_int_new(struct ihm_category *category,
 /* Add a new floating-point ihm_keyword to a category. */
 struct ihm_keyword *ihm_keyword_float_new(struct ihm_category *category,
                                           const char *name);
+
+/* Add a new boolean ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_bool_new(struct ihm_category *category,
+                                         const char *name);
 
 /* Add a new string ihm_keyword to a category. */
 struct ihm_keyword *ihm_keyword_str_new(struct ihm_category *category,

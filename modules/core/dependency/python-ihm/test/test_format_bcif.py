@@ -40,9 +40,11 @@ class GenericHandler:
     unknown = "?"
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
-             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2')
+             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2',
+             'boolkey1')
     _int_keys = frozenset(('intkey1', 'intkey2'))
     _float_keys = frozenset(('floatkey1', 'floatkey2'))
+    _bool_keys = frozenset(('boolkey1',))
 
     def __init__(self):
         self.data = []
@@ -460,6 +462,41 @@ class Tests(unittest.TestCase):
         h = GenericHandler()
         self.assertRaises(ValueError, self._read_bcif,
                           [Block([cat])], {'_foo': h})
+
+    def test_bool_keys(self):
+        """Check handling of boolean keywords"""
+        cat = Category('_foo', {'boolkey1': ["YES", "NO", "GARBAGE"]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{'boolkey1': True},
+                                  {'boolkey1': False},
+                                  {}])
+        h = GenericHandler()
+        h.omitted = 'OM'
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{'boolkey1': True},
+                                  {'boolkey1': False},
+                                  {'boolkey1': 'OM'}])
+
+        # Float will be mapped to omitted (None, or handler.omitted)
+        cat = Category('_foo', {'boolkey1': [42.34]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{}])
+        h = GenericHandler()
+        h.omitted = 'OM'
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{'boolkey1': 'OM'}])
+
+        # Int will be mapped to omitted (None)
+        cat = Category('_foo', {'boolkey1': [42]})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{}])
+        h = GenericHandler()
+        h.omitted = 'OM'
+        self._read_bcif([Block([cat])], {'_foo': h})
+        self.assertEqual(h.data, [{'boolkey1': 'OM'}])
 
     def test_omitted_unknown(self):
         """Test handling of omitted/unknown data"""
@@ -1131,6 +1168,7 @@ class Tests(unittest.TestCase):
         h._keys = ('var1', 'var2')
         h._int_keys = frozenset()
         h._float_keys = frozenset()
+        h._bool_keys = frozenset()
         self._read_bcif([Block([cat])], {'_foo': h})
         self.assertEqual(h.data,
                          [{'var1': 'test1', 'var2': 'NOT'},

@@ -27,9 +27,11 @@ class GenericHandler:
     unknown = ihm.unknown
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
-             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2')
+             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2',
+             'boolkey1')
     _int_keys = frozenset(('intkey1', 'intkey2'))
     _float_keys = frozenset(('floatkey1', 'floatkey2'))
+    _bool_keys = frozenset(('boolkey1',))
 
     def __init__(self):
         self.data = []
@@ -266,21 +268,22 @@ x
     def test_handler_annotations(self):
         """Test Reader using Handler annotations"""
         class _OKHandler:
-            def __call__(self, a: int, b: float, c):
+            def __call__(self, a: int, b: float, c: bool, d):
                 pass
 
         class _BadHandler:
-            def __call__(self, a: bool, b, c):
+            def __call__(self, a: set, b, c):
                 pass
 
-        # Test that handler _int_keys, _float_keys are filled in
+        # Test that handler _int_keys, _float_keys, _bool_keys are filled in
         r = ihm.format._Reader()
         m = _OKHandler()
         r.category_handler = {'foo': m}
         r._add_category_keys()
-        self.assertEqual(m._keys, ['a', 'b', 'c'])
+        self.assertEqual(m._keys, ['a', 'b', 'c', 'd'])
         self.assertEqual(m._int_keys, frozenset(['a']))
         self.assertEqual(m._float_keys, frozenset(['b']))
+        self.assertEqual(m._bool_keys, frozenset(['c']))
 
         # Check handling of unsupported annotations
         r = ihm.format._Reader()
@@ -476,7 +479,8 @@ save_
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
                   'method': 'NOT', 'baz': 'x',
                   'intkey1': 'NOT', 'intkey2': 'NOT',
-                  'floatkey1': 'NOT', 'floatkey2': 'NOT'}])
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT',
+                  'boolkey1': 'NOT'}])
 
             h = GenericHandler()
             h.not_in_file = 'NOT'
@@ -488,7 +492,7 @@ save_
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
                   'method': 'NOT', 'baz': 'x',
                   'intkey1': 'NOT', 'intkey2': 'NOT',
-                  'floatkey1': 'NOT', 'floatkey2': 'NOT'}])
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT', 'boolkey1': 'NOT'}])
 
     def test_loop_linebreak(self):
         """Make sure that linebreaks are ignored in loop data"""
@@ -661,6 +665,41 @@ oneval
             val = h.data[0]['floatkey1']
             self.assertIsInstance(val, float)
             self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+    def test_bool_keys(self):
+        """Check handling of bool keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # boolkey1 should be returned as bool, not str
+            self._read_cif("_foo.var1 YES\n_foo.boolkey1 YES",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "YES", 'boolkey1': True}])
+
+            h = GenericHandler()
+            self._read_cif("_foo.var1 no\n_foo.boolkey1 no",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "no", 'boolkey1': False}])
+
+            # Anything else should map to omitted (None, or handler.omitted)
+            for val in ('GARBAGE', '42', '42.34'):
+                h = GenericHandler()
+                self._read_cif("_foo.var1 no\n_foo.boolkey1 %s" % val,
+                               real_file, {'_foo': h})
+                self.assertEqual(h.data, [{'var1': 'no'}])
+
+                h = GenericHandler()
+                h.omitted = 'OM'
+                self._read_cif("_foo.var1 no\n_foo.boolkey1 %s" % val,
+                               real_file, {'_foo': h})
+                self.assertEqual(h.data, [{'var1': 'no', 'boolkey1': 'OM'}])
+
+    def test_bool_keys_loop(self):
+        """Check handling of bool keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.boolkey1\n_foo.x\n_foo.bar\n"
+                           "YES xval barval", real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'bar': 'barval', 'boolkey1': True}])
 
     def test_first_data_block(self):
         """Only information from the first data block should be read"""

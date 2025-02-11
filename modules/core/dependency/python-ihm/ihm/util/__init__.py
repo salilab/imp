@@ -3,6 +3,7 @@
 import string
 import os
 import ihm
+import datetime
 
 
 class _AsymIDs:
@@ -176,3 +177,12 @@ def _get_codes(codestr):
         else:
             yield codestr[i]
         i += 1
+
+
+def _get_iso_date(iso_date_str):
+    """Get a datetime.date obj for a string in isoformat."""
+    if not iso_date_str:
+        return iso_date_str
+    return datetime.date(int(iso_date_str[0:4]),
+                         int(iso_date_str[5:7]),
+                         int(iso_date_str[8:10]))

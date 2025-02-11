@@ -509,6 +509,15 @@ struct ihm_keyword *ihm_keyword_float_new(struct ihm_category *category,
   return key;
 }
 
+/* Add a new boolean ihm_keyword to a category. */
+struct ihm_keyword *ihm_keyword_bool_new(struct ihm_category *category,
+                                         const char *name)
+{
+  struct ihm_keyword *key = ihm_keyword_new(category, name);
+  key->type = IHM_BOOL;
+  return key;
+}
+
 /* Add a new string ihm_keyword to a category. */
 struct ihm_keyword *ihm_keyword_str_new(struct ihm_category *category,
                                         const char *name)
@@ -547,6 +556,7 @@ static void set_value_from_string(struct ihm_reader *reader,
     } else {
       key->data.str = str;
     }
+    key->omitted = key->unknown = false;
     break;
   case IHM_INT:
     key->data.ival = strtol(str, &ch, 10);
@@ -556,6 +566,7 @@ static void set_value_from_string(struct ihm_reader *reader,
                     str, reader->linenum);
       return;
     }
+    key->omitted = key->unknown = false;
     break;
   case IHM_FLOAT:
     key->data.fval = strtod(str, &ch);
@@ -565,10 +576,20 @@ static void set_value_from_string(struct ihm_reader *reader,
                     str, reader->linenum);
       return;
     }
+    key->omitted = key->unknown = false;
+    break;
+  case IHM_BOOL:
+    key->omitted = key->unknown = false;
+    if (strcasecmp(str, "YES") == 0) {
+      key->data.bval = true;
+    } else if (strcasecmp(str, "NO") == 0) {
+      key->data.bval = false;
+    } else {
+      key->omitted = true;
+    }
     break;
   }
 
-  key->omitted = key->unknown = false;
   key->in_file = true;
 }
 
@@ -2583,12 +2604,15 @@ static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
        not the keyword */
     key->own_data = false;
     key->data.str = str;
+    key->omitted = false;
     break;
   case IHM_INT:
     key->data.ival = strtol(str, &ch, 10);
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as integer in file", str);
+    } else {
+      key->omitted = false;
     }
     break;
   case IHM_FLOAT:
@@ -2596,14 +2620,32 @@ static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as float in file", str);
+    } else {
+      key->omitted = false;
     }
     break;
+  case IHM_BOOL:
+    key->omitted = false;
+    if (strcasecmp(str, "YES") == 0) {
+      key->data.bval = true;
+    } else if (strcasecmp(str, "NO") == 0) {
+      key->data.bval = false;
+    } else {
+      key->omitted = true;
+    }
+    break;
+  }
+  if (!*err) {
+    key->in_file = true;
+    key->unknown = false;
   }
 }
 
 static void set_value_from_bcif_double(struct ihm_keyword *key, double fval,
                                        char *buffer)
 {
+  key->omitted = key->unknown = false;
+  key->in_file = true;
   switch(key->type) {
   case IHM_STRING:
     /* We (not the keyword) own buffer */
@@ -2619,12 +2661,17 @@ static void set_value_from_bcif_double(struct ihm_keyword *key, double fval,
   case IHM_FLOAT:
     key->data.fval = fval;
     break;
+  case IHM_BOOL:
+    key->omitted = true;
+    break;
   }
 }
 
 static void set_value_from_bcif_int(struct ihm_keyword *key, int32_t ival,
                                     char *buffer)
 {
+  key->omitted = key->unknown = false;
+  key->in_file = true;
   switch(key->type) {
   case IHM_STRING:
     /* We (not the keyword) own buffer */
@@ -2637,6 +2684,9 @@ static void set_value_from_bcif_int(struct ihm_keyword *key, int32_t ival,
     break;
   case IHM_FLOAT:
     key->data.fval = ival;
+    break;
+  case IHM_BOOL:
+    key->omitted = true;
     break;
   }
 }
@@ -2674,11 +2724,6 @@ static void set_value_from_data(struct ihm_reader *reader,
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
                   "Unhandled data type %d", data->type);
     break;
-  }
-
-  if (!*err) {
-    key->omitted = key->unknown = false;
-    key->in_file = true;
   }
 }
 

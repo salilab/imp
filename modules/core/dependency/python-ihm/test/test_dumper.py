@@ -5831,7 +5831,8 @@ baz 1abc 1abcxyz 1.2.3.4
     def test_database_status_dumper(self):
         """Test DatabaseStatusDumper"""
         system = ihm.System()
-        system._database_status = {
+        self.assertEqual(system.database_status._map, {})
+        system.database_status._map = {
             'status_code': 'REL', 'entry_id': '5FD1',
             'recvd_initial_deposition_date': '1993-06-29',
             'deposit_site': ihm.unknown, 'process_site': 'BNL',

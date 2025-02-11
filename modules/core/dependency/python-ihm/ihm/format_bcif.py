@@ -175,6 +175,16 @@ def _decode(data, encoding):
     return data
 
 
+class _BoolTypeHandler:
+    _bool_map = {'YES': True, 'NO': False}
+
+    def __init__(self, omitted):
+        self.omitted = omitted
+
+    def __call__(self, txt):
+        return self._bool_map.get(str(txt).upper(), self.omitted)
+
+
 class BinaryCifReader(ihm.format._Reader):
     """Class to read a BinaryCIF file and extract some or all of its data.
 
@@ -229,7 +239,7 @@ class BinaryCifReader(ihm.format._Reader):
                 or _format.add_category_handler
             func(self._c_format, category, handler._keys,
                  frozenset(handler._int_keys), frozenset(handler._float_keys),
-                 handler)
+                 frozenset(handler._bool_keys), handler)
         if self.unknown_category_handler is not None:
             _format.add_unknown_category_handler(self._c_format,
                                                  self.unknown_category_handler)
@@ -243,6 +253,8 @@ class BinaryCifReader(ihm.format._Reader):
         """Return a function that converts keyword string into desired type"""
         if keyword in category_handler._int_keys:
             return int
+        elif keyword in category_handler._bool_keys:
+            return _BoolTypeHandler(category_handler.omitted)
         elif keyword in category_handler._float_keys:
             return float
         else:

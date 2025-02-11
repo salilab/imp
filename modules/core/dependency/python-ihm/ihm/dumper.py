@@ -314,7 +314,7 @@ class _DatabaseStatusDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_pdbx_database_status") as lp:
             # Pass through all data items from a Python dict
-            lp.write(**system._database_status)
+            lp.write(**system.database_status._map)
 
 
 class _ChemCompDumper(Dumper):

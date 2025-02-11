@@ -84,7 +84,10 @@ class System:
         self.model_details = model_details
         self.databases = []
         self.databases.extend(databases)
-        self._database_status = {}
+
+        #: Information about data processsing and entry status.
+        #: See :class:`DatabaseStatus`.
+        self.database_status = DatabaseStatus()
 
         #: List of plain text comments. These will be added to the top of
         #: the mmCIF file.
@@ -238,6 +241,8 @@ class System:
         self._orphan_relaxation_times = []
         self._orphan_repos = []
         self._orphan_chem_comps = []
+
+    _database_status = property(lambda self: self.database_status._map)
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
@@ -679,6 +684,25 @@ class System:
                     "the same type, and only certain types (currently only "
                     "DerivedDistanceRestraint or PredictedContactRestraint) "
                     "can be grouped." % g)
+
+
+class DatabaseStatus:
+    """Information about data processsing and entry status.
+       This information is usually accessed via :attr:`System.database_status`.
+    """
+    def __init__(self):
+        self._map = {}
+
+    status_code = property(lambda self: self._map['status_code'],
+                           doc="The status of the entry, e.g. released.")
+    deposit_site = property(lambda self: self._map['deposit_site'],
+                            doc="The site where the file was deposited.")
+    process_site = property(lambda self: self._map['process_site'],
+                            doc="The site where the file was processed.")
+    recvd_initial_deposition_date = property(
+        lambda self:
+        util._get_iso_date(self._map['recvd_initial_deposition_date']),
+        doc="The date of initial deposition.")
 
 
 class Database:

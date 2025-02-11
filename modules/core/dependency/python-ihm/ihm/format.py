@@ -370,31 +370,34 @@ class _Reader:
                 return re.sub(r'(\d)', r'[\1]', field)
             else:
                 return field
+
+        def fill_keys(h, s, attr, typ):
+            if not hasattr(h, attr):
+                setattr(h, attr, frozenset(
+                    python_to_cif(k) for k, v in s.annotations.items()
+                    if v is typ))
+
+        def check_extra(h, attr):
+            extra = frozenset(getattr(h, attr)) - frozenset(h._keys)
+            if extra:
+                raise ValueError("For %s, %s not in _keys: %s"
+                                 % (h, attr, ", ".join(extra)))
+
         for h in self.category_handler.values():
             s = inspect.getfullargspec(h.__call__)
             if not hasattr(h, '_keys'):
                 h._keys = [python_to_cif(x) for x in s.args[1:]]
-            if not hasattr(h, '_int_keys'):
-                h._int_keys = frozenset(
-                    python_to_cif(k) for k, v in s.annotations.items()
-                    if v is int)
-            if not hasattr(h, '_float_keys'):
-                h._float_keys = frozenset(
-                    python_to_cif(k) for k, v in s.annotations.items()
-                    if v is float)
+            fill_keys(h, s, '_int_keys', int)
+            fill_keys(h, s, '_float_keys', float)
+            fill_keys(h, s, '_bool_keys', bool)
             bad_keys = frozenset(k for k, v in s.annotations.items()
-                                 if v not in (int, float, str))
+                                 if v not in (int, float, str, bool))
             if bad_keys:
                 raise ValueError("For %s, bad annotations: %s"
                                  % (h, ", ".join(bad_keys)))
-            extra = frozenset(h._int_keys) - frozenset(h._keys)
-            if extra:
-                raise ValueError("For %s, _int_keys not in _keys: %s"
-                                 % (h, ", ".join(extra)))
-            extra = frozenset(h._float_keys) - frozenset(h._keys)
-            if extra:
-                raise ValueError("For %s, _float_keys not in _keys: %s"
-                                 % (h, ", ".join(extra)))
+            check_extra(h, '_int_keys')
+            check_extra(h, '_float_keys')
+            check_extra(h, '_bool_keys')
 
 
 class _CifTokenizer:
@@ -1069,6 +1072,16 @@ def _float_type_handler(txt, linenum):
         raise ValueError("%s at line %d" % (str(exc), linenum))
 
 
+class _BoolTypeHandler:
+    _bool_map = {'YES': True, 'NO': False}
+
+    def __init__(self, omitted):
+        self.omitted = omitted
+
+    def __call__(self, txt, linenum):
+        return self._bool_map.get(txt.upper(), self.omitted)
+
+
 def _str_type_handler(txt, linenum):
     return txt
 
@@ -1213,6 +1226,8 @@ class CifReader(_Reader, _CifTokenizer):
         """Return a function that converts keyword string into desired type"""
         if keyword in category_handler._int_keys:
             return _int_type_handler
+        elif keyword in category_handler._bool_keys:
+            return _BoolTypeHandler(category_handler.omitted)
         elif keyword in category_handler._float_keys:
             return _float_type_handler
         else:
@@ -1299,7 +1314,7 @@ class CifReader(_Reader, _CifTokenizer):
                 or _format.add_category_handler
             func(self._c_format, category, handler._keys,
                  frozenset(handler._int_keys), frozenset(handler._float_keys),
-                 handler)
+                 frozenset(handler._bool_keys), handler)
         if self.unknown_category_handler is not None:
             _format.add_unknown_category_handler(self._c_format,
                                                  self.unknown_category_handler)

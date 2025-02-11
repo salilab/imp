@@ -5449,6 +5449,12 @@ _pdbx_database_status.SG_entry                        .
                           'deposit_site': ihm.unknown,
                           'process_site': 'BNL',
                           'sg_entry': None})
+        # Also test public interface for selected data items
+        self.assertEqual(s.database_status.status_code, 'REL')
+        self.assertIs(s.database_status.deposit_site, ihm.unknown)
+        self.assertEqual(s.database_status.process_site, 'BNL')
+        self.assertEqual(s.database_status.recvd_initial_deposition_date,
+                         datetime.date(1993, 6, 29))
 
     def test_add_to_system(self):
         """Test adding new mmCIF input to existing System"""

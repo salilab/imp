@@ -317,6 +317,9 @@ static void handle_category_data(struct ihm_reader *reader, int linenum,
       case IHM_FLOAT:
         val = PyFloat_FromDouble((*keys)->data.fval);
         break;
+      case IHM_BOOL:
+        val = (*keys)->data.bval ? Py_True : Py_False;
+        break;
       }
     }
     /* Steals ref to val */
@@ -353,7 +356,8 @@ static void end_frame_category(struct ihm_reader *reader, int linenum,
 static struct category_handler_data *do_add_handler(
                         struct ihm_reader *reader, char *name,
                         PyObject *keywords, PyObject *int_keywords,
-                        PyObject *float_keywords, PyObject *callable,
+                        PyObject *float_keywords,
+                        PyObject *bool_keywords, PyObject *callable,
                         ihm_category_callback data_callback,
                         ihm_category_callback end_frame_callback,
                         ihm_category_callback finalize_callback,
@@ -373,6 +377,10 @@ static struct category_handler_data *do_add_handler(
   }
   if (!PyAnySet_Check(float_keywords)) {
     ihm_error_set(err, IHM_ERROR_VALUE, "'float_keywords' should be a set");
+    return NULL;
+  }
+  if (!PyAnySet_Check(bool_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'bool_keywords' should be a set");
     return NULL;
   }
   if (!PyCallable_Check(callable)) {
@@ -407,6 +415,8 @@ static struct category_handler_data *do_add_handler(
         hd->keywords[i] = ihm_keyword_int_new(category, key_name);
       } else if (PySet_Contains(float_keywords, o) == 1) {
         hd->keywords[i] = ihm_keyword_float_new(category, key_name);
+      } else if (PySet_Contains(bool_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_bool_new(category, key_name);
       } else {
         hd->keywords[i] = ihm_keyword_str_new(category, key_name);
       }
@@ -495,11 +505,12 @@ void add_unknown_keyword_handler(struct ihm_reader *reader,
    the given category and passes them to a Python callable */
 void add_category_handler(struct ihm_reader *reader, char *name,
                           PyObject *keywords, PyObject *int_keywords,
-                          PyObject *float_keywords, PyObject *callable,
-                          struct ihm_error **err)
+                          PyObject *float_keywords, PyObject *bool_keywords,
+                          PyObject *callable, struct ihm_error **err)
 {
-  do_add_handler(reader, name, keywords, int_keywords, float_keywords, callable,
-                 handle_category_data, end_frame_category, NULL, err);
+  do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                 bool_keywords, callable, handle_category_data,
+                 end_frame_category, NULL, err);
 }
 %}
 
@@ -558,12 +569,14 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader, int linenum,
    asym_id==pdb_strand_id, and pdb_ins_code is blank */
 void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
                                  PyObject *keywords, PyObject *int_keywords,
-                                 PyObject *float_keywords, PyObject *callable,
+                                 PyObject *float_keywords,
+                                 PyObject *bool_keywords, PyObject *callable,
                                  struct ihm_error **err)
 {
   struct category_handler_data *hd;
   hd = do_add_handler(reader, name, keywords, int_keywords, float_keywords,
-                      callable, handle_poly_seq_scheme_data, NULL, NULL, err);
+                      bool_keywords, callable, handle_poly_seq_scheme_data,
+                      NULL, NULL, err);
   if (hd) {
     /* Make sure the Python handler and the C handler agree on the order
        of the keywords */
@@ -579,12 +592,12 @@ void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
 /* Test function so we can make sure finalize callbacks work */
 void _test_finalize_callback(struct ihm_reader *reader, char *name,
                              PyObject *keywords, PyObject *int_keywords,
-                             PyObject *float_keywords, PyObject *callable,
-                             struct ihm_error **err)
+                             PyObject *float_keywords, PyObject *bool_keywords,
+                             PyObject *callable, struct ihm_error **err)
 {
   do_add_handler(reader, name, keywords, int_keywords, float_keywords,
-                 callable, handle_category_data, NULL, handle_category_data,
-                 err);
+                 bool_keywords, callable, handle_category_data, NULL,
+                 handle_category_data, err);
 }
 
 %}
