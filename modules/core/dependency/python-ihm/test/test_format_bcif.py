@@ -319,9 +319,15 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data[0], str)
         self.assertAlmostEqual(float(data[0]), 42.0, delta=0.1)
 
-        # unsupported type
+        # type 32 (32-bit float)
+        data = get_decoded(ihm.format_bcif._Float32, b'\x00\x00(B')
+        self.assertIsInstance(data[0], str)
+        self.assertAlmostEqual(float(data[0]), 42.0, delta=0.1)
+
+        # unsupported type (16-bit int)
         self.assertRaises(_format.FileFormatError,
-                          get_decoded, ihm.format_bcif._Float32, b'\x00\x00(B')
+                          get_decoded, ihm.format_bcif._Int16,
+                          struct.pack('<h', 5))
 
     def test_integer_packing_decoder_signed(self):
         """Test IntegerPacking decoder with signed data"""
@@ -457,7 +463,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(val, float)
         self.assertAlmostEqual(val, 42.34, delta=0.01)
 
-        # Cannot coerce arbitary string to float
+        # Cannot coerce arbitrary string to float
         cat = Category('_foo', {'floatkey1': ["some string"]})
         h = GenericHandler()
         self.assertRaises(ValueError, self._read_bcif,
@@ -882,14 +888,14 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})
 
-        # Indices must be in range
-        for data in (struct.pack('2b', 0, 40), struct.pack('b', -32)):
+        # Out-of-range indices return empty strings
+        for data in (struct.pack('b', 40), struct.pack('b', -32)):
             d = make_bcif(data=data, data_type=ihm.format_bcif._Int8,
                           offsets=b'\x00\x01\x03',
                           offsets_type=ihm.format_bcif._Uint8)
             h = GenericHandler()
-            self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
-                              d, {'_foo': h})
+            self._read_bcif_raw(d, {'_foo': h})
+            self.assertEqual(h.data, [{'bar': ''}])
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_fixed_point_encoding_c(self):
@@ -942,7 +948,7 @@ class Tests(unittest.TestCase):
                                                     'columns': [c]}]}]}
 
         # Test normal usage
-        d = make_bcif(data=b'\x05\x00\x00\x00\x03\x00\x00\x00',
+        d = make_bcif(data=struct.pack('<2i', 5, 3),
                       data_type=ihm.format_bcif._Int32)
         h = GenericHandler()
         self._read_bcif_raw(d, {'_foo': h})
@@ -950,6 +956,20 @@ class Tests(unittest.TestCase):
 
         # Bad input type
         d = make_bcif(data=b'\x05\x03', data_type=ihm.format_bcif._Int8)
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Negative counts should be rejected
+        d = make_bcif(data=struct.pack('<2i', 5, -3),
+                      data_type=ihm.format_bcif._Int32)
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Very large positive counts should be rejected
+        d = make_bcif(data=struct.pack('<2i', 5, int(1e8)),
+                      data_type=ihm.format_bcif._Int32)
         h = GenericHandler()
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})

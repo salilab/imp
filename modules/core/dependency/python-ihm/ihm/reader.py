@@ -876,18 +876,20 @@ class Handler:
 
            class CustomHandler(Handler):
                category = "_custom"
-               def __call__(self, key1, key2):
+               def __call__(self, key1, key2: int, key3: float):
                    pass
 
-       will be called with arguments `"x", "y"` when given the mmCIF input::
+       will be called with arguments `"x", 42, 1.0` when given the
+       mmCIF input::
 
            _custom.key1 x
-           _custom.key2 y
+           _custom.key2 42
+           _custom.key3 1.0
 
-       Note that the arguments will always be strings when reading an mmCIF
-       file. To convert to integer, floating point, or boolean, use the utility
-       methods :meth:`get_int`, :meth:`get_float` or :meth:`get_bool`
-       respectively.
+       By default, the arguments will be passed as strings. Type annotations
+       (as above) can be used to get arguments as integers, floating-point
+       values, or booleans, using the annotations `int`, `float`, or `bool`
+       respectively (no other type annotations are permitted).
        """
 
     #: Value passed to `__call__` for keywords not in the file

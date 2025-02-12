@@ -1,3 +1,23 @@
+2.0 - 2025-02-11
+================
+  - python-ihm no longer supports Python 2; the oldest supported version
+    is now Python 3.6 (#161).
+  - BinaryCIF files are now read in using a C-accelerated parser, which is
+    faster and more memory efficient than the older Python parser (#160).
+  - The tokenizers for mmCIF and BinaryCIF now return data of the correct
+    type (int, float, bool, or string); previously, all values were returned
+    as strings. :class:`ihm.reader.Handler` subclasses now request data of
+    the correct type using Python type annotations. The API of the
+    C-accelerated parsers has changed accordingly (#162).
+  - The new :class:`ihm.metadata.BinaryCIFParser` class can extract metadata
+    such as database IDs and template information from BinaryCIF files, in
+    a similar fashion to the existing :class:`ihm.metadata.CIFParser`.
+  - Information about a deposited structure, such as the deposition date,
+    can now be read from :attr:`System.database_status` (#163).
+  - The new :class:`ihm.format.ReplaceCategoryFilter` class can be used to
+    completely replace or remove an mmCIF category when using
+    :class:`ihm.format.CifTokenReader`.
+
 1.8 - 2024-11-26
 ================
   - Support added for datasets containing EPR, X-ray diffraction, footprinting

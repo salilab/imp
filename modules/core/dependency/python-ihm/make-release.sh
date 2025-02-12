@@ -9,6 +9,7 @@
 # - Run util/check-db-entries.py to check against some real archive structures
 #   (cd util; PYTHONPATH=.. python3 check-db-entries.py)
 # - Make sure all python-modelcif tests work using new IHM version
+# - Make sure the self-test script in each package (Homebrew, conda) works
 # - Update ChangeLog.rst, util/debian/changelog, and util/python-ihm.spec
 #   with the release number and date
 # - Update release number in ihm/__init__.py, MANIFEST.in, and setup.py

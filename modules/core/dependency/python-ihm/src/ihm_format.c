@@ -2340,7 +2340,16 @@ static bool decode_bcif_run_length(struct bcif_data *d,
   }
   outsz = 0;
   for (i = 1; i < d->size; i += 2) {
-    outsz += d->data.int32[i];
+    int32_t ts = d->data.int32[i];
+    /* Try to catch invalid (or malicious) counts. Counts cannot be negative
+       and the largest count seen in a very large PDB structure (3j3q) is
+       about 2.4m, so we are unlikely to see counts of 40m in real systems */
+    if (ts < 0 || ts > 40000000) {
+      ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
+                    "Bad run length repeat count %d", ts);
+      return false;
+    }
+    outsz += ts;
   }
   assert(outsz > 0);
   outdata = (int32_t *)ihm_malloc(outsz * sizeof(int32_t));
@@ -2470,16 +2479,13 @@ static bool decode_bcif_string_array(struct bcif_data *d,
   strarr = (char **)ihm_malloc(d->size * sizeof(char *));
   for (i = 0; i < d->size; ++i) {
     int32_t strnum = get_int_data(d, i);
-    /* make sure strnum in range */
+    /* If strnum out of range, return a null string (this usually corresponds
+       to masked data) */
     if (strnum < 0 || (size_t)strnum >= enc->offsets.size) {
-      free(strarr);
-      free(starts);
-      ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
-                    "StringArray index %d out of range 0-%d",
-                    strnum, enc->offsets.size - 1);
-      return false;
+      strarr[i] = "";
+    } else {
+      strarr[i] = enc->string_data + starts[strnum];
     }
-    strarr[i] = enc->string_data + starts[strnum];
   }
   free(starts);
   bcif_data_free(d);
@@ -2552,6 +2558,7 @@ static bool process_column_data(struct bcif_column *col,
   if (!decode_bcif_data(&col->data, col->first_encoding, err)) return false;
   if (col->data.type != BCIF_DATA_INT32
       && col->data.type != BCIF_DATA_UINT8
+      && col->data.type != BCIF_DATA_FLOAT
       && col->data.type != BCIF_DATA_DOUBLE
       && col->data.type != BCIF_DATA_STRING) {
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
@@ -2709,6 +2716,10 @@ static void set_value_from_data(struct ihm_reader *reader,
   switch(data->type) {
   case BCIF_DATA_STRING:
     set_value_from_bcif_string(key, data->data.string[irow], err);
+    break;
+  case BCIF_DATA_FLOAT:
+    /* promote to double */
+    set_value_from_bcif_double(key, data->data.float32[irow], buffer);
     break;
   case BCIF_DATA_DOUBLE:
     set_value_from_bcif_double(key, data->data.float64[irow], buffer);

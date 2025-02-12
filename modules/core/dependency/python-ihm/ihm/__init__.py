@@ -17,7 +17,7 @@ import urllib.request
 import json
 from . import util
 
-__version__ = '1.8'
+__version__ = '2.0'
 
 
 class __UnknownValue:
@@ -85,7 +85,7 @@ class System:
         self.databases = []
         self.databases.extend(databases)
 
-        #: Information about data processsing and entry status.
+        #: Information about data processing and entry status.
         #: See :class:`DatabaseStatus`.
         self.database_status = DatabaseStatus()
 
@@ -687,7 +687,7 @@ class System:
 
 
 class DatabaseStatus:
-    """Information about data processsing and entry status.
+    """Information about data processing and entry status.
        This information is usually accessed via :attr:`System.database_status`.
     """
     def __init__(self):
