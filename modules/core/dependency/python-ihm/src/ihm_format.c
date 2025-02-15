@@ -2556,16 +2556,21 @@ static bool process_column_data(struct bcif_column *col,
                                 struct ihm_error **err)
 {
   if (!decode_bcif_data(&col->data, col->first_encoding, err)) return false;
-  if (col->data.type != BCIF_DATA_INT32
-      && col->data.type != BCIF_DATA_UINT8
-      && col->data.type != BCIF_DATA_FLOAT
-      && col->data.type != BCIF_DATA_DOUBLE
-      && col->data.type != BCIF_DATA_STRING) {
+  switch(col->data.type) {
+  case BCIF_DATA_INT32:
+  case BCIF_DATA_INT8:
+  case BCIF_DATA_UINT8:
+  case BCIF_DATA_INT16:
+  case BCIF_DATA_UINT16:
+  case BCIF_DATA_FLOAT:
+  case BCIF_DATA_DOUBLE:
+  case BCIF_DATA_STRING:
+    return true;
+  default:
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
                   "Unsupported column data type %d", col->data.type);
     return false;
   }
-  return true;
 }
 
 /* Decode and check the column's mask, if any */
@@ -2724,9 +2729,21 @@ static void set_value_from_data(struct ihm_reader *reader,
   case BCIF_DATA_DOUBLE:
     set_value_from_bcif_double(key, data->data.float64[irow], buffer);
     break;
+  case BCIF_DATA_INT8:
+    /* promote to int32 */
+    set_value_from_bcif_int(key, data->data.int8[irow], buffer);
+    break;
   case BCIF_DATA_UINT8:
     /* promote to int32 */
     set_value_from_bcif_int(key, data->data.uint8[irow], buffer);
+    break;
+  case BCIF_DATA_INT16:
+    /* promote to int32 */
+    set_value_from_bcif_int(key, data->data.int16[irow], buffer);
+    break;
+  case BCIF_DATA_UINT16:
+    /* promote to int32 */
+    set_value_from_bcif_int(key, data->data.uint16[irow], buffer);
     break;
   case BCIF_DATA_INT32:
     set_value_from_bcif_int(key, data->data.int32[irow], buffer);

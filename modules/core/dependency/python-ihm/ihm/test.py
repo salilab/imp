@@ -3,6 +3,10 @@ import ihm.dumper
 import ihm.reader
 import os
 import unittest
+try:
+    import msgpack
+except ImportError:
+    msgpack = None
 
 
 class Tests(unittest.TestCase):
@@ -22,6 +26,15 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(sys2.title, 'test system')
         os.unlink('output.cif')
+
+        # Also test with BinaryCIF
+        if msgpack:
+            with open('output.bcif', 'wb') as fh:
+                ihm.dumper.write(fh, [system], format='BCIF')
+            with open('output.bcif', 'rb') as fh:
+                sys2, = ihm.reader.read(fh, format='BCIF')
+            self.assertEqual(sys2.title, 'test system')
+            os.unlink('output.bcif')
 
 
 if __name__ == '__main__':

@@ -309,9 +309,21 @@ class Tests(unittest.TestCase):
                           enc=[{'kind': 'ByteArray',
                                 'type': ihm.format_bcif._Int32}] * 2)
 
+        # type 1 (signed char)
+        data = get_decoded(ihm.format_bcif._Int8, struct.pack('2b', -10, 100))
+        self.assertEqual(data, ['-10', '100'])
+
         # type 4 (unsigned char)
         data = get_decoded(ihm.format_bcif._Uint8, b'\x00\xFF')
         self.assertEqual(data, ['0', '255'])
+
+        # type 2 (16-bit signed int)
+        data = get_decoded(ihm.format_bcif._Int16, struct.pack('<2h', -5, 10))
+        self.assertEqual(data, ['-5', '10'])
+
+        # type 5 (16-bit unsigned int)
+        data = get_decoded(ihm.format_bcif._Uint16, struct.pack('<H', 50))
+        self.assertEqual(data, ['50'])
 
         # type 33 (64-bit float)
         data = get_decoded(ihm.format_bcif._Float64,
@@ -324,10 +336,10 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data[0], str)
         self.assertAlmostEqual(float(data[0]), 42.0, delta=0.1)
 
-        # unsupported type (16-bit int)
+        # unsupported type (32-bit unsigned int)
         self.assertRaises(_format.FileFormatError,
-                          get_decoded, ihm.format_bcif._Int16,
-                          struct.pack('<h', 5))
+                          get_decoded, ihm.format_bcif._Uint32,
+                          struct.pack('<I', 5))
 
     def test_integer_packing_decoder_signed(self):
         """Test IntegerPacking decoder with signed data"""
