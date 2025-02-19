@@ -155,6 +155,20 @@ class _FixedPointDecoder(_Decoder):
             yield float(d) / factor
 
 
+class _IntervalQuantizationDecoder(_Decoder):
+    """Decode a floating point array stored as integers quantized within
+       a given interval into a number of discrete steps."""
+    _kind = 'IntervalQuantization'
+
+    def __call__(self, enc, data):
+        minval = float(enc['min'])
+        maxval = float(enc['max'])
+        numsteps = int(enc['numSteps'])
+        delta = (maxval - minval) / (numsteps - 1)
+        for d in data:
+            yield minval + delta * d
+
+
 def _get_decoder_map():
     m = {}
     for d in [x[1] for x in inspect.getmembers(sys.modules[__name__],

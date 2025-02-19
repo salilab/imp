@@ -31,7 +31,10 @@ import os
 import argparse
 
 
-def add_ihm_info(s):
+def add_ihm_info(s, fix_histidines):
+    # Non-standard histidine names (protonation states)
+    histidines = frozenset(('HIP', 'HID', 'HIE'))
+
     if not s.title:
         s.title = 'Auto-generated system'
 
@@ -58,7 +61,39 @@ def add_ihm_info(s):
                         model.protocol = default_protocol
                     model.not_modeled_residue_ranges.extend(
                         _get_not_modeled_residues(model))
+                    if fix_histidines:
+                        _fix_histidine_het_atoms(model, histidines)
+    if fix_histidines:
+        _fix_histidine_chem_comps(s, histidines)
     return s
+
+
+def _fix_histidine_het_atoms(model, histidines):
+    """Fix any non-standard histidine atoms in atom_site that are marked
+       HETATM to instead use ATOM"""
+    for atom in model._atoms:
+        if atom.seq_id is None or not atom.het:
+            continue
+        comp = atom.asym_unit.sequence[atom.seq_id - 1]
+        if comp.id in histidines:
+            atom.het = False
+
+
+def _fix_histidine_chem_comps(s, histidines):
+    """Change any non-standard histidine chemical components to normal HIS"""
+    his = ihm.LPeptideAlphabet()['H']
+    for e in s.entities:
+        for c in e.sequence:
+            if c.id in histidines:
+                # Change the ChemComp to HIS in place, as there may be
+                # references to this ChemComp elsewhere. Duplicate HIS
+                # components will be combined into one at output time.
+                c.id = his.id
+                c.code = his.code
+                c.code_canonical = his.code_canonical
+                c.name = his.name
+                c.formula = his.formula
+                c.__class__ = his.__class__
 
 
 def _get_not_modeled_residues(model):
@@ -95,7 +130,7 @@ def _get_not_modeled_residues(model):
             yield ihm.model.NotModeledResidueRange(asym, r[0], r[1])
 
 
-def add_ihm_info_one_system(fname):
+def add_ihm_info_one_system(fname, fix_histidines):
     """Read mmCIF file `fname`, which must contain a single System, and
        return it with any missing IHM data added."""
     with open(fname) as fh:
@@ -103,7 +138,7 @@ def add_ihm_info_one_system(fname):
     if len(systems) != 1:
         raise ValueError("mmCIF file %s must contain exactly 1 data block "
                          "(%d found)" % (fname, len(systems)))
-    return add_ihm_info(systems[0])
+    return add_ihm_info(systems[0], fix_histidines)
 
 
 def combine(s, other_s):
@@ -218,6 +253,9 @@ def get_args():
     p.add_argument("--add", "-a", action='append', metavar="add.cif",
                    help="also add model information from the named mmCIF "
                         "file to the output file")
+    p.add_argument("--histidines", action='store_true', dest="fix_histidines",
+                   help="Convert any non-standard histidine names (HIP, HID, "
+                        "HIE, for different protonation states) to HIS")
     return p.parse_args()
 
 
@@ -229,9 +267,9 @@ def main():
         raise ValueError("Input and output are the same file")
 
     if args.add:
-        s = add_ihm_info_one_system(args.input)
+        s = add_ihm_info_one_system(args.input, args.fix_histidines)
         for other in args.add:
-            other_s = add_ihm_info_one_system(other)
+            other_s = add_ihm_info_one_system(other, args.fix_histidines)
             combine(s, other_s)
         with open(args.output, 'w') as fhout:
             ihm.dumper.write(
@@ -241,7 +279,8 @@ def main():
         with open(args.input) as fh:
             with open(args.output, 'w') as fhout:
                 ihm.dumper.write(
-                    fhout, [add_ihm_info(s) for s in ihm.reader.read(fh)],
+                    fhout, [add_ihm_info(s, args.fix_histidines)
+                            for s in ihm.reader.read(fh)],
                     variant=ihm.dumper.IgnoreVariant(['_audit_conform']))
 
 

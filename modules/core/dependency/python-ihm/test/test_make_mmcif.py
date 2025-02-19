@@ -220,6 +220,29 @@ class Tests(unittest.TestCase):
         self.assertEqual(r3.asym_unit._id, 'B')
         os.unlink('output.cif')
 
+    def test_histidine(self):
+        """Test handling multiple histidine protonation states"""
+        incif = utils.get_input_file_name(TOPDIR, 'histidine.cif')
+        with open(incif) as fh:
+            s, = ihm.reader.read(fh)
+        self.assertEqual([c.id for c in s.entities[0].sequence],
+                         ['ALA', 'HIS', 'HIE', 'HIP'])
+
+        subprocess.check_call([sys.executable, MAKE_MMCIF,
+                               '--histidine', incif])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        # All histidines should now be HIS
+        self.assertEqual([c.id for c in s.entities[0].sequence],
+                         ['ALA', 'HIS', 'HIS', 'HIS'])
+        # All atoms should now be ATOM not HETATM
+        for state_group in s.state_groups:
+            for state in state_group:
+                for model_group in state:
+                    for model in model_group:
+                        self.assertFalse(any(x.het for x in model._atoms))
+        os.unlink('output.cif')
+
 
 if __name__ == '__main__':
     unittest.main()
