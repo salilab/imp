@@ -370,10 +370,16 @@ IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
-/** \relates Hierarchy
+/**
+    @param mhd The Hierarchy to traverse for bond endpoints.
+    @param with_representations If true then bond endpoints in non-default
+           representations (see Representation) are also considered.
+
+    \relates Hierarchy
     \see Bond
  */
-IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
+IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd,
+                                       bool with_representations=false);
 
 //! Return the root of the hierarchy
 /** \relates Hierarchy */

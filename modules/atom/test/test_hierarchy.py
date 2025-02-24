@@ -102,6 +102,45 @@ class Tests(IMP.test.TestCase):
                                  IMP.atom.Bond.SINGLE)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 3)
 
+    def test_get_internal_bonds_with_rep(self):
+        """Check hierarchy get_internal_bonds with representations"""
+        def _make_rep(m):
+            r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
+            r3, r4, bonded3, bonded4 = _make_bonded_atoms(m)
+
+            top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+            repr1 = IMP.atom.Representation.setup_particle(IMP.Particle(m), 1)
+            repr2 = IMP.atom.Representation.setup_particle(IMP.Particle(m), 1)
+            top.add_child(repr1)
+            top.add_child(repr2)
+            repr1.add_child(r1)
+            repr1.add_representation(r2, IMP.atom.BALLS, 10)
+            repr2.add_child(r3)
+            repr2.add_representation(r4, IMP.atom.BALLS, 10)
+            return top, bonded1, bonded2, bonded3, bonded4
+
+        m = IMP.Model()
+
+        # By default, we should see bonds in default representations
+        top, bonded1, bonded2, bonded3, bonded4 = _make_rep(m)
+        IMP.atom.create_bond(bonded1[0], bonded3[0], IMP.atom.Bond.SINGLE)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top)), 1)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top, True)), 1)
+
+        # By default, we should not see bonds between endpoints in non-default
+        # representations
+        top, bonded1, bonded2, bonded3, bonded4 = _make_rep(m)
+        IMP.atom.create_bond(bonded1[0], bonded4[0], IMP.atom.Bond.SINGLE)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top)), 0)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top, True)), 1)
+
+        # Bonds between default and non-default representations, while
+        # nonsensical, should also be included
+        top, bonded1, bonded2, bonded3, bonded4 = _make_rep(m)
+        IMP.atom.create_bond(bonded1[0], bonded2[0], IMP.atom.Bond.SINGLE)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top)), 0)
+        self.assertEqual(len(IMP.atom.get_internal_bonds(top, True)), 1)
+
     def test_equality(self):
         """Check equality of AtomType types"""
         at0 = IMP.atom.AtomType(0)
