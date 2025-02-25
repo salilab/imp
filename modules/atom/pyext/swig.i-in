@@ -6,6 +6,7 @@ namespace atom {
 
 IMP_SWIG_GRAPH(IMP::atom, HierarchyTree, HierarchyTree, IMP::atom::Hierarchy);
 IMP_SWIG_VALUE(IMP::atom, PDBRecord, PDBRecords);
+IMP_SWIG_VALUE(IMP::atom, LennardJonesType, LennardJonesTypes);
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
 IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
@@ -24,6 +25,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
 IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
 IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
+IMP_SWIG_DECORATOR(IMP::atom, LennardJonesTyped, LennardJonesTypeds);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, LinearVelocity, LinearVelocities);
 IMP_SWIG_DECORATOR(IMP::atom, AngularVelocity, AngularVelocities);
@@ -72,6 +74,7 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
+IMP_SWIG_OBJECT(IMP::atom, LennardJonesTypedPairScore, LennardJonesTypedPairScores);
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
@@ -231,6 +234,7 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %include "IMP/atom/Domain.h"
 %include "IMP/atom/LennardJones.h"
 %include "IMP/atom/LennardJonesPairScore.h"
+%include "IMP/atom/LennardJonesTypedPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"

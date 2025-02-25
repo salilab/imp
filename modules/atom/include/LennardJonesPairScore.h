@@ -37,6 +37,9 @@ IMPATOM_BEGIN_NAMESPACE
     rarely-used NBFIX directive, for example). If the well depth or radius of
     a single particle is modified, that will affect its interaction with all
     particles.
+
+    It is recommended that new code instead uses LennardJonesTypedPairScore,
+    which is about twice as fast and can support NBFIX.
  */
 class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
   IMP::PointerMember<SmoothingFunction> smoothing_function_;
