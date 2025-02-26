@@ -27,7 +27,6 @@ class Tests(IMP.test.TestCase):
         t.set_radius(2.0)
         self.assertAlmostEqual(t.get_well_depth(), 3.0, delta=1e-6)
         self.assertAlmostEqual(t.get_radius(), 2.0, delta=1e-6)
-        self.assertIn('well depth: ', str(t))
 
     def test_create(self):
         """Check creation of LennardJonesTyped decorators"""
@@ -41,6 +40,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(typ.get_well_depth(), 2.0, delta=1e-6)
         self.assertAlmostEqual(typ.get_radius(), 1.0, delta=1e-6)
         t2 = typ.get_type()
+        self.assertAlmostEqual(t2.get_radius(), t.get_radius())
+        self.assertAlmostEqual(t2.get_well_depth(), t.get_well_depth())
         self.assertEqual(t2.get_name(), t.get_name())
         # Change to LennardJonesType should be reflected in the decorator
         t.set_well_depth(3.0)

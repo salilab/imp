@@ -22,12 +22,11 @@ IMPATOM_BEGIN_NAMESPACE
     any number of particles using the LennardJonesTyped decorator and then
     used by LennardJonesTypedPairScore. The parameters can be changed at
     any time, which will change the interaction of all particles using this
-    type. The type also has a name for ease of identification.
+    type.
  */
-class IMPATOMEXPORT LennardJonesType : public Value {
+class IMPATOMEXPORT LennardJonesType : public Object {
   double well_depth_;
   double radius_;
-  std::string name_;
   int index_;
 public:
   LennardJonesType(double well_depth, double radius,
@@ -41,25 +40,19 @@ public:
 
   void set_radius(double r);
 
-  std::string get_name() const { return name_; }
-
-  void set_name(std::string name);
-
   //! Get the globally unique identifier for this type.
   int get_index() const { return index_; }
 
-  IMP_SHOWABLE_INLINE(LennardJonesType, {
-    out << "well depth: " << well_depth_ << " radius: " << radius_;
-  });
+  IMP_OBJECT_METHODS(LennardJonesType);
 };
 
-IMP_VALUES(LennardJonesType, LennardJonesTypes);
+IMP_OBJECTS(LennardJonesType, LennardJonesTypes);
 
 #ifndef SWIG
 namespace internal {
 
 class IMPATOMEXPORT LennardJonesParameters : public Object {
-  std::vector<LennardJonesType> types_;
+  LennardJonesTypes types_;
 
 public:
   // Mapping from LJ types for a particle pair to A factor
@@ -70,9 +63,9 @@ public:
 
   LennardJonesParameters() : Object("LennardJonesParameters %1%") {}
 
-  int add(LennardJonesType &typ);
+  int add(LennardJonesType *typ);
 
-  LennardJonesType &get(int index);
+  LennardJonesType *get(int index);
 
   // Calculate aij, bij factors for all types interacting with type i
   void precalculate(int i);
@@ -106,26 +99,26 @@ IMPATOMEXPORT LennardJonesParameters* get_lj_params();
  */
 class IMPATOMEXPORT LennardJonesTyped : public core::XYZ {
   static void do_setup_particle(Model *m, ParticleIndex pi,
-                                LennardJonesType type) {
+                                LennardJonesType *type) {
     IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
                     "Particle must already be an XYZ particle");
-    m->add_attribute(get_type_key(), pi, type.get_index());
+    m->add_attribute(get_type_key(), pi, type->get_index());
   }
  public:
   IMP_DECORATOR_METHODS(LennardJonesTyped, core::XYZ);
-  IMP_DECORATOR_SETUP_1(LennardJonesTyped, LennardJonesType, type);
+  IMP_DECORATOR_SETUP_1(LennardJonesTyped, LennardJonesType*, type);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return XYZ::get_is_setup(m, pi) &&
            m->get_has_attribute(get_type_key(), pi);
   }
 
-  void set_type(LennardJonesType type) {
+  void set_type(LennardJonesType *type) {
     get_model()->set_attribute(get_type_key(), get_particle_index(),
-                               type.get_index());
+                               type->get_index());
   }
 
-  LennardJonesType get_type() const {
+  LennardJonesType* get_type() const {
     int ind = get_index();
     return internal::get_lj_params()->get(ind);
   }
@@ -135,11 +128,11 @@ class IMPATOMEXPORT LennardJonesTyped : public core::XYZ {
   }
 
   double get_well_depth() const {
-    return get_type().get_well_depth();
+    return get_type()->get_well_depth();
   }
 
   double get_radius() const {
-    return get_type().get_radius();
+    return get_type()->get_radius();
   }
 
   //! Get the key used to store the type.

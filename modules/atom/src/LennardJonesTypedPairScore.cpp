@@ -12,28 +12,18 @@ IMPATOM_BEGIN_NAMESPACE
 
 LennardJonesType::LennardJonesType(double well_depth, double radius,
                                    std::string name)
-                : well_depth_(well_depth), radius_(radius), name_(name) {
-  index_ = internal::get_lj_params()->add(*this);
+                : Object(name), well_depth_(well_depth), radius_(radius) {
+  index_ = internal::get_lj_params()->add(this);
 }
 
 void LennardJonesType::set_well_depth(double d) {
   well_depth_ = d;
-  // We may be a copy, so update the internally stored version too
-  internal::get_lj_params()->get(index_).well_depth_ = d;
   internal::get_lj_params()->precalculate(index_);
 }
 
 void LennardJonesType::set_radius(double r) {
   radius_ = r;
-  // We may be a copy, so update the internally stored version too
-  internal::get_lj_params()->get(index_).radius_ = r;
   internal::get_lj_params()->precalculate(index_);
-}
-
-void LennardJonesType::set_name(std::string name) {
-  name_ = name;
-  // We may be a copy, so update the internally stored version too
-  internal::get_lj_params()->get(index_).name_ = name;
 }
 
 IntKey LennardJonesTyped::get_type_key() {

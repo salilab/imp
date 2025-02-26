@@ -11,13 +11,13 @@
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 void LennardJonesParameters::precalculate(int i) {
-  const LennardJonesType &ti = get(i);
+  LennardJonesType *ti = get(i);
   for (int j = 0; j < types_.size(); ++j) {
-    const LennardJonesType &tj = get(j);
+    LennardJonesType *tj = get(j);
     int ind = get_parameter_index(i, j);
 
-    double well_depth = std::sqrt(ti.get_well_depth() * tj.get_well_depth());
-    double rmin = ti.get_radius() + tj.get_radius();
+    double well_depth = std::sqrt(ti->get_well_depth() * tj->get_well_depth());
+    double rmin = ti->get_radius() + tj->get_radius();
     // probably faster than pow(rmin, 6) on systems that don't
     // have pow(double, int)
     double rmin6 = rmin * rmin * rmin * rmin * rmin * rmin;
@@ -28,7 +28,7 @@ void LennardJonesParameters::precalculate(int i) {
   }
 }
 
-int LennardJonesParameters::add(LennardJonesType &typ) {
+int LennardJonesParameters::add(LennardJonesType *typ) {
   types_.push_back(typ);
   int index = types_.size() - 1;
   // fill in aij, bij for new type interacting with all previous types
@@ -39,7 +39,7 @@ int LennardJonesParameters::add(LennardJonesType &typ) {
   return index;
 }
 
-LennardJonesType& LennardJonesParameters::get(int index) {
+LennardJonesType* LennardJonesParameters::get(int index) {
   return types_[index];
 }
 
