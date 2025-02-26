@@ -59,14 +59,13 @@ def get_scoring_function(protein, topology, is_non_bonded=True):
     restraints = []
     restraints.append(IMP.atom.CHARMMStereochemistryRestraint(protein, topology))
     if is_non_bonded:
-        force_field.add_radii(protein)
-        force_field.add_well_depths(protein)
+        force_field.add_lennard_jones_types(protein)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         container = IMP.container.ListSingletonContainer(m, atoms)
         cpc = IMP.container.ClosePairContainer(cont, 4.0)
         cpc.add_pair_filter(r.get_pair_filter())
         sf = IMP.atom.ForceSwitch(6.0, 7.0)
-        ljps = IMP.atom.LennardJonesPairScore(sf)
+        ljps = IMP.atom.LennardJonesTypedPairScore(sf)
         restraints.append(IMP.container.PairsRestraint(ljps, cpc))
     scoring_function = IMP.core.RestraintsScoringFunction(restraints)
     return scoring_function

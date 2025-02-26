@@ -56,12 +56,14 @@ int do_benchmark() {
     IMP_NEW(CHARMMStereochemistryRestraint, r, (prot, topology));
     rs->add_restraint(r);
 
-    /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-       know the radii and well depths for each atom, so add them from the
-       forcefield (they can also be assigned manually using the XYZR or
-       LennardJones decorators): */
+    /* Add radii from the forcefield, used for close pairs calculation */
     ff->add_radii(prot);
-    ff->add_well_depths(prot);
+
+    /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
+       know the Lennard-Jones types (radii and well depths) for each atom,
+       so add them from the forcefield (they can also be assigned manually
+       using the LennardJonesTyped decorators): */
+    ff->add_lennard_jones_types(prot);
 
     // Get a list of all atoms in the protein, and put it in a container
     atom::Hierarchies atoms = get_by_type(prot, ATOM_TYPE);
@@ -77,15 +79,15 @@ int do_benchmark() {
        of all pairs of Particles that are close.
        Next, all 1-2, 1-3 and 1-4 pairs
        from the stereochemistry created above are filtered out.
-       Then, a LennardJonesPairScore scores a pair of atoms with the
+       Then, a LennardJonesTypedPairScore scores a pair of atoms with the
        Lennard-Jones
        potential. Finally, a PairsRestraint is used which simply applies the
-       LennardJonesPairScore to each pair in the ClosePairContainer. */
+       LennardJonesTypedPairScore to each pair in the ClosePairContainer. */
     IMP_NEW(ClosePairContainer, nbl, (cont, 4.0));
     nbl->add_pair_filter(r->get_pair_filter());
 
     IMP_NEW(ForceSwitch, sf, (6.0, 7.0));
-    IMP_NEW(LennardJonesPairScore, ps, (sf));
+    IMP_NEW(LennardJonesTypedPairScore, ps, (sf));
     rs->add_restraint(new PairsRestraint(ps, nbl));
 
     // Finally, evaluate the score of the whole system (without derivatives)

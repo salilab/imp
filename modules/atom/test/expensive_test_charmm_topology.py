@@ -472,7 +472,7 @@ class Tests(IMP.test.TestCase):
             IMP.ValueException,
             segment.apply_default_patches,
             ff)
-        for typ in (IMP.atom.Charged, IMP.atom.LennardJones):
+        for typ in (IMP.atom.Charged, IMP.atom.LennardJonesTyped):
             self.assertEqual(typ.get_is_setup(last_atom), False)
         topology.add_atom_types(pdb)
         self.assertEqual(IMP.atom.CHARMMAtom.get_is_setup(last_atom),
@@ -508,11 +508,11 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(impropers), 509)
 
         ff.add_radii(pdb, 1.2)
-        ff.add_well_depths(pdb)
+        ff.add_lennard_jones_types(pdb)
         self.assertAlmostEqual(IMP.core.XYZR(last_atom).get_radius(),
                                2.04, delta=1e-3)
         self.assertAlmostEqual(
-            IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12,
+            IMP.atom.LennardJonesTyped(last_atom).get_well_depth(), 0.12,
             delta=1e-3)
         last_cg1 = atoms[-3].get_particle()
         self.assertAlmostEqual(IMP.core.XYZR(last_cg1).get_radius(),
