@@ -23,6 +23,10 @@ IMPATOM_BEGIN_NAMESPACE
     used by LennardJonesTypedPairScore. The parameters can be changed at
     any time, which will change the interaction of all particles using this
     type.
+
+    Note that there is currently no support for overriding the interaction
+    between two specific types (as is done in the CHARMM forcefield with the
+    NBFIX directive, for example) but that could be added if needed.
  */
 class IMPATOMEXPORT LennardJonesType : public Object {
   double well_depth_;
