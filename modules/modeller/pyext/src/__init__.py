@@ -110,8 +110,10 @@ class ModellerRestraints(IMP.Restraint):
 
     def get_version_info(self):
         return IMP.VersionInfo("IMP developers", "0.1")
+
     def do_show(self, fh):
         fh.write("ModellerRestraints")
+
     def do_get_inputs(self):
         return self._particles
 
@@ -164,24 +166,29 @@ def _HarmonicLowerBoundGenerator(parameters, modalities):
     k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.HarmonicLowerBound(mean, k)
 
+
 def _HarmonicUpperBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
     k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.HarmonicUpperBound(mean, k)
+
 
 def _HarmonicGenerator(parameters, modalities):
     (mean, stdev) = parameters
     k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.Harmonic(mean, k)
 
+
 def _CosineGenerator(parameters, modalities):
     (phase, force_constant) = parameters
     (periodicity,) = modalities
     return IMP.core.Cosine(force_constant, periodicity, phase)
 
+
 def _LinearGenerator(parameters, modalities):
     (scale,) = parameters
     return IMP.core.Linear(0, scale)
+
 
 def _SplineGenerator(parameters, modalities):
     (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
@@ -193,6 +200,7 @@ def _SplineGenerator(parameters, modalities):
     else:
         return IMP.core.OpenCubicSpline(values, low, delta)
 
+
 #: Mapping from Modeller math form number to a unary function generator
 _unary_func_generators = {
     1: _HarmonicLowerBoundGenerator,
@@ -203,6 +211,7 @@ _unary_func_generators = {
     10: _SplineGenerator,
 }
 
+
 # Generators to make IMP Restraint objects from Modeller features
 def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
@@ -210,17 +219,19 @@ def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
                                       unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1])
 
+
 def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
     return IMP.core.AngleRestraint(atoms[0].get_model(),
                                    unary_func_gen(parameters, modalities),
                                    atoms[0], atoms[1], atoms[2])
 
+
 def _MultiBinormalGenerator(form, modalities, atoms, parameters):
     nterms = modalities[0]
     if len(parameters) != nterms * 6:
         raise ValueError("Incorrect number of parameters (%d) for multiple "
-                         "binormal restraint - expecting %d (%d terms * 6)" \
+                         "binormal restraint - expecting %d (%d terms * 6)"
                          % (len(parameters), nterms * 6, nterms))
     r = IMP.core.MultipleBinormalRestraint(atoms[0].get_model(),
                                            atoms[:4], atoms[4:8])
@@ -235,6 +246,7 @@ def _MultiBinormalGenerator(form, modalities, atoms, parameters):
         r.add_term(t)
     return r
 
+
 def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     if form == 9:
         return _MultiBinormalGenerator(form, modalities, atoms, parameters)
@@ -242,6 +254,7 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     return IMP.core.DihedralRestraint(atoms[0].get_model(),
                                       unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1], atoms[2], atoms[3])
+
 
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
@@ -255,6 +268,7 @@ def _get_protein_atom_particles(protein):
                 atom_particles.append(atom.get_particle())
     return atom_particles
 
+
 def _load_restraints_line(line, atom_particles):
     """Parse a single Modeller restraints file line and return the
        corresponding IMP restraint."""
@@ -263,7 +277,7 @@ def _load_restraints_line(line, atom_particles):
     if typ == 'MODELLER5':
         return
     elif typ != 'R':
-        raise NotImplementedError("Only 'R' lines currently read from " + \
+        raise NotImplementedError("Only 'R' lines currently read from " +
                                   "Modeller restraints files")
     form = int(spl.pop(0))
     modalities = [int(spl.pop(0))]
@@ -282,10 +296,10 @@ def _load_restraints_line(line, atom_particles):
         atoms[i] = atom_particles[atoms[i] - 1]
     parameters = [float(spl.pop(0)) for x in range(nparam)]
     restraint_generators = {
-        1 : _DistanceRestraintGenerator,
-        2 : _AngleRestraintGenerator,
-        3 : _DihedralRestraintGenerator,
-        4 : _DihedralRestraintGenerator,
+        1: _DistanceRestraintGenerator,
+        2: _AngleRestraintGenerator,
+        3: _DihedralRestraintGenerator,
+        4: _DihedralRestraintGenerator,
     }
     restraint_gen = restraint_generators[features[0]]
     return restraint_gen(form, modalities, atoms, parameters)
@@ -300,27 +314,25 @@ def _load_entire_restraints_file(filename, protein):
                 rsr = _load_restraints_line(line, atoms)
                 if rsr is not None:
                     yield rsr
-            except Exception as err:
+            except Exception:
                 print("Cannot read restraints file line:\n" + line)
                 raise
 
 
 def _copy_residue(r, model):
     """Copy residue information from modeller to imp"""
-    #print "residue "+str(r)
-    p=IMP.Particle(model)
-    rp= IMP.atom.Residue.setup_particle(p, IMP.atom.ResidueType(r.pdb_name),
-                                         r.index)
-    p.set_name(str("residue "+r.num));
+    p = IMP.Particle(model)
+    _ = IMP.atom.Residue.setup_particle(p, IMP.atom.ResidueType(r.pdb_name),
+                                        r.index)
+    p.set_name(str("residue "+r.num))
     return p
 
 
 def _copy_atom(a, model):
     """Copy atom information from modeller"""
-    #print "atom "+str(a)
-    p=IMP.Particle(model)
-    ap= IMP.atom.Atom.setup_particle(p,IMP.atom.AtomType(a.name))
-    xyzd= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
+    p = IMP.Particle(model)
+    ap = IMP.atom.Atom.setup_particle(p, IMP.atom.AtomType(a.name))
+    _ = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
     # Alignment structures don't have charges or atom types; models do
     if hasattr(a, 'charge'):
         IMP.atom.Charged.setup_particle(p, a.charge)
@@ -329,13 +341,14 @@ def _copy_atom(a, model):
     ap.set_input_index(a.index)
     return p
 
+
 def _copy_chain(c, model):
     """Copy chain information from modeller"""
-    #print "atom "+str(a)
-    p=IMP.Particle(model)
-    #set the chain name
-    cp = IMP.atom.Chain.setup_particle(p,c.name)
+    p = IMP.Particle(model)
+    # set the chain name
+    _ = IMP.atom.Chain.setup_particle(p, c.name)
     return p
+
 
 def _get_forcefield(submodel):
     if submodel == 3:
@@ -348,6 +361,7 @@ def _get_forcefield(submodel):
                  IMP.atom.get_data_path('par.lib'))
     return ff
 
+
 def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
     """Add radii to the hierarchy using the Modeller radius library, radii.lib.
        Each radius is scaled by the given scale (Modeller usually scales radii
@@ -358,7 +372,8 @@ def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
     radii = {}
     with open(filename) as fh:
         for line in fh:
-            if line.startswith('#'): continue
+            if line.startswith('#'):
+                continue
             spl = line.split()
             if len(spl) > 11:
                 radii[spl[0]] = float(spl[submodel])
@@ -422,7 +437,6 @@ class ModelLoader:
                     hap = IMP.atom.Hierarchy(ap)
                     hrp.add_child(hap)
                     self._atoms[atom.index] = ap
-                lastres = hrp
         self._modeller_hierarchy = hpp
         return hpp
 
@@ -448,12 +462,12 @@ class ModelLoader:
            or stiffness. These bonds are primarily useful as input to
            IMP::atom::StereochemistryPairFilter, to exclude bond interactions
            from the nonbonded list. Typically the contribution to the scoring
-           function from the bonds is included in the Modeller static restraints
-           (use load_static_restraints() or load_static_restraints_file() to
-           load these). If you want to regenerate the stereochemistry in IMP,
-           do not use these functions (as then stereochemistry scoring terms
-           and exclusions would be double-counted) and instead use the
-           IMP::atom::CHARMMTopology class.
+           function from the bonds is included in the Modeller static
+           restraints (use load_static_restraints() or
+           load_static_restraints_file() to load these). If you want to
+           regenerate the stereochemistry in IMP, do not use these functions
+           (as then stereochemistry scoring terms and exclusions would be
+           double-counted) and instead use the IMP::atom::CHARMMTopology class.
 
            You must call load_atoms() prior to using this function.
            @see load_angles(), load_dihedrals(), load_impropers()
@@ -465,13 +479,13 @@ class ModelLoader:
             pa = self._atoms[maa.index]
             pb = self._atoms[mab.index]
             if IMP.atom.Bonded.get_is_setup(pa):
-                ba= IMP.atom.Bonded(pa)
+                ba = IMP.atom.Bonded(pa)
             else:
-                ba= IMP.atom.Bonded.setup_particle(pa)
+                ba = IMP.atom.Bonded.setup_particle(pa)
             if IMP.atom.Bonded.get_is_setup(pb):
-                bb= IMP.atom.Bonded(pb)
+                bb = IMP.atom.Bonded(pb)
             else:
-                bb= IMP.atom.Bonded.setup_particle(pb)
+                bb = IMP.atom.Bonded.setup_particle(pb)
             yield IMP.atom.create_bond(ba, bb,
                                        IMP.atom.Bond.SINGLE).get_particle()
 
@@ -499,8 +513,8 @@ class ModelLoader:
         for modeller_atoms in angles:
             imp_particles = [self._atoms[x.index] for x in modeller_atoms]
             p = IMP.Particle(imp_particles[0].get_model())
-            a = angle_class.setup_particle(p,
-                                 *[IMP.core.XYZ(x) for x in imp_particles])
+            a = angle_class.setup_particle(
+                p, *[IMP.core.XYZ(x) for x in imp_particles])
             yield a.get_particle()
 
     def load_static_restraints_file(self, filename):
@@ -517,11 +531,10 @@ class ModelLoader:
             raise ValueError("Call load_atoms() first.")
         return _load_entire_restraints_file(filename, self._modeller_hierarchy)
 
-
     def load_static_restraints(self):
-        """Convert the current set of Modeller static restraints into equivalent
-           IMP::Restraints. load_atoms() must have been called first to read
-           in the atoms that the restraints will act upon.
+        """Convert the current set of Modeller static restraints into
+           equivalent IMP::Restraints. load_atoms() must have been called
+           first to read in the atoms that the restraints will act upon.
            @return A Python generator of the newly-created IMP::Restraint
                    objects.
         """
@@ -529,17 +542,24 @@ class ModelLoader:
             """Simple generator wrapper"""
             def __init__(self, gen):
                 self._gen = gen
+
             def __iter__(self, *args, **keys):
                 return self
+
             def close(self, *args, **keys):
                 return self._gen.close(*args, **keys)
+
             def next(self):
                 return next(self._gen)
+
             __next__ = next
+
             def send(self, *args, **keys):
                 return self._gen.send(*args, **keys)
+
             def throw(self, *args, **keys):
                 return self._gen.throw(*args, **keys)
+
         # Write current restraints into a temporary file
         t = _TempDir()
         rsrfile = os.path.join(t.tmpdir, 'restraints.rsr')
@@ -588,10 +608,10 @@ class ModelLoader:
             # No way to get Modeller radii, so we have to reassign them
             add_soft_sphere_radii(self._modeller_hierarchy,
                                   libs.topology.submodel, edat.radii_factor)
-            k = \
-              IMP.core.Harmonic.get_k_from_standard_deviation(edat.sphere_stdv)
+            k = IMP.core.Harmonic.get_k_from_standard_deviation(
+                edat.sphere_stdv)
             ps = IMP.core.SphereDistancePairScore(
-                              IMP.core.HarmonicLowerBound(0, k))
+                IMP.core.HarmonicLowerBound(0, k))
             yield IMP.container.PairsRestraint(ps, nbl)
 
         if edat.dynamic_lennard or edat.dynamic_coulomb:
