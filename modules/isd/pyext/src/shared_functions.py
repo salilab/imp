@@ -286,13 +286,13 @@ class sfo_common:
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
             rsb = IMP.RestraintSet(m, 1.0, "bonded")
             rsb.add_restraint(r)
+            ff.add_radii(prot)
             #
             # Add non-bonded interaction (in this case, Lennard-Jones).
             # This needs to know the radii and well depths for each atom,
             # so add them from the forcefield (they can also be assigned
-            # manually using the XYZR or LennardJones decorators):
-            ff.add_radii(prot)
-            ff.add_well_depths(prot)
+            # manually using the LennardJonesTyped decorator):
+            ff.add_lennard_jones_types(prot)
             nonbonded_pair_filter = r.get_pair_filter()
         # Get a list of all atoms in the protein, and put it in a container
         atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
@@ -302,10 +302,10 @@ class sfo_common:
         # a collection of building blocks. First, a ClosePairContainer
         # maintains a list of all pairs of Particles that are close. Next, all
         # 1-2, 1-3 and 1-4 pairs from the stereochemistry created above are
-        # filtered out. Then, a LennardJonesPairScore scores a pair of atoms
-        # with the Lennard-Jones potential. Finally, a PairsRestraint is used
-        # which simply applies the LennardJonesPairScore to each pair in the
-        # ClosePairContainer.
+        # filtered out. Then, a LennardJonesTypedPairScore scores a pair of
+        # atoms with the Lennard-Jones potential. Finally, a PairsRestraint
+        # is used which simply applies the LennardJonesTypedPairScore to
+        # each pair in the ClosePairContainer.
         nbl = IMP.container.ClosePairContainer(cont, 4.0)
         nbl.add_pair_filter(nonbonded_pair_filter)
         # should weight the ff restraint by a temperature, set to 300K.

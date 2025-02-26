@@ -21,7 +21,7 @@ IMPISD_BEGIN_NAMESPACE
 /** \see XYZR
     \see SphereDistancePairScore
     \see DistancePairScore
-    \see LennardJonesPairScore
+    \see LennardJonesTypedPairScore
  */
 class IMPISDEXPORT RepulsiveDistancePairScore : public PairScore {
   double x0_, k_;

@@ -429,7 +429,7 @@ class ModelLoader:
     def _get_nonbonded_list(self, atoms, pair_filter, edat, distance):
         nbl = IMP.container.ClosePairContainer(atoms, distance,
                                                edat.update_dynamic)
-    
+
         # Exclude the same sets of atoms as Modeller
         if pair_filter is None:
             pair_filter = IMP.atom.StereochemistryPairFilter()
@@ -580,7 +580,7 @@ class ModelLoader:
         atoms = IMP.atom.get_leaves(self._modeller_hierarchy)
         m = atoms[0].get_model()
         atoms = IMP.container.ListSingletonContainer(m, IMP.get_indexes(atoms))
-        
+
         if edat.dynamic_sphere:
             # Note: cannot use Modeller's cutoff distance, as that is
             # center-to-center; IMP's is sphere surface-surface
@@ -602,10 +602,10 @@ class ModelLoader:
             ff.add_radii(self._modeller_hierarchy)
 
             if edat.dynamic_lennard:
-                ff.add_well_depths(self._modeller_hierarchy)
+                ff.add_lennard_jones_types(self._modeller_hierarchy)
                 sf = IMP.atom.ForceSwitch(edat.lennard_jones_switch[0],
                                           edat.lennard_jones_switch[1])
-                ps = IMP.atom.LennardJonesPairScore(sf)
+                ps = IMP.atom.LennardJonesTypedPairScore(sf)
                 yield IMP.container.PairsRestraint(ps, nbl)
 
             if edat.dynamic_coulomb:
