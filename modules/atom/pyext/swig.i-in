@@ -234,6 +234,7 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %include "IMP/atom/Domain.h"
 %include "IMP/atom/LennardJones.h"
 %include "IMP/atom/LennardJonesPairScore.h"
+%include "IMP/atom/LennardJonesType.h"
 %include "IMP/atom/LennardJonesTypedPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
