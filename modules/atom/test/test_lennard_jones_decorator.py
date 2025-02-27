@@ -10,7 +10,8 @@ def _make_test_decorator(m):
     v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
     s = IMP.algebra.Sphere3D(v, 4.0)
     IMP.core.XYZR.setup_particle(p, s)
-    return IMP.atom.LennardJones.setup_particle(p, 0.5)
+    with IMP.allow_deprecated():
+        return IMP.atom.LennardJones.setup_particle(p, 0.5)
 
 
 class Tests(IMP.test.TestCase):
@@ -26,9 +27,11 @@ class Tests(IMP.test.TestCase):
         # already an XYZ
         p = IMP.Particle(m)
         IMP.core.XYZR.setup_particle(p, s)
-        IMP.atom.LennardJones.setup_particle(p, 0.5)
+        with IMP.allow_deprecated():
+            IMP.atom.LennardJones.setup_particle(p, 0.5)
         p = IMP.Particle(m)
-        self.assertRaisesUsageException(
+        with IMP.allow_deprecated():
+            self.assertRaisesUsageException(
                               IMP.atom.LennardJones.setup_particle, p, 0.5)
 
     def test_get_set(self):
