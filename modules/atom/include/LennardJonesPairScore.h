@@ -62,10 +62,14 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
   }
 
  public:
+  IMPATOM_DEPRECATED_OBJECT_DECL(2.23)
   LennardJonesPairScore(SmoothingFunction *f)
       : smoothing_function_(f),
         repulsive_weight_(1.0),
-        attractive_weight_(1.0) {}
+        attractive_weight_(1.0) {
+    IMPATOM_DEPRECATED_OBJECT_DEF(
+                 2.23, "Use LennardJonesTypedPairScore instead");
+  }
 
   void set_repulsive_weight(double repulsive_weight) {
     repulsive_weight_ = repulsive_weight;

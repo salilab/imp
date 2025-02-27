@@ -18,14 +18,19 @@ IMPATOM_BEGIN_NAMESPACE
 /** Such particles must be XYZR particles (they must have a position and
     a radius) but need not be true atoms.
 
+    This class is deprecated; instead, use the LennardJonesTyped
+    decorator in new code.
+
     The well depth should be a non-negative value.
     \ingroup helper
     \ingroup decorators
     \see LennardJonesPairScore
  */
 class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
+  IMPATOM_DEPRECATED_METHOD_DECL(2.23)
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float well_depth = 0) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.23, "Use LennardJonesTyped instead");
     IMP_USAGE_CHECK(XYZR::get_is_setup(m, pi),
                     "Particle must already be an XYZR particle");
     m->add_attribute(get_well_depth_key(), pi, well_depth);
@@ -46,7 +51,9 @@ class IMPATOMEXPORT LennardJones : public IMP::core::XYZR {
   }
 
   //! Return true if the particle is an instance of a LennardJones
+  IMPATOM_DEPRECATED_METHOD_DECL(2.23)
   static bool get_is_setup(Model *m, ParticleIndex pi) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.23, "Use LennardJonesTyped instead");
     return XYZR::get_is_setup(m, pi) &&
            m->get_has_attribute(get_well_depth_key(), pi);
   }
