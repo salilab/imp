@@ -51,7 +51,7 @@ public:
 
 IMP_OBJECTS(LennardJonesType, LennardJonesTypes);
 
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
 
 class IMPATOMEXPORT LennardJonesParameters : public Object {
