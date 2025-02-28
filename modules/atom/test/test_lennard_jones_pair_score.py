@@ -65,7 +65,8 @@ class Tests(IMP.test.TestCase):
                                 c.set_repulsive_weight(rep)
                                 for r in (3.0, 4.0, 5.0):
                                     place_xyzs(d0, d1, box, r)
-                                    score = sf.evaluate(False)
+                                    with IMP.allow_deprecated():
+                                        score = sf.evaluate(False)
                                     expected = wd * (rep * (rmin / r) ** 12
                                                      - 2.0 * att * (rmin / r) ** 6)
                                     self.assertAlmostEqual(score, expected,
@@ -80,8 +81,9 @@ class Tests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
                            * (random.random() * 5.0 + 1.0))
-        self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
-        self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
+        with IMP.allow_deprecated():
+            self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
+            self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
 
     def test_smoothing(self):
         """Check smoothing of LennardJonesPairScore"""
@@ -98,8 +100,9 @@ class Tests(IMP.test.TestCase):
         # For dist <= min_distance, scores should be identical
         for dist in (3.0, 3.5, 4.0):
             place_all(dist)
-            self.assertAlmostEqual(sf.evaluate(False), smsf.evaluate(False),
-                                   delta=1e-6)
+            with IMP.allow_deprecated():
+                self.assertAlmostEqual(sf.evaluate(False), smsf.evaluate(False),
+                                       delta=1e-6)
 
         # For dist > max_distance, smoothed score should be zero
         place_all(5.5)
