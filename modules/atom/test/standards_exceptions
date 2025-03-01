@@ -1,5 +1,5 @@
 show_exceptions=['ElementTable']
-value_object_exceptions=['ElementTable']
+value_object_exceptions=['ElementTable', 'LennardJonesTypedPairScore']
 function_name_exceptions=['transform',
                           'BrownianDynamics.simulate',
                           'BrownianDynamics.simulate_wave',
