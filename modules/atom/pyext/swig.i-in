@@ -74,7 +74,8 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
-IMP_SWIG_OBJECT(IMP::atom, LennardJonesTypedPairScore, LennardJonesTypedPairScores);
+IMP_SWIG_OBJECT_MINIMAL(IMP::atom, _LennardJonesTypedPairScore)
+IMP_SWIG_OBJECT_MINIMAL(IMP::atom, _SwitchedLennardJonesTypedPairScore)
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
@@ -121,6 +122,7 @@ IMP_SWIG_OBJECT(IMP::atom, HelixRestraint, HelixRestraints);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
+
 // for some reason this one fails using the generic macro
  %extend IMP::atom::CHARMMConnection<D> {
   IMP_SWIG_SHOWSTUFF(CHARMMConnection);
@@ -349,4 +351,26 @@ def get_rigid_bodies_drms(a, b, ranges):
     #rs = [IMP.IntRange(r[0],r[1]) for r in ranges]
     return _get_rigid_bodies_drms_cpp(va, vb, ranges)
 
+%}
+
+/* Instantiate the LennardJonesTypedPairScore template using both the abstract
+   class (SmoothingFunction) and the most commonly used concrete class
+   (ForceSwitch). Proxy them both with the same Python class and pick the
+   appropriate template instantiation at runtime. This is about 10% faster
+   than just using the abstract class. */
+%template(_LennardJonesTypedPairScore) IMP::atom::LennardJonesTypedPairScore<IMP::atom::SmoothingFunction>;
+%template(_SwitchedLennardJonesTypedPairScore) IMP::atom::LennardJonesTypedPairScore<IMP::atom::ForceSwitch>;
+
+%pythoncode %{
+class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0]):
+    def __init__(self, f):
+        if isinstance(f, ForceSwitch):
+            p = _SwitchedLennardJonesTypedPairScore(f)
+        else:
+            p = _LennardJonesTypedPairScore(f)
+        self.__dict__['_proxied'] = p
+    def __getattr__(self, key):
+        return getattr(self._proxied, key)
+    def __setattr__(self, key, val):
+        return setattr(self._proxied, key, val)
 %}

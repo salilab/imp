@@ -397,6 +397,19 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
  }
 %enddef
 
+/* Minimal wrapping of an Object, used e.g. for templated objects */
+%define IMP_SWIG_OBJECT_MINIMAL(Namespace, Name)
+%typemap(out) Namespace::Name* {
+  if (!($owner & SWIG_POINTER_NEW)) {
+    // out typemaps are also called for constructors, which already use %ref
+    // to increase the reference count. So don't do it twice.
+    if ($1) $1->ref();
+  }
+  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
+ }
+IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
+%enddef
+
 %define IMP_SWIG_OBJECT_TEMPLATE(Namespace, Name)
 IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {

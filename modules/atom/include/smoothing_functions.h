@@ -69,7 +69,7 @@ class IMPATOMEXPORT SmoothingFunction : public IMP::Object {
 
     \see CoulombPairScore
  */
-class IMPATOMEXPORT ForceSwitch : public SmoothingFunction {
+class IMPATOMEXPORT ForceSwitch final : public SmoothingFunction {
   double min_distance_, max_distance_;
   double value_prefactor_, deriv_prefactor_;
 

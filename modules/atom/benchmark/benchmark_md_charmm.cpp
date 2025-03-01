@@ -87,7 +87,7 @@ int do_benchmark() {
     nbl->add_pair_filter(r->get_pair_filter());
 
     IMP_NEW(ForceSwitch, sf, (6.0, 7.0));
-    IMP_NEW(LennardJonesTypedPairScore, ps, (sf));
+    IMP_NEW(LennardJonesTypedPairScore<ForceSwitch>, ps, (sf));
     rs->add_restraint(new PairsRestraint(ps, nbl));
 
     // Finally, evaluate the score of the whole system (without derivatives)
