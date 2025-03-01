@@ -106,8 +106,9 @@ class Tests(IMP.test.TestCase):
 
         # For dist > max_distance, smoothed score should be zero
         place_all(5.5)
-        self.assertEqual(smsf.evaluate(False), 0.0)
-        self.assertNotEqual(sf.evaluate(False), 0.0)
+        with IMP.allow_deprecated():
+            self.assertEqual(smsf.evaluate(False), 0.0)
+            self.assertNotEqual(sf.evaluate(False), 0.0)
 
 if __name__ == '__main__':
     IMP.test.main()
