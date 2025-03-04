@@ -54,6 +54,15 @@ class IMPATOMEXPORT Charged : public IMP::core::XYZ {
            m->get_has_attribute(get_charge_key(), pi);
   }
 
+#ifndef SWIG
+  //! Access the raw attribute data for the charge.
+  /** This array may become invalid if particles or attributes are
+      added or removed. */
+  static const double *get_charge_array(Model *m) {
+    return m->FloatAttributeTable::access_attribute_data(get_charge_key());
+  }
+#endif
+
   static FloatKey get_charge_key();
 };
 

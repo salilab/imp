@@ -70,6 +70,64 @@
     return ret;                                                                \
   }
 
+/** Like IMP_CLASSNAME_SCORE_METHODS but the Evaluate method can be overridden
+    (it should use the Model, m; the particle index(es), p[i]; and the
+    DerivativeAccumulator, da). Additionally, some one-time setup can be done.
+ */
+#define IMP_CLASSNAME_SCORE_METHODS_CUSTOM(Name, Setup, Evaluate)              \
+  double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
+                          DerivativeAccumulator *da, unsigned int lower_bound, \
+                          unsigned int upper_bound)                            \
+                          const override final {                               \
+    Setup;                                                                     \
+    double ret = 0;                                                            \
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
+      ret += Evaluate;                                                         \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
+  double evaluate_indexes_scores(                                              \
+                  Model *m, const PLURALINDEXTYPE &p,                          \
+                  DerivativeAccumulator *da, unsigned int lower_bound,         \
+                  unsigned int upper_bound,                                    \
+                  std::vector<double> &score)                                  \
+                  const override final {                                       \
+    Setup;                                                                     \
+    double ret = 0;                                                            \
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
+      double s = Evaluate;                                                     \
+      score[i] = s;                                                            \
+      ret += s;                                                                \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
+  double evaluate_indexes_delta(                                               \
+                  Model *m, const PLURALINDEXTYPE &p,                          \
+                  DerivativeAccumulator *da,                                   \
+                  const std::vector<unsigned> &indexes,                        \
+                  std::vector<double> &score)                                  \
+                  const override final {                                       \
+    Setup;                                                                     \
+    double ret = 0;                                                            \
+    for (unsigned int i : indexes) {                                           \
+      double s = Evaluate;                                                     \
+      ret = ret - score[i] + s;                                                \
+      score[i] = s;                                                            \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
+  double evaluate_if_good_indexes(                                             \
+      Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
+      double max, unsigned int lower_bound,                                    \
+      unsigned int upper_bound) const override {                               \
+    double ret = 0;                                                            \
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
+      ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \
+      if (ret > max) return std::numeric_limits<double>::max();                \
+    }                                                                          \
+    return ret;                                                                \
+  }
+
 //! Define extra the functions needed for a ClassnamePredicate
 #define IMP_CLASSNAME_PREDICATE_METHODS(Name)                                  \
   int get_value(ARGUMENTTYPE a) const {                                        \

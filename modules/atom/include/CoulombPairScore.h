@@ -13,6 +13,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/atom/smoothing_functions.h>
+#include <IMP/atom/Charged.h>
 #include <IMP/pair_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -33,6 +34,11 @@ class IMPATOMEXPORT CoulombPairScore : public PairScore {
 
   void calculate_multiplication_factor();
 
+  double evaluate_index_fast(Model *m,
+                             const ParticleIndexPair &p,
+                             DerivativeAccumulator *da,
+                             const double *charge_array) const;
+
  public:
   CoulombPairScore(SmoothingFunction *f) : smoothing_function_(f) {
     set_relative_dielectric(1.0);
@@ -50,7 +56,9 @@ class IMPATOMEXPORT CoulombPairScore : public PairScore {
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const override;
-  IMP_PAIR_SCORE_METHODS(CoulombPairScore);
+  IMP_PAIR_SCORE_METHODS_CUSTOM(CoulombPairScore,
+      const double *charge_array = Charged::get_charge_array(m),
+      evaluate_index_fast(m, p[i], da, charge_array) );
   IMP_OBJECT_METHODS(CoulombPairScore);
   ;
 };
