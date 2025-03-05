@@ -138,6 +138,16 @@ class IMPATOMEXPORT LennardJonesTyped : public core::XYZ {
     return get_type()->get_radius();
   }
 
+#ifndef SWIG
+  //! Access the raw attribute data for the type.
+  /** This array may become invalid if particles or attributes are
+      added or removed. */
+  static const int *get_type_array(Model *m) {
+    return m->IMP::internal::IntAttributeTable::access_attribute_data(
+                    get_type_key());
+  }
+#endif
+
   //! Get the key used to store the type.
   static IntKey get_type_key();
 };

@@ -41,6 +41,11 @@ class LennardJonesTypedPairScore final : public PairScore {
   double repulsive_weight_, attractive_weight_;
   IMP::PointerMember<internal::LennardJonesParameters> params_;
 
+  double evaluate_index_fast(Model *m,
+                             const ParticleIndexPair &p,
+                             DerivativeAccumulator *da,
+                             const int *type_array) const;
+
 public:
   LennardJonesTypedPairScore(SmoothingFuncT *f)
       : smoothing_function_(f),
@@ -66,7 +71,9 @@ public:
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const override;
-  IMP_PAIR_SCORE_METHODS(LennardJonesTypedPairScore);
+  IMP_PAIR_SCORE_METHODS_CUSTOM(LennardJonesTypedPairScore,
+      const int *type_array = LennardJonesTyped::get_type_array(m),
+      evaluate_index_fast(m, p[i], da, type_array) );
   IMP_OBJECT_METHODS(LennardJonesTypedPairScore);
   ;
 };
@@ -84,6 +91,40 @@ Float LennardJonesTypedPairScore<SmoothingFuncT>::evaluate_index(
   double dist12 = dist6 * dist6;
 
   int index = params_->get_parameter_index(lj0.get_index(), lj1.get_index());
+  double A = params_->aij_[index] * repulsive_weight_;
+  double B = params_->bij_[index] * attractive_weight_;
+  double repulsive = A / dist12;
+  double attractive = B / dist6;
+  double score = repulsive - attractive;
+
+  if (da) {
+    DerivativePair d = (*smoothing_function_)(
+        score, (6.0 * attractive - 12.0 * repulsive) / dist, dist);
+    algebra::Vector3D deriv = d.second * delta / dist;
+    lj0.add_to_derivatives(deriv, *da);
+    lj1.add_to_derivatives(-deriv, *da);
+    return d.first;
+  } else {
+    return (*smoothing_function_)(score, dist);
+  }
+}
+
+template <class SmoothingFuncT>
+Float LennardJonesTypedPairScore<SmoothingFuncT>::evaluate_index_fast(
+      Model *m, const ParticleIndexPair &p, DerivativeAccumulator *da,
+      const int *type_array) const {
+  core::XYZ lj0(m, std::get<0>(p));
+  core::XYZ lj1(m, std::get<1>(p));
+  int type0 = type_array[lj0.get_particle_index().get_index()];
+  int type1 = type_array[lj1.get_particle_index().get_index()];
+
+  algebra::Vector3D delta = lj0.get_coordinates() - lj1.get_coordinates();
+  double distsqr = delta.get_squared_magnitude();
+  double dist = std::sqrt(distsqr);
+  double dist6 = distsqr * distsqr * distsqr;
+  double dist12 = dist6 * dist6;
+
+  int index = params_->get_parameter_index(type0, type1);
   double A = params_->aij_[index] * repulsive_weight_;
   double B = params_->bij_[index] * attractive_weight_;
   double repulsive = A / dist12;
