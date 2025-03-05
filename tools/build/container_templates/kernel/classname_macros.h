@@ -2,7 +2,7 @@
  *  \file IMP/classname_macros.h
  *  \brief Macros for various classes.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_MACROS_H
@@ -21,8 +21,10 @@
 #define IMP_CLASSNAME_SCORE_METHODS(Name)                                      \
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
-                          unsigned int upper_bound)                            \
+                          unsigned int upper_bound,                            \
+                          bool all_indexes_checked=false)                      \
                           const override final {                               \
+    IMP_UNUSED(all_indexes_checked);                                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
@@ -33,8 +35,10 @@
                   Model *m, const PLURALINDEXTYPE &p,                          \
                   DerivativeAccumulator *da, unsigned int lower_bound,         \
                   unsigned int upper_bound,                                    \
-                  std::vector<double> &score)                                  \
+                  std::vector<double> &score,                                  \
+                  bool all_indexes_checked=false)                              \
                   const override final {                                       \
+    IMP_UNUSED(all_indexes_checked);                                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       double s = evaluate_index(m, p[i], da);                                  \
@@ -47,8 +51,10 @@
                   Model *m, const PLURALINDEXTYPE &p,                          \
                   DerivativeAccumulator *da,                                   \
                   const std::vector<unsigned> &indexes,                        \
-                  std::vector<double> &score)                                  \
+                  std::vector<double> &score,                                  \
+                  bool all_indexes_checked=false)                              \
                   const override final {                                       \
+    IMP_UNUSED(all_indexes_checked);                                           \
     double ret = 0;                                                            \
     for (std::vector<unsigned>::const_iterator it = indexes.begin();           \
          it != indexes.end(); ++it) {                                          \
@@ -61,7 +67,9 @@
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
       double max, unsigned int lower_bound,                                    \
-      unsigned int upper_bound) const override {                               \
+      unsigned int upper_bound,                                                \
+      bool all_indexes_checked=false) const override {                         \
+    IMP_UNUSED(all_indexes_checked);                                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \
@@ -71,18 +79,27 @@
   }
 
 /** Like IMP_CLASSNAME_SCORE_METHODS but the Evaluate method can be overridden
-    (it should use the Model, m; the particle index(es), p[i]; and the
-    DerivativeAccumulator, da). Additionally, some one-time setup can be done.
+    when checks are disabled (it should use the Model, m; the particle
+    index(es), p[i]; and the DerivativeAccumulator, da). Additionally,
+    some one-time unchecked setup can be done. This should be used in
+    combination with an override of check_indexes().
  */
-#define IMP_CLASSNAME_SCORE_METHODS_CUSTOM(Name, Setup, Evaluate)              \
+#define IMP_CLASSNAME_SCORE_METHODS_UNCHECKED(Name, Setup, Evaluate)           \
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
-                          unsigned int upper_bound)                            \
+                          unsigned int upper_bound,                            \
+                          bool all_indexes_checked=false)                      \
                           const override final {                               \
-    Setup;                                                                     \
     double ret = 0;                                                            \
-    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
-      ret += Evaluate;                                                         \
+    if (all_indexes_checked) {                                                 \
+      Setup;                                                                   \
+      for (unsigned int i = lower_bound; i < upper_bound; ++i) {               \
+        ret += Evaluate;                                                       \
+      }                                                                        \
+    } else {                                                                   \
+      for (unsigned int i = lower_bound; i < upper_bound; ++i) {               \
+        ret += evaluate_index(m, p[i], da);                                    \
+      }                                                                        \
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
@@ -90,14 +107,23 @@
                   Model *m, const PLURALINDEXTYPE &p,                          \
                   DerivativeAccumulator *da, unsigned int lower_bound,         \
                   unsigned int upper_bound,                                    \
-                  std::vector<double> &score)                                  \
+                  std::vector<double> &score,                                  \
+                  bool all_indexes_checked=false)                              \
                   const override final {                                       \
-    Setup;                                                                     \
     double ret = 0;                                                            \
-    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
-      double s = Evaluate;                                                     \
-      score[i] = s;                                                            \
-      ret += s;                                                                \
+    if (all_indexes_checked) {                                                 \
+      Setup;                                                                   \
+      for (unsigned int i = lower_bound; i < upper_bound; ++i) {               \
+        double s = Evaluate;                                                   \
+        score[i] = s;                                                          \
+        ret += s;                                                              \
+      }                                                                        \
+    } else {                                                                   \
+      for (unsigned int i = lower_bound; i < upper_bound; ++i) {               \
+        double s = evaluate_index(m, p[i], da);                                \
+        score[i] = s;                                                          \
+        ret += s;                                                              \
+      }                                                                        \
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
@@ -105,21 +131,32 @@
                   Model *m, const PLURALINDEXTYPE &p,                          \
                   DerivativeAccumulator *da,                                   \
                   const std::vector<unsigned> &indexes,                        \
-                  std::vector<double> &score)                                  \
+                  std::vector<double> &score,                                  \
+                  bool all_indexes_checked=false)                              \
                   const override final {                                       \
-    Setup;                                                                     \
     double ret = 0;                                                            \
-    for (unsigned int i : indexes) {                                           \
-      double s = Evaluate;                                                     \
-      ret = ret - score[i] + s;                                                \
-      score[i] = s;                                                            \
+    if (all_indexes_checked) {                                                 \
+      Setup;                                                                   \
+      for (unsigned int i : indexes) {                                         \
+        double s = Evaluate;                                                   \
+        ret = ret - score[i] + s;                                              \
+        score[i] = s;                                                          \
+      }                                                                        \
+    } else {                                                                   \
+      for (std::vector<unsigned>::const_iterator it = indexes.begin();         \
+           it != indexes.end(); ++it) {                                        \
+        double s = evaluate_index(m, p[*it], da);                              \
+        ret = ret - score[*it] + s;                                            \
+        score[*it] = s;                                                        \
+      }                                                                        \
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
-      double max, unsigned int lower_bound,                                    \
-      unsigned int upper_bound) const override {                               \
+      double max, unsigned int lower_bound, unsigned int upper_bound,          \
+      bool all_indexes_checked=false) const override {                         \
+    IMP_UNUSED(all_indexes_checked);                                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \

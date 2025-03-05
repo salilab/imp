@@ -56,7 +56,9 @@ class IMPATOMEXPORT CoulombPairScore : public PairScore {
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const override;
-  IMP_PAIR_SCORE_METHODS_CUSTOM(CoulombPairScore,
+  virtual bool check_indexes(Model *m,
+                             const ParticleIndexes &pis) const override;
+  IMP_PAIR_SCORE_METHODS_UNCHECKED(CoulombPairScore,
       const double *charge_array = Charged::get_charge_array(m),
       evaluate_index_fast(m, p[i], da, charge_array) );
   IMP_OBJECT_METHODS(CoulombPairScore);

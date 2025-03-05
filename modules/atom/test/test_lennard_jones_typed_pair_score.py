@@ -9,23 +9,39 @@ import IMP.core
 from test_coulomb import place_xyzs
 
 
-def make_test_pair_score(min_distance=9.0, max_distance=10.0):
+def make_test_pair_score(min_distance=9.0, max_distance=10.0,
+                         with_container=False,
+                         with_type0=True,
+                         with_type1=True):
     m = IMP.Model()
     p0 = m.add_particle("p0")
     sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 4.0)
     IMP.core.XYZR.setup_particle(m, p0, sph)
 
-    t0 = IMP.atom.LennardJonesType(1.0, 1.0, "type0")
-    d0 = IMP.atom.LennardJonesTyped.setup_particle(m, p0, t0)
+    if with_type0:
+        t0 = IMP.atom.LennardJonesType(1.0, 1.0, "type0")
+        d0 = IMP.atom.LennardJonesTyped.setup_particle(m, p0, t0)
+    else:
+        t0 = None
+        d0 = p0
 
     p1 = m.add_particle("p1")
     IMP.core.XYZR.setup_particle(m, p1, sph)
-    t1 = IMP.atom.LennardJonesType(1.0, 1.0, "type1")
-    d1 = IMP.atom.LennardJonesTyped.setup_particle(m, p1, t1)
+
+    if with_type1:
+        t1 = IMP.atom.LennardJonesType(1.0, 1.0, "type1")
+        d1 = IMP.atom.LennardJonesTyped.setup_particle(m, p1, t1)
+    else:
+        t1 = None
+        d1 = p1
 
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.LennardJonesTypedPairScore(sm)
-    r = IMP.core.PairRestraint(m, c, (p0, p1))
+    if with_container:
+        lpc = IMP.container.ListPairContainer(m, [(p0, p1)])
+        r = IMP.container.PairsRestraint(c, lpc)
+    else:
+        r = IMP.core.PairRestraint(m, c, (p0, p1))
     sf = IMP.core.RestraintsScoringFunction([r])
     return m, sf, t0, t1, d0, d1, c
 
@@ -106,6 +122,44 @@ class Tests(IMP.test.TestCase):
         place_all(5.5)
         self.assertEqual(smsf.evaluate(False), 0.0)
         self.assertNotEqual(sf.evaluate(False), 0.0)
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_no_model_type_attribute(self):
+        """Test handling of Model with no type attribute"""
+        for container in (False, True):
+            m, sf, t0, t1, d0, d1, c = make_test_pair_score(
+                with_container=container, with_type0=False,
+                with_type1=False)
+            self.assertRaises(IMP.UsageException, sf.evaluate, False)
+            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_type_out_of_range(self):
+        """Test handling of Model with type attribute out of range"""
+        # We only add type to the first particle, so the dimension of
+        # the type array will be 1, not the full number of particles
+        # in the system (2)
+        for container in (False, True):
+            m, sf, t0, t1, d0, d1, c = make_test_pair_score(
+                with_container=container, with_type0=True,
+                with_type1=False)
+            self.assertRaises(IMP.UsageException, sf.evaluate, False)
+            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_type_invalid(self):
+        """Test handling of Model with invalid type attribute"""
+        # We only add type to the second particle, so the type for
+        # the first particle will be invalid
+        for container in (False, True):
+            m, sf, t0, t1, d0, d1, c = make_test_pair_score(
+                with_container=container, with_type0=False,
+                with_type1=True)
+            self.assertRaises(IMP.UsageException, sf.evaluate, False)
+            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
 
 
 if __name__ == '__main__':

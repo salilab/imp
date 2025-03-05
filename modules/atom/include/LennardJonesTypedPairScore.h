@@ -71,7 +71,9 @@ public:
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const override;
-  IMP_PAIR_SCORE_METHODS_CUSTOM(LennardJonesTypedPairScore,
+  virtual bool check_indexes(Model *m,
+                             const ParticleIndexes &pis) const override;
+  IMP_PAIR_SCORE_METHODS_UNCHECKED(LennardJonesTypedPairScore,
       const int *type_array = LennardJonesTyped::get_type_array(m),
       evaluate_index_fast(m, p[i], da, type_array) );
   IMP_OBJECT_METHODS(LennardJonesTypedPairScore);
@@ -107,6 +109,20 @@ Float LennardJonesTypedPairScore<SmoothingFuncT>::evaluate_index(
   } else {
     return (*smoothing_function_)(score, dist);
   }
+}
+
+template <class SmoothingFuncT>
+bool LennardJonesTypedPairScore<SmoothingFuncT>::check_indexes(
+      Model *m, const ParticleIndexes &pis) const {
+  int total = 0;
+  // Every particle should be a LennardJonesTyped particle
+  for (ParticleIndex pi: pis) {
+    LennardJonesTyped lj0(m, pi);
+    // make sure we actually use the object so the compiler doesn't optimize
+    // it out
+    total += lj0.get_index();
+  }
+  return true;
 }
 
 template <class SmoothingFuncT>

@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameScore.h
  *  \brief Define ClassnameScore.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_SCORE_H
@@ -57,6 +57,21 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
                                 DerivativeAccumulator *da) const = 0;
 
+  //! Check the given particle indexes for necessary attributes
+  /** If implemented, this method should return true and should assert
+      that all particles have all attributes needed to evaluate the score
+      (or raise an exception). After successfully calling this method,
+      evaluate_indexes() and similar methods can be called with
+      all_indexes_checked=true, and can opt to skip these checks. It is the
+      caller's responsibility to call check_indexes() again if the set of
+      possible indexes changes, or particles or attributes are removed.
+   */
+  virtual bool check_indexes(Model *m, const ParticleIndexes &pis) const {
+    IMP_UNUSED(m);
+    IMP_UNUSED(pis);
+    return false;
+  }
+
   //! Compute the score and the derivative if needed over a set.
   /** @param m the model of o
       @param o objects of type TYPENAME, specified by index
@@ -65,6 +80,10 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                 will not be computed.
       @param lower_bound index of first item in o to evaluate
       @param upper_bound index one past last item in o to evaluate
+      @param all_indexes_checked if true, all of the passed indexes
+             have already been checked by check_indexes() for needed particle
+             attributes, so a faster implementation (that doesn't check them
+             again) can be used if available.
 
       @note An implementation for this is provided by
             the IMP_CLASSNAME_SCORE_METHODS() macro.
@@ -72,7 +91,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   virtual double evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
                                   DerivativeAccumulator *da,
                                   unsigned int lower_bound,
-                                  unsigned int upper_bound) const;
+                                  unsigned int upper_bound,
+                                  bool all_indexes_checked=false) const;
 
   //! Compute the score and the derivative if needed over a set.
   /** Like regular evaluate_indexes(), but the score for each o[x] is also
@@ -86,7 +106,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                         DerivativeAccumulator *da,
                         unsigned int lower_bound,
                         unsigned int upper_bound,
-                        std::vector<double> &score) const;
+                        std::vector<double> &score,
+                        bool all_indexes_checked=false) const;
 
   //! Compute the change in score and the derivative if needed over a set.
   /** The score for each o[indexes[x]] is updated in score[indexes[x]]
@@ -100,7 +121,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                         Model *m, const PLURALINDEXTYPE &o,
                         DerivativeAccumulator *da,
                         const std::vector<unsigned> &indexes,
-                        std::vector<double> &score) const;
+                        std::vector<double> &score,
+                        bool all_indexes_checked=false) const;
 
   //! Compute the score and the derivative if needed, only if "good".
   /** This functions similarly to evaluate_index(),
@@ -125,7 +147,8 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                           const PLURALINDEXTYPE &o,
                                           DerivativeAccumulator *da, double max,
                                           unsigned int lower_bound,
-                                          unsigned int upper_bound) const;
+                                          unsigned int upper_bound,
+                                          bool all_indexes_checked=false) const;
 
   //! Decompose this ClassnameScore into a set of
   //! currently positive restraints over vt.

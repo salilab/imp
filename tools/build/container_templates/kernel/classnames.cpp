@@ -116,7 +116,7 @@ double ClassnameScore::evaluate_indexes(Model *m,
                                         const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,
                                         unsigned int lower_bound,
-                                        unsigned int upper_bound) const {
+                                        unsigned int upper_bound, bool) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     ret += evaluate_index(m, o[i], da);
@@ -128,7 +128,7 @@ double ClassnameScore::evaluate_indexes_scores(
                 Model *m, const PLURALINDEXTYPE &p,
                 DerivativeAccumulator *da, unsigned int lower_bound,
                 unsigned int upper_bound,
-                std::vector<double> &score) const {
+                std::vector<double> &score, bool) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     double s = evaluate_index(m, p[i], da);
@@ -142,7 +142,7 @@ double ClassnameScore::evaluate_indexes_delta(
                 Model *m, const PLURALINDEXTYPE &p,
                 DerivativeAccumulator *da,
                 const std::vector<unsigned> &indexes,
-                std::vector<double> &score) const {
+                std::vector<double> &score, bool) const {
   double ret = 0;
   for (std::vector<unsigned>::const_iterator it = indexes.begin();
        it != indexes.end(); ++it) {
@@ -163,7 +163,8 @@ double ClassnameScore::evaluate_if_good_index(Model *m,
 
 double ClassnameScore::evaluate_if_good_indexes(
     Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da,
-    double max, unsigned int lower_bound, unsigned int upper_bound) const {
+    double max, unsigned int lower_bound, unsigned int upper_bound,
+    bool) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     double cur = evaluate_if_good_index(m, o[i], da, max - ret);

@@ -55,17 +55,19 @@ class DistancePairScoreWithCache : public PairScore {
   virtual double evaluate_indexes(
        Model *m, const ParticleIndexPairs &p,
        DerivativeAccumulator *da, unsigned int lower_bound,
-       unsigned int upper_bound) const override;
+       unsigned int upper_bound, bool all_indexes_checked=false) const override;
 
   virtual double evaluate_indexes_scores(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        unsigned int lower_bound, unsigned int upper_bound,
-       std::vector<double> &score) const override;
+       std::vector<double> &score,
+       bool all_indexes_checked=false) const override;
 
   virtual double evaluate_indexes_delta(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        const std::vector<unsigned> &indexes,
-       std::vector<double> &score) const override;
+       std::vector<double> &score,
+       bool all_indexes_checked=false) const override;
 
   IMP_OBJECT_METHODS(DistancePairScoreWithCache);
 };
@@ -75,7 +77,7 @@ template <class DistanceScore>
 inline double DistancePairScoreWithCache<DistanceScore>::evaluate_indexes(
        Model *m, const ParticleIndexPairs &p,
        DerivativeAccumulator *da, unsigned int lower_bound,
-       unsigned int upper_bound) const {
+       unsigned int upper_bound, bool) const {
   double ret = 0;
   ds_.check_cache_valid(m);
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
@@ -89,7 +91,7 @@ inline double
 DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_scores(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        unsigned int lower_bound, unsigned int upper_bound,
-       std::vector<double> &score) const {
+       std::vector<double> &score, bool) const {
   double ret = 0;
   ds_.check_cache_valid(m);
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
@@ -104,7 +106,8 @@ template <class DistanceScore>
 inline double
 DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_delta(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
-       const std::vector<unsigned> &indexes, std::vector<double> &score) const {
+       const std::vector<unsigned> &indexes, std::vector<double> &score,
+       bool) const {
   double ret = 0;
   ds_.check_cache_valid(m);
   for (unsigned it : indexes) {

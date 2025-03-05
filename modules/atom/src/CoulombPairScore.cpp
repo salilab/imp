@@ -45,6 +45,19 @@ double CoulombPairScore::evaluate_index(Model *m,
   }
 }
 
+bool CoulombPairScore::check_indexes(Model *m,
+                                     const ParticleIndexes &pis) const {
+  double total = 0.;
+  // Every particle should be a Charged particle
+  for (ParticleIndex pi: pis) {
+    Charged c0(m, pi);
+    // make sure we actually use the object so the compiler doesn't optimize
+    // it out
+    total += c0.get_charge();
+  }
+  return true;
+}
+
 double CoulombPairScore::evaluate_index_fast(
          Model *m, const ParticleIndexPair &p, DerivativeAccumulator *da,
          const double *charge_array) const {
