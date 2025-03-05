@@ -191,6 +191,9 @@ class BasicAttributeTable {
     {
       IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
       IMP_CHECK_MASK_IF_CHECKED(read_mask_, particle, k, GET, ATTRIBUTE );
+      IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                      "Can't get attribute that is not there: "
+                        << k.get_string() << " on particle " << particle);
       return data_[k.get_index()][particle];
     }
 
