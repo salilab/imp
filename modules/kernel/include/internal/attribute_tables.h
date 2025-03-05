@@ -448,6 +448,8 @@ class FloatAttributeTable {
   }
 
  public:
+  typedef FloatKey Key;
+
   void swap_with(FloatAttributeTable &o) {
     using std::swap;
     IMP_SWAP_MEMBER(spheres_);
@@ -1033,8 +1035,11 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
 #define IMP_MODEL_IMPORT(Base)     \
   using Base::add_attribute;       \
   using Base::add_cache_attribute; \
-  using Base::remove_attribute;    \
   using Base::get_attribute_size;   \
+  void remove_attribute(Base::Key k, ParticleIndex particle) {  \
+    Base::remove_attribute(k, particle);                        \
+    removed_particles_attributes_age_ = age_counter_;           \
+  }                                \
   using Base::get_has_attribute;   \
   using Base::set_attribute;       \
   using Base::get_attribute;       \

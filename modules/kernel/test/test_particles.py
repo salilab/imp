@@ -150,6 +150,48 @@ class Tests(IMP.test.TestCase):
         self._test_add_remove(p, IMP.IntsKey("something"), [1,2,3])
         self._test_add_remove(p, IMP.FloatsKey("something"), [1.0,2.0,3.0])
 
+    def test_remove_particles_age(self):
+        """Check that removing particles updates the age counter"""
+        m = IMP.Model()
+        # No particles removed yet, so age==0
+        self.assertEqual(m.get_age(), 1)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 0)
+        # Adding particles should not update age
+        p1 = IMP.Particle(m)
+        m.update()
+        self.assertEqual(m.get_age(), 2)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 0)
+        # Remove particles should update age
+        m.remove_particle(p1)
+        m.update()
+        self.assertEqual(m.get_age(), 3)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 2)
+
+    def test_remove_attributes_age(self):
+        """Check that removing attributes updates the age counter"""
+        m = IMP.Model()
+        # No attributes removed yet, so age==0
+        self.assertEqual(m.get_age(), 1)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 0)
+        # Adding particles or attributes should not update age
+        p1 = IMP.Particle(m)
+        p1.add_attribute(IMP.FloatKey("something"), 1.0)
+        m.update()
+        self.assertEqual(m.get_age(), 2)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 0)
+        # Removing float attributes should update age
+        p2 = IMP.Particle(m)
+        self._test_add_remove(p2, IMP.FloatKey("something"), 1.0)
+        m.update()
+        self.assertEqual(m.get_age(), 3)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 2)
+        # Removing int attributes should update age
+        p3 = IMP.Particle(m)
+        self._test_add_remove(p3, IMP.IntKey("something"), 1)
+        m.update()
+        self.assertEqual(m.get_age(), 4)
+        self.assertEqual(m.get_removed_particles_attributes_age(), 3)
+
     def test_derivatives(self):
         """Test get/set of derivatives"""
         (model, particles) = self.setup()
