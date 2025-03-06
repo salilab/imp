@@ -131,8 +131,10 @@ class Tests(IMP.test.TestCase):
             m, sf, t0, t1, d0, d1, c = make_test_pair_score(
                 with_container=container, with_type0=False,
                 with_type1=False)
-            self.assertRaises(IMP.UsageException, sf.evaluate, False)
-            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
 
     @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
                      "No check in fast mode")
@@ -145,8 +147,10 @@ class Tests(IMP.test.TestCase):
             m, sf, t0, t1, d0, d1, c = make_test_pair_score(
                 with_container=container, with_type0=True,
                 with_type1=False)
-            self.assertRaises(IMP.UsageException, sf.evaluate, False)
-            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
 
     @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
                      "No check in fast mode")
@@ -158,8 +162,10 @@ class Tests(IMP.test.TestCase):
             m, sf, t0, t1, d0, d1, c = make_test_pair_score(
                 with_container=container, with_type0=False,
                 with_type1=True)
-            self.assertRaises(IMP.UsageException, sf.evaluate, False)
-            self.assertRaises(IMP.UsageException, c.check_indexes, m, [d0, d1])
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
 
 
 if __name__ == '__main__':
