@@ -2,7 +2,7 @@
  *  \file internal/AccumulatorScoreModifier.h
  *  \brief Utility functions to gather scores and derivatives.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -127,19 +127,35 @@ class AccumulatorScoreModifier : public Score::Modifier {
   mutable ParticleIndex last_moved_particle_;
   mutable std::vector<double> last_last_score_;
   mutable double last_moved_delta_;
+  // cache for check_indexes()
+  std::size_t contents_age_;
+  unsigned particles_age_;
+  bool check_indexes_impl_;
   MovedIndexesMap<Score, Container> moved_indexes_map_;
+
+  void set_container_initial(Container *c) {
+    // Call check_indexes with empty list to see if it is
+    // implemented by the Score
+    ParticleIndexes empty_inds;
+    check_indexes_impl_ = ss_->check_indexes(c->get_model(), empty_inds);
+  }
 
  public:
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Groupname and the Groupname.
   */
-  AccumulatorScoreModifier(Score *ss)
+  AccumulatorScoreModifier(Score *ss, Container *c)
       : Score::Modifier(ss->get_name() + " accumulator"),
         ss_(ss), score_(BAD_SCORE),
         container_contents_hash_(-1),
         moved_particles_cache_age_(0),
-        total_last_score_(BAD_SCORE), last_moved_delta_(BAD_SCORE) {}
+        total_last_score_(BAD_SCORE), last_moved_delta_(BAD_SCORE),
+        contents_age_(0), particles_age_(0),
+        check_indexes_impl_(false) {
+    // we don't keep a reference to the container
+    set_container_initial(c);
+  }
 
   double get_score() const {
     Score::Modifier::set_was_used(true);
@@ -155,6 +171,24 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   void set_container(Container *c) {
+    // If the Score implements check_indexes(), we may need to call it
+    // if particles or attributes have been removed, or container contents
+    // have changed
+    if (check_indexes_impl_) {
+      Model *m = c->get_model();
+      unsigned rm_ps_age = m->get_removed_particles_attributes_age();
+      std::size_t contents = c->get_contents_hash();
+      if ((rm_ps_age != 0 && rm_ps_age != particles_age_)
+          || contents != contents_age_) {
+        particles_age_ = rm_ps_age;
+        contents_age_ = contents;
+        ss_->check_indexes(m, c->get_all_possible_indexes());
+      }
+    }
+  }
+
+  void set_container_moved(Container *c) {
+    set_container(c);
     moved_indexes_map_.set_container(c);
     Model *m = c->get_model();
     unsigned dependencies_age = m->get_dependencies_updated();
@@ -187,7 +221,8 @@ class AccumulatorScoreModifier : public Score::Modifier {
                        IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &a,
       unsigned int lower_bound, unsigned int upper_bound) const override {
     double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
-                                         lower_bound, upper_bound);
+                                         lower_bound, upper_bound,
+                                         true);
     IMP_OMP_PRAGMA(atomic)
     score_ += score;
     sa_.add_score(score);
@@ -307,8 +342,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
 template <class Score, class Container>
 inline AccumulatorScoreModifier<Score, Container>
 *create_accumulator_score_modifier(Score *s, Container *c) {
-  IMP_UNUSED(c);
-  return new AccumulatorScoreModifier<Score, Container>(s);
+  return new AccumulatorScoreModifier<Score, Container>(s, c);
 }
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
