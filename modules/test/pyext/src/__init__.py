@@ -665,7 +665,7 @@ class TestCase(unittest.TestCase):
                      "reject", "clear", "handle", "update", "apply",
                      "optimize", "reserve", "dump", "propose", "setup",
                      "teardown", "visit", "find", "run", "swap", "link",
-                     "validate", "erase"])
+                     "validate", "erase", "check"])
         misspelled = []
         bad = self._check_function_names(module.__name__, None, all, verbs,
                                          all, exceptions, words, misspelled)
