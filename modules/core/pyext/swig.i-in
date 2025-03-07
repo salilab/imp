@@ -167,9 +167,9 @@ IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 IMP_SWIG_VALUE_SERIALIZE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
 
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, TruncatedHarmonicBounds);
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonic, TruncatedHarmonicLowerBounds);
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonicBound, TruncatedHarmonicBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistancePairScore, DistancePairScores);

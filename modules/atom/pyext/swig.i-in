@@ -74,8 +74,12 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
-IMP_SWIG_OBJECT_MINIMAL(IMP::atom, _LennardJonesTypedPairScore)
-IMP_SWIG_OBJECT_MINIMAL(IMP::atom, _SwitchedLennardJonesTypedPairScore)
+IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _LennardJonesTypedPairScore,
+            LennardJonesTypedPairScore<IMP::atom::SmoothingFunction>,
+            _LennardJonesTypedPairScores);
+IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _SwitchedLennardJonesTypedPairScore,
+            LennardJonesTypedPairScore<IMP::atom::ForceSwitch>,
+            _SwitchedLennardJonesTypedPairScores);
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
@@ -373,4 +377,14 @@ class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0
         return getattr(self._proxied, key)
     def __setattr__(self, key, val):
         return setattr(self._proxied, key, val)
+
+    @staticmethod
+    def get_from(o):
+        try:
+            p = _SwitchedLennardJonesTypedPairScore.get_from(o)
+        except ValueError:
+            p = _LennardJonesTypedPairScore.get_from(o)
+        obj = object.__new__(LennardJonesTypedPairScore)
+        obj.__dict__['_proxied'] = p
+        return obj
 %}

@@ -123,6 +123,25 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(smsf.evaluate(False), 0.0)
         self.assertNotEqual(sf.evaluate(False), 0.0)
 
+    def test_cast(self):
+        """Test LennardJonesTypedPairScore.get_from()"""
+        sm = IMP.atom.ForceSwitch(7.0, 9.0)
+        c = IMP.atom.LennardJonesTypedPairScore(sm)
+        c.set_repulsive_weight(42.0)
+        m = IMP.Model()
+        # Get pairscore back as a generic Object
+        ok = IMP.ModelKey("ljps")
+        m.add_data(ok, c)
+        r = m.get_data(ok)
+        # Should be able to cast Object back to our LJ PairScore
+        x = IMP.atom.LennardJonesTypedPairScore.get_from(r)
+        self.assertIsInstance(x, IMP.atom.LennardJonesTypedPairScore)
+        self.assertAlmostEqual(x.get_repulsive_weight(), 42.0, delta=1e-6)
+
+        # Should not be able to cast some other object (Model)
+        self.assertRaises(ValueError,
+                          IMP.atom.LennardJonesTypedPairScore.get_from, m)
+
     @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
                      "No check in fast mode")
     def test_no_model_type_attribute(self):

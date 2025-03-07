@@ -362,7 +362,7 @@ _object_types.append(#Name)
 
 
 
-%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName, UniqueID...)
+%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, CppName, PluralName, UniqueID...)
 IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
 %typemap(out) Namespace::Name* {
   if (!($owner & SWIG_POINTER_NEW)) {
@@ -382,7 +382,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Namespace::Name, PluralName##Temp,);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%template(_object_cast_to_##UniqueID##Name) IMP::object_cast<Namespace::Name>;
+%template(_object_cast_to_##UniqueID##Name) IMP::object_cast<Namespace::CppName>;
 %enddef
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName, UniqueID...)
@@ -397,17 +397,19 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
  }
 %enddef
 
-/* Minimal wrapping of an Object, used e.g. for templated objects */
-%define IMP_SWIG_OBJECT_MINIMAL(Namespace, Name)
-%typemap(out) Namespace::Name* {
-  if (!($owner & SWIG_POINTER_NEW)) {
-    // out typemaps are also called for constructors, which already use %ref
-    // to increase the reference count. So don't do it twice.
-    if ($1) $1->ref();
-  }
-  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
+/* Like IMP_SWIG_OBJECT, for cases where Namespace::Name only exists in
+   Python but is equivalent to Namespace::CppName in C++, generally because
+   it is a template class */
+%define IMP_SWIG_OBJECT_TEMPLATED(Namespace, Name, CppName, PluralName, UniqueID...)
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, CppName, PluralName, UniqueID);
+IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
+%extend Namespace::CppName {
+  %pythoncode %{
+    @staticmethod
+    def get_from(o):
+       return _object_cast_to_##UniqueID##Name(o)
+  %}
  }
-IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %enddef
 
 %define IMP_SWIG_OBJECT_TEMPLATE(Namespace, Name)
