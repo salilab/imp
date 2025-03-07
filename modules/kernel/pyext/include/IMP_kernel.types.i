@@ -888,6 +888,13 @@ IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name)
 %enddef
 
+// A templated Object that is serializable/picklable
+%define IMP_SWIG_OBJECT_SERIALIZE_TEMPLATED(Namespace, Name, CppName, PluralName)
+IMP_SWIG_OBJECT_TEMPLATED(Namespace, Name, CppName, PluralName)
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, CppName)
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, CppName)
+%enddef
+
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)
 %template(Name) Namespace::Generic##Name<argument>;
 %template(create_##lcname) Namespace::create_##lcname<argument>;

@@ -1,4 +1,5 @@
-value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor']
+value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor',
+                         'SphereDistancePairScore']
 
 function_name_exceptions=['RigidBody.normalize_rotation',
         'RigidBody.pull_back_body_member_adjoints',
