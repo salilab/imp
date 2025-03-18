@@ -1,5 +1,5 @@
 /**
- *  \file ChiScore.h   \brief Basic SAXS scoring
+ *  \file ChiScore.cpp   \brief Basic SAXS scoring
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
