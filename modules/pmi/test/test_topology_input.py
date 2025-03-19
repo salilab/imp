@@ -348,7 +348,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(color.get_blue(), 0.3, delta=1e-6)
         self.assertEqual(len(sel4_1),10)
         self.assertEqual(len(sel4_10),1)
-        self.assertEqual(len(sel4_D),2)
+        self.assertEqual(len(sel4_D), 1)
 
         # check rigid bodies
         rbs = dof.get_rigid_bodies()

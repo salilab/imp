@@ -116,6 +116,33 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         # Test that a two child molecules were added to State
         self.assertEqual(len(st1.get_hierarchy().get_children()), 3)
 
+    def test_fit_gmm_per_residue(self):
+        """Fit GMM to 1 bead per residue representation"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(
+            self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1", sequence=seqs["Protein_1"])
+        # Only one point (CA atom) per residue
+        atomic_res = m1.add_structure(
+            self.get_input_file_name('prot.pdb'), chain_id='A',
+            res_range=(55, 63), offset=-54, ca_only=True)
+        fname = self.get_tmp_file_name('test_gmm')
+        m1.add_representation(atomic_res, resolutions=[1],
+                              density_residues_per_component=1,
+                              density_voxel_size=3.0,
+                              density_prefix=fname)
+        # This fails with older PMI which creates one too many densities:
+        # sklearn.mixture.GaussianMixture.fit() fails because
+        # n_samples < n_components
+        hier = m1.build()
+
 
 if __name__ == '__main__':
     IMP.test.main()

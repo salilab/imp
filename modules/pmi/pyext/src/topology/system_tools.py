@@ -4,7 +4,7 @@ import IMP.isd.gmm_tools
 import IMP.pmi
 import IMP.pmi.tools
 from collections import defaultdict
-from math import pi
+import math
 import os
 import warnings
 
@@ -136,7 +136,7 @@ def build_bead(model, residues, input_coord=None):
         prt.set_name('%i-%i_bead' % (ds_frag[0], ds_frag[-1]))
         h.set_residue_indexes(range(ds_frag[0], ds_frag[-1] + 1))
         volume = IMP.atom.get_volume_from_mass(mass)
-        radius = 0.8 * (3.0 / 4.0 / pi * volume) ** (1.0 / 3.0)
+        radius = 0.8 * (3.0 / 4.0 / math.pi * volume) ** (1.0 / 3.0)
         ptem.set_radius(radius)
 
     IMP.atom.Mass.setup_particle(prt, mass)
@@ -282,8 +282,8 @@ def build_representation(parent, rep, coord_finder, rephandler):
     prov_dict = {}
     if rep.density_residues_per_component:
         single_node = True
-        num_components = (len(rep.residues)
-                          // rep.density_residues_per_component+1)
+        num_components = math.ceil(
+            len(rep.residues) / rep.density_residues_per_component)
         rep_dict = defaultdict(list)
         segp = IMP.Particle(model)
         root_representation = IMP.atom.Representation.setup_particle(
