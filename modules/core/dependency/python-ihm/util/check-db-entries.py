@@ -18,16 +18,16 @@ class Tests(unittest.TestCase):
         os.unlink('test.cif')
 
     def test_9a0e(self):
-        """Test IMP structure with incorrect reference sequence (9a0e)"""
+        """Test IMP structure without errors (9a0e)"""
         s = self._read_cif('9a0e')
-        self.assertRaises(ValueError, self._write_cif, s)
-        self._write_cif(s, check=False)
+        # This used to have an incorrect reference sequence, now fixed.
+        self._write_cif(s)
 
     def test_8zzd(self):
-        """Test docking structure with incorrect assembly (8zzd)"""
+        """Test docking structure without errors (8zzd)"""
         s = self._read_cif('8zzd')
-        self.assertRaises(ValueError, self._write_cif, s)
-        self._write_cif(s, check=False)
+        # This used to have an incorrect assembly, now fixed.
+        self._write_cif(s)
 
     def test_9a82(self):
         """Test HADDOCK structure without errors (9a82)"""
@@ -35,10 +35,11 @@ class Tests(unittest.TestCase):
         self._write_cif(s)
 
     def test_9a13(self):
-        """Test HADDOCK structure with incorrect null feature (9a13)"""
+        """Test HADDOCK structure without errors (9a13)"""
         s = self._read_cif('9a13')
-        self.assertRaises(ValueError, self._write_cif, s)
-        self._write_cif(s, check=False)
+        # This used to fail because feature #71 was null, but this
+        # is now fixed.
+        self._write_cif(s)
 
     def test_9a0t(self):
         """Test IMP structure without errors (9a0t)"""

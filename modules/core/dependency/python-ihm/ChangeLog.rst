@@ -1,3 +1,14 @@
+2.3 - 2025-03-13
+================
+  - The C-accelerated BinaryCIF parser now supports interval quantization
+    encoding and a wider range of data types.
+  - ``make_mmcif`` now has a new ``--histidines`` option to convert any
+    non-standard histidine names to HIS (#164).
+  - Bugfix: don't change name or description of the complete assembly
+    in ``make_mmcif``.
+  - Bugfix: if :class:`ihm.reference.SeqDif` is used to annotate an
+    insertion or deletion, don't erroneously claim the alignment is incorrect.
+
 2.2 - 2025-02-13
 ================
   - The C-accelerated BinaryCIF parser now supports a wider range of data types.

@@ -867,6 +867,28 @@ _struct_ref_seq_dif.details
         # Should work with checks disabled
         _ = _get_dumper_output(dumper, system, check=False)
 
+    def test_struct_ref_seq_dif_ins_del(self):
+        """Test StructRefDumper with SeqDif insertions and deletions"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd1 = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['G'],
+                                   monomer=None, details='deletion')
+        sd2 = ihm.reference.SeqDif(seq_id=3, db_monomer=lpep['C'],
+                                   monomer=None, details='insertion')
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MEWPTYQT',
+            details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(seq_dif=[sd1, sd2]))
+        system.entities.append(ihm.Entity('MEWPTYQT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system)  # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system)  # Assign IDs
+        # Insertions and deletions are not currently checked, so
+        # this should pass
+        _ = _get_dumper_output(dumper, system)
+
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
         system = ihm.System()

@@ -579,6 +579,11 @@ class _StructRefDumper(Dumper):
         if ref.sequence in (None, ihm.unknown):
             # We just have to trust the range if the ref sequence is blank
             return
+        # Our sanity-checking logic doesn't currently support insertions
+        # or deletions
+        if any(sd.details in ('insertion', 'deletion')
+               for sd in align.seq_dif):
+            return
         entseq = self._check_seq_dif(entity, ref, align)
         # Reference sequence may contain non-standard residues, so parse them
         # out; e.g. "FLGHGGN(WP9)LHFVQLAS"

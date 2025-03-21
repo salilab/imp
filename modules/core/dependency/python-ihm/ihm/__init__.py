@@ -17,7 +17,7 @@ import urllib.request
 import json
 from . import util
 
-__version__ = '2.2'
+__version__ = '2.3'
 
 
 class __UnknownValue:

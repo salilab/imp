@@ -150,5 +150,6 @@ class SeqDif:
         self.monomer, self.details = monomer, details
 
     def _signature(self):
-        # Ignore "details"
-        return (self.seq_id, self.db_monomer, self.monomer)
+        # Don't ignore "details", as these distinguish insertions from
+        # deletions
+        return (self.seq_id, self.db_monomer, self.monomer, self.details)

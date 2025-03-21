@@ -90,6 +90,7 @@ class Tests(unittest.TestCase):
         m = s.state_groups[0][0][0][0]
         self.assertEqual(m.protocol.name, 'Modeling')
         self.assertEqual(m.assembly.name, 'Our complete assembly')
+        self.assertEqual(m.assembly.description, 'All our known components')
         chain_a, chain_b, = m.representation
         self.assertIsInstance(chain_a, ihm.representation.AtomicSegment)
         self.assertTrue(chain_a.rigid)
@@ -97,6 +98,16 @@ class Tests(unittest.TestCase):
         self.assertFalse(chain_b.rigid)
         self.assertEqual(s.title, 'Output from simple-docking example')
         os.unlink('output.cif')
+
+    def test_complete_assembly_order(self):
+        """Check that assembly order does not matter"""
+        incif = utils.get_input_file_name(TOPDIR, 'docking_order.cif')
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        m = s.state_groups[0][0][0][0]
+        self.assertEqual(m.assembly.name, 'Our complete assembly')
+        self.assertEqual(m.assembly.description, 'All our known components')
 
     def test_add_polymers(self):
         """Check that make_mmcif combines polymer information"""
@@ -226,7 +237,7 @@ class Tests(unittest.TestCase):
         with open(incif) as fh:
             s, = ihm.reader.read(fh)
         self.assertEqual([c.id for c in s.entities[0].sequence],
-                         ['ALA', 'HIS', 'HIE', 'HIP'])
+                         ['ALA', 'HIS', 'HIE', 'HIP', 'ALA'])
 
         subprocess.check_call([sys.executable, MAKE_MMCIF,
                                '--histidine', incif])
@@ -234,13 +245,16 @@ class Tests(unittest.TestCase):
             s, = ihm.reader.read(fh)
         # All histidines should now be HIS
         self.assertEqual([c.id for c in s.entities[0].sequence],
-                         ['ALA', 'HIS', 'HIS', 'HIS'])
-        # All atoms should now be ATOM not HETATM
+                         ['ALA', 'HIS', 'HIS', 'HIS', 'ALA'])
+        # All modified histidine atoms should now be ATOM not HETATM;
+        # the last atom in the last ALA residue (which was marked HETATM in
+        # the input) should still be HETATM.
         for state_group in s.state_groups:
             for state in state_group:
                 for model_group in state:
                     for model in model_group:
-                        self.assertFalse(any(x.het for x in model._atoms))
+                        self.assertEqual([x.het for x in model._atoms],
+                                         [False, False, False, False, True])
         os.unlink('output.cif')
 
 

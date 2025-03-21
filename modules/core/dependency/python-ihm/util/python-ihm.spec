@@ -1,7 +1,7 @@
 Name:          python3-ihm
 License:       MIT
 Group:         Applications/Engineering
-Version:       2.2
+Version:       2.3
 Release:       1%{?dist}
 Summary:       Package for handling IHM mmCIF and BinaryCIF files
 Packager:      Ben Webb <ben@salilab.org>
@@ -36,6 +36,9 @@ sed -i -e "s/install_requires=\['msgpack'\]/#/" setup.py
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 13 2025 Ben Webb <ben@salilab.org>   2.3-1
+- Update to latest upstream.
+
 * Thu Feb 13 2025 Ben Webb <ben@salilab.org>   2.2-1
 - Update to latest upstream.
 
