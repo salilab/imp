@@ -251,7 +251,7 @@ class Builder(object):
         commands = []
         if component.target[typ]:
             commands.append("%s %s" % (self.makecmd, component.target[typ]))
-        cmd = "%s -R '%s' -L '-%ss?-'" % (
+        cmd = "%s -R '%s' -L '\\-%ss?-'" % (
             self.testcmd,
             component.test_regex,
             typ)
