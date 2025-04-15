@@ -51,7 +51,7 @@ def colourize_edge(calls, total_time):
 def reset_settings():
     global settings
     global graph_attributes
-    global __version__
+    global __version__  # noqa: F824
 
     settings = {
         'node_attributes': {
@@ -201,12 +201,12 @@ def tracer(frame, event, arg):
     during a trace. It keeps track of relationships between calls.
     """
     global func_count_max
-    global func_count
-    global trace_filter
-    global time_filter
-    global call_stack
-    global func_time
-    global func_time_max
+    global func_count  # noqa: F824
+    global trace_filter  # noqa: F824
+    global time_filter  # noqa: F824
+    global call_stack  # noqa: F824
+    global func_time  # noqa: F824
+    global func_time_max  # noqa: F824
 
     if event == 'call':
         keep = True
@@ -300,12 +300,12 @@ def get_dot(stop=True):
     """Returns a string containing a DOT file. Setting stop to True will cause
     the trace to stop.
     """
-    global func_time_max
+    global func_time_max  # noqa: F824
 
     def frac_calculation(func, count):
-        global func_count_max
-        global func_time
-        global func_time_max
+        global func_count_max  # noqa: F824
+        global func_time  # noqa: F824
+        global func_time_maxa  # noqa: F824
         calls_frac = float(count) / func_count_max
         try:
             total_time = func_time[func]

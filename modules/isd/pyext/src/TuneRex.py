@@ -62,7 +62,7 @@ def spline(xy, mean, method=None):
         mean)
 
     def interpolated(x):
-        global _rinterp
+        global _rinterp  # noqa: F824
         return _rinterp(x)[0]
     return interpolated
 
@@ -78,7 +78,7 @@ def linear_interpolation(xy, mean):
     _rinterp = r('cvspline <- approxfun(x,y)')
 
     def interpolated(x):
-        global _rinterp
+        global _rinterp  # noqa: F824
         return _rinterp(x)[0]
     return interpolated
 
@@ -408,7 +408,7 @@ def update_any_cv_step(newp, oldp, ind, targetAR=0.4, Cv=None, **kwargs):
     self-consistent loop.
     """
 
-    global kB
+    global kB  # noqa: F824
 
     if abs(oldp[0] - newp[0]) < EPSILON and targetAR < 0:
         return oldp[1]
@@ -426,7 +426,7 @@ def update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
                      tol=1e-6, maxiter=10000):
     """self-consistent solver version"""
 
-    global kB
+    global kB  # noqa: F824
 
     if abs(oldp[0] - newp[0]) < EPSILON and targetAR < 0:
         return oldp[1]

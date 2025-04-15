@@ -599,7 +599,7 @@ dependency_info_cache = {}
 
 
 def get_dependency_info(dependency, extra_data_path, root="."):
-    global dependency_info_cache
+    global dependency_info_cache  # noqa: F824
     if dependency in dependency_info_cache:
         return dependency_info_cache[dependency]
     df = os.path.join(root, "build_info", dependency)
@@ -628,7 +628,7 @@ module_info_cache = {}
 
 
 def get_module_info(module, extra_data_path, root="."):
-    global module_info_cache
+    global module_info_cache  # noqa: F824
     if module in module_info_cache:
         return module_info_cache[module]
     if module.find("/") != -1:
@@ -735,7 +735,7 @@ _subprocesses = []
 
 
 def run_subprocess(command, **kwargs):
-    global _subprocesses
+    global _subprocesses  # noqa: F824
     # if not kwargs.has_key("stdout"):
     #    kwargs["stdout"] = subprocess.PIPE
     # if not kwargs.has_key("stderr"):
@@ -756,7 +756,7 @@ def run_subprocess(command, **kwargs):
 def _sigHandler(signum, frame):
     print("starting handler")
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
-    global _subprocesses
+    global _subprocesses  # noqa: F824
     for p in _subprocesses:
         print("killing", p)
         try:
