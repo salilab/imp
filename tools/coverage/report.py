@@ -176,7 +176,7 @@ def parse_args():
                              "C++ ('both'). Default '%(default)s'.")
     parser.add_argument("--modules", metavar='STR', default=None,
                         help="Report only for the given colon-separated "
-                             "list of IMP modules, e.g. 'base:kernel'. By "
+                             "list of IMP modules, e.g. 'core:kernel'. By "
                              "default, coverage for all modules is reported.")
     parser.add_argument("--dependencies", metavar='STR', default=None,
                         help="Report only for the given colon-separated list "
