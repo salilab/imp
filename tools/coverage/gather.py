@@ -3,8 +3,6 @@
 import coverage
 import os
 import subprocess
-import tempfile
-import shutil
 
 
 def gather_python():
