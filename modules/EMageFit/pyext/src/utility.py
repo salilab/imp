@@ -3,7 +3,10 @@
 """
 
 import os
+import sys
 import IMP
+import importlib.machinery
+import importlib.util
 
 
 def vararg_callback(option, opt_str, value, parser):
@@ -43,10 +46,8 @@ def get_experiment_params(fn_params):
         @param fn_params configuration file
         @return Experiment Class with all the information from the config file
     """
-    import importlib.machinery
     name, ext = os.path.splitext(fn_params)
-    foo = importlib.machinery.SourceFileLoader(name,
-                                               fn_params).load_module()
+    foo = _import_from_path(name, fn_params)
     exp = foo.Experiment()
     # convert to absolute paths
     exp.fn_pdbs = [IMP.get_relative_path(fn_params, fn) for fn in exp.fn_pdbs]
@@ -72,3 +73,13 @@ def get_experiment_params(fn_params):
             exp.em2d_restraints[i][1] = IMP.get_relative_path(
                 fn_params, exp.em2d_restraints[i][1])
     return exp
+
+
+def _import_from_path(module_name, file_path):
+    """Import a Python source file directly as a module"""
+    loader = importlib.machinery.SourceFileLoader(module_name, file_path)
+    spec = importlib.util.spec_from_loader(module_name, loader)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module

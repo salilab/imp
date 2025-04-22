@@ -991,10 +991,17 @@ class ApplicationTestCase(TestCase):
            This is useful to directly test components of the application.
            @return the Python module object."""
         import importlib.machinery
+        import importlib.util
         name = os.path.splitext(app)[0]
+        if name in sys.modules:
+            return sys.modules[name]
         pathname = os.path.join(os.environ['IMP_BIN_DIR'], app)
-        return importlib.machinery.SourceFileLoader(name,
-                                                    pathname).load_module()
+        loader = importlib.machinery.SourceFileLoader(name, pathname)
+        spec = importlib.util.spec_from_loader(name, loader)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[name] = module
+        spec.loader.exec_module(module)
+        return module
 
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
