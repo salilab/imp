@@ -308,7 +308,6 @@ def create_dockings_from_xlinks(params):
     dock = SourceFileLoader("emagefit_dock",
                             os.path.join(os.path.dirname(sys.argv[0]),
                                          "emagefit_dock")).load_module()
-    import emagefit_dock as dock
     import IMP.EMageFit.buildxlinks as bx
     m = domino_model.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
