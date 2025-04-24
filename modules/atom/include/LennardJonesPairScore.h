@@ -15,6 +15,8 @@
 #include <IMP/atom/LennardJones.h>
 #include <IMP/atom/smoothing_functions.h>
 
+IMPATOM_DEPRECATED_HEADER(2.23, "Use LennardJonesTypedPairScore.h instead");
+
 IMPATOM_BEGIN_NAMESPACE
 
 //! Lennard-Jones score between a pair of particles.
