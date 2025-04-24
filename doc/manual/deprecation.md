@@ -78,7 +78,7 @@ deprecated):
 
           #ifndef IMP_MY_DEPRECATED_HEADER_H
           #define IMP_MY_DEPRECATED_HEADER_H
-          IMPEXAMPLE_DEPREACTED_HEADER(2.1, "Use my_new_header.h")
+          IMPEXAMPLE_DEPRECATED_HEADER(2.1, "Use my_new_header.h")
           ...
           #endif // IMP_MY_DEPRECATED_HEADER_H
 
