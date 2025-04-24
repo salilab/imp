@@ -2,13 +2,6 @@
  * \brief test attributeDistancePairScore
  *
  */
-#include <IMP/core.h>
-#include <IMP/atom.h>
-#include <IMP/algebra.h>
-#include <IMP/container.h>
-#include <IMP/spb.h>
-#include <IMP/display.h>
-#include <IMP/rmf.h>
 #include <string>
 #include <list>
 #include <map>
@@ -16,6 +9,16 @@
 #include <time.h>
 #include <IMP/check_macros.h>
 #include <IMP/flags.h>
+#include <IMP/Model.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/core/Harmonic.h>
+#include <IMP/core/GenericAttributeSingletonScore.h>
+#include <IMP/core/SingletonRestraint.h>
+#include <IMP/core/BallMover.h>
+#include <IMP/core/SerialMover.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/spb/MonteCarloWithWte.h>
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;

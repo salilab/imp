@@ -5,17 +5,29 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Pointer.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
-#include <IMP/isd.h>
-#include <IMP/spb.h>
-#include <IMP/rmf.h>
-#include <IMP/statistics.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <IMP/Pointer.h>
+#include <IMP/Particle.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Domain.h>
+#include <IMP/atom/Selection.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/atom/Molecule.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/spb_parser.h>
+#include <IMP/spb/spb_representation.h>
+#include <IMP/spb/spb_ISD_particles.h>
+#include <IMP/rmf/particle_io.h>
+#include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/frames.h>
 
 // We only want the C API, so try to suppress the C++ API
 #ifndef MPICH_SKIP_MPICXX

@@ -8,9 +8,8 @@
 #ifndef IMPSPB_RMSD_METRIC_H
 #define IMPSPB_RMSD_METRIC_H
 
-#include <IMP/algebra.h>
-#include <IMP/statistics.h>
 #include <IMP/spb/spb_config.h>
+#include <IMP/statistics/Metric.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

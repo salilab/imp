@@ -8,8 +8,7 @@
 #ifndef IMPSPB_CONTACT_MAP_METRIC_H
 #define IMPSPB_CONTACT_MAP_METRIC_H
 
-#include <IMP/algebra.h>
-#include <IMP/statistics.h>
+#include <IMP/statistics/Metric.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

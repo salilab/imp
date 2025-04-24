@@ -8,9 +8,6 @@
 
 #ifndef IMPSPB_SPB_ASSEMBLE_RESTRAINTS_H
 #define IMPSPB_SPB_ASSEMBLE_RESTRAINTS_H
-#include <IMP.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
 #include <IMP/spb/spb_main.h>
 #include <map>
 #include <string>

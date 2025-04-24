@@ -5,10 +5,17 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/atom.h>
-#include <IMP/core.h>
-#include <IMP/spb.h>
+
 #include <iostream>
+#include <IMP/core/BallMover.h>
+#include <IMP/core/SerialMover.h>
+#include <IMP/core/NormalMover.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/spb/MonteCarloWithWte.h>
+#include <IMP/spb/PbcBoxedRigidBodyMover.h>
+#include <IMP/spb/PbcBoxedMover.h>
+#include <IMP/spb/spb_sampler.h>
+#include <IMP/spb/spb_config.h>
 
 using namespace IMP;
 using namespace IMP::spb;

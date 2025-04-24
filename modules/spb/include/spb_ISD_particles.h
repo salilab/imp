@@ -8,9 +8,6 @@
 
 #ifndef IMPSPB_SPB_IS_D_PARTICLES_H
 #define IMPSPB_SPB_IS_D_PARTICLES_H
-#include <IMP.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
 #include <IMP/spb/spb_main.h>
 #include <map>
 #include <string>

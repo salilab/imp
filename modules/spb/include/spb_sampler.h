@@ -8,9 +8,11 @@
 
 #ifndef IMPSPB_SPB_SAMPLER_H
 #define IMPSPB_SPB_SAMPLER_H
-#include <IMP.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
+
+#include <IMP/Pointer.h>
+#include <IMP/Particle.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/spb/spb_main.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

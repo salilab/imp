@@ -5,13 +5,16 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
-#include <IMP/core.h>
-#include <IMP/spb.h>
 #include <fstream>
 #include <map>
+#include <IMP/Pointer.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/spb_assemble_restraints.h>
+#include <IMP/spb/spb_restraint.h>
+#include <IMP/spb/spb_config.h>
 
 using namespace IMP;
 using namespace IMP::spb;

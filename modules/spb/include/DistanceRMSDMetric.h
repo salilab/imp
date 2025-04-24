@@ -8,10 +8,10 @@
 #ifndef IMPSPB_DISTANCE_RMSD_METRIC_H
 #define IMPSPB_DISTANCE_RMSD_METRIC_H
 
-#include <IMP/algebra.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/statistics.h>
+#include <IMP/statistics/Metric.h>
+#include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

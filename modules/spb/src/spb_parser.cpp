@@ -5,10 +5,12 @@
 *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/base_types.h>
-#include <IMP/spb.h>
 #include <boost/program_options.hpp>
 #include <string>
+#include <IMP/base_types.h>
+#include <IMP/spb/spb_config.h>
+#include <IMP/spb/spb_parser.h>
+#include <IMP/spb/spb_main.h>
 
 using namespace IMP;
 using namespace IMP::spb;

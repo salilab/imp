@@ -5,11 +5,19 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/core.h>
-#include <IMP/isd.h>
-#include <IMP/spb.h>
 #include <map>
 #include <string>
+#include <IMP/Pointer.h>
+#include <IMP/Model.h>
+#include <IMP/core/SingletonConstraint.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/isd/GaussianRestraint.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/spb_sampler.h>
+#include <IMP/spb/NuisanceRangeModifier.h>
+#include <IMP/spb/spb_ISD_particles.h>
+#include <IMP/spb/spb_config.h>
 
 using namespace IMP;
 using namespace IMP::spb;

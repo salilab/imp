@@ -5,8 +5,9 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/spb.h>
 #include <cmath>
+#include <IMP/spb/pt_stuff.h>
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 
