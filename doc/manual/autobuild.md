@@ -19,12 +19,12 @@ is merged there. Results for these branches can also be viewed at the nightly
 build state page by selecting the branch from the dropdown at the top left
 of the page.
 
-## Travis CI
+## GitHub Actions
 
 A subset of the %IMP code is built using
-[Travis CI](https://travis-ci.org/salilab/imp) every time code is pushed to
-the `develop` branch on [GitHub](https://github.com/salilab/imp). (Only a subset
-is built because building all of %IMP would exceed Travis CI's time limits.)
+[GitHub Actions](https://github.com/salilab/imp/actions/workflows/ci.yml)
+every time code is pushed to the `develop` branch on
+[GitHub](https://github.com/salilab/imp).
 This is helpful to quickly detect compilation errors.
 
 ## Coverity
