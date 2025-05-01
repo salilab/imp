@@ -7,6 +7,9 @@
 [submodule "components/metamodeling"]
 	path = components/metamodeling
 	url = https://github.com/salilab/metamodeling.git
+[submodule "components/emseqfinder"]
+	path = components/emseqfinder
+	url = https://github.com/salilab/emseqfinder.git
 [submodule "modules/pmi1"]
 	path = modules/pmi1
 	url = https://github.com/salilab/pmi.git
