@@ -220,7 +220,14 @@ class _PDBFragment(ihm.representation.ResidueSegment):
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
             & IMP.atom.ChainPDBSelector([chain])
-        self.starting_hier = IMP.atom.read_pdb(pdbname, state.model, sel)
+        # Read file in mmCIF or BinaryCIF format if requested
+        if pdbname.endswith('.cif'):
+            read_file = IMP.atom.read_mmcif
+        elif pdbname.endswith('.bcif'):
+            read_file = IMP.atom.read_bcif
+        else:
+            read_file = IMP.atom.read_pdb
+        self.starting_hier = read_file(pdbname, state.model, sel)
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
                      lambda self, val: None)
@@ -880,7 +887,14 @@ class _AllStartingModels:
         fragment.starting_model = models[-1]
 
     def _add_model(self, f):
-        parser = ihm.metadata.PDBParser()
+        if (hasattr(ihm.metadata, 'CIFParser')
+                and f.pdbname.endswith('.cif')):
+            parser = ihm.metadata.CIFParser()
+        elif (hasattr(ihm.metadata, 'BinaryCIFParser')
+              and f.pdbname.endswith('.bcif')):
+            parser = ihm.metadata.BinaryCIFParser()
+        else:
+            parser = ihm.metadata.PDBParser()
         r = parser.parse_file(f.pdbname)
 
         self.simo._add_dataset(r['dataset'])
@@ -891,7 +905,7 @@ class _AllStartingModels:
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
                 self.simo._add_dataset(t.dataset)
-        source = r['entity_source'].get(f.chain)
+        source = r.get('entity_source', {}).get(f.chain)
         if source:
             f.asym_unit.entity.source = source
         pmi_offset = f.asym_unit.entity.pmi_offset
@@ -899,7 +913,7 @@ class _AllStartingModels:
                     asym_unit=f.asym_unit.asym.pmi_range(f.start, f.end),
                     dataset=r['dataset'], asym_id=f.chain,
                     templates=templates, offset=f.offset + pmi_offset,
-                    metadata=r['metadata'],
+                    metadata=r.get('metadata'),
                     software=r['software'][0] if r['software'] else None,
                     script_file=r['script'])
         m.fragments = [weakref.proxy(f)]
