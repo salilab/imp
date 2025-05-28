@@ -1,6 +1,10 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- We no longer provide packages for Ubuntu 20.04 LTS (Focal Fossa), as it
+  reached end of life in May 2025.
+
 # 2.22.0 - 2024-12-12 # {#changelog_2_22_0}
 - IMP now includes the Bayesian Fluorescence Framework, as the IMP::bff module.
 - Python 2 is no longer supported; the minimum supported Python version is 3.6.
