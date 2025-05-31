@@ -39,29 +39,11 @@ BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
 BuildRequires: CGAL-devel
 
-# RHEL 7 and 8 have OpenCV, but it was dropped in RHEL 9, so disable the em2d
-# module.
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
+# RHEL 7 and 8 have OpenCV in base; it is in EPEL for RHEL 9, 10
 BuildRequires: opencv-devel
-%endif
 
-# If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom OpenCV package
-# and bundle the libraries with IMP.
-# If building outside of the lab and you still want this package, get it
-# from https://integrativemodeling.org/build-extras/
-%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-%if 0%{?rhel} == 9
-BuildRequires: opencv-nogui-devel
-%endif
-%if 0%{?rhel} == 9
-%define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so
-%else
+# Bundle libTAU library with IMP so folks don't need to get it separately
 %define bundled libTAU\\.so
-%endif
-%else
-%define bundled libTAU\\.so
-%endif
 
 # The IMP kernel links with numpy, so pull that in if available. Many modules
 # also use Python's scipy module, so pull that in (at build time for tests;
@@ -121,9 +103,7 @@ Requires:      ann-devel
 %endif
 Requires:      python3-devel
 Requires:      CGAL-devel
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
-%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -308,15 +288,6 @@ fi
 # %_prefix to be, but dependent libraries are always in /usr)
 mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-
-%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-# Bundle any lab-specific libraries
-%if 0%{?rhel} == 9
-for cvlib in core imgproc highgui imgcodecs; do
-  cp /usr/%{_lib}/libopencv_${cvlib}.so.4.5 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-done
-%endif
-%endif
 
 # Don't distribute example application or dependency
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \

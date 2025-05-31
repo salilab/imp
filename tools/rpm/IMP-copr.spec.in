@@ -38,16 +38,8 @@ Requires: python3-ihm
 BuildRequires: CGAL-devel
 
 # Use OpenCV if provided by the OS
-# (RHEL 7 and 8 have OpenCV, but it was dropped in RHEL 9).
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
+# (RHEL 7 and 8 have OpenCV in base; it is in EPEL for RHEL 9, 10)
 BuildRequires: opencv-devel
-%endif
-
-# On other systems, use our custom OpenCV package instead
-# from https://integrativemodeling.org/build-extras/ or Fedora COPR
-%if 0%{?rhel} == 9
-BuildRequires: opencv-nogui-devel
-%endif
 
 # The IMP kernel links with numpy, so pull that in if available. Many modules
 # also use Python's scipy module, so pull that in (at build time for tests;
@@ -105,9 +97,7 @@ Requires:      ann-devel
 %endif
 Requires:      python3-devel, python3-ihm
 Requires:      CGAL-devel
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
-%endif
 
 %description devel
 This package contains the include files for building applications that link
