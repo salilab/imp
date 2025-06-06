@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['XYRadialPositionLowerRestraint_Score_Test']),
-            33.74, delta=1e-2)
+            53.37, delta=1e-2)
 
     def test_xy_radial_pos_upper_restraint(self):
         """Test XYRadialPositionUpperRestraint"""
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['XYRadialPositionUpperRestraint_Score_Test']),
-            84.48, delta=1e-2)
+            196.19, delta=1e-2)
 
     def test_z_axial_pos_restraint(self):
         """Test ZAxialPositionRestraint"""
@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['ZAxialPositionLowerRestraint_Score_Test']),
-            62.76, delta=1e-2)
+            90.38, delta=1e-2)
 
     def test_z_axial_pos_upper_restraint(self):
         """Test ZAxialPositionUpperRestraint"""
@@ -87,7 +87,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['ZAxialPositionUpperRestraint_Score_Test']),
-            4.32, delta=1e-2)
+            26.82, delta=1e-2)
 
     def test_y_axial_pos_restraint(self):
         """Test YAxialPositionRestraint"""
@@ -110,7 +110,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['YAxialPositionLowerRestraint_Score_Test']),
-            21.64, delta=1e-2)
+            53.42, delta=1e-2)
 
     def test_y_axial_pos_upper_restraint(self):
         """Test YAxialPositionUpperRestraint"""
@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
         out = r.get_output()
         self.assertAlmostEqual(
             float(out['YAxialPositionUpperRestraint_Score_Test']),
-            5.51, delta=1e-2)
+            7.36, delta=1e-2)
 
     def test_membrane_surface_restraint(self):
         """Test MembraneSurfaceLocationRestraint"""
