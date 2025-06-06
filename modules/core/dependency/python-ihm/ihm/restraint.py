@@ -440,9 +440,12 @@ class ResidueCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
     def _get_residue1(self):
@@ -502,9 +505,12 @@ class FeatureCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
 
@@ -551,16 +557,22 @@ class AtomCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
 
 class CrossLinkFit:
-    """Information on the fit of a model to a :class:`CrossLink`.
+    """Information on the fit of a single model to a :class:`CrossLink`.
        See :attr:`ResidueCrossLink.fits`, :attr:`AtomCrossLink.fits`, or
        :attr:`FeatureCrossLink.fits`.
+
+       See also :class:`CrossLinkGroupFit` for information on the fit of
+       a model group or ensemble in aggregate to the cross-link.
 
        :param float psi: Uncertainty in the experimental data.
        :param float sigma1: Uncertainty in the position of the first residue.
@@ -570,6 +582,29 @@ class CrossLinkFit:
 
     def __init__(self, psi=None, sigma1=None, sigma2=None):
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
+
+
+class CrossLinkGroupFit:
+    """Information on the fit of a :class:`~ihm.model.ModelGroup` or
+       :class:`~ihm.model.Ensemble` in aggregate to a :class:`CrossLink`.
+       See :attr:`ResidueCrossLink.fits`, :attr:`AtomCrossLink.fits`, or
+       :attr:`FeatureCrossLink.fits`.
+
+       See also :class:`CrossLinkFit` for information on the fit of
+       a single model to the cross-link.
+
+       :param float median_distance: Actual median cross-link distance in the
+              sampled models.
+       :param int num_models: Number of models sampled, for which the
+              median distance is provided.
+       :param str details: More information on the fit.
+    """
+    __slots__ = ["median_distance", "num_models",
+                 "details"]  # Reduce memory usage
+
+    def __init__(self, median_distance, num_models=None, details=None):
+        self.median_distance = median_distance
+        self.num_models, self.details = num_models, details
 
 
 class Feature:

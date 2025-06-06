@@ -58,9 +58,8 @@ pip install ihm
 
 (Note that pip builds a C extension module for faster reading of mmCIF and
 BinaryCIF files. This requires that your system has a C compiler. If you
-don't want to build the C extension module, install with
-`pip install ihm --install-option="--without-ext"`, and then the library
-will read files using pure Python instead.)
+don't have a C compiler available, the library will read files using pure
+Python instead.)
 
 # Installation from source code
 
@@ -71,12 +70,10 @@ python setup.py build
 python setup.py install
 ```
 
-Note that a C extension module is built for faster reading of mmCIF and
-BinaryCIF files. This requires that your system has a C compiler and
-[SWIG](https://www.swig.org/). If either of these components are missing, you
-can choose to build without the extension by adding `--without-ext` to both
-`setup.py` command lines above, and then the library will read files using
-pure Python instead.
+Note that this will attempt to build a C extension module for faster reading
+of mmCIF and BinaryCIF files. This requires that your system has a C compiler
+and [SWIG](https://www.swig.org/). If either of these components are missing,
+the library will fall back to reading files using pure Python instead.
 
 If you want to write [BinaryCIF](https://github.com/molstar/BinaryCIF)
 files (or to read them without the C extension module), you will also need the

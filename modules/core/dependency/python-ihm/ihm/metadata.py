@@ -138,8 +138,7 @@ class _ParsedEMDBLocation(location.EMDBLocation):
        when they are requested (unless they are set to other values)."""
     def __init__(self, emdb):
         self.__emdb_info = None
-        super(_ParsedEMDBLocation, self).__init__(
-            db_code=emdb, version=None, details=None)
+        super().__init__(db_code=emdb, version=None, details=None)
         self.__emdb_info = None
 
     def __get_version(self):
@@ -763,6 +762,11 @@ class _SystemReader:
         self.template_ranges = ihm.reader.IDMapper(None, _TemplateRange)
         self.target_ranges = ihm.reader.IDMapper(None, _TargetRange)
         self.templates = ihm.reader.IDMapper(m['templates'], _Template)
+        self.entities = ihm.reader.IDMapper(None, ihm.Entity, [])
+        self.asym_units = ihm.reader.IDMapper(m['asyms'], ihm.AsymUnit, None)
+        self.src_gens = ihm.reader.IDMapper(None, ihm.source.Manipulated)
+        self.src_nats = ihm.reader.IDMapper(None, ihm.source.Natural)
+        self.src_syns = ihm.reader.IDMapper(None, ihm.source.Synthetic)
 
 
 class _TemplateDetailsHandler(ihm.reader.Handler):
@@ -857,7 +861,7 @@ class _ModBaseLocation(location.DatabaseLocation):
     """A model deposited in ModBase"""
     def __init__(self, db_code, version=None, details=None):
         # Use details to describe ModBase, ignoring the file title
-        super(_ModBaseLocation, self).__init__(
+        super().__init__(
             db_code, version=version,
             details="ModBase database of comparative protein structure models")
 
@@ -875,7 +879,8 @@ class _CIFParserBase(Parser):
 
     def parse_file(self, filename):
         m = {'db': {}, 'title': 'Starting model structure',
-             'software': [], 'templates': [], 'alignments': []}
+             'software': [], 'templates': [], 'alignments': [],
+             'asyms': []}
         with self._open_file(filename) as fh:
             dbh = _Database2Handler(m)
             structh = _StructHandler(m)
@@ -891,6 +896,12 @@ class _CIFParserBase(Parser):
                      '_modeller_template': modtmplh,
                      '_software': ihm.reader._SoftwareHandler(sysr),
                      '_citation': ihm.reader._CitationHandler(sysr),
+                     '_struct_asym': ihm.reader._StructAsymHandler(sysr),
+                     '_entity': ihm.reader._EntityHandler(sysr),
+                     '_entity_src_nat': ihm.reader._EntitySrcNatHandler(sysr),
+                     '_pdbx_entity_src_syn':
+                     ihm.reader._EntitySrcSynHandler(sysr),
+                     '_entity_src_gen': ihm.reader._EntitySrcGenHandler(sysr),
                      '_citation_author':
                      ihm.reader._CitationAuthorHandler(sysr),
                      '_ma_template_details': _TemplateDetailsHandler(sysr),
@@ -905,6 +916,8 @@ class _CIFParserBase(Parser):
         dset = self._get_dataset(filename, m)
         return {'dataset': dset, 'software': m['software'],
                 'templates': self._get_templates(filename, m, dset),
+                'entity_source': {asym.id: asym.entity.source
+                                  for asym in m['asyms']},
                 'script': m['script']}
 
     def _get_dataset(self, filename, m):
@@ -982,13 +995,15 @@ class CIFParser(_CIFParserBase):
                     IDs in the PDB file and values the list of comparative
                     model templates used to model that chain as
                     :class:`ihm.startmodel.Template` objects;
+                    'entity_source' pointing to a dict with keys the asym IDs
+                    and values :class:`ihm.source.Source` objects;
                     'software' pointing to a list of software used to generate
                     the file (as :class:`ihm.Software` objects);
                     'script' pointing to the script used to generate the
                     file, if any (as :class:`ihm.location.WorkflowFileLocation`
                     objects).
         """
-        return super(CIFParser, self).parse_file(filename)
+        return super().parse_file(filename)
 
 
 class BinaryCIFParser(_CIFParserBase):

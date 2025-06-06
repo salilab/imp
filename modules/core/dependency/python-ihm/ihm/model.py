@@ -169,7 +169,12 @@ class ModelGroup(list):
     def __init__(self, elements=(), name=None, details=None):
         self.name = name
         self.details = details
-        super(ModelGroup, self).__init__(elements)
+        super().__init__(elements)
+
+    # Kind of ugly but needed so we can use ModelGroup as keys for
+    # the ihm.restraint.CrossLink.fits dict
+    def __hash__(self):
+        return hash(tuple(self))
 
 
 class State(list):
@@ -185,7 +190,7 @@ class State(list):
         self.type, self.name, self.details = type, name, details
         self.experiment_type = experiment_type
         self.population_fraction = population_fraction
-        super(State, self).__init__(elements)
+        super().__init__(elements)
 
 
 class StateGroup(list):
@@ -196,7 +201,7 @@ class StateGroup(list):
        :param elements: Initial set of states in the group.
     """
     def __init__(self, elements=()):
-        super(StateGroup, self).__init__(elements)
+        super().__init__(elements)
 
 
 class Ensemble:
@@ -329,7 +334,7 @@ class ProcessStep(list):
     """
     def __init__(self, elements=(), description=None):
         self.description = description
-        super(ProcessStep, self).__init__(elements)
+        super().__init__(elements)
 
 
 class ProcessEdge:

@@ -118,7 +118,7 @@ class DatasetGroup(list):
     name = application = details = None
 
     def __init__(self, elements=(), name=None, application=None, details=None):
-        super(DatasetGroup, self).__init__(elements)
+        super().__init__(elements)
         self.name, self.application = name, application
         self.details = details
 

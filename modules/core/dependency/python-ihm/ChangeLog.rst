@@ -1,3 +1,19 @@
+2.5 - 2025-04-25
+================
+  - Assemblies are now checked at file-output time to ensure that each
+    asym referenced in an assembly is represented by atoms and/or spheres
+    in at least one model (#165).
+  - ``make_mmcif`` has a new ``--check_atom_names`` option which, if set,
+    will check for any non-canonical atom names (#166).
+  - ``pip install`` should no longer fail to install if the C extension
+    module cannot be built; it will fall back to use the slower pure Python
+    implementation.
+
+2.4 - 2025-03-25
+================
+  - Add support for fits of model groups or ensembles to cross-links
+    using the new :class:`ihm.restraint.CrossLinkGroupFit` class.
+
 2.3 - 2025-03-13
 ================
   - The C-accelerated BinaryCIF parser now supports interval quantization

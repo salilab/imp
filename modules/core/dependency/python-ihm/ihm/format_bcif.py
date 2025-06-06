@@ -584,7 +584,7 @@ class BinaryCifWriter(ihm.format._Writer):
                       _ByteArrayEncoder()]
 
     def __init__(self, fh):
-        super(BinaryCifWriter, self).__init__(fh)
+        super().__init__(fh)
         self._blocks = []
         self._masked_encoder = {str: _StringArrayMaskedEncoder(),
                                 int: _IntArrayMaskedEncoder(),

@@ -73,6 +73,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: CrossLinkFit
    :members:
 
+.. autoclass:: CrossLinkGroupFit
+   :members:
+
 .. autoclass:: Feature
    :members:
 

@@ -1186,6 +1186,47 @@ newa b c d
 x y
 """)
 
+    def test_cif_token_reader_change_func_value_filter(self):
+        """Test CifTokenReader class with ChangeFuncValueFilter"""
+        class MyFunc:
+            def __init__(self):
+                self.calls = []
+
+            def __call__(self, value, category, keyword):
+                self.calls.append((value, category, keyword))
+                return value.upper()
+
+        cif = """
+data_foo_bar
+#
+_cat1.bar old
+#
+loop_
+_foo.bar
+_foo.baz
+a b c d
+x y
+"""
+        f = MyFunc()
+        r = ihm.format.CifTokenReader(StringIO(cif))
+        filters = [ihm.format.ChangeFuncValueFilter(".bar", f)]
+        tokens = list(r.read_file(filters))
+        new_cif = "".join(x.as_mmcif() for x in tokens)
+        self.assertEqual(f.calls,
+                         [('old', '_cat1', 'bar'), ('a', '_foo', 'bar'),
+                          ('c', '_foo', 'bar'), ('x', '_foo', 'bar')])
+        self.assertEqual(new_cif, """
+data_foo_bar
+#
+_cat1.bar OLD
+#
+loop_
+_foo.bar
+_foo.baz
+A b C d
+X y
+""")
+
     def test_cif_token_reader_replace_category_filter(self):
         """Test CifTokenReader class with ReplaceCategoryFilter"""
         cif = """

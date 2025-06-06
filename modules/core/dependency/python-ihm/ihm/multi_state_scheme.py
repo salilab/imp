@@ -236,14 +236,14 @@ class EquilibriumConstant:
 class PopulationEquilibriumConstant(EquilibriumConstant):
     """An equilibrium constant determined from population"""
     def __init__(self, value, unit=None):
-        super(PopulationEquilibriumConstant, self).__init__(value, unit)
+        super().__init__(value, unit)
         self.method = 'equilibrium constant is determined from population'
 
 
 class KineticRateEquilibriumConstant(EquilibriumConstant):
     """An equilibrium constant determined from kinetic rates as kAB/kBA"""
     def __init__(self, value, unit=None):
-        super(KineticRateEquilibriumConstant, self).__init__(value, unit)
+        super().__init__(value, unit)
         self.method = 'equilibrium constant is determined from kinetic ' \
                       'rates, kAB/kBA'
 

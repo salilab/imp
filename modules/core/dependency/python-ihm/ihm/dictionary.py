@@ -29,17 +29,17 @@ class _UnknownCif(_CifSpecialValue):
 class _KeywordEnumeration(set):
     """Set of possible values for a keyword. Can be case insensitive."""
     def __init__(self):
-        super(_KeywordEnumeration, self).__init__()
+        super().__init__()
         self.case_sensitive = True
         self._upper_set = None
 
     def add(self, item):
         self._upper_set = None  # Invalidate upper_set
-        super(_KeywordEnumeration, self).add(item)
+        super().add(item)
 
     def __contains__(self, item):
         if self.case_sensitive:
-            return super(_KeywordEnumeration, self).__contains__(item)
+            return super().__contains__(item)
         else:
             if self._upper_set is None:
                 self._upper_set = set(x.upper() for x in self)
@@ -60,7 +60,7 @@ class _ValidatorCategoryHandler(Handler):
     unknown = _UnknownCif()
 
     def __init__(self, sysr, category):
-        super(_ValidatorCategoryHandler, self).__init__(sysr)
+        super().__init__(sysr)
         self.category = '_' + category.name
         self.category_obj = category
         self._keys = [k.lower() for k in category.keywords.keys()]

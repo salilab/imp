@@ -87,7 +87,7 @@ class EmptyStep(Step):
     type = 'none'
 
     def __init__(self):
-        super(EmptyStep, self).__init__(
+        super().__init__(
             feature='none', num_models_begin=None, num_models_end=None)
 
 

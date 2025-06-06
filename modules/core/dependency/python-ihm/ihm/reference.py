@@ -69,8 +69,7 @@ class UniProtSequence(Sequence):
     _db_name = 'UNP'
 
     def __init__(self, db_code, accession, sequence, details=None):
-        super(UniProtSequence, self).__init__(
-            self._db_name, db_code, accession, sequence, details)
+        super().__init__(self._db_name, db_code, accession, sequence, details)
 
     def __str__(self):
         return "<ihm.reference.UniProtSequence(%r)>" % self.accession

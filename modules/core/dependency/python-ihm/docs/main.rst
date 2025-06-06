@@ -123,6 +123,13 @@ The :mod:`ihm` Python module
 .. autoclass:: BranchLink
    :members:
 
+.. autoclass:: DataUsage
+   :members:
+
+.. autoclass:: License
+
+.. autoclass:: Disclaimer
+
 .. autoclass:: Revision
    :members:
 

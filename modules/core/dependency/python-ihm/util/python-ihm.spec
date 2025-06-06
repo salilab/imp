@@ -1,18 +1,22 @@
 Name:          python3-ihm
 License:       MIT
 Group:         Applications/Engineering
-Version:       2.3
+Version:       2.5
 Release:       1%{?dist}
 Summary:       Package for handling IHM mmCIF and BinaryCIF files
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://pypi.python.org/pypi/ihm
 Source:        ihm-%{version}.tar.gz
+Patch0:        ihm-force-c-ext.patch
 BuildRequires: python3-devel, python3-setuptools, gcc
 %if 0%{?rhel} != 7
 BuildRequires: python3-msgpack
 Requires: python3-msgpack
 %else
 BuildRequires: sed
+%endif
+%if 0%{?fedora} >= 42
+BuildRequires: python3-pytest
 %endif
 
 %description
@@ -22,6 +26,7 @@ with Python 3.6 or later.
 
 %prep
 %setup -n ihm-%{version}
+%patch -P 0 -p1
 %if 0%{?rhel} == 7
 sed -i -e "s/install_requires=\['msgpack'\]/#/" setup.py
 %endif
@@ -30,12 +35,22 @@ sed -i -e "s/install_requires=\['msgpack'\]/#/" setup.py
 %{__python3} setup.py install --root=${RPM_BUILD_ROOT} --record=INSTALLED_FILES
 
 %check
+%if 0%{?fedora} >= 42
+%pytest ihm/test.py
+%else
 %{__python3} setup.py test
+%endif
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 25 2025 Ben Webb <ben@salilab.org>   2.5-1
+- Update to latest upstream.
+
+* Tue Mar 25 2025 Ben Webb <ben@salilab.org>   2.4-1
+- Update to latest upstream.
+
 * Thu Mar 13 2025 Ben Webb <ben@salilab.org>   2.3-1
 - Update to latest upstream.
 

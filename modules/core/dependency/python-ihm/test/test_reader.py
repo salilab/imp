@@ -347,6 +347,34 @@ _pdbx_audit_revision_item.item
             self.assertEqual(r.categories, ['cat1', 'cat2'])
             self.assertEqual(r.items, ['item1'])
 
+    def test_data_usage_handler(self):
+        """Test DataUsageHandler"""
+        cif = """
+loop_
+_pdbx_data_usage.id
+_pdbx_data_usage.type
+_pdbx_data_usage.details
+_pdbx_data_usage.url
+_pdbx_data_usage.name
+1 license 'some license' someurl somename
+2 disclaimer 'some disclaimer' . .
+3 "some other type" 'misc usage' . ."""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            d1, d2, d3 = s.data_usage
+            self.assertIsInstance(d1, ihm.License)
+            self.assertEqual(d1.details, "some license")
+            self.assertEqual(d1.name, "somename")
+            self.assertEqual(d1.url, "someurl")
+
+            self.assertIsInstance(d2, ihm.Disclaimer)
+            self.assertEqual(d2.details, "some disclaimer")
+            self.assertIsNone(d2.name)
+            self.assertIsNone(d2.url)
+
+            self.assertEqual(d3.type, "other")
+            self.assertEqual(d3.details, "misc usage")
+
     def test_grant_handler(self):
         """Test GrantHandler"""
         cif = """
@@ -2073,7 +2101,7 @@ _ihm_sas_restraint.details
         """Test SphereObjSiteHandler"""
         class MyModel(ihm.model.Model):
             def add_sphere(self, sphere):
-                super(MyModel, self).add_sphere(sphere)
+                super().add_sphere(sphere)
                 self.sphere_count = len(self._spheres)
 
         fh = StringIO("""
@@ -3346,6 +3374,18 @@ _ihm_cross_link_result_parameters.sigma_1
 _ihm_cross_link_result_parameters.sigma_2
 1 1 201 0.100 4.200 2.100
 2 1 301 . . .
+#
+loop_
+_ihm_cross_link_result.id
+_ihm_cross_link_result.restraint_id
+_ihm_cross_link_result.ensemble_id
+_ihm_cross_link_result.model_group_id
+_ihm_cross_link_result.num_models
+_ihm_cross_link_result.distance_threshold
+_ihm_cross_link_result.median_distance
+_ihm_cross_link_result.details
+1 1 401 . 10 99.0 10.0 'details 1'
+2 1 . 501 20 99.0 20.0 .
 """
         # Order of categories shouldn't matter
         for text in (xl_list + xl_rsr + xl_fit, xl_fit + xl_rsr + xl_list):
@@ -3353,18 +3393,34 @@ _ihm_cross_link_result_parameters.sigma_2
             s, = ihm.reader.read(fh)
             r, = s.restraints
             xl, = r.cross_links
-            # Sort fits by model ID
+            # Sort fits by ID
             fits = sorted(xl.fits.items(), key=lambda x: x[0]._id)
-            self.assertEqual(len(fits), 2)
+            self.assertEqual(len(fits), 4)
+            self.assertIsInstance(fits[0][0], ihm.model.Model)
             self.assertEqual(fits[0][0]._id, '201')
             self.assertAlmostEqual(fits[0][1].psi, 0.100, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma1, 4.200, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma2, 2.100, delta=0.1)
 
             self.assertEqual(fits[1][0]._id, '301')
+            self.assertIsInstance(fits[1][0], ihm.model.Model)
             self.assertIsNone(fits[1][1].psi)
             self.assertIsNone(fits[1][1].sigma1)
             self.assertIsNone(fits[1][1].sigma2)
+
+            self.assertEqual(fits[2][0]._id, '401')
+            self.assertIsInstance(fits[2][0], ihm.model.Ensemble)
+            self.assertEqual(fits[2][1].num_models, 10)
+            self.assertAlmostEqual(fits[2][1].median_distance, 10.0,
+                                   delta=0.01)
+            self.assertEqual(fits[2][1].details, 'details 1')
+
+            self.assertEqual(fits[3][0]._id, '501')
+            self.assertIsInstance(fits[3][0], ihm.model.ModelGroup)
+            self.assertEqual(fits[3][1].num_models, 20)
+            self.assertAlmostEqual(fits[3][1].median_distance, 20.0,
+                                   delta=0.01)
+            self.assertIsNone(fits[3][1].details)
 
     def test_ordered_model_handler(self):
         """Test OrderedModelHandler"""

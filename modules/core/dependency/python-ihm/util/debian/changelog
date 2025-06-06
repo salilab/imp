@@ -1,3 +1,15 @@
+python-ihm (2.5-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 2.5 release
+
+ -- Ben Webb <ben@salilab.org>  Fri, 25 Apr 2025 20:41:22 -0700
+
+python-ihm (2.4-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 2.4 release
+
+ -- Ben Webb <ben@salilab.org>  Tue, 25 Mar 2025 20:31:19 -0700
+
 python-ihm (2.3-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.3 release

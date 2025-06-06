@@ -105,8 +105,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.27",
-                     dict_location=self.URL % "ad4a00e")
+            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.28",
+                     dict_location=self.URL % "44ed2c3")
 
 
 class _StructDumper(Dumper):
@@ -286,6 +286,16 @@ class _AuditRevisionDumper(Dumper):
                     lp.write(ordinal=next(ordinal), revision_ordinal=rev._id,
                              data_content_type=rev.data_content_type,
                              item=item)
+
+
+class _DataUsageDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_pdbx_data_usage",
+                         ["id", "type", "details", "url", "name"]) as lp:
+            for d in system.data_usage:
+                lp.write(id=next(ordinal), type=d.type,
+                         details=d.details, url=d.url, name=d.name)
 
 
 class _GrantDumper(Dumper):
@@ -682,7 +692,7 @@ class _StructRefDumper(Dumper):
 
 class _EntityPolyDumper(Dumper):
     def __init__(self):
-        super(_EntityPolyDumper, self).__init__()
+        super().__init__()
 
         # Determine the type of the entire entity's sequence based on the
         # type(s) of all chemical components it contains
@@ -1045,20 +1055,21 @@ class _AssemblyDumperBase(Dumper):
             a.sort(key=component_key)
 
         seen_assemblies = {}
-        # Assign IDs to all assemblies; duplicate assemblies get same ID
+        # Assign IDs to all assemblies; duplicate assemblies (same signature)
+        # get same ID
         self._assembly_by_id = []
         description_by_id = {}
         all_assemblies = list(system._all_assemblies())
         seen_assembly_ids = {}
         for a in all_assemblies:
-            # list isn't hashable but tuple is
-            hasha = tuple(a)
-            if hasha not in seen_assemblies:
+            # Assembly isn't hashable but its signature is
+            sig = a._signature()
+            if sig not in seen_assemblies:
                 self._assembly_by_id.append(a)
-                seen_assemblies[hasha] = a._id = len(self._assembly_by_id)
+                seen_assemblies[sig] = a._id = len(self._assembly_by_id)
                 description_by_id[a._id] = []
             else:
-                a._id = seen_assemblies[hasha]
+                a._id = seen_assemblies[sig]
             if a.description and id(a) not in seen_assembly_ids:
                 descs = description_by_id[a._id]
                 # Don't duplicate descriptions
@@ -1797,6 +1808,52 @@ class _RangeChecker:
                              for x in self.repr_asym_ids[asym._id])))
 
 
+class _AssemblyChecker:
+    """Check that all Assembly asyms are in a Model"""
+    def __init__(self):
+        # Map from Assembly id to set of Asym ids
+        self._asmb_asyms = {}
+        # Map from Assembly id to Assembly object
+        self._asmb_from_id = {}
+
+        # Map from Assembly id to set of all represented Asym ids (in models)
+        self._asmb_model_asyms = {}
+
+    def add_model_asyms(self, model, seen_asym_ids):
+        """Add a set of asym IDs seen in atoms or spheres in the model"""
+        asmb = model.assembly
+        # If this is the first time we've seen this assembly, get its
+        # declared set of asym IDs
+        if id(asmb) not in self._asmb_asyms:
+            self._asmb_from_id[id(asmb)] = asmb
+            asyms = frozenset(x._id for x in asmb if hasattr(x, 'entity'))
+            self._asmb_asyms[id(asmb)] = asyms
+        # Add asym IDs from model
+        if id(asmb) not in self._asmb_model_asyms:
+            self._asmb_model_asyms[id(asmb)] = set()
+        self._asmb_model_asyms[id(asmb)] |= seen_asym_ids
+
+    def check(self):
+        """Make sure each Assembly only references asym IDs that are
+           represented by atoms or spheres in at least one Model, or
+           raise ValueError."""
+        def get_extra_asyms():
+            for asmb_id, asyms in self._asmb_asyms.items():
+                extra = asyms - self._asmb_model_asyms[asmb_id]
+                if extra:
+                    asmb = self._asmb_from_id[asmb_id]
+                    asmb_id = ("ID %s" % asmb._id
+                               if hasattr(asmb, '_id') else asmb)
+                    yield asmb_id, ", ".join(sorted(extra))
+
+        err = "; ".join("%s, asym IDs %s" % extra
+                        for extra in get_extra_asyms())
+        if err:
+            raise ValueError(
+                "The following Assemblies reference asym IDs that don't "
+                "have coordinates in any Model: " + err)
+
+
 class _ModelDumperBase(Dumper):
 
     def finalize(self, system):
@@ -1826,10 +1883,20 @@ class _ModelDumperBase(Dumper):
            in atom_site. This table is needed by atom_site. Note that we
            output it *after* atom_site (otherwise we would need to iterate
            through all atoms in the system twice)."""
+        # Also check all assemblies, after dumping all atoms/spheres
+        if self._check:
+            self._assembly_checker.check()
         elements = [x for x in sorted(seen_types.keys()) if x is not None]
         with writer.loop("_atom_type", ["symbol"]) as lp:
             for element in elements:
                 lp.write(symbol=element)
+
+    def __get_assembly_checker(self):
+        if not hasattr(self, '_asmb_check'):
+            self._asmb_check = _AssemblyChecker()
+        return self._asmb_check
+
+    _assembly_checker = property(__get_assembly_checker)
 
     def dump_atoms(self, system, writer, add_ihm=True):
         seen_types = {}
@@ -1843,9 +1910,11 @@ class _ModelDumperBase(Dumper):
             it.append("ihm_model_id")
         with writer.loop("_atom_site", it) as lp:
             for group, model in system._all_models():
+                seen_asym_ids = set()
                 rngcheck = _RangeChecker(model, self._check)
                 for atom in model.get_atoms():
                     rngcheck(atom)
+                    seen_asym_ids.add(atom.asym_unit._id)
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
                     label_seq_id = atom.seq_id
                     if not atom.asym_unit.entity.is_polymeric():
@@ -1871,6 +1940,7 @@ class _ModelDumperBase(Dumper):
                              occupancy=atom.occupancy,
                              pdbx_PDB_model_num=model._id,
                              ihm_model_id=model._id)
+                self._assembly_checker.add_model_asyms(model, seen_asym_ids)
         return seen_types
 
 
@@ -1919,8 +1989,10 @@ class _ModelDumper(_ModelDumperBase):
                           "model_id"]) as lp:
             for group, model in system._all_models():
                 rngcheck = _RangeChecker(model, self._check)
+                seen_asym_ids = set()
                 for sphere in model.get_spheres():
                     rngcheck(sphere)
+                    seen_asym_ids.add(sphere.asym_unit._id)
                     lp.write(id=next(ordinal),
                              entity_id=sphere.asym_unit.entity._id,
                              seq_id_begin=sphere.seq_id_range[0],
@@ -1929,6 +2001,7 @@ class _ModelDumper(_ModelDumperBase):
                              Cartn_x=sphere.x, Cartn_y=sphere.y,
                              Cartn_z=sphere.z, object_radius=sphere.radius,
                              rmsf=sphere.rmsf, model_id=model._id)
+                self._assembly_checker.add_model_asyms(model, seen_asym_ids)
 
 
 class _NotModeledResidueRangeDumper(Dumper):
@@ -2425,7 +2498,8 @@ class _CrossLinkDumper(Dumper):
         self.dump_list(system, writer)
         pseudo_xls = self.dump_restraint(system, writer)
         self.dump_pseudo_sites(system, writer, pseudo_xls)
-        self.dump_results(system, writer)
+        self.dump_result(system, writer)
+        self.dump_result_parameters(system, writer)
 
     def dump_list(self, system, writer):
         with writer.loop("_ihm_cross_link_list",
@@ -2506,7 +2580,36 @@ class _CrossLinkDumper(Dumper):
                          pseudo_site_id=p.site._id,
                          model_id=p.model._id if p.model else None)
 
-    def dump_results(self, system, writer):
+    def dump_result(self, system, writer):
+        with writer.loop("_ihm_cross_link_result",
+                         ["id", "restraint_id", "ensemble_id",
+                          "model_group_id", "num_models", "distance_threshold",
+                          "median_distance", "details"]) as lp:
+            ordinal = itertools.count(1)
+            for r in self._all_restraints(system):
+                for xl in r.cross_links:
+                    # all fits ordered by ID
+                    for g, fit in sorted(
+                            (it for it in xl.fits.items()
+                             if not isinstance(it[0], ihm.model.Model)),
+                            key=lambda i: i[0]._id):
+                        if isinstance(g, ihm.model.Ensemble):
+                            ens_id = g._id
+                            if g.model_group is None:
+                                mg_id = None
+                            else:
+                                mg_id = g.model_group._id
+                        else:
+                            mg_id = g._id
+                            ens_id = None
+                        lp.write(id=next(ordinal), restraint_id=xl._id,
+                                 model_group_id=mg_id, ensemble_id=ens_id,
+                                 num_models=fit.num_models,
+                                 distance_threshold=xl.distance.distance,
+                                 median_distance=fit.median_distance,
+                                 details=fit.details)
+
+    def dump_result_parameters(self, system, writer):
         with writer.loop("_ihm_cross_link_result_parameters",
                          ["id", "restraint_id", "model_id",
                           "psi", "sigma_1", "sigma_2"]) as lp:
@@ -2514,8 +2617,10 @@ class _CrossLinkDumper(Dumper):
             for r in self._all_restraints(system):
                 for xl in r.cross_links:
                     # all fits ordered by model ID
-                    for model, fit in sorted(xl.fits.items(),
-                                             key=lambda i: i[0]._id):
+                    for model, fit in sorted(
+                            (it for it in xl.fits.items()
+                             if isinstance(it[0], ihm.model.Model)),
+                            key=lambda i: i[0]._id):
                         lp.write(id=next(ordinal), restraint_id=xl._id,
                                  model_id=model._id, psi=fit.psi,
                                  sigma_1=fit.sigma1, sigma_2=fit.sigma2)
@@ -3877,7 +3982,7 @@ class IHMVariant(Variant):
         _CollectionDumper, _StructDumper, _CommentDumper, _AuditConformDumper,
         _DatabaseDumper, _DatabaseStatusDumper, _CitationDumper,
         _SoftwareDumper, _AuditAuthorDumper, _AuditRevisionDumper,
-        _GrantDumper, _ChemCompDumper,
+        _DataUsageDumper, _GrantDumper, _ChemCompDumper,
         _ChemDescriptorDumper, _EntityDumper, _EntitySrcGenDumper,
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
         _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,

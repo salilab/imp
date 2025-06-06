@@ -151,7 +151,7 @@ class _ChemCompIDMapper(IDMapper):
     id_attr = 'id'
 
     def __init__(self, *args, **keys):
-        super(_ChemCompIDMapper, self).__init__(*args, **keys)
+        super().__init__(*args, **keys)
         # get standard residue types
         alphabets = [x[1] for x in inspect.getmembers(ihm, inspect.isclass)
                      if issubclass(x[1], ihm.Alphabet)
@@ -174,7 +174,7 @@ class _ChemCompIDMapper(IDMapper):
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
                 newcls = (ihm.WaterChemComp if objid == 'HOH'
                           else ihm.NonPolymerChemComp)
-            return super(_ChemCompIDMapper, self).get_by_id(objid, newcls)
+            return super().get_by_id(objid, newcls)
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -259,7 +259,7 @@ class _FeatureIDMapper(IDMapper):
             return newcls([])
 
     def _update_old_object(self, obj, newcls=None):
-        super(_FeatureIDMapper, self)._update_old_object(obj, newcls)
+        super()._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         if (newcls is ihm.restraint.ResidueFeature
                 and not hasattr(obj, 'ranges')):
@@ -310,7 +310,7 @@ class _GeometryIDMapper(IDMapper):
         # Don't revert a derived class back to a base class
         elif newcls and isinstance(obj, newcls):
             return
-        super(_GeometryIDMapper, self)._update_old_object(obj, newcls)
+        super()._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         for member in self._members.get(newcls, ()):
             if not hasattr(obj, member):
@@ -373,7 +373,7 @@ class _FLRIDMapper(IDMapper):
                  *args, **keys):
         system_list = _FLRListAdapter(collection_dict, collection_list,
                                       flr_data)
-        super(_FLRIDMapper, self).__init__(system_list, cls, *args, **keys)
+        super().__init__(system_list, cls, *args, **keys)
 
 
 class _DatasetAssemblyIDMapper:
@@ -1094,6 +1094,20 @@ class _AuditRevisionItemHandler(Handler):
         r.items.append(item)
 
 
+class _DataUsageHandler(Handler):
+    category = '_pdbx_data_usage'
+
+    # Map type to corresponding subclass of ihm.DataUsage
+    _type_map = dict((x[1].type.lower(), x[1])
+                     for x in inspect.getmembers(ihm, inspect.isclass)
+                     if issubclass(x[1], ihm.DataUsage))
+
+    def __call__(self, type, name, details, url):
+        typ = type.lower() if type else 'other'
+        cls = self._type_map.get(typ, ihm.DataUsage)
+        self.system.data_usage.append(cls(details=details, name=name, url=url))
+
+
 class _GrantHandler(Handler):
     category = '_pdbx_audit_support'
 
@@ -1164,7 +1178,7 @@ class _ChemCompHandler(Handler):
     category = '_chem_comp'
 
     def __init__(self, *args):
-        super(_ChemCompHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _chem_comp.type to corresponding subclass of ihm.ChemComp
         self.type_map = dict((x[1].type.lower(), x[1])
                              for x in inspect.getmembers(ihm, inspect.isclass)
@@ -1194,7 +1208,7 @@ class _EntityHandler(Handler):
     category = '_entity'
 
     def __init__(self, *args):
-        super(_EntityHandler, self).__init__(*args)
+        super().__init__(*args)
         self.src_map = dict(
             (x[1].src_method.lower(), x[1])
             for x in inspect.getmembers(ihm.source, inspect.isclass)
@@ -1254,7 +1268,7 @@ class _StructRefHandler(Handler):
     category = '_struct_ref'
 
     def __init__(self, *args):
-        super(_StructRefHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map db_name to subclass of ihm.reference.Sequence
         self.type_map = dict(
             (x[1]._db_name.lower(), x[1])
@@ -1355,7 +1369,7 @@ class _EntityPolyHandler(Handler):
     category = '_entity_poly'
 
     def __init__(self, *args):
-        super(_EntityPolyHandler, self).__init__(*args)
+        super().__init__(*args)
         self._entity_info = {}
 
     def __call__(self, entity_id, type, pdbx_seq_one_letter_code,
@@ -1424,7 +1438,7 @@ class _AssemblyDetailsHandler(Handler):
     ignored_keywords = ['ordinal_id', 'entity_description']
 
     def __init__(self, *args):
-        super(_AssemblyDetailsHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, assembly_id, parent_assembly_id, entity_poly_segment_id,
@@ -1486,7 +1500,7 @@ class _ExtRefHandler(Handler):
     category = '_ihm_external_reference_info'
 
     def __init__(self, *args):
-        super(_ExtRefHandler, self).__init__(*args)
+        super().__init__(*args)
         self.type_map = {'doi': ihm.location.Repository,
                          'supplementary files': _LocalFiles}
 
@@ -1512,7 +1526,7 @@ class _ExtFileHandler(Handler):
     category = '_ihm_external_files'
 
     def __init__(self, *args):
-        super(_ExtFileHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _ihm_external_files.content_type to corresponding
         # subclass of ihm.location.FileLocation
         self.type_map = dict(
@@ -1545,7 +1559,7 @@ class _DatasetListHandler(Handler):
     category = '_ihm_dataset_list'
 
     def __init__(self, *args):
-        super(_DatasetListHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.dataset.Dataset
         self.type_map = dict(
@@ -1595,7 +1609,7 @@ class _DatasetDBRefHandler(Handler):
     category = '_ihm_dataset_related_db_reference'
 
     def __init__(self, *args):
-        super(_DatasetDBRefHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.location.DatabaseLocation
         # or ihm.location.DatabaseLocation itself
@@ -1690,7 +1704,7 @@ class _ModelRepresentationDetailsHandler(Handler):
                         'by-feature': _make_feature_segment}
 
     def __init__(self, *args):
-        super(_ModelRepresentationDetailsHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, entity_asym_id, entity_poly_segment_id,
@@ -1834,7 +1848,7 @@ class _PostProcessHandler(Handler):
     category = '_ihm_modeling_post_process'
 
     def __init__(self, *args):
-        super(_PostProcessHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _ihm_modeling_post_process.type to corresponding subclass
         # of ihm.analysis.Step
         self.type_map = dict((x[1].type.lower(), x[1])
@@ -2054,7 +2068,7 @@ class _DensityHandler(Handler):
     category = '_ihm_localization_density_files'
 
     def __init__(self, *args):
-        super(_DensityHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, ensemble_id, file_id, asym_id,
@@ -2186,7 +2200,7 @@ class _AtomSiteHandler(Handler):
     category = '_atom_site'
 
     def __init__(self, *args):
-        super(_AtomSiteHandler, self).__init__(*args)
+        super().__init__(*args)
         self._missing_sequence = collections.defaultdict(dict)
         # Mapping from asym+auth_seq_id to internal ID
         self._seq_id_map = {}
@@ -2683,7 +2697,7 @@ class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
     def __init__(self, *args):
-        super(_NonPolySchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._scheme = {}
 
     def __call__(self, asym_id, entity_id, pdb_seq_num, mon_id, pdb_ins_code,
@@ -2757,7 +2771,7 @@ class _BranchSchemeHandler(Handler):
     category = '_pdbx_branch_scheme'
 
     def __init__(self, *args):
-        super(_BranchSchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._scheme = {}
 
     def __call__(self, asym_id, num: int, pdb_seq_num, auth_seq_num,
@@ -2876,7 +2890,7 @@ class _CrossLinkListHandler(Handler):
     _linkers_by_name = None
 
     def __init__(self, *args):
-        super(_CrossLinkListHandler, self).__init__(*args)
+        super().__init__(*args)
         self._seen_group_ids = set()
         self._linker_type = {}
 
@@ -2999,6 +3013,21 @@ class _CrossLinkPseudoSiteHandler(Handler):
 
 
 class _CrossLinkResultHandler(Handler):
+    category = '_ihm_cross_link_result'
+
+    def __call__(self, restraint_id, ensemble_id, model_group_id,
+                 num_models: int, median_distance: float, details):
+        if ensemble_id:
+            g = self.sysr.ensembles.get_by_id(ensemble_id)
+        else:
+            g = self.sysr.model_groups.get_by_id(model_group_id)
+        xl = self.sysr.cross_links.get_by_id(restraint_id)
+        xl.fits[g] = ihm.restraint.CrossLinkGroupFit(
+            num_models=num_models, median_distance=median_distance,
+            details=details)
+
+
+class _CrossLinkResultParametersHandler(Handler):
     category = '_ihm_cross_link_result_parameters'
     ignored_keywords = ['ordinal_id']
 
@@ -3191,7 +3220,7 @@ class _RelaxationTimeMultiStateSchemeHandler(Handler):
     category = '_ihm_relaxation_time_multi_state_scheme'
 
     def __init__(self, *args):
-        super(_RelaxationTimeMultiStateSchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, relaxation_time_id,
@@ -3607,7 +3636,7 @@ class _FLRFretModelDistanceHandler(Handler):
     category = '_flr_fret_model_distance'
 
     def __init__(self, *args):
-        super(_FLRFretModelDistanceHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, restraint_id, model_id, distance: float,
@@ -3763,8 +3792,7 @@ class _FLRRelaxationTimeFretAnalysisConnectionHandler(Handler):
     category = '_flr_relaxation_time_analysis'
 
     def __init__(self, *args):
-        super(_FLRRelaxationTimeFretAnalysisConnectionHandler,
-              self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, fret_analysis_id, relaxation_time_id, details):
@@ -3846,7 +3874,7 @@ class IHMVariant(Variant):
         _AuditAuthorHandler, _AuditRevisionHistoryHandler,
         _AuditRevisionDetailsHandler, _AuditRevisionGroupHandler,
         _AuditRevisionCategoryHandler, _AuditRevisionItemHandler,
-        _GrantHandler, _CitationAuthorHandler,
+        _DataUsageHandler, _GrantHandler, _CitationAuthorHandler,
         _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
         _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,
         _StructRefHandler, _StructRefSeqHandler, _StructRefSeqDifHandler,
@@ -3875,6 +3903,7 @@ class IHMVariant(Variant):
         _NonPolySchemeHandler, _BranchSchemeHandler, _EntityBranchListHandler,
         _BranchDescriptorHandler, _BranchLinkHandler, _CrossLinkListHandler,
         _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
+        _CrossLinkResultParametersHandler,
         _CrossLinkResultHandler, _StartingModelSeqDifHandler,
         _OrderedModelHandler, _OrderedEnsembleHandler,
         _MultiStateSchemeHandler, _MultiStateSchemeConnectivityHandler,

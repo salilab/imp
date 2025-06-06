@@ -21,6 +21,8 @@ The :mod:`ihm.format` Python module
 
 .. autoclass:: ChangeValueFilter
 
+.. autoclass:: ChangeFuncValueFilter
+
 .. autoclass:: RemoveItemFilter
 
 .. autoclass:: ChangeKeywordFilter

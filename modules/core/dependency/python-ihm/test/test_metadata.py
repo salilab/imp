@@ -131,37 +131,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
         self.assertIsNone(p['script'])
-        dataset = p['dataset']
-        self.assertEqual(dataset.data_type, 'Experimental model')
-        self.assertEqual(dataset.location.db_name, 'PDB')
-        self.assertEqual(dataset.location.access_code, '2HBJ')
-        self.assertEqual(dataset.location.version, '14-JUN-06')
-        self.assertEqual(dataset.location.details,
-                         'STRUCTURE OF THE YEAST NUCLEAR EXOSOME COMPONENT, '
-                         'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
-                         'SITE AND THE HRDC DOMAIN')
-        es = p['entity_source']
-        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
-        self.assertEqual(es['B'], es['C'])
-        self.assertEqual(es['A'].src_method, 'man')
-        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
-        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
-        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
-        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
-        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
-        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
-        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
-        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
-        self.assertEqual(es['B'].src_method, 'nat')
-        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
-        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
-        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
-        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
-        self.assertEqual(es['D'].src_method, 'syn')
-        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
-        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
-        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
-        self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
+        self._check_parsed_official_pdb(p, pdb_format=True)
 
     def test_bad_header(self):
         """Test PDBParser when given a non-official PDB with HEADER line"""
@@ -454,16 +424,48 @@ class Tests(unittest.TestCase):
         p = parser.parse_file(fname)
         self._check_parsed_official_pdb(p)
 
-    def _check_parsed_official_pdb(self, p):
+    def _check_parsed_official_pdb(self, p, pdb_format=False):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.db_name, 'PDB')
         self.assertEqual(dataset.location.access_code, '2HBJ')
-        self.assertEqual(dataset.location.version, '2021-11-10')
-        self.assertEqual(dataset.location.details,
-                         'Structure of the yeast nuclear exosome component, '
-                         'Rrp6p, reveals an interplay between the active '
-                         'site and the HRDC domain')
+        if pdb_format:
+            self.assertEqual(dataset.location.version, '14-JUN-06')
+        else:
+            self.assertEqual(dataset.location.version, '2021-11-10')
+        details = ('Structure of the yeast nuclear exosome component, '
+                   'Rrp6p, reveals an interplay between the active '
+                   'site and the HRDC domain')
+        if pdb_format:
+            details = details.upper()
+        self.assertEqual(dataset.location.details, details)
+
+        es = p['entity_source']
+        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
+        self.assertEqual(es['B'], es['C'])
+        self.assertEqual(es['A'].src_method, 'man')
+        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
+        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
+        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
+        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
+        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
+        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
+        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
+        self.assertEqual(es['B'].src_method, 'nat')
+        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
+        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
+        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
+        self.assertEqual(es['D'].src_method, 'syn')
+        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
+        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
+        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
+        # _pdbx_entity_src_syn.strain is not used in current PDB entries
+        if pdb_format:
+            self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
+        else:
+            self.assertIsNone(es['D'].strain)
 
     def test_cif_model_archive(self):
         """Test CIFParser when given an mmCIF in Model Archive"""

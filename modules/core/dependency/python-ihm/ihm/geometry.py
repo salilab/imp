@@ -73,7 +73,7 @@ class Sphere(GeometricObject):
 
     def __init__(self, center, radius, transformation=None,
                  name=None, description=None):
-        super(Sphere, self).__init__(name, description)
+        super().__init__(name, description)
         self.center, self.transformation = center, transformation
         self.radius = radius
 
@@ -97,7 +97,7 @@ class Torus(GeometricObject):
 
     def __init__(self, center, major_radius, minor_radius, transformation=None,
                  name=None, description=None):
-        super(Torus, self).__init__(name, description)
+        super().__init__(name, description)
         self.center, self.transformation = center, transformation
         self.major_radius, self.minor_radius = major_radius, minor_radius
 
@@ -118,7 +118,7 @@ class HalfTorus(GeometricObject):
 
     def __init__(self, center, major_radius, minor_radius, thickness,
                  transformation=None, inner=None, name=None, description=None):
-        super(HalfTorus, self).__init__(name, description)
+        super().__init__(name, description)
         self.center, self.transformation = center, transformation
         self.major_radius, self.minor_radius = major_radius, minor_radius
         self.thickness, self.inner = thickness, inner
@@ -137,7 +137,7 @@ class Axis(GeometricObject):
     type = 'axis'
 
     def __init__(self, transformation=None, name=None, description=None):
-        super(Axis, self).__init__(name, description)
+        super().__init__(name, description)
         self.transformation = transformation
 
 
@@ -178,7 +178,7 @@ class Plane(GeometricObject):
     type = 'plane'
 
     def __init__(self, transformation=None, name=None, description=None):
-        super(Plane, self).__init__(name, description)
+        super().__init__(name, description)
         self.transformation = transformation
 
 

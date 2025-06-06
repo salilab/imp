@@ -15,9 +15,10 @@ import re
 import sys
 import urllib.request
 import json
+import collections
 from . import util
 
-__version__ = '2.3'
+__version__ = '2.5'
 
 
 class __UnknownValue:
@@ -121,6 +122,9 @@ class System:
 
         #: Revision/update history. See :class:`Revision`.
         self.revisions = []
+
+        #: Information on usage of the data. See :class:`DataUsage`.
+        self.data_usage = []
 
         #: All orphaned chemical descriptors in the system.
         #: See :class:`ChemDescriptor`. This can be used to track descriptors
@@ -1042,7 +1046,7 @@ class SaccharideChemComp(ChemComp):
 
     def __init__(self, id, name=None, formula=None, ccd=None,
                  descriptors=None):
-        super(SaccharideChemComp, self).__init__(
+        super().__init__(
             id, id, id, name=name, formula=formula,
             ccd=ccd, descriptors=descriptors)
 
@@ -1104,7 +1108,7 @@ class NonPolymerChemComp(ChemComp):
 
     def __init__(self, id, code_canonical='X', name=None, formula=None,
                  ccd=None, descriptors=None):
-        super(NonPolymerChemComp, self).__init__(
+        super().__init__(
             id, id, code_canonical, name=name, formula=formula,
             ccd=ccd, descriptors=descriptors)
 
@@ -1113,8 +1117,7 @@ class WaterChemComp(NonPolymerChemComp):
     """The chemical component for crystal water.
     """
     def __init__(self):
-        super(WaterChemComp, self).__init__('HOH', name='WATER',
-                                            formula="H2 O")
+        super().__init__('HOH', name='WATER', formula="H2 O")
 
 
 class Alphabet:
@@ -1673,7 +1676,7 @@ class WaterAsymUnit(AsymUnit):
         if entity.type != 'water':
             raise TypeError(
                 "WaterAsymUnit can only be used for water entities")
-        super(WaterAsymUnit, self).__init__(
+        super().__init__(
             entity, details=details, auth_seq_id_map=auth_seq_id_map,
             id=id, strand_id=strand_id,
             orig_auth_seq_id_map=orig_auth_seq_id_map)
@@ -1716,8 +1719,29 @@ class Assembly(list):
     parent = None
 
     def __init__(self, elements=(), name=None, description=None):
-        super(Assembly, self).__init__(elements)
+        super().__init__(elements)
         self.name, self.description = name, description
+
+    def _signature(self):
+        """Get a Python object that represents this Assembly. Notably, two
+           Assemblies that cover the part of the system (even if the
+           components are in a different order) will have the same signature.
+           Signatures are also hashable, unlike the Assembly itself."""
+        d = collections.defaultdict(list)
+        for a in self:
+            # a might be an AsymUnit or an AsymUnitRange
+            asym = a.asym if hasattr(a, 'asym') else a
+            d[asym].append(a.seq_id_range)
+        ret = []
+        # asyms might not have IDs yet, so just put them in a consistent order
+        for asym in sorted(d.keys(), key=lambda x: id(x)):
+            ranges = d[asym]
+            # Non-polymers have no ranges
+            if all(r == (None, None) for r in ranges):
+                ret.append((asym, None))
+            else:
+                ret.append((asym, tuple(util._combine_ranges(d[asym]))))
+        return tuple(ret)
 
 
 class ChemDescriptor:
@@ -1809,6 +1833,35 @@ class BranchLink:
         self.leaving_atom_id1 = leaving_atom_id1
         self.leaving_atom_id2 = leaving_atom_id2
         self.order, self.details = order, details
+
+
+class DataUsage:
+    """Information on how the data in the file can be used.
+
+       Do not use this class itself, but one of its subclasses, either
+       :class:`License` or :class:`Disclaimer`. DataUsage objects are
+       stored in :data:`ihm.System.data_usage`.
+
+       :param str details: Information about the data usage.
+       :param str name: An optional well-known name for the usage.
+       :param str url: An optional URL providing more information.
+    """
+    type = 'other'
+
+    def __init__(self, details, name=None, url=None):
+        self.details, self.name, self.url = details, name, url
+
+
+class License(DataUsage):
+    """A license describing how the data in the file can be used.
+       See :class:`DataUsage` for more information."""
+    type = 'license'
+
+
+class Disclaimer(DataUsage):
+    """A disclaimer relating to usage of the data in the file.
+       See :class:`DataUsage` for more information."""
+    type = 'disclaimer'
 
 
 class Revision:

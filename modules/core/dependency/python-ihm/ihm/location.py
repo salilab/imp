@@ -75,7 +75,7 @@ class DatabaseLocation(Location):
     db_name = 'Other'
 
     def __init__(self, db_code, version=None, details=None):
-        super(DatabaseLocation, self).__init__(details)
+        super().__init__(details)
         self.access_code = db_code
         self.version = version
 
@@ -217,7 +217,7 @@ class FileLocation(Location):
     content_type = 'Other'
 
     def __init__(self, path, repo=None, details=None, file_format=None):
-        super(FileLocation, self).__init__(details)
+        super().__init__(details)
         self.repo, self.file_format = repo, file_format
         if repo:
             self.path = path

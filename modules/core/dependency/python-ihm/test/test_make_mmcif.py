@@ -257,6 +257,60 @@ class Tests(unittest.TestCase):
                                          [False, False, False, False, True])
         os.unlink('output.cif')
 
+    def test_check_non_canon_atom_standard(self):
+        """Test check for non-canonical atom names, standard restypes"""
+        minicif = utils.get_input_file_name(TOPDIR, 'mini.cif')
+        incif = utils.get_input_file_name(TOPDIR, 'non_canon_atom.cif')
+
+        # Should work fine without check
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif])
+        os.unlink('output.cif')
+
+        # Should also work fine for file with canonical atom names
+        subprocess.check_call([sys.executable, MAKE_MMCIF,
+                               "--check_atom_names=standard", minicif])
+        os.unlink('output.cif')
+
+        # Should fail with check enabled
+        r = subprocess.Popen([sys.executable, MAKE_MMCIF,
+                             "--check_atom_names=standard", incif],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True)
+        out, err = r.communicate()
+        self.assertEqual(r.returncode, 1)
+        # Non-canonical atoms in standard residues should be reported
+        # Non-standard residues (ZN, ...) are not checked
+        self.assertIn("Non-canonical atom names found in the following "
+                      "residues: GLN: ['bad3']; VAL: ['bad1', 'bad2']",
+                      err)
+        os.unlink('output.cif')
+
+    def test_check_non_canon_atom_all(self):
+        """Test check for non-canonical atom names, all restypes"""
+        incif = utils.get_input_file_name(TOPDIR, 'non_canon_atom.cif')
+
+        # Use mock urllib so we don't hit the network during this test
+        env = os.environ.copy()
+        mockdir = os.path.join(TOPDIR, 'test', 'mock', 'non_canon_atom')
+        env['PYTHONPATH'] = mockdir + os.pathsep + env['PYTHONPATH']
+
+        r = subprocess.Popen([sys.executable, MAKE_MMCIF,
+                             "--check_atom_names=all", incif],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             universal_newlines=True, env=env)
+        out, err = r.communicate()
+        self.assertEqual(r.returncode, 1)
+        # Non-canonical atoms in standard residues should be reported
+        # Non-standard residue (ZN) should also be checked
+        self.assertIn("Non-canonical atom names found in the following "
+                      "residues: GLN: ['bad3']; VAL: ['bad1', 'bad2']; "
+                      "ZN: ['bad4']", err)
+        # Residues not in CCD should give a warning
+        self.assertIn("Component invalid-comp-name could not be found in CCD",
+                      err)
+        os.unlink('output.cif')
+
 
 if __name__ == '__main__':
     unittest.main()

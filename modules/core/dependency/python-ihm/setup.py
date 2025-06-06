@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "2.3"
+VERSION = "2.5"
 
 copy_args = sys.argv[1:]
 
@@ -35,7 +35,8 @@ if build_ext:
                      include_dirs=['src'],
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',
-                                '-nodefaultdtor', '-noproxy'])]
+                                '-nodefaultdtor', '-noproxy'],
+                     optional=True)]
 else:
     mod = []
 
@@ -54,9 +55,9 @@ setup(name='ihm',
       ext_modules=mod,
       packages=['ihm', 'ihm.util'],
       install_requires=['msgpack'],
+      license='MIT',
       classifiers=[
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: MIT License",
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering",
