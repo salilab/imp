@@ -260,6 +260,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top)
+        for chain in IMP.atom.get_by_type(top, IMP.atom.CHAIN_TYPE):
+            self.add_structured_residue(m, chain, 1)
         c = IMP.mmcif.Writer()
         c.add_model([top], [])
         fname = 'test_write.cif'

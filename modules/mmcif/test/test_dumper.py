@@ -564,6 +564,8 @@ _ihm_ensemble_info.sub_sampling_type
         """Test ModelListDumper"""
         m = IMP.Model()
         h = self.make_model(m)
+        for chain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
+            self.add_structured_residue(m, chain, 1)
         c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         ens[None].model_group.name = 'cluster 1'
@@ -600,6 +602,26 @@ _ihm_model_group_link.group_id
 _ihm_model_group_link.model_id
 1 1
 1 2
+#
+#
+loop_
+_ihm_sphere_obj_site.id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 1 1 A 1.000 2.000 3.000 4.000 . 1
+2 1 1 1 B 1.000 2.000 3.000 4.000 . 1
+3 2 1 1 C 1.000 2.000 3.000 4.000 . 1
+4 1 1 1 A 1.000 2.000 3.000 4.000 . 2
+5 1 1 1 B 1.000 2.000 3.000 4.000 . 2
+6 2 1 1 C 1.000 2.000 3.000 4.000 . 2
 #
 """)
 
