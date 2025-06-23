@@ -1200,6 +1200,12 @@ x y
 data_foo_bar
 #
 _cat1.bar old
+_cat2.baz old2
+#
+#
+loop_
+_cat3.baz
+a b c
 #
 loop_
 _foo.bar
@@ -1209,7 +1215,8 @@ x y
 """
         f = MyFunc()
         r = ihm.format.CifTokenReader(StringIO(cif))
-        filters = [ihm.format.ChangeFuncValueFilter(".bar", f)]
+        filters = [ihm.format.ChangeFuncValueFilter(".bar", f),
+                   ihm.format.ChangeFuncValueFilter("_cat4.foo", f)]
         tokens = list(r.read_file(filters))
         new_cif = "".join(x.as_mmcif() for x in tokens)
         self.assertEqual(f.calls,
@@ -1219,6 +1226,12 @@ x y
 data_foo_bar
 #
 _cat1.bar OLD
+_cat2.baz old2
+#
+#
+loop_
+_cat3.baz
+a b c
 #
 loop_
 _foo.bar

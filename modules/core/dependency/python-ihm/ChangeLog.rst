@@ -1,3 +1,19 @@
+2.6 - 2025-06-09
+================
+  - The new :class:`ihm.License` and :class:`ihm.Disclaimer` classes
+    allow describing how the data in the file can be used, and map to
+    the ``pdbx_data_usage`` mmCIF table (#171).
+  - Two :class:`ihm.Assembly` classes are now considered equal if they
+    contain the same set of constituents, even if those constituents are
+    in differing orders or are split differently into domains (#170).
+  - The new :class:`ihm.format.ChangeFuncValueFilter` class allows modifying
+    mmCIF values by passing them through an arbitrary Python function.
+  - Checks for non-canonical atom names no longer use Ligand Expo to obtain
+    CCD info, as it is being retired (#169).
+  - :class:`ihm.metadata.CIFParser` and :class:`ihm.metadata.BinaryCIFParser`
+    now return the same ``entity_source`` mapping that
+    :class:`ihm.metadata.PDBParser` does (#168).
+
 2.5 - 2025-04-25
 ================
   - Assemblies are now checked at file-output time to ensure that each
