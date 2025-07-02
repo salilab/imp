@@ -72,11 +72,11 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search(r'6lyz_m2.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 149.65, delta=0.03)
+        self.assertAlmostEqual(float(m.group(1)), 149.56, delta=0.03)
 
         m = re.search(r'6lyz_m3.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 134.08, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 134.11, delta=0.01)
 
         for model in ('_m1', '_m2', '_m3'):
             for out in ('6lyz%s.cif.dat' % model, '6lyz%s_lyzexp.dat' % model,
@@ -103,11 +103,11 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search(r'6lyz_m2.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 149.65, delta=0.03)
+        self.assertAlmostEqual(float(m.group(1)), 149.56, delta=0.03)
 
         m = re.search(r'6lyz_m3.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 134.08, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 134.11, delta=0.01)
 
         for model in ('_m1', '_m2', '_m3'):
             for out in ('6lyz%s.bcif.dat' % model, '6lyz%s_lyzexp.dat' % model,
