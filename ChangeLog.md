@@ -1,9 +1,40 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.23.0 - 2025-07-10 # {#changelog_2_23_0}
+- Input structures can now be read in BinaryCIF format. The new function
+  IMP::atom::read_pdb_any will read any PDB-like file based on the extension
+  (legacy PDB, mmCIF, or BinaryCIF). The old function
+  IMP::atom::read_pdb_or_mmcif, which only reads PDB or mmCIF, is now
+  deprecated. PMI topology files can now use BinaryCIF inputs too.
+- The new IMP::atom::LennardJonesTypedPairScore class is about twice as fast
+  as the old LJ class, IMP::atom::LennardJonesPairScore, which is now
+  deprecated.
+- The new method IMP::PairScore::check_indexes can now be used to skip lookups
+  of particle attributes on every scoring function evaluation, to improve
+  performance. (This also works for similar classes like IMP::SingletonScore.)
+  This is used by IMP::atom::CoulombPairScore to improve performance by
+  about 45%.
+- IMP::core::SphereDistancePairScore, when created with Python, now
+  automatically uses the most performant underlying C++ class. It is no longer
+  necessary to explicitly instantiate specialized classes such as
+  HarmonicUpperBoundSphereDistancePairScore.
+- The Windows .exe installer now includes the IMP::bff module.
+- We now provide RPM packages for RedHat Enterprise Linux 10 (or compatible
+  operating systems such as Rocky 10).
 - We no longer provide packages for Ubuntu 20.04 LTS (Focal Fossa), as it
   reached end of life in May 2025.
+- The new IMP::Model::get_removed_particles_attributes_age method tracks when
+  particles or attributes were removed from the model, and can be used to
+  invalidate caches that rely on these being present.
+- The IMP::atom::get_internal_bonds function takes a new `with_representations`
+  argument which can be used to request that it handle IMP::atom::Representation
+  nodes. This is used to include bonds between different non-default
+  representations in output RMF files.
+- Bugfix: IMP::pmi::mmcif::ProtocolOutput now correctly handles input models in
+  mmCIF or BinaryCIF format.
+- Bugfix: GMM fitting previously created more EM densities than there were
+  atoms in some cases, causing the fit to fail.
 
 # 2.22.0 - 2024-12-12 # {#changelog_2_22_0}
 - IMP now includes the Bayesian Fluorescence Framework, as the IMP::bff module.
