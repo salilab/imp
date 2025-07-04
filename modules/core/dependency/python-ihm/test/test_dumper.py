@@ -2295,6 +2295,41 @@ _ihm_model_group_link.model_id
 #
 """)
 
+    def test_model_representative_dumper(self):
+        """Test ModelRepresentativeDumper"""
+        class MockObject:
+            pass
+        system = ihm.System()
+        m1 = ihm.model.Model(assembly=None, protocol=None, representation=None)
+        m1._id = 5
+        m2 = ihm.model.Model(assembly=None, protocol=None, representation=None)
+        m2._id = 8
+        group = ihm.model.ModelGroup([m1, m2])
+        group._id = 42
+        self.assertRaises(ValueError, ihm.model.ModelRepresentative,
+                          m1, "bad criteria")
+        group.representatives.extend([
+            ihm.model.ModelRepresentative(m1, "medoid"),
+            ihm.model.ModelRepresentative(m2, "lowest energy")])
+
+        state = ihm.model.State()
+        state.append(group)
+        system.state_groups.append(ihm.model.StateGroup([state]))
+
+        dumper = ihm.dumper._ModelRepresentativeDumper()
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_model_representative.id
+_ihm_model_representative.model_group_id
+_ihm_model_representative.model_id
+_ihm_model_representative.selection_criteria
+1 42 5 medoid
+2 42 8 'lowest energy'
+#
+""")
+
     def _make_test_model(self, water=False, seq='ACGT'):
         class MockObject:
             pass

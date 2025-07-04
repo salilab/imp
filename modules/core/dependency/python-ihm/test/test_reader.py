@@ -1672,6 +1672,36 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             m, = mg1
             self.assertEqual(m._id, '42')
 
+    def test_model_representative_handler(self):
+        """Test ModelRepresentativeHandler"""
+        cif = """
+loop_
+_ihm_model_representative.id
+_ihm_model_representative.model_group_id
+_ihm_model_representative.model_id
+_ihm_model_representative.selection_criteria
+1 42 5 medoid
+2 42 8 'lowest energy'
+3 99 3 'some unknown criterion'
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            state, = s.state_groups[0]
+            mg1, mg2 = state
+            self.assertEqual(mg1._id, '42')
+            self.assertEqual(len(mg1.representatives), 2)
+            self.assertEqual(mg1.representatives[0].model._id, '5')
+            self.assertEqual(mg1.representatives[0].selection_criteria,
+                             'medoid')
+            self.assertEqual(mg1.representatives[1].model._id, '8')
+            self.assertEqual(mg1.representatives[1].selection_criteria,
+                             'lowest energy')
+            self.assertEqual(mg2._id, '99')
+            self.assertEqual(len(mg2.representatives), 1)
+            self.assertEqual(mg2.representatives[0].model._id, '3')
+            self.assertEqual(mg2.representatives[0].selection_criteria,
+                             'other selction criteria')
+
     def test_multi_state_handler(self):
         """Test MultiStateHandler and MultiStateLinkHandler"""
         cif = """

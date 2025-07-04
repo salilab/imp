@@ -1950,6 +1950,21 @@ class _ModelGroupLinkHandler(Handler):
         model_group.append(model)
 
 
+class _ModelRepresentativeHandler(Handler):
+    category = '_ihm_model_representative'
+
+    def __call__(self, model_group_id, model_id, selection_criteria):
+        model_group = self.sysr.model_groups.get_by_id(model_group_id)
+        model = self.sysr.models.get_by_id(model_id)
+        # Default to "other" if invalid criteria read
+        try:
+            rep = ihm.model.ModelRepresentative(model, selection_criteria)
+        except ValueError:
+            rep = ihm.model.ModelRepresentative(model,
+                                                "other selction criteria")
+        model_group.representatives.append(rep)
+
+
 class _MultiStateHandler(Handler):
     category = '_ihm_multi_state_modeling'
 
@@ -3888,6 +3903,7 @@ class IHMVariant(Variant):
         _StartingComputationalModelsHandler, _StartingComparativeModelsHandler,
         _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
         _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
+        _ModelRepresentativeHandler,
         _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
         _NotModeledResidueRangeHandler,
         _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,

@@ -155,6 +155,25 @@ class Model:
         self._atoms.append(atom)
 
 
+class ModelRepresentative:
+    """A single model that represents all models in a :class:`ModelGroup`.
+       See :attr:`ModelGroup.representatives`.
+
+       :param model: The actual representative Model.
+       :type model: :class:`Model`
+       :param str selection_criteria: How the representative was chosen
+    """
+    def __init__(self, model, selection_criteria):
+        self.model, self.selection_criteria = model, selection_criteria
+
+    selection_criteria = _text_choice_property(
+        "selection_criteria",
+        ["medoid", "closest to the average", "lowest energy",
+         "target function", "fewest violations", "minimized average structure",
+         "best scoring model", "centroid", "other selction criteria"],
+        doc="How the representative was chosen")
+
+
 class ModelGroup(list):
     """A set of related models. See :class:`Model`. It is implemented as
        a simple list of the models.
@@ -170,6 +189,10 @@ class ModelGroup(list):
         self.name = name
         self.details = details
         super().__init__(elements)
+
+        #: Any representative structural model(s).
+        #: See :class:`ModelRepresentative`.
+        self.representatives = []
 
     # Kind of ugly but needed so we can use ModelGroup as keys for
     # the ihm.restraint.CrossLink.fits dict

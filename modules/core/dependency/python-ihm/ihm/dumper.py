@@ -2004,6 +2004,21 @@ class _ModelDumper(_ModelDumperBase):
                 self._assembly_checker.add_model_asyms(model, seen_asym_ids)
 
 
+class _ModelRepresentativeDumper(Dumper):
+    def dump(self, system, writer):
+        ordinal = itertools.count(1)
+        with writer.loop("_ihm_model_representative",
+                         ["id", "model_group_id", "model_id",
+                          "selection_criteria"]) as lp:
+            for group in system._all_model_groups():
+                for rep in group.representatives:
+                    # This assumes that each representative is also a
+                    # member of the group, so we don't need to assign an ID.
+                    lp.write(id=next(ordinal), model_group_id=group._id,
+                             model_id=rep.model._id,
+                             selection_criteria=rep.selection_criteria)
+
+
 class _NotModeledResidueRangeDumper(Dumper):
     def dump(self, system, writer):
         ordinal = itertools.count(1)
@@ -3996,7 +4011,8 @@ class IHMVariant(Variant):
         _GeometricRestraintDumper, _DerivedDistanceRestraintDumper,
         _HDXRestraintDumper,
         _PredictedContactRestraintDumper, _EM3DDumper, _EM2DDumper, _SASDumper,
-        _ModelDumper, _NotModeledResidueRangeDumper,
+        _ModelDumper, _ModelRepresentativeDumper,
+        _NotModeledResidueRangeDumper,
         _EnsembleDumper, _DensityDumper, _MultiStateDumper,
         _OrderedDumper,
         _MultiStateSchemeDumper, _MultiStateSchemeConnectivityDumper,
