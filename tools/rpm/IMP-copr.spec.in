@@ -347,6 +347,9 @@ python3 test_mock.py -v
 %endif
 
 %changelog
+* Thu Jul 10 2025 Ben Webb <ben@salilab.org>   2.23.0-1
+- 2.23.0 release.
+
 * Thu Dec 12 2024 Ben Webb <ben@salilab.org>   2.22.0-1
 - 2.22.0 release.
 
