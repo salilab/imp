@@ -319,6 +319,7 @@ static void handle_category_data(struct ihm_reader *reader, int linenum,
         break;
       case IHM_BOOL:
         val = (*keys)->data.bval ? Py_True : Py_False;
+        Py_INCREF(val);
         break;
       }
     }
