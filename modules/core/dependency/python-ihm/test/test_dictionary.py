@@ -2,17 +2,17 @@ import utils
 import os
 import unittest
 import sys
-from test_format_bcif import MockMsgPack, MockFh
-
-if sys.version_info[0] >= 3:
-    from io import StringIO, BytesIO
-else:
-    from io import BytesIO
-    StringIO = BytesIO
+from io import StringIO, BytesIO
+from test_format_bcif import MockMsgPack, MockFh, _add_msgpack
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.dictionary
+
+try:
+    from ihm import _format
+except ImportError:
+    _format = None
 
 
 def add_keyword(name, mandatory, category):
@@ -201,12 +201,11 @@ save_
         self.assertEqual(d.linked_items,
                          {'_test_category2.baz': '_test_category1.bar'})
 
-        if sys.version_info[0] >= 3:
-            # Make sure that files can be read in binary mode
-            d = ihm.dictionary.read(BytesIO(cif.encode('latin-1')))
-            self.assertEqual(sorted(d.categories.keys()),
-                             ['test_category1', 'test_category2',
-                              'test_category3', 'test_category4'])
+        # Make sure that files can be read in binary mode
+        d = ihm.dictionary.read(BytesIO(cif.encode('latin-1')))
+        self.assertEqual(sorted(d.categories.keys()),
+                         ['test_category1', 'test_category2',
+                          'test_category3', 'test_category4'])
 
     def test_add(self):
         """Test adding two Dictionaries"""
@@ -309,6 +308,12 @@ save_
         with writer.category('_test_optional_category') as loc:
             loc.write(bar='enum1')
         writer.flush()
+        if _format:
+            # Convert Python object into msgpack format for the C parser
+            bio = BytesIO()
+            _add_msgpack(fh.data, bio)
+            bio.seek(0)
+            fh.data = bio
         d.validate(fh.data, format='BCIF')
 
     def test_validate_multi_data_ok(self):

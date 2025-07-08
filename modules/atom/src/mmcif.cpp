@@ -19,6 +19,7 @@
 #include <boost/lexical_cast.hpp>
 
 extern "C" {
+#include "cmp.c"
 #include "ihm_format.c"
 }
 
@@ -41,10 +42,10 @@ class AtomSiteCategory : public Category {
   Model *model_;
   IMP::PointerMember<PDBSelector> selector_;
   bool read_all_models_, honor_model_num_;
-  internal::CifKeyword atom_name_, residue_name_, chain_, auth_chain_,
-                       element_, seq_id_, group_, id_, occupancy_,
-                       temp_factor_, ins_code_, x_, y_, z_,
-                       model_num_, auth_seq_id_, alt_loc_id_;
+  internal::StringCifKeyword atom_name_, residue_name_, chain_, auth_chain_,
+                       element_, group_, ins_code_, auth_seq_id_, alt_loc_id_;
+  internal::IntCifKeyword id_, seq_id_, model_num_;
+  internal::FloatCifKeyword x_, y_, z_, occupancy_, temp_factor_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
@@ -59,7 +60,8 @@ class AtomSiteCategory : public Category {
   std::map<int, Particle *> root_map_;
   PDBRecord pdb_record_;
 
-  static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
+  static void callback(struct ihm_reader *, int, void *data,
+                       struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
   }
 
@@ -78,18 +80,18 @@ public:
         chain_(c_, "label_asym_id"),
         auth_chain_(c_, "auth_asym_id"),
         element_(c_, "type_symbol"),
-        seq_id_(c_, "label_seq_id"),
         group_(c_, "group_pdb"),
-        id_(c_, "id"),
-        occupancy_(c_, "occupancy"),
-        temp_factor_(c_, "b_iso_or_equiv"),
         ins_code_(c_, "pdbx_pdb_ins_code"),
+        auth_seq_id_(c_, "auth_seq_id"),
+        alt_loc_id_(c_, "label_alt_id"),
+        id_(c_, "id"),
+        seq_id_(c_, "label_seq_id"),
+        model_num_(c_, "pdbx_pdb_model_num"),
         x_(c_, "cartn_x"),
         y_(c_, "cartn_y"),
         z_(c_, "cartn_z"),
-        model_num_(c_, "pdbx_pdb_model_num"),
-        auth_seq_id_(c_, "auth_seq_id"),
-        alt_loc_id_(c_, "label_alt_id"),
+        occupancy_(c_, "occupancy"),
+        temp_factor_(c_, "b_iso_or_equiv"),
         cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
     pdb_record_.set_keywords(group_, element_, atom_name_, alt_loc_id_,
@@ -171,23 +173,23 @@ public:
     if (!get_is_selected()) {
       return;
     }
-    if (!get_root_particle(honor_model_num_ ? model_num_.as_int() : 1)) {
+    if (!get_root_particle(honor_model_num_ ? model_num_.get() : 1)) {
       return;
     }
 
-    Element e = get_element_table().get_element(element_.as_str());
-    int seq_id = seq_id_.as_int(1);
-    std::string residue_icode = ins_code_.as_str();
+    Element e = get_element_table().get_element(element_.get());
+    int seq_id = seq_id_.get(1);
+    std::string residue_icode = ins_code_.get();
 
     // Use author-provided chain ID if available
-    std::string label_asym_id = chain_.as_str();
+    std::string label_asym_id = chain_.get();
     bool new_chain;
-    if (strlen(auth_chain_.as_str()) > 0) {
-      new_chain = get_chain_particle(auth_chain_.as_str(), label_asym_id);
+    if (strlen(auth_chain_.get()) > 0) {
+      new_chain = get_chain_particle(auth_chain_.get(), label_asym_id);
     } else {
       new_chain = get_chain_particle(label_asym_id, label_asym_id);
     }
-    std::string auth_seq_id_str = auth_seq_id_.as_str();
+    std::string auth_seq_id_str = auth_seq_id_.get();
     // Check if new residue
     if (rp_ == nullptr || seq_id != curr_seq_id_
         || residue_icode != curr_residue_icode_
@@ -217,15 +219,15 @@ public:
       }
       curr_auth_seq_id_ = auth_seq_id;
       rp_ = internal::residue_particle(model_, auth_seq_id, one_icode,
-                                       residue_name_.as_str());
+                                       residue_name_.get());
       Chain(cp_).add_child(Residue(rp_));
     }
     Particle *ap = internal::atom_particle(
-                       model_, atom_name_.as_str(), e,
-                       group_.as_str() == hetatm_, id_.as_int(),
-                       curr_auth_seq_id_, x_.as_float(), y_.as_float(),
-                       z_.as_float(), occupancy_.as_float(),
-                       temp_factor_.as_float());
+                       model_, atom_name_.get(), e,
+                       group_.get() == hetatm_, id_.get(),
+                       curr_auth_seq_id_, x_.get(), y_.get(),
+                       z_.get(), occupancy_.get(),
+                       temp_factor_.get());
     Residue(rp_).add_child(Atom(ap));
   }
 };
@@ -249,22 +251,22 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
   }
 }
 
-Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
-                       Model* model, PDBSelector *selector,
-                       bool read_all_models, bool honor_model_num,
-                       bool noradii)
+Hierarchies read_cif(std::istream& in, std::string name, std::string filename,
+                     Model* model, PDBSelector *selector,
+                     bool read_all_models, bool honor_model_num,
+                     bool noradii, bool binary)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   struct ihm_error *err = nullptr;
   struct ihm_file *fh = ihm_file_new(read_callback, &in, nullptr);
 
-  struct ihm_reader *r = ihm_reader_new(fh);
+  struct ihm_reader *r = ihm_reader_new(fh, binary);
   Hierarchies ret;
 
   AtomSiteCategory asc(r, name, filename, model, &ret, selector,
                        read_all_models, honor_model_num);
 
-  int more_data;
+  bool more_data;
   if (!ihm_read_file(r, &more_data, &err)) {
     std::string errmsg(err->msg);
     ihm_error_free(err);
@@ -286,8 +288,8 @@ Hierarchies read_multimodel_mmcif(TextInput in, Model *model,
                                   PDBSelector* selector, bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
-  Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, true, true, noradii);
+  Hierarchies ret = read_cif(in, cif_nicename(in.get_name()), in.get_name(),
+                             model, selector, true, true, noradii, false);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
@@ -298,9 +300,36 @@ Hierarchy read_mmcif(TextInput in, Model *model, PDBSelector* selector,
                      bool select_first_model, bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
-  Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, false, select_first_model,
-                               noradii);
+  Hierarchies ret = read_cif(in, cif_nicename(in.get_name()), in.get_name(),
+                             model, selector, false, select_first_model,
+                             noradii, false);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
+  }
+  return ret[0];
+}
+
+Hierarchies read_multimodel_bcif(TextInput in, Model *model,
+                                 PDBSelector* selector, bool noradii)
+{
+  in.set_binary_open_mode(true);
+  IMP::PointerMember<PDBSelector> sp(selector);
+  Hierarchies ret = read_cif(in, cif_nicename(in.get_name()), in.get_name(),
+                             model, selector, true, true, noradii, true);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
+  }
+  return ret;
+}
+
+Hierarchy read_bcif(TextInput in, Model *model, PDBSelector* selector,
+                    bool select_first_model, bool noradii)
+{
+  in.set_binary_open_mode(true);
+  IMP::PointerMember<PDBSelector> sp(selector);
+  Hierarchies ret = read_cif(in, cif_nicename(in.get_name()), in.get_name(),
+                             model, selector, false, select_first_model,
+                             noradii, true);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }

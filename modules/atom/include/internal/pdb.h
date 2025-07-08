@@ -114,21 +114,32 @@ IMPATOMEXPORT String atom_element(const String& pdb_line);
 IMPATOMEXPORT Vector<unsigned short> connected_atoms(
     const String& pdb_line);
 
-//! Handle a keyword in an mmCIF file
-class IMPATOMEXPORT CifKeyword {
+//! Handle a string keyword in an mmCIF file
+class IMPATOMEXPORT StringCifKeyword {
   struct ihm_keyword *k_;
 public:
-  CifKeyword(struct ihm_category *c, std::string name);
-
-  //! Get raw string value of the keyword (may be null)
-  const char *data();
+  StringCifKeyword(struct ihm_category *c, std::string name);
 
   //! Get value as a string, or the empty string if it is missing
-  const char *as_str();
+  const char *get();
+};
 
-  float as_float(float default_value=0.);
+//! Handle an int keyword in an mmCIF file
+class IMPATOMEXPORT IntCifKeyword {
+  struct ihm_keyword *k_;
+public:
+  IntCifKeyword(struct ihm_category *c, std::string name);
 
-  int as_int(int default_value=0);
+  int get(int default_value=0);
+};
+
+//! Handle a float keyword in an mmCIF file
+class IMPATOMEXPORT FloatCifKeyword {
+  struct ihm_keyword *k_;
+public:
+  FloatCifKeyword(struct ihm_category *c, std::string name);
+
+  float get(float default_value=0.);
 };
 
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)

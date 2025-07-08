@@ -9,9 +9,8 @@
 #define IMPSPB_MONTE_CARLO_WITH_WTE_H
 
 #include <IMP/spb/spb_config.h>
-
+#include <IMP/core/MonteCarlo.h>
 #include <IMP/Restraint.h>
-#include <IMP/core.h>
 #include <boost/scoped_array.hpp>
 
 IMPSPB_BEGIN_NAMESPACE

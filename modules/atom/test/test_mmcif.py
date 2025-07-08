@@ -17,12 +17,29 @@ class Tests(IMP.test.TestCase):
             self.assertRaises(IMP.ValueException,
                               IMP.atom.read_mmcif, fh, m)
 
+    def test_read_pdb_any(self):
+        """Check reading mmCIF or BinaryCIF with read_pdb_nany"""
+        for fname in ('input.cif', 'input.bcif'):
+            m = IMP.Model()
+            mp = IMP.atom.read_pdb_any(self.get_input_file_name(fname), m)
+            chains = [IMP.atom.Chain(x)
+                      for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+            self.assertEqual(len(chains), 3)
+            self.assertEqual(chains[0].get_id(), "")
+            self.assertEqual(chains[0].get_label_asym_id(), "")
+            self.assertEqual(chains[1].get_id(), "X")
+            self.assertEqual(chains[1].get_label_asym_id(), "B")
+            self.assertEqual(chains[2].get_id(), "A")
+            self.assertEqual(chains[2].get_label_asym_id(), "A")
+            self.assertEqual(len(m.get_particle_indexes()), 435)
+
     def test_read_pdb_or_mmcif(self):
         """Check reading mmCIF with read_pdb_or_mmcif"""
         m = IMP.Model()
 
-        mp = IMP.atom.read_pdb_or_mmcif(
-            self.get_input_file_name("input.cif"), m)
+        with IMP.allow_deprecated():
+            mp = IMP.atom.read_pdb_or_mmcif(
+                self.get_input_file_name("input.cif"), m)
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(chains), 3)
@@ -34,13 +51,26 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(chains[2].get_label_asym_id(), "A")
         self.assertEqual(len(m.get_particle_indexes()), 435)
 
+    def test_read_pdb_any_no_num(self):
+        """Check reading mmCIF with read_pdb_any, ignoring model num"""
+        for fname in ('input.cif', 'input.bcif'):
+            m = IMP.Model()
+            mp = IMP.atom.read_pdb_any(
+                self.get_input_file_name(fname), m,
+                IMP.atom.NonWaterPDBSelector(), False)
+            chains = [IMP.atom.Chain(x)
+                      for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+            self.assertEqual(len(chains), 3)
+            self.assertEqual(len(m.get_particle_indexes()), 441)
+
     def test_read_pdb_or_mmcif_no_num(self):
         """Check reading mmCIF with read_pdb_or_mmcif, ignoring model num"""
         m = IMP.Model()
 
-        mp = IMP.atom.read_pdb_or_mmcif(
-            self.get_input_file_name("input.cif"), m,
-            IMP.atom.NonWaterPDBSelector(), False)
+        with IMP.allow_deprecated():
+            mp = IMP.atom.read_pdb_or_mmcif(
+                self.get_input_file_name("input.cif"), m,
+                IMP.atom.NonWaterPDBSelector(), False)
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(chains), 3)
@@ -50,9 +80,27 @@ class Tests(IMP.test.TestCase):
         """Check reading an mmCIF file with one protein"""
         m = IMP.Model()
 
-        #! read PDB
         with self.open_input_file("input.cif") as fh:
             mp = IMP.atom.read_mmcif(fh, m)
+        self._check_test_read(m, mp)
+
+    def test_read_bcif_name(self):
+        """Check reading a BinaryCIF file with one protein from filename"""
+        m = IMP.Model()
+
+        fname = self.get_input_file_name("input.bcif")
+        mp = IMP.atom.read_bcif(fname, m)
+        self._check_test_read(m, mp)
+
+    def test_read_bcif_filelike(self):
+        """Check reading a BinaryCIF file with one protein from filelike obj"""
+        m = IMP.Model()
+
+        with self.open_input_file("input.bcif", "rb") as fh:
+            mp = IMP.atom.read_bcif(fh, m)
+        self._check_test_read(m, mp)
+
+    def _check_test_read(self, m, mp):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(len(m.get_particle_indexes()), 435)
@@ -78,12 +126,27 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(chains), 3)
         self.assertEqual(len(m.get_particle_indexes()), 441)
 
+    def test_read_multimodel_pdb_any(self):
+        "Check reading multimodel mmCIF/BinaryCIF with read_multimodel_pdb_any"
+        for fname in ('input.cif', 'input.bcif'):
+            m = IMP.Model()
+            mps = IMP.atom.read_multimodel_pdb_any(
+                self.get_input_file_name(fname), m)
+            mp1, mp2 = mps
+            chains1 = [IMP.atom.Chain(x)
+                       for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]
+            self.assertEqual([c.get_id() for c in chains1], ['', 'X', 'A'])
+            chains2 = [IMP.atom.Chain(x)
+                       for x in IMP.atom.get_by_type(mp2, IMP.atom.CHAIN_TYPE)]
+            self.assertEqual([c.get_id() for c in chains2], [''])
+
     def test_read_multimodel_pdb_or_mmcif(self):
-        """Check reading mmCIF with read_multimodel_pdb_or_mmcif"""
+        """Check reading multimodel mmCIF with read_multimodel_pdb_or_mmcif"""
         m = IMP.Model()
 
-        mps = IMP.atom.read_multimodel_pdb_or_mmcif(
-            self.get_input_file_name("input.cif"), m)
+        with IMP.allow_deprecated():
+            mps = IMP.atom.read_multimodel_pdb_or_mmcif(
+                self.get_input_file_name("input.cif"), m)
         mp1, mp2 = mps
         chains1 = [IMP.atom.Chain(x)
                    for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]
@@ -96,9 +159,19 @@ class Tests(IMP.test.TestCase):
         """Check reading a multimodel mmCIF file"""
         m = IMP.Model()
 
-        #! read PDB
         with self.open_input_file("input.cif") as fh:
             mps = IMP.atom.read_multimodel_mmcif(fh, m)
+        self._check_read_multimodel(m, mps)
+
+    def test_read_multimodel_bcif(self):
+        """Check reading a multimodel BinaryCIF file"""
+        m = IMP.Model()
+
+        with self.open_input_file("input.bcif", "rb") as fh:
+            mps = IMP.atom.read_multimodel_bcif(fh, m)
+        self._check_read_multimodel(m, mps)
+
+    def _check_read_multimodel(self, m, mps):
         mp1, mp2 = mps
         chains1 = [IMP.atom.Chain(x)
                    for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]

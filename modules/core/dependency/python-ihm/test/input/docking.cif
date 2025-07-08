@@ -102,7 +102,7 @@ loop_
 _ihm_struct_assembly.id
 _ihm_struct_assembly.name
 _ihm_struct_assembly.description
-1 'Our complete assembly' 'All known components'
+1 'Our complete assembly' 'All our known components'
 2 'Subunit A' .
 3 'Subunit B' .
 #

@@ -223,35 +223,39 @@ Vector<unsigned short> connected_atoms(const String& pdb_line) {
   return conn_atoms;
 }
 
-CifKeyword::CifKeyword(struct ihm_category *c, std::string name)
-      : k_(ihm_keyword_new(c, name.c_str())) {
+StringCifKeyword::StringCifKeyword(struct ihm_category *c, std::string name)
+      : k_(ihm_keyword_str_new(c, name.c_str())) {
 }
 
-const char *CifKeyword::data() {
-  return k_->data;
+IntCifKeyword::IntCifKeyword(struct ihm_category *c, std::string name)
+      : k_(ihm_keyword_int_new(c, name.c_str())) {
 }
 
-const char *CifKeyword::as_str() {
+FloatCifKeyword::FloatCifKeyword(struct ihm_category *c, std::string name)
+      : k_(ihm_keyword_float_new(c, name.c_str())) {
+}
+
+const char *StringCifKeyword::get() {
   if (k_->omitted || k_->unknown || !k_->in_file) {
     return "";
   } else {
-    return k_->data;
+    return k_->data.str;
   }
 }
 
-float CifKeyword::as_float(float default_value) {
+float FloatCifKeyword::get(float default_value) {
   if (k_->omitted || k_->unknown || !k_->in_file) {
     return default_value;
   } else {
-    return boost::lexical_cast<float>(k_->data);
+    return k_->data.fval;
   }
 }
 
-int CifKeyword::as_int(int default_value) {
+int IntCifKeyword::get(int default_value) {
   if (k_->omitted || k_->unknown || !k_->in_file) {
     return default_value;
   } else {
-    return boost::lexical_cast<int>(k_->data);
+    return k_->data.ival;
   }
 }
 

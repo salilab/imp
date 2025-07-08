@@ -356,12 +356,8 @@ struct ConvertSequenceHelper {
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
-#if PY_VERSION_HEX < 0x03000000
-    if (!in || !PySequence_Check(in) || PyString_Check(in)) {
-#else
     if (!in || !PySequence_Check(in) || PyUnicode_Check(in)
         || PyBytes_Check(in)) {
-#endif
       return false;
     }
     for (unsigned int i = 0; i < PySequence_Length(in); ++i) {
@@ -376,12 +372,8 @@ struct ConvertSequenceHelper {
   static void fill(PyObject* in, const char *symname, int argnum,
                    const char *argtype, SwigData st, SwigData particle_st,
                    SwigData decorator_st, C& t) {
-#if PY_VERSION_HEX < 0x03000000
-    if (!in || !PySequence_Check(in) || PyString_Check(in)) {
-#else
     if (!in || !PySequence_Check(in) || PyUnicode_Check(in)
         || PyBytes_Check(in)) {
-#endif
       PyErr_SetString(PyExc_ValueError, "Expected a sequence");
     }
     unsigned int l = PySequence_Size(in);
@@ -861,7 +853,6 @@ struct Convert<std::string> {
   static std::string get_cpp_object(PyObject* o, const char *symname,
                                     int argnum, const char *argtype, SwigData,
                                     SwigData, SwigData) {
-#if PY_VERSION_HEX>=0x03000000
     if (!o || !PyUnicode_Check(o)) {
       IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
                 TypeException);
@@ -876,30 +867,14 @@ struct Convert<std::string> {
       Py_DECREF(obj);
       return s;
     }
-#else
-    if (!o || !PyString_Check(o)) {
-      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
-                TypeException);
-    } else {
-      return std::string(PyString_AsString(o));
-    }
-#endif
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
-#if PY_VERSION_HEX>=0x03000000
     return PyUnicode_Check(o);
-#else
-    return PyString_Check(o);
-#endif
   }
   template <class SwigData>
   static PyObject* create_python_object(std::string f, SwigData, int) {
-#if PY_VERSION_HEX>=0x03000000
     return PyUnicode_FromString(f.c_str());
-#else
-    return PyString_FromString(f.c_str());
-#endif
   }
 };
 
@@ -948,11 +923,6 @@ struct Convert<int> {
       return PyLong_AsLong(o);
     } else {
       long ret = PyLong_AsLong(o);
-#if PY_VERSION_HEX < 0x03000000
-      if (ret == -1 && PyErr_Occurred()) {
-        ret = PyInt_AsLong(o);
-      }
-#endif
       if (ret != -1 || !PyErr_Occurred()) {
         return ret;
       } else {

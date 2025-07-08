@@ -32,30 +32,14 @@ Requires: python3-protobuf
 
 BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
-BuildRequires: RMF-devel >= 1.6
+BuildRequires: RMF-devel >= 1.7
 BuildRequires: python3-ihm
 Requires: python3-ihm
-
-# Use CGAL and OpenCV if provided by the OS
-# (RHEL doesn't have a CGAL package; RHEL 7 and 8 have OpenCV, but it was
-# dropped in RHEL 9).
-%if 0%{?fedora}
 BuildRequires: CGAL-devel
-%endif
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
+
+# Use OpenCV if provided by the OS
+# (RHEL 7 and 8 have OpenCV in base; it is in EPEL for RHEL 9, 10)
 BuildRequires: opencv-devel
-%endif
-
-# On other systems, use our custom CGAL and OpenCV packages instead
-# from https://integrativemodeling.org/build-extras/ or Fedora COPR
-%if 0%{?rhel}
-%if 0%{?rhel} == 9
-BuildRequires: opencv-nogui-devel
-%endif
-
-BuildRequires: CGAL-nogui-devel
-
-%endif
 
 # The IMP kernel links with numpy, so pull that in if available. Many modules
 # also use Python's scipy module, so pull that in (at build time for tests;
@@ -112,12 +96,8 @@ Requires:      boost-devel, hdf5-devel, protobuf-devel, RMF-devel
 Requires:      ann-devel
 %endif
 Requires:      python3-devel, python3-ihm
-%if 0%{?fedora}
 Requires:      CGAL-devel
-%endif
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
-%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -197,16 +177,7 @@ mkdir build && cd build
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
-%if 0%{?fedora} >= 29 && 0%{?fedora} < 32
-# Help cmake to find CGAL
-export CGAL_DIR=%{_libdir}/cmake/CGAL
-%endif
-%if 0%{?fedora} == 32
-export CGAL_DIR=/usr/share/CGAL/cmake
-%endif
-%if 0%{?fedora} >= 33
 export CGAL_DIR=/usr/share/cmake/CGAL
-%endif
 
 # Workaround gcc -frounding-math bug; see
 # https://bugzilla.redhat.com/show_bug.cgi?id=2085189
@@ -376,6 +347,9 @@ python3 test_mock.py -v
 %endif
 
 %changelog
+* Thu Jul 10 2025 Ben Webb <ben@salilab.org>   2.23.0-1
+- 2.23.0 release.
+
 * Thu Dec 12 2024 Ben Webb <ben@salilab.org>   2.22.0-1
 - 2.22.0 release.
 

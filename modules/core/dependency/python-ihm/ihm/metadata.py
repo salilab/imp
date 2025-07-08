@@ -17,25 +17,17 @@ import ihm.source
 import ihm.citations
 import ihm.reader
 import ihm.format
+import ihm.format_bcif
 
 import operator
 import struct
 import json
 import string
 import warnings
-import sys
 import re
 import collections
-
-# Handle different naming of urllib in Python 2/3
-try:
-    import urllib.request
-    import urllib.error
-except ImportError:    # pragma: no cover
-    class MockUrlLib(object):
-        pass
-    urllib = MockUrlLib()
-    urllib.request = urllib.error = __import__('urllib2')
+import urllib.request
+import urllib.error
 
 
 def _get_modeller(version, date):
@@ -88,7 +80,7 @@ def _handle_modeller_template(info, template_path_map, target_dataset,
                 alignment_file=alnfile))
 
 
-class Parser(object):
+class Parser:
     """Base class for all metadata parsers."""
 
     def parse_file(self, filename):
@@ -138,10 +130,7 @@ class MRCParser(Parser):
                 label = fh.read(80).strip()
                 m = r.search(label)
                 if m:
-                    if sys.version_info[0] < 3:    # pragma: no cover
-                        return m.group(1)
-                    else:
-                        return m.group(1).decode('ascii')
+                    return m.group(1).decode('ascii')
 
 
 class _ParsedEMDBLocation(location.EMDBLocation):
@@ -149,8 +138,7 @@ class _ParsedEMDBLocation(location.EMDBLocation):
        when they are requested (unless they are set to other values)."""
     def __init__(self, emdb):
         self.__emdb_info = None
-        super(_ParsedEMDBLocation, self).__init__(
-            db_code=emdb, version=None, details=None)
+        super().__init__(db_code=emdb, version=None, details=None)
         self.__emdb_info = None
 
     def __get_version(self):
@@ -187,15 +175,7 @@ class _ParsedEMDBLocation(location.EMDBLocation):
             return
         contents = json.load(response)
         info = contents['admin']
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:    # pragma: no cover
-            self.__emdb_info = [
-                info['key_dates']['map_release'].encode('ascii'),
-                info['title'].encode('ascii')]
-        else:
-            self.__emdb_info = [info['key_dates']['map_release'],
-                                info['title']]
+        self.__emdb_info = [info['key_dates']['map_release'], info['title']]
 
     version = property(__get_version, __set_version)
     details = property(__get_details, __set_details)
@@ -266,7 +246,8 @@ class PDBParser(Parser):
        some custom headers that can be used to indicate that a file has been
        locally modified in some way.
 
-       See also :class:`CIFParser` for coordinate files in mmCIF format.
+       See also :class:`CIFParser` for coordinate files in mmCIF format,
+       or :class:`BinaryCIFParser` for BinaryCIF format.
     """
 
     def parse_file(self, filename):
@@ -707,7 +688,7 @@ class _ModellerTemplateHandler(ihm.reader.Handler):
         self.m['modeller_templates'].append(t)
 
 
-class _ModelCifAlignment(object):
+class _ModelCifAlignment:
     """Store alignment information from a ModelCIF file"""
 
     def __init__(self):
@@ -719,21 +700,21 @@ class _ModelCifAlignment(object):
                                                           aln=self)
 
 
-class _TemplateRange(object):
+class _TemplateRange:
     """Store information about a template residue range from a ModelCIF file"""
     def __init__(self):
         self.seq_id_range = None
         self.template = None
 
 
-class _TargetRange(object):
+class _TargetRange:
     """Store information about a target residue range from a ModelCIF file"""
     def __init__(self):
         self.seq_id_range = None
         self.asym_id = None
 
 
-class _Template(object):
+class _Template:
     """Store template information from a ModelCIF file"""
 
     # Map ModelCIF ma_template_ref_db_details.db_name to IHMCIF equivalents
@@ -769,7 +750,7 @@ class _Template(object):
         return aln.target.asym_id if aln else self.target_asym_id, t
 
 
-class _SystemReader(object):
+class _SystemReader:
     """A minimal implementation, so we can use some of the Handlers
        in ihm.reader but get outputs in the results dict."""
     def __init__(self, m):
@@ -781,6 +762,11 @@ class _SystemReader(object):
         self.template_ranges = ihm.reader.IDMapper(None, _TemplateRange)
         self.target_ranges = ihm.reader.IDMapper(None, _TargetRange)
         self.templates = ihm.reader.IDMapper(m['templates'], _Template)
+        self.entities = ihm.reader.IDMapper(None, ihm.Entity, [])
+        self.asym_units = ihm.reader.IDMapper(m['asyms'], ihm.AsymUnit, None)
+        self.src_gens = ihm.reader.IDMapper(None, ihm.source.Manipulated)
+        self.src_nats = ihm.reader.IDMapper(None, ihm.source.Natural)
+        self.src_syns = ihm.reader.IDMapper(None, ihm.source.Synthetic)
 
 
 class _TemplateDetailsHandler(ihm.reader.Handler):
@@ -833,7 +819,7 @@ class _TemplatePolyMappingHandler(ihm.reader.Handler):
                           self.get_int(target_seq_id_end))
 
 
-class _SeqIDMapper(object):
+class _SeqIDMapper:
     """Map ModelCIF sequence identity to IHMCIF equivalent"""
 
     identity_map = {
@@ -875,21 +861,12 @@ class _ModBaseLocation(location.DatabaseLocation):
     """A model deposited in ModBase"""
     def __init__(self, db_code, version=None, details=None):
         # Use details to describe ModBase, ignoring the file title
-        super(_ModBaseLocation, self).__init__(
+        super().__init__(
             db_code, version=version,
             details="ModBase database of comparative protein structure models")
 
 
-class CIFParser(Parser):
-    """Extract metadata (e.g. PDB ID, comparative modeling templates)
-       from an mmCIF file. This currently handles mmCIF files from the PDB
-       database itself, models compliant with the ModelCIF dictionary,
-       plus files from Model Archive or the outputs from the
-       MODELLER comparative modeling package.
-
-       See also :class:`PDBParser` for coordinate files in legacy PDB format.
-    """
-
+class _CIFParserBase(Parser):
     # Map PDBx database_2.database_name to IHMCIF equivalents
     dbmap = {'PDB': (location.PDBLocation, dataset.PDBDataset),
              'PDB-DEV': (location.PDBDevLocation,
@@ -901,26 +878,10 @@ class CIFParser(Parser):
              'MODBASE': (_ModBaseLocation, dataset.ComparativeModelDataset)}
 
     def parse_file(self, filename):
-        """Extract metadata. See :meth:`Parser.parse_file` for details.
-
-           :param str filename: the file to extract metadata from.
-           :return: a dict with key `dataset` pointing to the coordinate file,
-                    as an entry in the PDB or Model Archive databases if the
-                    file contains appropriate headers, otherwise to the
-                    file itself;
-                    'templates' pointing to a dict with keys the asym (chain)
-                    IDs in the PDB file and values the list of comparative
-                    model templates used to model that chain as
-                    :class:`ihm.startmodel.Template` objects;
-                    'software' pointing to a list of software used to generate
-                    the file (as :class:`ihm.Software` objects);
-                    'script' pointing to the script used to generate the
-                    file, if any (as :class:`ihm.location.WorkflowFileLocation`
-                    objects).
-        """
         m = {'db': {}, 'title': 'Starting model structure',
-             'software': [], 'templates': [], 'alignments': []}
-        with open(filename) as fh:
+             'software': [], 'templates': [], 'alignments': [],
+             'asyms': []}
+        with self._open_file(filename) as fh:
             dbh = _Database2Handler(m)
             structh = _StructHandler(m)
             arevhisth = _AuditRevHistHandler(m)
@@ -928,13 +889,19 @@ class CIFParser(Parser):
             modellerh = _ModellerHandler(m, filename)
             modtmplh = _ModellerTemplateHandler(m)
             sysr = _SystemReader(m)
-            r = ihm.format.CifReader(
+            r = self._reader_class(
                 fh, {'_database_2': dbh, '_struct': structh,
                      '_pdbx_audit_revision_history': arevhisth,
                      '_exptl': exptlh, '_modeller': modellerh,
                      '_modeller_template': modtmplh,
                      '_software': ihm.reader._SoftwareHandler(sysr),
                      '_citation': ihm.reader._CitationHandler(sysr),
+                     '_struct_asym': ihm.reader._StructAsymHandler(sysr),
+                     '_entity': ihm.reader._EntityHandler(sysr),
+                     '_entity_src_nat': ihm.reader._EntitySrcNatHandler(sysr),
+                     '_pdbx_entity_src_syn':
+                     ihm.reader._EntitySrcSynHandler(sysr),
+                     '_entity_src_gen': ihm.reader._EntitySrcGenHandler(sysr),
                      '_citation_author':
                      ihm.reader._CitationAuthorHandler(sysr),
                      '_ma_template_details': _TemplateDetailsHandler(sysr),
@@ -949,6 +916,8 @@ class CIFParser(Parser):
         dset = self._get_dataset(filename, m)
         return {'dataset': dset, 'software': m['software'],
                 'templates': self._get_templates(filename, m, dset),
+                'entity_source': {asym.id: asym.entity.source
+                                  for asym in m['asyms']},
                 'script': m['script']}
 
     def _get_dataset(self, filename, m):
@@ -996,3 +965,53 @@ class CIFParser(Parser):
             templates[chain] = sorted(templates[chain],
                                       key=operator.attrgetter('seq_id_range'))
         return templates
+
+
+class CIFParser(_CIFParserBase):
+    """Extract metadata (e.g. PDB ID, comparative modeling templates)
+       from an mmCIF file. This currently handles mmCIF files from the PDB
+       database itself, models compliant with the ModelCIF dictionary,
+       plus files from Model Archive or the outputs from the
+       MODELLER comparative modeling package.
+
+       See also :class:`PDBParser` for coordinate files in legacy PDB format,
+       or :class:`BinaryCIFParser` for BinaryCIF format.
+    """
+
+    _reader_class = ihm.format.CifReader
+
+    def _open_file(self, filename):
+        return open(filename)
+
+    def parse_file(self, filename):
+        """Extract metadata. See :meth:`Parser.parse_file` for details.
+
+           :param str filename: the file to extract metadata from.
+           :return: a dict with key `dataset` pointing to the coordinate file,
+                    as an entry in the PDB or Model Archive databases if the
+                    file contains appropriate headers, otherwise to the
+                    file itself;
+                    'templates' pointing to a dict with keys the asym (chain)
+                    IDs in the PDB file and values the list of comparative
+                    model templates used to model that chain as
+                    :class:`ihm.startmodel.Template` objects;
+                    'entity_source' pointing to a dict with keys the asym IDs
+                    and values :class:`ihm.source.Source` objects;
+                    'software' pointing to a list of software used to generate
+                    the file (as :class:`ihm.Software` objects);
+                    'script' pointing to the script used to generate the
+                    file, if any (as :class:`ihm.location.WorkflowFileLocation`
+                    objects).
+        """
+        return super().parse_file(filename)
+
+
+class BinaryCIFParser(_CIFParserBase):
+    """Extract metadata from a BinaryCIF file. This works in a very similar
+       fashion to :class:`CIFParser`; see that class for more information.
+    """
+
+    _reader_class = ihm.format_bcif.BinaryCifReader
+
+    def _open_file(self, filename):
+        return open(filename, 'rb')

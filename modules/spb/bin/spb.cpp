@@ -5,12 +5,6 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/Pointer.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
-#include <IMP/isd.h>
-#include <IMP/spb.h>
-#include <IMP/rmf.h>
 #include <stdio.h>
 #include <time.h>
 #include <boost/scoped_array.hpp>
@@ -18,6 +12,26 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <IMP/Model.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/isd/FretRestraint.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/CellMover.h>
+#include <IMP/spb/spb_representation.h>
+#include <IMP/spb/spb_sampler.h>
+#include <IMP/spb/MonteCarloWithWte.h>
+#include <IMP/spb/spb_parser.h>
+#include <IMP/spb/spb_assemble_restraints.h>
+#include <IMP/spb/spb_ISD_particles.h>
+#include <IMP/spb/pt_stuff.h>
+#include <RMF/FileConstHandle.h>
+#include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/particle_io.h>
+#include <IMP/rmf/frames.h>
 
 // We only want the C API, so try to suppress the C++ API
 #ifndef MPICH_SKIP_MPICXX

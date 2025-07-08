@@ -307,8 +307,33 @@ Hierarchy create_fragment(const Hierarchies &ps) {
   return fd;
 }
 
-Bonds get_internal_bonds(Hierarchy mhd) {
+Bonds get_internal_bonds(Hierarchy mhd, bool with_representations) {
   ParticlesTemp ps = core::get_all_descendants(mhd);
+
+  if (with_representations) {
+    Hierarchies reprs;
+    // Get all non-default BALLS representations
+    for (Particle *p : ps) {
+      if (Representation::get_is_setup(p)) {
+        Representation r(p);
+        for (const Hierarchy &ball : r.get_representations(BALLS)) {
+          if (ball.get_particle() != p) {
+            reprs.push_back(ball);
+          }
+        }
+      }
+    }
+    // Add descendants for each such representation.
+    // Note that this will capture bonds between different Representation
+    // subtrees at the same resolution (as desired) but also bonds between
+    // subtrees of different resolutions. We don't currently filter the
+    // latter out but they perhaps shouldn't be there in the first place.
+    for (const Hierarchy &h: reprs) {
+      ParticlesTemp rps = core::get_all_descendants(h);
+      ps.insert(ps.end(), rps.begin(), rps.end());
+    }
+  }
+
   boost::unordered_set<Particle *> sps(ps.begin(), ps.end());
   Bonds ret;
   for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end();

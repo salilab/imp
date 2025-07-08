@@ -684,9 +684,9 @@ _ihm_sphere_obj_site.model_id
         nup84_2.add_representation(resolutions=[1])
 
         nup85 = st2.create_molecule("Nup85", "GGGGSELMGG", "B")
-        # Residues S, E should be residues 8, 9 in test.nup85.pdb; map them
+        # Residues S, E should be residues 8, 9 in test.nup85.cif; map them
         # to FASTA sequence
-        nup85.add_structure(self.get_input_file_name('test.nup85.pdb'), 'A',
+        nup85.add_structure(self.get_input_file_name('test.nup85.cif'), 'A',
                             res_range=(8, 9), offset=-3)
         nup85.add_representation(residues=nup85[4:8], resolutions=[1])
         _ = s.build()

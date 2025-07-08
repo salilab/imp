@@ -276,17 +276,14 @@ _ihm_model_representation_details.description
         top.add_child(state)
         return state
 
-    def _make_residue_chain(self, name, chain_id, model, cif=False):
+    def _make_residue_chain(self, name, chain_id, model, ext='pdb'):
         if name == 'Nup84':
-            if cif:
-                fname = 'test.nup84.cif'
-            else:
-                fname = 'test.nup84.pdb'
+            fname = 'test.nup84.%s' % ext
             seq = 'ME'
         else:
             fname = 'test.nup85.pdb'
             seq = 'GE'
-        h = IMP.atom.read_pdb_or_mmcif(self.get_input_file_name(fname), model)
+        h = IMP.atom.read_pdb_any(self.get_input_file_name(fname), model)
         for hchain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             chain = IMP.atom.Chain(hchain)
             chain.set_sequence(seq)
@@ -307,25 +304,29 @@ _ihm_model_representation_details.description
 
     def test_starting_model_dumper_pdb(self):
         """Test StartingModelDumper with PDB starting models"""
-        self._internal_test_starting_model_dumper(cif=False)
+        self._internal_test_starting_model_dumper(ext='pdb')
 
     def test_starting_model_dumper_cif(self):
         """Test StartingModelDumper with mmCIF starting models"""
-        self._internal_test_starting_model_dumper(cif=True)
+        self._internal_test_starting_model_dumper(ext='cif')
 
-    def _internal_test_starting_model_dumper(self, cif):
+    def test_starting_model_dumper_bcif(self):
+        """Test StartingModelDumper with BinaryCIF starting models"""
+        self._internal_test_starting_model_dumper(ext='bcif')
+
+    def _internal_test_starting_model_dumper(self, ext):
         m = IMP.Model()
 
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         state1h = self.add_state(m, top, 0, "State1")
 
-        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
+        h1 = self._make_residue_chain('Nup84', 'A', m, ext=ext)
         state1h.add_child(h1)
 
         # Test multiple states: components that are the same in both states
         # (Nup84) should not be duplicated in the mmCIF output
         state2h = self.add_state(m, top, 0, "State2")
-        h1 = self._make_residue_chain('Nup84', 'A', m, cif=cif)
+        h1 = self._make_residue_chain('Nup84', 'A', m, ext=ext)
         state2h.add_child(h1)
         h2 = self._make_residue_chain('Nup85', 'B', m)
         state2h.add_child(h2)
@@ -563,6 +564,8 @@ _ihm_ensemble_info.sub_sampling_type
         """Test ModelListDumper"""
         m = IMP.Model()
         h = self.make_model(m)
+        for chain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
+            self.add_structured_residue(m, chain, 1)
         c = IMP.mmcif.Writer()
         ens = c.add_model([h], [], name="model1")
         ens[None].model_group.name = 'cluster 1'
@@ -599,6 +602,26 @@ _ihm_model_group_link.group_id
 _ihm_model_group_link.model_id
 1 1
 1 2
+#
+#
+loop_
+_ihm_sphere_obj_site.id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 1 1 A 1.000 2.000 3.000 4.000 . 1
+2 1 1 1 B 1.000 2.000 3.000 4.000 . 1
+3 2 1 1 C 1.000 2.000 3.000 4.000 . 1
+4 1 1 1 A 1.000 2.000 3.000 4.000 . 2
+5 1 1 1 B 1.000 2.000 3.000 4.000 . 2
+6 2 1 1 C 1.000 2.000 3.000 4.000 . 2
 #
 """)
 

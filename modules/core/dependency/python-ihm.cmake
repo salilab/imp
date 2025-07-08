@@ -78,7 +78,8 @@ endif()
 set(swig_i
     "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ihm_format.i")
 set(ext_c
-    "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ihm_format.c")
+    "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ihm_format.c"
+    "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/cmp.c")
 set(wrap_c "${CMAKE_BINARY_DIR}/src/core_swig/ihm_format_wrap.c")
 add_custom_command(OUTPUT ${wrap_c}
 	           COMMAND ${SWIG_EXECUTABLE} "-python" "-noproxy"

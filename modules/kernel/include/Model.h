@@ -2,7 +2,7 @@
  *  \file IMP/Model.h
  *  \brief Storage of a model, its restraints, constraints and particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -157,6 +157,8 @@ class IMPKERNELEXPORT Model : public Object
   Vector<unsigned> trigger_age_;
   // time when dependencies were last changed, or 0
   unsigned dependencies_age_;
+  // time when particles or attributes were last removed, or 0
+  unsigned removed_particles_attributes_age_;
 
   // allow skipping updating dependencies_age_ for temporary ModelObjects
   bool dependencies_saved_;
@@ -238,6 +240,7 @@ class IMPKERNELEXPORT Model : public Object
       age_counter_ = 1;
       trigger_age_.clear();
       dependencies_age_ = 0;
+      removed_particles_attributes_age_ = 0;
       saved_dependencies_age_ = 0;
       dependencies_saved_ = false;
       moved_particles_cache_age_ = 0;
@@ -580,6 +583,14 @@ class IMPKERNELEXPORT Model : public Object
       or ScoreStates were last added or removed. It is typically used to
       help maintain caches that depend on the model's dependency graph. */
   unsigned get_dependencies_updated() { return dependencies_age_; }
+
+  //! Get the model age when particles or attributes were last removed, or 0.
+  /** This gives the Model age (see get_age()) when any particle or attribute
+      was last removed. It is typically used by callers that rely on certain
+      particles or decorators being present. */
+  unsigned get_removed_particles_attributes_age() {
+    return removed_particles_attributes_age_;
+  }
 
   //! Mark a 'restore point' for ModelObject dependencies.
   /** \see restore_dependencies() */

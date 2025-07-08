@@ -1,5 +1,5 @@
 /**
- *  \file ChiScore.h   \brief Basic SAXS scoring
+ *  \file ChiScore.cpp   \brief Basic SAXS scoring
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
@@ -20,11 +20,11 @@ double ChiScore::compute_score(const Profile* exp_profile,
   unsigned int profile_size =
     std::min(model_profile->size(), exp_profile->size());
 
-  const Eigen::VectorXf& errors = exp_profile->get_errors();
-  const Eigen::VectorXf& exp_intensities = exp_profile->get_intensities();
-  const Eigen::VectorXf& model_intensities = model_profile->get_intensities();
+  const Eigen::VectorXd& errors = exp_profile->get_errors();
+  const Eigen::VectorXd& exp_intensities = exp_profile->get_intensities();
+  const Eigen::VectorXd& model_intensities = model_profile->get_intensities();
 
-  Eigen::VectorXf delta = exp_intensities - c * model_intensities;
+  Eigen::VectorXd delta = exp_intensities - c * model_intensities;
   if(use_offset) delta.array() += offset;
 
   for(int i=0; i<delta.size(); i++) {
@@ -41,11 +41,11 @@ double ChiScore::compute_scale_factor(const Profile* exp_profile,
                                       const Profile* model_profile,
                                       const double offset) const {
 
-  const Eigen::VectorXf& errors = exp_profile->get_errors();
-  const Eigen::VectorXf& exp_intensities = exp_profile->get_intensities();
-  const Eigen::VectorXf& model_intensities = model_profile->get_intensities();
+  const Eigen::VectorXd& errors = exp_profile->get_errors();
+  const Eigen::VectorXd& exp_intensities = exp_profile->get_intensities();
+  const Eigen::VectorXd& model_intensities = model_profile->get_intensities();
 
-  Eigen::VectorXf square_errors = errors.cwiseProduct(errors);
+  Eigen::VectorXd square_errors = errors.cwiseProduct(errors);
   for (int k = 0; k < square_errors.size(); k++) {
     square_errors(k) = 1.0/square_errors(k);
   }
@@ -65,10 +65,10 @@ double ChiScore::compute_scale_factor(const Profile* exp_profile,
 double ChiScore::compute_offset(const Profile* exp_profile,
                                 const Profile* model_profile) const {
 
-  const Eigen::VectorXf& errors = exp_profile->get_errors();
-  const Eigen::VectorXf& exp_intensities = exp_profile->get_intensities();
-  const Eigen::VectorXf& model_intensities = model_profile->get_intensities();
-  Eigen::VectorXf square_errors = errors.cwiseProduct(errors);
+  const Eigen::VectorXd& errors = exp_profile->get_errors();
+  const Eigen::VectorXd& exp_intensities = exp_profile->get_intensities();
+  const Eigen::VectorXd& model_intensities = model_profile->get_intensities();
+  Eigen::VectorXd square_errors = errors.cwiseProduct(errors);
   for (int k = 0; k < square_errors.size(); k++) {
     square_errors(k) = 1.0/square_errors(k);
   }
@@ -83,8 +83,8 @@ double ChiScore::compute_offset(const Profile* exp_profile,
   double c =  sum_imod_iexp / sum_imod2;
 
   // compute offset
-  Eigen::VectorXf delta = exp_intensities - c * model_intensities;
-  Eigen::VectorXf delta2 = constant * model_intensities;
+  Eigen::VectorXd delta = exp_intensities - c * model_intensities;
+  Eigen::VectorXd delta2 = constant * model_intensities;
   for (int k = 0; k < delta2.size(); k++) delta2(k) = 1.0 - delta2(k);
 
   double sum1 = (square_errors.array() * delta.array() * delta2.array()).sum();

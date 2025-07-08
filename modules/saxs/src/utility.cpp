@@ -1,7 +1,7 @@
 /**
  *  \file IMP/saxs/utility.cpp
  *  \brief Functions to deal with very common saxs operations
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/saxs/utility.h>
@@ -76,19 +76,20 @@ void read_pdb(Model *model, const std::string file,
       selector = new IMP::atom::NonWaterPDBSelector();
   }
 
-  // Use same "cif or pdb" logic as in atom::read_multimodel_pdb_or_mmcif
+  // Use same "bcif or cif or pdb" logic as in atom::read_multimodel_pdb_any
   bool mmcif = file.find(".cif") == file.size() - 4;
+  bool bcif = file.find(".bcif") == file.size() - 5;
 
   if (multi_model_pdb == 2) {
-    mhds = read_multimodel_pdb_or_mmcif(file, model, selector, true);
+    mhds = read_multimodel_pdb_any(file, model, selector, true);
   } else {
     if (multi_model_pdb == 3) {
       IMP::atom::Hierarchy mhd =
-          IMP::atom::read_pdb_or_mmcif(file, model, selector, false, true);
+          IMP::atom::read_pdb_any(file, model, selector, false, true);
       mhds.push_back(mhd);
     } else {
       IMP::atom::Hierarchy mhd =
-          IMP::atom::read_pdb_or_mmcif(file, model, selector, true, true);
+          IMP::atom::read_pdb_any(file, model, selector, true, true);
       mhds.push_back(mhd);
     }
   }
@@ -101,7 +102,7 @@ void read_pdb(Model *model, const std::string file,
       if (mhds.size() > 1) {
         pdb_id = trim_extension(file) + "_m" +
                  std::string(boost::lexical_cast<std::string>(h_index + 1)) +
-                 (mmcif ? ".cif" : ".pdb");
+                 (bcif ? ".bcif" : mmcif ? ".cif" : ".pdb");
       }
       pdb_file_names.push_back(pdb_id);
       particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
@@ -131,7 +132,7 @@ void read_files(Model *m, const std::vector<std::string>& files,
       IMP_WARN("Can't open file " << file << std::endl);
       return;
     }
-    // 1. try as pdb or mmcif
+    // 1. try as pdb, BinaryCIF, or mmCIF
     try {
       read_pdb(m, file, pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb, explicit_water);
@@ -153,8 +154,11 @@ void read_files(Model *m, const std::vector<std::string>& files,
 }
 
 std::string trim_extension(const std::string file_name) {
-  if (file_name[file_name.size() - 4] == '.')
+  if (file_name.size() >= 4 && file_name[file_name.size() - 4] == '.') {
     return file_name.substr(0, file_name.size() - 4);
+  } else if (file_name.size() >= 5 && file_name[file_name.size() - 5] == '.') {
+    return file_name.substr(0, file_name.size() - 5);
+  }
   return file_name;
 }
 

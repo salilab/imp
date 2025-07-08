@@ -6,6 +6,7 @@ namespace atom {
 
 IMP_SWIG_GRAPH(IMP::atom, HierarchyTree, HierarchyTree, IMP::atom::Hierarchy);
 IMP_SWIG_VALUE(IMP::atom, PDBRecord, PDBRecords);
+IMP_SWIG_OBJECT(IMP::atom, LennardJonesType, LennardJonesTypes);
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
 IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
@@ -24,6 +25,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
 IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
 IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
+IMP_SWIG_DECORATOR(IMP::atom, LennardJonesTyped, LennardJonesTypeds);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, LinearVelocity, LinearVelocities);
 IMP_SWIG_DECORATOR(IMP::atom, AngularVelocity, AngularVelocities);
@@ -72,6 +74,12 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
+IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _LennardJonesTypedPairScore,
+            LennardJonesTypedPairScore<IMP::atom::SmoothingFunction>,
+            _LennardJonesTypedPairScores);
+IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _SwitchedLennardJonesTypedPairScore,
+            LennardJonesTypedPairScore<IMP::atom::ForceSwitch>,
+            _SwitchedLennardJonesTypedPairScores);
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
@@ -118,6 +126,7 @@ IMP_SWIG_OBJECT(IMP::atom, HelixRestraint, HelixRestraints);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
+
 // for some reason this one fails using the generic macro
  %extend IMP::atom::CHARMMConnection<D> {
   IMP_SWIG_SHOWSTUFF(CHARMMConnection);
@@ -231,6 +240,8 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %include "IMP/atom/Domain.h"
 %include "IMP/atom/LennardJones.h"
 %include "IMP/atom/LennardJonesPairScore.h"
+%include "IMP/atom/LennardJonesType.h"
+%include "IMP/atom/LennardJonesTypedPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"
@@ -344,4 +355,36 @@ def get_rigid_bodies_drms(a, b, ranges):
     #rs = [IMP.IntRange(r[0],r[1]) for r in ranges]
     return _get_rigid_bodies_drms_cpp(va, vb, ranges)
 
+%}
+
+/* Instantiate the LennardJonesTypedPairScore template using both the abstract
+   class (SmoothingFunction) and the most commonly used concrete class
+   (ForceSwitch). Proxy them both with the same Python class and pick the
+   appropriate template instantiation at runtime. This is about 10% faster
+   than just using the abstract class. */
+%template(_LennardJonesTypedPairScore) IMP::atom::LennardJonesTypedPairScore<IMP::atom::SmoothingFunction>;
+%template(_SwitchedLennardJonesTypedPairScore) IMP::atom::LennardJonesTypedPairScore<IMP::atom::ForceSwitch>;
+
+%pythoncode %{
+class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0]):
+    def __init__(self, f):
+        if isinstance(f, ForceSwitch):
+            p = _SwitchedLennardJonesTypedPairScore(f)
+        else:
+            p = _LennardJonesTypedPairScore(f)
+        self.__dict__['_proxied'] = p
+    def __getattr__(self, key):
+        return getattr(self._proxied, key)
+    def __setattr__(self, key, val):
+        return setattr(self._proxied, key, val)
+
+    @staticmethod
+    def get_from(o):
+        try:
+            p = _SwitchedLennardJonesTypedPairScore.get_from(o)
+        except ValueError:
+            p = _LennardJonesTypedPairScore.get_from(o)
+        obj = object.__new__(LennardJonesTypedPairScore)
+        obj.__dict__['_proxied'] = p
+        return obj
 %}

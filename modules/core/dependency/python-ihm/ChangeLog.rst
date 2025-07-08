@@ -1,3 +1,80 @@
+2.7 - 2025-07-07
+================
+  - Representative models for :class:`ihm.model.ModelGroup` can now be
+    denoted using the :class:`ihm.model.ModelRepresentative` class (#173).
+  - Bugfix: fix reference counts of Python bool objects.
+
+2.6 - 2025-06-09
+================
+  - The new :class:`ihm.License` and :class:`ihm.Disclaimer` classes
+    allow describing how the data in the file can be used, and map to
+    the ``pdbx_data_usage`` mmCIF table (#171).
+  - Two :class:`ihm.Assembly` classes are now considered equal if they
+    contain the same set of constituents, even if those constituents are
+    in differing orders or are split differently into domains (#170).
+  - The new :class:`ihm.format.ChangeFuncValueFilter` class allows modifying
+    mmCIF values by passing them through an arbitrary Python function.
+  - Checks for non-canonical atom names no longer use Ligand Expo to obtain
+    CCD info, as it is being retired (#169).
+  - :class:`ihm.metadata.CIFParser` and :class:`ihm.metadata.BinaryCIFParser`
+    now return the same ``entity_source`` mapping that
+    :class:`ihm.metadata.PDBParser` does (#168).
+
+2.5 - 2025-04-25
+================
+  - Assemblies are now checked at file-output time to ensure that each
+    asym referenced in an assembly is represented by atoms and/or spheres
+    in at least one model (#165).
+  - ``make_mmcif`` has a new ``--check_atom_names`` option which, if set,
+    will check for any non-canonical atom names (#166).
+  - ``pip install`` should no longer fail to install if the C extension
+    module cannot be built; it will fall back to use the slower pure Python
+    implementation.
+
+2.4 - 2025-03-25
+================
+  - Add support for fits of model groups or ensembles to cross-links
+    using the new :class:`ihm.restraint.CrossLinkGroupFit` class.
+
+2.3 - 2025-03-13
+================
+  - The C-accelerated BinaryCIF parser now supports interval quantization
+    encoding and a wider range of data types.
+  - ``make_mmcif`` now has a new ``--histidines`` option to convert any
+    non-standard histidine names to HIS (#164).
+  - Bugfix: don't change name or description of the complete assembly
+    in ``make_mmcif``.
+  - Bugfix: if :class:`ihm.reference.SeqDif` is used to annotate an
+    insertion or deletion, don't erroneously claim the alignment is incorrect.
+
+2.2 - 2025-02-13
+================
+  - The C-accelerated BinaryCIF parser now supports a wider range of data types.
+
+2.1 - 2025-02-12
+================
+  - Minor fixes to the C-accelerated BinaryCIF parser.
+
+2.0 - 2025-02-11
+================
+  - python-ihm no longer supports Python 2; the oldest supported version
+    is now Python 3.6 (#161).
+  - BinaryCIF files are now read in using a C-accelerated parser, which is
+    faster and more memory efficient than the older Python parser (#160).
+  - The tokenizers for mmCIF and BinaryCIF now return data of the correct
+    type (int, float, bool, or string); previously, all values were returned
+    as strings. :class:`ihm.reader.Handler` subclasses now request data of
+    the correct type using Python type annotations. The API of the
+    C-accelerated parsers has changed accordingly (#162).
+  - The new :class:`ihm.metadata.BinaryCIFParser` class can extract metadata
+    such as database IDs and template information from BinaryCIF files, in
+    a similar fashion to the existing :class:`ihm.metadata.CIFParser`.
+  - Information about a deposited structure, such as the deposition date,
+    can now be read from :attr:`System.database_status` (#163).
+  - The new :class:`ihm.format.ReplaceCategoryFilter` class can be used to
+    completely replace or remove an mmCIF category when using
+    :class:`ihm.format.CifTokenReader`.
+
 1.8 - 2024-11-26
 ================
   - Support added for datasets containing EPR, X-ray diffraction, footprinting
@@ -489,7 +566,7 @@
    output, the set of all citation authors is used instead, as before.)
  - Any grants that supported the modeling can now be listed in
    :attr:`ihm.System.grants`.
- - A copy of `SWIG <http://www.swig.org/>`_ is no longer needed to install
+ - A copy of `SWIG <https://www.swig.org/>`_ is no longer needed to install
    releases of python-ihm via `pip` as pre-generated SWIG outputs are
    included in the PyPI package. SWIG is still needed to build directly
    from source code though.

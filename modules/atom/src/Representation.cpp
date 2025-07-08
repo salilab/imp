@@ -207,33 +207,31 @@ Floats Representation::get_resolutions(RepresentationType type) const {
 }
 
 void Representation::remove_representation(ParticleIndexAdaptor rep) {
-  Ints types =
-      get_model()->get_attribute(get_types_key(), get_particle_index());
-  Floats resolutions =
-      get_model()->get_attribute(get_resolutions_key(), get_particle_index());
-  ParticleIndexes reps =
-      get_model()->get_attribute(get_representations_key(),
-                                 get_particle_index());
-  for (unsigned int i = 0; i < reps.size(); i++) {
-    if (reps[i] == rep) {
-      types.erase(types.begin() + i);
-      resolutions.erase(resolutions.begin() + i);
-      reps.erase(reps.begin() + i);
-      if (types.empty()) {
-        get_model()->remove_attribute(get_types_key(), get_particle_index());
-        get_model()->remove_attribute(get_resolutions_key(),
-                                      get_particle_index());
-        get_model()->remove_attribute(get_representations_key(),
-                                     get_particle_index());
-      } else {
-        get_model()->set_attribute(get_types_key(), get_particle_index(),
-                                   types);
-        get_model()->set_attribute(get_resolutions_key(), get_particle_index(),
-                                   resolutions);
-        get_model()->set_attribute(get_representations_key(),
-                                   get_particle_index(), reps);
+  Model *m = get_model();
+  ParticleIndex ind = get_particle_index();
+
+  if (m->get_has_attribute(get_types_key(), ind)
+      && m->get_has_attribute(get_resolutions_key(), ind)
+      && m->get_has_attribute(get_representations_key(), ind)) {
+    Ints types = m->get_attribute(get_types_key(), ind);
+    Floats resolutions = m->get_attribute(get_resolutions_key(), ind);
+    ParticleIndexes reps = m->get_attribute(get_representations_key(), ind);
+    for (unsigned int i = 0; i < reps.size(); i++) {
+      if (reps[i] == rep) {
+        types.erase(types.begin() + i);
+        resolutions.erase(resolutions.begin() + i);
+        reps.erase(reps.begin() + i);
+        if (types.empty()) {
+          m->remove_attribute(get_types_key(), ind);
+          m->remove_attribute(get_resolutions_key(), ind);
+          m->remove_attribute(get_representations_key(), ind);
+        } else {
+          m->set_attribute(get_types_key(), ind, types);
+          m->set_attribute(get_resolutions_key(), ind, resolutions);
+          m->set_attribute(get_representations_key(), ind, reps);
+        }
+        return;
       }
-      return;
     }
   }
   IMP_THROW("The requested representation was not found", ValueException);

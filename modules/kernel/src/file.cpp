@@ -27,25 +27,33 @@ namespace {
 template <class BaseStream, class FileStream>
 struct LazyFileStorage : public internal::IOStorage<BaseStream> {
   typedef internal::IOStorage<BaseStream> P;
-  std::string name_;
   bool open_;
-  bool append_;
+  std::ios_base::openmode openmode_;
+  bool binary_;
   FileStream stream_;
-  LazyFileStorage(std::string name, bool append = false)
-      : P(name), open_(false), append_(append) {}
+  LazyFileStorage(std::string name, std::ios_base::openmode openmode)
+      : P(name), open_(false), openmode_(openmode), binary_(false) {}
   BaseStream &get_stream() override {
     if (!open_) {
-      if (append_) {
-        stream_.open(P::get_name().c_str(), std::fstream::app);
-      } else {
-        stream_.open(P::get_name().c_str());
+      std::ios_base::openmode om = openmode_;
+      if (binary_) {
+        om |= std::ios_base::binary;
       }
+      stream_.open(P::get_name().c_str(), om);
       if (!stream_) {
         IMP_THROW("Unable to open file " << P::get_name(), IOException);
       }
       open_ = true;
     }
     return stream_;
+  }
+
+  void set_binary_open_mode(bool binary) override {
+    if (open_) {
+      IMP_THROW("Cannot set open mode; file is already open "
+                << P::get_name(), IOException);
+    }
+    binary_ = binary;
   }
 };
 
@@ -82,9 +90,11 @@ struct OwnedStreamStorage : public internal::IOStorage<BaseStream> {
 }
 
 TextOutput::TextOutput(const char *c, bool append)
-    : out_(new LazyFileStorage<std::ostream, std::ofstream>(c, append)) {}
+    : out_(new LazyFileStorage<std::ostream, std::ofstream>(
+                     c, append ? std::ios_base::app : std::ios_base::out)) {}
 TextOutput::TextOutput(std::string c, bool append)
-    : out_(new LazyFileStorage<std::ostream, std::ofstream>(c, append)) {}
+    : out_(new LazyFileStorage<std::ostream, std::ofstream>(
+                     c, append ? std::ios_base::app : std::ios_base::out)) {}
 TextOutput::TextOutput(std::ostream &in, std::string name)
     : out_(new StreamStorage<std::ostream>(in, name)) {}
 TextOutput::TextOutput(TextProxy<std::ostream> out)
@@ -95,9 +105,11 @@ TextOutput::TextOutput(double) {
 }
 
 TextInput::TextInput(const char *c)
-    : in_(new LazyFileStorage<std::istream, std::ifstream>(c)) {}
+    : in_(new LazyFileStorage<std::istream,
+                              std::ifstream>(c, std::ios_base::in)) {}
 TextInput::TextInput(std::string c)
-    : in_(new LazyFileStorage<std::istream, std::ifstream>(c)) {}
+    : in_(new LazyFileStorage<std::istream,
+                              std::ifstream>(c, std::ios_base::in)) {}
 TextInput::TextInput(std::istream &in, std::string name)
     : in_(new StreamStorage<std::istream>(in, name)) {}
 TextInput::TextInput(TextProxy<std::istream> out)

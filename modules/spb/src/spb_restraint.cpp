@@ -5,18 +5,38 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
-#include <IMP/core.h>
-#include <IMP/em2d.h>
-#include <IMP/isd.h>
-#include <IMP/spb.h>
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <list>
 #include <sstream>
 #include <string>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/core/DistancePairScore.h>
+#include <IMP/core/Harmonic.h>
+#include <IMP/core/HarmonicWell.h>
+#include <IMP/core/ExcludedVolumeRestraint.h>
+#include <IMP/core/PairRestraint.h>
+#include <IMP/core/SingletonRestraint.h>
+#include <IMP/core/DistanceToSingletonScore.h>
+#include <IMP/core/GenericAttributeSingletonScore.h>
+#include <IMP/core/symmetry.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Molecule.h>
+#include <IMP/atom/Selection.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/container/CloseBipartitePairContainer.h>
+#include <IMP/container/PairsRestraint.h>
+#include <IMP/container/SingletonsRestraint.h>
+#include <IMP/container/SingletonsConstraint.h>
+#include <IMP/spb/spb_restraint.h>
+#include <IMP/spb/DistanceTerminiRestraint.h>
+#include <IMP/spb/UniformBoundedRestraint.h>
+#include <IMP/spb/TiltSingletonScore.h>
+#include <IMP/spb/TransformationSymmetry.h>
+#include <IMP/spb/AttributeDistancePairScore.h>
+#include <IMP/spb/DiameterRgyrRestraint.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/spb_config.h>
 
 using namespace IMP;
 

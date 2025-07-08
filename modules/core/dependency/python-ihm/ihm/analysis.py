@@ -5,7 +5,7 @@
 from ihm.util import _text_choice_property
 
 
-class Step(object):
+class Step:
     """A single step in an :class:`Analysis`.
 
        Normally one of the more specific derived classes is used;
@@ -87,11 +87,11 @@ class EmptyStep(Step):
     type = 'none'
 
     def __init__(self):
-        super(EmptyStep, self).__init__(
+        super().__init__(
             feature='none', num_models_begin=None, num_models_end=None)
 
 
-class Analysis(object):
+class Analysis:
     """Analysis of a modeling run.
        Each analysis consists of a number of steps (e.g. filtering,
        rescoring, clustering). A modeling run may be followed by any number

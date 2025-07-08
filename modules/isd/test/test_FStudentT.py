@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from random import uniform
 
 import numpy as np

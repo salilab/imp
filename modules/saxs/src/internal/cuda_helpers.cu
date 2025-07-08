@@ -32,11 +32,12 @@ __device__ double sinc_pi(double x) {
 }
 
 __global__
-void make_profile(const double *r_dist, const float *q, const double *distances,
-                  float *intensity, double modulation_function_parameter,
-                  size_t r_size, size_t q_size)
+void make_profile(const double *r_dist, const double *q,
+                  const double *distances, double *intensity,
+                  double modulation_function_parameter, size_t r_size,
+                  size_t q_size)
 {
-  __shared__ float inten[MAX_THREADS];
+  __shared__ double inten[MAX_THREADS];
   // one block per q; each thread handles part of r_dist
   size_t k = blockIdx.x;
   inten[threadIdx.x] = 0.0;
@@ -50,7 +51,7 @@ void make_profile(const double *r_dist, const float *q, const double *distances,
   __syncthreads();
   // get total intensity in first thread
   if (threadIdx.x == 0) {
-    float total = 0.;
+    double total = 0.;
     for (size_t i = 0; i < blockDim.x; ++i) {
       total += inten[i];
     }
@@ -62,17 +63,16 @@ void make_profile(const double *r_dist, const float *q, const double *distances,
 }
 
 void squared_distribution_2_profile_cuda(
-           const double *r_dist, const float *q,
-           const double *distances, float *intensity,
+           const double *r_dist, const double *q,
+           const double *distances, double *intensity,
            double modulation_function_parameter, size_t r_size, size_t q_size)
 {
-  double *d_r_dist, *d_distances;
-  float *d_q, *d_intensity;
+  double *d_r_dist, *d_distances, *d_q, *d_intensity;
 
   IMP_checkCudaErrors(cudaMalloc(&d_r_dist, r_size * sizeof(double)));
   IMP_checkCudaErrors(cudaMalloc(&d_distances, r_size * sizeof(double)));
-  IMP_checkCudaErrors(cudaMalloc(&d_q, q_size * sizeof(float)));
-  IMP_checkCudaErrors(cudaMalloc(&d_intensity, q_size * sizeof(float)));
+  IMP_checkCudaErrors(cudaMalloc(&d_q, q_size * sizeof(double)));
+  IMP_checkCudaErrors(cudaMalloc(&d_intensity, q_size * sizeof(double)));
 
   // copy inputs to device
   IMP_checkCudaErrors(cudaMemcpy(d_r_dist, r_dist, r_size * sizeof(double),
@@ -80,7 +80,7 @@ void squared_distribution_2_profile_cuda(
   IMP_checkCudaErrors(cudaMemcpy(d_distances, distances,
                                  r_size * sizeof(double),
                                  cudaMemcpyHostToDevice));
-  IMP_checkCudaErrors(cudaMemcpy(d_q, q, q_size * sizeof(float),
+  IMP_checkCudaErrors(cudaMemcpy(d_q, q, q_size * sizeof(double),
                                  cudaMemcpyHostToDevice));
 
   size_t n_threads = std::min(MAX_THREADS, r_size);
@@ -90,7 +90,8 @@ void squared_distribution_2_profile_cuda(
   IMP_checkCudaErrors(cudaDeviceSynchronize());
 
   // copy outputs back to host
-  IMP_checkCudaErrors(cudaMemcpy(intensity, d_intensity, q_size * sizeof(float),
+  IMP_checkCudaErrors(cudaMemcpy(intensity, d_intensity,
+                                 q_size * sizeof(double),
                                  cudaMemcpyDeviceToHost));
 
   IMP_checkCudaErrors(cudaFree(d_r_dist));

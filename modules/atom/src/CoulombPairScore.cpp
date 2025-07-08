@@ -45,6 +45,41 @@ double CoulombPairScore::evaluate_index(Model *m,
   }
 }
 
+bool CoulombPairScore::check_indexes(Model *m,
+                                     const ParticleIndexes &pis) const {
+  double total = 0.;
+  // Every particle should be a Charged particle
+  for (ParticleIndex pi: pis) {
+    Charged c0(m, pi);
+    // make sure we actually use the object so the compiler doesn't optimize
+    // it out
+    total += c0.get_charge();
+  }
+  return true;
+}
+
+double CoulombPairScore::evaluate_index_fast(
+         Model *m, const ParticleIndexPair &p, DerivativeAccumulator *da,
+         const double *charge_array) const {
+  core::XYZ c0(m, std::get<0>(p));
+  core::XYZ c1(m, std::get<1>(p));
+  algebra::Vector3D delta = c0.get_coordinates() - c1.get_coordinates();
+  double q0 = charge_array[c0.get_particle_index().get_index()];
+  double q1 = charge_array[c1.get_particle_index().get_index()];
+  double dist = delta.get_magnitude();
+  double score =
+      multiplication_factor_ * q0 * q1 / dist;
+  if (da) {
+    DerivativePair d = (*smoothing_function_)(score, -score / dist, dist);
+    algebra::Vector3D deriv = d.second * delta / dist;
+    c0.add_to_derivatives(deriv, *da);
+    c1.add_to_derivatives(-deriv, *da);
+    return d.first;
+  } else {
+    return (*smoothing_function_)(score, dist);
+  }
+}
+
 ModelObjectsTemp CoulombPairScore::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);

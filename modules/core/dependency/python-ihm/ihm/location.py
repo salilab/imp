@@ -4,7 +4,7 @@
 import os
 
 
-class Location(object):
+class Location:
     """Identifies the location where a resource can be found.
 
        Do not use this class itself, but one of its subclasses.
@@ -75,7 +75,7 @@ class DatabaseLocation(Location):
     db_name = 'Other'
 
     def __init__(self, db_code, version=None, details=None):
-        super(DatabaseLocation, self).__init__(details)
+        super().__init__(details)
         self.access_code = db_code
         self.version = version
 
@@ -217,7 +217,7 @@ class FileLocation(Location):
     content_type = 'Other'
 
     def __init__(self, path, repo=None, details=None, file_format=None):
-        super(FileLocation, self).__init__(details)
+        super().__init__(details)
         self.repo, self.file_format = repo, file_format
         if repo:
             self.path = path
@@ -281,7 +281,7 @@ class VisualizationFileLocation(FileLocation):
     content_type = "Visualization script"
 
 
-class Repository(object):
+class Repository:
     """A repository containing modeling files, i.e. a collection of related
        files at a remote, public location. This can include code repositories
        such as GitHub, file archival services such as Zenodo, or any other

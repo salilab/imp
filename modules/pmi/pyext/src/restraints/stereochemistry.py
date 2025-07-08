@@ -539,7 +539,6 @@ class CharmmForceFieldRestraint:
             print('init bonds score', r.unprotected_evaluate(None))
             self.bonds_rs.add_restraint(r)
             ff.add_radii(root)
-            ff.add_well_depths(root)
 
         atoms = IMP.atom.get_by_type(root, IMP.atom.ATOM_TYPE)
         # non-bonded forces

@@ -2,21 +2,18 @@ import utils
 import os
 import unittest
 import warnings
-import sys
-try:
-    import urllib.request as urlrequest
-    import urllib.error as urlerror
-except ImportError:
-    import urllib2 as urlrequest
-    urlerror = urlrequest
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+import urllib.request
+import urllib.error
+from io import StringIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.metadata
+
+try:
+    from ihm import _format
+except ImportError:
+    _format = None
 
 
 class Tests(unittest.TestCase):
@@ -60,8 +57,8 @@ class Tests(unittest.TestCase):
         # Need to mock out urllib.request so we don't hit the network
         # (expensive) every time we test
         try:
-            orig_urlopen = urlrequest.urlopen
-            urlrequest.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             self.assertEqual(dataset.location.version, '2011-04-21')
             self.assertEqual(dataset.location.details, 'test details')
             dataset.location.version = 'my version'
@@ -69,12 +66,12 @@ class Tests(unittest.TestCase):
             self.assertEqual(dataset.location.version, 'my version')
             self.assertEqual(dataset.location.details, 'my details')
         finally:
-            urlrequest.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
 
     def test_mrc_parser_emdb_bad(self):
         """Test MRCParser pointing to an MRC in EMDB, with a network error"""
         def mock_urlopen(url, timeout=None):
-            raise urlerror.URLError("Mock network error")
+            raise urllib.error.URLError("Mock network error")
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
         d = p.parse_file(fname)
@@ -86,15 +83,15 @@ class Tests(unittest.TestCase):
 
         # Mock out urllib.request to raise an error
         try:
-            orig_urlopen = urlrequest.urlopen
-            urlrequest.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
                 self.assertIsNone(dataset.location.version)
                 self.assertEqual(dataset.location.details,
                                  'Electron microscopy density map')
         finally:
-            urlrequest.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
         self.assertEqual(len(w), 1)
 
     def test_mrc_parser_emdb_override(self):
@@ -115,13 +112,13 @@ class Tests(unittest.TestCase):
 
         # Mock out urllib.request to raise an error
         try:
-            orig_urlopen = urlrequest.urlopen
-            urlrequest.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             self.assertEqual(dataset.location.version, 'foo')
             self.assertEqual(dataset.location.details,
                              'Electron microscopy density map')
         finally:
-            urlrequest.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
 
     def _parse_pdb(self, fname):
         p = ihm.metadata.PDBParser()
@@ -134,37 +131,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
         self.assertIsNone(p['script'])
-        dataset = p['dataset']
-        self.assertEqual(dataset.data_type, 'Experimental model')
-        self.assertEqual(dataset.location.db_name, 'PDB')
-        self.assertEqual(dataset.location.access_code, '2HBJ')
-        self.assertEqual(dataset.location.version, '14-JUN-06')
-        self.assertEqual(dataset.location.details,
-                         'STRUCTURE OF THE YEAST NUCLEAR EXOSOME COMPONENT, '
-                         'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
-                         'SITE AND THE HRDC DOMAIN')
-        es = p['entity_source']
-        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
-        self.assertEqual(es['B'], es['C'])
-        self.assertEqual(es['A'].src_method, 'man')
-        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
-        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
-        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
-        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
-        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
-        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
-        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
-        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
-        self.assertEqual(es['B'].src_method, 'nat')
-        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
-        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
-        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
-        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
-        self.assertEqual(es['D'].src_method, 'syn')
-        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
-        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
-        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
-        self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
+        self._check_parsed_official_pdb(p, pdb_format=True)
 
     def test_bad_header(self):
         """Test PDBParser when given a non-official PDB with HEADER line"""
@@ -447,15 +414,58 @@ class Tests(unittest.TestCase):
     def test_cif_official_pdb(self):
         """Test CIFParser when given an mmCIF in the official PDB database"""
         p = self._parse_cif(utils.get_input_file_name(TOPDIR, 'official.cif'))
+        self._check_parsed_official_pdb(p)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_binary_cif_official_pdb(self):
+        """Test BinaryCIFParser when given a BinaryCIF in the official PDB"""
+        fname = utils.get_input_file_name(TOPDIR, 'official.bcif')
+        parser = ihm.metadata.BinaryCIFParser()
+        p = parser.parse_file(fname)
+        self._check_parsed_official_pdb(p)
+
+    def _check_parsed_official_pdb(self, p, pdb_format=False):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.db_name, 'PDB')
         self.assertEqual(dataset.location.access_code, '2HBJ')
-        self.assertEqual(dataset.location.version, '2021-11-10')
-        self.assertEqual(dataset.location.details,
-                         'Structure of the yeast nuclear exosome component, '
-                         'Rrp6p, reveals an interplay between the active '
-                         'site and the HRDC domain')
+        if pdb_format:
+            self.assertEqual(dataset.location.version, '14-JUN-06')
+        else:
+            self.assertEqual(dataset.location.version, '2021-11-10')
+        details = ('Structure of the yeast nuclear exosome component, '
+                   'Rrp6p, reveals an interplay between the active '
+                   'site and the HRDC domain')
+        if pdb_format:
+            details = details.upper()
+        self.assertEqual(dataset.location.details, details)
+
+        es = p['entity_source']
+        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
+        self.assertEqual(es['B'], es['C'])
+        self.assertEqual(es['A'].src_method, 'man')
+        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
+        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
+        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
+        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
+        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
+        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
+        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
+        self.assertEqual(es['B'].src_method, 'nat')
+        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
+        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
+        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
+        self.assertEqual(es['D'].src_method, 'syn')
+        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
+        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
+        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
+        # _pdbx_entity_src_syn.strain is not used in current PDB entries
+        if pdb_format:
+            self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
+        else:
+            self.assertIsNone(es['D'].strain)
 
     def test_cif_model_archive(self):
         """Test CIFParser when given an mmCIF in Model Archive"""

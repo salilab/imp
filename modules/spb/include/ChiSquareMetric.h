@@ -8,8 +8,7 @@
 #ifndef IMPSPB_CHI_SQUARE_METRIC_H
 #define IMPSPB_CHI_SQUARE_METRIC_H
 
-#include <IMP/algebra.h>
-#include <IMP/statistics.h>
+#include <IMP/statistics/Metric.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

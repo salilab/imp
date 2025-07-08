@@ -6,13 +6,6 @@
  * printed out.
  *
  */
-#include <IMP/core.h>
-#include <IMP/atom.h>
-#include <IMP/algebra.h>
-#include <IMP/container.h>
-#include <IMP/spb.h>
-#include <IMP/display.h>
-#include <IMP/rmf.h>
 #include <string>
 #include <list>
 #include <map>
@@ -20,6 +13,20 @@
 #include <time.h>
 #include <Eigen/Dense>
 #include <IMP/flags.h>
+#include <IMP/Model.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/isd/FretRestraint.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/spb_parser.h>
+#include <IMP/spb/spb_representation.h>
+#include <IMP/spb/spb_assemble_restraints.h>
+#include <IMP/spb/spb_ISD_particles.h>
+#include <IMP/rmf/particle_io.h>
+#include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/frames.h>
 
 using namespace IMP;
 using namespace IMP::spb;

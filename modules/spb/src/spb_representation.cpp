@@ -5,17 +5,29 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
-#include <IMP/core.h>
-#include <IMP/display.h>
-#include <IMP/spb.h>
-#include <IMP/rmf.h>
 #include <time.h>
 #include <list>
 #include <map>
 #include <string>
+#include <IMP/Pointer.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Selection.h>
+#include <IMP/atom/Domain.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/atom/estimates.h>
+#include <IMP/atom/pdb.h>
+#include <IMP/core/RigidBodyMover.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/spb/spb_main.h>
+#include <IMP/spb/PbcBoxedRigidBodyMover.h>
+#include <IMP/spb/spb_representation.h>
+#include <IMP/spb/spb_sampler.h>
+#include <IMP/spb/spb_restraint.h>
+#include <IMP/spb/spb_config.h>
+#include <RMF/FileConstHandle.h>
+#include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/frames.h>
 
 using namespace IMP;
 using namespace IMP::spb;

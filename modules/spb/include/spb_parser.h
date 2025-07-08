@@ -8,9 +8,9 @@
 
 #ifndef IMPSPB_SPB_PARSER_H
 #define IMPSPB_SPB_PARSER_H
-#include <IMP.h>
-#include <IMP/spb.h>
+
 #include <string>
+#include <IMP/spb/spb_main.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

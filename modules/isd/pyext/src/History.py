@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """@namespace IMP.isd.History
    Classes to store output from replicas.

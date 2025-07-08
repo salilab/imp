@@ -6,7 +6,7 @@
 %}
 
 /* Get simple return values */
-%apply int *OUTPUT { int * };
+%apply bool *OUTPUT { bool * };
 
 %ignore ihm_keyword;
 %ignore ihm_error_set;
@@ -58,9 +58,9 @@ static void handle_error(struct ihm_error *err)
 
 %{
 
-/* Read data from a Python filelike object */
-static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
-                                    void *data, struct ihm_error **err)
+/* Read data from a Python filelike object, in text mode */
+static ssize_t pyfile_text_read_callback(char *buffer, size_t buffer_len,
+                                         void *data, struct ihm_error **err)
 {
   Py_ssize_t read_len;
   char *read_str;
@@ -78,25 +78,6 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
     return -1;
   }
 
-#if PY_VERSION_HEX < 0x03000000
-  if (PyString_Check(result)) {
-    if (PyString_AsStringAndSize(result, &read_str, &read_len) < 0) {
-      ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
-      Py_DECREF(result);
-      return -1;
-    }
-  } else if (PyUnicode_Check(result)) {
-    if (!(bytes = PyUnicode_AsUTF8String(result))) {
-      ihm_error_set(err, IHM_ERROR_VALUE, "string to bytes failed");
-      Py_DECREF(result);
-      return -1;
-    }
-    if (PyBytes_AsStringAndSize(bytes, &read_str, &read_len) < 0) {
-      ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
-      Py_DECREF(result);
-      return -1;
-    }
-#else
   if (PyUnicode_Check(result)) {
     /* This returns const char * on Python 3.7 or later */
     if (!(read_str = (char *)PyUnicode_AsUTF8AndSize(result, &read_len))) {
@@ -127,7 +108,6 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
       Py_DECREF(result);
       return -1;
     }
-#endif
   } else {
     ihm_error_set(err, IHM_ERROR_VALUE, "read method should return a string");
     Py_DECREF(result);
@@ -137,19 +117,89 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
   if (read_len > buffer_len) {
     ihm_error_set(err, IHM_ERROR_VALUE,
                   "Python read method returned too many bytes");
-#if PY_VERSION_HEX < 0x03000000
-    Py_XDECREF(bytes);
-#endif
     Py_DECREF(result);
     return -1;
   }
 
   memcpy(buffer, read_str, read_len);
-#if PY_VERSION_HEX < 0x03000000
-  Py_XDECREF(bytes);
-#endif
   Py_DECREF(result);
   return read_len;
+}
+
+/* Read data from a Python filelike object, in binary mode */
+static ssize_t pyfile_binary_read_callback(char *buffer, size_t buffer_len,
+                                           void *data, struct ihm_error **err)
+{
+  Py_ssize_t read_len;
+  char *read_str;
+  static char fmt[] = "(n)";
+  PyObject *read_method = data;
+  PyObject *result = PyObject_CallFunction(read_method, fmt, buffer_len);
+  if (!result) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "read failed");
+    return -1;
+  }
+
+  if (PyBytes_Check(result)) {
+    if (PyBytes_AsStringAndSize(result, &read_str, &read_len) < 0) {
+      ihm_error_set(err, IHM_ERROR_VALUE, "PyBytes_AsStringAndSize failed");
+      return -1;
+    }
+  } else {
+    ihm_error_set(err, IHM_ERROR_VALUE, "read method should return bytes");
+    Py_DECREF(result);
+    return -1;
+  }
+
+  if (read_len > buffer_len) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "Python read method returned too many bytes");
+    Py_DECREF(result);
+    return -1;
+  }
+
+  memcpy(buffer, read_str, read_len);
+  Py_DECREF(result);
+  return read_len;
+}
+
+/* Read data from a Python filelike object directly into the buffer */
+static ssize_t pyfile_binary_readinto_callback(
+                    char *buffer, size_t buffer_len,
+                    void *data, struct ihm_error **err)
+{
+  PyObject *readinto_method = data;
+  PyObject *memview, *result;
+  Py_ssize_t read_len;
+
+  memview = PyMemoryView_FromMemory(buffer, buffer_len, PyBUF_WRITE);
+  result = PyObject_CallFunctionObjArgs(readinto_method, memview, NULL);
+  Py_DECREF(memview);
+
+  if (!result) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "Python readinto failed");
+    return -1;
+  }
+
+  if (!PyLong_Check(result)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "Python readinto did not return int");
+    Py_DECREF(result);
+    return -1;
+  }
+  if ((read_len = PyLong_AsSsize_t(result)) == -1 && PyErr_Occurred()) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "Python readinto bad return");
+    Py_DECREF(result);
+    return -1;
+  }
+  Py_DECREF(result);
+
+  if (read_len > buffer_len) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "Python readinto method returned too many bytes");
+    return -1;
+  } else {
+    return read_len;
+  }
 }
 
 static void pyfile_free(void *data)
@@ -158,36 +208,39 @@ static void pyfile_free(void *data)
   Py_DECREF(read_method);
 }
 
+static PyObject *get_optional_attr_str(PyObject *obj, const char *attr) {
+  PyObject *method = PyObject_GetAttrString(obj, attr);
+  if (!method) {
+    PyErr_Clear();
+  }
+  return method;
+}
 %}
 
 
 %inline %{
 /* Wrap a Python file object as an ihm_file */
-struct ihm_file *ihm_file_new_from_python(PyObject *pyfile,
+struct ihm_file *ihm_file_new_from_python(PyObject *pyfile, bool binary,
                                           struct ihm_error **err)
 {
   PyObject *read_method;
+  ihm_file_read_callback read_callback;
 
-#if !defined(_WIN32) && !defined(_WIN64) && PY_VERSION_HEX < 0x03000000
-  /* Use the file descriptor directly if the Python file is a real file,
-     except on Windows where we can't reliably tell if we and Python are
-     using the same C runtime (if we're not, we can't pass file descriptors),
-     or on Python 3 where the file descriptor may not be correct
-     (e.g. PyObject_AsFileDescriptor() returns a valid descriptor for a
-     file opened with gzip.open()) */
-  if (PyFile_Check(pyfile)) {
-    int fd = fileno(PyFile_AsFile(pyfile));
-    return ihm_file_new_from_fd(fd);
-  }
-#endif
+  read_callback = binary ? pyfile_binary_read_callback
+                         : pyfile_text_read_callback;
 
-  /* Otherwise, look for a read() method and use that */
-  if (!(read_method = PyObject_GetAttrString(pyfile, "read"))) {
-    ihm_error_set(err, IHM_ERROR_VALUE, "no read method");
-    return NULL;
+  /* In binary mode, we can avoid a copy if the object supports readinto() */
+  if (binary && (read_method = get_optional_attr_str(pyfile, "readinto"))) {
+    read_callback = pyfile_binary_readinto_callback;
+  } else {
+    /* Look for a read() method and use that to read data */
+    if (!(read_method = PyObject_GetAttrString(pyfile, "read"))) {
+      ihm_error_set(err, IHM_ERROR_VALUE, "no read method");
+      return NULL;
+    }
   }
 
-  return ihm_file_new(pyfile_read_callback, read_method, pyfile_free);
+  return ihm_file_new(read_callback, read_method, pyfile_free);
 }
 
 %}
@@ -222,8 +275,8 @@ static void category_handler_data_free(void *data)
 }
 
 /* Called for each category (or loop construct data line) with data */
-static void handle_category_data(struct ihm_reader *reader, void *data,
-                                 struct ihm_error **err)
+static void handle_category_data(struct ihm_reader *reader, int linenum,
+                                 void *data, struct ihm_error **err)
 {
   int i;
   struct category_handler_data *hd = data;
@@ -249,15 +302,25 @@ static void handle_category_data(struct ihm_reader *reader, void *data,
       val = hd->unknown;
       Py_INCREF(val);
     } else {
-#if PY_VERSION_HEX < 0x03000000
-      val = PyString_FromString((*keys)->data);
-#else
-      val = PyUnicode_FromString((*keys)->data);
-#endif
-      if (!val) {
-        ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
-        Py_DECREF(tuple);
-        return;
+      switch((*keys)->type) {
+      case IHM_STRING:
+        val = PyUnicode_FromString((*keys)->data.str);
+        if (!val) {
+          ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
+          Py_DECREF(tuple);
+          return;
+        }
+        break;
+      case IHM_INT:
+        val = PyLong_FromLong((*keys)->data.ival);
+        break;
+      case IHM_FLOAT:
+        val = PyFloat_FromDouble((*keys)->data.fval);
+        break;
+      case IHM_BOOL:
+        val = (*keys)->data.bval ? Py_True : Py_False;
+        Py_INCREF(val);
+        break;
       }
     }
     /* Steals ref to val */
@@ -276,8 +339,8 @@ static void handle_category_data(struct ihm_reader *reader, void *data,
 }
 
 /* Called at the end of each save frame for each category */
-static void end_frame_category(struct ihm_reader *reader, void *data,
-                               struct ihm_error **err)
+static void end_frame_category(struct ihm_reader *reader, int linenum,
+                               void *data, struct ihm_error **err)
 {
   PyObject *ret;
   struct category_handler_data *hd = data;
@@ -293,7 +356,9 @@ static void end_frame_category(struct ihm_reader *reader, void *data,
 
 static struct category_handler_data *do_add_handler(
                         struct ihm_reader *reader, char *name,
-                        PyObject *keywords, PyObject *callable,
+                        PyObject *keywords, PyObject *int_keywords,
+                        PyObject *float_keywords,
+                        PyObject *bool_keywords, PyObject *callable,
                         ihm_category_callback data_callback,
                         ihm_category_callback end_frame_callback,
                         ihm_category_callback finalize_callback,
@@ -305,6 +370,18 @@ static struct category_handler_data *do_add_handler(
 
   if (!PySequence_Check(keywords)) {
     ihm_error_set(err, IHM_ERROR_VALUE, "'keywords' should be a sequence");
+    return NULL;
+  }
+  if (!PyAnySet_Check(int_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'int_keywords' should be a set");
+    return NULL;
+  }
+  if (!PyAnySet_Check(float_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'float_keywords' should be a set");
+    return NULL;
+  }
+  if (!PyAnySet_Check(bool_keywords)) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "'bool_keywords' should be a set");
     return NULL;
   }
   if (!PyCallable_Check(callable)) {
@@ -331,14 +408,19 @@ static struct category_handler_data *do_add_handler(
     return NULL;
   }
   for (i = 0; i < seqlen; ++i) {
+    const char *key_name;
     PyObject *o = PySequence_GetItem(keywords, i);
-#if PY_VERSION_HEX < 0x03000000
-    if (PyString_Check(o)) {
-      hd->keywords[i] = ihm_keyword_new(category, PyString_AsString(o));
-#else
     if (PyUnicode_Check(o)) {
-      hd->keywords[i] = ihm_keyword_new(category, PyUnicode_AsUTF8(o));
-#endif
+      key_name = PyUnicode_AsUTF8(o);
+      if (PySet_Contains(int_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_int_new(category, key_name);
+      } else if (PySet_Contains(float_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_float_new(category, key_name);
+      } else if (PySet_Contains(bool_keywords, o) == 1) {
+        hd->keywords[i] = ihm_keyword_bool_new(category, key_name);
+      } else {
+        hd->keywords[i] = ihm_keyword_str_new(category, key_name);
+      }
       Py_DECREF(o);
     } else {
       Py_XDECREF(o);
@@ -423,17 +505,19 @@ void add_unknown_keyword_handler(struct ihm_reader *reader,
 /* Add a generic category handler which collects all specified keywords for
    the given category and passes them to a Python callable */
 void add_category_handler(struct ihm_reader *reader, char *name,
-                          PyObject *keywords, PyObject *callable,
-                          struct ihm_error **err)
+                          PyObject *keywords, PyObject *int_keywords,
+                          PyObject *float_keywords, PyObject *bool_keywords,
+                          PyObject *callable, struct ihm_error **err)
 {
-  do_add_handler(reader, name, keywords, callable, handle_category_data,
+  do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                 bool_keywords, callable, handle_category_data,
                  end_frame_category, NULL, err);
 }
 %}
 
 %{
 /* Called for each _pdbx_poly_seq_scheme line */
-static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
+static void handle_poly_seq_scheme_data(struct ihm_reader *reader, int linenum,
                                         void *data, struct ihm_error **err)
 {
   int i, seq_id, pdb_seq_num, auth_seq_num;
@@ -446,8 +530,8 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
   if (hd->keywords[0]->in_file && hd->keywords[5]->in_file &&
       !hd->keywords[0]->omitted && !hd->keywords[5]->omitted &&
       !hd->keywords[0]->unknown && !hd->keywords[5]->unknown &&
-      strcmp(hd->keywords[0]->data, hd->keywords[5]->data) != 0) {
-    handle_category_data(reader, data, err);
+      strcmp(hd->keywords[0]->data.str, hd->keywords[5]->data.str) != 0) {
+    handle_category_data(reader, linenum, data, err);
     return;
   }
 
@@ -455,7 +539,7 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
     /* Call Python handler if any of asym_id, seq_id, pdb_seq_num,
        or auth_seq_num are missing */
     if (!(*keys)->in_file || (*keys)->omitted || (*keys)->unknown) {
-      handle_category_data(reader, data, err);
+      handle_category_data(reader, linenum, data, err);
       return;
     }
   }
@@ -464,9 +548,9 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
      auth_seq_num (4th keyword) are identical integers, and
      pdb_ins_code (5th keyword) is blank or missing,
      nothing needs to be done */
-  seq_id = strtol(hd->keywords[1]->data, &seq_id_endptr, 10);
-  pdb_seq_num = strtol(hd->keywords[2]->data, &pdb_seq_num_endptr, 10);
-  auth_seq_num = strtol(hd->keywords[3]->data, &auth_seq_num_endptr, 10);
+  seq_id = strtol(hd->keywords[1]->data.str, &seq_id_endptr, 10);
+  pdb_seq_num = strtol(hd->keywords[2]->data.str, &pdb_seq_num_endptr, 10);
+  auth_seq_num = strtol(hd->keywords[3]->data.str, &auth_seq_num_endptr, 10);
   if (!*seq_id_endptr && !*pdb_seq_num_endptr && !*auth_seq_num_endptr
       && seq_id == pdb_seq_num && seq_id == auth_seq_num
       && (!hd->keywords[4]->in_file || hd->keywords[4]->omitted
@@ -474,7 +558,7 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
     return;
   } else {
     /* Otherwise, call the normal handler */
-    handle_category_data(reader, data, err);
+    handle_category_data(reader, linenum, data, err);
   }
 }
 %}
@@ -485,12 +569,15 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
    the common case where seq_id==pdb_seq_num==auth_seq_num,
    asym_id==pdb_strand_id, and pdb_ins_code is blank */
 void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
-                                 PyObject *keywords, PyObject *callable,
+                                 PyObject *keywords, PyObject *int_keywords,
+                                 PyObject *float_keywords,
+                                 PyObject *bool_keywords, PyObject *callable,
                                  struct ihm_error **err)
 {
   struct category_handler_data *hd;
-  hd = do_add_handler(reader, name, keywords, callable,
-                      handle_poly_seq_scheme_data, NULL, NULL, err);
+  hd = do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                      bool_keywords, callable, handle_poly_seq_scheme_data,
+                      NULL, NULL, err);
   if (hd) {
     /* Make sure the Python handler and the C handler agree on the order
        of the keywords */
@@ -505,11 +592,13 @@ void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
 
 /* Test function so we can make sure finalize callbacks work */
 void _test_finalize_callback(struct ihm_reader *reader, char *name,
-                             PyObject *keywords, PyObject *callable,
-                             struct ihm_error **err)
+                             PyObject *keywords, PyObject *int_keywords,
+                             PyObject *float_keywords, PyObject *bool_keywords,
+                             PyObject *callable, struct ihm_error **err)
 {
-  do_add_handler(reader, name, keywords, callable,
-                 handle_category_data, NULL, handle_category_data, err);
+  do_add_handler(reader, name, keywords, int_keywords, float_keywords,
+                 bool_keywords, callable, handle_category_data, NULL,
+                 handle_category_data, err);
 }
 
 %}

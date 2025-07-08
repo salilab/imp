@@ -1,15 +1,36 @@
 /**
  * \file SolventAccessibleSurface \brief
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/standard_grids.h>
+#include <limits>
+#include <cmath>
 
 IMPSAXS_BEGIN_NAMESPACE
+
+namespace {
+  /* Try to avoid running out of memory or exceeding the maximum extent
+     of DenseGridStorage (it uses unsigned internally, so normally limited
+     to 2^32) if our points are widely dispersed. */
+  double get_grid_spacing(const algebra::BoundingBox3D &bb) {
+    static const double DEFAULT_SPACING = 2.0;
+    // Limit memory usage to ~20GiB
+    static const unsigned max_extent = 1000000000;
+    algebra::Vector3D box_span = bb.get_corner(1) - bb.get_corner(0);
+    double dx = std::abs(box_span[0]);
+    double dy = std::abs(box_span[1]);
+    double dz = std::abs(box_span[2]);
+
+    // Get approximate spacing (assumes sz << dx,dy,dz)
+    double sz = std::pow(dx * dy * dz / static_cast<double>(max_extent), 1./3.);
+    return std::max(sz, DEFAULT_SPACING);
+  }
+}
 
 Vector<double> SolventAccessibleSurface::get_solvent_accessibility(
     const core::XYZRs& ps, double probe_radius, double density) {
@@ -27,7 +48,7 @@ Vector<double> SolventAccessibleSurface::get_solvent_accessibility(
   // init grid
   typedef algebra::DenseGrid3D<Ints> Grid;
   algebra::BoundingBox3D bb(coordinates);
-  Grid grid(2.0, bb);
+  Grid grid(get_grid_spacing(bb), bb);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     Grid::Index grid_index = grid.get_nearest_index(coordinates[i]);
     grid[grid_index].push_back(i);

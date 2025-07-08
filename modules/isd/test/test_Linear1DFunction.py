@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # general imports
 from numpy import *
 

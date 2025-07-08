@@ -191,6 +191,9 @@ class BasicAttributeTable {
     {
       IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
       IMP_CHECK_MASK_IF_CHECKED(read_mask_, particle, k, GET, ATTRIBUTE );
+      IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                      "Can't get attribute that is not there: "
+                        << k.get_string() << " on particle " << particle);
       return data_[k.get_index()][particle];
     }
 
@@ -445,6 +448,8 @@ class FloatAttributeTable {
   }
 
  public:
+  typedef FloatKey Key;
+
   void swap_with(FloatAttributeTable &o) {
     using std::swap;
     IMP_SWAP_MEMBER(spheres_);
@@ -1030,8 +1035,11 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
 #define IMP_MODEL_IMPORT(Base)     \
   using Base::add_attribute;       \
   using Base::add_cache_attribute; \
-  using Base::remove_attribute;    \
   using Base::get_attribute_size;   \
+  void remove_attribute(Base::Key k, ParticleIndex particle) {  \
+    Base::remove_attribute(k, particle);                        \
+    removed_particles_attributes_age_ = age_counter_;           \
+  }                                \
   using Base::get_has_attribute;   \
   using Base::set_attribute;       \
   using Base::get_attribute;       \

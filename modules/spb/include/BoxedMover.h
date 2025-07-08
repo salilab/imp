@@ -11,7 +11,6 @@
 
 #include <IMP/spb/spb_config.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/core.h>
 #include <IMP/core/MonteCarloMover.h>
 
 IMPSPB_BEGIN_NAMESPACE

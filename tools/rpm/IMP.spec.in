@@ -31,41 +31,19 @@ BuildRequires: libTAU-devel
 # Need for npctransport module
 BuildRequires: protobuf-devel
 # No Python protobuf package in RHEL8
-%if 0%{?fedora} || 0%{?rhel} == 9
+%if 0%{?fedora} || 0%{?rhel} >= 9
 Requires: python3-protobuf
 %endif
 
 BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
-
-# RHEL doesn't have a CGAL package, so build without CGAL on RHEL.
-# RHEL 7 and 8 have OpenCV, but it was dropped in RHEL 9, so disable the em2d
-# module.
-%if 0%{?fedora}
 BuildRequires: CGAL-devel
-%endif
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
-BuildRequires: opencv-devel
-%endif
 
-# If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom CGAL and OpenCV packages
-# and bundle the libraries with IMP.
-# If building outside of the lab and you still want these packages, get them
-# from https://integrativemodeling.org/build-extras/
-%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-%if 0%{?rhel} == 9
-BuildRequires: opencv-nogui-devel
-%endif
-BuildRequires: CGAL-nogui-devel
-%if 0%{?rhel} == 9
-%define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so
-%else
-%define bundled libTAU\\.so\\|libCGAL\\.so
-%endif
-%else
+# RHEL 7 and 8 have OpenCV in base; it is in EPEL for RHEL 9, 10
+BuildRequires: opencv-devel
+
+# Bundle libTAU library with IMP so folks don't need to get it separately
 %define bundled libTAU\\.so
-%endif
 
 # The IMP kernel links with numpy, so pull that in if available. Many modules
 # also use Python's scipy module, so pull that in (at build time for tests;
@@ -124,12 +102,8 @@ Requires:      boost-devel, hdf5-devel, protobuf-devel
 Requires:      ann-devel
 %endif
 Requires:      python3-devel
-%if 0%{?fedora}
 Requires:      CGAL-devel
-%endif
-%if 0%{?fedora} || (0%{?rhel} >= 7 && 0%{?rhel} <= 8)
 Requires:      opencv-devel
-%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -246,16 +220,8 @@ mkdir build && cd build
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
-%if 0%{?fedora} >= 29 && 0%{?fedora} < 32
 # Help cmake to find CGAL
-export CGAL_DIR=%{_libdir}/cmake/CGAL
-%endif
-%if 0%{?fedora} == 32
-export CGAL_DIR=/usr/share/CGAL/cmake
-%endif
-%if 0%{?fedora} >= 33
 export CGAL_DIR=/usr/share/cmake/CGAL
-%endif
 
 # Workaround gcc -frounding-math bug; see
 # https://bugzilla.redhat.com/show_bug.cgi?id=2085189
@@ -322,21 +288,6 @@ fi
 # %_prefix to be, but dependent libraries are always in /usr)
 mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-
-%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-# Bundle CGAL (and potentially OpenCV) libraries
-%if 0%{?rhel} == 9
-for cvlib in core imgproc highgui imgcodecs; do
-  cp /usr/%{_lib}/libopencv_${cvlib}.so.4.5 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-done
-%endif
-
-%if 0%{?rhel} >= 8
-cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-%else
-cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-%endif
-%endif
 
 # Don't distribute example application or dependency
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
@@ -433,6 +384,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec sed -i -e 's
 %endif
 
 %changelog
+* Thu Jul 10 2025 Ben Webb <ben@salilab.org>   2.23.0-1
+- 2.23.0 release.
+
 * Thu Dec 12 2024 Ben Webb <ben@salilab.org>   2.22.0-1
 - 2.22.0 release.
 

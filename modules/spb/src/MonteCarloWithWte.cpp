@@ -6,7 +6,6 @@
  *
  */
 #include <IMP/Restraint.h>
-#include <IMP/core.h>
 #include <IMP/spb/MonteCarloWithWte.h>
 
 IMPSPB_BEGIN_NAMESPACE

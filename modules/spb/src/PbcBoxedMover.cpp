@@ -5,12 +5,11 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/PbcBoxedMover.h>
+#include <IMP/core/XYZ.h>
 #include <iostream>
 
 IMPSPB_BEGIN_NAMESPACE

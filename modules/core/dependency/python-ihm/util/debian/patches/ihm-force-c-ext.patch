@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 5172433..d428f1d 100755
+--- a/setup.py
++++ b/setup.py
+@@ -36,7 +36,7 @@ if build_ext:
+                      extra_compile_args=cargs,
+                      swig_opts=['-keyword', '-nodefaultctor',
+                                 '-nodefaultdtor', '-noproxy'],
+-                     optional=True)]
++                     optional=False)]
+ else:
+     mod = []
+ 

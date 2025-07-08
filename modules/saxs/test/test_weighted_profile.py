@@ -61,13 +61,13 @@ class Tests(IMP.test.TestCase):
         # Get score for single profile
         score, weights = saxs_score.compute_score(profile_list[:1],
                                                   False, False)
-        self.assertAlmostEqual(score, 81.765, delta=0.001)
+        self.assertAlmostEqual(score, 81.897, delta=0.001)
         self.assertEqual(len(weights), 1)
         self.assertAlmostEqual(weights[0], 1.0, delta=0.001)
 
         # Get score for both profiles
         score, weights = saxs_score.compute_score(profile_list, False, False)
-        self.assertAlmostEqual(score, 3.031, delta=0.001)
+        self.assertAlmostEqual(score, 3.108, delta=0.001)
         self.assertEqual(len(weights), 2)
         self.assertAlmostEqual(weights[0], 0.297, delta=0.001)
         self.assertAlmostEqual(weights[1], 0.703, delta=0.001)

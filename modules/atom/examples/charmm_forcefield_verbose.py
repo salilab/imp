@@ -89,12 +89,14 @@ cont = IMP.container.ListSingletonContainer(m, impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
 rs.append(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
 
-# Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-# know the radii and well depths for each atom, so add them from the forcefield
-# (they can also be assigned manually using the XYZR or LennardJones
-# decorators):
+# Add radii from the forcefield, used for close pairs calculation
 ff.add_radii(prot)
-ff.add_well_depths(prot)
+
+# Add non-bonded interaction (in this case, Lennard-Jones). This needs to
+# know the Lennard-Jones types for all atoms (which in turn define the radius
+# and well depth), so add them from the forcefield (they can also be assigned
+# manually using the LennardJonesType decorator):
+ff.add_lennard_jones_types(prot)
 
 # Get a list of all atoms in the protein, and put it in a container
 atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
@@ -105,10 +107,10 @@ cont = IMP.container.ListSingletonContainer(m, atoms)
 # of all pairs of Particles that are close. A StereochemistryPairFilter is used
 # to exclude atoms from this list that are bonded to each other or are involved
 # in an angle or dihedral (1-3 or 1-4 interaction). Then, a
-# LennardJonesPairScore scores a pair of atoms with the
-# Lennard-Jones potential.
+# LennardJonesTypedPairScore scores a pair of atoms with the
+# Lennard-Jones potential, using the Lennard-Jones types already assigned.
 # Finally, a PairsRestraint is used which simply applies the
-# LennardJonesPairScore to each pair in the ClosePairContainer.
+# LennardJonesTypedPairScore to each pair in the ClosePairContainer.
 nbl = IMP.container.ClosePairContainer(cont, 4.0)
 pair_filter = IMP.atom.StereochemistryPairFilter()
 pair_filter.set_bonds(bonds)
@@ -117,7 +119,7 @@ pair_filter.set_dihedrals(dihedrals)
 nbl.add_pair_filter(pair_filter)
 
 sf = IMP.atom.ForceSwitch(6.0, 7.0)
-ps = IMP.atom.LennardJonesPairScore(sf)
+ps = IMP.atom.LennardJonesTypedPairScore(sf)
 rs.append(IMP.container.PairsRestraint(ps, nbl))
 
 score_func = IMP.core.RestraintsScoringFunction(rs)

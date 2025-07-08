@@ -2,7 +2,7 @@
  *  \file internal/ContainerRestraint.h
  *  \brief Templated alternative to SingletonsRestraint, etc.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -105,6 +105,7 @@ void ContainerRestraint<Score, C>::do_add_score_and_derivatives(
   IMP_CHECK_OBJECT(acc_);
   IMP_CHECK_OBJECT(pc_);
   acc_->set_accumulator(accum);
+  acc_->set_container(pc_);
   pc_->apply_generic(acc_.get());
 }
 
@@ -117,7 +118,7 @@ void ContainerRestraint<Score, C>::do_add_score_and_derivatives_moved(
   IMP_CHECK_OBJECT(acc_);
   IMP_CHECK_OBJECT(pc_);
   acc_->set_accumulator(accum);
-  acc_->set_container(pc_);
+  acc_->set_container_moved(pc_);
   pc_->apply_generic_moved(acc_.get(), moved_pis, reset_pis);
 }
 

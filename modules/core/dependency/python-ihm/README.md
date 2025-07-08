@@ -7,9 +7,9 @@
 [![codecov](https://codecov.io/gh/ihmwg/python-ihm/branch/main/graph/badge.svg)](https://codecov.io/gh/ihmwg/python-ihm)
 
 This is a Python package to assist in handling [mmCIF](https://mmcif.wwpdb.org/)
-and [BinaryCIF](https://github.com/dsehnal/BinaryCIF) files compliant with the
+and [BinaryCIF](https://github.com/molstar/BinaryCIF) files compliant with the
 [integrative/hybrid modeling (IHM)](https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Index/)
-extension. It works with Python 2.7 or Python 3.
+extension. It works with Python 3.6 or later.
 
 To handle non-integrative theoretical models (for example, homology models),
 see the [python-modelcif](https://github.com/ihmwg/python-modelcif) package
@@ -56,10 +56,10 @@ Alternatively, install with pip:
 pip install ihm
 ```
 
-(Note that pip builds a C extension module for faster parsing of mmCIF files.
-This requires that your system has a C compiler. If you don't want to build
-the C extension module, install with
-`pip install ihm --install-option="--without-ext"`.)
+(Note that pip builds a C extension module for faster reading of mmCIF and
+BinaryCIF files. This requires that your system has a C compiler. If you
+don't have a C compiler available, the library will read files using pure
+Python instead.)
 
 # Installation from source code
 
@@ -70,14 +70,13 @@ python setup.py build
 python setup.py install
 ```
 
-Note that a C extension module is built for faster parsing of mmCIF files.
-This requires that your system has a C compiler
-and [SWIG](http://www.swig.org/). If either of these components are missing, you
-can choose to build without the extension by adding `--without-ext` to both
-`setup.py` command lines above.
+Note that this will attempt to build a C extension module for faster reading
+of mmCIF and BinaryCIF files. This requires that your system has a C compiler
+and [SWIG](https://www.swig.org/). If either of these components are missing,
+the library will fall back to reading files using pure Python instead.
 
-If you want to read or write [BinaryCIF](https://github.com/dsehnal/BinaryCIF)
-files, you will also need the
+If you want to write [BinaryCIF](https://github.com/molstar/BinaryCIF)
+files (or to read them without the C extension module), you will also need the
 Python [msgpack](https://github.com/msgpack/msgpack-python) package.
 
 # Testing

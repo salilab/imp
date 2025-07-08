@@ -99,6 +99,10 @@ class _CrossLinkDataBaseStandardKeys:
         self.type[self.sigma2_key] = str
         self.psi_key = "Psi"
         self.type[self.psi_key] = str
+        self.alpha_key = "Alpha"
+        self.type[self.alpha_key] = str
+        self.beta_key = "Beta"
+        self.type[self.beta_key] = str
         self.distance_key = "Distance"
         self.type[self.distance_key] = float
         self.min_ambiguous_distance_key = "MinAmbiguousDistance"
@@ -288,7 +292,7 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         '''
         Returns the keys that have been setup so far
         '''
-        return self.backward_converter.keys()
+        return list(self.backward_converter.keys())
 
     def set_standard_keys(self):
         """
@@ -571,13 +575,13 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self.check_cross_link_consistency()
 
     def __iter__(self):
-        sorted_ids = sorted(self.data_base.keys())
+        sorted_ids = sorted(list(self.data_base.keys()))
         for k in sorted_ids:
             for xl in self.data_base[k]:
                 yield xl
 
     def xlid_iterator(self):
-        sorted_ids = sorted(self.data_base.keys())
+        sorted_ids = sorted(list(self.data_base.keys()))
         for xlid in sorted_ids:
             yield xlid
 
@@ -905,7 +909,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def filter(self, FilterOperator):
         new_xl_dict = {}
-        for id in self.data_base.keys():
+        for id in list(self.data_base.keys()):
             for xl in self.data_base[id]:
                 if FilterOperator.evaluate(xl):
                     if id not in new_xl_dict:
@@ -1175,7 +1179,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self._update()
 
     def clone_protein(self, protein_name, new_protein_name):
-        for id in self.data_base.keys():
+        for id in list(self.data_base.keys()):
             new_data_base = []
             for xl in self.data_base[id]:
                 new_data_base.append(xl)
@@ -1209,7 +1213,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         This function remove cross-links applied to the same residue
         (ie, same chain name and residue number)
         '''
-        for id in self.data_base.keys():
+        for id in list(self.data_base.keys()):
             new_data_base = []
             for xl in self.data_base[id]:
                 if xl[self.protein1_key] == xl[self.protein2_key] \
@@ -1233,7 +1237,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                              'should be between 0 and 1')
         nspectra = self.get_number_of_xlid()
         nrandom_spectra = int(nspectra*percentage)
-        random_keys = random.sample(sorted(self.data_base.keys()),
+        random_keys = random.sample(sorted(list(self.data_base.keys())),
                                     nrandom_spectra)
         new_data_base = {}
         for k in random_keys:
@@ -1242,7 +1246,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def __str__(self):
         outstr = ''
-        sorted_ids = sorted(self.data_base.keys())
+        sorted_ids = sorted(list(self.data_base.keys()))
 
         for id in sorted_ids:
             outstr += id + "\n"
@@ -1369,12 +1373,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         data = []
         sorted_ids = None
-        sorted_group_ids = sorted(self.data_base.keys())
+        sorted_group_ids = sorted(list(self.data_base.keys()))
         for group in sorted_group_ids:
             group_block = []
             for xl in self.data_base[group]:
                 if not sorted_ids:
-                    sorted_ids = sorted(xl.keys())
+                    sorted_ids = sorted(list(xl.keys()))
                 values = [xl[k] for k in sorted_ids]
                 group_block.append(values)
             data += group_block
@@ -1508,12 +1512,13 @@ class MapCrossLinkDataBaseOnStructure:
     def compute_distances(self):
         data = []
         sorted_ids = None
-        sorted_group_ids = sorted(self.CrossLinkDataBase.data_base.keys())
+        sorted_group_ids = \
+            sorted(list(self.CrossLinkDataBase.data_base.keys()))
         for group in sorted_group_ids:
             group_dists = []
             for xl in self.CrossLinkDataBase.data_base[group]:
                 if not sorted_ids:
-                    sorted_ids = sorted(xl.keys())
+                    sorted_ids = sorted(list(xl.keys()))
                     data.append(
                         sorted_ids
                         + ["UniqueID", "Distance", "MinAmbiguousDistance"])
@@ -1600,7 +1605,8 @@ class MapCrossLinkDataBaseOnStructure:
                  results_sorted[0][4]))
 
     def save_rmf_snapshot(self, filename, color_id=None):
-        sorted_group_ids = sorted(self.CrossLinkDataBase.data_base.keys())
+        sorted_group_ids = \
+            sorted(list(self.CrossLinkDataBase.data_base.keys()))
         list_of_pairs = []
         color_scores = []
         for group in sorted_group_ids:
@@ -1662,7 +1668,7 @@ class MapCrossLinkDataBaseOnStructure:
 
     def boxplot_crosslink_distances(self, filename):
         import numpy
-        keys = [self.id_to_array[k] for k in self.distances.keys()]
+        keys = [self.id_to_array[k] for k in list(self.distances.keys())]
         medians = [numpy.median(self.distances[self.array_to_id[k]])
                    for k in keys]
         dists = [self.distances[self.array_to_id[k]] for k in keys]
@@ -1750,7 +1756,7 @@ class CrossLinkDataBaseFromStructure:
                             self.protein_residue_dict[(molecule, r)] = index
 
     def get_all_possible_pairs(self):
-        n = float(len(self.protein_residue_dict.keys()))
+        n = float(len(list(self.protein_residue_dict.keys())))
         return n*(n-1.0)/2.0
 
     def get_all_feasible_pairs(self, distance=21):
@@ -1758,7 +1764,7 @@ class CrossLinkDataBaseFromStructure:
         particle_index_pairs = []
         nxl = 0
         for a, b in itertools.combinations(
-                self.protein_residue_dict.keys(), 2):
+                list(self.protein_residue_dict.keys()), 2):
             new_xl = {}
             index1 = self.protein_residue_dict[a]
             index2 = self.protein_residue_dict[b]
@@ -1821,10 +1827,12 @@ class CrossLinkDataBaseFromStructure:
                 self.reactivity_dictionary[(pra[0], pra[2])]
             new_xl["Reactivity_Residue2"] = \
                 self.reactivity_dictionary[(pra[1], pra[3])]
+            new_xl["Reactivity"] = \
+                new_xl["Reactivity_Residue1"]+new_xl["Reactivity_Residue2"]
             if noisy:
-                new_xl["Score"] = np.random.beta(1.0, self.beta_false)
+                new_xl["IDScore"] = np.random.beta(1.0, self.beta_false)
             else:
-                new_xl["Score"] = 1.0-np.random.beta(1.0, self.beta_true)
+                new_xl["IDScore"] = 1.0-np.random.beta(1.0, self.beta_true)
             new_xl["TargetDistance"] = dist
             new_xl["NoiseProbability"] = noise
             new_xl["AmbiguityProbability"] = ambiguity_probability
@@ -1857,8 +1865,10 @@ class CrossLinkDataBaseFromStructure:
         if distance is None:
             # get a random pair
             while True:
-                protein1, residue1 = choice(self.protein_residue_dict.keys())
-                protein2, residue2 = choice(self.protein_residue_dict.keys())
+                protein1, residue1 = \
+                    choice(list(self.protein_residue_dict.keys()))
+                protein2, residue2 = \
+                    choice(list(self.protein_residue_dict.keys()))
                 index1 = self.protein_residue_dict[(protein1, residue1)]
                 index2 = self.protein_residue_dict[(protein2, residue2)]
                 particle_distance = IMP.core.get_distance(
@@ -1882,12 +1892,12 @@ class CrossLinkDataBaseFromStructure:
                     # get a random reaction site
                     first_site = self.weighted_choice(self.sites_weighted)
                     # get all distances
-                    if not self.euclidean_interacting_pairs:
+                    if self.euclidean_interacting_pairs is None:
                         self.euclidean_interacting_pairs = \
                             gcpf.get_close_pairs(
                                 self.model,
-                                self.indexes_dict1.keys(),
-                                self.indexes_dict2.keys())
+                                list(self.indexes_dict1.keys()),
+                                list(self.indexes_dict2.keys()))
                     # get the partner for the first reacted site
                     first_site_pairs = \
                         [pair for pair in self.euclidean_interacting_pairs
@@ -2010,7 +2020,7 @@ class CrossLinkDataBaseFromStructure:
         import RMF
         if color_id is None:
             color_id = "Reactivity"
-        sorted_group_ids = sorted(self.cldb.data_base.keys())
+        sorted_group_ids = sorted(list(self.cldb.data_base.keys()))
         list_of_pairs = []
         color_scores = []
         for group in sorted_group_ids:

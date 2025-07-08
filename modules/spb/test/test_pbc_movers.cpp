@@ -2,13 +2,6 @@
  * \brief test attributeDistancePairScore
  *
  */
-#include <IMP/core.h>
-#include <IMP/atom.h>
-#include <IMP/algebra.h>
-#include <IMP/container.h>
-#include <IMP/spb.h>
-#include <IMP/display.h>
-#include <IMP/rmf.h>
 #include <string>
 #include <list>
 #include <map>
@@ -16,6 +9,14 @@
 #include <time.h>
 #include <IMP/check_macros.h>
 #include <IMP/flags.h>
+#include <IMP/Model.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/algebra/Transformation3D.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/spb/PbcBoxedRigidBodyMover.h>
+#include <IMP/spb/PbcBoxedMover.h>
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;

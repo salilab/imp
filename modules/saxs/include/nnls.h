@@ -16,13 +16,13 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 //! non-negative least square fitting for profile weight solving problem
-inline Eigen::VectorXf NNLS(const Eigen::MatrixXf& A,
-                            const Eigen::VectorXf& b) {
+inline Eigen::VectorXd NNLS(const Eigen::MatrixXd& A,
+                            const Eigen::VectorXd& b) {
 
   // TODO: make JacobiSVD a class object to avoid memory re-allocations
-  Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeThinU
                                            | Eigen::ComputeThinV);
-  Eigen::VectorXf x = svd.solve(b);
+  Eigen::VectorXd x = svd.solve(b);
 
   // compute a small negative tolerance
   double tol = 0;
@@ -38,8 +38,8 @@ inline Eigen::VectorXf NNLS(const Eigen::MatrixXf& A,
   int sip = int(negs / 100);
   if (sip < 1) sip = 1;
 
-  Eigen::VectorXf zeroed = Eigen::VectorXf::Zero(n);
-  Eigen::MatrixXf C = A;
+  Eigen::VectorXd zeroed = Eigen::VectorXd::Zero(n);
+  Eigen::MatrixXd C = A;
 
   // iteratively zero some x values
   for (int count = 0; count < n; count++) {  // loop till no negatives found
@@ -66,7 +66,7 @@ inline Eigen::VectorXf NNLS(const Eigen::MatrixXf& A,
     }
 
     // re-solve
-    Eigen::JacobiSVD<Eigen::MatrixXf> svd(C, Eigen::ComputeThinU
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(C, Eigen::ComputeThinU
                                              | Eigen::ComputeThinV);
     x = svd.solve(b);
   }

@@ -14,8 +14,8 @@ namespace saxs {
 namespace internal {
 
 void squared_distribution_2_profile_cuda(
-           const double *r_dist, const float *q,
-           const double *distances, float *intensity,
+           const double *r_dist, const double *q,
+           const double *distances, double *intensity,
            double modulation_function_parameter, size_t r_size, size_t q_size);
 
 } } }

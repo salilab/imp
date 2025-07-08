@@ -22,16 +22,18 @@ RMF_ENABLE_WARNINGS namespace RMF {
     fill_matrix();
   }
   void Rotation::fill_matrix() {
-    double v0s = v_[0] * v_[0];
-    double v1s = v_[1] * v_[1];
-    double v2s = v_[2] * v_[2];
-    double v3s = v_[3] * v_[3];
-    double v12 = v_[1] * v_[2];
-    double v01 = v_[0] * v_[1];
-    double v02 = v_[0] * v_[2];
-    double v23 = v_[2] * v_[3];
-    double v03 = v_[0] * v_[3];
-    double v13 = v_[1] * v_[3];
+    // v_ is float; promote to double *before* the multiplication to avoid
+    // possible (although unlikely) overflow
+    double v0s = static_cast<double>(v_[0]) * v_[0];
+    double v1s = static_cast<double>(v_[1]) * v_[1];
+    double v2s = static_cast<double>(v_[2]) * v_[2];
+    double v3s = static_cast<double>(v_[3]) * v_[3];
+    double v12 = static_cast<double>(v_[1]) * v_[2];
+    double v01 = static_cast<double>(v_[0]) * v_[1];
+    double v02 = static_cast<double>(v_[0]) * v_[2];
+    double v23 = static_cast<double>(v_[2]) * v_[3];
+    double v03 = static_cast<double>(v_[0]) * v_[3];
+    double v13 = static_cast<double>(v_[1]) * v_[3];
     matrix_[0][0] = v0s + v1s - v2s - v3s;
     matrix_[0][1] = 2 * (v12 - v03);
     matrix_[0][2] = 2 * (v13 + v02);

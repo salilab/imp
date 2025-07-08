@@ -4,19 +4,35 @@ import IMP
 import IMP.test
 import IMP.atom
 import IMP.core
+import IMP.container
 
 
-def make_test_pair_score(min_distance=9.0, max_distance=10.0):
+def make_test_pair_score(min_distance=9.0, max_distance=10.0,
+                         with_container=False,
+                         with_charge0=True,
+                         with_charge1=True):
     m = IMP.Model()
     p0 = m.add_particle("p0")
-    d0 = IMP.atom.Charged.setup_particle(
-        m, p0, IMP.algebra.Vector3D(0, 0, 0), 0.0)
+    if with_charge0:
+        d0 = IMP.atom.Charged.setup_particle(
+            m, p0, IMP.algebra.Vector3D(0, 0, 0), 0.0)
+    else:
+        d0 = IMP.core.XYZ.setup_particle(
+            m, p0, IMP.algebra.Vector3D(0, 0, 0))
     p1 = m.add_particle("p1")
-    d1 = IMP.atom.Charged.setup_particle(
-        m, p1, IMP.algebra.Vector3D(0, 0, 0), 0.0)
+    if with_charge1:
+        d1 = IMP.atom.Charged.setup_particle(
+            m, p1, IMP.algebra.Vector3D(0, 0, 0), 0.0)
+    else:
+        d1 = IMP.core.XYZ.setup_particle(
+            m, p1, IMP.algebra.Vector3D(0, 0, 0))
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.CoulombPairScore(sm)
-    r = IMP.core.PairRestraint(m, c, (p0, p1))
+    if with_container:
+        lpc = IMP.container.ListPairContainer(m, [(p0, p1)])
+        r = IMP.container.PairsRestraint(c, lpc)
+    else:
+        r = IMP.core.PairRestraint(m, c, (p0, p1))
     sf = IMP.core.RestraintsScoringFunction([r])
     return m, sf, d0, d1, c
 
@@ -105,6 +121,51 @@ class Tests(IMP.test.TestCase):
         place_all(5.5)
         self.assertEqual(smsf.evaluate(False), 0.0)
         self.assertNotEqual(sf.evaluate(False), 0.0)
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_no_model_charge_attribute(self):
+        """Test handling of Model with no charge attribute"""
+        for container in (False, True):
+            m, sf, d0, d1, c = make_test_pair_score(
+                with_container=container, with_charge0=False,
+                with_charge1=False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_charge_out_of_range(self):
+        """Test handling of Model with charge attribute out of range"""
+        # We only add charge to the first particle, so the dimension of
+        # the charge array will be 1, not the full number of particles
+        # in the system (2)
+        for container in (False, True):
+            m, sf, d0, d1, c = make_test_pair_score(
+                with_container=container, with_charge0=True,
+                with_charge1=False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
+
+    @IMP.test.skipIf(IMP.get_check_level() < IMP.USAGE,
+                     "No check in fast mode")
+    def test_charge_invalid(self):
+        """Test handling of Model with invalid charge attribute"""
+        # We only add charge to the second particle, so the charge for
+        # the first particle will be invalid
+        for container in (False, True):
+            m, sf, d0, d1, c = make_test_pair_score(
+                with_container=container, with_charge0=False,
+                with_charge1=True)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              sf.evaluate, False)
+            self.assertRaises((IMP.InternalException, IMP.UsageException),
+                              c.check_indexes, m, [d0, d1])
+
 
 if __name__ == '__main__':
     IMP.test.main()

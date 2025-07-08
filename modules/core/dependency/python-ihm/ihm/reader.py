@@ -17,7 +17,6 @@ import ihm.cross_linkers
 import ihm.multi_state_scheme
 import ihm.flr
 import inspect
-import datetime
 import warnings
 import collections
 from . import util
@@ -75,16 +74,7 @@ def _get_matrix33(d, key):
                 for i in (1, 2, 3)]
 
 
-def _get_iso_date(iso_date_str):
-    """Get a datetime.date obj for a string in isoformat."""
-    if not iso_date_str:
-        return iso_date_str
-    return datetime.date(int(iso_date_str[0:4]),
-                         int(iso_date_str[5:7]),
-                         int(iso_date_str[8:10]))
-
-
-class IDMapper(object):
+class IDMapper:
     """Utility class to handle mapping from mmCIF IDs to Python objects.
 
        :param list system_list: The list in :class:`ihm.System` that keeps
@@ -161,7 +151,7 @@ class _ChemCompIDMapper(IDMapper):
     id_attr = 'id'
 
     def __init__(self, *args, **keys):
-        super(_ChemCompIDMapper, self).__init__(*args, **keys)
+        super().__init__(*args, **keys)
         # get standard residue types
         alphabets = [x[1] for x in inspect.getmembers(ihm, inspect.isclass)
                      if issubclass(x[1], ihm.Alphabet)
@@ -184,7 +174,7 @@ class _ChemCompIDMapper(IDMapper):
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
                 newcls = (ihm.WaterChemComp if objid == 'HOH'
                           else ihm.NonPolymerChemComp)
-            return super(_ChemCompIDMapper, self).get_by_id(objid, newcls)
+            return super().get_by_id(objid, newcls)
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -197,7 +187,7 @@ class _ChemCompIDMapper(IDMapper):
             return newcls(*self._cls_args, **self._cls_keys)
 
 
-class RangeIDMapper(object):
+class RangeIDMapper:
     """Utility class to handle mapping from mmCIF IDs to
        :class:`ihm.AsymUnitRange` or :class:`ihm.EntityRange` objects."""
 
@@ -269,7 +259,7 @@ class _FeatureIDMapper(IDMapper):
             return newcls([])
 
     def _update_old_object(self, obj, newcls=None):
-        super(_FeatureIDMapper, self)._update_old_object(obj, newcls)
+        super()._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         if (newcls is ihm.restraint.ResidueFeature
                 and not hasattr(obj, 'ranges')):
@@ -320,7 +310,7 @@ class _GeometryIDMapper(IDMapper):
         # Don't revert a derived class back to a base class
         elif newcls and isinstance(obj, newcls):
             return
-        super(_GeometryIDMapper, self)._update_old_object(obj, newcls)
+        super()._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         for member in self._members.get(newcls, ()):
             if not hasattr(obj, member):
@@ -353,7 +343,7 @@ class _ReferenceIDMapper(IDMapper):
             return newcls(*(None,) * 3)
 
 
-class _FLRListAdapter(object):
+class _FLRListAdapter:
     """Take objects from IDMapper and place them in objects in FLRData."""
 
     def __init__(self, collection_dict, collection_list, flr_data):
@@ -383,10 +373,10 @@ class _FLRIDMapper(IDMapper):
                  *args, **keys):
         system_list = _FLRListAdapter(collection_dict, collection_list,
                                       flr_data)
-        super(_FLRIDMapper, self).__init__(system_list, cls, *args, **keys)
+        super().__init__(system_list, cls, *args, **keys)
 
 
-class _DatasetAssemblyIDMapper(object):
+class _DatasetAssemblyIDMapper:
     """Handle mapping from mmCIF dataset IDs to Python objects.
 
        This is similar to IDMapper but is intended for objects like restraints
@@ -418,7 +408,7 @@ class _DatasetAssemblyIDMapper(object):
         return r
 
 
-class _XLRestraintMapper(object):
+class _XLRestraintMapper:
     """Map entries to CrossLinkRestraint"""
 
     def __init__(self, system_list):
@@ -440,7 +430,7 @@ class _XLRestraintMapper(object):
         return self._seen_rsrs.values()
 
 
-class SystemReader(object):
+class SystemReader:
     """Utility class to track global information for a :class:`ihm.System`
        being read from a file, such as the mapping from IDs to objects
        (as :class:`IDMapper` objects). This can be used by :class:`Handler`
@@ -874,7 +864,7 @@ class SystemReader(object):
             e.sequence = tuple(e.sequence)
 
 
-class Handler(object):
+class Handler:
     """Base class for all handlers of mmCIF data.
        Each class handles a single category in the mmCIF or BinaryCIF file.
        To add a new handler (for example to handle a custom category)
@@ -886,18 +876,20 @@ class Handler(object):
 
            class CustomHandler(Handler):
                category = "_custom"
-               def __call__(self, key1, key2):
+               def __call__(self, key1, key2: int, key3: float):
                    pass
 
-       will be called with arguments `"x", "y"` when given the mmCIF input::
+       will be called with arguments `"x", 42, 1.0` when given the
+       mmCIF input::
 
            _custom.key1 x
-           _custom.key2 y
+           _custom.key2 42
+           _custom.key3 1.0
 
-       Note that the arguments will always be strings when reading an mmCIF
-       file. To convert to integer, floating point, or boolean, use the utility
-       methods :meth:`get_int`, :meth:`get_float` or :meth:`get_bool`
-       respectively.
+       By default, the arguments will be passed as strings. Type annotations
+       (as above) can be used to get arguments as integers, floating-point
+       values, or booleans, using the annotations `int`, `float`, or `bool`
+       respectively (no other type annotations are permitted).
        """
 
     #: Value passed to `__call__` for keywords not in the file
@@ -1059,13 +1051,13 @@ class _AuditAuthorHandler(Handler):
 class _AuditRevisionHistoryHandler(Handler):
     category = '_pdbx_audit_revision_history'
 
-    def __call__(self, ordinal, data_content_type, major_revision,
-                 minor_revision, revision_date):
+    def __call__(self, ordinal, data_content_type, major_revision: int,
+                 minor_revision: int, revision_date):
         r = self.sysr.revisions.get_by_id(ordinal)
         r.data_content_type = data_content_type
-        r.major = self.get_int(major_revision)
-        r.minor = self.get_int(minor_revision)
-        r.date = _get_iso_date(revision_date)
+        r.major = major_revision
+        r.minor = minor_revision
+        r.date = util._get_iso_date(revision_date)
 
 
 class _AuditRevisionDetailsHandler(Handler):
@@ -1100,6 +1092,20 @@ class _AuditRevisionItemHandler(Handler):
     def __call__(self, revision_ordinal, item):
         r = self.sysr.revisions.get_by_id(revision_ordinal)
         r.items.append(item)
+
+
+class _DataUsageHandler(Handler):
+    category = '_pdbx_data_usage'
+
+    # Map type to corresponding subclass of ihm.DataUsage
+    _type_map = dict((x[1].type.lower(), x[1])
+                     for x in inspect.getmembers(ihm, inspect.isclass)
+                     if issubclass(x[1], ihm.DataUsage))
+
+    def __call__(self, type, name, details, url):
+        typ = type.lower() if type else 'other'
+        cls = self._type_map.get(typ, ihm.DataUsage)
+        self.system.data_usage.append(cls(details=details, name=name, url=url))
 
 
 class _GrantHandler(Handler):
@@ -1163,7 +1169,7 @@ class _DatabaseStatusHandler(Handler):
 
     def __call__(self, *args):
         # Just pass through all data items present in the file, as a dict
-        self.system._database_status = dict(
+        self.system.database_status._map = dict(
             (k, v) for (k, v) in zip(self._keys, args)
             if v != self.not_in_file)
 
@@ -1172,7 +1178,7 @@ class _ChemCompHandler(Handler):
     category = '_chem_comp'
 
     def __init__(self, *args):
-        super(_ChemCompHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _chem_comp.type to corresponding subclass of ihm.ChemComp
         self.type_map = dict((x[1].type.lower(), x[1])
                              for x in inspect.getmembers(ihm, inspect.isclass)
@@ -1202,7 +1208,7 @@ class _EntityHandler(Handler):
     category = '_entity'
 
     def __init__(self, *args):
-        super(_EntityHandler, self).__init__(*args)
+        super().__init__(*args)
         self.src_map = dict(
             (x[1].src_method.lower(), x[1])
             for x in inspect.getmembers(ihm.source, inspect.isclass)
@@ -1262,7 +1268,7 @@ class _StructRefHandler(Handler):
     category = '_struct_ref'
 
     def __init__(self, *args):
-        super(_StructRefHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map db_name to subclass of ihm.reference.Sequence
         self.type_map = dict(
             (x[1]._db_name.lower(), x[1])
@@ -1304,26 +1310,25 @@ class _StructRefHandler(Handler):
 class _StructRefSeqHandler(Handler):
     category = '_struct_ref_seq'
 
-    def __call__(self, align_id, ref_id, seq_align_beg, seq_align_end,
-                 db_align_beg, db_align_end):
+    def __call__(self, align_id, ref_id, seq_align_beg: int,
+                 seq_align_end: int, db_align_beg: int, db_align_end: int):
         ref = self.sysr.references.get_by_id(ref_id)
         align = self.sysr.alignments.get_by_id(align_id)
-        align.db_begin = self.get_int(db_align_beg)
-        align.db_end = self.get_int(db_align_end)
-        align.entity_begin = self.get_int(seq_align_beg)
-        align.entity_end = self.get_int(seq_align_end)
+        align.db_begin = db_align_beg
+        align.db_end = db_align_end
+        align.entity_begin = seq_align_beg
+        align.entity_end = seq_align_end
         ref.alignments.append(align)
 
 
 class _StructRefSeqDifHandler(Handler):
     category = '_struct_ref_seq_dif'
 
-    def __call__(self, align_id, seq_num, db_mon_id, mon_id, details):
+    def __call__(self, align_id, seq_num: int, db_mon_id, mon_id, details):
         align = self.sysr.alignments.get_by_id(align_id)
         db_monomer = self.sysr.chem_comps.get_by_id_or_none(db_mon_id)
         monomer = self.sysr.chem_comps.get_by_id_or_none(mon_id)
-        sd = ihm.reference.SeqDif(self.get_int(seq_num), db_monomer, monomer,
-                                  details)
+        sd = ihm.reference.SeqDif(seq_num, db_monomer, monomer, details)
         align.seq_dif.append(sd)
 
 
@@ -1364,12 +1369,12 @@ class _EntityPolyHandler(Handler):
     category = '_entity_poly'
 
     def __init__(self, *args):
-        super(_EntityPolyHandler, self).__init__(*args)
+        super().__init__(*args)
         self._entity_info = {}
 
     def __call__(self, entity_id, type, pdbx_seq_one_letter_code,
                  pdbx_seq_one_letter_code_can):
-        class EntityInfo(object):
+        class EntityInfo:
             pass
         e = EntityInfo()
         e.one_letter = tuple(util._get_codes(pdbx_seq_one_letter_code))
@@ -1397,9 +1402,8 @@ class _EntityPolyHandler(Handler):
 class _EntityPolySegmentHandler(Handler):
     category = '_ihm_entity_poly_segment'
 
-    def __call__(self, id, seq_id_begin, seq_id_end):
-        self.sysr.ranges.set(id, self.get_int(seq_id_begin),
-                             self.get_int(seq_id_end))
+    def __call__(self, id, seq_id_begin: int, seq_id_end: int):
+        self.sysr.ranges.set(id, seq_id_begin, seq_id_end)
 
 
 class _EntityNonPolyHandler(Handler):
@@ -1434,7 +1438,7 @@ class _AssemblyDetailsHandler(Handler):
     ignored_keywords = ['ordinal_id', 'entity_description']
 
     def __init__(self, *args):
-        super(_AssemblyDetailsHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, assembly_id, parent_assembly_id, entity_poly_segment_id,
@@ -1457,7 +1461,10 @@ class _AssemblyDetailsHandler(Handler):
             a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
 
         self.system._make_complete_assembly()
-        tup_complete = tuple(self.system.complete_assembly)
+        # The order of components should not matter, so put in a consistent
+        # order so we can compare against other assemblies
+        complete = sorted(self.system.complete_assembly,
+                          key=lambda x: id(x))
 
         for a in self.system.orphan_assemblies:
             # Any EntityRange or AsymUnitRange which covers an entire entity,
@@ -1465,7 +1472,7 @@ class _AssemblyDetailsHandler(Handler):
             a[:] = [self._handle_component(x) for x in a]
             # If the input file defines the complete assembly, transfer
             # user-provided info to system.complete_assembly
-            if tuple(a) == tup_complete:
+            if sorted(a, key=lambda x: id(x)) == complete:
                 self.system.complete_assembly.name = a.name
                 self.system.complete_assembly.description = a.description
 
@@ -1493,7 +1500,7 @@ class _ExtRefHandler(Handler):
     category = '_ihm_external_reference_info'
 
     def __init__(self, *args):
-        super(_ExtRefHandler, self).__init__(*args)
+        super().__init__(*args)
         self.type_map = {'doi': ihm.location.Repository,
                          'supplementary files': _LocalFiles}
 
@@ -1519,7 +1526,7 @@ class _ExtFileHandler(Handler):
     category = '_ihm_external_files'
 
     def __init__(self, *args):
-        super(_ExtFileHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _ihm_external_files.content_type to corresponding
         # subclass of ihm.location.FileLocation
         self.type_map = dict(
@@ -1552,7 +1559,7 @@ class _DatasetListHandler(Handler):
     category = '_ihm_dataset_list'
 
     def __init__(self, *args):
-        super(_DatasetListHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.dataset.Dataset
         self.type_map = dict(
@@ -1602,7 +1609,7 @@ class _DatasetDBRefHandler(Handler):
     category = '_ihm_dataset_related_db_reference'
 
     def __init__(self, *args):
-        super(_DatasetDBRefHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map data_type to corresponding
         # subclass of ihm.location.DatabaseLocation
         # or ihm.location.DatabaseLocation itself
@@ -1697,12 +1704,12 @@ class _ModelRepresentationDetailsHandler(Handler):
                         'by-feature': _make_feature_segment}
 
     def __init__(self, *args):
-        super(_ModelRepresentationDetailsHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, entity_asym_id, entity_poly_segment_id,
                  representation_id, starting_model_id, model_object_primitive,
-                 model_granularity, model_object_count, model_mode,
+                 model_granularity, model_object_count: int, model_mode,
                  description):
         # Postpone until finalize time as we may not have segments yet
         self._read_args.append(
@@ -1724,10 +1731,10 @@ class _ModelRepresentationDetailsHandler(Handler):
             primitive = self.get_lower(model_object_primitive)
             gran = self.get_lower(model_granularity)
             primitive = self.get_lower(model_object_primitive)
-            count = self.get_int(model_object_count)
             rigid = self._rigid_map[self.get_lower(model_mode)]
             segment = self._segment_factory[gran](
-                asym, rigid, primitive, count, smodel, description)
+                asym, rigid, primitive, model_object_count,
+                smodel, description)
             rep.append(segment)
 
 
@@ -1779,21 +1786,19 @@ class _StartingComparativeModelsHandler(Handler):
 
     def __call__(self, starting_model_id, template_dataset_list_id,
                  alignment_file_id, template_auth_asym_id,
-                 starting_model_seq_id_begin, starting_model_seq_id_end,
-                 template_seq_id_begin, template_seq_id_end,
-                 template_sequence_identity,
-                 template_sequence_identity_denominator):
+                 starting_model_seq_id_begin: int,
+                 starting_model_seq_id_end: int,
+                 template_seq_id_begin: int, template_seq_id_end: int,
+                 template_sequence_identity: float,
+                 template_sequence_identity_denominator: int):
         m = self.sysr.starting_models.get_by_id(starting_model_id)
         dataset = self.sysr.datasets.get_by_id(template_dataset_list_id)
         aln = self.sysr.external_files.get_by_id_or_none(alignment_file_id)
         asym_id = template_auth_asym_id
-        seq_id_range = (self.get_int(starting_model_seq_id_begin),
-                        self.get_int(starting_model_seq_id_end))
-        template_seq_id_range = (self.get_int(template_seq_id_begin),
-                                 self.get_int(template_seq_id_end))
+        seq_id_range = (starting_model_seq_id_begin, starting_model_seq_id_end)
+        template_seq_id_range = (template_seq_id_begin, template_seq_id_end)
         identity = ihm.startmodel.SequenceIdentity(
-            self.get_float(template_sequence_identity),
-            self.get_int(template_sequence_identity_denominator))
+            template_sequence_identity, template_sequence_identity_denominator)
         t = ihm.startmodel.Template(
             dataset, asym_id, seq_id_range, template_seq_id_range,
             identity, aln)
@@ -1813,29 +1818,25 @@ class _ProtocolHandler(Handler):
 class _ProtocolDetailsHandler(Handler):
     category = '_ihm_modeling_protocol_details'
 
-    def __call__(self, protocol_id, step_id, num_models_begin,
-                 num_models_end, multi_scale_flag, multi_state_flag,
-                 ordered_flag, ensemble_flag, struct_assembly_id,
+    def __call__(self, protocol_id, step_id, num_models_begin: int,
+                 num_models_end: int, multi_scale_flag: bool,
+                 multi_state_flag: bool, ordered_flag: bool,
+                 ensemble_flag: bool, struct_assembly_id,
                  dataset_group_id, software_id, script_file_id, step_name,
                  step_method, description):
         p = self.sysr.protocols.get_by_id(protocol_id)
-        nbegin = self.get_int(num_models_begin)
-        nend = self.get_int(num_models_end)
-        mscale = self.get_bool(multi_scale_flag)
-        mstate = self.get_bool(multi_state_flag)
-        ensemble = self.get_bool(ensemble_flag)
-        ordered = self.get_bool(ordered_flag)
-        assembly = self.sysr.assemblies.get_by_id_or_none(
-            struct_assembly_id)
+        assembly = self.sysr.assemblies.get_by_id_or_none(struct_assembly_id)
         dg = self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
         software = self.sysr.software.get_by_id_or_none(software_id)
         script = self.sysr.external_files.get_by_id_or_none(script_file_id)
         s = ihm.protocol.Step(assembly=assembly, dataset_group=dg,
-                              method=None, num_models_begin=nbegin,
-                              num_models_end=nend, multi_scale=mscale,
-                              multi_state=mstate, ordered=ordered,
-                              ensemble=ensemble, software=software,
-                              script_file=script, description=description)
+                              method=None, num_models_begin=num_models_begin,
+                              num_models_end=num_models_end,
+                              multi_scale=multi_scale_flag,
+                              multi_state=multi_state_flag,
+                              ordered=ordered_flag, ensemble=ensemble_flag,
+                              software=software, script_file=script,
+                              description=description)
         s._id = step_id
         self.copy_if_present(
             s, locals(),
@@ -1847,7 +1848,7 @@ class _PostProcessHandler(Handler):
     category = '_ihm_modeling_post_process'
 
     def __init__(self, *args):
-        super(_PostProcessHandler, self).__init__(*args)
+        super().__init__(*args)
         # Map _ihm_modeling_post_process.type to corresponding subclass
         # of ihm.analysis.Step
         self.type_map = dict((x[1].type.lower(), x[1])
@@ -1856,8 +1857,9 @@ class _PostProcessHandler(Handler):
                              if issubclass(x[1], ihm.analysis.Step)
                              and x[1] is not ihm.analysis.Step)
 
-    def __call__(self, protocol_id, analysis_id, type, id, num_models_begin,
-                 num_models_end, struct_assembly_id, dataset_group_id,
+    def __call__(self, protocol_id, analysis_id, type, id,
+                 num_models_begin: int, num_models_end: int,
+                 struct_assembly_id, dataset_group_id,
                  software_id, script_file_id, feature, details):
         protocol = self.sysr.protocols.get_by_id(protocol_id)
         analysis = self.sysr.analyses.get_by_id((protocol_id, analysis_id))
@@ -1875,8 +1877,8 @@ class _PostProcessHandler(Handler):
             # to Python None - set it to explicit 'none' instead
             step.feature = 'none'
         else:
-            step.num_models_begin = self.get_int(num_models_begin)
-            step.num_models_end = self.get_int(num_models_end)
+            step.num_models_begin = num_models_begin
+            step.num_models_end = num_models_end
             step.assembly = self.sysr.assemblies.get_by_id_or_none(
                 struct_assembly_id)
             step.dataset_group = self.sysr.dataset_groups.get_by_id_or_none(
@@ -1948,17 +1950,31 @@ class _ModelGroupLinkHandler(Handler):
         model_group.append(model)
 
 
+class _ModelRepresentativeHandler(Handler):
+    category = '_ihm_model_representative'
+
+    def __call__(self, model_group_id, model_id, selection_criteria):
+        model_group = self.sysr.model_groups.get_by_id(model_group_id)
+        model = self.sysr.models.get_by_id(model_id)
+        # Default to "other" if invalid criteria read
+        try:
+            rep = ihm.model.ModelRepresentative(model, selection_criteria)
+        except ValueError:
+            rep = ihm.model.ModelRepresentative(model,
+                                                "other selction criteria")
+        model_group.representatives.append(rep)
+
+
 class _MultiStateHandler(Handler):
     category = '_ihm_multi_state_modeling'
 
-    def __call__(self, state_group_id, state_id,
-                 population_fraction, experiment_type, details, state_name,
-                 state_type):
+    def __call__(self, state_group_id, state_id, population_fraction: float,
+                 experiment_type, details, state_name, state_type):
         state_group = self.sysr.state_groups.get_by_id(state_group_id)
         state = self.sysr.states.get_by_id(state_id)
         state_group.append(state)
 
-        state.population_fraction = self.get_float(population_fraction)
+        state.population_fraction = population_fraction
         self.copy_if_present(
             state, locals(),
             keys=['experiment_type', 'details'],
@@ -1983,20 +1999,21 @@ class _EnsembleHandler(Handler):
                      if issubclass(x[1], ihm.model.Subsample))
 
     def __call__(self, ensemble_id, model_group_id, post_process_id,
-                 ensemble_file_id, num_ensemble_models,
-                 ensemble_precision_value, ensemble_name,
+                 ensemble_file_id, num_ensemble_models: int,
+                 ensemble_precision_value: float, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature,
-                 details, sub_sampling_type, num_ensemble_models_deposited,
-                 model_group_superimposed_flag):
+                 details, sub_sampling_type,
+                 num_ensemble_models_deposited: int,
+                 model_group_superimposed_flag: bool):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
         f = self.sysr.external_files.get_by_id_or_none(ensemble_file_id)
 
         ensemble.model_group = mg
-        ensemble.num_models = self.get_int(num_ensemble_models)
-        ensemble._num_deposited = self.get_int(num_ensemble_models_deposited)
-        ensemble.precision = self.get_float(ensemble_precision_value)
+        ensemble.num_models = num_ensemble_models
+        ensemble._num_deposited = num_ensemble_models_deposited
+        ensemble.precision = ensemble_precision_value
         if sub_sampling_type:
             ensemble._sub_sampling_type = sub_sampling_type.lower()
         # note that num_ensemble_models_deposited is ignored (should be size of
@@ -2004,7 +2021,7 @@ class _EnsembleHandler(Handler):
         ensemble.post_process = pp
         ensemble.file = f
         ensemble.details = details
-        ensemble.superimposed = self.get_bool(model_group_superimposed_flag)
+        ensemble.superimposed = model_group_superimposed_flag
         # Default to "other" if invalid method/feature read
         try:
             ensemble.clustering_method = ensemble_clustering_method
@@ -2049,7 +2066,8 @@ class _NotModeledResidueRangeHandler(Handler):
 class _SubsampleHandler(Handler):
     category = '_ihm_ensemble_sub_sample'
 
-    def __call__(self, name, ensemble_id, num_models, model_group_id, file_id):
+    def __call__(self, name, ensemble_id, num_models: int, model_group_id,
+                 file_id):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         f = self.sysr.external_files.get_by_id_or_none(file_id)
@@ -2057,8 +2075,7 @@ class _SubsampleHandler(Handler):
         # We don't know the type yet (not until ensemble is read); this
         # will be corrected by EnsembleHandler.finalize()
         ss = ihm.model.Subsample(
-            name=name, num_models=self.get_int(num_models), model_group=mg,
-            file=f)
+            name=name, num_models=num_models, model_group=mg, file=f)
         ensemble.subsamples.append(ss)
 
 
@@ -2066,7 +2083,7 @@ class _DensityHandler(Handler):
     category = '_ihm_localization_density_files'
 
     def __init__(self, *args):
-        super(_DensityHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, ensemble_id, file_id, asym_id,
@@ -2095,9 +2112,9 @@ class _EM3DRestraintHandler(Handler):
     category = '_ihm_3dem_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
-                 fitting_method_citation_id, map_segment_flag, fitting_method,
-                 number_of_gaussians, model_id, cross_correlation_coefficient,
-                 details):
+                 fitting_method_citation_id, map_segment_flag: bool,
+                 fitting_method, number_of_gaussians: int, model_id,
+                 cross_correlation_coefficient: float, details):
         # EM3D restraints don't have their own IDs - they use the dataset
         # and assembly IDs
         r = self.sysr.em3d_restraints.get_by_dataset(dataset_list_id,
@@ -2106,29 +2123,29 @@ class _EM3DRestraintHandler(Handler):
         r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
             fitting_method_citation_id)
         self.copy_if_present(r, locals(), keys=('fitting_method', 'details'))
-        r.segment = self.get_bool(map_segment_flag)
-        r.number_of_gaussians = self.get_int(number_of_gaussians)
+        r.segment = map_segment_flag
+        r.number_of_gaussians = number_of_gaussians
 
         model = self.sysr.models.get_by_id(model_id)
-        ccc = self.get_float(cross_correlation_coefficient)
+        ccc = cross_correlation_coefficient
         r.fits[model] = ihm.restraint.EM3DRestraintFit(ccc)
 
 
 class _EM2DRestraintHandler(Handler):
     category = '_ihm_2dem_class_average_restraint'
 
-    def __call__(self, id, dataset_list_id, number_raw_micrographs,
-                 pixel_size_width, pixel_size_height, image_resolution,
-                 image_segment_flag, number_of_projections,
-                 struct_assembly_id, details):
+    def __call__(self, id, dataset_list_id, number_raw_micrographs: int,
+                 pixel_size_width: float, pixel_size_height: float,
+                 image_resolution: float, image_segment_flag: bool,
+                 number_of_projections: int, struct_assembly_id, details):
         r = self.sysr.em2d_restraints.get_by_id(id)
         r.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
-        r.number_raw_micrographs = self.get_int(number_raw_micrographs)
-        r.pixel_size_width = self.get_float(pixel_size_width)
-        r.pixel_size_height = self.get_float(pixel_size_height)
-        r.image_resolution = self.get_float(image_resolution)
-        r.segment = self.get_bool(image_segment_flag)
-        r.number_of_projections = self.get_int(number_of_projections)
+        r.number_raw_micrographs = number_raw_micrographs
+        r.pixel_size_width = pixel_size_width
+        r.pixel_size_height = pixel_size_height
+        r.image_resolution = image_resolution
+        r.segment = image_segment_flag
+        r.number_of_projections = number_of_projections
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
         self.copy_if_present(r, locals(), keys=('details',))
@@ -2137,13 +2154,14 @@ class _EM2DRestraintHandler(Handler):
 class _EM2DFittingHandler(Handler):
     category = '_ihm_2dem_class_average_fitting'
 
-    def __call__(self, restraint_id, model_id, cross_correlation_coefficient,
+    def __call__(self, restraint_id, model_id,
+                 cross_correlation_coefficient: float,
                  tr_vector1, tr_vector2, tr_vector3, rot_matrix11,
                  rot_matrix21, rot_matrix31, rot_matrix12, rot_matrix22,
                  rot_matrix32, rot_matrix13, rot_matrix23, rot_matrix33):
         r = self.sysr.em2d_restraints.get_by_id(restraint_id)
         model = self.sysr.models.get_by_id(model_id)
-        ccc = self.get_float(cross_correlation_coefficient)
+        ccc = cross_correlation_coefficient
         tr_vector = _get_vector3(locals(), 'tr_vector')
         rot_matrix = _get_matrix33(locals(), 'rot_matrix')
         r.fits[model] = ihm.restraint.EM2DRestraintFit(
@@ -2155,39 +2173,37 @@ class _SASRestraintHandler(Handler):
     category = '_ihm_sas_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
-                 profile_segment_flag, fitting_atom_type, fitting_method,
-                 details, fitting_state, radius_of_gyration,
-                 number_of_gaussians, model_id, chi_value):
+                 profile_segment_flag: bool, fitting_atom_type, fitting_method,
+                 details, fitting_state, radius_of_gyration: float,
+                 number_of_gaussians: int, model_id, chi_value: float):
         # SAS restraints don't have their own IDs - they use the dataset and
         # assembly IDs
         r = self.sysr.sas_restraints.get_by_dataset(dataset_list_id,
                                                     struct_assembly_id)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
             struct_assembly_id)
-        r.segment = self.get_bool(profile_segment_flag)
+        r.segment = profile_segment_flag
         self.copy_if_present(
             r, locals(),
             keys=('fitting_atom_type', 'fitting_method', 'details'))
         fs = (fitting_state if fitting_state not in (None, ihm.unknown)
               else 'Single')
         r.multi_state = fs.lower() != 'single'
-        r.radius_of_gyration = self.get_float(radius_of_gyration)
-        r.number_of_gaussians = self.get_int(number_of_gaussians)
+        r.radius_of_gyration = radius_of_gyration
+        r.number_of_gaussians = number_of_gaussians
 
         model = self.sysr.models.get_by_id(model_id)
-        r.fits[model] = ihm.restraint.SASRestraintFit(
-            chi_value=self.get_float(chi_value))
+        r.fits[model] = ihm.restraint.SASRestraintFit(chi_value=chi_value)
 
 
 class _SphereObjSiteHandler(Handler):
     category = '_ihm_sphere_obj_site'
     ignored_keywords = ['ordinal_id']
 
-    def __call__(self, model_id, asym_id, rmsf, seq_id_begin, seq_id_end,
-                 cartn_x, cartn_y, cartn_z, object_radius):
+    def __call__(self, model_id, asym_id, rmsf: float, seq_id_begin,
+                 seq_id_end, cartn_x, cartn_y, cartn_z, object_radius):
         model = self.sysr.models.get_by_id(model_id)
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        rmsf = self.get_float(rmsf)
         s = ihm.model.Sphere(
             asym_unit=asym, seq_id_range=(int(seq_id_begin), int(seq_id_end)),
             x=float(cartn_x), y=float(cartn_y), z=float(cartn_z),
@@ -2199,7 +2215,7 @@ class _AtomSiteHandler(Handler):
     category = '_atom_site'
 
     def __init__(self, *args):
-        super(_AtomSiteHandler, self).__init__(*args)
+        super().__init__(*args)
         self._missing_sequence = collections.defaultdict(dict)
         # Mapping from asym+auth_seq_id to internal ID
         self._seq_id_map = {}
@@ -2224,12 +2240,13 @@ class _AtomSiteHandler(Handler):
             asym.auth_seq_id_map[seq_id] = (auth_seq_id, pdbx_pdb_ins_code)
         return m[auth]
 
-    def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
-                 label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
-                 cartn_z, occupancy, group_pdb, auth_seq_id,
-                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id, label_alt_id):
+    def __call__(self, pdbx_pdb_model_num, label_asym_id,
+                 b_iso_or_equiv: float, label_seq_id: int, label_atom_id,
+                 type_symbol, cartn_x: float, cartn_y: float, cartn_z: float,
+                 occupancy: float, group_pdb, auth_seq_id, pdbx_pdb_ins_code,
+                 auth_asym_id, label_comp_id, label_alt_id):
         # seq_id can be None for non-polymers (HETATM)
-        seq_id = self.get_int(label_seq_id)
+        seq_id = label_seq_id
         # todo: handle fields other than those output by us
         model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
         if label_asym_id is None:
@@ -2248,13 +2265,11 @@ class _AtomSiteHandler(Handler):
                 auth_seq_id, pdbx_pdb_ins_code, asym)
         else:
             our_seq_id = seq_id
-        biso = self.get_float(b_iso_or_equiv)
-        occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
-            type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
-            z=float(cartn_z), het=group != 'ATOM', biso=biso,
+            type_symbol=type_symbol, x=cartn_x, y=cartn_y,
+            z=cartn_z, het=group != 'ATOM', biso=b_iso_or_equiv,
             occupancy=occupancy, alt_id=label_alt_id)
         model.add_atom(a)
 
@@ -2290,28 +2305,26 @@ class _StartingModelCoordHandler(Handler):
     category = '_ihm_starting_model_coord'
 
     def __call__(self, starting_model_id, group_pdb, type_symbol, atom_id,
-                 asym_id, seq_id, cartn_x, cartn_y, cartn_z, b_iso_or_equiv):
+                 asym_id, seq_id: int, cartn_x: float, cartn_y: float,
+                 cartn_z: float, b_iso_or_equiv: float):
         model = self.sysr.starting_models.get_by_id(starting_model_id)
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        biso = self.get_float(b_iso_or_equiv)
         # seq_id can be None for non-polymers (HETATM)
-        seq_id = self.get_int(seq_id)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=seq_id, atom_id=atom_id,
-            type_symbol=type_symbol, x=float(cartn_x), y=float(cartn_y),
-            z=float(cartn_z), het=group != 'ATOM', biso=biso)
+            type_symbol=type_symbol, x=cartn_x, y=cartn_y,
+            z=cartn_z, het=group != 'ATOM', biso=b_iso_or_equiv)
         model.add_atom(a)
 
 
 class _StartingModelSeqDifHandler(Handler):
     category = '_ihm_starting_model_seq_dif'
 
-    def __call__(self, starting_model_id, db_seq_id, seq_id, db_comp_id,
-                 details):
+    def __call__(self, starting_model_id, db_seq_id: int, seq_id: int,
+                 db_comp_id, details):
         model = self.sysr.starting_models.get_by_id(starting_model_id)
-        sd = ihm.startmodel.SeqDif(db_seq_id=self.get_int(db_seq_id),
-                                   seq_id=self.get_int(seq_id),
+        sd = ihm.startmodel.SeqDif(db_seq_id=db_seq_id, seq_id=seq_id,
                                    db_comp_id=db_comp_id,
                                    details=details)
         model.add_seq_dif(sd)
@@ -2382,39 +2395,34 @@ class _PseudoSiteFeatureHandler(Handler):
 class _PseudoSiteHandler(Handler):
     category = '_ihm_pseudo_site'
 
-    def __call__(self, id, cartn_x, cartn_y, cartn_z, radius, description):
+    def __call__(self, id, cartn_x: float, cartn_y: float, cartn_z: float,
+                 radius: float, description):
         p = self.sysr.pseudo_sites.get_by_id(id)
-        p.x = self.get_float(cartn_x)
-        p.y = self.get_float(cartn_y)
-        p.z = self.get_float(cartn_z)
-        p.radius = self.get_float(radius)
+        p.x = cartn_x
+        p.y = cartn_y
+        p.z = cartn_z
+        p.radius = radius
         p.description = description
 
 
-def _make_harmonic(low, up, _get_float):
-    low = _get_float(low)
-    up = _get_float(up)
+def _make_harmonic(low, up):
     return ihm.restraint.HarmonicDistanceRestraint(up if low is None else low)
 
 
-def _make_upper_bound(low, up, _get_float):
-    up = _get_float(up)
+def _make_upper_bound(low, up):
     return ihm.restraint.UpperBoundDistanceRestraint(up)
 
 
-def _make_lower_bound(low, up, _get_float):
-    low = _get_float(low)
+def _make_lower_bound(low, up):
     return ihm.restraint.LowerBoundDistanceRestraint(low)
 
 
-def _make_lower_upper_bound(low, up, _get_float):
-    low = _get_float(low)
-    up = _get_float(up)
+def _make_lower_upper_bound(low, up):
     return ihm.restraint.LowerUpperBoundDistanceRestraint(
         distance_lower_limit=low, distance_upper_limit=up)
 
 
-def _make_unknown_distance(low, up, _get_float):
+def _make_unknown_distance(low, up):
     return ihm.restraint.DistanceRestraint()
 
 
@@ -2431,8 +2439,8 @@ class _DerivedDistanceRestraintHandler(Handler):
 
     def __call__(self, id, group_id, dataset_list_id, feature_id_1,
                  feature_id_2, restraint_type, group_conditionality,
-                 probability, mic_value, distance_lower_limit,
-                 distance_upper_limit):
+                 probability: float, mic_value: float,
+                 distance_lower_limit: float, distance_upper_limit: float):
         r = self.sysr.dist_restraints.get_by_id(id)
         if group_id is not None:
             rg = self.sysr.dist_restraint_groups.get_by_id(group_id)
@@ -2441,22 +2449,21 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.feature1 = self.sysr.features.get_by_id(feature_id_1)
         r.feature2 = self.sysr.features.get_by_id(feature_id_2)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit,
-                                                      self.get_float)
+                                                      distance_upper_limit)
         r.restrain_all = self._cond_map[group_conditionality]
-        r.probability = self.get_float(probability)
-        r.mic_value = self.get_float(mic_value)
+        r.probability = probability
+        r.mic_value = mic_value
 
 
 class _HDXRestraintHandler(Handler):
     category = '_ihm_hdx_restraint'
 
-    def __call__(self, id, dataset_list_id, feature_id, protection_factor,
-                 details):
+    def __call__(self, id, dataset_list_id, feature_id,
+                 protection_factor: float, details):
         r = self.sysr.hdx_restraints.get_by_id(id)
         r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         r.feature = self.sysr.features.get_by_id(feature_id)
-        r.protection_factor = self.get_float(protection_factor)
+        r.protection_factor = protection_factor
         r.details = details
 
 
@@ -2465,16 +2472,16 @@ class _PredictedContactRestraintHandler(Handler):
 
     def _get_resatom(self, asym_id, seq_id, atom_id):
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        seq_id = self.get_int(seq_id)
         resatom = asym.residue(seq_id)
         if atom_id:
             resatom = resatom.atom(atom_id)
         return resatom
 
     def __call__(self, id, group_id, dataset_list_id, asym_id_1,
-                 seq_id_1, rep_atom_1, asym_id_2, seq_id_2, rep_atom_2,
-                 restraint_type, probability, distance_lower_limit,
-                 distance_upper_limit, model_granularity, software_id):
+                 seq_id_1: int, rep_atom_1, asym_id_2, seq_id_2: int,
+                 rep_atom_2, restraint_type, probability: float,
+                 distance_lower_limit: float, distance_upper_limit: float,
+                 model_granularity, software_id):
         r = self.sysr.pred_cont_restraints.get_by_id(id)
         if group_id is not None:
             rg = self.sysr.pred_cont_restraint_groups.get_by_id(group_id)
@@ -2483,21 +2490,20 @@ class _PredictedContactRestraintHandler(Handler):
         r.resatom1 = self._get_resatom(asym_id_1, seq_id_1, rep_atom_1)
         r.resatom2 = self._get_resatom(asym_id_2, seq_id_2, rep_atom_2)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit,
-                                                      self.get_float)
+                                                      distance_upper_limit)
         r.by_residue = self.get_lower(model_granularity) == 'by-residue'
-        r.probability = self.get_float(probability)
+        r.probability = probability
         r.software = self.sysr.software.get_by_id_or_none(software_id)
 
 
 class _CenterHandler(Handler):
     category = '_ihm_geometric_object_center'
 
-    def __call__(self, id, xcoord, ycoord, zcoord):
+    def __call__(self, id, xcoord: float, ycoord: float, zcoord: float):
         c = self.sysr.centers.get_by_id(id)
-        c.x = self.get_float(xcoord)
-        c.y = self.get_float(ycoord)
-        c.z = self.get_float(zcoord)
+        c.x = xcoord
+        c.y = ycoord
+        c.z = zcoord
 
 
 class _TransformationHandler(Handler):
@@ -2534,25 +2540,26 @@ class _GeometricObjectHandler(Handler):
 class _SphereHandler(Handler):
     category = '_ihm_geometric_object_sphere'
 
-    def __call__(self, object_id, center_id, transformation_id, radius_r):
+    def __call__(self, object_id, center_id, transformation_id,
+                 radius_r: float):
         s = self.sysr.geometries.get_by_id(object_id, ihm.geometry.Sphere)
         s.center = self.sysr.centers.get_by_id_or_none(center_id)
         s.transformation = self.sysr.transformations.get_by_id_or_none(
             transformation_id)
-        s.radius = self.get_float(radius_r)
+        s.radius = radius_r
 
 
 class _TorusHandler(Handler):
     category = '_ihm_geometric_object_torus'
 
     def __call__(self, object_id, center_id, transformation_id,
-                 major_radius_r, minor_radius_r):
+                 major_radius_r: float, minor_radius_r: float):
         t = self.sysr.geometries.get_by_id(object_id, ihm.geometry.Torus)
         t.center = self.sysr.centers.get_by_id_or_none(center_id)
         t.transformation = self.sysr.transformations.get_by_id_or_none(
             transformation_id)
-        t.major_radius = self.get_float(major_radius_r)
-        t.minor_radius = self.get_float(minor_radius_r)
+        t.major_radius = major_radius_r
+        t.minor_radius = minor_radius_r
 
 
 class _HalfTorusHandler(Handler):
@@ -2560,10 +2567,10 @@ class _HalfTorusHandler(Handler):
 
     _inner_map = {'inner half': True, 'outer half': False}
 
-    def __call__(self, object_id, thickness_th, section):
+    def __call__(self, object_id, thickness_th: float, section):
         t = self.sysr.geometries.get_by_id(object_id,
                                            ihm.geometry.HalfTorus)
-        t.thickness = self.get_float(thickness_th)
+        t.thickness = thickness_th
         section = section.lower() if section is not None else ''
         t.inner = self._inner_map.get(section, None)
 
@@ -2614,9 +2621,9 @@ class _GeometricRestraintHandler(Handler):
                      if issubclass(x[1], ihm.restraint.GeometricRestraint))
 
     def __call__(self, object_characteristic, id, dataset_list_id, object_id,
-                 feature_id, restraint_type, harmonic_force_constant,
-                 group_conditionality, distance_lower_limit,
-                 distance_upper_limit):
+                 feature_id, restraint_type, harmonic_force_constant: float,
+                 group_conditionality, distance_lower_limit: float,
+                 distance_upper_limit: float):
         typ = (object_characteristic or 'other').lower()
         r = self.sysr.geom_restraints.get_by_id(
             id, self._type_map.get(typ, ihm.restraint.GeometricRestraint))
@@ -2624,9 +2631,8 @@ class _GeometricRestraintHandler(Handler):
         r.geometric_object = self.sysr.geometries.get_by_id(object_id)
         r.feature = self.sysr.features.get_by_id(feature_id)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit,
-                                                      self.get_float)
-        r.harmonic_force_constant = self.get_float(harmonic_force_constant)
+                                                      distance_upper_limit)
+        r.harmonic_force_constant = harmonic_force_constant
         r.restrain_all = self._cond_map[group_conditionality]
 
 
@@ -2706,11 +2712,11 @@ class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
     def __init__(self, *args):
-        super(_NonPolySchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._scheme = {}
 
     def __call__(self, asym_id, entity_id, pdb_seq_num, mon_id, pdb_ins_code,
-                 pdb_strand_id, ndb_seq_num, auth_seq_num):
+                 pdb_strand_id, ndb_seq_num: int, auth_seq_num):
         entity = self.sysr.entities.get_by_id(entity_id)
         # nonpolymer entities generally have information on their chemical
         # component in pdbx_entity_nonpoly, but if that's missing, at least
@@ -2728,7 +2734,6 @@ class _NonPolySchemeHandler(Handler):
             asym._strand_id = pdb_strand_id
         pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        ndb_seq_num = self.get_int(ndb_seq_num)
         # Make mapping from author-provided numbering (*pdb_seq_num*, not
         # auth_seq_num) to original and NDB numbering. We will use this at
         # finalize time to map internal ID ("seq_id") to auth, orig_auth,
@@ -2781,17 +2786,16 @@ class _BranchSchemeHandler(Handler):
     category = '_pdbx_branch_scheme'
 
     def __init__(self, *args):
-        super(_BranchSchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._scheme = {}
 
-    def __call__(self, asym_id, num, pdb_seq_num, auth_seq_num, pdb_asym_id,
-                 pdb_ins_code):
+    def __call__(self, asym_id, num: int, pdb_seq_num, auth_seq_num,
+                 pdb_asym_id, pdb_ins_code):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         if pdb_asym_id not in (None, ihm.unknown, asym_id):
             asym._strand_id = pdb_asym_id
         pdb_seq_num = self.get_int_or_string(pdb_seq_num)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        num = self.get_int(num)
         # Make mapping from author-provided numbering (*pdb_seq_num*, not
         # auth_seq_num) to original and "num" numbering. We will use this at
         # finalize time to map internal ID ("seq_id") to auth, orig_auth,
@@ -2882,15 +2886,13 @@ class _BranchDescriptorHandler(Handler):
 class _BranchLinkHandler(Handler):
     category = '_pdbx_entity_branch_link'
 
-    def __call__(self, entity_id, entity_branch_list_num_1, atom_id_1,
-                 leaving_atom_id_1, entity_branch_list_num_2, atom_id_2,
+    def __call__(self, entity_id, entity_branch_list_num_1: int, atom_id_1,
+                 leaving_atom_id_1, entity_branch_list_num_2: int, atom_id_2,
                  leaving_atom_id_2, value_order, details):
         e = self.sysr.entities.get_by_id(entity_id)
-        num1 = self.get_int(entity_branch_list_num_1)
-        num2 = self.get_int(entity_branch_list_num_2)
-        lnk = ihm.BranchLink(num1=num1, atom_id1=atom_id_1,
+        lnk = ihm.BranchLink(num1=entity_branch_list_num_1, atom_id1=atom_id_1,
                              leaving_atom_id1=leaving_atom_id_1,
-                             num2=num2, atom_id2=atom_id_2,
+                             num2=entity_branch_list_num_2, atom_id2=atom_id_2,
                              leaving_atom_id2=leaving_atom_id_2,
                              order=value_order, details=details)
         e.branch_links.append(lnk)
@@ -2903,7 +2905,7 @@ class _CrossLinkListHandler(Handler):
     _linkers_by_name = None
 
     def __init__(self, *args):
-        super(_CrossLinkListHandler, self).__init__(*args)
+        super().__init__(*args)
         self._seen_group_ids = set()
         self._linker_type = {}
 
@@ -2971,9 +2973,9 @@ class _CrossLinkRestraintHandler(Handler):
                      and x[1] is not ihm.restraint.CrossLink)
 
     def __call__(self, model_granularity, id, group_id, asym_id_1, asym_id_2,
-                 restraint_type, distance_threshold,
-                 conditional_crosslink_flag, atom_id_1, atom_id_2, psi,
-                 sigma_1, sigma_2):
+                 restraint_type, distance_threshold: float,
+                 conditional_crosslink_flag, atom_id_1, atom_id_2, psi: float,
+                 sigma_1: float, sigma_2: float):
         typ = (model_granularity or 'other').lower()
         xl = self.sysr.cross_links.get_by_id(
             id, self._type_map.get(typ, ihm.restraint.ResidueCrossLink))
@@ -2984,14 +2986,14 @@ class _CrossLinkRestraintHandler(Handler):
         xl.asym2 = self.sysr.asym_units.get_by_id(asym_id_2)
         # todo: handle unknown restraint type
         _distcls = self._distance_map[restraint_type.lower()]
-        xl.distance = _distcls(float(distance_threshold))
+        xl.distance = _distcls(distance_threshold)
         xl.restrain_all = self._cond_map[conditional_crosslink_flag]
         if isinstance(xl, ihm.restraint.AtomCrossLink):
             xl.atom1 = atom_id_1
             xl.atom2 = atom_id_2
-        xl.psi = self.get_float(psi)
-        xl.sigma1 = self.get_float(sigma_1)
-        xl.sigma2 = self.get_float(sigma_2)
+        xl.psi = psi
+        xl.sigma1 = sigma_1
+        xl.sigma2 = sigma_2
 
     def finalize(self):
         # Put each cross link in the restraint that owns its experimental xl
@@ -3008,15 +3010,14 @@ class _CrossLinkRestraintHandler(Handler):
 class _CrossLinkPseudoSiteHandler(Handler):
     category = '_ihm_cross_link_pseudo_site'
 
-    def __call__(self, id, restraint_id, cross_link_partner, pseudo_site_id,
-                 model_id):
+    def __call__(self, id, restraint_id, cross_link_partner: int,
+                 pseudo_site_id, model_id):
         xlps = self.sysr.cross_link_pseudo_sites.get_by_id(id)
         xlps.site = self.sysr.pseudo_sites.get_by_id(pseudo_site_id)
         xlps.model = self.sysr.models.get_by_id_or_none(model_id)
 
         xl = self.sysr.cross_links.get_by_id(restraint_id)
-        partner = self.get_int(cross_link_partner)
-        if partner == 2:
+        if cross_link_partner == 2:
             if getattr(xl, 'pseudo2', None) is None:
                 xl.pseudo2 = []
             xl.pseudo2.append(xlps)
@@ -3027,15 +3028,30 @@ class _CrossLinkPseudoSiteHandler(Handler):
 
 
 class _CrossLinkResultHandler(Handler):
+    category = '_ihm_cross_link_result'
+
+    def __call__(self, restraint_id, ensemble_id, model_group_id,
+                 num_models: int, median_distance: float, details):
+        if ensemble_id:
+            g = self.sysr.ensembles.get_by_id(ensemble_id)
+        else:
+            g = self.sysr.model_groups.get_by_id(model_group_id)
+        xl = self.sysr.cross_links.get_by_id(restraint_id)
+        xl.fits[g] = ihm.restraint.CrossLinkGroupFit(
+            num_models=num_models, median_distance=median_distance,
+            details=details)
+
+
+class _CrossLinkResultParametersHandler(Handler):
     category = '_ihm_cross_link_result_parameters'
     ignored_keywords = ['ordinal_id']
 
-    def __call__(self, restraint_id, model_id, psi, sigma_1, sigma_2):
+    def __call__(self, restraint_id, model_id, psi: float, sigma_1: float,
+                 sigma_2: float):
         xl = self.sysr.cross_links.get_by_id(restraint_id)
         model = self.sysr.models.get_by_id(model_id)
         xl.fits[model] = ihm.restraint.CrossLinkFit(
-            psi=self.get_float(psi), sigma1=self.get_float(sigma_1),
-            sigma2=self.get_float(sigma_2))
+            psi=psi, sigma1=sigma_1, sigma2=sigma_2)
 
 
 class _OrderedModelHandler(Handler):
@@ -3081,7 +3097,7 @@ class UnknownKeywordWarning(Warning):
     pass
 
 
-class _UnknownCategoryHandler(object):
+class _UnknownCategoryHandler:
     def __init__(self):
         self.reset()
 
@@ -3098,7 +3114,7 @@ class _UnknownCategoryHandler(object):
                       UnknownCategoryWarning, stacklevel=2)
 
 
-class _UnknownKeywordHandler(object):
+class _UnknownKeywordHandler:
     def add_category_handlers(self, handlers):
         self._ignored_keywords = dict((h.category,
                                        frozenset(h.ignored_keywords))
@@ -3219,7 +3235,7 @@ class _RelaxationTimeMultiStateSchemeHandler(Handler):
     category = '_ihm_relaxation_time_multi_state_scheme'
 
     def __init__(self, *args):
-        super(_RelaxationTimeMultiStateSchemeHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, relaxation_time_id,
@@ -3301,13 +3317,13 @@ class _FLRInstrumentHandler(Handler):
 class _FLREntityAssemblyHandler(Handler):
     category = '_flr_entity_assembly'
 
-    def __call__(self, ordinal_id, assembly_id, entity_id, num_copies):
+    def __call__(self, ordinal_id, assembly_id, entity_id, num_copies: int):
         # Get the object or create the object
         a = self.sysr.flr_entity_assemblies.get_by_id(assembly_id)
         # Get the entity
         entity = self.sysr.entities.get_by_id(entity_id)
         # Add the entity to the entity assembly
-        a.add_entity(entity=entity, num_copies=self.get_int(num_copies))
+        a.add_entity(entity=entity, num_copies=num_copies)
 
 
 class _FLRSampleConditionHandler(Handler):
@@ -3323,13 +3339,13 @@ class _FLRSampleConditionHandler(Handler):
 class _FLRSampleHandler(Handler):
     category = '_flr_sample'
 
-    def __call__(self, id, entity_assembly_id, num_of_probes,
+    def __call__(self, id, entity_assembly_id, num_of_probes: int,
                  sample_condition_id, sample_description, sample_details,
                  solvent_phase):
         sample = self.sysr.flr_samples.get_by_id(id)
         sample.entity_assembly \
             = self.sysr.flr_entity_assemblies.get_by_id(entity_assembly_id)
-        sample.num_of_probes = self.get_int(num_of_probes)
+        sample.num_of_probes = num_of_probes
         sample.condition = cond \
             = self.sysr.flr_sample_conditions.get_by_id(sample_condition_id)
         self.copy_if_present(sample, locals(), keys=('solvent_phase',),
@@ -3340,10 +3356,9 @@ class _FLRSampleHandler(Handler):
 class _FLRProbeListHandler(Handler):
     category = '_flr_probe_list'
 
-    def __call__(self, probe_id, chromophore_name, reactive_probe_flag,
+    def __call__(self, probe_id, chromophore_name, reactive_probe_flag: bool,
                  reactive_probe_name, probe_origin, probe_link_type):
         cur_probe = self.sysr.flr_probes.get_by_id(probe_id)
-        reactive_probe_flag = self.get_bool(reactive_probe_flag)
         cur_probe.probe_list_entry = ihm.flr.ProbeList(
             chromophore_name=chromophore_name,
             reactive_probe_flag=reactive_probe_flag,
@@ -3390,7 +3405,6 @@ class _FLRPolyProbePositionHandler(Handler):
         if asym is not None:
             asym.entity = entity
             asym.id = asym_id
-        seq_id = self.get_int(seq_id)
         resatom = entity.residue(seq_id)
         if asym is not None:
             resatom.asym = asym
@@ -3398,12 +3412,12 @@ class _FLRPolyProbePositionHandler(Handler):
             resatom = resatom.atom(atom_id)
         return resatom
 
-    def __call__(self, id, entity_id, asym_id, seq_id, atom_id,
-                 mutation_flag, modification_flag, auth_name):
+    def __call__(self, id, entity_id, asym_id, seq_id: int, atom_id,
+                 mutation_flag: bool, modification_flag: bool, auth_name):
         ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
         ppos.resatom = self._get_resatom(entity_id, asym_id, seq_id, atom_id)
-        ppos.mutation_flag = self.get_bool(mutation_flag)
-        ppos.modification_flag = self.get_bool(modification_flag)
+        ppos.mutation_flag = mutation_flag
+        ppos.modification_flag = modification_flag
         ppos.auth_name = auth_name
 
 
@@ -3429,43 +3443,44 @@ class _FLRPolyProbeConjugateHandler(Handler):
     category = '_flr_poly_probe_conjugate'
 
     def __call__(self, id, sample_probe_id, chem_descriptor_id,
-                 ambiguous_stoichiometry_flag, probe_stoichiometry):
+                 ambiguous_stoichiometry_flag: bool,
+                 probe_stoichiometry: float):
         ppc = self.sysr.flr_poly_probe_conjugates.get_by_id(id)
         ppc.sample_probe = self.sysr.flr_sample_probe_details.get_by_id(
             sample_probe_id)
         ppc.chem_descriptor = self.sysr.chem_descriptors.get_by_id(
             chem_descriptor_id)
-        ppc.ambiguous_stoichiometry = self.get_bool(
-            ambiguous_stoichiometry_flag)
-        ppc.probe_stoichiometry = self.get_float(probe_stoichiometry)
+        ppc.ambiguous_stoichiometry = ambiguous_stoichiometry_flag
+        ppc.probe_stoichiometry = probe_stoichiometry
 
 
 class _FLRFretForsterRadiusHandler(Handler):
     category = '_flr_fret_forster_radius'
 
-    def __call__(self, id, donor_probe_id, acceptor_probe_id, forster_radius,
-                 reduced_forster_radius):
+    def __call__(self, id, donor_probe_id, acceptor_probe_id,
+                 forster_radius: float, reduced_forster_radius: float):
         ffr = self.sysr.flr_fret_forster_radius.get_by_id(id)
         ffr.donor_probe = self.sysr.flr_probes.get_by_id(donor_probe_id)
         ffr.acceptor_probe = self.sysr.flr_probes.get_by_id(acceptor_probe_id)
-        ffr.forster_radius = self.get_float(forster_radius)
-        ffr.reduced_forster_radius = self.get_float(reduced_forster_radius)
+        ffr.forster_radius = forster_radius
+        ffr.reduced_forster_radius = reduced_forster_radius
 
 
 class _FLRFretCalibrationParametersHandler(Handler):
     category = '_flr_fret_calibration_parameters'
 
-    def __call__(self, id, phi_acceptor, alpha, alpha_sd, gg_gr_ratio, beta,
-                 gamma, delta, a_b):
+    def __call__(self, id, phi_acceptor: float, alpha: float, alpha_sd: float,
+                 gg_gr_ratio: float, beta: float, gamma: float, delta: float,
+                 a_b: float):
         p = self.sysr.flr_fret_calibration_parameters.get_by_id(id)
-        p.phi_acceptor = self.get_float(phi_acceptor)
-        p.alpha = self.get_float(alpha)
-        p.alpha_sd = self.get_float(alpha_sd)
-        p.gg_gr_ratio = self.get_float(gg_gr_ratio)
-        p.beta = self.get_float(beta)
-        p.gamma = self.get_float(gamma)
-        p.delta = self.get_float(delta)
-        p.a_b = self.get_float(a_b)
+        p.phi_acceptor = phi_acceptor
+        p.alpha = alpha
+        p.alpha_sd = alpha_sd
+        p.gg_gr_ratio = gg_gr_ratio
+        p.beta = beta
+        p.gamma = gamma
+        p.delta = delta
+        p.a_b = a_b
 
 
 class _FLRFretAnalysisHandler(Handler):
@@ -3494,15 +3509,15 @@ class _FLRFretAnalysisIntensityHandler(Handler):
     category = '_flr_fret_analysis_intensity'
 
     def __call__(self, ordinal_id, analysis_id,
-                 calibration_parameters_id, donor_only_fraction,
-                 chi_square_reduced, method_name, details):
+                 calibration_parameters_id, donor_only_fraction: float,
+                 chi_square_reduced: float, method_name, details):
         f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
         f.type = 'intensity-based'
         f.calibration_parameters = \
             self.sysr.flr_fret_calibration_parameters.get_by_id(
                 calibration_parameters_id)
-        f.donor_only_fraction = self.get_float(donor_only_fraction)
-        f.chi_square_reduced = self.get_float(chi_square_reduced)
+        f.donor_only_fraction = donor_only_fraction
+        f.chi_square_reduced = chi_square_reduced
         f.method_name = method_name
         f.details = details
 
@@ -3512,8 +3527,8 @@ class _FLRFretAnalysisLifetimeHandler(Handler):
 
     def __call__(self, ordinal_id, analysis_id,
                  reference_measurement_group_id, lifetime_fit_model_id,
-                 donor_only_fraction, chi_square_reduced, method_name,
-                 details):
+                 donor_only_fraction: float, chi_square_reduced: float,
+                 method_name, details):
         f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
         f.type = 'lifetime-based'
         f.ref_measurement_group \
@@ -3521,8 +3536,8 @@ class _FLRFretAnalysisLifetimeHandler(Handler):
                 reference_measurement_group_id)
         f.lifetime_fit_model = self.sysr.flr_lifetime_fit_models.get_by_id(
             lifetime_fit_model_id)
-        f.donor_only_fraction = self.get_float(donor_only_fraction)
-        f.chi_square_reduced = self.get_float(chi_square_reduced)
+        f.donor_only_fraction = donor_only_fraction
+        f.chi_square_reduced = chi_square_reduced
         f.method_name = method_name
         f.details = details
 
@@ -3573,11 +3588,11 @@ class _FLRRefMeasurementLifetimeHandler(Handler):
     category = '_flr_reference_measurement_lifetime'
 
     def __call__(self, ordinal_id, reference_measurement_id,
-                 species_name, species_fraction, lifetime):
+                 species_name, species_fraction: float, lifetime: float):
         lf = self.sysr.flr_ref_measurement_lifetimes.get_by_id(ordinal_id)
         lf.species_name = species_name
-        lf.species_fraction = self.get_float(species_fraction)
-        lf.lifetime = self.get_float(lifetime)
+        lf.species_fraction = species_fraction
+        lf.lifetime = lifetime
 
         # Add the lifetime to the reference measurement
         r = self.sysr.flr_ref_measurements.get_by_id(reference_measurement_id)
@@ -3596,9 +3611,10 @@ class _FLRFretDistanceRestraintHandler(Handler):
     category = '_flr_fret_distance_restraint'
 
     def __call__(self, ordinal_id, id, group_id, sample_probe_id_1,
-                 sample_probe_id_2, state_id, analysis_id, distance,
-                 distance_error_plus, distance_error_minus, distance_type,
-                 population_fraction, peak_assignment_id):
+                 sample_probe_id_2, state_id, analysis_id, distance: float,
+                 distance_error_plus: float, distance_error_minus: float,
+                 distance_type, population_fraction: float,
+                 peak_assignment_id):
         r = self.sysr.flr_fret_distance_restraints.get_by_id(id)
         r.sample_probe_1 = self.sysr.flr_sample_probe_details.get_by_id(
             sample_probe_id_1)
@@ -3608,11 +3624,11 @@ class _FLRFretDistanceRestraintHandler(Handler):
         r.analysis = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
         r.peak_assignment = self.sysr.flr_peak_assignments.get_by_id(
             peak_assignment_id)
-        r.distance = self.get_float(distance)
-        r.distance_error_plus = self.get_float(distance_error_plus)
-        r.distance_error_minus = self.get_float(distance_error_minus)
+        r.distance = distance
+        r.distance_error_plus = distance_error_plus
+        r.distance_error_minus = distance_error_minus
         r.distance_type = distance_type
-        r.population_fraction = self.get_float(population_fraction)
+        r.population_fraction = population_fraction
 
         # also create the fret_distance_restraint_group
         rg = self.sysr.flr_fret_distance_restraint_groups.get_by_id(group_id)
@@ -3622,11 +3638,11 @@ class _FLRFretDistanceRestraintHandler(Handler):
 class _FLRFretModelQualityHandler(Handler):
     category = '_flr_fret_model_quality'
 
-    def __call__(self, model_id, chi_square_reduced, dataset_group_id,
+    def __call__(self, model_id, chi_square_reduced: float, dataset_group_id,
                  method, details):
         q = self.sysr.flr_fret_model_qualities.get_by_id(model_id)
         q.model = self.sysr.models.get_by_id(model_id)
-        q.chi_square_reduced = self.get_float(chi_square_reduced)
+        q.chi_square_reduced = chi_square_reduced
         q.dataset_group = self.sysr.dataset_groups.get_by_id(dataset_group_id)
         self.copy_if_present(q, locals(), keys=('method', 'details'))
 
@@ -3635,17 +3651,17 @@ class _FLRFretModelDistanceHandler(Handler):
     category = '_flr_fret_model_distance'
 
     def __init__(self, *args):
-        super(_FLRFretModelDistanceHandler, self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
-    def __call__(self, id, restraint_id, model_id, distance,
-                 distance_deviation):
+    def __call__(self, id, restraint_id, model_id, distance: float,
+                 distance_deviation: float):
         md = self.sysr.flr_fret_model_distances.get_by_id(id)
         md.restraint = self.sysr.flr_fret_distance_restraints.get_by_id(
             restraint_id)
         md.model = self.sysr.models.get_by_id(model_id)
-        md.distance = self.get_float(distance)
-        md.distance_deviation = self.get_float(distance_deviation)
+        md.distance = distance
+        md.distance_deviation = distance_deviation
         self._read_args.append(md)
 
     def finalize(self):
@@ -3656,34 +3672,36 @@ class _FLRFretModelDistanceHandler(Handler):
 class _FLRFPSGlobalParameterHandler(Handler):
     category = '_flr_fps_global_parameter'
 
-    def __call__(self, id, forster_radius_value,
-                 conversion_function_polynom_order, repetition,
-                 av_grid_rel, av_min_grid_a, av_allowed_sphere,
-                 av_search_nodes, av_e_samples_k, sim_viscosity_adjustment,
-                 sim_dt_adjustment, sim_max_iter_k, sim_max_force,
-                 sim_clash_tolerance_a, sim_reciprocal_kt, sim_clash_potential,
-                 convergence_e, convergence_k, convergence_f, convergence_t):
+    def __call__(self, id, forster_radius_value: float,
+                 conversion_function_polynom_order: int, repetition: int,
+                 av_grid_rel: float, av_min_grid_a: float,
+                 av_allowed_sphere: float, av_search_nodes: int,
+                 av_e_samples_k: float, sim_viscosity_adjustment: float,
+                 sim_dt_adjustment: float, sim_max_iter_k: float,
+                 sim_max_force: float, sim_clash_tolerance_a: float,
+                 sim_reciprocal_kt: float, sim_clash_potential,
+                 convergence_e: float, convergence_k: float,
+                 convergence_f: float, convergence_t: float):
         p = self.sysr.flr_fps_global_parameters.get_by_id(id)
-        p.forster_radius = self.get_float(forster_radius_value)
-        p.conversion_function_polynom_order = self.get_int(
-            conversion_function_polynom_order)
-        p.repetition = self.get_int(repetition)
-        p.av_grid_rel = self.get_float(av_grid_rel)
-        p.av_min_grid_a = self.get_float(av_min_grid_a)
-        p.av_allowed_sphere = self.get_float(av_allowed_sphere)
-        p.av_search_nodes = self.get_int(av_search_nodes)
-        p.av_e_samples_k = self.get_float(av_e_samples_k)
-        p.sim_viscosity_adjustment = self.get_float(sim_viscosity_adjustment)
-        p.sim_dt_adjustment = self.get_float(sim_dt_adjustment)
-        p.sim_max_iter_k = self.get_float(sim_max_iter_k)
-        p.sim_max_force = self.get_float(sim_max_force)
-        p.sim_clash_tolerance_a = self.get_float(sim_clash_tolerance_a)
-        p.sim_reciprocal_kt = self.get_float(sim_reciprocal_kt)
+        p.forster_radius = forster_radius_value
+        p.conversion_function_polynom_order = conversion_function_polynom_order
+        p.repetition = repetition
+        p.av_grid_rel = av_grid_rel
+        p.av_min_grid_a = av_min_grid_a
+        p.av_allowed_sphere = av_allowed_sphere
+        p.av_search_nodes = av_search_nodes
+        p.av_e_samples_k = av_e_samples_k
+        p.sim_viscosity_adjustment = sim_viscosity_adjustment
+        p.sim_dt_adjustment = sim_dt_adjustment
+        p.sim_max_iter_k = sim_max_iter_k
+        p.sim_max_force = sim_max_force
+        p.sim_clash_tolerance_a = sim_clash_tolerance_a
+        p.sim_reciprocal_kt = sim_reciprocal_kt
         p.sim_clash_potential = sim_clash_potential
-        p.convergence_e = self.get_float(convergence_e)
-        p.convergence_k = self.get_float(convergence_k)
-        p.convergence_f = self.get_float(convergence_f)
-        p.convergence_t = self.get_float(convergence_t)
+        p.convergence_e = convergence_e
+        p.convergence_k = convergence_k
+        p.convergence_f = convergence_f
+        p.convergence_t = convergence_t
 
 
 class _FLRFPSModelingHandler(Handler):
@@ -3707,15 +3725,16 @@ class _FLRFPSModelingHandler(Handler):
 class _FLRFPSAVParameterHandler(Handler):
     category = '_flr_fps_av_parameter'
 
-    def __call__(self, id, num_linker_atoms, linker_length, linker_width,
-                 probe_radius_1, probe_radius_2, probe_radius_3):
+    def __call__(self, id, num_linker_atoms: int, linker_length: float,
+                 linker_width: float, probe_radius_1: float,
+                 probe_radius_2: float, probe_radius_3: float):
         p = self.sysr.flr_fps_av_parameters.get_by_id(id)
-        p.num_linker_atoms = self.get_int(num_linker_atoms)
-        p.linker_length = self.get_float(linker_length)
-        p.linker_width = self.get_float(linker_width)
-        p.probe_radius_1 = self.get_float(probe_radius_1)
-        p.probe_radius_2 = self.get_float(probe_radius_2)
-        p.probe_radius_3 = self.get_float(probe_radius_3)
+        p.num_linker_atoms = num_linker_atoms
+        p.linker_length = linker_length
+        p.linker_width = linker_width
+        p.probe_radius_1 = probe_radius_1
+        p.probe_radius_2 = probe_radius_2
+        p.probe_radius_3 = probe_radius_3
 
 
 class _FLRFPSAVModelingHandler(Handler):
@@ -3732,29 +3751,28 @@ class _FLRFPSAVModelingHandler(Handler):
 class _FLRFPSMPPHandler(Handler):
     category = '_flr_fps_mean_probe_position'
 
-    def __call__(self, id, sample_probe_id, mpp_xcoord, mpp_ycoord,
-                 mpp_zcoord):
+    def __call__(self, id, sample_probe_id, mpp_xcoord: float,
+                 mpp_ycoord: float, mpp_zcoord: float):
         p = self.sysr.flr_fps_mean_probe_positions.get_by_id(id)
         p.sample_probe = self.sysr.flr_sample_probe_details.get_by_id(
             sample_probe_id)
-        p.x = self.get_float(mpp_xcoord)
-        p.y = self.get_float(mpp_ycoord)
-        p.z = self.get_float(mpp_zcoord)
+        p.x = mpp_xcoord
+        p.y = mpp_ycoord
+        p.z = mpp_zcoord
 
 
 class _FLRFPSMPPAtomPositionHandler(Handler):
     category = '_flr_fps_mpp_atom_position'
 
-    def __call__(self, id, group_id, seq_id, atom_id, asym_id, xcoord,
-                 ycoord, zcoord):
+    def __call__(self, id, group_id, seq_id: int, atom_id, asym_id,
+                 xcoord: float, ycoord: float, zcoord: float):
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        seq_id = self.get_int(seq_id)
 
         p = self.sysr.flr_fps_mpp_atom_positions.get_by_id(id)
         p.atom = asym.residue(seq_id).atom(atom_id)
-        p.x = self.get_float(xcoord)
-        p.y = self.get_float(ycoord)
-        p.z = self.get_float(zcoord)
+        p.x = xcoord
+        p.y = ycoord
+        p.z = zcoord
 
         g = self.sysr.flr_fps_mpp_atom_position_groups.get_by_id(group_id)
         g.add_atom_position(p)
@@ -3789,8 +3807,7 @@ class _FLRRelaxationTimeFretAnalysisConnectionHandler(Handler):
     category = '_flr_relaxation_time_analysis'
 
     def __init__(self, *args):
-        super(_FLRRelaxationTimeFretAnalysisConnectionHandler,
-              self).__init__(*args)
+        super().__init__(*args)
         self._read_args = []
 
     def __call__(self, id, fret_analysis_id, relaxation_time_id, details):
@@ -3833,7 +3850,7 @@ _flr_handlers = [_FLRChemDescriptorHandler, _FLRInstSettingHandler,
                  _FLRRelaxationTimeFretAnalysisConnectionHandler]
 
 
-class Variant(object):
+class Variant:
     """Utility class to select the type of file to read with :func:`read`."""
 
     #: Class to track global file information, e.g. :class:`SystemReader`
@@ -3872,7 +3889,7 @@ class IHMVariant(Variant):
         _AuditAuthorHandler, _AuditRevisionHistoryHandler,
         _AuditRevisionDetailsHandler, _AuditRevisionGroupHandler,
         _AuditRevisionCategoryHandler, _AuditRevisionItemHandler,
-        _GrantHandler, _CitationAuthorHandler,
+        _DataUsageHandler, _GrantHandler, _CitationAuthorHandler,
         _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
         _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,
         _StructRefHandler, _StructRefSeqHandler, _StructRefSeqDifHandler,
@@ -3886,6 +3903,7 @@ class IHMVariant(Variant):
         _StartingComputationalModelsHandler, _StartingComparativeModelsHandler,
         _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
         _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
+        _ModelRepresentativeHandler,
         _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
         _NotModeledResidueRangeHandler,
         _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,
@@ -3901,6 +3919,7 @@ class IHMVariant(Variant):
         _NonPolySchemeHandler, _BranchSchemeHandler, _EntityBranchListHandler,
         _BranchDescriptorHandler, _BranchLinkHandler, _CrossLinkListHandler,
         _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
+        _CrossLinkResultParametersHandler,
         _CrossLinkResultHandler, _StartingModelSeqDifHandler,
         _OrderedModelHandler, _OrderedEnsembleHandler,
         _MultiStateSchemeHandler, _MultiStateSchemeConnectivityHandler,

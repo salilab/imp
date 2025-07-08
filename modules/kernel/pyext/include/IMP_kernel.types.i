@@ -362,7 +362,7 @@ _object_types.append(#Name)
 
 
 
-%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName, UniqueID...)
+%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, CppName, PluralName, UniqueID...)
 IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
 %typemap(out) Namespace::Name* {
   if (!($owner & SWIG_POINTER_NEW)) {
@@ -382,13 +382,28 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Namespace::Name, PluralName##Temp,);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%template(_object_cast_to_##UniqueID##Name) IMP::object_cast<Namespace::Name>;
+%template(_object_cast_to_##UniqueID##Name) IMP::object_cast<Namespace::CppName>;
 %enddef
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName, UniqueID...)
 IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName, UniqueID);
 IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
+  %pythoncode %{
+    @staticmethod
+    def get_from(o):
+       return _object_cast_to_##UniqueID##Name(o)
+  %}
+ }
+%enddef
+
+/* Like IMP_SWIG_OBJECT, for cases where Namespace::Name only exists in
+   Python but is equivalent to Namespace::CppName in C++, generally because
+   it is a template class */
+%define IMP_SWIG_OBJECT_TEMPLATED(Namespace, Name, CppName, PluralName, UniqueID...)
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, CppName, PluralName, UniqueID);
+IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
+%extend Namespace::CppName {
   %pythoncode %{
     @staticmethod
     def get_from(o):
@@ -871,6 +886,13 @@ IMP_SWIG_VALUE_SERIALIZE_IMPL(Namespace, Name)
 IMP_SWIG_OBJECT(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, Name)
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, Name)
+%enddef
+
+// A templated Object that is serializable/picklable
+%define IMP_SWIG_OBJECT_SERIALIZE_TEMPLATED(Namespace, Name, CppName, PluralName)
+IMP_SWIG_OBJECT_TEMPLATED(Namespace, Name, CppName, PluralName)
+IMP_SWIG_OBJECT_SERIALIZE_IMPL(Namespace, CppName)
+IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, CppName)
 %enddef
 
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)

@@ -409,28 +409,9 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
 }
 
 namespace {
-atom::Bonds get_rep_bonds(atom::Hierarchy h) {
-  IMP_FUNCTION_LOG;
-  atom::Bonds ret;
-  if (atom::Representation::get_is_setup(h)) {
-    for(atom::Hierarchy r :
-                atom::Representation(h).get_representations(atom::BALLS)) {
-      if (r != h) {
-        ret += atom::get_internal_bonds(r);
-      }
-    }
-    IMP_LOG_VERBOSE("Found " << ret.size() << " alt bonds" << std::endl);
-  } else {
-    for(atom::Hierarchy ch : h.get_children()) {
-      ret += get_rep_bonds(ch);
-    }
+  atom::Bonds get_rmf_bonds(atom::Hierarchy h) {
+    return atom::get_internal_bonds(h, true);
   }
-  return ret;
-}
-atom::Bonds get_rmf_bonds(atom::Hierarchy h) {
-  atom::Bonds ret = atom::get_internal_bonds(h);
-  return ret + get_rep_bonds(h);
-}
 }
 
 void HierarchySaveBonds::setup_bonds(Model *m, ParticleIndex p,

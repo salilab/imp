@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""
@@ -251,7 +251,7 @@ class Builder(object):
         commands = []
         if component.target[typ]:
             commands.append("%s %s" % (self.makecmd, component.target[typ]))
-        cmd = "%s -R '%s' -L '-%ss?-'" % (
+        cmd = "%s -R '%s' -L '\\-%ss?-'" % (
             self.testcmd,
             component.test_regex,
             typ)

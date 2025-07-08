@@ -2,14 +2,14 @@
 """
 
 
-class Source(object):
+class Source:
     """Base class to describe the source of an :class:`ihm.Entity`.
        See :class:`Manipulated`, :class:`Natural` and :class:`Synthetic`.
     """
     src_method = None
 
 
-class Details(object):
+class Details:
     """Identifying information for an entity source.
        See :class:`Manipulated`, :class:`Natural` or :class:`Synthetic`.
 

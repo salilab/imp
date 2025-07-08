@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """@namespace IMP.isd.TBLReader
    Classes to handle TBL files.

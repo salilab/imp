@@ -115,7 +115,7 @@ int rrt_sample(int argc, char **argv)
   IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading PDB or mmCIF file " << pdb_name << std::endl;
   IMP::atom::Hierarchy mhd =
-    IMP::atom::read_pdb_or_mmcif(
+    IMP::atom::read_pdb_any(
             pdb_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
             // don't add radii
             true, true);

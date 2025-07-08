@@ -8,9 +8,11 @@
 
 #ifndef IMPSPB_SPB_MAIN_H
 #define IMPSPB_SPB_MAIN_H
-#include <IMP.h>
 #include <map>
 #include <string>
+#include <IMP/algebra/constants.h>
+#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Transformation3D.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

@@ -38,7 +38,7 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
     Wb_(exp_profile->size()),
     A_(exp_profile->size(), 2) {
 
-    Eigen::VectorXf b(exp_profile->size());
+    Eigen::VectorXd b(exp_profile->size());
     for (unsigned int i = 0; i < exp_profile->size(); i++) {
       Wb_(i) = exp_profile->get_intensity(i);
       W_(i) = 1.0 / (exp_profile->get_error(i));
@@ -94,13 +94,13 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
       double max_c2, double old_chi, Vector<double>& weights, bool use_offset) const;
 
  private:
-  Eigen::MatrixXf W_;  // weights matrix
+  Eigen::MatrixXd W_;  // weights matrix
 
   // weights matrix multiplied by experimental intensities vector
-  Eigen::VectorXf Wb_;
+  Eigen::VectorXd Wb_;
 
   // intensities
-  Eigen::MatrixXf A_;
+  Eigen::MatrixXd A_;
 };
 
 template <typename ScoringFunctionT>
@@ -133,9 +133,9 @@ double WeightedProfileFitter<ScoringFunctionT>::compute_score(
     }
   }
 
-  Eigen::VectorXf w;
+  Eigen::VectorXd w;
   if (!nnls) {  // solve least squares
-    Eigen::JacobiSVD<Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(W_.asDiagonal() * A_,
                                           Eigen::ComputeThinU
                                           | Eigen::ComputeThinV);
     w = svd.solve(Wb_);
@@ -152,7 +152,7 @@ double WeightedProfileFitter<ScoringFunctionT>::compute_score(
           (ProfileFitter<ScoringFunctionT>::exp_profile_->get_min_q(),
            ProfileFitter<ScoringFunctionT>::exp_profile_->get_max_q(),
            ProfileFitter<ScoringFunctionT>::exp_profile_->get_delta_q()));
-  Eigen::VectorXf wp = A_ * w;
+  Eigen::VectorXd wp = A_ * w;
   weighted_profile->set_qs(profiles[0]->get_qs());
   weighted_profile->set_intensities(wp);
   weights.resize(w.size());

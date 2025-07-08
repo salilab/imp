@@ -40,7 +40,7 @@ class Tests(unittest.TestCase):
 
     def test_residue_segment_starting_model(self):
         """Test ResidueSegment class with starting model"""
-        class MockObject(object):
+        class MockObject:
             pass
         asym = ihm.AsymUnit(ihm.Entity('AA'), "testdetail")
         sm = MockObject()

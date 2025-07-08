@@ -19,6 +19,9 @@ class VarListIterator:
         self.__getfunc = getfunc
         self.__n = -1
 
+    def __iter__(self):
+        return self
+
     def __next__(self):
         self.__n += 1
         if self.__n >= self.__count:

@@ -8,7 +8,6 @@
 
 #ifndef IMPSPB_PT_STUFF_H
 #define IMPSPB_PT_STUFF_H
-#include <IMP.h>
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE

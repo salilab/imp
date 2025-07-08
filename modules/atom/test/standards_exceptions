@@ -1,5 +1,5 @@
 show_exceptions=['ElementTable']
-value_object_exceptions=['ElementTable']
+value_object_exceptions=['ElementTable', 'LennardJonesTypedPairScore']
 function_name_exceptions=['transform',
                           'BrownianDynamics.simulate',
                           'BrownianDynamics.simulate_wave',
@@ -30,4 +30,5 @@ spelling_exceptions=['lennard', 'charmm', "jones",
                      "rmsd", "pdb", "multimodel", "conect",
                      'rescale',
                      'berendsen', 'langevin', 'runge', 'kutta', "drms", "drmsd",
-                     "psipred", "femto", "xor", "mmcif", "uniprot", "asym"]
+                     "psipred", "femto", "xor", "mmcif", "uniprot", "asym",
+                     "bcif"]

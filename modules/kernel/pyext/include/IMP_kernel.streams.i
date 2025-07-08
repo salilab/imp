@@ -175,31 +175,18 @@
       setp(&buffer_.front(), &buffer_.front() + buffer_.size());
       // to make errors occur earlier
       PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_,
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
                           (Py_ssize_t)0);
-#else
-                          (int)0);
-#endif
       if (!result) {
-#if PY_VERSION_HEX >= 0x03000000
         PyErr_Clear();
         // Failed to write string (Unicode); try bytes instead
         fmat_[1] = 'y';
         result = PyObject_CallFunction(write_method_, fmat_, fmat_,
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
                           (Py_ssize_t)0);
-#else
-                          (int)0);
-#endif
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
           Py_DECREF(result);
         }
-#else
-        // Python exception will be reraised when SWIG method finishes
-        throw std::ostream::failure("Python error on write");
-#endif
       } else {
         Py_DECREF(result);
       }
@@ -222,11 +209,7 @@
         return 0;
       }
       PyObject *result = PyObject_CallFunction(write_method_, fmat_, pbase(),
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
                                                (Py_ssize_t)num);
-#else
-                                               (int)num);
-#endif
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
@@ -244,11 +227,7 @@
         // buffer_.size() characters via the regular buffering
         sync();
         PyObject *result = PyObject_CallFunction(write_method_, fmat_, s,
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
                                                  (Py_ssize_t)n);
-#else
-                                                 (int)n);
-#endif
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
@@ -316,41 +295,6 @@ class InAdapter : public std::streambuf
 };
 
 // Adapter class that acts like an input std::streambuf but delegates to
-// C-style stdio via a FILE pointer
-class PyInCFileAdapter : public InAdapter
-{
-  FILE *fh_;
-public:
-  PyInCFileAdapter(FILE *fh) : fh_(fh) {}
-  virtual ~PyInCFileAdapter(){
-  }
-protected:
-  virtual int_type uflow() {
-    return getc(fh_);
-  }
-
-  virtual int_type underflow() {
-    int c = getc(fh_);
-    if (c != EOF) {
-      ungetc(c, fh_);
-    }
-    return c;
-  }
-
-  virtual std::streamsize xsgetn(char *s, std::streamsize n) {
-    return fread(s, 1, n, fh_);
-  }
-
-  virtual int_type pbackfail(int c) {
-    return c == EOF ? EOF : ungetc(c, fh_);
-  }
-
-  virtual int_type sync() {
-    return fflush(fh_);
-  }
-};
-
-// Adapter class that acts like an input std::streambuf but delegates to
 // a Python file-like object
 class PyInFilelikeAdapter : public InAdapter
 {
@@ -379,18 +323,14 @@ protected:
     static char fmt[] = "(i)";
     if (peeked_!= -1) return peeked_;
     PyObject *result = PyObject_CallFunction(read_method_, fmt,
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
                                              (Py_ssize_t)1);
-#else
-                                             (int)1);
-#endif
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
       throw std::ostream::failure("Python error on read");
     } else {
       if (PyString_Check(result)) {
         if (PyString_Size(result) == 1) {
-          int c = peeked_ = PyString_AsString(result)[0];
+          int c = peeked_ = (unsigned char)(PyString_AsString(result)[0]);
           Py_DECREF(result);
           return c;
         } else {
@@ -408,12 +348,7 @@ protected:
 
   virtual std::streamsize xsgetn(char *s, std::streamsize n) {
     static char fmt[] = "(i)";
-    PyObject *result = PyObject_CallFunction(read_method_, fmt,
-#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
-                                             (Py_ssize_t)n);
-#else
-                                             (int)n);
-#endif
+    PyObject *result = PyObject_CallFunction(read_method_, fmt, (Py_ssize_t)n);
     if (!result) {
       throw std::ostream::failure("Python error on read");
     } else {
@@ -446,14 +381,9 @@ protected:
 // (and we cannot read multiple bytes from the Python file, since there is no
 // way to put them back if we read too many; even if the stream is seekable
 // there is no guarantee we can restore the file position unless it is opened
-// in binary mode). Thus, we try to use the underlying FILE pointer (only
-// available for real files, not for file-like objects) if possible. This may
-// fail on Windows where different C runtimes can make FILE pointers unusable:
-// http://www.python.org/doc/faq/windows/#pyrun-simplefile-crashes-on-windows-but-not-on-unix-why
+// in binary mode).
 
-// Note that this is still not optimal, since the streambuf is not buffered;
-// uflow() or underflow() virtual methods will be called for each character
-// (unless xsgetn can be used). This could be alleviated (at the expense of
+// This could be alleviated (at the expense of
 // making the classes rather more complex) by buffering if the underlying file
 // is seekable:
 //   populate_buffer() {
@@ -490,33 +420,11 @@ public:
   // Given a Python file object, return an istream that will read from this
   // object, or NULL if the object is not suitable.
   std::istream* set_python_file(PyObject *p) {
-    // Is the object a 'real' C-style FILE ?
-    bool real_file;
-    /* Cannot reliably detect a "real" file pointer on Windows
-       (differing C runtimes) so always use a file-like approach here;
-       in Python 3 all files are only file-like */
-#if PY_VERSION_HEX >= 0x03000000 || defined(_MSC_VER)
-    real_file = false;
-#else
-    try {
-      real_file = (PyFile_Check(p) && ftell(PyFile_AsFile(p)) != -1);
-    } catch(...) {
-      real_file = false;
+    PyObject *read_method;
+    if (!(read_method = PyObject_GetAttrString(p, "read"))) {
+      return NULL;
     }
-#endif
-
-#if PY_VERSION_HEX < 0x03000000
-    if (real_file) {
-      streambuf_ = std::unique_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
-    } else 
-#endif
-    {
-      PyObject *read_method;
-      if (!(read_method = PyObject_GetAttrString(p, "read"))) {
-        return NULL;
-      }
-      streambuf_ = std::unique_ptr<InAdapter>(new PyInFilelikeAdapter(read_method));
-    }
+    streambuf_ = std::unique_ptr<InAdapter>(new PyInFilelikeAdapter(read_method));
     IMP_INTERNAL_CHECK(!istr_.get(), "Already set the stream.");
     istr_ = std::unique_ptr<std::istream>(new std::istream(streambuf_.get()));
     istr_->exceptions(std::istream::badbit);

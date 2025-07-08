@@ -37,12 +37,14 @@ topology.setup_hierarchy(prot)
 # impropers) of the CHARMM forcefield
 r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
 
-# Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-# know the radii and well depths for each atom, so add them from the forcefield
-# (they can also be assigned manually using the XYZR or LennardJones
-# decorators):
+# Add radii from the forcefield, used for close pairs calculation
 ff.add_radii(prot)
-ff.add_well_depths(prot)
+
+# Add non-bonded interaction (in this case, Lennard-Jones). This needs to
+# know the Lennard-Jones types for all atoms (which in turn define the radius
+# and well depth), so add them from the forcefield (they can also be assigned
+# manually using the LennardJonesType decorator):
+ff.add_lennard_jones_types(prot)
 
 # Get a list of all atoms in the protein, and put it in a container
 atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
@@ -52,14 +54,15 @@ cont = IMP.container.ListSingletonContainer(m, atoms)
 # a collection of building blocks. First, a ClosePairContainer maintains a list
 # of all pairs of Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
 # from the stereochemistry created above are filtered out.
-# Then, a LennardJonesPairScore scores a pair of atoms with the Lennard-Jones
-# potential. Finally, a PairsRestraint is used which simply applies the
-# LennardJonesPairScore to each pair in the ClosePairContainer.
+# Then, a LennardJonesTypedPairScore scores a pair of atoms with the
+# Lennard-Jones potential, using the Lennard-Jones types already assigned.
+# Finally, a PairsRestraint is used which simply applies the
+# LennardJonesTypedPairScore to each pair in the ClosePairContainer.
 nbl = IMP.container.ClosePairContainer(cont, 4.0)
 nbl.add_pair_filter(r.get_pair_filter())
 
 sf = IMP.atom.ForceSwitch(6.0, 7.0)
-ps = IMP.atom.LennardJonesPairScore(sf)
+ps = IMP.atom.LennardJonesTypedPairScore(sf)
 restraints = [r, IMP.container.PairsRestraint(ps, nbl)]
 scoring_function = IMP.core.RestraintsScoringFunction(restraints)
 

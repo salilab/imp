@@ -6,10 +6,8 @@
  */
 
 #include <boost/property_map/property_map.hpp>
-#include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/spb/ChiSquareMetric.h>
-#include <IMP/statistics.h>
 #include <cmath>
 #include <algorithm>
 #include <vector>

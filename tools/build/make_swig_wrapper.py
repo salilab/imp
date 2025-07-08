@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """ Run swig and patch the output.
 """
@@ -38,6 +38,9 @@ def run_swig(outputdir, options):
     args.append("-modern")
     args.append("-fvirtual")
     args.append("-Wextra")
+    # Older SWIG doesn't understand final specifier on classes, so just ignore
+    # it (it has no effect on the generated Python wrappers).
+    args.append("-Dfinal=")
     args.append("-I" + os.path.join("..", "..", "include"))
     args.append("-I" + os.path.join("..", "..", "swig"))
     if options.include:

@@ -27,11 +27,101 @@ import ihm.dumper
 import ihm.model
 import ihm.protocol
 import ihm.util
+import ihm.format
+import urllib.request
 import os
 import argparse
+import collections
+import operator
+import warnings
 
 
-def add_ihm_info(s):
+# All canonical atom names for each standard residue type, as per CCD.
+# This is generated using the util/get_ccd_atoms.py script.
+KNOWN_ATOM_NAMES = {
+    'A': {"C4'", "C2'", 'C2', "C1'", 'N7', 'H62', 'OP2', 'N3', 'C5', 'P',
+          "H5''", 'H2', "C5'", 'H61', "H3'", 'C4', 'N1', 'H8', "H1'", 'C8',
+          'N9', 'HOP3', 'OP1', "O4'", "H2'", "HO2'", 'OP3', "O3'", 'N6',
+          'HOP2', "O5'", "O2'", "HO3'", "H5'", "C3'", 'C6', "H4'"},
+    'ALA': {'H2', 'HB1', 'HB3', 'HB2', 'N', 'HXT', 'O', 'CB', 'C', 'HA', 'CA',
+            'H', 'OXT'},
+    'ARG': {'HB2', 'CG', 'NE', 'H', 'H2', 'HH22', 'N', 'HG2', 'CA', 'NH2',
+            'HH11', 'HG3', 'HH21', 'CZ', 'HB3', 'HXT', 'O', 'C', 'HD3', 'HH12',
+            'CB', 'NH1', 'CD', 'HA', 'HD2', 'HE', 'OXT'},
+    'ASN': {'H2', 'HB3', 'HD22', 'HB2', 'N', 'CG', 'O', 'CB', 'ND2', 'HXT',
+            'C', 'HA', 'HD21', 'CA', 'OD1', 'H', 'OXT'},
+    'ASP': {'H2', 'HB3', 'HB2', 'N', 'CG', 'O', 'CB', 'HXT', 'C', 'HA', 'OD2',
+            'CA', 'OD1', 'HD2', 'H', 'OXT'},
+    'C': {"C4'", "C2'", 'C2', 'O2', 'H42', 'H5', "C1'", 'OP2', 'N3', 'C5',
+          'P', "H5''", 'H41', 'H6', "C5'", "H3'", 'C4', 'N1', 'N4', "H1'",
+          'HOP3', 'OP1', "O4'", "H2'", "HO2'", 'OP3', "O3'", 'HOP2', "O5'",
+          "O2'", "HO3'", "H5'", "C3'", 'C6', "H4'"},
+    'CYS': {'H2', 'HB3', 'HB2', 'N', 'SG', 'O', 'CB', 'HXT', 'C', 'HA', 'HG',
+            'CA', 'H', 'OXT'},
+    'DA': {"C4'", "C2'", 'C2', "C1'", 'N7', 'H62', 'OP2', 'N3', 'C5', 'P',
+           "H5''", 'H2', "C5'", 'H61', "H3'", 'C4', 'N1', 'H8', "H1'", 'C8',
+           'N9', 'HOP3', 'OP1', "O4'", "H2'", 'OP3', "O3'", 'N6', 'HOP2',
+           "O5'", "H2''", "HO3'", "H5'", "C3'", 'C6', "H4'"},
+    'DC': {"C4'", "C2'", 'C2', 'O2', 'H42', 'H5', "C1'", 'OP2', 'N3', 'C5',
+           'P', "H5''", 'H41', 'H6', "C5'", "H3'", 'C4', 'N1', 'N4', "H1'",
+           'HOP3', 'OP1', "O4'", "H2'", 'OP3', "O3'", 'HOP2', "O5'", "H2''",
+           "HO3'", "H5'", "C3'", 'C6', "H4'"},
+    'DG': {"C4'", "C2'", 'C2', "C1'", 'N7', 'OP2', 'N3', 'C5', 'P', "H5''",
+           "C5'", 'O6', 'H1', "H3'", 'C4', 'N1', 'H8', "H1'", 'C8', 'N9',
+           'HOP3', 'OP1', "O4'", "H2'", 'OP3', "O3'", 'HOP2', "O5'", "H2''",
+           'H21', 'H22', "HO3'", "H5'", "C3'", 'N2', 'C6', "H4'"},
+    'DT': {"C4'", "C2'", 'C2', 'O2', 'O4', "C1'", 'OP2', 'N3', 'C5', 'P',
+           "H5''", 'H6', "C5'", "H3'", 'C4', 'N1', 'C7', "H1'", 'H73', 'HOP3',
+           'H3', 'OP1', "O4'", "H2'", 'OP3', "O3'", 'HOP2', "O5'", "H2''",
+           'H71', "HO3'", "H5'", "C3'", 'H72', 'C6', "H4'"},
+    'G': {"C4'", "C2'", 'C2', "C1'", 'N7', 'OP2', 'N3', 'C5', 'P', "H5''",
+          "C5'", 'O6', 'H1', "H3'", 'C4', 'N1', 'H8', "H1'", 'C8', 'N9',
+          'HOP3', 'OP1', "O4'", "H2'", "HO2'", 'OP3', "O3'", 'HOP2', "O5'",
+          "O2'", 'H21', 'H22', "HO3'", "H5'", "C3'", 'N2', 'C6', "H4'"},
+    'GLN': {'HB2', 'CG', 'H', 'H2', 'N', 'HG2', 'HE22', 'CA', 'HG3', 'HE21',
+            'HB3', 'HXT', 'O', 'NE2', 'C', 'OE1', 'CB', 'CD', 'HA', 'OXT'},
+    'GLU': {'HB2', 'CG', 'H', 'H2', 'N', 'HG2', 'CA', 'HG3', 'HB3', 'HXT',
+            'O', 'HE2', 'C', 'OE2', 'OE1', 'CB', 'CD', 'HA', 'OXT'},
+    'GLY': {'HA3', 'HXT', 'CA', 'O', 'HA2', 'H', 'N', 'C', 'H2', 'OXT'},
+    'HIS': {'HB2', 'CG', 'CE1', 'HE1', 'H', 'ND1', 'H2', 'N', 'CA', 'HD1',
+            'HB3', 'HXT', 'O', 'HE2', 'NE2', 'C', 'CD2', 'CB', 'HA', 'HD2',
+            'OXT'},
+    'ILE': {'HD11', 'CG1', 'H', 'HD12', 'H2', 'N', 'CA', 'HD13', 'HG13',
+            'HXT', 'O', 'HB', 'C', 'CD1', 'HG23', 'HG22', 'HG21', 'HG12',
+            'CB', 'CG2', 'HA', 'OXT'},
+    'LEU': {'HD11', 'HB2', 'HD22', 'CG', 'HD21', 'H', 'HD12', 'H2', 'N',
+            'HD23', 'CA', 'HD13', 'HB3', 'HXT', 'O', 'C', 'CD2', 'CD1', 'CB',
+            'HA', 'HG', 'OXT'},
+    'LYS': {'HB2', 'CG', 'CE', 'H', 'H2', 'N', 'HG2', 'HE3', 'CA', 'HG3',
+            'HB3', 'HXT', 'O', 'HE2', 'HZ1', 'HZ3', 'C', 'HD3', 'CB', 'CD',
+            'HA', 'HZ2', 'HD2', 'NZ', 'OXT'},
+    'MET': {'HB2', 'CG', 'HE1', 'CE', 'H', 'H2', 'N', 'HG2', 'HE3', 'CA',
+            'HG3', 'SD', 'HB3', 'HXT', 'O', 'HE2', 'C', 'CB', 'HA', 'OXT'},
+    'PHE': {'HB2', 'CG', 'CE1', 'HE1', 'H', 'H2', 'N', 'HZ', 'CA', 'HD1',
+            'CZ', 'HB3', 'HXT', 'O', 'HE2', 'C', 'CD2', 'CD1', 'CB', 'CE2',
+            'HA', 'HD2', 'OXT'},
+    'PRO': {'HB3', 'HB2', 'N', 'CG', 'O', 'CB', 'HG2', 'HXT', 'CD', 'C', 'HA',
+            'CA', 'HD2', 'H', 'HG3', 'HD3', 'OXT'},
+    'SER': {'H2', 'HB3', 'HB2', 'N', 'HXT', 'O', 'CB', 'C', 'HA', 'HG', 'CA',
+            'H', 'OG', 'OXT'},
+    'THR': {'H2', 'HXT', 'N', 'HG23', 'O', 'CB', 'CG2', 'OG1', 'HB', 'C',
+            'HA', 'CA', 'HG22', 'H', 'HG1', 'HG21', 'OXT'},
+    'TRP': {'HB2', 'CG', 'CE3', 'CZ3', 'HE1', 'H', 'H2', 'N', 'HE3', 'CA',
+            'CZ2', 'HD1', 'HB3', 'HXT', 'O', 'HZ3', 'C', 'CD2', 'CD1', 'NE1',
+            'CB', 'HH2', 'CE2', 'HA', 'CH2', 'HZ2', 'OXT'},
+    'U': {"C4'", "C2'", 'C2', 'O2', 'H5', 'O4', "C1'", 'OP2', 'N3', 'C5', 'P',
+          "H5''", 'H6', "C5'", "H3'", 'C4', 'N1', "H1'", 'HOP3', 'H3', 'OP1',
+          "O4'", "H2'", "HO2'", 'OP3', "O3'", 'HOP2', "O5'", "O2'", "HO3'",
+          "H5'", "C3'", 'C6', "H4'"},
+    'VAL': {'CG1', 'H', 'H2', 'N', 'CA', 'HG13', 'HXT', 'O', 'HB', 'C',
+            'HG23', 'HG22', 'HG21', 'HG12', 'CB', 'CG2', 'HA', 'OXT', 'HG11'}
+}
+
+
+def add_ihm_info(s, fix_histidines, check_atom_names):
+    # Non-standard histidine names (protonation states)
+    histidines = frozenset(('HIP', 'HID', 'HIE'))
+
     if not s.title:
         s.title = 'Auto-generated system'
 
@@ -58,7 +148,97 @@ def add_ihm_info(s):
                         model.protocol = default_protocol
                     model.not_modeled_residue_ranges.extend(
                         _get_not_modeled_residues(model))
+                    if fix_histidines:
+                        _fix_histidine_het_atoms(model, histidines)
+                    if check_atom_names != 'no':
+                        _check_atom_names(model, check_atom_names == 'all')
+    if fix_histidines:
+        _fix_histidine_chem_comps(s, histidines)
     return s
+
+
+def _fix_histidine_het_atoms(model, histidines):
+    """Fix any non-standard histidine atoms in atom_site that are marked
+       HETATM to instead use ATOM"""
+    for atom in model._atoms:
+        if atom.seq_id is None or not atom.het:
+            continue
+        comp = atom.asym_unit.sequence[atom.seq_id - 1]
+        if comp.id in histidines:
+            atom.het = False
+
+
+class _ChemCompAtomHandler:
+    not_in_file = omitted = unknown = None
+
+    def __init__(self):
+        super().__init__()
+        self.atoms = collections.defaultdict(set)
+
+    def __call__(self, comp_id, atom_id):
+        self.atoms[comp_id].add(atom_id)
+
+
+def _get_non_std_restyp(restyp):
+    """Return CCD info for the given residue type"""
+    url_top = 'https://files.rcsb.org'
+    url_pattern = url_top + '/pub/pdb/refdata/chem_comp/%s/%s/%s.cif'
+    url = url_pattern % (restyp[-1], restyp, restyp)
+    cca = _ChemCompAtomHandler()
+    try:
+        with urllib.request.urlopen(url) as fh:
+            c = ihm.format.CifReader(fh,
+                                     category_handler={'_chem_comp_atom': cca})
+            c.read_file()
+    except urllib.error.URLError as exc:
+        warnings.warn(
+            "Component %s could not be found in CCD: %s" % (restyp, exc))
+    return cca.atoms
+
+
+def _get_non_canon(seen_atom_names, check_all):
+    """Get all non-canonical atom names for each residue type"""
+    for restyp, atoms in seen_atom_names.items():
+        if check_all and restyp not in KNOWN_ATOM_NAMES:
+            KNOWN_ATOM_NAMES.update(_get_non_std_restyp(restyp))
+        if restyp in KNOWN_ATOM_NAMES:
+            non_canon_atoms = atoms - KNOWN_ATOM_NAMES[restyp]
+            if non_canon_atoms:
+                yield restyp, non_canon_atoms
+
+
+def _check_atom_names(model, check_all):
+    """Check that only standard atom names are used for known
+       residue types"""
+    seen_atom_names = collections.defaultdict(set)
+    for atom in model._atoms:
+        seq_id = 1 if atom.seq_id is None else atom.seq_id
+        comp = atom.asym_unit.sequence[seq_id - 1]
+        seen_atom_names[comp.id].add(atom.atom_id)
+    non_canon = sorted(_get_non_canon(seen_atom_names, check_all),
+                       key=operator.itemgetter(0))
+    if non_canon:
+        raise ValueError(
+            "Non-canonical atom names found in the following residues: "
+            + "; ".join("%s: %r" % (restyp, sorted(atoms))
+                        for (restyp, atoms) in non_canon))
+
+
+def _fix_histidine_chem_comps(s, histidines):
+    """Change any non-standard histidine chemical components to normal HIS"""
+    his = ihm.LPeptideAlphabet()['H']
+    for e in s.entities:
+        for c in e.sequence:
+            if c.id in histidines:
+                # Change the ChemComp to HIS in place, as there may be
+                # references to this ChemComp elsewhere. Duplicate HIS
+                # components will be combined into one at output time.
+                c.id = his.id
+                c.code = his.code
+                c.code_canonical = his.code_canonical
+                c.name = his.name
+                c.formula = his.formula
+                c.__class__ = his.__class__
 
 
 def _get_not_modeled_residues(model):
@@ -95,7 +275,7 @@ def _get_not_modeled_residues(model):
             yield ihm.model.NotModeledResidueRange(asym, r[0], r[1])
 
 
-def add_ihm_info_one_system(fname):
+def add_ihm_info_one_system(fname, fix_histidines, check_atom_names):
     """Read mmCIF file `fname`, which must contain a single System, and
        return it with any missing IHM data added."""
     with open(fname) as fh:
@@ -103,7 +283,7 @@ def add_ihm_info_one_system(fname):
     if len(systems) != 1:
         raise ValueError("mmCIF file %s must contain exactly 1 data block "
                          "(%d found)" % (fname, len(systems)))
-    return add_ihm_info(systems[0])
+    return add_ihm_info(systems[0], fix_histidines, check_atom_names)
 
 
 def combine(s, other_s):
@@ -218,6 +398,15 @@ def get_args():
     p.add_argument("--add", "-a", action='append', metavar="add.cif",
                    help="also add model information from the named mmCIF "
                         "file to the output file")
+    p.add_argument("--histidines", action='store_true', dest="fix_histidines",
+                   help="Convert any non-standard histidine names (HIP, HID, "
+                        "HIE, for different protonation states) to HIS")
+    p.add_argument('--check_atom_names', choices=['no', 'standard', 'all'],
+                   dest="check_atom_names", default='no',
+                   help="If 'standard', check for non-canonical atom names "
+                        "in standard amino acid and nucleic acid chemical "
+                        "components; if 'all', also check non-standard "
+                        "residue types by querying CCD (needs network access)")
     return p.parse_args()
 
 
@@ -229,9 +418,11 @@ def main():
         raise ValueError("Input and output are the same file")
 
     if args.add:
-        s = add_ihm_info_one_system(args.input)
+        s = add_ihm_info_one_system(args.input, args.fix_histidines,
+                                    args.check_atom_names)
         for other in args.add:
-            other_s = add_ihm_info_one_system(other)
+            other_s = add_ihm_info_one_system(other, args.fix_histidines,
+                                              args.check_atom_names)
             combine(s, other_s)
         with open(args.output, 'w') as fhout:
             ihm.dumper.write(
@@ -241,7 +432,9 @@ def main():
         with open(args.input) as fh:
             with open(args.output, 'w') as fhout:
                 ihm.dumper.write(
-                    fhout, [add_ihm_info(s) for s in ihm.reader.read(fh)],
+                    fhout, [add_ihm_info(s, args.fix_histidines,
+                                         args.check_atom_names)
+                            for s in ihm.reader.read(fh)],
                     variant=ihm.dumper.IgnoreVariant(['_audit_conform']))
 
 

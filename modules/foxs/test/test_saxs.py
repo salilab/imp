@@ -40,6 +40,22 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
                     '6lyz.plt', '6lyz_lyzexp.fit'):
             os.unlink(self.get_input_file_name(out))
 
+    def test_simple_bcif(self):
+        """Simple test of SAXS profile application with BinaryCIF input"""
+        p = self.run_application('foxs',
+                                 ['-g',
+                                  self.get_input_file_name('6lyz.bcif'),
+                                  self.get_input_file_name('lyzexp.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        m = re.search(r'6lyz\.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
+        for out in ('6lyz.bcif.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt',
+                    '6lyz.plt', '6lyz_lyzexp.fit'):
+            os.unlink(self.get_input_file_name(out))
+
     def test_simple_cif_multimodel(self):
         """Test of SAXS profile application with multimodel mmCIF input"""
         p = self.run_application('foxs',
@@ -56,14 +72,45 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search(r'6lyz_m2.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 149.65, delta=0.03)
+        self.assertAlmostEqual(float(m.group(1)), 149.56, delta=0.03)
 
         m = re.search(r'6lyz_m3.cif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 134.08, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 134.11, delta=0.01)
 
         for model in ('_m1', '_m2', '_m3'):
             for out in ('6lyz%s.cif.dat' % model, '6lyz%s_lyzexp.dat' % model,
+                        '6lyz%s_lyzexp.fit' % model,
+                        '6lyz%s_lyzexp.plt' % model,
+                        '6lyz%s.plt' % model):
+                os.unlink(self.get_input_file_name(out))
+        os.unlink('fit.plt')
+        os.unlink('profiles.plt')
+
+    def test_simple_bcif_multimodel(self):
+        """Test of SAXS profile application with multimodel BinaryCIF input"""
+        p = self.run_application('foxs',
+                                 ['-g', '-m', '2',
+                                  self.get_input_file_name('6lyz.bcif'),
+                                  self.get_input_file_name('lyzexp.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        # Should have three fits for the three models
+        m = re.search(r'6lyz_m1.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
+
+        m = re.search(r'6lyz_m2.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 149.56, delta=0.03)
+
+        m = re.search(r'6lyz_m3.bcif.*Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 134.11, delta=0.01)
+
+        for model in ('_m1', '_m2', '_m3'):
+            for out in ('6lyz%s.bcif.dat' % model, '6lyz%s_lyzexp.dat' % model,
                         '6lyz%s_lyzexp.fit' % model,
                         '6lyz%s_lyzexp.plt' % model,
                         '6lyz%s.plt' % model):

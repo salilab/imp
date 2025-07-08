@@ -1,7 +1,7 @@
 Source: imp
 Priority: optional
 Maintainer: Ben Webb <ben@salilab.org>
-Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, libopenmpi-dev, rmf-dev (>= 1.6), python3-ihm, scons, lsb-release, python3-protobuf, python3-yaml, python3-mpi4py
+Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, libopenmpi-dev, rmf-dev (>= 1.7), python3-ihm, scons, lsb-release, python3-protobuf, python3-yaml, python3-mpi4py
 Standards-Version: 4.6.2
 Section: libs
 Homepage: https://integrativemodeling.org/
@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/salilab/imp/
 Package: imp-dev
 Section: libdevel
 Architecture: any
-Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, python3-dev, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, rmf-dev (>= 1.6), python3-ihm
+Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl-dev, python3-dev, libann-dev, libeigen3-dev, libcereal-dev, libprotobuf-dev, protobuf-compiler, rmf-dev (>= 1.7), python3-ihm
 Description: The Integrative Modeling Platform - development files
  Headers to compile against IMP.
 

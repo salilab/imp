@@ -4,7 +4,7 @@ import IMP.isd.gmm_tools
 import IMP.pmi
 import IMP.pmi.tools
 from collections import defaultdict
-from math import pi
+import math
 import os
 import warnings
 
@@ -54,7 +54,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
                   model_num=None, ca_only=False):
     """read a structure from a PDB file and return a list of residues
     @param model The IMP model
-    @param pdb_fn    The file to read (in traditional PDB or mmCIF format)
+    @param pdb_fn  The file to read (in mmCIF, BinaryCIF, or legacy PDB format)
     @param chain_id  Chain ID to read
     @param res_range Add only a specific set of residues.
            res_range[0] is the starting and res_range[1] is the ending
@@ -66,10 +66,13 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
     @param model_num Read multi-model PDB and return that model (0-based index)
     @param ca_only Read only CA atoms (by default, all non-waters are read)
     """
-    # Read file in mmCIF format if requested
+    # Read file in mmCIF or BinaryCIF format if requested
     if pdb_fn.endswith('.cif'):
         read_file = IMP.atom.read_mmcif
         read_multi_file = IMP.atom.read_multimodel_mmcif
+    elif pdb_fn.endswith('.bcif'):
+        read_file = IMP.atom.read_bcif
+        read_multi_file = IMP.atom.read_multimodel_bcif
     else:
         read_file = IMP.atom.read_pdb
         read_multi_file = IMP.atom.read_multimodel_pdb
@@ -133,7 +136,7 @@ def build_bead(model, residues, input_coord=None):
         prt.set_name('%i-%i_bead' % (ds_frag[0], ds_frag[-1]))
         h.set_residue_indexes(range(ds_frag[0], ds_frag[-1] + 1))
         volume = IMP.atom.get_volume_from_mass(mass)
-        radius = 0.8 * (3.0 / 4.0 / pi * volume) ** (1.0 / 3.0)
+        radius = 0.8 * (3.0 / 4.0 / math.pi * volume) ** (1.0 / 3.0)
         ptem.set_radius(radius)
 
     IMP.atom.Mass.setup_particle(prt, mass)
@@ -279,8 +282,8 @@ def build_representation(parent, rep, coord_finder, rephandler):
     prov_dict = {}
     if rep.density_residues_per_component:
         single_node = True
-        num_components = (len(rep.residues)
-                          // rep.density_residues_per_component+1)
+        num_components = math.ceil(
+            len(rep.residues) / rep.density_residues_per_component)
         rep_dict = defaultdict(list)
         segp = IMP.Particle(model)
         root_representation = IMP.atom.Representation.setup_particle(

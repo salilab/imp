@@ -1,7 +1,7 @@
 /**
  *  \file ligand_score.cpp   \brief A class for reading mol2 files
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,10 +48,10 @@ int main(int argc, char *argv[]) {
   IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname, trans_file, out_file_name;
 
-  po::options_description desc("Usage: <pdb|mmcif> <mol2> [trans file]\n\n"
+  po::options_description desc("Usage: <pdb|mmcif|bcif> <mol2> [trans file]\n\n"
           "static and transformed molecules from docking with "
           "transformation file.\n\n"
-          "Inputs are PDB/mmCIF, mol2, and transformation files\n\n"
+          "Inputs are PDB/mmCIF/BinaryCIF, mol2, and transformation files\n\n"
           "Options");
   desc.add_options()
     ("help,h", "Show command line arguments and exit.")
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   IMP::atom::Hierarchy protein, ligand;
   {
     IMP::SetLogState ss(IMP::SILENT);
-    protein = IMP::atom::read_pdb_or_mmcif(
+    protein = IMP::atom::read_pdb_any(
                         pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(protein);
     ligand = IMP::atom::read_mol2(mol2name, m);

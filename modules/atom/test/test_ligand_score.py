@@ -8,8 +8,7 @@ pose_score = IMP.atom.get_data_path('protein_ligand_pose_score.lib')
 
 class Tests(IMP.test.ApplicationTestCase):
 
-    def get_inputs(self, cif=False):
-        ext = 'cif' if cif else 'pdb'
+    def get_inputs(self, ext='pdb'):
         return [self.get_input_file_name('1d3d-protein.%s' % ext),
                 self.get_input_file_name('1d3d-ligands.mol2')]
 
@@ -22,7 +21,13 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_rank_score_cif(self):
         """Simple test of ligand score application with mmCIF input"""
-        inputs = self.get_inputs(cif=True)
+        inputs = self.get_inputs('cif')
+        p = self.run_application('ligand_score', inputs)
+        self.check_output(p, 8.39, 6.54)
+
+    def test_rank_score_bcif(self):
+        """Simple test of ligand score application with BinaryCIF input"""
+        inputs = self.get_inputs('bcif')
         p = self.run_application('ligand_score', inputs)
         self.check_output(p, 8.39, 6.54)
 

@@ -7,14 +7,12 @@ try:
 except ImportError:
     numpy = None
 
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.format
+import ihm.dumper
 
 try:
     from ihm import _format
@@ -22,14 +20,18 @@ except ImportError:
     _format = None
 
 
-class GenericHandler(object):
+class GenericHandler:
     """Capture mmCIF data as a simple list of dicts"""
     not_in_file = None
     omitted = None
     unknown = ihm.unknown
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
-             'var2', 'var3')
+             'var2', 'var3', 'intkey1', 'intkey2', 'floatkey1', 'floatkey2',
+             'boolkey1')
+    _int_keys = frozenset(('intkey1', 'intkey2'))
+    _float_keys = frozenset(('floatkey1', 'floatkey2'))
+    _bool_keys = frozenset(('boolkey1',))
 
     def __init__(self):
         self.data = []
@@ -50,7 +52,7 @@ class _TestFinalizeHandler(GenericHandler):
         _add_c_handler = _format._test_finalize_callback
 
 
-class StringWriter(object):
+class StringWriter:
     def __init__(self):
         self.fh = StringIO()
 
@@ -209,8 +211,6 @@ x
         self.assertEqual(w._repr(0.00000123456), '1.23e-06')
         self.assertEqual(w._repr(False), 'NO')
         self.assertEqual(w._repr(True), 'YES')
-        if sys.version_info[0] == 2:
-            self.assertEqual(w._repr(long(4)), '4')    # noqa: F821
         # data_ should be quoted to distinguish from data blocks
         self.assertEqual(w._repr('data_foo'), "'data_foo'")
         self.assertEqual(w._repr('data_'), "'data_'")
@@ -238,7 +238,58 @@ x
 
     def test_reader_base(self):
         """Test Reader base class"""
-        _ = ihm.format._Reader()  # noop
+        class _MockHandler:
+            def __call__(self, a, b):
+                pass
+
+        # Test handler with no _int_keys, _float_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        r.category_handler = {'foo': m}
+        r._add_category_keys()
+        self.assertEqual(m._keys, ['a', 'b'])
+        self.assertEqual(m._int_keys, frozenset())
+        self.assertEqual(m._float_keys, frozenset())
+
+        # Test handler with typos in _int_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        m._int_keys = ['bar']
+        r.category_handler = {'foo': m}
+        self.assertRaises(ValueError, r._add_category_keys)
+
+        # Test handler with typos in _float_keys
+        r = ihm.format._Reader()
+        m = _MockHandler()
+        m._float_keys = ['bar']
+        r.category_handler = {'foo': m}
+        self.assertRaises(ValueError, r._add_category_keys)
+
+    def test_handler_annotations(self):
+        """Test Reader using Handler annotations"""
+        class _OKHandler:
+            def __call__(self, a: int, b: float, c: bool, d):
+                pass
+
+        class _BadHandler:
+            def __call__(self, a: set, b, c):
+                pass
+
+        # Test that handler _int_keys, _float_keys, _bool_keys are filled in
+        r = ihm.format._Reader()
+        m = _OKHandler()
+        r.category_handler = {'foo': m}
+        r._add_category_keys()
+        self.assertEqual(m._keys, ['a', 'b', 'c', 'd'])
+        self.assertEqual(m._int_keys, frozenset(['a']))
+        self.assertEqual(m._float_keys, frozenset(['b']))
+        self.assertEqual(m._bool_keys, frozenset(['c']))
+
+        # Check handling of unsupported annotations
+        r = ihm.format._Reader()
+        m = _BadHandler()
+        r.category_handler = {'foo': m}
+        self.assertRaises(ValueError, r._add_category_keys)
 
     def _check_bad_cif(self, cif, real_file, category_handlers={}):
         """Ensure that the given bad cif results in a parser error"""
@@ -426,7 +477,10 @@ save_
                 h.data,
                 [{'var1': 'NOT', 'var3': 'NOT', 'var2': 'NOT',
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
-                  'method': 'NOT', 'baz': 'x'}])
+                  'method': 'NOT', 'baz': 'x',
+                  'intkey1': 'NOT', 'intkey2': 'NOT',
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT',
+                  'boolkey1': 'NOT'}])
 
             h = GenericHandler()
             h.not_in_file = 'NOT'
@@ -436,7 +490,9 @@ save_
                 h.data,
                 [{'var1': 'NOT', 'var3': 'NOT', 'var2': 'NOT',
                   'pdbx_keywords': 'NOT', 'bar': '.1', 'foo': 'NOT',
-                  'method': 'NOT', 'baz': 'x'}])
+                  'method': 'NOT', 'baz': 'x',
+                  'intkey1': 'NOT', 'intkey2': 'NOT',
+                  'floatkey1': 'NOT', 'floatkey2': 'NOT', 'boolkey1': 'NOT'}])
 
     def test_loop_linebreak(self):
         """Make sure that linebreaks are ignored in loop data"""
@@ -551,6 +607,100 @@ _atom_site.y
 oneval
 """, real_file, {'_atom_site': h})
 
+    def test_int_keys(self):
+        """Check handling of integer keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # intkey1, intkey2 should be returned as ints, not strings
+            self._read_cif("_foo.var1 42\n_foo.intkey1 42",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "42", 'intkey1': 42}])
+
+            # float cannot be coerced to int
+            self.assertRaises(ValueError, self._read_cif, "_foo.intkey1 42.34",
+                              real_file, {'_foo': h})
+
+            # string cannot be coerced to int
+            self.assertRaises(ValueError, self._read_cif, "_foo.intkey1 str",
+                              real_file, {'_foo': h})
+
+    def test_int_keys_loop(self):
+        """Check handling of integer keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.intkey1\n_foo.x\n_foo.bar\n"
+                           "42 xval barval", real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'bar': 'barval', 'intkey1': 42}])
+
+    def test_float_keys(self):
+        """Check handling of floating-point keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # floatkey1, floatkey2 should be returned as floats, not strings
+            self._read_cif("_foo.floatkey1 42.340",
+                           real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+            # int will be coerced to float
+            h = GenericHandler()
+            self._read_cif("_foo.floatkey1 42",
+                           real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.0, delta=0.01)
+
+            # string cannot be coerced to float
+            h = GenericHandler()
+            self.assertRaises(ValueError, self._read_cif, "_foo.floatkey1 str",
+                              real_file, {'_foo': h})
+
+    def test_float_keys_loop(self):
+        """Check handling of float keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.x\n_foo.bar\n_foo.floatkey1\n"
+                           "xval barval 42.34", real_file, {'_foo': h})
+            val = h.data[0]['floatkey1']
+            self.assertIsInstance(val, float)
+            self.assertAlmostEqual(val, 42.34, delta=0.01)
+
+    def test_bool_keys(self):
+        """Check handling of bool keywords"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            # boolkey1 should be returned as bool, not str
+            self._read_cif("_foo.var1 YES\n_foo.boolkey1 YES",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "YES", 'boolkey1': True}])
+
+            h = GenericHandler()
+            self._read_cif("_foo.var1 no\n_foo.boolkey1 no",
+                           real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'var1': "no", 'boolkey1': False}])
+
+            # Anything else should map to omitted (None, or handler.omitted)
+            for val in ('GARBAGE', '42', '42.34'):
+                h = GenericHandler()
+                self._read_cif("_foo.var1 no\n_foo.boolkey1 %s" % val,
+                               real_file, {'_foo': h})
+                self.assertEqual(h.data, [{'var1': 'no'}])
+
+                h = GenericHandler()
+                h.omitted = 'OM'
+                self._read_cif("_foo.var1 no\n_foo.boolkey1 %s" % val,
+                               real_file, {'_foo': h})
+                self.assertEqual(h.data, [{'var1': 'no', 'boolkey1': 'OM'}])
+
+    def test_bool_keys_loop(self):
+        """Check handling of bool keywords in loop construct"""
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif("loop_\n_foo.boolkey1\n_foo.x\n_foo.bar\n"
+                           "YES xval barval", real_file, {'_foo': h})
+            self.assertEqual(h.data, [{'bar': 'barval', 'boolkey1': True}])
+
     def test_first_data_block(self):
         """Only information from the first data block should be read"""
         cif = """
@@ -610,7 +760,7 @@ x y
     def test_file_new_python_no_read_method(self):
         """Test ihm_file_new_from_python with object with no read method"""
         self.assertRaises(AttributeError, _format.ihm_file_new_from_python,
-                          None)
+                          None, False)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_exception(self):
@@ -618,36 +768,114 @@ x y
         class MyError(Exception):
             pass
 
-        class MyFileLike(object):
+        class MyFileLike:
             def read(self, numbytes):
                 raise MyError("some error")
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
         self.assertRaises(MyError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_not_string(self):
         """Test that read() returning an invalid type is handled"""
-        class MyFileLike(object):
+        class MyFileLike:
             def read(self, numbytes):
                 return 42
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_too_long(self):
         """Test that read() returning too many bytes is handled"""
-        class MyFileLike(object):
+        class MyFileLike:
             def read(self, numbytes):
                 return " " * (numbytes * 4 + 10)
         fh = MyFileLike()
-        f = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(f)
+        f = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(f, False)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_read_binary_exception(self):
+        """Test exception in binary read callback is handled"""
+        class MyError(Exception):
+            pass
+
+        class MyFileLike:
+            def read(self, numbytes):
+                raise MyError("some error")
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
+        self.assertRaises(MyError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_read_binary_not_string(self):
+        """Test that binary read() returning an invalid type is handled"""
+        class MyFileLike:
+            def read(self, numbytes):
+                return 42
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_read_binary_too_long(self):
+        """Test that binary read() returning too many bytes is handled"""
+        class MyFileLike:
+            def read(self, numbytes):
+                return b" " * (numbytes + 10)
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_readinto_exception(self):
+        """Test exception in readinto callback is handled"""
+        class MyError(Exception):
+            pass
+
+        class MyFileLike:
+            def readinto(self, buffer):
+                raise MyError("some error")
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
+        self.assertRaises(MyError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_readinto_not_length(self):
+        """Test that readinto() returning an invalid type is handled"""
+        class MyFileLike:
+            def readinto(self, buffer):
+                return "garbage"
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
+        self.assertRaises(ValueError, _format.ihm_read_file, reader)
+        _format.ihm_reader_free(reader)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_python_readinto_too_long(self):
+        """Test that readinto() returning too many bytes is handled"""
+        class MyFileLike:
+            def readinto(self, buffer):
+                return len(buffer) + 10
+        fh = MyFileLike()
+        f = _format.ihm_file_new_from_python(fh, True)
+        reader = _format.ihm_reader_new(f, True)
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
@@ -663,7 +891,7 @@ x y
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_bytes(self):
         """Test read() returning bytes (binary file)"""
-        class MyFileLike(object):
+        class MyFileLike:
             def __init__(self):
                 self.calls = 0
 
@@ -681,16 +909,16 @@ x y
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_unicode(self):
         """Test read() returning Unicode (text file)"""
-        class MyFileLike(object):
+        class MyFileLike:
             def __init__(self):
                 self.calls = 0
 
             def read(self, numbytes):
                 self.calls += 1
                 if self.calls == 1:
-                    return u"_exptl.method foo"
+                    return "_exptl.method foo"
                 else:
-                    return u""
+                    return ""
         h = GenericHandler()
         r = ihm.format.CifReader(MyFileLike(), {'_exptl': h})
         r.read_file()
@@ -725,7 +953,7 @@ x y
 
     def test_unknown_category_handled(self):
         """Test that unknown categories are handled if requested"""
-        class CatHandler(object):
+        class CatHandler:
             def __init__(self):
                 self.warns = []
 
@@ -762,7 +990,7 @@ x y
 
     def test_unknown_keyword_handled(self):
         """Test that unknown keywords are handled if requested"""
-        class KeyHandler(object):
+        class KeyHandler:
             def __init__(self):
                 self.warns = []
 
@@ -788,13 +1016,13 @@ x y
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_multiple_set_unknown_handler(self):
         """Test setting unknown handler multiple times"""
-        class Handler(object):
+        class Handler:
             def __call__(self):
                 pass
         uc = Handler()
         fh = StringIO()
-        c_file = _format.ihm_file_new_from_python(fh)
-        reader = _format.ihm_reader_new(c_file)
+        c_file = _format.ihm_file_new_from_python(fh, False)
+        reader = _format.ihm_reader_new(c_file, False)
         # Handler must be a callable object
         self.assertRaises(ValueError, _format.add_unknown_category_handler,
                           reader, None)
@@ -956,6 +1184,110 @@ _foo.bar
 _foo.baz
 newa b c d
 x y
+""")
+
+    def test_cif_token_reader_change_func_value_filter(self):
+        """Test CifTokenReader class with ChangeFuncValueFilter"""
+        class MyFunc:
+            def __init__(self):
+                self.calls = []
+
+            def __call__(self, value, category, keyword):
+                self.calls.append((value, category, keyword))
+                return value.upper()
+
+        cif = """
+data_foo_bar
+#
+_cat1.bar old
+_cat2.baz old2
+#
+#
+loop_
+_cat3.baz
+a b c
+#
+loop_
+_foo.bar
+_foo.baz
+a b c d
+x y
+"""
+        f = MyFunc()
+        r = ihm.format.CifTokenReader(StringIO(cif))
+        filters = [ihm.format.ChangeFuncValueFilter(".bar", f),
+                   ihm.format.ChangeFuncValueFilter("_cat4.foo", f)]
+        tokens = list(r.read_file(filters))
+        new_cif = "".join(x.as_mmcif() for x in tokens)
+        self.assertEqual(f.calls,
+                         [('old', '_cat1', 'bar'), ('a', '_foo', 'bar'),
+                          ('c', '_foo', 'bar'), ('x', '_foo', 'bar')])
+        self.assertEqual(new_cif, """
+data_foo_bar
+#
+_cat1.bar OLD
+_cat2.baz old2
+#
+#
+loop_
+_cat3.baz
+a b c
+#
+loop_
+_foo.bar
+_foo.baz
+A b C d
+X y
+""")
+
+    def test_cif_token_reader_replace_category_filter(self):
+        """Test CifTokenReader class with ReplaceCategoryFilter"""
+        cif = """
+data_foo_bar
+#
+_cat1.bar old
+#
+loop_
+_cat2.bar
+_cat2.baz
+a b c d
+x y
+#
+_cat3.x 1
+_cat3.y 2
+#
+_cat4.z 1
+#
+loop_
+_cat5.bar
+_cat5.baz
+a b
+"""
+        d = ihm.dumper._CommentDumper()
+        s = ihm.System()
+        s.comments.extend(['comment1', 'comment2'])
+        r = ihm.format.CifTokenReader(StringIO(cif))
+        filters = [ihm.format.ReplaceCategoryFilter("cat1"),
+                   ihm.format.ReplaceCategoryFilter("_cat2", raw_cif='FOO'),
+                   ihm.format.ReplaceCategoryFilter("cat3", dumper=d,
+                                                    system=s)]
+        tokens = list(r.read_file(filters))
+        new_cif = "".join(x.as_mmcif() for x in tokens)
+        self.assertEqual(new_cif, """
+data_foo_bar
+#
+#
+FOO
+#
+# comment1
+# comment2
+#
+_cat4.z 1
+#
+loop_
+_cat5.bar
+_cat5.baz
+a b
 """)
 
     def test_category_token_group(self):
@@ -1152,7 +1484,8 @@ a b c d
 """
         r = ihm.format.CifTokenReader(StringIO(cif))
         filters = [ihm.format.ChangeKeywordFilter(".bar", "newbar"),
-                   ihm.format.ChangeKeywordFilter(".baz", "newbaz")]
+                   ihm.format.ChangeKeywordFilter(".baz", "newbaz"),
+                   ihm.format.ChangeKeywordFilter("x.y", "newy")]
         new_cif = "".join(t.as_mmcif() for t in r.read_file(filters))
         self.assertEqual(new_cif, """
 _bar.id 1

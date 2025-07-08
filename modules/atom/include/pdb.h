@@ -33,7 +33,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! Represent a single ATOM/HETATM "line" in PDB or mmCIF format
 class IMPATOMEXPORT PDBRecord : public Value {
   const std::string *line_;
-  internal::CifKeyword *group_, *element_, *atom_name_, *alt_loc_id_,
+  internal::StringCifKeyword *group_, *element_, *atom_name_, *alt_loc_id_,
                        *residue_name_, *auth_chain_, *chain_, *auth_seq_id_;
   bool use_line_, use_keywords_;
 public:
@@ -47,14 +47,14 @@ public:
   //! Point the record to a single atom_site loop row from an mmCIF file
   /** This uses pointers to the CIF keywords, so should not be used after
       the keywords are freed. */
-  void set_keywords(internal::CifKeyword &group,
-                    internal::CifKeyword &element,
-                    internal::CifKeyword &atom_name,
-                    internal::CifKeyword &alt_loc_id,
-                    internal::CifKeyword &residue_name,
-                    internal::CifKeyword &auth_chain,
-                    internal::CifKeyword &chain,
-                    internal::CifKeyword &auth_seq_id);
+  void set_keywords(internal::StringCifKeyword &group,
+                    internal::StringCifKeyword &element,
+                    internal::StringCifKeyword &atom_name,
+                    internal::StringCifKeyword &alt_loc_id,
+                    internal::StringCifKeyword &residue_name,
+                    internal::StringCifKeyword &auth_chain,
+                    internal::StringCifKeyword &chain,
+                    internal::StringCifKeyword &auth_seq_id);
 #endif
 
   //! Returns the alternative location indicator

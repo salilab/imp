@@ -12,7 +12,7 @@ def _starting_model_report(seg):
         return ""
 
 
-class Segment(object):
+class Segment:
     """Base class for part of a :class:`Representation`.
        See :class:`AtomicSegment`, :class:`ResidueSegment`,
        :class:`MultiResidueSegment`, and :class:`FeatureSegment`.
@@ -177,5 +177,5 @@ class Representation(list):
 
     # todo: use set rather than list?
     def __init__(self, elements=(), name=None, details=None):
-        super(Representation, self).__init__(elements)
+        super().__init__(elements)
         self.name, self.details = name, details

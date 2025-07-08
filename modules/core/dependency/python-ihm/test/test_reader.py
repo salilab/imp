@@ -3,17 +3,18 @@ import datetime
 import os
 import unittest
 import gzip
-import sys
 import operator
 import warnings
-if sys.version_info[0] >= 3:
-    from io import StringIO, BytesIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO, BytesIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.reader
+
+try:
+    from ihm import _format
+except ImportError:
+    _format = None
 
 
 def cif_file_handles(cif):
@@ -83,10 +84,9 @@ class Tests(unittest.TestCase):
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'testid')
-        if sys.version_info[0] >= 3:
-            # Make sure we can read the file in binary mode too
-            s, = ihm.reader.read(BytesIO(cif.encode('latin-1')))
-            self.assertEqual(s.id, 'testid')
+        # Make sure we can read the file in binary mode too
+        s, = ihm.reader.read(BytesIO(cif.encode('latin-1')))
+        self.assertEqual(s.id, 'testid')
 
     def test_read_unicode(self):
         """Test that Unicode characters are handled sensibly"""
@@ -95,26 +95,24 @@ class Tests(unittest.TestCase):
         cif = "data_model\n_struct.entry_id test\u00dc\U0001f600\n"
         s, = ihm.reader.read(StringIO(cif))
         self.assertEqual(s.id, 'test\u00dc\U0001f600')
-        # Full Unicode support requires Python 3
-        if sys.version_info[0] >= 3:
-            s, = ihm.reader.read(BytesIO(cif.encode('utf-8')))
-            # Reading in binary mode should give us the raw text (latin-1)
-            self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
-            with utils.temporary_directory() as tmpdir:
-                fname = os.path.join(tmpdir, 'test')
-                with open(fname, 'w', encoding='utf-8') as fh:
-                    fh.write(cif)
-                # Should get the input back if we use the right UTF-8 encoding
-                with open(fname, encoding='utf-8') as fh:
-                    s, = ihm.reader.read(fh)
-                    self.assertEqual(s.id, 'test\u00dc\U0001f600')
-                # Should get a decode error if we treat it as ASCII:
-                with open(fname, encoding='ascii') as fh:
-                    self.assertRaises(UnicodeDecodeError, ihm.reader.read, fh)
-                # A permissive 8-bit encoding should work but give us garbage
-                with open(fname, encoding='latin-1') as fh:
-                    s, = ihm.reader.read(fh)
-                    self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
+        s, = ihm.reader.read(BytesIO(cif.encode('utf-8')))
+        # Reading in binary mode should give us the raw text (latin-1)
+        self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
+        with utils.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'test')
+            with open(fname, 'w', encoding='utf-8') as fh:
+                fh.write(cif)
+            # Should get the input back if we use the right UTF-8 encoding
+            with open(fname, encoding='utf-8') as fh:
+                s, = ihm.reader.read(fh)
+                self.assertEqual(s.id, 'test\u00dc\U0001f600')
+            # Should get a decode error if we treat it as ASCII:
+            with open(fname, encoding='ascii') as fh:
+                self.assertRaises(UnicodeDecodeError, ihm.reader.read, fh)
+            # A permissive 8-bit encoding should work but give us garbage
+            with open(fname, encoding='latin-1') as fh:
+                s, = ihm.reader.read(fh)
+                self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
 
     def test_read_custom_handler(self):
         """Test read() function with custom Handler"""
@@ -138,7 +136,7 @@ class Tests(unittest.TestCase):
 
     def test_id_mapper(self):
         """Test IDMapper class"""
-        class MockObject(object):
+        class MockObject:
             def __init__(self, x, y):
                 self.x, self.y = x, y
 
@@ -153,7 +151,7 @@ class Tests(unittest.TestCase):
 
     def test_handler(self):
         """Test Handler base class"""
-        class MockObject(object):
+        class MockObject:
             pass
         o = MockObject()
         o.system = 'foo'
@@ -162,7 +160,7 @@ class Tests(unittest.TestCase):
 
     def test_handler_copy_if_present(self):
         """Test copy_if_present method"""
-        class MockObject(object):
+        class MockObject:
             pass
         # Keys = namedtuple('Keys', 'foo bar t test x')
         o = MockObject()
@@ -348,6 +346,34 @@ _pdbx_audit_revision_item.item
             self.assertEqual(r.groups, ['group1', 'group2'])
             self.assertEqual(r.categories, ['cat1', 'cat2'])
             self.assertEqual(r.items, ['item1'])
+
+    def test_data_usage_handler(self):
+        """Test DataUsageHandler"""
+        cif = """
+loop_
+_pdbx_data_usage.id
+_pdbx_data_usage.type
+_pdbx_data_usage.details
+_pdbx_data_usage.url
+_pdbx_data_usage.name
+1 license 'some license' someurl somename
+2 disclaimer 'some disclaimer' . .
+3 "some other type" 'misc usage' . ."""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            d1, d2, d3 = s.data_usage
+            self.assertIsInstance(d1, ihm.License)
+            self.assertEqual(d1.details, "some license")
+            self.assertEqual(d1.name, "somename")
+            self.assertEqual(d1.url, "someurl")
+
+            self.assertIsInstance(d2, ihm.Disclaimer)
+            self.assertEqual(d2.details, "some disclaimer")
+            self.assertIsNone(d2.name)
+            self.assertIsNone(d2.url)
+
+            self.assertEqual(d3.type, "other")
+            self.assertEqual(d3.details, "misc usage")
 
     def test_grant_handler(self):
         """Test GrantHandler"""
@@ -1588,7 +1614,7 @@ _ihm_model_group.id
 _ihm_model_group.name
 _ihm_model_group.details
 1 "Cluster 1" .
-2 "Cluster 2" .
+2 "Cluster 2" 'cluster 2 details'
 #
 loop_
 _ihm_model_group_link.group_id
@@ -1625,6 +1651,7 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             mg1, mg2 = state
             self.assertEqual(mg1.name, 'Cluster 1')
             self.assertEqual(mg1._id, '1')
+            self.assertIsNone(mg1.details)
             m, = mg1
             self.assertEqual(m._id, '1')
             self.assertEqual(m.name, 'Best scoring model')
@@ -1632,6 +1659,7 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             self.assertEqual(m.protocol._id, '2')
             self.assertEqual(m.representation._id, '3')
             self.assertEqual(mg2.name, 'Cluster 2')
+            self.assertEqual(mg2.details, 'cluster 2 details')
             self.assertEqual(mg2._id, '2')
             m, = mg2
             self.assertEqual(m._id, '2')
@@ -1643,6 +1671,36 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             self.assertIsNone(mg1.name)  # auto-created group
             m, = mg1
             self.assertEqual(m._id, '42')
+
+    def test_model_representative_handler(self):
+        """Test ModelRepresentativeHandler"""
+        cif = """
+loop_
+_ihm_model_representative.id
+_ihm_model_representative.model_group_id
+_ihm_model_representative.model_id
+_ihm_model_representative.selection_criteria
+1 42 5 medoid
+2 42 8 'lowest energy'
+3 99 3 'some unknown criterion'
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            state, = s.state_groups[0]
+            mg1, mg2 = state
+            self.assertEqual(mg1._id, '42')
+            self.assertEqual(len(mg1.representatives), 2)
+            self.assertEqual(mg1.representatives[0].model._id, '5')
+            self.assertEqual(mg1.representatives[0].selection_criteria,
+                             'medoid')
+            self.assertEqual(mg1.representatives[1].model._id, '8')
+            self.assertEqual(mg1.representatives[1].selection_criteria,
+                             'lowest energy')
+            self.assertEqual(mg2._id, '99')
+            self.assertEqual(len(mg2.representatives), 1)
+            self.assertEqual(mg2.representatives[0].model._id, '3')
+            self.assertEqual(mg2.representatives[0].selection_criteria,
+                             'other selction criteria')
 
     def test_multi_state_handler(self):
         """Test MultiStateHandler and MultiStateLinkHandler"""
@@ -2073,7 +2131,7 @@ _ihm_sas_restraint.details
         """Test SphereObjSiteHandler"""
         class MyModel(ihm.model.Model):
             def add_sphere(self, sphere):
-                super(MyModel, self).add_sphere(sphere)
+                super().add_sphere(sphere)
                 self.sphere_count = len(self._spheres)
 
         fh = StringIO("""
@@ -3346,6 +3404,18 @@ _ihm_cross_link_result_parameters.sigma_1
 _ihm_cross_link_result_parameters.sigma_2
 1 1 201 0.100 4.200 2.100
 2 1 301 . . .
+#
+loop_
+_ihm_cross_link_result.id
+_ihm_cross_link_result.restraint_id
+_ihm_cross_link_result.ensemble_id
+_ihm_cross_link_result.model_group_id
+_ihm_cross_link_result.num_models
+_ihm_cross_link_result.distance_threshold
+_ihm_cross_link_result.median_distance
+_ihm_cross_link_result.details
+1 1 401 . 10 99.0 10.0 'details 1'
+2 1 . 501 20 99.0 20.0 .
 """
         # Order of categories shouldn't matter
         for text in (xl_list + xl_rsr + xl_fit, xl_fit + xl_rsr + xl_list):
@@ -3353,18 +3423,34 @@ _ihm_cross_link_result_parameters.sigma_2
             s, = ihm.reader.read(fh)
             r, = s.restraints
             xl, = r.cross_links
-            # Sort fits by model ID
+            # Sort fits by ID
             fits = sorted(xl.fits.items(), key=lambda x: x[0]._id)
-            self.assertEqual(len(fits), 2)
+            self.assertEqual(len(fits), 4)
+            self.assertIsInstance(fits[0][0], ihm.model.Model)
             self.assertEqual(fits[0][0]._id, '201')
             self.assertAlmostEqual(fits[0][1].psi, 0.100, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma1, 4.200, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma2, 2.100, delta=0.1)
 
             self.assertEqual(fits[1][0]._id, '301')
+            self.assertIsInstance(fits[1][0], ihm.model.Model)
             self.assertIsNone(fits[1][1].psi)
             self.assertIsNone(fits[1][1].sigma1)
             self.assertIsNone(fits[1][1].sigma2)
+
+            self.assertEqual(fits[2][0]._id, '401')
+            self.assertIsInstance(fits[2][0], ihm.model.Ensemble)
+            self.assertEqual(fits[2][1].num_models, 10)
+            self.assertAlmostEqual(fits[2][1].median_distance, 10.0,
+                                   delta=0.01)
+            self.assertEqual(fits[2][1].details, 'details 1')
+
+            self.assertEqual(fits[3][0]._id, '501')
+            self.assertIsInstance(fits[3][0], ihm.model.ModelGroup)
+            self.assertEqual(fits[3][1].num_models, 20)
+            self.assertAlmostEqual(fits[3][1].median_distance, 20.0,
+                                   delta=0.01)
+            self.assertIsNone(fits[3][1].details)
 
     def test_ordered_model_handler(self):
         """Test OrderedModelHandler"""
@@ -3418,13 +3504,42 @@ _ihm_ordered_ensemble.model_group_id_end
         self.assertEqual(e2.group_begin._id, '1')
         self.assertEqual(e2.group_end._id, '4')
 
-    def test_read_full_pdbx(self):
-        """Test reading a full PDBx file"""
+    def _check_pdbx(self, s):
+        self.assertEqual(
+            s.title, 'Enterococcus faecalis FIC protein in complex '
+            'with AMP and calcium ion.')
+        self.assertEqual(len(s.databases), 2)
+        self.assertEqual(s.databases[0].code, '6EP0')
+        self.assertEqual(s.databases[1].code, 'D_1200006994')
+        self.assertEqual(s.authors, ['Veyron, S.', 'Cherfils, J.'])
+        self.assertEqual(s.citations[0].doi, '10.1038/s41467-019-09023-1')
+        self.assertEqual(s.grants[0].funding_organization, 'DIM Malinf')
+        self.assertEqual(len(s.revisions), 4)
+        self.assertEqual(len(s.entities), 5)
+        self.assertEqual(len(s.asym_units), 14)
+        self.assertEqual(
+            [x.name for x in s.software],
+            ['BUSTER', 'autoPROC', 'XDS', 'PHENIX'])
+        m = s.state_groups[0][0][0][0]
+        self.assertEqual(len(m._atoms), 3528)
+        self.assertAlmostEqual(m._atoms[0].x, -23.51, delta=0.01)
+        self.assertAlmostEqual(m._atoms[0].y, 15.583, delta=0.01)
+        self.assertAlmostEqual(m._atoms[0].z, 17.773, delta=0.01)
+
+    def test_read_full_pdbx_mmcif(self):
+        """Test reading a full PDBx file in mmCIF format"""
         fname = utils.get_input_file_name(TOPDIR, '6ep0.cif.gz')
-        # We can't use 'with' here because that requires Python >= 2.7
-        f = gzip.open(fname, 'rt' if sys.version_info[0] >= 3 else 'rb')
-        s, = ihm.reader.read(f)
-        f.close()
+        with gzip.open(fname, 'rt') as f:
+            s, = ihm.reader.read(f)
+        self._check_pdbx(s)
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_read_full_pdbx_bcif(self):
+        """Test reading a full PDBx file in BinaryCIF format"""
+        fname = utils.get_input_file_name(TOPDIR, '6ep0.bcif.gz')
+        with gzip.open(fname, 'rb') as f:
+            s, = ihm.reader.read(f, format='BCIF')
+        self._check_pdbx(s)
 
     def test_old_file_read_default(self):
         """Test default handling of old files"""
@@ -5420,6 +5535,12 @@ _pdbx_database_status.SG_entry                        .
                           'deposit_site': ihm.unknown,
                           'process_site': 'BNL',
                           'sg_entry': None})
+        # Also test public interface for selected data items
+        self.assertEqual(s.database_status.status_code, 'REL')
+        self.assertIs(s.database_status.deposit_site, ihm.unknown)
+        self.assertEqual(s.database_status.process_site, 'BNL')
+        self.assertEqual(s.database_status.recvd_initial_deposition_date,
+                         datetime.date(1993, 6, 29))
 
     def test_add_to_system(self):
         """Test adding new mmCIF input to existing System"""

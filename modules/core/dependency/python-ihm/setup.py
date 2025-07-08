@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "1.8"
+VERSION = "2.7"
 
 copy_args = sys.argv[1:]
 
@@ -31,11 +31,12 @@ if build_ext:
     if not os.path.exists(wrap):
         wrap = "src/ihm_format.i"
     mod = [Extension("ihm._format",
-                     sources=["src/ihm_format.c", wrap],
+                     sources=["src/ihm_format.c", "src/cmp.c", wrap],
                      include_dirs=['src'],
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',
-                                '-nodefaultdtor', '-noproxy'])]
+                                '-nodefaultdtor', '-noproxy'],
+                     optional=True)]
 else:
     mod = []
 
@@ -54,10 +55,9 @@ setup(name='ihm',
       ext_modules=mod,
       packages=['ihm', 'ihm.util'],
       install_requires=['msgpack'],
+      license='MIT',
       classifiers=[
-          "Programming Language :: Python :: 2.7",
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: MIT License",
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering",

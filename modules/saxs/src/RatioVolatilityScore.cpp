@@ -1,5 +1,5 @@
 /**
- *  \file RatioVolatilityScore.h   \brief Chi free SAXS score
+ *  \file RatioVolatilityScore.cpp   \brief Vr score implementation
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

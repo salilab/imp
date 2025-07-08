@@ -10,7 +10,7 @@
 #define IMPSPB_PBC_BOXED_MOVER_H
 
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/core.h>
+#include <IMP/algebra/Transformation3D.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/spb/spb_config.h>
 

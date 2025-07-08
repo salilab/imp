@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import numpy.random as random
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
 example_nreps = 10

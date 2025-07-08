@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.12"]
+        python-version: ["3.13"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -32,7 +32,7 @@ jobs:
         source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gcc_linux-64.sh
         source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gxx_linux-64.sh
         mkdir build && cd build
-        cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DUSE_PYTHON2=off -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
+        cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
         make
         ./setup_environment.sh pytest --cov=.. --cov-branch --cov-report=xml -v ../test/test_*.py ../test/medium_test_*.py test/*/*.py
         flake8 ../pyext/src/

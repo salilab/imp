@@ -1,6 +1,5 @@
 """Helper classes to provide a summary report of an :class:`ihm.System`"""
 
-from __future__ import print_function
 import ihm
 import sys
 import warnings
@@ -26,7 +25,7 @@ def _get_name(name):
         return "(unnamed)"
 
 
-class _SectionReporter(object):
+class _SectionReporter:
     def __init__(self, title, fh):
         self.fh = fh
         print("\n\n# " + title, file=self.fh)
@@ -35,7 +34,7 @@ class _SectionReporter(object):
         print("   " + str(txt), file=self.fh)
 
 
-class Reporter(object):
+class Reporter:
     def __init__(self, system, fh=sys.stdout):
         self.system = system
         self.fh = fh

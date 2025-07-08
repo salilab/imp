@@ -16,6 +16,9 @@ The :mod:`ihm.model` Python module
 .. autoclass:: Model
    :members:
 
+.. autoclass:: ModelRepresentative
+   :members:
+
 .. autoclass:: ModelGroup
    :members:
 

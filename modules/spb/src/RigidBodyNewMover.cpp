@@ -6,8 +6,7 @@
  *
  */
 #include <IMP/random.h>
-#include <IMP/algebra.h>
-#include <IMP/core.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/spb/RigidBodyNewMover.h>
 
 IMPSPB_BEGIN_NAMESPACE

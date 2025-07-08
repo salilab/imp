@@ -1,10 +1,7 @@
 import utils
 import os
 import unittest
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib2
+import urllib.request
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -357,14 +354,14 @@ class Tests(unittest.TestCase):
             self.assertTrue(url.endswith('&id=29539637'))
             fname = utils.get_input_file_name(TOPDIR, json_fname)
             return open(fname)
-        # Need to mock out urllib2 so we don't hit the network (expensive)
-        # every time we test
+        # Need to mock out urllib.request so we don't hit the network
+        # (expensive) every time we test
         try:
-            orig_urlopen = urllib2.urlopen
-            urllib2.urlopen = mock_urlopen
+            orig_urlopen = urllib.request.urlopen
+            urllib.request.urlopen = mock_urlopen
             return ihm.Citation.from_pubmed_id(29539637, is_primary=is_primary)
         finally:
-            urllib2.urlopen = orig_urlopen
+            urllib.request.urlopen = orig_urlopen
 
     def test_citation_from_pubmed_id(self):
         """Test Citation.from_pubmed_id()"""
@@ -613,6 +610,34 @@ class Tests(unittest.TestCase):
         self.assertEqual(a.name, 'foo')
         self.assertEqual(a.description, 'bar')
 
+    def test_assembly_signature(self):
+        """Test Assembly._signature method"""
+        e1 = ihm.Entity('AHCD')
+        a1 = ihm.AsymUnit(e1)
+        e2 = ihm.Entity('AHC')
+        a2 = ihm.AsymUnit(e2)
+        enonpol = ihm.Entity([ihm.NonPolymerChemComp('HEM')],
+                             description='heme')
+        anonpol = ihm.AsymUnit(enonpol)
+        asm = ihm.Assembly([a1, a2, anonpol], name='foo', description='bar')
+
+        # Component order, name, description do not affect signature
+        asm2 = ihm.Assembly([a2, a1, anonpol],
+                            name='other', description='other')
+        self.assertEqual(asm._signature(), asm2._signature())
+
+        # Different components, different signatures
+        asm2 = ihm.Assembly([a1, anonpol])
+        self.assertNotEqual(asm._signature(), asm2._signature())
+
+        # Different component ranges, different signatures
+        asm2 = ihm.Assembly([a1, a2(1, 2), anonpol])
+        self.assertNotEqual(asm._signature(), asm2._signature())
+
+        # Same signature if ranges completely overlap
+        asm2 = ihm.Assembly([a1, a2(1, 2), a2(3, 3), anonpol])
+        self.assertEqual(asm._signature(), asm2._signature())
+
     def test_remove_identical(self):
         """Test remove_identical function"""
         x = {}
@@ -694,7 +719,7 @@ class Tests(unittest.TestCase):
 
     def test_all_models(self):
         """Test _all_models() method"""
-        class MockModel(object):
+        class MockModel:
             pass
         model1 = MockModel()
         model2 = MockModel()
@@ -709,7 +734,7 @@ class Tests(unittest.TestCase):
 
     def test_all_protocols(self):
         """Test _all_protocols() method"""
-        class MockObject(object):
+        class MockObject:
             pass
         model1 = MockObject()
         model2 = MockObject()
@@ -728,7 +753,7 @@ class Tests(unittest.TestCase):
 
     def test_all_representations(self):
         """Test _all_representations() method"""
-        class MockObject(object):
+        class MockObject:
             pass
         model1 = MockObject()
         model2 = MockObject()
@@ -747,7 +772,7 @@ class Tests(unittest.TestCase):
 
     def test_all_assemblies(self):
         """Test _all_assemblies() method"""
-        class MockObject(object):
+        class MockObject:
             pass
         model1 = MockObject()
         model2 = MockObject()
@@ -784,7 +809,7 @@ class Tests(unittest.TestCase):
 
     def test_all_citations(self):
         """Test _all_citations() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         c1 = ihm.Citation(title='Test paper', journal='J Mol Biol',
@@ -825,7 +850,7 @@ class Tests(unittest.TestCase):
 
     def test_all_software(self):
         """Test _all_software() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s1 = ihm.Software(name='test', classification='test code',
@@ -869,7 +894,7 @@ class Tests(unittest.TestCase):
 
     def test_all_dataset_groups(self):
         """Test _all_dataset_groups() method"""
-        class MockObject(object):
+        class MockObject:
             pass
         dg1 = MockObject()
         dg2 = MockObject()
@@ -894,10 +919,10 @@ class Tests(unittest.TestCase):
 
     def test_all_locations(self):
         """Test _all_locations() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
-        class MockDataset(object):
+        class MockDataset:
             parents = []
         loc1 = MockObject()
         loc2 = MockObject()
@@ -963,10 +988,10 @@ class Tests(unittest.TestCase):
 
     def test_all_datasets(self):
         """Test _all_datasets() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
-        class MockDataset(object):
+        class MockDataset:
             parents = []
 
         s = ihm.System()
@@ -1008,7 +1033,7 @@ class Tests(unittest.TestCase):
 
     def test_all_starting_models(self):
         """Test _all_starting_models() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -1029,7 +1054,7 @@ class Tests(unittest.TestCase):
 
     def test_all_geometric_objects(self):
         """Test _all_geometric_objects() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         geom1 = MockObject()
@@ -1051,7 +1076,7 @@ class Tests(unittest.TestCase):
 
     def test_all_features(self):
         """Test _all_features() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         f1 = MockObject()
@@ -1072,7 +1097,7 @@ class Tests(unittest.TestCase):
 
     def test_all_pseudo_sites(self):
         """Test _all_pseudo_sites() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s1 = MockObject()
@@ -1107,7 +1132,7 @@ class Tests(unittest.TestCase):
 
     def test_all_chem_descriptors(self):
         """Test _all_chem_descriptors() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         d1 = ihm.ChemDescriptor("d1")
@@ -1137,7 +1162,7 @@ class Tests(unittest.TestCase):
 
     def test_all_entity_ranges(self):
         """Test _all_entity_ranges() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -1174,7 +1199,7 @@ class Tests(unittest.TestCase):
 
     def test_all_multi_state_schemes(self):
         """Test _all_multi_state_schemes() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -1190,7 +1215,7 @@ class Tests(unittest.TestCase):
 
     def test_all_multi_state_scheme_connectivities(self):
         """Test _all_multi_state_scheme_connectivities() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -1217,7 +1242,7 @@ class Tests(unittest.TestCase):
 
     def test_all_kinetic_rates(self):
         """Test _all_kinetic_rates() method"""
-        class MockObject(object):
+        class MockObject:
             pass
 
         s = ihm.System()
@@ -1272,7 +1297,7 @@ class Tests(unittest.TestCase):
 
     def test_all_relaxation_times(self):
         """Test _all_relaxation_times() method"""
-        class MockObject(object):
+        class MockObject:
             pass
         s = ihm.System()
         # Multi-state schemes
@@ -1376,6 +1401,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(lnk.leaving_atom_id2, 'H2')
         self.assertEqual(lnk.order, 'sing')
         self.assertEqual(lnk.details, 'foo')
+
+    def test_data_usage(self):
+        """Test DataUsage classes"""
+        d = ihm.DataUsage("foo", name="fooname", url="foourl")
+        d = ihm.License("foo", name="fooname", url="foourl")
+        self.assertEqual(d.type, "license")
+        d = ihm.Disclaimer("foo", name="fooname", url="foourl")
+        self.assertEqual(d.type, "disclaimer")
 
 
 if __name__ == '__main__':

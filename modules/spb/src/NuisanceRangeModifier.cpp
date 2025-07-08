@@ -7,7 +7,6 @@
  */
 
 #include "IMP/spb/NuisanceRangeModifier.h"
-#include "IMP/isd.h"
 
 IMPSPB_BEGIN_NAMESPACE
 

@@ -4,7 +4,7 @@
 import ihm
 
 
-class PseudoSite(object):
+class PseudoSite:
     """Selection of a pseudo position in the system.
        Pseudo positions are typically used to reference a point or sphere
        that is not explicitly represented, in a :class:`PseudoSiteFeature`
@@ -27,7 +27,7 @@ class PseudoSite(object):
                      for v in (self.x, self.y, self.z, self.radius))
 
 
-class Restraint(object):
+class Restraint:
     """Base class for all restraints.
        See :attr:`ihm.System.restraints`.
     """
@@ -94,7 +94,7 @@ class EM3DRestraint(Restraint):
         self.fits = {}
 
 
-class EM3DRestraintFit(object):
+class EM3DRestraintFit:
     """Information on the fit of a model to an :class:`EM3DRestraint`.
        See :attr:`EM3DRestaint.fits`.
 
@@ -149,7 +149,7 @@ class SASRestraint(Restraint):
         self.fits = {}
 
 
-class SASRestraintFit(object):
+class SASRestraintFit:
     """Information on the fit of a model to a :class:`SASRestraint`.
        See :attr:`SASRestaint.fits`.
 
@@ -206,7 +206,7 @@ class EM2DRestraint(Restraint):
         self.fits = {}
 
 
-class EM2DRestraintFit(object):
+class EM2DRestraintFit:
     """Information on the fit of a model to an :class:`EM2DRestraint`.
        See :attr:`EM2DRestaint.fits`.
 
@@ -260,7 +260,7 @@ class CrossLinkRestraint(Restraint):
         self.cross_links = []
 
 
-class ExperimentalCrossLink(object):
+class ExperimentalCrossLink:
     """A cross-link identified in the experiment.
 
        These objects, once created, should be added to
@@ -277,7 +277,7 @@ class ExperimentalCrossLink(object):
         self.details = details
 
 
-class DistanceRestraint(object):
+class DistanceRestraint:
     """Base class for all distance restraints. These are typically
        used in a :class:`DerivedDistanceRestraint`.
 
@@ -370,7 +370,7 @@ class LowerUpperBoundDistanceRestraint(DistanceRestraint):
         self.distance_upper_limit = distance_upper_limit
 
 
-class CrossLink(object):
+class CrossLink:
     """Base class for all cross-links used in the modeling.
        Do not use this class directly, but instead use a subclass:
        :class:`ResidueCrossLink`, :class:`AtomCrossLink`,
@@ -378,7 +378,7 @@ class CrossLink(object):
     pass
 
 
-class CrossLinkPseudoSite(object):
+class CrossLinkPseudoSite:
     """Pseudo site corresponding to one end of a cross-link.
 
        These objects are used when the end of a cross-link is not represented
@@ -440,9 +440,12 @@ class ResidueCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
     def _get_residue1(self):
@@ -502,9 +505,12 @@ class FeatureCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
 
@@ -551,16 +557,22 @@ class AtomCrossLink(CrossLink):
         self.distance, self.restrain_all = distance, restrain_all
         self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
-        #: Information about the fit of each model to this cross-link.
-        #: This is a Python dict where keys are :class:`~ihm.model.Model`
-        #: objects and values are :class:`CrossLinkFit` objects.
+        #: Information about the fit of models or groups to this cross-link.
+        #: This is a Python dict where keys can be :class:`~ihm.model.Model`
+        #: objects (with corresponding values as :class:`CrossLinkFit` objects)
+        #: or :class:`~ihm.model.ModelGroup` or class:`~ihm.model.Ensemble`
+        #: objects (with corresponding values as :class:`CrossLinkGroupFit`
+        #: objects).
         self.fits = {}
 
 
-class CrossLinkFit(object):
-    """Information on the fit of a model to a :class:`CrossLink`.
+class CrossLinkFit:
+    """Information on the fit of a single model to a :class:`CrossLink`.
        See :attr:`ResidueCrossLink.fits`, :attr:`AtomCrossLink.fits`, or
        :attr:`FeatureCrossLink.fits`.
+
+       See also :class:`CrossLinkGroupFit` for information on the fit of
+       a model group or ensemble in aggregate to the cross-link.
 
        :param float psi: Uncertainty in the experimental data.
        :param float sigma1: Uncertainty in the position of the first residue.
@@ -572,7 +584,30 @@ class CrossLinkFit(object):
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
 
 
-class Feature(object):
+class CrossLinkGroupFit:
+    """Information on the fit of a :class:`~ihm.model.ModelGroup` or
+       :class:`~ihm.model.Ensemble` in aggregate to a :class:`CrossLink`.
+       See :attr:`ResidueCrossLink.fits`, :attr:`AtomCrossLink.fits`, or
+       :attr:`FeatureCrossLink.fits`.
+
+       See also :class:`CrossLinkFit` for information on the fit of
+       a single model to the cross-link.
+
+       :param float median_distance: Actual median cross-link distance in the
+              sampled models.
+       :param int num_models: Number of models sampled, for which the
+              median distance is provided.
+       :param str details: More information on the fit.
+    """
+    __slots__ = ["median_distance", "num_models",
+                 "details"]  # Reduce memory usage
+
+    def __init__(self, median_distance, num_models=None, details=None):
+        self.median_distance = median_distance
+        self.num_models, self.details = num_models, details
+
+
+class Feature:
     """Base class for selecting parts of the system that a restraint acts on.
        This class should not be used itself; instead,
        see :class:`ResidueFeature`, :class:`AtomFeature`,

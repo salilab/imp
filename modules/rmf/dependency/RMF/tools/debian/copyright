@@ -2,5 +2,5 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: rmf
 Source: https://integrativemodeling.org/rmf/
 
-Copyright: 2007-2024 IMP Inventors
+Copyright: 2007-2025 IMP Inventors
 License: Apache

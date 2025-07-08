@@ -6,8 +6,7 @@
  */
 
 #include <IMP/UnaryFunction.h>
-#include <IMP/algebra.h>
-#include <IMP/core.h>
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/spb/TiltSingletonScore.h>
 
 IMPSPB_BEGIN_NAMESPACE

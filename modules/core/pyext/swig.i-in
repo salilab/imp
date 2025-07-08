@@ -84,7 +84,8 @@ IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonConstraint, SingletonConstraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonRestraint, SingletonRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
-IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
+%rename(_SphereDistancePairScore) IMP::core::SphereDistancePairScore;
+IMP_SWIG_OBJECT_SERIALIZE_TEMPLATED( IMP::core, _SphereDistancePairScore, SphereDistancePairScore, _SphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSubSurfacePairScore, SoftSubSurfacePairScores);
 IMP_SWIG_OBJECT( IMP::core, SoftSuperSurfacePairScore, SoftSuperSurfacePairScores);
@@ -167,9 +168,9 @@ IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 IMP_SWIG_VALUE_SERIALIZE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
 
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, TruncatedHarmonicBounds);
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonic, TruncatedHarmonicLowerBounds);
-IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonicBound, TruncatedHarmonicBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistancePairScore, DistancePairScores);
@@ -392,6 +393,54 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingSphere3DSingletonScore, boun
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
+
+
+// Pick the most performant C++ template class when creating
+// SphereDistancePairScore, and proxy it in the Python class
+%pythoncode %{
+class SphereDistancePairScore(_SphereDistancePairScore.__bases__[0]):
+    def __init__(self, uf):
+        if isinstance(uf, HarmonicUpperBound):
+            p = HarmonicUpperBoundSphereDistancePairScore(
+                    uf.get_mean(), uf.get_k())
+        elif isinstance(uf, HarmonicLowerBound):
+            if uf.get_mean() == 0.0:
+                p = SoftSpherePairScore(uf.get_k())
+            else:
+                p = _SphereDistancePairScore(uf)
+        elif isinstance(uf, Harmonic):
+            p = HarmonicSphereDistancePairScore(
+                    uf.get_mean(), uf.get_k())
+        else:
+            p = _SphereDistancePairScore(uf)
+        self.__dict__['_proxied'] = p
+    def __getattr__(self, key):
+        return getattr(self._proxied, key)
+    def __setattr__(self, key, val):
+        return setattr(self._proxied, key, val)
+
+    def __getstate__(self):
+        return self.__dict__['_proxied']
+
+    def __setstate__(self, p):
+        self.__dict__['_proxied'] = p
+
+    @staticmethod
+    def get_from(o):
+        try:
+            p = HarmonicUpperBoundSphereDistancePairScore.get_from(o)
+        except ValueError:
+            try:
+                p = HarmonicSphereDistancePairScore.get_from(o)
+            except ValueError:
+                try:
+                    p = SoftSpherePairScore.get_from(o)
+                except ValueError:
+                    p = _SphereDistancePairScore.get_from(o)
+        obj = object.__new__(SphereDistancePairScore)
+        obj.__dict__['_proxied'] = p
+        return obj
+%}
 
 %pythoncode %{
 

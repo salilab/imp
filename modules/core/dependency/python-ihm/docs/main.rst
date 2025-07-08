@@ -12,6 +12,9 @@ The :mod:`ihm` Python module
 .. autoclass:: System
    :members:
 
+.. autoclass:: DatabaseStatus
+   :members:
+
 .. autoclass:: Database
    :members:
 
@@ -119,6 +122,13 @@ The :mod:`ihm` Python module
 
 .. autoclass:: BranchLink
    :members:
+
+.. autoclass:: DataUsage
+   :members:
+
+.. autoclass:: License
+
+.. autoclass:: Disclaimer
 
 .. autoclass:: Revision
    :members:

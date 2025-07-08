@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Create the top_level __init__.py for a Python-only module"""
 

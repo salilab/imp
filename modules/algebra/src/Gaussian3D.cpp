@@ -84,6 +84,10 @@ DensityGrid get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
   DensityGrid ret(cell_width, bb, 0);
   for (unsigned int ng = 0; ng < gmm.size(); ng++) {
     Eigen::Matrix3d covar = get_covariance(gmm[ng]);
+    // Skip contribution from infinitely small Gaussians
+    if (covar.squaredNorm() < 1e-8) {
+      continue;
+    }
     Eigen::Matrix3d inverse = Eigen::Matrix3d::Zero(3, 3);
 
     double determinant;
@@ -107,6 +111,10 @@ DensityGrid get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
   DensityGrid ret(cell_width, bb, 0);
   for (unsigned int ng = 0; ng < gmm.size(); ng++) {
     Eigen::Matrix3d covar = get_covariance(gmm[ng]);
+    // Skip contribution from infinitely small Gaussians
+    if (covar.squaredNorm() < 1e-8) {
+      continue;
+    }
     Eigen::Matrix3d inverse = Eigen::Matrix3d::Zero(3, 3);
 
     double determinant;

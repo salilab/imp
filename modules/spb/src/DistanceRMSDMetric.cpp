@@ -6,11 +6,9 @@
  */
 
 #include <boost/property_map/property_map.hpp>
-#include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/DistanceRMSDMetric.h>
-#include <IMP/statistics.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>

@@ -8,12 +8,14 @@
 
 #ifndef IMPSPB_SPB_RESTRAINT_H
 #define IMPSPB_SPB_RESTRAINT_H
-#include <IMP.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
-#include <IMP/em2d.h>
-#include <IMP/isd.h>
+
+#include <IMP/core/DistancePairScore.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/container/MinimumPairRestraint.h>
+#include <IMP/isd/FretRestraint.h>
+#include <IMP/spb/EM2DRestraint.h>
 #include <IMP/spb/spb_config.h>
+#include <IMP/spb/spb_main.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

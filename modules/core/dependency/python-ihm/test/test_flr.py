@@ -1201,7 +1201,7 @@ class Tests(unittest.TestCase):
 
     def test_kinetic_rate_fret_analysis_connection_eq(self):
         """Test equality of KineticRateFretAnalysisConnection objects."""
-        class MockObject(object):
+        class MockObject:
             pass
         f1 = MockObject()
         f1._id = '1'
@@ -1247,7 +1247,7 @@ class Tests(unittest.TestCase):
 
     def test_relaxation_time_fret_analysis_connection_eq(self):
         """Test equality of RelaxationTimeFretAnalysisConnection objects."""
-        class MockObject(object):
+        class MockObject:
             pass
         f1 = MockObject()
         f1._id = '1'

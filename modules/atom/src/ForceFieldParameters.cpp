@@ -47,6 +47,15 @@ void ForceFieldParameters::add_well_depths(Hierarchy mhd) const {
   warn_context_.dump_warnings();
 }
 
+void ForceFieldParameters::add_lennard_jones_types(Hierarchy mhd) const {
+  for (Particle *p : get_by_type(mhd, ATOM_TYPE)) {
+    String force_field_atom_type = get_force_field_atom_type(Atom(p));
+    LennardJonesType *t = get_lj_type(force_field_atom_type);
+    LennardJonesTyped::setup_particle(p, t);
+  }
+  warn_context_.dump_warnings();
+}
+
 Float ForceFieldParameters::get_radius(const String& force_field_atom_type)
     const {
   if (force_field_atom_type.length() > 0 &&
@@ -75,6 +84,21 @@ Float ForceFieldParameters::get_epsilon(const String& force_field_atom_type)
                                     << std::endl);
   }
   return -0.1;  // SOME DEFAULT VALUE!!
+}
+
+LennardJonesType *ForceFieldParameters::get_lj_type(
+                const String& force_field_atom_type) const {
+  auto mr = force_field_2_lj_type_.find(force_field_atom_type);
+  if (mr != force_field_2_lj_type_.end()) {
+    return mr->second;
+  } else {
+    Float well_depth = -get_epsilon(force_field_atom_type);
+    Float radius = get_radius(force_field_atom_type);
+    IMP_NEW(LennardJonesType, ljtyp,
+            (well_depth, radius, force_field_atom_type));
+    force_field_2_lj_type_[force_field_atom_type] = ljtyp;
+    return ljtyp;
+  }
 }
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {

@@ -13,6 +13,10 @@ class Tests(IMP.test.ApplicationTestCase):
         """Simple test of rrt_sample application, mmCIF format"""
         return self._test_simple('three.cif')
 
+    def test_simple_bcif(self):
+        """Simple test of rrt_sample application, BinaryCIF format"""
+        return self._test_simple('three.bcif')
+
     def _test_simple(self, infile):
         p = self.run_application('rrt_sample',
                                  [self.get_input_file_name(infile),

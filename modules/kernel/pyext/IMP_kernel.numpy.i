@@ -235,12 +235,12 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj)
   %}
 }
 
-// Always treat particle indexes as numpy.int32 when using numpy
+// Always treat particle indexes as numpy.intc when using numpy
 #if IMP_KERNEL_HAS_NUMPY
 %pythoncode %{
 try:
     import numpy
-    ParticleIndex = numpy.int32
+    ParticleIndex = numpy.intc
 except ImportError:
     pass
 %}

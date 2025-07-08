@@ -10,20 +10,18 @@
 """
 
 import itertools
+import numbers
 import re
 import sys
-# Handle different naming of urllib in Python 2/3
-try:
-    import urllib.request as urllib2
-except ImportError:    # pragma: no cover
-    import urllib2
+import urllib.request
 import json
+import collections
 from . import util
 
-__version__ = '1.8'
+__version__ = '2.7'
 
 
-class __UnknownValue(object):
+class __UnknownValue:
     # Represent the mmCIF 'unknown' special value
 
     def __str__(self):
@@ -32,8 +30,6 @@ class __UnknownValue(object):
 
     def __bool__(self):
         return False
-    # Python2 compatibility
-    __nonzero__ = __bool__
 
     # Needs to be hashable so that classes like Software (that might
     # use unknown values as attributes) are hashable
@@ -67,7 +63,7 @@ def _remove_identical(gen):
         yield obj
 
 
-class System(object):
+class System:
     """Top-level class representing a complete modeled system.
 
        :param str title: Title (longer text description) of the system.
@@ -89,7 +85,10 @@ class System(object):
         self.model_details = model_details
         self.databases = []
         self.databases.extend(databases)
-        self._database_status = {}
+
+        #: Information about data processing and entry status.
+        #: See :class:`DatabaseStatus`.
+        self.database_status = DatabaseStatus()
 
         #: List of plain text comments. These will be added to the top of
         #: the mmCIF file.
@@ -123,6 +122,9 @@ class System(object):
 
         #: Revision/update history. See :class:`Revision`.
         self.revisions = []
+
+        #: Information on usage of the data. See :class:`DataUsage`.
+        self.data_usage = []
 
         #: All orphaned chemical descriptors in the system.
         #: See :class:`ChemDescriptor`. This can be used to track descriptors
@@ -243,6 +245,8 @@ class System(object):
         self._orphan_relaxation_times = []
         self._orphan_repos = []
         self._orphan_chem_comps = []
+
+    _database_status = property(lambda self: self.database_status._map)
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
@@ -686,7 +690,26 @@ class System(object):
                     "can be grouped." % g)
 
 
-class Database(object):
+class DatabaseStatus:
+    """Information about data processing and entry status.
+       This information is usually accessed via :attr:`System.database_status`.
+    """
+    def __init__(self):
+        self._map = {}
+
+    status_code = property(lambda self: self._map['status_code'],
+                           doc="The status of the entry, e.g. released.")
+    deposit_site = property(lambda self: self._map['deposit_site'],
+                            doc="The site where the file was deposited.")
+    process_site = property(lambda self: self._map['process_site'],
+                            doc="The site where the file was processed.")
+    recvd_initial_deposition_date = property(
+        lambda self:
+        util._get_iso_date(self._map['recvd_initial_deposition_date']),
+        doc="The date of initial deposition.")
+
+
+class Database:
     """Information about a System that is part of an official database.
 
        If a :class:`System` is part of one or more official databases
@@ -704,7 +727,7 @@ class Database(object):
         self.doi, self.accession = doi, accession
 
 
-class Software(object):
+class Software:
     """Software used as part of the modeling protocol.
 
        :param str name: The name of the software.
@@ -748,7 +771,7 @@ class Software(object):
         return hash(self._eq_vals())
 
 
-class Grant(object):
+class Grant:
     """Information on funding support for the modeling.
        See :attr:`System.grants`.
 
@@ -765,7 +788,7 @@ class Grant(object):
         self.grant_number = grant_number
 
 
-class Citation(object):
+class Citation:
     """A publication that describes the modeling.
 
        Generally citations are added to :attr:`System.citations` or
@@ -811,10 +834,10 @@ class Citation(object):
         def get_doi(ref):
             for art_id in ref['articleids']:
                 if art_id['idtype'] == 'doi':
-                    return enc(art_id['value'])
+                    return art_id['value']
 
         def get_page_range(ref):
-            rng = enc(ref['pages']).split('-')
+            rng = ref['pages'].split('-')
             if len(rng) == 2 and len(rng[1]) < len(rng[0]):
                 # map ranges like "2730-43" to 2730,2743 not 2730, 43
                 rng[1] = rng[0][:len(rng[0]) - len(rng[1])] + rng[1]
@@ -824,22 +847,14 @@ class Citation(object):
             if rng == '':
                 rng = None
             return rng
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:    # pragma: no cover
-            def enc(s):
-                return s.encode('ascii')
-        else:
-            def enc(s):
-                return s
 
         url = ('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
                '?db=pubmed&retmode=json&rettype=abstract&id=%s' % pubmed_id)
-        fh = urllib2.urlopen(url)
+        fh = urllib.request.urlopen(url)
         j = json.load(fh)
         fh.close()
         ref = j['result'][str(pubmed_id)]
-        authors = [enc(x['name']) for x in ref['authors']
+        authors = [x['name'] for x in ref['authors']
                    if x['authtype'] == 'Author']
 
         # PubMed authors are usually of the form "Lastname AB" but PDB uses
@@ -851,16 +866,16 @@ class Citation(object):
                                                for initial in m.group(2))
         authors = [r.sub(auth_sub, auth) for auth in authors]
 
-        return cls(pmid=pubmed_id, title=enc(ref['title']),
-                   journal=enc(ref['source']),
-                   volume=enc(ref['volume']) or None,
+        return cls(pmid=pubmed_id, title=ref['title'],
+                   journal=ref['source'],
+                   volume=ref['volume'] or None,
                    page_range=get_page_range(ref),
-                   year=enc(ref['pubdate']).split()[0],
+                   year=ref['pubdate'].split()[0],
                    authors=authors, doi=get_doi(ref),
                    is_primary=is_primary)
 
 
-class ChemComp(object):
+class ChemComp:
     """A chemical component from which :class:`Entity` objects are constructed.
        Usually these are amino acids (see :class:`LPeptideChemComp`) or
        nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`),
@@ -1031,7 +1046,7 @@ class SaccharideChemComp(ChemComp):
 
     def __init__(self, id, name=None, formula=None, ccd=None,
                  descriptors=None):
-        super(SaccharideChemComp, self).__init__(
+        super().__init__(
             id, id, id, name=name, formula=formula,
             ccd=ccd, descriptors=descriptors)
 
@@ -1093,7 +1108,7 @@ class NonPolymerChemComp(ChemComp):
 
     def __init__(self, id, code_canonical='X', name=None, formula=None,
                  ccd=None, descriptors=None):
-        super(NonPolymerChemComp, self).__init__(
+        super().__init__(
             id, id, code_canonical, name=name, formula=formula,
             ccd=ccd, descriptors=descriptors)
 
@@ -1102,11 +1117,10 @@ class WaterChemComp(NonPolymerChemComp):
     """The chemical component for crystal water.
     """
     def __init__(self):
-        super(WaterChemComp, self).__init__('HOH', name='WATER',
-                                            formula="H2 O")
+        super().__init__('HOH', name='WATER', formula="H2 O")
 
 
-class Alphabet(object):
+class Alphabet:
     """A mapping from codes (usually one-letter, or two-letter for DNA) to
        chemical components.
        These classes can be used to construct sequences of components
@@ -1230,7 +1244,7 @@ class DNAAlphabet(Alphabet):
                        'C10 H15 N2 O8 P')])
 
 
-class EntityRange(object):
+class EntityRange:
     """Part of an entity. Usually these objects are created from
        an :class:`Entity`, e.g. to get a range covering residues 4 through
        7 in `entity` use::
@@ -1259,7 +1273,7 @@ class EntityRange(object):
     _id = property(lambda self: self.entity._id)
 
 
-class Atom(object):
+class Atom:
     """A single atom in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Residue.atom`.
 
@@ -1277,7 +1291,7 @@ class Atom(object):
     seq_id = property(lambda self: self.residue.seq_id)
 
 
-class Residue(object):
+class Residue:
     """A single residue in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Entity.residue` or
        :meth:`AsymUnit.residue`.
@@ -1320,7 +1334,7 @@ class Residue(object):
     seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
 
 
-class Entity(object):
+class Entity:
     """Represent a CIF entity (with a unique sequence)
 
        :param sequence sequence: The primary sequence, as a sequence of
@@ -1486,7 +1500,7 @@ class Entity(object):
     seq_id_range = property(__get_seq_id_range, doc="Sequence range")
 
 
-class AsymUnitRange(object):
+class AsymUnitRange:
     """Part of an asymmetric unit. Usually these objects are created from
        an :class:`AsymUnit`, e.g. to get a range covering residues 4 through
        7 in `asym` use::
@@ -1518,7 +1532,7 @@ class AsymUnitRange(object):
     details = property(lambda self: self.asym.details)
 
 
-class AsymUnitSegment(object):
+class AsymUnitSegment:
     """An aligned part of an asymmetric unit.
 
        Usually these objects are created from
@@ -1534,7 +1548,7 @@ class AsymUnitSegment(object):
         self.seq_id_range = (seq_id_begin, seq_id_end)
 
 
-class AsymUnit(object):
+class AsymUnit:
     """An asymmetric unit, i.e. a unique instance of an Entity that
        was modeled.
 
@@ -1600,12 +1614,12 @@ class AsymUnit(object):
         self.num_map = None
 
     def _get_auth_seq_id_ins_code(self, seq_id):
-        if isinstance(self.auth_seq_id_map, int):
+        if isinstance(self.auth_seq_id_map, numbers.Integral):
             return seq_id + self.auth_seq_id_map, None
         else:
             try:
                 ret = self.auth_seq_id_map[seq_id]
-                if isinstance(ret, (int, str)):
+                if isinstance(ret, (numbers.Integral, str)):
                     return ret, None
                 else:
                     return ret
@@ -1662,7 +1676,7 @@ class WaterAsymUnit(AsymUnit):
         if entity.type != 'water':
             raise TypeError(
                 "WaterAsymUnit can only be used for water entities")
-        super(WaterAsymUnit, self).__init__(
+        super().__init__(
             entity, details=details, auth_seq_id_map=auth_seq_id_map,
             id=id, strand_id=strand_id,
             orig_auth_seq_id_map=orig_auth_seq_id_map)
@@ -1705,11 +1719,32 @@ class Assembly(list):
     parent = None
 
     def __init__(self, elements=(), name=None, description=None):
-        super(Assembly, self).__init__(elements)
+        super().__init__(elements)
         self.name, self.description = name, description
 
+    def _signature(self):
+        """Get a Python object that represents this Assembly. Notably, two
+           Assemblies that cover the part of the system (even if the
+           components are in a different order) will have the same signature.
+           Signatures are also hashable, unlike the Assembly itself."""
+        d = collections.defaultdict(list)
+        for a in self:
+            # a might be an AsymUnit or an AsymUnitRange
+            asym = a.asym if hasattr(a, 'asym') else a
+            d[asym].append(a.seq_id_range)
+        ret = []
+        # asyms might not have IDs yet, so just put them in a consistent order
+        for asym in sorted(d.keys(), key=lambda x: id(x)):
+            ranges = d[asym]
+            # Non-polymers have no ranges
+            if all(r == (None, None) for r in ranges):
+                ret.append((asym, None))
+            else:
+                ret.append((asym, tuple(util._combine_ranges(d[asym]))))
+        return tuple(ret)
 
-class ChemDescriptor(object):
+
+class ChemDescriptor:
     """Description of a non-polymeric chemical component used in the
        experiment. For example, this might be a fluorescent probe or
        cross-linking agent. This class describes the chemical structure of
@@ -1741,7 +1776,7 @@ class ChemDescriptor(object):
         self.inchi, self.inchi_key = inchi, inchi_key
 
 
-class Collection(object):
+class Collection:
     """A collection of entries belonging to single deposition or group.
        These are used by the archive to group multiple related entries,
        e.g. all entries deposited as part of a given study, or all
@@ -1758,7 +1793,7 @@ class Collection(object):
         self.id, self.name, self.details = id, name, details
 
 
-class BranchDescriptor(object):
+class BranchDescriptor:
     """String descriptor of branched chemical structure.
        These generally only make sense for oligosaccharide entities.
        See :attr:`Entity.branch_descriptors`.
@@ -1777,7 +1812,7 @@ class BranchDescriptor(object):
         self.program, self.program_version = program, program_version
 
 
-class BranchLink(object):
+class BranchLink:
     """A link between components in a branched entity.
        These generally only make sense for oligosaccharide entities.
        See :attr:`Entity.branch_links`.
@@ -1800,7 +1835,36 @@ class BranchLink(object):
         self.order, self.details = order, details
 
 
-class Revision(object):
+class DataUsage:
+    """Information on how the data in the file can be used.
+
+       Do not use this class itself, but one of its subclasses, either
+       :class:`License` or :class:`Disclaimer`. DataUsage objects are
+       stored in :data:`ihm.System.data_usage`.
+
+       :param str details: Information about the data usage.
+       :param str name: An optional well-known name for the usage.
+       :param str url: An optional URL providing more information.
+    """
+    type = 'other'
+
+    def __init__(self, details, name=None, url=None):
+        self.details, self.name, self.url = details, name, url
+
+
+class License(DataUsage):
+    """A license describing how the data in the file can be used.
+       See :class:`DataUsage` for more information."""
+    type = 'license'
+
+
+class Disclaimer(DataUsage):
+    """A disclaimer relating to usage of the data in the file.
+       See :class:`DataUsage` for more information."""
+    type = 'disclaimer'
+
+
+class Revision:
     """Represent part of the history of a :class:`System`.
 
        :param str data_content_type: The type of file that was changed.
@@ -1825,7 +1889,7 @@ class Revision(object):
         self.items = []
 
 
-class RevisionDetails(object):
+class RevisionDetails:
     """More information on the changes in a given :class:`Revision`.
 
        :param str provider: The provider (author, repository) of the revision.

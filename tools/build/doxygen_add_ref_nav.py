@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Add navigation to the reference guide HTML output, similarly
    to what is done for the manual (see doxygen_add_nav.py).

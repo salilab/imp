@@ -14,12 +14,15 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     p0 = m.add_particle("p0")
     sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1.0)
     IMP.core.XYZR.setup_particle(m, p0, sph)
-    d0 = IMP.atom.LennardJones.setup_particle(m, p0, 1.0)
+    with IMP.allow_deprecated():
+        d0 = IMP.atom.LennardJones.setup_particle(m, p0, 1.0)
     p1 = m.add_particle("p1")
     IMP.core.XYZR.setup_particle(m, p1, sph)
-    d1 = IMP.atom.LennardJones.setup_particle(m, p1, 1.0)
+    with IMP.allow_deprecated():
+        d1 = IMP.atom.LennardJones.setup_particle(m, p1, 1.0)
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
-    c = IMP.atom.LennardJonesPairScore(sm)
+    with IMP.allow_deprecated():
+        c = IMP.atom.LennardJonesPairScore(sm)
     r = IMP.core.PairRestraint(m, c, (p0, p1))
     sf = IMP.core.RestraintsScoringFunction([r])
     return m, sf, d0, d1, c
@@ -32,7 +35,8 @@ class Tests(IMP.test.TestCase):
     def test_get_set(self):
         """Check LennardJonesPairScore get/set methods"""
         sm = IMP.atom.ForceSwitch(9.0, 10.0)
-        c = IMP.atom.LennardJonesPairScore(sm)
+        with IMP.allow_deprecated():
+            c = IMP.atom.LennardJonesPairScore(sm)
         self.assertEqual(c.get_repulsive_weight(), 1.0)
         c.set_repulsive_weight(5.0)
         self.assertEqual(c.get_repulsive_weight(), 5.0)
@@ -61,7 +65,8 @@ class Tests(IMP.test.TestCase):
                                 c.set_repulsive_weight(rep)
                                 for r in (3.0, 4.0, 5.0):
                                     place_xyzs(d0, d1, box, r)
-                                    score = sf.evaluate(False)
+                                    with IMP.allow_deprecated():
+                                        score = sf.evaluate(False)
                                     expected = wd * (rep * (rmin / r) ** 12
                                                      - 2.0 * att * (rmin / r) ** 6)
                                     self.assertAlmostEqual(score, expected,
@@ -76,8 +81,9 @@ class Tests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
                            * (random.random() * 5.0 + 1.0))
-        self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
-        self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
+        with IMP.allow_deprecated():
+            self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
+            self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
 
     def test_smoothing(self):
         """Check smoothing of LennardJonesPairScore"""
@@ -94,13 +100,15 @@ class Tests(IMP.test.TestCase):
         # For dist <= min_distance, scores should be identical
         for dist in (3.0, 3.5, 4.0):
             place_all(dist)
-            self.assertAlmostEqual(sf.evaluate(False), smsf.evaluate(False),
-                                   delta=1e-6)
+            with IMP.allow_deprecated():
+                self.assertAlmostEqual(sf.evaluate(False), smsf.evaluate(False),
+                                       delta=1e-6)
 
         # For dist > max_distance, smoothed score should be zero
         place_all(5.5)
-        self.assertEqual(smsf.evaluate(False), 0.0)
-        self.assertNotEqual(sf.evaluate(False), 0.0)
+        with IMP.allow_deprecated():
+            self.assertEqual(smsf.evaluate(False), 0.0)
+            self.assertNotEqual(sf.evaluate(False), 0.0)
 
 if __name__ == '__main__':
     IMP.test.main()

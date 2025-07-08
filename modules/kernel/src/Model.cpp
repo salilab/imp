@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,7 @@ Model::Model(std::string name)
   first_call_ = true;
   age_counter_ = 1;
   dependencies_age_ = 0;
+  removed_particles_attributes_age_ = 0;
   saved_dependencies_age_ = 0;
   dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
@@ -164,6 +165,7 @@ void Model::do_remove_particle(ParticleIndex pi) {
   free_particles_.push_back(pi);
   particle_index_[pi]->set_model(nullptr);
   particle_index_[pi] = nullptr;
+  removed_particles_attributes_age_ = age_counter_;
 }
 
 void Model::remove_particle(ParticleIndex pi) { do_remove_particle(pi); }

@@ -83,7 +83,7 @@ class PeptideDocker:
         topology.add_atom_types(self.protein)
 
         ff.add_radii(self.protein)
-        ff.add_well_depths(self.protein)
+        ff.add_lennard_jones_types(self.protein)
         self.ff = ff
         self.topology = topology
 
@@ -575,7 +575,7 @@ class PeptideDocker:
             leaves = IMP.atom.get_leaves(self.protein)
 
             sf = IMP.atom.ForceSwitch(6.0, 7.0)
-            ps = IMP.atom.LennardJonesPairScore(sf)
+            ps = IMP.atom.LennardJonesTypedPairScore(sf)
             for i in range(len(leaves)):
                 iLeaf = leaves[i]
                 for j in range(i + 1, len(leaves)):
@@ -604,7 +604,7 @@ class PeptideDocker:
         print("adding initial fixed flexible lj restraints")
         fixedAtoms = self.getFixedAtoms()
         sf = IMP.atom.ForceSwitch(6.0, 7.0)
-        ps = IMP.atom.LennardJonesPairScore(sf)
+        ps = IMP.atom.LennardJonesTypedPairScore(sf)
 
         for flexPname in self.flexibleAtoms.keys():
             flexParticle = self.namesToParticles[flexPname]

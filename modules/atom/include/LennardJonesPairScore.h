@@ -15,6 +15,8 @@
 #include <IMP/atom/LennardJones.h>
 #include <IMP/atom/smoothing_functions.h>
 
+IMPATOM_DEPRECATED_HEADER(2.23, "Use LennardJonesTypedPairScore.h instead");
+
 IMPATOM_BEGIN_NAMESPACE
 
 //! Lennard-Jones score between a pair of particles.
@@ -37,6 +39,9 @@ IMPATOM_BEGIN_NAMESPACE
     rarely-used NBFIX directive, for example). If the well depth or radius of
     a single particle is modified, that will affect its interaction with all
     particles.
+
+    It is recommended that new code instead uses LennardJonesTypedPairScore,
+    which is about twice as fast and can support NBFIX.
  */
 class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
   IMP::PointerMember<SmoothingFunction> smoothing_function_;
@@ -59,10 +64,14 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
   }
 
  public:
+  IMPATOM_DEPRECATED_OBJECT_DECL(2.23)
   LennardJonesPairScore(SmoothingFunction *f)
       : smoothing_function_(f),
         repulsive_weight_(1.0),
-        attractive_weight_(1.0) {}
+        attractive_weight_(1.0) {
+    IMPATOM_DEPRECATED_OBJECT_DEF(
+                 2.23, "Use LennardJonesTypedPairScore instead");
+  }
 
   void set_repulsive_weight(double repulsive_weight) {
     repulsive_weight_ = repulsive_weight;

@@ -8,10 +8,12 @@
 
 #ifndef IMPSPB_SPB_REPRESENTATION_H
 #define IMPSPB_SPB_REPRESENTATION_H
-#include <IMP.h>
-#include <IMP/atom.h>
-#include <IMP/core.h>
+
 #include <IMP/spb/spb_config.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Molecule.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

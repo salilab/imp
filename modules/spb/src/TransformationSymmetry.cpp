@@ -5,9 +5,9 @@
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
-#include "IMP/spb/TransformationSymmetry.h"
-#include <IMP/core.h>
-#include <IMP/isd.h>
+#include <IMP/spb/TransformationSymmetry.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/core/symmetry.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

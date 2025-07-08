@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import IMP
 import IMP.core
 from IMP.isd import create_gmm

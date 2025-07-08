@@ -1045,7 +1045,7 @@ class Tests(IMP.test.TestCase):
         selD = IMP.atom.Selection(
             hier, resolution=IMP.atom.ALL_RESOLUTIONS, representation_type=IMP.atom.DENSITIES)
         self.assertEqual(len(selB.get_selected_particles()), 20 +2+5)
-        self.assertEqual(len(selD.get_selected_particles()), 3)
+        self.assertEqual(len(selD.get_selected_particles()), 2)
         os.unlink('hgmm.txt')
 
         self.assertEqual(m1.get_ideal_helices(), [m1[0:20]])

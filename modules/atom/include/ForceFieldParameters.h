@@ -1,7 +1,7 @@
 /**
  * \file IMP/atom/ForceFieldParameters.h \brief force field base class
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,7 @@
 #include "Atom.h"
 #include "Hierarchy.h"
 #include <IMP/base_types.h>
+#include <IMP/atom/LennardJonesType.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -34,6 +35,10 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::Object {
   //! Add LennardJones well depths to the structure
   void add_well_depths(Hierarchy mhd) const;
 
+  //! Add Lennard-Jones types to the structure
+  /** This adds LennardJonesTyped decorators to all applicable particles. */
+  void add_lennard_jones_types(Hierarchy mhd) const;
+
   //! add bonds to the structure defined in the hierarchy
   void add_bonds(Hierarchy mhd) const;
 
@@ -52,6 +57,7 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::Object {
 
   Float get_radius(const String& force_field_atom_type) const;
   Float get_epsilon(const String& force_field_atom_type) const;
+  LennardJonesType *get_lj_type(const String& force_field_atom_type) const;
   virtual String get_force_field_atom_type(Atom atom) const;
   void add_bonds(Residue rd) const;
   void add_bonds(Residue rd1, Residue rd2) const;
@@ -70,6 +76,9 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::Object {
   // map that holds force_field parameters according to force_field atom types
   // key=force_field_atom_type, value=(epsilon,radius)
   std::map<String, FloatPair> force_field_2_vdW_;
+
+  // mapping from parameters to instantianted Lennard Jones types
+  mutable std::map<String, Pointer<LennardJonesType>> force_field_2_lj_type_;
 
  private:
   WarningContext warn_context_;

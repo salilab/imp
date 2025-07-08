@@ -116,6 +116,14 @@ class IMPKERNELEXPORT TextInput : public InputAdaptor {
   IMP_SHOWABLE_INLINE(TextInput, out << get_name());
   IMP_SAFE_BOOL(TextInput, in_ &&in_->get_stream());
   std::string get_name() const { return in_->get_name(); }
+
+  //! Control whether to open the file in text or binary mode.
+  /** This only has an effect on files constructed from filename, and is an
+      error if the file has already been opened. For streams or filelike
+      objects, open the stream in binary mode first before passing it to
+      TextInput.
+   */
+  void set_binary_open_mode(bool binary) { in_->set_binary_open_mode(binary); }
 };
 
 //! Set the target for the log.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Create the paths.cpp file for the kernel so IMP can find data once
 it is installed.

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import IMP
 import IMP.algebra
 import IMP.core

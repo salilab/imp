@@ -348,7 +348,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(color.get_blue(), 0.3, delta=1e-6)
         self.assertEqual(len(sel4_1),10)
         self.assertEqual(len(sel4_10),1)
-        self.assertEqual(len(sel4_D),2)
+        self.assertEqual(len(sel4_D), 1)
 
         # check rigid bodies
         rbs = dof.get_rigid_bodies()
@@ -363,8 +363,20 @@ class Tests(IMP.test.TestCase):
             import sklearn
         except ImportError:
             self.skipTest("no sklearn package")
-        mdl = IMP.Model()
         tfile = self.get_input_file_name('topology_mmcif.txt')
+        self._internal_test_build_system(tfile)
+
+    def test_build_system_binary_cif(self):
+        """Test BuildSystem macro with BinaryCIF input files"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+        tfile = self.get_input_file_name('topology_bcif.txt')
+        self._internal_test_build_system(tfile)
+
+    def _internal_test_build_system(self, tfile):
+        mdl = IMP.Model()
         input_dir = os.path.dirname(tfile)
         t = IMP.pmi.topology.TopologyReader(tfile,
                                             pdb_dir=input_dir,
@@ -379,7 +391,6 @@ class Tests(IMP.test.TestCase):
                                   resolution=1,
                                   copy_index=0).get_selected_particles()
         self.assertEqual(len(sel1), 7  + 2 )
-
 
 
 if __name__=="__main__":
