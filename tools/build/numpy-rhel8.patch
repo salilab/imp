@@ -1,0 +1,27 @@
+diff -Nur a/vendor-include/numpy/__multiarray_api.h b/vendor-include/numpy/__multiarray_api.h
+--- a/vendor-include/numpy/__multiarray_api.h	2025-07-10 12:09:20.649463912 -0700
++++ b/vendor-include/numpy/__multiarray_api.h	2025-07-10 12:10:08.619282756 -0700
+@@ -1485,6 +1485,11 @@
+     numpy = PyImport_ImportModule("numpy.core._multiarray_umath");
+   }
+ 
++  if (numpy == NULL && PyErr_ExceptionMatches(PyExc_ModuleNotFoundError)) {
++    PyErr_Clear();
++    numpy = PyImport_ImportModule("numpy.core.multiarray");
++  }
++
+   if (numpy == NULL) {
+       return -1;
+   }
+diff -Nur a/vendor-include/numpy/numpyconfig.h b/vendor-include/numpy/numpyconfig.h
+--- a/vendor-include/numpy/numpyconfig.h	2025-07-10 12:09:20.658029239 -0700
++++ b/vendor-include/numpy/numpyconfig.h	2025-07-10 12:10:08.618038370 -0700
+@@ -121,7 +121,7 @@
+     #define NPY_FEATURE_VERSION NPY_TARGET_VERSION
+ #else
+     /* Use the default (increase when dropping Python 3.9 support) */
+-    #define NPY_FEATURE_VERSION NPY_1_19_API_VERSION
++    #define NPY_FEATURE_VERSION NPY_1_14_API_VERSION
+ #endif
+ 
+ /* Sanity check the (requested) feature version */
