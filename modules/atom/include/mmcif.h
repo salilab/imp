@@ -99,38 +99,6 @@ inline Hierarchies read_multimodel_pdb_any(TextInput input, Model *model,
   }
 }
 
-#ifndef IMP_DOXYGEN
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.23)
-inline Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector(),
-                         bool select_first_model = true
-                         , bool noradii = false
-                        ) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.23, "Use read_pdb_any() instead");
-  std::string filename = input.get_name();
-  if (filename.find(".cif") == filename.size() - 4) {
-    return read_mmcif(input, model, selector, select_first_model, noradii);
-  } else {
-    return read_pdb(input, model, selector, select_first_model, noradii);
-  }
-}
-
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.23)
-inline Hierarchies read_multimodel_pdb_or_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector()
-                         , bool noradii = false
-                        ) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(
-           2.23, "Use read_multimodel_pdb_any() instead");
-  std::string filename = input.get_name();
-  if (filename.find(".cif") == filename.size() - 4) {
-    return read_multimodel_mmcif(input, model, selector, noradii);
-  } else {
-    return read_multimodel_pdb(input, model, selector, noradii);
-  }
-}
-#endif
-
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_MMCIF_H */

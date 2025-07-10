@@ -9,7 +9,6 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/Particle.h>
 #include <IMP/atom/CHARMMParameters.h>
-#include <IMP/atom/LennardJones.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -35,15 +34,6 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
     }
   }
   // TODO: handle N-term and C-term
-  warn_context_.dump_warnings();
-}
-
-void ForceFieldParameters::add_well_depths(Hierarchy mhd) const {
-  ParticlesTemp ps = get_by_type(mhd, ATOM_TYPE);
-  for (unsigned int i = 0; i < ps.size(); i++) {
-    Float epsilon = get_epsilon(Atom(ps[i]));
-    LennardJones::setup_particle(ps[i], -epsilon);
-  }
   warn_context_.dump_warnings();
 }
 

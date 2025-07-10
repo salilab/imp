@@ -5,14 +5,6 @@ import IMP.atom
 import IMP.algebra
 
 
-def _make_test_decorator(m):
-    p = IMP.Particle(m)
-    v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
-    s = IMP.algebra.Sphere3D(v, 4.0)
-    IMP.core.XYZR.setup_particle(p, s)
-    return IMP.atom.LennardJones.setup_particle(p, 0.5)
-
-
 class Tests(IMP.test.TestCase):
 
     """Test the LennardJonesTyped decorator and LennardJonesType"""

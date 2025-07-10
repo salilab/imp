@@ -33,24 +33,6 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(chains[2].get_label_asym_id(), "A")
             self.assertEqual(len(m.get_particle_indexes()), 435)
 
-    def test_read_pdb_or_mmcif(self):
-        """Check reading mmCIF with read_pdb_or_mmcif"""
-        m = IMP.Model()
-
-        with IMP.allow_deprecated():
-            mp = IMP.atom.read_pdb_or_mmcif(
-                self.get_input_file_name("input.cif"), m)
-        chains = [IMP.atom.Chain(x)
-                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual(len(chains), 3)
-        self.assertEqual(chains[0].get_id(), "")
-        self.assertEqual(chains[0].get_label_asym_id(), "")
-        self.assertEqual(chains[1].get_id(), "X")
-        self.assertEqual(chains[1].get_label_asym_id(), "B")
-        self.assertEqual(chains[2].get_id(), "A")
-        self.assertEqual(chains[2].get_label_asym_id(), "A")
-        self.assertEqual(len(m.get_particle_indexes()), 435)
-
     def test_read_pdb_any_no_num(self):
         """Check reading mmCIF with read_pdb_any, ignoring model num"""
         for fname in ('input.cif', 'input.bcif'):
@@ -62,19 +44,6 @@ class Tests(IMP.test.TestCase):
                       for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
             self.assertEqual(len(chains), 3)
             self.assertEqual(len(m.get_particle_indexes()), 441)
-
-    def test_read_pdb_or_mmcif_no_num(self):
-        """Check reading mmCIF with read_pdb_or_mmcif, ignoring model num"""
-        m = IMP.Model()
-
-        with IMP.allow_deprecated():
-            mp = IMP.atom.read_pdb_or_mmcif(
-                self.get_input_file_name("input.cif"), m,
-                IMP.atom.NonWaterPDBSelector(), False)
-        chains = [IMP.atom.Chain(x)
-                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual(len(chains), 3)
-        self.assertEqual(len(m.get_particle_indexes()), 441)
 
     def test_read(self):
         """Check reading an mmCIF file with one protein"""
@@ -139,21 +108,6 @@ class Tests(IMP.test.TestCase):
             chains2 = [IMP.atom.Chain(x)
                        for x in IMP.atom.get_by_type(mp2, IMP.atom.CHAIN_TYPE)]
             self.assertEqual([c.get_id() for c in chains2], [''])
-
-    def test_read_multimodel_pdb_or_mmcif(self):
-        """Check reading multimodel mmCIF with read_multimodel_pdb_or_mmcif"""
-        m = IMP.Model()
-
-        with IMP.allow_deprecated():
-            mps = IMP.atom.read_multimodel_pdb_or_mmcif(
-                self.get_input_file_name("input.cif"), m)
-        mp1, mp2 = mps
-        chains1 = [IMP.atom.Chain(x)
-                   for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual([c.get_id() for c in chains1], ['', 'X', 'A'])
-        chains2 = [IMP.atom.Chain(x)
-                   for x in IMP.atom.get_by_type(mp2, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual([c.get_id() for c in chains2], [''])
 
     def test_read_multimodel(self):
         """Check reading a multimodel mmCIF file"""
