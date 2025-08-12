@@ -29,3 +29,7 @@
 	path = modules/bff
 	url = https://github.com/salilab/IMP.bff.git
         branch = salilab
+[submodule "modules/emseqfinder"]
+	path = modules/emseqfinder
+	url = https://github.com/salilab/emseqfinder.git
+	branch = imp_module
