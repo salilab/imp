@@ -56,7 +56,7 @@ endif(POLICY CMP0167)
 
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost COMPONENTS system filesystem thread program_options iostreams
+find_package(Boost COMPONENTS filesystem thread program_options iostreams
   REQUIRED)
 
 include(FindHDF5)
