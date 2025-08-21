@@ -434,17 +434,9 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 %extend Namespace::Name {
   %pythoncode %{
-    def get_type_name(self):
-        return self.__class__.__name__
     def do_show(self, out):
         pass
-    def get_version_info(self):
-        if #Namespace == "IMP":
-          return VersionInfo(self.__module__,
-                             __import__(self.__module__).get_module_version())
-        else:
-          return IMP.VersionInfo(self.__module__,
-                             __import__(self.__module__).get_module_version())
+
     @staticmethod
     def get_from(o):
        return _object_cast_to_##Name(o)

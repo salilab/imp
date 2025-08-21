@@ -100,11 +100,11 @@ IMP_COMPILER_DISABLE_WARNINGS
   about the module and about files associated with the module.
   @{
   */
-#if !defined(SWIG)
+#if !defined(SWIG) || defined(IMP_SWIG_WRAPPER)
     %(cppprefix)sEXPORT std::string get_module_version();
 #endif
 
-#if !defined(SWIG)
+#if !defined(SWIG) || defined(IMP_SWIG_WRAPPER)
     // SWIG will whine about duplicate definitions of function
     inline std::string get_module_name() { return "%(namespace)s"; }
 #endif

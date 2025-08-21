@@ -158,6 +158,27 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(newrsr.get_name(), "foo")
         self.assertAlmostEqual(newrsr.evaluate(False), 0.2, delta=1e-3)
 
+    def test_object_info(self):
+        """Test object get_type_name() and get_version_info()"""
+        uf = IMP.core.Harmonic(1.0, 0.1)
+        rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
+                                         self.particles[0], self.particles[1])
+        self.assertEqual(rsr.get_type_name(), "DistanceRestraint")
+        self.assertEqual(rsr.get_version_info().get_module(), "IMP::core")
+        # Should get the same information using the Restraint base class
+        r_rsr = IMP.Restraint.get_from(rsr)
+        self.assertIs(type(r_rsr), IMP.Restraint)
+        self.assertEqual(r_rsr.get_type_name(), "DistanceRestraint")
+        self.assertEqual(r_rsr.get_version_info().get_module(), "IMP::core")
+        # Should get the same information using the Object base class
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key")
+        m.add_data(mk, rsr)
+        obj_rsr = m.get_data(mk)
+        self.assertIs(type(obj_rsr), IMP.Object)
+        self.assertEqual(obj_rsr.get_type_name(), "DistanceRestraint")
+        self.assertEqual(obj_rsr.get_version_info().get_module(), "IMP::core")
+
 
 if __name__ == '__main__':
     IMP.test.main()
