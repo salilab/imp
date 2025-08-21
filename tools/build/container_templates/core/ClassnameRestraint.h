@@ -53,8 +53,8 @@ class ClassnameRestraint :
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
   IMP::ModelObjectsTemp do_get_inputs() const;
-  IMP_OBJECT_METHODS(ClassnameRestraint)
 #endif
+  IMP_OBJECT_METHODS(ClassnameRestraint)
 };
 
 IMPCORE_END_NAMESPACE
