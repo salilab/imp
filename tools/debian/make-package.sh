@@ -31,14 +31,6 @@ perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAM
 if [ "${CODENAME}" = "jammy" ]; then
   perl -pi -e "s/libgsl0-dev/libgsl-dev/" debian/control || exit 1
 fi
-if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "bionic" ]; then
-  # CGAL cmake support on Xenial or later requires Qt5 headers too
-  perl -pi -e "s/libcgal\-dev/libcgal-dev, libcgal-qt5-dev/g" debian/control || exit 1
-fi
-# Older distributions don't support python3-protobuf
-if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "trusty" ]; then
-  perl -pi -e "s/, python3-protobuf//" debian/control || exit 1
-fi
 
 # Workaround gcc -frounding-math bug; see
 # https://bugzilla.redhat.com/show_bug.cgi?id=2085189
