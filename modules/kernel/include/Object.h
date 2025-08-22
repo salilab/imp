@@ -2,7 +2,7 @@
  *  \file IMP/Object.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -221,8 +221,8 @@ class IMPKERNELEXPORT Object : public NonCopyable {
 
   /** \imp provides warnings when objects are never used before they are
       destroyed. Examples of use include adding an IMP::Restraint to an
-      IMP::Model. If an object is not properly marked as used, or your
-      code is the one using it, call set_was_used(true) on the object.
+      IMP::ScoringFunction. If an object is not properly marked as used, or
+      your code is the one using it, call set_was_used(true) on the object.
   */
   void set_was_used(bool tf) const;
 
