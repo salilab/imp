@@ -20,6 +20,8 @@ imp_dir_name=`basename ${TOP_DIR}`
 cd ${TOP_DIR} || exit 1
 rm -rf debian
 cp -r tools/debian/ . || exit 1
+# Use same numpy patch as the PPA build
+cp tools/debian-ppa/patches/imp-numpy2_vendor.patch debian/patches/ || exit 1
 
 # Add all module directories to imp.install
 (cd modules && ${TOP_DIR}/tools/debian/make-imp-install.py < ${TOP_DIR}/tools/debian/imp.install > ${TOP_DIR}/debian/imp.install)
