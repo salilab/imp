@@ -19,6 +19,12 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.SingletonsRestraint(ss, lsc)
         return m, p1, p2, r
 
+    def test_object_info(self):
+        """Test object get_type_name() and get_version_info()"""
+        m, p1, p2, r = self.make_system()
+        self.assertEqual(r.get_type_name(), "SingletonsRestraint")
+        self.assertEqual(r.get_version_info().get_module(), "IMP::container")
+
     def test_pickle(self):
         """Test (un-)pickle of SingletonsRestraint"""
         m, p1, p2, r = self.make_system()
