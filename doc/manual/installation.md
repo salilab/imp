@@ -25,7 +25,7 @@ To experiment with IMP on [Google Colaboratory](https://colab.research.google.co
 !apt install imp
 import sys, os, glob
 sys.path.append(os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[0]))
-
+os.environ['PYTHONPATH'] = os.path.dirname(glob.glob('/usr/lib/python*/dist-packages/IMP')[0])
 \endcode
 
 # Source code installation {#installation_source}
