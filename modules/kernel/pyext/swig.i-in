@@ -28,6 +28,15 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
   bool __gt__(const Object *o) const {
      return self > o;
   }
+
+  %pythoncode %{
+  def get_derived_object(self):
+      """Return this object cast to the most derived subclass."""
+      modname = self.get_version_info().get_module().replace('::', '.')
+      modobj = sys.modules[modname]
+      clsobj = getattr(modobj, self.get_type_name())
+      return clsobj.get_from(self)
+  %}
 }
 
 // Make sure that ModelObject::get_model() returns the same Model object

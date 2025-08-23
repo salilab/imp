@@ -178,6 +178,8 @@ class Tests(IMP.test.TestCase):
         self.assertIs(type(obj_rsr), IMP.Object)
         self.assertEqual(obj_rsr.get_type_name(), "DistanceRestraint")
         self.assertEqual(obj_rsr.get_version_info().get_module(), "IMP::core")
+        self.assertIs(type(obj_rsr.get_derived_object()),
+                      IMP.core.DistanceRestraint)
 
 
 if __name__ == '__main__':

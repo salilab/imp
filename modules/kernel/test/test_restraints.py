@@ -40,6 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertIs(type(obj_cr), IMP.Object)
         self.assertEqual(obj_cr.get_type_name(), "_ConstRestraint")
         self.assertEqual(obj_cr.get_version_info().get_module(), "IMP")
+        self.assertIs(type(obj_cr.get_derived_object()), IMP._ConstRestraint)
 
 
 if __name__ == '__main__':
