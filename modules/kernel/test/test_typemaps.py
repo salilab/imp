@@ -309,6 +309,7 @@ class Tests(IMP.test.TestCase):
                       'get_has_required_score_states',
                       'handle_set_has_required_score_states',
                       'set_has_required_score_states',
+                      'get_derived_object',
                       ]
         md = dir(IMP._TrivialDecorator)
         missing = []
