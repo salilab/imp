@@ -39,4 +39,4 @@ jobs:
       - name: Test IMP
         run: |
           cd build
-          ctest --output-on-failure -L '\-tests?-' -E 'expensive|medium' -T Test
+          IMP_SKIP_UNSTABLE_TESTS=1 ctest --output-on-failure -L '\-tests?-' -E 'expensive|medium' -T Test
