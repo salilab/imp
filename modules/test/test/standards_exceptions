@@ -97,7 +97,7 @@ exceptions.extend([
    'set.union_update',
    'expectedFailure', 'main', 'numerical_derivative', 'skip', 'skipIf',
    'skipUnless', 'xyz_numerical_derivatives', 'temporary_directory',
-   'temporary_working_directory'])
+   'temporary_working_directory', 'unstable'])
 
 
 value_object_exceptions=[]

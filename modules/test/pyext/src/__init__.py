@@ -31,6 +31,17 @@ skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
 
+def unstable(reason="unstable test"):
+    """Mark a test as 'unstable', i.e. that it fails randomly.
+
+       'unstable' tests are tests that do not reliably pass or fail, such
+       as 'science' tests that perform some sort of stochastic sampling or
+       optimization and then assert on the results. This decorator can be
+       used to mark such tests. They are then skipped if the
+       IMP_SKIP_UNSTABLE_TESTS environment variable is set."""
+    return skipIf('IMP_SKIP_UNSTABLE_TESTS' in os.environ, reason)
+
+
 class _TempDir:
     def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
