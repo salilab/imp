@@ -1,23 +1,25 @@
 name: CI
 on: [push, pull_request]
 
-env:
-  CXXFLAGS: "-fprofile-arcs -ftest-coverage"
-
 jobs:
   test:
     name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10"]
-        os: [ubuntu-22.04]
-        compiler: [gcc]
-    env:
-      CC: ${{ matrix.compiler }}
+        include:
+        - os: [ubuntu-22.04]
+          python-version: ["3.10"]
+          cxxflags: "-fprofile-arcs -ftest-coverage"
+          cgaldir: /usr/lib/x86_64-linux-gnu/cmake/CGAL/
+        - os: macos-latest
+          python-version: ["3.13"]
+          cxxflags: ""
+          cgaldir: ""
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq libboost-all-dev swig libhdf5-dev libeigen3-dev \
@@ -26,6 +28,11 @@ jobs:
             libprotobuf-dev protobuf-compiler \
             libopenmpi-dev python3-dev python3-numpy python3-protobuf \
             python3-nose python3-pip python3-biopython
+          pip3 install codecov
+      - name: Install dependencies (Mac)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install swig boost cereal cmake cgal opencv gsl fftw eigen hdf5 protobuf numpy
           pip3 install codecov
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -37,7 +44,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}"
           make -k -j 2
           cd ..
       - name: Test IMP
