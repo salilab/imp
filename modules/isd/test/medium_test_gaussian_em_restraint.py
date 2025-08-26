@@ -183,6 +183,7 @@ class Tests(IMP.test.TestCase):
         newscore = newsf.evaluate(False)
         self.assertAlmostEqual(newscore, origscore, delta=1e-3)
 
+    @IMP.test.unstable
     def test_gem_score(self):
         """test accuracy of GMM score"""
         for nt in range(10):

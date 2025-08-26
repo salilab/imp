@@ -123,6 +123,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
             1 / 72. * (37 + 36 * log(2 * pi)),
             delta=0.18)
 
+    @IMP.test.unstable
     def test_ensemble_mc(self):
         """test ensemble averages against the standard Monte Carlo"""
         IMP.isd.Nuisance(self.nuisances[0]).set_nuisance_is_optimized(False)

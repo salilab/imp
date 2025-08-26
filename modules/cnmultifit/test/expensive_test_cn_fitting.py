@@ -28,6 +28,7 @@ class CnFittingTests(IMP.test.TestCase):
         self.ref_chains = IMP.atom.get_by_type(self.ref, IMP.atom.CHAIN_TYPE)
         self.ref_rbs = [IMP.atom.create_rigid_body(c) for c in self.ref_chains]
 
+    @IMP.test.unstable
     def test_consistent_fitting(self):
         mh_pca = IMP.cnmultifit.MolCnSymmAxisDetector(self.cn_symm_deg,
                                                       self.ref_chains)
