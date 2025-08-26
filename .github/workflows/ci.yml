@@ -15,7 +15,7 @@ jobs:
         - os: macos-latest
           python-version: "3.13"
           cxxflags: ""
-          cgaldir: ""
+          cgaldir: /opt/homebrew/lib/cmake/CGAL/
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies (Linux)
