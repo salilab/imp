@@ -33,7 +33,6 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           brew install swig boost cereal cgal opencv gsl fftw eigen hdf5 protobuf numpy
-          pip3 install codecov
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
