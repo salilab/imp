@@ -11,12 +11,12 @@ jobs:
         - os: ubuntu-22.04
           python-version: "3.10"
           cxxflags: "-fprofile-arcs -ftest-coverage"
-          cgaldir: /usr/lib/x86_64-linux-gnu/cmake/CGAL/
+          cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\.modeller\-"
         - os: macos-latest
           python-version: "3.13"
           cxxflags: "-std=c++17"
-          cgaldir: /opt/homebrew/lib/cmake/CGAL/
+          cgaldir: "/opt/homebrew/lib/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\.modeller\-|IMP\.parallel\-test_tasks|IMP\.parallel\-test_startup"
     steps:
       - uses: actions/checkout@v3
