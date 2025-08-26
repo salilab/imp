@@ -50,4 +50,4 @@ jobs:
         run: |
           cd build
           IMP_SKIP_UNSTABLE_TESTS=1 ctest --output-on-failure -L '\-tests?-' -E 'expensive|medium|IMP\.modeller\-' -T Test
-          ctest --output-on-failure -R medium_test_standards -T Test
+          ctest --output-on-failure -R medium_test_standards -E 'IMP\.modeller\-' -T Test
