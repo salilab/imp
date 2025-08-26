@@ -14,7 +14,7 @@ jobs:
           cgaldir: /usr/lib/x86_64-linux-gnu/cmake/CGAL/
         - os: macos-latest
           python-version: "3.13"
-          cxxflags: ""
+          cxxflags: "-std=c++17"
           cgaldir: /opt/homebrew/lib/cmake/CGAL/
     steps:
       - uses: actions/checkout@v3
