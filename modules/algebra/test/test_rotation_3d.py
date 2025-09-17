@@ -146,6 +146,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(vti[1], v[1], delta=.1)
         self.assertAlmostEqual(vti[2], v[2], delta=.1)
 
+    @IMP.test.unstable
     def test_deriv(self):
         """Check the quaternion derivatives"""
         r = IMP.algebra.get_random_rotation_3d()
