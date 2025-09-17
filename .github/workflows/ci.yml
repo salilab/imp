@@ -48,14 +48,14 @@ jobs:
         run: |
           mkdir build
           cd build
-          ../tools/coverage/setup.py
           PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}"
           make -k -j 2
           cd ..
       - name: Test IMP
         run: |
           cd build
-          IMP_SKIP_UNSTABLE_TESTS=1 ctest --output-on-failure -L '\-tests?-' -E "${{ matrix.skiptests }}" -T Test
+          ../tools/coverage/setup.py
+          IMP_SKIP_UNSTABLE_TESTS=1 PYTHONPATH=`pwd`/coverage ctest --output-on-failure -L '\-tests?-' -E "${{ matrix.skiptests }}" -T Test
           ctest --output-on-failure -R medium_test_standards -E 'IMP\.modeller\-' -T Test
       - name: Combine coverage
         run: |
