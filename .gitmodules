@@ -13,7 +13,8 @@
 	branch = legacy-pmi1
 [submodule "modules/bayesianem"]
 	path = modules/bayesianem
-	url = https://gitlab.pasteur.fr/rpellari/bayesianem.git
+	url = https://github.com/salilab/bayesianem.git
+	branch = main
 [submodule "modules/sampcon"]
 	path = modules/sampcon
 	url = https://github.com/salilab/imp-sampcon.git
