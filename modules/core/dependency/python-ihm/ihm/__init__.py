@@ -1553,7 +1553,7 @@ class AsymUnit:
        was modeled.
 
        Note that this class should not be used to describe crystal waters;
-       for that, see :class:`ihm.WaterAsymUnit`.
+       for that, see :class:`WaterAsymUnit`.
 
        :param entity: The unique sequence of this asymmetric unit.
        :type entity: :class:`Entity`

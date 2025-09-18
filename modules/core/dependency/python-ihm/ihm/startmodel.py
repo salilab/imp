@@ -61,7 +61,6 @@ class Template:
               template-target alignment.
        :type alignment_file: :class:`~ihm.location.Location`
     """
-    # todo: handle sequence_identity_denominator as an enum, not int
 
     def __init__(self, dataset, asym_id, seq_id_range, template_seq_id_range,
                  sequence_identity, alignment_file=None):

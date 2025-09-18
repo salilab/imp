@@ -2426,6 +2426,9 @@ HETATM 4 O O . HOH . 70 . B 20.000 20.000 20.000 . 1 B . 1 1
                          {2: 500})
         self.assertEqual(b1.asym_unit.auth_seq_id_map, {1: (70, None)})
         self.assertIsNone(b1.asym_unit.orig_auth_seq_id_map)
+        # Should get a WaterAsymUnit, not regular AsymUnit
+        self.assertIsInstance(a1.asym_unit, ihm.WaterAsymUnit)
+        self.assertIsInstance(b1.asym_unit, ihm.WaterAsymUnit)
         # seq_id should be assigned based on atom_site
         self.assertEqual(a1.seq_id, 1)
         self.assertEqual(a2.seq_id, 2)
