@@ -12,8 +12,8 @@ class GenericTest(unittest.TestCase):
         """Test that opening a file 2x works"""
         try:
             import RMF_HDF5
-        except:
-            return
+        except ImportError:
+            self.skipTest("no support for legacy HDF5 files")
         f0 = RMF.HDF5.open_file(
             RMF._get_test_input_file_path("backwards.rmf"))
         RMF.HDF5.set_show_errors(True)
