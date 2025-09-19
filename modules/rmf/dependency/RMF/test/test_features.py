@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -42,7 +41,6 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(sd.get_score(), 10)
         for r0, r1 in zip(rd.get_representation(), reps):
             self.assertEqual(r0, r1)
-            #self.assertEqual(rd.get_representation(), reps)
 
     def test_multiparent(self):
         """Test that feature nodes work right"""
@@ -52,6 +50,7 @@ class GenericTest(unittest.TestCase):
             print("file is", path)
             self._create(path)
             self._test(path)
+
 
 if __name__ == '__main__':
     unittest.main()

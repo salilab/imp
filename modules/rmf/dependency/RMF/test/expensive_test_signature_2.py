@@ -7,8 +7,8 @@ class Tests(unittest.TestCase):
     def test_0(self):
         """Test that signatures make sense and are stable"""
         try:
-            import RMF_HDF5
-        except:
+            import RMF_HDF5  # noqa: F401
+        except ImportError:
             return
 
         RMF.set_log_level("Off")
@@ -26,8 +26,8 @@ class Tests(unittest.TestCase):
     def test_1(self):
         """Test that signatures make sense and are stable"""
         try:
-            import RMF_HDF5
-        except:
+            import RMF_HDF5  # noqa: F401
+        except ImportError:
             return
 
         RMF.set_log_level("Off")

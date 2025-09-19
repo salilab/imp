@@ -4,6 +4,7 @@ import shutil
 import os
 import sys
 
+
 class Tests(unittest.TestCase):
 
     def get_filename_key(self, fh):

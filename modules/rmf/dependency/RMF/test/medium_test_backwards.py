@@ -1,7 +1,6 @@
 import unittest
 import RMF
 import shutil
-import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -14,8 +13,8 @@ class GenericTest(unittest.TestCase):
     def test_backwards_0(self):
         """Test opening pre-category change files"""
         try:
-            import RMF_HDF5
-        except:
+            import RMF_HDF5  # noqa: F401
+        except ImportError:
             return
         ifn = RMF._get_test_input_file_path("backwards.rmf")
         f = RMF.open_rmf_file_read_only(ifn)
@@ -31,5 +30,7 @@ class GenericTest(unittest.TestCase):
         pks = f.get_keys(pc)
         print(pks)
         self.assertGreater(len(pks), 3)
+
+
 if __name__ == '__main__':
     unittest.main()

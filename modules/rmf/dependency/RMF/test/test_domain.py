@@ -9,5 +9,5 @@ dd = df.get(fh.get_root_node().add_child("domain", RMF.REPRESENTATION))
 input = [0, 10]
 dd.set_residue_indexes(*input)
 output = dd.get_residue_indexes()
-assert(input[0] == output[0])
-assert(input[1] == output[1])
+assert input[0] == output[0]
+assert input[1] == output[1]

@@ -18,5 +18,6 @@ class GenericTest(unittest.TestCase):
         for suffix in ["rmfz"]:
             self._test_one(RMF._get_temporary_file_path("comments." + suffix))
 
+
 if __name__ == '__main__':
     unittest.main()

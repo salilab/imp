@@ -17,5 +17,6 @@ class Tests(unittest.TestCase):
         bbh = RMF.read_buffer(name)
         self.assertEqual(bbh.get_buffer(), bh.get_buffer())
 
+
 if __name__ == '__main__':
     unittest.main()

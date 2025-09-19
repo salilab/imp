@@ -14,5 +14,6 @@ class GenericTest(unittest.TestCase):
             rh2 = fh.get_node_from_association(fh)
             self.assertEqual(rh2, rh)
 
+
 if __name__ == '__main__':
     unittest.main()

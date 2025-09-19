@@ -1,6 +1,7 @@
 import RMF
 import unittest
 
+
 class Tests(unittest.TestCase):
 
     def test_chain(self):
@@ -43,6 +44,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.get_uniprot_accession(), 'Q13098')
         self.assertEqual(c.get_chain_id(), 'X')
         self.assertEqual(c.get_label_asym_id(), 'AA')
+
 
 if __name__ == '__main__':
     unittest.main()

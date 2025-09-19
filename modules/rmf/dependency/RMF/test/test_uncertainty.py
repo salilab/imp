@@ -1,8 +1,6 @@
-import sys
 import RMF
 import unittest
-import os
-import utils
+
 
 class Tests(unittest.TestCase):
 

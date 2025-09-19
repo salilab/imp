@@ -1,6 +1,7 @@
 import RMF
 import unittest
 
+
 class Tests(unittest.TestCase):
 
     def test_get_as_node_name(self):
@@ -22,6 +23,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(RMF.get_is_valid_key_name('foo  bar'))
         self.assertTrue(RMF.get_is_valid_key_name('foo bar'))
         self.assertTrue(RMF.get_is_valid_key_name('foobar'))
+
 
 if __name__ == '__main__':
     unittest.main()

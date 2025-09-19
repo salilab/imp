@@ -1,7 +1,5 @@
 import unittest
 import RMF
-import shutil
-import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -33,8 +31,8 @@ class GenericTest(unittest.TestCase):
             RMF.show_hierarchy_with_values(f.get_root_node())
             RMF.show_hierarchy_with_values(of.get_root_node())
 
-            print("number of frames", of.get_number_of_frames(),\
-                fr, f.get_number_of_frames())
+            print("number of frames", of.get_number_of_frames(),
+                  fr, f.get_number_of_frames())
         self.assertTrue(RMF.get_equal_static_values(f, of))
         print("deling")
         del of
@@ -59,6 +57,7 @@ class GenericTest(unittest.TestCase):
         for suffix in RMF.suffixes:
             print(suffix)
             self._copy_to(suffix)
+
 
 if __name__ == '__main__':
     unittest.main()

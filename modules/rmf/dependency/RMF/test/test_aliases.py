@@ -37,5 +37,6 @@ class Tests(unittest.TestCase):
             self.assertEqual(af.get(ch[0]).get_aliased(), rh)
             print("done")
 
+
 if __name__ == '__main__':
     unittest.main()

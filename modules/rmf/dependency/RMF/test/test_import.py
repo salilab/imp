@@ -7,7 +7,8 @@ class GenericTest(unittest.TestCase):
         """Test that import works"""
         import sys
         print("path", sys.path)
-        import RMF
+        import RMF  # noqa: F401
+
 
 if __name__ == '__main__':
     unittest.main()

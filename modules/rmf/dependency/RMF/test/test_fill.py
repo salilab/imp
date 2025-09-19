@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import shutil
 
 
 class GenericTest(unittest.TestCase):
@@ -14,8 +13,8 @@ class GenericTest(unittest.TestCase):
         """Test filling a data set"""
         fn = RMF._get_temporary_file_path("fill.hdf5")
         try:
-            import RMF_HDF5
-        except:
+            import RMF_HDF5  # noqa: F401
+        except ImportError:
             return
         f = RMF.HDF5.create_file(fn)
         ds = f.add_child_float_data_set_2d("test")
@@ -24,5 +23,7 @@ class GenericTest(unittest.TestCase):
         ds.set_value([0, 1], 1)
         ds.set_value([0, 2], 0)
         ds.set_size([3, 4])
+
+
 if __name__ == '__main__':
     unittest.main()

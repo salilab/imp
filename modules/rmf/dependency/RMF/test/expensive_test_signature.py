@@ -7,8 +7,8 @@ class Tests(unittest.TestCase):
     def test_1(self):
         """Test signature of older file"""
         try:
-            import RMF_HDF5
-        except:
+            import RMF_HDF5  # noqa: F401
+        except ImportError:
             return
 
         RMF.set_log_level("Off")
@@ -23,6 +23,7 @@ class Tests(unittest.TestCase):
                 "conformations.imp.old.0fd20c095e58.signature"),
             "r").read()
         RMF._assert_signatures_equal(sig, old_sig)
+
 
 if __name__ == '__main__':
     unittest.main()

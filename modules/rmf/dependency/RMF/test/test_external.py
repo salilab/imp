@@ -2,7 +2,7 @@ import RMF
 import os.path
 import unittest
 import sys
-import utils
+
 
 class GenericTest(unittest.TestCase):
 
@@ -14,7 +14,7 @@ class GenericTest(unittest.TestCase):
         # now make hierarchy
         rff = RMF.ReferenceFrameFactory(rmf)
         ef = RMF.ExternalFactory(rmf)
-            # add a couple transformed copies of simple
+        # add a couple transformed copies of simple
         c0 = rt.add_child("copy0", RMF.REPRESENTATION)
         rb0 = rff.get(c0)
         rb0.set_translation(RMF.Vector3(100, 0, 0))
@@ -90,5 +90,7 @@ class GenericTest(unittest.TestCase):
             print("read")
             self._read(name)
             print("done")
+
+
 if __name__ == '__main__':
     unittest.main()

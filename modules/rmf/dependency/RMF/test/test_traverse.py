@@ -1,6 +1,7 @@
 import unittest
 import RMF
 
+
 class Tests(unittest.TestCase):
 
     def test_traverse(self):
@@ -18,6 +19,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(t.get_copy_index(), None)
 #       self.assertEqual(t.get_global_coordinates(RMF.Vector3(0,0,0)), None)
         self.assertEqual(len(t.get_children()), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

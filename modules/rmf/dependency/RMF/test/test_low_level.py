@@ -6,8 +6,8 @@ try:
     I1 = RMF.HDF5.DataSetIndex1D
     I2 = RMF.HDF5.DataSetIndex2D
     I3 = RMF.HDF5.DataSetIndex3D
-except:
-    pass
+except ImportError:
+    RMF_HDF5 = None
 
 
 class GenericTest(unittest.TestCase):
@@ -23,10 +23,7 @@ class GenericTest(unittest.TestCase):
                (f.add_child_float_data_set_1d, 3.25),
                (f.add_child_string_data_set_1d, "there"),
                (f.add_child_index_data_set_1d, 3),
-               #(f.add_child_float_data_set_2d_data_set_1d, ds),
-               #(f.add_child_index_data_set_2d_data_set_1d, dsi),
                (f.add_child_ints_data_set_1d, [3, 4, 5, 6]),
-               #(f.add_child_node_ids_data_set_1d, [nh]),
                ]
         # swig can't get the node ids array right
         self.assertEqual(len(lst), len(RMF.HDF5.get_data_types()) - 3)
@@ -48,12 +45,9 @@ class GenericTest(unittest.TestCase):
 
     """Test the python code"""
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_perturbed(self):
         """Test low level usage of hdf5"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         self._touch_all_types("pert")
         num_base_handles = RMF.HDF5.get_number_of_open_handles()
         f = RMF.HDF5.create_file(
@@ -76,12 +70,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles)
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_ds(self):
         """Test low level usage of hdf5 with datasets"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         self._touch_all_types("datasets")
         num_base_handles = RMF.HDF5.get_number_of_open_handles()
         f = RMF.HDF5.create_file(
@@ -115,12 +106,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles)
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_dsb(self):
         """Test writing of blocks with data sets"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         self._touch_all_types("block_datasets")
         num_base_handles = RMF.HDF5.get_number_of_open_handles()
         f = RMF.HDF5.create_file(
@@ -142,12 +130,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles)
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_dsgrow(self):
         """Test low level usage of hdf5 with datasets that grow"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         self._touch_all_types("growing_datasets")
         num_base_handles = RMF.HDF5.get_number_of_open_handles()
         f = RMF.HDF5.create_file(
@@ -184,12 +169,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles)
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_arrays(self):
         """Test arrays of integers"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         f = RMF.HDF5.create_file(
             RMF._get_temporary_file_path("testadg.hdf5"))
         self._show(f)
@@ -216,12 +198,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(in2, out)
         self.assertEqual(list(in3), [])
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_arrays_strings(self):
         """Test strings data set 2d"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         f = RMF.HDF5.create_file(
             RMF._get_temporary_file_path("testadgs.hdf5"))
         self._show(f)
@@ -248,12 +227,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(in2, out)
         self.assertEqual(in3, '')
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_arrays_strings_1d(self):
         """Test strings data set 1d"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         f = RMF.HDF5.create_file(
             RMF._get_temporary_file_path("testadgs1.hdf5"))
         self._show(f)
@@ -281,12 +257,9 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(in2, out)
         self.assertEqual(in3, 'adfjhslak')
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_as(self):
         """Test low level usage of hdf5 with attributes"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         self._touch_all_types("attributes")
         num_base_handles = RMF.HDF5.get_number_of_open_handles()
         f = RMF.HDF5.create_file(
@@ -309,28 +282,22 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles + 2)
         print("string")
-        #f.set_string_attribute("str", ["there", "not there"])
-        #self.assertEqual(RMF.HDF5.get_number_of_open_handles(), num_base_handles+2)
         self._show(f)
-        # print f.get_string_attribute("str")
-        #self.assertEqual(RMF.HDF5.get_number_of_open_handles(), num_base_handles+2)
-        #self.assertEqual(f.get_string_attribute("str"), ["there", "not there"])
         del g
         del f
         print("done")
         self.assertEqual(
             RMF.HDF5.get_number_of_open_handles(), num_base_handles)
 
+    @unittest.skipIf(RMF_HDF5 is None, "No HDF5 support")
     def test_get_groups(self):
         """Test getting of child groups"""
-        try:
-            import RMF_HDF5
-        except:
-            return
         f = RMF.HDF5.create_file(
             RMF._get_temporary_file_path("test_get_groups.hdf5"))
         ch = f.add_child_group("hi")
         chb = f.get_child_group(0)
         self.assertEqual(ch.get_name(), chb.get_name())
+
+
 if __name__ == '__main__':
     unittest.main()
