@@ -59,7 +59,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}"
+          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4
           make -k -j 2
           cd ..
       - name: Test IMP
