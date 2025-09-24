@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }} / ${{ matrix.show_build }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -14,18 +14,40 @@ jobs:
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
+          show_build: Release
+          cmake_build: Release
+          max_checks: USAGE
+          max_log: VERBOSE
         - os: ubuntu-24.04
           python-version: "3.12"
           cxxflags: "--coverage"
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
+          show_build: Debug
+          cmake_build: Debug
+          max_checks: INTERNAL
+          max_log: VERBOSE
+        - os: ubuntu-24.04
+          python-version: "3.12"
+          cxxflags: "--coverage"
+          linkflags: "--coverage"
+          cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
+          skiptests: "expensive|medium|IMP\\.modeller\\-"
+          show_build: Fast
+          cmake_build: Release
+          max_checks: NONE
+          max_log: NONE
         - os: macos-latest
           python-version: "3.13"
           cxxflags: "-std=c++17 --coverage"
           linkflags: "--coverage"
           cgaldir: "/opt/homebrew/lib/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-|IMP\\.parallel\\-test_tasks|IMP\\.parallel\\-test_startup"
+          show_build: Release
+          cmake_build: Release
+          max_checks: USAGE
+          max_log: VERBOSE
     steps:
       - uses: actions/checkout@v5
       - name: Install dependencies (Linux)
@@ -59,7 +81,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4
+          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.cmake_build }}" -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4 -DIMP_MAX_CHECKS="${{ matrix.max_checks }}" -DIMP_MAX_LOG="${{ matrix.max_log }}"
           make -k -j 2
           cd ..
       - name: Test IMP
