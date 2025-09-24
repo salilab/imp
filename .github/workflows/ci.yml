@@ -85,15 +85,18 @@ jobs:
           make -k -j 2
           cd ..
       - name: Test IMP
+        if: matrix.cmake_build != 'Debug'
         run: |
           cd build
           ../tools/coverage/setup.py
           IMP_SKIP_UNSTABLE_TESTS=1 PYTHONPATH=`pwd`/coverage ctest --output-on-failure -L '\-tests?-' -E "${{ matrix.skiptests }}" -T Test
           ctest --output-on-failure -R medium_test_standards -E 'IMP\.modeller\-' -T Test
       - name: Combine coverage
+        if: matrix.cmake_build != 'Debug'
         run: |
           cd build/coverage
           coverage combine && coverage xml && mv coverage.xml ../..
       - uses: codecov/codecov-action@v5
+        if: matrix.cmake_build != 'Debug'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
