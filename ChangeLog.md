@@ -1,6 +1,9 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The Windows .exe installer now supports Python 3.9 through 3.14.
+
 # 2.23.0 - 2025-07-10 # {#changelog_2_23_0}
 - Input structures can now be read in BinaryCIF format. The new function
   IMP::atom::read_pdb_any will read any PDB-like file based on the extension
