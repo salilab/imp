@@ -12,7 +12,7 @@ Release:       1%{?dist}
 License:       LGPLv2+ and GPLv3
 Summary:       The Integrative Modeling Platform
 Group:         Applications/Engineering
-Packager:      Ben Webb <ben@salilab.org>
+Packager:      Ben Webb <benmwebb@gmail.com>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 Patch1:        imp-no-cnmultifit.patch
