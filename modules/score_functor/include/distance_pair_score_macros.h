@@ -54,6 +54,7 @@
    public:                                                             \
     Name Args : P(Functor PassArgs, name) {}                           \
     Name() {}                                                          \
+    IMP_OBJECT_METHODS(Name);                                          \
   }
 #endif
 

@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 import pickle
 
 def make_score():
@@ -37,6 +38,15 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(r)
         newr = pickle.loads(dump)
         self.assertAlmostEqual(newr.evaluate(False), 43.0, delta=1e-4)
+
+    def test_get_derived_object(self):
+        """Test cast to HarmonicDistancePairScore"""
+        m, p1, p2, s = make_score()
+        r = IMP.container.PairsRestraint(s, [(p1, p2)])
+        new_s = r.get_score_object()
+        self.assertIs(type(new_s), IMP.PairScore)
+        der_new_s = new_s.get_derived_object()
+        self.assertIsInstance(der_new_s, IMP.core.HarmonicDistancePairScore)
 
 
 if __name__ == '__main__':
