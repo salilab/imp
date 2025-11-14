@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -59,7 +59,12 @@ class ClassnamesRestraint :
 
   ClassnamesRestraint() {}
 
+  //! Get the ClassnameScore object used in this restraint
+  ClassnameScore *get_score_object() const { return P::get_score(); }
+
 #if defined(IMP_DOXYGEN) || defined(SWIG)
+  //! Get the ClassnameContainer object used in this restraint
+  ClassnameContainer *get_container() const;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
   IMP::ModelObjectsTemp do_get_inputs() const;
 #endif
