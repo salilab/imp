@@ -23,9 +23,9 @@
          IMP_FUNCTOR_DISTANCE_PAIR_SCORE(DistancePairScore,
                                    score_functor::UnaryFunctionEvaluate,
                             (UnaryFunction *uf, std::string name
-                                         = "DistancePairScore%1%"), (uf));
+                                         = "DistancePairScore%1%"), (uf), );
  */
-#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
+#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs, Accessors) \
   class Name : public IMP::PairScore {                                 \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
                                                                        \
@@ -37,11 +37,12 @@
                           DerivativeAccumulator *da) const;            \
     ModelObjectsTemp do_get_inputs(                            \
         Model *m, const ParticleIndexes &pis) const;   \
+    Accessors                                          \
     IMP_OBJECT_METHODS(Name);                                          \
   }
 
 #else
-#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
+#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs, Accessors) \
   class Name : public IMP::score_functor::DistancePairScore<Functor> { \
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
     friend class cereal::access;                                       \
@@ -54,6 +55,7 @@
    public:                                                             \
     Name Args : P(Functor PassArgs, name) {}                           \
     Name() {}                                                          \
+    Accessors                                                          \
     IMP_OBJECT_METHODS(Name);                                          \
   }
 #endif

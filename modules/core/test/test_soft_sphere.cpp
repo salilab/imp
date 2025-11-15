@@ -27,7 +27,8 @@ typedef IMP::score_functor::SphereDistance<
 IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore, SoftSphereDistanceScore,
                                 (double k,
                                  std::string name = "SoftSpherePairScore%1%"),
-                                (IMP::score_functor::HarmonicLowerBound(k)));
+                                (IMP::score_functor::HarmonicLowerBound(k)),
+                                );
 }
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test soft sphere pair score");

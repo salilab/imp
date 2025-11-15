@@ -41,7 +41,7 @@ class Harmonic : public Score {
       double distance) const {
     return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
-  double get_k() { return k_; }
+  double get_k() const { return k_; }
   void set_k(double k) { k_ = k; }
 };
 

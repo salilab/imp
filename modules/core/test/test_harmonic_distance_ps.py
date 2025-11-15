@@ -48,6 +48,12 @@ class Tests(IMP.test.TestCase):
         der_new_s = new_s.get_derived_object()
         self.assertIsInstance(der_new_s, IMP.core.HarmonicDistancePairScore)
 
+    def test_accessors(self):
+        """Test HarmonicDistancePairScore accessors"""
+        m, p1, p2, s = make_score()
+        self.assertAlmostEqual(s.get_x0(), 0.0, delta=1e-5)
+        self.assertAlmostEqual(s.get_k(), 1.0, delta=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()
