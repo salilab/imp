@@ -407,7 +407,7 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_harmonic_distance_pair_score,
                               d=self.get_x0(), k=self.get_k())
-        return JaxInfo(m=None, score_func=f)
+        return JaxInfo(m=None, score_func=f, weight=1.0)
   %}
 }
 
@@ -419,7 +419,8 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
                  for r in self.restraints]
         def jax_sf(X):
             return sum(f(X) for f in funcs)
-        return IMP._jax_util.JaxInfo(m=self.get_model(), score_func=jax_sf)
+        return IMP._jax_util.JaxInfo(m=self.get_model(), score_func=jax_sf,
+                                     weight=1.0)
   %}
 }
 

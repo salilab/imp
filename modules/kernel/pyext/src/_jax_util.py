@@ -7,10 +7,14 @@ class JaxInfo:
 
        @param m The IMP::Model that this function acts on (can be None
                 for PairScores)
-       @param score_func The JAX scoring function"""
-    def __init__(self, m, score_func):
+       @param score_func The JAX scoring function
+       @param weight The multiplication factor on the restraint"""
+    def __init__(self, m, score_func, weight):
         self.m = m
-        self.score_func = score_func
+        if weight == 1.0:
+            self.score_func = score_func
+        else:
+            self.score_func = lambda X: weight * score_func(X)
 
     def get_model_state(self):
         """Get Model data as a tree of NumPy arrays, X"""
