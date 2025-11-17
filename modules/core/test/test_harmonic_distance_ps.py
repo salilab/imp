@@ -75,13 +75,24 @@ class Tests(IMP.test.TestCase):
         # Test score inside RestraintsScoringFunction
         lpc = IMP.container.ListPairContainer(m)
         lpc.add((p1, p2))
-        sf = IMP.core.RestraintsScoringFunction(
-            [IMP.container.PairsRestraint(s, lpc)])
+        pr = IMP.container.PairsRestraint(s, lpc)
+        pr.set_weight(5.0)
+        sf = IMP.core.RestraintsScoringFunction([pr])
         ji = sf._get_jax()
         jax_s = jax.jit(ji.score_func)
         X = ji.get_model_state()
         jax_score_val = jax_s(X)
+        imp_score_val = sf.evaluate(True)
         self.assertAlmostEqual(imp_score_val, jax_score_val, delta=1e-5)
+        # Test derivatives
+        imp_dp1 = IMP.core.XYZ(p1).get_derivatives()
+        imp_dp2 = IMP.core.XYZ(p2).get_derivatives()
+        jax_deriv = jax.jit(jax.grad(ji.score_func))
+        derivs = jax_deriv(X)['xyz']
+        jax_dp1 = IMP.algebra.Vector3D(*derivs[0])
+        jax_dp2 = IMP.algebra.Vector3D(*derivs[1])
+        self.assertLess(IMP.algebra.get_distance(imp_dp1, jax_dp1), 1e-3)
+        self.assertLess(IMP.algebra.get_distance(imp_dp2, jax_dp2), 1e-3)
 
 
 if __name__ == '__main__':
