@@ -394,6 +394,34 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_t
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 
+%extend IMP::core::HarmonicDistancePairScore {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        import functools
+        from IMP._jax_util import JaxInfo
+        def jax_harmonic_distance_pair_score(X, indexes, d, k):
+            xyzs = X['xyz'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1)
+            return 0.5 * k * (d - drs)**2
+        f = functools.partial(jax_harmonic_distance_pair_score,
+                              d=self.get_x0(), k=self.get_k())
+        return JaxInfo(m=None, score_func=f)
+  %}
+}
+
+%extend IMP::core::RestraintsScoringFunction {
+  %pythoncode %{
+    def _get_jax(self):
+        import IMP._jax_util
+        funcs = [r.get_derived_object()._get_jax().score_func
+                 for r in self.restraints]
+        def jax_sf(X):
+            return sum(f(X) for f in funcs)
+        return IMP._jax_util.JaxInfo(m=self.get_model(), score_func=jax_sf)
+  %}
+}
 
 // Pick the most performant C++ template class when creating
 // SphereDistancePairScore, and proxy it in the Python class

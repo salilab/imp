@@ -60,6 +60,27 @@ IMP_SWIG_OBJECT(IMP::container, DistributePairsScoreState, DistributePairScoreSt
 IMP_SWIG_OBJECT(IMP::container, DistributeTripletsScoreState, DistributeTripletsScoreStates);
 IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreStates);
 
+%extend IMP::container::ListPairContainer {
+  %pythoncode %{
+    def _get_static_contents(self):
+        return self.get_contents()
+  %}
+}
+
+%extend IMP::container::PairsRestraint {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        from IMP._jax_util import JaxInfo
+        container = self.get_container().get_derived_object()
+        score = self.get_score_object().get_derived_object()
+        score_jax = score._get_jax().score_func
+        indexes = container._get_static_contents()
+        def jax_pairs_restraint(X):
+            return jnp.sum(score_jax(X, indexes))
+        return JaxInfo(m=self.get_model(), score_func=jax_pairs_restraint)
+  %}
+}
 
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"
