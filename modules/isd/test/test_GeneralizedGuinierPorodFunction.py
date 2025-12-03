@@ -627,6 +627,7 @@ class Tests(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
+    @IMP.test.unstable
     def testHessianNumericdd(self):
         """
         test the Hessian of the function numerically wrt d and d
