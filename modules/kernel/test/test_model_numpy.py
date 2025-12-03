@@ -25,6 +25,10 @@ class Tests(IMP.test.TestCase):
             n[0] = 42.0
             self.assertAlmostEqual(p1.get_derivative(k), 42.0, delta=1e-6)
 
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_derivatives_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42.0)
+
             n = m2.get_derivatives_numpy(k)
             self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no float key for this model
@@ -50,6 +54,10 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(n[0], 1.0, delta=1e-6)
             n[0] = 42.0
             self.assertAlmostEqual(p1.get_value(k), 42.0, delta=1e-6)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_floats_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42.0)
 
             n = m2.get_floats_numpy(k)
             self.assertIs(n.base, m2)
@@ -81,6 +89,10 @@ class Tests(IMP.test.TestCase):
             n[1] = 24
             self.assertEqual(p1.get_value(k), 42)
             self.assertEqual(p2.get_value(k), 24)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_ints_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42)
 
             n = m2.get_ints_numpy(k)
             self.assertIs(n.base, m2)
@@ -125,6 +137,11 @@ class Tests(IMP.test.TestCase):
             c[1][0] = 24.0
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
 
+            # Read-only array should raise ValueError on assignment
+            c, r = m1.get_spheres_numpy(read_only=True)
+            self.assertRaises(ValueError, r.__setitem__, 0, 42.0)
+            self.assertRaises(ValueError, c[1].__setitem__, 0, 24.0)
+
             c, r = m2.get_spheres_numpy()
             for n in c, r:
                 self.assertIs(n.base, m2)
@@ -154,6 +171,12 @@ class Tests(IMP.test.TestCase):
             c[1][1] = 24.0
             self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
+
+            # Read-only array should raise ValueError on assignment
+            c, r = m1.get_sphere_derivatives_numpy(read_only=True)
+            self.assertRaises(ValueError, r.__setitem__, 0, 42.0)
+            self.assertRaises(ValueError, c[1].__setitem__, 0, 24.0)
+
             c, r = m2.get_sphere_derivatives_numpy()
             for n in c, r:
                 self.assertIs(n.base, m2)
