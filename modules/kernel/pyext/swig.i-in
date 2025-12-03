@@ -209,6 +209,17 @@ def _forward_set_value(self, name, value):
   strings_must_be_passed_by_std_string;
 }
 
+%extend IMP::Restraint {
+  %pythoncode %{
+  def _wrap_jax(self, score_func):
+      """Use in _get_jax() to wrap the JAX scoring function with other
+         model- and restraint-specific information"""
+      from IMP._jax_util import JaxInfo
+      return JaxInfo(m=self.get_model(), score_func=score_func,
+                     weight=self.get_weight())
+  %}
+}
+
 %extend IMP::Particle {
   bool __eq__(const Particle *o) const {
      return self ==o;
