@@ -1,5 +1,12 @@
 import IMP
+import IMP.core
 import IMP.test
+
+
+class PythonRestraint(IMP.Restraint):
+    """Do-nothing restraint implemented in Python"""
+    def __init__(self, m):
+        super().__init__(m, "PythonRestraint %1%")
 
 
 class Tests(IMP.test.TestCase):
@@ -41,6 +48,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(obj_cr.get_type_name(), "_ConstRestraint")
         self.assertEqual(obj_cr.get_version_info().get_module(), "IMP")
         self.assertIs(type(obj_cr.get_derived_object()), IMP._ConstRestraint)
+
+    def test_director_object_info(self):
+        """Test get_derived_object() on SWIG director objects"""
+        m = IMP.Model()
+        cr = PythonRestraint(m)
+        # Cast to IMP.Restraint base class
+        sf = IMP.core.RestraintsScoringFunction([cr])
+        r_cr = sf.restraints[0]
+        self.assertIs(type(r_cr), IMP.Restraint)
+        # get_derived_object() should be able to recover the original object
+        new_cr = r_cr.get_derived_object()
+        self.assertIs(type(new_cr), PythonRestraint)
+        self.assertIs(new_cr, cr)
 
 
 if __name__ == '__main__':

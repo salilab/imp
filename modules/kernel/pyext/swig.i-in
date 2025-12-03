@@ -29,9 +29,27 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
      return self > o;
   }
 
+  // If this is a SWIG director, return the original Python object (else None)
+  PyObject *_get_director_object() {
+    Swig::Director *d = dynamic_cast<Swig::Director *>(self);
+    if (d) {
+      PyObject *pyobj = d->swig_get_self();
+      Py_INCREF(pyobj);
+      return pyobj;
+    } else {
+      return Py_None;
+    }
+  }
+
   %pythoncode %{
   def get_derived_object(self):
       """Return this object cast to the most derived subclass."""
+      # If this is a SWIG director, return the original Python object
+      pyobj = self._get_director_object()
+      if pyobj is not None:
+          return pyobj
+      # Otherwise, use the object's module and type name to look up
+      # the corresponding most-derived Python type
       modname = self.get_version_info().get_module().replace('::', '.')
       modobj = sys.modules[modname]
       clsobj = getattr(modobj, self.get_type_name())
