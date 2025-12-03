@@ -3,6 +3,7 @@ from threading import Thread
 
 error = None
 
+
 def cpu_count():
     """Return the number of processors this machine has"""
     try:
@@ -10,6 +11,7 @@ def cpu_count():
         return multiprocessing.cpu_count()
     except ImportError:
         return 1
+
 
 class _Worker(Thread):
 
@@ -29,6 +31,7 @@ class _Worker(Thread):
             except Exception as e:
                 print(e)
             self.tasks.task_done()
+
 
 class ThreadPool:
 
