@@ -82,7 +82,7 @@ class WatchDog(Thread):
         timeout: in minutes.
         """
 
-        Thread.__init__(self)
+        super().__init__()
 
         self.timeout = timeout * 60.
         self.debug = debug

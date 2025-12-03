@@ -104,7 +104,7 @@ class Worker(_Communicator):
        a subclass such as LocalWorker or SGEQsubWorkerArray."""
 
     def __init__(self):
-        _Communicator.__init__(self)
+        super().__init__()
         self._state = workerstate.init
         self._context = None
         self._task = None
@@ -205,7 +205,7 @@ class LocalWorker(Worker):
 
 class _SGEQsubWorker(Worker):
     def __init__(self, array):
-        Worker.__init__(self)
+        super().__init__()
         self._jobid = None
         self._array = array
 
@@ -285,7 +285,7 @@ class SGEQsubWorkerArray(WorkerArray):
 
 class _SGEPEWorker(Worker):
     def __init__(self, host):
-        Worker.__init__(self)
+        super().__init__()
         self._host = host
 
     def _start(self, command, unique_id, output):

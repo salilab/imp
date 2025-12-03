@@ -6,7 +6,7 @@ import pickle
 
 class TestMovedRestraint(IMP.Restraint):
     def __init__(self, m, ps, value, name="TestMovedRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.ps = ps
         self.value = value
 

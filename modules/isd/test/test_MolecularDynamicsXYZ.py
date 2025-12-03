@@ -24,7 +24,7 @@ class XTransRestraint(IMP.Restraint):
     """Attempt to move the whole system along the x axis"""
 
     def __init__(self, m, strength):
-        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
+        super().__init__(m, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
@@ -60,7 +60,7 @@ class WriteTrajState(IMP.OptimizerState):
     """Write system coordinates (trajectory) into a Python list"""
 
     def __init__(self, m, traj):
-        IMP.OptimizerState.__init__(self, m, "WriteTraj")
+        super().__init__(m, "WriteTraj")
         self.traj = traj
 
     def update(self):

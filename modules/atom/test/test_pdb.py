@@ -248,7 +248,7 @@ class Tests(IMP.test.TestCase):
         class my_selector(IMP.atom.PDBSelector):
 
             def __init__(self):
-                IMP.atom.PDBSelector.__init__(self, "my selector")
+                super().__init__("my selector")
 
             def get_is_selected(self, record):
                 return record.get_is_atom()

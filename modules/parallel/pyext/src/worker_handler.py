@@ -15,7 +15,7 @@ class _HeartBeatThread(threading.Thread):
     timeout = 300
 
     def __init__(self, manager):
-        threading.Thread.__init__(self)
+        super().__init__()
         self._manager = manager
         self._event = threading.Event()
 

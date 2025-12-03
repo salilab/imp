@@ -8,7 +8,7 @@ class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
 
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, model, "WoodsFunc %1%")
+        super().__init__(model, "WoodsFunc %1%")
         self.particles = particles
         self.index = IMP.FloatKey("x")
 

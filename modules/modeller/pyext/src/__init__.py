@@ -43,7 +43,7 @@ class IMPRestraints(modeller.terms.EnergyTerm):
                  Modeller and then use ModelLoader to load it into IMP,
                  since that will preserve the Modeller atom ordering in IMP.
         """
-        modeller.terms.EnergyTerm.__init__(self)
+        super().__init__()
         self._particles = particles
         if scoring_function:
             self._sf = scoring_function
@@ -94,7 +94,7 @@ class ModellerRestraints(IMP.Restraint):
                 return x.get_particle()
             else:
                 return x
-        IMP.Restraint.__init__(self, model, "ModellerRestraints %1%")
+        super().__init__(model, "ModellerRestraints %1%")
         self._modeller_model = modeller_model
         self._particles = [get_particle(x) for x in particles]
 

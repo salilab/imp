@@ -136,7 +136,7 @@ class NMRScorer(ExperimentalScorer):
             return cls(idock)
 
     def __init__(self, idock):
-        ExperimentalScorer.__init__(self, idock, "nmr_rtc_score")
+        super().__init__(idock, "nmr_rtc_score")
         self.receptor_rtc = idock.opts.receptor_rtc
         self.ligand_rtc = idock.opts.ligand_rtc
         if idock.opts.type == 'AA':
@@ -182,7 +182,7 @@ class SAXSScorer(ExperimentalScorer):
             return cls(idock)
 
     def __init__(self, idock):
-        ExperimentalScorer.__init__(self, idock, "saxs_score")
+        super().__init__(idock, "saxs_score")
         self.saxs_file = idock.opts.saxs_file
         self.saxs_receptor = idock.opts.saxs_receptor_pdb or idock.receptor
         self.saxs_ligand = idock.opts.saxs_ligand_pdb or idock.ligand
@@ -210,7 +210,7 @@ class SOAPScorer(Scorer):
         return cls(idock)
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, "soap_score")
+        super().__init__(idock, "soap_score")
         self.saxs_receptor = idock.receptor
         self.saxs_ligand = idock.ligand
 
@@ -250,7 +250,7 @@ class EM2DScorer(ExperimentalScorer):
                 return cls(idock)
 
     def __init__(self, idock):
-        ExperimentalScorer.__init__(self, idock, "em2d_score")
+        super().__init__(idock, "em2d_score")
         self.class_averages = idock.opts.class_averages
         self.pixel_size = idock.opts.pixel_size
 
@@ -285,7 +285,7 @@ class EM3DScorer(ExperimentalScorer):
             return cls(idock)
 
     def __init__(self, idock):
-        ExperimentalScorer.__init__(self, idock, "em3d_score")
+        super().__init__(idock, "em3d_score")
         self.map_file = idock.opts.map_file
 
     def __str__(self):
@@ -316,7 +316,7 @@ class CXMSScorer(ExperimentalScorer):
             return cls(idock)
 
     def __init__(self, idock):
-        ExperimentalScorer.__init__(self, idock, "cxms_score")
+        super().__init__(idock, "cxms_score")
         self.cross_links_file = idock.opts.cross_links_file
 
     def __str__(self):

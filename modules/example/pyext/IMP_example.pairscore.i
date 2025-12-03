@@ -5,7 +5,7 @@ class PythonExamplePairScore(IMP.PairScore):
        This should be functionally equivalent to the C++ ExamplePairScore.
     """
     def __init__(self, x0, k):
-        IMP.PairScore.__init__(self)
+        super().__init__()
         self.x0, self.k = x0, k
 
     def evaluate_index(self, m, pip, da):

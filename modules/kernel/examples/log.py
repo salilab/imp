@@ -10,7 +10,7 @@ IMP.setup_from_argv(sys.argv, "Log example")
 class DummyObject(IMP.Object):
 
     def __init__(self):
-        IMP.Object.__init__(self, "DummyObject%1%")
+        super().__init__("DummyObject%1%")
 
     def add_log(self):
         # Temporarily (for the duration of the 'with' block) set the

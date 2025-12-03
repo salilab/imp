@@ -9,7 +9,7 @@ class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
 
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "WoodsFunc%1%")
+        super().__init__(m, "WoodsFunc%1%")
         self.index = IMP.FloatKey("x")
 
     def unprotected_evaluate(self, accum):

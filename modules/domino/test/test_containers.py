@@ -8,7 +8,7 @@ import random
 class TrivialParticleStates(IMP.domino.ParticleStates):
 
     def __init__(self, n):
-        IMP.domino.ParticleStates.__init__(self)
+        super().__init__()
         self.n = n
 
     def get_number_of_particle_states(self):

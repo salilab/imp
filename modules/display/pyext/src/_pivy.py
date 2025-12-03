@@ -9,7 +9,7 @@ def get_writer(parent):
     class PivyWriter(parent):
 
         def __init__(self):
-            parent.__init__(self, "pivy")
+            super().__init__("pivy")
             self._setup_pivy()
 
         def _setup_pivy(self):

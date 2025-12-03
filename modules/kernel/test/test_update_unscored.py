@@ -8,7 +8,7 @@ class TouchSS(IMP.ScoreState):
     """ScoreState that logs all calls"""
 
     def __init__(self, m, pi, k):
-        IMP.ScoreState.__init__(self, m, "TouchSS")
+        super().__init__(m, "TouchSS")
         self.pi = pi
         self.k = k
 

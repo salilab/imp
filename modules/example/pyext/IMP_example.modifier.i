@@ -7,7 +7,7 @@ class PythonExampleSingletonModifier(IMP.SingletonModifier):
     """
 
     def __init__(self, bb):
-        IMP.SingletonModifier.__init__(self, "ExampleSingletonModifier%1%")
+        super().__init__("ExampleSingletonModifier%1%")
         self.bb = bb
 
     def apply_index(self, m, pi):

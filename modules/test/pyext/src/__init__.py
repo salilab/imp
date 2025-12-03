@@ -155,7 +155,7 @@ class TestCase(unittest.TestCase):
         assertNotRegex = unittest.TestCase.assertNotRegexpMatches
 
     def __init__(self, *args, **keys):
-        unittest.TestCase.__init__(self, *args, **keys)
+        super().__init__(*args, **keys)
         self._progname = Path(sys.argv[0]).absolute()
 
     def setUp(self):
@@ -953,11 +953,11 @@ class _SubprocessWrapper(subprocess.Popen):
             env['PATH'] += ';' + libdir
         else:
             env = None
-        subprocess.Popen.__init__(self, [app]+list(args),
-                                  stdin=subprocess.PIPE,
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, env=env, cwd=cwd,
-                                  universal_newlines=True)
+        super().__init__([app]+list(args),
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, env=env, cwd=cwd,
+                         universal_newlines=True)
 
 
 class ApplicationTestCase(TestCase):

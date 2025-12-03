@@ -18,7 +18,7 @@ IMP.setup_from_argv(sys.argv, "optimize EM2D with MonteCarlo")
 class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
     def __init__(self, m, restraints):
-        IMP.OptimizerState.__init__(self, m, "WriteStats")
+        super().__init__(m, "WriteStats")
         self.count = 0
         self.restraints = restraints
 

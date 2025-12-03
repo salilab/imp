@@ -7,7 +7,7 @@ import IMP.core
 class TrivialParticleStates(IMP.domino.ParticleStates):
 
     def __init__(self, n):
-        IMP.domino.ParticleStates.__init__(self)
+        super().__init__()
         self.key = IMP.IntKey("hi")
         self.n = n
 

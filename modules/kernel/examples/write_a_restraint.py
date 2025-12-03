@@ -17,7 +17,7 @@ class MyRestraint(IMP.Restraint):
     # take the list of particles and the key to use
 
     def __init__(self, m, ps, k):
-        IMP.Restraint.__init__(self, m, "MyRestraint %1%")
+        super().__init__(m, "MyRestraint %1%")
         self.ps = ps
         self.k = k
 

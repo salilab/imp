@@ -11,7 +11,7 @@ class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
 
     def __init__(self, m, ps=[], cs=[], name="DummyRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.ps = ps
         self.cs = cs
 
@@ -34,7 +34,7 @@ class FailingRestraint(IMP.Restraint):
     """Restraint that fails in evaluate"""
 
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "FailingRestraint %1%")
+        super().__init__(m, "FailingRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
@@ -52,7 +52,7 @@ class DummyScoreState(IMP.ScoreState):
 
     def __init__(self, m, ips=[], ics=[], ops=[], ocs=[],
                  name="DummyScoreState%1%"):
-        IMP.ScoreState.__init__(self, m, name)
+        super().__init__(m, name)
         self.ips = ips
         self.ics = ics
         self.ops = ops
@@ -80,7 +80,7 @@ class ClassScoreState(IMP.ScoreState):
     """Score state that shows the filehandle class"""
 
     def __init__(self, m):
-        IMP.ScoreState.__init__(self, m, "ClassScoreState%1%")
+        super().__init__(m, "ClassScoreState%1%")
 
     def update(self):
         pass

@@ -40,7 +40,7 @@ class PriceStates(IMP.domino.ParticleStates):
 
     def __init__(self, prices):
         self.prices = prices
-        IMP.domino.ParticleStates.__init__(self)
+        super().__init__()
 
     def load_particle_state(self, i, particle):
         pr = Price(particle)

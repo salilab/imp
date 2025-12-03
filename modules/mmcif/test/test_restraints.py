@@ -26,7 +26,7 @@ class MockGaussianEMRestraint(IMP.Restraint):
     def __init__(self, m, em_filename, inputs=[]):
         self.em_filename = em_filename
         self.inputs = inputs
-        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
@@ -52,7 +52,7 @@ class MockCrossLinkRestraint(IMP.RestraintSet):
 
     def __init__(self, m, xlms_filename):
         self.xlms_filename = xlms_filename
-        IMP.RestraintSet.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
@@ -75,7 +75,7 @@ class MockSAXSRestraint(IMP.Restraint):
 
     def __init__(self, m, dat_filename):
         self.dat_filename = dat_filename
-        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
@@ -98,7 +98,7 @@ class MockSAXSRestraint(IMP.Restraint):
 
 class MockZAxialRestraint(IMP.Restraint):
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
@@ -121,7 +121,7 @@ class MockPCAFitRestraint(IMP.Restraint):
 
     def __init__(self, m, image_filenames):
         self.image_filenames = image_filenames
-        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):

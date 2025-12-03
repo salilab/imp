@@ -26,7 +26,7 @@ class NormalRestraint(IMP.Restraint):
     """Restrain surface normal to vector from surface center to sphere."""
 
     def __init__(self, m, s, d, k=1):
-        IMP.Restraint.__init__(self, m, "NormalRestraint%1%")
+        super().__init__(m, "NormalRestraint%1%")
         self.s, self.d = s, d
         self.k = k
 

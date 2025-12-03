@@ -5,7 +5,7 @@ class PythonExampleRestraint(IMP.Restraint):
        This should be functionally equivalent to the C++ ExampleRestraint.
     """
     def __init__(self, m, p, k):
-        IMP.Restraint.__init__(self, m, "PythonExampleRestraint%1%")
+        super().__init__(m, "PythonExampleRestraint%1%")
         self.p, self.k = p, k
 
     def do_add_score_and_derivatives(self, sa):

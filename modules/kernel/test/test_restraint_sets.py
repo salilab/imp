@@ -7,7 +7,7 @@ class LinkScoreState(IMP.ScoreState):
     """ScoreState that links one particle to another"""
 
     def __init__(self, m, pin, pout):
-        IMP.ScoreState.__init__(self, m, "LinkScoreState%1%")
+        super().__init__(m, "LinkScoreState%1%")
         self.pin, self.pout = pin, pout
 
     def do_before_evaluate(self):
@@ -27,7 +27,7 @@ class LogRestraint(IMP.Restraint):
     """Restraint that logs how it was called (or skipped)"""
 
     def __init__(self, m, ps, value):
-        IMP.Restraint.__init__(self, m, 'LogRestraint%1%')
+        super().__init__(m, 'LogRestraint%1%')
         self.ps = ps
         self.value = value
         self.moved_evaluate = None

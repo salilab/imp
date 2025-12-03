@@ -117,13 +117,13 @@ class ReferenceFrameToText(Transformation3DToText):
 
     def __init__(self, ref, delimiter="|"):
         T = ref.get_transformation_to()
-        Transformation3DToText.__init__(self, T, delimiter)
+        super().__init__(T, delimiter)
 
 
 class TextToReferenceFrame(TextToTransformation3D):
 
     def __init__(self, text, delimiter="|"):
-        TextToTransformation3D.__init__(self, text, delimiter)
+        super().__init__(text, delimiter)
         self.ref = IMP.algebra.ReferenceFrame3D(self.get_transformation())
 
     def get_reference_frame(self):

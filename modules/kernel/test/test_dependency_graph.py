@@ -5,7 +5,7 @@ import io
 class NullConstraint(IMP.Constraint):
 
     def __init__(self, m, inputs=[], outputs=[]):
-        IMP.Constraint.__init__(self, m, "NullConstraint%1%")
+        super().__init__(m, "NullConstraint%1%")
         self.inputs = inputs
         self.outputs = outputs
 

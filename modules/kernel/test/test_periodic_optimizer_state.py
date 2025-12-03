@@ -7,7 +7,7 @@ import random
 class PeriodicOS(IMP.OptimizerState):
 
     def __init__(self, m):
-        IMP.OptimizerState.__init__(self, m, "MyPOS%1%")
+        super().__init__(m, "MyPOS%1%")
         self.calls = []
 
     def do_update(self, call):

@@ -17,7 +17,7 @@ import IMP.test
 class XTransRestraint(IMP.Restraint):
 
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
+        super().__init__(m, "XTransRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         m = self.get_model()

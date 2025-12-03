@@ -5,7 +5,7 @@ import IMP.container
 
 class TestMovedScore(IMP.PairScore):
     def __init__(self, value, name="TestMovedScore %1%"):
-        IMP.PairScore.__init__(self, name)
+        super().__init__(name)
         self.value = value
 
     def evaluate_index(self, m, pis, accum):

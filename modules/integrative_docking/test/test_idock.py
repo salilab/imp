@@ -373,7 +373,7 @@ Program parameters
         class MyScorer(app.Scorer):
 
             def __init__(self, idock):
-                app.Scorer.__init__(self, idock, "my_score")
+                super().__init__(idock, "my_score")
         s = MyScorer(idock)
         with open('my_score.res', 'w') as fh:
             fh.write("""

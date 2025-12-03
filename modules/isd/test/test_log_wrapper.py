@@ -8,7 +8,7 @@ class LogRestraint(IMP.Restraint):
     """Restraint that logs how it was called (or skipped)"""
 
     def __init__(self, m, ps, value):
-        IMP.Restraint.__init__(self, m, 'LogRestraint%1%')
+        super().__init__(m, 'LogRestraint%1%')
         self.ps = ps
         self.value = value
         self.moved_evaluate = None

@@ -46,9 +46,9 @@ def filter(xxx_todo_changeme,
 class ContainerFileGenerator(tools.FileGenerator):
     def __init__(self, template_file):
         if template_file.endswith('.py'):
-            tools.FileGenerator.__init__(self, template_file, '#')
+            super().__init__(template_file, '#')
         else:
-            tools.FileGenerator.__init__(self, template_file, '//')
+            super().__init__(template_file, '//')
 
     def get_output_file_contents(self, output):
         return filter(output, self.template, self.template_file)

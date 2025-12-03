@@ -12,7 +12,7 @@ class ManagerCommunicator(_Communicator):
     connect_timeout = 600
 
     def __init__(self, manager_addr, lock):
-        _Communicator.__init__(self)
+        super().__init__()
         self._manager_addr = manager_addr
         self._connect_to_manager()
         self._lock = lock
