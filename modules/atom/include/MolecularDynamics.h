@@ -2,7 +2,7 @@
  *  \file IMP/atom/MolecularDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,17 +23,16 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT LinearVelocity : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                      const algebra::Vector3D v = algebra::Vector3D(0, 0, 0)) {
-    m->add_attribute(get_velocities_key(), pi, v.get_coordinates());
-  }
-  static FloatsKey get_velocities_key() {
-    static const FloatsKey key("linvel");
-    return key;
+    m->add_attribute(get_velocity_key(), pi, v);
   }
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_velocities_key(), pi);
+    return m->get_has_attribute(get_velocity_key(), pi);
   }
+
+  /* Get the key used to store velocity */
+  static Vector3DKey get_velocity_key();
 
   IMP_DECORATOR_METHODS(LinearVelocity, Decorator);
   IMP_DECORATOR_SETUP_0(LinearVelocity);
@@ -42,13 +41,13 @@ public:
   void set_velocity(const algebra::Vector3D &v) {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    m->set_attribute(get_velocities_key(), pi, v.get_coordinates());
+    m->set_attribute(get_velocity_key(), pi, v);
   }
 
   algebra::Vector3D get_velocity() const {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    return algebra::Vector3D(m->get_attribute(get_velocities_key(), pi));
+    return m->get_attribute(get_velocity_key(), pi);
   }
 };
 

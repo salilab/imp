@@ -7,7 +7,7 @@ xkey = IMP.FloatKey('x')
 ykey = IMP.FloatKey('y')
 zkey = IMP.FloatKey('z')
 masskey = IMP.FloatKey('mass')
-linvelkey = IMP.FloatsKey('linvel')
+linvelkey = IMP.atom.LinearVelocity.get_velocity_key()
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
 kcal2mod = 4.1868e-4
@@ -58,7 +58,7 @@ class WriteTrajState(IMP.OptimizerState):
         self.traj.append([(model.get_attribute(xkey, p),
                            model.get_attribute(ykey, p),
                            model.get_attribute(zkey, p),
-                           model.get_attribute(linvelkey, p))
+                           IMP.atom.LinearVelocity(model, p).get_velocity())
                           for p in model.get_particle_indexes()])
 
 
@@ -188,9 +188,9 @@ class Tests(IMP.test.TestCase):
         # Make sure that the random number generator is working properly;
         # we should get different particle velocities each time we assign
         # velocities (NOT the case with r452 or earlier):
-        velocity = self.particles[0].get_value(linvelkey)[0]
+        velocity = IMP.atom.LinearVelocity(self.particles[0]).get_velocity()[0]
         self.md.assign_velocities(100.0)
-        velocity2 = self.particles[0].get_value(linvelkey)[0]
+        velocity2 = IMP.atom.LinearVelocity(self.particles[0]).get_velocity()[0]
         self.assertNotAlmostEqual(velocity, velocity2, delta=1e-6)
         # Kinetic energy, however, should be almost identical
         ekinetic2 = self.md.get_kinetic_energy()

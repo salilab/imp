@@ -25,6 +25,11 @@ namespace {
 static const double deriv_to_acceleration = -4.1868e-4;
 }
 
+Vector3DKey LinearVelocity::get_velocity_key() {
+  static const Vector3DKey key("linvel");
+  return key;
+}
+
 void LinearVelocity::show(std::ostream &out) const {
   out << "Linear velocity " << get_velocity() << std::endl;
 }
