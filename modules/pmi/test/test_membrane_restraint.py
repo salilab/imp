@@ -25,7 +25,7 @@ class MembraneRestraintPrototype(IMP.Restraint):
         input a list of particles, the slope and theta of the sigmoid potential
         theta is the cutoff distance for a protein-protein contact
         '''
-        IMP.Restraint.__init__(self, m, "MembraneRestraintPrototype_ %1%")
+        super().__init__(m, "MembraneRestraintPrototype_ %1%")
         self.set_was_used(True)
         self.thickness = thickness
         self.z_nuisance = z_nuisance

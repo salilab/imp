@@ -267,7 +267,7 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         '''
         self.converter = {}
         self.backward_converter = {}
-        _CrossLinkDataBaseStandardKeys.__init__(self)
+        super().__init__()
         self.rplp = list_parser
         if self.rplp is None:
             # either you have protein1, protein2, residue1, residue2
@@ -392,7 +392,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
     import re
 
     def __init__(self, style):
-        _CrossLinkDataBaseStandardKeys.__init__(self)
+        super().__init__()
         if style == "MSSTUDIO":
             self.style = style
             self.compulsory_keys = set([self.protein1_key,
@@ -500,7 +500,7 @@ class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
     currently support ProXL
     '''
     def __init__(self, format):
-        _CrossLinkDataBaseStandardKeys.__init__(self)
+        super().__init__()
         if format == "PROXL":
             self.format = format
         else:
@@ -547,7 +547,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         else:
             self.data_base = data_base
 
-        _CrossLinkDataBaseStandardKeys.__init__(self)
+        super().__init__()
         if converter is not None:
             self.cldbkc = converter  # type: CrossLinkDataBaseKeywordsConverter
             self.list_parser = self.cldbkc.rplp

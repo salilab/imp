@@ -262,20 +262,20 @@ class _TempProvenance:
 
 class ClusterProvenance(_TempProvenance):
     def __init__(self, *args, **kwargs):
-        _TempProvenance.__init__(self, IMP.core.ClusterProvenance,
-                                 "clustering", *args, **kwargs)
+        super().__init__(IMP.core.ClusterProvenance,
+                         "clustering", *args, **kwargs)
 
 
 class FilterProvenance(_TempProvenance):
     def __init__(self, *args, **kwargs):
-        _TempProvenance.__init__(self, IMP.core.FilterProvenance,
-                                 "filtering", *args, **kwargs)
+        super().__init__(IMP.core.FilterProvenance,
+                         "filtering", *args, **kwargs)
 
 
 class CombineProvenance(_TempProvenance):
     def __init__(self, *args, **kwargs):
-        _TempProvenance.__init__(self, IMP.core.CombineProvenance,
-                                 "combine runs", *args, **kwargs)
+        super().__init__(IMP.core.CombineProvenance,
+                         "combine runs", *args, **kwargs)
 
 
 def add_provenance(prov, hiers):

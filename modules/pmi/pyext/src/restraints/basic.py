@@ -140,7 +140,7 @@ class CylinderRestraint(IMP.Restraint):
         @param label A unique label to be used in outputs and
                particle/restraint names
         '''
-        IMP.Restraint.__init__(self, m, "CylinderRestraint %1%")
+        super().__init__(m, "CylinderRestraint %1%")
         self.radius = radius
         self.softness = 3.0
         self.softness_angle = 0.5
@@ -211,7 +211,7 @@ class BiStableDistanceRestraint(IMP.Restraint):
         input two particles, the two equilibrium distances, their amplitudes,
         and their weights (populations)
         '''
-        IMP.Restraint.__init__(self, m, "BiStableDistanceRestraint %1%")
+        super().__init__(m, "BiStableDistanceRestraint %1%")
         self.dist1 = dist1
         self.dist2 = dist2
 

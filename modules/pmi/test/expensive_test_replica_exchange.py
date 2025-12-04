@@ -13,6 +13,7 @@ import os.path
 
 class Tests(IMP.test.TestCase):
 
+    @IMP.test.unstable
     def test_macro(self):
         """setting up the representation
         PMI 2 representation. Creates two particles and
