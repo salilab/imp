@@ -465,4 +465,21 @@ inline VectorD<D> get_elementwise_product(const Ints &a,
 
 IMPALGEBRA_END_NAMESPACE
 
+/* Overload std::get to work on VectorD similarly to std::array */
+namespace std {
+  template <unsigned int I, int D>
+  const double& get(const IMP::algebra::VectorD<D> &v) {
+    static_assert(D > 0, "std::get does not work for VectorKD");
+    static_assert(I < D, "vector index is within bounds");
+    return *(v.begin() + I);
+  }
+
+  template <unsigned int I, int D>
+  double& get(IMP::algebra::VectorD<D> &v) {
+    static_assert(D > 0, "std::get does not work for VectorKD");
+    static_assert(I < D, "vector index is within bounds");
+    return *(v.begin() + I);
+  }
+}
+
 #endif /* IMPALGEBRA_VECTOR_D_H */

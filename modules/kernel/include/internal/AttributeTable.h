@@ -237,7 +237,7 @@ struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
 
   static bool get_is_valid(const algebra::Vector3D &f) {
     double inv = FloatAttributeTableTraits::get_invalid();
-    return f[0] != inv;
+    return std::get<0>(f) != inv;
   }
   static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
     return std::equal(a.begin(), a.end(), b.begin());
