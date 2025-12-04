@@ -179,7 +179,7 @@ class BasicAttributeTable {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Setting invalid attribute: " << k << " of particle "
                                                   << particle);
-    IMP_USAGE_CHECK(value != Traits::get_invalid(),
+    IMP_USAGE_CHECK(!Traits::is_equal(value, Traits::get_invalid()),
                     "Cannot set attribute to value of "
                         << Traits::get_invalid()
                         << " as it is reserved for a null value.");
@@ -392,20 +392,6 @@ class SparseBasicAttributeTable {
   unsigned int size(unsigned int i) const { return data_[i].size(); }
 };
 IMP_SWAP_1(SparseBasicAttributeTable);
-
-// VectorD and SphereD do not support operator==, so provide our
-// own functions to test for exact equality (to be used during serialization)
-template<class T> struct vector_equal {
-  bool operator()(const T&a, const T&b) {
-    return std::equal(a.begin(), a.end(), b.begin());
-  }
-};
-
-template<class T> struct sphere_equal {
-  bool operator()(const T&a, const T&b) {
-    return a.get_radius() == b.get_radius() && std::equal(a.get_center().begin(), a.get_center().end(), b.get_center().begin());
-  }
-};
 
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
@@ -1013,6 +999,8 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
     ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
+typedef BasicAttributeTable<internal::Vector3DAttributeTableTraits>
+    Vector3DAttributeTable;
 
 typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
     SparseStringAttributeTable;

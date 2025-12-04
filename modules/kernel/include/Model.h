@@ -96,6 +96,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::WeakObjectAttributeTable,
                               public internal::IntsAttributeTable,
                               public internal::FloatsAttributeTable,
+                              public internal::Vector3DAttributeTable,
                               public internal::ObjectsAttributeTable,
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable,
@@ -193,6 +194,7 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::IntAttributeTable>(this),
        cereal::base_class<internal::IntsAttributeTable>(this),
        cereal::base_class<internal::FloatsAttributeTable>(this),
+       cereal::base_class<internal::Vector3DAttributeTable>(this),
        cereal::base_class<internal::ParticleAttributeTable>(this),
        cereal::base_class<internal::ParticlesAttributeTable>(this),
        cereal::base_class<internal::SparseStringAttributeTable>(this),
@@ -342,6 +344,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::WeakObjectAttributeTable);
   IMP_MODEL_IMPORT(internal::IntsAttributeTable);
   IMP_MODEL_IMPORT(internal::FloatsAttributeTable);
+  IMP_MODEL_IMPORT(internal::Vector3DAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectsAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
@@ -473,6 +476,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(Float, Float);
   IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
   IMP_MODEL_ATTRIBUTE_METHODS(Floats, Floats);
+  IMP_MODEL_ATTRIBUTE_METHODS(Vector3D, IMP::algebra::Vector3D);
   IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);

@@ -46,6 +46,9 @@ Model::Model(std::string name)
   internal::IntsAttributeTable::set_masks(&this->Masks::read_mask_,
                                           &this->Masks::write_mask_,
                                           &this->Masks::add_remove_mask_);
+  internal::Vector3DAttributeTable::set_masks(&this->Masks::read_mask_,
+                                              &this->Masks::write_mask_,
+                                              &this->Masks::add_remove_mask_);
   internal::ObjectsAttributeTable::set_masks(&this->Masks::read_mask_,
                                              &this->Masks::write_mask_,
                                              &this->Masks::add_remove_mask_);
@@ -155,6 +158,7 @@ void Model::do_remove_particle(ParticleIndex pi) {
   internal::ObjectAttributeTable::clear_attributes(pi);
   internal::WeakObjectAttributeTable::clear_attributes(pi);
   internal::IntsAttributeTable::clear_attributes(pi);
+  internal::Vector3DAttributeTable::clear_attributes(pi);
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);

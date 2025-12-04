@@ -98,6 +98,10 @@ IMP_VALUES(SparseFloatKey, SparseFloatKeys);
 typedef Key<15> SparseParticleIndexKey;
 IMP_VALUES(SparseParticleIndexKey, SparseParticleIndexKeys);
 
+//! The type used to identify 3D vector attributes in the Particles
+typedef Key<16> Vector3DKey;
+IMP_VALUES(Vector3DKey, Vector3DKeys);
+
 /** @} */
 
 class Restraint;
