@@ -230,5 +230,32 @@ class Tests(IMP.test.TestCase):
         scaler.rescale_velocities()
         self._check_temperature(50.0, 0.1)
 
+    def test_linear_velocity_numpy(self):
+        """Test access to linear velocities from NumPy"""
+        m1 = IMP.Model()
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+        v1 = IMP.atom.LinearVelocity.setup_particle(
+            p1, IMP.algebra.Vector3D(0, 1, 2))
+        v2 = IMP.atom.LinearVelocity.setup_particle(
+            p2, IMP.algebra.Vector3D(3, 4, 5))
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            vs = m1.get_vector3ds_numpy(
+                IMP.atom.LinearVelocity.get_velocity_key())
+            self.assertEqual(vs.shape, (2, 3))
+            self.assertAlmostEqual(vs[0][2], 2.0, delta=1e-5)
+            self.assertAlmostEqual(vs[1][2], 5.0, delta=1e-5)
+            vs[0][0] = 42.0
+            self.assertAlmostEqual(vs[0][0], 42.0, delta=1e-5)
+
+            # Read-only array should raise ValueError on assignment
+            vs = m1.get_vector3ds_numpy(
+                IMP.atom.LinearVelocity.get_velocity_key(), read_only=True)
+            self.assertRaises(ValueError, vs[0].__setitem__, 0, 42.0)
+        else:
+            self.assertRaises(NotImplementedError, m1.get_vector3ds_numpy)
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -80,6 +80,45 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data,
 #endif
 }
 
+PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
+                                    algebra::Vector3D *data, bool read_only)
+{
+#if IMP_KERNEL_HAS_NUMPY
+  if (numpy_import_retval != 0) {
+    PyErr_SetString(PyExc_ImportError,
+                    "IMP's NumPy support did not initialize correctly");
+    return NULL;
+  }
+
+  npy_intp dims[2];
+  dims[0] = sz;
+  dims[1] = 3;
+
+  static_assert(sizeof(algebra::Vector3D) == 3 * sizeof(double));
+  PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
+                              data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
+                              NULL);
+  if (!obj) {
+    return NULL;
+  }
+
+  /* Ensure that the Model is kept around as long as the numpy object
+     is alive. */
+  Py_INCREF(m_pyobj);
+  if (PyArray_SetBaseObject((PyArrayObject *)obj, m_pyobj) != 0) {
+    Py_DECREF(m_pyobj);
+    Py_DECREF(obj);
+    return NULL;
+  }
+
+  return obj;
+#else
+  PyErr_SetString(PyExc_NotImplementedError,
+                  "IMP was built without NumPy support");
+  return NULL;
+#endif
+}
+
 #if IMP_KERNEL_HAS_NUMPY
 PyObject *_add_spheres_component(void *data, int nd, npy_intp *dims,
                                  npy_intp *strides, PyObject *m_pyobj,
@@ -193,6 +232,16 @@ PyObject *_get_ints_numpy(IMP::Model *m, IMP::IntKey k, PyObject *m_pyobj,
            read_only);
 }
 
+PyObject *_get_vector3ds_numpy(IMP::Model *m, IMP::Vector3DKey k,
+                               PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz = m->IMP::internal::Vector3DAttributeTable::get_attribute_size(k);
+  return _get_vector3ds_data_numpy(m_pyobj, sz,
+       sz == 0 ? nullptr
+        : m->IMP::internal::Vector3DAttributeTable::access_attribute_data(k),
+       read_only);
+}
+
 PyObject *_get_spheres_numpy(IMP::Model *m, PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->get_spheres_size();
@@ -235,6 +284,11 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj,
         """Get the model's attribute derivatives array for FloatKey k
            as a NumPy array. See Model::get_ints_numpy() for more details."""
         return _get_derivatives_numpy(self, k, self, read_only)
+
+    def get_vector3ds_numpy(self, k, read_only=False):
+        """Get the model's attribute array for Vector3DKey k as a NumPy array.
+           See Model::get_ints_numpy() for more details."""
+        return _get_vector3ds_numpy(self, k, self, read_only)
 
     def get_spheres_numpy(self, read_only=False):
         """Get the model's XYZR attribute arrays as NumPy arrays.

@@ -242,6 +242,11 @@ struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
   static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
     return std::equal(a.begin(), a.end(), b.begin());
   }
+  //
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
