@@ -242,6 +242,16 @@ struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
   static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
     return std::equal(a.begin(), a.end(), b.begin());
   }
+  static algebra::Vector3D min(const algebra::Vector3D &a,
+                               const algebra::Vector3D &b) {
+    IMP_UNUSED(b);
+    return a;
+  }
+  static algebra::Vector3D max(const algebra::Vector3D &a,
+                               const algebra::Vector3D &b) {
+    IMP_UNUSED(a);
+    return b;
+  }
   //
   //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
