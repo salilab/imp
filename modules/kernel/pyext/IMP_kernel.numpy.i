@@ -94,7 +94,8 @@ PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
   dims[0] = sz;
   dims[1] = 3;
 
-  static_assert(sizeof(algebra::Vector3D) == 3 * sizeof(double));
+  static_assert(sizeof(algebra::Vector3D) == 3 * sizeof(double),
+                "Vector3D size != 3 * double size");
   PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
                               data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
                               NULL);
