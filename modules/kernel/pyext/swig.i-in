@@ -51,8 +51,14 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
       # Otherwise, use the object's module and type name to look up
       # the corresponding most-derived Python type
       modname = self.get_version_info().get_module().replace('::', '.')
+      type_name = self.get_type_name()
+      # IMP.core.RestraintsScoringFunction is a typedef for
+      # IMP.GenericRestraintsScoringFunction; map to the real Python class
+      if modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
+          modname = 'IMP.core'
+          type_name = 'RestraintsScoringFunction'
       modobj = sys.modules[modname]
-      clsobj = getattr(modobj, self.get_type_name())
+      clsobj = getattr(modobj, type_name)
       return clsobj.get_from(self)
   %}
 }

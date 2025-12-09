@@ -81,6 +81,20 @@ class Tests(IMP.test.TestCase):
         """Check MD standard object methods"""
         self.check_standard_object_methods(self.md)
 
+    def test_get_scoring_function(self):
+        """Test get_scoring_function()"""
+        r = XTransRestraint(self.model, 1.0)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        self.md.set_scoring_function(sf)
+
+        new_sf = self.md.get_scoring_function()
+        self.assertIs(type(new_sf), IMP.ScoringFunction)
+        self.assertFalse(hasattr(new_sf, 'restraints'))
+        # We should be able to get the original RestraintsScoringFunction
+        dsf = new_sf.get_derived_object()
+        self.assertIsInstance(dsf, IMP.core.RestraintsScoringFunction)
+        self.assertEqual(len(dsf.restraints), 1)
+
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
         vx = 0.
