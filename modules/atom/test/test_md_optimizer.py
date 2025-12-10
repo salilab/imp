@@ -2,6 +2,11 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import functools
+try:
+    import jax
+except ImportError:
+    jax = None
 
 xkey = IMP.FloatKey('x')
 ykey = IMP.FloatKey('y')
@@ -33,6 +38,15 @@ class XTransRestraint(IMP.Restraint):
             for pi in m.get_particle_indexes():
                 m.add_to_derivative(xkey, pi, self.strength, accum)
         return e
+
+    def _get_jax(self):
+        import jax.numpy as jnp
+        indexes = self.get_model().get_particle_indexes()
+        strength = self.strength
+        def jax_restraint(X):
+            xyzs = X['xyz'][indexes]
+            return jnp.sum(xyzs[:,0] * strength)
+        return self._wrap_jax(jax_restraint)
 
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
@@ -66,10 +80,8 @@ class Tests(IMP.test.TestCase):
 
     """Test molecular dynamics optimizer"""
 
-    def setUp(self):
+    def make_model(self):
         """Set up particles and optimizer"""
-        IMP.test.TestCase.setUp(self)
-
         self.model = IMP.Model()
         self.particles = []
         self.particles.append(self.create_point_particle(self.model,
@@ -79,10 +91,12 @@ class Tests(IMP.test.TestCase):
 
     def test_standard_object_methods(self):
         """Check MD standard object methods"""
+        self.make_model()
         self.check_standard_object_methods(self.md)
 
     def test_get_scoring_function(self):
         """Test get_scoring_function()"""
+        self.make_model()
         r = XTransRestraint(self.model, 1.0)
         sf = IMP.core.RestraintsScoringFunction([r])
         self.md.set_scoring_function(sf)
@@ -94,6 +108,40 @@ class Tests(IMP.test.TestCase):
         dsf = new_sf.get_derived_object()
         self.assertIsInstance(dsf, IMP.core.RestraintsScoringFunction)
         self.assertEqual(len(dsf.restraints), 1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation"""
+        def make_md():
+            timestep = 4.0
+            strength = 50.0
+            self.make_model()
+            r = XTransRestraint(self.model, strength)
+            sf = IMP.core.RestraintsScoringFunction([r])
+            self.md.set_scoring_function(sf)
+            self.md.set_maximum_time_step(timestep)
+
+        # Run with original C++ code
+        make_md()
+        self.md.optimize(50)
+        final_cpp = IMP.core.XYZ(self.particles[0]).get_coordinates()
+
+        # Run with JAX code, low level
+        make_md()
+        ji = self.md._get_jax()
+        X = ji.get_model_state()
+
+        jit_init_func = jax.jit(ji.init_func)
+        X = jit_init_func(X)
+
+        def run_opt(X, apply_func, nsteps):
+            return jax.lax.fori_loop(0, nsteps, apply_func, X)
+
+        jit_apply_func = jax.jit(functools.partial(
+            run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=50))
+        X = jit_apply_func(X)
+        # Final coordinates should match those from C++
+        self.assertLess((final_cpp - X['xyz'][0]).get_magnitude(), 1e-3)
 
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
@@ -134,6 +182,7 @@ class Tests(IMP.test.TestCase):
 
     def test_nonrigid_translation(self):
         """Check that non-rigid MD translation is Newtonian"""
+        self.make_model()
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(self.model, strength)
@@ -144,6 +193,7 @@ class Tests(IMP.test.TestCase):
 
     def test_velocity_cap(self):
         """Check that velocity capping works"""
+        self.make_model()
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(self.model, strength)
@@ -158,6 +208,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip particles without xyz attributes"""
+        self.make_model()
         p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         r = IMP.RestraintSet(self.model)
@@ -166,6 +217,7 @@ class Tests(IMP.test.TestCase):
 
     def test_make_velocities(self):
         """Test that MD generates particle velocities"""
+        self.make_model()
         r = IMP.RestraintSet(self.model)
         self.md.set_scoring_function(r)
         self.md.optimize(0)
@@ -183,6 +235,7 @@ class Tests(IMP.test.TestCase):
 
     def test_temperature(self):
         """Check temperature"""
+        self.make_model()
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
         for i in range(500):
@@ -212,6 +265,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method"""
+        self.make_model()
         wrtraj = WriteTrajState(self.model, [])
         scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
                                                         self.particles, 298.0)
@@ -225,6 +279,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""
+        self.make_model()
         for i in range(100):
             self.particles.append(self.create_point_particle(self.model,
                                                              -43.0, 65.0, 93.0))
@@ -246,6 +301,7 @@ class Tests(IMP.test.TestCase):
 
     def test_linear_velocity_numpy(self):
         """Test access to linear velocities from NumPy"""
+        self.make_model()
         m1 = IMP.Model()
         p1 = IMP.Particle(m1)
         p2 = IMP.Particle(m1)

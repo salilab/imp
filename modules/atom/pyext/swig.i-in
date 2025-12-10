@@ -384,3 +384,11 @@ class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0
         obj.__dict__['_proxied'] = p
         return obj
 %}
+
+%extend IMP::atom::MolecularDynamics {
+  %pythoncode %{
+    def _get_jax(self):
+        from IMP.atom._jax_util import _MDJaxInfo
+        return _MDJaxInfo(self)
+  %}
+}
