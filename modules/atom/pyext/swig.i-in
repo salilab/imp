@@ -390,5 +390,9 @@ class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0
     def _get_jax(self):
         from IMP.atom._jax_util import _MDJaxInfo
         return _MDJaxInfo(self)
+
+    def _optimize_jax(self, max_steps):
+        import IMP.atom._jax_util
+        return IMP.atom._jax_util._md_optimize(self, max_steps)
   %}
 }

@@ -161,6 +161,12 @@ class Tests(IMP.test.TestCase):
         # Final coordinates should match those from C++
         self.assertLess((final_cpp - X['xyz'][0]).get_magnitude(), 1e-3)
 
+        # Run with JAX code, high level
+        make_md()
+        self.md._optimize_jax(50)
+        final_jax = IMP.core.XYZ(self.particles[0]).get_coordinates()
+        self.assertLess((final_cpp - final_jax).get_magnitude(), 1e-3)
+
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
         vx = 0.
@@ -182,7 +188,7 @@ class Tests(IMP.test.TestCase):
                 coor[n][0] += (newvx + vx) / 2.0 * timestep
             vx = newvx
 
-    def _optimize_model(self, timestep, restraints):
+    def _optimize_model(self, timestep, restraints, use_jax=False):
         """Run a short MD optimization on the model."""
         start = [[self.model.get_attribute(xkey, p),
                   self.model.get_attribute(ykey, p),
@@ -195,19 +201,29 @@ class Tests(IMP.test.TestCase):
         self.md.set_scoring_function(sf)
         self.md.add_optimizer_state(state)
         self.md.set_maximum_time_step(timestep)
-        self.md.optimize(50)
+        if use_jax:
+            self.md._optimize_jax(50)
+        else:
+            self.md.optimize(50)
         return start, traj
 
     def test_nonrigid_translation(self):
         """Check that non-rigid MD translation is Newtonian"""
-        self.make_model()
-        timestep = 4.0
-        strength = 50.0
-        r = XTransRestraint(self.model, strength)
-        (start, traj) = self._optimize_model(timestep, [r])
-        delttm = -timestep * kcal2mod / cmass
-        self._check_trajectory(start, traj, timestep,
-                               lambda a: a + strength * delttm)
+        # If we have JAX support, also test the JAX implementation
+        if jax is None:
+            use_jax_opts = [False]
+        else:
+            use_jax_opts = [False, True]
+        for use_jax in use_jax_opts:
+            self.make_model()
+            timestep = 4.0
+            strength = 50.0
+            r = XTransRestraint(self.model, strength)
+            (start, traj) = self._optimize_model(timestep, [r],
+                                                 use_jax=use_jax)
+            delttm = -timestep * kcal2mod / cmass
+            self._check_trajectory(start, traj, timestep,
+                                   lambda a: a + strength * delttm)
 
     def test_velocity_cap(self):
         """Check that velocity capping works"""
