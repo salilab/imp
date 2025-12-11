@@ -86,6 +86,85 @@ IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProxim
             ret[i] = self.get_contribution_particle_indexes(i)
         return ret
 
+    def _get_jax(self):
+        import jax.lax
+        import jax.numpy as jnp
+        import math
+
+        def sphere_cap(r1, r2, d):
+            def short_range(r1, r2, d):
+                return jax.lax.min(4.0 / 3.0 * math.pi * r1 * r1 * r1,
+                                   4.0 / 3.0 * math.pi * r2 * r2 * r2)
+            def mid_range(r1, r2, d):
+                return ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
+                        (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
+                         + 6 * r1 * r2 - 3 * r2 * r2))
+            def long_range(r1, r2, d):
+                return jax.lax.cond(d >= r1 + r2, lambda a,b,c: 0.,
+                                    mid_range, r1, r2, d)
+            return jax.lax.cond(
+                d <= jax.lax.max(r1, r2) - jax.lax.min(r1, r2), short_range,
+                long_range, r1, r2, d)
+
+        def get_probability(xyz, scale, ps, ncontrib, sigma, psi, length,
+                            slope):
+            def short_range(length, dist, sigmai, sigmaj, voli, volj):
+                xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
+                         * (length / 2.) * (length / 2))
+                return jax.lax.min(voli, xlvol),  jax.lax.min(volj, xlvol)
+
+            def long_range(length, dist, sigmai, sigmaj, voli, volj):
+                di = dist - sigmaj - length / 2.
+                dj = dist - sigmai - length / 2.
+                return (sphere_cap(sigmai, length / 2., abs(di)),
+                        sphere_cap(sigmaj, length / 2., abs(dj)))
+
+            onemprob = 1.0
+            for k in range(ncontrib):
+                dist = jnp.linalg.norm(xyz[ps[k, 0]] - xyz[ps[k, 1]])
+                dist = jax.lax.min(dist, 0.0001)
+                psik = scale[psi[k]]
+                sigmai = scale[sigma[k, 0]]
+                sigmaj = scale[sigma[k, 1]]
+
+                voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
+                volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+
+                fi, fj = jax.lax.cond(dist < sigmai + sigmaj,
+                                      short_range, long_range, length,
+                                      dist, sigmai, sigmaj, voli, volj)
+
+                pofr = fi * fj / voli / volj
+                if slope is not None:
+                    prior = jnp.exp(slope * dist)
+                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
+                                           + pofr * (1 - psik)) * prior)
+                else:
+                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
+                                           + pofr * (1 - psik)))
+            return 1.0 - onemprob
+
+        if self.get_is_length_variable():
+            raise NotImplementedError("Only implemented for fixed-length")
+        sigma = self._get_contributions_sigma_numpy()
+        psi = self._get_contributions_psi_numpy()
+        pis = self._get_contributions_particles_numpy()
+        get_log_prob = self.get_log_prob()
+        length = self.get_length()
+        ncontrib = len(sigma)
+        slope = self.get_slope() if self.get_has_slope() else None
+
+        def jax_restraint(X):
+            prob = get_probability(X['xyz'], X['nuisance'], pis, ncontrib,
+                                   sigma, psi, length, slope)
+            if get_log_prob:
+                return -math.log(prob)
+            else:
+                return prob
+
+        return self._wrap_jax(jax_restraint,
+                              keys=[IMP.isd.Scale.get_scale_key()])
+
     def _get_python_evaluate(self):
         from numba import njit
         import numpy.linalg
