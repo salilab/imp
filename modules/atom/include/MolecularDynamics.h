@@ -129,6 +129,10 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
    */
   void set_velocity_cap(Float velocity_cap) { velocity_cap_ = velocity_cap; }
 
+  //! Get the current value of the velocity cap
+  /** If velocities are not capped, infinity is returned */
+  Float get_velocity_cap() const { return velocity_cap_; }
+
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
   virtual void setup(const ParticleIndexes &ps) override;

@@ -121,6 +121,24 @@ class Tests(IMP.test.TestCase):
             self.md.set_scoring_function(sf)
             self.md.set_maximum_time_step(timestep)
 
+        self._compare_jax_implementation(make_md)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_velocity_cap(self):
+        """Test JAX implementation with velocity cap"""
+        def make_md():
+            timestep = 4.0
+            strength = 5000.0
+            self.make_model()
+            r = XTransRestraint(self.model, strength)
+            sf = IMP.core.RestraintsScoringFunction([r])
+            self.md.set_scoring_function(sf)
+            self.md.set_maximum_time_step(timestep)
+            self.md.set_velocity_cap(0.3)
+
+        self._compare_jax_implementation(make_md)
+
+    def _compare_jax_implementation(self, make_md):
         # Run with original C++ code
         make_md()
         self.md.optimize(50)

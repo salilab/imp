@@ -1,15 +1,17 @@
 import jax
+import jax.numpy as jnp
 import IMP.atom
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
 _deriv_to_acceleration = -4.1868e-4
 
 
-def _propagate_coordinates(X, indexes, mass, time_step):
+def _propagate_coordinates(X, indexes, mass, time_step, velocity_cap=None):
     linvel = X['linvel'].at[indexes]
     dcoord = X["xyz'"][indexes]
     v = linvel.get() + time_step * 0.5 * dcoord * _deriv_to_acceleration / mass
-    # todo: cap vel
+    if velocity_cap is not None:
+        v = jnp.clip(v, -velocity_cap, velocity_cap)
     X['linvel'] = linvel.set(v)
     X['xyz'] = X['xyz'].at[indexes].add(v * time_step)
 
@@ -29,6 +31,13 @@ class _MDJaxInfo:
         indexes = md.get_simulation_particle_indexes()
         deriv_func = jax.grad(ji.score_func)
         time_step = md.get_maximum_time_step()
+        velocity_cap = md.get_velocity_cap()
+        # Would like to use math.isfinite here but it is not guaranteed
+        # that a C++ "infinite" value is also considered to be math.inf
+        if velocity_cap < 1e20:
+            velocity_cap = jnp.array([velocity_cap] * 3)
+        else:
+            velocity_cap = None
 
         def init_func(X):
             X["xyz'"] = deriv_func(X)["xyz"]
@@ -37,7 +46,8 @@ class _MDJaxInfo:
         def apply_func(X):
             mass = X['mass'][indexes]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
-            _propagate_coordinates(X, indexes, mass, time_step)
+            _propagate_coordinates(X, indexes, mass, time_step,
+                                   velocity_cap)
             # Get new derivatives at t+(delta t)
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
