@@ -49,10 +49,13 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1.get_floats_numpy(k)
+            n2 = m1.get_numpy(k)
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 1) # no float attribute for p2
             self.assertAlmostEqual(n[0], 1.0, delta=1e-6)
             n[0] = 42.0
+            # n2 should be the same view as n
+            self.assertAlmostEqual(n2[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(p1.get_value(k), 42.0, delta=1e-6)
 
             # Read-only array should raise ValueError on assignment
@@ -81,12 +84,16 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1.get_ints_numpy(k)
+            n2 = m1.get_numpy(k)
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no int attribute for p3
             self.assertEqual(n[0], 1)
             self.assertEqual(n[1], 2)
             n[0] = 42
             n[1] = 24
+            # n2 should be the same view as n
+            self.assertEqual(n2[0], 42)
+            self.assertEqual(n2[1], 24)
             self.assertEqual(p1.get_value(k), 42)
             self.assertEqual(p2.get_value(k), 24)
 

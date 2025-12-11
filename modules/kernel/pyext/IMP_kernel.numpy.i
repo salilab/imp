@@ -276,6 +276,14 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj,
         """
         return _get_ints_numpy(self, k, self, read_only)
 
+    def get_numpy(self, k, read_only=False):
+        """Get the model's attribute array for any type of Key
+           k as a NumPy array. See Model::get_ints_numpy() for more details."""
+        _numpy_meth_map = {IntKey: _get_ints_numpy,
+                           FloatKey: _get_floats_numpy,
+                           Vector3DKey: _get_vector3ds_numpy}
+        return _numpy_meth_map[type(k)](self, k, self, read_only)
+
     def get_floats_numpy(self, k, read_only=False):
         """Get the model's attribute array for FloatKey k as a NumPy array.
            See Model::get_ints_numpy() for more details."""
