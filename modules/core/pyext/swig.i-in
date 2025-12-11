@@ -415,12 +415,13 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
   %pythoncode %{
     def _get_jax(self):
         import IMP._jax_util
-        funcs = [r.get_derived_object()._get_jax().score_func
-                 for r in self.restraints]
+        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+        funcs = [j.score_func for j in jis]
+        keys = frozenset(x for j in jis for x in j._keys)
         def jax_sf(X):
             return sum(f(X) for f in funcs)
         return IMP._jax_util.JaxInfo(m=self.get_model(), score_func=jax_sf,
-                                     weight=1.0)
+                                     weight=1.0, keys=keys)
   %}
 }
 

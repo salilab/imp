@@ -2,6 +2,13 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
+
+idkey = IMP.IntKey("id")
 
 
 class TestMovedRestraint(IMP.Restraint):
@@ -19,6 +26,20 @@ class TestMovedRestraint(IMP.Restraint):
         self.moved_pis = moved_pis
         self.reset_pis = reset_pis
         return self.value * 10.
+
+    def do_get_inputs(self):
+        return self.ps
+
+
+class TestJaxsKeyRestraint(IMP.Restraint):
+    def __init__(self, m, ps, name="TestJaxsKeyRestraint %1%"):
+        super().__init__(m, name)
+        self.ps = ps
+
+    def _get_jax(self):
+        def jax_restraint(X):
+            return 1.0
+        return self._wrap_jax(jax_restraint, keys=[idkey])
 
     def do_get_inputs(self):
         return self.ps
@@ -154,6 +175,25 @@ class Tests(IMP.test.TestCase):
         newr, = newsf.restraints
         self.assertEqual(newr.get_name(), "foo")
         self.assertEqual(newsf.evaluate(False), 42)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_keys(self):
+        """Test JAX keys returned by RestraintsScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r = TestJaxsKeyRestraint(m, p)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        # TestJaxsKeyRestraint should request the 'id' attribute
+        ji = sf._get_jax()
+        X = ji.get_model_state()
+        self.assertEqual(sorted(X.keys()), ['id', 'r', 'xyz'])
+
+        r = IMP._ConstRestraint(m, [p], 42)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        # ConstRestraint doesn't request any keys; we should get the default
+        ji = sf._get_jax()
+        X = ji.get_model_state()
+        self.assertEqual(sorted(X.keys()), ['r', 'xyz'])
 
 
 if __name__ == '__main__':
