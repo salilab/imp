@@ -1,4 +1,3 @@
-import jax
 import IMP
 import IMP.core
 import IMP.isd
