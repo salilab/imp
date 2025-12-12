@@ -103,15 +103,15 @@ IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProxim
                 return jax.lax.cond(d >= r1 + r2, lambda a,b,c: 0.,
                                     mid_range, r1, r2, d)
             return jax.lax.cond(
-                d <= jax.lax.max(r1, r2) - jax.lax.min(r1, r2), short_range,
+                d <= jnp.absolute(r1 - r2), short_range,
                 long_range, r1, r2, d)
 
-        def get_probability(xyz, scale, ps, ncontrib, sigma, psi, length,
+        def get_probability(xyz, r, scale, ps, ncontrib, sigma, psi, length,
                             slope):
             def short_range(length, dist, sigmai, sigmaj, voli, volj):
                 xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
-                         * (length / 2.) * (length / 2))
-                return jax.lax.min(voli, xlvol),  jax.lax.min(volj, xlvol)
+                         * (length / 2.) * (length / 2.))
+                return jax.lax.min(voli, xlvol), jax.lax.min(volj, xlvol)
 
             def long_range(length, dist, sigmai, sigmaj, voli, volj):
                 di = dist - sigmaj - length / 2.
@@ -119,10 +119,21 @@ IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProxim
                 return (sphere_cap(sigmai, length / 2., abs(di)),
                         sphere_cap(sigmaj, length / 2., abs(dj)))
 
+            def dist_diff(xyz, r, ps, k):
+                return jnp.linalg.norm(xyz[ps[k, 0]] - xyz[ps[k, 1]])
+
+            def dist_same(xyz, r, ps, k):
+                # If the residues are assigned to the same particle-domain
+                # get the distance as if the residue positions were randomly
+                # taken from within the sphere representing the domain
+                # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
+                return 36.0 / 35.0 * r[ps[k, 0]];
+
             onemprob = 1.0
             for k in range(ncontrib):
-                dist = jnp.linalg.norm(xyz[ps[k, 0]] - xyz[ps[k, 1]])
-                dist = jax.lax.min(dist, 0.0001)
+                dist = jax.lax.cond(ps[k, 0] == ps[k, 1], dist_same,
+                                    dist_diff, xyz, r, ps, k)
+                dist = jax.lax.max(dist, 0.0001)
                 psik = scale[psi[k]]
                 sigmai = scale[sigma[k, 0]]
                 sigmaj = scale[sigma[k, 1]]
@@ -136,7 +147,7 @@ IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProxim
 
                 pofr = fi * fj / voli / volj
                 if slope is not None:
-                    prior = jnp.exp(slope * dist)
+                    prior = jnp.exp(-slope * dist)
                     onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
                                            + pofr * (1 - psik)) * prior)
                 else:
@@ -155,10 +166,10 @@ IMP_SWIG_OBJECT(IMP::isd, ResidueProteinProximityRestraint, ResidueProteinProxim
         slope = self.get_slope() if self.get_has_slope() else None
 
         def jax_restraint(X):
-            prob = get_probability(X['xyz'], X['nuisance'], pis, ncontrib,
-                                   sigma, psi, length, slope)
+            prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
+                                   ncontrib, sigma, psi, length, slope)
             if get_log_prob:
-                return -math.log(prob)
+                return -jnp.log(prob)
             else:
                 return prob
 
