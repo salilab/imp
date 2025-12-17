@@ -2,7 +2,24 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The new IMP::emseqfinder module provides a method for assigning amino acid
+  residue sequence to backbone fragments traced in an input cryo-electron
+  microscopy map.
 - The Windows .exe installer now supports Python 3.9 through 3.14.
+- The old IMP::atom::LennardJonesPairScore class been removed.
+  Use IMP::atom::LennardJonesTypedPairScore instead.
+- The IMP::atom::read_pdb_or_mmcif function has been removed.
+  Use IMP::atom::read_pdb_any instead.
+- IMP::Model can now be given Particle attributes that are 3D vectors
+  (Vector3D). These are also accessible via NumPy. This new attribute type
+  is now used to store particle Cartesian velocities for molecular dynamics
+  (using the IMP::atom::LinearVelocity decorator).
+- The new Object::get_derived_object method casts an object to its most
+  derived subclass. This is useful for extracting the original Python objects
+  that constitute an IMP::RestraintSet or IMP::core::RestraintsScoringFunction,
+  for example.
+- There is now experimental support for writing restraints and optimizers
+  using the JAX (https://docs.jax.dev/) Python library.
 
 # 2.23.0 - 2025-07-10 # {#changelog_2_23_0}
 - Input structures can now be read in BinaryCIF format. The new function
