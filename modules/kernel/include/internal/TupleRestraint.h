@@ -40,6 +40,7 @@ class TupleRestraint : public Restraint {
   TupleRestraint() {}
 
   Score *get_score() const { return ss_; }
+  typename Score::IndexArgument get_index() const { return v_; }
   typename Score::Argument get_argument() const {
     return get_particle(Restraint::get_model(), v_);
   }
