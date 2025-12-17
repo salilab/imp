@@ -73,11 +73,12 @@ IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreS
         import jax.numpy as jnp
         container = self.get_container().get_derived_object()
         score = self.get_score_object().get_derived_object()
-        score_jax = score._get_jax().score_func
+        ji = score._get_jax()
+        score_jax = ji.score_func
         indexes = container._get_static_contents()
         def jax_pairs_restraint(X):
             return jnp.sum(score_jax(X, indexes))
-        return self._wrap_jax(jax_pairs_restraint)
+        return self._wrap_jax(jax_pairs_restraint, keys=ji._keys)
   %}
 }
 
