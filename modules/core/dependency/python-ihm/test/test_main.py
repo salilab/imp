@@ -11,6 +11,7 @@ import ihm.representation
 import ihm.model
 import ihm.source
 import ihm.flr
+import ihm.restraint
 import ihm.multi_state_scheme
 
 
@@ -1172,6 +1173,7 @@ class Tests(unittest.TestCase):
         s.asym_units.append(a1)
         e1rng = e1(1, 3)
         a1rng = a1(1, 2)
+        a1rng2 = a1(3, 4)
 
         sm1 = MockObject()
         sm1.asym_unit = e1rng
@@ -1183,6 +1185,10 @@ class Tests(unittest.TestCase):
         seg1.asym_unit = a1
         rep.append(seg1)
         s.orphan_representations.append(rep)
+
+        # Ranges listed in ResidueFeature should not be included
+        # in _all_entity_ranges()
+        s.orphan_features.append(ihm.restraint.ResidueFeature([a1rng2]))
 
         asmb1 = ihm.Assembly([e1, a1])
         s.orphan_assemblies.append(asmb1)
@@ -1409,6 +1415,41 @@ class Tests(unittest.TestCase):
         self.assertEqual(d.type, "license")
         d = ihm.Disclaimer("foo", name="fooname", url="foourl")
         self.assertEqual(d.type, "disclaimer")
+
+    def test_get_representative_model(self):
+        """Test get_representative_model()"""
+        s = ihm.System()
+        # No models should raise an error
+        self.assertRaises(ValueError, s.get_representative_model)
+
+        e = ihm.Entity('AHC')
+        a1 = ihm.AsymUnit(e, 'foo')
+        a2 = ihm.AsymUnit(e, 'bar')
+        s.entities.append(e)
+        s.asym_units.extend((a1, a2))
+        s1 = ihm.representation.AtomicSegment(
+            a1, starting_model=None, rigid=True)
+        s2 = ihm.representation.AtomicSegment(
+            a2, starting_model=None, rigid=True)
+        m1 = ihm.model.Model(assembly=None, protocol=None,
+                             representation=[s1])
+        m2 = ihm.model.Model(assembly=None, protocol=None,
+                             representation=[s1, s2])
+        mg = ihm.model.ModelGroup((m1, m2))
+        state = ihm.model.State([mg])
+        s.state_groups.append(ihm.model.StateGroup([state]))
+
+        # m2 contains two chains to m1's one, so it should be selected
+        # by default (as an auto-generated model)
+        r = s.get_representative_model()
+        self.assertIs(r.model, m2)
+        self.assertEqual(r.selection_criteria, 'auto')
+
+        # If we explicitly denote m1 as the representative, it should
+        # be returned instead
+        mr = ihm.model.ModelRepresentative(m1, "medoid")
+        mg.representatives.append(mr)
+        self.assertIs(s.get_representative_model(), mr)
 
 
 if __name__ == '__main__':

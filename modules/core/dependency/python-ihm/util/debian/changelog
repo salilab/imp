@@ -1,101 +1,107 @@
+python-ihm (2.8-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 2.8 release
+
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 12 Dec 2025 10:14:34 -0800
+
 python-ihm (2.7-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.7 release
 
- -- Ben Webb <ben@salilab.org>  Mon, 07 Jul 2025 18:13:05 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Mon, 07 Jul 2025 18:13:05 -0700
 
 python-ihm (2.6-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.6 release
 
- -- Ben Webb <ben@salilab.org>  Mon, 09 Jun 2025 15:40:14 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Mon, 09 Jun 2025 15:40:14 -0700
 
 python-ihm (2.5-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.5 release
 
- -- Ben Webb <ben@salilab.org>  Fri, 25 Apr 2025 20:41:22 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 25 Apr 2025 20:41:22 -0700
 
 python-ihm (2.4-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.4 release
 
- -- Ben Webb <ben@salilab.org>  Tue, 25 Mar 2025 20:31:19 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Tue, 25 Mar 2025 20:31:19 -0700
 
 python-ihm (2.3-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.3 release
 
- -- Ben Webb <ben@salilab.org>  Thu, 13 Mar 2025 19:57:57 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Thu, 13 Mar 2025 19:57:57 -0700
 
 python-ihm (2.2-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.2 release
 
- -- Ben Webb <ben@salilab.org>  Thu, 13 Feb 2025 20:24:55 -0800
+ -- Ben Webb <benmwebb@gmail.com>  Thu, 13 Feb 2025 20:24:55 -0800
 
 python-ihm (2.1-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.1 release
 
- -- Ben Webb <ben@salilab.org>  Wed, 12 Feb 2025 22:11:51 -0800
+ -- Ben Webb <benmwebb@gmail.com>  Wed, 12 Feb 2025 22:11:51 -0800
 
 python-ihm (2.0-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.0 release
 
- -- Ben Webb <ben@salilab.org>  Tue, 11 Feb 2025 16:49:02 -0800
+ -- Ben Webb <benmwebb@gmail.com>  Tue, 11 Feb 2025 16:49:02 -0800
 
 python-ihm (1.8-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.8 release
 
- -- Ben Webb <ben@salilab.org>  Tue, 26 Nov 2024 22:00:07 -0800
+ -- Ben Webb <benmwebb@gmail.com>  Tue, 26 Nov 2024 22:00:07 -0800
 
 python-ihm (1.7-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.7 release
 
- -- Ben Webb <ben@salilab.org>  Tue, 22 Oct 2024 23:02:03 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Tue, 22 Oct 2024 23:02:03 -0700
 
 python-ihm (1.6-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.6 release
 
- -- Ben Webb <ben@salilab.org>  Fri, 27 Sep 2024 10:55:45 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 27 Sep 2024 10:55:45 -0700
 
 python-ihm (1.5-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.5 release
 
- -- Ben Webb <ben@salilab.org>  Fri, 06 Sep 2024 14:15:12 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 06 Sep 2024 14:15:12 -0700
 
 python-ihm (1.4-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.4 release
 
- -- Ben Webb <ben@salilab.org>  Fri, 30 Aug 2024 15:27:15 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 30 Aug 2024 15:27:15 -0700
 
 python-ihm (1.3-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.3 release
 
- -- Ben Webb <ben@salilab.org>  Tue, 16 Jul 2024 10:37:13 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Tue, 16 Jul 2024 10:37:13 -0700
 
 python-ihm (1.2-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.2 release
 
- -- Ben Webb <ben@salilab.org>  Wed, 12 Jun 2024 11:35:25 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Wed, 12 Jun 2024 11:35:25 -0700
 
 python-ihm (1.1-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 1.1 release
 
- -- Ben Webb <ben@salilab.org>  Thu, 09 May 2024 12:44:51 -0700
+ -- Ben Webb <benmwebb@gmail.com>  Thu, 09 May 2024 12:44:51 -0700
 
 python-ihm (1.0-1~@CODENAME@) @CODENAME@; urgency=low
 
   * Initial .deb release
 
- -- Ben Webb <ben@salilab.org>  Thu, 07 Mar 2024 00:19:35 +0000
+ -- Ben Webb <benmwebb@gmail.com>  Thu, 07 Mar 2024 00:19:35 +0000

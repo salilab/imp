@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "2.7"
+VERSION = "2.8"
 
 copy_args = sys.argv[1:]
 
@@ -50,7 +50,7 @@ setup(name='ihm',
       long_description=long_description,
       long_description_content_type="text/markdown",
       author='Ben Webb',
-      author_email='ben@salilab.org',
+      author_email='benmwebb@gmail.com',
       url='https://github.com/ihmwg/python-ihm',
       ext_modules=mod,
       packages=['ihm', 'ihm.util'],
