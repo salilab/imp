@@ -5,6 +5,10 @@ import IMP.test
 import IMP.atom
 import IMP.core
 import IMP.container
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def make_test_pair_score(min_distance=9.0, max_distance=10.0,
@@ -81,6 +85,26 @@ class Tests(IMP.test.TestCase):
                         # Conversion factor to get score in kcal/mol
                         expected = 331.8469014486 * q0 * q1 / dist / eps
                         self.assertAlmostEqual(score, expected, delta=1e-2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Check JAX implementation of CoulombPairScore"""
+        m, sf, d0, d1, c = make_test_pair_score()
+
+        box = IMP.algebra.Vector3D(10.0, 20.0, 30.0)
+        for eps in (1.0, 5.0):
+            c.set_relative_dielectric(eps)
+            ji = sf._get_jax()
+            j = jax.jit(ji.score_func)
+            X = ji.get_model_state()
+            for q0 in (2.0, -1.0, 0.0):
+                d0.set_charge(q0)
+                for q1 in (2.0, -1.0, 0.0):
+                    d1.set_charge(q1)
+                    for dist in (0.5, 1.0, 2.0, 3.0):
+                        place_xyzs(d0, d1, box, dist)
+                        score = sf.evaluate(False)
+                        self.assertAlmostEqual(score, j(X), delta=1e-2)
 
     def test_derivatives(self):
         """Check derivatives of CoulombPairScore"""

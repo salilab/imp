@@ -420,3 +420,35 @@ class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0
         return jax_func
   %}
 }
+
+%extend IMP::atom::CoulombPairScore {
+  %pythoncode %{
+    def _get_jax(self):
+        import math
+        import jax
+        import jax.numpy as jnp
+        from IMP._jax_util import JaxInfo
+        # 1 / (4pi * epsilon) * conversion factor to get score in kcal/mol
+        # if distances are in angstroms
+        avogadro = 6.02214179e23  # /mole
+        electron_charge = 1.6021892e-19  # Coulomb
+        permittivity_vacuum = 8.854187818e-12  # C/V/m
+        kcal2joule = 4186.8
+        factor = (avogadro * electron_charge * electron_charge *
+                  1.0e10 / permittivity_vacuum / kcal2joule /
+                  (4.0 * math.pi * self.get_relative_dielectric()))
+        sf = self.get_smoothing_function().get_derived_object()
+        # Function operates on a single distance + score; make it work on
+        # an array instead using jax.vmap
+        smoothing_function = jax.vmap(sf._get_jax())
+        def jax_pair_score(X, indexes):
+            xyzs = X['xyz'][indexes]
+            qs = X['charge'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1)
+            scores = factor * jnp.prod(qs, axis=1) / drs
+            return smoothing_function(scores, drs)
+        return JaxInfo(m=None, score_func=jax_pair_score, weight=1.0,
+                       keys=[Charged.get_charge_key()])
+  %}
+}
