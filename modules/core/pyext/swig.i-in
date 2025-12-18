@@ -411,6 +411,23 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
   %}
 }
 
+%extend IMP::core::HarmonicSphereDistancePairScore {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        import functools
+        from IMP._jax_util import JaxInfo
+        def jax_score(X, indexes, d, k):
+            xyzs = X['xyz'][indexes]
+            rs = X['r'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            return 0.5 * k * (d - drs)**2
+        f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
+        return JaxInfo(m=None, score_func=f, weight=1.0)
+  %}
+}
+
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self):
