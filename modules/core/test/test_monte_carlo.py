@@ -149,7 +149,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container=False)
         m2, mc2 = setup_system(coords, use_container=False)
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -167,7 +167,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container='pair')
         m2, mc2 = setup_system(coords, use_container='pair')
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -185,7 +185,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container='singleton')
         m2, mc2 = setup_system(coords, use_container='singleton')
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -203,7 +203,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_rigid_body_system(coords)
         m2, mc2 = setup_rigid_body_system(coords)
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
