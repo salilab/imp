@@ -1,9 +1,16 @@
+import functools
 import IMP
 import IMP.test
 import IMP.algebra
 import math
 import io
 import pickle
+try:
+    import jax
+    import jax.numpy as jnp
+    from IMP.algebra import _jax_util
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -84,6 +91,24 @@ class Tests(IMP.test.TestCase):
         observed_p = float(n) / float(m)
         print(expected_p, observed_p)
         self.assertAlmostEqual(observed_p, expected_p, places=1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_sampling_in_3d_sphere(self):
+        """Test the JAX get_random_vector_in_3d_sphere function"""
+        j = jax.jit(functools.partial(_jax_util.get_random_vector_in_3d_sphere,
+                                      shape=20000))
+        lbound = jnp.full(3, -0.5)
+        ubound = jnp.full(3, 0.5)
+        k = jax.random.key(42)
+        v = j(k, radius=1.0)
+        n = jnp.count_nonzero(
+                jnp.all(jnp.logical_and(lbound <= v, v <= ubound), axis=1))
+        # compare expected and observed hits
+        s_volume = 4/3 * math.pi
+        inner_box_volume = 1.0
+        expected_p = inner_box_volume / s_volume
+        observed_p = float(n) / float(20000)
+        self.assertAlmostEqual(expected_p, observed_p, delta=0.1)
 
     def test_io(self):
         """Check I/O of Sphere3Ds"""
