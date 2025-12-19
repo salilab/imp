@@ -456,6 +456,25 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
   %}
 }
 
+%extend IMP::core::BallMover {
+  %pythoncode %{
+    def _get_jax(self):
+        from IMP.algebra._jax_util import get_random_vector_in_3d_sphere
+        indexes = self.get_indexes()
+        keys = frozenset(self.get_keys())
+        if keys != frozenset(IMP.core.XYZ.get_xyz_keys()):
+            raise NotImplementedError("Only works for XYZ")
+        radius = self.get_radius()
+
+        def propose_func(k, X):
+            v = get_random_vector_in_3d_sphere(k, radius)
+            newX = X.copy()
+            newX['xyz'] = X['xyz'].at[indexes].add(v)
+            return newX
+        return propose_func
+  %}
+}
+
 // Pick the most performant C++ template class when creating
 // SphereDistancePairScore, and proxy it in the Python class
 %pythoncode %{

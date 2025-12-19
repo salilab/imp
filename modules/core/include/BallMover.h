@@ -2,7 +2,7 @@
  *  \file IMP/core/BallMover.h
  *  \brief A modifier which variables within a ball.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -78,6 +78,9 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   }
 
   Float get_radius() const { return radius_; }
+
+  ParticleIndexes get_indexes() const { return pis_; }
+  FloatKeys get_keys() const { return keys_; }
 
  protected:
   virtual ModelObjectsTemp do_get_inputs() const override;
