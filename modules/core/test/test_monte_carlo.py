@@ -1,7 +1,13 @@
+import functools
 import IMP
 import IMP.test
 import IMP.core
 import IMP.container
+try:
+    import jax
+    import jax.numpy as jnp
+except ImportError:
+    jax = None
 
 
 def setup_system(coords, use_container):
@@ -212,6 +218,53 @@ class Tests(IMP.test.TestCase):
         mc2_score = mc2.optimize(100)
 
         self.assertAlmostEqual(mc1_score, mc2_score, delta=1e-2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_low_level(self):
+        """Test low-level JAX implementation of MonteCarlo"""
+        m = IMP.Model()
+        mc = IMP.core.MonteCarlo(m)
+        ds = []
+        for i in range(2):
+            p = IMP.Particle(m)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_radius(.1)
+            d.set_coordinates_are_optimized(True)
+            ds.append(d)
+        ds[1].set_coordinates(IMP.algebra.Vector3D(1., 2., 3.))
+        hps = IMP.core.HarmonicDistancePairScore(0, 100)
+        r = IMP.core.PairRestraint(m, hps, ds)
+        rs = IMP.core.RestraintsScoringFunction([r])
+        mc.set_scoring_function(rs)
+        bm = IMP.core.BallMover(m, ds[0], 0.01)
+        mc.add_mover(bm)
+        mc.set_kt(0.01)
+        mc.set_return_best(False)
+
+        # Initialize, get score of starting configuration
+        ji = mc._get_jax()
+        X = ji.get_model_state()
+        f = jax.jit(ji.init_func)
+        X = f(X)
+
+        # Run 2000 steps of MC
+        def run_n_mc_steps(k, X, n_steps, mc_step):
+            def mc_step_with_key(i, kX):
+                k, X = kX
+                k, subkey = jax.random.split(k)
+                return (k, mc_step(subkey, X))
+            return jax.lax.fori_loop(0, n_steps, mc_step_with_key, (k, X))[1]
+
+        k = jax.random.key(42)
+        j = jax.jit(functools.partial(run_n_mc_steps, n_steps=2000,
+                                      mc_step=ji.apply_func))
+        newX = j(k, X)
+        # Check MC stats
+        stats = newX["mc"]
+        self.assertEqual(stats.rejected_steps + stats.downward_steps_taken
+                         + stats.upward_steps_taken, 2000)
+        # Particles should now be close
+        self.assertLess(jnp.linalg.norm(newX["xyz"][1] - newX["xyz"][0]), 0.5)
 
 
 if __name__ == '__main__':

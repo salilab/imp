@@ -475,6 +475,14 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
   %}
 }
 
+%extend IMP::core::MonteCarlo {
+  %pythoncode %{
+    def _get_jax(self):
+        from IMP.core._jax_util import _MCJaxInfo
+        return _MCJaxInfo(self)
+  %}
+}
+
 // Pick the most performant C++ template class when creating
 // SphereDistancePairScore, and proxy it in the Python class
 %pythoncode %{
