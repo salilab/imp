@@ -1,7 +1,9 @@
+import functools
 import math
 import jax
 import jax.numpy as jnp
 from typing import NamedTuple
+import IMP
 
 class _MCStats(NamedTuple):
     last_score: float
@@ -43,6 +45,7 @@ class _MCJaxInfo:
 
             def upward_step():
                 newX["mc"] = X["mc"]._replace(
+                    last_score=new_score,
                     upward_steps_taken=X["mc"].upward_steps_taken + 1)
                 return newX
 
@@ -74,3 +77,56 @@ class _MCJaxInfo:
                            downward_steps_taken=0, upward_steps_taken=0,
                            rejected_steps=0)
         return X
+
+
+def _sync_stats(imp_mc, jax_mc):
+    """Update IMP MonteCarlo object with stats from JAX run"""
+    imp_mc.set_number_of_downward_steps(jax_mc.downward_steps_taken)
+    imp_mc.set_number_of_upward_steps(jax_mc.upward_steps_taken)
+    imp_mc.set_number_of_rejected_steps(jax_mc.rejected_steps)
+    imp_mc.set_best_accepted_energy(jax_mc.best_score)
+    imp_mc.set_last_accepted_energy(jax_mc.last_score)
+
+
+def _mc_optimize(mc, max_steps):
+    # Get the number of steps that we can run in JAX, before having to
+    # copy JAX arrays back to the IMP Model
+    inner_steps = functools.reduce(
+        math.gcd, [x.get_period() for x in mc.optimizer_states], max_steps)
+    n_loops = max_steps // inner_steps
+
+    ji = mc._get_jax()
+    init_func = jax.jit(ji.init_func)
+
+    def run_n_mc_steps(k, X):
+        def mc_step_with_key(i, kX):
+            k, X = kX
+            k, subkey = jax.random.split(k)
+            return (k, ji.apply_func(subkey, X))
+        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key, (k, X))[1]
+    apply_func = jax.jit(run_n_mc_steps)
+
+    X = init_func(ji.get_model_state())
+
+    m = mc.get_model()
+    xyz = m.get_spheres_numpy()[0]
+
+    k = jax.random.key(IMP.random_number_generator())
+    n_step = 0
+    for i in range(n_loops):
+        k, subkey = jax.random.split(k)
+        X = apply_func(subkey, X)
+        # Resync IMP Model arrays with JAX
+        xyz[:] = X['xyz']
+        # Update any necessary OptimizerStates
+        n_step += inner_steps
+        for s in mc.optimizer_states:
+            if n_step % s.get_period() == 0:
+                s.update_always()
+
+    # Update IMP MonteCarlo object with stats from JAX run
+    _sync_stats(mc, X['mc'])
+    if mc.get_return_best():
+        return mc.get_best_accepted_energy()
+    else:
+        return mc.get_last_accepted_energy()
