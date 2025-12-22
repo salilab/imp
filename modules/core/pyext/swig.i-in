@@ -470,7 +470,7 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<Unar
             v = get_random_vector_in_3d_sphere(k, radius)
             newX = X.copy()
             newX['xyz'] = X['xyz'].at[indexes].add(v)
-            return newX
+            return newX, 1.0
         return propose_func
   %}
 }

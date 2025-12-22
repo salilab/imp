@@ -31,9 +31,11 @@ class _MCJaxInfo:
         def apply_func(k, X):
             old_score = X["mc"].last_score
             newX = X.copy()
+            proposal_ratio = 1.0
             for propose in propose_funcs:
                 k, subkey = jax.random.split(k)
-                newX = propose(subkey, newX)
+                newX, ratio = propose(subkey, newX)
+                proposal_ratio *= ratio
             new_score = score_func(newX)
 
             def downward_step():
@@ -57,9 +59,9 @@ class _MCJaxInfo:
             def metrop_step():
                 diff = new_score - old_score
                 e = jnp.exp(-diff / temperature)
-                # todo: use proposal_ratio from movers
                 prob = jax.random.uniform(k, minval=0.0, maxval=1.0)
-                return jax.lax.cond(e > prob, upward_step, reject_step)
+                return jax.lax.cond(e * proposal_ratio > prob,
+                                    upward_step, reject_step)
 
             return jax.lax.cond(new_score < old_score,
                                 downward_step, metrop_step)
