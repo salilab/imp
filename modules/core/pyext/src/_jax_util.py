@@ -105,7 +105,7 @@ def _mc_optimize(mc, max_steps):
             k, X = kX
             k, subkey = jax.random.split(k)
             return (k, ji.apply_func(subkey, X))
-        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key, (k, X))[1]
+        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key, (k, X))
     apply_func = jax.jit(run_n_mc_steps)
 
     X = init_func(ji.get_model_state())
@@ -116,8 +116,7 @@ def _mc_optimize(mc, max_steps):
     k = jax.random.key(IMP.random_number_generator())
     n_step = 0
     for i in range(n_loops):
-        k, subkey = jax.random.split(k)
-        X = apply_func(subkey, X)
+        k, X = apply_func(k, X)
         # Resync IMP Model arrays with JAX
         xyz[:] = X['xyz']
         # Update any necessary OptimizerStates
