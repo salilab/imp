@@ -72,12 +72,10 @@ class _MDJaxInfo:
 
 
 def _md_optimize(md, max_steps):
-    # Get the number of steps that we can run in JAX, before having to
-    # copy JAX arrays back to the IMP Model
-    inner_steps = functools.reduce(
-        math.gcd, [x.get_period() for x in md.optimizer_states], max_steps)
-    n_loops = max_steps // inner_steps
+    from IMP.core._jax_util import _JAXOptimizer
 
+    jopt = _JAXOptimizer(md, max_steps)
+    inner_steps = jopt.inner_steps
     ji = md._get_jax()
     init_func = jax.jit(ji.init_func)
     score_func = jax.jit(ji.score_func)
@@ -86,22 +84,15 @@ def _md_optimize(md, max_steps):
                                     lambda i, X: ji.apply_func(X), X))
 
     X = init_func(ji.get_model_state())
-
     m = md.get_model()
     linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())
     xyz = m.get_spheres_numpy()[0]
     dxyz = m.get_sphere_derivatives_numpy()[0]
 
-    n_step = 0
-    for i in range(n_loops):
+    for i in jopt.loop():
         X = apply_func(X)
         # Resync IMP Model arrays with JAX
         linvel[:] = X['linvel']
         xyz[:] = X['xyz']
         dxyz[:] = X["xyz'"]
-        # Update any necessary OptimizerStates
-        n_step += inner_steps
-        for s in md.optimizer_states:
-            if n_step % s.get_period() == 0:
-                s.update_always()
     return score_func(X)

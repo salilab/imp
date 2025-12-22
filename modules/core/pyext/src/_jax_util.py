@@ -90,13 +90,33 @@ def _sync_stats(imp_mc, jax_mc):
     imp_mc.set_last_accepted_energy(jax_mc.last_score)
 
 
-def _mc_optimize(mc, max_steps):
-    # Get the number of steps that we can run in JAX, before having to
-    # copy JAX arrays back to the IMP Model
-    inner_steps = functools.reduce(
-        math.gcd, [x.get_period() for x in mc.optimizer_states], max_steps)
-    n_loops = max_steps // inner_steps
+class _JAXOptimizer:
+    """Helper class to run an IMP Optimizer using JAX."""
+    def __init__(self, opt, max_steps):
+        self.opt = opt
+        # Get the number of steps that we can run in JAX, before having to
+        # copy JAX arrays back to the IMP Model
+        self.inner_steps = functools.reduce(
+            math.gcd, [x.get_period() for x in opt.optimizer_states],
+            max_steps)
+        self.n_loops = max_steps // self.inner_steps
 
+    def loop(self):
+        """Run the outer loop (in Python) of the Optimizer. On each yield,
+           inner_steps of JAX optimization should be run."""
+        n_step = 0
+        for i in range(self.n_loops):
+            yield i
+            # Update any necessary OptimizerStates
+            n_step += self.inner_steps
+            for s in self.opt.optimizer_states:
+                if n_step % s.get_period() == 0:
+                    s.update_always()
+
+
+def _mc_optimize(mc, max_steps):
+    jopt = _JAXOptimizer(mc, max_steps)
+    inner_steps = jopt.inner_steps
     ji = mc._get_jax()
     init_func = jax.jit(ji.init_func)
 
@@ -109,21 +129,14 @@ def _mc_optimize(mc, max_steps):
     apply_func = jax.jit(run_n_mc_steps)
 
     X = init_func(ji.get_model_state())
-
     m = mc.get_model()
     xyz = m.get_spheres_numpy()[0]
 
     k = jax.random.key(IMP.random_number_generator())
-    n_step = 0
-    for i in range(n_loops):
+    for _ in jopt.loop():
         k, X = apply_func(k, X)
         # Resync IMP Model arrays with JAX
         xyz[:] = X['xyz']
-        # Update any necessary OptimizerStates
-        n_step += inner_steps
-        for s in mc.optimizer_states:
-            if n_step % s.get_period() == 0:
-                s.update_always()
 
     # Update IMP MonteCarlo object with stats from JAX run
     _sync_stats(mc, X['mc'])
