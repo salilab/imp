@@ -22,13 +22,14 @@ class _MCJaxInfo:
         propose_funcs = [mover.get_derived_object()._get_jax()
                          for mover in mc.movers]
         temperature = mc.get_kt()
+        return_best = mc.get_return_best()
 
         def init_func(X):
             score = score_func(X)
             X["mc"] = X["mc"]._replace(last_score=score, best_score=score)
             return X
 
-        def apply_func(k, X):
+        def apply_func(k, X, bestX):
             old_score = X["mc"].last_score
             newX = X.copy()
             proposal_ratio = 1.0
@@ -39,22 +40,36 @@ class _MCJaxInfo:
             new_score = score_func(newX)
 
             def downward_step():
+                if return_best:
+                    return jax.lax.cond(new_score < X["mc"].best_score,
+                                        downward_step_new_best,
+                                        downward_step_not_best)
+                else:
+                    return downward_step_not_best()
+
+            def downward_step_new_best():
+                newX["mc"] = X["mc"]._replace(
+                    last_score=new_score, best_score=new_score,
+                    downward_steps_taken=X["mc"].downward_steps_taken + 1)
+                # newX should replace bestX
+                return newX, newX
+
+            def downward_step_not_best():
                 newX["mc"] = X["mc"]._replace(
                     last_score=new_score,
-                    best_score=jax.lax.min(new_score, X["mc"].best_score),
                     downward_steps_taken=X["mc"].downward_steps_taken + 1)
-                return newX
+                return newX, bestX
 
             def upward_step():
                 newX["mc"] = X["mc"]._replace(
                     last_score=new_score,
                     upward_steps_taken=X["mc"].upward_steps_taken + 1)
-                return newX
+                return newX, bestX
 
             def reject_step():
                 X["mc"] = X["mc"]._replace(
                     rejected_steps=X["mc"].rejected_steps + 1)
-                return X
+                return X, bestX
 
             def metrop_step():
                 diff = new_score - old_score
@@ -120,28 +135,32 @@ def _mc_optimize(mc, max_steps):
     ji = mc._get_jax()
     init_func = jax.jit(ji.init_func)
 
-    def run_n_mc_steps(k, X):
+    def run_n_mc_steps(k, X, bestX):
         def mc_step_with_key(i, kX):
-            k, X = kX
+            k, X, bestX = kX
             k, subkey = jax.random.split(k)
-            return (k, ji.apply_func(subkey, X))
-        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key, (k, X))
+            return (k, *ji.apply_func(subkey, X, bestX))
+        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key,
+                                 (k, X, bestX))
     apply_func = jax.jit(run_n_mc_steps)
 
     X = init_func(ji.get_model_state())
+    bestX = X
     m = mc.get_model()
     xyz = m.get_spheres_numpy()[0]
 
     k = jax.random.key(IMP.random_number_generator())
     for _ in jopt.loop():
-        k, X = apply_func(k, X)
+        k, X, bestX = apply_func(k, X, bestX)
         # Resync IMP Model arrays with JAX
         xyz[:] = X['xyz']
 
     # Update IMP MonteCarlo object with stats from JAX run
     _sync_stats(mc, X['mc'])
+
     if mc.get_return_best():
-        # todo: we must also return best X
+        # Resync IMP Model arrays with JAX best model state
+        xyz[:] = bestX['xyz']
         return mc.get_best_accepted_energy()
     else:
         return mc.get_last_accepted_energy()

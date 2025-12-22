@@ -250,19 +250,21 @@ class Tests(IMP.test.TestCase):
         X = ji.get_model_state()
         f = jax.jit(ji.init_func)
         X = f(X)
+        bestX = X
 
         # Run 2000 steps of MC
-        def run_n_mc_steps(k, X, n_steps, mc_step):
+        def run_n_mc_steps(k, X, bestX, n_steps, mc_step):
             def mc_step_with_key(i, kX):
-                k, X = kX
+                k, X, bestX = kX
                 k, subkey = jax.random.split(k)
-                return (k, mc_step(subkey, X))
-            return jax.lax.fori_loop(0, n_steps, mc_step_with_key, (k, X))[1]
+                return (k, *mc_step(subkey, X, bestX))
+            return jax.lax.fori_loop(0, n_steps, mc_step_with_key,
+                                     (k, X, bestX))[1:]
 
         k = jax.random.key(42)
         j = jax.jit(functools.partial(run_n_mc_steps, n_steps=2000,
                                       mc_step=ji.apply_func))
-        newX = j(k, X)
+        newX, bestX = j(k, X, bestX)
         # Check MC stats
         stats = newX["mc"]
         self.assertEqual(stats.rejected_steps + stats.downward_steps_taken
