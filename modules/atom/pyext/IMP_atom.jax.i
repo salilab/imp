@@ -40,7 +40,6 @@
         import math
         import jax
         import jax.numpy as jnp
-        from IMP._jax_util import JaxInfo
         # 1 / (4pi * epsilon) * conversion factor to get score in kcal/mol
         # if distances are in angstroms
         avogadro = 6.02214179e23  # /mole
@@ -61,7 +60,6 @@
             drs = jnp.linalg.norm(diff, axis=1)
             scores = factor * jnp.prod(qs, axis=1) / drs
             return smoothing_function(scores, drs)
-        return JaxInfo(m=None, score_func=jax_pair_score, weight=1.0,
-                       keys=[Charged.get_charge_key()])
+        return self._wrap_jax(jax_pair_score, keys=[Charged.get_charge_key()])
   %}
 }
