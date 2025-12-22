@@ -30,8 +30,9 @@ class Tests(IMP.test.TestCase):
         X = {'xyz': jnp.array(m.get_spheres_numpy()[0])}
         j = jax.jit(mv._get_jax())
         k = jax.random.key(42)
-        newX = j(k, X)
+        newX, ratio = j(k, X)
         self.assertEqual(newX['xyz'].shape, (2, 3))
+        self.assertAlmostEqual(ratio, 1.0, delta=1e-5)
         # Both particles should be moved in the same fashion
         self.assertTrue(jnp.allclose(newX['xyz'][0], newX['xyz'][1]))
         # Particles should not be further than radius from origin
