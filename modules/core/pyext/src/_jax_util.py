@@ -129,6 +129,7 @@ def _mc_optimize(mc, max_steps):
     # Update IMP MonteCarlo object with stats from JAX run
     _sync_stats(mc, X['mc'])
     if mc.get_return_best():
+        # todo: we must also return best X
         return mc.get_best_accepted_energy()
     else:
         return mc.get_last_accepted_energy()
