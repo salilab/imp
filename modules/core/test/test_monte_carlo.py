@@ -249,27 +249,27 @@ class Tests(IMP.test.TestCase):
         ji = mc._get_jax()
         X = ji.get_model_state()
         f = jax.jit(ji.init_func)
-        X = f(X)
-        bestX = X
+        mc_state = f(X)
 
         # Run 2000 steps of MC
-        def run_n_mc_steps(k, X, bestX, n_steps, mc_step):
-            def mc_step_with_key(i, kX):
-                k, X, bestX = kX
+        def run_n_mc_steps(k, mc_state, n_steps, mc_step):
+            def mc_step_with_key(i, kms):
+                k, mc_state = kms
                 k, subkey = jax.random.split(k)
-                return (k, *mc_step(subkey, X, bestX))
+                return (k, mc_step(subkey, mc_state))
             return jax.lax.fori_loop(0, n_steps, mc_step_with_key,
-                                     (k, X, bestX))[1:]
+                                     (k, mc_state))[1]
 
         k = jax.random.key(42)
         j = jax.jit(functools.partial(run_n_mc_steps, n_steps=2000,
                                       mc_step=ji.apply_func))
-        newX, bestX = j(k, X, bestX)
+        mc_state = j(k, mc_state)
         # Check MC stats
-        stats = newX["mc"]
-        self.assertEqual(stats.rejected_steps + stats.downward_steps_taken
-                         + stats.upward_steps_taken, 2000)
+        self.assertEqual(mc_state.rejected_steps
+                         + mc_state.downward_steps_taken
+                         + mc_state.upward_steps_taken, 2000)
         # Particles should now be close
+        newX = mc_state.X
         self.assertLess(jnp.linalg.norm(newX["xyz"][1] - newX["xyz"][0]), 0.5)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
