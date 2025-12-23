@@ -8,6 +8,28 @@
   %}
 }
 
+%extend IMP::core::HarmonicUpperBound {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.lax
+        def score(dist, mean, k):
+            return 0.5 * k * jax.lax.min(mean - dist, 0.0) ** 2
+        return functools.partial(score, mean=self.get_mean(), k=self.get_k())
+  %}
+}
+
+%extend IMP::core::HarmonicLowerBound {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.lax
+        def score(dist, mean, k):
+            return 0.5 * k * jax.lax.max(mean - dist, 0.0) ** 2
+        return functools.partial(score, mean=self.get_mean(), k=self.get_k())
+  %}
+}
+
 %extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
   %pythoncode %{
     def _get_jax(self):
