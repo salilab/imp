@@ -890,6 +890,13 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, CppName)
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)
 %template(Name) Namespace::Generic##Name<argument>;
 %template(create_##lcname) Namespace::create_##lcname<argument>;
+%extend Namespace::Generic##Name<argument> {
+  %pythoncode %{
+    @staticmethod
+    def get_from(o):
+       return _object_cast_to_##Name(o)
+  %}
+ }
 %enddef
 
 
