@@ -1,6 +1,7 @@
 import functools
 import math
 import jax
+import jax.random
 import jax.numpy as jnp
 from typing import NamedTuple
 import IMP
@@ -24,6 +25,8 @@ class _MCState(NamedTuple):
     upward_steps_taken: int
     # Number of rejected steps
     rejected_steps: int
+    # JAX random number key
+    rkey: jax.Array
 
 
 class _MCJaxInfo(JaxOptimizerInfo):
@@ -35,15 +38,16 @@ class _MCJaxInfo(JaxOptimizerInfo):
         temperature = mc.get_kt()
         return_best = mc.get_return_best()
 
-        def init_func(X):
+        def init_func(X, seed):
             score = score_func(X)
             ms = _MCState(score=score, best_score=score, X=X, best_X=X,
                           downward_steps_taken=0, upward_steps_taken=0,
-                          rejected_steps=0)
+                          rejected_steps=0, rkey=jax.random.key(seed))
             return ms
 
-        def apply_func(k, ms):
+        def apply_func(ms):
             new_X = ms.X.copy()
+            k = ms.rkey
             proposal_ratio = 1.0
             for propose in propose_funcs:
                 k, subkey = jax.random.split(k)
@@ -61,24 +65,25 @@ class _MCJaxInfo(JaxOptimizerInfo):
 
             def downward_step_new_best():
                 return ms._replace(
-                    downward_steps_taken=ms.downward_steps_taken + 1,
+                    downward_steps_taken=ms.downward_steps_taken + 1, rkey=k,
                     # new (score,X) should replace best
                     score=new_score, best_score=new_score,
                     X=new_X, best_X=new_X)
 
             def downward_step_not_best():
                 return ms._replace(
-                    score=new_score, X=new_X,
+                    score=new_score, X=new_X, rkey=k,
                     downward_steps_taken=ms.downward_steps_taken + 1)
 
             def upward_step():
                 return ms._replace(
-                    score=new_score, X=new_X,
+                    score=new_score, X=new_X, rkey=k,
                     upward_steps_taken=ms.upward_steps_taken + 1)
 
             def reject_step():
                 # Keep X and score from previous step
-                return ms._replace(rejected_steps=ms.rejected_steps + 1)
+                return ms._replace(rejected_steps=ms.rejected_steps + 1,
+                                   rkey=k)
 
             def metrop_step():
                 diff = new_score - ms.score
@@ -132,23 +137,17 @@ def _mc_optimize(mc, max_steps):
     inner_steps = jopt.inner_steps
     ji = mc._get_jax()
     init_func = jax.jit(ji.init_func)
+    apply_func = jax.jit(
+        lambda X: jax.lax.fori_loop(0, inner_steps,
+                                    lambda i, X: ji.apply_func(X), X))
 
-    def run_n_mc_steps(k, mc_state):
-        def mc_step_with_key(i, kms):
-            k, mc_state = kms
-            k, subkey = jax.random.split(k)
-            return (k, ji.apply_func(subkey, mc_state))
-        return jax.lax.fori_loop(0, inner_steps, mc_step_with_key,
-                                 (k, mc_state))
-    apply_func = jax.jit(run_n_mc_steps)
-
-    mc_state = init_func(ji.get_model_state())
+    mc_state = init_func(ji.get_model_state(),
+                         seed=IMP.random_number_generator())
     m = mc.get_model()
     xyz = m.get_spheres_numpy()[0]
 
-    k = jax.random.key(IMP.random_number_generator())
     for _ in jopt.loop():
-        k, mc_state = apply_func(k, mc_state)
+        mc_state = apply_func(mc_state)
         # Resync IMP Model arrays with JAX
         xyz[:] = mc_state.X['xyz']
 
