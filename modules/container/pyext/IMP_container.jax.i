@@ -1,3 +1,10 @@
+%extend IMP::container::ListSingletonContainer {
+  %pythoncode %{
+    def _get_static_contents(self):
+        return self.get_contents()
+  %}
+}
+
 %extend IMP::container::ListPairContainer {
   %pythoncode %{
     def _get_static_contents(self):
@@ -5,17 +12,18 @@
   %}
 }
 
+%extend IMP::container::SingletonsRestraint {
+  %pythoncode %{
+    def _get_jax(self):
+        from . import _jax_util
+        return _jax_util._get_jax_container_restraint(self)
+  %}
+}
+
 %extend IMP::container::PairsRestraint {
   %pythoncode %{
     def _get_jax(self):
-        import jax.numpy as jnp
-        container = self.get_container().get_derived_object()
-        score = self.get_score_object().get_derived_object()
-        ji = score._get_jax()
-        score_jax = ji.score_func
-        indexes = container._get_static_contents()
-        def jax_pairs_restraint(X):
-            return jnp.sum(score_jax(X, indexes))
-        return self._wrap_jax(jax_pairs_restraint, keys=ji._keys)
+        from . import _jax_util
+        return _jax_util._get_jax_container_restraint(self)
   %}
 }

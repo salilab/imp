@@ -8,6 +8,18 @@ import IMP
 from IMP._jax_util import JaxOptimizerInfo
 
 
+def _get_jax_restraint(r):
+    """Return a JAX implementation for SingletonRestraint,
+       PairRestraint, etc."""
+    score = r.get_score_object().get_derived_object()
+    ji = score._get_jax()
+    score_jax = ji.score_func
+    indexes = jnp.array([r.get_index()])
+    def jax_restraint(X):
+        return jnp.sum(score_jax(X, indexes))
+    return r._wrap_jax(jax_restraint, keys=ji._keys)
+
+
 class _MCState(NamedTuple):
     """Track the state of a MonteCarlo optimization using JAX"""
 

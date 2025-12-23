@@ -2,7 +2,7 @@
  *  \file IMP/core/DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
@@ -62,9 +62,22 @@ class GenericDistanceToSingletonScore : public SingletonScore {
       Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
+
+  UF *get_unary_function() const { return f_; }
+  algebra::Vector3D get_point() const { return pt_; }
+
   IMP_SINGLETON_SCORE_METHODS(GenericDistanceToSingletonScore);
-  IMP_OBJECT_METHODS(GenericDistanceToSingletonScore);
-  ;
+  // We never instantiate the template except with UnaryFunction, so
+  // call this class plain 'DistanceToSingletonScore' to help out
+  // Python get_derived_object() (this is essentially the code that would
+  // be inserted by IMP_OBJECT_METHODS)
+  virtual std::string get_type_name() const override {
+    return "DistanceToSingletonScore";
+  }
+  virtual ::IMP::VersionInfo get_version_info() const override {
+    return ::IMP::VersionInfo(get_module_name(), get_module_version());
+  }
+  virtual ~GenericDistanceToSingletonScore() { IMP::Object::_on_destruction(); }
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

@@ -1,3 +1,29 @@
+%extend IMP::core::Harmonic {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        def score(dist, mean, k):
+            return 0.5 * k * (mean - dist) ** 2
+        return functools.partial(score, mean=self.get_mean(), k=self.get_k())
+  %}
+}
+
+%extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        import functools
+        def score(X, indexes, point, uf):
+            xyzs = X['xyz'][indexes]
+            drs = jnp.linalg.norm(xyzs - point, axis=1)
+            return uf(drs)
+        uf = self.get_unary_function().get_derived_object()
+        f = functools.partial(score, point=jnp.array(self.get_point()),
+                              uf=uf._get_jax())
+        return self._wrap_jax(f)
+  %}
+}
+
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
     def _get_jax(self):
@@ -44,17 +70,19 @@
   %}
 }
 
+%extend IMP::core::SingletonRestraint {
+  %pythoncode %{
+    def _get_jax(self):
+        from . import _jax_util
+        return _jax_util._get_jax_restraint(self)
+  %}
+}
+
 %extend IMP::core::PairRestraint {
   %pythoncode %{
     def _get_jax(self):
-        import jax.numpy as jnp
-        score = self.get_score_object().get_derived_object()
-        ji = score._get_jax()
-        score_jax = ji.score_func
-        indexes = jnp.array([self.get_index()])
-        def jax_pair_restraint(X):
-            return jnp.sum(score_jax(X, indexes))
-        return self._wrap_jax(jax_pair_restraint, keys=ji._keys)
+        from . import _jax_util
+        return _jax_util._get_jax_restraint(self)
   %}
 }
 

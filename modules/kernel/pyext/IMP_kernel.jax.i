@@ -64,6 +64,19 @@
   %}
 }
 
+%extend IMP::SingletonScore {
+  %pythoncode %{
+    def _wrap_jax(self, score_func, keys=None):
+        """See IMP::PairScore::_wrap_jax"""
+        from IMP._jax_util import JaxScoreInfo
+        return JaxScoreInfo(score_func=score_func, keys=keys)
+
+    def _get_jax(self):
+        """See IMP::PairScore::_get_jax"""
+        raise NotImplementedError(f"No JAX implementation for {self}")
+  %}
+}
+
 %extend IMP::ScoringFunction {
   %pythoncode %{
     def _get_jax(self):

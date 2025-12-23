@@ -1,7 +1,13 @@
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
 
 def make_score():
     m = IMP.Model()
@@ -33,6 +39,33 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(r)
         newr = pickle.loads(dump)
         self.assertAlmostEqual(newr.evaluate(False), 18.0, delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_container(self):
+        """Test JAX DistanceToSingletonScore in a container"""
+        m, p, s = make_score()
+        lsc = IMP.container.ListSingletonContainer(m)
+        lsc.add([p])
+        r = IMP.container.SingletonsRestraint(s, lsc)
+        sf = IMP.core.RestraintsScoringFunction([r])
+
+        ji = sf._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        # Compare JAX with IMP C++ implementation
+        self.assertAlmostEqual(j(X), sf.evaluate(False), delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_restraint(self):
+        """Test JAX DistanceToSingletonScore in a SingletonRestraint"""
+        m, p, s = make_score()
+        r = IMP.core.SingletonRestraint(m, s, p)
+
+        ji = r._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        # Compare JAX with IMP C++ implementation
+        self.assertAlmostEqual(j(X), r.evaluate(False), delta=0.01)
 
 
 if __name__ == '__main__':
