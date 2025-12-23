@@ -62,6 +62,12 @@ class Tests(IMP.test.TestCase):
         self.assertIs(type(new_cr), PythonRestraint)
         self.assertIs(new_cr, cr)
 
+    def test_get_jax(self):
+        """Test get_jax() on Restraint base class"""
+        m = IMP.Model()
+        cr = PythonRestraint(m)
+        self.assertRaises(NotImplementedError, cr._get_jax)
+
 
 if __name__ == '__main__':
     IMP.test.main()
