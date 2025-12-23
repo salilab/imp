@@ -4,6 +4,8 @@ import jax
 import jax.numpy as jnp
 from typing import NamedTuple
 import IMP
+from IMP._jax_util import JaxOptimizerInfo
+
 
 class _MCState(NamedTuple):
     """Track the state of a MonteCarlo optimization using JAX"""
@@ -24,12 +26,10 @@ class _MCState(NamedTuple):
     rejected_steps: int
 
 
-class _MCJaxInfo:
+class _MCJaxInfo(JaxOptimizerInfo):
     def __init__(self, mc):
-        self._mc = mc
-        self._sf = mc.get_scoring_function().get_derived_object()
-        ji = self._sf._get_jax()
-        score_func = ji.score_func
+        super().__init__(mc)
+        score_func = self.score_func
         propose_funcs = [mover.get_derived_object()._get_jax()
                          for mover in mc.movers]
         temperature = mc.get_kt()
@@ -91,12 +91,7 @@ class _MCJaxInfo:
                                 downward_step, metrop_step)
 
         self.init_func = init_func
-        self.score_func = ji.score_func
         self.apply_func = apply_func
-
-    def get_model_state(self):
-        ji = self._sf._get_jax()
-        return ji.get_model_state()
 
 
 def _sync_stats(imp_mc, jax_mc):

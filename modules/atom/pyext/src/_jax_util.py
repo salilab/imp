@@ -3,6 +3,8 @@ import jax.numpy as jnp
 import math
 import functools
 import IMP.atom
+from IMP._jax_util import JaxOptimizerInfo
+
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
 _deriv_to_acceleration = -4.1868e-4
@@ -25,13 +27,11 @@ def _propagate_velocities(X, indexes, mass, time_step):
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
 
-class _MDJaxInfo:
+class _MDJaxInfo(JaxOptimizerInfo):
     def __init__(self, md):
-        self._md = md
-        self._sf = md.get_scoring_function().get_derived_object()
-        ji = self._sf._get_jax()
+        super().__init__(md)
         indexes = md.get_simulation_particle_indexes()
-        deriv_func = jax.grad(ji.score_func)
+        deriv_func = jax.grad(self.score_func)
         time_step = md.get_maximum_time_step()
         velocity_cap = md.get_velocity_cap()
         # Would like to use math.isfinite here but it is not guaranteed
@@ -57,13 +57,11 @@ class _MDJaxInfo:
             return X
 
         self.init_func = init_func
-        self.score_func = ji.score_func
         self.apply_func = apply_func
 
     def get_model_state(self):
-        m = self._md.get_model()
-        ji = self._sf._get_jax()
-        X = ji.get_model_state()
+        X = super().get_model_state()
+        m = self._opt.get_model()
         X['mass'] = m.get_floats_numpy(IMP.atom.Mass.get_mass_key())
         X['linvel'] = jax.numpy.array(
             m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key()))

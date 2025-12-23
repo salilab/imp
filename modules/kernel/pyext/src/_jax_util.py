@@ -64,3 +64,35 @@ class JaxScoreInfo:
     def get_model_state(self, m):
         """Get Model data for the given Model as a tree of NumPy arrays, X"""
         return _get_model_state(m, self._keys)
+
+
+class JaxOptimizerInfo:
+    """Information about a JAX implementation of an Optimizer.
+
+       These objects are returned by Optimizer._get_jax(), and can be used
+       to scample a scoring function using JAX.
+
+       These public members are available:
+
+       `init_func`: a JAX function which, given a model state (see
+           get_model_state), creates and returns an initial optimizer state.
+           This may just be the model state, or may add scores and statistics
+           used by the optimizer.
+       `score_func`: a JAX function which, given the model state, returns
+           its score.
+       `apply_func`: a JAX function which, given an optimizer state, performs
+           one step of optimization and returns a new optimizer state.
+    """
+
+    def __init__(self, optimizer):
+        self._opt = optimizer
+        self._sf = optimizer.get_scoring_function().get_derived_object()
+        ji = self._sf._get_jax()
+        self.score_func = ji.score_func
+        # Subclasses will fill in init_func and apply_func
+
+    def get_model_state(self):
+        """Get Model data as a tree of NumPy arrays, X"""
+        # By default just return the ScoringFunction's model state
+        ji = self._sf._get_jax()
+        return ji.get_model_state()
