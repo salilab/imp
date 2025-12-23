@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def _harmonicfunc(val, mean, force_constant):
@@ -28,6 +32,24 @@ class Tests(IMP.test.TestCase):
             score, deriv = func.evaluate_with_derivative(val)
             scoreonly = func.evaluate(val)
             self.assertEqual(score, scoreonly)
+            self.assertAlmostEqual(expscore, score, delta=0.1)
+            self.assertAlmostEqual(expderiv, deriv, delta=0.1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test that JAX harmonic values are correct"""
+        force_constant = 100.0
+        mean = 10.0
+        func = IMP.core.Harmonic(mean, force_constant)
+        func.set_was_used(True)
+        score_func = func._get_jax()
+        score_f = jax.jit(score_func)
+        deriv_f = jax.jit(jax.grad(score_func))
+        for i in range(15):
+            val = 5.0 + i
+            expscore, expderiv = _harmonicfunc(val, mean, force_constant)
+            score = score_f(val)
+            deriv = deriv_f(val)
             self.assertAlmostEqual(expscore, score, delta=0.1)
             self.assertAlmostEqual(expderiv, deriv, delta=0.1)
 
