@@ -4,6 +4,10 @@ import IMP.algebra
 import IMP.core
 import IMP.example
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -21,6 +25,19 @@ class Tests(IMP.test.TestCase):
             self.assertIn("UnaryFunction", str(u))
             self.assertIn("UnaryFunction", repr(u))
             self.assertIn("example", u.get_version_info().get_module())
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation"""
+        u = IMP.example.PythonExampleUnaryFunction(2.0, 10.0)
+        f = u._get_jax()
+        score_f = jax.jit(f)
+        deriv_f = jax.jit(jax.grad(f))
+        dp = u.evaluate_with_derivative(5.0)
+        score = score_f(5.0)
+        deriv = deriv_f(5.0)
+        self.assertAlmostEqual(score, dp[0], delta=1e-3)
+        self.assertAlmostEqual(deriv, dp[1], delta=1e-3)
 
     def test_combine(self):
         """Test combining example UnaryFunction with a PairScore"""
