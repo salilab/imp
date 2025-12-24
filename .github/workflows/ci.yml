@@ -8,12 +8,14 @@ jobs:
     strategy:
       matrix:
         include:
-        - os: ubuntu-22.04
-          python-version: "3.10"
+        - os: ubuntu-24.04
+          python-version: "3.12"
           cxxflags: "--coverage"
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
+          # Newer versions of jax need numpy 2 (Ubuntu 24.04 has numpy 1)
+          pip_extra_packages: jax==0.7.1
           show_build: Release
           cmake_build: Release
           max_checks: USAGE
@@ -24,8 +26,6 @@ jobs:
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
-          # Newer versions of jax need numpy 2 (Ubuntu 24.04 has numpy 1)
-          pip_extra_packages: jax==0.7.1
           show_build: Debug
           cmake_build: Debug
           max_checks: INTERNAL
