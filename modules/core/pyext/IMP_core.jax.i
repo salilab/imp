@@ -2,8 +2,8 @@
   %pythoncode %{
     def _get_jax(self):
         import functools
-        def score(dist, mean, k):
-            return 0.5 * k * (mean - dist) ** 2
+        def score(val, mean, k):
+            return 0.5 * k * (mean - val) ** 2
         return functools.partial(score, mean=self.get_mean(), k=self.get_k())
   %}
 }
@@ -13,8 +13,8 @@
     def _get_jax(self):
         import functools
         import jax.lax
-        def score(dist, mean, k):
-            return 0.5 * k * jax.lax.min(mean - dist, 0.0) ** 2
+        def score(val, mean, k):
+            return 0.5 * k * jax.lax.min(mean - val, 0.0) ** 2
         return functools.partial(score, mean=self.get_mean(), k=self.get_k())
   %}
 }
@@ -24,9 +24,20 @@
     def _get_jax(self):
         import functools
         import jax.lax
-        def score(dist, mean, k):
-            return 0.5 * k * jax.lax.max(mean - dist, 0.0) ** 2
+        def score(val, mean, k):
+            return 0.5 * k * jax.lax.max(mean - val, 0.0) ** 2
         return functools.partial(score, mean=self.get_mean(), k=self.get_k())
+  %}
+}
+
+%extend IMP::core::Linear {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        def score(val, slope, offset):
+            return (val - offset) * slope
+        return functools.partial(score, slope=self.get_slope(),
+                                 offset=self.get_offset())
   %}
 }
 

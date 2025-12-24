@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Linear.h    \brief A linear function.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_LINEAR_H
@@ -27,7 +27,11 @@ class Linear : public UnaryFunction {
 
   void set_slope(double f) { slope_ = f; }
 
+  double get_slope() const { return slope_; }
+
   void set_offset(double f) { offset_ = f; }
+
+  double get_offset() const { return offset_; }
 
   virtual double evaluate(double feature) const override {
     return (feature - offset_) * slope_;

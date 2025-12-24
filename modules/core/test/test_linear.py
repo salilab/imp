@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -19,6 +23,24 @@ class Tests(IMP.test.TestCase):
                     scoreonly = func.evaluate(val)
                     score, deriv = func.evaluate_with_derivative(val)
                     self.assertEqual(score, scoreonly)
+                    self.assertAlmostEqual(score, (val - offset) * slope,
+                                           delta=0.001)
+                    self.assertAlmostEqual(deriv, slope, delta=0.001)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test that JAX linear values are correct"""
+        for offset in (0.0, -1.0):
+            for slope in (0.0, -5.0, 3.5):
+                func = IMP.core.Linear(offset, slope)
+                func.set_was_used(True)
+                f = func._get_jax()
+                score_f = jax.jit(f)
+                deriv_f = jax.jit(jax.grad(f))
+                for i in range(15):
+                    val = -10.0 + 3.5 * i
+                    score = score_f(val)
+                    deriv = deriv_f(val)
                     self.assertAlmostEqual(score, (val - offset) * slope,
                                            delta=0.001)
                     self.assertAlmostEqual(deriv, slope, delta=0.001)
