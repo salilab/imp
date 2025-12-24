@@ -77,6 +77,18 @@
   %}
 }
 
+%extend IMP::UnaryFunction {
+  %pythoncode %{
+    def _get_jax(self):
+        """Return a JAX implementation of this UnaryFunction.
+           Implement this method in a UnaryFunction subclass to provide
+           an equivalent function using [JAX](https://docs.jax.dev/)
+           that scores the provided feature value.
+        """
+        raise NotImplementedError(f"No JAX implementation for {self}")
+  %}
+}
+
 %extend IMP::ScoringFunction {
   %pythoncode %{
     def _get_jax(self):
