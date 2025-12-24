@@ -9,7 +9,7 @@
                    a single argument (the current model state) and returns
                    the score of the restraint.
             @param keys If given, a set of IMP::Key objects describing Model
-                  attributes (other than xyz and radius) that the restraint
+                   attributes (other than xyz and radius) that the restraint
                    uses. For example, a restraint that uses electrostatic charge
                    would pass IMP::atom::Charged::get_charge_key() here.
         """
