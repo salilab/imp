@@ -65,7 +65,7 @@ class _MDJaxInfo(JaxOptimizerInfo):
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
             _propagate_velocities(X, indexes, mass, time_step)
-            return ms._replace(X=X, steps=ms.steps + 1)
+            return ms._replace(steps=ms.steps + 1)
 
         self.init_func = init_func
         self.apply_func = apply_func
