@@ -155,16 +155,18 @@ class Tests(IMP.test.TestCase):
         X = ji.get_model_state()
 
         jit_init_func = jax.jit(ji.init_func)
-        X = jit_init_func(X)
+        md_state = jit_init_func(X)
 
         def run_opt(X, apply_func, nsteps):
             return jax.lax.fori_loop(0, nsteps, apply_func, X)
 
         jit_apply_func = jax.jit(functools.partial(
             run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=50))
-        X = jit_apply_func(X)
+        md_state = jit_apply_func(md_state)
+        self.assertEqual(md_state.steps, 50)
         # Final coordinates should match those from C++
-        self.assertLess((final_cpp - X['xyz'][0]).get_magnitude(), 1e-3)
+        self.assertLess((final_cpp - md_state.X['xyz'][0]).get_magnitude(),
+                        1e-3)
 
         # Run with JAX code, high level
         make_md()

@@ -3,6 +3,7 @@ import jax.numpy as jnp
 import math
 import functools
 import IMP.atom
+from typing import NamedTuple
 from IMP._jax_util import JaxOptimizerInfo
 
 
@@ -27,6 +28,15 @@ def _propagate_velocities(X, indexes, mass, time_step):
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
 
+class _MDState(NamedTuple):
+    """Track the state of a MolecularDynamics optimization using JAX"""
+
+    # Current model state
+    X: dict
+    # Number of steps taken
+    steps: int
+
+
 class _MDJaxInfo(JaxOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
@@ -43,9 +53,10 @@ class _MDJaxInfo(JaxOptimizerInfo):
 
         def init_func(X):
             X["xyz'"] = deriv_func(X)["xyz"]
-            return X
+            return _MDState(X=X, steps=0)
 
-        def apply_func(X):
+        def apply_func(ms):
+            X = ms.X
             mass = X['mass'][indexes]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
             _propagate_coordinates(X, indexes, mass, time_step,
@@ -54,7 +65,7 @@ class _MDJaxInfo(JaxOptimizerInfo):
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
             _propagate_velocities(X, indexes, mass, time_step)
-            return X
+            return ms._replace(X=X, steps=ms.steps + 1)
 
         self.init_func = init_func
         self.apply_func = apply_func
@@ -81,16 +92,17 @@ def _md_optimize(md, max_steps):
         lambda X: jax.lax.fori_loop(0, inner_steps,
                                     lambda i, X: ji.apply_func(X), X))
 
-    X = init_func(ji.get_model_state())
+    md_state = init_func(ji.get_model_state())
     m = md.get_model()
     linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())
     xyz = m.get_spheres_numpy()[0]
     dxyz = m.get_sphere_derivatives_numpy()[0]
 
-    for i in jopt.loop():
-        X = apply_func(X)
+    for _ in jopt.loop():
+        md_state = apply_func(md_state)
         # Resync IMP Model arrays with JAX
+        X = md_state.X
         linvel[:] = X['linvel']
         xyz[:] = X['xyz']
         dxyz[:] = X["xyz'"]
-    return score_func(X)
+    return score_func(md_state.X)
