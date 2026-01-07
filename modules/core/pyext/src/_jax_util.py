@@ -124,6 +124,13 @@ class _JAXOptimizer:
     """Helper class to run an IMP Optimizer using JAX."""
     def __init__(self, opt, max_steps):
         self.opt = opt
+
+        # todo: sort the OptimizerStates by inputs/outputs
+        for s in opt.optimizer_states:
+            if s._get_jax() is not None:
+                raise NotImplementedError(
+                    "JAX OptimizerStates are not yet supported")
+
         # Get the number of steps that we can run in JAX, before having to
         # copy JAX arrays back to the IMP Model
         self.inner_steps = functools.reduce(

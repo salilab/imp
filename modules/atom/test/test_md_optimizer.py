@@ -67,6 +67,11 @@ class WriteTrajState(IMP.OptimizerState):
         super().__init__(m, "WriteTrajState%1%")
         self.traj = traj
 
+    def _get_jax(self):
+        # No explicit JAX implementation; JAX data will be synced back to
+        # the IMP.Model before calling do_update()
+        return None
+
     def do_update(self, call):
         model = self.get_optimizer().get_model()
         self.traj.append([(model.get_attribute(xkey, p),

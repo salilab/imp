@@ -95,3 +95,27 @@
       raise NotImplementedError(f"No JAX implementation for {self}")
   %}
 }
+
+%extend IMP::OptimizerState {
+  %pythoncode %{
+    def _get_jax(self):
+        """Add JAX support for this OptimizerState.
+
+           Each OptimizerState must explicitly support how it is going to
+           be called when the Optimizer is run via JAX.
+
+           OptimizerStates can run as traditional IMP CPU code
+           on the IMP Model object, in which case None should be returned here.
+           The Optimizer will sync any necessary information from JAX back
+           with the IMP Model before calling the OptimizerState. However,
+           the OptimizerState is not permitted to modify the Model; any
+           changes will not be propagated back to the Optimizer.
+           (For example, a thermostat which tries to change particle
+           velocities will not function correctly.)
+
+           Alternatively, a pure JAX implememtation can be provided (not
+           yet supported).
+        """
+        raise NotImplementedError(f"No JAX implementation for {self}")
+  %}
+}
