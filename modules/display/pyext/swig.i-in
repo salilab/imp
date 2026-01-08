@@ -59,6 +59,8 @@ IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 %include "IMP/display/PymolWriter.h"
 %include "IMP/display/restraint_geometry.h"
 
+%include "IMP_display.jax.i"
+
 %pythoncode %{
 from . import _pivy
 PivyWriter= _pivy.get_writer(Writer)

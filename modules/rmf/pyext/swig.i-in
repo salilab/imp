@@ -24,6 +24,8 @@ IMP_SWIG_OBJECT(IMP::rmf, HierarchyLoadLink, HierarchyLoadLinks);
 %include "IMP/rmf/HierarchyLoadLink.h"
 %include "IMP/rmf/HierarchySaveLink.h"
 
+%include "IMP_rmf.jax.i"
+
 %pythoncode %{
 suffixes = [".rmf", ".rmfz"]
 %}
