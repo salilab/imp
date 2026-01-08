@@ -21,4 +21,4 @@ jobs:
     - name: Test
       run: |
         pip install flake8
-        flake8 tools --extend-exclude '*/test/*,*/examples/*,*/data/*,*/utility/*,*/dependency/*,dependencies.py,setup_git.py,*/pmi1/*,*/dev_tools/*,*/benchmark/*,*/scripts/*,components/*'
+        flake8 . --extend-exclude '*/test/*,*/examples/*,*/data/*,*/utility/*,*/dependency/*,dependencies.py,setup_git.py,*/pmi1/*,*/dev_tools/*,*/benchmark/*,*/scripts/*,*/broken-examples/*,components/*'
