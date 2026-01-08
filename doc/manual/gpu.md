@@ -21,8 +21,9 @@ The JAX code is still in active development and many caveats apply:
    IMP::OptimizerState classes should.
  - There is currently no PMI support for JAX.
 
-To add JAX support for a particular IMP::Restraint, IMP::PairScore or
-IMP::core::MonteCarloMover, implement the `_get_jax()` method.
+To add JAX support for a particular IMP::Restraint, IMP::PairScore,
+IMP::core::MonteCarloMover, or IMP::OptimizerState,
+implement the `_get_jax()` method.
 
 Note that the JAX code will also run on a CPU. In some circumstances the
 JAX code will run faster than the native %IMP C++ code on a CPU, so it may
