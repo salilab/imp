@@ -1,8 +1,8 @@
 /**
  *  \file IMP/core/PeriodicOptimizerState.h
- *  \brief Angle restraint between three particles.
+ *  \brief Shared optimizer state.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,8 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/OptimizerState.h>
+
+IMPCORE_DEPRECATED_HEADER(2.24, "Use IMP/OptimizerState.h instead")
 
 IMPCORE_BEGIN_NAMESPACE
 
