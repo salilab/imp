@@ -1,6 +1,6 @@
 Source: rmf
 Priority: optional
-Maintainer: Ben Webb <ben@salilab.org>
+Maintainer: Ben Webb <benmwebb@gmail.com>
 Build-Depends: debhelper-compat (= 13), cmake, swig, libboost-filesystem-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-thread-dev, libhdf5-dev, python3-dev, python3-numpy
 Standards-Version: 4.6.2
 Section: libs

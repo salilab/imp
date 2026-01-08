@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }} / ${{ matrix.build }}${{ matrix.name_with }}"
     strategy:
       fail-fast: false
       matrix:
@@ -16,13 +16,15 @@ jobs:
           linkflags: '--coverage'
           tests: RMF
           build: Debug
+          name_with: ''
         - os: ubuntu-latest
-          python-version: 3.9
+          python-version: 3.13
           install: ''
           flags: '--coverage'
           linkflags: '--coverage'
           tests: RMF
           build: Release
+          name_with: ''
         - os: ubuntu-latest
           python-version: 3.9
           install: 'libhdf5-dev liblog4cxx-dev'
@@ -30,6 +32,7 @@ jobs:
           linkflags: '--coverage'
           tests: RMF
           build: Debug
+          name_with: ', with HDF5'
         - os: macos-latest
           python-version: 3.9
           install: ''
@@ -37,6 +40,7 @@ jobs:
           linkflags: '--coverage'
           tests: RMF
           build: Release
+          name_with: ''
         - os: windows-latest
           python-version: 3.9
           install: ''
@@ -44,6 +48,7 @@ jobs:
           linkflags: ''
           tests: RMF
           build: Release
+          name_with: ''
     runs-on: ${{ matrix.os }}
 
     steps:

@@ -21,7 +21,7 @@ you to open models from the command line. You have to launch VMD and then do
 VMD doesn't seem to support 64 bit builds on MacOS (at least no usable
 pre-built ones are provided). By default, RMF is built 64 bit, and so
 the plugin will not work. To build a 32 bit version with
-[HomeBrew](http://brew.sh) do
+[HomeBrew](https://brew.sh) do
 - build `szip`, `hdf5`, `log4cxx` and `boost` with the `--universal` flag
   (you have to uninstall them first).
 - configure RMF with `-DCMAKE_OSX_ARCHITECTURES=i386`
