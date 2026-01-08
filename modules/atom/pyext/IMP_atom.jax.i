@@ -63,3 +63,25 @@
         return self._wrap_jax(jax_pair_score, keys=[Charged.get_charge_key()])
   %}
 }
+
+%extend IMP::atom::VelocityScalingOptimizerState {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.lax
+        import jax.numpy as jnp
+        temperature = self.get_temperature()
+
+        def scale_velocities(md, tkinetic):
+            scale = jnp.sqrt(temperature / tkinetic)
+            linvel = md.X['linvel'].at[md.simulation_indexes]
+            md.X['linvel'] = linvel.multiply(scale)
+            return md
+
+        def apply_func(md):
+            ekinetic = md.get_kinetic_energy()
+            tkinetic = md.get_kinetic_temperature(ekinetic)
+            return jax.lax.cond(tkinetic > 1e-8, scale_velocities,
+                                lambda md, tk: md, md, tkinetic)
+        return self._wrap_jax(lambda x: x, apply_func)
+  %}
+}

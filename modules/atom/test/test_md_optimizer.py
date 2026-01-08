@@ -369,6 +369,21 @@ class Tests(IMP.test.TestCase):
         scaler.rescale_velocities()
         self._check_temperature(50.0, 0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rescaling(self):
+        """Test JAX thermostatting by velocity rescaling"""
+        self.make_model()
+        # With strength 0 this is a "do-nothing" restraint
+        r = XTransRestraint(self.model, 0.0)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        self.md.set_scoring_function(sf)
+        self.md.assign_velocities(100.0)
+        scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
+                                                        self.particles, 298.0)
+        self.md.add_optimizer_state(scaler)
+        self.md._optimize_jax(10)
+        self._check_temperature(298.0, 0.1)
+
     def test_linear_velocity_numpy(self):
         """Test access to linear velocities from NumPy"""
         self.make_model()
