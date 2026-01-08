@@ -37,14 +37,37 @@ class _MDState(NamedTuple):
     rkey: jax.Array
     # Any state used by OptimizerStates
     optimizer_states: dict
+    # Indexes of all particles subject to MD
+    simulation_indexes: jax.Array
+    # Number of degrees of freedom in the system
+    degrees_of_freedom: int
+    # Time between integrator steps
+    time_step: float
+
+    def get_kinetic_energy(self):
+        """Return the current kinetic energy of the system, in kcal/mol"""
+        # Conversion factor to get energy in kcal/mol from velocities
+        # in A/fs and mass in g/mol
+        conversion = 1.0 / 4.1868e-4
+
+        indexes = self.simulation_indexes
+        velocity = self.X['linvel'][indexes]
+        mass = self.X['mass'][indexes]
+        return 0.5 * conversion * jnp.sum(
+            mass * jnp.sum(jnp.square(velocity), axis=1))
+
+    def get_kinetic_temperature(self, ekinetic):
+        """Return the current kinetic temperature of the system"""
+        # E = (n/2)kT  n=degrees of freedom, k = Boltzmann constant
+        # Boltzmann constant, in kcal/mol
+        boltzmann = 8.31441 / 4186.8
+        return 2.0 * ekinetic / (self.degrees_of_freedom * boltzmann)
 
 
 class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
-        indexes = md.get_simulation_particle_indexes()
         deriv_func = jax.grad(self.score_func)
-        time_step = md.get_maximum_time_step()
         velocity_cap = md.get_velocity_cap()
         # Would like to use math.isfinite here but it is not guaranteed
         # that a C++ "infinite" value is also considered to be math.inf
@@ -57,22 +80,27 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
 
         def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]
-            s = _MDState(X=X, steps=0, optimizer_states={}, rkey=key)
+            s = _MDState(
+                X=X, steps=0, optimizer_states={}, rkey=key,
+                simulation_indexes=md.get_simulation_particle_indexes(),
+                degrees_of_freedom=md.get_degrees_of_freedom(),
+                time_step = md.get_maximum_time_step())
             for js in jax_optstates:
                 s = js.init_func(s)
             return s
 
         def apply_func(ms):
             X = ms.X
+            indexes = ms.simulation_indexes
             steps = ms.steps + 1
             mass = X['mass'][indexes]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
-            _propagate_coordinates(X, indexes, mass, time_step,
+            _propagate_coordinates(X, indexes, mass, ms.time_step,
                                    velocity_cap)
             # Get new derivatives at t+(delta t)
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
-            _propagate_velocities(X, indexes, mass, time_step)
+            _propagate_velocities(X, indexes, mass, ms.time_step)
             ms = ms._replace(steps=steps)
             for js in jax_optstates:
                 ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
@@ -81,6 +109,9 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
 
         self.init_func = init_func
         self.apply_func = apply_func
+
+        # Force MolecularDynamics to create linvel for all particles
+        indexes = md.get_simulation_particle_indexes()
 
     def get_model_state(self):
         X = super().get_model_state()

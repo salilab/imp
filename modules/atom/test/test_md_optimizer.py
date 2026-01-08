@@ -168,6 +168,8 @@ class Tests(IMP.test.TestCase):
         make_md()
         self.md.optimize(50)
         final_cpp = IMP.core.XYZ(self.particles[0]).get_coordinates()
+        final_ke = self.md.get_kinetic_energy()
+        final_temp = self.md.get_kinetic_temperature(final_ke)
 
         # Run with JAX code, low level
         make_md()
@@ -184,9 +186,16 @@ class Tests(IMP.test.TestCase):
             run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=50))
         md_state = jit_apply_func(md_state)
         self.assertEqual(md_state.steps, 50)
+        self.assertAlmostEqual(md_state.time_step,
+                               self.md.get_maximum_time_step(), delta=0.1)
         # Final coordinates should match those from C++
         self.assertLess((final_cpp - md_state.X['xyz'][0]).get_magnitude(),
                         1e-3)
+        # Final kinetic energy and temperature should match that from C++
+        ke = md_state.get_kinetic_energy()
+        self.assertAlmostEqual(ke, final_ke, delta=0.1)
+        self.assertAlmostEqual(md_state.get_kinetic_temperature(ke),
+                               final_temp, delta=2.0)
 
         # Run with JAX code, high level
         make_md()

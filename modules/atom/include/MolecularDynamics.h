@@ -133,6 +133,12 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
   /** If velocities are not capped, infinity is returned */
   Float get_velocity_cap() const { return velocity_cap_; }
 
+  //! Get number of degrees of freedom in the system
+  int get_degrees_of_freedom() {
+    setup_degrees_of_freedom(get_simulation_particle_indexes());
+    return degrees_of_freedom_;
+  }
+
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
   virtual void setup(const ParticleIndexes &ps) override;
