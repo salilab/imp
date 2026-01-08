@@ -19,7 +19,7 @@ def _get_model_state(m, keys):
        they may need to copied back to IMP). Optimizers may add more keys
        to this dict to track their own state."""
     xyz, r = m.get_spheres_numpy()
-    X = { "xyz": xyz, "r": r }
+    X = {"xyz": xyz, "r": r}
     for k in keys:
         X[k.get_string()] = m.get_numpy(k)
     return X

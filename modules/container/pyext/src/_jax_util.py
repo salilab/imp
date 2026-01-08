@@ -9,6 +9,7 @@ def _get_jax_container_restraint(r):
     ji = score._get_jax()
     score_jax = ji.score_func
     indexes = container._get_static_contents()
+
     def jax_restraint(X):
         return jnp.sum(score_jax(X, indexes))
     return r._wrap_jax(jax_restraint, keys=ji._keys)

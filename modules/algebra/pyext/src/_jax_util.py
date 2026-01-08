@@ -3,6 +3,7 @@ import jax.lax
 import jax.numpy as jnp
 import jax.random
 
+
 def get_random_vector_in_3d_sphere(key, radius, shape=1):
     """Return a random vector uniformly distributed in a 3-dimensional
        sphere of given radius at the origin"""

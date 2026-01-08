@@ -1,7 +1,5 @@
 import jax
 import jax.numpy as jnp
-import math
-import functools
 import IMP.atom
 from typing import NamedTuple
 import IMP._jax_util

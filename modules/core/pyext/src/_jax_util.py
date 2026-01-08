@@ -14,6 +14,7 @@ def _get_jax_restraint(r):
     ji = score._get_jax()
     score_jax = ji.score_func
     indexes = jnp.array([r.get_index()])
+
     def jax_restraint(X):
         return jnp.sum(score_jax(X, indexes))
     return r._wrap_jax(jax_restraint, keys=ji._keys)
@@ -95,7 +96,8 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
                     downward_steps_taken=ms.downward_steps_taken + 1, rkey=k,
                     # new (score,X) should replace best
                     score=new_score, best_score=new_score,
-                    X=new_X, best_X=new_X, accepted_steps=ms.accepted_steps + 1)
+                    X=new_X, best_X=new_X,
+                    accepted_steps=ms.accepted_steps + 1)
                 return update_states(ms)
 
             def downward_step_not_best(ms):
