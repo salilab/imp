@@ -53,7 +53,8 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
                          for mover in mc.movers]
         temperature = mc.get_kt()
         return_best = mc.get_return_best()
-        jax_optstates = [x._get_jax() for x in mc.optimizer_states]
+        jax_optstates = [x.get_derived_object()._get_jax()
+                         for x in mc.optimizer_states]
         jax_optstates = [x for x in jax_optstates if x is not None]
 
         def init_func(X, key):
@@ -150,7 +151,7 @@ class _JAXOptimizer:
         # Get all OptimizerStates that have no explicit JAX implementation
         # todo: sort the OptimizerStates by inputs/outputs
         self._imp_opt_states = [s for s in opt.optimizer_states
-                                if s._get_jax() is None]
+                                if s.get_derived_object()._get_jax() is None]
 
         # Get the number of steps that we can run in JAX, before having to
         # copy JAX arrays back to the IMP Model for OptimizerStates

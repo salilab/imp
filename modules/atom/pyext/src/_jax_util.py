@@ -75,7 +75,8 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
             velocity_cap = jnp.array([velocity_cap] * 3)
         else:
             velocity_cap = None
-        jax_optstates = [x._get_jax() for x in md.optimizer_states]
+        jax_optstates = [x.get_derived_object()._get_jax()
+                         for x in md.optimizer_states]
         jax_optstates = [x for x in jax_optstates if x is not None]
 
         def init_func(X, key):
