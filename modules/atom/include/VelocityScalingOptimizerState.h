@@ -47,8 +47,6 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  private:
   Particles pis_;
   Float temperature_;
-  unsigned skip_steps_;
-  unsigned call_number_;
 };
 
 IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
