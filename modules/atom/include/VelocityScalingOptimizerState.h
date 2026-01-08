@@ -34,6 +34,8 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   //! Set the temperature to use.
   void set_temperature(Float temperature) { temperature_ = temperature; }
 
+  Float get_temperature() const { return temperature_; }
+
   //! Rescale the velocities now
   void rescale_velocities() const;
 
