@@ -5,6 +5,7 @@ import IMP.core
 import IMP.container
 try:
     import jax
+    import jax.random
     import jax.numpy as jnp
 except ImportError:
     jax = None
@@ -268,7 +269,7 @@ class Tests(IMP.test.TestCase):
         ji = mc._get_jax()
         X = ji.get_model_state()
         f = jax.jit(ji.init_func)
-        mc_state = f(X, seed=42)
+        mc_state = f(X, key=jax.random.key(42))
 
         # Create JAX function to run 2000 steps of MC
         j = jax.jit(
@@ -319,7 +320,7 @@ class Tests(IMP.test.TestCase):
         ji = mc._get_jax()
         X = ji.get_model_state()
         f = jax.jit(ji.init_func)
-        mc_state = f(X, seed=42)
+        mc_state = f(X, key=jax.random.key(42))
         j = jax.jit(
             lambda X: jax.lax.fori_loop(0, 2000,
                                         lambda i, X: ji.apply_func(X), X))

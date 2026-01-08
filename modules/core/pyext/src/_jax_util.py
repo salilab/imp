@@ -4,8 +4,7 @@ import jax
 import jax.random
 import jax.numpy as jnp
 from typing import NamedTuple
-import IMP
-from IMP._jax_util import JaxOptimizerInfo
+import IMP._jax_util
 
 
 def _get_jax_restraint(r):
@@ -45,7 +44,7 @@ class _MCState(NamedTuple):
     optimizer_states: dict
 
 
-class _MCJaxInfo(JaxOptimizerInfo):
+class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
     def __init__(self, mc):
         super().__init__(mc)
         score_func = self.score_func
@@ -56,12 +55,12 @@ class _MCJaxInfo(JaxOptimizerInfo):
         jax_optstates = [x._get_jax() for x in mc.optimizer_states]
         jax_optstates = [x for x in jax_optstates if x is not None]
 
-        def init_func(X, seed):
+        def init_func(X, key):
             score = score_func(X)
             ms = _MCState(score=score, best_score=score, X=X, best_X=X,
                           accepted_steps=0, downward_steps_taken=0,
                           upward_steps_taken=0, rejected_steps=0,
-                          optimizer_states={}, rkey=jax.random.key(seed))
+                          optimizer_states={}, rkey=key)
             for js in jax_optstates:
                 ms = js.init_func(ms)
             return ms
@@ -182,7 +181,8 @@ def _mc_optimize(mc, max_steps):
                                     lambda i, X: ji.apply_func(X), X))
 
     mc_state = init_func(ji.get_model_state(),
-                         seed=IMP.random_number_generator())
+                         key=IMP._jax_util.get_random_key())
+
     m = mc.get_model()
     xyz = m.get_spheres_numpy()[0]
 

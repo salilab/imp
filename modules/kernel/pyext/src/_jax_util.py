@@ -1,3 +1,12 @@
+import jax.random
+import IMP
+
+
+def get_random_key():
+    """Get a new JAX random key seeded from IMP's RNG"""
+    return jax.random.key(IMP.random_number_generator())
+
+
 def _get_model_state(m, keys):
     """Convert an IMP Model object into a "model state" object suitable
        for use in JAX code. This is a simple dict. The dict keys are particle

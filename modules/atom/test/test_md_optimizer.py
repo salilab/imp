@@ -5,6 +5,7 @@ import IMP.atom
 import functools
 try:
     import jax
+    import jax.random
 except ImportError:
     jax = None
 
@@ -174,7 +175,7 @@ class Tests(IMP.test.TestCase):
         X = ji.get_model_state()
 
         jit_init_func = jax.jit(ji.init_func)
-        md_state = jit_init_func(X, seed=42)
+        md_state = jit_init_func(X, key=jax.random.key(42))
 
         def run_opt(X, apply_func, nsteps):
             return jax.lax.fori_loop(0, nsteps, apply_func, X)
@@ -408,7 +409,7 @@ class Tests(IMP.test.TestCase):
         ji = self.md._get_jax()
         X = ji.get_model_state()
         jit_init_func = jax.jit(ji.init_func)
-        md_state = jit_init_func(X, seed=42)
+        md_state = jit_init_func(X, key=jax.random.key(42))
 
         jit_apply_func = jax.jit(ji.apply_func)
         md_state = jit_apply_func(md_state)

@@ -1,12 +1,10 @@
 import jax
 import jax.numpy as jnp
-import jax.random
 import math
 import functools
 import IMP.atom
 from typing import NamedTuple
-import IMP
-from IMP._jax_util import JaxOptimizerInfo
+import IMP._jax_util
 
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
@@ -43,7 +41,7 @@ class _MDState(NamedTuple):
     optimizer_states: dict
 
 
-class _MDJaxInfo(JaxOptimizerInfo):
+class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
         indexes = md.get_simulation_particle_indexes()
@@ -59,10 +57,9 @@ class _MDJaxInfo(JaxOptimizerInfo):
         jax_optstates = [x._get_jax() for x in md.optimizer_states]
         jax_optstates = [x for x in jax_optstates if x is not None]
 
-        def init_func(X, seed):
+        def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]
-            s = _MDState(X=X, steps=0, optimizer_states={},
-                         rkey=jax.random.key(seed))
+            s = _MDState(X=X, steps=0, optimizer_states={}, rkey=key)
             for js in jax_optstates:
                 s = js.init_func(s)
             return s
@@ -110,7 +107,7 @@ def _md_optimize(md, max_steps):
                                     lambda i, X: ji.apply_func(X), X))
 
     md_state = init_func(ji.get_model_state(),
-                         seed=IMP.random_number_generator())
+                         key=IMP._jax_util.get_random_key())
     m = md.get_model()
     linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())
     xyz = m.get_spheres_numpy()[0]
