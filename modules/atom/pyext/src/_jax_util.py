@@ -84,7 +84,7 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
                 X=X, steps=0, optimizer_states={}, rkey=key,
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
-                time_step = md.get_maximum_time_step())
+                time_step=md.get_maximum_time_step())
             for js in jax_optstates:
                 s = js.init_func(s)
             return s
@@ -111,7 +111,7 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
         self.apply_func = apply_func
 
         # Force MolecularDynamics to create linvel for all particles
-        indexes = md.get_simulation_particle_indexes()
+        _ = md.get_simulation_particle_indexes()
 
     def get_model_state(self):
         X = super().get_model_state()
