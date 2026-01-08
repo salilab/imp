@@ -113,9 +113,24 @@
            (For example, a thermostat which tries to change particle
            velocities will not function correctly.)
 
-           Alternatively, a pure JAX implememtation can be provided (not
-           yet supported).
+           Alternatively, a pure JAX implememtation can be provided.
+           See _wrap_jax for more information.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
+
+    def _wrap_jax(self, init_func, apply_func):
+        """Create the return value for _get_jax.
+           Use this method in _get_jax() to wrap the JAX function
+           with other OptimizerState-specific information.
+
+           @param init_func a JAX function which, given an optimizer state,
+                  does any necessary setup and returns a (possibly modified)
+                  optimizer state.
+           @param apply_func a JAX function which, given an optimizer state,
+                  does the JAX equivalent of do_update() and returns a new
+                  optimizer state.
+        """
+        from IMP._jax_util import JaxOptimizerStateInfo
+        return JaxOptimizerStateInfo(self, init_func, apply_func)
   %}
 }

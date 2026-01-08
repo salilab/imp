@@ -10,6 +10,25 @@ except ImportError:
     jax = None
 
 
+class JAXOptimizerState(IMP.OptimizerState):
+    def __init__(self, m, name):
+        super().__init__(m, name)
+
+    def _get_jax(self):
+        import IMP._jax_util
+        name = self.get_name()
+
+        def init_func(ms):
+            ms.optimizer_states[name] = {'calls': 0}
+            return ms
+
+        def apply_func(ms):
+            ms.optimizer_states[name]['calls'] += 1
+            return ms
+
+        return IMP._jax_util.JaxOptimizerStateInfo(self, init_func, apply_func)
+
+
 def setup_system(coords, use_container):
     m = IMP.Model()
     mc = IMP.core.MonteCarlo(m)
@@ -260,6 +279,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(mc_state.rejected_steps
                          + mc_state.downward_steps_taken
                          + mc_state.upward_steps_taken, 2000)
+        self.assertEqual(mc_state.rejected_steps
+                         + mc_state.accepted_steps, 2000)
         # Particles should now be close
         newX = mc_state.X
         self.assertLess(jnp.linalg.norm(newX["xyz"][1] - newX["xyz"][0]), 0.5)
@@ -280,6 +301,37 @@ class Tests(IMP.test.TestCase):
         self.assertLess(
             IMP.algebra.get_distance(d0.get_coordinates(),
                                      d1.get_coordinates()), 0.5)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_optimizer_state(self):
+        """Test pure JAX OptimizerState"""
+        def make_mc():
+            m, mc = _setup_jax_mc()
+            state1 = JAXOptimizerState(m, name="State1")
+            mc.add_optimizer_state(state1)
+            state2 = JAXOptimizerState(m, name="State2")
+            state2.set_period(2)
+            mc.add_optimizer_state(state2)
+            return m, mc
+
+        # Low level
+        m, mc = make_mc()
+        ji = mc._get_jax()
+        X = ji.get_model_state()
+        f = jax.jit(ji.init_func)
+        mc_state = f(X, seed=42)
+        j = jax.jit(
+            lambda X: jax.lax.fori_loop(0, 2000,
+                                        lambda i, X: ji.apply_func(X), X))
+        mc_state = j(mc_state)
+        self.assertEqual(mc_state.accepted_steps,
+                         mc_state.optimizer_states['State1']['calls'])
+        self.assertEqual(mc_state.accepted_steps // 2,
+                         mc_state.optimizer_states['State2']['calls'])
+
+        # High level
+        m, mc = make_mc()
+        mc._optimize_jax(2)
 
 
 if __name__ == '__main__':

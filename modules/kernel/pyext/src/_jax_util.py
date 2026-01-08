@@ -96,3 +96,21 @@ class JaxOptimizerInfo:
         # By default just return the ScoringFunction's model state
         ji = self._sf._get_jax()
         return ji.get_model_state()
+
+
+class JaxOptimizerStateInfo:
+    """Information about a JAX implementation of an OptimizerState.
+
+       These objects can be returned by OptimizerState._get_jax().
+
+       These public members are available:
+
+       `init_func`: a JAX function which, given an optimizer state,
+           returns a (possibly modified) optimizer state.
+       `apply_func`: a JAX function which, given an optimizer state, does
+           the JAX equivalent of do_update() and returns a new optimizer state.
+    """
+    def __init__(self, optstate, init_func, apply_func):
+        self.period = optstate.get_period()
+        self.init_func = init_func
+        self.apply_func = apply_func

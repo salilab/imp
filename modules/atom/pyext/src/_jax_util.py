@@ -1,9 +1,11 @@
 import jax
 import jax.numpy as jnp
+import jax.random
 import math
 import functools
 import IMP.atom
 from typing import NamedTuple
+import IMP
 from IMP._jax_util import JaxOptimizerInfo
 
 
@@ -35,6 +37,10 @@ class _MDState(NamedTuple):
     X: dict
     # Number of steps taken
     steps: int
+    # JAX random number key
+    rkey: jax.Array
+    # Any state used by OptimizerStates
+    optimizer_states: dict
 
 
 class _MDJaxInfo(JaxOptimizerInfo):
@@ -50,13 +56,20 @@ class _MDJaxInfo(JaxOptimizerInfo):
             velocity_cap = jnp.array([velocity_cap] * 3)
         else:
             velocity_cap = None
+        jax_optstates = [x._get_jax() for x in md.optimizer_states]
+        jax_optstates = [x for x in jax_optstates if x is not None]
 
-        def init_func(X):
+        def init_func(X, seed):
             X["xyz'"] = deriv_func(X)["xyz"]
-            return _MDState(X=X, steps=0)
+            s = _MDState(X=X, steps=0, optimizer_states={},
+                         rkey=jax.random.key(seed))
+            for js in jax_optstates:
+                s = js.init_func(s)
+            return s
 
         def apply_func(ms):
             X = ms.X
+            steps = ms.steps + 1
             mass = X['mass'][indexes]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
             _propagate_coordinates(X, indexes, mass, time_step,
@@ -65,7 +78,11 @@ class _MDJaxInfo(JaxOptimizerInfo):
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
             _propagate_velocities(X, indexes, mass, time_step)
-            return ms._replace(steps=ms.steps + 1)
+            ms = ms._replace(steps=steps)
+            for js in jax_optstates:
+                ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
+                                  lambda x: x, ms)
+            return ms
 
         self.init_func = init_func
         self.apply_func = apply_func
@@ -92,7 +109,8 @@ def _md_optimize(md, max_steps):
         lambda X: jax.lax.fori_loop(0, inner_steps,
                                     lambda i, X: ji.apply_func(X), X))
 
-    md_state = init_func(ji.get_model_state())
+    md_state = init_func(ji.get_model_state(),
+                         seed=IMP.random_number_generator())
     m = md.get_model()
     linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())
     xyz = m.get_spheres_numpy()[0]

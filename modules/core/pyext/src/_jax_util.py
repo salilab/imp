@@ -31,6 +31,8 @@ class _MCState(NamedTuple):
     best_X: dict
     # Score of the best model state seen
     best_score: float
+    # Total number of accepted steps (upward + downward)
+    accepted_steps: int
     # Number of accepted steps that reduced the score
     downward_steps_taken: int
     # Number of accepted steps that increased the score
@@ -39,6 +41,8 @@ class _MCState(NamedTuple):
     rejected_steps: int
     # JAX random number key
     rkey: jax.Array
+    # Any state used by OptimizerStates
+    optimizer_states: dict
 
 
 class _MCJaxInfo(JaxOptimizerInfo):
@@ -49,12 +53,17 @@ class _MCJaxInfo(JaxOptimizerInfo):
                          for mover in mc.movers]
         temperature = mc.get_kt()
         return_best = mc.get_return_best()
+        jax_optstates = [x._get_jax() for x in mc.optimizer_states]
+        jax_optstates = [x for x in jax_optstates if x is not None]
 
         def init_func(X, seed):
             score = score_func(X)
             ms = _MCState(score=score, best_score=score, X=X, best_X=X,
-                          downward_steps_taken=0, upward_steps_taken=0,
-                          rejected_steps=0, rkey=jax.random.key(seed))
+                          accepted_steps=0, downward_steps_taken=0,
+                          upward_steps_taken=0, rejected_steps=0,
+                          optimizer_states={}, rkey=jax.random.key(seed))
+            for js in jax_optstates:
+                ms = js.init_func(ms)
             return ms
 
         def apply_func(ms):
@@ -67,45 +76,57 @@ class _MCJaxInfo(JaxOptimizerInfo):
                 proposal_ratio *= ratio
             new_score = score_func(new_X)
 
-            def downward_step():
+            def update_states(ms):
+                steps = ms.accepted_steps
+                for js in jax_optstates:
+                    ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
+                                      lambda x: x, ms)
+                return ms
+
+            def downward_step(ms):
                 if return_best:
                     return jax.lax.cond(new_score < ms.best_score,
                                         downward_step_new_best,
-                                        downward_step_not_best)
+                                        downward_step_not_best, ms)
                 else:
-                    return downward_step_not_best()
+                    return downward_step_not_best(ms)
 
-            def downward_step_new_best():
-                return ms._replace(
+            def downward_step_new_best(ms):
+                ms = ms._replace(
                     downward_steps_taken=ms.downward_steps_taken + 1, rkey=k,
                     # new (score,X) should replace best
                     score=new_score, best_score=new_score,
-                    X=new_X, best_X=new_X)
+                    X=new_X, best_X=new_X, accepted_steps=ms.accepted_steps + 1)
+                return update_states(ms)
 
-            def downward_step_not_best():
-                return ms._replace(
+            def downward_step_not_best(ms):
+                ms = ms._replace(
                     score=new_score, X=new_X, rkey=k,
-                    downward_steps_taken=ms.downward_steps_taken + 1)
+                    downward_steps_taken=ms.downward_steps_taken + 1,
+                    accepted_steps=ms.accepted_steps + 1)
+                return update_states(ms)
 
-            def upward_step():
-                return ms._replace(
+            def upward_step(ms):
+                ms = ms._replace(
                     score=new_score, X=new_X, rkey=k,
-                    upward_steps_taken=ms.upward_steps_taken + 1)
+                    upward_steps_taken=ms.upward_steps_taken + 1,
+                    accepted_steps=ms.accepted_steps + 1)
+                return update_states(ms)
 
-            def reject_step():
+            def reject_step(ms):
                 # Keep X and score from previous step
                 return ms._replace(rejected_steps=ms.rejected_steps + 1,
                                    rkey=k)
 
-            def metrop_step():
+            def metrop_step(ms):
                 diff = new_score - ms.score
                 e = jnp.exp(-diff / temperature)
                 prob = jax.random.uniform(k, minval=0.0, maxval=1.0)
                 return jax.lax.cond(e * proposal_ratio > prob,
-                                    upward_step, reject_step)
+                                    upward_step, reject_step, ms)
 
             return jax.lax.cond(new_score < ms.score,
-                                downward_step, metrop_step)
+                                downward_step, metrop_step, ms)
 
         self.init_func = init_func
         self.apply_func = apply_func
@@ -125,16 +146,16 @@ class _JAXOptimizer:
     def __init__(self, opt, max_steps):
         self.opt = opt
 
+        # Get all OptimizerStates that have no explicit JAX implementation
         # todo: sort the OptimizerStates by inputs/outputs
-        for s in opt.optimizer_states:
-            if s._get_jax() is not None:
-                raise NotImplementedError(
-                    "JAX OptimizerStates are not yet supported")
+        self._imp_opt_states = [s for s in opt.optimizer_states
+                                if s._get_jax() is None]
 
         # Get the number of steps that we can run in JAX, before having to
-        # copy JAX arrays back to the IMP Model
+        # copy JAX arrays back to the IMP Model for OptimizerStates
+        # implemented in IMP
         self.inner_steps = functools.reduce(
-            math.gcd, [x.get_period() for x in opt.optimizer_states],
+            math.gcd, [x.get_period() for x in self._imp_opt_states],
             max_steps)
         self.n_loops = max_steps // self.inner_steps
 
@@ -144,9 +165,9 @@ class _JAXOptimizer:
         n_step = 0
         for i in range(self.n_loops):
             yield i
-            # Update any necessary OptimizerStates
+            # Update any necessary IMP OptimizerStates
             n_step += self.inner_steps
-            for s in self.opt.optimizer_states:
+            for s in self._imp_opt_states:
                 if n_step % s.get_period() == 0:
                     s.update_always()
 

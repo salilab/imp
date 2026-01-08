@@ -81,6 +81,25 @@ class WriteTrajState(IMP.OptimizerState):
                           for p in model.get_particle_indexes()])
 
 
+class JAXOptimizerState(IMP.OptimizerState):
+    def __init__(self, m, name):
+        super().__init__(m, name)
+
+    def _get_jax(self):
+        import IMP._jax_util
+        name = self.get_name()
+
+        def init_func(ms):
+            ms.optimizer_states[name] = {'calls': 0}
+            return ms
+
+        def apply_func(ms):
+            ms.optimizer_states[name]['calls'] += 1
+            return ms
+
+        return self._wrap_jax(init_func, apply_func)
+
+
 class Tests(IMP.test.TestCase):
 
     """Test molecular dynamics optimizer"""
@@ -155,7 +174,7 @@ class Tests(IMP.test.TestCase):
         X = ji.get_model_state()
 
         jit_init_func = jax.jit(ji.init_func)
-        md_state = jit_init_func(X)
+        md_state = jit_init_func(X, seed=42)
 
         def run_opt(X, apply_func, nsteps):
             return jax.lax.fori_loop(0, nsteps, apply_func, X)
@@ -366,6 +385,40 @@ class Tests(IMP.test.TestCase):
             self.assertRaises(ValueError, vs[0].__setitem__, 0, 42.0)
         else:
             self.assertRaises(NotImplementedError, m1.get_vector3ds_numpy)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_optimizer_state(self):
+        """Test pure JAX OptimizerState"""
+        def make_md():
+            timestep = 4.0
+            strength = 50.0
+            self.make_model()
+            r = XTransRestraint(self.model, strength)
+            sf = IMP.core.RestraintsScoringFunction([r])
+            self.md.set_scoring_function(sf)
+            self.md.set_maximum_time_step(timestep)
+            state1 = JAXOptimizerState(self.model, name="State1")
+            self.md.add_optimizer_state(state1)
+            state2 = JAXOptimizerState(self.model, name="State2")
+            state2.set_period(2)
+            self.md.add_optimizer_state(state2)
+
+        # Low level
+        make_md()
+        ji = self.md._get_jax()
+        X = ji.get_model_state()
+        jit_init_func = jax.jit(ji.init_func)
+        md_state = jit_init_func(X, seed=42)
+
+        jit_apply_func = jax.jit(ji.apply_func)
+        md_state = jit_apply_func(md_state)
+        md_state = jit_apply_func(md_state)
+        self.assertEqual(md_state.optimizer_states['State1']['calls'], 2)
+        self.assertEqual(md_state.optimizer_states['State2']['calls'], 1)
+
+        # High level
+        make_md()
+        self.md._optimize_jax(2)
 
 
 if __name__ == '__main__':
