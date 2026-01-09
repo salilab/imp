@@ -124,17 +124,35 @@
     def _get_jax(self):
         """Return a JAX implementation of this mover.
            Implement this method in a MonteCarloMover subclass to provide
-           an equivalent function using [JAX](https://docs.jax.dev/)
-           that given the random number generator state and the current model
-           state, returns a proposed new model state and the proposal ratio.
+           equivalent functionality using [JAX](https://docs.jax.dev/).
+           See _wrap_jax for more information.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
+
+    def _wrap_jax(self, init_func, propose_func):
+        """Create the return value for _get_jax.
+           Use this method in _get_jax() to wrap the JAX functions
+           with other mover-specific information.
+
+           @param init_func a JAX function which is used to initialize this
+                  mover. It is called with a single argument, a fresh JAX
+                  random key, and should return a persistent state object.
+                  This object may be the key itself, or any other Python object
+                  that JAX understands.
+           @param propose_func a JAX function which is called with the current
+                  model state and the mover's persistent state object.
+                  It should return a new model state, a new persistent state,
+                  and the proposal ratio.
+        """
+        from IMP.core._jax_util import JaxMoverInfo
+        return JaxMoverInfo(init_func, propose_func)
   %}
 }
 
 %extend IMP::core::BallMover {
   %pythoncode %{
     def _get_jax(self):
+        import jax.random
         from IMP.algebra._jax_util import get_random_vector_in_3d_sphere
         indexes = self.get_indexes()
         keys = frozenset(self.get_keys())
@@ -142,12 +160,16 @@
             raise NotImplementedError("Only works for XYZ")
         radius = self.get_radius()
 
-        def propose_func(k, X):
-            v = get_random_vector_in_3d_sphere(k, radius)
+        def init_func(key):
+            return key
+
+        def propose_func(X, key):
+            key, subkey = jax.random.split(key)
+            v = get_random_vector_in_3d_sphere(subkey, radius)
             newX = X.copy()
             newX['xyz'] = X['xyz'].at[indexes].add(v)
-            return newX, 1.0
-        return propose_func
+            return newX, key, 1.0
+        return self._wrap_jax(init_func, propose_func)
   %}
 }
 

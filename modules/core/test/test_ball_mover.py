@@ -28,9 +28,13 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZ.setup_particle(m, p2)
         mv = IMP.core.BallMover(m, (p1, p2), 1.0)
         X = {'xyz': jnp.array(m.get_spheres_numpy()[0])}
-        j = jax.jit(mv._get_jax())
-        k = jax.random.key(42)
-        newX, ratio = j(k, X)
+        ji = mv._get_jax()
+
+        init_func = jax.jit(ji.init_func)
+        mvs = init_func(jax.random.key(42))
+
+        j = jax.jit(ji.propose_func)
+        newX, mvs, ratio = j(X, mvs)
         self.assertEqual(newX['xyz'].shape, (2, 3))
         self.assertAlmostEqual(ratio, 1.0, delta=1e-5)
         # Both particles should be moved in the same fashion

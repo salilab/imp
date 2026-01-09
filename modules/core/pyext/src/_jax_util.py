@@ -20,6 +20,13 @@ def _get_jax_restraint(r):
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 
+class JaxMoverInfo:
+    """Information about a JAX implementation of a MonteCarloMover."""
+    def __init__(self, init_func, propose_func):
+        self.init_func = init_func
+        self.propose_func = propose_func
+
+
 class _MCState(NamedTuple):
     """Track the state of a MonteCarlo optimization using JAX"""
 
@@ -41,6 +48,8 @@ class _MCState(NamedTuple):
     rejected_steps: int
     # JAX random number key
     rkey: jax.Array
+    # Any state used by Movers
+    mover_state: list
     # Any state used by OptimizerStates
     optimizer_states: dict
 
@@ -49,8 +58,7 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
     def __init__(self, mc):
         super().__init__(mc)
         score_func = self.score_func
-        propose_funcs = [mover.get_derived_object()._get_jax()
-                         for mover in mc.movers]
+        movers = [mover.get_derived_object()._get_jax() for mover in mc.movers]
         temperature = mc.get_kt()
         return_best = mc.get_return_best()
         jax_optstates = [x.get_derived_object()._get_jax()
@@ -59,21 +67,25 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
 
         def init_func(X, key):
             score = score_func(X)
+            mover_state = []
+            for mover in movers:
+                key, subkey = jax.random.split(key)
+                mover_state.append(mover.init_func(subkey))
             ms = _MCState(score=score, best_score=score, X=X, best_X=X,
                           accepted_steps=0, downward_steps_taken=0,
                           upward_steps_taken=0, rejected_steps=0,
-                          optimizer_states={}, rkey=key)
+                          optimizer_states={}, rkey=key,
+                          mover_state=mover_state)
             for js in jax_optstates:
                 ms = js.init_func(ms)
             return ms
 
         def apply_func(ms):
             new_X = ms.X.copy()
-            k = ms.rkey
             proposal_ratio = 1.0
-            for propose in propose_funcs:
-                k, subkey = jax.random.split(k)
-                new_X, ratio = propose(subkey, new_X)
+            for i in range(len(movers)):
+                new_X, ms.mover_state[i], ratio = movers[i].propose_func(
+                    new_X, ms.mover_state[i])
                 proposal_ratio *= ratio
             new_score = score_func(new_X)
 
@@ -103,27 +115,28 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
 
             def downward_step_not_best(ms):
                 ms = ms._replace(
-                    score=new_score, X=new_X, rkey=k,
+                    score=new_score, X=new_X,
                     downward_steps_taken=ms.downward_steps_taken + 1,
                     accepted_steps=ms.accepted_steps + 1)
                 return update_states(ms)
 
             def upward_step(ms):
                 ms = ms._replace(
-                    score=new_score, X=new_X, rkey=k,
+                    score=new_score, X=new_X,
                     upward_steps_taken=ms.upward_steps_taken + 1,
                     accepted_steps=ms.accepted_steps + 1)
                 return update_states(ms)
 
             def reject_step(ms):
                 # Keep X and score from previous step
-                return ms._replace(rejected_steps=ms.rejected_steps + 1,
-                                   rkey=k)
+                return ms._replace(rejected_steps=ms.rejected_steps + 1)
 
             def metrop_step(ms):
                 diff = new_score - ms.score
                 e = jnp.exp(-diff / temperature)
-                prob = jax.random.uniform(k, minval=0.0, maxval=1.0)
+                key, subkey = jax.random.split(ms.rkey)
+                prob = jax.random.uniform(subkey, minval=0.0, maxval=1.0)
+                ms = ms._replace(rkey=key)
                 return jax.lax.cond(e * proposal_ratio > prob,
                                     upward_step, reject_step, ms)
 
