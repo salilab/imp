@@ -289,6 +289,14 @@ class Tests(IMP.test.TestCase):
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 552.0, delta=0.1)
 
+        # RestraintSet with no restraints should score zero
+        r = IMP.RestraintSet(m)
+        r.set_weight(4.0)
+        ji = r._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 0.0, delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

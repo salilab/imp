@@ -146,7 +146,11 @@
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
         def jax_sf(X):
-            return sum(f(X) for f in funcs)
+            if funcs:
+                return sum(f(X) for f in funcs)
+            else:
+                # sum([]) returns int, but we must return float
+                return 0.
         return self._wrap_jax(jax_sf, keys=keys)
   %}
 }
