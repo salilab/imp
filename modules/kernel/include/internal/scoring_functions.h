@@ -58,6 +58,8 @@ class RestraintScoringFunction : public ScoringFunction {
                                     const ScoreStatesTemp &ss) override;
   Restraints create_restraints() const override;
   virtual ModelObjectsTemp do_get_inputs() const override;
+
+  virtual Restraint *get_single_restraint() const override { return r_; }
   IMP_OBJECT_METHODS(RestraintScoringFunction);
 };
 

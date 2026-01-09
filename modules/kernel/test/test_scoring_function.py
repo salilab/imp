@@ -1,6 +1,10 @@
 import sys
 import IMP
 import IMP.test
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -29,6 +33,26 @@ class Tests(IMP.test.TestCase):
         r.set_weight(1)
         rs.set_weight(0)
         self.assertEqual(rsf.evaluate(False), 0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score(self):
+        """Test JAX score of implicit RestraintScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r1.set_weight(2.0)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        r2.set_weight(3.0)
+        r = IMP.RestraintSet(m)
+        r.set_weight(4.0)
+        r.add_restraints([r1, r2])
+        sf = r.create_scoring_function()
+
+        ji = sf._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 552.0, delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()

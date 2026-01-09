@@ -92,7 +92,11 @@
 %extend IMP::ScoringFunction {
   %pythoncode %{
     def _get_jax(self):
-      raise NotImplementedError(f"No JAX implementation for {self}")
+        r = self.get_single_restraint()
+        if r is None:
+            raise NotImplementedError(f"No JAX implementation for {self}")
+        else:
+            return r.get_derived_object()._get_jax()
   %}
 }
 
