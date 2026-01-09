@@ -134,3 +134,15 @@
         return JaxOptimizerStateInfo(self, init_func, apply_func)
   %}
 }
+
+%extend IMP::RestraintSet {
+  %pythoncode %{
+    def _get_jax(self):
+        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+        funcs = [j.score_func for j in jis]
+        keys = frozenset(x for j in jis for x in j._keys)
+        def jax_sf(X):
+            return sum(f(X) for f in funcs)
+        return self._wrap_jax(jax_sf, keys=keys)
+  %}
+}

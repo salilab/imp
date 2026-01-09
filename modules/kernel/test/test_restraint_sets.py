@@ -2,6 +2,11 @@ import IMP
 import IMP.core
 import IMP.test
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
 
 class LinkScoreState(IMP.ScoreState):
     """ScoreState that links one particle to another"""
@@ -266,6 +271,23 @@ class Tests(IMP.test.TestCase):
         assert_restraint_skipped(r1)
         assert_restraint_evaluate(r3)
         assert_restraint_evaluate_moved(r4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score(self):
+        """Test JAX RestraintSet score"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r1.set_weight(2.0)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        r2.set_weight(3.0)
+        r = IMP.RestraintSet(m)
+        r.set_weight(4.0)
+        r.add_restraints([r1, r2])
+        ji = r._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 552.0, delta=0.1)
 
 
 if __name__ == '__main__':
