@@ -291,11 +291,15 @@ class Tests(IMP.test.TestCase):
 
         # RestraintSet with no restraints should score zero
         r = IMP.RestraintSet(m)
-        r.set_weight(4.0)
-        ji = r._get_jax()
-        X = ji.get_model_state()
-        j = jax.jit(ji.score_func)
-        self.assertAlmostEqual(j(X), 0.0, delta=0.1)
+        for weight in (1.0, 4.0):
+            r.set_weight(weight)
+            ji = r._get_jax()
+            X = ji.get_model_state()
+            j = jax.jit(ji.score_func)
+            g = jax.jit(jax.grad(ji.score_func))
+            self.assertAlmostEqual(j(X), 0.0, delta=0.1)
+            dX = g(X)
+            self.assertEqual(dX['xyz'].shape, (0, 3))
 
 
 if __name__ == '__main__':
