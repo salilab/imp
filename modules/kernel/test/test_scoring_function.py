@@ -34,6 +34,15 @@ class Tests(IMP.test.TestCase):
         rs.set_weight(0)
         self.assertEqual(rsf.evaluate(False), 0)
 
+    def test_implicit_derived_object(self):
+        """Test get_derived_object() of implicit RestraintScoringFunction"""
+        m = IMP.Model()
+        r = IMP.RestraintSet(m)
+        sf = r.create_scoring_function()
+        # No Python class for implicit scoring functions, so
+        # get_derived_object() should return the base class
+        self.assertIs(type(sf.get_derived_object()), IMP.ScoringFunction)
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score(self):
         """Test JAX score of implicit RestraintScoringFunction"""

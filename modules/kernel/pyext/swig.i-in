@@ -57,6 +57,10 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
       if modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
           modname = 'IMP.core'
           type_name = 'RestraintsScoringFunction'
+      elif modname == 'IMP' and type_name == 'RestraintScoringFunction':
+          # The implicit RestraintScoringFunction isn't exposed to Python,
+          # so just return the base class
+          return self
       modobj = sys.modules[modname]
       clsobj = getattr(modobj, type_name)
       return clsobj.get_from(self)
