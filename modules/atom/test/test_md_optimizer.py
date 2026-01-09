@@ -418,6 +418,10 @@ class Tests(IMP.test.TestCase):
             timestep = 4.0
             strength = 50.0
             self.make_model()
+            # Make sure JAX MD works with more than one particle
+            self.particles.append(self.create_point_particle(self.model,
+                                                             -43.0, 65.0, 93.0))
+            self.particles[-1].add_attribute(masskey, cmass, False)
             r = XTransRestraint(self.model, strength)
             sf = IMP.core.RestraintsScoringFunction([r])
             self.md.set_scoring_function(sf)

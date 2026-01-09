@@ -95,6 +95,9 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
             indexes = ms.simulation_indexes
             steps = ms.steps + 1
             mass = X['mass'][indexes]
+            # Make mass 2D so propagate functions can broadcast it over
+            # the 2D coordinate/velocity arrays
+            mass = mass.reshape(mass.shape[0], 1)
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
             _propagate_coordinates(X, indexes, mass, ms.time_step,
                                    velocity_cap)
