@@ -195,6 +195,19 @@ class Tests(IMP.test.TestCase):
         X = ji.get_model_state()
         self.assertEqual(sorted(X.keys()), ['r', 'xyz'])
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score(self):
+        """Test JAX RestraintsScoringFunction score"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        sf = IMP.core.RestraintsScoringFunction([r1, r2])
+        ji = sf._get_jax()
+        X = ji.get_model_state()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 60.0, delta=0.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()
