@@ -1,7 +1,8 @@
 import jax
 import jax.numpy as jnp
 import IMP.atom
-from typing import NamedTuple
+import jax.tree_util
+from dataclasses import dataclass
 import IMP._jax_util
 
 
@@ -26,7 +27,9 @@ def _propagate_velocities(X, indexes, mass, time_step):
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
 
-class _MDState(NamedTuple):
+@jax.tree_util.register_dataclass
+@dataclass
+class _MDState:
     """Track the state of a MolecularDynamics optimization using JAX"""
 
     # Current model state
@@ -93,7 +96,7 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
         def apply_func(ms):
             X = ms.X
             indexes = ms.simulation_indexes
-            steps = ms.steps + 1
+            ms.steps += 1
             mass = X['mass'][indexes]
             # Make mass 2D so propagate functions can broadcast it over
             # the 2D coordinate/velocity arrays
@@ -105,7 +108,7 @@ class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
             X["xyz'"] = deriv_func(X)["xyz"]
             # Get velocities at t+(delta t)
             _propagate_velocities(X, indexes, mass, ms.time_step)
-            ms = ms._replace(steps=steps)
+            steps = ms.steps
             for js in jax_optstates:
                 ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
                                   lambda x: x, ms)
