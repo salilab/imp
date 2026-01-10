@@ -27,7 +27,7 @@ class JAXOptimizerState(IMP.OptimizerState):
             ms.optimizer_states[name]['calls'] += 1
             return ms
 
-        return IMP._jax_util.JaxOptimizerStateInfo(self, init_func, apply_func)
+        return IMP._jax_util.JAXOptimizerStateInfo(self, init_func, apply_func)
 
 
 def setup_system(coords, use_container):

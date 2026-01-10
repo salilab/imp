@@ -25,7 +25,7 @@ def _get_model_state(m, keys):
     return X
 
 
-class JaxRestraintInfo:
+class JAXRestraintInfo:
     """Information about a JAX implementation of one or more Restraints.
 
        These objects are returned by Restraint._get_jax() (usually using
@@ -53,14 +53,14 @@ class JaxRestraintInfo:
         return _get_model_state(self.m, self._keys)
 
 
-class JaxScoreInfo:
+class JAXScoreInfo:
     """Information about a JAX implementation of a single Score
        (e.g. PairScore).
 
        These objects are returned by PairScore._get_jax() (usually using
        the PairScore._wrap_jax() helper function), and can be used to
        evaluate the Score using JAX. Usually this is done by a Restraint
-       (see JaxRestraintInfo).
+       (see JAXRestraintInfo).
 
        @param score_func The JAX scoring function
        @param keys If given, a list of particle attribute Keys that the
@@ -75,7 +75,7 @@ class JaxScoreInfo:
         return _get_model_state(m, self._keys)
 
 
-class JaxOptimizerInfo:
+class JAXOptimizerInfo:
     """Information about a JAX implementation of an Optimizer.
 
        These objects are returned by Optimizer._get_jax(), and can be used
@@ -107,7 +107,7 @@ class JaxOptimizerInfo:
         return ji.get_model_state()
 
 
-class JaxOptimizerStateInfo:
+class JAXOptimizerStateInfo:
     """Information about a JAX implementation of an OptimizerState.
 
        These objects can be returned by OptimizerState._get_jax().

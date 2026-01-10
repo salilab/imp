@@ -98,7 +98,7 @@
         keys = frozenset(x for j in jis for x in j._keys)
         def jax_sf(X):
             return sum(f(X) for f in funcs)
-        return IMP._jax_util.JaxRestraintInfo(
+        return IMP._jax_util.JAXRestraintInfo(
             m=self.get_model(), score_func=jax_sf, weight=1.0, keys=keys)
   %}
 }
@@ -144,8 +144,8 @@
                   It should return a new model state, a new persistent state,
                   and the proposal ratio.
         """
-        from IMP.core._jax_util import JaxMoverInfo
-        return JaxMoverInfo(init_func, propose_func)
+        from IMP.core._jax_util import JAXMoverInfo
+        return JAXMoverInfo(init_func, propose_func)
   %}
 }
 
@@ -210,8 +210,8 @@
 %extend IMP::core::MonteCarlo {
   %pythoncode %{
     def _get_jax(self):
-        from IMP.core._jax_util import _MCJaxInfo
-        return _MCJaxInfo(self)
+        from IMP.core._jax_util import _MCJAXInfo
+        return _MCJAXInfo(self)
 
     def _optimize_jax(self, max_steps):
         import IMP.core._jax_util

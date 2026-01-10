@@ -1,8 +1,8 @@
 %extend IMP::atom::MolecularDynamics {
   %pythoncode %{
     def _get_jax(self):
-        from IMP.atom._jax_util import _MDJaxInfo
-        return _MDJaxInfo(self)
+        from IMP.atom._jax_util import _MDJAXInfo
+        return _MDJAXInfo(self)
 
     def _optimize_jax(self, max_steps):
         import IMP.atom._jax_util

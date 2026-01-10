@@ -67,7 +67,7 @@ class _MDState:
         return 2.0 * ekinetic / (self.degrees_of_freedom * boltzmann)
 
 
-class _MDJaxInfo(IMP._jax_util.JaxOptimizerInfo):
+class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
         deriv_func = jax.grad(self.score_func)

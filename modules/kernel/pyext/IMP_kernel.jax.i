@@ -13,8 +13,8 @@
                    uses. For example, a restraint that uses electrostatic charge
                    would pass IMP::atom::Charged::get_charge_key() here.
         """
-        from IMP._jax_util import JaxRestraintInfo
-        return JaxRestraintInfo(m=self.get_model(), score_func=score_func,
+        from IMP._jax_util import JAXRestraintInfo
+        return JAXRestraintInfo(m=self.get_model(), score_func=score_func,
                                 weight=self.get_weight(), keys=keys)
 
     def _get_jax(self):
@@ -50,8 +50,8 @@
            @param keys Model attributes used by the PairScore.
                   See IMP::Restraint::_wrap_jax.
         """
-        from IMP._jax_util import JaxScoreInfo
-        return JaxScoreInfo(score_func=score_func, keys=keys)
+        from IMP._jax_util import JAXScoreInfo
+        return JAXScoreInfo(score_func=score_func, keys=keys)
 
     def _get_jax(self):
         """Return a JAX implementation of this PairScore.
@@ -68,8 +68,8 @@
   %pythoncode %{
     def _wrap_jax(self, score_func, keys=None):
         """See IMP::PairScore::_wrap_jax"""
-        from IMP._jax_util import JaxScoreInfo
-        return JaxScoreInfo(score_func=score_func, keys=keys)
+        from IMP._jax_util import JAXScoreInfo
+        return JAXScoreInfo(score_func=score_func, keys=keys)
 
     def _get_jax(self):
         """See IMP::PairScore::_get_jax"""
@@ -134,8 +134,8 @@
                   does the JAX equivalent of do_update() and returns a new
                   optimizer state.
         """
-        from IMP._jax_util import JaxOptimizerStateInfo
-        return JaxOptimizerStateInfo(self, init_func, apply_func)
+        from IMP._jax_util import JAXOptimizerStateInfo
+        return JAXOptimizerStateInfo(self, init_func, apply_func)
   %}
 }
 

@@ -21,7 +21,7 @@ def _get_jax_restraint(r):
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 
-class JaxMoverInfo:
+class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
     def __init__(self, init_func, propose_func):
         self.init_func = init_func
@@ -57,7 +57,7 @@ class _MCState:
     optimizer_states: dict
 
 
-class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
+class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     def __init__(self, mc):
         super().__init__(mc)
         score_func = self.score_func

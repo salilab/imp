@@ -31,8 +31,8 @@ class TestMovedRestraint(IMP.Restraint):
         return self.ps
 
 
-class TestJaxsKeyRestraint(IMP.Restraint):
-    def __init__(self, m, ps, name="TestJaxsKeyRestraint %1%"):
+class TestJAXKeyRestraint(IMP.Restraint):
+    def __init__(self, m, ps, name="TestJAXKeyRestraint %1%"):
         super().__init__(m, name)
         self.ps = ps
 
@@ -181,9 +181,9 @@ class Tests(IMP.test.TestCase):
         """Test JAX keys returned by RestraintsScoringFunction"""
         m = IMP.Model()
         p = IMP.Particle(m)
-        r = TestJaxsKeyRestraint(m, p)
+        r = TestJAXKeyRestraint(m, p)
         sf = IMP.core.RestraintsScoringFunction([r])
-        # TestJaxsKeyRestraint should request the 'id' attribute
+        # TestJAXKeyRestraint should request the 'id' attribute
         ji = sf._get_jax()
         X = ji.get_model_state()
         self.assertEqual(sorted(X.keys()), ['id', 'r', 'xyz'])
