@@ -290,6 +290,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_high_level(self):
         """Test high-level JAX implementation of MonteCarlo"""
         m, mc = _setup_jax_mc()
+        mc.set_return_best(True)
         mc._optimize_jax(2000)
 
         # Check MC stats
