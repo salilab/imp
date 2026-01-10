@@ -2,8 +2,9 @@ import functools
 import math
 import jax
 import jax.random
+import jax.tree_util
 import jax.numpy as jnp
-from typing import NamedTuple
+from dataclasses import dataclass
 import IMP._jax_util
 
 
@@ -27,7 +28,9 @@ class JaxMoverInfo:
         self.propose_func = propose_func
 
 
-class _MCState(NamedTuple):
+@jax.tree_util.register_dataclass
+@dataclass
+class _MCState:
     """Track the state of a MonteCarlo optimization using JAX"""
 
     # Current model state
@@ -97,6 +100,8 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
                 return ms
 
             def downward_step(ms):
+                ms.downward_steps_taken += 1
+                ms.accepted_steps += 1
                 if return_best:
                     return jax.lax.cond(new_score < ms.best_score,
                                         downward_step_new_best,
@@ -105,38 +110,33 @@ class _MCJaxInfo(IMP._jax_util.JaxOptimizerInfo):
                     return downward_step_not_best(ms)
 
             def downward_step_new_best(ms):
-                ms = ms._replace(
-                    downward_steps_taken=ms.downward_steps_taken + 1, rkey=k,
-                    # new (score,X) should replace best
-                    score=new_score, best_score=new_score,
-                    X=new_X, best_X=new_X,
-                    accepted_steps=ms.accepted_steps + 1)
+                # new (score,X) should replace best
+                ms.score = ms.best_score = new_score
+                ms.X = ms.best_X = new_X
                 return update_states(ms)
 
             def downward_step_not_best(ms):
-                ms = ms._replace(
-                    score=new_score, X=new_X,
-                    downward_steps_taken=ms.downward_steps_taken + 1,
-                    accepted_steps=ms.accepted_steps + 1)
+                ms.score = new_score
+                ms.X = new_X
                 return update_states(ms)
 
             def upward_step(ms):
-                ms = ms._replace(
-                    score=new_score, X=new_X,
-                    upward_steps_taken=ms.upward_steps_taken + 1,
-                    accepted_steps=ms.accepted_steps + 1)
+                ms.upward_steps_taken += 1
+                ms.accepted_steps += 1
+                ms.score = new_score
+                ms.X = new_X
                 return update_states(ms)
 
             def reject_step(ms):
                 # Keep X and score from previous step
-                return ms._replace(rejected_steps=ms.rejected_steps + 1)
+                ms.rejected_steps += 1
+                return ms
 
             def metrop_step(ms):
                 diff = new_score - ms.score
                 e = jnp.exp(-diff / temperature)
-                key, subkey = jax.random.split(ms.rkey)
+                ms.rkey, subkey = jax.random.split(ms.rkey)
                 prob = jax.random.uniform(subkey, minval=0.0, maxval=1.0)
-                ms = ms._replace(rkey=key)
                 return jax.lax.cond(e * proposal_ratio > prob,
                                     upward_step, reject_step, ms)
 
