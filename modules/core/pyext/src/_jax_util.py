@@ -216,3 +216,14 @@ def _mc_optimize(mc, max_steps):
         return mc.get_best_accepted_energy()
     else:
         return mc.get_last_accepted_energy()
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _SerialMoverState:
+    """Persistent state for a JAX SerialMover"""
+
+    # Mover index to delegate to
+    imov: int
+    # Any state used by Movers
+    mover_state: list

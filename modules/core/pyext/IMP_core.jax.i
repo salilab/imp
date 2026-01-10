@@ -173,6 +173,40 @@
   %}
 }
 
+%extend IMP::core::SerialMover {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.random
+        import jax.lax
+        import functools
+        from IMP.core._jax_util import _SerialMoverState
+        movers = [m.get_derived_object()._get_jax()
+                  for m in self.get_movers()]
+
+        def sub_propose_func(X, sms, i):
+            """Call the propose_func of the ith mover"""
+            X, sms.mover_state[i], ratio = movers[i].propose_func(
+                X, sms.mover_state[i])
+            return X, sms, ratio
+
+        sub_propose_funcs = [functools.partial(sub_propose_func, i=i)
+                             for i in range(len(movers))]
+
+        def init_func(key):
+            # Initialize all movers and store their state in ours
+            mover_state = []
+            for m in movers:
+                key, subkey = jax.random.split(key)
+                mover_state.append(m.init_func(subkey))
+            return _SerialMoverState(imov=-1, mover_state=mover_state)
+
+        def propose_func(X, sms):
+            sms.imov = jax.lax.min(sms.imov + 1, len(movers) - 1)
+            return jax.lax.switch(sms.imov, sub_propose_funcs, X, sms)
+        return self._wrap_jax(init_func, propose_func)
+  %}
+}
+
 %extend IMP::core::MonteCarlo {
   %pythoncode %{
     def _get_jax(self):
