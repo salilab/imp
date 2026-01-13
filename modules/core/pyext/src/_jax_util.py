@@ -162,7 +162,6 @@ class _JAXOptimizer:
         self.opt = opt
 
         # Get all OptimizerStates that have no explicit JAX implementation
-        # todo: sort the OptimizerStates by inputs/outputs
         self._imp_opt_states = [s for s in opt.optimizer_states
                                 if s.get_derived_object()._get_jax() is None]
 
