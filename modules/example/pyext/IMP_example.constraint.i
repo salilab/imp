@@ -18,6 +18,16 @@ class PythonExampleConstraint(IMP.Constraint):
     def do_update_attributes(self):
         self.p.set_value(self.k, self.p.get_value(self.k) + 1)
 
+    def _get_jax(self):
+        """Implementation of the constraint using JAX"""
+        import functools
+        def apply_func(X, key, index):
+            X[key] = X[key].at[index].add(1)
+            return X
+        f = functools.partial(apply_func, key=self.k.get_string(),
+                              index=self.p.get_index())
+        return self._wrap_jax(f, keys=(self.k,))
+
     def do_update_derivatives(self, da):
         pass
 
