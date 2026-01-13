@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
         for typ in (IMP.example.ExampleSingletonModifier,
                     IMP.example.PythonExampleSingletonModifier):
             m = IMP.Model()
-            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 2, 3),
                                            IMP.algebra.Vector3D(10, 10, 10))
             p = m.add_particle("p1")
             d = IMP.core.XYZ.setup_particle(m, p,
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
             s = typ(bb)
             s.apply_index(m, p)
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),
-                                           IMP.algebra.Vector3D(6,3,8)), 1e-4)
+                                           IMP.algebra.Vector3D(5,5,7)), 1e-4)
             self.assertIn("SingletonModifier", str(s))
             self.assertIn("SingletonModifier", repr(s))
             self.assertIn("example", s.get_version_info().get_module())
@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         for typ in (IMP.example.ExampleSingletonModifier,
                     IMP.example.PythonExampleSingletonModifier):
             m = IMP.Model()
-            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 2, 3),
                                            IMP.algebra.Vector3D(10, 10, 10))
             p = m.add_particle("p")
             d = IMP.core.XYZ.setup_particle(m, p,
@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
             m.add_score_state(c)
             m.update()
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),
-                                           IMP.algebra.Vector3D(6,3,8)), 1e-4)
+                                           IMP.algebra.Vector3D(5,5,7)), 1e-4)
 
     def test_pickle(self):
         """Test (un-)pickle of ExampleSingletonModifier"""
