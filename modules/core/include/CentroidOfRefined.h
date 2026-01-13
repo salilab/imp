@@ -54,6 +54,8 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
   FloatKey get_weight() const { return w_; }
   FloatKeys get_keys() const { return ks_; }
 
+  bool get_is_weight_null() const { return w_ == FloatKey(); }
+
   /**
      Compute the weighted centroid of the keys of refine particles (as passed in
      the constructor), and store the centroid values in the corresponding keys of

@@ -23,8 +23,9 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(ss, IMP.core.SingletonConstraint)
         bm = ss.get_before_modifier().get_derived_object()
         self.assertIsInstance(bm, IMP.core.CentroidOfRefined)
-        w = bm.get_weight()
+        self.assertTrue(bm.get_is_weight_null())
         refiner = bm.get_refiner()
+        self.assertIsInstance(refiner, IMP.Refiner)
 
 
 if __name__ == '__main__':
