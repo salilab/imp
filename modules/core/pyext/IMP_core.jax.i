@@ -119,6 +119,50 @@
   %}
 }
 
+%extend IMP::core::SingletonConstraint {
+  %pythoncode %{
+    def _get_jax(self):
+        index = self.get_index()
+        mod = self.get_before_modifier().get_derived_object()
+        ji = mod._get_jax(self.get_model(), index)
+        return self._wrap_jax(ji.apply_func, keys=ji._keys)
+  %}
+}
+
+%extend IMP::core::CentroidOfRefined {
+  %pythoncode %{
+    def _get_jax(self, m, index):
+        import functools
+        import jax.numpy as jnp
+        refined = self.get_refiner().get_refined_indexes(m, index)
+
+        def apply_func_unweighted(X):
+            xyz = X['xyz']
+            X['xyz'] = xyz.at[index].set(jnp.average(xyz[refined], axis=0))
+            return X
+
+        def apply_func_weighted(X, weight_key):
+            xyz = X['xyz']
+            weights = X[weight_key][refined]
+            X['xyz'] = xyz.at[index].set(jnp.average(xyz[refined], axis=0,
+                                                     weights=weights))
+            return X
+
+        keys = frozenset(self.get_keys())
+        if keys != frozenset(IMP.core.XYZ.get_xyz_keys()):
+            raise NotImplementedError("Only works for XYZ")
+
+        if self.get_is_weight_null():
+            return self._wrap_jax(apply_func_unweighted)
+        else:
+            weight_key = self.get_weight()
+            return self._wrap_jax(
+                functools.partial(apply_func_weighted,
+                                  weight_key=weight_key.get_string()),
+                keys=(weight_key,))
+  %}
+}
+
 %extend IMP::core::MonteCarloMover {
   %pythoncode %{
     def _get_jax(self):

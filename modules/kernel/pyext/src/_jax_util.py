@@ -29,7 +29,7 @@ class JAXRestraintInfo:
     """Information about a JAX implementation of one or more Restraints.
 
        These objects are returned by Restraint._get_jax() (usually using
-       the helper function Restraint_wrap_jax()) or by
+       the helper function Restraint._wrap_jax()) or by
        RestraintsScoringFunction._get_jax(), and can be used to
        evaluate the score of a single restraint, a RestraintSet,
        or a RestraintsScoringFunction using JAX.
@@ -73,6 +73,37 @@ class JAXScoreInfo:
     def get_model_state(self, m):
         """Get Model data for the given Model as a tree of NumPy arrays, X"""
         return _get_model_state(m, self._keys)
+
+
+class JAXScoreStateInfo:
+    """Information about a JAX implementation of a single ScoreState.
+
+       These objects are returned by ScoreState._get_jax() (usually using
+       the helper function ScoreState._wrap_jax()), and can be used to
+       modify the model state using JAX.
+
+       @param m The IMP::Model that apply_func acts on
+       @param apply_func A JAX function that, given the current model
+                         state, returns a new model state.
+       @param keys If given, a list of particle attribute Keys that the
+                   ScoreState uses (other than xyz and r), such
+                   as mass."""
+    def __init__(self, m, apply_func, keys=None):
+        self.m = m
+        self.apply_func = apply_func
+        self._keys = frozenset(keys or ())
+
+    def get_model_state(self):
+        """Get Model data as a tree of NumPy arrays, X"""
+        return _get_model_state(self.m, self._keys)
+
+
+class JAXModifierInfo:
+    """Information about a JAX implementation of a modifier
+       (e.g. SingletonModifier)"""
+    def __init__(self, apply_func, keys=None):
+        self.apply_func = apply_func
+        self._keys = frozenset(keys or ())
 
 
 class JAXOptimizerInfo:

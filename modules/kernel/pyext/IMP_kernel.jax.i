@@ -154,3 +154,42 @@
         return self._wrap_jax(jax_sf, keys=keys)
   %}
 }
+
+%extend IMP::ScoreState {
+  %pythoncode %{
+    def _wrap_jax(self, apply_func, keys=None):
+        """Create the return value for _get_jax.
+            Use this method in _get_jax() to wrap the JAX apply function
+            with other model- and ScoreState-specific information.
+
+            @param apply_func A function implemented using JAX that takes
+                   a single argument (the current model state) and returns
+                   a new model state.
+            @param keys If given, a set of IMP::Key objects describing Model
+                   attributes (other than xyz and radius) that the ScoreState
+                   uses.
+        """
+        from IMP._jax_util import JAXScoreStateInfo
+        return JAXScoreStateInfo(m=self.get_model(), apply_func=apply_func,
+                                 keys=keys)
+
+    def _get_jax(self):
+        """Return a JAX implementation of this ScoreState.
+           Implement this method in a ScoreState subclass to provide
+           an equivalent function using [JAX](https://docs.jax.dev/)
+           that modifies the model state. See also _wrap_jax.
+        """
+        raise NotImplementedError(f"No JAX implementation for {self}")
+  %}
+}
+
+%extend IMP::SingletonModifier {
+  %pythoncode %{
+    def _wrap_jax(self, apply_func, keys=None):
+        from IMP._jax_util import JAXModifierInfo
+        return JAXModifierInfo(apply_func=apply_func, keys=keys)
+
+    def _get_jax(self):
+        raise NotImplementedError(f"No JAX implementation for {self}")
+  %}
+}

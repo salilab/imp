@@ -1,6 +1,10 @@
 import IMP
 import IMP.test
 import IMP.atom
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -46,6 +50,34 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(weight.get_string(), "mass")
         refiner = bm.get_refiner()
         self.assertIsInstance(refiner, IMP.Refiner)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implememtation of CenterOfMass constraint"""
+        import jax.numpy as jnp
+        m = IMP.Model()
+        ps = IMP.core.create_xyzr_particles(m, 10, 1)
+        for i, p in enumerate(ps):
+            IMP.atom.Mass.setup_particle(p, 10.0 * (i + 1))
+
+        p2 = IMP.Particle(m)
+        com = IMP.atom.CenterOfMass.setup_particle(p2, ps)
+
+        # Get JAX implementation of COM
+        ji = m.get_score_states()[0].get_derived_object()._get_jax()
+        jm = ji.get_model_state()
+
+        # Make model state mutable
+        jm['xyz'] = jnp.asarray(jm['xyz'])
+
+        # Get coordinates for p2 using JAX
+        jm = ji.apply_func(jm)
+        jax_coord = IMP.algebra.Vector3D(jm['xyz'][-1])
+
+        # Compare with p2's coordinates using IMP
+        m.update()
+        imp_coord = IMP.core.XYZ(p2).get_coordinates()
+        self.assertLess(IMP.algebra.get_distance(jax_coord, imp_coord), 0.01)
 
 
 if __name__ == '__main__':
