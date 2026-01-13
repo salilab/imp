@@ -3,7 +3,7 @@
  *  \brief Set the coordinates of the particle to be the centroid of the
  *  refined particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CENTROID_OF_REFINED_H
@@ -49,6 +49,10 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
    */
   CentroidOfRefined(Refiner *r, FloatKey weight = FloatKey(),
                     FloatKeys ks = XYZ::get_xyz_keys());
+
+  Refiner *get_refiner() const { return refiner_; }
+  FloatKey get_weight() const { return w_; }
+  FloatKeys get_keys() const { return ks_; }
 
   /**
      Compute the weighted centroid of the keys of refine particles (as passed in
