@@ -4,6 +4,10 @@ import IMP.algebra
 import IMP.core
 import IMP.example
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def make_modifier():
@@ -72,6 +76,25 @@ class Tests(IMP.test.TestCase):
         newc.before_evaluate()
         self.assertLess(IMP.algebra.get_distance(
             d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of SingletonModifier"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p = m.add_particle("p1")
+        d = IMP.core.XYZ.setup_particle(m, p,
+                                        IMP.algebra.Vector3D(-4, 13, 28))
+        s = IMP.example.PythonExampleSingletonModifier(bb)
+        ji = s._get_jax(m, p)
+        X = IMP._jax_util._get_model_state(m, ji._keys)
+        f = jax.jit(ji.apply_func)
+        X = f(X)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
 
 
 if __name__ == '__main__':
