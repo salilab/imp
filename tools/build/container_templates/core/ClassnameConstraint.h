@@ -62,8 +62,8 @@ class ClassnameConstraint :
   void do_update_derivatives(DerivativeAccumulator *da);
   virtual ModelObjectsTemp do_get_inputs() const;
   virtual ModelObjectsTemp do_get_outputs() const;
-  IMP_OBJECT_METHODS(ClassnameConstraint);
 #endif
+  IMP_OBJECT_METHODS(ClassnameConstraint);
 };
 
 IMPCORE_END_NAMESPACE
