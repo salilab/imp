@@ -70,7 +70,9 @@ class _MDState:
 class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
-        deriv_func = jax.grad(self.score_func)
+        # score_func returns both score and a modified model state, but
+        # deriv_func only wants the first scalar argument (the score)
+        deriv_func = jax.grad(lambda X: self.score_func(X)[0])
         velocity_cap = md.get_velocity_cap()
         # Would like to use math.isfinite here but it is not guaranteed
         # that a C++ "infinite" value is also considered to be math.inf
@@ -156,4 +158,5 @@ def _md_optimize(md, max_steps):
         linvel[:] = X['linvel']
         xyz[:] = X['xyz']
         dxyz[:] = X["xyz'"]
-    return score_func(md_state.X)
+    score, md_state.X = score_func(md_state.X)
+    return score

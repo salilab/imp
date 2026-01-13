@@ -25,6 +25,22 @@ def _get_model_state(m, keys):
     return X
 
 
+def _get_score_constrained(m, score_func):
+    """Given a JAX function that scores a model state, return a new function
+       that first applies all ScoreStates (aka Constraints) and then returns
+       both the score and the new model state."""
+    # todo: get these in sorted order
+    apply_funcs = [ss.get_derived_object()._get_jax().apply_func
+                   for ss in m.get_score_states()]
+
+    def score_constrained_func(X):
+        for f in apply_funcs:
+            X = f(X)
+        return score_func(X), X
+
+    return score_constrained_func
+
+
 class JAXRestraintInfo:
     """Information about a JAX implementation of one or more Restraints.
 
@@ -118,8 +134,9 @@ class JAXOptimizerInfo:
            get_model_state), creates and returns an initial optimizer state.
            This may just be the model state, or may add scores and statistics
            used by the optimizer.
-       `score_func`: a JAX function which, given the model state, returns
-           its score.
+       `score_func`: a JAX function which, given the model state, applies
+           any ScoreStates (aka constraints) and returns its score and a
+           new model state.
        `apply_func`: a JAX function which, given an optimizer state, performs
            one step of optimization and returns a new optimizer state.
     """
@@ -128,12 +145,14 @@ class JAXOptimizerInfo:
         self._opt = optimizer
         self._sf = optimizer.get_scoring_function().get_derived_object()
         ji = self._sf._get_jax()
-        self.score_func = ji.score_func
+        self.score_func = _get_score_constrained(
+            optimizer.get_model(), ji.score_func)
         # Subclasses will fill in init_func and apply_func
 
     def get_model_state(self):
         """Get Model data as a tree of NumPy arrays, X"""
         # By default just return the ScoringFunction's model state
+        # todo: add any keys used by ScoreStates
         ji = self._sf._get_jax()
         return ji.get_model_state()
 

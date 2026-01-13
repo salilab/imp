@@ -69,7 +69,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         jax_optstates = [x for x in jax_optstates if x is not None]
 
         def init_func(X, key):
-            score = score_func(X)
+            score, X = score_func(X)
             mover_state = []
             for mover in movers:
                 key, subkey = jax.random.split(key)
@@ -90,7 +90,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 new_X, ms.mover_state[i], ratio = movers[i].propose_func(
                     new_X, ms.mover_state[i])
                 proposal_ratio *= ratio
-            new_score = score_func(new_X)
+            new_score, new_X = score_func(new_X)
 
             def update_states(ms):
                 steps = ms.accepted_steps
