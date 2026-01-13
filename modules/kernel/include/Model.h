@@ -402,6 +402,16 @@ class IMPKERNELEXPORT Model : public Object
   */
   void update();
 
+  //! Determine and return the correct order to evaluate ScoreStates in
+  /** ScoreStates are not evaluated in the order in which they were added
+      to the Model; instead, the Model's dependency graph is used to ensure
+      that a ScoreState that takes particle x as an input is always
+      evaluated after a state that modifies particle x on output.
+      This method determines and returns the correct order. This is also
+      cached in the ScoreStates themselves; see IMP::get_update_order.
+   */
+  ScoreStatesTemp get_ordered_score_states();
+
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes
       \anchor model_attributes

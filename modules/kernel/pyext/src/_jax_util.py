@@ -29,9 +29,9 @@ def _get_score_constrained(m, score_func):
     """Given a JAX function that scores a model state, return a new function
        that first applies all ScoreStates (aka Constraints) and then returns
        both the score and the new model state."""
-    # todo: get these in sorted order
+    # get all ScoreStates in sorted order
     apply_funcs = [ss.get_derived_object()._get_jax().apply_func
-                   for ss in m.get_score_states()]
+                   for ss in m.get_ordered_score_states()]
 
     def score_constrained_func(X):
         for f in apply_funcs:
