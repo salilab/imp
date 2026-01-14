@@ -122,30 +122,35 @@
 %extend IMP::core::SingletonConstraint {
   %pythoncode %{
     def _get_jax(self):
+        import functools
         index = self.get_index()
         mod = self.get_before_modifier().get_derived_object()
         ji = mod._get_jax(self.get_model(), index)
-        return self._wrap_jax(ji.apply_func, keys=ji._keys)
+        return self._wrap_jax(
+            functools.partial(ji.apply_func, indexes=index),
+            keys=ji._keys)
   %}
 }
 
 %extend IMP::core::CentroidOfRefined {
   %pythoncode %{
-    def _get_jax(self, m, index):
+    def _get_jax(self, m, index=None):
         import functools
         import jax.numpy as jnp
+        if index is None:
+            raise NotImplementedError("Only implemented for single particle")
         refined = self.get_refiner().get_refined_indexes(m, index)
 
-        def apply_func_unweighted(X):
+        def apply_func_unweighted(X, indexes):
             xyz = X['xyz']
-            X['xyz'] = xyz.at[index].set(jnp.average(xyz[refined], axis=0))
+            X['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0))
             return X
 
-        def apply_func_weighted(X, weight_key):
+        def apply_func_weighted(X, indexes, weight_key):
             xyz = X['xyz']
             weights = X[weight_key][refined]
-            X['xyz'] = xyz.at[index].set(jnp.average(xyz[refined], axis=0,
-                                                     weights=weights))
+            X['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0,
+                                                       weights=weights))
             return X
 
         keys = frozenset(self.get_keys())

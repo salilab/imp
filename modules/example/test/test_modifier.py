@@ -92,8 +92,56 @@ class Tests(IMP.test.TestCase):
         ji = s._get_jax(m, p)
         X = IMP._jax_util._get_model_state(m, ji._keys)
         f = jax.jit(ji.apply_func)
+        X = f(X, p)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_singleton_constraint(self):
+        """Test JAX SingletonModifier in a SingletonConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p = m.add_particle("p1")
+        d = IMP.core.XYZ.setup_particle(m, p,
+                                        IMP.algebra.Vector3D(-4, 13, 28))
+        s = IMP.example.PythonExampleSingletonModifier(bb)
+        c = IMP.core.SingletonConstraint(s, None, m, p)
+
+        ji = c._get_jax()
+        X = ji.get_model_state()
+        f = jax.jit(ji.apply_func)
         X = f(X)
         self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_singletons_constraint(self):
+        """Test JAX SingletonModifier in a SingletonsConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p1 = m.add_particle("p1")
+        d1 = IMP.core.XYZ.setup_particle(m, p1,
+                                         IMP.algebra.Vector3D(-4, 13, 28))
+        p2 = m.add_particle("p2")
+        d2 = IMP.core.XYZ.setup_particle(m, p2,
+                                         IMP.algebra.Vector3D(3, 20, 42))
+        s = IMP.example.PythonExampleSingletonModifier(bb)
+        lsc = IMP.container.ListSingletonContainer(m, [p1, p2])
+        c = IMP.container.SingletonsConstraint(s, None, lsc)
+
+        ji = c._get_jax()
+        X = ji.get_model_state()
+        f = jax.jit(ji.apply_func)
+        X = f(X)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+        self.assertLess(jnp.linalg.norm(X['xyz'][1] - jnp.array([3., 0., 2.])),
                         1e-3)
 
 

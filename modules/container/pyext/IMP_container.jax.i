@@ -27,3 +27,11 @@
         return _jax_util._get_jax_container_restraint(self)
   %}
 }
+
+%extend IMP::container::SingletonsConstraint {
+  %pythoncode %{
+    def _get_jax(self):
+        from . import _jax_util
+        return _jax_util._get_jax_container_constraint(self)
+  %}
+}
