@@ -2,7 +2,7 @@
  *  \file IMP/decorator_macros.h
  *  \brief Helper macros for implementing Decorators
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -502,7 +502,7 @@
     } else {                                                            \
       Constraint* ss = new core::SingletonConstraint(                     \
           before, after, m, pi,                                           \
-          std::string(#Name "updater for ") + m->get_particle_name(pi),   \
+          std::string(#Name " updater for ") + m->get_particle_name(pi),  \
           can_skip);                                                      \
       m->add_attribute(get_constraint_key(), pi, ss);                     \
       m->add_score_state(ss);                                             \
