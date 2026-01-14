@@ -198,7 +198,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
 
-  // swig doesn't support using, so the method is wrapped
+  // SWIG doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
   //! (= translation from local to global rigid body coordinates)
   algebra::Vector3D get_coordinates() const { return XYZ::get_coordinates(); }
@@ -705,7 +705,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
 
   ~RigidBodyMember();
   //! sets the global coordinates of this member using XYZ::set_coordinates()
-  // this is here since swig does like using statements
+  // this is here since SWIG doesn't like "using" statements
   void set_coordinates(const algebra::Vector3D &center) {
     XYZ::set_coordinates(center);
   }
