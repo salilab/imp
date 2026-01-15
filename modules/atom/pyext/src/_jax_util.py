@@ -81,13 +81,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             velocity_cap = jnp.array([velocity_cap] * 3)
         else:
             velocity_cap = None
-        state_index = 0
-        jax_optstates = []
-        for s in md.optimizer_states:
-            j = s.get_derived_object()._get_jax(state_index)
-            if j is not None:
-                state_index += 1
-                jax_optstates.append(j)
+        jax_optstates = self._setup_jax_optimizer_states()
 
         def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]

@@ -190,6 +190,18 @@ class JAXOptimizerInfo:
             optimizer.get_model(), ji.score_func)
         # Subclasses will fill in init_func and apply_func
 
+    def _setup_jax_optimizer_states(self):
+        """Setup and return a list of the OptimizerStates that have
+           a JAX implementation"""
+        state_index = 0
+        jax_optstates = []
+        for s in self._opt.optimizer_states:
+            j = s.get_derived_object()._get_jax(state_index)
+            if j is not None:
+                state_index += 1
+                jax_optstates.append(j)
+        return jax_optstates
+
     def get_model_state(self):
         """Get Model data as a tree of NumPy arrays, X"""
         # By default just return the ScoringFunction's model state
