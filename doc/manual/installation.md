@@ -42,7 +42,7 @@ In order to build %IMP from source, you will need:
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (1.8 or later)
 - [cereal](https://uscilab.github.io/cereal/)
-- [Python](https://www.python.org) (3.6 or later)
+- [Python](https://www.python.org) (3.7 or later, or 3.6 with the [dataclasses](https://pypi.org/project/dataclasses/) Python backport)
 - [SWIG](https://www.swig.org/) (3 or later)
 
 The following prerequisites are _optional_; without them some parts of %IMP
