@@ -1,10 +1,47 @@
 import jax.random
+import jax.numpy as jnp
+import jax.tree_util
+from dataclasses import dataclass
 import IMP
 
 
 def get_random_key():
     """Get a new JAX random key seeded from IMP's RNG"""
     return jax.random.key(IMP.random_number_generator())
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _RigidBodies:
+    """Information on all rigid bodies in the Model"""
+
+    # Internal coordinates indexed by particle index
+    intcoord: jax.Array
+    # Reference frame rotation quaternion indexed by rigid body index
+    quaternion: jax.Array
+    # Mapping from particle index to rigid body index
+    rb_index_from_particle: dict
+    # Mapping from rigid body index to particle index
+    particle_from_rb_index: list
+
+
+_RB_LIST_KEY = IMP.ModelKey("rigid body list")
+_RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
+                 for i in range(4)]
+
+def _get_rigid_bodies(m):
+    assert m.get_has_data(_RB_LIST_KEY)
+    rbl = m.get_data(_RB_LIST_KEY)
+    rbl = IMP.SingletonContainer.get_from(rbl)
+    particle_from_rb_index = rbl.get_contents()
+    intcoord = m.get_internal_coordinates_numpy()
+    quaternion = jnp.stack([m.get_numpy(rk)[particle_from_rb_index]
+                            for rk in _RB_QUAT_KEYS], axis=1)
+    return _RigidBodies(
+        intcoord=intcoord, particle_from_rb_index=particle_from_rb_index,
+        rb_index_from_particle={int(pi): rbi for (rbi, pi) in
+                                enumerate(particle_from_rb_index)},
+        quaternion=quaternion)
 
 
 def _get_model_state(m, keys):
@@ -15,13 +52,17 @@ def _get_model_state(m, keys):
        always include `xyz` and `r` items for particle XYZ coordinates and
        radii, but may include other attributes if they are used by restraints
        or optimizers. These arrays may be NumPy views of the IMP Model, or
-       they be copies (in which case if a JAX optimizer changes the values
-       they may need to copied back to IMP). Optimizers may add more keys
-       to this dict to track their own state."""
+       they may be copies (in which case if a JAX optimizer changes the values
+       they may need to copied back to IMP).
+       If the key "rigid_bodies" is given, information on all of the Model's
+       rigid bodies is included."""
     xyz, r = m.get_spheres_numpy()
     X = {"xyz": xyz, "r": r}
     for k in keys:
-        X[k.get_string()] = m.get_numpy(k)
+        if k == 'rigid_bodies':
+            X['rigid_bodies'] = _get_rigid_bodies(m)
+        else:
+            X[k.get_string()] = m.get_numpy(k)
     return X
 
 
