@@ -30,7 +30,7 @@ class JAXMoverInfo:
 
 @jax.tree_util.register_dataclass
 @dataclass
-class _MCState:
+class _MonteCarloState:
     """Track the state of a MonteCarlo optimization using JAX"""
 
     # Current model state
@@ -74,11 +74,12 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             for mover in movers:
                 key, subkey = jax.random.split(key)
                 mover_state.append(mover.init_func(subkey))
-            ms = _MCState(score=score, best_score=score, X=X, best_X=X,
-                          accepted_steps=0, downward_steps_taken=0,
-                          upward_steps_taken=0, rejected_steps=0,
-                          optimizer_states={}, rkey=key,
-                          mover_state=mover_state)
+            ms = _MonteCarloState(
+                score=score, best_score=score, X=X, best_X=X,
+                accepted_steps=0, downward_steps_taken=0,
+                upward_steps_taken=0, rejected_steps=0,
+                optimizer_states={}, rkey=key,
+                mover_state=mover_state)
             for js in jax_optstates:
                 ms = js.init_func(ms)
             return ms

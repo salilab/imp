@@ -29,7 +29,7 @@ def _propagate_velocities(X, indexes, mass, time_step):
 
 @jax.tree_util.register_dataclass
 @dataclass
-class _MDState:
+class _MolecularDynamicsState:
     """Track the state of a MolecularDynamics optimization using JAX"""
 
     # Current model state
@@ -86,7 +86,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
         def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]
-            s = _MDState(
+            s = _MolecularDynamicsState(
                 X=X, steps=0, optimizer_states={}, rkey=key,
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
