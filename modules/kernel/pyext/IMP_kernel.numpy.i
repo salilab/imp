@@ -258,6 +258,23 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj,
                   sz == 0 ? nullptr : m->access_sphere_derivatives_data(),
                   read_only);
 }
+
+PyObject *_get_internal_coordinates_numpy(IMP::Model *m, PyObject *m_pyobj,
+                                          bool read_only)
+{
+  unsigned sz = m->get_internal_coordinates_size();
+  return _get_vector3ds_data_numpy(m_pyobj, sz,
+       sz == 0 ? nullptr : m->access_internal_coordinates_data(), read_only);
+}
+
+PyObject *_get_internal_coordinate_derivatives_numpy(
+                IMP::Model *m, PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz = m->get_internal_coordinate_derivatives_size();
+  return _get_vector3ds_data_numpy(m_pyobj, sz,
+       sz == 0 ? nullptr : m->access_internal_coordinate_derivatives_data(),
+       read_only);
+}
 %}
 
 %extend IMP::Model {
@@ -311,6 +328,20 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj,
         """Get the model's XYZR attribute derivatives arrays as NumPy arrays.
            See Model::get_ints_numpy() for more details."""
         return _get_sphere_derivatives_numpy(self, self, read_only)
+
+    def get_internal_coordinates_numpy(self, read_only=False):
+        """Get the model's internal coordinate array as a NumPy array.
+           The attribute arrays for rigid body internal coordinates are
+           stored separately from those for other FloatKeys.
+           See Model::get_ints_numpy() for more details."""
+        return _get_internal_coordinates_numpy(self, self, read_only)
+
+    def get_internal_coordinate_derivatives_numpy(self, read_only=False):
+        """Get the model's internal coordinate derivative array as a
+           NumPy array.
+           See Model::get_ints_numpy() for more details."""
+        return _get_internal_coordinate_derivatives_numpy(
+            self, self, read_only)
   %}
 }
 

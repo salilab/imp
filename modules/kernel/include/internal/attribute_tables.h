@@ -2,7 +2,7 @@
  *  \file internal/attribute_tables.h
  *  \brief Access to particle attributes.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -786,16 +786,22 @@ class FloatAttributeTable {
   algebra::Sphere3D* access_sphere_derivatives_data(){
     return sphere_derivatives_.data();
   }
+  unsigned get_internal_coordinates_size() const {
+    return internal_coordinates_.size();
+  }
   algebra::Vector3D const* access_internal_coordinates_data() const{
     return internal_coordinates_.data();
   }
   algebra::Vector3D * access_internal_coordinates_data() {
     return internal_coordinates_.data();
   }
-  algebra::Vector3D const* access_internal_coordinates_derivatives_data() const{
+  unsigned get_internal_coordinate_derivatives_size() const {
+    return internal_coordinate_derivatives_.size();
+  }
+  algebra::Vector3D const* access_internal_coordinate_derivatives_data() const{
     return internal_coordinate_derivatives_.data();
   }
-  algebra::Vector3D * access_internal_coordinates_derivatives_data() {
+  algebra::Vector3D * access_internal_coordinate_derivatives_data() {
     return internal_coordinate_derivatives_.data();
   }
   //! Get the size of the attribute table for the given key.
