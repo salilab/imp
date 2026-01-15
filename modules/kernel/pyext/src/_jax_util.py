@@ -29,6 +29,7 @@ _RB_LIST_KEY = IMP.ModelKey("rigid body list")
 _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
                  for i in range(4)]
 
+
 def _get_rigid_bodies(m):
     assert m.get_has_data(_RB_LIST_KEY)
     rbl = m.get_data(_RB_LIST_KEY)
