@@ -68,7 +68,7 @@ class WriteTrajState(IMP.OptimizerState):
         super().__init__(m, "WriteTrajState%1%")
         self.traj = traj
 
-    def _get_jax(self):
+    def _get_jax(self, state_index):
         # No explicit JAX implementation; JAX data will be synced back to
         # the IMP.Model before calling do_update()
         return None
@@ -86,16 +86,15 @@ class JAXOptimizerState(IMP.OptimizerState):
     def __init__(self, m, name):
         super().__init__(m, name)
 
-    def _get_jax(self):
+    def _get_jax(self, state_index):
         import IMP._jax_util
-        name = self.get_name()
 
         def init_func(ms):
-            ms.optimizer_states[name] = {'calls': 0}
+            ms.optimizer_states[state_index] = {'calls': 0}
             return ms
 
         def apply_func(ms):
-            ms.optimizer_states[name]['calls'] += 1
+            ms.optimizer_states[state_index]['calls'] += 1
             return ms
 
         return self._wrap_jax(init_func, apply_func)
@@ -442,8 +441,8 @@ class Tests(IMP.test.TestCase):
         jit_apply_func = jax.jit(ji.apply_func)
         md_state = jit_apply_func(md_state)
         md_state = jit_apply_func(md_state)
-        self.assertEqual(md_state.optimizer_states['State1']['calls'], 2)
-        self.assertEqual(md_state.optimizer_states['State2']['calls'], 1)
+        self.assertEqual(md_state.optimizer_states[0]['calls'], 2)
+        self.assertEqual(md_state.optimizer_states[1]['calls'], 1)
 
         # High level
         make_md()

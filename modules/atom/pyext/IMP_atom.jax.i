@@ -66,7 +66,7 @@
 
 %extend IMP::atom::VelocityScalingOptimizerState {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, state_index):
         import jax.lax
         import jax.numpy as jnp
         temperature = self.get_temperature()

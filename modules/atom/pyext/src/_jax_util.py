@@ -38,8 +38,9 @@ class _MolecularDynamicsState:
     steps: int
     # JAX random number key
     rkey: jax.Array
-    # Any state used by OptimizerStates
-    optimizer_states: dict
+    # Any state used by OptimizerStates. Each OptimizerState's _get_jax()
+    # method is given a unique index into this list.
+    optimizer_states: list
     # Indexes of all particles subject to MD
     simulation_indexes: jax.Array
     # Number of degrees of freedom in the system
@@ -80,17 +81,21 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             velocity_cap = jnp.array([velocity_cap] * 3)
         else:
             velocity_cap = None
-        jax_optstates = [x.get_derived_object()._get_jax()
-                         for x in md.optimizer_states]
-        jax_optstates = [x for x in jax_optstates if x is not None]
+        state_index = 0
+        jax_optstates = []
+        for s in md.optimizer_states:
+            j = s.get_derived_object()._get_jax(state_index)
+            if j is not None:
+                state_index += 1
+                jax_optstates.append(j)
 
         def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]
             s = _MolecularDynamicsState(
-                X=X, steps=0, optimizer_states={}, rkey=key,
+                X=X, steps=0, optimizer_states=[None] * len(jax_optstates),
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
-                time_step=md.get_maximum_time_step())
+                rkey=key, time_step=md.get_maximum_time_step())
             for js in jax_optstates:
                 s = js.init_func(s)
             return s

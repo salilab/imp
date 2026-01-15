@@ -102,7 +102,7 @@
 
 %extend IMP::OptimizerState {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, state_index):
         """Add JAX support for this OptimizerState.
 
            Each OptimizerState must explicitly support how it is going to
@@ -129,7 +129,10 @@
 
            @param init_func a JAX function which, given an optimizer state,
                   does any necessary setup and returns a (possibly modified)
-                  optimizer state.
+                  optimizer state. If any OptimizerState-specific
+                  persistent state is needed, it can be stored in
+                  `state.optimizer_states[state_index]` and later retrieved or
+                  modified in apply_func.
            @param apply_func a JAX function which, given an optimizer state,
                   does the JAX equivalent of do_update() and returns a new
                   optimizer state.

@@ -53,8 +53,9 @@ class _MonteCarloState:
     rkey: jax.Array
     # Any state used by Movers
     mover_state: list
-    # Any state used by OptimizerStates
-    optimizer_states: dict
+    # Any state used by OptimizerStates. Each OptimizerState's _get_jax()
+    # method is given a unique index into this list.
+    optimizer_states: list
 
 
 class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
@@ -64,9 +65,13 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         movers = [mover.get_derived_object()._get_jax() for mover in mc.movers]
         temperature = mc.get_kt()
         return_best = mc.get_return_best()
-        jax_optstates = [x.get_derived_object()._get_jax()
-                         for x in mc.optimizer_states]
-        jax_optstates = [x for x in jax_optstates if x is not None]
+        state_index = 0
+        jax_optstates = []
+        for s in mc.optimizer_states:
+            j = s.get_derived_object()._get_jax(state_index)
+            if j is not None:
+                state_index += 1
+                jax_optstates.append(j)
 
         def init_func(X, key):
             score, X = score_func(X)
@@ -78,8 +83,8 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 score=score, best_score=score, X=X, best_X=X,
                 accepted_steps=0, downward_steps_taken=0,
                 upward_steps_taken=0, rejected_steps=0,
-                optimizer_states={}, rkey=key,
-                mover_state=mover_state)
+                optimizer_states=[None] * len(jax_optstates),
+                rkey=key, mover_state=mover_state)
             for js in jax_optstates:
                 ms = js.init_func(ms)
             return ms
@@ -164,7 +169,7 @@ class _JAXOptimizer:
 
         # Get all OptimizerStates that have no explicit JAX implementation
         self._imp_opt_states = [s for s in opt.optimizer_states
-                                if s.get_derived_object()._get_jax() is None]
+                                if s.get_derived_object()._get_jax(0) is None]
 
         # Get the number of steps that we can run in JAX, before having to
         # copy JAX arrays back to the IMP Model for OptimizerStates

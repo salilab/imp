@@ -1,6 +1,6 @@
 %extend IMP::display::WriteOptimizerState {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, state_index):
         """No JAX implementation, but this OptimizerState should work
            correctly if JAX arrays are copied back to IMP.Model"""
         return None
