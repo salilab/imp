@@ -96,7 +96,7 @@ class Tests(IMP.test.TestCase):
             c.set_relative_dielectric(eps)
             ji = sf._get_jax()
             j = jax.jit(ji.score_func)
-            X = ji.get_model_state()
+            X = ji.get_jax_model()
             for q0 in (2.0, -1.0, 0.0):
                 d0.set_charge(q0)
                 for q1 in (2.0, -1.0, 0.0):

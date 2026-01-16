@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
         m, p1, p2, s = make_score()
         ji = s._get_jax()
         jax_s = jax.jit(ji.score_func)
-        X = ji.get_model_state(m)
+        X = ji.get_jax_model(m)
         imp_score_val = s.evaluate_index(m, (p1, p2), None)
         jax_score_val = jax_s(X,
                               jnp.array([[p1.get_index(), p2.get_index()]]))

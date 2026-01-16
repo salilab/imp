@@ -42,9 +42,9 @@ class Tests(IMP.test.TestCase):
 
         # Get JAX implementation of centroid
         ji = m.get_score_states()[0].get_derived_object()._get_jax()
-        jm = ji.get_model_state()
+        jm = ji.get_jax_model()
 
-        # Make model state mutable
+        # Make model mutable
         jm['xyz'] = jnp.asarray(jm['xyz'])
 
         # Get coordinates for p using JAX

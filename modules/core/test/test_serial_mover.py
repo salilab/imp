@@ -40,7 +40,7 @@ class Test(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implememtation of SerialMover"""
-        from IMP._jax_util import _get_model_state
+        from IMP._jax_util import _get_jax_model
         m = IMP.Model()
         mvs = []
         for i in range(5):
@@ -54,7 +54,7 @@ class Test(IMP.test.TestCase):
         # JAXMover
         self.assertEqual(sms.mover_state, [0, 100, 200, 300, 400])
 
-        X = _get_model_state(m, [])
+        X = _get_jax_model(m, [])
         propose_func = jax.jit(ji.propose_func)
 
         X, sms, ratio = propose_func(X, sms)

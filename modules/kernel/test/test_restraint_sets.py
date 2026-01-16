@@ -285,7 +285,7 @@ class Tests(IMP.test.TestCase):
         r.set_weight(4.0)
         r.add_restraints([r1, r2])
         ji = r._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 552.0, delta=0.1)
 
@@ -294,7 +294,7 @@ class Tests(IMP.test.TestCase):
         for weight in (1.0, 4.0):
             r.set_weight(weight)
             ji = r._get_jax()
-            X = ji.get_model_state()
+            X = ji.get_jax_model()
             j = jax.jit(ji.score_func)
             g = jax.jit(jax.grad(ji.score_func))
             self.assertAlmostEqual(j(X), 0.0, delta=0.1)

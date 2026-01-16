@@ -45,18 +45,18 @@ def _get_rigid_bodies(m):
         quaternion=quaternion)
 
 
-def _get_model_state(m, keys):
-    """Convert an IMP Model object into a "model state" object suitable
-       for use in JAX code. This is a simple dict. The dict keys are particle
-       attribute names. Each dict value is a flat NumPy array of particle
-       attribute values indexed by particle index. The model state dict will
-       always include `xyz` and `r` items for particle XYZ coordinates and
-       radii, but may include other attributes if they are used by restraints
-       or optimizers. These arrays may be NumPy views of the IMP Model, or
-       they may be copies (in which case if a JAX optimizer changes the values
-       they may need to copied back to IMP).
+def _get_jax_model(m, keys):
+    """Convert an IMP Model object into a corresponding JAX model object
+       suitable for use in JAX code. This is a simple dict. The dict keys are
+       particle attribute names. Each dict value is usually a flat NumPy array
+       of particle attribute values indexed by particle index. The JAX model
+       dict will always include `xyz` and `r` items for particle XYZ
+       coordinates and radii, but may include other attributes if they are
+       used by restraints or optimizers. These arrays may be NumPy views of
+       the IMP Model, or they may be copies (in which case if a JAX optimizer
+       or ScoreState changes the values they may need to copied back to IMP).
        If the key "rigid_bodies" is given, information on all of the Model's
-       rigid bodies is included."""
+       rigid bodies is also included."""
     xyz, r = m.get_spheres_numpy()
     X = {"xyz": xyz, "r": r}
     for k in keys:
@@ -68,9 +68,9 @@ def _get_model_state(m, keys):
 
 
 def _get_score_constrained(m, score_func):
-    """Given a JAX function that scores a model state, return a new function
+    """Given a JAX function that scores a JAX Model, return a new function
        that first applies all ScoreStates (aka Constraints) and then returns
-       both the score and the new model state."""
+       both the score and the new JAX Model."""
     # get all ScoreStates in sorted order
     apply_funcs = [ss.get_derived_object()._get_jax().apply_func
                    for ss in m.get_ordered_score_states()]
@@ -106,9 +106,9 @@ class JAXRestraintInfo:
             self.score_func = lambda X: weight * score_func(X)
         self._keys = frozenset(keys or ())
 
-    def get_model_state(self):
+    def get_jax_model(self):
         """Get Model data as a tree of NumPy arrays, X"""
-        return _get_model_state(self.m, self._keys)
+        return _get_jax_model(self.m, self._keys)
 
 
 class JAXScoreInfo:
@@ -128,9 +128,9 @@ class JAXScoreInfo:
         self.score_func = score_func
         self._keys = frozenset(keys or ())
 
-    def get_model_state(self, m):
+    def get_jax_model(self, m):
         """Get Model data for the given Model as a tree of NumPy arrays, X"""
-        return _get_model_state(m, self._keys)
+        return _get_jax_model(m, self._keys)
 
 
 class JAXScoreStateInfo:
@@ -138,11 +138,11 @@ class JAXScoreStateInfo:
 
        These objects are returned by ScoreState._get_jax() (usually using
        the helper function ScoreState._wrap_jax()), and can be used to
-       modify the model state using JAX.
+       modify the JAX Model.
 
        @param m The IMP::Model that apply_func acts on
-       @param apply_func A JAX function that, given the current model
-                         state, returns a new model state.
+       @param apply_func A JAX function that, given the current JAX Model,
+                         returns a new JAX Model.
        @param keys If given, a list of particle attribute Keys that the
                    ScoreState uses (other than xyz and r), such
                    as mass."""
@@ -151,9 +151,9 @@ class JAXScoreStateInfo:
         self.apply_func = apply_func
         self._keys = frozenset(keys or ())
 
-    def get_model_state(self):
+    def get_jax_model(self):
         """Get Model data as a tree of NumPy arrays, X"""
-        return _get_model_state(self.m, self._keys)
+        return _get_jax_model(self.m, self._keys)
 
 
 class JAXModifierInfo:
@@ -172,15 +172,16 @@ class JAXOptimizerInfo:
 
        These public members are available:
 
-       `init_func`: a JAX function which, given a model state (see
-           get_model_state), creates and returns an initial optimizer state.
-           This may just be the model state, or may add scores and statistics
-           used by the optimizer.
-       `score_func`: a JAX function which, given the model state, applies
+       `init_func`: a JAX function which, given a JAX Model (see
+           get_jax_model), creates and returns an initial JAX Optimizer
+           object. This includes the JAX model, and may add scores,
+           statistics, or any other persistent state used by the optimizer.
+       `score_func`: a JAX function which, given the JAX Model, applies
            any ScoreStates (aka constraints) and returns its score and a
-           new model state.
-       `apply_func`: a JAX function which, given an optimizer state, performs
-           one step of optimization and returns a new optimizer state.
+           new JAX Model.
+       `apply_func`: a JAX function which, given a JAX Optimizer object,
+           performs one step of optimization and returns a new JAX Optimizer
+           object.
     """
 
     def __init__(self, optimizer):
@@ -203,12 +204,12 @@ class JAXOptimizerInfo:
                 jax_optstates.append(j)
         return jax_optstates
 
-    def get_model_state(self):
+    def get_jax_model(self):
         """Get Model data as a tree of NumPy arrays, X"""
-        # By default just return the ScoringFunction's model state
+        # By default just return the model from the ScoringFunction
         # todo: add any keys used by ScoreStates
         ji = self._sf._get_jax()
-        return ji.get_model_state()
+        return ji.get_jax_model()
 
 
 class JAXOptimizerStateInfo:
@@ -218,10 +219,11 @@ class JAXOptimizerStateInfo:
 
        These public members are available:
 
-       `init_func`: a JAX function which, given an optimizer state,
-           returns a (possibly modified) optimizer state.
-       `apply_func`: a JAX function which, given an optimizer state, does
-           the JAX equivalent of do_update() and returns a new optimizer state.
+       `init_func`: a JAX function which, given a JAX Optimizer object,
+           stores any needed OptimizerState persistent state in the
+           object, and then returns the JAX Optimizer.
+       `apply_func`: a JAX function which, given a JAX Optimizer, does
+           the JAX equivalent of do_update() and returns a new JAX Optimizer.
     """
     def __init__(self, optstate, init_func, apply_func):
         self.period = optstate.get_period()

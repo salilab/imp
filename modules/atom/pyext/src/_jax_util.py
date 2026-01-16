@@ -29,17 +29,17 @@ def _propagate_velocities(X, indexes, mass, time_step):
 
 @jax.tree_util.register_dataclass
 @dataclass
-class _MolecularDynamicsState:
+class _MolecularDynamics:
     """Track the state of a MolecularDynamics optimization using JAX"""
 
-    # Current model state
+    # Current JAX Model
     X: dict
     # Number of steps taken
     steps: int
     # JAX random number key
     rkey: jax.Array
-    # Any state used by OptimizerStates. Each OptimizerState's _get_jax()
-    # method is given a unique index into this list.
+    # Any persistent state used by OptimizerStates. Each OptimizerState's
+    # _get_jax() method is given a unique index into this list.
     optimizer_states: list
     # Indexes of all particles subject to MD
     simulation_indexes: jax.Array
@@ -71,7 +71,7 @@ class _MolecularDynamicsState:
 class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     def __init__(self, md):
         super().__init__(md)
-        # score_func returns both score and a modified model state, but
+        # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
         deriv_func = jax.grad(lambda X: self.score_func(X)[0])
         velocity_cap = md.get_velocity_cap()
@@ -85,7 +85,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
         def init_func(X, key):
             X["xyz'"] = deriv_func(X)["xyz"]
-            s = _MolecularDynamicsState(
+            s = _MolecularDynamics(
                 X=X, steps=0, optimizer_states=[None] * len(jax_optstates),
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
@@ -121,8 +121,8 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         # Force MolecularDynamics to create linvel for all particles
         _ = md.get_simulation_particle_indexes()
 
-    def get_model_state(self):
-        X = super().get_model_state()
+    def get_jax_model(self):
+        X = super().get_jax_model()
         m = self._opt.get_model()
         X['mass'] = m.get_floats_numpy(IMP.atom.Mass.get_mass_key())
         X['linvel'] = jax.numpy.array(
@@ -143,7 +143,7 @@ def _md_optimize(md, max_steps):
         lambda X: jax.lax.fori_loop(0, inner_steps,
                                     lambda i, X: ji.apply_func(X), X))
 
-    md_state = init_func(ji.get_model_state(),
+    md_state = init_func(ji.get_jax_model(),
                          key=IMP._jax_util.get_random_key())
     m = md.get_model()
     linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())

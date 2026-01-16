@@ -617,8 +617,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(id(newm), id(m))
 
     @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_get_model_state_rigid_bodies(self):
-        """Test _get_model_state with rigid bodies"""
+    def test_get_jax_model_rigid_bodies(self):
+        """Test _get_jax_model with rigid bodies"""
         import IMP._jax_util
         m1 = IMP.Model()
         p1 = IMP.Particle(m1)
@@ -636,7 +636,7 @@ class Tests(IMP.test.TestCase):
         d3.set_radius(4)
         rb4 = IMP.core.RigidBody.setup_particle(p4, [p3])
 
-        ms = IMP._jax_util._get_model_state(m1, ('rigid_bodies',))
+        ms = IMP._jax_util._get_jax_model(m1, ('rigid_bodies',))
         rbs = ms['rigid_bodies']
         # 2 rigid bodies
         self.assertEqual(len(rbs.quaternion), 2)

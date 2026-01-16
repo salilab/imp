@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         c = IMP.example.ExampleConstraint(p)
         ji = c._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         s = jax.jit(ji.apply_func)
         self.assertEqual(X['Constraint key'][0], 0)
         X = s(X)

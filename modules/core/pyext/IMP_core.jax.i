@@ -189,9 +189,12 @@
                   This object may be the key itself, or any other Python object
                   that JAX understands.
            @param propose_func a JAX function which is called with the current
-                  model state and the mover's persistent state object.
-                  It should return a new model state, a new persistent state,
-                  and the proposal ratio.
+                  JAX Model and the mover's persistent state object.
+                  It should return a new JAX Model with the move applied,
+                  a new persistent state, and the proposal ratio. If the move
+                  is rejected then the new JAX Model will be discarded.
+                  However, the mover's persistent state is updated for both
+                  accepted and rejected moves.
         """
         from IMP.core._jax_util import JAXMoverInfo
         return JAXMoverInfo(init_func, propose_func)
@@ -228,7 +231,7 @@
         import jax.random
         import jax.lax
         import functools
-        from IMP.core._jax_util import _SerialMoverState
+        from IMP.core._jax_util import _SerialMover
         movers = [m.get_derived_object()._get_jax()
                   for m in self.get_movers()]
 
@@ -247,7 +250,7 @@
             for m in movers:
                 key, subkey = jax.random.split(key)
                 mover_state.append(m.init_func(subkey))
-            return _SerialMoverState(imov=-1, mover_state=mover_state)
+            return _SerialMover(imov=-1, mover_state=mover_state)
 
         def propose_func(X, sms):
             sms.imov = jax.lax.min(sms.imov + 1, len(movers) - 1)

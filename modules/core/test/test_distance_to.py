@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
 
         ji = sf._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         # Compare JAX with IMP C++ implementation
         self.assertAlmostEqual(j(X), sf.evaluate(False), delta=0.01)
@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.core.SingletonRestraint(m, s, p)
 
         ji = r._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         # Compare JAX with IMP C++ implementation
         self.assertAlmostEqual(j(X), r.evaluate(False), delta=0.01)

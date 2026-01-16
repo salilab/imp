@@ -173,7 +173,7 @@ class Tests(IMP.test.TestCase):
         # Run with JAX code, low level
         make_md()
         ji = self.md._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
 
         jit_init_func = jax.jit(ji.init_func)
         md_state = jit_init_func(X, key=jax.random.key(42))
@@ -434,7 +434,7 @@ class Tests(IMP.test.TestCase):
         # Low level
         make_md()
         ji = self.md._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         jit_init_func = jax.jit(ji.init_func)
         md_state = jit_init_func(X, key=jax.random.key(42))
 

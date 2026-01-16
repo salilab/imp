@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         sf = r.create_scoring_function()
 
         ji = sf._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 552.0, delta=0.1)
 

@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         p = IMP.example.ExamplePairScore(2.0, 10.0)
 
         ji = p._get_jax()
-        X = ji.get_model_state(m)
+        X = ji.get_jax_model(m)
         f = jax.jit(ji.score_func)
         self.assertAlmostEqual(f(X, jnp.array([[p1, p2]])), 51.08, delta=0.01)
 

@@ -6,7 +6,7 @@
             with other model- and restraint-specific information.
 
             @param score_func A function implemented using JAX that takes
-                   a single argument (the current model state) and returns
+                   a single argument (the current JAX Model) and returns
                    the score of the restraint.
             @param keys If given, a set of IMP::Key objects describing Model
                    attributes (other than xyz and radius) that the restraint
@@ -21,7 +21,7 @@
         """Return a JAX implementation of this Restraint.
            Implement this method in a Restraint subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
-           that scores the current model state. See also _wrap_jax.
+           that scores the current JAX Model. See also _wrap_jax.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
@@ -31,7 +31,7 @@
   %pythoncode %{
     def _get_jax(self):
         value = self.get_value()
-        # We always return `value` regardless of the model state
+        # We always return `value` regardless of the JAX Model
         return self._wrap_jax(lambda X: value)
   %}
 }
@@ -44,7 +44,7 @@
            with other score-specific information.
 
            @param score_func A function implemented using JAX that takes
-                  two arguments (the current model state, and the
+                  two arguments (the current JAX Model, and the
                   ParticlePairIndexes to act on) and returns the total
                   score (for all indexes).
            @param keys Model attributes used by the PairScore.
@@ -57,7 +57,7 @@
         """Return a JAX implementation of this PairScore.
            Implement this method in a PairScore subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
-           that scores the current model state with a given set of
+           that scores the current JAX Model with a given set of
            ParticlePairIndexes. See also _wrap_jax.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
@@ -127,15 +127,15 @@
            Use this method in _get_jax() to wrap the JAX function
            with other OptimizerState-specific information.
 
-           @param init_func a JAX function which, given an optimizer state,
+           @param init_func a JAX function which, given a JAX Optimizer,
                   does any necessary setup and returns a (possibly modified)
-                  optimizer state. If any OptimizerState-specific
+                  JAX Optimizer. If any OptimizerState-specific
                   persistent state is needed, it can be stored in
-                  `state.optimizer_states[state_index]` and later retrieved or
+                  `opt.optimizer_states[state_index]` and later retrieved or
                   modified in apply_func.
-           @param apply_func a JAX function which, given an optimizer state,
+           @param apply_func a JAX function which, given a JAX Optimizer,
                   does the JAX equivalent of do_update() and returns a new
-                  optimizer state.
+                  JAX Optimizer.
         """
         from IMP._jax_util import JAXOptimizerStateInfo
         return JAXOptimizerStateInfo(self, init_func, apply_func)
@@ -166,8 +166,9 @@
             with other model- and ScoreState-specific information.
 
             @param apply_func A function implemented using JAX that takes
-                   a single argument (the current model state) and returns
-                   a new model state.
+                   a single argument (the current JAX Model) and returns
+                   a new JAX Model with the ScoreState's transformation
+                   applied.
             @param keys If given, a set of IMP::Key objects describing Model
                    attributes (other than xyz and radius) that the ScoreState
                    uses.
@@ -180,7 +181,7 @@
         """Return a JAX implementation of this ScoreState.
            Implement this method in a ScoreState subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
-           that modifies the model state. See also _wrap_jax.
+           that modifies the JAX Model. See also _wrap_jax.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}

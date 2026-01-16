@@ -266,7 +266,7 @@ class Tests(IMP.test.TestCase):
         m, mc = _setup_jax_mc()
         # Initialize, get score of starting configuration
         ji = mc._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         f = jax.jit(ji.init_func)
         mc_state = f(X, key=jax.random.key(42))
 
@@ -318,7 +318,7 @@ class Tests(IMP.test.TestCase):
         # Low level
         m, mc = make_mc()
         ji = mc._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         f = jax.jit(ji.init_func)
         mc_state = f(X, key=jax.random.key(42))
         j = jax.jit(

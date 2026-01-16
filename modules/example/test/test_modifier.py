@@ -90,7 +90,7 @@ class Tests(IMP.test.TestCase):
                                         IMP.algebra.Vector3D(-4, 13, 28))
         s = IMP.example.ExampleSingletonModifier(bb)
         ji = s._get_jax(m, p)
-        X = IMP._jax_util._get_model_state(m, ji._keys)
+        X = IMP._jax_util._get_jax_model(m, ji._keys)
         f = jax.jit(ji.apply_func)
         X = f(X, p)
         self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
         c = IMP.core.SingletonConstraint(s, None, m, p)
 
         ji = c._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         f = jax.jit(ji.apply_func)
         X = f(X)
         self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
         c = IMP.container.SingletonsConstraint(s, None, lsc)
 
         ji = c._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         f = jax.jit(ji.apply_func)
         X = f(X)
         self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),

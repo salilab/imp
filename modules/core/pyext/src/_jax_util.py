@@ -30,16 +30,16 @@ class JAXMoverInfo:
 
 @jax.tree_util.register_dataclass
 @dataclass
-class _MonteCarloState:
+class _MonteCarlo:
     """Track the state of a MonteCarlo optimization using JAX"""
 
-    # Current model state
+    # Current JAX Model
     X: dict
-    # Score of the current model state
+    # Score of the current JAX Model
     score: float
-    # Best model state seen (if return_best is turned on)
+    # Best JAX Model seen (if return_best is turned on)
     best_X: dict
-    # Score of the best model state seen
+    # Score of the best JAX model seen
     best_score: float
     # Total number of accepted steps (upward + downward)
     accepted_steps: int
@@ -51,10 +51,10 @@ class _MonteCarloState:
     rejected_steps: int
     # JAX random number key
     rkey: jax.Array
-    # Any state used by Movers
+    # Any persistent state used by Movers
     mover_state: list
-    # Any state used by OptimizerStates. Each OptimizerState's _get_jax()
-    # method is given a unique index into this list.
+    # Any persistent state used by OptimizerStates. Each OptimizerState's
+    # _get_jax() method is given a unique index into this list.
     optimizer_states: list
 
 
@@ -73,7 +73,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             for mover in movers:
                 key, subkey = jax.random.split(key)
                 mover_state.append(mover.init_func(subkey))
-            ms = _MonteCarloState(
+            ms = _MonteCarlo(
                 score=score, best_score=score, X=X, best_X=X,
                 accepted_steps=0, downward_steps_taken=0,
                 upward_steps_taken=0, rejected_steps=0,
@@ -195,7 +195,7 @@ def _mc_optimize(mc, max_steps):
         lambda X: jax.lax.fori_loop(0, inner_steps,
                                     lambda i, X: ji.apply_func(X), X))
 
-    mc_state = init_func(ji.get_model_state(),
+    mc_state = init_func(ji.get_jax_model(),
                          key=IMP._jax_util.get_random_key())
 
     m = mc.get_model()
@@ -210,7 +210,7 @@ def _mc_optimize(mc, max_steps):
     _sync_stats(mc, mc_state)
 
     if mc.get_return_best():
-        # Resync IMP Model arrays with JAX best model state
+        # Resync IMP Model arrays with best JAX Model
         xyz[:] = mc_state.best_X['xyz']
         return mc.get_best_accepted_energy()
     else:
@@ -219,7 +219,7 @@ def _mc_optimize(mc, max_steps):
 
 @jax.tree_util.register_dataclass
 @dataclass
-class _SerialMoverState:
+class _SerialMover:
     """Persistent state for a JAX SerialMover"""
 
     # Mover index to delegate to

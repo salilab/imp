@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
             d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(1,2,3))
             r = typ(m, p, 10.)
             ji = r._get_jax()
-            X = ji.get_model_state()
+            X = ji.get_jax_model()
             s = jax.jit(ji.score_func)
             self.assertAlmostEqual(s(X), 45.0, delta=1e-3)
             g = jax.jit(jax.grad(ji.score_func))

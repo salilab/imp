@@ -185,14 +185,14 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         # TestJAXKeyRestraint should request the 'id' attribute
         ji = sf._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         self.assertEqual(sorted(X.keys()), ['id', 'r', 'xyz'])
 
         r = IMP._ConstRestraint(m, [p], 42)
         sf = IMP.core.RestraintsScoringFunction([r])
         # ConstRestraint doesn't request any keys; we should get the default
         ji = sf._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         self.assertEqual(sorted(X.keys()), ['r', 'xyz'])
 
     @IMP.test.skipIf(jax is None, "No JAX support")
@@ -204,7 +204,7 @@ class Tests(IMP.test.TestCase):
         r2 = IMP._ConstRestraint(m, [p], 18)
         sf = IMP.core.RestraintsScoringFunction([r1, r2])
         ji = sf._get_jax()
-        X = ji.get_model_state()
+        X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 60.0, delta=0.1)
 

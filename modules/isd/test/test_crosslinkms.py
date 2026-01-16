@@ -168,7 +168,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         dr_lp.add_contribution((p1, p2), (sigma1, sigma2), psi)
         if jax:
             ji = dr_lp._get_jax()
-            X = ji.get_model_state()
+            X = ji.get_jax_model()
             jax_score_func = jax.jit(ji.score_func)
 
         testdr= CrossLinkMS(length, slope)
@@ -359,7 +359,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
         if jax:
             ji = dr_lp._get_jax()
-            X = ji.get_model_state()
+            X = ji.get_jax_model()
             jax_score_func = jax.jit(ji.score_func)
 
         testdr= CrossLinkMS(length, slope)
