@@ -58,17 +58,20 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation"""
-        m = IMP.Model()
-        p = m.add_particle("p")
-        d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(1,2,3))
-        r = IMP.example.ExampleRestraint(m, p, 10.)
-        ji = r._get_jax()
-        X = ji.get_model_state()
-        s = jax.jit(ji.score_func)
-        self.assertAlmostEqual(s(X), 45.0, delta=1e-3)
-        g = jax.jit(jax.grad(ji.score_func))
-        self.assertLess(IMP.algebra.get_distance(
-            g(X)['xyz'][0], IMP.algebra.Vector3D(0,0,30)), 1e-4)
+        # Test both classes: C++ and Python
+        for typ in (IMP.example.ExampleRestraint,
+                    IMP.example.PythonExampleRestraint):
+            m = IMP.Model()
+            p = m.add_particle("p")
+            d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(1,2,3))
+            r = typ(m, p, 10.)
+            ji = r._get_jax()
+            X = ji.get_model_state()
+            s = jax.jit(ji.score_func)
+            self.assertAlmostEqual(s(X), 45.0, delta=1e-3)
+            g = jax.jit(jax.grad(ji.score_func))
+            self.assertLess(IMP.algebra.get_distance(
+                g(X)['xyz'][0], IMP.algebra.Vector3D(0,0,30)), 1e-4)
 
 
 if __name__ == '__main__':
