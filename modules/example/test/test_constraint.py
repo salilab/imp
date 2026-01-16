@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         k = IMP.IntKey("Constraint key")
         m = IMP.Model()
         p = IMP.Particle(m)
-        c = IMP.example.PythonExampleConstraint(p)
+        c = IMP.example.ExampleConstraint(p)
         ji = c._get_jax()
         X = ji.get_model_state()
         s = jax.jit(ji.apply_func)

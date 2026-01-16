@@ -88,7 +88,7 @@ class Tests(IMP.test.TestCase):
         p = m.add_particle("p1")
         d = IMP.core.XYZ.setup_particle(m, p,
                                         IMP.algebra.Vector3D(-4, 13, 28))
-        s = IMP.example.PythonExampleSingletonModifier(bb)
+        s = IMP.example.ExampleSingletonModifier(bb)
         ji = s._get_jax(m, p)
         X = IMP._jax_util._get_model_state(m, ji._keys)
         f = jax.jit(ji.apply_func)
@@ -107,7 +107,7 @@ class Tests(IMP.test.TestCase):
         p = m.add_particle("p1")
         d = IMP.core.XYZ.setup_particle(m, p,
                                         IMP.algebra.Vector3D(-4, 13, 28))
-        s = IMP.example.PythonExampleSingletonModifier(bb)
+        s = IMP.example.ExampleSingletonModifier(bb)
         c = IMP.core.SingletonConstraint(s, None, m, p)
 
         ji = c._get_jax()
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
         p2 = m.add_particle("p2")
         d2 = IMP.core.XYZ.setup_particle(m, p2,
                                          IMP.algebra.Vector3D(3, 20, 42))
-        s = IMP.example.PythonExampleSingletonModifier(bb)
+        s = IMP.example.ExampleSingletonModifier(bb)
         lsc = IMP.container.ListSingletonContainer(m, [p1, p2])
         c = IMP.container.SingletonsConstraint(s, None, lsc)
 

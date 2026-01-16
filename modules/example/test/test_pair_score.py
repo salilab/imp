@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         p2 = m.add_particle("p2")
         d1 = IMP.core.XYZ.setup_particle(m, p1, IMP.algebra.Vector3D(1,2,3))
         d2 = IMP.core.XYZ.setup_particle(m, p2, IMP.algebra.Vector3D(4,5,6))
-        p = IMP.example.PythonExamplePairScore(2.0, 10.0)
+        p = IMP.example.ExamplePairScore(2.0, 10.0)
 
         ji = p._get_jax()
         X = ji.get_model_state(m)

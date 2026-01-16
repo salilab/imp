@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation"""
-        u = IMP.example.PythonExampleUnaryFunction(2.0, 10.0)
+        u = IMP.example.ExampleUnaryFunction(2.0, 10.0)
         f = u._get_jax()
         score_f = jax.jit(f)
         deriv_f = jax.jit(jax.grad(f))

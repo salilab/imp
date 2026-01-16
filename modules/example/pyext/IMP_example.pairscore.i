@@ -24,17 +24,6 @@ class PythonExamplePairScore(IMP.PairScore):
             d1.add_to_derivatives(-udelta * dv, da)
         return score
 
-    def _get_jax(self):
-        """Implementation of the score using JAX"""
-        import jax.numpy as jnp
-        import functools
-        def pair_score(X, indexes, x0, k):
-            xyzs = X['xyz'][indexes]
-            diff = jnp.linalg.norm(xyzs[:,0] - xyzs[:,1], axis=1) - x0
-            return 0.5 * k * diff * diff
-        f = functools.partial(pair_score, x0=self.x0, k=self.k)
-        return self._wrap_jax(f)
-
     def do_get_inputs(self, m, pis):
         return IMP.get_particles(m, pis)
 

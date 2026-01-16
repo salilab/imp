@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p = m.add_particle("p")
         d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(1,2,3))
-        r = IMP.example.PythonExampleRestraint(m, p, 10.)
+        r = IMP.example.ExampleRestraint(m, p, 10.)
         ji = r._get_jax()
         X = ji.get_model_state()
         s = jax.jit(ji.score_func)

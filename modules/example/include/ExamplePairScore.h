@@ -2,7 +2,7 @@
  *  \file IMP/example/ExamplePairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_PAIR_SCORE_H
@@ -29,6 +29,10 @@ class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
  public:
   ExamplePairScore(double x0, double k);
   ExamplePairScore() {}
+
+  double get_mean() const { return x0_; }
+  double get_force_constant() const { return k_; }
+
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const override;

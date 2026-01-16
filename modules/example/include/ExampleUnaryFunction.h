@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleUnaryFunction.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,6 +37,9 @@ class IMPEXAMPLEEXPORT ExampleUnaryFunction : public UnaryFunction {
   }
 
   ExampleUnaryFunction() {}
+
+  Float get_center() const { return center_; }
+  Float get_force_constant() const { return k_; }
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
       override {

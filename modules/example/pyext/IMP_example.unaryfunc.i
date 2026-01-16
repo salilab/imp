@@ -14,10 +14,4 @@ class PythonExampleUnaryFunction(IMP.UnaryFunction):
     def evaluate(self, feature):
         return .5 * self.k * (feature - self.center) * (feature - self.center)
 
-    def _get_jax(self):
-        """Implementation of the unary function using JAX"""
-        import functools
-        def score(feature, center, k):
-            return 0.5 * k * (feature - center) ** 2
-        return functools.partial(score, center=self.center, k=self.k)
 %}

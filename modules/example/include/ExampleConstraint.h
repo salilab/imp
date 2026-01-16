@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleConstraint.h
  *  \brief A restraint on a list of particle pairs.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,6 +28,8 @@ class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
  public:
   ExampleConstraint(Particle *p);
   ExampleConstraint() {}
+
+  ParticleIndex get_index() const { return p_; }
 
   virtual void do_update_attributes() override;
   virtual void do_update_derivatives(DerivativeAccumulator *da) override;
