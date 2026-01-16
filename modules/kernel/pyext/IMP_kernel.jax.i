@@ -192,7 +192,7 @@
         from IMP._jax_util import JAXModifierInfo
         return JAXModifierInfo(apply_func=apply_func, keys=keys)
 
-    def _get_jax(self):
+    def _get_jax(self, m, index=None):
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
 }
