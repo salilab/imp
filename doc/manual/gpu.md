@@ -15,15 +15,15 @@ The JAX code is still in active development and many caveats apply:
  - Only a small number of scoring function terms and optimizers currently
    have JAX implementations. Trying to use others will result in a
    Python NotImplementedError exception.
- - Most IMP::ScoreState classes do not yet work - this includes common
-   applications such as rigid bodies and close pair containers.
- - Molecular dynamics thermostats do not yet work, although most other
-   IMP::OptimizerState classes should.
+ - Some IMP::ScoreState (aka constraint) classes do not yet work - this
+   includes common applications such as rigid bodies and close pair containers.
  - There is currently no PMI support for JAX.
 
 To add JAX support for a particular IMP::Restraint, IMP::PairScore,
 IMP::core::MonteCarloMover, or IMP::OptimizerState,
-implement the `_get_jax()` method.
+implement the `_get_jax()` method. See the
+[IMP.example module](https://github.com/salilab/imp/blob/develop/modules/example/pyext/IMP_example.jax.i)
+for some examples
 
 Note that the JAX code will also run on a CPU. In some circumstances the
 JAX code will run faster than the native %IMP C++ code on a CPU, so it may
