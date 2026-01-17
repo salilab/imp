@@ -57,6 +57,31 @@
   %}
 }
 
+%extend IMP::core::GenericBoundingBox3DSingletonScore<UnaryFunction> {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        import functools
+        def score(jm, indexes, box_min, box_max, uf):
+            xyzs = jm['xyz'][indexes]
+            # This calculates the distance and the score for every point,
+            # even those inside the box. IMP just returns zero for points
+            # inside the box, skipping the distance calculation.
+            # The implementation here is *probably* faster on a GPU since
+            # we reduce the use of conditionals, and JAX will likely skip
+            # the sqrt if uf is a harmonic, but this should be benchmarked.
+            drs = jnp.linalg.norm(
+                xyzs - jnp.clip(xyzs, box_min, box_max), axis=1)
+            return uf(drs)
+        uf = self.get_unary_function().get_derived_object()
+        bb = self.get_bounding_box()
+        f = functools.partial(score, box_min=jnp.asarray(bb.get_corner(0)),
+                              box_max=jnp.asarray(bb.get_corner(1)),
+                              uf=uf._get_jax())
+        return self._wrap_jax(f)
+  %}
+}
+
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
     def _get_jax(self):
