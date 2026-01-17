@@ -141,7 +141,7 @@ def _md_optimize(md, max_steps):
     score_func = jax.jit(ji.score_func)
     apply_func = jax.jit(
         lambda jm: jax.lax.fori_loop(0, inner_steps,
-                                    lambda i, jm: ji.apply_func(jm), jm))
+                                     lambda i, jm: ji.apply_func(jm), jm))
 
     md_state = init_func(ji.get_jax_model(),
                          key=IMP._jax_util.get_random_key())
