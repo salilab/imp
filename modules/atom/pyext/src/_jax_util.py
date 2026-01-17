@@ -10,20 +10,20 @@ import IMP._jax_util
 _deriv_to_acceleration = -4.1868e-4
 
 
-def _propagate_coordinates(X, indexes, mass, time_step, velocity_cap=None):
-    linvel = X['linvel'].at[indexes]
-    dcoord = X["xyz'"][indexes]
+def _propagate_coordinates(jm, indexes, mass, time_step, velocity_cap=None):
+    linvel = jm['linvel'].at[indexes]
+    dcoord = jm["xyz'"][indexes]
     v = linvel.get() + time_step * 0.5 * dcoord * _deriv_to_acceleration / mass
     if velocity_cap is not None:
         v = jnp.clip(v, -velocity_cap, velocity_cap)
-    X['linvel'] = linvel.set(v)
-    X['xyz'] = X['xyz'].at[indexes].add(v * time_step)
+    jm['linvel'] = linvel.set(v)
+    jm['xyz'] = jm['xyz'].at[indexes].add(v * time_step)
 
 
-def _propagate_velocities(X, indexes, mass, time_step):
-    linvel = X['linvel'].at[indexes]
-    dcoord = X["xyz'"][indexes]
-    X['linvel'] = linvel.add(
+def _propagate_velocities(jm, indexes, mass, time_step):
+    linvel = jm['linvel'].at[indexes]
+    dcoord = jm["xyz'"][indexes]
+    jm['linvel'] = linvel.add(
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
 
@@ -33,7 +33,7 @@ class _MolecularDynamics:
     """Track the state of a MolecularDynamics optimization using JAX"""
 
     # Current JAX Model
-    X: dict
+    jm: dict
     # Number of steps taken
     steps: int
     # JAX random number key
@@ -55,8 +55,8 @@ class _MolecularDynamics:
         conversion = 1.0 / 4.1868e-4
 
         indexes = self.simulation_indexes
-        velocity = self.X['linvel'][indexes]
-        mass = self.X['mass'][indexes]
+        velocity = self.jm['linvel'][indexes]
+        mass = self.jm['mass'][indexes]
         return 0.5 * conversion * jnp.sum(
             mass * jnp.sum(jnp.square(velocity), axis=1))
 
@@ -73,7 +73,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         super().__init__(md)
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
-        deriv_func = jax.grad(lambda X: self.score_func(X)[0])
+        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
         velocity_cap = md.get_velocity_cap()
         # Would like to use math.isfinite here but it is not guaranteed
         # that a C++ "infinite" value is also considered to be math.inf
@@ -83,10 +83,10 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             velocity_cap = None
         jax_optstates = self._setup_jax_optimizer_states()
 
-        def init_func(X, key):
-            X["xyz'"] = deriv_func(X)["xyz"]
+        def init_func(jm, key):
+            jm["xyz'"] = deriv_func(jm)["xyz"]
             s = _MolecularDynamics(
-                X=X, steps=0, optimizer_states=[None] * len(jax_optstates),
+                jm=jm, steps=0, optimizer_states=[None] * len(jax_optstates),
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
                 rkey=key, time_step=md.get_maximum_time_step())
@@ -95,20 +95,20 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             return s
 
         def apply_func(ms):
-            X = ms.X
+            jm = ms.jm
             indexes = ms.simulation_indexes
             ms.steps += 1
-            mass = X['mass'][indexes]
+            mass = jm['mass'][indexes]
             # Make mass 2D so propagate functions can broadcast it over
             # the 2D coordinate/velocity arrays
             mass = mass.reshape(mass.shape[0], 1)
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
-            _propagate_coordinates(X, indexes, mass, ms.time_step,
+            _propagate_coordinates(jm, indexes, mass, ms.time_step,
                                    velocity_cap)
             # Get new derivatives at t+(delta t)
-            X["xyz'"] = deriv_func(X)["xyz"]
+            jm["xyz'"] = deriv_func(jm)["xyz"]
             # Get velocities at t+(delta t)
-            _propagate_velocities(X, indexes, mass, ms.time_step)
+            _propagate_velocities(jm, indexes, mass, ms.time_step)
             steps = ms.steps
             for js in jax_optstates:
                 ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
@@ -122,13 +122,13 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         _ = md.get_simulation_particle_indexes()
 
     def get_jax_model(self):
-        X = super().get_jax_model()
+        jm = super().get_jax_model()
         m = self._opt.get_model()
-        X['mass'] = m.get_floats_numpy(IMP.atom.Mass.get_mass_key())
-        X['linvel'] = jax.numpy.array(
+        jm['mass'] = m.get_floats_numpy(IMP.atom.Mass.get_mass_key())
+        jm['linvel'] = jax.numpy.array(
             m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key()))
-        X['xyz'] = jax.numpy.array(X['xyz'])
-        return X
+        jm['xyz'] = jax.numpy.array(jm['xyz'])
+        return jm
 
 
 def _md_optimize(md, max_steps):
@@ -140,8 +140,8 @@ def _md_optimize(md, max_steps):
     init_func = jax.jit(ji.init_func)
     score_func = jax.jit(ji.score_func)
     apply_func = jax.jit(
-        lambda X: jax.lax.fori_loop(0, inner_steps,
-                                    lambda i, X: ji.apply_func(X), X))
+        lambda jm: jax.lax.fori_loop(0, inner_steps,
+                                    lambda i, jm: ji.apply_func(jm), jm))
 
     md_state = init_func(ji.get_jax_model(),
                          key=IMP._jax_util.get_random_key())
@@ -153,9 +153,9 @@ def _md_optimize(md, max_steps):
     for _ in jopt.loop():
         md_state = apply_func(md_state)
         # Resync IMP Model arrays with JAX
-        X = md_state.X
-        linvel[:] = X['linvel']
-        xyz[:] = X['xyz']
-        dxyz[:] = X["xyz'"]
-    score, md_state.X = score_func(md_state.X)
+        jm = md_state.jm
+        linvel[:] = jm['linvel']
+        xyz[:] = jm['xyz']
+        dxyz[:] = jm["xyz'"]
+    score, md_state.jm = score_func(md_state.jm)
     return score

@@ -44,8 +44,8 @@ class XTransRestraint(IMP.Restraint):
         import jax.numpy as jnp
         indexes = self.get_model().get_particle_indexes()
         strength = self.strength
-        def jax_restraint(X):
-            xyzs = X['xyz'][indexes]
+        def jax_restraint(jm):
+            xyzs = jm['xyz'][indexes]
             return jnp.sum(xyzs[:,0] * strength)
         return self._wrap_jax(jax_restraint)
 
@@ -178,8 +178,8 @@ class Tests(IMP.test.TestCase):
         jit_init_func = jax.jit(ji.init_func)
         md_state = jit_init_func(X, key=jax.random.key(42))
 
-        def run_opt(X, apply_func, nsteps):
-            return jax.lax.fori_loop(0, nsteps, apply_func, X)
+        def run_opt(jm, apply_func, nsteps):
+            return jax.lax.fori_loop(0, nsteps, apply_func, jm)
 
         jit_apply_func = jax.jit(functools.partial(
             run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=50))
@@ -188,7 +188,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(md_state.time_step,
                                self.md.get_maximum_time_step(), delta=0.1)
         # Final coordinates should match those from C++
-        self.assertLess((final_cpp - md_state.X['xyz'][0]).get_magnitude(),
+        self.assertLess((final_cpp - md_state.jm['xyz'][0]).get_magnitude(),
                         1e-3)
         # Final kinetic energy and temperature should match that from C++
         ke = md_state.get_kinetic_energy()

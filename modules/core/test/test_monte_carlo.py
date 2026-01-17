@@ -282,8 +282,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(mc_state.rejected_steps
                          + mc_state.accepted_steps, 2000)
         # Particles should now be close
-        newX = mc_state.X
-        self.assertLess(jnp.linalg.norm(newX["xyz"][1] - newX["xyz"][0]), 0.5)
+        new_jm = mc_state.jm
+        self.assertLess(jnp.linalg.norm(new_jm["xyz"][1] - new_jm["xyz"][0]),
+                        0.5)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_high_level(self):

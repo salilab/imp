@@ -58,13 +58,13 @@ def _get_jax_model(m, keys):
        If the key "rigid_bodies" is given, information on all of the Model's
        rigid bodies is also included."""
     xyz, r = m.get_spheres_numpy()
-    X = {"xyz": xyz, "r": r}
+    jm = {"xyz": xyz, "r": r}
     for k in keys:
         if k == 'rigid_bodies':
-            X['rigid_bodies'] = _get_rigid_bodies(m)
+            jm['rigid_bodies'] = _get_rigid_bodies(m)
         else:
-            X[k.get_string()] = m.get_numpy(k)
-    return X
+            jm[k.get_string()] = m.get_numpy(k)
+    return jm
 
 
 def _get_score_constrained(m, score_func):
@@ -75,10 +75,10 @@ def _get_score_constrained(m, score_func):
     apply_funcs = [ss.get_derived_object()._get_jax().apply_func
                    for ss in m.get_ordered_score_states()]
 
-    def score_constrained_func(X):
+    def score_constrained_func(jm):
         for f in apply_funcs:
-            X = f(X)
-        return score_func(X), X
+            jm = f(jm)
+        return score_func(jm), jm
 
     return score_constrained_func
 
@@ -103,11 +103,11 @@ class JAXRestraintInfo:
         if weight == 1.0:
             self.score_func = score_func
         else:
-            self.score_func = lambda X: weight * score_func(X)
+            self.score_func = lambda jm: weight * score_func(jm)
         self._keys = frozenset(keys or ())
 
     def get_jax_model(self):
-        """Get Model data as a tree of NumPy arrays, X"""
+        """Get Model data as a tree of NumPy arrays"""
         return _get_jax_model(self.m, self._keys)
 
 
@@ -129,7 +129,7 @@ class JAXScoreInfo:
         self._keys = frozenset(keys or ())
 
     def get_jax_model(self, m):
-        """Get Model data for the given Model as a tree of NumPy arrays, X"""
+        """Get Model data for the given Model as a tree of NumPy arrays"""
         return _get_jax_model(m, self._keys)
 
 
@@ -152,7 +152,7 @@ class JAXScoreStateInfo:
         self._keys = frozenset(keys or ())
 
     def get_jax_model(self):
-        """Get Model data as a tree of NumPy arrays, X"""
+        """Get Model data as a tree of NumPy arrays"""
         return _get_jax_model(self.m, self._keys)
 
 
@@ -205,8 +205,8 @@ class JAXOptimizerInfo:
         return jax_optstates
 
     def get_jax_model(self):
-        """Get Model data as a tree of NumPy arrays, X"""
-        # By default just return the model from the ScoringFunction
+        """Get Model data as a tree of NumPy arrays"""
+        # By default just return the Model from the ScoringFunction
         # todo: add any keys used by ScoreStates
         ji = self._sf._get_jax()
         return ji.get_jax_model()

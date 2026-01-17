@@ -18,8 +18,8 @@ class JAXMover(IMP.core.MonteCarloMover):
     def _get_jax(self):
         def init_func(key):
             return self.state
-        def propose_func(X, state):
-            return X, state + 1, self.ratio
+        def propose_func(jm, state):
+            return jm, state + 1, self.ratio
         return self._wrap_jax(init_func, propose_func)
 
 

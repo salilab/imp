@@ -32,7 +32,7 @@
     def _get_jax(self):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model
-        return self._wrap_jax(lambda X: value)
+        return self._wrap_jax(lambda jm: value)
   %}
 }
 
@@ -148,9 +148,9 @@
         jis = [r.get_derived_object()._get_jax() for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
-        def jax_sf(X):
+        def jax_sf(jm):
             if funcs:
-                return sum(f(X) for f in funcs)
+                return sum(f(jm) for f in funcs)
             else:
                 # sum([]) returns int, but we must return float
                 return 0.

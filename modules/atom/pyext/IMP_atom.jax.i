@@ -53,9 +53,9 @@
         # Function operates on a single distance + score; make it work on
         # an array instead using jax.vmap
         smoothing_function = jax.vmap(sf._get_jax())
-        def jax_pair_score(X, indexes):
-            xyzs = X['xyz'][indexes]
-            qs = X['charge'][indexes]
+        def jax_pair_score(jm, indexes):
+            xyzs = jm['xyz'][indexes]
+            qs = jm['charge'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1)
             scores = factor * jnp.prod(qs, axis=1) / drs
@@ -73,8 +73,8 @@
 
         def scale_velocities(md, tkinetic):
             scale = jnp.sqrt(temperature / tkinetic)
-            linvel = md.X['linvel'].at[md.simulation_indexes]
-            md.X['linvel'] = linvel.multiply(scale)
+            linvel = md.jm['linvel'].at[md.simulation_indexes]
+            md.jm['linvel'] = linvel.multiply(scale)
             return md
 
         def apply_func(md):

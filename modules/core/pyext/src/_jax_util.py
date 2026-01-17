@@ -16,8 +16,8 @@ def _get_jax_restraint(r):
     score_jax = ji.score_func
     indexes = jnp.array([r.get_index()])
 
-    def jax_restraint(X):
-        return jnp.sum(score_jax(X, indexes))
+    def jax_restraint(jm):
+        return jnp.sum(score_jax(jm, indexes))
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 
@@ -34,11 +34,11 @@ class _MonteCarlo:
     """Track the state of a MonteCarlo optimization using JAX"""
 
     # Current JAX Model
-    X: dict
+    jm: dict
     # Score of the current JAX Model
     score: float
     # Best JAX Model seen (if return_best is turned on)
-    best_X: dict
+    best_jm: dict
     # Score of the best JAX model seen
     best_score: float
     # Total number of accepted steps (upward + downward)
@@ -67,14 +67,14 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         return_best = mc.get_return_best()
         jax_optstates = self._setup_jax_optimizer_states()
 
-        def init_func(X, key):
-            score, X = score_func(X)
+        def init_func(jm, key):
+            score, jm = score_func(jm)
             mover_state = []
             for mover in movers:
                 key, subkey = jax.random.split(key)
                 mover_state.append(mover.init_func(subkey))
             ms = _MonteCarlo(
-                score=score, best_score=score, X=X, best_X=X,
+                score=score, best_score=score, jm=jm, best_jm=jm,
                 accepted_steps=0, downward_steps_taken=0,
                 upward_steps_taken=0, rejected_steps=0,
                 optimizer_states=[None] * len(jax_optstates),
@@ -84,13 +84,13 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             return ms
 
         def apply_func(ms):
-            new_X = ms.X.copy()
+            new_jm = ms.jm.copy()
             proposal_ratio = 1.0
             for i in range(len(movers)):
-                new_X, ms.mover_state[i], ratio = movers[i].propose_func(
-                    new_X, ms.mover_state[i])
+                new_jm, ms.mover_state[i], ratio = movers[i].propose_func(
+                    new_jm, ms.mover_state[i])
                 proposal_ratio *= ratio
-            new_score, new_X = score_func(new_X)
+            new_score, new_jm = score_func(new_jm)
 
             def update_states(ms):
                 steps = ms.accepted_steps
@@ -110,25 +110,25 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                     return downward_step_not_best(ms)
 
             def downward_step_new_best(ms):
-                # new (score,X) should replace best
+                # new (score,jm) should replace best
                 ms.score = ms.best_score = new_score
-                ms.X = ms.best_X = new_X
+                ms.jm = ms.best_jm = new_jm
                 return update_states(ms)
 
             def downward_step_not_best(ms):
                 ms.score = new_score
-                ms.X = new_X
+                ms.jm = new_jm
                 return update_states(ms)
 
             def upward_step(ms):
                 ms.upward_steps_taken += 1
                 ms.accepted_steps += 1
                 ms.score = new_score
-                ms.X = new_X
+                ms.jm = new_jm
                 return update_states(ms)
 
             def reject_step(ms):
-                # Keep X and score from previous step
+                # Keep jm and score from previous step
                 ms.rejected_steps += 1
                 return ms
 
@@ -192,8 +192,8 @@ def _mc_optimize(mc, max_steps):
     ji = mc._get_jax()
     init_func = jax.jit(ji.init_func)
     apply_func = jax.jit(
-        lambda X: jax.lax.fori_loop(0, inner_steps,
-                                    lambda i, X: ji.apply_func(X), X))
+        lambda jm: jax.lax.fori_loop(0, inner_steps,
+                                     lambda i, jm: ji.apply_func(jm), jm))
 
     mc_state = init_func(ji.get_jax_model(),
                          key=IMP._jax_util.get_random_key())
@@ -204,14 +204,14 @@ def _mc_optimize(mc, max_steps):
     for _ in jopt.loop():
         mc_state = apply_func(mc_state)
         # Resync IMP Model arrays with JAX
-        xyz[:] = mc_state.X['xyz']
+        xyz[:] = mc_state.jm['xyz']
 
     # Update IMP MonteCarlo object with stats from JAX run
     _sync_stats(mc, mc_state)
 
     if mc.get_return_best():
         # Resync IMP Model arrays with best JAX Model
-        xyz[:] = mc_state.best_X['xyz']
+        xyz[:] = mc_state.best_jm['xyz']
         return mc.get_best_accepted_energy()
     else:
         return mc.get_last_accepted_energy()

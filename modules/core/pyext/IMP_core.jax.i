@@ -46,8 +46,8 @@
     def _get_jax(self):
         import jax.numpy as jnp
         import functools
-        def score(X, indexes, point, uf):
-            xyzs = X['xyz'][indexes]
+        def score(jm, indexes, point, uf):
+            xyzs = jm['xyz'][indexes]
             drs = jnp.linalg.norm(xyzs - point, axis=1)
             return uf(drs)
         uf = self.get_unary_function().get_derived_object()
@@ -62,8 +62,8 @@
     def _get_jax(self):
         import jax.numpy as jnp
         import functools
-        def jax_harmonic_distance_pair_score(X, indexes, d, k):
-            xyzs = X['xyz'][indexes]
+        def jax_harmonic_distance_pair_score(jm, indexes, d, k):
+            xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1)
             return 0.5 * k * (d - drs)**2
@@ -78,9 +78,9 @@
     def _get_jax(self):
         import jax.numpy as jnp
         import functools
-        def jax_score(X, indexes, d, k):
-            xyzs = X['xyz'][indexes]
-            rs = X['r'][indexes]
+        def jax_score(jm, indexes, d, k):
+            xyzs = jm['xyz'][indexes]
+            rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
             return 0.5 * k * (d - drs)**2
@@ -96,8 +96,8 @@
         jis = [r.get_derived_object()._get_jax() for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
-        def jax_sf(X):
-            return sum(f(X) for f in funcs)
+        def jax_sf(jm):
+            return sum(f(jm) for f in funcs)
         return IMP._jax_util.JAXRestraintInfo(
             m=self.get_model(), score_func=jax_sf, weight=1.0, keys=keys)
   %}
@@ -141,17 +141,17 @@
             raise NotImplementedError("Only implemented for single particle")
         refined = self.get_refiner().get_refined_indexes(m, index)
 
-        def apply_func_unweighted(X, indexes):
-            xyz = X['xyz']
-            X['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0))
-            return X
+        def apply_func_unweighted(jm, indexes):
+            xyz = jm['xyz']
+            jm['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0))
+            return jm
 
-        def apply_func_weighted(X, indexes, weight_key):
-            xyz = X['xyz']
-            weights = X[weight_key][refined]
-            X['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0,
-                                                       weights=weights))
-            return X
+        def apply_func_weighted(jm, indexes, weight_key):
+            xyz = jm['xyz']
+            weights = jm[weight_key][refined]
+            jm['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0,
+                                                        weights=weights))
+            return jm
 
         keys = frozenset(self.get_keys())
         if keys != frozenset(IMP.core.XYZ.get_xyz_keys()):
@@ -215,12 +215,12 @@
         def init_func(key):
             return key
 
-        def propose_func(X, key):
+        def propose_func(jm, key):
             key, subkey = jax.random.split(key)
             v = get_random_vector_in_3d_sphere(subkey, radius)
-            newX = X.copy()
-            newX['xyz'] = X['xyz'].at[indexes].add(v)
-            return newX, key, 1.0
+            new_jm = jm.copy()
+            new_jm['xyz'] = jm['xyz'].at[indexes].add(v)
+            return new_jm, key, 1.0
         return self._wrap_jax(init_func, propose_func)
   %}
 }
@@ -235,11 +235,11 @@
         movers = [m.get_derived_object()._get_jax()
                   for m in self.get_movers()]
 
-        def sub_propose_func(X, sms, i):
+        def sub_propose_func(jm, sms, i):
             """Call the propose_func of the ith mover"""
-            X, sms.mover_state[i], ratio = movers[i].propose_func(
-                X, sms.mover_state[i])
-            return X, sms, ratio
+            jm, sms.mover_state[i], ratio = movers[i].propose_func(
+                jm, sms.mover_state[i])
+            return jm, sms, ratio
 
         sub_propose_funcs = [functools.partial(sub_propose_func, i=i)
                              for i in range(len(movers))]
@@ -252,9 +252,9 @@
                 mover_state.append(m.init_func(subkey))
             return _SerialMover(imov=-1, mover_state=mover_state)
 
-        def propose_func(X, sms):
+        def propose_func(jm, sms):
             sms.imov = jax.lax.min(sms.imov + 1, len(movers) - 1)
-            return jax.lax.switch(sms.imov, sub_propose_funcs, X, sms)
+            return jax.lax.switch(sms.imov, sub_propose_funcs, jm, sms)
         return self._wrap_jax(init_func, propose_func)
   %}
 }
