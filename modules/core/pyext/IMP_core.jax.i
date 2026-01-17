@@ -218,9 +218,8 @@
         def propose_func(jm, key):
             key, subkey = jax.random.split(key)
             v = get_random_vector_in_3d_sphere(subkey, radius)
-            new_jm = jm.copy()
-            new_jm['xyz'] = jm['xyz'].at[indexes].add(v)
-            return new_jm, key, 1.0
+            jm['xyz'] = jm['xyz'].at[indexes].add(v)
+            return jm, key, 1.0
         return self._wrap_jax(init_func, propose_func)
   %}
 }
