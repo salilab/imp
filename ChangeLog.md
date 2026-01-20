@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.24.0 - 2026-01-29 # {#changelog_2_24_0}
 - The new IMP::emseqfinder module provides a method for assigning amino acid
   residue sequence to backbone fragments traced in an input cryo-electron
   microscopy map.
@@ -19,7 +19,7 @@ ChangeLog {#changelog}
   that constitute an IMP::RestraintSet or IMP::core::RestraintsScoringFunction,
   for example.
 - There is now experimental support for writing restraints and optimizers
-  using the JAX (https://docs.jax.dev/) Python library.
+  using the [JAX](https://docs.jax.dev/) Python library.
 
 # 2.23.0 - 2025-07-10 # {#changelog_2_23_0}
 - Input structures can now be read in BinaryCIF format. The new function
