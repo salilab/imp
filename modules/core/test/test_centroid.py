@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
-        """Test JAX implememtation of centroid"""
+        """Test JAX implementation of centroid"""
         import jax.numpy as jnp
         m = IMP.Model()
         ps = IMP.core.create_xyzr_particles(m, 10, 1)

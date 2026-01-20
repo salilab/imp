@@ -117,7 +117,7 @@
            (For example, a thermostat which tries to change particle
            velocities will not function correctly.)
 
-           Alternatively, a pure JAX implememtation can be provided.
+           Alternatively, a pure JAX implementation can be provided.
            See _wrap_jax for more information.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")

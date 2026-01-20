@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
                     min_dist = IMP.algebra.get_distance(v, vecs[j])
                     closest_v = j
             print(n1, closest_v)
-            # verivy n1 is indeed nearest neighbor:
+            # verify n1 is indeed nearest neighbor:
             self.assertEqual(n1, closest_v)
 
     def test_nn_functionality(self):

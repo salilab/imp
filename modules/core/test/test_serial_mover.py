@@ -39,7 +39,7 @@ class Test(IMP.test.TestCase):
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
-        """Test JAX implememtation of SerialMover"""
+        """Test JAX implementation of SerialMover"""
         from IMP._jax_util import _get_jax_model
         m = IMP.Model()
         mvs = []
