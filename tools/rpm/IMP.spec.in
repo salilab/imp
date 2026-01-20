@@ -384,6 +384,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec sed -i -e 's
 %endif
 
 %changelog
+* Thu Jan 29 2026 Ben Webb <benjamin.webb@ucsf.edu>   2.24.0-1
+- 2.24.0 release.
+
 * Thu Jul 10 2025 Ben Webb <benjamin.webb@ucsf.edu>   2.23.0-1
 - 2.23.0 release.
 

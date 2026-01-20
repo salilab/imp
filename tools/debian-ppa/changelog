@@ -1,3 +1,9 @@
+imp (2.24.0-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * IMP 2.24.0 release
+
+ -- IMP Developers <imp@salilab.org>  Thu, 29 Jan 2026 14:52:13 -0800
+
 imp (2.23.0-1~@CODENAME@) @CODENAME@; urgency=low
 
   * IMP 2.23.0 release
