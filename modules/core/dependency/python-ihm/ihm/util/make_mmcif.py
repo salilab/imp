@@ -34,6 +34,7 @@ import argparse
 import collections
 import operator
 import warnings
+import inspect
 
 
 # All canonical atom names for each standard residue type, as per CCD.
@@ -118,7 +119,7 @@ KNOWN_ATOM_NAMES = {
 }
 
 
-def add_ihm_info(s, fix_histidines, check_atom_names):
+def add_ihm_info(s, fix_histidines, check_atom_names, fix_chem_comp):
     # Non-standard histidine names (protonation states)
     histidines = frozenset(('HIP', 'HID', 'HIE'))
 
@@ -154,6 +155,9 @@ def add_ihm_info(s, fix_histidines, check_atom_names):
                         _check_atom_names(model, check_atom_names == 'all')
     if fix_histidines:
         _fix_histidine_chem_comps(s, histidines)
+    _fix_empty_assemblies(s)
+    if fix_chem_comp:
+        _fix_incomplete_chem_comps(s)
     return s
 
 
@@ -179,20 +183,25 @@ class _ChemCompAtomHandler:
         self.atoms[comp_id].add(atom_id)
 
 
-def _get_non_std_restyp(restyp):
-    """Return CCD info for the given residue type"""
+def _read_ccd(restyp, category_handler):
+    """Read the given residue type from CCD using the given CIF handler(s)"""
     url_top = 'https://files.rcsb.org'
     url_pattern = url_top + '/pub/pdb/refdata/chem_comp/%s/%s/%s.cif'
     url = url_pattern % (restyp[-1], restyp, restyp)
-    cca = _ChemCompAtomHandler()
     try:
         with urllib.request.urlopen(url) as fh:
-            c = ihm.format.CifReader(fh,
-                                     category_handler={'_chem_comp_atom': cca})
+            c = ihm.format.CifReader(
+                fh, category_handler=category_handler)
             c.read_file()
     except urllib.error.URLError as exc:
         warnings.warn(
             "Component %s could not be found in CCD: %s" % (restyp, exc))
+
+
+def _get_non_std_restyp(restyp):
+    """Return CCD atom info for the given residue type"""
+    cca = _ChemCompAtomHandler()
+    _read_ccd(restyp, {'_chem_comp_atom': cca})
     return cca.atoms
 
 
@@ -275,7 +284,53 @@ def _get_not_modeled_residues(model):
             yield ihm.model.NotModeledResidueRange(asym, r[0], r[1])
 
 
-def add_ihm_info_one_system(fname, fix_histidines, check_atom_names):
+def _fix_empty_assemblies(s):
+    """If input file contains any assemblies with no asyms, replace with
+       the default "complete" assembly"""
+    for asmb in s.orphan_assemblies:
+        if len(asmb) == 0:
+            asmb[:] = s.asym_units
+            # Use any user-provided information for the default complete
+            # assembly too
+            if asmb.name:
+                s.complete_assembly.name = asmb.name
+            if asmb.description:
+                s.complete_assembly.description = asmb.description
+
+
+class _ChemCompHandler:
+    """Read the _chem_comp table from a CCD entry"""
+    not_in_file = omitted = unknown = None
+
+    def __call__(self, name, type, formula):
+        self.name, self.type, self.formula = name, type, formula
+
+
+def _fix_incomplete_chem_comps(s):
+    """Add any missing information to ChemComps using CCD"""
+    # Map type to ChemComp subclass. Map nonpolymer to NonPolyChemComp,
+    # not WaterChemComp
+    typmap = {x[1].type.lower(): x[1]
+              for x in inspect.getmembers(ihm, inspect.isclass)
+              if issubclass(x[1], ihm.ChemComp)
+              and x[1] is not ihm.WaterChemComp}
+    for cc in s._orphan_chem_comps:
+        if cc.type == 'other' or cc.name is None or cc.formula is None:
+            _fix_chem_comp(cc, typmap)
+
+
+def _fix_chem_comp(cc, typmap):
+    """Add missing information to a single ChemComp from CCD"""
+    h = _ChemCompHandler()
+    _read_ccd(cc.id.upper(), {'_chem_comp': h})
+    if hasattr(h, 'name') and h.name is not None:
+        cc.name = h.name
+        cc.formula = h.formula
+        cc.__class__ = typmap.get(h.type.lower(), ihm.ChemComp)
+
+
+def add_ihm_info_one_system(fname, fix_histidines, check_atom_names,
+                            fix_chem_comp):
     """Read mmCIF file `fname`, which must contain a single System, and
        return it with any missing IHM data added."""
     with open(fname) as fh:
@@ -283,7 +338,8 @@ def add_ihm_info_one_system(fname, fix_histidines, check_atom_names):
     if len(systems) != 1:
         raise ValueError("mmCIF file %s must contain exactly 1 data block "
                          "(%d found)" % (fname, len(systems)))
-    return add_ihm_info(systems[0], fix_histidines, check_atom_names)
+    return add_ihm_info(systems[0], fix_histidines, check_atom_names,
+                        fix_chem_comp)
 
 
 def combine(s, other_s):
@@ -407,6 +463,10 @@ def get_args():
                         "in standard amino acid and nucleic acid chemical "
                         "components; if 'all', also check non-standard "
                         "residue types by querying CCD (needs network access)")
+    p.add_argument("--fix_chem_comp", action='store_true',
+                   dest="fix_chem_comp",
+                   help="Add any missing data to the chem_comp table by"
+                        "querying CCD (needs network access)")
     return p.parse_args()
 
 
@@ -419,10 +479,12 @@ def main():
 
     if args.add:
         s = add_ihm_info_one_system(args.input, args.fix_histidines,
-                                    args.check_atom_names)
+                                    args.check_atom_names,
+                                    args.fix_chem_comp)
         for other in args.add:
             other_s = add_ihm_info_one_system(other, args.fix_histidines,
-                                              args.check_atom_names)
+                                              args.check_atom_names,
+                                              args.fix_chem_comp)
             combine(s, other_s)
         with open(args.output, 'w') as fhout:
             ihm.dumper.write(
@@ -433,7 +495,8 @@ def main():
             with open(args.output, 'w') as fhout:
                 ihm.dumper.write(
                     fhout, [add_ihm_info(s, args.fix_histidines,
-                                         args.check_atom_names)
+                                         args.check_atom_names,
+                                         args.fix_chem_comp)
                             for s in ihm.reader.read(fh)],
                     variant=ihm.dumper.IgnoreVariant(['_audit_conform']))
 

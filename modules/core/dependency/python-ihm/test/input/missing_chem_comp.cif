@@ -1,0 +1,10 @@
+loop_
+_chem_comp.id
+_chem_comp.type
+_chem_comp.name
+_chem_comp.formula
+_chem_comp.formula_weight
+ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
+MG . . . .
+ZN . . . .
+invalid-chem-comp . . . .

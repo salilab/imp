@@ -2365,6 +2365,51 @@ ATOM   9  C CA  . MET . . 1 ?  3.000 3.000 3.000 1.00   0.95 0 D 1
         self.assertEqual("".join(c.code_canonical for c in a1.entity.sequence),
                          "MCMS")
 
+    def test_atom_site_handler_missing_entity_nonpoly(self):
+        """Test AtomSiteHandler with missing pdbx_entity_nonpoly table"""
+        fh = StringIO("""
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.formula_weight
+_entity.pdbx_number_of_molecules
+_entity.details
+5 non-polymer syn "ADENOSINE-5'-DIPHOSPHATE" . 1 .
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+D 5 foo
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+HETATM  1  P PA . ADP D 5 . 1 ? 1.000 2.000 3.000
+""")
+        s, = ihm.reader.read(fh)
+        e, = s.entities
+        self.assertEqual(e.type, 'non-polymer')
+        # Non-polymer chem_comp should have been auto-generated from atom_site
+        self.assertEqual(len(e.sequence), 1)
+        self.assertEqual(e.sequence[0].id, 'ADP')
+        self.assertIsNone(e.sequence[0].code)
+        self.assertIsNone(e.sequence[0].code_canonical)
+
     def test_atom_site_handler_water(self):
         """Test AtomSiteHandler reading water molecules"""
         fh = StringIO("""

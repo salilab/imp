@@ -2216,7 +2216,8 @@ class _AtomSiteHandler(Handler):
 
     def __init__(self, *args):
         super().__init__(*args)
-        self._missing_sequence = collections.defaultdict(dict)
+        self._missing_poly_sequence = collections.defaultdict(dict)
+        self._missing_nonpoly_chem_comp = collections.defaultdict(dict)
         # Mapping from asym+auth_seq_id to internal ID
         self._seq_id_map = {}
 
@@ -2255,7 +2256,7 @@ class _AtomSiteHandler(Handler):
             asym = self.sysr.asym_units.get_by_id(auth_asym_id)
             # Chances are the entity_poly table is missing too, so remember
             # the comp_id to help us construct missing sequence info
-            self._missing_sequence[asym][seq_id] = label_comp_id
+            self._missing_poly_sequence[asym][seq_id] = label_comp_id
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
         auth_seq_id = self.get_int_or_string(auth_seq_id)
@@ -2266,10 +2267,15 @@ class _AtomSiteHandler(Handler):
         else:
             our_seq_id = seq_id
         group = 'ATOM' if group_pdb is None else group_pdb
+        het = group != 'ATOM'
+        if het:
+            # Remember the comp_id to help us construct missing
+            # pdbx_entity_nonpoly if needed
+            self._missing_nonpoly_chem_comp[asym] = label_comp_id
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=cartn_x, y=cartn_y,
-            z=cartn_z, het=group != 'ATOM', biso=b_iso_or_equiv,
+            z=cartn_z, het=het, biso=b_iso_or_equiv,
             occupancy=occupancy, alt_id=label_alt_id)
         model.add_atom(a)
 
@@ -2284,7 +2290,7 @@ class _AtomSiteHandler(Handler):
     def finalize(self):
         # Fill in missing Entity information from comp_ids
         entity_from_seq = {}
-        for asym, comp_from_seq_id in self._missing_sequence.items():
+        for asym, comp_from_seq_id in self._missing_poly_sequence.items():
             if asym.entity is None:
                 # Fill in gaps in seq_id with UNK residues
                 seq_len = max(comp_from_seq_id.keys())
@@ -2299,6 +2305,12 @@ class _AtomSiteHandler(Handler):
                     asym.entity = ihm.Entity(seq)
                     entity_from_seq[seq] = asym.entity
                     self.system.entities.append(asym.entity)
+
+        for asym, comp_id in self._missing_nonpoly_chem_comp.items():
+            if (asym.entity and asym.entity.type != 'branched'
+                    and len(asym.entity.sequence) == 0):
+                cc = self.sysr.chem_comps.get_by_id(comp_id)
+                asym.entity.sequence = (cc,)
 
 
 class _StartingModelCoordHandler(Handler):

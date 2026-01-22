@@ -311,6 +311,80 @@ class Tests(unittest.TestCase):
                       err)
         os.unlink('output.cif')
 
+    def test_empty_assembly_with_description(self):
+        """Test fix of empty assembly with name and description"""
+        incif = utils.get_input_file_name(TOPDIR, 'empty_assembly.cif')
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        # Input file specifies an assembly containing no asyms, but with
+        # a name and description. On output it should be filled in with the
+        # "complete" assembly but keep the user-provided information.
+        self.assertEqual(len(s.orphan_assemblies), 1)
+        self.assertEqual(len(s.orphan_assemblies[0]), 1)
+        self.assertEqual(s.orphan_assemblies[0].name, 'User-provided name')
+        self.assertEqual(s.orphan_assemblies[0].description,
+                         'User-provided description')
+        os.unlink('output.cif')
+
+    def test_empty_assembly_no_description(self):
+        """Test fix of empty assembly without name or description"""
+        incif_orig = utils.get_input_file_name(TOPDIR, 'empty_assembly.cif')
+        incif_new = "empty_assembly_no_description.cif"
+        with open(incif_orig) as fh:
+            data = fh.read().replace(
+                "'User-provided name' 'User-provided description'", ". .")
+        with open(incif_new, 'w') as fh:
+            fh.write(data)
+
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif_new])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        # Input file specifies an assembly containing no asyms, name or
+        # description. On output it should be filled in with the
+        # "complete" assembly, including the auto-generated name
+        # and description.
+        self.assertEqual(len(s.orphan_assemblies), 1)
+        self.assertEqual(len(s.orphan_assemblies[0]), 1)
+        self.assertEqual(s.orphan_assemblies[0].name, 'Complete assembly')
+        self.assertEqual(s.orphan_assemblies[0].description,
+                         'All known components')
+        os.unlink(incif_new)
+        os.unlink('output.cif')
+
+    def test_missing_chem_comp(self):
+        """Test fix of incomplete chem_comp table"""
+        incif = utils.get_input_file_name(TOPDIR, 'missing_chem_comp.cif')
+
+        # Use mock urllib so we don't hit the network during this test
+        env = os.environ.copy()
+        mockdir = os.path.join(TOPDIR, 'test', 'mock', 'non_canon_atom')
+        env['PYTHONPATH'] = mockdir + os.pathsep + env['PYTHONPATH']
+
+        r = subprocess.Popen([sys.executable, MAKE_MMCIF,
+                             "--fix_chem_comp", incif],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             universal_newlines=True, env=env)
+        out, err = r.communicate()
+        self.assertEqual(r.returncode, 0)
+        # Residues not in CCD should give a warning
+        self.assertIn("Component INVALID-CHEM-COMP could not be found in CCD",
+                      err)
+        # ALA should be left unchanged (already present in the input file);
+        # MG should be filled in with CCD info;
+        # ZN should be left unchanged (no chem_comp table in our mock CCD)
+        with open('output.cif') as fh:
+            contents = fh.readlines()
+        ind = contents.index('_chem_comp.formula_weight\n')
+        self.assertEqual(
+            contents[ind + 1:ind + 5],
+            ["ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094\n",
+             "MG non-polymer 'MAGNESIUM ION' Mg 24.305\n",
+             'ZN other . . .\n',
+             'invalid-chem-comp other . . .\n'])
+        os.unlink('output.cif')
+
 
 if __name__ == '__main__':
     unittest.main()
