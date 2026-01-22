@@ -64,7 +64,7 @@ accessing is done through appropriately named functions (eg RMF::decorator::Part
 # Language bindings # {#bindings}
 
 The RMF library currently supports C++ and Python. The API is
-written so that [SWIG](http://www.swig.org) can be used to
+written so that [SWIG](https://www.swig.org) can be used to
 easily generate bindings for most languages. The two main
 exceptions are C and Fortran. Until the SWIG %C target support is
 finished, these can be supported by writing a simple %C %API

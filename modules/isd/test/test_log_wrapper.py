@@ -8,7 +8,7 @@ class LogRestraint(IMP.Restraint):
     """Restraint that logs how it was called (or skipped)"""
 
     def __init__(self, m, ps, value):
-        IMP.Restraint.__init__(self, m, 'LogRestraint%1%')
+        super().__init__(m, 'LogRestraint%1%')
         self.ps = ps
         self.value = value
         self.moved_evaluate = None
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
     def test_evaluate_moved(self):
         """Test scoring with moved particles"""
         def assert_restraint_skipped(r):
-            # In debug mode restraints aren't actually skipped; they
+            # In debug mode restraints aren't actually skipped; they are
             # evaluated and the score is checked against the 'skipped' score
             if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
                 assert_restraint_evaluate_moved(r)

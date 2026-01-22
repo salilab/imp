@@ -51,6 +51,10 @@ class IMPATOMEXPORT CoulombPairScore : public PairScore {
 
   double get_relative_dielectric() const { return relative_dielectric_; }
 
+  SmoothingFunction *get_smoothing_function() const {
+    return smoothing_function_;
+  }
+
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const override;

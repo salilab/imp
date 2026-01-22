@@ -9,7 +9,7 @@ class LoggingScoreState(IMP.ScoreState):
 
     def __init__(self, m, log, can_skip=False, inputs=[], outputs=[],
                  suffix=''):
-        IMP.ScoreState.__init__(self, m, "Logging%1%")
+        super().__init__(m, "Logging%1%")
         self.set_can_skip(can_skip)
         self.log = log
         self.inputs = inputs

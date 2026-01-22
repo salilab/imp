@@ -1,6 +1,7 @@
 import unittest
 import RMF
 
+
 class Tests(unittest.TestCase):
 
     def test_signature(self):
@@ -14,6 +15,7 @@ class Tests(unittest.TestCase):
         with open(RMF._get_test_input_file_path("simple.rmf.signature")) as fh:
             old_sig = fh.read()
         RMF._assert_signatures_equal(sig, old_sig)
+
 
 if __name__ == '__main__':
     unittest.main()

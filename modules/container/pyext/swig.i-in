@@ -60,6 +60,7 @@ IMP_SWIG_OBJECT(IMP::container, DistributePairsScoreState, DistributePairScoreSt
 IMP_SWIG_OBJECT(IMP::container, DistributeTripletsScoreState, DistributeTripletsScoreStates);
 IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreStates);
 
+%include "IMP_container.jax.i"
 
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"

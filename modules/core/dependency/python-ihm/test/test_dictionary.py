@@ -38,7 +38,8 @@ def make_test_dictionary():
     c.mandatory = False
     k = add_keyword("foo", False, c)
     # For testing we only accept upper case values
-    k.item_type = ihm.dictionary.ItemType('text', 'char', r'[ \n\t_()A-Z]+')
+    k.item_type = ihm.dictionary.ItemType('text', 'char',
+                                          r'[ \n\t_()/\{}A-Z]+')
     k = add_keyword("bar", True, c)
     k.enumeration = set(('enum1', 'enum2'))
     add_keyword("baz", False, c)
@@ -389,11 +390,14 @@ _test_mandatory_category.bar 2
         d.validate(StringIO(prefix + '"FOO_BAR"'))
         d.validate(StringIO(prefix + '"FOO\tBAR"'))
         d.validate(StringIO(prefix + '\n;FOO\nBAR\n;'))
+        d.validate(StringIO(prefix + '"FOO{BAR"'))
+        d.validate(StringIO(prefix + '"FOO}BAR"'))
+        d.validate(StringIO(prefix + '"FOO\\BAR"'))
         # Bad strings
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
                           StringIO(prefix + '"foo BAR"'))
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
-                          StringIO(prefix + '"FOO\\BAR"'))
+                          StringIO(prefix + '"foo#BAR"'))
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
                           StringIO(prefix + 'n'))
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,

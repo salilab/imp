@@ -28,6 +28,46 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
   bool __gt__(const Object *o) const {
      return self > o;
   }
+
+  // If this is a SWIG director, return the original Python object (else None)
+  PyObject *_get_director_object() {
+    Swig::Director *d = dynamic_cast<Swig::Director *>(self);
+    if (d) {
+      PyObject *pyobj = d->swig_get_self();
+      Py_INCREF(pyobj);
+      return pyobj;
+    } else {
+      return Py_None;
+    }
+  }
+
+  %pythoncode %{
+  def get_derived_object(self):
+      """Return this object cast to the most derived subclass."""
+      # If this is a SWIG director, return the original Python object
+      pyobj = self._get_director_object()
+      if pyobj is not None:
+          return pyobj
+      # Otherwise, use the object's module and type name to look up
+      # the corresponding most-derived Python type
+      modname = self.get_version_info().get_module().replace('::', '.')
+      type_name = self.get_type_name()
+      # IMP.core.RestraintsScoringFunction is a typedef for
+      # IMP.GenericRestraintsScoringFunction; map to the real Python class
+      if modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
+          modname = 'IMP.core'
+          type_name = 'RestraintsScoringFunction'
+      elif (modname == 'IMP.core'
+            and type_name == 'GenericBoundingBox3DSingletonScore'):
+          type_name = 'BoundingBox3DSingletonScore'
+      elif modname == 'IMP' and type_name == 'RestraintScoringFunction':
+          # The implicit RestraintScoringFunction isn't exposed to Python,
+          # so just return the base class
+          return self
+      modobj = sys.modules[modname]
+      clsobj = getattr(modobj, type_name)
+      return clsobj.get_from(self)
+  %}
 }
 
 // Make sure that ModelObject::get_model() returns the same Model object
@@ -339,6 +379,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP, SparseIntKey, Key, SparseIntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, SparseStringKey, Key, SparseStringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, SparseParticleIndexKey, Key,
                         SparseParticleIndexKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, Vector3DKey, Key, Vector3DKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
@@ -381,6 +422,7 @@ namespace IMP {
   %template(SparseIntKey) ::IMP::Key<13>;
   %template(SparseFloatKey) ::IMP::Key<14>;
   %template(SparseParticleIndexKey) ::IMP::Key<15>;
+  %template(Vector3DKey) ::IMP::Key<16>;
 }
 
 %inline %{
@@ -511,3 +553,4 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %include "IMP_kernel.argparse.i"
 %include "IMP_kernel.random.i"
 %include "IMP_kernel.numpy.i"
+%include "IMP_kernel.jax.i"

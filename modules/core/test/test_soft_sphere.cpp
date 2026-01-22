@@ -17,12 +17,18 @@
 
 namespace {
 
+// Since we are not in a module we need to provide these so that
+// SoftSpherePairScore gets correct version info from IMP_OBJECT_METHODS below
+std::string get_module_name() { return "<tests>"; }
+std::string get_module_version() { return "<none>"; }
+
 typedef IMP::score_functor::SphereDistance<
     IMP::score_functor::HarmonicLowerBound> SoftSphereDistanceScore;
 IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore, SoftSphereDistanceScore,
                                 (double k,
                                  std::string name = "SoftSpherePairScore%1%"),
-                                (IMP::score_functor::HarmonicLowerBound(k)));
+                                (IMP::score_functor::HarmonicLowerBound(k)),
+                                );
 }
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test soft sphere pair score");

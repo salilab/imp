@@ -44,7 +44,7 @@ class DummyRestraint(IMP.Restraint):
     """Adds random derivatives to particles."""
 
     def __init__(self, m, ps1, ps2, name="DummyRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.ps1 = ps1
         self.ps2 = ps2
 
@@ -67,7 +67,7 @@ class DummyRestraint2(IMP.Restraint):
     """Adds random derivatives to particles."""
 
     def __init__(self, m, p, name="DummyRestraint2 %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.p = p
 
     def unprotected_evaluate(self, accum):
@@ -85,7 +85,7 @@ class vonMisesFisherRestraint(IMP.Restraint):
     """Applies von Mises-Fisher distribution to quaternion."""
 
     def __init__(self, m, p, mu, kappa, name="vonMisesFisherRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.p = p
         self.c = kappa * IMP.algebra.Vector4D(mu)
 

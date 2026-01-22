@@ -1,6 +1,6 @@
 import RMF
 import unittest
-import os
+
 
 class Tests(unittest.TestCase):
 
@@ -34,6 +34,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(ref.get_reference(), c0)
         self.assertFalse(rf.get_is(c0))
         self.assertTrue(rf.get_is(c1))
+
 
 if __name__ == '__main__':
     unittest.main()

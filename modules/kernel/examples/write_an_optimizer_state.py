@@ -13,8 +13,7 @@ class MyOptimizerState(IMP.OptimizerState):
     "An optimizer state which prints out the last scores of some restraints"
 
     def __init__(self, rs):
-        IMP.OptimizerState.__init__(self, rs[0].get_model(),
-                                    "MyOptimizerState%1%")
+        super().__init__(rs[0].get_model(), "MyOptimizerState%1%")
         self.rs = rs
 
     def update(self):

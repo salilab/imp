@@ -56,6 +56,8 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   */
   void set_return_best(bool tf) { return_best_ = tf; }
 
+  bool get_return_best() const { return return_best_; }
+
   //! If set true (default false), only rescore moved particles
   /** By default, on each move the score of the entire system is
       calculated. If it is guaranteed that only Movers and ScoreStates
@@ -87,12 +89,16 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   //! Return the energy of the last accepted state.
   double get_last_accepted_energy() const { return last_energy_; }
 
+  void set_last_accepted_energy(double energy) { last_energy_ = energy; }
+
   //! If return best is on, returns the best energy found so far.
   double get_best_accepted_energy() const {
     IMP_USAGE_CHECK(return_best_, "Getting the best energy"
                                       << " requires return best being on.");
     return best_energy_;
   }
+  void set_best_accepted_energy(double energy) { best_energy_ = energy; }
+
   /** \name Statistics
       @{
    */
@@ -112,6 +118,15 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   //! Get number of accepted moves
   unsigned int get_number_of_accepted_steps() const {
     return stat_downward_steps_taken_ + stat_upward_steps_taken_;
+  }
+  void set_number_of_downward_steps(unsigned int nsteps) {
+    stat_downward_steps_taken_ = nsteps;
+  }
+  void set_number_of_upward_steps(unsigned int nsteps) {
+    stat_upward_steps_taken_ = nsteps;
+  }
+  void set_number_of_rejected_steps(unsigned int nsteps) {
+    stat_num_failures_ = nsteps;
   }
   void reset_statistics() {
     stat_downward_steps_taken_ = 0;

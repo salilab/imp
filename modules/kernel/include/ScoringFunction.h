@@ -2,7 +2,7 @@
  *  \file IMP/ScoringFunction.h
  *  \brief Represents a scoring function on the model.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -153,6 +153,11 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   double get_last_score() const { return es_.score; }
   //! Return a set of restraints equivalent to this scoring function.
   virtual Restraints create_restraints() const = 0;
+
+  //! Return the single restraint used by this scoring function, if possible
+  /** If this scoring function wraps multiple restraints, nullptr is returned
+      instead. */
+  virtual Restraint *get_single_restraint() const { return nullptr; }
 };
 
 /** Return a list of ScoringFunction objects where each is as simple

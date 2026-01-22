@@ -1,4 +1,4 @@
-[![nightly build](https://integrativemodeling.org/nightly/results/?p=stat)](https://integrativemodeling.org/nightly/results/)
+[![nightly build](https://integrativemodeling.org/nightly/results/badge.svg)](https://integrativemodeling.org/nightly/results/)
 [![coverity scan](https://img.shields.io/coverity/scan/8505.svg)](https://scan.coverity.com/projects/salilab-imp)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3256565.svg)](https://doi.org/10.5281/zenodo.3256565)
 
@@ -33,7 +33,7 @@ new shell.
 Copyright and License information
 =================================
 
-IMP is Copyright 2007-2025 IMP Inventors. The IMP Inventors are
+IMP is Copyright 2007-2026 IMP Inventors. The IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
 Javier Velázquez-Muriel, Friedrich Förster, Elina Tjioe, Hao Fan,
 Seung Joong Kim, Yannick Spill, Riccardo Pellarin.

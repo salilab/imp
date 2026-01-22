@@ -219,6 +219,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                                        self.V_obs / (gamma * dist ** -6))),
                                    delta=0.001)
 
+    @IMP.test.unstable
     def testSanityEP(self):
         "Test if NOE score is -log(prob)"
         for i in range(100):

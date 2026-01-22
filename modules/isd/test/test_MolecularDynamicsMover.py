@@ -12,7 +12,6 @@ from IMP.isd import Scale, MolecularDynamicsMover
 # unit testing framework
 import IMP.test
 
-vel_key_xyz = IMP.FloatsKey("linvel")
 vel_key_nuisance = IMP.FloatKey("vel")
 
 
@@ -70,7 +69,7 @@ class TestMolecularDynamicsMover(IMP.test.TestCase):
     def get_xyz_coordinates(self):
         a = [[i.get_value(fl) for fl in IMP.core.XYZ.get_xyz_keys()]
              for i in self.xyzs]
-        b = [i.get_value(vel_key_xyz) for i in self.xyzs]
+        b = [IMP.atom.LinearVelocity(i).get_velocity() for i in self.xyzs]
         return a + b
 
     def test_move(self):

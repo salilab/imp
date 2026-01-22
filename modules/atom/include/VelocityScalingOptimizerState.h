@@ -34,6 +34,8 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   //! Set the temperature to use.
   void set_temperature(Float temperature) { temperature_ = temperature; }
 
+  Float get_temperature() const { return temperature_; }
+
   //! Rescale the velocities now
   void rescale_velocities() const;
 
@@ -45,8 +47,6 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  private:
   Particles pis_;
   Float temperature_;
-  unsigned skip_steps_;
-  unsigned call_number_;
 };
 
 IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);

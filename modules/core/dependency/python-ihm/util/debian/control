@@ -1,6 +1,6 @@
 Source: python-ihm
 Priority: optional
-Maintainer: Ben Webb <ben@salilab.org>
+Maintainer: Ben Webb <benmwebb@gmail.com>
 Build-Depends: debhelper-compat (= 13), dh-python, swig, python3-dev
 Standards-Version: 4.6.2
 Section: libs

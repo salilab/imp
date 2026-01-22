@@ -1148,7 +1148,7 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         hs = IMP.rmf.create_hierarchies(self.rh_ref, self.model)
         IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(0))
         self.root_hier_ref = hs[0]
-        IMP.atom.Hierarchy.__init__(self, self.root_hier_ref)
+        super().__init__(self.root_hier_ref)
         self.model.update()
         self.ColorHierarchy = None
 
@@ -1282,8 +1282,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             self.score_threshold = StatHierarchyHandler.score_threshold
             self.score_key = StatHierarchyHandler.score_key
             self.cache = StatHierarchyHandler.cache
-            RMFHierarchyHandler.__init__(self, self.model,
-                                         self.current_rmf)
+            super().__init__(self.model, self.current_rmf)
             if self.cache:
                 self.cache = CacheHierarchyCoordinates(self)
             else:

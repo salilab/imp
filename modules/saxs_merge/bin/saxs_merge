@@ -1124,7 +1124,7 @@ def untransform_d(x, particle):
 
 def residuals(point, mean, particles, mean_fn, data):
     if mean == 'Flat':
-        A = point
+        A = point[0]
     elif mean == 'Simple':
         A, mu, mv = point
     elif mean == 'Generalized':
@@ -1223,7 +1223,7 @@ def find_fit_mean(data, verbose, mean_function):
                                 functions['mean'],
                                 data),
                             maxiter=100, disp=False)
-        Af = res
+        Af = res[0]
     else:
         mu0 = transform(particles['G'])
         mv0 = transform(particles['Rg'])

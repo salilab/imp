@@ -8,7 +8,7 @@ class PythonExampleConstraint(IMP.Constraint):
     k = None
 
     def __init__(self, p):
-        IMP.Constraint.__init__(self, p.get_model(), "ExampleConstraint%1%")
+        super().__init__(p.get_model(), "ExampleConstraint%1%")
         self.p = p
         if self.k is None:
             PythonExampleConstraint.k = IMP.IntKey("Constraint key")

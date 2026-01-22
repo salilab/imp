@@ -4,6 +4,10 @@ import IMP.algebra
 import IMP.core
 import IMP.example
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def make_modifier():
@@ -23,7 +27,7 @@ class Tests(IMP.test.TestCase):
         for typ in (IMP.example.ExampleSingletonModifier,
                     IMP.example.PythonExampleSingletonModifier):
             m = IMP.Model()
-            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 2, 3),
                                            IMP.algebra.Vector3D(10, 10, 10))
             p = m.add_particle("p1")
             d = IMP.core.XYZ.setup_particle(m, p,
@@ -31,7 +35,7 @@ class Tests(IMP.test.TestCase):
             s = typ(bb)
             s.apply_index(m, p)
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),
-                                           IMP.algebra.Vector3D(6,3,8)), 1e-4)
+                                           IMP.algebra.Vector3D(5,5,7)), 1e-4)
             self.assertIn("SingletonModifier", str(s))
             self.assertIn("SingletonModifier", repr(s))
             self.assertIn("example", s.get_version_info().get_module())
@@ -43,7 +47,7 @@ class Tests(IMP.test.TestCase):
         for typ in (IMP.example.ExampleSingletonModifier,
                     IMP.example.PythonExampleSingletonModifier):
             m = IMP.Model()
-            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+            bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 2, 3),
                                            IMP.algebra.Vector3D(10, 10, 10))
             p = m.add_particle("p")
             d = IMP.core.XYZ.setup_particle(m, p,
@@ -52,7 +56,7 @@ class Tests(IMP.test.TestCase):
             m.add_score_state(c)
             m.update()
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),
-                                           IMP.algebra.Vector3D(6,3,8)), 1e-4)
+                                           IMP.algebra.Vector3D(5,5,7)), 1e-4)
 
     def test_pickle(self):
         """Test (un-)pickle of ExampleSingletonModifier"""
@@ -72,6 +76,73 @@ class Tests(IMP.test.TestCase):
         newc.before_evaluate()
         self.assertLess(IMP.algebra.get_distance(
             d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of SingletonModifier"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p = m.add_particle("p1")
+        d = IMP.core.XYZ.setup_particle(m, p,
+                                        IMP.algebra.Vector3D(-4, 13, 28))
+        s = IMP.example.ExampleSingletonModifier(bb)
+        ji = s._get_jax(m, p)
+        X = IMP._jax_util._get_jax_model(m, ji._keys)
+        f = jax.jit(ji.apply_func)
+        X = f(X, p)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_singleton_constraint(self):
+        """Test JAX SingletonModifier in a SingletonConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p = m.add_particle("p1")
+        d = IMP.core.XYZ.setup_particle(m, p,
+                                        IMP.algebra.Vector3D(-4, 13, 28))
+        s = IMP.example.ExampleSingletonModifier(bb)
+        c = IMP.core.SingletonConstraint(s, None, m, p)
+
+        ji = c._get_jax()
+        X = ji.get_jax_model()
+        f = jax.jit(ji.apply_func)
+        X = f(X)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_singletons_constraint(self):
+        """Test JAX SingletonModifier in a SingletonsConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        p1 = m.add_particle("p1")
+        d1 = IMP.core.XYZ.setup_particle(m, p1,
+                                         IMP.algebra.Vector3D(-4, 13, 28))
+        p2 = m.add_particle("p2")
+        d2 = IMP.core.XYZ.setup_particle(m, p2,
+                                         IMP.algebra.Vector3D(3, 20, 42))
+        s = IMP.example.ExampleSingletonModifier(bb)
+        lsc = IMP.container.ListSingletonContainer(m, [p1, p2])
+        c = IMP.container.SingletonsConstraint(s, None, lsc)
+
+        ji = c._get_jax()
+        X = ji.get_jax_model()
+        f = jax.jit(ji.apply_func)
+        X = f(X)
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+                        1e-3)
+        self.assertLess(jnp.linalg.norm(X['xyz'][1] - jnp.array([3., 0., 2.])),
+                        1e-3)
 
 
 if __name__ == '__main__':

@@ -540,7 +540,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         # for *every* proteomics restraint, only this one
         import networkx
         self.networkx = networkx
-        IMP.Restraint.__init__(self, m, "ConnectivityNetworkRestraint %1%")
+        super().__init__(m, "ConnectivityNetworkRestraint %1%")
         self.slope = slope
         self.theta = theta
         self.linear_slope = linear_slope
@@ -659,7 +659,7 @@ class FuzzyRestraint(IMP.Restraint):
         input a list of particles, the slope and theta of the sigmoid potential
         theta is the cutoff distance for a protein-protein contact
         '''
-        IMP.Restraint.__init__(self, m, "FuzzyRestraint %1%")
+        super().__init__(m, "FuzzyRestraint %1%")
         self.m = m
         self.min = sys.float_info.min
         if isinstance(p1, FuzzyRestraint) and isinstance(p2, FuzzyRestraint):

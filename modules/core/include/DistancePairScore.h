@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
 */
 IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
     DistancePairScore, score_functor::UnaryFunctionEvaluate,
-    (UnaryFunction *uf, std::string name = "DistancePairScore%1%"), (uf));
+    (UnaryFunction *uf, std::string name = "DistancePairScore%1%"), (uf), );
 IMP_OBJECTS(DistancePairScore, DistancePairScores);
 
 #ifndef IMP_DOXYGEN
@@ -51,7 +51,9 @@ typedef score_functor::Shift<score_functor::Harmonic> HarmonicDistanceScore;
 IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
     HarmonicDistancePairScore, HarmonicDistanceScore,
     (double x0, double k, std::string name = "HarmonicDistancePairScore%1%"),
-    (x0, score_functor::Harmonic(k)));
+    (x0, score_functor::Harmonic(k)),
+    double get_x0() const { return get_score_functor().get_x0(); }
+    double get_k() const { return get_score_functor().get_k(); });
 IMP_OBJECTS(HarmonicDistancePairScore, HarmonicDistancePairScores);
 
 IMPCORE_END_NAMESPACE

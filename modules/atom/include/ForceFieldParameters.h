@@ -32,9 +32,6 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::Object {
   void add_radii(Hierarchy mhd, double scale = 1.0,
                  FloatKey radius_key = FloatKey("radius")) const;
 
-  //! Add LennardJones well depths to the structure
-  void add_well_depths(Hierarchy mhd) const;
-
   //! Add Lennard-Jones types to the structure
   /** This adds LennardJonesTyped decorators to all applicable particles. */
   void add_lennard_jones_types(Hierarchy mhd) const;

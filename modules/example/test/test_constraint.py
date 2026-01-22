@@ -4,6 +4,10 @@ import IMP.algebra
 import IMP.core
 import IMP.example
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -45,6 +49,22 @@ class Tests(IMP.test.TestCase):
         newc = pickle.loads(dump)
         m.update()
         self.assertEqual(p.get_value(k), 2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation"""
+        k = IMP.IntKey("Constraint key")
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        c = IMP.example.ExampleConstraint(p)
+        ji = c._get_jax()
+        X = ji.get_jax_model()
+        s = jax.jit(ji.apply_func)
+        self.assertEqual(X['Constraint key'][0], 0)
+        X = s(X)
+        self.assertEqual(X['Constraint key'][0], 1)
+        X = s(X)
+        self.assertEqual(X['Constraint key'][0], 2)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ Release:       1%{?dist}
 License:       Apache 2.0
 Summary:       Library to support reading and writing of RMF files
 Group:         Applications/Engineering
-Packager:      Ben Webb <ben@salilab.org>
+Packager:      Ben Webb <benmwebb@gmail.com>
 URL:           https://integrativemodeling.org/rmf/
 Source0:       rmf-%{version}.tar.gz
 BuildRequires: python3-devel, symlinks

@@ -1,7 +1,32 @@
+import functools
 import IMP
 import IMP.test
 import IMP.core
 import IMP.container
+try:
+    import jax
+    import jax.random
+    import jax.numpy as jnp
+except ImportError:
+    jax = None
+
+
+class JAXOptimizerState(IMP.OptimizerState):
+    def __init__(self, m, name):
+        super().__init__(m, name)
+
+    def _get_jax(self, state_index):
+        import IMP._jax_util
+
+        def init_func(ms):
+            ms.optimizer_states[state_index] = {'calls': 0}
+            return ms
+
+        def apply_func(ms):
+            ms.optimizer_states[state_index]['calls'] += 1
+            return ms
+
+        return IMP._jax_util.JAXOptimizerStateInfo(self, init_func, apply_func)
 
 
 def setup_system(coords, use_container):
@@ -106,6 +131,28 @@ def setup_rigid_body_system(coords):
     return m, mc
 
 
+def _setup_jax_mc():
+    m = IMP.Model()
+    mc = IMP.core.MonteCarlo(m)
+    ds = []
+    for i in range(2):
+        p = IMP.Particle(m)
+        d = IMP.core.XYZR.setup_particle(p)
+        d.set_radius(.1)
+        d.set_coordinates_are_optimized(True)
+        ds.append(d)
+    ds[1].set_coordinates(IMP.algebra.Vector3D(1., 2., 3.))
+    hps = IMP.core.HarmonicDistancePairScore(0, 100)
+    r = IMP.core.PairRestraint(m, hps, ds)
+    rs = IMP.core.RestraintsScoringFunction([r])
+    mc.set_scoring_function(rs)
+    bm = IMP.core.BallMover(m, ds[0], 0.01)
+    mc.add_mover(bm)
+    mc.set_kt(0.01)
+    mc.set_return_best(False)
+    return m, mc
+
+
 class Tests(IMP.test.TestCase):
 
     def test_stats(self):
@@ -149,7 +196,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container=False)
         m2, mc2 = setup_system(coords, use_container=False)
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -167,7 +214,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container='pair')
         m2, mc2 = setup_system(coords, use_container='pair')
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -185,7 +232,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_system(coords, use_container='singleton')
         m2, mc2 = setup_system(coords, use_container='singleton')
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -203,7 +250,7 @@ class Tests(IMP.test.TestCase):
         m1, mc1 = setup_rigid_body_system(coords)
         m2, mc2 = setup_rigid_body_system(coords)
 
-        # Same seeed, same system, so we should get identical trajectories
+        # Same seed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
         mc1_score = mc1.optimize(100)
 
@@ -212,6 +259,82 @@ class Tests(IMP.test.TestCase):
         mc2_score = mc2.optimize(100)
 
         self.assertAlmostEqual(mc1_score, mc2_score, delta=1e-2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_low_level(self):
+        """Test low-level JAX implementation of MonteCarlo"""
+        m, mc = _setup_jax_mc()
+        # Initialize, get score of starting configuration
+        ji = mc._get_jax()
+        X = ji.get_jax_model()
+        f = jax.jit(ji.init_func)
+        mc_state = f(X, key=jax.random.key(42))
+
+        # Create JAX function to run 2000 steps of MC
+        j = jax.jit(
+            lambda X: jax.lax.fori_loop(0, 2000,
+                                        lambda i, X: ji.apply_func(X), X))
+        mc_state = j(mc_state)
+        # Check MC stats
+        self.assertEqual(mc_state.rejected_steps
+                         + mc_state.downward_steps_taken
+                         + mc_state.upward_steps_taken, 2000)
+        self.assertEqual(mc_state.rejected_steps
+                         + mc_state.accepted_steps, 2000)
+        # Particles should now be close
+        new_jm = mc_state.jm
+        self.assertLess(jnp.linalg.norm(new_jm["xyz"][1] - new_jm["xyz"][0]),
+                        0.5)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_high_level(self):
+        """Test high-level JAX implementation of MonteCarlo"""
+        m, mc = _setup_jax_mc()
+        mc.set_return_best(True)
+        mc._optimize_jax(2000)
+
+        # Check MC stats
+        self.assertEqual(mc.get_number_of_proposed_steps(), 2000)
+        self.assertLessEqual(mc.get_number_of_downward_steps()
+                             + mc.get_number_of_upward_steps(), 2000)
+        # Particles should now be close
+        d0 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(0)))
+        d1 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(1)))
+        self.assertLess(
+            IMP.algebra.get_distance(d0.get_coordinates(),
+                                     d1.get_coordinates()), 0.5)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_optimizer_state(self):
+        """Test pure JAX OptimizerState"""
+        def make_mc():
+            m, mc = _setup_jax_mc()
+            state1 = JAXOptimizerState(m, name="State1")
+            mc.add_optimizer_state(state1)
+            state2 = JAXOptimizerState(m, name="State2")
+            state2.set_period(2)
+            mc.add_optimizer_state(state2)
+            return m, mc
+
+        # Low level
+        m, mc = make_mc()
+        ji = mc._get_jax()
+        X = ji.get_jax_model()
+        f = jax.jit(ji.init_func)
+        mc_state = f(X, key=jax.random.key(42))
+        j = jax.jit(
+            lambda X: jax.lax.fori_loop(0, 2000,
+                                        lambda i, X: ji.apply_func(X), X))
+        mc_state = j(mc_state)
+        self.assertEqual(len(mc_state.optimizer_states), 2)
+        self.assertEqual(mc_state.accepted_steps,
+                         mc_state.optimizer_states[0]['calls'])
+        self.assertEqual(mc_state.accepted_steps // 2,
+                         mc_state.optimizer_states[1]['calls'])
+
+        # High level
+        m, mc = make_mc()
+        mc._optimize_jax(2)
 
 
 if __name__ == '__main__':

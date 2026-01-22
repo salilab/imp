@@ -15,7 +15,7 @@ except ImportError:
 
 class EMFitRestraint(IMP.Restraint):
     def __init__(self, model, ps, dmap, weight_keys, resolution, sigma):
-        IMP.Restraint.__init__(self, model, "EMFitRestraintBayesEM3D%1%")
+        super().__init__(model, "EMFitRestraintBayesEM3D%1%")
         self.ps = ps
         self.dmap = dmap
         self.weight_keys = weight_keys

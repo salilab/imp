@@ -125,7 +125,7 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         self.module = module
         self.modules = modules
         self.finder = finder
-        tools.FileGenerator.__init__(self, template_file, '#')
+        super().__init__(template_file, '#')
 
     def get_output_file_contents(self, args):
         template = self.template

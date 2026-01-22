@@ -5,6 +5,10 @@ import IMP.test
 import pickle
 from random import sample
 from math import pi, log, exp
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
@@ -162,6 +166,10 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         # initialize also a restraint which output -log(prob)
         dr_lp = IMP.isd.CrossLinkMSRestraint(m, length, slope, True)
         dr_lp.add_contribution((p1, p2), (sigma1, sigma2), psi)
+        if jax:
+            ji = dr_lp._get_jax()
+            X = ji.get_jax_model()
+            jax_score_func = jax.jit(ji.score_func)
 
         testdr= CrossLinkMS(length, slope)
         testdr.add_contribution(xyz1,xyz2,sigma1,sigma2,psi)
@@ -189,6 +197,10 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         score_lp = dr_lp.unprotected_evaluate(None)
                         self.assertAlmostEqual(score,scoretest,places=4)
                         self.assertAlmostEqual(score_lp,scoretest,places=4)
+                        if jax:
+                            score_jax = jax_score_func(X)
+                            self.assertAlmostEqual(score_lp,
+                                                   score_jax, delta=1e-3)
 
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
@@ -345,6 +357,11 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         dr_lp = IMP.isd.CrossLinkMSRestraint(m, length, slope, True)
         dr_lp.add_contribution((p1, p1), (sigma1, sigma1), psi)
 
+        if jax:
+            ji = dr_lp._get_jax()
+            X = ji.get_jax_model()
+            jax_score_func = jax.jit(ji.score_func)
+
         testdr= CrossLinkMS(length, slope)
         testdr.add_contribution(xyz1,xyz1,sigma1,sigma1,psi)
 
@@ -367,6 +384,10 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                     score_lp = dr_lp.unprotected_evaluate(None)
                     self.assertAlmostEqual(score,scoretest,places=4)
                     self.assertAlmostEqual(score_lp,scoretest,places=4)
+                    if jax:
+                        score_jax = jax_score_func(X)
+                        self.assertAlmostEqual(score_lp, score_jax, delta=1e-3)
+
 
     def test_score_two_fold_ambiguity(self):
         IMP.test.TestCase.setUp(self)

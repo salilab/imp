@@ -1,10 +1,10 @@
 Name:          python3-ihm
 License:       MIT
 Group:         Applications/Engineering
-Version:       2.7
+Version:       2.8
 Release:       1%{?dist}
 Summary:       Package for handling IHM mmCIF and BinaryCIF files
-Packager:      Ben Webb <ben@salilab.org>
+Packager:      Ben Webb <benmwebb@gmail.com>
 URL:           https://pypi.python.org/pypi/ihm
 Source:        ihm-%{version}.tar.gz
 Patch0:        ihm-force-c-ext.patch
@@ -45,89 +45,92 @@ sed -i -e "s/install_requires=\['msgpack'\]/#/" setup.py
 %defattr(-,root,root)
 
 %changelog
-* Mon Jul 07 2025 Ben Webb <ben@salilab.org>   2.7-1
+* Fri Dec 12 2025 Ben Webb <benmwebb@gmail.com>   2.8-1
 - Update to latest upstream.
 
-* Mon Jun 09 2025 Ben Webb <ben@salilab.org>   2.6-1
+* Mon Jul 07 2025 Ben Webb <benmwebb@gmail.com>   2.7-1
 - Update to latest upstream.
 
-* Fri Apr 25 2025 Ben Webb <ben@salilab.org>   2.5-1
+* Mon Jun 09 2025 Ben Webb <benmwebb@gmail.com>   2.6-1
 - Update to latest upstream.
 
-* Tue Mar 25 2025 Ben Webb <ben@salilab.org>   2.4-1
+* Fri Apr 25 2025 Ben Webb <benmwebb@gmail.com>   2.5-1
 - Update to latest upstream.
 
-* Thu Mar 13 2025 Ben Webb <ben@salilab.org>   2.3-1
+* Tue Mar 25 2025 Ben Webb <benmwebb@gmail.com>   2.4-1
 - Update to latest upstream.
 
-* Thu Feb 13 2025 Ben Webb <ben@salilab.org>   2.2-1
+* Thu Mar 13 2025 Ben Webb <benmwebb@gmail.com>   2.3-1
 - Update to latest upstream.
 
-* Wed Feb 12 2025 Ben Webb <ben@salilab.org>   2.1-1
+* Thu Feb 13 2025 Ben Webb <benmwebb@gmail.com>   2.2-1
 - Update to latest upstream.
 
-* Tue Feb 11 2025 Ben Webb <ben@salilab.org>   2.0-1
+* Wed Feb 12 2025 Ben Webb <benmwebb@gmail.com>   2.1-1
 - Update to latest upstream.
 
-* Tue Nov 26 2024 Ben Webb <ben@salilab.org>   1.8-1
+* Tue Feb 11 2025 Ben Webb <benmwebb@gmail.com>   2.0-1
 - Update to latest upstream.
 
-* Tue Oct 22 2024 Ben Webb <ben@salilab.org>   1.7-1
+* Tue Nov 26 2024 Ben Webb <benmwebb@gmail.com>   1.8-1
 - Update to latest upstream.
 
-* Fri Sep 27 2024 Ben Webb <ben@salilab.org>   1.6-1
+* Tue Oct 22 2024 Ben Webb <benmwebb@gmail.com>   1.7-1
 - Update to latest upstream.
 
-* Fri Sep 06 2024 Ben Webb <ben@salilab.org>   1.5-1
+* Fri Sep 27 2024 Ben Webb <benmwebb@gmail.com>   1.6-1
 - Update to latest upstream.
 
-* Fri Aug 30 2024 Ben Webb <ben@salilab.org>   1.4-1
+* Fri Sep 06 2024 Ben Webb <benmwebb@gmail.com>   1.5-1
 - Update to latest upstream.
 
-* Tue Jul 16 2024 Ben Webb <ben@salilab.org>   1.3-1
+* Fri Aug 30 2024 Ben Webb <benmwebb@gmail.com>   1.4-1
 - Update to latest upstream.
 
-* Wed Jun 12 2024 Ben Webb <ben@salilab.org>   1.2-1
+* Tue Jul 16 2024 Ben Webb <benmwebb@gmail.com>   1.3-1
 - Update to latest upstream.
 
-* Thu May 09 2024 Ben Webb <ben@salilab.org>   1.1-1
+* Wed Jun 12 2024 Ben Webb <benmwebb@gmail.com>   1.2-1
 - Update to latest upstream.
 
-* Tue Feb 13 2024 Ben Webb <ben@salilab.org>   1.0-1
+* Thu May 09 2024 Ben Webb <benmwebb@gmail.com>   1.1-1
 - Update to latest upstream.
 
-* Fri Dec 08 2023 Ben Webb <ben@salilab.org>   0.43-1
+* Tue Feb 13 2024 Ben Webb <benmwebb@gmail.com>   1.0-1
 - Update to latest upstream.
 
-* Thu Nov 30 2023 Ben Webb <ben@salilab.org>   0.42-1
+* Fri Dec 08 2023 Ben Webb <benmwebb@gmail.com>   0.43-1
 - Update to latest upstream.
 
-* Mon Oct 02 2023 Ben Webb <ben@salilab.org>   0.41-1
+* Thu Nov 30 2023 Ben Webb <benmwebb@gmail.com>   0.42-1
 - Update to latest upstream.
 
-* Mon Sep 25 2023 Ben Webb <ben@salilab.org>   0.40-1
+* Mon Oct 02 2023 Ben Webb <benmwebb@gmail.com>   0.41-1
 - Update to latest upstream.
 
-* Fri Aug 04 2023 Ben Webb <ben@salilab.org>   0.39-1
+* Mon Sep 25 2023 Ben Webb <benmwebb@gmail.com>   0.40-1
 - Update to latest upstream.
 
-* Mon Jul 31 2023 Ben Webb <ben@salilab.org>   0.38-1
+* Fri Aug 04 2023 Ben Webb <benmwebb@gmail.com>   0.39-1
 - Update to latest upstream.
 
-* Thu Apr 14 2022 Ben Webb <ben@salilab.org>   0.31-1
+* Mon Jul 31 2023 Ben Webb <benmwebb@gmail.com>   0.38-1
 - Update to latest upstream.
 
-* Mon Mar 21 2022 Ben Webb <ben@salilab.org>   0.28-1
+* Thu Apr 14 2022 Ben Webb <benmwebb@gmail.com>   0.31-1
 - Update to latest upstream.
 
-* Thu Jan 27 2022 Ben Webb <ben@salilab.org>   0.27-1
+* Mon Mar 21 2022 Ben Webb <benmwebb@gmail.com>   0.28-1
 - Update to latest upstream.
 
-* Tue Jan 25 2022 Ben Webb <ben@salilab.org>   0.26-1
+* Thu Jan 27 2022 Ben Webb <benmwebb@gmail.com>   0.27-1
 - Update to latest upstream.
 
-* Fri Dec 03 2021 Ben Webb <ben@salilab.org>   0.25-1
+* Tue Jan 25 2022 Ben Webb <benmwebb@gmail.com>   0.26-1
 - Update to latest upstream.
 
-* Fri Jul 09 2021 Ben Webb <ben@salilab.org>   0.20-1
+* Fri Dec 03 2021 Ben Webb <benmwebb@gmail.com>   0.25-1
+- Update to latest upstream.
+
+* Fri Jul 09 2021 Ben Webb <benmwebb@gmail.com>   0.20-1
 - Initial package.

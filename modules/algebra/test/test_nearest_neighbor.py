@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
                     min_dist = IMP.algebra.get_distance(v, vecs[j])
                     closest_v = j
             print(n1, closest_v)
-            # verivy n1 is indeed nearest neighbor:
+            # verify n1 is indeed nearest neighbor:
             self.assertEqual(n1, closest_v)
 
     def test_nn_functionality(self):
@@ -75,6 +75,22 @@ class Tests(IMP.test.TestCase):
                 print(vs[x], (vs[x] - vs[i]).get_magnitude())
             # print
             self.assertNotEqual(rnn.index(cnn), -1)
+
+    def test_object_info(self):
+        """Test object get_type_name() and get_version_info()"""
+        v1 = IMP.algebra.Vector3D(1, 2, 3)
+        nn = IMP.algebra.NearestNeighbor3D([v1])
+        self.assertEqual(nn.get_type_name(), "NearestNeighborD")
+        self.assertEqual(nn.get_version_info().get_module(), "IMP::algebra")
+        # Should get the same information using the Object base class
+        m = IMP.Model()
+        mk = IMP.ModelKey("data_key")
+        m.add_data(mk, nn)
+        obj_nn = m.get_data(mk)
+        self.assertIs(type(obj_nn), IMP.Object)
+        self.assertEqual(obj_nn.get_type_name(), "NearestNeighborD")
+        self.assertEqual(obj_nn.get_version_info().get_module(),
+                         "IMP::algebra")
 
 
 if __name__ == '__main__':

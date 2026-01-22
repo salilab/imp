@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -30,6 +29,7 @@ class GenericTest(unittest.TestCase):
         n0 = f.get_root_node().get_children()[0]
         n1 = f.get_root_node().get_children()[1]
         self.assertFalse(n1.get_has_value(k0))
+
 
 if __name__ == '__main__':
     unittest.main()

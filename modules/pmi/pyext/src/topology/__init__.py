@@ -160,7 +160,7 @@ class System(_SystemBase):
            @param model The IMP::Model in which to construct this system.
            @param name  The name of the top-level hierarchy node.
         """
-        _SystemBase.__init__(self, model)
+        super().__init__(model)
         self._number_of_states = 0
         self._protocol_output = []
         self.states = []
@@ -1834,7 +1834,7 @@ class PMIMoleculeHierarchy(IMP.atom.Molecule):
     '''Extends the functionality of IMP.atom.Molecule'''
 
     def __init__(self, hierarchy):
-        IMP.atom.Molecule.__init__(self, hierarchy)
+        super().__init__(hierarchy)
 
     def get_state_index(self):
         state = self.get_parent()

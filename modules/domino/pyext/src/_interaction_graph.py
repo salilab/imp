@@ -1,7 +1,4 @@
 import networkx as NX
-from xml.dom import minidom, Node
-#import xml.dom.ext as domExt
-import sys
 (NO_EDGE, EDGE_TYPE_SOLID) = range(2)
 
 

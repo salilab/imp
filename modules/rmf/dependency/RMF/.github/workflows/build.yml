@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }} / ${{ matrix.build }}${{ matrix.name_with }}"
     strategy:
       fail-fast: false
       matrix:
@@ -13,32 +13,48 @@ jobs:
           python-version: 3.9
           install: ''
           flags: '--coverage'
+          linkflags: '--coverage'
           tests: RMF
           build: Debug
+          name_with: ''
         - os: ubuntu-latest
-          python-version: 3.9
+          python-version: 3.13
           install: ''
           flags: '--coverage'
+          linkflags: '--coverage'
           tests: RMF
           build: Release
+          name_with: ''
         - os: ubuntu-latest
           python-version: 3.9
           install: 'libhdf5-dev liblog4cxx-dev'
           flags: '--coverage'
+          linkflags: '--coverage'
           tests: RMF
           build: Debug
+          name_with: ', with HDF5'
         - os: macos-latest
           python-version: 3.9
           install: ''
           flags: '--coverage'
+          linkflags: '--coverage'
           tests: RMF
           build: Release
+          name_with: ''
+        - os: windows-latest
+          python-version: 3.9
+          install: ''
+          flags: '/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DH5_BUILT_AS_DYNAMIC_LIB /DWIN32 /bigobj /DBOOST_ZLIB_BINARY=kernel32'
+          linkflags: ''
+          tests: RMF
+          build: Release
+          name_with: ''
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
@@ -52,18 +68,44 @@ jobs:
       run: |
         brew install swig boost log4cxx ${{ matrix.install }}
         pip install coverage numpy
-    - name: Build and test
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install swig boost-msvc-14.3
+        pip install numpy
+    - name: Build and test (Mac or Linux)
+      if: matrix.os != 'windows-latest'
       run: |
         mkdir build
         cd build
         ../tools/coverage/setup.py
-        PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.build }}" -DCMAKE_CXX_FLAGS="${{ matrix.flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.flags }}" -DCMAKE_MODULE_LINKER_FLAGS="${{ matrix.flags }}" -DCMAKE_SHARED_LINKER_FLAGS="${{ matrix.flags }}"
+        PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.build }}" -DCMAKE_CXX_FLAGS="${{ matrix.flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.linkflags }}" -DCMAKE_MODULE_LINKER_FLAGS="${{ matrix.linkflags }}" -DCMAKE_SHARED_LINKER_FLAGS="${{ matrix.linkflags }}"
         make -j 2
         ctest -j 2 --output-on-failure -L ${{ matrix.tests }}
+    - name: Build and test (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.build }}" -DCMAKE_CXX_FLAGS="${{ matrix.flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.linkflags }}" -DCMAKE_MODULE_LINKER_FLAGS="${{ matrix.linkflags }}" -DCMAKE_SHARED_LINKER_FLAGS="${{ matrix.linkflags }}"
+        cmake --build . --config Release -j 2
+        # Scripts expect to find binaries in lib\ or bin\ but msbuild puts them
+        # in lib\Release\ or bin\Release\; copy to the expected location.
+        copy lib\Release\*.dll lib\
+        copy lib\Release\*.pyd lib\
+        copy bin\Release\*.exe bin\
+        # Since Python 3.8 _RMF.pyd will not search for DLL dependencies
+        # in PATH. Work around by just copying them into the same directory.
+        copy C:\local\boost_1_87_0\lib64-msvc-14.3\*.dll lib\
+        # Add lib directory to PATH so that C++ tests can find RMF.dll
+        $env:Path += ";$pwd\lib"
+        ctest -j 2 --output-on-failure -L ${{ matrix.tests }}
     - name: Combine coverage
+      if: matrix.os != 'windows-latest'
       run: |
         cd build/coverage
         coverage combine && coverage xml && mv coverage.xml ../..
-    - uses: codecov/codecov-action@v4
+    - uses: codecov/codecov-action@v5
+      if: matrix.os != 'windows-latest'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

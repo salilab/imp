@@ -104,6 +104,9 @@ class IMPATOMEXPORT ForceSwitch final : public SmoothingFunction {
     deriv_prefactor_ = 6.0 * value_prefactor_;
   }
 
+  double get_min_distance() const { return min_distance_; }
+  double get_max_distance() const { return max_distance_; }
+
   double operator()(double score, double distance) const override {
     double factor = get_value(distance);
     return score * factor;

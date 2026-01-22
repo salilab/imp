@@ -1,3 +1,11 @@
+2.8 - 2025-12-12
+================
+  - The new :meth:`ihm.System.get_representative_model` method returns a single
+    :class:`ihm.model.ModelRepresentative` that best represents the entire
+    system (#174).
+  - Bugfix: spurious segments in the ``ihm_entity_poly_segment`` table
+    are no longer created for :class:`ihm.restraint.ResidueFeature` (#175).
+
 2.7 - 2025-07-07
 ================
   - Representative models for :class:`ihm.model.ModelGroup` can now be

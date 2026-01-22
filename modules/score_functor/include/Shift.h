@@ -32,6 +32,9 @@ class Shift : public BaseDistanceScore {
  public:
   Shift(double x0, BaseDistanceScore base) : P(base), x0_(x0) {}
   Shift() {}
+
+  double get_x0() const { return x0_; }
+
   template <unsigned int D>
   double get_score(Model *m,
                    const Array<D, ParticleIndex> &pi,

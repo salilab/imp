@@ -166,6 +166,8 @@ class ModelRepresentative:
     def __init__(self, model, selection_criteria):
         self.model, self.selection_criteria = model, selection_criteria
 
+    # "selction" is deliberately misspelled here to match a misspelling
+    # in the IHM dictionary. See https://github.com/ihmwg/IHMCIF/issues/112
     selection_criteria = _text_choice_property(
         "selection_criteria",
         ["medoid", "closest to the average", "lowest energy",

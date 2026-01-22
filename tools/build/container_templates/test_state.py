@@ -7,7 +7,7 @@ import IMP.container
 class SingletonTestModifier(IMP.SingletonModifier):
 
     def __init__(self, k):
-        IMP.SingletonModifier.__init__(self)
+        super().__init__()
         self.k = k
 
     def do_show(self, fh):
@@ -32,7 +32,7 @@ class SingletonTestModifier(IMP.SingletonModifier):
 class PairTestModifier(IMP.PairModifier):
 
     def __init__(self, k):
-        IMP.PairModifier.__init__(self)
+        super().__init__()
         self.k = k
         self.sm = SingletonTestModifier(k)
 

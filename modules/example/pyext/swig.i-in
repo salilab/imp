@@ -53,6 +53,7 @@ def create_model_and_particles():
 %include "IMP_example.unaryfunc.i"
 %include "IMP_example.constraint.i"
 %include "IMP_example.modifier.i"
+%include "IMP_example.jax.i"
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line. */

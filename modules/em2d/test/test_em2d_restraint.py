@@ -12,7 +12,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
        given set of evaluations"""
 
     def __init__(self, m):
-        IMP.OptimizerState.__init__(self, m, "WriteStats")
+        super().__init__(m, "WriteStats")
         self.count = 0
 
     def update(self):

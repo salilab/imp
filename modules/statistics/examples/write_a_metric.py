@@ -16,7 +16,7 @@ class MyMetric(IMP.statistics.Metric):
 
     def __init__(self, nums):
         """Store the list of numbers to measure distances between"""
-        IMP.statistics.Metric.__init__(self, "MyMetric%1%")
+        super().__init__("MyMetric%1%")
         self._nums = nums
 
     def get_distance(self, i, j):

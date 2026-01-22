@@ -3091,11 +3091,15 @@ _ihm_localization_density_files.entity_poly_segment_id
         a1._id = 'X'
         system.entities.extend((e1, e2, e3))
         system.asym_units.append(a1)
-        res1 = e2.residue(1)
-        res2 = e2.residue(2)
-        system.orphan_features.append(ihm.restraint.ResidueFeature([e2]))
-        system.orphan_features.append(ihm.restraint.ResidueFeature([res2]))
-        system.orphan_features.append(ihm.restraint.NonPolyFeature([e3]))
+        rng1 = a1(1, 2)
+        rng2 = a1(3, 4)
+
+        s1 = ihm.representation.ResidueSegment(
+            rng1, starting_model=None,
+            rigid=False, primitive='sphere')
+        r1 = ihm.representation.Representation((s1,), name='foo',
+                                               details='bar')
+        system.orphan_representations.append(r1)
 
         system._make_complete_assembly()
 
@@ -3107,14 +3111,11 @@ _ihm_localization_density_files.entity_poly_segment_id
         # e1 isn't directly used in anything (a1 is used instead, in the
         # assembly) so should have no range ID
         self.assertFalse(hasattr(e1, '_range_id'))
-        self.assertEqual(a1._range_id, 1)
-        # e2 is use, in a ResidueFeature, so should have a range ID
-        self.assertEqual(e2._range_id, 2)
-        # non-polymers don't have ranges
-        self.assertEqual(e3._range_id, None)
-        # res2 should have been assigned a range, but not res1
-        self.assertFalse(hasattr(res1, '_range_id'))
-        self.assertEqual(res2._range_id, 3)
+        self.assertEqual(a1._range_id, 2)
+        # rng1 is use, in a ResidueSegment, so should have a range ID
+        self.assertEqual(rng1._range_id, 1)
+        # rng2 is not in use
+        self.assertFalse(hasattr(rng2, '_range_id'))
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -3125,9 +3126,8 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
-1 1 1 4 ALA ASP
-2 2 1 3 ALA GLY
-3 2 2 2 CYS CYS
+1 1 1 2 ALA HIS
+2 1 1 4 ALA ASP
 #
 """)
 
@@ -3142,8 +3142,12 @@ _ihm_entity_poly_segment.comp_id_end
             # Disable construction-time check so that we
             # can see dump time check
             e1._range_check = False
-            system.orphan_features.append(
-                ihm.restraint.ResidueFeature([e1(*badrng)]))
+            s1 = ihm.representation.ResidueSegment(
+                e1(*badrng), starting_model=None,
+                rigid=False, primitive='sphere')
+            r1 = ihm.representation.Representation((s1,), name='foo',
+                                                   details='bar')
+            system.orphan_representations.append(r1)
             e1._range_check = True
 
             dumper = ihm.dumper._EntityDumper()

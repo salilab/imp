@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import shutil
 
 
 class GenericTest(unittest.TestCase):

@@ -11,7 +11,7 @@ class MockRestraint(IMP.Restraint):
     def __init__(self, m, ps, val):
         self.ps = ps
         self._dyn_info = "foo"
-        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+        super().__init__(m, "MockRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         return 0.
@@ -60,7 +60,7 @@ class MockRestraint(IMP.Restraint):
 class MockRestraintSet(IMP.RestraintSet):
 
     def __init__(self, m, ps, val):
-        IMP.RestraintSet.__init__(self, m, "MockRestraintSet %1%")
+        super().__init__(m, "MockRestraintSet %1%")
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()

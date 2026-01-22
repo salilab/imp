@@ -10,7 +10,7 @@ class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
 
     def __init__(self, m, ps=[], cs=[]):
-        IMP.Restraint.__init__(self, m, "DummyRestraint %1%")
+        super().__init__(m, "DummyRestraint %1%")
         self.ps = ps
         self.cs = cs
 

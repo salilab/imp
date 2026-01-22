@@ -20,3 +20,8 @@ There are several ways to run calculations in parallel in %IMP:
    with OpenMP support to use this, but when enabled it is used automatically
    by all parts of %IMP that have been parallelized. See the
    [OpenMP](@ref openmp) page for more details.
+
+ - GPU support. %IMP code written using the [JAX](https://docs.jax.dev/)
+   library is inherently parallel. It is primarily intended to run on GPUs,
+   but may also work on multiple CPU systems. See the [GPU](@ref gpu) page
+   for more details.

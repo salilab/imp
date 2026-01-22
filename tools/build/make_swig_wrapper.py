@@ -6,6 +6,7 @@
 import tools
 from argparse import ArgumentParser
 import os.path
+import re
 
 parser = ArgumentParser()
 parser.add_argument("--include", help="Extra header include path",
@@ -68,6 +69,33 @@ def run_swig(outputdir, options):
                      options.module)
 
 
+def patch_python_append(line, append):
+    """Modify 'return foo' to 'val = foo; append' and return"""
+    m = re.match(r'(\s+)return (.*)', line)
+    if m is None:
+        raise ValueError("Could not match function body " + line)
+    indent = m.group(1)
+    append_lines = append.strip().split('\n')
+    lines = ['val = ' + m.group(2)] + append_lines + ['return val\n']
+    return '\n'.join(indent + line for line in lines)
+
+
+def patch_object_get_version_info(line):
+    return patch_python_append(line, """
+if val.get_module() == 'none':
+    val = VersionInfo(
+        self.__module__,
+        __import__(self.__module__).get_module_version())
+""")
+
+
+def patch_object_get_type_name(line):
+    return patch_python_append(line, """
+if val == 'unknown object type':
+    val = self.__class__.__name__
+""")
+
+
 def patch_py_wrapper(infile, outfile, module):
     """Patch Python wrappers.
        Work around SWIG bugs."""
@@ -84,6 +112,12 @@ def patch_py_wrapper(infile, outfile, module):
                 # List wrappers use IMP._list_util for all modules
                 # *except* kernel
                 line = line.replace('IMP._list_util', '_list_util')
+                # We want to override methods in just the Object base class,
+                # not subclasses, so can't use %pythonappend
+                if 'return _IMP_kernel.Object_get_version_info(' in line:
+                    line = patch_object_get_version_info(line)
+                elif 'return _IMP_kernel.Object_get_type_name(' in line:
+                    line = patch_object_get_type_name(line)
             outfh.write(line)
     outfh.close()
 

@@ -288,6 +288,10 @@ class ItemType:
         # Extend this to match any Unicode "word" character so we don't
         # fail to validate as soon as we see an accented character.
         self.construct = construct.replace('A-Za-z0-9', r'\w')
+        # CIF regexes often include '\{}' which is interpreted by Python re
+        # as matching '{' or '}', but it is presumably intended to also
+        # match a literal backslash
+        self.construct = self.construct.replace(r'\{}', r'\\{}')
         self.primitive_code = primitive_code
         # Ensure that regex matches the entire value
         try:

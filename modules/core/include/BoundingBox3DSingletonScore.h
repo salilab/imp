@@ -75,6 +75,9 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
    */
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
+  UF *get_unary_function() const { return f_; }
+  algebra::BoundingBoxD<3> get_bounding_box() const { return bb_; }
+
   /**
     return 0 if the p is within the bounding box or f(d) if it is
     outside the bounding box, where f is the unary function provided

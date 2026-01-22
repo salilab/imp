@@ -24,7 +24,6 @@ IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
 IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
 IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
-IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, LennardJonesTyped, LennardJonesTypeds);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, LinearVelocity, LinearVelocities);
@@ -73,7 +72,6 @@ IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
 IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
-IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
 IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _LennardJonesTypedPairScore,
             LennardJonesTypedPairScore<IMP::atom::SmoothingFunction>,
             _LennardJonesTypedPairScores);
@@ -238,8 +236,6 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %include "IMP/atom/Charged.h"
 %include "IMP/atom/CoulombPairScore.h"
 %include "IMP/atom/Domain.h"
-%include "IMP/atom/LennardJones.h"
-%include "IMP/atom/LennardJonesPairScore.h"
 %include "IMP/atom/LennardJonesType.h"
 %include "IMP/atom/LennardJonesTypedPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
@@ -388,3 +384,5 @@ class LennardJonesTypedPairScore(_SwitchedLennardJonesTypedPairScore.__bases__[0
         obj.__dict__['_proxied'] = p
         return obj
 %}
+
+%include "IMP_atom.jax.i"

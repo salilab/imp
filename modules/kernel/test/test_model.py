@@ -4,6 +4,10 @@ import io
 import random
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class DummyRestraint(IMP.Restraint):
@@ -11,7 +15,7 @@ class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
 
     def __init__(self, m, ps=[], cs=[], name="DummyRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.ps = ps
         self.cs = cs
 
@@ -34,7 +38,7 @@ class FailingRestraint(IMP.Restraint):
     """Restraint that fails in evaluate"""
 
     def __init__(self, m):
-        IMP.Restraint.__init__(self, m, "FailingRestraint %1%")
+        super().__init__(m, "FailingRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
@@ -52,7 +56,7 @@ class DummyScoreState(IMP.ScoreState):
 
     def __init__(self, m, ips=[], ics=[], ops=[], ocs=[],
                  name="DummyScoreState%1%"):
-        IMP.ScoreState.__init__(self, m, name)
+        super().__init__(m, name)
         self.ips = ips
         self.ics = ics
         self.ops = ops
@@ -80,7 +84,7 @@ class ClassScoreState(IMP.ScoreState):
     """Score state that shows the filehandle class"""
 
     def __init__(self, m):
-        IMP.ScoreState.__init__(self, m, "ClassScoreState%1%")
+        super().__init__(m, "ClassScoreState%1%")
 
     def update(self):
         pass
@@ -611,6 +615,37 @@ class Tests(IMP.test.TestCase):
         td = IMP._TrivialDecorator.setup_particle(p)
         newm = td.get_model()
         self.assertEqual(id(newm), id(m))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_get_jax_model_rigid_bodies(self):
+        """Test _get_jax_model with rigid bodies"""
+        import IMP._jax_util
+        m1 = IMP.Model()
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+        p4 = IMP.Particle(m1)
+
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        d1.set_coordinates(IMP.algebra.Vector3D(1,2,3))
+        d1.set_radius(4)
+        rb2 = IMP.core.RigidBody.setup_particle(p2, [p1])
+
+        d3 = IMP.core.XYZR.setup_particle(p3)
+        d3.set_coordinates(IMP.algebra.Vector3D(4,5,6))
+        d3.set_radius(4)
+        rb4 = IMP.core.RigidBody.setup_particle(p4, [p3])
+
+        ms = IMP._jax_util._get_jax_model(m1, ('rigid_bodies',))
+        rbs = ms['rigid_bodies']
+        # 2 rigid bodies
+        self.assertEqual(len(rbs.quaternion), 2)
+        self.assertEqual(rbs.rb_index_from_particle, {1: 0, 3: 1})
+        self.assertEqual(list(rbs.particle_from_rb_index), [1, 3])
+        # No internal coordinate for rb4, so len==3
+        self.assertEqual(len(rbs.intcoord), 3)
+        self.assertEqual([int(x) for x in rbs.quaternion[0]], [1, 0, 0, 0])
+        self.assertEqual([int(x) for x in rbs.quaternion[1]], [1, 0, 0, 0])
 
 
 if __name__ == '__main__':

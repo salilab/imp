@@ -9,12 +9,12 @@ import IMP.test
 
 class ISDRestraint(IMP.isd.ISDRestraint):
     def __init__(self,m):
-        IMP.isd.ISDRestraint.__init__(self, m, "ISDRestraint %1%")
+        super().__init__(m, "ISDRestraint %1%")
 
 
 class ISDRestraint2(IMP.isd.ISDRestraint):
     def __init__(self,m):
-        IMP.isd.ISDRestraint.__init__(self, m, "ISDRestraint %1%")
+        super().__init__(m, "ISDRestraint %1%")
 
     def unprotected_evaluate(self,da):
         return -math.log(self.get_probability())
@@ -27,7 +27,7 @@ class ISDRestraint2(IMP.isd.ISDRestraint):
 
 class ISDRestraint3(IMP.isd.ISDRestraint):
     def __init__(self,m):
-        IMP.isd.ISDRestraint.__init__(self, m, "ISDRestraint %1%")
+        super().__init__(m, "ISDRestraint %1%")
 
     def get_probability(self):
         return math.pi

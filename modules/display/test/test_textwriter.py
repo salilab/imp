@@ -8,7 +8,7 @@ import os
 class DummyWriter(IMP.display.TextWriter):
 
     def __init__(self, name):
-        IMP.display.TextWriter.__init__(self, name)
+        super().__init__(name)
 
     def do_open(self):
         print("opening")

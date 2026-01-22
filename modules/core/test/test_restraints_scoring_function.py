@@ -2,11 +2,18 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
+
+idkey = IMP.IntKey("id")
 
 
 class TestMovedRestraint(IMP.Restraint):
     def __init__(self, m, ps, value, name="TestMovedRestraint %1%"):
-        IMP.Restraint.__init__(self, m, name)
+        super().__init__(m, name)
         self.ps = ps
         self.value = value
 
@@ -19,6 +26,20 @@ class TestMovedRestraint(IMP.Restraint):
         self.moved_pis = moved_pis
         self.reset_pis = reset_pis
         return self.value * 10.
+
+    def do_get_inputs(self):
+        return self.ps
+
+
+class TestJAXKeyRestraint(IMP.Restraint):
+    def __init__(self, m, ps, name="TestJAXKeyRestraint %1%"):
+        super().__init__(m, name)
+        self.ps = ps
+
+    def _get_jax(self):
+        def jax_restraint(jm):
+            return 1.0
+        return self._wrap_jax(jax_restraint, keys=[idkey])
 
     def do_get_inputs(self):
         return self.ps
@@ -154,6 +175,38 @@ class Tests(IMP.test.TestCase):
         newr, = newsf.restraints
         self.assertEqual(newr.get_name(), "foo")
         self.assertEqual(newsf.evaluate(False), 42)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_keys(self):
+        """Test JAX keys returned by RestraintsScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r = TestJAXKeyRestraint(m, p)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        # TestJAXKeyRestraint should request the 'id' attribute
+        ji = sf._get_jax()
+        X = ji.get_jax_model()
+        self.assertEqual(sorted(X.keys()), ['id', 'r', 'xyz'])
+
+        r = IMP._ConstRestraint(m, [p], 42)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        # ConstRestraint doesn't request any keys; we should get the default
+        ji = sf._get_jax()
+        X = ji.get_jax_model()
+        self.assertEqual(sorted(X.keys()), ['r', 'xyz'])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score(self):
+        """Test JAX RestraintsScoringFunction score"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        sf = IMP.core.RestraintsScoringFunction([r1, r2])
+        ji = sf._get_jax()
+        X = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 60.0, delta=0.1)
 
 
 if __name__ == '__main__':

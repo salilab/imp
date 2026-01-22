@@ -1,23 +1,59 @@
 name: CI
 on: [push, pull_request]
 
-env:
-  CXXFLAGS: "-fprofile-arcs -ftest-coverage"
-
 jobs:
   test:
-    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }} / ${{ matrix.show_build }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10"]
-        os: [ubuntu-22.04]
-        compiler: [gcc]
-    env:
-      CC: ${{ matrix.compiler }}
+        include:
+        - os: ubuntu-24.04
+          python-version: "3.12"
+          cxxflags: "--coverage"
+          linkflags: "--coverage"
+          cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
+          skiptests: "expensive|medium|IMP\\.modeller\\-"
+          # Newer versions of jax need numpy 2 (Ubuntu 24.04 has numpy 1)
+          pip_extra_packages: jax==0.7.1
+          show_build: Release
+          cmake_build: Release
+          max_checks: USAGE
+          max_log: VERBOSE
+        - os: ubuntu-24.04
+          python-version: "3.12"
+          cxxflags: "--coverage"
+          linkflags: "--coverage"
+          cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
+          skiptests: "expensive|medium|IMP\\.modeller\\-"
+          show_build: Debug
+          cmake_build: Debug
+          max_checks: INTERNAL
+          max_log: VERBOSE
+        - os: ubuntu-24.04
+          python-version: "3.12"
+          cxxflags: "--coverage"
+          linkflags: "--coverage"
+          cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
+          skiptests: "expensive|medium|IMP\\.modeller\\-"
+          show_build: Fast
+          cmake_build: Release
+          max_checks: NONE
+          max_log: NONE
+        - os: macos-latest
+          python-version: "3.13"
+          cxxflags: "-std=c++17 --coverage"
+          linkflags: "--coverage"
+          cgaldir: "/opt/homebrew/lib/cmake/CGAL/"
+          skiptests: "expensive|medium|IMP\\.modeller\\-|IMP\\.parallel\\-test_tasks|IMP\\.parallel\\-test_startup"
+          show_build: Release
+          cmake_build: Release
+          max_checks: USAGE
+          max_log: VERBOSE
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
+      - uses: actions/checkout@v5
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq libboost-all-dev swig libhdf5-dev libeigen3-dev \
@@ -26,12 +62,43 @@ jobs:
             libprotobuf-dev protobuf-compiler \
             libopenmpi-dev python3-dev python3-numpy python3-protobuf \
             python3-nose python3-pip python3-biopython
-          pip3 install codecov
+          pip3 install codecov ${{ matrix.pip_extra_packages }}
+      - name: Set up Python ${{ matrix.python-version }}
+        if: matrix.os == 'macos-latest'
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies (Mac)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install swig boost cereal cgal opencv gsl fftw eigen hdf5 protobuf
+          pip install codecov numpy
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          create-symlink: true
       - name: Set up git
         run: ./setup_git.py
       - name: Build IMP
         run: |
           mkdir build
           cd build
-          cmake .. -DUSE_PYTHON2=OFF -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/
+          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.cmake_build }}" -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4 -DIMP_MAX_CHECKS="${{ matrix.max_checks }}" -DIMP_MAX_LOG="${{ matrix.max_log }}"
           make -k -j 2
+          cd ..
+      - name: Test IMP
+        if: matrix.cmake_build != 'Debug'
+        run: |
+          cd build
+          ../tools/coverage/setup.py
+          PYTHONPATH=`pwd`/coverage ctest --output-on-failure -L '\-tests?-' -E "${{ matrix.skiptests }}" -T Test
+          ctest --output-on-failure -R medium_test_standards -E 'IMP\.modeller\-' -T Test
+      - name: Combine coverage
+        if: matrix.cmake_build != 'Debug'
+        run: |
+          cd build/coverage
+          coverage combine && coverage xml && mv coverage.xml ../..
+      - uses: codecov/codecov-action@v5
+        if: matrix.cmake_build != 'Debug'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

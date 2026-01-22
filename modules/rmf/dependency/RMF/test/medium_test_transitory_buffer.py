@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import shutil
 
 
 class GenericTest(unittest.TestCase):
@@ -16,5 +15,7 @@ class GenericTest(unittest.TestCase):
         buf = RMF.read_buffer(ifn)
         f = RMF.open_rmf_buffer_read_only(buf)
         RMF.show_hierarchy_with_values(f.get_root_node())
+
+
 if __name__ == '__main__':
     unittest.main()

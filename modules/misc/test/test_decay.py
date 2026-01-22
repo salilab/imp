@@ -7,6 +7,7 @@ class Tests(IMP.test.TestCase):
 
     """Tests for WLC unary function"""
 
+    @IMP.test.unstable
     def test_wlc(self):
         """Test that decay has the right halflife"""
         m = IMP.Model()

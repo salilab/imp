@@ -13,12 +13,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Test
       run: |
         pip install flake8
-        flake8 tools modules/cnmultifit/pyext modules/EMageFit/pyext modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext modules/pepdock/pyext modules/saxs_merge/bin/saxs_merge modules/isd/pyext modules/multifit/pyext modules/spatiotemporal/pyext modules/modeller/pyext
+        flake8 . --extend-exclude '*/test/*,*/examples/*,*/data/*,*/utility/*,*/dependency/*,dependencies.py,setup_git.py,*/pmi1/*,*/dev_tools/*,*/benchmark/*,*/scripts/*,*/broken-examples/*,components/*'

@@ -66,7 +66,11 @@ void test(const char* fname) {
 int main(int, char * []) {
   try {
     // don't have tmp file support at this point
+#ifdef _WIN32
+    const char fname[] = "tmp-assoc.rmf";
+#else
     const char fname[] = "/tmp/assoc.rmf";
+#endif
     test(fname);
     remove(fname);
   }

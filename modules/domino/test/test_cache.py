@@ -9,7 +9,7 @@ import random
 class LogRestraint(IMP.Restraint):
 
     def __init__(self, m, ps):
-        IMP.Restraint.__init__(self, m, "LogRestraint%1%")
+        super().__init__(m, "LogRestraint%1%")
         self.count = 0
         self.ps = ps
 

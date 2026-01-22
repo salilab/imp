@@ -394,7 +394,6 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_t
 IMP_SWIG_OBJECT_SERIALIZE_IMPL(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 IMP_SWIG_OBJECT_SERIALIZE_PICKLE(IMP::core, GenericDistanceToSingletonScore<UnaryFunction>);
 
-
 // Pick the most performant C++ template class when creating
 // SphereDistancePairScore, and proxy it in the Python class
 %pythoncode %{
@@ -496,3 +495,5 @@ def add_imp_provenance(p):
                             version=IMP.get_module_version(),
                             location="https://integrativemodeling.org")
 %}
+
+%include "IMP_core.jax.i"

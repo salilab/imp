@@ -12,7 +12,9 @@
 #include "../utility.h"
 #include <IMP/log.h>
 #include <IMP/Object.h>
+#include <IMP/Array.h>
 #include <IMP/Pointer.h>
+#include <IMP/algebra/Vector3D.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
 #include <boost/container/flat_map.hpp>
@@ -50,6 +52,20 @@ IMPKERNEL_END_NAMESPACE
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
+// VectorD and SphereD do not support operator==, so provide our
+// own functions to test for exact equality (to be used during serialization)
+template<class T> struct vector_equal {
+  bool operator()(const T&a, const T&b) {
+    return std::equal(a.begin(), a.end(), b.begin());
+  }
+};
+
+template<class T> struct sphere_equal {
+  bool operator()(const T&a, const T&b) {
+    return a.get_radius() == b.get_radius() && std::equal(a.get_center().begin(), a.get_center().end(), b.get_center().begin());
+  }
+};
+
 /** Base class for defining traits of attributes in the attribute table
     to be stored in a Model object. The traits define the type of attribute
     values, the attribute key, a container for the list of values etc.
@@ -71,6 +87,8 @@ struct DefaultTraits {
   static const T &max(const T &a, const T &b) { return std::max(a, b); }
   //! returns the minimum of a and b
   static const T &min(const T &a, const T &b) { return std::min(a, b); }
+  //! compares a and b for equality
+  static bool is_equal(const T &a, const T &b) { return a == b; }
   //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
@@ -89,6 +107,7 @@ struct ArrayTraits {
   static bool get_is_valid(const Value &v) { return !v.empty(); }
   static const Value &max(const Value &a, const Value &) { return a; }
   static const Value &min(const Value &, const Value &b) { return b; }
+  static bool is_equal(const Value &a, const Value &b) { return a == b; }
   //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
@@ -145,6 +164,7 @@ struct ObjectAttributeTableTraits {
   static bool get_is_valid(const Value &f) { return f; }
   static Value min(Value a, Value b) { return std::min(a, b); }
   static Value max(Value a, Value b) { return std::max(a, b); }
+  static bool is_equal(Value a, Value b) { return a == b; }
     //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
@@ -163,6 +183,7 @@ struct WeakObjectAttributeTableTraits {
   static bool get_is_valid(const Value &f) { return f; }
   static Value min(Value a, Value b) { return std::min(a, b); }
   static Value max(Value a, Value b) { return std::max(a, b); }
+  static bool is_equal(Value a, Value b) { return a == b; }
     //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
@@ -186,6 +207,7 @@ struct ObjectsAttributeTableTraits {
     IMP_UNUSED(a);
     return b;
   }
+  static bool is_equal(Value a, Value b) { return a == b; }
   //! allow direct const access to the container data
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
@@ -200,6 +222,41 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
   static Int get_invalid() { return std::numeric_limits<Int>::max(); }
   static bool get_is_valid(Int f) { return f != get_invalid(); }
 
+};
+
+struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
+                                                           Vector3DKey> {
+  typedef IndexVector<ParticleIndexTag, algebra::Vector3D,
+                      std::allocator<algebra::Vector3D>,
+                      vector_equal<algebra::Vector3D> > Container;
+
+  static algebra::Vector3D get_invalid() {
+    double inv = FloatAttributeTableTraits::get_invalid();
+    return algebra::Vector3D(inv, inv, inv);
+  }
+
+  static bool get_is_valid(const algebra::Vector3D &f) {
+    double inv = FloatAttributeTableTraits::get_invalid();
+    return std::get<0>(f) != inv;
+  }
+  static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
+    return std::equal(a.begin(), a.end(), b.begin());
+  }
+  static algebra::Vector3D min(const algebra::Vector3D &a,
+                               const algebra::Vector3D &b) {
+    IMP_UNUSED(b);
+    return a;
+  }
+  static algebra::Vector3D max(const algebra::Vector3D &a,
+                               const algebra::Vector3D &b) {
+    IMP_UNUSED(a);
+    return b;
+  }
+  //
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {

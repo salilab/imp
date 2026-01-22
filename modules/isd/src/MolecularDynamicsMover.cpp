@@ -56,7 +56,12 @@ void MolecularDynamicsMover::save_coordinates() {
       coords.push_back(d.get_coordinate(1));
       coords.push_back(d.get_coordinate(2));
       coordinates_.push_back(coords);
-      velocities_.push_back(ps[i]->get_value(FloatsKey("linvel")));
+      algebra::Vector3D v = atom::LinearVelocity(ps[i]).get_velocity();
+      coords.clear();
+      coords.push_back(v[0]);
+      coords.push_back(v[1]);
+      coords.push_back(v[2]);
+      velocities_.push_back(coords);
     }
   }
 }
@@ -90,8 +95,8 @@ void MolecularDynamicsMover::do_reject() {
       core::XYZ(ps[i]).set_coordinate(0, coordinates_[i][0]);
       core::XYZ(ps[i]).set_coordinate(1, coordinates_[i][1]);
       core::XYZ(ps[i]).set_coordinate(2, coordinates_[i][2]);
-      Floats fs(velocities_[i]);
-      ps[i]->set_value(FloatsKey("linvel"), fs);
+      algebra::Vector3D v(velocities_[i]);
+      atom::LinearVelocity(ps[i]).set_velocity(v);
     }
   }
 }

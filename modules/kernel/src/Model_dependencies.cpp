@@ -255,8 +255,12 @@ void Model::set_has_all_dependencies(bool tf) {
 
 void Model::update() {
   IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
+  ScoreStatesTemp ordered_score_states = get_ordered_score_states();
+  before_evaluate(ordered_score_states);
+}
 
+ScoreStatesTemp Model::get_ordered_score_states() {
+  IMP_CHECK_OBJECT(this);
   set_has_all_dependencies(true);
   ScoreStatesTemp sst;
   for(DependencyGraph::value_type & vt : dependency_graph_) {
@@ -267,8 +271,7 @@ void Model::update() {
       sst.push_back(ss);
     }
   }
-  ScoreStatesTemp ordered_score_states = get_update_order(sst);
-  before_evaluate(ordered_score_states);
+  return get_update_order(sst);
 }
 
 void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {

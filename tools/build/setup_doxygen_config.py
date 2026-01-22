@@ -17,7 +17,7 @@ from argparse import ArgumentParser
 
 class DoxConfigFileGenerator(tools.FileGenerator):
     def __init__(self, template_file):
-        tools.FileGenerator.__init__(self, template_file, '#')
+        super().__init__(template_file, '#')
 
     def get_output_file_contents(self, output):
         is_xml = output['is_xml']

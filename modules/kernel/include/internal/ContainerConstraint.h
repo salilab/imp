@@ -2,7 +2,7 @@
  *  \file ContainerConstraint.h
  *  \brief Templated and more efficient constraint implementation.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,6 +44,12 @@ class ContainerConstraint : public Constraint {
 
   //! Apply this modifier to all the elements before an evaluate
   void set_before_evaluate_modifier(Before *f) { f_ = f; }
+
+  Before *get_before_modifier() const { return f_; }
+  After *get_after_modifier() const { return af_; }
+
+  //! Get the container object used in this constraint
+  Container *get_container() const { return c_; }
 
   // only report actual interactions
   ModelObjectsTemps do_get_interactions() const override {

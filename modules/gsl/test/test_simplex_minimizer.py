@@ -10,7 +10,7 @@ corners = [[0, 0, 0], [0, 1, 0], [0, 0, 1], [0, 1, 1],
 class EasyCubeFunc(IMP.Restraint):
 
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, "EasyCubeFunc %1%")
+        super().__init__("EasyCubeFunc %1%")
         self.particles = particles
         self.index = IMP.FloatKey("x")
 

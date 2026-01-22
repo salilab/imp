@@ -434,17 +434,9 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 %extend Namespace::Name {
   %pythoncode %{
-    def get_type_name(self):
-        return self.__class__.__name__
     def do_show(self, out):
         pass
-    def get_version_info(self):
-        if #Namespace == "IMP":
-          return VersionInfo(self.__module__,
-                             __import__(self.__module__).get_module_version())
-        else:
-          return IMP.VersionInfo(self.__module__,
-                             __import__(self.__module__).get_module_version())
+
     @staticmethod
     def get_from(o):
        return _object_cast_to_##Name(o)
@@ -898,6 +890,13 @@ IMP_SWIG_OBJECT_SERIALIZE_PICKLE(Namespace, CppName)
 %define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)
 %template(Name) Namespace::Generic##Name<argument>;
 %template(create_##lcname) Namespace::create_##lcname<argument>;
+%extend Namespace::Generic##Name<argument> {
+  %pythoncode %{
+    @staticmethod
+    def get_from(o):
+       return _object_cast_to_##Name(o)
+  %}
+ }
 %enddef
 
 

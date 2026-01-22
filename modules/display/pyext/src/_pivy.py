@@ -9,11 +9,11 @@ def get_writer(parent):
     class PivyWriter(parent):
 
         def __init__(self):
-            parent.__init__(self, "pivy")
+            super().__init__("pivy")
             self._setup_pivy()
 
         def _setup_pivy(self):
-            import pivy.sogui
+            import pivy.sogui  # noqa: F811
             import pivy.coin
             import os
             self.pivy = pivy
@@ -89,23 +89,18 @@ def get_writer(parent):
             cyl = s.get_geometry()
             seg = cyl.get_segment()
             center = seg.get_middle_point()
-        #tr.translation.setValue(self.pivy.coin.SbVec3f(0, seg.get_length()/2, 0))
             tr.translation.setValue(
                 self.pivy.coin.SbVec3f(center[0], center[1],
                                        center[2]))
-        #tr.center.setValue(self.pivy.coin.SbVec3f(center[0], center[1], center[2]))
             uv = seg.get_direction().get_unit_vector()
             tr.rotation.setValue(
                 self.pivy.coin.SbRotation(self.pivy.coin.SbVec3f(0, 1, 0),
-                                          self.pivy.coin.SbVec3f(uv[0], uv[1], uv[2])))
-        # print "tr", tr.translation.getValue()[0], tr.translation.getValue()[1], tr.translation.getValue()[2]
-        # print "scale", tr.scaleFactor.getValue()[0],  tr.scaleFactor.getValue()[1],  tr.scaleFactor.getValue()[2]
-        # tr.rotation.getValue()
+                                          self.pivy.coin.SbVec3f(uv[0], uv[1],
+                                                                 uv[2])))
             sep.addChild(tr)
             sphere = self.pivy.coin.SoCylinder()
             sphere.radius.setValue(cyl.get_radius())
             sphere.height.setValue(cyl.get_segment().get_length())
-        # sphere.addPart(self.pivy.coin.SoCylinder.ALL)
             sep.addChild(sphere)
             return True
 
@@ -114,7 +109,7 @@ def get_writer(parent):
             self.pivy.sogui.SoGui.show(self.window)  # Display main window
             self.pivy.sogui.SoGui.mainLoop()
     try:
-        import pivy.sogui
-    except:
+        import pivy.sogui  # noqa: F401
+    except ImportError:
         return None
     return PivyWriter

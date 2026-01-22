@@ -5,7 +5,7 @@ class PythonExampleUnaryFunction(IMP.UnaryFunction):
        This should be functionally equivalent to the C++ ExampleUnaryFunction.
     """
     def __init__(self, center, k):
-        IMP.UnaryFunction.__init__(self)
+        super().__init__()
         self.center, self.k = center, k
 
     def evaluate_with_derivative(self, feature):

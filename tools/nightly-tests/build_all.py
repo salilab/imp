@@ -42,7 +42,7 @@ class TestXMLHandler(XMLGenerator):
 
     def __init__(self, dest, detail_dir):
         self.fh = open(dest, 'w')
-        XMLGenerator.__init__(self, self.fh, "UTF-8")
+        super().__init__(self.fh, "UTF-8")
         self.detail_dir = detail_dir
         self._test = None
         self._in_name = False
@@ -208,7 +208,7 @@ class Module(Component):
     """Represent an IMP module"""
 
     def __init__(self, name):
-        Component.__init__(self, name)
+        super().__init__(name)
         self.target['build'] = 'IMP.' + name
         self.test_regex = '^IMP\\.' + name + '\\-'
 
@@ -216,7 +216,7 @@ class Module(Component):
 class RMFDependency(Component):
 
     def __init__(self, name):
-        Component.__init__(self, name)
+        super().__init__(name)
         self.target['build'] = 'RMF'
         self.test_regex = '^RMF\\-'
 

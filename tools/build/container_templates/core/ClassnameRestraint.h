@@ -2,7 +2,7 @@
  *  \file IMP/core/ClassnameRestraint.h
  *  \brief Apply a ClassnameScore to a Classname.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2025 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,6 +31,7 @@ class ClassnameRestraint :
     public IMP::internal::TupleRestraint<ClassnameScore>
 #endif
     {
+  typedef IMP::internal::TupleRestraint<ClassnameScore> P;
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
@@ -49,12 +50,18 @@ class ClassnameRestraint :
   }
   ClassnameRestraint() {}
 
+  //! Get the ClassnameScore object used in this restraint
+  ClassnameScore *get_score_object() const { return P::get_score(); }
+
 #if defined(SWIG) || defined(IMP_DOXYGEN)
+  //! Get the index(es) used in this restraint
+  typename ClassnameScore::IndexArgument get_index() const;
+
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
   IMP::ModelObjectsTemp do_get_inputs() const;
-  IMP_OBJECT_METHODS(ClassnameRestraint)
 #endif
+  IMP_OBJECT_METHODS(ClassnameRestraint)
 };
 
 IMPCORE_END_NAMESPACE

@@ -1,7 +1,7 @@
 /**
  *  \file KMData.h   \brief Holds data points to cluster using k-means
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -106,7 +106,7 @@ inline void clear_points(KMPointArray *points) {
   }
   points->clear();
 }
-//! Dellocate a point array
+//! Deallocate a point array
 inline void deallocate_points(KMPointArray *points) {
   if (points == nullptr) return;
   for (unsigned int i = 0; i < points->size(); i++) {

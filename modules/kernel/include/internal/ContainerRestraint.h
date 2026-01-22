@@ -63,7 +63,11 @@ class ContainerRestraint : public Restraint {
     return pc_->get();
   }
 
+  //! Get the score object used in this restraint
   Score *get_score() const { return acc_->get_score_object(); }
+
+  //! Get the container object used in this restraint
+  Container *get_container() const { return pc_; }
 
   Restraints do_create_decomposition() const override;
   Restraints do_create_current_decomposition() const override;

@@ -12,7 +12,7 @@ tk = IMP.IntKey("type")
 class Pred(IMP.PairPredicate):
 
     def __init__(self):
-        IMP.PairPredicate.__init__(self)
+        super().__init__()
 
     def get_value_index(self, m, pp):
         return m.get_attribute(tk, pp[0]) + m.get_attribute(tk, pp[1])
@@ -27,7 +27,7 @@ class Score(IMP.PairScore):
         self._value = v
         self._pred = Pred()
         self._pred.set_was_used(True)
-        IMP.PairScore.__init__(self)
+        super().__init__()
 
     def evaluate_index(self, m, pp, da):
         if self._pred.get_value_index(m, pp) == self._value:

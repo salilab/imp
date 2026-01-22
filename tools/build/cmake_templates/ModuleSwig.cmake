@@ -69,6 +69,10 @@ if(WIN32 AND NOT CYGWIN)
   set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".pyd")
 endif()
 
+if(IMP_USE_PYTHON_SOABI AND NOT WIN32 AND DEFINED PYTHON_SOABI AND NOT PYTHON_SOABI STREQUAL "")
+  set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".${PYTHON_SOABI}.so")
+endif()
+
 target_link_libraries(IMP.%(name)s-python
     IMP.%(name)s-lib
     ${imp_%(name)s_libs}

@@ -8,6 +8,7 @@
 import IMP.core
 import IMP.algebra
 
+
 def randomize_particle(p):
     d = IMP.core.XYZ(p)
     d.set_coordinates(IMP.algebra.get_random_vector_in(

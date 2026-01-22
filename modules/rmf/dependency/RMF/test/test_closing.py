@@ -1,6 +1,5 @@
 import unittest
 import RMF
-import shutil
 
 
 class Tests(unittest.TestCase):
@@ -28,7 +27,7 @@ class Tests(unittest.TestCase):
             del sc
             try:
                 import RMF_HDF5
-            except:
+            except ImportError:
                 continue
             names = RMF_HDF5.get_open_handle_names()
             print(names)

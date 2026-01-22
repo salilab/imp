@@ -9,7 +9,7 @@ import IMP.display
 class NullStates(IMP.domino.ParticleStates):
 
     def __init__(self):
-        IMP.domino.ParticleStates.__init__(self)
+        super().__init__()
 
     def get_number_of_particle_states(self):
         return 1

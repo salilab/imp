@@ -60,6 +60,8 @@ class DistancePairScore : public PairScore {
   DistanceScoreT& get_score_functor()
     {return ds_; }
 
+  const DistanceScoreT& get_score_functor() const { return ds_; }
+
   IMP_PAIR_SCORE_METHODS(DistancePairScore);
   IMP_OBJECT_METHODS(DistancePairScore);
 };

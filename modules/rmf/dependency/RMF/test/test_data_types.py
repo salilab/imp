@@ -17,8 +17,6 @@ class GenericTest(unittest.TestCase):
                (RMF.vector4_tag, RMF.Vector4(1, 2, 3, 4)),
                (RMF.vector3s_tag, [RMF.Vector3(1, 2, 3)]),
                (RMF.ints_tag, [3, 4, 5, 6]), ]
-        #      (f.get_vector4_key, RMF.Vector4(1,2,3,4))]
-        #self.assertEqual(len(lst), len(RMF.get_data_types()) - 3)
         return lst
 
     def _test_write(self, name):
@@ -59,8 +57,8 @@ class GenericTest(unittest.TestCase):
         RMF.set_log_level("trace")
         for suffix in RMF.suffixes:
             name = RMF._get_temporary_file_path("test_data_types." + suffix)
-            #f= RMF.create_rmf_file(name)
             self._do_test_types(name)
+
 
 if __name__ == '__main__':
     unittest.main()

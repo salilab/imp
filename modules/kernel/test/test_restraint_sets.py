@@ -2,12 +2,17 @@ import IMP
 import IMP.core
 import IMP.test
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
 
 class LinkScoreState(IMP.ScoreState):
     """ScoreState that links one particle to another"""
 
     def __init__(self, m, pin, pout):
-        IMP.ScoreState.__init__(self, m, "LinkScoreState%1%")
+        super().__init__(m, "LinkScoreState%1%")
         self.pin, self.pout = pin, pout
 
     def do_before_evaluate(self):
@@ -27,7 +32,7 @@ class LogRestraint(IMP.Restraint):
     """Restraint that logs how it was called (or skipped)"""
 
     def __init__(self, m, ps, value):
-        IMP.Restraint.__init__(self, m, 'LogRestraint%1%')
+        super().__init__(m, 'LogRestraint%1%')
         self.ps = ps
         self.value = value
         self.moved_evaluate = None
@@ -266,6 +271,35 @@ class Tests(IMP.test.TestCase):
         assert_restraint_skipped(r1)
         assert_restraint_evaluate(r3)
         assert_restraint_evaluate_moved(r4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score(self):
+        """Test JAX RestraintSet score"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r1.set_weight(2.0)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        r2.set_weight(3.0)
+        r = IMP.RestraintSet(m)
+        r.set_weight(4.0)
+        r.add_restraints([r1, r2])
+        ji = r._get_jax()
+        X = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 552.0, delta=0.1)
+
+        # RestraintSet with no restraints should score zero
+        r = IMP.RestraintSet(m)
+        for weight in (1.0, 4.0):
+            r.set_weight(weight)
+            ji = r._get_jax()
+            X = ji.get_jax_model()
+            j = jax.jit(ji.score_func)
+            g = jax.jit(jax.grad(ji.score_func))
+            self.assertAlmostEqual(j(X), 0.0, delta=0.1)
+            dX = g(X)
+            self.assertEqual(dX['xyz'].shape, (0, 3))
 
 
 if __name__ == '__main__':

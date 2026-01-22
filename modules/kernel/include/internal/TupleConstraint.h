@@ -2,7 +2,7 @@
  *  \file internal/TupleConstraint.h
  *  \brief Templated Constraint.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,6 +41,11 @@ class TupleConstraint : public Constraint {
 
   //! Apply this modifier to all the elements before an evaluate
   void set_before_evaluate_modifier(Before *f) { f_ = f; }
+
+  Before *get_before_modifier() const { return f_; }
+  After *get_after_modifier() const { return af_; }
+
+  typename Before::IndexArgument get_index() const { return v_; }
 
   typename Before::Argument get_argument() const {
     return get_particle(ScoreState::get_model(), v_);

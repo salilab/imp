@@ -78,7 +78,7 @@ class _Worker(Thread):
     """Thread executing tasks from a given tasks queue"""
 
     def __init__(self, tasks):
-        Thread.__init__(self)
+        super().__init__()
         self.tasks = tasks
         self.daemon = True
         self.start()

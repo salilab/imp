@@ -129,6 +129,7 @@ _plural_types=[]
 
     contents.append("""
 namespace IMP { %s
+const std::string get_module_name();
 const std::string get_module_version();
 std::string get_example_path(std::string fname);
 std::string get_data_path(std::string fname);

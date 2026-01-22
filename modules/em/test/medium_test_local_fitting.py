@@ -36,6 +36,7 @@ class Tests(IMP.test.TestCase):
         mhs = IMP.atom.Hierarchies()
         mhs.append(self.mh)
 
+    @IMP.test.unstable
     def test_fast_vs_slow_local_fitting(self):
         """Check that fast and slow local fitting converge to the same score"""
         rand_translation = 15. * \

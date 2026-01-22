@@ -198,7 +198,7 @@ typedef struct {
    * (not unit vectors) for the x, y, and z axes.  In the simplest
    * case, these would be <size,0,0> <0,size,0> and <0,0,size) for
    * an orthogonal cubic volume set.  For other cell shapes these
-   * axes can be oriented non-orthogonally, and the parallelpiped
+   * axes can be oriented non-orthogonally, and the parallelepiped
    * may have different side lengths, not just a cube/rhombus.
    */
   float xaxis[3]; /**< direction (and length) for X axis              */

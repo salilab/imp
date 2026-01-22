@@ -2,9 +2,57 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
+
+def _lb_harmonicfunc(val, mean, force_constant):
+    """Python implementation of lower bound harmonic function and 1st deriv"""
+    if val > mean:
+        return 0., 0.
+    else:
+        diff = val - mean
+        score = 0.5 * force_constant * diff * diff
+        deriv = force_constant * diff
+        return score, deriv
 
 
 class Tests(IMP.test.TestCase):
+
+    def test_values(self):
+        """Test that harmonic lower bound values are correct"""
+        force_constant = 100.0
+        mean = 10.0
+        func = IMP.core.HarmonicLowerBound(mean, force_constant)
+        func.set_was_used(True)
+        for i in range(15):
+            val = 5.0 + i
+            expscore, expderiv = _lb_harmonicfunc(val, mean, force_constant)
+            score, deriv = func.evaluate_with_derivative(val)
+            scoreonly = func.evaluate(val)
+            self.assertEqual(score, scoreonly)
+            self.assertAlmostEqual(expscore, score, delta=0.1)
+            self.assertAlmostEqual(expderiv, deriv, delta=0.1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test that JAX harmonic lower bound values are correct"""
+        force_constant = 100.0
+        mean = 10.0
+        func = IMP.core.HarmonicLowerBound(mean, force_constant)
+        func.set_was_used(True)
+        score_func = func._get_jax()
+        score_f = jax.jit(score_func)
+        deriv_f = jax.jit(jax.grad(score_func))
+        for i in range(15):
+            val = 5.0 + i
+            expscore, expderiv = _lb_harmonicfunc(val, mean, force_constant)
+            score = score_f(val)
+            deriv = deriv_f(val)
+            self.assertAlmostEqual(expscore, score, delta=0.1)
+            self.assertAlmostEqual(expderiv, deriv, delta=0.1)
 
     def test_pickle(self):
         """Test (un-)pickle of HarmonicLowerBound"""

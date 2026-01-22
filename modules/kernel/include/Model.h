@@ -96,6 +96,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::WeakObjectAttributeTable,
                               public internal::IntsAttributeTable,
                               public internal::FloatsAttributeTable,
+                              public internal::Vector3DAttributeTable,
                               public internal::ObjectsAttributeTable,
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable,
@@ -193,6 +194,7 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::IntAttributeTable>(this),
        cereal::base_class<internal::IntsAttributeTable>(this),
        cereal::base_class<internal::FloatsAttributeTable>(this),
+       cereal::base_class<internal::Vector3DAttributeTable>(this),
        cereal::base_class<internal::ParticleAttributeTable>(this),
        cereal::base_class<internal::ParticlesAttributeTable>(this),
        cereal::base_class<internal::SparseStringAttributeTable>(this),
@@ -342,6 +344,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::WeakObjectAttributeTable);
   IMP_MODEL_IMPORT(internal::IntsAttributeTable);
   IMP_MODEL_IMPORT(internal::FloatsAttributeTable);
+  IMP_MODEL_IMPORT(internal::Vector3DAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectsAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
@@ -398,6 +401,16 @@ class IMPKERNELEXPORT Model : public Object
       up to date.
   */
   void update();
+
+  //! Determine and return the correct order to evaluate ScoreStates in
+  /** ScoreStates are not evaluated in the order in which they were added
+      to the Model; instead, the Model's dependency graph is used to ensure
+      that a ScoreState that takes particle x as an input is always
+      evaluated after a state that modifies particle x on output.
+      This method determines and returns the correct order. This is also
+      cached in the ScoreStates themselves; see IMP::get_update_order.
+   */
+  ScoreStatesTemp get_ordered_score_states();
 
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes
@@ -473,6 +486,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(Float, Float);
   IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
   IMP_MODEL_ATTRIBUTE_METHODS(Floats, Floats);
+  IMP_MODEL_ATTRIBUTE_METHODS(Vector3D, IMP::algebra::Vector3D);
   IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);

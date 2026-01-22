@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,6 +36,9 @@ class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint {
 
   // Default constructor, needed for serialization or Python pickle support
   ExampleRestraint() {}
+
+  double get_force_constant() const { return k_; }
+  ParticleIndex get_index() const { return p_; }
 
   void do_add_score_and_derivatives(ScoreAccumulator sa) const
       override;

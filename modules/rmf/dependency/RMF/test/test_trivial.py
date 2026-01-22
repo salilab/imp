@@ -9,7 +9,7 @@ class GenericTest(unittest.TestCase):
         try:
             import RMF_HDF5
             RMF_HDF5.set_show_errors(True)
-        except:
+        except ImportError:
             pass
         for suffix in RMF.suffixes:
             RMF.set_log_level("trace")
@@ -38,6 +38,7 @@ class GenericTest(unittest.TestCase):
             print("get value")
             v = fh.get_root_node().get_value(key)
             self.assertEqual(v, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

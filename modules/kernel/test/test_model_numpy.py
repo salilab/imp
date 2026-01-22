@@ -25,6 +25,10 @@ class Tests(IMP.test.TestCase):
             n[0] = 42.0
             self.assertAlmostEqual(p1.get_derivative(k), 42.0, delta=1e-6)
 
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_derivatives_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42.0)
+
             n = m2.get_derivatives_numpy(k)
             self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no float key for this model
@@ -45,11 +49,18 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1.get_floats_numpy(k)
+            n2 = m1.get_numpy(k)
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 1) # no float attribute for p2
             self.assertAlmostEqual(n[0], 1.0, delta=1e-6)
             n[0] = 42.0
+            # n2 should be the same view as n
+            self.assertAlmostEqual(n2[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(p1.get_value(k), 42.0, delta=1e-6)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_floats_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42.0)
 
             n = m2.get_floats_numpy(k)
             self.assertIs(n.base, m2)
@@ -73,14 +84,22 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1.get_ints_numpy(k)
+            n2 = m1.get_numpy(k)
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no int attribute for p3
             self.assertEqual(n[0], 1)
             self.assertEqual(n[1], 2)
             n[0] = 42
             n[1] = 24
+            # n2 should be the same view as n
+            self.assertEqual(n2[0], 42)
+            self.assertEqual(n2[1], 24)
             self.assertEqual(p1.get_value(k), 42)
             self.assertEqual(p2.get_value(k), 24)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_ints_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42)
 
             n = m2.get_ints_numpy(k)
             self.assertIs(n.base, m2)
@@ -125,6 +144,11 @@ class Tests(IMP.test.TestCase):
             c[1][0] = 24.0
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
 
+            # Read-only array should raise ValueError on assignment
+            c, r = m1.get_spheres_numpy(read_only=True)
+            self.assertRaises(ValueError, r.__setitem__, 0, 42.0)
+            self.assertRaises(ValueError, c[1].__setitem__, 0, 24.0)
+
             c, r = m2.get_spheres_numpy()
             for n in c, r:
                 self.assertIs(n.base, m2)
@@ -154,6 +178,12 @@ class Tests(IMP.test.TestCase):
             c[1][1] = 24.0
             self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
+
+            # Read-only array should raise ValueError on assignment
+            c, r = m1.get_sphere_derivatives_numpy(read_only=True)
+            self.assertRaises(ValueError, r.__setitem__, 0, 42.0)
+            self.assertRaises(ValueError, c[1].__setitem__, 0, 24.0)
+
             c, r = m2.get_sphere_derivatives_numpy()
             for n in c, r:
                 self.assertIs(n.base, m2)
@@ -161,6 +191,81 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertRaises(NotImplementedError,
                               m1.get_sphere_derivatives_numpy)
+
+    def test_get_internal_coordinates_numpy(self):
+        """Test get_internal_coordinates_numpy method"""
+        m1 = IMP.Model("numpy get_internal_coordinates")
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+
+        m2 = IMP.Model("numpy no get_internal_coordinates")
+        p12 = IMP.Particle(m2)
+
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        d1.set_coordinates(IMP.algebra.Vector3D(1,2,3))
+        d1.set_radius(4)
+
+        rb2 = IMP.core.RigidBody.setup_particle(p2, [p1])
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            c = m1.get_internal_coordinates_numpy()
+            self.assertIs(c.base, m1)
+            self.assertEqual(len(c), 1) # no intcoord attribute for p2, p3
+            # Internal coordinates should be zero since rb2 will be
+            # colocated with p1
+            self.assertAlmostEqual(c[0][0], 0.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][1], 0.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][2], 0.0, delta=1e-4)
+
+            c[0][0] = 24.0
+            # Force update of global coords from internal coords
+            m1.update()
+            self.assertAlmostEqual(d1.get_coordinates()[0], 25.0, delta=1e-4)
+
+            # Read-only array should raise ValueError on assignment
+            c = m1.get_internal_coordinates_numpy(read_only=True)
+            self.assertRaises(ValueError, c[0].__setitem__, 0, 24.0)
+
+            c = m2.get_internal_coordinates_numpy()
+            self.assertIs(c.base, m2)
+            self.assertEqual(len(c), 0) # no int coords for this model
+        else:
+            self.assertRaises(NotImplementedError,
+                              m1.get_internal_coordinates_numpy)
+
+    def test_get_internal_coordinate_derivatives_numpy(self):
+        """Test get_internal_coordinate_derivatives_numpy method"""
+        m1 = IMP.Model("numpy get_internal_coordinate_derivatives")
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+
+        m2 = IMP.Model("numpy no get_internal_coordinate_derivatives")
+        p12 = IMP.Particle(m2)
+
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        d1.set_coordinates(IMP.algebra.Vector3D(1,2,3))
+        d1.set_radius(4)
+
+        rb2 = IMP.core.RigidBody.setup_particle(p2, [p1])
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            c = m1.get_internal_coordinate_derivatives_numpy()
+            self.assertIs(c.base, m1)
+            self.assertEqual(len(c), 1) # no intcoord attribute for p2, p3
+            c[0][0] = 24.0
+
+            # Read-only array should raise ValueError on assignment
+            c = m1.get_internal_coordinate_derivatives_numpy(read_only=True)
+            self.assertRaises(ValueError, c[0].__setitem__, 0, 24.0)
+
+            c = m2.get_internal_coordinate_derivatives_numpy()
+            self.assertIs(c.base, m2)
+            self.assertEqual(len(c), 0) # no int coords for this model
+        else:
+            self.assertRaises(NotImplementedError,
+                              m1.get_internal_coordinate_derivatives_numpy)
 
 
 if __name__ == '__main__':

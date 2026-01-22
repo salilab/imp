@@ -37,7 +37,7 @@ print("without", [(m.get_particle_name(x[0]), m.get_particle_name(x[1]))
 class ConsecutiveFilter(IMP.PairPredicate):
 
     def __init__(self):
-        IMP.PairPredicate.__init__(self, "ConsecutiveFilter%1%")
+        super().__init__("ConsecutiveFilter%1%")
 
     def get_value_index(self, m, pp):
         diff = m.get_attribute(ik, pp[0]) - m.get_attribute(ik, pp[1])
