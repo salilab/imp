@@ -253,7 +253,6 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/WeightedSum.h"
 %include "IMP/core/WeightedSumOfExponential.h"
-%include "IMP/core/PeriodicOptimizerState.h"
 %include "IMP/core/MSConnectivityRestraint.h"
 %inline %{
 namespace IMP {
