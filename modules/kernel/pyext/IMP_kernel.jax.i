@@ -77,6 +77,24 @@
   %}
 }
 
+%extend IMP::internal::_ConstSingletonScore {
+  %pythoncode %{
+    def _get_jax(self):
+        value = self.get_value()
+        # We always return `value` regardless of the JAX Model or indexes
+        return self._wrap_jax(lambda jm, indexes: value)
+  %}
+}
+
+%extend IMP::internal::_ConstPairScore {
+  %pythoncode %{
+    def _get_jax(self):
+        value = self.get_value()
+        # We always return `value` regardless of the JAX Model or indexes
+        return self._wrap_jax(lambda jm, indexes: value)
+  %}
+}
+
 %extend IMP::UnaryFunction {
   %pythoncode %{
     def _get_jax(self):
