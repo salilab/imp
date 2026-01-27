@@ -68,6 +68,8 @@ class _ConstSingletonScore : public SingletonScore {
  public:
   _ConstSingletonScore(double v) : v_(v) {}
   _ConstSingletonScore() {}
+
+  double get_value() const { return v_; }
   virtual double evaluate_index(Model *, ParticleIndex,
                                 DerivativeAccumulator *) const override {
     return v_;
@@ -93,6 +95,8 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
  public:
   _ConstPairScore(double v) : v_(v) {}
   _ConstPairScore() {}
+
+  double get_value() const { return v_; }
   virtual double evaluate_index(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const override {
     return v_;
