@@ -1,6 +1,11 @@
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -56,6 +61,37 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
         self.assertRaisesUsageException(sf.set_weights,
                                         [1.])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_single(self):
+        """Test JAX implementation of WeightedSum, single score"""
+        f1 = IMP.core.Harmonic(0., 1.)
+        f2 = IMP.core.Harmonic(2., 3.)
+        sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
+        jsf = jax.jit(sf._get_jax())
+        imp_score = sf.evaluate(4.0)
+        jax_score = jsf(4.0)
+        self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multiple(self):
+        """Test JAX implementation of WeightedSum, multiple scores"""
+        f1 = IMP.core.Harmonic(0., 1.)
+        f2 = IMP.core.Harmonic(2., 3.)
+        sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
+        m = IMP.Model()
+        p1 = self.create_point_particle(m, -3.0, 0.0, 0.0)
+        p2 = self.create_point_particle(m, 4.0, 0.0, 0.0)
+        ss = IMP.core.DistanceToSingletonScore(
+            sf, IMP.algebra.Vector3D(0., 0., 0.))
+        lsc = IMP.container.ListSingletonContainer(m, [p1, p2])
+        r = IMP.container.SingletonsRestraint(ss, lsc)
+        imp_score = r.evaluate(False)
+        ji = r._get_jax()
+        jm = ji.get_jax_model()
+        jsf = jax.jit(ji.score_func)
+        jax_score = jsf(jm)
+        self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 
 if __name__ == '__main__':
