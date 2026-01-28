@@ -42,6 +42,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test that cosine JAX values are correct"""
+        import jax.numpy as jnp
         force_constant = -5.0
         periodicity = 3
         phase = math.pi
@@ -58,6 +59,12 @@ class Tests(IMP.test.TestCase):
             deriv = deriv_f(val)
             self.assertAlmostEqual(expscore, score, delta=0.1)
             self.assertAlmostEqual(expderiv, deriv, delta=0.1)
+        # Should also work if given an array
+        vals = jnp.array([-math.pi, math.pi / 4.0, math.pi / 2.0])
+        scores = score_f(vals)
+        self.assertEqual(scores.shape, (3,))
+        self.assertAlmostEqual(scores[0], score_f(vals[0]), delta=1e-3)
+        self.assertAlmostEqual(scores[1], score_f(vals[1]), delta=1e-3)
 
     def test_pickle(self):
         """Test (un-)pickle of Cosine"""
