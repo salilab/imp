@@ -6,6 +6,7 @@ import IMP.core
 class Tests(IMP.test.TestCase):
 
     def test_values(self):
+        """Check value of WeightedSum function"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
@@ -24,6 +25,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(deriv, deriv_sum, delta=1e-4)
 
     def test_update_functions(self):
+        """Test changing WeightedSum parameters"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 2.)
         sf = IMP.core.WeightedSum([f1, f2], [.5, .5])
@@ -32,6 +34,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.evaluate(0), 1., delta=1e-6)
 
     def test_accessors(self):
+        """Test WeightedSum accessors"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
@@ -43,6 +46,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.get_weight(1), .6)
 
     def test_errors(self):
+        """Test handling of incorrect inputs to WeightedSum"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         self.assertRaisesUsageException(IMP.core.WeightedSum,
