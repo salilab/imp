@@ -65,6 +65,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_single(self):
         """Test JAX implementation of WeightedSum, single score"""
+        import jax.numpy as jnp
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
@@ -72,6 +73,14 @@ class Tests(IMP.test.TestCase):
         imp_score = sf.evaluate(4.0)
         jax_score = jsf(4.0)
         self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
+        # Should also work if given an array
+        vals = jnp.array([4.0, 6.0])
+        scores = jsf(vals)
+        self.assertEqual(scores.shape, (2,))
+        self.assertAlmostEqual(scores[0], 6.6, delta=1e-3)
+        self.assertAlmostEqual(scores[0], jsf(vals[0]), delta=1e-3)
+        self.assertAlmostEqual(scores[1], 22.2, delta=1e-3)
+        self.assertAlmostEqual(scores[1], jsf(vals[1]), delta=1e-3)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_multiple(self):
