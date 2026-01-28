@@ -56,6 +56,24 @@
   %}
 }
 
+%extend IMP::core::WeightedSumOfExponential {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.numpy as jnp
+        def score(val, funcs, weights, denom):
+            exp_sum = sum(weight * jnp.exp(-f(val) / denom)
+                          for (f, weight) in zip(funcs, weights))
+            return -jnp.log(exp_sum) * denom
+        nfunc = self.get_function_number()
+        funcs = [self.get_function(i).get_derived_object()._get_jax()
+                 for i in range(nfunc)]
+        return functools.partial(score, funcs=funcs,
+                                 weights=self.get_weights(),
+                                 denom=self.get_denominator())
+  %}
+}
+
 %extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
   %pythoncode %{
     def _get_jax(self):
