@@ -39,6 +39,7 @@ class IMPCOREEXPORT DistanceRestraint :
     public IMP::internal::TupleRestraint<DistancePairScore>
 #endif
     {
+  typedef IMP::internal::TupleRestraint<DistancePairScore> P;
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
@@ -61,7 +62,12 @@ class IMPCOREEXPORT DistanceRestraint :
                     std::string name = "DistanceRestraint %1%");
   DistanceRestraint() {}
 
+  //! Get the DistancePairScore object used in this restraint
+  DistancePairScore *get_score_object() const { return P::get_score(); }
+
 #ifdef SWIG
+  //! Get the indexes used in this restraint
+  typename DistancePairScore::IndexArgument get_index() const;
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
   IMP::ModelObjectsTemp do_get_inputs() const;

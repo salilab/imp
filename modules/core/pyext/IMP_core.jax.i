@@ -114,6 +114,34 @@
   %}
 }
 
+%extend IMP::core::DistancePairScore {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        import functools
+        def jax_score(jm, indexes, uf):
+            xyzs = jm['xyz'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1)
+            return uf(drs)
+        sfnc = self.get_score_functor()
+        uf = sfnc.get_unary_function().get_derived_object()
+        f = functools.partial(jax_score, uf=uf._get_jax())
+        return self._wrap_jax(f)
+  %}
+}
+
+%extend IMP::core::DistanceRestraint {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        ps = self.get_score_object()
+        ji = ps._get_jax()
+        indexes = jnp.array([self.get_index()])
+        return self._wrap_jax(lambda jm: ji.score_func(jm, indexes))
+  %}
+}
+
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self):
