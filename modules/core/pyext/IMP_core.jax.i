@@ -53,6 +53,19 @@
   %}
 }
 
+%extend IMP::core::Cosine {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.numpy as jnp
+        def score(val, k, period, phase):
+            return jnp.abs(k) - k * jnp.cos(period * val + phase)
+        return functools.partial(score, k=self.get_force_constant(),
+                                 period=self.get_periodicity(),
+                                 phase=self.get_phase())
+  %}
+}
+
 %extend IMP::core::WeightedSum {
   %pythoncode %{
     def _get_jax(self):
