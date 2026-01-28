@@ -24,6 +24,7 @@ def _derv_sum_of_exponent(fs, weights, x, d=1.):
 class Tests(IMP.test.TestCase):
 
     def test_values(self):
+        """Check value of WeightedSumOfExponential function"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7])
@@ -49,6 +50,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(deriv, exp_deriv, delta=1e-4)
 
     def test_update_functions(self):
+        """Test changing WeightedSumOfExponential parameters"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 2.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.5, .5])
@@ -57,6 +59,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.evaluate(0), .566219, delta=1e-6)
 
     def test_accessors(self):
+        """Test WeightedSumOfExponential accessors"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7], 2.)
@@ -71,6 +74,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.get_denominator(), 3.)
 
     def test_errors(self):
+        """Test handling of incorrect inputs to WeightedSumOfExponential"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         self.assertRaisesUsageException(IMP.core.WeightedSumOfExponential,
