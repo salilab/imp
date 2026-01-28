@@ -30,6 +30,18 @@
   %}
 }
 
+%extend IMP::core::HarmonicWell {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.numpy as jnp
+        def score(val, lb, ub, k):
+            return 0.5 * k * (val - jnp.clip(val, lb, ub)) ** 2
+        well = self.get_well()
+        return functools.partial(score, lb=well[0], ub=well[1], k=self.get_k())
+  %}
+}
+
 %extend IMP::core::Linear {
   %pythoncode %{
     def _get_jax(self):
