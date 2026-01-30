@@ -93,8 +93,9 @@ class Tests(IMP.test.TestCase):
         p2 = self.create_point_particle(m, 4.0, 0.0, 0.0)
         ss = IMP.core.DistanceToSingletonScore(
             sf, IMP.algebra.Vector3D(0., 0., 0.))
-        lsc = IMP.container.ListSingletonContainer(m, [p1, p2])
-        r = IMP.container.SingletonsRestraint(ss, lsc)
+        # We are implicitly testing the use of an implicit StaticListContainer
+        # here:
+        r = IMP.container.SingletonsRestraint(ss, [p1, p2])
         imp_score = r.evaluate(False)
         ji = r._get_jax()
         jm = ji.get_jax_model()
