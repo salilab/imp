@@ -41,7 +41,7 @@ jobs:
           max_checks: NONE
           max_log: NONE
         - os: macos-latest
-          python-version: "3.13"
+          python-version: "3.14"
           cxxflags: "-std=c++17 --coverage"
           linkflags: "--coverage"
           cgaldir: "/opt/homebrew/lib/cmake/CGAL/"
