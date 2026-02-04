@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/ClosedCubicSpline.h    \brief Closed cubic spline function.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSED_CUBIC_SPLINE_H
@@ -35,6 +35,13 @@ class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction {
   IMP_OBJECT_METHODS(ClosedCubicSpline);
 
   void do_show(std::ostream &out) const;
+
+  Float get_minrange() const { return minrange_; }
+  Float get_spacing() const { return spacing_; }
+  Floats get_values() const { return values_; }
+
+  //! Get the calculated second derivatives corresponding to the spline values
+  Floats get_second_derivatives() const { return second_derivs_; }
 
  private:
   Floats values_;

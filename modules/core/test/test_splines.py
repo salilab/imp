@@ -79,5 +79,17 @@ class Tests(IMP.test.TestCase):
         open_spline.show()
         closed_spline.show()
 
+    def test_closed_accessors(self):
+        """Test ClosedCubicSpline accessors"""
+        s = IMP.core.ClosedCubicSpline([1.0, 2.0, 4.0], 4.0, 10.0)
+        self.assertAlmostEqual(s.get_minrange(), 4.0, delta=1e-4)
+        self.assertAlmostEqual(s.get_spacing(), 10.0, delta=1e-4)
+        v = s.get_values()
+        self.assertEqual(len(v), 3)
+        self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
+        v2 = s.get_second_derivatives()
+        self.assertEqual(len(v2), 3)
+
+
 if __name__ == '__main__':
     IMP.test.main()
