@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/OpenCubicSpline.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_OPEN_CUBIC_SPLINE_H
@@ -102,6 +102,17 @@ class OpenCubicSpline : public Score {
       return squared_distance > algebra::get_squared(maxrange_);
     } else
       return false;
+  }
+
+  Float get_minrange() const { return minrange_; }
+  Float get_spacing() const { return spacing_; }
+  Float get_extend() const { return extend_; }
+
+  Floats get_values() const { return spline_.get_values(); }
+
+  //! Get the calculated second derivatives corresponding to the spline values
+  Floats get_second_derivatives() const {
+    return spline_.get_second_derivatives();
   }
 };
 

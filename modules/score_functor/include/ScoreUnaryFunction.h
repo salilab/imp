@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/ScoreUnaryFunction.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_SCORE_UNARY_FUNCTION_H
@@ -34,6 +34,10 @@ class ScoreUnaryFunction : public IMP::UnaryFunction {
     return score_.get_score(nullptr, Array<D, ParticleIndex>(),
                             feature);
   }
+
+#ifndef SWIG
+  const Score &get_score() const { return score_; }
+#endif
 
   IMP_OBJECT_METHODS(ScoreUnaryFunction);
 };

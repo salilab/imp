@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/OpenCubicSpline.h    \brief Open cubic spline function.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_OPEN_CUBIC_SPLINE_H
@@ -25,6 +25,16 @@ class OpenCubicSpline
   OpenCubicSpline(const Floats &values, Float minrange, Float spacing,
                   bool extend = false)
       : P(S(values, minrange, spacing, extend)) {}
+
+  Float get_minrange() const { return get_score().get_minrange(); }
+  Float get_spacing() const { return get_score().get_spacing(); }
+  Floats get_values() const { return get_score().get_values(); }
+  bool get_extend() const { return get_score().get_extend(); }
+
+  //! Get the calculated second derivatives corresponding to the spline values
+  Floats get_second_derivatives() const {
+    return get_score().get_second_derivatives();
+  }
 };
 
 IMPCORE_END_NAMESPACE
