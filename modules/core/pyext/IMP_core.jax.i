@@ -104,18 +104,34 @@
     def _get_jax(self):
         import functools
         import jax.numpy as jnp
+        from IMP.core._jax_util import _spline
         def score(feature, minrange, spacing, values, second_derivs):
             # determine bin index and thus the cubic fragment to use:
             lowbin = jnp.array((feature - minrange) / spacing, dtype=int)
             # enforce periodicity - wrap around from n to 0
             highbin = jnp.remainder(lowbin + 1, len(values))
-            lowfeature = minrange + lowbin * spacing
-            b = (feature - lowfeature) / spacing
-            a = 1. - b
-            return (a * values[lowbin] + b * values[highbin] +
-                    ((a * (a * a - 1.)) * second_derivs[lowbin]
-                     + (b * (b * b - 1.)) * second_derivs[highbin])
-                    * (spacing * spacing) / 6.)
+            return _spline(feature, minrange, lowbin, highbin, spacing,
+                           values, second_derivs)
+        return functools.partial(
+            score, minrange=self.get_minrange(),
+            spacing=self.get_spacing(), values=jnp.asarray(self.get_values()),
+            second_derivs=jnp.asarray(self.get_second_derivatives()))
+  %}
+}
+
+%extend IMP::core::OpenCubicSpline {
+  %pythoncode %{
+    def _get_jax(self):
+        import functools
+        import jax.numpy as jnp
+        from IMP.core._jax_util import _spline
+        def score(feature, minrange, spacing, values, second_derivs):
+            # determine bin index and thus the cubic fragment to use:
+            lowbin = jnp.array((feature - minrange) / spacing, dtype=int)
+            # enforce periodicity - wrap around from n to 0
+            highbin = jnp.remainder(lowbin + 1, len(values))
+            return _spline(feature, minrange, lowbin, highbin, spacing,
+                           values, second_derivs)
         return functools.partial(
             score, minrange=self.get_minrange(),
             spacing=self.get_spacing(), values=jnp.asarray(self.get_values()),

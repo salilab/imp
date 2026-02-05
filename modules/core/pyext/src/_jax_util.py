@@ -226,3 +226,15 @@ class _SerialMover:
     imov: int
     # Any state used by Movers
     mover_state: list
+
+
+def _spline(feature, minrange, lowbin, highbin, spacing, values,
+            second_derivs):
+    """Cubic spline interpolation"""
+    lowfeature = minrange + lowbin * spacing
+    b = (feature - lowfeature) / spacing
+    a = 1. - b
+    return (a * values[lowbin] + b * values[highbin] +
+            ((a * (a * a - 1.)) * second_derivs[lowbin]
+             + (b * (b * b - 1.)) * second_derivs[highbin])
+            * (spacing * spacing) / 6.)

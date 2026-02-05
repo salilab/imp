@@ -121,6 +121,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(fs), 3)
         self.assertAlmostEqual(fs[0], f(vals[0]), delta=1e-3)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_open_jax(self):
+        """Test JAX implementation of OpenCubicSpline"""
+        import jax
+        import jax.numpy as jnp
+        s = IMP.core.OpenCubicSpline([1.0, 2.0, 4.0], 10.0, 2.0, extend=True)
+        f = jax.jit(s._get_jax())
+        vals = [1.0, 10.2, 12.2, 13.9, 26.0]
+        for val in vals:
+            self.assertAlmostEqual(s.evaluate(val), f(val), delta=1e-3)
+        # Check given array as input
+        fs = f(jnp.asarray(vals))
+        self.assertEqual(len(fs), 5)
+        self.assertAlmostEqual(fs[0], f(vals[0]), delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()
