@@ -83,7 +83,12 @@
 %extend IMP::example::ExamplePairScore {
   %pythoncode %{
     def _get_jax(self):
-        """Implementation of the score using JAX"""
+        """Implementation of the score using JAX.
+           A PairScore takes as input the JAX Model and the particle pair
+           indexes to act on, and returns the score. Unlike an IMP C++
+           PairScore (which takes a single pair of indexes), the JAX score
+           takes multiple indexes, as an Nx2 array, and should return an
+           N-element array of scores."""
         import jax.numpy as jnp
         import functools
         def pair_score(jm, indexes, x0, k):
@@ -99,7 +104,11 @@
 %extend IMP::example::ExampleUnaryFunction {
   %pythoncode %{
     def _get_jax(self):
-        """Implementation of the unary function using JAX"""
+        """Implementation of the unary function using JAX.
+           This takes the feature value to act on, and returns a score.
+           Unlike an IMP C++ UnaryFunction (which takes a single feature),
+           the JAX score takes multiple features, as an N-element array,
+           and should return an N-element array of scores."""
         import functools
         def score(feature, center, k):
             return 0.5 * k * (feature - center) ** 2
