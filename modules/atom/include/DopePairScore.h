@@ -39,9 +39,11 @@ class DopePairScore
 
  public:
   DopePairScore(double threshold = std::numeric_limits<double>::max())
-      : P(score_functor::Dope(threshold)) {}
+      : P(score_functor::Dope(threshold), "DopePairScore %1%") {}
   DopePairScore(double threshold, TextInput data_file)
-      : P(score_functor::Dope(threshold, data_file)) {}
+      : P(score_functor::Dope(threshold, data_file), "DopePairScore %1%") {}
+
+  IMP_OBJECT_METHODS(DopePairScore);
 };
 
 /** Add the dope atom types to the atoms in the hierarchy.
