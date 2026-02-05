@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import math
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def _testfunc(val):
@@ -101,6 +105,21 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
         v2 = s.get_second_derivatives()
         self.assertEqual(len(v2), 3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_closed_jax(self):
+        """Test JAX implementation of ClosedCubicSpline"""
+        import jax
+        import jax.numpy as jnp
+        s = IMP.core.ClosedCubicSpline([1.0, 2.0, 4.0], 10.0, 2.0)
+        f = jax.jit(s._get_jax())
+        vals = [10.2, 12.2, 15.9]
+        for val in vals:
+            self.assertAlmostEqual(s.evaluate(val), f(val), delta=1e-3)
+        # Check given array as input
+        fs = f(jnp.asarray(vals))
+        self.assertEqual(len(fs), 3)
+        self.assertAlmostEqual(fs[0], f(vals[0]), delta=1e-3)
 
 
 if __name__ == '__main__':
