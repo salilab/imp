@@ -125,16 +125,20 @@
         import functools
         import jax.numpy as jnp
         from IMP.core._jax_util import _spline
-        def score(feature, minrange, spacing, values, second_derivs):
+        def score(feature, minrange, maxrange, spacing, values, second_derivs):
+            # clip feature to range (extend=True behavior)
+            feature = jnp.clip(feature, minrange, maxrange)
             # determine bin index and thus the cubic fragment to use:
             lowbin = jnp.array((feature - minrange) / spacing, dtype=int)
-            # enforce periodicity - wrap around from n to 0
-            highbin = jnp.remainder(lowbin + 1, len(values))
-            return _spline(feature, minrange, lowbin, highbin, spacing,
+            return _spline(feature, minrange, lowbin, lowbin + 1, spacing,
                            values, second_derivs)
+        spacing = self.get_spacing()
+        minrange = self.get_minrange()
+        values = jnp.asarray(self.get_values())
+        maxrange = minrange + spacing * (len(values) - 1)
         return functools.partial(
-            score, minrange=self.get_minrange(),
-            spacing=self.get_spacing(), values=jnp.asarray(self.get_values()),
+            score, minrange=minrange, maxrange=maxrange,
+            spacing=spacing, values=values,
             second_derivs=jnp.asarray(self.get_second_derivatives()))
   %}
 }
