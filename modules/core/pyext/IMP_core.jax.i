@@ -1,7 +1,10 @@
+%pythonbegin %{
+  import functools
+%}
+
 %extend IMP::core::Harmonic {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         def score(val, mean, k):
             return 0.5 * k * (mean - val) ** 2
         return functools.partial(score, mean=self.get_mean(), k=self.get_k())
@@ -11,7 +14,6 @@
 %extend IMP::core::HarmonicUpperBound {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.lax
         def score(val, mean, k):
             return 0.5 * k * jax.lax.min(mean - val, 0.0) ** 2
@@ -22,7 +24,6 @@
 %extend IMP::core::HarmonicLowerBound {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.lax
         def score(val, mean, k):
             return 0.5 * k * jax.lax.max(mean - val, 0.0) ** 2
@@ -33,7 +34,6 @@
 %extend IMP::core::HarmonicWell {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         def score(val, lb, ub, k):
             return 0.5 * k * (val - jnp.clip(val, lb, ub)) ** 2
@@ -45,7 +45,6 @@
 %extend IMP::core::Linear {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         def score(val, slope, offset):
             return (val - offset) * slope
         return functools.partial(score, slope=self.get_slope(),
@@ -56,7 +55,6 @@
 %extend IMP::core::Cosine {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         def score(val, k, period, phase):
             return jnp.abs(k) - k * jnp.cos(period * val + phase)
@@ -69,7 +67,6 @@
 %extend IMP::core::WeightedSum {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         def score(val, funcs, weights):
             return sum(f(val) * weight for (f, weight) in zip(funcs, weights))
@@ -84,7 +81,6 @@
 %extend IMP::core::WeightedSumOfExponential {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         def score(val, funcs, weights, denom):
             exp_sum = sum(weight * jnp.exp(-f(val) / denom)
@@ -102,7 +98,6 @@
 %extend IMP::core::ClosedCubicSpline {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         from IMP.core._jax_util import _spline
         def score(feature, minrange, spacing, values, second_derivs):
@@ -122,7 +117,6 @@
 %extend IMP::core::OpenCubicSpline {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import jax.numpy as jnp
         from IMP.core._jax_util import _spline
         def score(feature, minrange, maxrange, spacing, values, second_derivs):
@@ -147,7 +141,6 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
-        import functools
         def score(jm, indexes, point, uf):
             xyzs = jm['xyz'][indexes]
             drs = jnp.linalg.norm(xyzs - point, axis=1)
@@ -163,7 +156,6 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
-        import functools
         def score(jm, indexes, box_min, box_max, uf):
             xyzs = jm['xyz'][indexes]
             # This calculates the distance and the score for every point,
@@ -188,7 +180,6 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
-        import functools
         def jax_harmonic_distance_pair_score(jm, indexes, d, k):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
@@ -204,7 +195,6 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
-        import functools
         def jax_score(jm, indexes, d, k):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
@@ -220,7 +210,6 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
-        import functools
         def jax_score(jm, indexes, uf):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
@@ -277,7 +266,6 @@
 %extend IMP::core::SingletonConstraint {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         index = self.get_index()
         mod = self.get_before_modifier().get_derived_object()
         ji = mod._get_jax(self.get_model(), index)
@@ -290,7 +278,6 @@
 %extend IMP::core::CentroidOfRefined {
   %pythoncode %{
     def _get_jax(self, m, index=None):
-        import functools
         import jax.numpy as jnp
         if index is None:
             raise NotImplementedError("Only implemented for single particle")
@@ -384,7 +371,6 @@
     def _get_jax(self):
         import jax.random
         import jax.lax
-        import functools
         from IMP.core._jax_util import _SerialMover
         movers = [m.get_derived_object()._get_jax()
                   for m in self.get_movers()]

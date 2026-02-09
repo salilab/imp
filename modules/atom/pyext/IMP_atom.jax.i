@@ -1,3 +1,7 @@
+%pythonbegin %{
+  import functools
+%}
+
 %extend IMP::atom::MolecularDynamics {
   %pythoncode %{
     def _get_jax(self):
@@ -67,7 +71,6 @@
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
     def _get_jax(self):
-        import functools
         import numpy as np
         import jax.lax
         import jax.numpy as jnp
