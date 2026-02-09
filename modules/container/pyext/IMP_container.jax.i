@@ -1,3 +1,7 @@
+%pythonbegin %{
+  import warnings
+%}
+
 %extend IMP::container::ListSingletonContainer {
   %pythoncode %{
     def _get_static_contents(self):
@@ -16,6 +20,15 @@
   %pythoncode %{
     def _get_static_contents(self):
         return self.get_contents()
+  %}
+}
+
+%extend IMP::container::ClosePairContainer {
+  %pythoncode %{
+    def _get_static_contents(self):
+        warnings.warn("No JAX support for close pairs, so using all "
+                      "possible pairs; this may be slow.", IMP.JAXWarning)
+        return self.get_range_indexes()
   %}
 }
 

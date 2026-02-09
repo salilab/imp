@@ -33,8 +33,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.add_dope_score_data(mh)
 
         ps = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
-        # JAX currently has no support for ClosePairContainer
-        dpc = IMP.container.AllPairContainer(ps)
+        dpc = IMP.container.ClosePairContainer(ps, 7.0, 0.1)
         dps = IMP.atom.DopePairScore(7.0)
         d = IMP.container.PairsRestraint(dps, dpc)
         score = d.evaluate(False)

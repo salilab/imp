@@ -1,3 +1,9 @@
+%pythoncode %{
+class JAXWarning(UserWarning):
+    """Warning for incomplete JAX support or different behavior of JAX code"""
+    pass
+%}
+
 %extend IMP::Restraint {
   %pythoncode %{
     def _wrap_jax(self, score_func, keys=None):
