@@ -159,3 +159,36 @@ def _md_optimize(md, max_steps):
         dxyz[:] = jm["xyz'"]
     score, md_state.jm = score_func(md_state.jm)
     return score
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _Bonds:
+    """All information about chemical bonds"""
+
+    # Ideal length of each bond
+    length: jax.Array
+
+    # Force constant per bond
+    stiffness: jax.Array
+
+    # Nx2 array of bonded particle indexes
+    bonded_indexes: jax.Array
+
+
+def _get_bonds(m, bond_indexes):
+    """Given a list of particle indexes that are IMP.atom.Bond particles,
+       return all data packed in a JAX _Bonds object"""
+    bonded = []
+    for b in bond_indexes:
+        if not IMP.atom.Bond.get_is_setup(m, b):
+            raise TypeError("%s is not a bond" % b)
+        b = IMP.atom.Bond(m, b)
+        bonded.append([b.get_bonded(i).get_particle_index()
+                       for i in range(2)])
+    # todo: add utility functions to get these keys
+    bond_length = m.get_numpy(IMP.FloatKey("bond length"))
+    bond_stiffness = m.get_numpy(IMP.FloatKey("bond stiffness"))
+    return _Bonds(length=bond_length[bond_indexes],
+                  stiffness=bond_stiffness[bond_indexes],
+                  bonded_indexes=jnp.asarray(bonded))
