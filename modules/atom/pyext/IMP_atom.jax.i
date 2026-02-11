@@ -110,15 +110,15 @@
                 second_derivs.append(sf.get_second_derivatives(i, j))
         values = np.vstack(values)
         second_derivs = np.vstack(second_derivs)
-        # Vectorize to take multiple indexes (second argument)
-        score = jax.vmap(score_one,
-                         in_axes=(None, 0, None, None, None, None, None))
         f = functools.partial(
-            score, index=indexes, minrange=sf.get_offset(),
+            score_one, minrange=sf.get_offset(),
             maxrange=min(sf.get_max(), sf.get_threshold()),
             spacing=sf.get_spacing(), values=jnp.asarray(values),
             second_derivs=jnp.asarray(second_derivs))
-        return self._wrap_jax(m, f, keys=(sf.get_dope_type_key(),))
+        # Vectorize to take multiple indexes (second argument)
+        vf = jax.vmap(f, in_axes=(None, 0))
+        return self._wrap_jax(m, lambda jm: vf(jm, indexes),
+                              keys=(sf.get_dope_type_key(),))
   %}
 }
 
