@@ -164,7 +164,6 @@
 %extend IMP::atom::AngleSingletonScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
-        import math
         import jax.numpy as jnp
         import IMP.core._jax_util
         from IMP.atom._jax_util import _get_angles
@@ -173,9 +172,8 @@
             rij = xyzs[:,0] - xyzs[:,1]
             rkj = xyzs[:,2] - xyzs[:,1]
             angle = IMP.core._jax_util._angle(rij, rkj)
-            # Get smallest angle difference (between -pi and +pi)
-            angle_diff = (jnp.mod(angles.ideal - angle + math.pi,
-                                  2.0 * math.pi) - math.pi)
+            angle_diff = IMP.core._jax_util._get_angle_difference(
+                angle, angles.ideal)
             return uf(angles.stiffness * angle_diff)
         uf = self.get_unary_function().get_derived_object()
         f = functools.partial(score, angles=_get_angles(m, indexes),
@@ -200,6 +198,28 @@
             return jnp.abs(b) + b * jnp.cos(dihedral * dihedrals.multiplicity
                                             + dihedrals.ideal)
         f = functools.partial(score, dihedrals=_get_dihedrals(m, indexes))
+        return self._wrap_jax(m, f)
+  %}
+}
+
+%extend IMP::atom::ImproperSingletonScore {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import jax.numpy as jnp
+        import IMP.core._jax_util
+        from IMP.atom._jax_util import _get_dihedrals
+        def score(jm, dihedrals, uf):
+            xyzs = jm['xyz'][dihedrals.bonded_indexes]
+            rij = xyzs[:,0] - xyzs[:,1]
+            rkj = xyzs[:,2] - xyzs[:,1]
+            rkl = xyzs[:,2] - xyzs[:,3]
+            dihedral = IMP.core._jax_util._dihedral(rij, rkj, rkl)
+            angle_diff = IMP.core._jax_util._get_angle_difference(
+                dihedral, dihedrals.ideal)
+            return uf(dihedrals.stiffness * angle_diff)
+        uf = self.get_unary_function().get_derived_object()
+        f = functools.partial(score, dihedrals=_get_dihedrals(m, indexes),
+                              uf=uf._get_jax())
         return self._wrap_jax(m, f)
   %}
 }

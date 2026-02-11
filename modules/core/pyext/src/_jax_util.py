@@ -263,3 +263,8 @@ def _dihedral(rij, rkj, rkl):
     v0 = jnp.cross(v1, v2)
     sign = jnp.einsum("ij,ij->i", rkj, v0)
     return jnp.copysign(angle, sign)
+
+
+def _get_angle_difference(a1, a2):
+    """Get smallest angle difference (between -pi and +pi) between a1 and a2"""
+    return jnp.mod(a2 - a1 + math.pi, 2.0 * math.pi) - math.pi
