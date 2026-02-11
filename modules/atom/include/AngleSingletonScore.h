@@ -33,6 +33,7 @@ class IMPATOMEXPORT AngleSingletonScore : public SingletonScore {
  public:
   //! Use f to penalize deviations in angle
   AngleSingletonScore(UnaryFunction *f);
+  UnaryFunction *get_unary_function() const { return f_; }
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(

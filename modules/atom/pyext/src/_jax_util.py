@@ -193,3 +193,39 @@ def _get_bonds(m, bond_indexes):
     return _Bonds(length=bond_length[bond_indexes],
                   stiffness=bond_stiffness[bond_indexes],
                   bonded_indexes=jnp.asarray(bonded))
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _Angles:
+    """All information about chemical bond angles"""
+
+    # Ideal value of each bond angle
+    ideal: jax.Array
+
+    # Force constant per angle
+    stiffness: jax.Array
+
+    # Nx3 array of bonded particle indexes
+    bonded_indexes: jax.Array
+
+
+def _get_angles(m, angle_indexes):
+    """Given a list of particle indexes that are IMP.atom.Angle particles,
+       return all data packed in a JAX _Angles object"""
+    bonded = []
+    valid_indexes = []
+    ideal = m.get_numpy(IMP.atom.Angle.get_ideal_key())
+    stiffness = m.get_numpy(IMP.atom.Angle.get_stiffness_key())
+    for a in angle_indexes:
+        a = IMP.ParticleIndex(a)
+        if not IMP.atom.Angle.get_is_setup(m, a):
+            raise TypeError("%s is not an angle" % a)
+        # Exclude angles with negative stiffness
+        if stiffness[a] > 0.0:
+            valid_indexes.append(a)
+            a = IMP.atom.Angle(m, a)
+            bonded.append([a.get_particle(i).get_index() for i in range(3)])
+    return _Angles(ideal=ideal[valid_indexes],
+                   stiffness=stiffness[valid_indexes],
+                   bonded_indexes=jnp.asarray(bonded))
