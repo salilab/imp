@@ -181,6 +181,7 @@ def _get_bonds(m, bond_indexes):
        return all data packed in a JAX _Bonds object"""
     bonded = []
     for b in bond_indexes:
+        b = IMP.ParticleIndex(b)
         if not IMP.atom.Bond.get_is_setup(m, b):
             raise TypeError("%s is not a bond" % b)
         b = IMP.atom.Bond(m, b)

@@ -4,6 +4,10 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import random
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -55,6 +59,28 @@ class Tests(IMP.test.TestCase):
 
         self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
         self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of BondSingletonScore"""
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
+        d0 = IMP.core.XYZ.setup_particle(p0)
+        d1 = IMP.core.XYZ.setup_particle(p1)
+        b0 = IMP.atom.Bonded.setup_particle(p0)
+        b1 = IMP.atom.Bonded.setup_particle(p1)
+        b = IMP.atom.create_custom_bond(b0, b1, 1.0, 20.0)
+        ss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0.1, 1.2))
+        r = IMP.core.SingletonRestraint(m, ss, b)
+        imp_score = r.evaluate(False)
+        ji = r._get_jax()
+        jm = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        jax_score = j(jm)
+        self.assertAlmostEqual(imp_score, 242.406, delta=0.01)
+        self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
+
 
 if __name__ == '__main__':
     IMP.test.main()
