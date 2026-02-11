@@ -180,18 +180,28 @@ def _get_bonds(m, bond_indexes):
     """Given a list of particle indexes that are IMP.atom.Bond particles,
        return all data packed in a JAX _Bonds object"""
     bonded = []
+    valid_indexes = []
+    stiffness = []
+    # todo: add utility functions to get these keys
+    bond_length = m.get_numpy(IMP.FloatKey("bond length"))
+    bond_stiffness = m.get_numpy(IMP.FloatKey("bond stiffness"))
     for b in bond_indexes:
         b = IMP.ParticleIndex(b)
         if not IMP.atom.Bond.get_is_setup(m, b):
             raise TypeError("%s is not a bond" % b)
-        b = IMP.atom.Bond(m, b)
-        bonded.append([b.get_bonded(i).get_particle_index()
-                       for i in range(2)])
-    # todo: add utility functions to get these keys
-    bond_length = m.get_numpy(IMP.FloatKey("bond length"))
-    bond_stiffness = m.get_numpy(IMP.FloatKey("bond stiffness"))
-    return _Bonds(length=bond_length[bond_indexes],
-                  stiffness=bond_stiffness[bond_indexes],
+        # Exclude bonds with negative length
+        if bond_length[b] >= 0.0:
+            valid_indexes.append(int(b))
+            # Bonds with no or negative stiffness get default (1)
+            if b >= len(bond_stiffness) or bond_stiffness[b] < 0:
+                stiffness.append(1.0)
+            else:
+                stiffness.append(bond_stiffness[b])
+            b = IMP.atom.Bond(m, b)
+            bonded.append([b.get_bonded(i).get_particle_index()
+                           for i in range(2)])
+    return _Bonds(length=bond_length[valid_indexes],
+                  stiffness=jnp.asarray(stiffness),
                   bonded_indexes=jnp.asarray(bonded))
 
 
