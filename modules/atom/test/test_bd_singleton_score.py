@@ -12,8 +12,6 @@ except ImportError:
 
 class Tests(IMP.test.TestCase):
 
-    """Test the symmetry restraint"""
-
     def test_bd_ss(self):
         """Test the bond decorator score"""
         m = IMP.Model()
@@ -37,6 +35,15 @@ class Tests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 2))
         self.assertEqual(ss.evaluate_index(m, b, None), -2)
+
+        # Bond with no length
+        b.set_length(-1.0)
+        self.assertEqual(ss.evaluate_index(m, b, None), 0)
+
+        # Bond with negative stiffness (will be treated as 1)
+        b.set_length(3.0)
+        b.set_stiffness(-1000)
+        self.assertEqual(ss.evaluate_index(m, b, None), -1)
 
     def test_bd_deriv(self):
         """Test derivatives of the bond SingletonScore"""
