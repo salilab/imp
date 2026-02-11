@@ -139,24 +139,24 @@
 
 %extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        def score(jm, indexes, point, uf):
+        def score(jm, point, uf):
             xyzs = jm['xyz'][indexes]
             drs = jnp.linalg.norm(xyzs - point, axis=1)
             return uf(drs)
         uf = self.get_unary_function().get_derived_object()
         f = functools.partial(score, point=jnp.array(self.get_point()),
                               uf=uf._get_jax())
-        return self._wrap_jax(f)
+        return self._wrap_jax(m, f)
   %}
 }
 
 %extend IMP::core::GenericBoundingBox3DSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        def score(jm, indexes, box_min, box_max, uf):
+        def score(jm, box_min, box_max, uf):
             xyzs = jm['xyz'][indexes]
             # This calculates the distance and the score for every point,
             # even those inside the box. IMP just returns zero for points
@@ -172,45 +172,45 @@
         f = functools.partial(score, box_min=jnp.asarray(bb.get_corner(0)),
                               box_max=jnp.asarray(bb.get_corner(1)),
                               uf=uf._get_jax())
-        return self._wrap_jax(f)
+        return self._wrap_jax(m, f)
   %}
 }
 
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        def jax_harmonic_distance_pair_score(jm, indexes, d, k):
+        def jax_harmonic_distance_pair_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_harmonic_distance_pair_score,
                               d=self.get_x0(), k=self.get_k())
-        return self._wrap_jax(f)
+        return self._wrap_jax(m, f)
   %}
 }
 
 %extend IMP::core::HarmonicSphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        def jax_score(jm, indexes, d, k):
+        def jax_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
-        return self._wrap_jax(f)
+        return self._wrap_jax(m, f)
   %}
 }
 
 %extend IMP::core::DistancePairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        def jax_score(jm, indexes, uf):
+        def jax_score(jm, uf):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1)
@@ -218,7 +218,7 @@
         sfnc = self.get_score_functor()
         uf = sfnc.get_unary_function().get_derived_object()
         f = functools.partial(jax_score, uf=uf._get_jax())
-        return self._wrap_jax(f)
+        return self._wrap_jax(m, f)
   %}
 }
 
@@ -227,9 +227,9 @@
     def _get_jax(self):
         import jax.numpy as jnp
         ps = self.get_score_object()
-        ji = ps._get_jax()
         indexes = jnp.array([self.get_index()])
-        return self._wrap_jax(lambda jm: ji.score_func(jm, indexes))
+        ji = ps._get_jax(self.get_model(), indexes)
+        return self._wrap_jax(ji.score_func)
   %}
 }
 

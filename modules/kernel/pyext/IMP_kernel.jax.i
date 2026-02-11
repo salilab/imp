@@ -44,27 +44,30 @@ class JAXWarning(UserWarning):
 
 %extend IMP::PairScore {
   %pythoncode %{
-    def _wrap_jax(self, score_func, keys=None):
+    def _wrap_jax(self, m, score_func, keys=None):
         """Create the return value for _get_jax.
            Use this method in _get_jax() to wrap the JAX scoring function
            with other score-specific information.
 
+           @param m The IMP.Model that the score will act on.
            @param score_func A function implemented using JAX that takes
-                  two arguments (the current JAX Model, and the
-                  ParticlePairIndexes to act on) and returns the total
-                  score (for all indexes).
+                  one argument (the current JAX Model) and returns the total
+                  score.
            @param keys Model attributes used by the PairScore.
                   See IMP::Restraint::_wrap_jax.
         """
         from IMP._jax_util import JAXScoreInfo
-        return JAXScoreInfo(score_func=score_func, keys=keys)
+        return JAXScoreInfo(m, score_func=score_func, keys=keys)
 
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         """Return a JAX implementation of this PairScore.
            Implement this method in a PairScore subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
            that scores the current JAX Model with a given set of
            ParticlePairIndexes. See also _wrap_jax.
+
+           @param m The IMP.Model that the score will act on.
+           @param indexes The ParticlePairIndexes that the score will act on.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
@@ -72,12 +75,12 @@ class JAXWarning(UserWarning):
 
 %extend IMP::SingletonScore {
   %pythoncode %{
-    def _wrap_jax(self, score_func, keys=None):
+    def _wrap_jax(self, m, score_func, keys=None):
         """See IMP::PairScore::_wrap_jax"""
         from IMP._jax_util import JAXScoreInfo
-        return JAXScoreInfo(score_func=score_func, keys=keys)
+        return JAXScoreInfo(m, score_func=score_func, keys=keys)
 
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         """See IMP::PairScore::_get_jax"""
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
@@ -85,19 +88,19 @@ class JAXWarning(UserWarning):
 
 %extend IMP::internal::_ConstSingletonScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model or indexes
-        return self._wrap_jax(lambda jm, indexes: value)
+        return self._wrap_jax(m, lambda jm: value)
   %}
 }
 
 %extend IMP::internal::_ConstPairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model or indexes
-        return self._wrap_jax(lambda jm, indexes: value)
+        return self._wrap_jax(m, lambda jm: value)
   %}
 }
 

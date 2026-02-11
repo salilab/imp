@@ -12,12 +12,12 @@ def _get_jax_restraint(r):
     """Return a JAX implementation for SingletonRestraint,
        PairRestraint, etc."""
     score = r.get_score_object().get_derived_object()
-    ji = score._get_jax()
-    score_jax = ji.score_func
     indexes = jnp.array([r.get_index()])
+    ji = score._get_jax(r.get_model(), indexes)
+    score_jax = ji.score_func
 
     def jax_restraint(jm):
-        return jnp.sum(score_jax(jm, indexes))
+        return jnp.sum(score_jax(jm))
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 

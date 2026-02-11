@@ -18,11 +18,11 @@ def _get_jax_container_restraint(r):
        PairsRestraint, etc."""
     indexes = _get_static_container_contents(r.get_container())
     score = r.get_score_object().get_derived_object()
-    ji = score._get_jax()
+    ji = score._get_jax(r.get_model(), indexes)
     score_jax = ji.score_func
 
     def jax_restraint(jm):
-        return jnp.sum(score_jax(jm, indexes))
+        return jnp.sum(score_jax(jm))
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 

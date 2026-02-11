@@ -49,10 +49,10 @@ class Tests(IMP.test.TestCase):
         import jax.numpy as jnp
         m, p1, p2, s = make_score()
         imp_score = s.evaluate_index(m, (p1, p2), None)
-        ji = s._get_jax()
-        jm = ji.get_jax_model(m)
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]))
+        jm = ji.get_jax_model()
         f = jax.jit(ji.score_func)
-        jax_score = f(jm, jnp.array([[p1.get_index(), p2.get_index()]]))
+        jax_score = f(jm)
         self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 

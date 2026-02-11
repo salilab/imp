@@ -40,7 +40,7 @@
 
 %extend IMP::atom::CoulombPairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import math
         import jax
         import jax.numpy as jnp
@@ -57,20 +57,20 @@
         # Function operates on a single distance + score; make it work on
         # an array instead using jax.vmap
         smoothing_function = jax.vmap(sf._get_jax())
-        def jax_pair_score(jm, indexes):
+        def score(jm):
             xyzs = jm['xyz'][indexes]
             qs = jm['charge'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
             drs = jnp.linalg.norm(diff, axis=1)
             scores = factor * jnp.prod(qs, axis=1) / drs
             return smoothing_function(scores, drs)
-        return self._wrap_jax(jax_pair_score, keys=[Charged.get_charge_key()])
+        return self._wrap_jax(m, score, keys=[Charged.get_charge_key()])
   %}
 }
 
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, m, indexes):
         import numpy as np
         import jax.lax
         import jax.numpy as jnp
@@ -110,14 +110,15 @@
                 second_derivs.append(sf.get_second_derivatives(i, j))
         values = np.vstack(values)
         second_derivs = np.vstack(second_derivs)
+        # Vectorize to take multiple indexes (second argument)
+        score = jax.vmap(score_one,
+                         in_axes=(None, 0, None, None, None, None, None))
         f = functools.partial(
-            score_one, minrange=sf.get_offset(),
+            score, index=indexes, minrange=sf.get_offset(),
             maxrange=min(sf.get_max(), sf.get_threshold()),
             spacing=sf.get_spacing(), values=jnp.asarray(values),
             second_derivs=jnp.asarray(second_derivs))
-        # Vectorize to take multiple indexes (second argument)
-        return self._wrap_jax(jax.vmap(f, in_axes=(None, 0)),
-                              keys=(sf.get_dope_type_key(),))
+        return self._wrap_jax(m, f, keys=(sf.get_dope_type_key(),))
   %}
 }
 

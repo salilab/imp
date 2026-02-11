@@ -120,17 +120,19 @@ class JAXScoreInfo:
        evaluate the Score using JAX. Usually this is done by a Restraint
        (see JAXRestraintInfo).
 
+       @param m The IMP::Model that score_func acts on
        @param score_func The JAX scoring function
        @param keys If given, a list of particle attribute Keys that the
                    scoring function uses (other than xyz and r), such
                    as Bayesian nuisances."""
-    def __init__(self, score_func, keys=None):
+    def __init__(self, m, score_func, keys=None):
+        self.m = m
         self.score_func = score_func
         self._keys = frozenset(keys or ())
 
-    def get_jax_model(self, m):
-        """Get Model data for the given Model as a tree of NumPy arrays"""
-        return _get_jax_model(m, self._keys)
+    def get_jax_model(self):
+        """Get Model data as a tree of NumPy arrays"""
+        return _get_jax_model(self.m, self._keys)
 
 
 class JAXScoreStateInfo:
