@@ -238,3 +238,28 @@ def _spline(feature, minrange, lowbin, highbin, spacing, values,
             ((a * (a * a - 1.)) * second_derivs[lowbin]
              + (b * (b * b - 1.)) * second_derivs[highbin])
             * (spacing * spacing) / 6.)
+
+
+def _angle(rij, rkj):
+    """Return the N angles (in radians) between Nx3 vectors rij and rkj."""
+    # einsum here calculates the row-wise dot product. We could also
+    # use vecdot but that likely requires numpy 2.
+    scalar_product = jnp.einsum("ij,ij->i", rij, rkj)
+    # Avoid division by zero if colinear
+    mag_product = jnp.clip(jnp.linalg.norm(rij, axis=1)
+                           * jnp.linalg.norm(rkj, axis=1), 1e-6)
+    # Clip to valid domain for cos
+    cosangle = jnp.clip(scalar_product / mag_product, -1.0, 1.0)
+    return jnp.acos(cosangle)
+
+
+def _dihedral(rij, rkj, rkl):
+    """Return the N dihedrals (in radians) between Nx3 vectors rij,
+       rkj and rkl."""
+    v1 = jnp.cross(rij, rkj)
+    v2 = jnp.cross(rkj, rkl)
+    angle = _angle(v1, v2)
+    # Get sign
+    v0 = jnp.cross(v1, v2)
+    sign = jnp.einsum("ij,ij->i", rkj, v0)
+    return jnp.copysign(angle, sign)

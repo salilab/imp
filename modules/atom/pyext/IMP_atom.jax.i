@@ -166,20 +166,13 @@
     def _get_jax(self, m, indexes):
         import math
         import jax.numpy as jnp
+        import IMP.core._jax_util
         from IMP.atom._jax_util import _get_angles
         def score(jm, angles, uf):
             xyzs = jm['xyz'][angles.bonded_indexes]
             rij = xyzs[:,0] - xyzs[:,1]
             rkj = xyzs[:,2] - xyzs[:,1]
-            # einsum here calculates the row-wise dot product. We could also
-            # use vecdot but that likely requires numpy 2.
-            scalar_product = jnp.einsum("ij,ij->i", rij, rkj)
-            # Avoid division by zero if colinear
-            mag_product = jnp.clip(jnp.linalg.norm(rij, axis=1)
-                                   * jnp.linalg.norm(rkj, axis=1), 1e-6)
-            # Clip to valid domain for cos
-            cosangle = jnp.clip(scalar_product / mag_product, -1.0, 1.0)
-            angle = jnp.acos(cosangle)
+            angle = IMP.core._jax_util._angle(rij, rkj)
             # Get smallest angle difference (between -pi and +pi)
             angle_diff = (jnp.mod(angles.ideal - angle + math.pi,
                                   2.0 * math.pi) - math.pi)
@@ -187,6 +180,26 @@
         uf = self.get_unary_function().get_derived_object()
         f = functools.partial(score, angles=_get_angles(m, indexes),
                               uf=uf._get_jax())
+        return self._wrap_jax(m, f)
+  %}
+}
+
+%extend IMP::atom::DihedralSingletonScore {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import jax.numpy as jnp
+        import IMP.core._jax_util
+        from IMP.atom._jax_util import _get_dihedrals
+        def score(jm, dihedrals):
+            xyzs = jm['xyz'][dihedrals.bonded_indexes]
+            rij = xyzs[:,0] - xyzs[:,1]
+            rkj = xyzs[:,2] - xyzs[:,1]
+            rkl = xyzs[:,2] - xyzs[:,3]
+            dihedral = IMP.core._jax_util._dihedral(rij, rkj, rkl)
+            b = 0.5 * dihedrals.stiffness * jnp.abs(dihedrals.stiffness)
+            return jnp.abs(b) + b * jnp.cos(dihedral * dihedrals.multiplicity
+                                            + dihedrals.ideal)
+        f = functools.partial(score, dihedrals=_get_dihedrals(m, indexes))
         return self._wrap_jax(m, f)
   %}
 }

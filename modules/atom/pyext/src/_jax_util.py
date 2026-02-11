@@ -239,3 +239,44 @@ def _get_angles(m, angle_indexes):
     return _Angles(ideal=ideal[valid_indexes],
                    stiffness=stiffness[valid_indexes],
                    bonded_indexes=jnp.asarray(bonded))
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _Dihedrals:
+    """All information about chemical bond dihedral angles"""
+
+    # Ideal value of each dihedral
+    ideal: jax.Array
+
+    # Integer multiplicity per dihedral
+    multiplicity: jax.Array
+
+    # Force constant per dihedral
+    stiffness: jax.Array
+
+    # Nx4 array of bonded particle indexes
+    bonded_indexes: jax.Array
+
+
+def _get_dihedrals(m, angle_indexes):
+    """Given a list of particle indexes that are IMP.atom.Dihedral particles,
+       return all data packed in a JAX _Dihedrals object"""
+    bonded = []
+    valid_indexes = []
+    ideal = m.get_numpy(IMP.atom.Dihedral.get_ideal_key())
+    multiplicity = m.get_numpy(IMP.atom.Dihedral.get_multiplicity_key())
+    stiffness = m.get_numpy(IMP.atom.Dihedral.get_stiffness_key())
+    for a in angle_indexes:
+        a = IMP.ParticleIndex(a)
+        if not IMP.atom.Dihedral.get_is_setup(m, a):
+            raise TypeError("%s is not a dihedral" % a)
+        # Exclude angles with very small stiffness
+        if abs(stiffness[a]) > 1e-6:
+            valid_indexes.append(a)
+            a = IMP.atom.Dihedral(m, a)
+            bonded.append([a.get_particle(i).get_index() for i in range(4)])
+    return _Dihedrals(ideal=ideal[valid_indexes],
+                      multiplicity=multiplicity[valid_indexes],
+                      stiffness=stiffness[valid_indexes],
+                      bonded_indexes=jnp.asarray(bonded))
