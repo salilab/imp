@@ -71,7 +71,7 @@
         import jax.numpy as jnp
         def apply_func(jm, indexes, box):
             jm['xyz'] = jm['xyz'].at[index].set(
-                jnp.mod(jm['xyz'][index], box[1] - box[0]) + box[0])
+                jnp.mod(jm['xyz'][index] - box[0], box[1] - box[0]) + box[0])
             return jm
         box = jnp.array([self.get_bounding_box().get_corner(x)
                          for x in range(2)])

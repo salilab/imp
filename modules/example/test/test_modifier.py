@@ -12,10 +12,10 @@ except ImportError:
 
 def make_modifier():
     m = IMP.Model()
-    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(2, 3, 4),
                                    IMP.algebra.Vector3D(10, 10, 10))
     p = m.add_particle("p1")
-    d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(-4, 13, 28))
+    d = IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(-4, 13, 26))
     s = IMP.example.ExampleSingletonModifier(bb)
     return m, p, d, s
 
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
         news = pickle.loads(dump)
         news.apply_index(m, p)
         self.assertLess(IMP.algebra.get_distance(
-            d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+            d.get_coordinates(), IMP.algebra.Vector3D(4,6,8)), 1e-4)
 
     def test_pickle_polymorphic(self):
         """Test (un-)pickle of ExampleSingletonModifier via polymorphic ptr"""
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
         newc = pickle.loads(dump)
         newc.before_evaluate()
         self.assertLess(IMP.algebra.get_distance(
-            d.get_coordinates(), IMP.algebra.Vector3D(6,3,8)), 1e-4)
+            d.get_coordinates(), IMP.algebra.Vector3D(4,6,8)), 1e-4)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
@@ -83,17 +83,17 @@ class Tests(IMP.test.TestCase):
         import IMP._jax_util
         import jax.numpy as jnp
         m = IMP.Model()
-        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(2, 3, 4),
                                        IMP.algebra.Vector3D(10, 10, 10))
         p = m.add_particle("p1")
         d = IMP.core.XYZ.setup_particle(m, p,
-                                        IMP.algebra.Vector3D(-4, 13, 28))
+                                        IMP.algebra.Vector3D(-4, 13, 26))
         s = IMP.example.ExampleSingletonModifier(bb)
         ji = s._get_jax(m, p)
         X = IMP._jax_util._get_jax_model(m, ji._keys)
         f = jax.jit(ji.apply_func)
         X = f(X, p)
-        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([6., 3., 8.])),
+        self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([4., 6., 8.])),
                         1e-3)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
