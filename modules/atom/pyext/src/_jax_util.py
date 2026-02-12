@@ -1,5 +1,6 @@
 import jax
 import jax.numpy as jnp
+import functools
 import IMP.atom
 import jax.tree_util
 from dataclasses import dataclass
@@ -280,3 +281,31 @@ def _get_dihedrals(m, angle_indexes):
                       multiplicity=multiplicity[valid_indexes],
                       stiffness=stiffness[valid_indexes],
                       bonded_indexes=jnp.asarray(bonded))
+
+
+def _get_lennard_jones_score(lj, indexes):
+    """Get a suitable JAX scoring function for the given LennardJones score"""
+    def score(jm, aij, bij, repulsive_weight, attractive_weight,
+              smoothing_function):
+        xyzs = jm['xyz'][indexes]
+        lj_types = jm['lennard_jones_type'][indexes]
+        # Get index into aij/bij tables
+        maxij = jnp.max(lj_types, axis=1)
+        minij = jnp.min(lj_types, axis=1)
+        lj_type_pair = (maxij+1)*maxij // 2 + minij
+        dists = jnp.linalg.norm(xyzs[:,0] - xyzs[:,1], axis=1)
+        A = aij[lj_type_pair] * repulsive_weight
+        B = bij[lj_type_pair] * attractive_weight
+        scores = A / dists**12 - B / dists**6
+        return smoothing_function(scores, dists)
+
+    sf = lj.get_smoothing_function().get_derived_object()
+    # Function operates on a single distance + score; make it work on
+    # an array instead using jax.vmap
+    smoothing_function = jax.vmap(sf._get_jax())
+    return functools.partial(
+        score, aij=jnp.asarray(lj.get_repulsive_type_factors()),
+        bij=jnp.asarray(lj.get_attractive_type_factors()),
+        repulsive_weight=lj.get_repulsive_weight(),
+        attractive_weight=lj.get_attractive_weight(),
+        smoothing_function=smoothing_function)

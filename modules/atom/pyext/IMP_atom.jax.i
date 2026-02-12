@@ -68,6 +68,24 @@
   %}
 }
 
+%extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::ForceSwitch> {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import IMP.atom._jax_util
+        score = IMP.atom._jax_util._get_lennard_jones_score(self, indexes)
+        return self._wrap_jax(m, score, keys=[LennardJonesTyped.get_type_key()])
+  %}
+}
+
+%extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::SmoothingFunction> {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import IMP.atom._jax_util
+        score = IMP.atom._jax_util._get_lennard_jones_score(self, indexes)
+        return self._wrap_jax(m, score, keys=[LennardJonesTyped.get_type_key()])
+  %}
+}
+
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):

@@ -5,6 +5,10 @@ import IMP
 import IMP.test
 import IMP.atom
 import IMP.core
+try:
+    import jax
+except ImportError:
+    jax = None
 
 from test_coulomb import place_xyzs
 
@@ -122,6 +126,23 @@ class Tests(IMP.test.TestCase):
         place_all(5.5)
         self.assertEqual(smsf.evaluate(False), 0.0)
         self.assertNotEqual(sf.evaluate(False), 0.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Check JAX implementation of LennardJonesTypedPairScore"""
+        m, sf, t0, t1, d0, d1, c = make_test_pair_score()
+        d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 3))
+        t0.set_radius(1.5)
+        t1.set_radius(2.5)
+        t0.set_well_depth(1.0)
+        t1.set_well_depth(2.0)
+        imp_score = sf.evaluate(False)
+        ji = sf._get_jax()
+        jm = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        jax_score = j(jm)
+        self.assertAlmostEqual(imp_score, 28.7538, delta=0.1)
+        self.assertAlmostEqual(imp_score, jax_score, delta=0.1)
 
     def test_cast(self):
         """Test LennardJonesTypedPairScore.get_from()"""

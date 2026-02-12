@@ -59,10 +59,10 @@ class IMPATOMEXPORT LennardJonesParameters : public Object {
 
 public:
   // Mapping from LJ types for a particle pair to A factor
-  std::vector<double> aij_;
+  Floats aij_;
 
   // Mapping from LJ types for a particle pair to B factor
-  std::vector<double> bij_;
+  Floats bij_;
 
   LennardJonesParameters() : Object("LennardJonesParameters %1%") {}
 
