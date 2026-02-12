@@ -137,10 +137,7 @@ class Tests(IMP.test.TestCase):
         t0.set_well_depth(1.0)
         t1.set_well_depth(2.0)
         imp_score = sf.evaluate(False)
-        ji = sf._get_jax()
-        jm = ji.get_jax_model()
-        j = jax.jit(ji.score_func)
-        jax_score = j(jm)
+        jax_score = sf._evaluate_jax()
         self.assertAlmostEqual(imp_score, 28.7538, delta=0.1)
         self.assertAlmostEqual(imp_score, jax_score, delta=0.1)
 

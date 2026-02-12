@@ -124,6 +124,17 @@ class JAXWarning(UserWarning):
             raise NotImplementedError(f"No JAX implementation for {self}")
         else:
             return r.get_derived_object()._get_jax()
+
+    def _evaluate_jax(self):
+        """Similar to evaluate(False), but using JAX.
+           This is intended to be useful for testing purposes. It will likely
+           not be particularly fast as it will copy the IMP Model and
+           jax.jit-compile the scoring function each time."""
+        import jax
+        ji = self._get_jax()
+        jm = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        return j(jm)
   %}
 }
 
