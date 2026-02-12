@@ -293,7 +293,7 @@ def _get_lennard_jones_score(lj, indexes):
         maxij = jnp.max(lj_types, axis=1)
         minij = jnp.min(lj_types, axis=1)
         lj_type_pair = (maxij+1)*maxij // 2 + minij
-        dists = jnp.linalg.norm(xyzs[:,0] - xyzs[:,1], axis=1)
+        dists = jnp.linalg.norm(xyzs[:, 0] - xyzs[:, 1], axis=1)
         A = aij[lj_type_pair] * repulsive_weight
         B = bij[lj_type_pair] * attractive_weight
         scores = A / dists**12 - B / dists**6
