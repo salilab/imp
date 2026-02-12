@@ -87,7 +87,7 @@ rs.append(r)
 
 cont = IMP.container.ListSingletonContainer(m, impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
-rs.append(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
+rs.append(IMP.container.SingletonsRestraint(bss, cont, "impropers"))
 
 # Add radii from the forcefield, used for close pairs calculation
 ff.add_radii(prot)
