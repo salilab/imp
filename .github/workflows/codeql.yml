@@ -43,8 +43,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: c-cpp
-          build-mode: manual
         - language: python
           build-mode: none
         # CodeQL supports the following values keywords for 'language': 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
@@ -78,9 +76,6 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Set up ccache
-      if: matrix.build-mode == 'manual'
-      uses: hendrikmuhs/ccache-action@v1.2
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
@@ -93,7 +88,7 @@ jobs:
             python3-nose python3-pip python3-biopython
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake .. -DCMAKE_BUILD_TYPE=Release
         make -j 2
 
     - name: Perform CodeQL Analysis
