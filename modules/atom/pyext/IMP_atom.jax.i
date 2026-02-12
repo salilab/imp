@@ -146,10 +146,11 @@
         import jax.lax
         import jax.numpy as jnp
         temperature = self.get_temperature()
+        indexes = jnp.asarray(IMP.get_indexes(self.get_particles()))
 
         def scale_velocities(md, tkinetic):
             scale = jnp.sqrt(temperature / tkinetic)
-            linvel = md.jm['linvel'].at[md.simulation_indexes]
+            linvel = md.jm['linvel'].at[indexes]
             md.jm['linvel'] = linvel.multiply(scale)
             return md
 
