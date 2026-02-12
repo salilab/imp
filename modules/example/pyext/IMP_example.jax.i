@@ -1,5 +1,5 @@
 // Add JAX implementations to each of our example classes.
-// [JAX](https://docs.jax.dev/) ia high performance Python library
+// [JAX](https://docs.jax.dev/) is a high performance Python library
 // which has NumPy-like syntax but compiles to fast code that will
 // run on both CPUs and GPUs.
 
