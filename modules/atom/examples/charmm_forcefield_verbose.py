@@ -129,3 +129,4 @@ IMP.set_check_level(IMP.USAGE)
 
 # Finally, evaluate the score of the whole system (without derivatives)
 print(score_func.evaluate(False))
+print(score_func._evaluate_jax())

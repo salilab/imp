@@ -78,10 +78,10 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - if: matrix.build-mode == 'manual'
-      name: Set up ccache
+    - name: Set up ccache
+      if: matrix.build-mode == 'manual'
       uses: hendrikmuhs/ccache-action@v1.2
-      with: 
+      with:
         create-symlink: true
     - if: matrix.build-mode == 'manual'
       shell: bash
