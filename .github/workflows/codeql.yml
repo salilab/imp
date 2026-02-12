@@ -81,8 +81,6 @@ jobs:
     - name: Set up ccache
       if: matrix.build-mode == 'manual'
       uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        create-symlink: true
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
@@ -95,7 +93,7 @@ jobs:
             python3-nose python3-pip python3-biopython
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         make -j 2
 
     - name: Perform CodeQL Analysis
