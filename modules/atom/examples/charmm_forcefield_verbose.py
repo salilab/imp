@@ -129,4 +129,7 @@ IMP.set_check_level(IMP.USAGE)
 
 # Finally, evaluate the score of the whole system (without derivatives)
 print(score_func.evaluate(False))
-print(score_func._evaluate_jax())
+
+# Alternatively we can score the system on a GPU if the JAX Python
+# module is available::
+# print(score_func._evaluate_jax())
