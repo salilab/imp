@@ -3,6 +3,19 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.atom
+try:
+    import jax
+except ImportError:
+    jax = None
+
+
+class DoNothingRestraint(IMP.Restraint):
+    def __init__(self, m):
+        super().__init__(m, "DoNothingRestraint %1%")
+    def do_get_inputs(self):
+        return []
+    def _get_jax(self):
+        return self._wrap_jax(lambda jm: 0.0)
 
 
 class Tests(IMP.test.TestCase):
@@ -101,6 +114,22 @@ class Tests(IMP.test.TestCase):
             # Make sure that once set temperature is reached, it is maintained
             for i in range(steps, 20):
                 self.assertAlmostEqual(ts[i], 298.0, delta=0.1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_berendsen_thermostat(self):
+        """Test JAX implementation of Berendsen thermostat"""
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(0.1, 0, 0)]])
+        scaler = IMP.atom.BerendsenThermostatOptimizerState(ps, 298.0, 8.0)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_maximum_time_step(4.0)
+        r = DoNothingRestraint(m)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        md.set_scoring_function(sf)
+        md.add_optimizer_state(scaler)
+        md._optimize_jax(20)
+        ts = md.get_kinetic_temperature(md.get_kinetic_energy())
+        self.assertAlmostEqual(ts, 298.0, delta=0.1)
 
     def test_langevin_thermostat(self):
         """Test Langevin thermostat"""

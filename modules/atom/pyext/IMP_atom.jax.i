@@ -163,6 +163,29 @@
   %}
 }
 
+%extend IMP::atom::BerendsenThermostatOptimizerState {
+  %pythoncode %{
+    def _get_jax(self, state_index):
+        import jax.lax
+        import jax.numpy as jnp
+
+        def apply_func(md, temperature, tau, indexes):
+            ekinetic = md.get_kinetic_energy()
+            tkinetic = md.get_kinetic_temperature(ekinetic)
+            scale = jnp.sqrt(1.0 + (md.time_step / tau)
+                             * (temperature / tkinetic - 1.0))
+            linvel = md.jm['linvel'].at[indexes]
+            md.jm['linvel'] = linvel.multiply(scale)
+            return md
+
+        f = functools.partial(
+            apply_func, temperature=self.get_temperature(),
+            tau=self.get_tau(),
+            indexes=jnp.asarray(IMP.get_indexes(self.get_particles())))
+        return self._wrap_jax(lambda x: x, f)
+  %}
+}
+
 %extend IMP::atom::BondSingletonScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
