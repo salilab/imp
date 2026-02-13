@@ -166,6 +166,18 @@ class JAXModifierInfo:
         self._keys = frozenset(keys or ())
 
 
+class _NullScoringFunction:
+    """Helper class for an optimizer that has had .set_scoring_function([])
+       called on it"""
+    def __init__(self, m):
+        self.m = m
+
+    def _get_jax(self):
+        # Always return a score of zero, and reference the optimizer's model
+        return JAXRestraintInfo(m=self.m, score_func=lambda jm: 0.0,
+                                weight=1.0)
+
+
 class JAXOptimizerInfo:
     """Information about a JAX implementation of an Optimizer.
 
@@ -188,11 +200,23 @@ class JAXOptimizerInfo:
 
     def __init__(self, optimizer):
         self._opt = optimizer
-        self._sf = optimizer.get_scoring_function().get_derived_object()
+        self._sf = self._get_scoring_function(optimizer)
         ji = self._sf._get_jax()
         self.score_func = _get_score_constrained(
             optimizer.get_model(), ji.score_func)
         # Subclasses will fill in init_func and apply_func
+
+    def _get_scoring_function(self, optimizer):
+        sf = optimizer.get_scoring_function()
+        # NullScoringFunction has no Python implementation (and even if it
+        # did, it has no valid Model pointer) so use our own helper class
+        # instead
+        if (sf._get_director_object() is None
+                and sf.get_type_name() == 'NullScoringFunction'
+                and sf.get_version_info().get_module() == 'IMP'):
+            return _NullScoringFunction(optimizer.get_model())
+        else:
+            return sf.get_derived_object()
 
     def _setup_jax_optimizer_states(self):
         """Setup and return a list of the OptimizerStates that have

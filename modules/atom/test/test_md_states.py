@@ -9,15 +9,6 @@ except ImportError:
     jax = None
 
 
-class DoNothingRestraint(IMP.Restraint):
-    def __init__(self, m):
-        super().__init__(m, "DoNothingRestraint %1%")
-    def do_get_inputs(self):
-        return []
-    def _get_jax(self):
-        return self._wrap_jax(lambda jm: 0.0)
-
-
 class Tests(IMP.test.TestCase):
 
     """Test molecular dynamics optimizer states"""
@@ -124,9 +115,7 @@ class Tests(IMP.test.TestCase):
         scaler = IMP.atom.BerendsenThermostatOptimizerState(ps, 298.0, 8.0)
         md = IMP.atom.MolecularDynamics(m)
         md.set_maximum_time_step(4.0)
-        r = DoNothingRestraint(m)
-        sf = IMP.core.RestraintsScoringFunction([r])
-        md.set_scoring_function(sf)
+        md.set_scoring_function([])
         md.add_optimizer_state(scaler)
         md._optimize_jax(20)
         ts = md.get_kinetic_temperature(md.get_kinetic_energy())
@@ -162,9 +151,8 @@ class Tests(IMP.test.TestCase):
         scaler = IMP.atom.LangevinThermostatOptimizerState(m, ps, 298.0, 0.1)
         md = IMP.atom.MolecularDynamics(m)
         md.set_maximum_time_step(4.0)
-        r = DoNothingRestraint(m)
-        sf = IMP.core.RestraintsScoringFunction([r])
-        md.set_scoring_function(sf)
+        # Test MD with NullScoringFunction
+        md.set_scoring_function([])
         md.add_optimizer_state(scaler)
         md._optimize_jax(100)
         ts = md.get_kinetic_temperature(md.get_kinetic_energy())
