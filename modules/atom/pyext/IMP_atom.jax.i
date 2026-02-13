@@ -186,6 +186,42 @@
   %}
 }
 
+%extend IMP::atom::LangevinThermostatOptimizerState {
+  %pythoncode %{
+    def _get_jax(self, state_index):
+        import jax.lax
+        import jax.numpy as jnp
+        import jax.random
+        gas_constant = 8.31441e-7
+
+        def init_func(md):
+            # Make our own random key split off from MD's key
+            md.rkey, subkey = jax.random.split(md.rkey)
+            md.optimizer_states[state_index] = subkey
+            return md
+
+        def apply_func(md, temperature, gamma, indexes):
+            c1 = jnp.exp(-gamma * md.time_step)
+            c2 = jnp.sqrt((1.0 - c1) * gas_constant * temperature)
+            md.optimizer_states[state_index], subkey = jax.random.split(
+                md.optimizer_states[state_index])
+            sample = jax.random.normal(subkey, shape=(len(indexes), 3))
+            mass = md.jm['mass'][indexes]
+            linvel = md.jm['linvel'].at[indexes]
+            md.jm['linvel'] = linvel.set(
+                c1 * linvel.get()
+                 + c2 * jnp.sqrt((c1 + 1.0) / mass).reshape(len(indexes), 1)
+                      * sample)
+            return md
+
+        f = functools.partial(
+            apply_func, temperature=self.get_temperature(),
+            gamma=self.get_gamma(),
+            indexes=jnp.asarray(IMP.get_indexes(self.get_particles())))
+        return self._wrap_jax(init_func, f)
+  %}
+}
+
 %extend IMP::atom::BondSingletonScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
