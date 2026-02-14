@@ -1,4 +1,3 @@
-import functools
 import jax.numpy as jnp
 
 
