@@ -266,33 +266,34 @@
 %extend IMP::core::SingletonConstraint {
   %pythoncode %{
     def _get_jax(self):
-        index = self.get_index()
+        import jax.numpy as jnp
+        indexes = jnp.array([self.get_index()])
         mod = self.get_before_modifier().get_derived_object()
-        ji = mod._get_jax(self.get_model(), index)
-        return self._wrap_jax(
-            functools.partial(ji.apply_func, indexes=index),
-            keys=ji._keys)
+        ji = mod._get_jax(self.get_model(), indexes)
+        return self._wrap_jax(ji.apply_func, keys=ji._keys)
   %}
 }
 
 %extend IMP::core::CentroidOfRefined {
   %pythoncode %{
-    def _get_jax(self, m, index=None):
+    def _get_jax(self, m, indexes):
         import jax.numpy as jnp
-        if index is None:
-            raise NotImplementedError("Only implemented for single particle")
-        refined = self.get_refiner().get_refined_indexes(m, index)
+        refined = [
+            self.get_refiner().get_refined_indexes(m, IMP.ParticleIndex(index))
+            for index in indexes]
 
-        def apply_func_unweighted(jm, indexes):
-            xyz = jm['xyz']
-            jm['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0))
+        def apply_func_unweighted(jm):
+            for ind, ref in zip(indexes, refined):
+                xyz = jm['xyz']
+                jm['xyz'] = xyz.at[ind].set(jnp.average(xyz[ref], axis=0))
             return jm
 
-        def apply_func_weighted(jm, indexes, weight_key):
-            xyz = jm['xyz']
-            weights = jm[weight_key][refined]
-            jm['xyz'] = xyz.at[indexes].set(jnp.average(xyz[refined], axis=0,
-                                                        weights=weights))
+        def apply_func_weighted(jm, weight_key):
+            for ind, ref in zip(indexes, refined):
+                xyz = jm['xyz']
+                weights = jm[weight_key][ref]
+                jm['xyz'] = xyz.at[ind].set(
+                    jnp.average(xyz[ref], axis=0, weights=weights))
             return jm
 
         keys = frozenset(self.get_keys())

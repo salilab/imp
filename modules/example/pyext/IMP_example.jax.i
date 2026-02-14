@@ -65,13 +65,13 @@
 
 %extend IMP::example::ExampleSingletonModifier {
   %pythoncode %{
-    def _get_jax(self, m, index=None):
+    def _get_jax(self, m, indexes):
         """Implementation of the modifier using JAX"""
         import functools
         import jax.numpy as jnp
-        def apply_func(jm, indexes, box):
-            jm['xyz'] = jm['xyz'].at[index].set(
-                jnp.mod(jm['xyz'][index] - box[0], box[1] - box[0]) + box[0])
+        def apply_func(jm, box):
+            jm['xyz'] = jm['xyz'].at[indexes].set(
+                jnp.mod(jm['xyz'][indexes] - box[0], box[1] - box[0]) + box[0])
             return jm
         box = jnp.array([self.get_bounding_box().get_corner(x)
                          for x in range(2)])

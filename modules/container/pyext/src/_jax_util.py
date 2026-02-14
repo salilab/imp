@@ -31,8 +31,6 @@ def _get_jax_container_constraint(r):
        PairsConstraint, etc."""
     container = r.get_container().get_derived_object()
     mod = r.get_before_modifier().get_derived_object()
-    ji = mod._get_jax(r.get_model(), index=None)
     indexes = container._get_static_contents()
-    return r._wrap_jax(
-        functools.partial(ji.apply_func, indexes=indexes),
-        keys=ji._keys)
+    ji = mod._get_jax(r.get_model(), indexes)
+    return r._wrap_jax(ji.apply_func, keys=ji._keys)

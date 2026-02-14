@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
         ji = s._get_jax(m, p)
         X = IMP._jax_util._get_jax_model(m, ji._keys)
         f = jax.jit(ji.apply_func)
-        X = f(X, p)
+        X = f(X)
         self.assertLess(jnp.linalg.norm(X['xyz'][0] - jnp.array([4., 6., 8.])),
                         1e-3)
 

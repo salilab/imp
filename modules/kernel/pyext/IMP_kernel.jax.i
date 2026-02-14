@@ -228,10 +228,28 @@ class JAXWarning(UserWarning):
 %extend IMP::SingletonModifier {
   %pythoncode %{
     def _wrap_jax(self, apply_func, keys=None):
+        """Create the return value for _get_jax.
+           Use this method in _get_jax() to wrap the JAX function
+           with other modifier-specific information.
+
+           @param apply_func A function implemented using JAX that takes
+                  one argument (the current JAX Model) and returns a new
+                  modified JAX Model.
+           @param keys Model attributes used by the SingletonModifier.
+                  See IMP::Restraint::_wrap_jax.
+        """
         from IMP._jax_util import JAXModifierInfo
         return JAXModifierInfo(apply_func=apply_func, keys=keys)
 
-    def _get_jax(self, m, index=None):
+    def _get_jax(self, m, indexes):
+        """Return a JAX implementation of this SingletonModifier.
+           Implement this method in a SingletonModifier subclass to provide
+           an equivalent function using [JAX](https://docs.jax.dev/)
+           that modifies the current JAX Model. See also _wrap_jax.
+
+           @param m The IMP.Model that the modifier will act on.
+           @param indexes The ParticleIndexes that the modifier will act on.
+        """
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
 }

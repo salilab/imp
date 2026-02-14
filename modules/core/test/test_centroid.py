@@ -48,7 +48,8 @@ class Tests(IMP.test.TestCase):
         jm['xyz'] = jnp.asarray(jm['xyz'])
 
         # Get coordinates for p using JAX
-        jm = ji.apply_func(jm)
+        j = jax.jit(ji.apply_func)
+        jm = j(jm)
         jax_coord = IMP.algebra.Vector3D(jm['xyz'][-1])
 
         # Compare with p's coordinates using IMP
