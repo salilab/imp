@@ -10,9 +10,48 @@ def get_random_key():
     return jax.random.key(IMP.random_number_generator())
 
 
+def _quaternion_to_rotation_matrix(quaternion):
+    """Convert (normalized) quaternion to rotation matrix"""
+    v0 = quaternion[0]
+    v1 = quaternion[1]
+    v2 = quaternion[2]
+    v3 = quaternion[3]
+    v0s = v0**2
+    v1s = v1**2
+    v2s = v2**2
+    v3s = v3**2
+    v12 = v1 * v2
+    v01 = v0 * v1
+    v02 = v0 * v2
+    v23 = v2 * v3
+    v03 = v0 * v3
+    v13 = v1 * v3
+    return jnp.array(
+        [[v0s + v1s - v2s - v3s, 2. * (v12 + v03), 2. * (v13 - v02)],
+         [2. * (v12 - v03), v0s - v1s + v2s - v3s, 2. * (v23 + v01)],
+         [2. * (v13 + v02), 2. * (v23 - v01), v0s - v1s - v2s + v3s]])
+
+
 @jax.tree_util.register_dataclass
 @dataclass
-class _RigidBodies:
+class _RigidBody:
+    """Information on a single rigid body in the Model"""
+
+    # Zero-based index of the body
+    rb_index: int
+    # Index of the corresponding IMP RigidBody particle in the IMP Model
+    particle_index: int
+    # Indexes of all member particles that are not themselves rigid bodies
+    member_particle_indexes: int
+
+    def get_rotation_matrix(self, allrbs):
+        """Convert quaternion to the corresponding rotation matrix"""
+        return _quaternion_to_rotation_matrix(allrbs.quaternion[self.rb_index])
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _AllRigidBodies:
     """Information on all rigid bodies in the Model"""
 
     # Internal coordinates indexed by particle index
@@ -21,8 +60,8 @@ class _RigidBodies:
     quaternion: jax.Array
     # Mapping from particle index to rigid body index
     rb_index_from_particle: dict
-    # Mapping from rigid body index to particle index
-    particle_from_rb_index: list
+    # Information about each rigid body (as _RigidBody objects)
+    bodies: list
 
 
 _RB_LIST_KEY = IMP.ModelKey("rigid body list")
@@ -31,6 +70,7 @@ _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
 
 
 def _get_rigid_bodies(m):
+    import IMP.core
     assert m.get_has_data(_RB_LIST_KEY)
     rbl = m.get_data(_RB_LIST_KEY)
     rbl = IMP.SingletonContainer.get_from(rbl)
@@ -38,8 +78,14 @@ def _get_rigid_bodies(m):
     intcoord = m.get_internal_coordinates_numpy()
     quaternion = jnp.stack([m.get_numpy(rk)[particle_from_rb_index]
                             for rk in _RB_QUAT_KEYS], axis=1)
-    return _RigidBodies(
-        intcoord=intcoord, particle_from_rb_index=particle_from_rb_index,
+    bodies = []
+    for i, rb_ind in enumerate(particle_from_rb_index):
+        rb = IMP.core.RigidBody(m, rb_ind)
+        bodies.append(_RigidBody(
+            rb_index=i, particle_index=int(rb_ind),
+            member_particle_indexes=rb.get_member_particle_indexes()))
+    return _AllRigidBodies(
+        intcoord=intcoord, bodies=bodies,
         rb_index_from_particle={int(pi): rbi for (rbi, pi) in
                                 enumerate(particle_from_rb_index)},
         quaternion=quaternion)

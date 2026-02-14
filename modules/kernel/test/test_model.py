@@ -641,11 +641,44 @@ class Tests(IMP.test.TestCase):
         # 2 rigid bodies
         self.assertEqual(len(rbs.quaternion), 2)
         self.assertEqual(rbs.rb_index_from_particle, {1: 0, 3: 1})
-        self.assertEqual(list(rbs.particle_from_rb_index), [1, 3])
+        self.assertEqual(rbs.bodies[0].rb_index, 0)
+        self.assertEqual(rbs.bodies[0].particle_index, 1)
+        self.assertEqual(rbs.bodies[0].member_particle_indexes, [0])
+        self.assertEqual(rbs.bodies[1].rb_index, 1)
+        self.assertEqual(rbs.bodies[1].particle_index, 3)
+        self.assertEqual(rbs.bodies[1].member_particle_indexes, [2])
         # No internal coordinate for rb4, so len==3
         self.assertEqual(len(rbs.intcoord), 3)
         self.assertEqual([int(x) for x in rbs.quaternion[0]], [1, 0, 0, 0])
         self.assertEqual([int(x) for x in rbs.quaternion[1]], [1, 0, 0, 0])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_model_rigid_transform(self):
+        """Test JAX rigid body transform"""
+        import jax.numpy as jnp
+        import IMP._jax_util
+        m = IMP.Model()
+        members = []
+        for v in [[1., 2., 3.], [4., 5., 6.], [7, 8, 9.],
+                  [10., -3., 6.]]:
+            p = IMP.Particle(m)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_coordinates(IMP.algebra.Vector3D(v))
+            d.set_radius(4)
+            members.append(p)
+        p = IMP.Particle(m)
+        rb = IMP.core.RigidBody.setup_particle(p, members)
+        jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
+        rbs = jm['rigid_bodies']
+        body0 = rbs.bodies[0]
+        rotmat = body0.get_rotation_matrix(rbs)
+        intcoord = rbs.intcoord[body0.member_particle_indexes]
+        # Applying rigid body transformation (rotation matrix plus translation)
+        # to internal coordinates should yield the correct global coordinates
+        coord = jm['xyz'][body0.member_particle_indexes]
+        new_coord = (jnp.vecmat(intcoord, rotmat)
+                     + jm['xyz'][body0.particle_index])
+        self.assertTrue(jnp.allclose(coord, new_coord))
 
 
 if __name__ == '__main__':
