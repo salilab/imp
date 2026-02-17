@@ -660,7 +660,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         members = []
         for v in [[1., 2., 3.], [4., 5., 6.], [7, 8, 9.],
-                  [10., -3., 6.]]:
+                  [10., -3., 6.], [12., 3., 8.]]:
             p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(IMP.algebra.Vector3D(v))
@@ -668,6 +668,9 @@ class Tests(IMP.test.TestCase):
             members.append(p)
         p = IMP.Particle(m)
         rb = IMP.core.RigidBody.setup_particle(p, members)
+        # Test with both rigid and non-rigid members
+        rb.set_is_rigid_member(members[-2], False)
+        rb.set_is_rigid_member(members[-1], False)
         jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
         rbs = jm['rigid_bodies']
         body0 = rbs.bodies[0]
