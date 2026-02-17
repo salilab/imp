@@ -48,7 +48,7 @@ idock --complex_type AA --cxms=cxms.txt --precision=1 antibody_cut.pdb 2p4e.pdb
 
 The application makes use of the PatchDock program for docking, which must
 be obtained separately from
-\external{http://bioinfo3d.cs.tau.ac.il/PatchDock/,the PatchDock website}.
+\external{https://bio3d.cs.huji.ac.il/webserver/patchdock/,the PatchDock website}.
 It must be told explicitly where to find PatchDock
 (either by giving the <tt>--patch_dock</tt>
 option to idock, or by setting the <tt>PATCH_DOCK_HOME</tt>
@@ -60,7 +60,7 @@ Higher values result in longer run times. The <tt>--complex_type</tt>
 argument is passed to PatchDock, and identifies the type of
 complex (AA means antibody-antigen in this case). It alters how the docking
 is performed (for more information, see the
-\external{http://bioinfo3d.cs.tau.ac.il/PatchDock/help.html,PatchDock help}).
+\external{https://bio3d.cs.huji.ac.il/webserver/patchdock/help,PatchDock help}).
 
 \section idock_pcsk9_results Results
 
