@@ -681,6 +681,7 @@ class Tests(IMP.test.TestCase):
         body1 = rbs.bodies[1]
         # rb2 should contain rb1
         self.assertEqual(body1.body_member_indexes, [0])
+        self.assertEqual(body1.lquaternion.shape, (1, 4))
         rotmat = body1.get_rotation_matrix(rbs)
         intcoord = rbs.intcoord[body1.member_particle_indexes]
         # Applying rigid body transformation (rotation matrix plus translation)

@@ -45,6 +45,8 @@ class _RigidBody:
     member_particle_indexes: int
     # Rigid body indexes of all members that are nested rigid bodies
     body_member_indexes: int
+    # Rotation quaternion relative to parent rigid body for each nested body
+    lquaternion: jax.Array
 
     def get_rotation_matrix(self, allrbs):
         """Convert quaternion to the corresponding rotation matrix"""
@@ -69,6 +71,8 @@ class _AllRigidBodies:
 _RB_LIST_KEY = IMP.ModelKey("rigid body list")
 _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
                  for i in range(4)]
+_RB_LQUAT_KEYS = [IMP.FloatKey("rigid_body_local_quaternion_%d" % i)
+                  for i in range(4)]
 
 
 def _get_rigid_bodies(m):
@@ -85,11 +89,15 @@ def _get_rigid_bodies(m):
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
+        body_members = rb.get_body_member_particle_indexes()
+        lquaternion = jnp.stack([m.get_numpy(rk)[body_members]
+                                 for rk in _RB_LQUAT_KEYS], axis=1)
         bodies.append(_RigidBody(
             rb_index=i, particle_index=int(rb_ind),
             member_particle_indexes=rb.get_member_particle_indexes(),
+            lquaternion=lquaternion,
             body_member_indexes=[rb_index_from_particle[i] for i in
-                                 rb.get_body_member_particle_indexes()]))
+                                 body_members]))
     return _AllRigidBodies(
         intcoord=intcoord, bodies=bodies,
         rb_index_from_particle=rb_index_from_particle,
