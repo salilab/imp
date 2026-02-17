@@ -41,8 +41,10 @@ class _RigidBody:
     rb_index: int
     # Index of the corresponding IMP RigidBody particle in the IMP Model
     particle_index: int
-    # Indexes of all member particles that are not themselves rigid bodies
+    # Particle indexes of all members that are not themselves rigid bodies
     member_particle_indexes: int
+    # Rigid body indexes of all members that are nested rigid bodies
+    body_member_indexes: int
 
     def get_rotation_matrix(self, allrbs):
         """Convert quaternion to the corresponding rotation matrix"""
@@ -78,16 +80,19 @@ def _get_rigid_bodies(m):
     intcoord = m.get_internal_coordinates_numpy()
     quaternion = jnp.stack([m.get_numpy(rk)[particle_from_rb_index]
                             for rk in _RB_QUAT_KEYS], axis=1)
+    rb_index_from_particle={int(pi): rbi for (rbi, pi) in
+                            enumerate(particle_from_rb_index)}
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
         bodies.append(_RigidBody(
             rb_index=i, particle_index=int(rb_ind),
-            member_particle_indexes=rb.get_member_particle_indexes()))
+            member_particle_indexes=rb.get_member_particle_indexes(),
+            body_member_indexes=[rb_index_from_particle[i] for i in
+                                 rb.get_body_member_particle_indexes()]))
     return _AllRigidBodies(
         intcoord=intcoord, bodies=bodies,
-        rb_index_from_particle={int(pi): rbi for (rbi, pi) in
-                                enumerate(particle_from_rb_index)},
+        rb_index_from_particle=rb_index_from_particle,
         quaternion=quaternion)
 
 

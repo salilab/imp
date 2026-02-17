@@ -660,27 +660,34 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         members = []
         for v in [[1., 2., 3.], [4., 5., 6.], [7, 8, 9.],
-                  [10., -3., 6.], [12., 3., 8.]]:
+                  [10., -3., 6.], [12., 3., 8.], [102., 104, 106.],
+                  [90, 98., 102.], [96., 90., 99.]]:
             p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(IMP.algebra.Vector3D(v))
             d.set_radius(4)
             members.append(p)
         p = IMP.Particle(m)
-        rb = IMP.core.RigidBody.setup_particle(p, members)
+        rb1 = IMP.core.RigidBody.setup_particle(p, members[:4])
+        p = IMP.Particle(m)
+        rb2 = IMP.core.RigidBody.setup_particle(p, members[4:] + [rb1])
         # Test with both rigid and non-rigid members
-        rb.set_is_rigid_member(members[-2], False)
-        rb.set_is_rigid_member(members[-1], False)
+        rb2.set_is_rigid_member(members[4], False)
+        rb2.set_is_rigid_member(members[5], False)
+
         jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
         rbs = jm['rigid_bodies']
-        body0 = rbs.bodies[0]
-        rotmat = body0.get_rotation_matrix(rbs)
-        intcoord = rbs.intcoord[body0.member_particle_indexes]
+        self.assertEqual(len(rbs.bodies), 2)
+        body1 = rbs.bodies[1]
+        # rb2 should contain rb1
+        self.assertEqual(body1.body_member_indexes, [0])
+        rotmat = body1.get_rotation_matrix(rbs)
+        intcoord = rbs.intcoord[body1.member_particle_indexes]
         # Applying rigid body transformation (rotation matrix plus translation)
         # to internal coordinates should yield the correct global coordinates
-        coord = jm['xyz'][body0.member_particle_indexes]
+        coord = jm['xyz'][body1.member_particle_indexes]
         new_coord = (jnp.vecmat(intcoord, rotmat)
-                     + jm['xyz'][body0.particle_index])
+                     + jm['xyz'][body1.particle_index])
         self.assertTrue(jnp.allclose(coord, new_coord))
 
 
