@@ -32,6 +32,15 @@ def _quaternion_to_rotation_matrix(quaternion):
          [2. * (v13 + v02), 2. * (v23 - v01), v0s - v1s - v2s + v3s]])
 
 
+def _quaternion_multiply(q1, q2):
+    """Multiply two quaternions and return the result"""
+    return jnp.array(
+        [q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3],
+         q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2],
+         q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1],
+         q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0]])
+
+
 @jax.tree_util.register_dataclass
 @dataclass
 class _RigidBody:

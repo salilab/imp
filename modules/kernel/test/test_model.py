@@ -690,6 +690,19 @@ class Tests(IMP.test.TestCase):
         new_coord = (jnp.vecmat(intcoord, rotmat)
                      + jm['xyz'][body1.particle_index])
         self.assertTrue(jnp.allclose(coord, new_coord))
+        # We should be able to similarly transform nested rigid bodies
+        all_children = [rbs.bodies[i].particle_index
+                        for i in body1.body_member_indexes]
+        new_trans = (jnp.vecmat(rbs.intcoord[all_children], rotmat)
+                     + jm['xyz'][body1.particle_index])[0]
+        new_rot = IMP._jax_util._quaternion_multiply(
+            rbs.quaternion[rbs.bodies[0].particle_index],
+            body1.lquaternion[0])
+        tr = rb1.get_reference_frame().get_transformation_to()
+        self.assertTrue(jnp.allclose(
+            new_trans, jnp.asarray(list(tr.get_translation()))))
+        self.assertTrue(jnp.allclose(
+            new_rot, jnp.asarray(list(tr.get_rotation().get_quaternion()))))
 
 
 if __name__ == '__main__':
