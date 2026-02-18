@@ -93,8 +93,8 @@ def _get_rigid_bodies(m):
     intcoord = m.get_internal_coordinates_numpy()
     quaternion = jnp.stack([m.get_numpy(rk)[particle_from_rb_index]
                             for rk in _RB_QUAT_KEYS], axis=1)
-    rb_index_from_particle={int(pi): rbi for (rbi, pi) in
-                            enumerate(particle_from_rb_index)}
+    rb_index_from_particle = {int(pi): rbi for (rbi, pi) in
+                              enumerate(particle_from_rb_index)}
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
