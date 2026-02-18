@@ -42,3 +42,16 @@ def get_random_vector_in_sphere(key, n, radius):
     else:
         return jax.lax.while_loop(vector_out_radius, sample_vector,
                                   (key, box_ubound * 2.))[1]
+
+
+def get_random_vector_on_3d_sphere(key, radius, shape=1):
+    """Return a random vector uniformly distributed on the surface of
+       a 3-dimensional sphere of given radius at the origin"""
+    k1, k2 = jax.random.split(key, 2)
+    phi = jax.random.uniform(k1, shape=shape,
+                             minval=0., maxval=2. * math.pi)
+    theta = jnp.acos(jax.random.uniform(k2, shape=shape,
+                                        minval=-1., maxval=1.))
+    return jnp.array([radius * jnp.sin(theta) * jnp.cos(phi),
+                      radius * jnp.sin(theta) * jnp.sin(phi),
+                      radius * jnp.cos(theta)]).T
