@@ -682,27 +682,22 @@ class Tests(IMP.test.TestCase):
         # rb2 should contain rb1
         self.assertEqual(body1.body_member_indexes, [0])
         self.assertEqual(body1.lquaternion.shape, (1, 4))
-        rotmat = body1.get_rotation_matrix(rbs)
+
+        trans = body1.get_transformation(jm).get_with_matrix()
         intcoord = rbs.intcoord[body1.member_particle_indexes]
-        # Applying rigid body transformation (rotation matrix plus translation)
+        # Applying rigid body transformation
         # to internal coordinates should yield the correct global coordinates
         coord = jm['xyz'][body1.member_particle_indexes]
-        new_coord = (jnp.vecmat(intcoord, rotmat)
-                     + jm['xyz'][body1.particle_index])
+        new_coord = trans.get_transformed(intcoord)
         self.assertTrue(jnp.allclose(coord, new_coord))
         # We should be able to similarly transform nested rigid bodies
-        all_children = [rbs.bodies[i].particle_index
-                        for i in body1.body_member_indexes]
-        new_trans = (jnp.vecmat(rbs.intcoord[all_children], rotmat)
-                     + jm['xyz'][body1.particle_index])[0]
-        new_rot = IMP._jax_util._quaternion_multiply(
-            rbs.quaternion[rbs.bodies[0].particle_index],
-            body1.lquaternion[0])
+        new_trans = trans * body1.get_internal_transformation(jm, 0)
         tr = rb1.get_reference_frame().get_transformation_to()
         self.assertTrue(jnp.allclose(
-            new_trans, jnp.asarray(list(tr.get_translation()))))
+            new_trans.translation, jnp.asarray(list(tr.get_translation()))))
         self.assertTrue(jnp.allclose(
-            new_rot, jnp.asarray(list(tr.get_rotation().get_quaternion()))))
+            new_trans.rotation,
+            jnp.asarray(list(tr.get_rotation().get_quaternion()))))
 
 
 if __name__ == '__main__':

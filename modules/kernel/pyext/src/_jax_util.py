@@ -10,37 +10,6 @@ def get_random_key():
     return jax.random.key(IMP.random_number_generator())
 
 
-def _quaternion_to_rotation_matrix(quaternion):
-    """Convert (normalized) quaternion to rotation matrix"""
-    v0 = quaternion[0]
-    v1 = quaternion[1]
-    v2 = quaternion[2]
-    v3 = quaternion[3]
-    v0s = v0**2
-    v1s = v1**2
-    v2s = v2**2
-    v3s = v3**2
-    v12 = v1 * v2
-    v01 = v0 * v1
-    v02 = v0 * v2
-    v23 = v2 * v3
-    v03 = v0 * v3
-    v13 = v1 * v3
-    return jnp.array(
-        [[v0s + v1s - v2s - v3s, 2. * (v12 + v03), 2. * (v13 - v02)],
-         [2. * (v12 - v03), v0s - v1s + v2s - v3s, 2. * (v23 + v01)],
-         [2. * (v13 + v02), 2. * (v23 - v01), v0s - v1s - v2s + v3s]])
-
-
-def _quaternion_multiply(q1, q2):
-    """Multiply two quaternions and return the result"""
-    return jnp.array(
-        [q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3],
-         q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2],
-         q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1],
-         q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0]])
-
-
 @jax.tree_util.register_dataclass
 @dataclass
 class _RigidBody:
@@ -57,9 +26,22 @@ class _RigidBody:
     # Rotation quaternion relative to parent rigid body for each nested body
     lquaternion: jax.Array
 
-    def get_rotation_matrix(self, allrbs):
-        """Convert quaternion to the corresponding rotation matrix"""
-        return _quaternion_to_rotation_matrix(allrbs.quaternion[self.rb_index])
+    def get_transformation(self, jm):
+        """Get the transformation for this body's reference frame"""
+        from IMP.algebra._jax_util import Transformation3D
+        allrbs = jm['rigid_bodies']
+        return Transformation3D(rotation=allrbs.quaternion[self.rb_index],
+                                translation=jm['xyz'][self.particle_index])
+
+    def get_internal_transformation(self, jm, i):
+        """Get transformation for the ith nested rigid body, relative to
+           this (parent) rigid body's reference frame."""
+        from IMP.algebra._jax_util import Transformation3D
+        allrbs = jm['rigid_bodies']
+        child_body = allrbs.bodies[self.body_member_indexes[i]]
+        return Transformation3D(
+            rotation=self.lquaternion[i],
+            translation=allrbs.intcoord[child_body.particle_index])
 
 
 @jax.tree_util.register_dataclass
