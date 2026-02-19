@@ -676,6 +676,7 @@ class Tests(IMP.test.TestCase):
         rb2.set_is_rigid_member(members[5], False)
 
         jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
+        jm['xyz'] = jnp.asarray(jm['xyz'])
         rbs = jm['rigid_bodies']
         self.assertEqual(len(rbs.bodies), 2)
         body1 = rbs.bodies[1]
@@ -683,16 +684,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(body1.body_member_indexes, [0])
         self.assertEqual(body1.lquaternion.shape, (1, 4))
 
-        trans = body1.get_transformation(jm).get_with_matrix()
-        intcoord = rbs.intcoord[body1.member_particle_indexes]
-        # Applying rigid body transformation
-        # to internal coordinates should yield the correct global coordinates
+        # Test that applying rigid body transformation to all members
+        # (including rigid bodies) yields the correct global coordinates
+
+        # Non-body members
+        old_coord = jm['xyz'][body1.member_particle_indexes]
+        # Wipe old coordinates so we can be sure we are seeing the updated ones
+        jm['xyz'] = jm['xyz'].at[body1.member_particle_indexes].set(0.0)
+        trans = body1.get_transformation(jm)
+        jm = body1.set_transformation(trans, jm)
         coord = jm['xyz'][body1.member_particle_indexes]
-        new_coord = trans.get_transformed(intcoord)
-        self.assertTrue(jnp.allclose(coord, new_coord))
-        # We should be able to similarly transform nested rigid bodies
-        new_trans = trans * body1.get_internal_transformation(jm, 0)
+        self.assertTrue(jnp.allclose(coord, old_coord))
+
+        # Body member
         tr = rb1.get_reference_frame().get_transformation_to()
+        new_trans = rbs.bodies[0].get_transformation(jm)
         self.assertTrue(jnp.allclose(
             new_trans.translation, jnp.asarray(list(tr.get_translation()))))
         self.assertTrue(jnp.allclose(

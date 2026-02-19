@@ -20,9 +20,9 @@ class _RigidBody:
     # Index of the corresponding IMP RigidBody particle in the IMP Model
     particle_index: int
     # Particle indexes of all members that are not themselves rigid bodies
-    member_particle_indexes: int
+    member_particle_indexes: jax.Array
     # Rigid body indexes of all members that are nested rigid bodies
-    body_member_indexes: int
+    body_member_indexes: jax.Array
     # Rotation quaternion relative to parent rigid body for each nested body
     lquaternion: jax.Array
 
@@ -42,6 +42,41 @@ class _RigidBody:
         return Transformation3D(
             rotation=self.lquaternion[i],
             translation=allrbs.intcoord[child_body.particle_index])
+
+    def set_transformation_lazy(self, trans, jm):
+        """Set the reference frame transformation from local to global
+           coordinates, but do not change member global coordinates.
+           Returns the new model."""
+        allrbs = jm['rigid_bodies']
+        allrbs.quaternion = allrbs.quaternion.at[self.rb_index].set(
+            trans.rotation)
+        jm['xyz'] = jm['xyz'].at[self.particle_index].set(trans.translation)
+        return jm
+
+    def update_members(self, jm):
+        """Set the global coordinates for all members to match this body's
+           reference frame. Returns the new model."""
+        allrbs = jm['rigid_bodies']
+        trans = self.get_transformation(jm).get_with_matrix()
+
+        # Update global coordinates of non-body members
+        intcoord = allrbs.intcoord[self.member_particle_indexes]
+        jm['xyz'] = jm['xyz'].at[self.member_particle_indexes].set(
+            trans.get_transformed(intcoord))
+
+        # Update transformation of all nested rigid bodies
+        for i in range(len(self.body_member_indexes)):
+            body_index = self.body_member_indexes[i]
+            jm = allrbs.bodies[body_index].set_transformation_lazy(
+                trans * self.get_internal_transformation(jm, i), jm)
+        return jm
+
+    def set_transformation(self, trans, jm):
+        """Set the reference frame transformation from local to global
+           coordinates. This also sets the global coordinates for all
+           members to match. Returns the new model."""
+        jm = self.set_transformation_lazy(trans, jm)
+        return self.update_members(jm)
 
 
 @jax.tree_util.register_dataclass
