@@ -2,6 +2,11 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
 
 def make_score(uf):
     m = IMP.Model()
@@ -131,6 +136,18 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(s3._proxied, IMP.core._SphereDistancePairScore)
         s3 = IMP.core._SphereDistancePairScore.get_from(obj)
         self.assertIsInstance(s3, IMP.core._SphereDistancePairScore)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of _SphereDistancePairScore class"""
+        import jax.numpy as jnp
+        m, p1, p2, s = make_score(IMP.core.Linear(2.0, 3.0))
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]))
+        jax_s = jax.jit(ji.score_func)
+        jm = ji.get_jax_model()
+        imp_score_val = s.evaluate_index(m, (p1, p2), None)
+        jax_score_val = jax_s(jm)
+        self.assertAlmostEqual(imp_score_val, jax_score_val, delta=1e-5)
 
 
 if __name__ == '__main__':

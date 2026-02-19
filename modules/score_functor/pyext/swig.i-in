@@ -12,3 +12,6 @@
 %include "IMP/score_functor/LoopStatistical.h"
 %include "IMP/score_functor/ScoreUnaryFunction.h"
 %include "IMP/score_functor/UnaryFunctionEvaluate.h"
+
+%include "IMP/score_functor/SphereDistance.h"
+%template(_SphereDistanceUF) IMP::score_functor::SphereDistance<IMP::score_functor::UnaryFunctionEvaluate>;

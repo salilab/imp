@@ -423,6 +423,9 @@ class SphereDistancePairScore(_SphereDistancePairScore.__bases__[0]):
     def __setstate__(self, p):
         self.__dict__['_proxied'] = p
 
+    def _get_jax(self, *args, **kwargs):
+        return self._proxied._get_jax(*args, **kwargs)
+
     @staticmethod
     def get_from(o):
         try:

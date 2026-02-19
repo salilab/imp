@@ -206,6 +206,23 @@
   %}
 }
 
+%extend IMP::core::SphereDistancePairScore {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import jax.numpy as jnp
+        def jax_score(jm, uf):
+            xyzs = jm['xyz'][indexes]
+            rs = jm['r'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            return uf(drs)
+        sfnc = self.get_score_functor()
+        uf = sfnc.get_unary_function().get_derived_object()
+        f = functools.partial(jax_score, uf=uf._get_jax())
+        return self._wrap_jax(m, f)
+  %}
+}
+
 %extend IMP::core::DistancePairScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
