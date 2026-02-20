@@ -185,10 +185,11 @@ typedef score_functor::SphereDistance<score_functor::HarmonicLowerBound>
 /** This class is equivalent to, but faster than a
     SphereDistancePairScore with a HarmonicLowerBound.
 */
-IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore, SoftSphereDistanceScore,
-                                (double k,
-                                 std::string name = "SoftSpherePairScore%1%"),
-                                (score_functor::HarmonicLowerBound(k)), );
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
+    SoftSpherePairScore, SoftSphereDistanceScore,
+    (double k, std::string name = "SoftSpherePairScore%1%"),
+    (score_functor::HarmonicLowerBound(k)),
+    double get_k() const { return get_score_functor().get_k(); });
 
 IMPCORE_END_NAMESPACE
 
