@@ -111,31 +111,6 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
   IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
 
-/** \brief Compute the coordinates of the RigidMember objects bases
-      on the orientation.
-
-      This should be applied after evaluate to keep the bodies
-      rigid. You can use the setup_rigid_bodies and setup_rigid_body
-      methods instead of creating these objects yourself.
-
-      \see setup_rigid_bodies
-      \see setup_rigid_body
-      \see RigidBody
-      \see AccumulateRigidBodyDerivatives */
-class UpdateRigidBodyMembers : public SingletonModifier {
- public:
-  UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
-      : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
-  IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
-};
-
 /** \brief Fix the normalization of the rotation term. */
 class NormalizeRotation : public SingletonModifier {
  public:
@@ -267,28 +242,6 @@ ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_inputs(
 ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_outputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::get_particles(m, pis);
-  return ret;
-}
-
-void UpdateRigidBodyMembers::apply_index(Model *m,
-                                         ParticleIndex pi) const {
-  RigidBody rb(m, pi);
-  rb.update_members();
-}
-ModelObjectsTemp UpdateRigidBodyMembers::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
-  ret += IMP::get_particles(m, pis);
-  return ret;
-}
-ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
-    Model *m, const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
-  for (unsigned int i = 0; i < pis.size(); ++i) {
-    RigidBody rb(m, pis[i]);
-    ret += IMP::get_particles(m, rb.get_member_particle_indexes());
-    ret += IMP::get_particles(m, rb.get_body_member_particle_indexes());
-  }
   return ret;
 }
 
@@ -480,6 +433,30 @@ bool is_rotation_valid(Eigen::Matrix3d rm) {
   }
   return true;
 }
+}
+
+void UpdateRigidBodyMembers::apply_index(Model *m,
+                                         ParticleIndex pi) const {
+  RigidBody rb(m, pi);
+  rb.update_members();
+}
+
+ModelObjectsTemp UpdateRigidBodyMembers::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
+  ret += IMP::get_particles(m, pis);
+  return ret;
+}
+
+ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    RigidBody rb(m, pis[i]);
+    ret += IMP::get_particles(m, rb.get_member_particle_indexes());
+    ret += IMP::get_particles(m, rb.get_body_member_particle_indexes());
+  }
+  return ret;
 }
 
 void RigidBody::on_change() {

@@ -871,6 +871,25 @@ IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
 }
 #endif
 
+/** \brief Update global coordinates of all members of a given rigid body.
+
+    It is rarely necessary to use this modifier explicitly; one is
+    automatically added for every rigid body that is created.
+    It is applied before evaluate to keep the body rigid.
+ */
+class IMPCOREEXPORT UpdateRigidBodyMembers : public SingletonModifier {
+ public:
+  UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
+      : SingletonModifier(name) {}
+  virtual void apply_index(Model *m, ParticleIndex pi) const override;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
+  IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
+};
+
 //! Transform a rigid body
 /** The transformation is applied current conformation of the rigid
     body, as opposed to replacing the current conformation, as in

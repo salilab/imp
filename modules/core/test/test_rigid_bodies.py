@@ -225,5 +225,22 @@ class Tests(IMP.test.TestCase):
             pass
         self.assertTrue(not failure)
 
+    def test_update_rigid_body_members(self):
+        """Test UpdateRigidBodyMembers modifier"""
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        # Make sure that modifier recreates the original member coordinates
+        mod = IMP.core.UpdateRigidBodyMembers()
+        oldxyz = cs[0].get_coordinates()
+        cs[0].set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
+        mod.apply_index(m, rbd)
+        self.assertLess(
+            IMP.algebra.get_distance(oldxyz, cs[0].get_coordinates()), 1e-3)
+
+
 if __name__ == '__main__':
     IMP.test.main()
