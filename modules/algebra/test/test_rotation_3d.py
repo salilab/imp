@@ -5,6 +5,10 @@ import numpy as np
 import random
 import math
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class TransformFunct:
@@ -267,6 +271,20 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(0.0, angle, delta=.0001)
         self.assertAlmostEqual((axis - [1, 0, 0]).get_magnitude(),
                                0.0, delta=.0001)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_get_rotation_about_normalized_axis(self):
+        """Check JAX get_rotation_about_normalized_axis()"""
+        import jax.numpy as jnp
+        from IMP.algebra._jax_util import get_rotation_about_normalized_axis
+        r0 = IMP.algebra.get_random_rotation_3d()
+        aa = IMP.algebra.get_axis_and_angle(r0)
+        axis = aa[0]
+        angle = aa[1]
+        r1 = IMP.algebra.get_rotation_about_axis(axis, angle)
+        v = jnp.asarray(axis.get_unit_vector())
+        r2 = get_rotation_about_normalized_axis(v, angle)
+        self.assertTrue(jnp.allclose(jnp.asarray(r1.get_quaternion()), r2))
 
     def test_is_equal_between_rotations(self):
         """Check that two rotations are equal"""

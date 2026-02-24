@@ -58,6 +58,12 @@ def get_random_vector_on_3d_sphere(key, radius, shape=1):
                       radius * jnp.cos(theta)]).T
 
 
+def get_rotation_about_normalized_axis(axis_norm, angle):
+    """Return a quaternion from the given normalized axis and angle"""
+    return jnp.concatenate((jnp.atleast_1d(jnp.cos(angle / 2.0)),
+                            axis_norm * jnp.sin(angle / 2.0)))
+
+
 def _quaternion_to_rotation_matrix(quaternion):
     """Convert (normalized) quaternion to rotation matrix"""
     v0 = quaternion[0]
