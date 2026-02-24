@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidBodyMover.h
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -66,6 +66,8 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   Float get_maximum_translation() const { return max_translation_; }
 
   Float get_maximum_rotation() const { return max_angle_; }
+
+  ParticleIndex get_index() const { return pi_; }
 
  protected:
   virtual ModelObjectsTemp do_get_inputs() const override;

@@ -34,7 +34,7 @@ def make_system():
     return m, rb_mover
 
 
-class NormalMoverTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_zeros(self):
         m = IMP.Model()
@@ -45,6 +45,7 @@ class NormalMoverTest(IMP.test.TestCase):
         rb.set_coordinates_are_optimized(True)
         print("0")
         rbmt0 = IMP.core.RigidBodyMover(m, pi, 0, 1)
+        self.assertEqual(rbmt0.get_index(), pi)
         rbmt0.propose()
         rbmt0.accept()
         print("1")
