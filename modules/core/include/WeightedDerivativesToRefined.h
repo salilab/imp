@@ -4,7 +4,7 @@
  *         to its refined set of particles using weights
  *         indicated by a weight key.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_DERIVATIVES_TO_REFINED_H
@@ -16,7 +16,7 @@
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/Pointer.h>
-#include <IMP/SingletonDerivativeModifier.h>
+#include <IMP/SingletonModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -26,8 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see Centroid
     \see atom::CenterOfMass
  */
-class IMPCOREEXPORT WeightedDerivativesToRefined :
-public SingletonDerivativeModifier {
+class IMPCOREEXPORT WeightedDerivativesToRefined : public SingletonModifier {
   IMP::PointerMember<Refiner> refiner_;
   FloatKey w_; // weights key
   FloatKeys keys_;

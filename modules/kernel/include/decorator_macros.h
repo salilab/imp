@@ -470,8 +470,8 @@
      reset and removed from the model list of score states.
  */                                                                     \
  static void set_constraint(SingletonModifier* before,                  \
-                              SingletonDerivativeModifier* after, Model* m, \
-                              ParticleIndex pi);                        \
+                            SingletonModifier* after, Model* m,         \
+                            ParticleIndex pi);                          \
                                                                            \
  public:                                                                   \
   Constraint* get_constraint() const {                                     \
@@ -491,7 +491,7 @@
     return ret;                                                           \
   }                                                                       \
   void Name::set_constraint(SingletonModifier* before,                    \
-                            SingletonDerivativeModifier* after, Model* m, \
+                            SingletonModifier* after, Model* m,           \
                             ParticleIndex pi) {                           \
     if (!after && !before) {                                              \
       if (m->get_has_attribute(get_constraint_key(), pi)) {               \
@@ -580,7 +580,7 @@
     \param[in] create_pre_modifier the statements to create the
                SingletonModifier which computes the summary info,
                using refiner 'ref'
-    \param[in] create_post_modifier a SingletonDerivativeModifier for
+    \param[in] create_post_modifier a SingletonModifier for
                the derivatives of the summary back to its members,
                using refiner 'ref'
     \param[in] can_skip set to true iff the modifiers do not need to be
@@ -593,7 +593,7 @@
                                const ParticleIndexes &pis) {            \
     Refiner *ref = new FixedRefiner(IMP::get_particles(m, pis)); \
     SingletonModifier* pre_mod = create_pre_modifier;                   \
-    SingletonDerivativeModifier* post_mod = create_post_modifier;       \
+    SingletonModifier* post_mod = create_post_modifier;                 \
     if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
     set_constraint(pre_mod, post_mod, m, pi);                           \
   }                                                                     \
@@ -601,7 +601,7 @@
   void Name::do_setup_particle(Model *m, ParticleIndex pi,      \
                                Refiner *ref) {                          \
     SingletonModifier* pre_mod = create_pre_modifier;                   \
-    SingletonDerivativeModifier* post_mod = create_post_modifier;       \
+    SingletonModifier* post_mod = create_post_modifier;                 \
     if (!Parent::get_is_setup(m, pi)) Parent::setup_particle(m, pi);    \
     set_constraint(pre_mod, post_mod, m, pi);                           \
   }                                                                     \

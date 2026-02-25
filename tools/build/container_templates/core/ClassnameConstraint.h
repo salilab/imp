@@ -12,7 +12,6 @@
 #include <IMP/core/core_config.h>
 #include <IMP/internal/TupleConstraint.h>
 #include <IMP/ClassnameModifier.h>
-#include <IMP/ClassnameDerivativeModifier.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
 
@@ -31,29 +30,28 @@ class ClassnameConstraint :
     public Constraint
 #else
     public IMP::internal::TupleConstraint<ClassnameModifier,
-                                                  ClassnameDerivativeModifier>
+                                          ClassnameModifier>
 #endif
     {
   typedef IMP::internal::TupleConstraint<ClassnameModifier,
-                                         ClassnameDerivativeModifier> P;
+                                         ClassnameModifier> P;
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
                     IMP::internal::TupleConstraint<ClassnameModifier,
-                                        ClassnameDerivativeModifier> >(this));
+                                        ClassnameModifier> >(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(ClassnameConstraint);
 
  public:
   ClassnameConstraint(ClassnameModifier *before,
-                      ClassnameDerivativeModifier *after, Model *m,
+                      ClassnameModifier *after, Model *m,
                       PASSINDEXTYPE vt,
                       std::string name = "ClassnameConstraint %1%",
                       bool can_skip=false)
       : IMP::internal::TupleConstraint<
-            ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
-                                                            vt, name,
-                                                            can_skip) {}
+            ClassnameModifier, ClassnameModifier>(before, after, m,
+                                                  vt, name, can_skip) {}
 
   ClassnameConstraint() {}
 

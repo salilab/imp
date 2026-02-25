@@ -2,7 +2,7 @@
  *  \file rigid_bodies.cpp
  *  \brief Support for rigid bodies.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -96,11 +96,11 @@ namespace {
     \verbinclude rigid_bodies.py
     \see UpdateRigidBodyMembers
 */
-class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
+class AccumulateRigidBodyDerivatives : public SingletonModifier {
  public:
   AccumulateRigidBodyDerivatives(std::string name =
                                      "AccumulateRigidBodyDerivatives%1%")
-      : SingletonDerivativeModifier(name) {}
+      : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
       override;
   virtual ModelObjectsTemp do_get_inputs(
@@ -130,10 +130,9 @@ class NormalizeRotation : public SingletonModifier {
 };
 
 /** \brief Fix the normalization of the rotation term. */
-class NullSDM : public SingletonDerivativeModifier {
+class NullSDM : public SingletonModifier {
  public:
-  NullSDM(std::string name = "NullModifier%1%")
-      : SingletonDerivativeModifier(name) {}
+  NullSDM(std::string name = "NullModifier%1%") : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
       override;
   virtual ModelObjectsTemp do_get_inputs(

@@ -2,7 +2,7 @@
  *  \file CenterOfMass.cpp
  *  \brief Center of mass of a set of particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,7 +36,7 @@ void CenterOfMass::do_setup_particle(Model *m, ParticleIndex pi,
     new core::CentroidOfRefined( refiner,
                            Mass::get_mass_key(),
                            IMP::core::XYZ::get_xyz_keys());
-  SingletonDerivativeModifier* post_mod =
+  SingletonModifier* post_mod =
     new core::WeightedDerivativesToRefined( refiner,
                                       Mass::get_mass_key(),
                                       IMP::core::XYZ::get_xyz_keys());
@@ -65,7 +65,7 @@ void CenterOfMass::show(std::ostream &out) const {
 //     return ret;
 //   }
 //   void CenterOfMass::set_constraint(SingletonModifier* before,
-//                             SingletonDerivativeModifier* after, Model* m,
+//                             SingletonModifier* after, Model* m,
 //                             ParticleIndex pi) {
 //     if (!after && !before) {
 //       if (m->get_has_attribute(get_constraint_key(), pi)) {
