@@ -344,17 +344,13 @@ ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_outputs(
   return ret;
 }
 
-inline void NormalizeRotation::apply_index(Model *m,
-                                           ParticleIndex p) const {
+void NormalizeRotation::apply_index(Model *m, ParticleIndex p) const {
   apply_indexes(m, ParticleIndexes(1,p), 0, 1);
 }
 
-inline void
-NormalizeRotation::apply_indexes
-(Model *m, const ParticleIndexes &pis,
- unsigned int lower_bound,
- unsigned int upper_bound) const
-{
+void NormalizeRotation::apply_indexes(
+    Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
+    unsigned int upper_bound) const {
   // direct access to tables for speed
   double* quaternion_tables[4];
   for(unsigned int i = 0; i < 4; i++){
