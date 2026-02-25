@@ -2,7 +2,7 @@
  *  \file IMP/core/rigid_bodies.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODIES_H
@@ -871,7 +871,7 @@ IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
 }
 #endif
 
-/** \brief Update global coordinates of all members of a given rigid body.
+/** \brief Update global coordinates of all members of a given rigid body
 
     It is rarely necessary to use this modifier explicitly; one is
     automatically added for every rigid body that is created.
@@ -888,6 +888,27 @@ class IMPCOREEXPORT UpdateRigidBodyMembers : public SingletonModifier {
       Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
   IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
+};
+
+//! Accumulate the derivatives from the refined particles in the rigid body
+/** It is rarely necessary to use this modifier explicitly; one is
+    automatically added for every rigid body that is created.
+    It is applied after evaluate to map derivatives from the body's rigid
+    members back onto the body itself.
+*/
+class IMPCOREEXPORT AccumulateRigidBodyDerivatives : public SingletonModifier {
+ public:
+  AccumulateRigidBodyDerivatives(std::string name =
+                                     "AccumulateRigidBodyDerivatives%1%")
+      : SingletonModifier(name) {}
+  virtual void apply_index(Model *m, ParticleIndex pi) const
+      override;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
+  IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
 
 //! Transform a rigid body
