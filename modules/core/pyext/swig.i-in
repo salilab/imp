@@ -81,6 +81,7 @@ IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyUmbrella, RigidBodyUmbrellas);
 IMP_SWIG_OBJECT( IMP::core, UpdateRigidBodyMembers, ListUpdateRigidBodyMembers);
 IMP_SWIG_OBJECT( IMP::core, AccumulateRigidBodyDerivatives, ListAccumulateRigidBodyDerivatives);
+IMP_SWIG_OBJECT( IMP::core, NormalizeRotation, NormalizeRotations);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SingletonConstraint, SingletonConstraints);

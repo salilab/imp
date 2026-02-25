@@ -911,6 +911,26 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives : public SingletonModifier {
   IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
 
+/** \brief Normalize the rigid body's rotation quaternion
+    It is rarely necessary to use this modifier explicitly; one is
+    automatically added for every rigid body that is created.
+ */
+class IMPCOREEXPORT NormalizeRotation : public SingletonModifier {
+ public:
+  NormalizeRotation(std::string name = "NormalizeRotation%1%")
+      : SingletonModifier(name) {}
+  virtual void apply_index(Model *m, ParticleIndex pi) const
+      override;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const override;
+  virtual void apply_indexes(
+      Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
+      unsigned int upper_bound) const override final;
+  IMP_OBJECT_METHODS(NormalizeRotation);
+};
+
 //! Transform a rigid body
 /** The transformation is applied current conformation of the rigid
     body, as opposed to replacing the current conformation, as in

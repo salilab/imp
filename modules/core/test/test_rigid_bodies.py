@@ -4,6 +4,10 @@ import IMP.core
 import IMP.algebra
 
 
+_RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
+                 for i in range(4)]
+
+
 class Tests(IMP.test.TestCase):
 
     """Tests for RigidBody function"""
@@ -263,6 +267,32 @@ class Tests(IMP.test.TestCase):
         derivs = rbd.get_derivatives()
         self.assertLess(IMP.algebra.get_distance(
             derivs, IMP.algebra.Vector3D(10000, 20000, 30000)), 40.)
+
+    def test_normalize_rotation(self):
+        """Test NormalizeRotation modifier"""
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        mod = IMP.core.NormalizeRotation()
+
+        # Zero quaternion should be reset to identity
+        for i in range(4):
+            rbd.set_value(_RB_QUAT_KEYS[i], 0.0)
+        mod.apply_index(m, rbd)
+        rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
+        self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
+                         [10, 0, 0, 0])
+
+        # Non-normalized quaternion should be normalized
+        for i, val in enumerate((0., 2., 0., 0.)):
+            rbd.set_value(_RB_QUAT_KEYS[i], val)
+        mod.apply_index(m, rbd)
+        rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
+        self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
+                         [0, 10, 0, 0])
 
 
 if __name__ == '__main__':

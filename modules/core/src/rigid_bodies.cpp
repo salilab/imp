@@ -87,24 +87,6 @@ namespace {
   }*/
 
 /** \brief Fix the normalization of the rotation term. */
-class NormalizeRotation : public SingletonModifier {
- public:
-  NormalizeRotation(std::string name = "NormalizeRotation%1%")
-      : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual void apply_indexes(
-      Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
-      unsigned int upper_bound) const override final;
-  //  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
-  IMP_OBJECT_METHODS(NormalizeRotation);
-};
-
-/** \brief Fix the normalization of the rotation term. */
 class NullSDM : public SingletonModifier {
  public:
   NullSDM(std::string name = "NullModifier%1%") : SingletonModifier(name) {}
@@ -117,78 +99,6 @@ class NullSDM : public SingletonModifier {
   IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
   IMP_OBJECT_METHODS(NullSDM);
 };
-
-inline void NormalizeRotation::apply_index(Model *m,
-                                           ParticleIndex p) const {
-  apply_indexes(m, ParticleIndexes(1,p), 0, 1);
-}
-
-inline void
-NormalizeRotation::apply_indexes
-(Model *m, const ParticleIndexes &pis,
- unsigned int lower_bound,
- unsigned int upper_bound) const
-{
-  // direct access to tables for speed
-  double* quaternion_tables[4];
-  for(unsigned int i = 0; i < 4; i++){
-    quaternion_tables[i]=
-      core::RigidBody::access_quaternion_i_data(m, i);
-  }
-  for (unsigned int i = lower_bound; i < upper_bound; ++i) {
-    int pi=pis[i].get_index();
-    algebra::VectorD<4> v(quaternion_tables[0][pi],
-                        quaternion_tables[1][pi],
-                        quaternion_tables[2][pi],
-                        quaternion_tables[3][pi]);
-    IMP_LOG_TERSE( "Rotation quaternion before normalization: " << v << std::endl);
-    double sm = v.get_squared_magnitude();
-    if (sm < .0001) {
-      IMP_LOG_TERSE("Near-zero rotation quaternion set to identity");
-      quaternion_tables[0][pi] = 1;
-      quaternion_tables[1][pi] = 0;
-      quaternion_tables[2][pi] = 0;
-      quaternion_tables[3][pi] = 0;
-    } else if (std::abs(sm - 1.0) > .01) {
-      double magnitude = std::sqrt(sm);
-      quaternion_tables[0][pi] = v[0]/magnitude;
-      quaternion_tables[1][pi] = v[1]/magnitude;
-      quaternion_tables[2][pi] = v[2]/magnitude;
-      quaternion_tables[3][pi] = v[3]/magnitude;
-      IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
-    }
-    IMP_INTERNAL_CHECK
-      (std::abs(core::RigidBody(m,pis[i]).get_rotation()
-                .get_quaternion().get_magnitude() - 1.0) < .01,
-       "Quaternion expected to be normalized");
-  }
-
-  // evil hack - to reset all torques (BR: is it needed anywhere? for the attribute rather than the derivative? who ever used the torque attribute rather than derivative? it's supposedly angular momentum but it's never used anywhere this way, and why should it be reset anyway?)
-  if(true){
-    for(unsigned int i = 0; i < 3; i++){
-      double* torque_table_i=
-        core::RigidBody::access_torque_i_data(m, i);
-      for (unsigned int j = lower_bound; j < upper_bound; j++) {
-        torque_table_i[j]=0;
-      } // for j
-    } // for i
-    //      ParticleIndex pi_j=pis[j];
-    // m->set_attribute(internal::rigid_body_data().torque_[0], pi_j, 0);
-    //m->set_attribute(internal::rigid_body_data().torque_[1], pi_j, 0);
-    // m->set_attribute(internal::rigid_body_data().torque_[2], pi_j, 0);
-    //  } // for j
-  }
-}
-
-
-ModelObjectsTemp NormalizeRotation::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
-  return IMP::get_particles(m, pis);
-}
-ModelObjectsTemp NormalizeRotation::do_get_outputs(
-    Model *m, const ParticleIndexes &pis) const {
-  return IMP::get_particles(m, pis);
-}
 
 inline void NullSDM::apply_index(Model *, ParticleIndex) const {
 }
@@ -432,6 +342,78 @@ ModelObjectsTemp AccumulateRigidBodyDerivatives::do_get_outputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::get_particles(m, pis);
   return ret;
+}
+
+inline void NormalizeRotation::apply_index(Model *m,
+                                           ParticleIndex p) const {
+  apply_indexes(m, ParticleIndexes(1,p), 0, 1);
+}
+
+inline void
+NormalizeRotation::apply_indexes
+(Model *m, const ParticleIndexes &pis,
+ unsigned int lower_bound,
+ unsigned int upper_bound) const
+{
+  // direct access to tables for speed
+  double* quaternion_tables[4];
+  for(unsigned int i = 0; i < 4; i++){
+    quaternion_tables[i]=
+      core::RigidBody::access_quaternion_i_data(m, i);
+  }
+  for (unsigned int i = lower_bound; i < upper_bound; ++i) {
+    int pi=pis[i].get_index();
+    algebra::VectorD<4> v(quaternion_tables[0][pi],
+                        quaternion_tables[1][pi],
+                        quaternion_tables[2][pi],
+                        quaternion_tables[3][pi]);
+    IMP_LOG_TERSE( "Rotation quaternion before normalization: " << v << std::endl);
+    double sm = v.get_squared_magnitude();
+    if (sm < .0001) {
+      IMP_LOG_TERSE("Near-zero rotation quaternion set to identity");
+      quaternion_tables[0][pi] = 1;
+      quaternion_tables[1][pi] = 0;
+      quaternion_tables[2][pi] = 0;
+      quaternion_tables[3][pi] = 0;
+    } else if (std::abs(sm - 1.0) > .01) {
+      double magnitude = std::sqrt(sm);
+      quaternion_tables[0][pi] = v[0]/magnitude;
+      quaternion_tables[1][pi] = v[1]/magnitude;
+      quaternion_tables[2][pi] = v[2]/magnitude;
+      quaternion_tables[3][pi] = v[3]/magnitude;
+      IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
+    }
+    IMP_INTERNAL_CHECK
+      (std::abs(core::RigidBody(m,pis[i]).get_rotation()
+                .get_quaternion().get_magnitude() - 1.0) < .01,
+       "Quaternion expected to be normalized");
+  }
+
+  // evil hack - to reset all torques (BR: is it needed anywhere? for the attribute rather than the derivative? who ever used the torque attribute rather than derivative? it's supposedly angular momentum but it's never used anywhere this way, and why should it be reset anyway?)
+  if(true){
+    for(unsigned int i = 0; i < 3; i++){
+      double* torque_table_i=
+        core::RigidBody::access_torque_i_data(m, i);
+      for (unsigned int j = lower_bound; j < upper_bound; j++) {
+        torque_table_i[j]=0;
+      } // for j
+    } // for i
+    //      ParticleIndex pi_j=pis[j];
+    // m->set_attribute(internal::rigid_body_data().torque_[0], pi_j, 0);
+    //m->set_attribute(internal::rigid_body_data().torque_[1], pi_j, 0);
+    // m->set_attribute(internal::rigid_body_data().torque_[2], pi_j, 0);
+    //  } // for j
+  }
+}
+
+ModelObjectsTemp NormalizeRotation::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
+}
+
+ModelObjectsTemp NormalizeRotation::do_get_outputs(
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 void RigidBody::on_change() {
