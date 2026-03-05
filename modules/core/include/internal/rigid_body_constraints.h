@@ -14,6 +14,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/internal/ContainerConstraint.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/Model.h>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
@@ -136,6 +137,46 @@ public:
 #endif
 
   IMP_OBJECT_METHODS(_RigidBodyNormalizeConstraint);
+};
+
+/* Make a simple subclass rather than using
+   IMP::internal::create_tuple_constraint(), so that we can serialize it */
+class IMPCOREEXPORT _RigidBodyPositionConstraint
+#ifdef SWIG
+    : public IMP::Constraint
+#else
+    : public IMP::internal::TupleConstraint<_UpdateRigidBodyMembers,
+                                            _AccumulateRigidBodyDerivatives>
+#endif
+{
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+                    IMP::internal::TupleConstraint<_UpdateRigidBodyMembers,
+                                      _AccumulateRigidBodyDerivatives> >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(_RigidBodyPositionConstraint);
+
+public:
+#ifndef SWIG
+  _RigidBodyPositionConstraint(_UpdateRigidBodyMembers *before,
+                               _AccumulateRigidBodyDerivatives *after,
+                               Model *m, const ParticleIndex &vt,
+                               std::string name, bool can_skip)
+          : IMP::internal::TupleConstraint<
+                _UpdateRigidBodyMembers, _AccumulateRigidBodyDerivatives>(
+                                    before, after, m, vt, name, can_skip) {}
+#endif
+
+  _RigidBodyPositionConstraint() {}
+  IMP_OBJECT_METHODS(_RigidBodyPositionConstraint);
+
+#ifdef SWIG
+  // Expose base class methods to SWIG
+  _UpdateRigidBodyMembers *get_before_modifier() const;
+  _AccumulateRigidBodyDerivatives *get_after_modifier() const;
+  ParticleIndex get_index() const;
+#endif
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE

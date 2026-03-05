@@ -93,32 +93,6 @@ ModelKey get_rb_list_key() {
 
 }
 
-/* Make a simple subclass rather than using
-   IMP::internal::create_tuple_constraint(), so that we can serialize it */
-class RigidBodyPositionConstraint
-        : public IMP::internal::TupleConstraint<internal::_UpdateRigidBodyMembers,
-                                            internal::_AccumulateRigidBodyDerivatives> {
-  friend class cereal::access;
-  template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<
-                    IMP::internal::TupleConstraint<internal::_UpdateRigidBodyMembers,
-                                      internal::_AccumulateRigidBodyDerivatives> >(this));
-  }
-  IMP_OBJECT_SERIALIZE_DECL(RigidBodyPositionConstraint);
-
-public:
-  RigidBodyPositionConstraint(internal::_UpdateRigidBodyMembers *before,
-                              internal::_AccumulateRigidBodyDerivatives *after,
-                              Model *m, const ParticleIndex &vt,
-                              std::string name, bool can_skip)
-          : IMP::internal::TupleConstraint<
-                internal::_UpdateRigidBodyMembers, internal::_AccumulateRigidBodyDerivatives>(
-                                    before, after, m, vt, name, can_skip) {}
-
-  RigidBodyPositionConstraint() {}
-};
-IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyPositionConstraint);
-
 namespace {
   // compute inertia tensor for particles ds with origin center
 Eigen::Matrix3d compute_I(Model *model,
@@ -505,7 +479,7 @@ void RigidBody::setup_score_states() {
                                       get_particle_index())) {
     IMP_NEW(internal::_UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(internal::_AccumulateRigidBodyDerivatives, arbd, ());
-    IMP_NEW(RigidBodyPositionConstraint, c0,
+    IMP_NEW(internal::_RigidBodyPositionConstraint, c0,
                (urbm, arbd, get_model(), get_particle_index(),
                 get_particle()->get_name() + " rigid body positions", true));
     get_model()->add_score_state(c0);

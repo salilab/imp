@@ -209,5 +209,6 @@ ModelObjectsTemp _NormalizeRotation::do_get_outputs(
 }
 
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::internal::_RigidBodyNormalizeConstraint);
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::internal::_RigidBodyPositionConstraint);
 
 IMPCORE_END_INTERNAL_NAMESPACE
