@@ -23,24 +23,6 @@ IMP_OBJECTS(Geometry, Geometries);
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-class NullSDM : public SingletonModifier {
- public:
-  NullSDM(std::string name = "NullModifier%1%") : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *, const ParticleIndexes &) const override {
-    return ModelObjectsTemp();
-  }
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *, const ParticleIndexes &) const override {
-    return ModelObjectsTemp();
-  }
-  IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
-};
-
-inline void NullSDM::apply_index(Model *, ParticleIndex) const {}
-
 struct RigidBodyData {
   FloatKeys child_keys_;
   FloatKeys quaternion_;

@@ -13,11 +13,7 @@
 
 #include "XYZ.h"
 #include "XYZR.h"
-#include <IMP/SingletonContainer.h>
-#include <IMP/SingletonModifier.h>
 #include <IMP/Refiner.h>
-#include <IMP/internal/ContainerConstraint.h>
-#include <IMP/internal/StaticListContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
@@ -872,106 +868,6 @@ namespace internal {
 IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
 }
 #endif
-
-/** \brief Update global coordinates of all members of a given rigid body
-
-    It is rarely necessary to use this modifier explicitly; one is
-    automatically added for every rigid body that is created.
-    It is applied before evaluate to keep the body rigid.
- */
-class IMPCOREEXPORT UpdateRigidBodyMembers : public SingletonModifier {
- public:
-  UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
-      : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
-  IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
-};
-
-//! Accumulate the derivatives from the refined particles in the rigid body
-/** It is rarely necessary to use this modifier explicitly; one is
-    automatically added for every rigid body that is created.
-    It is applied after evaluate to map derivatives from the body's rigid
-    members back onto the body itself.
-*/
-class IMPCOREEXPORT AccumulateRigidBodyDerivatives : public SingletonModifier {
- public:
-  AccumulateRigidBodyDerivatives(std::string name =
-                                     "AccumulateRigidBodyDerivatives%1%")
-      : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
-  IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
-};
-
-/** \brief Normalize the rigid body's rotation quaternion
-    It is rarely necessary to use this modifier explicitly; one is
-    automatically added for every rigid body that is created.
- */
-class IMPCOREEXPORT NormalizeRotation : public SingletonModifier {
- public:
-  NormalizeRotation(std::string name = "NormalizeRotation%1%")
-      : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual void apply_indexes(
-      Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
-      unsigned int upper_bound) const override final;
-  IMP_OBJECT_METHODS(NormalizeRotation);
-};
-
-/** Normalize the rotation quaternions of all rigid bodies in the system */
-class IMPCOREEXPORT RigidBodyNormalizeConstraint
-#ifdef SWIG
-          : public IMP::Constraint
-#else
-          : public IMP::internal::ContainerConstraint<
-               NormalizeRotation, internal::NullSDM,
-               IMP::internal::StaticListContainer<SingletonContainer> >
-#endif
-{
-  friend class cereal::access;
-  template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<
-          IMP::internal::ContainerConstraint<
-            NormalizeRotation, internal::NullSDM,
-            IMP::internal::StaticListContainer<SingletonContainer> > >(this));
-  }
-  IMP_OBJECT_SERIALIZE_DECL(RigidBodyNormalizeConstraint);
-public:
-#ifndef SWIG
-  RigidBodyNormalizeConstraint(
-       NormalizeRotation *before, internal::NullSDM *after,
-       IMP::internal::StaticListContainer<SingletonContainer> *c,
-       std::string name, bool can_skip=false)
- : IMP::internal::ContainerConstraint<NormalizeRotation, internal::NullSDM,
-            IMP::internal::StaticListContainer<SingletonContainer> >(
-                            before, after, c, name, can_skip) {}
-#endif
-
-  RigidBodyNormalizeConstraint() {}
-
-#ifdef SWIG
-  // Expose base class methods to SWIG
-  NormalizeRotation *get_before_modifier() const;
-  Container *get_container() const { return c_; }
-#endif
-
-  IMP_OBJECT_METHODS(RigidBodyNormalizeConstraint);
-};
 
 //! Transform a rigid body
 /** The transformation is applied current conformation of the rigid
