@@ -86,31 +86,6 @@ namespace {
   return ret;
   }*/
 
-/** \brief Fix the normalization of the rotation term. */
-class NullSDM : public SingletonModifier {
- public:
-  NullSDM(std::string name = "NullModifier%1%") : SingletonModifier(name) {}
-  virtual void apply_index(Model *m, ParticleIndex pi) const
-      override;
-  virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const override;
-  IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
-  IMP_OBJECT_METHODS(NullSDM);
-};
-
-inline void NullSDM::apply_index(Model *, ParticleIndex) const {
-}
-ModelObjectsTemp NullSDM::do_get_inputs(Model *,
-                                        const ParticleIndexes &) const {
-  return ModelObjectsTemp();
-}
-ModelObjectsTemp NullSDM::do_get_outputs(
-    Model *, const ParticleIndexes &) const {
-  return ModelObjectsTemp();
-}
-
 ObjectKey get_rb_score_state_0_key() {
   static ObjectKey key("rigid body score state 0");
   return key;
@@ -149,30 +124,6 @@ public:
 };
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyPositionConstraint);
 
-/* Make a simple subclass rather than using
-   IMP::internal::create_container_constraint(), so that we can serialize it */
-class RigidBodyNormalizeConstraint
-          : public IMP::internal::ContainerConstraint<
-               NormalizeRotation, NullSDM,
-               IMP::internal::StaticListContainer<SingletonContainer> > {
-  friend class cereal::access;
-  template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<
-          IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
-              IMP::internal::StaticListContainer<SingletonContainer> > >(this));
-  }
-  IMP_OBJECT_SERIALIZE_DECL(RigidBodyNormalizeConstraint);
-public:
-  RigidBodyNormalizeConstraint(
-       NormalizeRotation *before, NullSDM *after,
-       IMP::internal::StaticListContainer<SingletonContainer> *c,
-       std::string name, bool can_skip=false)
- : IMP::internal::ContainerConstraint<NormalizeRotation, NullSDM,
-            IMP::internal::StaticListContainer<SingletonContainer> >(
-                            before, after, c, name, can_skip) {}
-
-  RigidBodyNormalizeConstraint() {}
-};
 IMP_OBJECT_SERIALIZE_IMPL(IMP::core::RigidBodyNormalizeConstraint);
 
 namespace {
@@ -517,7 +468,7 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
             list, (d.get_model(), "rigid bodies list"));
     list->set(ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
-    IMP_NEW(NullSDM, null, ());
+    IMP_NEW(internal::NullSDM, null, ());
     IMP_NEW(RigidBodyNormalizeConstraint, c1,
             (nr, null, list, "normalize rigid bodies"));
     d.get_model()->add_score_state(c1);

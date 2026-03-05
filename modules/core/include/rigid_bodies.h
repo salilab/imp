@@ -16,6 +16,8 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/Refiner.h>
+#include <IMP/internal/ContainerConstraint.h>
+#include <IMP/internal/StaticListContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
@@ -929,6 +931,46 @@ class IMPCOREEXPORT NormalizeRotation : public SingletonModifier {
       Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
       unsigned int upper_bound) const override final;
   IMP_OBJECT_METHODS(NormalizeRotation);
+};
+
+/** Normalize the rotation quaternions of all rigid bodies in the system */
+class IMPCOREEXPORT RigidBodyNormalizeConstraint
+#ifdef SWIG
+          : public IMP::Constraint
+#else
+          : public IMP::internal::ContainerConstraint<
+               NormalizeRotation, internal::NullSDM,
+               IMP::internal::StaticListContainer<SingletonContainer> >
+#endif
+{
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<
+          IMP::internal::ContainerConstraint<
+            NormalizeRotation, internal::NullSDM,
+            IMP::internal::StaticListContainer<SingletonContainer> > >(this));
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RigidBodyNormalizeConstraint);
+public:
+#ifndef SWIG
+  RigidBodyNormalizeConstraint(
+       NormalizeRotation *before, internal::NullSDM *after,
+       IMP::internal::StaticListContainer<SingletonContainer> *c,
+       std::string name, bool can_skip=false)
+ : IMP::internal::ContainerConstraint<NormalizeRotation, internal::NullSDM,
+            IMP::internal::StaticListContainer<SingletonContainer> >(
+                            before, after, c, name, can_skip) {}
+#endif
+
+  RigidBodyNormalizeConstraint() {}
+
+#ifdef SWIG
+  // Expose base class methods to SWIG
+  NormalizeRotation *get_before_modifier() const;
+  Container *get_container() const { return c_; }
+#endif
+
+  IMP_OBJECT_METHODS(RigidBodyNormalizeConstraint);
 };
 
 //! Transform a rigid body
