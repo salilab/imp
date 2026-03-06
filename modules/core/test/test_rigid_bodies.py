@@ -230,7 +230,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(not failure)
 
     def test_update_rigid_body_members(self):
-        """Test UpdateRigidBodyMembers modifier"""
+        """Test _UpdateRigidBodyMembers modifier"""
         m = IMP.Model()
         p = self._create_hierarchy(m)
         h = IMP.core.Hierarchy(p)
@@ -238,7 +238,7 @@ class Tests(IMP.test.TestCase):
         cs = IMP.core.XYZs(children)
         rbd = IMP.core.RigidBody.setup_particle(p, cs)
         # Make sure that modifier recreates the original member coordinates
-        mod = IMP.core.UpdateRigidBodyMembers()
+        mod = IMP.core._UpdateRigidBodyMembers()
         oldxyz = cs[0].get_coordinates()
         cs[0].set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         mod.apply_index(m, rbd)
@@ -246,7 +246,7 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.get_distance(oldxyz, cs[0].get_coordinates()), 1e-3)
 
     def test_accumulate_rigid_body_derivatives(self):
-        """Test AccumulateRigidBodyDerivatives modifier"""
+        """Test _AccumulateRigidBodyDerivatives modifier"""
         m = IMP.Model()
         p = self._create_hierarchy(m, n=10)
         h = IMP.core.Hierarchy(p)
@@ -262,21 +262,21 @@ class Tests(IMP.test.TestCase):
             x.add_to_derivatives(IMP.algebra.Vector3D(1000, 2000, 3000), d)
         # Derivatives on the rigid body should be (roughly) 10x those on
         # individual particles
-        mod = IMP.core.AccumulateRigidBodyDerivatives()
+        mod = IMP.core._AccumulateRigidBodyDerivatives()
         mod.apply_index(m, rbd)
         derivs = rbd.get_derivatives()
         self.assertLess(IMP.algebra.get_distance(
             derivs, IMP.algebra.Vector3D(10000, 20000, 30000)), 40.)
 
     def test_normalize_rotation(self):
-        """Test NormalizeRotation modifier"""
+        """Test _NormalizeRotation modifier"""
         m = IMP.Model()
         p = self._create_hierarchy(m)
         h = IMP.core.Hierarchy(p)
         children = h.get_children()
         cs = IMP.core.XYZs(children)
         rbd = IMP.core.RigidBody.setup_particle(p, cs)
-        mod = IMP.core.NormalizeRotation()
+        mod = IMP.core._NormalizeRotation()
 
         # Zero quaternion should be reset to identity
         for i in range(4):
