@@ -59,6 +59,8 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
           # The implicit RestraintScoringFunction isn't exposed to Python,
           # so just return the base class
           return self
+      elif modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
+          type_name = '_RestraintsScoringFunction'
       modobj = sys.modules[modname]
       clsobj = getattr(modobj, type_name)
       return clsobj.get_from(self)
@@ -382,6 +384,28 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 IMP_SWIG_BASE_OBJECT(IMP, ScoringFunction, ScoringFunctions);
 IMP_SWIG_BASE_OBJECT(IMP, ModelObject, ModelObjects);
 
+IMP_SWIG_OBJECT_TEMPLATED(IMP::internal, _RestraintsScoringFunction, GenericRestraintsScoringFunction<::IMP::Restraints>, _RestraintsScoringFunctions);
+
+%extend IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints> {
+  %pythoncode %{
+    def __get_restraints(self):
+        return IMP._list_util.VarList(
+            getdimfunc=self.get_number_of_restraints,
+            getfunc=self.get_restraint, erasefunc=self.erase_restraint,
+            appendfunc=self.add_restraint, extendfunc=self.add_restraints,
+            clearfunc=self.clear_restraints,
+            indexfunc=self._python_index_restraint)
+
+    def __set_restraints(self, obj):
+        IMP._list_util.set_varlist(self.restraints, obj)
+
+    def __del_restraints(self):
+        IMP._list_util.del_varlist(self.restraints)
+
+    restraints = property(__get_restraints, __set_restraints,
+                          __del_restraints, doc="List of Restraints")
+  %}
+}
 
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
@@ -475,6 +499,7 @@ namespace IMP {
 %include "IMP_kernel.particle.i"
 %include "IMP/dependency_graph.h"
 %include "IMP/ScoringFunction.h"
+%include "IMP/internal/RestraintsScoringFunction.h"
 %include "IMP/Undecorator.h"
 %include "IMP/Model.h"
 %include "IMP/Decorator.h"
@@ -511,6 +536,9 @@ namespace IMP {
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
 
+namespace IMP::internal {
+  %template(_RestraintsScoringFunction) ::IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints>;
+}
 
 namespace IMP {
   %template(ScopedSetFloatAttribute) ::IMP::ScopedSetAttribute<FloatKey, Float>;

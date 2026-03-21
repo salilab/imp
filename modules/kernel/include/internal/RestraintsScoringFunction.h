@@ -2,7 +2,7 @@
  *  \file IMP/internal/RestraintsScoringFunction.h
  *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -141,7 +141,7 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   IMP_OBJECT_METHODS(GenericRestraintsScoringFunction);
 };
 
-typedef GenericRestraintsScoringFunction<Restraints> RestraintsScoringFunction;
+typedef GenericRestraintsScoringFunction<Restraints> _RestraintsScoringFunction;
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H */

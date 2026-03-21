@@ -118,8 +118,8 @@ class Tests(IMP.test.TestCase):
         self.make_model()
         self.check_standard_object_methods(self.md)
 
-    def test_get_scoring_function(self):
-        """Test get_scoring_function()"""
+    def test_get_scoring_function_core_restraints_sf(self):
+        """Test get_scoring_function() using core.RestraintsScoringFunction"""
         self.make_model()
         r = XTransRestraint(self.model, 1.0)
         sf = IMP.core.RestraintsScoringFunction([r])
@@ -132,6 +132,21 @@ class Tests(IMP.test.TestCase):
         dsf = new_sf.get_derived_object()
         self.assertIsInstance(dsf, IMP.core.RestraintsScoringFunction)
         self.assertEqual(len(dsf.restraints), 1)
+
+    def test_get_scoring_function_list_restraints(self):
+        """Test get_scoring_function() using list of restraints"""
+        self.make_model()
+        r1 = XTransRestraint(self.model, 1.0)
+        r2 = XTransRestraint(self.model, 1.0)
+        self.md.set_scoring_function([r1, r2])
+
+        new_sf = self.md.get_scoring_function()
+        self.assertIs(type(new_sf), IMP.ScoringFunction)
+        self.assertFalse(hasattr(new_sf, 'restraints'))
+        # We should be able to get the original IMP._RestraintsScoringFunction
+        dsf = new_sf.get_derived_object()
+        self.assertIsInstance(dsf, IMP._RestraintsScoringFunction)
+        self.assertEqual(len(dsf.restraints), 2)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):

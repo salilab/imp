@@ -177,7 +177,7 @@ double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
 
 ScoringFunction *ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
   if (!sf.empty()) {
-    return new internal::RestraintsScoringFunction(sf);
+    return new internal::_RestraintsScoringFunction(sf);
   } else {
     return get_null_scoring_function();
   }
@@ -185,7 +185,7 @@ ScoringFunction *ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
 
 ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
   if (!sf.empty()) {
-    return new internal::RestraintsScoringFunction(sf);
+    return new internal::_RestraintsScoringFunction(sf);
   } else {
     return get_null_scoring_function();
   }
