@@ -2,7 +2,7 @@
  *  \file IMP/core/RestraintsScoringFunction.h
  *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -68,10 +68,9 @@ class RestraintsScoringFunction :
   unsigned int _python_index_restraint(Restraint *r, unsigned int start,
                                        unsigned int stop);
   IMP_LIST_PYTHON_IMPL(restraint, restraints, Restraints, Restraints)
+#endif
 
   IMP_OBJECT_METHODS(RestraintsScoringFunction);
-
-#endif
 };
 
 IMPCORE_END_NAMESPACE

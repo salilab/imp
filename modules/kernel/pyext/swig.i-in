@@ -52,13 +52,8 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
       # the corresponding most-derived Python type
       modname = self.get_version_info().get_module().replace('::', '.')
       type_name = self.get_type_name()
-      # IMP.core.RestraintsScoringFunction is a typedef for
-      # IMP.GenericRestraintsScoringFunction; map to the real Python class
-      if modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
-          modname = 'IMP.core'
-          type_name = 'RestraintsScoringFunction'
-      elif (modname == 'IMP.core'
-            and type_name == 'GenericBoundingBox3DSingletonScore'):
+      if (modname == 'IMP.core'
+          and type_name == 'GenericBoundingBox3DSingletonScore'):
           type_name = 'BoundingBox3DSingletonScore'
       elif modname == 'IMP' and type_name == 'RestraintScoringFunction':
           # The implicit RestraintScoringFunction isn't exposed to Python,
