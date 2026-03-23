@@ -253,3 +253,17 @@ class JAXWarning(UserWarning):
         raise NotImplementedError(f"No JAX implementation for {self}")
   %}
 }
+
+%extend IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints> {
+  %pythoncode %{
+    def _get_jax(self):
+        import IMP._jax_util
+        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+        funcs = [j.score_func for j in jis]
+        keys = frozenset(x for j in jis for x in j._keys)
+        def jax_sf(jm):
+            return sum(f(jm) for f in funcs)
+        return IMP._jax_util.JAXRestraintInfo(
+            m=self.get_model(), score_func=jax_sf, weight=1.0, keys=keys)
+  %}
+}
