@@ -206,6 +206,22 @@
   %}
 }
 
+%extend IMP::core::HarmonicUpperBoundSphereDistancePairScore {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import jax.numpy as jnp
+        import jax.lax
+        def jax_score(jm, d, k):
+            xyzs = jm['xyz'][indexes]
+            rs = jm['r'][indexes]
+            diff = xyzs[:,0] - xyzs[:,1]
+            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            return 0.5 * k * jax.lax.min(d - drs, 0.0) ** 2
+        f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
+        return self._wrap_jax(m, f)
+  %}
+}
+
 %extend IMP::core::SoftSpherePairScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
