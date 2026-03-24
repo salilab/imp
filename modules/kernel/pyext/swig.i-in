@@ -536,7 +536,7 @@ namespace IMP {
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
 
-namespace IMP::internal {
+namespace IMP {
   %template(_RestraintsScoringFunction) ::IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints>;
 }
 
