@@ -49,6 +49,8 @@ class _MonteCarlo:
     upward_steps_taken: int
     # Number of rejected steps
     rejected_steps: int
+    # Temperature for acceptance criterion
+    temperature: float
     # JAX random number key
     rkey: jax.Array
     # Any persistent state used by Movers
@@ -63,7 +65,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         super().__init__(mc)
         score_func = self.score_func
         movers = [mover.get_derived_object()._get_jax() for mover in mc.movers]
-        temperature = mc.get_kt()
+        _temperature = mc.get_kt()
         return_best = mc.get_return_best()
         jax_optstates = self._setup_jax_optimizer_states()
 
@@ -78,7 +80,8 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 accepted_steps=0, downward_steps_taken=0,
                 upward_steps_taken=0, rejected_steps=0,
                 optimizer_states=[None] * len(jax_optstates),
-                rkey=key, mover_state=mover_state)
+                rkey=key, mover_state=mover_state,
+                temperature=_temperature)
             for js in jax_optstates:
                 ms = js.init_func(ms)
             return ms
@@ -134,7 +137,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
             def metrop_step(ms):
                 diff = new_score - ms.score
-                e = jnp.exp(-diff / temperature)
+                e = jnp.exp(-diff / ms.temperature)
                 ms.rkey, subkey = jax.random.split(ms.rkey)
                 prob = jax.random.uniform(subkey, minval=0.0, maxval=1.0)
                 return jax.lax.cond(e * proposal_ratio > prob,
