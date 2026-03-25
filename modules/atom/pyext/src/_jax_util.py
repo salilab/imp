@@ -5,6 +5,7 @@ import IMP.atom
 import jax.tree_util
 from dataclasses import dataclass
 import IMP._jax_util
+from IMP.core._jax_util import _JAXOptimizer
 
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
@@ -132,34 +133,36 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         return jm
 
 
-def _md_optimize(md, max_steps):
-    from IMP.core._jax_util import _JAXOptimizer
+class _MDJAXOptimizer(_JAXOptimizer):
+    """Do MD sampling with JAX, and update the IMP Model with the result"""
+    def __init__(self, md, max_steps):
+        super().__init__(md, max_steps)
+        ji = self._jax_info
+        self.init_func = jax.jit(ji.init_func)
+        self.score_func = jax.jit(ji.score_func)
+        self.apply_func = jax.jit(
+            lambda jm: jax.lax.fori_loop(0, self.inner_steps,
+                                         lambda i, jm: ji.apply_func(jm), jm))
 
-    jopt = _JAXOptimizer(md, max_steps)
-    inner_steps = jopt.inner_steps
-    ji = md._get_jax()
-    init_func = jax.jit(ji.init_func)
-    score_func = jax.jit(ji.score_func)
-    apply_func = jax.jit(
-        lambda jm: jax.lax.fori_loop(0, inner_steps,
-                                     lambda i, jm: ji.apply_func(jm), jm))
+    def optimize(self, md_state):
+        """Run max_steps of sampling with JAX and update the IMP Model with
+           the result. Return the final score and the new JAX optimizer
+           object."""
+        m = self.opt.get_model()
+        linvel = m.get_vector3ds_numpy(
+            IMP.atom.LinearVelocity.get_velocity_key())
+        xyz = m.get_spheres_numpy()[0]
+        dxyz = m.get_sphere_derivatives_numpy()[0]
 
-    md_state = init_func(ji.get_jax_model(),
-                         key=IMP._jax_util.get_random_key())
-    m = md.get_model()
-    linvel = m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key())
-    xyz = m.get_spheres_numpy()[0]
-    dxyz = m.get_sphere_derivatives_numpy()[0]
-
-    for _ in jopt.loop():
-        md_state = apply_func(md_state)
-        # Resync IMP Model arrays with JAX
-        jm = md_state.jm
-        linvel[:] = jm['linvel']
-        xyz[:] = jm['xyz']
-        dxyz[:] = jm["xyz'"]
-    score, md_state.jm = score_func(md_state.jm)
-    return score
+        for _ in self._loop():
+            md_state = self.apply_func(md_state)
+            # Resync IMP Model arrays with JAX
+            jm = md_state.jm
+            linvel[:] = jm['linvel']
+            xyz[:] = jm['xyz']
+            dxyz[:] = jm["xyz'"]
+        score, md_state.jm = self.score_func(md_state.jm)
+        return score, md_state
 
 
 @jax.tree_util.register_dataclass

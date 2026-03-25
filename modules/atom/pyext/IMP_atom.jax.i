@@ -8,9 +8,14 @@
         from IMP.atom._jax_util import _MDJAXInfo
         return _MDJAXInfo(self)
 
-    def _optimize_jax(self, max_steps):
+    def _get_jax_optimizer(self, max_steps):
         import IMP.atom._jax_util
-        return IMP.atom._jax_util._md_optimize(self, max_steps)
+        return IMP.atom._jax_util._MDJAXOptimizer(self, max_steps)
+
+    def _optimize_jax(self, max_steps):
+        opt = self._get_jax_optimizer(max_steps)
+        score, md_state = opt.optimize(opt.get_initial_state())
+        return score
   %}
 }
 

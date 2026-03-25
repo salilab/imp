@@ -455,8 +455,13 @@
         from IMP.core._jax_util import _MCJAXInfo
         return _MCJAXInfo(self)
 
-    def _optimize_jax(self, max_steps):
+    def _get_jax_optimizer(self, max_steps):
         import IMP.core._jax_util
-        return IMP.core._jax_util._mc_optimize(self, max_steps)
+        return IMP.core._jax_util._MCJAXOptimizer(self, max_steps)
+
+    def _optimize_jax(self, max_steps):
+        opt = self._get_jax_optimizer(max_steps)
+        score, mc_state = opt.optimize(opt.get_initial_state())
+        return score
   %}
 }

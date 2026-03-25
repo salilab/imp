@@ -157,9 +157,10 @@ def _sync_stats(imp_mc, jax_mc):
 
 
 class _JAXOptimizer:
-    """Helper class to run an IMP Optimizer using JAX."""
+    """Helper base class to run an IMP Optimizer using JAX."""
     def __init__(self, opt, max_steps):
         self.opt = opt
+        self._jax_info = opt._get_jax()
 
         # Get all OptimizerStates that have no explicit JAX implementation
         self._imp_opt_states = [s for s in opt.optimizer_states
@@ -173,7 +174,12 @@ class _JAXOptimizer:
             max_steps)
         self.n_loops = max_steps // self.inner_steps
 
-    def loop(self):
+    def get_initial_state(self):
+        """Get the JAX optimizer object for the current IMP Model"""
+        jm = self._jax_info.get_jax_model()
+        return self.init_func(jm, key=IMP._jax_util.get_random_key())
+
+    def _loop(self):
         """Run the outer loop (in Python) of the Optimizer. On each yield,
            inner_steps of JAX optimization should be run."""
         n_step = 0
@@ -186,35 +192,37 @@ class _JAXOptimizer:
                     s.update_always()
 
 
-def _mc_optimize(mc, max_steps):
-    jopt = _JAXOptimizer(mc, max_steps)
-    inner_steps = jopt.inner_steps
-    ji = mc._get_jax()
-    init_func = jax.jit(ji.init_func)
-    apply_func = jax.jit(
-        lambda jm: jax.lax.fori_loop(0, inner_steps,
-                                     lambda i, jm: ji.apply_func(jm), jm))
+class _MCJAXOptimizer(_JAXOptimizer):
+    """Do MC sampling with JAX, and update the IMP Model with the result"""
+    def __init__(self, mc, max_steps):
+        super().__init__(mc, max_steps)
+        ji = self._jax_info
+        self.init_func = jax.jit(ji.init_func)
+        self.apply_func = jax.jit(
+            lambda jm: jax.lax.fori_loop(0, self.inner_steps,
+                                         lambda i, jm: ji.apply_func(jm), jm))
 
-    mc_state = init_func(ji.get_jax_model(),
-                         key=IMP._jax_util.get_random_key())
+    def optimize(self, mc_state):
+        """Run max_steps of sampling with JAX and update the IMP Model with
+           the result. Return the final score and the new JAX optimizer
+           object."""
+        m = self.opt.get_model()
+        xyz = m.get_spheres_numpy()[0]
 
-    m = mc.get_model()
-    xyz = m.get_spheres_numpy()[0]
+        for _ in self._loop():
+            mc_state = self.apply_func(mc_state)
+            # Resync IMP Model arrays with JAX
+            xyz[:] = mc_state.jm['xyz']
 
-    for _ in jopt.loop():
-        mc_state = apply_func(mc_state)
-        # Resync IMP Model arrays with JAX
-        xyz[:] = mc_state.jm['xyz']
+        # Update IMP MonteCarlo object with stats from JAX run
+        _sync_stats(self.opt, mc_state)
 
-    # Update IMP MonteCarlo object with stats from JAX run
-    _sync_stats(mc, mc_state)
-
-    if mc.get_return_best():
-        # Resync IMP Model arrays with best JAX Model
-        xyz[:] = mc_state.best_jm['xyz']
-        return mc.get_best_accepted_energy()
-    else:
-        return mc.get_last_accepted_energy()
+        if self.opt.get_return_best():
+            # Resync IMP Model arrays with best JAX Model
+            xyz[:] = mc_state.best_jm['xyz']
+            return self.opt.get_best_accepted_energy(), mc_state
+        else:
+            return self.opt.get_last_accepted_energy(), mc_state
 
 
 @jax.tree_util.register_dataclass
