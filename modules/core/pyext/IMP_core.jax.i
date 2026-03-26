@@ -278,7 +278,9 @@
         ps = self.get_score_object()
         indexes = jnp.array([self.get_index()])
         ji = ps._get_jax(self.get_model(), indexes)
-        return self._wrap_jax(ji.score_func)
+        def score(jm):
+            return jnp.sum(ji.score_func(jm))
+        return self._wrap_jax(score)
   %}
 }
 

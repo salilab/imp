@@ -196,6 +196,8 @@ class Tests(IMP.test.TestCase):
         jm = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         jax_score = f(jm)
+        # Restraint should return a JAX scalar as the score
+        self.assertEqual(jax_score.shape, ())
         self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 
