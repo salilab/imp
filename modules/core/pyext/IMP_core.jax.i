@@ -176,6 +176,35 @@
   %}
 }
 
+%extend IMP::core::GenericAttributeSingletonScore<UnaryFunction> {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        def score_float_key(jm, key, uf):
+            return uf(jm[key][indexes])
+
+        def score_xyz_key(jm, xyz_index, uf):
+            return uf(jm['xyz'][indexes, xyz_index])
+
+        uf = self.get_unary_function().get_derived_object()._get_jax()
+        key = self.get_key()
+        # First 7 FloatKeys are reserved in IMP and have to be handled
+        # specially
+        if key.get_index() >= 7:
+            need_keys = [key]
+            f = functools.partial(score_float_key, key=key.get_string(), uf=uf)
+        elif key == XYZR.get_radius_key():
+            need_keys = []  # We already have the radius in the JAX model
+            f = functools.partial(score_float_key, key='r', uf=uf)
+        elif key in XYZ.get_xyz_keys():
+            need_keys = []  # We already have coordinates in the JAX model
+            xyz_index = XYZ.get_xyz_keys().index(key)
+            f = functools.partial(score_xyz_key, xyz_index=xyz_index, uf=uf)
+        else:
+            raise NotImplementedError("No support for key %s" % key)
+        return self._wrap_jax(m, f, keys=need_keys)
+  %}
+}
+
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
     def _get_jax(self, m, indexes):
