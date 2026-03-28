@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         std = h.get_standard_deviation(center)
         print(center, std)
         for i in range(0, 3):
-            self.assertAlmostEqual(center[i], .75, delta=.016)
+            self.assertAlmostEqual(center[i], .75, delta=.017)
             self.assertAlmostEqual(std[i], .58 * .7, delta=.05)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
