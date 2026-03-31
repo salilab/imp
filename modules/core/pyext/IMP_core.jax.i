@@ -452,6 +452,7 @@
     def _get_jax(self):
         import jax.random
         import jax.lax
+        import jax.numpy as jnp
         from IMP.core._jax_util import _SerialMover
         movers = [m.get_derived_object()._get_jax()
                   for m in self.get_movers()]
@@ -474,7 +475,7 @@
             return _SerialMover(imov=-1, mover_state=mover_state)
 
         def propose_func(jm, sms):
-            sms.imov = jax.lax.min(sms.imov + 1, len(movers) - 1)
+            sms.imov = jnp.mod(sms.imov + 1, len(movers))
             return jax.lax.switch(sms.imov, sub_propose_funcs, jm, sms)
         return self._wrap_jax(init_func, propose_func)
   %}

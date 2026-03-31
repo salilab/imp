@@ -69,6 +69,13 @@ class Test(IMP.test.TestCase):
         self.assertEqual(sms.mover_state, [1, 101, 200, 300, 400])
         self.assertAlmostEqual(ratio, 0.2, delta=0.01)
 
+        # Make sure mover wraps back to zero
+        for i in range(7):
+            X, sms, ratio = propose_func(X, sms)
+        self.assertEqual(sms.imov, 3)
+        self.assertEqual(sms.mover_state, [2, 102, 202, 302, 401])
+        self.assertAlmostEqual(ratio, 0.6, delta=0.01)
+
     def test_pickle(self):
         """Test (un-)pickle of SerialMover"""
         self.make_system()
