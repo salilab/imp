@@ -2,6 +2,11 @@ import IMP
 import IMP.test
 import IMP.algebra
 import IMP.core
+import IMP.container
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -65,6 +70,35 @@ class Tests(IMP.test.TestCase):
         for i in range(10):
             self._test_sphere_(bsii)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX BoundingSphere3DSingletonScore"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1_xyz = IMP.core.XYZ.setup_particle(p1)
+        p2 = IMP.Particle(m)
+        d2_xyzr = IMP.core.XYZR.setup_particle(p2)
+        d2_xyzr.set_radius(1.0)
+
+        sphere = IMP.algebra.Sphere3D(
+            IMP.algebra.Vector3D(1, 2, 3), 4)
+        s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Harmonic(0, 1),
+                                                    sphere)
+        r = IMP.container.SingletonsRestraint(s, [p1, p2])
+
+        def check_scores(exp_val):
+            imp_score = r.evaluate(False)
+            jax_score = r._evaluate_jax()
+            self.assertAlmostEqual(imp_score, exp_val, delta=1e-4)
+            self.assertAlmostEqual(imp_score, jax_score, delta=1e-4)
+
+        d1_xyz.set_coordinates(IMP.algebra.Vector3D(1, 2, 3))
+        d2_xyzr.set_coordinates(IMP.algebra.Vector3D(1, 2, 3))
+        check_scores(0.0)
+
+        d1_xyz.set_coordinates(IMP.algebra.Vector3D(8, 9, 10))
+        d2_xyzr.set_coordinates(IMP.algebra.Vector3D(12, 14, 16))
+        check_scores(192.00458)
 
 
 if __name__ == '__main__':

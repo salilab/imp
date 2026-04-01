@@ -176,6 +176,45 @@
   %}
 }
 
+%extend IMP::core::GenericBoundingSphere3DSingletonScore<UnaryFunction> {
+  %pythoncode %{
+    def _get_jax(self, m, indexes):
+        import jax.numpy as jnp
+        import jax.lax
+        def score_with_radius(jm, inds, center, radius):
+            xyzs = jm['xyz'][inds]
+            radii = jm['r'][inds]
+            drs = jnp.linalg.norm(xyzs - center) + radii - radius
+            return jax.lax.select(drs < 0.000001, jnp.zeros_like(drs), uf(drs))
+        def score_without_radius(jm, inds, center, radius):
+            xyzs = jm['xyz'][inds]
+            drs = jnp.linalg.norm(xyzs - center) - radius
+            return jax.lax.select(drs < 0.000001, jnp.zeros_like(drs), uf(drs))
+        without_radii_inds = []
+        with_radii_inds = []
+        for ind in indexes:
+            if XYZR.get_is_setup(m, ind):
+                with_radii_inds.append(ind)
+            else:
+                without_radii_inds.append(ind)
+        without_radii_inds = jnp.asarray(without_radii_inds)
+        with_radii_inds = jnp.asarray(with_radii_inds)
+        uf = self.get_unary_function().get_derived_object()._get_jax()
+        sphere = self.get_sphere()
+        radius = sphere.get_radius()
+        center = jnp.asarray(sphere.get_center())
+        def score(jm):
+            s = 0.
+            if without_radii_inds.size > 0:
+                s += score_without_radius(jm, without_radii_inds,
+                                          center, radius)
+            if with_radii_inds.size > 0:
+                s += score_with_radius(jm, with_radii_inds, center, radius)
+            return s
+        return self._wrap_jax(m, score)
+  %}
+}
+
 %extend IMP::core::GenericAttributeSingletonScore<UnaryFunction> {
   %pythoncode %{
     def _get_jax(self, m, indexes):
