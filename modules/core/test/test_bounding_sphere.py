@@ -6,7 +6,20 @@ import IMP.core
 
 class Tests(IMP.test.TestCase):
 
-    """Test the symmetry restraint"""
+    """Test BoundingSphere3DSingletonScore"""
+
+    def test_getters(self):
+        """Test BoundingSphere3DSingletonScore getter methods"""
+        sphere = IMP.algebra.Sphere3D(
+            IMP.algebra.Vector3D(1, 2, 3), 4)
+        s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Harmonic(0, 1),
+                                                    sphere)
+        self.assertAlmostEqual(
+            s.get_unary_function().get_derived_object().get_k(),
+            1.0, delta=1e-4)
+        self.assertLess(
+            IMP.algebra.get_distance(s.get_sphere().get_center(),
+                                     sphere.get_center()), 0.1)
 
     def _test_sphere_(self, sphere):
         """Test the box score of a random particle for a specific sphere"""
