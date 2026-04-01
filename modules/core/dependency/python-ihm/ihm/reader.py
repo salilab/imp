@@ -1750,7 +1750,7 @@ class _StartingModelDetailsHandler(Handler):
         # We might not have a suitable range yet for this ID, so fill this
         # in at finalize time
         m.asym_unit = (asym_id, entity_poly_segment_id)
-        m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
+        m.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         self.copy_if_present(
             m, locals(), keys=('description',),
             mapkeys={'starting_model_auth_asym_id': 'asym_id'})

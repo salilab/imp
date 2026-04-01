@@ -147,13 +147,19 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(a._comps['Z'].formula_weight, 114.124,
                                delta=0.01)
 
+        self.assertEqual(a._comps['O'].id, 'PYL')
+        self.assertEqual(a._comps['O'].name, "PYRROLYSINE")
+        self.assertEqual(a._comps['O'].formula, 'C12 H21 N3 O3')
+        self.assertAlmostEqual(a._comps['O'].formula_weight, 255.318,
+                               delta=0.01)
+
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 25)
-        self.assertEqual(len(a.values), 25)
+        self.assertEqual(len(a.keys), 26)
+        self.assertEqual(len(a.values), 26)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 25)
+        self.assertEqual(len(a.items), 26)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')

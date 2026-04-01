@@ -18,7 +18,7 @@ import json
 import collections
 from . import util
 
-__version__ = '2.8'
+__version__ = '2.9'
 
 
 class __UnknownValue:
@@ -1203,6 +1203,7 @@ class LPeptideAlphabet(Alphabet):
                   ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3'),
                   ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2'),
                   ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2'),
+                  ('O', 'PYL', 'PYRROLYSINE', 'C12 H21 N3 O3'),
                   ('U', 'SEC', 'SELENOCYSTEINE', 'C3 H7 N O2 Se')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")

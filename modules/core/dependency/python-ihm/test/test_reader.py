@@ -1384,7 +1384,7 @@ _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 _ihm_starting_model_details.description
 1 1 Nup84 A 1 'comparative model' Q 8 4 .
-2 1 Nup84 A . 'comparative model' X . 6 'test desc'
+2 1 Nup84 A . 'comparative model' X . . 'test desc'
 """
         # Order of the two categories shouldn't matter
         for cif in ps_cif + sm_cif, sm_cif + ps_cif:
@@ -1401,7 +1401,7 @@ _ihm_starting_model_details.description
                 self.assertEqual(m2.asym_unit._id, 'A')
                 self.assertEqual(m2.asym_id, 'X')
                 self.assertEqual(m2.offset, 0)
-                self.assertEqual(m2.dataset._id, '6')
+                self.assertIsNone(m2.dataset)
                 self.assertEqual(m2.description, 'test desc')
 
     def test_starting_computational_models_handler(self):

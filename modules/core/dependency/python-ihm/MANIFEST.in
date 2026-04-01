@@ -4,4 +4,4 @@ include examples/*
 include src/cmp.h
 include src/ihm_format.h
 include src/ihm_format.i
-include src/ihm_format_wrap_2.8.c
+include src/ihm_format_wrap_2.9.c
