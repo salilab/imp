@@ -43,7 +43,31 @@ class _SerialReplicaExchange:
         self.was_used = was_used
 
 
-class MonteCarlo:
+class _SamplerBase:
+    def __init__(self, model):
+        self.model = model
+        # that is -1 because mc/md has not yet run
+        self.nframe = -1
+        self.simulated_annealing = False
+
+    def set_simulated_annealing(self, min_temp, max_temp, min_temp_time,
+                                max_temp_time):
+        self.simulated_annealing = True
+        self.tempmin = min_temp
+        self.tempmax = max_temp
+        self.timemin = min_temp_time
+        self.timemax = max_temp_time
+
+    def temp_simulated_annealing(self):
+        if self.nframe % (self.timemin + self.timemax) < self.timemin:
+            value = 0.0
+        else:
+            value = 1.0
+        temp = self.tempmin + (self.tempmax - self.tempmin) * value
+        return temp
+
+
+class MonteCarlo(_SamplerBase):
     """Sample using Monte Carlo"""
 
     # check that isd is installed
@@ -54,7 +78,7 @@ class MonteCarlo:
         isd_available = False
 
     def __init__(self, model, objects=None, temp=1.0, filterbyname=None,
-                 score_moved=False):
+                 score_moved=False, use_jax=False):
         """Setup Monte Carlo sampling
         @param model         The IMP Model
         @param objects       What to sample (a list of Movers)
@@ -62,7 +86,11 @@ class MonteCarlo:
         @param filterbyname Not used
         @param score_moved   If True, attempt to speed up sampling by
                caching scoring function terms on particles that didn't move
+        @param use_jax If set to True, sample the scoring function using
+               JAX instead of IMP's internal C++ implementation (requires
+               that all PMI restraints used have a JAX implementation).
         """
+        super().__init__(model)
         self.losp = [
             "Rigid_Bodies",
             "Floppy_Bodies",
@@ -70,16 +98,15 @@ class MonteCarlo:
             "X_coord",
             "Weights"
             "Surfaces"]
-        self.simulated_annealing = False
         self.selfadaptive = False
-        # that is -1 because mc has not yet run
-        self.nframe = -1
         self.temp = temp
         self.mvs = []
         self.mvslabels = []
         self.label = "None"
-        self.model = model
         self.movers_data = {}
+        self.use_jax = use_jax
+        self._jax_optimizer = None
+        self._jax_state = None
 
         self.mvs = objects
 
@@ -96,6 +123,8 @@ class MonteCarlo:
     def set_kt(self, temp):
         self.temp = temp
         self.mc.set_kt(temp)
+        if self._jax_state is not None:
+            self._jax_state.temperature = temp
 
     def get_mc(self):
         return self.mc
@@ -106,18 +135,6 @@ class MonteCarlo:
             rs.add_restraint(ob.get_restraint())
         sf = IMP.core.RestraintsScoringFunction([rs])
         self.mc.set_scoring_function(sf)
-
-    def set_simulated_annealing(
-        self,
-        min_temp,
-        max_temp,
-        min_temp_time,
-            max_temp_time):
-        self.simulated_annealing = True
-        self.tempmin = min_temp
-        self.tempmax = max_temp
-        self.timemin = min_temp_time
-        self.timemax = max_temp_time
 
     def set_self_adaptive(self, isselfadaptive=True):
         self.selfadaptive = isselfadaptive
@@ -143,15 +160,25 @@ class MonteCarlo:
 
     def optimize(self, nstep):
         self.nframe += 1
-        self.mc.optimize(nstep * self.get_number_of_movers())
+        if self.use_jax:
+            if self._jax_optimizer is None:
+                self._jax_optimizer = self.mc._get_jax_optimizer(
+                    nstep * self.get_number_of_movers())
+                self._jax_state = self._jax_optimizer.get_initial_state()
+            score, self._jax_state = self._jax_optimizer.optimize(
+                self._jax_state)
+        else:
+            score = self.mc.optimize(nstep * self.get_number_of_movers())
 
         # apply simulated annealing protocol
         if self.simulated_annealing:
-            self.temp = self.temp_simulated_annealing()
-            self.mc.set_kt(self.temp)
+            self.set_kt(self.temp_simulated_annealing())
 
         # apply self adaptive protocol
         if self.selfadaptive:
+            if self.use_jax:
+                raise NotImplementedError(
+                    "Adaptive protocol is not yet implemented for JAX")
             for i, mv in enumerate(self.mvs):
 
                 mvacc = mv.get_number_of_accepted()
@@ -196,6 +223,7 @@ class MonteCarlo:
                     mr = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(mr * 2 * accept)
+        return score
 
     def get_nuisance_movers(self, nuisances, maxstep):
         mvs = []
@@ -286,14 +314,6 @@ class MonteCarlo:
                                              refprob))
         return mvs
 
-    def temp_simulated_annealing(self):
-        if self.nframe % (self.timemin + self.timemax) < self.timemin:
-            value = 0.0
-        else:
-            value = 1.0
-        temp = self.tempmin + (self.tempmax - self.tempmin) * value
-        return temp
-
     def set_label(self, label):
         self.label = label
 
@@ -323,19 +343,24 @@ class MonteCarlo:
         return output
 
 
-class MolecularDynamics:
+class MolecularDynamics(_SamplerBase):
     """Sample using molecular dynamics"""
 
     def __init__(self, model, objects, kt, gamma=0.01, maximum_time_step=1.0,
-                 sf=None):
+                 sf=None, use_jax=False):
         """Setup MD
         @param model The IMP Model
         @param objects What to sample. Use flat list of particles
         @param kt Temperature
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step
+        @param use_jax If set to True, sample the scoring function using
+               JAX instead of IMP's internal C++ implementation (requires
+               that all PMI restraints used have a JAX implementation).
         """
-        self.model = model
+        super().__init__(model)
+        if use_jax:
+            raise NotImplementedError("JAX currently only supported for MC")
 
         # check if using PMI1 objects dictionary, or just list of particles
         try:
@@ -354,29 +379,11 @@ class MolecularDynamics:
         else:
             self.md.set_scoring_function(get_restraint_set(self.model))
         self.md.add_optimizer_state(self.ltstate)
-        self.simulated_annealing = False
-        self.nframe = -1
 
     def set_kt(self, kt):
         temp = kt/0.0019872041
         self.ltstate.set_temperature(temp)
         self.md.assign_velocities(temp)
-
-    def set_simulated_annealing(self, min_temp, max_temp, min_temp_time,
-                                max_temp_time):
-        self.simulated_annealing = True
-        self.tempmin = min_temp
-        self.tempmax = max_temp
-        self.timemin = min_temp_time
-        self.timemax = max_temp_time
-
-    def temp_simulated_annealing(self):
-        if self.nframe % (self.timemin + self.timemax) < self.timemin:
-            value = 0.0
-        else:
-            value = 1.0
-        temp = self.tempmin + (self.tempmax - self.tempmin) * value
-        return temp
 
     def set_gamma(self, gamma):
         self.ltstate.set_gamma(gamma)
@@ -385,9 +392,8 @@ class MolecularDynamics:
         # apply simulated annealing protocol
         self.nframe += 1
         if self.simulated_annealing:
-            self.temp = self.temp_simulated_annealing()
-            self.set_kt(self.temp)
-        self.md.optimize(nsteps)
+            self.set_kt(self.temp_simulated_annealing())
+        return self.md.optimize(nsteps)
 
     def get_output(self):
         output = {}
