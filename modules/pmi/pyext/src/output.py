@@ -664,6 +664,7 @@ class Output:
         for rmfinfo in self.dictionary_rmfs.keys():
             self.write_rmf(rmfinfo[0])
 
+    @IMP.deprecated_method("2.25", "Use init_stat2() instead")
     def init_stat(self, name, listofobjects):
         if self.ascii:
             flstat = open(name, 'w')
@@ -683,6 +684,7 @@ class Output:
     def set_output_entry(self, key, value):
         self.initoutput.update({key: value})
 
+    @IMP.deprecated_method("2.25", "Use write_stat2() instead")
     def write_stat(self, name, appendmode=True):
         output = self.initoutput
         for obj in self.dictionary_stats[name]:
@@ -705,6 +707,7 @@ class Output:
             pickle.dump(output, flstat, 2)
             flstat.close()
 
+    @IMP.deprecated_method("2.25", "Use write_stats2() instead")
     def write_stats(self):
         for stat in self.dictionary_stats.keys():
             self.write_stat(stat)
@@ -814,6 +817,14 @@ class Output:
 
     def init_stat2(self, name, listofobjects, extralabels=None,
                    listofsummedobjects=None):
+        """Write the header for a stat file in v2 format.
+           Lines can then be written to the stat file by calling write_stat2()
+           with the same file name.
+
+           @param name The file name to write to.
+           @param listofobjects PMI objects that will be reported in the file.
+                  Each object must implement the get_output() method.
+        """
         # this is a new stat file that should be less
         # space greedy!
         # listofsummedobjects must be in the form
@@ -877,6 +888,11 @@ class Output:
             extralabels)
 
     def write_stat2(self, name, appendmode=True):
+        """Write a single line to a stat file previously created
+           with init_stat2().
+
+           @param name The file name to write to.
+        """
         output = {}
         (listofobjects, stat2_inverse, listofsummedobjects,
          extralabels) = self.dictionary_stats2[name]
@@ -903,14 +919,8 @@ class Output:
             else:
                 output.update({stat2_inverse[k]: "None"})
 
-        if appendmode:
-            writeflag = 'a'
-        else:
-            writeflag = 'w'
-
-        flstat = open(name, writeflag)
-        flstat.write("%s \n" % output)
-        flstat.close()
+        with open(name, 'a' if appendmode else 'w') as flstat:
+            flstat.write("%s \n" % output)
 
     def write_stats2(self):
         for stat in self.dictionary_stats2.keys():

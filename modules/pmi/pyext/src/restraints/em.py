@@ -346,7 +346,7 @@ class GaussianEMRestraint:
 
     def get_output(self):
         output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
+        score = self.evaluate()
         ccc = self.gaussianEM_restraint.get_cross_correlation_coefficient()
 
         output["_TotalScore"] = str(score)
