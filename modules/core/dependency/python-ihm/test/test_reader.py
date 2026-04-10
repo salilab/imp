@@ -802,11 +802,14 @@ loop_
 _struct_ref_seq_dif.pdbx_ordinal
 _struct_ref_seq_dif.align_id
 _struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.pdbx_seq_db_seq_num
 _struct_ref_seq_dif.db_mon_id
 _struct_ref_seq_dif.mon_id
 _struct_ref_seq_dif.details
-1 1 2 TRP SER 'Test mutation'
-2 1 2 . . 'Test mutation'
+1 1 2 ? TRP SER 'Test mutation'
+2 1 2 ? . . 'Test mutation'
+3 1 2 ? ? PRO insertion
+4 1 ? 10 CYS ? deletion
 #
 """
         # Order of the categories shouldn't matter
@@ -830,8 +833,9 @@ _struct_ref_seq_dif.details
                 self.assertEqual(a1.db_end, 6)
                 self.assertEqual(a1.entity_begin, 1)
                 self.assertEqual(a1.entity_end, 4)
-                sd, sd2 = a1.seq_dif
+                sd, sd2, sd3, sd4 = a1.seq_dif
                 self.assertEqual(sd.seq_id, 2)
+                self.assertEqual(sd.db_seq_id, ihm.unknown)
                 self.assertIsInstance(sd.db_monomer, ihm.ChemComp)
                 self.assertIsInstance(sd.monomer, ihm.ChemComp)
                 self.assertEqual(sd.db_monomer.id, 'TRP')
@@ -840,6 +844,15 @@ _struct_ref_seq_dif.details
                 # Both mon_id and db_mon_id are optional, so could be empty
                 self.assertIsNone(sd2.db_monomer)
                 self.assertIsNone(sd2.monomer)
+
+                # Insertion
+                self.assertIsInstance(sd3, ihm.reference.InsertionSeqDif)
+                self.assertEqual(sd3.seq_id, 2)
+                self.assertEqual(sd3.db_seq_id, ihm.unknown)
+                # Deletion
+                self.assertIsInstance(sd4, ihm.reference.DeletionSeqDif)
+                self.assertEqual(sd4.seq_id, ihm.unknown)
+                self.assertEqual(sd4.db_seq_id, 10)
 
                 self.assertEqual(a2.db_begin, 8)
                 self.assertEqual(a2.db_end, 8)

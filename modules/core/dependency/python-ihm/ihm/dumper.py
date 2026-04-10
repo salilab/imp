@@ -552,24 +552,59 @@ class _StructRefDumper(Dumper):
             (code if len(code) == 1 else '(%s)' % code
              for code in fullrefseq[db_begin - 1:db_end]), 70))
 
-    def _check_seq_dif(self, entity, ref, align):
+    def _check_seq_dif(self, entity, ref, refseq, align):
         """Check all SeqDif objects for the Entity sequence. Return the mutated
-           sequence (to match the reference)."""
+           sequence (to match the reference) plus sets of all insertion
+           and deletion positions."""
         entseq = [comp.code_canonical for comp in entity.sequence]
+        mutations = []
+        insertions = []
+        deletions = []
         for sd in align.seq_dif:
-            if sd.seq_id < 1 or sd.seq_id > len(entseq):
-                raise IndexError("SeqDif.seq_id for %s is %d, out of "
-                                 "range 1-%d"
-                                 % (entity, sd.seq_id, len(entseq)))
-            if (sd.monomer
-                    and sd.monomer.code_canonical != entseq[sd.seq_id - 1]):
-                raise ValueError("SeqDif.monomer one-letter code (%s) does "
-                                 "not match that in %s (%s at position %d)"
-                                 % (sd.monomer.code_canonical, entity,
-                                    entseq[sd.seq_id - 1], sd.seq_id))
+            if sd.monomer and not sd.db_monomer:
+                insertions.append(sd)
+            elif not sd.monomer and sd.db_monomer:
+                deletions.append(sd)
+            else:
+                mutations.append(sd)
+        for sd in insertions:
+            self._check_seq_dif_entity(entity, entseq, sd)
+        for sd in deletions:
+            self._check_seq_dif_reference(ref, refseq, sd)
+        for sd in mutations:
+            self._check_seq_dif_entity(entity, entseq, sd)
+            # we don't check db_monomer against the reference sequence here,
+            # but this will be done later when we check the alignment
             if sd.db_monomer:
                 entseq[sd.seq_id - 1] = sd.db_monomer.code_canonical
-        return entseq
+        return (entseq, frozenset(sd.seq_id for sd in insertions),
+                frozenset(sd.db_seq_id for sd in deletions))
+
+    def _check_seq_dif_entity(self, entity, entseq, sd):
+        """Make sure the entity information in a SeqDif record matches"""
+        if sd.seq_id < 1 or sd.seq_id > len(entseq):
+            raise IndexError("SeqDif.seq_id for %s is %d, out of "
+                             "range 1-%d"
+                             % (entity, sd.seq_id, len(entseq)))
+        if (sd.monomer
+                and sd.monomer.code_canonical != entseq[sd.seq_id - 1]):
+            raise ValueError("SeqDif.monomer one-letter code (%s) does "
+                             "not match that in %s (%s at position %d)"
+                             % (sd.monomer.code_canonical, entity,
+                                entseq[sd.seq_id - 1], sd.seq_id))
+
+    def _check_seq_dif_reference(self, ref, refseq, sd):
+        """Make sure the reference information in a SeqDif record matches"""
+        if sd.db_seq_id < 1 or sd.db_seq_id > len(refseq):
+            raise IndexError("SeqDif.db_seq_id for %s is %d, out of "
+                             "range 1-%d"
+                             % (ref, sd.db_seq_id, len(refseq)))
+        if (sd.db_monomer and len(refseq[sd.db_seq_id - 1]) == 1
+                and sd.db_monomer.code_canonical != refseq[sd.db_seq_id - 1]):
+            raise ValueError("SeqDif.db_monomer one-letter code (%s) does "
+                             "not match that in %s (%s at position %d)"
+                             % (sd.db_monomer.code_canonical, ref,
+                                refseq[sd.db_seq_id - 1], sd.db_seq_id))
 
     def _get_ranges(self, entity, fullrefseq, align):
         """Get the sequence ranges for an Entity and Reference"""
@@ -578,6 +613,31 @@ class _StructRefDumper(Dumper):
                  else align.entity_end),
                 (align.db_begin,
                  len(fullrefseq) if align.db_end is None else align.db_end))
+
+    def _get_gapped_alignment(self, entity_rng, db_rng, entseq, refseq,
+                              insertions, deletions):
+        """Get the given ranges from the entity and reference sequences,
+           with gaps added to account for any insertion or deletion SeqDif
+           records"""
+        gapentseq = []
+        gaprefseq = []
+        ent_i = entity_rng[0]
+        ref_i = db_rng[0]
+        while ent_i <= entity_rng[1] and ref_i <= db_rng[1]:
+            if ent_i in insertions:
+                gapentseq.append(entseq[ent_i - 1])
+                ent_i += 1
+                gaprefseq.append('-')
+            elif ref_i in deletions:
+                gapentseq.append('-')
+                gaprefseq.append(refseq[ref_i - 1])
+                ref_i += 1
+            else:
+                gapentseq.append(entseq[ent_i - 1])
+                gaprefseq.append(refseq[ref_i - 1])
+                ref_i += 1
+                ent_i += 1
+        return gapentseq, gaprefseq
 
     def _check_reference_sequence(self, entity, ref):
         """Make sure that the Entity and Reference sequences match"""
@@ -589,15 +649,14 @@ class _StructRefDumper(Dumper):
         if ref.sequence in (None, ihm.unknown):
             # We just have to trust the range if the ref sequence is blank
             return
-        # Our sanity-checking logic doesn't currently support insertions
-        # or deletions
-        if any(sd.details in ('insertion', 'deletion')
-               for sd in align.seq_dif):
-            return
-        entseq = self._check_seq_dif(entity, ref, align)
         # Reference sequence may contain non-standard residues, so parse them
         # out; e.g. "FLGHGGN(WP9)LHFVQLAS"
         fullrefseq = list(util._get_codes(ref.sequence))
+
+        # Get mutated entity sequence, plus sets of insertions and deletions,
+        # from SeqDif records
+        entseq, insertions, deletions = self._check_seq_dif(
+            entity, ref, fullrefseq, align)
 
         def check_rng(rng, seq, rngstr, obj):
             if any(r < 1 or r > len(seq) for r in rng):
@@ -608,14 +667,13 @@ class _StructRefDumper(Dumper):
         check_rng(entity_rng, entseq, "entity_begin,entity_end", entity)
         check_rng(db_rng, fullrefseq, "db_begin,db_end", ref)
 
-        matchlen = min(entity_rng[1] - entity_rng[0], db_rng[1] - db_rng[0])
-        entseq = entseq[entity_rng[0] - 1:entity_rng[0] + matchlen - 1]
-        refseq = fullrefseq[db_rng[0] - 1:db_rng[0] + matchlen - 1]
+        entseq, refseq = self._get_gapped_alignment(
+            entity_rng, db_rng, entseq, fullrefseq, insertions, deletions)
 
         # Entity sequence is canonical so likely won't match any non-standard
         # residue (anything of length > 1), so just skip checks of these
         def matchseq(a, b):
-            return a == b or len(a) > 1 or len(b) > 1
+            return a == b or len(a) > 1 or len(b) > 1 or a == '-' or b == '-'
         if (len(refseq) != len(entseq)
                 or not all(matchseq(a, b) for (a, b) in zip(refseq, entseq))):
             raise ValueError(
@@ -676,13 +734,14 @@ class _StructRefDumper(Dumper):
         ordinal = itertools.count(1)
         with writer.loop(
                 "_struct_ref_seq_dif",
-                ["pdbx_ordinal", "align_id", "seq_num", "db_mon_id", "mon_id",
-                 "details"]) as lp:
+                ["pdbx_ordinal", "align_id", "db_mon_id",
+                 "pdbx_seq_db_seq_num", "mon_id", "seq_num", "details"]) as lp:
             for e, r in self._refs_by_id:
                 for a in r._get_alignments():
                     for sd in a.seq_dif:
                         lp.write(pdbx_ordinal=next(ordinal),
                                  align_id=a._id, seq_num=sd.seq_id,
+                                 pdbx_seq_db_seq_num=sd.db_seq_id,
                                  db_mon_id=sd.db_monomer.id
                                  if sd.db_monomer else ihm.unknown,
                                  mon_id=sd.monomer.id

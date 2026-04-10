@@ -21,3 +21,9 @@ The :mod:`ihm.reference` Python module
 
 .. autoclass:: SeqDif
    :members:
+
+.. autoclass:: InsertionSeqDif
+   :members:
+
+.. autoclass:: DeletionSeqDif
+   :members:

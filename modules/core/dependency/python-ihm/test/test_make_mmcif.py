@@ -385,6 +385,30 @@ class Tests(unittest.TestCase):
              'invalid-chem-comp other . . .\n'])
         os.unlink('output.cif')
 
+    def test_missing_struct_ref(self):
+        """Test fix of incomplete struct_ref table"""
+        incif = utils.get_input_file_name(TOPDIR, 'missing_struct_ref.cif')
+
+        # Use mock urllib so we don't hit the network during this test
+        env = os.environ.copy()
+        mockdir = os.path.join(TOPDIR, 'test', 'mock', 'non_canon_atom')
+        env['PYTHONPATH'] = mockdir + os.pathsep + env['PYTHONPATH']
+
+        r = subprocess.Popen([sys.executable, MAKE_MMCIF,
+                             "--fix_struct_ref", incif],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             universal_newlines=True, env=env)
+        out, err = r.communicate()
+        self.assertEqual(r.returncode, 0)
+        # struct_ref sequence should have been filled in
+        with open('output.cif') as fh:
+            contents = fh.readlines()
+        ind = contents.index('_struct_ref.details\n')
+        self.assertEqual(
+            contents[ind + 1], '1 1 UNP Q90VU7_HV1 Q90VU7 26 AADG\n')
+        os.unlink('output.cif')
+
 
 if __name__ == '__main__':
     unittest.main()

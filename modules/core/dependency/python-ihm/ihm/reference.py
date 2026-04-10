@@ -1,6 +1,7 @@
 """Classes for providing extra information about an :class:`ihm.Entity`"""
 
 import urllib.request
+import ihm
 
 
 class Reference:
@@ -97,6 +98,18 @@ class UniProtSequence(Sequence):
             seq = decode(fh.read()).replace('\n', '')
             return cls(code, accession, seq, details)
 
+    def add_missing_sequence(self):
+        """Fill in any missing sequence information.
+           This is done by querying the UniProt web API, so requires network
+           access.
+        """
+        if not self.sequence:
+            acc = self.from_accession(self.accession)
+            self.sequence = acc.sequence
+            # If we are missing details too, use that from UniProt
+            if not self.details:
+                self.details = acc.details
+
 
 class Alignment:
     """A sequence range that aligns between the database and the entity.
@@ -133,7 +146,10 @@ class Alignment:
 
 class SeqDif:
     """Annotate a sequence difference between a reference and entity sequence.
-       See :class:`Alignment`.
+       This is generally used for simple mutations; for insertions or
+       deletions, use the :class:`InsertionSeqDif` or :class:`DeletionSeqDif`
+       subclasses instead.
+       See also :class:`Alignment`.
 
        :param int seq_id: The residue index in the entity sequence.
        :param db_monomer: The monomer type (as a :class:`~ihm.ChemComp` object)
@@ -147,8 +163,46 @@ class SeqDif:
     def __init__(self, seq_id, db_monomer, monomer, details=None):
         self.seq_id, self.db_monomer = seq_id, db_monomer
         self.monomer, self.details = monomer, details
+        # Only used for deletions; not currently exposed in the base class
+        self.db_seq_id = ihm.unknown
 
     def _signature(self):
         # Don't ignore "details", as these distinguish insertions from
         # deletions
-        return (self.seq_id, self.db_monomer, self.monomer, self.details)
+        return (self.seq_id, self.db_seq_id, self.db_monomer, self.monomer,
+                self.details)
+
+
+class InsertionSeqDif(SeqDif):
+    """Annotate an insertion of a residue relative to the reference sequence.
+       This is used to describe a residue that is present in the entity
+       sequence but not in the reference, such as an expression tag.
+       See also :class:`SeqDif` and :class:`Alignment`.
+
+       :param int seq_id: The residue index in the entity sequence.
+       :param monomer: The monomer type (as a :class:`~ihm.ChemComp` object)
+              in the entity sequence.
+       :type monomer: :class:`ihm.ChemComp`
+       :param str details: Descriptive text for the sequence difference.
+    """
+    def __init__(self, seq_id, monomer, details='insertion'):
+        super().__init__(seq_id=seq_id, db_monomer=ihm.unknown,
+                         monomer=monomer, details=details)
+
+
+class DeletionSeqDif(SeqDif):
+    """Annotate a deletion of a residue from the reference sequence.
+       This is used to describe a residue that is present in the reference
+       sequence but not in the entity.
+       See also :class:`SeqDif` and :class:`Alignment`.
+
+       :param int db_seq_id: The residue index in the reference sequence.
+       :param db_monomer: The monomer type (as a :class:`~ihm.ChemComp` object)
+              in the reference sequence.
+       :type db_monomer: :class:`ihm.ChemComp`
+       :param str details: Descriptive text for the sequence difference.
+    """
+    def __init__(self, db_seq_id, db_monomer, details='deletion'):
+        super().__init__(seq_id=ihm.unknown, db_monomer=db_monomer,
+                         monomer=ihm.unknown, details=details)
+        self.db_seq_id = db_seq_id

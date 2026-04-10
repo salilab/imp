@@ -119,7 +119,8 @@ KNOWN_ATOM_NAMES = {
 }
 
 
-def add_ihm_info(s, fix_histidines, check_atom_names, fix_chem_comp):
+def add_ihm_info(s, fix_histidines, check_atom_names, fix_chem_comp,
+                 fix_struct_ref):
     # Non-standard histidine names (protonation states)
     histidines = frozenset(('HIP', 'HID', 'HIE'))
 
@@ -158,6 +159,8 @@ def add_ihm_info(s, fix_histidines, check_atom_names, fix_chem_comp):
     _fix_empty_assemblies(s)
     if fix_chem_comp:
         _fix_incomplete_chem_comps(s)
+    if fix_struct_ref:
+        _fix_incomplete_struct_ref(s)
     return s
 
 
@@ -329,8 +332,16 @@ def _fix_chem_comp(cc, typmap):
         cc.__class__ = typmap.get(h.type.lower(), ihm.ChemComp)
 
 
+def _fix_incomplete_struct_ref(s):
+    """Add any missing information to struct_ref using UniProt"""
+    for e in s.entities:
+        for r in e.references:
+            if isinstance(r, ihm.reference.UniProtSequence):
+                r.add_missing_sequence()
+
+
 def add_ihm_info_one_system(fname, fix_histidines, check_atom_names,
-                            fix_chem_comp):
+                            fix_chem_comp, fix_struct_ref):
     """Read mmCIF file `fname`, which must contain a single System, and
        return it with any missing IHM data added."""
     with open(fname) as fh:
@@ -339,7 +350,7 @@ def add_ihm_info_one_system(fname, fix_histidines, check_atom_names,
         raise ValueError("mmCIF file %s must contain exactly 1 data block "
                          "(%d found)" % (fname, len(systems)))
     return add_ihm_info(systems[0], fix_histidines, check_atom_names,
-                        fix_chem_comp)
+                        fix_chem_comp, fix_struct_ref)
 
 
 def combine(s, other_s):
@@ -467,6 +478,10 @@ def get_args():
                    dest="fix_chem_comp",
                    help="Add any missing data to the chem_comp table by"
                         "querying CCD (needs network access)")
+    p.add_argument("--fix_struct_ref", action='store_true',
+                   dest="fix_struct_ref",
+                   help="Add any missing data to the struct_ref table by"
+                        "querying UniProt (needs network access)")
     return p.parse_args()
 
 
@@ -480,11 +495,13 @@ def main():
     if args.add:
         s = add_ihm_info_one_system(args.input, args.fix_histidines,
                                     args.check_atom_names,
-                                    args.fix_chem_comp)
+                                    args.fix_chem_comp,
+                                    args.fix_struct_ref)
         for other in args.add:
             other_s = add_ihm_info_one_system(other, args.fix_histidines,
                                               args.check_atom_names,
-                                              args.fix_chem_comp)
+                                              args.fix_chem_comp,
+                                              args.fix_struct_ref)
             combine(s, other_s)
         with open(args.output, 'w') as fhout:
             ihm.dumper.write(
@@ -496,7 +513,8 @@ def main():
                 ihm.dumper.write(
                     fhout, [add_ihm_info(s, args.fix_histidines,
                                          args.check_atom_names,
-                                         args.fix_chem_comp)
+                                         args.fix_chem_comp,
+                                         args.fix_struct_ref)
                             for s in ihm.reader.read(fh)],
                     variant=ihm.dumper.IgnoreVariant(['_audit_conform']))
 

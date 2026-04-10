@@ -780,12 +780,71 @@ _struct_ref_seq.db_align_end
 loop_
 _struct_ref_seq_dif.pdbx_ordinal
 _struct_ref_seq_dif.align_id
-_struct_ref_seq_dif.seq_num
 _struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.pdbx_seq_db_seq_num
 _struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.seq_num
 _struct_ref_seq_dif.details
-1 1 2 TRP SER 'Test mutation'
-2 1 3 ? ? 'Test mutation'
+1 1 TRP ? SER 2 'Test mutation'
+2 1 ? ? ? 3 'Test mutation'
+#
+""")
+
+    def test_struct_ref_ins_del(self):
+        """Test StructRefDumper insertions and deletions"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd1 = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
+                                   monomer=lpep['S'], details='Test mutation')
+        sd2 = ihm.reference.DeletionSeqDif(db_seq_id=5, db_monomer=lpep['P'])
+        sd3 = ihm.reference.InsertionSeqDif(seq_id=4, monomer=lpep['C'])
+        r1 = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='test sequence')
+        r1.alignments.append(ihm.reference.Alignment(db_begin=3,
+                                                     seq_dif=[sd1, sd2, sd3]))
+        system.entities.append(ihm.Entity('LSTC', references=[r1]))
+
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system)  # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system)  # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_struct_ref.id
+_struct_ref.entity_id
+_struct_ref.db_name
+_struct_ref.db_code
+_struct_ref.pdbx_db_accession
+_struct_ref.pdbx_align_begin
+_struct_ref.pdbx_seq_one_letter_code
+_struct_ref.details
+1 1 UNP NUP84_YEAST P52891 3 LWPTYQT 'test sequence'
+#
+#
+loop_
+_struct_ref_seq.align_id
+_struct_ref_seq.ref_id
+_struct_ref_seq.seq_align_beg
+_struct_ref_seq.seq_align_end
+_struct_ref_seq.db_align_beg
+_struct_ref_seq.db_align_end
+1 1 1 4 3 6
+#
+#
+loop_
+_struct_ref_seq_dif.pdbx_ordinal
+_struct_ref_seq_dif.align_id
+_struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.pdbx_seq_db_seq_num
+_struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.details
+1 1 TRP ? SER 2 'Test mutation'
+2 1 PRO 5 ? ? deletion
+3 1 ? ? CYS 4 insertion
 #
 """)
 
@@ -891,19 +950,62 @@ _struct_ref_seq_dif.details
         # Should work with checks disabled
         _ = _get_dumper_output(dumper, system, check=False)
 
+    def test_struct_ref_deletion_mismatch(self):
+        """Test StructRefDumper with deletion residue type mismatch"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.DeletionSeqDif(db_seq_id=6, db_monomer=lpep['W'])
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system)  # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system)  # Assign IDs
+        with self.assertRaises(ValueError) as cm:
+            _get_dumper_output(dumper, system)
+        self.assertIn('one-letter code (W) does not match', str(cm.exception))
+        self.assertIn('(T at position 6)', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
+    def test_struct_ref_deletion_out_of_range(self):
+        """Test StructRefDumper with deletion out of range"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.DeletionSeqDif(db_seq_id=12, db_monomer=lpep['W'])
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system)  # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system)  # Assign IDs
+        with self.assertRaises(IndexError) as cm:
+            _get_dumper_output(dumper, system)
+        self.assertIn('SeqDif.db_seq_id for ', str(cm.exception))
+        self.assertIn('is 12, out of range 1-9', str(cm.exception))
+        # Should work with checks disabled
+        _ = _get_dumper_output(dumper, system, check=False)
+
     def test_struct_ref_seq_dif_ins_del(self):
         """Test StructRefDumper with SeqDif insertions and deletions"""
         system = ihm.System()
         lpep = ihm.LPeptideAlphabet()
-        sd1 = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['G'],
-                                   monomer=None, details='deletion')
-        sd2 = ihm.reference.SeqDif(seq_id=3, db_monomer=lpep['C'],
-                                   monomer=None, details='insertion')
+        sd1 = ihm.reference.DeletionSeqDif(db_seq_id=7, db_monomer=lpep['Q'])
+        sd2 = ihm.reference.InsertionSeqDif(
+            seq_id=1, monomer=lpep['H'], details='expression tag')
         r = ihm.reference.UniProtSequence(
             db_code='NUP84_YEAST', accession='P52891', sequence='MEWPTYQT',
             details='test sequence')
         r.alignments.append(ihm.reference.Alignment(seq_dif=[sd1, sd2]))
-        system.entities.append(ihm.Entity('MEWPTYQT', references=[r]))
+        system.entities.append(ihm.Entity('HMEWPTYT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign entity IDs
 
@@ -911,7 +1013,42 @@ _struct_ref_seq_dif.details
         dumper.finalize(system)  # Assign IDs
         # Insertions and deletions are not currently checked, so
         # this should pass
-        _ = _get_dumper_output(dumper, system)
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_struct_ref.id
+_struct_ref.entity_id
+_struct_ref.db_name
+_struct_ref.db_code
+_struct_ref.pdbx_db_accession
+_struct_ref.pdbx_align_begin
+_struct_ref.pdbx_seq_one_letter_code
+_struct_ref.details
+1 1 UNP NUP84_YEAST P52891 1 MEWPTYQT 'test sequence'
+#
+#
+loop_
+_struct_ref_seq.align_id
+_struct_ref_seq.ref_id
+_struct_ref_seq.seq_align_beg
+_struct_ref_seq.seq_align_end
+_struct_ref_seq.db_align_beg
+_struct_ref_seq.db_align_end
+1 1 1 8 1 8
+#
+#
+loop_
+_struct_ref_seq_dif.pdbx_ordinal
+_struct_ref_seq_dif.align_id
+_struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.pdbx_seq_db_seq_num
+_struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.details
+1 1 GLN 7 ? ? deletion
+2 1 ? ? HIS 1 'expression tag'
+#
+""")
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""

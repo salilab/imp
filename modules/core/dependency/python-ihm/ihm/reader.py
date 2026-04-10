@@ -1324,11 +1324,20 @@ class _StructRefSeqHandler(Handler):
 class _StructRefSeqDifHandler(Handler):
     category = '_struct_ref_seq_dif'
 
-    def __call__(self, align_id, seq_num: int, db_mon_id, mon_id, details):
+    def __call__(self, align_id, seq_num: int, pdbx_seq_db_seq_num: int,
+                 db_mon_id, mon_id, details):
         align = self.sysr.alignments.get_by_id(align_id)
         db_monomer = self.sysr.chem_comps.get_by_id_or_none(db_mon_id)
         monomer = self.sysr.chem_comps.get_by_id_or_none(mon_id)
         sd = ihm.reference.SeqDif(seq_num, db_monomer, monomer, details)
+        # db_seq_id isn't exposed in the base class constructor
+        sd.db_seq_id = pdbx_seq_db_seq_num
+        # Set more appropriate type if possible
+        if details:
+            if monomer and not db_monomer:
+                sd.__class__ = ihm.reference.InsertionSeqDif
+            elif db_monomer and not monomer:
+                sd.__class__ = ihm.reference.DeletionSeqDif
         align.seq_dif.append(sd)
 
 
