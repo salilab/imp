@@ -2,7 +2,7 @@
  *  \file file.cpp
  *  \brief Get directories used by IMP.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,7 +41,9 @@ struct LazyFileStorage : public internal::IOStorage<BaseStream> {
       }
       stream_.open(P::get_name().c_str(), om);
       if (!stream_) {
-        IMP_THROW("Unable to open file " << P::get_name(), IOException);
+        IMP_THROW("Unable to open file " << P::get_name()
+                  << (openmode_ & std::ios_base::out ? " for writing" : "")
+                  << ": " << strerror(errno), IOException);
       }
       open_ = true;
     }
