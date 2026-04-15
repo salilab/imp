@@ -543,6 +543,26 @@ def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
     return rmsd_bead_size_dict
 
 
+# This is similar to pmi.tools.RestraintStatScorer but uses
+# restraint.evaluate() instead of restraint.unprotected_evaluate() (which
+# does not include the weight)
+class _TotalScorer:
+    def __init__(self, name, r):
+        self._restraint = r
+        self._jax_score = None
+        self.name = name
+
+    def __call__(self, jm=None):
+        if jm is not None:
+            if self._jax_score is None:
+                import jax
+                ji = self._restraint._get_jax()
+                self._jax_score = jax.jit(ji.score_func)
+            return self._jax_score(jm)
+        else:
+            return self._restraint.evaluate(False)
+
+
 class TotalScoreOutput:
     """A helper output for model evaluation"""
     def __init__(self, model):
@@ -550,7 +570,5 @@ class TotalScoreOutput:
         self.rs = IMP.pmi.tools.get_restraint_set(self.model)
 
     def get_output(self):
-        score = self.rs.evaluate(False)
-        output = {}
-        output["Total_Score"] = str(score)
-        return output
+        scorer = _TotalScorer("Total_Score", self.rs)
+        return lambda jm: {scorer.name: str(scorer(jm))}

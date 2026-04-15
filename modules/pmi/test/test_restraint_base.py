@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
 
         r = DistanceRestraint(p1, p2, 0., 1.)
         self.assertAlmostEqual(r.evaluate(), 0.0, delta=1e-6)
-        output = r.get_output()
+        output = r.get_output()(None)
         self.assertEqual(output["DistanceRestraint_Score"], str(0.0))
         self.assertEqual(output["_TotalScore"], str(0.0))
         self.assertIsInstance(r.get_restraint_set(), IMP.RestraintSet)
@@ -46,12 +46,14 @@ class Tests(IMP.test.TestCase):
         r = DistanceRestraint(p1, p2, 0., 1., name="DistanceRestraint2",
                               weight=10., label="Test")
         self.assertAlmostEqual(r.evaluate(), 500, delta=1e-6)
-        output = r.get_output()
+        output_callable = r.get_output()
+
+        output = output_callable(None)
         self.assertEqual(output["DistanceRestraint2_Score_Test"], str(500.0))
         self.assertEqual(output["_TotalScore"], str(500.0))
 
         r.set_weight(1.)
-        output = r.get_output()
+        output = output_callable(None)
         self.assertEqual(output["DistanceRestraint2_Score_Test"], str(50.0))
         self.assertEqual(output["_TotalScore"], str(50.0))
 
@@ -144,9 +146,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(r.get_particles_to_sample()), 1)
         self.assertIs(list(r.get_particles_to_sample().values())[0][0][0],
                       r.sigma)
-        self.assertEqual(len(r.get_output()), 5)
+        output = r.get_output()(None)
+        self.assertEqual(len(output), 5)
 
-        output = r.get_output()
         self.assertAlmostEqual(
             float(output["GaussianRestraint_Sigma_JeffreysPrior_Score_Test"]),
             0., delta=1e-6)
@@ -154,7 +156,7 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(r.mu.get_nuisance_is_optimized())
         self.assertTrue(r.sigma.get_nuisance_is_optimized())
         r.sigma.set_nuisance(10.)
-        output = r.get_output()
+        output = r.get_output()(None)
         self.assertAlmostEqual(
             float(output["GaussianRestraint_Sigma_JeffreysPrior_Score_Test"]),
             -math.log(.1), delta=1e-6)

@@ -816,7 +816,7 @@ class Output:
         return versions
 
     def init_stat2(self, name, listofobjects, extralabels=None,
-                   listofsummedobjects=None):
+                   listofsummedobjects=None, jax_model=None):
         """Write the header for a stat file in v2 format.
            Lines can then be written to the stat file by calling write_stat2()
            with the same file name.
@@ -824,6 +824,9 @@ class Output:
            @param name The file name to write to.
            @param listofobjects PMI objects that will be reported in the file.
                   Each object must implement the get_output() method.
+                  This can either return a dict containing data from the
+                  current state of the model, or a callable which returns
+                  a similar dict of data each time it is called.
         """
         # this is a new stat file that should be less
         # space greedy!
@@ -845,13 +848,22 @@ class Output:
              str(self.get_versions_of_relevant_modules())})
         stat2_inverse = {}
 
+        dict_objects = []
+        callable_objects = []
         for obj in listofobjects:
             if "get_output" not in dir(obj):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() method"
                     % str(obj))
             else:
+                # get_output() can return either a dict or a callable;
+                # store these in different lists
                 d = obj.get_output()
+                if callable(d):
+                    callable_objects.append(d)
+                    d = d(jax_model)
+                else:
+                    dict_objects.append(obj)
                 # remove all entries that begin with _ (private entries)
                 dfiltered = dict((k, v)
                                  for k, v in d.items() if k[0] != "_")
@@ -882,24 +894,29 @@ class Output:
         flstat.write("%s \n" % stat2_keywords)
         flstat.close()
         self.dictionary_stats2[name] = (
-            listofobjects,
+            dict_objects, callable_objects,
             stat2_inverse,
             listofsummedobjects,
             extralabels)
 
-    def write_stat2(self, name, appendmode=True):
+    def write_stat2(self, name, appendmode=True, jax_model=None):
         """Write a single line to a stat file previously created
            with init_stat2().
 
            @param name The file name to write to.
         """
         output = {}
-        (listofobjects, stat2_inverse, listofsummedobjects,
+        (dict_objects, callable_objects, stat2_inverse, listofsummedobjects,
          extralabels) = self.dictionary_stats2[name]
 
+        def all_output():
+            for obj in dict_objects:
+                yield obj.get_output()
+            for obj in callable_objects:
+                yield obj(jax_model)
+
         # writing objects
-        for obj in listofobjects:
-            od = obj.get_output()
+        for od in all_output():
             dfiltered = dict((k, v) for k, v in od.items() if k[0] != "_")
             for k in dfiltered:
                 output.update({stat2_inverse[k]: od[k]})

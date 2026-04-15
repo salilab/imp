@@ -17,13 +17,15 @@ class Tests(IMP.test.TestCase):
         lower, upper, kappa = .2, .8, 1.
         r = IMP.pmi.restraints.parameters.WeightRestraint(weight, lower,
                                                           upper, kappa)
+        out = r.get_output()(None)
         self.assertAlmostEqual(
-            float(r.get_output()["_TotalScore"]), 0.01, delta=1e-6)
+            float(out["_TotalScore"]), 0.01, delta=1e-6)
 
         weight.add_weight()
         weight.set_weights([0., .15, .85])
+        out = r.get_output()(None)
         self.assertAlmostEqual(
-            float(r.get_output()["_TotalScore"]), .0225, delta=1e-6)
+            float(out["_TotalScore"]), .0225, delta=1e-6)
 
     def test_jeffreys_prior(self):
         m = IMP.Model()
@@ -31,12 +33,13 @@ class Tests(IMP.test.TestCase):
         sigma.set_scale(1.)
         r = IMP.pmi.restraints.parameters.JeffreysPrior(sigma)
 
+        out = r.get_output()
         self.assertAlmostEqual(
-            float(r.get_output()["_TotalScore"]), 0., delta=1e-6)
+            float(out(None)["_TotalScore"]), 0., delta=1e-6)
 
         sigma.set_scale(2.)
         self.assertAlmostEqual(
-            float(r.get_output()["_TotalScore"]), -math.log(.5), delta=1e-6)
+            float(out(None)["_TotalScore"]), -math.log(.5), delta=1e-6)
 
 
 if __name__ == '__main__':

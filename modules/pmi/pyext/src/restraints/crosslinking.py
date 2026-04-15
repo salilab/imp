@@ -425,7 +425,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     def get_output(self):
         """Get the output of the restraint to be used by the IMP.pmi.output
            object"""
-        output = super().get_output()
+        # todo: return a callable here instead
+        output = super().get_output()(None)
 
         for xl in self.xl_list:
 

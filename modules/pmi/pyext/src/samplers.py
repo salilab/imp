@@ -78,7 +78,7 @@ class MonteCarlo(_SamplerBase):
         isd_available = False
 
     def __init__(self, model, objects=None, temp=1.0, filterbyname=None,
-                 score_moved=False, use_jax=False):
+                 score_moved=False):
         """Setup Monte Carlo sampling
         @param model         The IMP Model
         @param objects       What to sample (a list of Movers)
@@ -86,9 +86,6 @@ class MonteCarlo(_SamplerBase):
         @param filterbyname Not used
         @param score_moved   If True, attempt to speed up sampling by
                caching scoring function terms on particles that didn't move
-        @param use_jax If set to True, sample the scoring function using
-               JAX instead of IMP's internal C++ implementation (requires
-               that all PMI restraints used have a JAX implementation).
         """
         super().__init__(model)
         self.losp = [
@@ -104,7 +101,7 @@ class MonteCarlo(_SamplerBase):
         self.mvslabels = []
         self.label = "None"
         self.movers_data = {}
-        self.use_jax = use_jax
+        self.use_jax = False
         self._jax_optimizer = None
         self._jax_state = None
 
@@ -119,6 +116,19 @@ class MonteCarlo(_SamplerBase):
         self.mc.set_score_moved(score_moved)
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
+
+    def set_use_jax(self, nstep):
+        """Request that sampling of the scoring function is done using
+           JAX instead of IMP's internal C++ implementation (requires
+           that all PMI restraints used have a JAX implementation)."""
+        self.use_jax = True
+        self._jax_optimizer = self.mc._get_jax_optimizer(
+            nstep * self.get_number_of_movers())
+        self._jax_state = self._jax_optimizer.get_initial_state()
+
+    def get_jax_model(self):
+        """Get the current JAX Model used by the sampler."""
+        return self._jax_state.jm
 
     def set_kt(self, temp):
         self.temp = temp
@@ -139,19 +149,6 @@ class MonteCarlo(_SamplerBase):
     def set_self_adaptive(self, isselfadaptive=True):
         self.selfadaptive = isselfadaptive
 
-    def get_nuisance_movers_parameters(self):
-        '''
-        Return a dictionary with the mover parameters for nuisance parameters
-        '''
-        output = {}
-        for i in range(self.get_number_of_movers()):
-            mv = self.smv.get_mover(i)
-            name = mv.get_name()
-            if "Nuisances" in name:
-                stepsize = IMP.core.NormalMover.get_from(mv).get_sigma()
-                output[name] = stepsize
-        return output
-
     def get_number_of_movers(self):
         return len(self.smv.get_movers())
 
@@ -161,10 +158,6 @@ class MonteCarlo(_SamplerBase):
     def optimize(self, nstep):
         self.nframe += 1
         if self.use_jax:
-            if self._jax_optimizer is None:
-                self._jax_optimizer = self.mc._get_jax_optimizer(
-                    nstep * self.get_number_of_movers())
-                self._jax_state = self._jax_optimizer.get_initial_state()
             score, self._jax_state = self._jax_optimizer.optimize(
                 self._jax_state)
         else:
@@ -176,143 +169,59 @@ class MonteCarlo(_SamplerBase):
 
         # apply self adaptive protocol
         if self.selfadaptive:
-            if self.use_jax:
-                raise NotImplementedError(
-                    "Adaptive protocol is not yet implemented for JAX")
-            for i, mv in enumerate(self.mvs):
-
-                mvacc = mv.get_number_of_accepted()
-                mvprp = mv.get_number_of_proposed()
-                if mv not in self.movers_data:
-                    accept = float(mvacc) / float(mvprp)
-                    self.movers_data[mv] = (mvacc, mvprp)
-                else:
-                    oldmvacc, oldmvprp = self.movers_data[mv]
-                    accept = float(mvacc-oldmvacc) / float(mvprp-oldmvprp)
-                    self.movers_data[mv] = (mvacc, mvprp)
-                if accept < 0.05:
-                    accept = 0.05
-                if accept > 1.0:
-                    accept = 1.0
-
-                if isinstance(mv, IMP.core.NormalMover):
-                    stepsize = mv.get_sigma()
-                    if 0.4 > accept or accept > 0.6:
-                        mv.set_sigma(stepsize * 2 * accept)
-
-                if isinstance(mv, IMP.isd.WeightMover):
-                    stepsize = mv.get_radius()
-                    if 0.4 > accept or accept > 0.6:
-                        mv.set_radius(stepsize * 2 * accept)
-
-                if isinstance(mv, IMP.core.RigidBodyMover):
-                    mr = mv.get_maximum_rotation()
-                    mt = mv.get_maximum_translation()
-                    if 0.4 > accept or accept > 0.6:
-                        mv.set_maximum_rotation(mr * 2 * accept)
-                        mv.set_maximum_translation(mt * 2 * accept)
-
-                if isinstance(mv, IMP.pmi.TransformMover):
-                    mr = mv.get_maximum_rotation()
-                    mt = mv.get_maximum_translation()
-                    if 0.4 > accept or accept > 0.6:
-                        mv.set_maximum_rotation(mr * 2 * accept)
-                        mv.set_maximum_translation(mt * 2 * accept)
-
-                if isinstance(mv, IMP.core.BallMover):
-                    mr = mv.get_radius()
-                    if 0.4 > accept or accept > 0.6:
-                        mv.set_radius(mr * 2 * accept)
+            self.apply_self_adaptive()
         return score
 
-    def get_nuisance_movers(self, nuisances, maxstep):
-        mvs = []
-        for nuisance in nuisances:
-            print(nuisance, maxstep)
-            mvs.append(
-                IMP.core.NormalMover([nuisance],
-                                     IMP.FloatKeys([IMP.FloatKey("nuisance")]),
-                                     maxstep))
-        return mvs
+    def apply_self_adaptive(self):
+        """Modify parameters of individual movers to try to keep acceptance
+           rate around 50%"""
+        if self.use_jax:
+            raise NotImplementedError(
+                "Adaptive protocol is not yet implemented for JAX")
+        for i, mv in enumerate(self.mvs):
 
-    def get_rigid_body_movers(self, rbs, maxtrans, maxrot):
-        mvs = []
-        for rb in rbs:
-            mvs.append(IMP.core.RigidBodyMover(rb.get_model(), rb,
-                                               maxtrans, maxrot))
-        return mvs
-
-    def get_super_rigid_body_movers(self, rbs, maxtrans, maxrot):
-        mvs = []
-        for rb in rbs:
-            if len(rb) == 2:
-                # normal Super Rigid Body
-                srbm = IMP.pmi.TransformMover(self.model, maxtrans, maxrot)
-            elif len(rb) == 3:
-                if isinstance(rb[2], tuple) and len(rb[2]) == 3 \
-                        and isinstance(rb[2][0], float) \
-                        and isinstance(rb[2][1], float) \
-                        and isinstance(rb[2][2], float):
-                    # super rigid body with 2D rotation, rb[2] is the axis
-                    srbm = IMP.pmi.TransformMover(
-                        self.model, IMP.algebra.Vector3D(rb[2]), maxtrans,
-                        maxrot)
-                else:
-                    print(
-                        "Setting up a super rigid body with wrong parameters")
-                    raise
-
-            for xyz in rb[0]:
-                srbm.add_xyz_particle(xyz)
-            for rb in rb[1]:
-                srbm.add_rigid_body_particle(rb)
-            mvs.append(srbm)
-        return mvs
-
-    def get_floppy_body_movers(self, fbs, maxtrans):
-        mvs = []
-        for fb in fbs:
-            # check is that is a rigid body member:
-            if IMP.core.NonRigidMember.get_is_setup(fb):
-                # if so force the particles to move anyway
-                floatkeys = \
-                    IMP.core.RigidBodyMember.get_internal_coordinate_keys()
-                for fk in floatkeys:
-                    fb.set_is_optimized(fk, True)
-                mvs.append(
-                    IMP.core.BallMover(fb.get_model(), fb,
-                                       IMP.FloatKeys(floatkeys),
-                                       maxtrans))
+            mvacc = mv.get_number_of_accepted()
+            mvprp = mv.get_number_of_proposed()
+            if mv not in self.movers_data:
+                accept = float(mvacc) / float(mvprp)
+                self.movers_data[mv] = (mvacc, mvprp)
             else:
-                # otherwise use the normal ball mover
-                mvs.append(IMP.core.BallMover(fb.get_model(), fb, maxtrans))
-        return mvs
+                oldmvacc, oldmvprp = self.movers_data[mv]
+                accept = float(mvacc-oldmvacc) / float(mvprp-oldmvprp)
+                self.movers_data[mv] = (mvacc, mvprp)
+            if accept < 0.05:
+                accept = 0.05
+            if accept > 1.0:
+                accept = 1.0
 
-    def get_X_movers(self, fbs, maxtrans):
-        mvs = []
-        Xfloatkey = IMP.core.XYZ.get_xyz_keys()[0]
-        for fb in fbs:
-            # check is that is a rigid body member:
-            if IMP.core.NonRigidMember.get_is_setup(fb):
-                raise ValueError("particle is part of a rigid body")
-            else:
-                # otherwise use the normal ball mover
-                mvs.append(IMP.core.NormalMover([fb], [Xfloatkey], maxtrans))
-        return mvs
+            if isinstance(mv, IMP.core.NormalMover):
+                stepsize = mv.get_sigma()
+                if 0.4 > accept or accept > 0.6:
+                    mv.set_sigma(stepsize * 2 * accept)
 
-    def get_weight_movers(self, weights, maxstep):
-        mvs = []
-        for weight in weights:
-            if weight.get_number_of_weights() > 1:
-                mvs.append(IMP.isd.WeightMover(weight, maxstep))
-        return mvs
+            if isinstance(mv, IMP.isd.WeightMover):
+                stepsize = mv.get_radius()
+                if 0.4 > accept or accept > 0.6:
+                    mv.set_radius(stepsize * 2 * accept)
 
-    def get_surface_movers(self, surfaces, maxtrans, maxrot, refprob):
-        mvs = []
-        for surface in surfaces:
-            mvs.append(IMP.core.SurfaceMover(surface, maxtrans, maxrot,
-                                             refprob))
-        return mvs
+            if isinstance(mv, IMP.core.RigidBodyMover):
+                mr = mv.get_maximum_rotation()
+                mt = mv.get_maximum_translation()
+                if 0.4 > accept or accept > 0.6:
+                    mv.set_maximum_rotation(mr * 2 * accept)
+                    mv.set_maximum_translation(mt * 2 * accept)
+
+            if isinstance(mv, IMP.pmi.TransformMover):
+                mr = mv.get_maximum_rotation()
+                mt = mv.get_maximum_translation()
+                if 0.4 > accept or accept > 0.6:
+                    mv.set_maximum_rotation(mr * 2 * accept)
+                    mv.set_maximum_translation(mt * 2 * accept)
+
+            if isinstance(mv, IMP.core.BallMover):
+                mr = mv.get_radius()
+                if 0.4 > accept or accept > 0.6:
+                    mv.set_radius(mr * 2 * accept)
 
     def set_label(self, label):
         self.label = label
@@ -354,13 +263,8 @@ class MolecularDynamics(_SamplerBase):
         @param kt Temperature
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step
-        @param use_jax If set to True, sample the scoring function using
-               JAX instead of IMP's internal C++ implementation (requires
-               that all PMI restraints used have a JAX implementation).
         """
         super().__init__(model)
-        if use_jax:
-            raise NotImplementedError("JAX currently only supported for MC")
 
         # check if using PMI1 objects dictionary, or just list of particles
         try:
@@ -379,6 +283,12 @@ class MolecularDynamics(_SamplerBase):
         else:
             self.md.set_scoring_function(get_restraint_set(self.model))
         self.md.add_optimizer_state(self.ltstate)
+
+    def set_use_jax(self, nstep):
+        """Request that sampling of the scoring function is done using
+           JAX instead of IMP's internal C++ implementation (requires
+           that all PMI restraints used have a JAX implementation)."""
+        raise NotImplementedError("JAX currently only supported for MC")
 
     def set_kt(self, kt):
         temp = kt/0.0019872041
