@@ -1,3 +1,19 @@
+2.10 - 2026-04-10
+=================
+  - The new classes :class:`ihm.reference.InsertionSeqDif`
+    and :class:`ihm.reference.DeletionSeqDif` allow for
+    annotating insertions or deletions in the entity sequence
+    relative to the reference database. Files are now checked
+    on output that the entity and reference sequences match
+    with this insertion/deletion information included (#181).
+  - :class:`ihm.LPeptideAlphabet` now maps the one-letter code 'O'
+    to pyrrolysine.
+  - ``make_mmcif`` has a new ``--fix_struct_ref`` command line flag which
+    if specified will fill in any missing reference database information
+    such as the sequence (in the ``struct_ref`` table), by querying
+    UniProt (#182).
+  - Bugfix: allow the starting model dataset to be empty (#180).
+
 2.9 - 2026-01-22
 ================
   - If given a file containing non-polymers but missing the
