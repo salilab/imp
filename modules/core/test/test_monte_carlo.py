@@ -181,6 +181,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(mc.get_number_of_upward_steps(), 0)
         self.assertEqual(mc.get_number_of_downward_steps(), 0)
         self.assertEqual(mc.get_number_of_proposed_steps(), 0)
+        mc.optimize(100)
+        # SerialMover steps should match the entire MC
+        self.assertEqual(mc.get_number_of_proposed_steps(), 100)
+        self.assertEqual(mc.get_number_of_proposed_steps(),
+                         mv.get_number_of_proposed())
+        self.assertEqual(mc.get_number_of_accepted_steps(),
+                         mv.get_number_of_accepted())
+        # BallMover totals should match SerialMover
+        for bm in ms:
+            self.assertEqual(bm.get_number_of_proposed(), 10)
+        self.assertEqual(sum(bm.get_number_of_accepted() for bm in ms),
+                         mv.get_number_of_accepted())
         for i in range(0, 10):
             mc.optimize(100)
             self.assertEqual(mc.get_number_of_accepted_steps(),
