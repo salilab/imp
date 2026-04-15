@@ -56,6 +56,7 @@ class Test(IMP.test.TestCase):
 
         X = _get_jax_model(m, [])
         propose_func = jax.jit(ji.propose_func)
+        accept_func = jax.jit(ji.accept_func)
 
         X, sms, ratio = propose_func(X, sms)
         self.assertEqual(sms.imov, 0)
@@ -72,8 +73,11 @@ class Test(IMP.test.TestCase):
         # Make sure mover wraps back to zero
         for i in range(7):
             X, sms, ratio = propose_func(X, sms)
+        sms = accept_func(sms)
         self.assertEqual(sms.imov, 3)
         self.assertEqual(sms.mover_state, [2, 102, 202, 302, 401])
+        self.assertEqual(list(sms.proposed_mover_steps), [2, 2, 2, 2, 1])
+        self.assertEqual(list(sms.accepted_mover_steps), [0, 0, 0, 1, 0])
         self.assertAlmostEqual(ratio, 0.6, delta=0.01)
 
     def test_pickle(self):

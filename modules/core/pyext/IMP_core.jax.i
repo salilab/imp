@@ -440,7 +440,7 @@
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
 
-    def _wrap_jax(self, init_func, propose_func):
+    def _wrap_jax(self, init_func, propose_func, accept_func=None):
         """Create the return value for _get_jax.
            Use this method in _get_jax() to wrap the JAX functions
            with other mover-specific information.
@@ -457,9 +457,12 @@
                   is rejected then the new JAX Model will be discarded.
                   However, the mover's persistent state is updated for both
                   accepted and rejected moves.
+           @param accept_func if provided, a JAX function which is called
+                  after each accepted Monte Carlo move, with the persistent
+                  state object. It should return a new persistent state.
         """
         from IMP.core._jax_util import JAXMoverInfo
-        return JAXMoverInfo(init_func, propose_func)
+        return JAXMoverInfo(init_func, propose_func, accept_func)
   %}
 }
 
@@ -500,6 +503,7 @@
             """Call the propose_func of the ith mover"""
             jm, sms.mover_state[i], ratio = movers[i].propose_func(
                 jm, sms.mover_state[i])
+            sms.proposed_mover_steps = sms.proposed_mover_steps.at[i].add(1)
             return jm, sms, ratio
 
         sub_propose_funcs = [functools.partial(sub_propose_func, i=i)
@@ -511,12 +515,21 @@
             for m in movers:
                 key, subkey = jax.random.split(key)
                 mover_state.append(m.init_func(subkey))
-            return _SerialMover(imov=-1, mover_state=mover_state)
+            return _SerialMover(
+                imov=-1, mover_state=mover_state,
+                proposed_mover_steps=jnp.zeros(len(movers), dtype=int),
+                accepted_mover_steps=jnp.zeros(len(movers), dtype=int))
 
         def propose_func(jm, sms):
             sms.imov = jnp.mod(sms.imov + 1, len(movers))
             return jax.lax.switch(sms.imov, sub_propose_funcs, jm, sms)
-        return self._wrap_jax(init_func, propose_func)
+
+        def accept_func(sms):
+            sms.accepted_mover_steps = \
+                sms.accepted_mover_steps.at[sms.imov].add(1)
+            return sms
+
+        return self._wrap_jax(init_func, propose_func, accept_func)
   %}
 }
 

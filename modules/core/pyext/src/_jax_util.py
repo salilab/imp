@@ -23,9 +23,10 @@ def _get_jax_restraint(r):
 
 class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
-    def __init__(self, init_func, propose_func):
+    def __init__(self, init_func, propose_func, accept_func):
         self.init_func = init_func
         self.propose_func = propose_func
+        self.accept_func = accept_func
 
 
 @jax.tree_util.register_dataclass
@@ -100,6 +101,10 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 for js in jax_optstates:
                     ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
                                       lambda x: x, ms)
+                for i in range(len(movers)):
+                    if movers[i].accept_func is not None:
+                        ms.mover_state[i] = movers[i].accept_func(
+                            ms.mover_state[i])
                 return ms
 
             def downward_step(ms):
@@ -237,6 +242,10 @@ class _SerialMover:
     imov: int
     # Any state used by Movers
     mover_state: list
+    # Number of proposed steps for each Mover
+    proposed_mover_steps: jax.Array
+    # Number of accepted steps for each Mover
+    accepted_mover_steps: jax.Array
 
 
 def _spline(feature, minrange, lowbin, highbin, spacing, values,
