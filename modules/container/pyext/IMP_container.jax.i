@@ -23,6 +23,13 @@
   %}
 }
 
+%extend IMP::container::AllBipartitePairContainer {
+  %pythoncode %{
+    def _get_static_contents(self):
+        return self.get_contents()
+  %}
+}
+
 %extend IMP::container::ClosePairContainer {
   %pythoncode %{
     def _get_static_contents(self):
