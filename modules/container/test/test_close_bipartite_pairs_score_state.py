@@ -115,6 +115,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
+        """Test JAX implementation"""
         m = IMP.Model()
         IMP.set_log_level(IMP.VERBOSE)
         ps0 = IMP.get_indexes(self.create_particles_in_box(m, 10))
