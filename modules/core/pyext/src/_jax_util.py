@@ -23,10 +23,11 @@ def _get_jax_restraint(r):
 
 class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
-    def __init__(self, init_func, propose_func, accept_func):
+    def __init__(self, init_func, propose_func, accept_func, sync_func):
         self.init_func = init_func
         self.propose_func = propose_func
         self.accept_func = accept_func
+        self.sync_func = sync_func
 
 
 @jax.tree_util.register_dataclass
@@ -155,13 +156,19 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         self.apply_func = apply_func
 
 
-def _sync_stats(imp_mc, jax_mc):
-    """Update IMP MonteCarlo object with stats from JAX run"""
+def _sync_stats(imp_mc, jax_mc, movers, mover_sync_funcs):
+    """Update IMP MonteCarlo and Mover objects with stats from JAX run"""
     imp_mc.set_number_of_downward_steps(jax_mc.downward_steps_taken)
     imp_mc.set_number_of_upward_steps(jax_mc.upward_steps_taken)
     imp_mc.set_number_of_rejected_steps(jax_mc.rejected_steps)
     imp_mc.set_best_accepted_energy(jax_mc.best_score)
     imp_mc.set_last_accepted_energy(jax_mc.score)
+    for mover, mover_state, sync_func in zip(movers, jax_mc.mover_state,
+                                             mover_sync_funcs):
+        mover.add_to_statistics(jax_mc.accepted_steps + jax_mc.rejected_steps,
+                                jax_mc.rejected_steps)
+        if sync_func is not None:
+            sync_func(mover, mover_state)
 
 
 class _JAXOptimizer:
@@ -209,6 +216,9 @@ class _MCJAXOptimizer(_JAXOptimizer):
         self.apply_func = jax.jit(
             lambda jm: jax.lax.fori_loop(0, self.inner_steps,
                                          lambda i, jm: ji.apply_func(jm), jm))
+        self._movers = [mover.get_derived_object() for mover in mc.movers]
+        self._mover_sync_funcs = [mover._get_jax().sync_func
+                                  for mover in self._movers]
 
     def optimize(self, mc_state):
         """Run max_steps of sampling with JAX and update the IMP Model with
@@ -223,7 +233,7 @@ class _MCJAXOptimizer(_JAXOptimizer):
             xyz[:] = mc_state.jm['xyz']
 
         # Update IMP MonteCarlo object with stats from JAX run
-        _sync_stats(self.opt, mc_state)
+        _sync_stats(self.opt, mc_state, self._movers, self._mover_sync_funcs)
 
         if self.opt.get_return_best():
             # Resync IMP Model arrays with best JAX Model

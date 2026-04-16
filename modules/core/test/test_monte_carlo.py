@@ -131,7 +131,7 @@ def setup_rigid_body_system(coords):
     return m, mc
 
 
-def _setup_jax_mc():
+def _setup_jax_mc(use_serial_mover=False):
     m = IMP.Model()
     mc = IMP.core.MonteCarlo(m)
     ds = []
@@ -146,8 +146,13 @@ def _setup_jax_mc():
     r = IMP.core.PairRestraint(m, hps, ds)
     rs = IMP.core.RestraintsScoringFunction([r])
     mc.set_scoring_function(rs)
-    bm = IMP.core.BallMover(m, ds[0], 0.01)
-    mc.add_mover(bm)
+    bm1 = IMP.core.BallMover(m, ds[0], 0.01)
+    if use_serial_mover:
+        bm2 = IMP.core.BallMover(m, ds[1], 0.01)
+        sm = IMP.core.SerialMover([bm1, bm2])
+        mc.add_mover(sm)
+    else:
+        mc.add_mover(bm1)
     mc.set_kt(0.01)
     mc.set_return_best(False)
     return m, mc
@@ -301,7 +306,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_high_level(self):
         """Test high-level JAX implementation of MonteCarlo"""
-        m, mc = _setup_jax_mc()
+        m, mc = _setup_jax_mc(use_serial_mover=True)
         mc.set_return_best(True)
         mc._optimize_jax(2000)
 
@@ -309,6 +314,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(mc.get_number_of_proposed_steps(), 2000)
         self.assertLessEqual(mc.get_number_of_downward_steps()
                              + mc.get_number_of_upward_steps(), 2000)
+        # Check SerialMover stats; should match the MC object
+        sm, = mc.movers
+        self.assertEqual(sm.get_number_of_proposed(),
+                         mc.get_number_of_proposed_steps())
+        self.assertEqual(sm.get_number_of_accepted(),
+                         mc.get_number_of_accepted_steps())
+        # Check BallMover stats
+        bm1, bm2 = sm.get_derived_object().get_movers()
+        self.assertEqual(bm1.get_number_of_proposed(), 1000)
+        self.assertEqual(bm2.get_number_of_proposed(), 1000)
+        self.assertEqual(bm1.get_number_of_accepted()
+                         + bm2.get_number_of_accepted(),
+                         sm.get_number_of_accepted())
         # Particles should now be close
         d0 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(0)))
         d1 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(1)))

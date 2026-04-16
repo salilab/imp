@@ -440,7 +440,8 @@
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
 
-    def _wrap_jax(self, init_func, propose_func, accept_func=None):
+    def _wrap_jax(self, init_func, propose_func, accept_func=None,
+                  sync_func=None):
         """Create the return value for _get_jax.
            Use this method in _get_jax() to wrap the JAX functions
            with other mover-specific information.
@@ -460,9 +461,13 @@
            @param accept_func if provided, a JAX function which is called
                   after each accepted Monte Carlo move, with the persistent
                   state object. It should return a new persistent state.
+           @param sync_func If provided, a Python function which is called
+                  at the end of a Monte Carlo sampling run to sync mover
+                  data back to IMP. It is called with the persistent state
+                  and the IMP Mover object.
         """
         from IMP.core._jax_util import JAXMoverInfo
-        return JAXMoverInfo(init_func, propose_func, accept_func)
+        return JAXMoverInfo(init_func, propose_func, accept_func, sync_func)
   %}
 }
 
@@ -525,11 +530,19 @@
             return jax.lax.switch(sms.imov, sub_propose_funcs, jm, sms)
 
         def accept_func(sms):
+            # Update statistics for the chosen mover
             sms.accepted_mover_steps = \
                 sms.accepted_mover_steps.at[sms.imov].add(1)
             return sms
 
-        return self._wrap_jax(init_func, propose_func, accept_func)
+        def sync_func(imp_mover, sms):
+            # Copy submover statistics back to IMP Movers
+            for i, mover in enumerate(imp_mover.get_movers()):
+                mover.add_to_statistics(
+                    sms.proposed_mover_steps[i],
+                    sms.proposed_mover_steps[i] - sms.accepted_mover_steps[i])
+
+        return self._wrap_jax(init_func, propose_func, accept_func, sync_func)
   %}
 }
 

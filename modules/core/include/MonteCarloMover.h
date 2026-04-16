@@ -102,6 +102,10 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
     num_proposed_ = 0;
     num_rejected_ = 0;
   }
+  void add_to_statistics(unsigned int num_proposed, unsigned int num_rejected) {
+    num_proposed_ += num_proposed;
+    num_rejected_ += num_rejected;
+  }
   /** @} */
  protected:
   //! Implement propose_move()
