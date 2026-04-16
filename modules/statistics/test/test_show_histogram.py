@@ -5,6 +5,7 @@ import IMP.algebra
 import random
 import sys
 import os
+import numpy
 
 
 class MockAxes:
@@ -74,10 +75,6 @@ class Tests(IMP.test.TestCase):
 
     def test_histogram_1d(self):
         """Check showing the histogram1D of a gaussian"""
-        try:
-            import numpy
-        except ImportError:
-            self.skipTest('no numpy module present')
         hist = IMP.statistics.Histogram1D(
             5.0, IMP.algebra.BoundingBox1D(IMP.algebra.Vector1D(-100),
                                            IMP.algebra.Vector1D(100)))
