@@ -3,7 +3,12 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.container
+import itertools
 import random
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -107,6 +112,24 @@ class Tests(IMP.test.TestCase):
         print("re-evaluate")
         m.update()
         self.assertEqual(len(cpss.get_indexes()), 0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        m = IMP.Model()
+        IMP.set_log_level(IMP.VERBOSE)
+        ps0 = IMP.get_indexes(self.create_particles_in_box(m, 10))
+        ps1 = IMP.get_indexes(self.create_particles_in_box(m, 10))
+        for p in itertools.chain(ps0, ps1):
+            d = IMP.core.XYZR.setup_particle(m, p, 1.0)
+
+        pc0 = IMP.container.ListSingletonContainer(m, ps0)
+        pc1 = IMP.container.ListSingletonContainer(m, ps1)
+        cpss = IMP.container.CloseBipartitePairContainer(pc0, pc1, 4.0, 1.0)
+        ps = IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(4.0, 4.0))
+        r = IMP.container.PairsRestraint(ps, cpss)
+        imp_score = r.evaluate(False)
+        jax_score = r._evaluate_jax()
+        self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
 
 
 if __name__ == '__main__':

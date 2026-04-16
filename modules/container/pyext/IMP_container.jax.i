@@ -32,6 +32,15 @@
   %}
 }
 
+%extend IMP::container::CloseBipartitePairContainer {
+  %pythoncode %{
+    def _get_static_contents(self):
+        warnings.warn("No JAX support for close pairs, so using all "
+                      "possible pairs; this may be slow.", IMP.JAXWarning)
+        return self.get_range_indexes()
+  %}
+}
+
 %extend IMP::container::SingletonsRestraint {
   %pythoncode %{
     def _get_jax(self):
