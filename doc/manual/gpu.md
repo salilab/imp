@@ -17,7 +17,6 @@ The JAX code is still in active development and many caveats apply:
    Python NotImplementedError exception.
  - Some IMP::ScoreState (aka constraint) classes do not yet work - this
    includes common applications such as rigid bodies and close pair containers.
- - There is currently no PMI support for JAX.
 
 To add JAX support for a particular IMP::Restraint, IMP::PairScore,
 IMP::core::MonteCarloMover, or IMP::OptimizerState,
