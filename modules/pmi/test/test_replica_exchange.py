@@ -195,12 +195,14 @@ class Tests(IMP.test.TestCase):
         # Regular IMP restraint that should have a JAX implementation too
         dr2 = IMP.pmi.restraints.basic.DistanceRestraint(
             root_hier=hier, tuple_selection1=(2,2,"Nup84"),
-            tuple_selection2=(3,3,"Nup84"), distancemin=10, distancemax=10)
+            tuple_selection2=(3,3,"Nup84"), distancemin=10, distancemax=10,
+            kappa=40.0)
         dr2.add_to_model()
 
         dr3 = IMP.pmi.restraints.basic.DistanceRestraint(
             root_hier=hier, tuple_selection1=(3,3,"Nup84"),
-            tuple_selection2=(4,4,"Nup84"), distancemin=10, distancemax=10)
+            tuple_selection2=(4,4,"Nup84"), distancemin=10, distancemax=10,
+            kappa=40.0)
         dr3.add_to_model()
 
         rex = IMP.pmi.macros.ReplicaExchange(

@@ -579,15 +579,24 @@ class Output:
             IMP.rmf.add_restraints(rh, rs)
         if geometries is not None:
             IMP.rmf.add_geometries(rh, geometries)
+        dict_objects = []
+        callable_objects = []
         if listofobjects is not None:
             cat = rh.get_category("stat")
             outputkey_rmfkey = {}
             for o in listofobjects:
-                if "get_output" not in dir(o):
+                if not hasattr(o, "get_output"):
                     raise ValueError(
                         "Output: object %s doesn't have get_output() method"
                         % str(o))
+                # get_output() can return either a dict or a callable;
+                # store these in different lists
                 output = o.get_output()
+                if callable(output):
+                    callable_objects.append(output)
+                    output = output(None)
+                else:
+                    dict_objects.append(o)
                 for outputkey in output:
                     rmftag = RMF.string_tag
                     if isinstance(output[outputkey], float):
@@ -605,7 +614,8 @@ class Output:
             outputkey_rmfkey["rmf_frame_index"] = \
                 rh.get_key(cat, "rmf_frame_index", RMF.int_tag)
 
-        self.dictionary_rmfs[name] = (rh, cat, outputkey_rmfkey, listofobjects)
+        self.dictionary_rmfs[name] = (rh, cat, outputkey_rmfkey,
+                                      dict_objects, callable_objects)
 
     def add_restraints_to_rmf(self, name, objectlist):
         for o in _flatten(objectlist):
@@ -636,9 +646,16 @@ class Output:
         IMP.rmf.save_frame(self.dictionary_rmfs[name][0])
         if self.dictionary_rmfs[name][1] is not None:
             outputkey_rmfkey = self.dictionary_rmfs[name][2]
-            listofobjects = self.dictionary_rmfs[name][3]
-            for o in listofobjects:
-                output = o.get_output()
+            dict_objects = self.dictionary_rmfs[name][3]
+            callable_objects = self.dictionary_rmfs[name][4]
+
+            def all_output():
+                for obj in dict_objects:
+                    yield obj.get_output()
+                for obj in callable_objects:
+                    yield obj(None)
+
+            for output in all_output():
                 for outputkey in output:
                     rmfkey = outputkey_rmfkey[outputkey]
                     try:
@@ -675,7 +692,7 @@ class Output:
 
         # check that all objects in listofobjects have a get_output method
         for o in listofobjects:
-            if "get_output" not in dir(o):
+            if not hasattr(o, "get_output"):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() method"
                     % str(o))
@@ -699,13 +716,11 @@ class Output:
             writeflag = 'w'
 
         if self.ascii:
-            flstat = open(name, writeflag)
-            flstat.write("%s \n" % output)
-            flstat.close()
+            with open(name, writeflag) as flstat:
+                flstat.write("%s \n" % output)
         else:
-            flstat = open(name, writeflag + 'b')
-            pickle.dump(output, flstat, 2)
-            flstat.close()
+            with open(name, writeflag + 'b') as flstat:
+                pickle.dump(output, flstat, 2)
 
     @IMP.deprecated_method("2.25", "Use write_stats2() instead")
     def write_stats(self):
@@ -722,7 +737,8 @@ class Output:
         flstat = open(name, 'w')
         output = self.initoutput
         for o in listofobjects:
-            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+            if (not hasattr(o, "get_test_output")
+                    and not hasattr(o, "get_output")):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() or "
                     "get_test_output() method" % str(o))
@@ -731,8 +747,11 @@ class Output:
         for obj in self.dictionary_stats[name]:
             try:
                 d = obj.get_test_output()
-            except:  # noqa: E722
+            except AttributeError:
                 d = obj.get_output()
+                if callable(d):
+                    # Get any scores using the current IMP Model
+                    d = d(None)
             # remove all entries that begin with _ (private entries)
             dfiltered = dict((k, v) for k, v in d.items() if k[0] != "_")
             output.update(dfiltered)
@@ -742,15 +761,20 @@ class Output:
     def test(self, name, listofobjects, tolerance=1e-5):
         output = self.initoutput
         for o in listofobjects:
-            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+            if (not hasattr(o, "get_test_output")
+                    and not hasattr(o, "get_output")):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() or "
                     "get_test_output() method" % str(o))
         for obj in listofobjects:
             try:
-                output.update(obj.get_test_output())
-            except:  # noqa: E722
-                output.update(obj.get_output())
+                out = obj.get_test_output()
+            except AttributeError:
+                out = obj.get_output()
+                if callable(out):
+                    # Get any scores using the current IMP Model
+                    out = out(None)
+            output.update(out)
 
         flstat = open(name, 'r')
 
@@ -851,7 +875,7 @@ class Output:
         dict_objects = []
         callable_objects = []
         for obj in listofobjects:
-            if "get_output" not in dir(obj):
+            if not hasattr(obj, "get_output"):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() method"
                     % str(obj))
@@ -872,7 +896,7 @@ class Output:
         # check for customizable entries
         for obj in listofsummedobjects:
             for t in obj[0]:
-                if "get_output" not in dir(t):
+                if not hasattr(t, "get_output"):
                     raise ValueError(
                         "Output: object %s doesn't have get_output() method"
                         % str(t))

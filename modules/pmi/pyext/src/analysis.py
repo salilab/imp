@@ -158,9 +158,8 @@ class Violations:
         self.violation_thresholds = {}
         self.violation_counts = {}
 
-        data = open(filename)
-        D = data.readlines()
-        data.close()
+        with open(filename) as data:
+            D = data.readlines()
 
         for d in D:
             d = d.strip().split()
@@ -289,29 +288,29 @@ class Clustering:
 
     def save_distance_matrix_file(self, file_name='cluster.rawmatrix.pkl'):
         import pickle
-        outf = open(file_name + ".data", 'wb')
 
         # to pickle the transformation dictionary
-        # you have to save the arrays correposnding to
+        # you have to save the arrays corresponding to
         # the transformations
 
         pickable_transformations = \
             self.get_pickable_transformation_distance_dict()
-        pickle.dump(
-            (self.structure_cluster_ids,
-             self.model_list_names,
-             pickable_transformations),
-            outf)
+
+        with open(file_name + ".data", 'wb') as outf:
+            pickle.dump(
+                (self.structure_cluster_ids,
+                 self.model_list_names,
+                 pickable_transformations),
+                outf)
 
         np.save(file_name + ".npy", self.raw_distance_matrix)
 
     def load_distance_matrix_file(self, file_name='cluster.rawmatrix.pkl'):
         import pickle
 
-        inputf = open(file_name + ".data", 'rb')
-        (self.structure_cluster_ids, self.model_list_names,
-         pickable_transformations) = pickle.load(inputf)
-        inputf.close()
+        with open(file_name + ".data", 'rb') as inputf:
+            (self.structure_cluster_ids, self.model_list_names,
+             pickable_transformations) = pickle.load(inputf)
 
         self.raw_distance_matrix = np.load(file_name + ".npy")
 

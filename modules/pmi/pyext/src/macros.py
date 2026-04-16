@@ -1644,15 +1644,13 @@ class AnalysisReplicaExchange0:
 
     def save_objects(self, objects, file_name):
         import pickle
-        outf = open(file_name, 'wb')
-        pickle.dump(objects, outf)
-        outf.close()
+        with open(file_name, 'wb') as outf:
+            pickle.dump(objects, outf)
 
     def load_objects(self, file_name):
         import pickle
-        inputf = open(file_name, 'rb')
-        objects = pickle.load(inputf)
-        inputf.close()
+        with open(file_name, 'rb') as inputf:
+            objects = pickle.load(inputf)
         return objects
 
 
@@ -1851,8 +1849,8 @@ class AnalysisReplicaExchange:
         @param filename string
         """
         import pickle
-        fl = open(filename, 'wb')
-        pickle.dump(self.clusters, fl)
+        with open(filename, 'wb') as fl:
+            pickle.dump(self.clusters, fl)
 
     def load_clusters(self, filename='clusters.pkl', append=False):
         """
@@ -1862,12 +1860,12 @@ class AnalysisReplicaExchange:
                to the ones currently present
         """
         import pickle
-        fl = open(filename, 'rb')
         self.clean_clusters()
-        if append:
-            self.clusters += pickle.load(fl)
-        else:
-            self.clusters = pickle.load(fl)
+        with open(filename, 'rb') as fl:
+            if append:
+                self.clusters += pickle.load(fl)
+            else:
+                self.clusters = pickle.load(fl)
         self.update_clusters()
 
     ####################
