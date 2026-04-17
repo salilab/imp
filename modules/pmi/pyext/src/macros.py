@@ -411,26 +411,13 @@ class ReplicaExchange:
 
             if self.vars["do_create_directories"]:
 
-                try:
-                    os.makedirs(globaldir)
-                except:  # noqa: E722
-                    pass
-                try:
-                    os.makedirs(rmf_dir)
-                except:  # noqa: E722
-                    pass
-
+                os.makedirs(globaldir, exist_ok=True)
+                os.makedirs(rmf_dir, exist_ok=True)
                 if not self.is_multi_state:
-                    try:
-                        os.makedirs(pdb_dir)
-                    except:  # noqa: E722
-                        pass
+                    os.makedirs(pdb_dir, exist_ok=True)
                 else:
                     for n in range(self.vars["number_of_states"]):
-                        try:
-                            os.makedirs(pdb_dir + "/" + str(n))
-                        except:  # noqa: E722
-                            pass
+                        os.makedirs(pdb_dir + "/" + str(n), exist_ok=True)
 
 # -------------------------------------------------------------------------
 
@@ -579,7 +566,8 @@ class ReplicaExchange:
                 if score is None:
                     score = IMP.pmi.tools.get_restraint_set(
                         self.model).evaluate(False)
-                elif IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+                elif (IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL
+                      and not self.use_jax):
                     # Final score from samplers should match the current
                     # score of the Model
                     check_score = IMP.pmi.tools.get_restraint_set(

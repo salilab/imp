@@ -1256,7 +1256,6 @@ class GetModelDensity:
 
     def write_mrc(self, path="./", suffix=None):
         import os
-        import errno
         for density_name in self.densities:
             self.densities[density_name].multiply(1. / self.count_models)
             if suffix is None:
@@ -1264,12 +1263,7 @@ class GetModelDensity:
             else:
                 name = path + "/" + density_name + "." + suffix + ".mrc"
             path, file = os.path.split(name)
-            if not os.path.exists(path):
-                try:
-                    os.makedirs(path)
-                except OSError as e:
-                    if e.errno != errno.EEXIST:
-                        raise
+            os.makedirs(path, exist_ok=True)
             IMP.em.write_map(self.densities[density_name], name,
                              IMP.em.MRCReaderWriter())
 
