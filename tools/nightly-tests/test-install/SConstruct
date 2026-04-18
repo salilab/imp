@@ -21,6 +21,9 @@ vars.Add(PathVariable('path',
                       None, PathVariable.PathAccept))
 vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
          'python')
+vars.Add(BoolVariable('rmf_needs_boost_system',
+                      'True iff RMF needs to link against boost_system',
+                      True))
 
 env = Environment(variables=vars)
 Help(vars.GenerateHelpText(env))
@@ -37,6 +40,7 @@ datapath = env.get('datapath', None)
 examplepath = env.get('examplepath', None)
 mock = env.get('mock_config', None)
 mpi = env.get('mpi_module', None)
+rmf_needs_boost_system = env.get('rmf_needs_boost_system', True)
 cxxflags = env.get('cxxflags', '').split(' ')
 linkflags = env.get('linkflags', '').split(' ')
 python = env['python']
@@ -65,9 +69,12 @@ testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
 runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
 
 # Test compiling and running a C++ program that links against RMF
+rmf_libs = ['RMF']
+if rmf_needs_boost_system:
+    rmf_libs.append('boost_system')
 testcpp_rmf = env.Program('test_rmf.cpp', CPPPATH=cpppath, LIBPATH=libpath,
                           CXXFLAGS=cxxflags, LINKFLAGS=linkflags,
-                          LIBS=['RMF', 'boost_system'])
+                          LIBS=rmf_libs)
 runcpp_rmf = env.Command('cpp_rmf.out', testcpp_rmf, "./$SOURCES > $TARGET")
 
 # Test running a Python unittest program that uses IMP
