@@ -478,8 +478,14 @@
         from IMP.algebra._jax_util import get_random_vector_in_3d_sphere
         indexes = self.get_indexes()
         keys = frozenset(self.get_keys())
-        if keys != frozenset(IMP.core.XYZ.get_xyz_keys()):
-            raise NotImplementedError("Only works for XYZ")
+        if keys == frozenset(IMP.core.XYZ.get_xyz_keys()):
+            intcoord = False
+        elif keys == frozenset(
+                IMP.core.RigidBodyMember.get_internal_coordinate_keys()):
+            intcoord = True
+        else:
+            raise NotImplementedError(
+                "Only works for XYZ or internal coordinates")
         radius = self.get_radius()
 
         def init_func(key):
@@ -488,7 +494,11 @@
         def propose_func(jm, key):
             key, subkey = jax.random.split(key)
             v = get_random_vector_in_3d_sphere(subkey, radius)
-            jm['xyz'] = jm['xyz'].at[indexes].add(v)
+            if intcoord:
+                rbs = jm['rigid_bodies']
+                rbs.intcoord = rbs.intcoord.at[indexes].add(v)
+            else:
+                jm['xyz'] = jm['xyz'].at[indexes].add(v)
             return jm, key, 1.0
         return self._wrap_jax(init_func, propose_func)
   %}
