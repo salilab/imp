@@ -584,7 +584,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       or as a non-rigid member. This affects the way the rigid body
       updates the coordinates and / or reference frame of its members.
 
-     The radius of the rigid body is updated to reflect this change.
+      It is also permissible to modify the internal coordinates of
+      non-rigid members during sampling, e.g. using IMP::core::BallMover.
+      Rigid members, on the other hand, are assumed to have fixed
+      internal coordinates.
+
+      The radius of the rigid body is updated to reflect this change.
   */
   void set_is_rigid_member(ParticleIndex pi, bool tf);
 
