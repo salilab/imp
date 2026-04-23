@@ -635,6 +635,7 @@ class Tests(IMP.test.TestCase):
         d3.set_coordinates(IMP.algebra.Vector3D(4,5,6))
         d3.set_radius(4)
         rb4 = IMP.core.RigidBody.setup_particle(p4, [p3])
+        rb4.set_is_rigid_member(p3, False)
 
         ms = IMP._jax_util._get_jax_model(m1, ('rigid_bodies',))
         rbs = ms['rigid_bodies']
@@ -651,6 +652,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(rbs.intcoord), 3)
         self.assertEqual([int(x) for x in rbs.quaternion[0]], [1, 0, 0, 0])
         self.assertEqual([int(x) for x in rbs.quaternion[1]], [1, 0, 0, 0])
+        # A single non-rigid member
+        self.assertEqual(rbs.non_rigid_members, [2])
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_model_rigid_transform(self):

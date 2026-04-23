@@ -1,3 +1,4 @@
+import numpy as np
 import jax.numpy as jnp
 import jax.tree_util
 from dataclasses import dataclass
@@ -83,6 +84,9 @@ class _AllRigidBodies:
     quaternion: jax.Array
     # Mapping from particle index to rigid body index
     rb_index_from_particle: dict
+    # Particles that are non-rigid members of any rigid body
+    # (these can change during sampling unlike rigid members)
+    non_rigid_members: jax.Array
     # Information about each rigid body (as _RigidBody objects)
     bodies: list
 
@@ -92,6 +96,7 @@ _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
                  for i in range(4)]
 _RB_LQUAT_KEYS = [IMP.FloatKey("rigid_body_local_quaternion_%d" % i)
                   for i in range(4)]
+_RB_IS_RIGID_KEY = IMP.IntKey("rigid_body__is_rigid")
 
 
 def _get_rigid_body_indexes(m):
@@ -129,7 +134,9 @@ def _get_rigid_bodies(m):
             lquaternion=lquaternion,
             body_member_indexes=[rb_index_from_particle[i] for i in
                                  body_members]))
+    is_rigid = m.get_numpy(_RB_IS_RIGID_KEY)
     return _AllRigidBodies(
         intcoord=intcoord, bodies=bodies,
         rb_index_from_particle=rb_index_from_particle,
+        non_rigid_members=np.flatnonzero(is_rigid == 0),
         quaternion=quaternion)
