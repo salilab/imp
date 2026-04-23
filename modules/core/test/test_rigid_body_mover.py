@@ -4,6 +4,11 @@ import IMP.atom
 import IMP.algebra
 import pickle
 from math import *
+try:
+    import jax
+    import jax.random
+except ImportError:
+    jax = None
 
 
 def get_axis_and_angle(q):
@@ -88,10 +93,10 @@ class Tests(IMP.test.TestCase):
         mc.add_mover(sm)
         mc.set_return_best(False)
         mc.set_kt(1.0)
-        return mdl,root,mc,rb
+        return mdl, root, mc, rb, rb_mover
 
     def test_mc_mover_translate(self):
-        mdl,root,mc,rb=self.setup_mv_mover_test(1.0,0.0)
+        mdl,root,mc,rb,_=self.setup_mv_mover_test(1.0,0.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
         mc.optimize(1)
@@ -104,7 +109,7 @@ class Tests(IMP.test.TestCase):
 
     def test_mc_mover_rotate(self):
         for i in range(200):
-            mdl,root,mc,rb=self.setup_mv_mover_test(0.0,1.0)
+            mdl,root,mc,rb,_=self.setup_mv_mover_test(0.0,1.0)
             r0=rb.get_coordinates()
             rot0=rb.get_rotation()
             mc.optimize(1)
@@ -116,7 +121,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(transm,0.0,places=6)
 
     def test_mc_mover_rotate_transalte(self):
-        mdl,root,mc,rb=self.setup_mv_mover_test(1.0,1.0)
+        mdl,root,mc,rb,_=self.setup_mv_mover_test(1.0,1.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
         mc.optimize(1)
@@ -126,6 +131,60 @@ class Tests(IMP.test.TestCase):
         q=(rot1/rot0).get_quaternion()
         self.assertLessEqual(abs(get_axis_and_angle(q)[0]),1.0)
         self.assertLessEqual(transm,1.0)
+
+    def _get_jax_rb_transform(self, jm, body_index):
+        """Convert JAX rigid body transform to IMP coordinates and rotation"""
+        body = jm['rigid_bodies'].bodies[body_index]
+        particle_index = body.particle_index
+        coord = IMP.algebra.Vector3D(jm['xyz'][particle_index])
+        rot = IMP.algebra.Rotation3D(jm['rigid_bodies'].quaternion[body_index])
+        return coord, rot
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rotate(self):
+        """Test JAX implementation, rotation only"""
+        m, root, mc, rb, rb_mover = self.setup_mv_mover_test(0.0, 1.0)
+        r0 = rb.get_coordinates()
+        rot0 = rb.get_rotation()
+
+        ji = rb_mover._get_jax()
+        jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
+
+        init_func = jax.jit(ji.init_func)
+        mvs = init_func(jax.random.key(42))
+
+        j = jax.jit(ji.propose_func)
+        new_jm, mvs, ratio = j(jm, mvs)
+        self.assertAlmostEqual(ratio, 1.0, delta=1e-5)
+
+        r1, rot1 = self._get_jax_rb_transform(new_jm, body_index=0)
+        transm = (r1 - r0).get_magnitude()
+        q = (rot1 / rot0).get_quaternion()
+        self.assertLessEqual(abs(get_axis_and_angle(q)[0]), 1.0)
+        self.assertAlmostEqual(transm, 0.0, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_translate(self):
+        """Test JAX implementation, translation only"""
+        m, root, mc, rb, rb_mover = self.setup_mv_mover_test(1.0, 0.0)
+        r0 = rb.get_coordinates()
+        rot0 = rb.get_rotation()
+
+        ji = rb_mover._get_jax()
+        jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
+
+        init_func = jax.jit(ji.init_func)
+        mvs = init_func(jax.random.key(42))
+
+        j = jax.jit(ji.propose_func)
+        new_jm, mvs, ratio = j(jm, mvs)
+        self.assertAlmostEqual(ratio, 1.0, delta=1e-5)
+
+        r1, rot1 = self._get_jax_rb_transform(new_jm, body_index=0)
+        transm = (r1 - r0).get_magnitude()
+        q = (rot1 / rot0).get_quaternion()
+        self.assertAlmostEqual(get_axis_and_angle(q)[0], 0.0, delta=1e-4)
+        self.assertLessEqual(transm, 1.0)
 
     def test_pickle(self):
         """Test (un-)pickle of RigidBodyMover"""

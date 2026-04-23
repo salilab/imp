@@ -504,6 +504,46 @@
   %}
 }
 
+%extend IMP::core::RigidBodyMover {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.random
+        import IMP.core._jax_rigid
+        from IMP.algebra._jax_util import (get_random_vector_on_3d_sphere,
+                                           get_random_vector_in_3d_sphere,
+                                           get_rotation_about_normalized_axis,
+                                           _quaternion_multiply)
+        max_angle = self.get_maximum_rotation()
+        max_translation = self.get_maximum_translation()
+        particle_index = self.get_index()
+        body_index = IMP.core._jax_rigid._get_rigid_body_index(
+            self.get_model(), self.get_index())
+
+        def init_func(key):
+            return key
+
+        def propose_func(jm, key):
+            body = jm['rigid_bodies'].bodies[body_index]
+            tf = body.get_transformation(jm)
+
+            if max_translation > 0:
+                key, subkey = jax.random.split(key)
+                tf.translation += get_random_vector_in_3d_sphere(
+                    subkey, max_translation)[0]
+            if max_angle > 0:
+                key, subkey1, subkey2 = jax.random.split(key, 3)
+                axis_norm = get_random_vector_on_3d_sphere(subkey1, 1.0)[0]
+                angle = jax.random.uniform(
+                    subkey2, minval=-max_angle, maxval=max_angle)
+                rotation = get_rotation_about_normalized_axis(axis_norm, angle)
+                tf.rotation = _quaternion_multiply(rotation, tf.rotation)
+            jm = body.set_transformation_lazy(tf, jm)
+            return jm, key, 1.0
+
+        return self._wrap_jax(init_func, propose_func)
+  %}
+}
+
 %extend IMP::core::SerialMover {
   %pythoncode %{
     def _get_jax(self):

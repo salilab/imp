@@ -94,16 +94,29 @@ _RB_LQUAT_KEYS = [IMP.FloatKey("rigid_body_local_quaternion_%d" % i)
                   for i in range(4)]
 
 
-def _get_rigid_bodies(m):
+def _get_rigid_body_indexes(m):
+    """Get the particle indexes of all rigid bodies in the model"""
     assert m.get_has_data(_RB_LIST_KEY)
     rbl = m.get_data(_RB_LIST_KEY)
     rbl = IMP.SingletonContainer.get_from(rbl)
-    particle_from_rb_index = rbl.get_contents()
+    return rbl.get_contents()
+
+
+def _get_rigid_body_index(m, particle_index):
+    """Given a particle index, return the corresponding rigid body index"""
+    particle_from_rb_index = _get_rigid_body_indexes(m)
+    rb_index_from_particle = {pi: rbi for (rbi, pi) in
+                              enumerate(particle_from_rb_index)}
+    return rb_index_from_particle[particle_index]
+
+
+def _get_rigid_bodies(m):
+    particle_from_rb_index = _get_rigid_body_indexes(m)
+    rb_index_from_particle = {int(pi): rbi for (rbi, pi) in
+                              enumerate(particle_from_rb_index)}
     intcoord = m.get_internal_coordinates_numpy()
     quaternion = jnp.stack([m.get_numpy(rk)[particle_from_rb_index]
                             for rk in _RB_QUAT_KEYS], axis=1)
-    rb_index_from_particle = {int(pi): rbi for (rbi, pi) in
-                              enumerate(particle_from_rb_index)}
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
