@@ -29,6 +29,7 @@ class Tests(IMP.test.TestCase):
         mv = IMP.core.BallMover(m, (p1, p2), 1.0)
         X = {'xyz': jnp.array(m.get_spheres_numpy()[0])}
         ji = mv._get_jax()
+        self.assertEqual(ji._keys, frozenset())
 
         init_func = jax.jit(ji.init_func)
         mvs = init_func(jax.random.key(42))
@@ -67,6 +68,7 @@ class Tests(IMP.test.TestCase):
             m, p1, IMP.core.RigidBodyMember.get_internal_coordinate_keys(),
             1.0)
         ji = mv._get_jax()
+        self.assertEqual(ji._keys, frozenset(('rigid_bodies',)))
         jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
 
         init_func = jax.jit(ji.init_func)

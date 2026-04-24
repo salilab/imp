@@ -10,17 +10,18 @@ except ImportError:
 
 
 class JAXMover(IMP.core.MonteCarloMover):
-    def __init__(self, m, state, ratio):
+    def __init__(self, m, state, ratio, key):
         super().__init__(m, "JAXMover%1%")
         self.state = state
         self.ratio = ratio
+        self._key = key
 
     def _get_jax(self):
         def init_func(key):
             return self.state
         def propose_func(jm, state):
             return jm, state + 1, self.ratio
-        return self._wrap_jax(init_func, propose_func)
+        return self._wrap_jax(init_func, propose_func, keys=[self._key])
 
 
 class Test(IMP.test.TestCase):
@@ -43,10 +44,13 @@ class Test(IMP.test.TestCase):
         from IMP._jax_util import _get_jax_model
         m = IMP.Model()
         mvs = []
+        fk1 = IMP.FloatKey("jax float key 1")
+        fk2 = IMP.FloatKey("jax float key 2")
         for i in range(5):
-            mvs.append(JAXMover(m, i * 100, 0.2 * i))
+            mvs.append(JAXMover(m, i * 100, 0.2 * i, [fk1, fk2][i % 2]))
         mvr = IMP.core.SerialMover(mvs)
         ji = mvr._get_jax()
+        self.assertEqual(ji._keys, frozenset([fk1, fk2]))
         init_func = jax.jit(ji.init_func)
         sms = init_func(jax.random.key(42))
         self.assertEqual(sms.imov, -1)

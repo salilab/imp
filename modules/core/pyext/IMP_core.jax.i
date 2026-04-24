@@ -441,7 +441,7 @@
         raise NotImplementedError(f"No JAX implementation for {self}")
 
     def _wrap_jax(self, init_func, propose_func, accept_func=None,
-                  sync_func=None):
+                  sync_func=None, keys=None):
         """Create the return value for _get_jax.
            Use this method in _get_jax() to wrap the JAX functions
            with other mover-specific information.
@@ -465,9 +465,13 @@
                   at the end of a Monte Carlo sampling run to sync mover
                   data back to IMP. It is called with the persistent state
                   and the IMP Mover object.
+           @param keys If given, a set of IMP::Key objects describing Model
+                  attributes (other than xyz and radius) that are altered
+                  by this mover.
         """
         from IMP.core._jax_util import JAXMoverInfo
-        return JAXMoverInfo(init_func, propose_func, accept_func, sync_func)
+        return JAXMoverInfo(init_func, propose_func, accept_func, sync_func,
+                            keys)
   %}
 }
 
@@ -500,7 +504,8 @@
             else:
                 jm['xyz'] = jm['xyz'].at[indexes].add(v)
             return jm, key, 1.0
-        return self._wrap_jax(init_func, propose_func)
+        return self._wrap_jax(init_func, propose_func,
+                              keys=['rigid_bodies'] if intcoord else None)
   %}
 }
 
@@ -540,7 +545,7 @@
             jm = body.set_transformation_lazy(tf, jm)
             return jm, key, 1.0
 
-        return self._wrap_jax(init_func, propose_func)
+        return self._wrap_jax(init_func, propose_func, keys=['rigid_bodies'])
   %}
 }
 
@@ -592,7 +597,9 @@
                     sms.proposed_mover_steps[i],
                     sms.proposed_mover_steps[i] - sms.accepted_mover_steps[i])
 
-        return self._wrap_jax(init_func, propose_func, accept_func, sync_func)
+        return self._wrap_jax(
+            init_func, propose_func, accept_func, sync_func,
+            keys=frozenset(x for m in movers for x in m._keys))
   %}
 }
 

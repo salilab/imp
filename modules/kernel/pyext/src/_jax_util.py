@@ -165,6 +165,7 @@ class JAXOptimizerInfo:
     def __init__(self, optimizer):
         self._opt = optimizer
         self._sf = self._get_scoring_function(optimizer)
+        self._keys = frozenset()
         ji = self._sf._get_jax()
         self.score_func = _get_score_constrained(
             optimizer.get_model(), ji.score_func)
@@ -196,10 +197,10 @@ class JAXOptimizerInfo:
 
     def get_jax_model(self):
         """Get Model data as a tree of NumPy arrays"""
-        # By default just return the Model from the ScoringFunction
+        # Add keys used by the scoring function to those we need ourselves
         # todo: add any keys used by ScoreStates
         ji = self._sf._get_jax()
-        return ji.get_jax_model()
+        return _get_jax_model(ji.m, ji._keys | self._keys)
 
 
 class JAXOptimizerStateInfo:

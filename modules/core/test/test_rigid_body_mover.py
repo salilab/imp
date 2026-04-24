@@ -148,6 +148,7 @@ class Tests(IMP.test.TestCase):
         rot0 = rb.get_rotation()
 
         ji = rb_mover._get_jax()
+        self.assertEqual(ji._keys, frozenset(["rigid_bodies"]))
         jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
 
         init_func = jax.jit(ji.init_func)

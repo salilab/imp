@@ -23,11 +23,13 @@ def _get_jax_restraint(r):
 
 class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
-    def __init__(self, init_func, propose_func, accept_func, sync_func):
+    def __init__(self, init_func, propose_func, accept_func, sync_func,
+                 keys):
         self.init_func = init_func
         self.propose_func = propose_func
         self.accept_func = accept_func
         self.sync_func = sync_func
+        self._keys = frozenset(keys or ())
 
 
 @jax.tree_util.register_dataclass
@@ -67,6 +69,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         super().__init__(mc)
         score_func = self.score_func
         movers = [mover.get_derived_object()._get_jax() for mover in mc.movers]
+        self._keys = frozenset(x for m in movers for x in m._keys)
         _temperature = mc.get_kt()
         return_best = mc.get_return_best()
         jax_optstates = self._setup_jax_optimizer_states()
