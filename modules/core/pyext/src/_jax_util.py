@@ -207,6 +207,43 @@ class _JAXOptimizer:
                     s.update_always()
 
 
+class _SyncIMPModel:
+    """Copy information from the JAX Model back to the IMP Model.
+       This is intended to be called during sampling, and will copy
+       XYZ coordinates and rigid body information"""
+
+    def __init__(self, imp_model, jax_model):
+        from . import _jax_rigid
+        self._imp_model = imp_model
+        self._xyz = imp_model.get_spheres_numpy()[0]
+        self._rigid_bodies = 'rigid_bodies' in jax_model
+        if self._rigid_bodies:
+            self._non_rigid = jax_model['rigid_bodies'].non_rigid_members
+            self._rigid_body_indexes = _jax_rigid._get_rigid_body_indexes(
+                imp_model)
+            self._quaternion = [imp_model.get_numpy(rk)
+                                for rk in _jax_rigid._RB_QUAT_KEYS]
+            # todo: lquaternion (nested rigid bodies)
+            for rb in jax_model['rigid_bodies'].body:
+                if rb.lquaternion.size > 0:
+                    raise NotImplementedError(
+                        "Nested rigid bodies not yet supported")
+            if self._non_rigid.size == 0:
+                self._non_rigid = None
+            else:
+                self._intcoord = imp_model.get_internal_coordinates_numpy()
+
+    def __call__(self, jm):
+        self._xyz[:] = jm['xyz']
+        if self._rigid_bodies:
+            rbs = jm['rigid_bodies']
+            for i in range(4):
+                self._quaternion[i][self._rigid_body_indexes] \
+                    = rbs.quaternion[:,i]
+            if self._non_rigid is not None:
+                self._intcoord[self._non_rigid] = rbs.intcoord[self._non_rigid]
+
+
 class _MCJAXOptimizer(_JAXOptimizer):
     """Do MC sampling with JAX, and update the IMP Model with the result"""
     def __init__(self, mc, max_steps):
@@ -225,19 +262,18 @@ class _MCJAXOptimizer(_JAXOptimizer):
            the result. Return the final score and the new JAX optimizer
            object."""
         m = self.opt.get_model()
-        xyz = m.get_spheres_numpy()[0]
-
+        sync_model = _SyncIMPModel(m, mc_state.jm)
         for _ in self._loop():
             mc_state = self.apply_func(mc_state)
             # Resync IMP Model arrays with JAX
-            xyz[:] = mc_state.jm['xyz']
+            sync_model(mc_state.jm)
 
         # Update IMP MonteCarlo object with stats from JAX run
         _sync_stats(self.opt, mc_state, self._movers, self._mover_sync_funcs)
 
         if self.opt.get_return_best():
             # Resync IMP Model arrays with best JAX Model
-            xyz[:] = mc_state.best_jm['xyz']
+            sync_model(mc_state.best_jm)
             return self.opt.get_best_accepted_energy(), mc_state
         else:
             return self.opt.get_last_accepted_energy(), mc_state
