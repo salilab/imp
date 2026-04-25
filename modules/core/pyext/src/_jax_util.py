@@ -242,7 +242,7 @@ class _SyncIMPModel:
             rbs = jm['rigid_bodies']
             for i in range(4):
                 self._quaternion[i][self._rigid_body_indexes] \
-                    = rbs.quaternion[:,i]
+                    = rbs.quaternion[:, i]
             if self._non_rigid is not None:
                 self._intcoord[self._non_rigid] = rbs.intcoord[self._non_rigid]
 
