@@ -3,8 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.display
 import IMP.container
-import io
-import math
 
 
 class Tests(IMP.test.TestCase):

@@ -5,8 +5,6 @@ import IMP.core
 import IMP.container
 import IMP.test
 
-import math
-
 
 class Volume(IMP.test.TestCase):
 

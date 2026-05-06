@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.container
-import math
 
 
 class ICMover(IMP.core.MonteCarloMover):

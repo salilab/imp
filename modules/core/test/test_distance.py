@@ -1,7 +1,6 @@
 import IMP
 import IMP.core
 import IMP.test
-import io
 import pickle
 try:
     import jax

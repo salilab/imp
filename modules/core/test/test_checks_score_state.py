@@ -1,4 +1,3 @@
-import sys
 import IMP
 import IMP.core
 import IMP.test

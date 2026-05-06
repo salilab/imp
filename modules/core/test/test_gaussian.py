@@ -7,7 +7,7 @@ import IMP.algebra
 import IMP.test
 import numpy as np
 import numpy.random
-from math import cos, sin, pi, sqrt, exp, log
+from math import cos, sin, pi, sqrt
 
 
 def create_test_points(mu, radii):

@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.core
-import pickle
 try:
     import jax
 except ImportError:

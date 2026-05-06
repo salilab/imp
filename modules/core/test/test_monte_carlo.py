@@ -1,4 +1,3 @@
-import functools
 import IMP
 import IMP.test
 import IMP.core
