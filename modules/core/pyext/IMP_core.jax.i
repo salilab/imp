@@ -619,3 +619,18 @@
         return score
   %}
 }
+
+%extend IMP::core::internal::_RigidBodyNormalizeConstraint {
+  %pythoncode %{
+    def _get_jax(self):
+        from IMP.algebra._jax_util import _quaternion_normalize
+        import jax
+        normalize_rotations = jax.vmap(_quaternion_normalize, in_axes=0)
+        def apply_func(jm):
+            # Assume that constraint acts on all rigid bodies
+            allrbs = jm['rigid_bodies']
+            allrbs.quaternion = normalize_rotations(allrbs.quaternion)
+            return jm
+        return self._wrap_jax(apply_func, keys=['rigid_bodies'])
+  %}
+}

@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
@@ -293,6 +297,41 @@ class Tests(IMP.test.TestCase):
         rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
         self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
                          [0, 10, 0, 0])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rigid_body_normalize_constraint(self):
+        """Test JAX _RigidBodyNormalizeConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        # _RigidBodyNormalizeConstraint should have been created automatically;
+        # find it by name
+        ss, = [s.get_derived_object() for s in m.get_ordered_score_states()
+               if s.get_name().startswith('normalize')]
+        ji = ss._get_jax()
+        jm = ji.get_jax_model()
+        apply_func = jax.jit(ji.apply_func)
+
+        # Zero quaternion should be reset to identity
+        jm['rigid_bodies'].quaternion = jnp.array([[0., 0., 0., 0.]])
+        jm = apply_func(jm)
+        self.assertEqual(
+            [int(x * 10.) for x in jm['rigid_bodies'].quaternion[0]],
+            [10, 0, 0, 0])
+
+        # Non-normalized quaternion should be normalized
+        jm['rigid_bodies'].quaternion = jnp.array([[0., 2., 0., 0.]])
+        jm = apply_func(jm)
+        self.assertEqual(
+            [int(x * 10.) for x in jm['rigid_bodies'].quaternion[0]],
+            [0, 10, 0, 0])
 
 
 if __name__ == '__main__':
