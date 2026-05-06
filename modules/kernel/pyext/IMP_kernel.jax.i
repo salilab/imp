@@ -29,7 +29,8 @@ class JAXWarning(UserWarning):
            an equivalent function using [JAX](https://docs.jax.dev/)
            that scores the current JAX Model. See also _wrap_jax.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
 
     def _evaluate_jax(self):
         """Similar to evaluate(False), but using JAX.
@@ -80,7 +81,8 @@ class JAXWarning(UserWarning):
            @param m The IMP.Model that the score will act on.
            @param indexes The ParticlePairIndexes that the score will act on.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 
@@ -93,7 +95,8 @@ class JAXWarning(UserWarning):
 
     def _get_jax(self, m, indexes):
         """See IMP::PairScore::_get_jax"""
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 
@@ -123,7 +126,8 @@ class JAXWarning(UserWarning):
            an equivalent function using [JAX](https://docs.jax.dev/)
            that scores the provided feature value.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 
@@ -132,7 +136,8 @@ class JAXWarning(UserWarning):
     def _get_jax(self):
         r = self.get_single_restraint()
         if r is None:
-            raise NotImplementedError(f"No JAX implementation for {self}")
+            raise NotImplementedError(
+                f"No JAX implementation for {self} ({type(self)})")
         else:
             return r.get_derived_object()._get_jax()
 
@@ -169,7 +174,8 @@ class JAXWarning(UserWarning):
            Alternatively, a pure JAX implementation can be provided.
            See _wrap_jax for more information.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
 
     def _wrap_jax(self, init_func, apply_func):
         """Create the return value for _get_jax.
@@ -232,7 +238,8 @@ class JAXWarning(UserWarning):
            an equivalent function using [JAX](https://docs.jax.dev/)
            that modifies the JAX Model. See also _wrap_jax.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 
@@ -261,7 +268,8 @@ class JAXWarning(UserWarning):
            @param m The IMP.Model that the modifier will act on.
            @param indexes The ParticleIndexes that the modifier will act on.
         """
-        raise NotImplementedError(f"No JAX implementation for {self}")
+        raise NotImplementedError(
+            f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 
