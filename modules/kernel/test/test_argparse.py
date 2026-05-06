@@ -1,5 +1,4 @@
 import IMP.test
-import sys
 from io import StringIO
 
 # argparse processing terminates early for --help or --version

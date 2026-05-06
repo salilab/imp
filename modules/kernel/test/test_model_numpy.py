@@ -1,7 +1,6 @@
 import IMP
 import IMP.core
 import IMP.test
-import sys
 
 class Tests(IMP.test.TestCase):
 

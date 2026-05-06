@@ -1,7 +1,6 @@
 import IMP.test
 import sys
 import random
-from io import StringIO
 
 if sys.version_info[0] >=3 :
     def cmp(x, y):

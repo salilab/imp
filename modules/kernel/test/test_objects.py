@@ -1,8 +1,5 @@
 import IMP
 import IMP.test
-import sys
-import random
-from io import StringIO
 
 
 class Tests(IMP.test.TestCase):
