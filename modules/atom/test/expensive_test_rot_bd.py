@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.container
 import IMP.atom
-import math
 
 radius = 5
 

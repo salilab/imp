@@ -5,8 +5,6 @@ import IMP.atom
 import IMP.rmf
 import IMP.container
 import RMF
-import math
-
 
 
 class Tests(IMP.test.TestCase):

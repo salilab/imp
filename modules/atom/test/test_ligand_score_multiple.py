@@ -1,7 +1,5 @@
 import IMP.test
 import IMP.atom
-import sys
-import re
 import os
 
 class Tests(IMP.test.ApplicationTestCase):

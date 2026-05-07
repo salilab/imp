@@ -87,8 +87,6 @@ class JAXOptimizerState(IMP.OptimizerState):
         super().__init__(m, name)
 
     def _get_jax(self, state_index):
-        import IMP._jax_util
-
         def init_func(ms):
             ms.optimizer_states[state_index] = {'calls': 0}
             return ms
