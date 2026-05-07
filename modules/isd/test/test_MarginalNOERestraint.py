@@ -3,6 +3,7 @@ from numpy import *
 from random import uniform
 import IMP
 import IMP.test
+import IMP.isd
 
 
 class Tests(IMP.test.TestCase):

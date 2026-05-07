@@ -1,6 +1,7 @@
 from numpy import *
 from random import uniform
 import IMP
+import IMP.isd
 import IMP.test
 
 

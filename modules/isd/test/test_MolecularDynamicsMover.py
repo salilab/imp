@@ -1,5 +1,6 @@
 import IMP
 import IMP.test
+import IMP.isd
 
 vel_key_nuisance = IMP.FloatKey("vel")
 
