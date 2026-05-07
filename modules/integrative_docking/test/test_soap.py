@@ -1,7 +1,6 @@
 import IMP.test
 import sys
 import os
-import re
 
 
 class SOAPDockingApplicationTest(IMP.test.ApplicationTestCase):

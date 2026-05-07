@@ -314,7 +314,7 @@ class Tests(IMP.test.TestCase):
         md = dir(IMP._TrivialDecorator)
         missing = []
         for m in dir(IMP.Particle):
-            if not m in md and m not in exclusions and not m.startswith("_") and not m.startswith("do_"):
+            if m not in md and m not in exclusions and not m.startswith("_") and not m.startswith("do_"):
                 print(m)
                 missing.append(m)
         self.assertEqual(len(missing), 0,

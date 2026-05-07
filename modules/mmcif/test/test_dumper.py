@@ -7,18 +7,23 @@ import ihm.dumper
 import os
 from io import StringIO
 
+
 class MockGaussianEMRestraint(IMP.Restraint):
 
     def __init__(self, m, em_filename, particles):
         self.particles = particles
         self.em_filename = em_filename
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return self.particles
 
@@ -39,6 +44,7 @@ def _get_dumper_output(dumper, system):
     writer = ihm.format.CifWriter(fh)
     dumper.dump(system, writer)
     return fh.getvalue()
+
 
 class Tests(IMP.test.TestCase):
     def make_model(self, m, chains=None):

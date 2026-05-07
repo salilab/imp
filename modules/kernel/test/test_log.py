@@ -1,6 +1,7 @@
 import IMP.test
 from io import BytesIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_log_targets(self):

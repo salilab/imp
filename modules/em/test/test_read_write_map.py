@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
         _ = IMP.em.read_map(self.get_input_file_name('mini.mrc'))
         _ = IMP.em.read_map(self.get_input_file_name('mini.map'))
         _ = IMP.em.read_map(self.get_input_file_name('cube.em'))
-        self.assertRaises(IOError,  IMP.em.read_map,
+        self.assertRaises(IOError, IMP.em.read_map,
                           self.get_input_file_name('mini.pdb'))
 
     def test_emheader(self):

@@ -29,12 +29,13 @@ ATOM     22  CA  THR     2       5.892  63.526  31.966  1.00 21.24
 ATOM     23  CB  THR     2       7.391  63.353  31.697  1.00 22.20
 """
 
+
 class Tests(IMP.test.TestCase):
     def test_charmm_patches(self):
         """Test CHARMM patches"""
         m = IMP.Model()
         sio = BytesIO(pdb)
-        prot = IMP.atom.read_pdb(sio, m);
+        prot = IMP.atom.read_pdb(sio, m)
         # Read in the CHARMM heavy atom topology and parameter files
         ff = IMP.atom.get_all_atom_CHARMM_parameters()
         topology = ff.create_topology(prot)

@@ -6,7 +6,7 @@ from random import uniform
 import IMP
 
 # our project
-from IMP.isd import Scale, vonMisesKappaJeffreysRestraint
+from IMP.isd import Scale
 
 # unit testing framework
 import IMP.test

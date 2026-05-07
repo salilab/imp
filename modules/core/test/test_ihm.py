@@ -9,6 +9,7 @@ if sys.version_info[0] >= 3:
 else:
     from io import BytesIO as StringIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_read_write(self):

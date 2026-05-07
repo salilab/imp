@@ -4,6 +4,7 @@ import IMP.core
 import sys
 import os
 
+
 class Tests(IMP.test.TestCase):
 
     def test_provenance(self):

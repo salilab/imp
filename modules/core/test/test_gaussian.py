@@ -21,6 +21,7 @@ def create_test_points(mu, radii):
         testers.append(t)
     return testers
 
+
 class TestGaussian(IMP.test.TestCase):
 
     def test_gauss_rigid_body(self):

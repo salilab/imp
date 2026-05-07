@@ -7,6 +7,7 @@ try:
 except ImportError:
     jax = None
 
+
 class Tests(IMP.test.TestCase):
 
     def test_circle(self):

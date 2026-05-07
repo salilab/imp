@@ -1,10 +1,9 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import IMP.isd
 import IMP.container
 import RMF
-from IMP.algebra import *
+
 
 class MockRestraint(IMP.Restraint):
 

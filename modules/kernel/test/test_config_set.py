@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         p.add_attribute(fk1, n + 1, True)
         p.add_attribute(fsk0, [n, 2.0 * n, 3.0 * n])
         p.add_attribute(ik0, 100 * n)
-        p.add_attribute(isk0, [1 * n,  2 * n, 3 * n])
+        p.add_attribute(isk0, [1 * n, 2 * n, 3 * n])
         p.add_attribute(ik1, 100 * n + 1)
         p.add_attribute(sk0, str(100 * n))
         p.add_attribute(sk1, str(100 * n + 1))

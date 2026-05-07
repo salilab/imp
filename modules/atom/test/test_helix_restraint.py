@@ -2,6 +2,7 @@ import IMP
 import IMP.atom
 import IMP.test
 
+
 class Tests(IMP.test.TestCase):
     def test_restraint(self):
         m = IMP.Model()
@@ -10,5 +11,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.atom.HelixRestraint(res)
         self.assertEqual(r.get_number_of_dihedrals(),len(res)-2)
         self.assertEqual(r.get_number_of_bonds(),len(res)-4)
+
+
 if __name__ == '__main__':
     IMP.test.main()

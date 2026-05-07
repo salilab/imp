@@ -494,7 +494,6 @@ ligandPdb (str) antibody_cut.pdb
                               'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
                               '--no_filtering_by_rg', '-a']))
 
-
     def test_saxs_scorer_weighted(self):
         """Test SAXSScorer class with weighting"""
         # Don't get confused by other tests that make *_score.res files at

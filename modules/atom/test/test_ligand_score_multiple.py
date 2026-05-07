@@ -2,6 +2,7 @@ import IMP.test
 import IMP.atom
 import os
 
+
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_score_pdb(self):

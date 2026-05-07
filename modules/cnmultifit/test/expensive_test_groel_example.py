@@ -1,6 +1,5 @@
 import IMP.test
 import IMP.cnmultifit
-import sys
 import os
 import re
 
@@ -14,7 +13,7 @@ class Tests(IMP.test.ApplicationTestCase):
         with IMP.test.temporary_working_directory():
             for c in cmds:
                 self.run_shell_command(c)
-            r = re.compile('rmsd:\s+([\d\.]+)')
+            r = re.compile('rmsd:\\s+([\\d\\.]+)')
             with open('rmsd.output') as fh:
                 rmsds = fh.readlines()
             expected_files = ['1oel_A.pdb.ms', 'multifit.output']

@@ -1,8 +1,6 @@
 import IMP
 import IMP.test
-import sys
 import os
-import random
 import logging
 log = logging.getLogger("test_mc_modeling")
 logging.basicConfig()
@@ -19,8 +17,8 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
     def test_generate_model(self):
         """ Test that the DOMINO modeling runs """
         try:
-            import networkx
-            import subprocess
+            import networkx  # noqa: F401
+            import subprocess  # noqa: F401
         except ImportError as detail:
             self.skipTest(str(detail))
         domino_model = self.import_python_application('emagefit')

@@ -7,6 +7,7 @@ try:
 except ImportError:
     jax = None
 
+
 def make_score():
     m = IMP.Model()
     s = IMP.core.HarmonicSphereDistancePairScore(0, 1)

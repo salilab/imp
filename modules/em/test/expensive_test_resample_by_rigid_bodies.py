@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
                 inv = rand_t[i].get_inverse()
                 for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
                     x.set_coordinates(
-                       inv.get_transformed(x.get_coordinates()))
+                        inv.get_transformed(x.get_coordinates()))
                 IMP.core.transform(self.rbs_of_copy[i], inv)
 
     def _test_resampling_derivatives(self):

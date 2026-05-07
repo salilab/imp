@@ -15,8 +15,10 @@ radkey = IMP.FloatKey("radius")
 class IntLike:
     def __init__(self, val):
         self.val = val
+
     def __int__(self):
         return self.val
+
     def __index__(self):
         return self.val
 

@@ -3,14 +3,17 @@ import IMP.test
 import IMP.core
 import pickle
 
+
 class TestVisitor(IMP.core.HierarchyVisitor):
     def __init__(self, descend=True):
         super().__init__()
         self.descend = descend
         self.seen = []
+
     def __call__(self, h):
         self.seen.append(h.get_name())
         return self.descend
+
 
 class Tests(IMP.test.TestCase):
 

@@ -2,9 +2,6 @@ import IMP
 import IMP.test
 import IMP.em2d
 import IMP.EMageFit.csv_related as csv_related
-import sys
-import os
-import random
 
 
 class Tests(IMP.test.TestCase):

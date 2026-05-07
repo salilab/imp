@@ -1,15 +1,7 @@
 # general imports
 from numpy import *
 from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import Scale, JeffreysRestraint, MarginalNOERestraint
-
-# unit testing framework
 import IMP.test
 
 

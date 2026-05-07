@@ -1,16 +1,7 @@
-# general imports
-from numpy import *
 from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import RepulsiveDistancePairScore
-
-# unit testing framework
 import IMP.test
+from IMP.isd import RepulsiveDistancePairScore
 
 
 class Tests(IMP.test.TestCase):

@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 
+
 class Tests(IMP.test.TestCase):
 
     def test_get_set_data(self):

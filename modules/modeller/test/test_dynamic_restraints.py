@@ -1,4 +1,3 @@
-import os
 import modeller
 import IMP
 import IMP.test

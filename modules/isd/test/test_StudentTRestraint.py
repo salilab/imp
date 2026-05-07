@@ -1,7 +1,7 @@
 from itertools import product
 
 import IMP
-from IMP.isd import Nuisance, Scale, StudentTRestraint, FStudentT
+from IMP.isd import Nuisance, Scale, StudentTRestraint
 import IMP.test
 
 try:

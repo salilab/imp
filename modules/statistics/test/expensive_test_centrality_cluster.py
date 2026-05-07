@@ -2,7 +2,6 @@ import IMP.test
 import IMP
 import IMP.statistics
 import IMP.algebra
-import random
 
 
 class Tests(IMP.test.TestCase):

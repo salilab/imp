@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.container
-import math
 
 
 class Tests(IMP.test.TestCase):

@@ -1,4 +1,3 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import RMF

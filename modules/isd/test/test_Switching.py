@@ -1,4 +1,3 @@
-import math
 # imp general
 import IMP
 import IMP.core

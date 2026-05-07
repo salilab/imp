@@ -5,6 +5,7 @@ import IMP.core
 import IMP.algebra
 import math
 
+
 class Tests(IMP.test.TestCase):
 
     def make_angle(self, m, angle):

@@ -5,6 +5,7 @@ import IMP.container
 
 max_score = .02
 
+
 class Tests(IMP.test.TestCase):
 
     def check_model(self, m, sf, lsc, lpc):
@@ -81,7 +82,7 @@ class Tests(IMP.test.TestCase):
         s.set_number_of_attempts(2)
         n_trials = 3
         trial = 1
-        while(True):
+        while True:
             try:
                 print("sampling")
                 cs = s.create_sample()
@@ -98,8 +99,8 @@ class Tests(IMP.test.TestCase):
                 return
             except:
                 if trial < n_trials:
-                    print("Trial #%d out of %d has failed, trying again" \
-                        % (trial, n_trials))
+                    print("Trial #%d out of %d has failed, trying again"
+                          % (trial, n_trials))
                     trial = trial + 1
                 else:
                     raise

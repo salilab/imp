@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         # make sure centers were found correctly
         c0 = km.get_center(0)
         c1 = km.get_center(1)
-        if(c0[0] < 3.0):
+        if c0[0] < 3.0:
             self.assertAlmostEqual(c0[0], 0.4, 1)
             self.assertAlmostEqual(c0[1], 0.2, 1)
         else:

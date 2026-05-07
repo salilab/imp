@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
         Omega = self.get_Omega()
         P = linalg.inv(Omega)
         eps = transpose([I - m])
-        ret =  1 / 2. * dot(dot(transpose(eps), P), eps)   \
+        ret = 1 / 2. * dot(dot(transpose(eps), P), eps)   \
             + 1 / 2. * log((2 * pi) ** M * linalg.det(Omega))
         assert ret.shape == (1, 1)
         return ret[0, 0]

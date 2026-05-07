@@ -1,17 +1,8 @@
-# general imports
-from numpy import *
 from random import uniform
 import pickle
-
-# imp general
 import IMP
-
 import math
-
-# our project
-from IMP.isd import Scale, FretRestraint
-
-# unit testing framework
+from IMP.isd import Scale
 import IMP.test
 
 

@@ -231,10 +231,7 @@ class Tests(IMP.test.TestCase):
         pis, fks = list(
             zip(*[(p.get_particle_index(), fk)
                   for p in all_beads + all_rbs[1:]
-                  for fk in IMP.core.RigidBodyMember(p).get_internal_coordinate_keys()
-                 ]
-               )
-        )
+                  for fk in IMP.core.RigidBodyMember(p).get_internal_coordinate_keys()]))
 
         gc = GradientCalculator(sf, pis, fks)
         grad_approx = gc.get_approximate_gradient(eps=1e-6)
@@ -339,8 +336,7 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         sf.evaluate(True)
 
-        rot_global_to_parent = rb.get_reference_frame(
-            ).get_transformation_to().get_rotation().get_inverse()
+        rot_global_to_parent = rb.get_reference_frame().get_transformation_to().get_rotation().get_inverse()
         exp_lderv = rot_global_to_parent * point.get_derivatives()
         lderv = IMP.core.NonRigidMember(nrb).get_internal_derivatives()
         self.assertGreater(lderv.get_magnitude(), 0)

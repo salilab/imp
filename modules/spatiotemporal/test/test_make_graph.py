@@ -13,6 +13,7 @@ import sys
 import itertools
 import numpy as np
 
+
 def setup_system():
     """
     Function to set up initial variables
@@ -23,6 +24,7 @@ def setup_system():
     # exp_comp_map is a dictionary that describes protein stoicheometery. The key describes the protein, which should correspond to names within the expected_subcomplexes. For each of these proteins, a csv file should be provided with protein copy number data
     exp_comp = {'A': 'exp_comp_A.csv', 'B': 'exp_comp_B.csv'}
     return time_dict, subcomplexes, exp_comp
+
 
 class Tests(IMP.test.TestCase):
 
@@ -54,7 +56,6 @@ class Tests(IMP.test.TestCase):
             check_config.close()
             self.assertEqual(line1[0:2], 'A1')
             self.assertEqual(line2[0:2], 'B2')
-
 
     def test_graph_setup(self):
         """
@@ -205,12 +206,12 @@ class Tests(IMP.test.TestCase):
             output=self.get_tmp_file_name('output')
             skip=0
             try:
-                from graphviz import Digraph
+                from graphviz import Digraph  # noqa: F401
             except ImportError:
                 self.skipTest('graphviz not available, will not test drawing graph')
             try:
-                from matplotlib import cm
-                from matplotlib import colors as clr
+                from matplotlib import cm  # noqa: F401
+                from matplotlib import colors as clr  # noqa: F401
             except ImportError:
                 self.skipTest('matplotlib not available, will not test drawing graph')
             nodes, graph, graph_prob, graph_scores = spatiotemporal.create_DAG(state_dict, input_dir=input,output_dir=output, draw_dag=True,out_labeled_pdf=False,out_cdf=False,out_pdf=False)

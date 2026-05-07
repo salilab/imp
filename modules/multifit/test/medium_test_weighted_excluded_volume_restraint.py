@@ -1,9 +1,7 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import IMP.multifit
-import os
 try:
     from time import process_time  # needs python 3.3 or later
 except ImportError:
@@ -101,12 +99,13 @@ class Tests(IMP.test.TestCase):
             conn_r = self.c_r.evaluate(False)
             w_exc_vol_r = self.wev_r.evaluate(False)
             self.assertTrue(
-                ((conn_r == 0.)and(w_exc_vol_r > 0.))or(
-                    (conn_r > 0.)and(w_exc_vol_r == 0.)),
+                (conn_r == 0. and w_exc_vol_r > 0.)
+                or (conn_r > 0. and w_exc_vol_r == 0.),
                 "inconsistency between connectivity and excluded volume restraint")
             # print "connectivity "+str(conn_r) + " | excluded-volume " +
             # str(w_exc_vol_r)
             xyz.set_coordinates(
                 t.get_inverse().get_transformed(xyz.get_coordinates()))
+
 if __name__ == '__main__':
     IMP.test.main()

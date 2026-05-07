@@ -13,6 +13,7 @@ This tests that NonRigidMembers, along with other invariants,
 are correctly updated when a TransformationSymmetry is applied in a MonteCarlo trajectory
 """
 
+
 class RigidBodyTransformation:
     '''Utility class to keep track of RB transformations'''
     def __init__(self,rb):
@@ -37,6 +38,7 @@ class RigidBodyTransformation:
         q=(self.rot1/self.rot0).get_quaternion()
         return get_angle_and_axis(q)
 
+
 class RigidBodyPairTransformation:
     '''Utility class to monitor transformations between RBs'''
     def __init__(self,rb0,rb1):
@@ -56,6 +58,7 @@ class RigidBodyPairTransformation:
         q=(self.rot1/self.rot0).get_quaternion()
         return get_angle_and_axis(q)
 
+
 def get_angle_and_axis(q):
     '''get angle and axis from quaternion'''
     # q[0] can be very slightly larger than 1.0; math.acos would throw
@@ -71,6 +74,7 @@ def get_angle_and_axis(q):
         return (angle,(x,y,z))
     else:
         return (0,None)
+
 
 def get_rbs_and_beads(hiers):
     """Returns rbs and fbs objects in original order"""
@@ -95,6 +99,7 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
+
 def add_symmetry(clones,refs,transform,mdl):
     '''setup the symmetry from the clones'''
 
@@ -112,6 +117,7 @@ def add_symmetry(clones,refs,transform,mdl):
     c = IMP.container.SingletonsConstraint(sm, None, lsc)
 
     mdl.add_score_state(c)
+
 
 class TestSymmetryMC(IMP.test.TestCase):
 
@@ -176,7 +182,6 @@ class TestSymmetryMC(IMP.test.TestCase):
                 else:
                     ps_mv[p]=[fbmv]
 
-
         # enforce rotational symmetry
         # while removing movers from the clones
         rotational_axis=IMP.algebra.Vector3D(-0.98477941,0.15168411,-0.08486137)
@@ -198,7 +203,6 @@ class TestSymmetryMC(IMP.test.TestCase):
                 continue
             else:
                 enabled_movers.append(mv)
-
 
         #create EV restraint
         ssps = IMP.core.SoftSpherePairScore(1.0)
@@ -263,13 +267,17 @@ class TestSymmetryMC(IMP.test.TestCase):
                 trans=rbpt.get_translation()
                 (angle,axis)=rbpt.get_rotation()
                 for key in rb_rbpt_values:
-                    if rb not in rb_rbpt_values[key]: rb_rbpt_values[key][rb]=[]
+                    if rb not in rb_rbpt_values[key]:
+                        rb_rbpt_values[key][rb]=[]
                     #if key=="trans": rb_rbpt_values[key][rb].append(trans)
-                    if key=="angle": rb_rbpt_values[key][rb].append(angle)
-                    if key=="axis_x": rb_rbpt_values[key][rb].append(abs(axis[0]))
-                    if key=="axis_y": rb_rbpt_values[key][rb].append(abs(axis[1]))
-                    if key=="axis_z": rb_rbpt_values[key][rb].append(abs(axis[2]))
-
+                    if key=="angle":
+                        rb_rbpt_values[key][rb].append(angle)
+                    if key=="axis_x":
+                        rb_rbpt_values[key][rb].append(abs(axis[0]))
+                    if key=="axis_y":
+                        rb_rbpt_values[key][rb].append(abs(axis[1]))
+                    if key=="axis_z":
+                        rb_rbpt_values[key][rb].append(abs(axis[2]))
 
             #third check the NonRigidMember internal coordinates:
             ic_xs=[]

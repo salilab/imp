@@ -1,15 +1,6 @@
-# general imports
 from numpy import *
-from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
 from IMP.isd import *
-
-# unit testing framework
 import IMP.test
 
 
@@ -55,7 +46,7 @@ class Tests(IMP.test.TestCase):
         l = self.lam.get_nuisance()
         s = self.sig.get_nuisance()
         return t ** 2 * exp(-(q1 - q2) ** 2 / (2. * l ** 2)) \
-            -  t ** 4 * exp(-(q1 ** 2 + q2 ** 2) / (2. * l ** 2))\
+            - t ** 4 * exp(-(q1 ** 2 + q2 ** 2) / (2. * l ** 2))\
             / (-t ** 4 + exp(1. / l ** 2) * (s + t ** 2) * (2 * s + t ** 2)) \
             * (exp((q1 + q2) / l ** 2) * (s + t ** 2) - t ** 2 * (exp(q1 / l ** 2) + exp(q2 / l ** 2))
                + exp(1. / l ** 2) * (2 * s + t ** 2))

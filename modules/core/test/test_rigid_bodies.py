@@ -133,8 +133,8 @@ class Tests(IMP.test.TestCase):
                      IMP.core.RigidMember.setup_particle(
                            IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
         non_rigid_body = IMP.core.RigidBody.setup_particle(
-                         IMP.core.NonRigidMember.setup_particle(
-                           IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
+            IMP.core.NonRigidMember.setup_particle(
+                IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
         rb.add_member(rigid_member)
         rb.add_non_rigid_member(non_rigid_member)
         rb.add_member(rigid_body)

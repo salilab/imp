@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
         with self.open_input_file("mini.pdb") as fh:
             h = IMP.atom.read_pdb(fh, m)
         s = IMP.atom.Selection(h, residue_type=IMP.atom.PHE) \
-              - (IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG) \
+              - (IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
                  | IMP.atom.Selection(h, terminus=IMP.atom.Selection.C))
         ps = s.get_selected_particle_indexes()
         self.assertEqual(len(ps), 19)

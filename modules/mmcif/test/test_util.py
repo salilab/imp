@@ -1,6 +1,5 @@
 import IMP.test
 import IMP.mmcif
-import ihm
 
 
 class Tests(IMP.test.TestCase):

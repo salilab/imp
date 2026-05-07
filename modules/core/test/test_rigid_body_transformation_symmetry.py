@@ -4,6 +4,7 @@ import IMP.core
 import IMP.container
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
     def test_xyz_particles(self):
         m=IMP.Model()
@@ -31,7 +32,6 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p)
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
         m.update()
@@ -56,8 +56,6 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid_body(self):
         m=IMP.Model()
-
-
 
         ps_reference=[]
         for i in range(10):
@@ -85,10 +83,8 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p.get_index())
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
-
 
         m.update()
 
@@ -113,7 +109,8 @@ class Tests(IMP.test.TestCase):
         for k in range(30):
             random_reference_rb_transformation= \
                 IMP.algebra.get_random_local_transformation(
-                IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D((0,0,0),10)))
+                    IMP.algebra.get_random_vector_in(
+                        IMP.algebra.Sphere3D((0,0,0), 10)))
             IMP.core.transform(rb_reference,random_reference_rb_transformation)
 
             random_symmetry_rb_transformation=IMP.algebra.get_random_local_transformation(

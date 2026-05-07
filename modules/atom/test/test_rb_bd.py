@@ -67,9 +67,9 @@ class Tests(IMP.test.TestCase):
             bd.optimize(round_cycles)
             energy = sf.evaluate(False)
             total_cycles += round_cycles
-            print("energy after %d cycles = %.2f" \
-                % (total_cycles, energy))
-            if(energy < e_threshold):
+            print("energy after %d cycles = %.2f"
+                  % (total_cycles, energy))
+            if energy < e_threshold:
                 break
         self.assertLess(energy, e_threshold)
 

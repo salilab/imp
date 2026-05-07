@@ -2,8 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
-import io
-import re
 import pickle
 
 

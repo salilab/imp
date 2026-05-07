@@ -3,6 +3,7 @@ import IMP.test
 import IMP.atom
 import IMP.multifit
 
+
 class Tests(IMP.test.TestCase):
 
     def test_refiner(self):

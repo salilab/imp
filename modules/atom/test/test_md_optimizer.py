@@ -44,6 +44,7 @@ class XTransRestraint(IMP.Restraint):
         import jax.numpy as jnp
         indexes = self.get_model().get_particle_indexes()
         strength = self.strength
+
         def jax_restraint(jm):
             xyzs = jm['xyz'][indexes]
             return jnp.sum(xyzs[:,0] * strength)

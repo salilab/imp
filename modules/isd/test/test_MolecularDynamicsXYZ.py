@@ -3,7 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.isd
-import random
 
 nkey = IMP.FloatKey("nuisance")
 vnkey = IMP.FloatKey("vel")

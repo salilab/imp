@@ -7,7 +7,7 @@ from random import gauss, uniform, randint
 import IMP
 
 # our project
-from IMP.isd import Scale, TALOSRestraint
+from IMP.isd import Scale
 
 # unit testing framework
 import IMP.test
@@ -159,7 +159,7 @@ class Tests(IMP.test.TestCase):
     def testValueEDist(self):
         """Test energy of TALOSRestraint by varying p3"""
         try:
-            from scipy.special import i0, i1
+            from scipy.special import i0, i1  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
@@ -179,7 +179,7 @@ class Tests(IMP.test.TestCase):
     def testValueEKappa(self):
         """Test energy of TALOSRestraint by varying kappa"""
         try:
-            from scipy.special import i0, i1
+            from scipy.special import i0, i1  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()

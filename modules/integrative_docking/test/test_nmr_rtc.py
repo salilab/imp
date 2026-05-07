@@ -1,7 +1,6 @@
 import IMP.test
 import sys
 import os
-import re
 
 
 class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):

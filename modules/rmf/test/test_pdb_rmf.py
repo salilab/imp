@@ -1,7 +1,5 @@
 import IMP.test
-import sys
 import os
-import re
 import RMF
 import IMP.rmf
 

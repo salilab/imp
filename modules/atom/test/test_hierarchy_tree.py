@@ -3,6 +3,7 @@ import IMP.atom
 import IMP.test
 from io import BytesIO
 
+
 class Tests(IMP.test.TestCase):
 
     def test_hierarchy_tree(self):

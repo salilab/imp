@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
         topology.add_coordinates(protein)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         for atom in atoms:
-            assert(IMP.atom.Atom.get_is_setup(atom))
+            assert IMP.atom.Atom.get_is_setup(atom)
             element_id = IMP.atom.Atom(atom).get_element()
             atom_radius = radius_by_element_id[element_id]
             xyzr = IMP.core.XYZR.setup_particle(atom)

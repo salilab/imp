@@ -3,7 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.display
-import os
 
 
 class Tests(IMP.test.TestCase):

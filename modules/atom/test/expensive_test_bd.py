@@ -216,7 +216,6 @@ class Tests(IMP.test.TestCase):
         if use_sympy:
             mean = -D_u * f_u * t_u / kT_u
         else:
-# mean=-18 # -18 is wrong - was made for the wrong simulation temperature
             mean = -D * F_LINEAR * t / KT_SILLY
         print("Theoretical mean x-coordinate: %.2f A" % mean)
         h = IMP.core.Linear(0, F_LINEAR)

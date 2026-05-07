@@ -5,14 +5,7 @@ from math import exp, log
 from random import sample
 import ast
 import pickle
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import Nuisance, Scale, CysteineCrossLinkRestraint, CysteineCrossLinkData, CrossLinkData
-
-# unit testing framework
 import IMP.test
 
 
@@ -72,9 +65,9 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
         grid = []
         dx = (gmax - gmin) / float(ngrid)
         for i in range(0, ngrid + 1):
-            if(not boundaries and i == 0):
+            if not boundaries and i == 0:
                 continue
-            if(not boundaries and i == ngrid):
+            if not boundaries and i == ngrid:
                 continue
             grid.append(gmin + float(i) * dx)
         return grid

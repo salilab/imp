@@ -22,5 +22,5 @@ for i in range(0, 10):
             IMP.algebra.get_random_vector_in(bb))
     m.update()
     for pip in cpc.get_indexes():
-        assert(pip[0] in nt.get_neighbors(pip[1]))
-        assert(pip[1] in nt.get_neighbors(pip[0]))
+        assert pip[0] in nt.get_neighbors(pip[1])
+        assert pip[1] in nt.get_neighbors(pip[0])

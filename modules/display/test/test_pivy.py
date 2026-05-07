@@ -3,7 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.display
 import os
-import io
 
 
 class Tests(IMP.test.TestCase):
@@ -11,7 +10,7 @@ class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the pivy writer and frames"""
         try:
-            import pivy
+            import pivy  # noqa: F401
         except ImportError:
             self.skipTest("pivy Python module unavailable")
         g0 = IMP.display.SphereGeometry(

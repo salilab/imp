@@ -61,8 +61,10 @@ class Tests(IMP.test.TestCase):
         class DummyObj:
             def __init__(self, hashval):
                 self.hashval = hashval
+
             def __eq__(self, other):
                 return self.hashval == other.hashval
+
             def __hash__(self):
                 return self.hashval
         seen_objs = {}

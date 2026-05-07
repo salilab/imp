@@ -160,7 +160,6 @@ class Tests(IMP.test.TestCase):
         psi.set_nuisance(0.05)
         psi.set_nuisance_is_optimized(True)
 
-
         ps=[]
         restraints=[]
         for n in range(10):
@@ -190,7 +189,6 @@ class Tests(IMP.test.TestCase):
             ps+=[p1,p2]
             restraints.append(dr)
 
-
         mc = IMP.core.MonteCarlo(m)
         sf = IMP.core.RestraintsScoringFunction(restraints)
         mc.set_scoring_function(sf)
@@ -206,9 +204,6 @@ class Tests(IMP.test.TestCase):
 
     def test_moved_score_rigid_bodies(self):
         """Test ISD restraints with score-aware MC score decreases"""
-
-        import random
-
         num_mc_steps = 10
         m = IMP.Model()
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
@@ -228,7 +223,6 @@ class Tests(IMP.test.TestCase):
         psi.set_lower(0.)
         psi.set_nuisance(0.05)
         psi.set_nuisance_is_optimized(True)
-
 
         ps=[]
         restraints=[]

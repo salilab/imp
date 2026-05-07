@@ -4,6 +4,7 @@ import IMP.core
 import IMP.container
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
     def test_xyz_particles_identity_transf(self):
         m=IMP.Model()
@@ -26,10 +27,8 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p.get_index())
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
-
 
         m.update()
 
@@ -77,10 +76,8 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p.get_index())
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
-
 
         m.update()
 
@@ -90,11 +87,8 @@ class Tests(IMP.test.TestCase):
             copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
             self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
-
     def test_rigid_body_identity_transf(self):
         m=IMP.Model()
-
-
 
         ps_reference=[]
         for i in range(10):
@@ -119,10 +113,8 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p.get_index())
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
-
 
         m.update()
 
@@ -141,8 +133,6 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid_body_random_transf(self):
         m=IMP.Model()
-
-
 
         ps_reference=[]
         for i in range(10):
@@ -169,10 +159,8 @@ class Tests(IMP.test.TestCase):
             IMP.core.Reference.setup_particle(p, ps_reference[i])
             lc.add(p.get_index())
 
-
         c = IMP.container.SingletonsConstraint(sm, None, lc)
         m.add_score_state(c)
-
 
         m.update()
 
@@ -194,8 +182,6 @@ class Tests(IMP.test.TestCase):
                     self.assertAlmostEqual(tuple(
                                     IMP.core.XYZ(ps_reference[i]).get_coordinates())[k],
                                     tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates())[k])
-
-
 
 
 if __name__ == '__main__':

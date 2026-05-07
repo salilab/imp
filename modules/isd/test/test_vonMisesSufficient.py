@@ -64,7 +64,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
     def testEvaluate(self):
         "Test vonMisesSufficient.evaluate"
         try:
-            from scipy.special import i0, i1
+            from scipy.special import i0, i1  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         for i in range(100):
@@ -115,7 +115,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
     def testDensity(self):
         "Test vonMisesSufficient.density"
         try:
-            from scipy.special import i0, i1
+            from scipy.special import i0, i1  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         for i in range(100):

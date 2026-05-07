@@ -1,9 +1,8 @@
 import IMP.test
-import sys
 import os
-import re
 import shutil
 import IMP.multi_state
+
 
 class Tests(IMP.test.ApplicationTestCase):
 

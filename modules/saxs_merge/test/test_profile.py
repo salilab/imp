@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os
 import tempfile
 import shutil
@@ -36,7 +35,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
         try:
-            import scipy
+            import scipy # noqa: F401
         except ImportError:
             self.skipTest("could not import scipy")
         merge = self.import_python_application('saxs_merge')

@@ -7,6 +7,7 @@ import pickle
 t1 = IMP.core.ParticleType("type1")
 t2 = IMP.core.ParticleType("type2")
 
+
 class Tests(IMP.test.TestCase):
 
     def test_pickle(self):

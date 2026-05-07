@@ -3,7 +3,6 @@ import IMP.test
 import IMP.container
 import IMP.core
 import itertools
-import random
 try:
     import jax
 except ImportError:

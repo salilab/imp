@@ -155,14 +155,14 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         nr0 = self._add_non_rigid(m, r0, "0")
-        assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
+        assert IMP.core.NonRigidMember.get_is_setup(m, nr0[0])
         r0.set_is_rigid_member(nr0[0], True)
-        assert(IMP.core.RigidMember.get_is_setup(m, nr0[0]))
-        assert(not IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
+        assert IMP.core.RigidMember.get_is_setup(m, nr0[0])
+        assert not IMP.core.NonRigidMember.get_is_setup(m, nr0[0])
 
         r0.set_is_rigid_member(nr0[0], False)
-        assert(not IMP.core.RigidMember.get_is_setup(m, nr0[0]))
-        assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
+        assert not IMP.core.RigidMember.get_is_setup(m, nr0[0])
+        assert IMP.core.NonRigidMember.get_is_setup(m, nr0[0])
 
 if __name__ == '__main__':
     IMP.test.main()

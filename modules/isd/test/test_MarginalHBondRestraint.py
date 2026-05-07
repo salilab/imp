@@ -1,15 +1,6 @@
-# general imports
 from numpy import *
 from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import Scale, JeffreysRestraint, MarginalHBondRestraint
-
-# unit testing framework
 import IMP.test
 
 
@@ -86,7 +77,7 @@ class Tests(IMP.test.TestCase):
                 volumes.append(uniform(0.1, 10))
                 self.noe.add_contribution(
                     IMP.container.ListPairContainer(self.m, [pair]),
-                                 volumes[-1])
+                    volumes[-1])
             expected = 0
             for j in range(len(pairs)):
                 expected += log(volumes[j] / distances[j] ** (-6)) ** 2
@@ -134,7 +125,7 @@ class Tests(IMP.test.TestCase):
                 volumes.append(uniform(0.1, 10))
                 self.noe.add_contribution(
                     IMP.container.ListPairContainer(self.m, [pair]),
-                                    volumes[-1])
+                    volumes[-1])
             expected = 0
             for j in range(len(pairs)):
                 expected += log(volumes[j] / distances[j] ** (-6)) ** 2
@@ -158,7 +149,7 @@ class Tests(IMP.test.TestCase):
                 volumes.append(uniform(0.1, 10))
                 self.noe.add_contribution(
                     IMP.container.ListPairContainer(self.m, [pair]),
-                              volumes[-1])
+                    volumes[-1])
             expected = len(volumes)
             self.assertAlmostEqual(self.noe.get_number_of_contributions(),
                                    expected, delta=0.001)

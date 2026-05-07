@@ -95,21 +95,6 @@ class Tests(IMP.test.TestCase):
         d[td] = 3
         self.assertEqual(d[p0], 3)
 
-    # no good reason to special case particles, just use UsageExceptions
-    def _test_bad_attributes(self):
-        """Asking for non-existent attributes should cause an exception"""
-        p1 = particles[0]
-        self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
-        self.assertRaises(IndexError, p1.get_value,
-                          IMP.SparseFloatKey("notexist"))
-        self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
-        self.assertRaises(IndexError, p1.get_value,
-                          IMP.SparseIntKey("notexist"))
-        self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
-        self.assertRaises(IndexError, p1.get_value,
-                          IMP.SparseStringKey("notexist"))
-        self.assertRaises(IndexError, p1.add_attribute, IMP.FloatKey(), 0)
-
     def test_get_set_methods(self):
         """Test particle get_ and set_ methods"""
         (model, particles) = self.setup()

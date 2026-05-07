@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.atom as atom
-import sys
 import os
 
 
@@ -13,7 +12,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             computed before
         """
         try:
-            import subprocess
+            import subprocess  # noqa: F401
             import IMP.EMageFit.buildxlinks as bx
         except ImportError as e:
             self.skipTest(str(e))
@@ -61,7 +60,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             Check that the module is at least imported correctly
         """
         try:
-            import subprocess
+            import subprocess  # noqa: F401
         except ImportError as e:
             self.skipTest(str(e))
         self.import_python_application('emagefit_dock')

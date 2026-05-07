@@ -5,6 +5,7 @@ import IMP.display
 import io
 import sys
 
+
 class Tests(IMP.test.TestCase):
 
     def test_5(self):

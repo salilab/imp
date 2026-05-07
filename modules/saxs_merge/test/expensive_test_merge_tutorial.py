@@ -1,6 +1,7 @@
 import IMP.test
 import os
 
+
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_merge(self):

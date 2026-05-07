@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
     def test_fit_fft_run_parallel(self):
         """Test fit_fft module run in parallel"""
         try:
-            import multiprocessing
+            import multiprocessing  # noqa: F401
         except ImportError:
             self.skipTest("multiprocessing module not available")
         if sys.platform == 'win32' and 'WINELOADERNOEXEC' in os.environ:

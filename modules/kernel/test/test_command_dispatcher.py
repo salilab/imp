@@ -3,6 +3,7 @@ import sys
 import IMP.test
 import io
 
+
 class TestModule:
     _all_commands = ['foo', 'bar']
 

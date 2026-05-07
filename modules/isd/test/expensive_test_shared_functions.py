@@ -1,6 +1,5 @@
 import IMP.test
 import IMP.isd.shared_functions as sf
-import math
 import tempfile
 import os
 
@@ -56,11 +55,11 @@ class Tests(IMP.test.TestCase):
     def test_init_model_charmm_protein_and_ff(self):
         "rudimentary test of things"
         self.init_protein('1G6J_MODEL1.pdb')
-        self.assertIsInstance(ff, IMP.atom.CHARMMParameters)
-        self.assertIsInstance(prot, IMP.atom.Hierarchy)
-        self.assertIsInstance(rsb, IMP.RestraintSet)
+        self.assertIsInstance(ff, IMP.atom.CHARMMParameters)  # noqa: F821
+        self.assertIsInstance(prot, IMP.atom.Hierarchy)  # noqa: F821
+        self.assertIsInstance(rsb, IMP.RestraintSet)  # noqa: F821
         #self.assertEqual(rsb.get_type_name(), 'phys_bonded')
-        self.assertTrue(prot.get_is_valid(False))
+        self.assertTrue(prot.get_is_valid(False))  # noqa: F821
 
     @IMP.test.expectedFailure
     def test_init_model_setup_scale(self):
@@ -167,7 +166,7 @@ class Tests(IMP.test.TestCase):
         self.assertIsInstance(rs, IMP.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 1)
-        self.assertIsInstance(prior_rs.get_restraint(0),
+        self.assertIsInstance(prior_rs.get_restraint(0),  # noqa: F821
                               IMP.saxs.Restraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
 

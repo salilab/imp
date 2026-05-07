@@ -1,15 +1,5 @@
-# general imports
 from numpy import *
-from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import Scale, HybridMonteCarlo
-
-# unit testing framework
 import IMP.test
 
 vel_key_nuisance = IMP.FloatKey("vel")

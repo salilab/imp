@@ -1,9 +1,10 @@
 import IMP
 import IMP.algebra
 import IMP.core
-from IMP.isd import Nuisance, Scale, LognormalAmbiguousRestraint
+from IMP.isd import Scale
 import math
 import IMP.test
+
 
 class Tests(IMP.test.TestCase):
 

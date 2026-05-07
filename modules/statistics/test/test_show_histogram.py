@@ -5,7 +5,6 @@ import IMP.algebra
 import random
 import sys
 import os
-import numpy
 
 
 class MockAxes:
@@ -129,7 +128,7 @@ class Tests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector3D(x, y, z))
         print(hist.get_counts())
         print(hist.get_frequencies())
-        if not "DISPLAY" in os.environ.keys():
+        if "DISPLAY" not in os.environ.keys():
             self.skipTest("no DISPLAY variable found")
         IMP.statistics.show_histogram(
             hist.get_frequencies(),

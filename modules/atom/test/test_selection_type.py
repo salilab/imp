@@ -10,6 +10,7 @@ class Tests(IMP.test.TestCase):
         def assert_no_match(rh, index):
             s = IMP.atom.Selection(rh, residue_indexes=[index])
             self.assertEqual(len(s.get_selected_particle_indexes()), 0)
+
         def assert_match(rh, index, ai):
             s = IMP.atom.Selection(rh, residue_indexes=[index])
             i = s.get_selected_particle_indexes()
@@ -238,7 +239,7 @@ class Tests(IMP.test.TestCase):
         print(s145)
         print(s85)
         for s in s145:
-            assert(s not in s85)
+            assert s not in s85
 
     def test_hierarchy_type(self):
         """Test selection of hierarchy types"""

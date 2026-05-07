@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import tempfile
-import copy
-
 import IMP.test
 import IMP.isd
 
@@ -70,8 +66,8 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
         try:
-            import scipy
-            import numpy
+            import scipy  # noqa: F401
+            import numpy  # noqa: F401
         except ImportError:
             self.skipTest("could not import scipy and numpy")
         merge = self.import_python_application('saxs_merge')

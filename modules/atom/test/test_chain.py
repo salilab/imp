@@ -38,7 +38,6 @@ class Tests(IMP.test.TestCase):
         t=c.get_chain_type()
         self.assertEqual(t,IMP.atom.UnknownChainType)
 
-
         for t in [IMP.atom.DPolypeptide,
                   IMP.atom.LPolypeptide,
                   IMP.atom.Polydeoxyribonucleotide,

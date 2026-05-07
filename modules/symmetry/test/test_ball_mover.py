@@ -4,8 +4,6 @@ import IMP.core
 import IMP.symmetry
 import IMP.algebra
 
-from math import *
-
 
 class Test(IMP.test.TestCase):
 

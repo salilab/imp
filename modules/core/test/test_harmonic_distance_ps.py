@@ -8,6 +8,7 @@ try:
 except ImportError:
     jax = None
 
+
 def make_score():
     m = IMP.Model()
     s = IMP.core.HarmonicDistancePairScore(0, 1)

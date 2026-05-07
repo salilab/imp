@@ -5,7 +5,7 @@ import IMP.rmf
 import IMP.test
 import RMF
 
-##### CONSTANT ####
+# CONSTANT
 N_ALANINES = 2
 # Radii by atomic weight of various elements
 radius_by_element_id = {
@@ -19,7 +19,8 @@ RMF_FNAME_PREFIX = "dialanine.rmf"
 BD_CYCLES = 100
 RMF_PERIOD = 10
 
-##### AUXILIARY FUNCTIOONS ####
+
+# AUXILIARY FUNCTIONS
 def add_poly_ALA_to_fragment(fragment, num):
     assert (IMP.atom.Fragment.get_is_setup(fragment))
     m = fragment.get_model()
@@ -28,10 +29,12 @@ def add_poly_ALA_to_fragment(fragment, num):
         r = IMP.atom.Residue.setup_particle(p, IMP.atom.ALA)
         fragment.add_child(r)
 
+
 def create_hierarchy_root(m):
     p = IMP.Particle(m)
     h = IMP.atom.Hierarchy.setup_particle(p)
     return h
+
 
 def create_fragment(m, num):
     p = IMP.Particle(m)
@@ -40,8 +43,10 @@ def create_fragment(m, num):
     f.set_residue_indexes([i+1 for i in range(num)])
     return f
 
+
 def get_num_res(t):
     return [s.get_number_of_residues() for s in t.get_segments()]
+
 
 def create_topology():
     m = IMP.Model()
@@ -54,30 +59,25 @@ def create_topology():
 #    assert(get_num_res(t) == [N_ALANINES])
     return t
 
+
 def get_scoring_function(protein, topology, is_non_bonded=True):
     force_field = topology.get_parameters()
     restraints = []
     restraints.append(IMP.atom.CHARMMStereochemistryRestraint(protein, topology))
     if is_non_bonded:
-        force_field.add_lennard_jones_types(protein)
-        atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-        container = IMP.container.ListSingletonContainer(m, atoms)
-        cpc = IMP.container.ClosePairContainer(cont, 4.0)
-        cpc.add_pair_filter(r.get_pair_filter())
-        sf = IMP.atom.ForceSwitch(6.0, 7.0)
-        ljps = IMP.atom.LennardJonesTypedPairScore(sf)
-        restraints.append(IMP.container.PairsRestraint(ljps, cpc))
+        raise NotImplementedError()
     scoring_function = IMP.core.RestraintsScoringFunction(restraints)
     return scoring_function
 
-##### Tests #####
+
+# Tests
 class Tests(IMP.test.TestCase):
     def _create_dialanine_hierarchy_and_topology(self, model):
         topology = create_topology()
         protein = topology.create_hierarchy(model)
         topology.apply_default_patches()
         topology.setup_hierarchy(protein)
-        topology.add_coordinates (protein)
+        topology.add_coordinates(protein)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         for atom in atoms:
             self.assertTrue(IMP.atom.Atom.get_is_setup(atom))

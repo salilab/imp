@@ -1,4 +1,3 @@
-import os
 import math
 import IMP
 import IMP.test

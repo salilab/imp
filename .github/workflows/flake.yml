@@ -22,3 +22,4 @@ jobs:
       run: |
         pip install flake8
         flake8 . --extend-exclude '*/test/*,*/examples/*,*/data/*,*/utility/*,*/dependency/*,dependencies.py,setup_git.py,*/pmi1/*,*/dev_tools/*,*/benchmark/*,*/scripts/*,*/broken-examples/*,components/*'
+        flake8 modules/*/test --ignore=F841,E501,E265,E305,E231,E225,E226,E116,E128,W503,W504,E126,E402,E127,E741,F403,F405,E261,E251,E722 --extend-exclude '*/bff/*,*/sampcon/*,*/pmi1/*,*/pmi/*,*/npctransport/*,*/bayesianem/*'

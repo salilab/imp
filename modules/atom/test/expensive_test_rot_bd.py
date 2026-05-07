@@ -44,7 +44,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(real_D, estimate_D, delta= .05*(real_D+estimate_D))
         return estimate_D
 
-
     def test_rot(self):
         """Check rigid body brownian dynamics correlation time"""
         estimate1000= self._do_test_rot(1000)

@@ -1,8 +1,6 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import RMF
-from IMP.algebra import *
 
 
 class Tests(IMP.test.TestCase):
