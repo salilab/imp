@@ -19,7 +19,6 @@ No repository directories are changed.
 
 import os
 import os.path
-import platform
 import tools
 from argparse import ArgumentParser
 
