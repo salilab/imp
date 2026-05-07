@@ -333,6 +333,37 @@ class Tests(IMP.test.TestCase):
             [int(x * 10.) for x in jm['rigid_bodies'].quaternion[0]],
             [0, 10, 0, 0])
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rigid_body_position_constraint(self):
+        """Test JAX _RigidBodyPositionConstraint"""
+        import IMP._jax_util
+        import numpy as np
+
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs0_index = int(children[0].get_particle_index())
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        # _RigidBodyPositionConstraint should have been created automatically;
+        # find it by name
+        ss, = [s.get_derived_object() for s in m.get_ordered_score_states()
+               if s.get_name().endswith('rigid body positions')]
+        ji = ss._get_jax()
+        jm = ji.get_jax_model()
+        apply_func = jax.jit(ji.apply_func)
+
+        oldxyz = jm['xyz'][cs0_index].copy()
+
+        # Make sure that constraint recreates the original member coordinates
+        jm['xyz'][cs0_index] = [0,0,0]
+        jm = apply_func(jm)
+        newxyz = jm['xyz'][cs0_index]
+
+        np.testing.assert_allclose(oldxyz, newxyz, rtol=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

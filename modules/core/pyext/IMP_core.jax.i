@@ -634,3 +634,20 @@
         return self._wrap_jax(apply_func, keys=['rigid_bodies'])
   %}
 }
+
+%extend IMP::core::internal::_RigidBodyPositionConstraint {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax
+        def apply_func(jm):
+            # Assume that constraint acts on all rigid bodies
+            bodies = jm['rigid_bodies'].bodies
+            # todo: this could perhaps be better parallelized, as in most
+            # cases (at least, without nested rigid bodies) the update of
+            # one rigid body does not affect members of another body
+            for body in bodies:
+                jm = body.update_members(jm)
+            return jm
+        return self._wrap_jax(apply_func, keys=['rigid_bodies'])
+  %}
+}
