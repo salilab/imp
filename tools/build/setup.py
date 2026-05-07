@@ -114,45 +114,6 @@ def link_python(modules):
                        filt=_ExcludeTopLevelPythonInit(topdir))
 
 
-def _make_test_driver(outf, cpps):
-    out = open(outf, "w")
-    out.write("""import IMP
-import IMP.test
-import sys
-try:
-    import subprocess
-except ImportError:
-    subprocess = None
-
-class TestCppProgram(IMP.test.TestCase):
-""")
-    for t in cpps:
-        tbase = os.path.splitext(t)[0]
-        # remove suffix
-        nm = os.path.split(str(tbase))[1].replace(".", "_")
-        # Strip .exe extension, so test name on Windows matches other platforms
-        exename = os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
-        if platform.system == "Windows":
-            exename = exename + ".exe"
-        out.write("""    def test_%(name)s(self):
-        \"\"\"Running C++ test %(name)s\"\"\"
-        if subprocess is None:
-            self.skipTest("subprocess module unavailable")
-        # Note: Windows binaries look for needed DLLs in the current
-        # directory. So we need to change into the directory where the DLLs
-        # have been installed for the binary to load correctly.
-        p = subprocess.Popen(["%(path)s"],
-                             shell=False, cwd="%(libdir)s")
-        self.assertEqual(p.wait(), 0)
-"""
-                  % {'name': nm, 'path': os.path.abspath(exename),
-                     'libdir': os.path.abspath("lib")})
-    out.write("""
-if __name__ == '__main__':
-    IMP.test.main()
-""")
-
-
 def generate_tests(modules):
     template = """import IMP
 import IMP.test
