@@ -12,7 +12,6 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             computed before
         """
         try:
-            import subprocess  # noqa: F401
             import IMP.EMageFit.buildxlinks as bx
         except ImportError as e:
             self.skipTest(str(e))
@@ -59,10 +58,6 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
             Check that the module is at least imported correctly
         """
-        try:
-            import subprocess  # noqa: F401
-        except ImportError as e:
-            self.skipTest(str(e))
         self.import_python_application('emagefit_dock')
 
 if __name__ == '__main__':

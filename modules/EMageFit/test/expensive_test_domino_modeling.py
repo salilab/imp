@@ -18,7 +18,6 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         """ Test that the DOMINO modeling runs """
         try:
             import networkx  # noqa: F401
-            import subprocess  # noqa: F401
         except ImportError as detail:
             self.skipTest(str(detail))
         domino_model = self.import_python_application('emagefit')
