@@ -1,4 +1,3 @@
-# general imports
 import gzip
 import sys
 from math import exp, log
@@ -7,6 +6,7 @@ import ast
 import pickle
 import IMP
 import IMP.test
+import IMP.isd
 
 
 class TestCysteineCrossLinkRestraint(IMP.test.TestCase):

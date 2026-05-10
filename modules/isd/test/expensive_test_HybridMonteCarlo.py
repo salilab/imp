@@ -1,6 +1,7 @@
 from numpy import *
 import IMP
 import IMP.test
+import IMP.isd
 
 vel_key_nuisance = IMP.FloatKey("vel")
 kB = 1.381 * 6.02214 / 4184.0
