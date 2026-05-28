@@ -118,34 +118,39 @@ def generate_tests(modules):
 import IMP.test
 import %(module)s
 
-spelling_exceptions=%(spelling_exceptions)s
-python_only=%(python_only)s
+spelling_exceptions = %(spelling_exceptions)s
+python_only = %(python_only)s
+
 
 class StandardsTest(IMP.test.TestCase):
     def test_value_objects(self):
         "Test that module classes are either values or objects"
         if python_only:
             self.skipTest("this module is Python-only")
-        exceptions= %(value_object_exceptions)s
-        return self.assertValueObjects(%(module)s,exceptions)
+        exceptions = %(value_object_exceptions)s
+        return self.assertValueObjects(%(module)s, exceptions)
+
     def test_classes(self):
         "Test that module class names follow the standards"
-        exceptions=%(value_object_exceptions)s
+        exceptions = %(value_object_exceptions)s
         return self.assertClassNames(%(module)s, exceptions,
                                      spelling_exceptions)
+
     def test_functions(self):
         "Test that module function names follow the standards"
-        exceptions= %(function_name_exceptions)s
+        exceptions = %(function_name_exceptions)s
         return self.assertFunctionNames(%(module)s, exceptions,
                                         spelling_exceptions)
+
     def test_show(self):
         "Test all objects have show"
-        exceptions=%(show_exceptions)s
+        exceptions = %(show_exceptions)s
         return self.assertShow(%(module)s, exceptions)
+
 
 if __name__ == '__main__':
     IMP.test.main()
-    """
+"""
     target = os.path.join("test")
     tools.mkdir(target)
     for module in modules:
