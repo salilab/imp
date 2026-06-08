@@ -4,11 +4,12 @@ import IMP.pmi.macros
 import IMP.test
 import glob
 
+
 class Tests(IMP.test.TestCase):
 
     def test_analysis_replica_exchange(self):
         try:
-            import matplotlib
+            import matplotlib  # noqa: F401
         except ImportError:
             self.skipTest("no matplotlib package")
         if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
@@ -27,8 +28,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(are),2)
 
         dcr={"Rpb4":["Rpb4"],"Rpb7":["Rpb7"],"All":["Rpb4","Rpb7"]}
-
-
 
         for cluster in are:
             are.save_coordinates(cluster)

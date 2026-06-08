@@ -6,6 +6,7 @@ import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.tools
 import IMP.pmi.output
 
+
 class Tests(IMP.test.TestCase):
     def test_hierarchy_construction(self):
         """Test construction of a hierarchy"""
@@ -19,9 +20,9 @@ class Tests(IMP.test.TestCase):
         # input parameter
         fastafile = self.get_input_file_name("mini.fasta")
 
-        components = ["Rpb1", "Rpb2" ]
+        components = ["Rpb1", "Rpb2"]
         chains = "AB"
-        colors = [0.,  1.]
+        colors = [0., 1.]
         beadsize = 20
         sequences = IMP.pmi.topology.Sequences(fastafile)
 

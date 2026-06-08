@@ -28,6 +28,7 @@ class XTransRestraint(IMP.Restraint):
         m = self.get_model()
         return IMP.get_particles(m, m.get_particle_indexes())
 
+
 class Tests(IMP.test.TestCase):
     def test_nuisance_mover(self):
         m = IMP.Model()

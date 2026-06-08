@@ -4,6 +4,7 @@ import IMP.test
 import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.topology
 
+
 class Tests(IMP.test.TestCase):
     def make_topology(self):
         # input parameter

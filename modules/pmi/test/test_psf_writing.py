@@ -5,6 +5,7 @@ import IMP.test
 import IMP.pmi.topology
 import IMP.pmi.output
 
+
 class Tests(IMP.test.TestCase):
     def test_psf_writing(self):
         """Test writing of PSF files"""
@@ -14,7 +15,7 @@ class Tests(IMP.test.TestCase):
         fastafile = self.get_input_file_name("mini.fasta")
         seqs = IMP.pmi.topology.Sequences(fastafile)
 
-        components = ["Rpb1", "Rpb2" ]
+        components = ["Rpb1", "Rpb2"]
 
         chains = "AB"
 

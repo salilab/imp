@@ -2,7 +2,6 @@ import IMP.pmi
 import IMP.test
 import RMF
 import IMP.rmf
-import os
 from math import sqrt
 import random
 try:
@@ -12,6 +11,7 @@ except ImportError:
 if scipy is not None:
     import IMP.pmi.analysis
     import IMP.pmi.io
+
 
 class AnalysisTest(IMP.test.TestCase):
     def setUp(self):
@@ -70,7 +70,6 @@ class AnalysisTest(IMP.test.TestCase):
             self.assertAlmostEqual(xyz11[i],xyz10[i])
             self.assertAlmostEqual(xyz21[i],xyz20[i])
 
-
     def test_alignment_and_rmsd(self):
         """Test alignment, random transformation"""
         if scipy is None:
@@ -118,7 +117,6 @@ class AnalysisTest(IMP.test.TestCase):
         # define the coordinate dictionary
         coord_ali_dict_0={"prot1":[xyz10],"prot2":[xyz20],"prot3":[xyz30]}
         coord_ali_dict_1={"prot1":[xyz11],"prot2":[xyz21],"prot3":[xyz31]}
-
 
         # initialize the alignment class
         ali=IMP.pmi.analysis.Alignment(coord_ali_dict_0,coord_ali_dict_1)
@@ -177,7 +175,6 @@ class AnalysisTest(IMP.test.TestCase):
         ali=IMP.pmi.analysis.Alignment(coord_dict_0,coord_dict_1)
         self.assertAlmostEqual(ali.get_rmsd(),1.0/sqrt(3.0))
 
-
     def test_alignment_rmsd_with_weights(self):
         """Test rmsd of already aligned particles,
         handles multiple copies of same protein"""
@@ -232,6 +229,7 @@ class AnalysisTest(IMP.test.TestCase):
         """Test the analysis macro does everything correctly"""
         pass
 
+
 class ClusteringTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -271,6 +269,7 @@ class ClusteringTest(IMP.test.TestCase):
         self.assertAlmostEqual(d[1,0],sqrt(10.0/21.0))
         self.assertAlmostEqual(d[2,0],0.0)
 
+
 class PrecisionTest(IMP.test.TestCase):
     """ The precision class reads some structures and checks
     the all-against-all RMSD. You just have to check that it correctly reads
@@ -286,6 +285,7 @@ class PrecisionTest(IMP.test.TestCase):
                 total+=(d0-d1)**2
                 ct+=1
         return sqrt(total/ct)
+
     def test_precision(self):
         if scipy is None:
             self.skipTest("no scipy module")

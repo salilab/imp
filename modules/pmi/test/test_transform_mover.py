@@ -21,6 +21,7 @@ try:
 except ImportError:
     rem = IMP.pmi.samplers._SerialReplicaExchange()
 
+
 class Tests(IMP.test.TestCase):
     def test_xyz_particles(self):
         m=IMP.Model()
@@ -51,7 +52,6 @@ class Tests(IMP.test.TestCase):
         dr=IMP.core.DistanceRestraint(m, ts1,
                                        ps[0],origin)
 
-
         for p in ps:
             srbm.add_xyz_particle(IMP.core.XYZ(p))
             srbm2.add_xyz_particle(IMP.core.XYZ(p))
@@ -71,7 +71,6 @@ class Tests(IMP.test.TestCase):
 
         del rh
         os.unlink("test_transform_mover_xyz.rmf3")
-
 
     def test_rigid_body_particles(self):
         m=IMP.Model()
@@ -104,7 +103,6 @@ class Tests(IMP.test.TestCase):
         dr=IMP.core.DistanceRestraint(m, ts1,
                                        ps[0],origin)
 
-
         #for p in ps:
         #    srbm.add_xyz_particle(p)
         srbm.add_rigid_body_particle(IMP.core.RigidBody(rb))
@@ -123,7 +121,6 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(rh)
         del rh
         os.unlink("test_transform_mover_rigid_body.rmf3")
-
 
     def test_xyz_particles_rotamer(self):
         m=IMP.Model()
@@ -161,7 +158,6 @@ class Tests(IMP.test.TestCase):
         ts1 = IMP.core.Harmonic(10,10)
         dr=IMP.core.DistanceRestraint(m, ts1,
                                        ps[0],origin)
-
 
         for p in ps[4:]:
             srbm.add_xyz_particle(IMP.core.XYZ(p))
@@ -223,7 +219,6 @@ class Tests(IMP.test.TestCase):
                                     included_objects=mol, resolution=10)
         ev.add_to_model()
         outputobjects.append(ev)
-
 
         mc2 = IMP.pmi.macros.ReplicaExchange(
             m, root_hier=root_hier,

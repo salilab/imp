@@ -3,6 +3,7 @@ import IMP.core
 import IMP.test
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
     def test_linear_restraint(self):
         m = IMP.Model()

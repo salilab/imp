@@ -143,8 +143,6 @@ class Tests(IMP.test.TestCase):
         mdl.update()
         self.assertEqual(len(mvs),4)
 
-
-
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
@@ -249,7 +247,6 @@ class Tests(IMP.test.TestCase):
         #                                      res0     res1
         self.assertEqual(len(rigid_members),57+110+57 + 7+13+7)
 
-
     def test_slice_rigid_body(self):
         """test you can create a rigid body from slices of molecules"""
         mdl = IMP.Model()
@@ -271,7 +268,7 @@ class Tests(IMP.test.TestCase):
     def test_rigid_body_with_densities(self):
         """Test still works when you add densities"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -291,12 +288,11 @@ class Tests(IMP.test.TestCase):
                               setup_particles_as_densities=True)
         hier = s.build()
 
-        na = 0 #57
+        na = 0 # 57
         na1 = 7
         na10 = 2
         naD = 2
         nn1 = 3
-
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         mvs,rb = dof.create_rigid_body(m1,
@@ -344,7 +340,7 @@ class Tests(IMP.test.TestCase):
                                         nonrigid_parts = mols[2].get_non_atomic_residues())
         srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
                                                 chain_max_length=2)
-        ### rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
+        # rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
         # rb1:4, rb2:1, rb3:4, srbs:2
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),11)
@@ -362,7 +358,7 @@ class Tests(IMP.test.TestCase):
                                         nonrigid_parts = mols[2].get_non_atomic_residues())
         srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
                                                 chain_max_length=2)
-        ### rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
+        # rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
         # rb1:4, rb2:1, rb3:4, srbs:2
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),11)
@@ -433,7 +429,6 @@ class Tests(IMP.test.TestCase):
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),8)
 
-
     def test_mc_flexible_beads(self):
         """Test setup of flexible beads"""
         mdl = IMP.Model()
@@ -480,7 +475,6 @@ class Tests(IMP.test.TestCase):
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),0)
 
-
     def test_mc_flexible_beads3(self):
         """Test flex beads don't work if nothing passed"""
         mdl = IMP.Model()
@@ -491,7 +485,7 @@ class Tests(IMP.test.TestCase):
 
     def test_constraint_symmetry(self):
         """Test setup and activity of symmetry constraint"""
-        ### create representation
+        # create representation
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -511,8 +505,7 @@ class Tests(IMP.test.TestCase):
         m4 = m2.create_clone(chain_id='D')
         root = s.build()
 
-
-        ### create movers and constraints
+        # create movers and constraints
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb1_movers = dof.create_rigid_body(m1,
                                            nonrigid_parts = m1.get_non_atomic_residues())
@@ -530,7 +523,7 @@ class Tests(IMP.test.TestCase):
         m1_leaves = IMP.pmi.tools.select_at_all_resolutions(m1.get_hierarchy())
         m3_leaves = IMP.pmi.tools.select_at_all_resolutions(m3.get_hierarchy())
 
-        ### test symmetry initially correct
+        # test symmetry initially correct
         mdl.update()
         for p1,p3 in zip(m1_leaves,m3_leaves):
             c1 = IMP.core.XYZ(p1).get_coordinates()
@@ -539,7 +532,7 @@ class Tests(IMP.test.TestCase):
             #for i in range(3):
             #    self.assertAlmostEqual(c1[i],c3[i])
 
-        ### test transformation propagates
+        # test transformation propagates
         rbs,beads = IMP.pmi.tools.get_rbs_and_beads(m1_leaves)
         test_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         IMP.core.transform(rbs[0],test_trans)
@@ -552,7 +545,6 @@ class Tests(IMP.test.TestCase):
 
         #srb = dof.create_super_rigid_body([m1,m2])   # should be OK
         #srb = dof.create_super_rigid_body([m3,m4])   # should raise exception
-
 
     def test_mc_with_densities(self):
         pass

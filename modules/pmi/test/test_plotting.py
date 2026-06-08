@@ -2,7 +2,7 @@ import IMP.pmi
 import IMP.pmi.analysis
 import IMP.test
 import IMP.rmf
-import sys
+
 
 class Tests(IMP.test.TestCase):
     @IMP.test.expectedFailure

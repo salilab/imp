@@ -4,6 +4,7 @@ import IMP.pmi.topology
 import IMP.pmi.restraints.crosslinking
 import os
 
+
 class Tests(IMP.test.TestCase):
     def test_cysteine_cross_link(self):
         """Test creation of CysteineCrossLinkRestraint"""

@@ -27,6 +27,7 @@ class JAXDistanceRestraint(IMP.Restraint):
     def _get_jax(self):
         import jax.numpy as jnp
         import functools
+
         def score(jm, indexes, d, k):
             xyzs = jm['xyz'][indexes]
             drs = jnp.linalg.norm(xyzs[0] - xyzs[1])
@@ -65,6 +66,7 @@ class MockSampler:
     def get_number_of_replicas(self):
         return 3
 
+
 class MockREX(IMP.pmi.macros.ReplicaExchange):
     # Override the slow init from the base class
     def __init__(self, model):
@@ -74,6 +76,7 @@ class MockREX(IMP.pmi.macros.ReplicaExchange):
                      'num_sample_rounds':2,
                      'number_of_frames':100}
         self.replica_exchange_object = MockSampler()
+
 
 class Tests(IMP.test.TestCase):
 

@@ -11,6 +11,7 @@ import glob
 import time
 import os.path
 
+
 class Tests(IMP.test.TestCase):
 
     @IMP.test.unstable
@@ -64,7 +65,6 @@ class Tests(IMP.test.TestCase):
         except OSError:
             pass
 
-
         rex.execute_macro()
 
         self.check_rmf_file('./test_replica_exchange_macro_output/rmfs/0.rmf3')
@@ -84,7 +84,6 @@ class Tests(IMP.test.TestCase):
         if my_index==0:
             for k in range(nreplicas):
                 self.assertTrue(os.path.isfile("./test_replica_exchange_macro_output/"+str(k)+".test"))
-
 
         #extract the info form the stat files
         rex_out_files=glob.glob("./test_replica_exchange_macro_output/stat_replica.*.out")
@@ -204,7 +203,6 @@ class Tests(IMP.test.TestCase):
         except OSError:
             pass
 
-
         rex.execute_macro()
 
         self.check_rmf_file('./test_replica_exchange_macro_output/rmfs/0.rmf3')
@@ -224,7 +222,6 @@ class Tests(IMP.test.TestCase):
         if my_index==0:
             for k in range(nreplicas):
                 self.assertTrue(os.path.isfile("./test_replica_exchange_macro_output/"+str(k)+".test"))
-
 
         #extract the info form the stat files
         rex_out_files=glob.glob("./test_replica_exchange_macro_output/stat_replica.*.out")

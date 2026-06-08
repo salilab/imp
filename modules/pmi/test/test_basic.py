@@ -33,7 +33,6 @@ class Tests(IMP.test.TestCase):
         m3 = m2.create_clone('C')
         hier = s.build()
 
-
         dr = IMP.pmi.restraints.basic.DistanceRestraint(root_hier = hier,
                                                         tuple_selection1=(1,1,"Prot1",0),
                                                         tuple_selection2=(1,1,"Prot2",1),

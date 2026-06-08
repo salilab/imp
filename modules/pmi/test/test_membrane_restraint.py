@@ -8,9 +8,9 @@ import IMP.pmi.io
 import IMP.pmi.restraints
 import IMP.pmi.restraints.basic
 import IMP.rmf
-import RMF
 import math
 import sys
+
 
 class MembraneRestraintPrototype(IMP.Restraint):
 

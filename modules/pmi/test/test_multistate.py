@@ -124,14 +124,12 @@ class Tests(IMP.test.TestCase):
 
         o.init_stat2("modeling.stat", [mc, xl])
 
-
         for i in range(1,20):
             xyz31.set_coordinates((float(i), 0, 0))
             for j in range(1,20):
                 xyz32.set_coordinates((float(j), 0, 0))
                 print(i,j,rset.evaluate(False))
                 o.write_stats2()
-
 
         po = IMP.pmi.output.ProcessOutput("modeling.stat")
         print(po.get_keys())

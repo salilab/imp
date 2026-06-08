@@ -1,13 +1,16 @@
 import IMP.test
 import IMP.pmi.macros
 
+
 class Tests(IMP.test.TestCase):
     def test_rmf_restraints(self):
         """Test RMFRestraints class"""
         class MockPMIRestraint:
             def __init__(self, r):
                 self.r = r
-            get_restraint = lambda self: self.r
+
+            def get_restraint(self):
+                return self.r
         m = IMP.Model()
         for ur in ([], None):
             rs = IMP.pmi.macros._RMFRestraints(m, ur)

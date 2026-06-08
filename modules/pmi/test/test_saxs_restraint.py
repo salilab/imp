@@ -6,6 +6,7 @@ import IMP.pmi
 import IMP.pmi.restraints
 import IMP.pmi.restraints.saxs
 
+
 class Tests(IMP.test.TestCase):
 
     def get_exp_profile(self):
@@ -29,7 +30,6 @@ class Tests(IMP.test.TestCase):
 
         st1.build()
         return mdl, m1
-
 
     def test_SAXSRestraint(self):
         mdl, m1 = self.setup_system()

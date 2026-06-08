@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
         cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
 
-        self.assertEqual(len(mol.get_residues()) - 1, cr.get_num_restraints() )
+        self.assertEqual(len(mol.get_residues()) - 1, cr.get_num_restraints())
 
     def test_stereochemistry_different_input(self):
         """ test PMI2 connectivity restraint on basic system
@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         for ml in molecules:
             cr3 = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(IMP.atom.get_leaves(ml))
 
-        self.assertEqual(len(mol.get_residues()) - 1, cr1.get_num_restraints() )
+        self.assertEqual(len(mol.get_residues()) - 1, cr1.get_num_restraints())
 
     def test_stereochemistry_basic_rb(self):
         """ test PMI2 connectivity restraint on basic system with rigid body"""
@@ -59,8 +59,7 @@ class Tests(IMP.test.TestCase):
         dof.create_rigid_body(rbres, nonrigid_parts=nrparts)
 
         cr1 = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
-        self.assertEqual( 4, cr1.get_num_restraints() )
-
+        self.assertEqual(4, cr1.get_num_restraints())
 
     def test_stereochemistry_basic_two_rbs(self):
         """ test PMI2 connectivity restraint on basic system with two rigid bodies"""
@@ -79,7 +78,7 @@ class Tests(IMP.test.TestCase):
         dof.create_rigid_body(rbres2)
 
         cr1 = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
-        self.assertEqual( 1, cr1.get_num_restraints() )
+        self.assertEqual(1, cr1.get_num_restraints())
 
     def test_stereochemistry_system(self):
         """ test PMI2 connectivity restraint with coarse-grained real system"""
@@ -163,7 +162,6 @@ class Tests(IMP.test.TestCase):
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
             included_objects=resis, resolution=1)
         self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 2)
-
 
     def test_charmm(self):
         """ test PMI setup of CHARMM"""

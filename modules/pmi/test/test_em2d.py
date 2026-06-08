@@ -3,6 +3,7 @@ import IMP.test
 import IMP.pmi.restraints.em2d
 import os
 
+
 class Tests(IMP.test.TestCase):
     def test_restraint(self):
         """Basic test of EM2D restraint"""

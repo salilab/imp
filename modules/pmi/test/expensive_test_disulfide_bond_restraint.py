@@ -9,18 +9,20 @@ import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
 from math import *
 
+
 def sphere_cap(r1, r2, d):
     sc = 0.0
     if d <= max(r1, r2) - min(r1, r2):
         sc = min(4.0 / 3 * pi * r1 * r1 * r1,
                       4.0 / 3 * pi * r2 * r2 * r2)
-    elif d >= r1 + r2 :
+    elif d >= r1 + r2:
         sc = 0
     else:
         sc = (pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) * \
              (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2 + 6 * r1 * r2 -
               3 * r2 * r2)
     return sc
+
 
 def get_probability(xyz1s,xyz2s,sigma1s,sigma2s,psis,length,slope):
     onemprob = 1.0
@@ -40,7 +42,7 @@ def get_probability(xyz1s,xyz2s,sigma1s,sigma2s,psis,length,slope):
         volj = 4.0 / 3.0 * pi * sigmaj * sigmaj * sigmaj
         fi = 0
         fj = 0
-        if dist < sigmai + sigmaj :
+        if dist < sigmai + sigmaj:
             xlvol = 4.0 / 3.0 * pi * (length / 2) * (length / 2) * \
                            (length / 2)
             fi = min(voli, xlvol)
@@ -56,6 +58,7 @@ def get_probability(xyz1s,xyz2s,sigma1s,sigma2s,psis,length,slope):
         onemprob = onemprob * factor
     prob = 1.0 - onemprob
     return prob
+
 
 def log_evaluate(restraints):
     prob = 1.0

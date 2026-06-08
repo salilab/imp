@@ -1,6 +1,6 @@
 import IMP
 import IMP.test
-import IMP.pmi.tools as tools
+
 
 class Tests(IMP.test.TestCase):
 
