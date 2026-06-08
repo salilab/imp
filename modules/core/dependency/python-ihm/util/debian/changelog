@@ -1,3 +1,15 @@
+python-ihm (2.11-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 2.11 release
+
+ -- Ben Webb <benmwebb@gmail.com>  Fri, 05 Jun 2026 13:39:31 -0700
+
+python-ihm (2.10-2~@CODENAME@) @CODENAME@; urgency=low
+
+  * Fix build on Ubuntu 26.04
+
+ -- Ben Webb <benmwebb@gmail.com>  Mon, 20 Apr 2026 00:09:12 -0700
+
 python-ihm (2.10-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.10 release

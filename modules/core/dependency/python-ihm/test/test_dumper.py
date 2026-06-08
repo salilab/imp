@@ -142,6 +142,40 @@ _struct.pdbx_structure_determination_methodology integrative
 _struct.title 'test model'
 """)
 
+    def test_struct_dumper_extensive(self):
+        """Test StructDumper with more extensive set of fields"""
+        system = ihm.System(title='test model', model_details="test details")
+        system._struct_pdbx_details = {'pdbx_details': 'foo',
+                                       'pdbx_CASP_flag': 'N'}
+        dumper = ihm.dumper._StructDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """_struct.entry_id model
+_struct.pdbx_CASP_flag N
+_struct.pdbx_details foo
+_struct.pdbx_model_details 'test details'
+_struct.pdbx_structure_determination_methodology integrative
+_struct.title 'test model'
+""")
+
+    def test_struct_dumper_no_pdbx_details(self):
+        """Test StructDumper with no pdbx_details data"""
+        # System class in python-modelcif may not provide _struct_pdbx_details
+        # field
+        class MySystem:
+            structure_determination_methodology = "integrative"
+            title = 'test model'
+            id = 'foo'
+            model_details = 'test details'
+
+        system = MySystem()
+        dumper = ihm.dumper._StructDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """_struct.entry_id foo
+_struct.pdbx_model_details 'test details'
+_struct.pdbx_structure_determination_methodology integrative
+_struct.title 'test model'
+""")
+
     def test_comment_dumper(self):
         """Test CommentDumper"""
         system = ihm.System()
@@ -210,7 +244,8 @@ _software.citation_id
             authors=['Shi Y', 'Fernandez-Martinez J', 'Tjioe E', 'Pellarin R',
                      'Kim SJ', 'Williams R', 'Schneidman-Duhovny D', 'Sali A',
                      'Rout MP', 'Chait BT'],
-            doi='10.1074/mcp.M114.041673')
+            doi='10.1074/mcp.M114.041673',
+            journal_astm='ASTM_X', journal_csd='CSD_Y', journal_issn='ISSN_Z')
         system.citations.extend((c1, c1))  # duplicates should be removed
         dumper = ihm.dumper._CitationDumper()
         dumper.finalize(system)  # Assign IDs
@@ -224,6 +259,9 @@ _citation.journal_volume
 _citation.page_first
 _citation.page_last
 _citation.year
+_citation.journal_id_ASTM
+_citation.journal_id_CSD
+_citation.journal_id_ISSN
 _citation.pdbx_database_id_PubMed
 _citation.pdbx_database_id_DOI
 1
@@ -231,7 +269,8 @@ _citation.pdbx_database_id_DOI
 detailed architecture of a coatomer-related heptameric
 module from the nuclear pore complex.
 ;
-'Mol Cell Proteomics' 13 2927 2943 2014 25161197 10.1074/mcp.M114.041673
+'Mol Cell Proteomics' 13 2927 2943 2014 ASTM_X CSD_Y ISSN_Z 25161197
+10.1074/mcp.M114.041673
 #
 #
 loop_
@@ -278,10 +317,13 @@ _citation.journal_volume
 _citation.page_first
 _citation.page_last
 _citation.year
+_citation.journal_id_ASTM
+_citation.journal_id_CSD
+_citation.journal_id_ISSN
 _citation.pdbx_database_id_PubMed
 _citation.pdbx_database_id_DOI
-primary y2 z2 1 1 . 2015 x2 e
-2 y z 1 1 . 2014 x d
+primary y2 z2 1 1 . 2015 . . . x2 e
+2 y z 1 1 . 2014 . . . x d
 #
 """)
 
@@ -518,9 +560,9 @@ _entity.pdbx_description
 _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
-1 polymer man foo 366.413 1 .
-2 polymer nat baz 499.516 1 .
-3 polymer syn bar 378.362 2 .
+1 polymer man foo 330.386 1 .
+2 polymer nat baz 445.474 1 .
+3 polymer syn bar 342.331 2 .
 4 water nat . 18.015 10 .
 #
 """)
@@ -1066,15 +1108,15 @@ _chem_comp.type
 _chem_comp.name
 _chem_comp.formula
 _chem_comp.formula_weight
-A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O7 P' 347.224
-ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
-C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O8 P' 323.198
-CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.154
-DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O6 P' 331.225
-DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O7 P' 307.199
-G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O8 P' 363.223
+A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O7 P' 347.221
+ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.093
+C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O8 P' 323.197
+CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.158
+DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O6 P' 331.222
+DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O7 P' 307.197
+G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O8 P' 363.221
 GLY 'peptide linking' GLYCINE 'C2 H5 N O2' 75.067
-THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
+THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.119
 #
 """)
 
@@ -1312,6 +1354,7 @@ A 1 4 THR 4 6 THR THR A .
     def test_poly_seq_scheme_dumper_not_modeled(self):
         """Test PolySeqSchemeDumper with not-modeled residues"""
         system, m1, asym = self._make_test_model()
+        del asym.entity._id
         rr = ihm.model.NotModeledResidueRange(asym, 1, 2)
         m1.not_modeled_residue_ranges.append(rr)
 
@@ -1359,6 +1402,7 @@ A 1 4 THR 4 4 THR THR A .
         # Older model with no not_modeled_residue_ranges member (e.g.
         # older versions of python-modelcif)
         system, m1, asym = self._make_test_model()
+        del asym.entity._id
         del m1.not_modeled_residue_ranges
 
         mg = system.state_groups[0][0][0]
@@ -1435,7 +1479,7 @@ foo bar 'more text'
 """)
 
     def test_struct_asym_dumper(self):
-        """Test StructAsymDumper"""
+        """Test StructAsymDumper with default fields"""
         system = ihm.System()
         e1 = ihm.Entity('ACGT')
         e2 = ihm.Entity('ACC')
@@ -1458,6 +1502,38 @@ Z 1 foo
 B 1 bar
 A 2 baz
 C 2 tmp
+#
+""")
+
+    def test_struct_asym_dumper_extensive(self):
+        """Test StructAsymDumper with more extensive set of fields"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        e1._id = 1
+        system.entities.append(e1)
+        a1 = ihm.AsymUnit(e1, 'foo')
+        a2 = ihm.AsymUnit(e1, 'bar')
+        a2._pdbx_details = {'pdbx_PDB_id': 'A',
+                            'pdbx_blank_PDB_chainid_flag': 'N',
+                            'pdbx_order': '1',
+                            'pdbx_type': 'ATOMP'}
+        system.asym_units.extend((a1, a2))
+        dumper = ihm.dumper._StructAsymDumper()
+        dumper.finalize(system)  # assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.pdbx_PDB_id
+_struct_asym.pdbx_alt_id
+_struct_asym.pdbx_blank_PDB_chainid_flag
+_struct_asym.pdbx_type
+_struct_asym.pdbx_order
+_struct_asym.pdbx_modified
+_struct_asym.details
+A 1 . . . . . . foo
+B 1 A . N ATOMP 1 . bar
 #
 """)
 
@@ -2231,6 +2307,7 @@ _ihm_starting_model_seq_dif.details
         dumper = ihm.dumper._EntityPolySegmentDumper()
         dumper.finalize(system)
         dumper = ihm.dumper._StartingModelDumper()
+        dumper.finalize(system)  # assign starting model IDs
         with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
         self.assertIn('Starting model 5 atom seq_id (99) out of range (1-3)',
@@ -3528,6 +3605,55 @@ _ihm_sas_restraint.details
 #
 """)
 
+    def test_epr_restraint_dumper(self):
+        """Test EPRRestraintDumper"""
+        class MockObject:
+            pass
+        system = ihm.System()
+
+        dataset = MockObject()
+        dataset._id = 97
+        citation = MockObject()
+        citation._id = 99
+        software = MockObject()
+        software._id = 42
+        r = ihm.restraint.EPRRestraint(
+            dataset=dataset, fitting_particle_type='unpaired electron',
+            fitting_method='fitmeth', fitting_method_citation=citation,
+            multi_state=False, software=software,
+            details='EPR restraint')
+        m = ihm.model.Model(assembly='foo', protocol='bar',
+                            representation='baz')
+        m._id = 42
+        m2 = ihm.model.Model(assembly='foo', protocol='bar',
+                             representation='baz')
+        m2._id = 44
+        system.restraints.extend((r, MockObject()))
+
+        r.fits[m] = ihm.restraint.EPRRestraintFit(0.20)
+        r.fits[m2] = ihm.restraint.EPRRestraintFit()
+
+        dumper = ihm.dumper._EPRDumper()
+        dumper.finalize(system)  # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_epr_restraint.ordinal_id
+_ihm_epr_restraint.dataset_list_id
+_ihm_epr_restraint.model_id
+_ihm_epr_restraint.fitting_particle_type
+_ihm_epr_restraint.fitting_method
+_ihm_epr_restraint.fitting_method_citation_id
+_ihm_epr_restraint.fitting_state
+_ihm_epr_restraint.fitting_software_id
+_ihm_epr_restraint.chi_value
+_ihm_epr_restraint.details
+1 97 42 'unpaired electron' fitmeth 99 Single 42 0.200 'EPR restraint'
+2 97 44 'unpaired electron' fitmeth 99 Single 42 . 'EPR restraint'
+#
+""")
+
     def test_em2d_restraint_dumper(self):
         """Test EM2DRestraintDumper"""
         class MockObject:
@@ -3975,6 +4101,8 @@ _ihm_geometric_object_plane.transformation_id
 
     def test_feature_dumper(self):
         """Test FeatureDumper"""
+        class MockObject:
+            pass
         system = ihm.System()
         e1 = ihm.Entity('ACGT')
         e2 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
@@ -3986,6 +4114,7 @@ _ihm_geometric_object_plane.transformation_id
 
         f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
                                          details='test feature')
+        self.assertEqual(len(f._all_entities_or_asyms()), 4)
         system.orphan_features.append(f)
 
         # Duplicate feature, should be pruned from output
@@ -4011,6 +4140,7 @@ _ihm_geometric_object_plane.transformation_id
                            a3.residue(1).atom('FE')])
         # Nonpolymeric feature
         f = ihm.restraint.NonPolyFeature([a3, e2])
+        self.assertEqual(len(f._all_entities_or_asyms()), 2)
         system.orphan_features.append(f)
         # Cannot make a NonPolyFeature that includes a polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.NonPolyFeature, [a1, a3])
@@ -4026,15 +4156,23 @@ _ihm_geometric_object_plane.transformation_id
         f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
+        # Interface residue feature
+        dataset = MockObject()
+        dataset._id = 42
+        f = ihm.restraint.InterfaceResidueFeature(
+            [a1], binding_partners=[a1, e2], dataset=dataset,
+            by_residue=True, rep_atom='CA', details='foo')
+        system.orphan_features.append(f)
+
         ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
 
         dumper = ihm.dumper._FeatureDumper()
         dumper.finalize(system)  # assign IDs
-        self.assertEqual(len(dumper._features_by_id), 5)
+        self.assertEqual(len(dumper._features_by_id), 6)
         # Repeated calls to finalize should yield identical results
         dumper.finalize(system)
-        self.assertEqual(len(dumper._features_by_id), 5)
+        self.assertEqual(len(dumper._features_by_id), 6)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -4047,6 +4185,7 @@ _ihm_feature_list.details
 3 atom non-polymer .
 4 ligand non-polymer .
 5 'pseudo site' other .
+6 'residue range' polymer foo
 #
 #
 loop_
@@ -4058,10 +4197,25 @@ _ihm_poly_residue_feature.seq_id_begin
 _ihm_poly_residue_feature.comp_id_begin
 _ihm_poly_residue_feature.seq_id_end
 _ihm_poly_residue_feature.comp_id_end
-1 1 1 A 1 ALA 4 THR
-2 1 1 B 2 CYS 3 GLY
-3 1 1 . 1 ALA 4 THR
-4 1 1 . 2 CYS 3 GLY
+_ihm_poly_residue_feature.interface_residue_flag
+_ihm_poly_residue_feature.residue_range_granularity
+_ihm_poly_residue_feature.rep_atom
+1 1 1 A 1 ALA 4 THR NO . .
+2 1 1 B 2 CYS 3 GLY NO . .
+3 1 1 . 1 ALA 4 THR NO . .
+4 1 1 . 2 CYS 3 GLY NO . .
+5 6 1 A 1 ALA 4 THR YES by-residue CA
+#
+#
+loop_
+_ihm_interface_residue_feature.ordinal_id
+_ihm_interface_residue_feature.feature_id
+_ihm_interface_residue_feature.binding_partner_entity_id
+_ihm_interface_residue_feature.binding_partner_asym_id
+_ihm_interface_residue_feature.dataset_list_id
+_ihm_interface_residue_feature.details
+1 6 1 A 42 foo
+2 6 2 . 42 foo
 #
 #
 loop_
@@ -4397,6 +4551,60 @@ _ihm_predicted_contact_restraint.software_id
 1 . 1 A ALA 1 . 2 B TRP 2 . 'lower bound' 25.000 . 0.800 by-residue 97 34
 2 1 1 A ALA 1 CA 2 B TRP 2 CB 'lower bound' 25.000 . 0.400 by-residue 97 .
 3 1 1 A ALA 1 . 2 B TRP 2 . 'upper bound' . 14.000 0.600 by-feature 97 .
+#
+""")
+
+    def test_hydroxy_radical_restraint_dumper(self):
+        """Test HydroxylRadicalRestraintDumper"""
+        class MockObject:
+            pass
+        system = ihm.System()
+        e1 = ihm.Entity('AHC')
+        a1 = ihm.AsymUnit(e1)
+        system.entities.append(e1)
+        system.asym_units.append(a1)
+
+        dataset = MockObject()
+        dataset._id = 97
+        software = MockObject()
+        software._id = 34
+
+        r1 = ihm.restraint.HydroxylRadicalFPRestraint(
+            dataset=dataset, residue=a1.residue(1), predicted_sasa=0.1,
+            software=software)
+        r2 = ihm.restraint.HydroxylRadicalFPRestraint(
+            dataset=dataset, residue=a1.residue(2), predicted_sasa=0.2,
+            rate=0.3, rate_error=0.03, log_pf=0.1, log_pf_error=0.01)
+        r3 = ihm.restraint.HydroxylRadicalFPRestraint(
+            dataset=dataset, residue=a1.residue(3), predicted_sasa=0.3)
+        rg = ihm.restraint.RestraintGroup((r2, r3))
+        system.restraints.extend((r1, r2))  # r2 is in restraints and groups
+        system.restraint_groups.append(rg)
+
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
+        dumper = ihm.dumper._HydroxylRadicalRestraintDumper()
+        dumper.finalize(system)  # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_hydroxyl_radical_fp_restraint.id
+_ihm_hydroxyl_radical_fp_restraint.group_id
+_ihm_hydroxyl_radical_fp_restraint.entity_id
+_ihm_hydroxyl_radical_fp_restraint.asym_id
+_ihm_hydroxyl_radical_fp_restraint.comp_id
+_ihm_hydroxyl_radical_fp_restraint.seq_id
+_ihm_hydroxyl_radical_fp_restraint.fp_rate
+_ihm_hydroxyl_radical_fp_restraint.fp_rate_error
+_ihm_hydroxyl_radical_fp_restraint.log_pf
+_ihm_hydroxyl_radical_fp_restraint.log_pf_error
+_ihm_hydroxyl_radical_fp_restraint.predicted_sasa
+_ihm_hydroxyl_radical_fp_restraint.dataset_list_id
+_ihm_hydroxyl_radical_fp_restraint.software_id
+1 . 1 A ALA 1 . . . . 0.100 97 34
+2 1 1 A HIS 2 0.300 0.030 0.100 0.010 0.200 97 .
+3 1 1 A CYS 3 . . . . 0.300 97 .
 #
 """)
 
@@ -6118,6 +6326,108 @@ _pdbx_database_status.process_site BNL
 _pdbx_database_status.recvd_initial_deposition_date 1993-06-29
 _pdbx_database_status.sg_entry .
 _pdbx_database_status.status_code REL""")
+
+    def test_probe_dumper(self):
+        """Test ProbeDumper"""
+        class MockObject:
+            pass
+        system = ihm.System()
+        e = ihm.Entity('AHC')
+        e._id = 42
+        system.entities.append(e)
+        dataset = MockObject()
+        dataset._id = 99
+        desc = MockObject()
+        desc._id = 66
+
+        covpt1 = ihm.restraint.ProbeType(name='COV1', intrinsic=False,
+                                         covalent=True, reactive=True,
+                                         reactive_name='REACT',
+                                         reactive_descriptor=desc,
+                                         descriptor=None)
+        covpt2 = ihm.restraint.ProbeType(name='COV2', intrinsic=False,
+                                         covalent=True, descriptor=desc,
+                                         reactive=None)
+        ligpt = ihm.restraint.ProbeType(name='LIG', intrinsic=True,
+                                        covalent=False, reactive=None,
+                                        descriptor=None)
+        ligprobe = ihm.restraint.LigandProbe(ligpt, entity=e, dataset=dataset,
+                                             details='test ligand probe')
+        system.probes.append(ligprobe)
+
+        alpha = ihm.LPeptideAlphabet()
+        pos1 = ihm.restraint.ProbePosition(
+            residue=e.residue(2), mutated=True, modified=False,
+            mutated_chem_comp=alpha['C'],
+            description='mutated position')
+        covprobe1 = ihm.restraint.ConjugateProbe(
+            covpt1, position=pos1, dataset=dataset, descriptor=desc,
+            ambiguous_stoichiometry=False, probe_stoichiometry=1.0,
+            details='test conjugate probe')
+        system.probes.append(covprobe1)
+
+        pos2 = ihm.restraint.ProbePosition(
+            residue=e.residue(3), mutated=False, modified=True,
+            modified_descriptor=desc,
+            description='modified position')
+        covprobe2 = ihm.restraint.ConjugateProbe(
+            covpt2, position=pos2, dataset=None)
+        system.probes.append(covprobe2)
+
+        dumper = ihm.dumper._ProbeDumper()
+        dumper.finalize(system)  # assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_probe_list.probe_id
+_ihm_probe_list.probe_name
+_ihm_probe_list.probe_origin
+_ihm_probe_list.probe_link_type
+_ihm_probe_list.probe_chem_comp_descriptor_id
+_ihm_probe_list.reactive_probe_flag
+_ihm_probe_list.reactive_probe_name
+_ihm_probe_list.reactive_probe_chem_comp_descriptor_id
+1 LIG intrinsic ligand . . . .
+2 COV1 extrinsic covalent . YES REACT 66
+3 COV2 extrinsic covalent 66 . . .
+#
+#
+loop_
+_ihm_poly_probe_position.id
+_ihm_poly_probe_position.entity_id
+_ihm_poly_probe_position.entity_description
+_ihm_poly_probe_position.comp_id
+_ihm_poly_probe_position.seq_id
+_ihm_poly_probe_position.mutation_flag
+_ihm_poly_probe_position.modification_flag
+_ihm_poly_probe_position.mut_res_chem_comp_id
+_ihm_poly_probe_position.mod_res_chem_comp_descriptor_id
+_ihm_poly_probe_position.description
+1 42 . HIS 2 YES NO CYS . 'mutated position'
+2 42 . CYS 3 NO YES . 66 'modified position'
+#
+#
+loop_
+_ihm_poly_probe_conjugate.id
+_ihm_poly_probe_conjugate.probe_id
+_ihm_poly_probe_conjugate.position_id
+_ihm_poly_probe_conjugate.chem_comp_descriptor_id
+_ihm_poly_probe_conjugate.ambiguous_stoichiometry_flag
+_ihm_poly_probe_conjugate.probe_stoichiometry
+_ihm_poly_probe_conjugate.details
+_ihm_poly_probe_conjugate.dataset_list_id
+1 2 1 66 NO 1.000 'test conjugate probe' 99
+2 3 2 . . . . .
+#
+#
+loop_
+_ihm_ligand_probe.probe_id
+_ihm_ligand_probe.entity_id
+_ihm_ligand_probe.dataset_list_id
+_ihm_ligand_probe.details
+1 42 99 'test ligand probe'
+#
+""")
 
 
 if __name__ == '__main__':

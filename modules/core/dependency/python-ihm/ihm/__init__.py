@@ -16,9 +16,10 @@ import sys
 import urllib.request
 import json
 import collections
+import warnings
 from . import util
 
-__version__ = '2.10'
+__version__ = '2.11'
 
 
 class __UnknownValue:
@@ -77,6 +78,10 @@ class System:
     """
 
     structure_determination_methodology = "integrative"
+
+    # Used to preserve less commonly-used struct fields if present
+    # in the input file
+    _struct_pdbx_details = None
 
     def __init__(self, title=None, id='model', model_details=None,
                  databases=[]):
@@ -210,6 +215,10 @@ class System:
         #: See :class:`~ihm.model.StateGroup`.
         self.state_groups = []
 
+        #: All probes, e.g. for EPR restraints.
+        #: See :class:`ihm.restraint.Probe`.
+        self.probes = []
+
         #: All orphaned geometric objects.
         #: This can be used to keep track of all objects that are not
         #: otherwise used - normally an object is assigned to a
@@ -245,6 +254,8 @@ class System:
         self._orphan_relaxation_times = []
         self._orphan_repos = []
         self._orphan_chem_comps = []
+        self._orphan_probe_positions = []
+        self._orphan_probe_types = []
 
     _database_status = property(lambda self: self.database_status._map)
 
@@ -343,8 +354,7 @@ class System:
            Duplicates may be present."""
         def _all_restraints_in_groups():
             for rg in self.restraint_groups:
-                for r in rg:
-                    yield r
+                yield from rg
         return itertools.chain(self.restraints, _all_restraints_in_groups())
 
     def _all_chem_descriptors(self):
@@ -403,8 +413,7 @@ class System:
 
     def _all_segments(self):
         for representation in self._all_representations():
-            for segment in representation:
-                yield segment
+            yield from representation
 
     def _all_starting_models(self):
         """Iterate over all StartingModels in the system.
@@ -426,14 +435,12 @@ class System:
 
     def _all_protocol_steps(self):
         for protocol in self._all_protocols():
-            for step in protocol.steps:
-                yield step
+            yield from protocol.steps
 
     def _all_analysis_steps(self):
         for protocol in self._all_protocols():
             for analysis in protocol.analyses:
-                for step in analysis.steps:
-                    yield step
+                yield from analysis.steps
 
     def _all_assemblies(self):
         """Iterate over all Assemblies in the system.
@@ -473,16 +480,14 @@ class System:
     def _all_templates(self):
         """Iterate over all Templates in the system."""
         for startmodel in self._all_starting_models():
-            for template in startmodel.templates:
-                yield template
+            yield from startmodel.templates
 
     def _all_datasets_except_parents(self):
         """Iterate over all Datasets except those referenced only
            as the parent of another Dataset. Duplicates may be present."""
         def _all_datasets_in_groups():
             for dg in self._all_dataset_groups():
-                for d in dg:
-                    yield d
+                yield from dg
         return itertools.chain(
             self.orphan_datasets,
             _all_datasets_in_groups(),
@@ -504,17 +509,14 @@ class System:
                     pd = p.dataset
                 else:
                     pd = p
-                for alld in _all_datasets_and_parents(pd):
-                    yield alld
+                yield from _all_datasets_and_parents(pd)
             yield d
         for d in self._all_datasets_except_parents():
-            for alld in _all_datasets_and_parents(d):
-                yield alld
+            yield from _all_datasets_and_parents(d)
 
     def _all_densities(self):
         for ensemble in self.ensembles:
-            for density in ensemble.densities:
-                yield density
+            yield from ensemble.densities
 
     def _all_locations(self):
         """Iterate over all Locations in the system.
@@ -640,14 +642,12 @@ class System:
             (d.asym_unit for d in self._all_densities())))
 
     def _all_multi_state_schemes(self):
-        for mss in self.multi_state_schemes:
-            yield mss
+        yield from self.multi_state_schemes
 
     def _all_multi_state_scheme_connectivities(self):
         """Iterate over all multi-state scheme connectivities"""
         for mss in self.multi_state_schemes:
-            for mssc in mss.get_connectivities():
-                yield mssc
+            yield from mss.get_connectivities()
 
     def _all_kinetic_rates(self):
         """Iterate over all kinetic rates within multi-state schemes"""
@@ -695,6 +695,19 @@ class System:
             seen_relaxation_times.append(rt)
             yield rt
 
+    def _all_probe_types(self):
+        """Iterate over all probe types"""
+        for p in self.probes:
+            yield p.probe_type
+        yield from self._orphan_probe_types
+
+    def _all_probe_positions(self):
+        """Iterate over all probe positions"""
+        for p in self.probes:
+            if hasattr(p, 'position'):
+                yield p.position
+        yield from self._orphan_probe_positions
+
     def _before_write(self):
         """Do any setup necessary before writing out to a file"""
         # Here, we initialize all RestraintGroups by removing any assigned ID
@@ -713,8 +726,8 @@ class System:
                     "of Restraints. Due to limitations of the underlying "
                     "dictionary, all objects in a RestraintGroup must be of "
                     "the same type, and only certain types (currently only "
-                    "DerivedDistanceRestraint or PredictedContactRestraint) "
-                    "can be grouped." % g)
+                    "DerivedDistanceRestraint, PredictedContactRestraint "
+                    "or HydroxylRadicalFPRestraint) can be grouped." % g)
 
 
 class DatabaseStatus:
@@ -838,14 +851,24 @@ class Citation:
               modeling itself (as opposed to a method or piece of software used
               in the protocol). Only one such publication is allowed, and it
               is assigned the ID "primary" in the mmCIF file.
+       :param str journal_astm: American Society for Testing and Materials
+              code assigned to the journal.
+       :param str journal_csd: Cambridge Structural Database code assigned to
+              the journal.
+       :param str journal_issn: International Standard Serial Number code
+              assigned to the journal.
     """
     def __init__(self, pmid, title, journal, volume, page_range, year, authors,
-                 doi, is_primary=False):
+                 doi, is_primary=False, journal_astm=None, journal_csd=None,
+                 journal_issn=None):
         self.title, self.journal, self.volume = title, journal, volume
         self.page_range, self.year = page_range, year
         self.pmid, self.doi = pmid, doi
         self.authors = authors if authors is not None else []
         self.is_primary = is_primary
+        self.journal_astm = journal_astm
+        self.journal_csd = journal_csd
+        self.journal_issn = journal_issn
 
     @classmethod
     def from_pubmed_id(cls, pubmed_id, is_primary=False):
@@ -899,7 +922,8 @@ class Citation:
                    page_range=get_page_range(ref),
                    year=ref['pubdate'].split()[0],
                    authors=authors, doi=get_doi(ref),
-                   is_primary=is_primary)
+                   is_primary=is_primary,
+                   journal_issn=ref.get('issn'))
 
 
 class ChemComp:
@@ -941,6 +965,9 @@ class ChemComp:
        :param list descriptors: When ``ccd`` is "local", this can be one or
               more descriptor objects that describe the chemistry. python-ihm
               does not define any, but python-modelcif does.
+       :param float formula_weight: The weight of the component in Daltons.
+              If not specified, it is calculated automatically from the
+              chemical formula and known atomic masses.
 
        For example, glycine would have
        ``id='GLY', code='G', code_canonical='G'`` while selenomethionine would
@@ -950,6 +977,12 @@ class ChemComp:
     """
 
     type = 'other'
+
+    # The mass lost when this chemical component forms a polymer bond
+    _bond_leaving_mass = 0.0
+
+    # The mass lost when this component is the first in a sequence
+    _first_leaving_mass = 0.0
 
     _element_mass = {'H': 1.008, 'C': 12.011, 'N': 14.007, 'O': 15.999,
                      'P': 30.974, 'S': 32.060, 'Se': 78.971, 'Fe': 55.845,
@@ -975,11 +1008,21 @@ class ChemComp:
                      'Yb': 173.045, 'Zn': 65.38, 'Zr': 91.224}
 
     def __init__(self, id, code, code_canonical, name=None, formula=None,
-                 ccd=None, descriptors=None):
+                 ccd=None, descriptors=None, formula_weight=None):
         self.id = id
         self.code, self.code_canonical, self.name = code, code_canonical, name
         self.formula = formula
         self.ccd, self.descriptors = ccd, descriptors
+        self._formula_weight = None
+        if formula_weight is not None:
+            auto_weight = self.__get_weight()
+            if (auto_weight is not None
+                    and abs(auto_weight - formula_weight) > 5.0):
+                warnings.warn("User-specified weight (%f) differs from the "
+                              "weight calculated from the chemical formula "
+                              "(%f); using user-specified weight."
+                              % (formula_weight, auto_weight))
+            self.formula_weight = formula_weight
 
     def __str__(self):
         return ('<%s.%s(%s)>'
@@ -987,6 +1030,9 @@ class ChemComp:
                    self.id))
 
     def __get_weight(self):
+        # Use user-provided value if available
+        if self._formula_weight:
+            return self._formula_weight
         # Calculate weight from formula
         if self.formula in (None, unknown):
             return
@@ -1009,10 +1055,11 @@ class ChemComp:
                 return None
         return weight
 
+    def __set_weight(self, weight):
+        self._formula_weight = weight
+
     formula_weight = property(
-        __get_weight,
-        doc="Formula weight (dalton). This is calculated automatically from "
-            "the chemical formula and known atomic masses.")
+        __get_weight, __set_weight, doc="Formula weight (dalton).")
 
     # Equal if all identifiers are the same
     def __eq__(self, other):
@@ -1028,6 +1075,9 @@ class PeptideChemComp(ChemComp):
        instead (except for glycine) to specify chirality.
        See :class:`ChemComp` for a description of the parameters."""
     type = 'peptide linking'
+
+    # H2O is lost when the peptide bond is formed
+    _bond_leaving_mass = 18.015
 
 
 class LPeptideChemComp(PeptideChemComp):
@@ -1047,11 +1097,21 @@ class DNAChemComp(ChemComp):
        See :class:`ChemComp` for a description of the parameters."""
     type = 'DNA linking'
 
+    # H2O is lost when the phosphodiester bond is formed, and the first
+    # component loses its phosphate
+    _bond_leaving_mass = 18.015
+    _first_leaving_mass = 62.972
+
 
 class RNAChemComp(ChemComp):
     """A single RNA component.
        See :class:`ChemComp` for a description of the parameters."""
     type = 'RNA linking'
+
+    # H2O is lost when the phosphodiester bond is formed, and the first
+    # component loses its phosphate
+    _bond_leaving_mass = 18.015
+    _first_leaving_mass = 62.972
 
 
 class SaccharideChemComp(ChemComp):
@@ -1179,34 +1239,37 @@ class LPeptideAlphabet(Alphabet):
        modified residues are also included (e.g. MSE). For these their full
        name rather than a one-letter code is used.
     """
+    # Weights taken from e.g.
+    # https://files.rcsb.org/pub/pdb/refdata/chem_comp/Y/GLY/GLY.cif
     _comps = dict([code, LPeptideChemComp(id, code, code, name,
-                                          formula)]
-                  for code, id, name, formula in [
-                  ('A', 'ALA', 'ALANINE', 'C3 H7 N O2'),
-                  ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S'),
-                  ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4'),
-                  ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4'),
-                  ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2'),
-                  ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1'),
-                  ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2'),
-                  ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1'),
-                  ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2'),
-                  ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S'),
-                  ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3'),
-                  ('P', 'PRO', 'PROLINE', 'C5 H9 N O2'),
-                  ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3'),
-                  ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1'),
-                  ('S', 'SER', 'SERINE', 'C3 H7 N O3'),
-                  ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
-                  ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
-                  ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
-                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3'),
-                  ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2'),
-                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2'),
-                  ('O', 'PYL', 'PYRROLYSINE', 'C12 H21 N3 O3'),
-                  ('U', 'SEC', 'SELENOCYSTEINE', 'C3 H7 N O2 Se')])
+                                          formula, formula_weight=weight)]
+                  for code, id, name, formula, weight in [
+                  ('A', 'ALA', 'ALANINE', 'C3 H7 N O2', 89.093),
+                  ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S', 121.158),
+                  ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4', 133.103),
+                  ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4', 147.129),
+                  ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2', 165.189),
+                  ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1', 156.165),
+                  ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2', 131.173),
+                  ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1', 147.195),
+                  ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2', 131.173),
+                  ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S', 149.211),
+                  ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3', 132.118),
+                  ('P', 'PRO', 'PROLINE', 'C5 H9 N O2', 115.130),
+                  ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3', 146.144),
+                  ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1', 175.209),
+                  ('S', 'SER', 'SERINE', 'C3 H7 N O3', 105.093),
+                  ('T', 'THR', 'THREONINE', 'C4 H9 N O3', 119.119),
+                  ('V', 'VAL', 'VALINE', 'C5 H11 N O2', 117.146),
+                  ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2', 204.225),
+                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3', 181.189),
+                  ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2', 100.096),
+                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2', 114.123),
+                  ('O', 'PYL', 'PYRROLYSINE', 'C12 H21 N3 O3', 255.313),
+                  ('U', 'SEC', 'SELENOCYSTEINE', 'C3 H7 N O2 Se', 168.053)])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
-                                  formula="C2 H5 N O2")
+                                  formula="C2 H5 N O2",
+                                  formula_weight=75.067)
 
     # common non-standard L-amino acids
     _comps.update([id, LPeptideChemComp(id, id, canon, name, formula)]
@@ -1249,27 +1312,33 @@ class DPeptideAlphabet(Alphabet):
 class RNAAlphabet(Alphabet):
     """A mapping from one-letter nucleic acid codes (e.g. A) to
        RNA (as :class:`RNAChemComp` objects)."""
-    _comps = dict([id, RNAChemComp(id, id, id, name, formula)]
-                  for id, name, formula in [
-                  ('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P'),
-                  ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P'),
-                  ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P'),
-                  ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P')])
+    _comps = dict([id, RNAChemComp(id, id, id, name, formula,
+                                   formula_weight=weight)]
+                  for id, name, formula, weight in [
+                  ('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P',
+                   347.221),
+                  ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P',
+                   323.197),
+                  ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P',
+                   363.221),
+                  ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P',
+                   324.181)])
 
 
 class DNAAlphabet(Alphabet):
     """A mapping from two-letter nucleic acid codes (e.g. DA) to
        DNA (as :class:`DNAChemComp` objects)."""
-    _comps = dict([code, DNAChemComp(code, code, canon, name, formula)]
-                  for code, canon, name, formula in [
+    _comps = dict([code, DNAChemComp(code, code, canon, name, formula,
+                                     formula_weight=weight)]
+                  for code, canon, name, formula, weight in [
                       ('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE",
-                       'C10 H14 N5 O6 P'),
+                       'C10 H14 N5 O6 P', 331.222),
                       ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE",
-                       'C9 H14 N3 O7 P'),
+                       'C9 H14 N3 O7 P', 307.197),
                       ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE",
-                       'C10 H14 N5 O7 P'),
+                       'C10 H14 N5 O7 P', 347.221),
                       ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE",
-                       'C10 H15 N2 O8 P')])
+                       'C10 H15 N2 O8 P', 322.208)])
 
 
 class EntityRange:
@@ -1378,6 +1447,9 @@ class Entity:
        :param references: Information about this entity stored in external
               databases (for example the sequence in UniProt)
        :type references: sequence of :class:`ihm.reference.Reference` objects
+       :param float formula_weight: The weight of the entire entity in Daltons.
+              If not specified, it is calculated automatically from the
+              weights of the constituent chemical components.
 
        The sequence for an entity can be specified explicitly as a list of
        chemical components, or (more usually) as a list or string of codes,
@@ -1441,7 +1513,11 @@ class Entity:
     src_method = property(__get_src_method, __set_src_method)
 
     def __get_weight(self):
+        # Use user-provided value if available
+        if self._formula_weight:
+            return self._formula_weight
         weight = 0.
+        first = True
         for s in self.sequence:
             w = s.formula_weight
             # If any component's weight is unknown, the total is too
@@ -1449,14 +1525,22 @@ class Entity:
                 weight += w
             else:
                 return None
+            if first:
+                weight -= s._first_leaving_mass
+            else:
+                weight -= s._bond_leaving_mass
+            first = False
         return weight
+
+    def __set_weight(self, weight):
+        self._formula_weight = weight
+
     formula_weight = property(
-        __get_weight,
-        doc="Formula weight (dalton). This is calculated automatically "
-            "from that of the chemical components.")
+        __get_weight, __set_weight, doc="Formula weight (dalton).")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
-                 description=None, details=None, source=None, references=[]):
+                 description=None, details=None, source=None, references=[],
+                 formula_weight=None):
         def get_chem_comp(s):
             if isinstance(s, ChemComp):
                 return s
@@ -1467,6 +1551,7 @@ class Entity:
         self.source = source
         self.references = []
         self.references.extend(references)
+        self.formula_weight = formula_weight
 
         #: String descriptors of branched chemical structure.
         #: These generally only make sense for oligosaccharide entities,
@@ -1624,6 +1709,9 @@ class AsymUnit:
     """
 
     number_of_molecules = 1
+    # Used to preserve less commonly-used struct_asym fields if present
+    # in the input file
+    _pdbx_details = None
 
     def __init__(self, entity, details=None, auth_seq_id_map=0, id=None,
                  strand_id=None, orig_auth_seq_id_map=None):
@@ -1754,11 +1842,17 @@ class Assembly(list):
         """Get a Python object that represents this Assembly. Notably, two
            Assemblies that cover the part of the system (even if the
            components are in a different order) will have the same signature.
-           Signatures are also hashable, unlike the Assembly itself."""
+           Signatures are also hashable, unlike the Assembly itself.
+           If the signature cannot be calculated for some reason (generally,
+           an incomplete input file), None is returned."""
         d = collections.defaultdict(list)
         for a in self:
             # a might be an AsymUnit or an AsymUnitRange
             asym = a.asym if hasattr(a, 'asym') else a
+            # If the file is incomplete and we don't have Entity info,
+            # we won't be able to figure out the seq_id_range
+            if not isinstance(asym, Entity) and asym.entity is None:
+                return None
             d[asym].append(a.seq_id_range)
         ret = []
         # asyms might not have IDs yet, so just put them in a consistent order

@@ -42,8 +42,9 @@ class RestraintGroup(list):
        Note that due to limitations of the underlying dictionary, only
        certain combinations of restraints can be placed in groups.
        In particular, all objects in a group must be of the same type, and
-       only certain types (currently only :class:`DerivedDistanceRestraint`
-       and :class:`PredictedContactRestraint`) can be grouped.
+       only certain types (currently only :class:`DerivedDistanceRestraint`,
+       :class:`PredictedContactRestraint` and
+       :class:`HydroxylRadicalFPRestraint`) can be grouped.
 
        Empty groups can be created, but will be ignored on output as the
        dictionary does not support them.
@@ -611,7 +612,8 @@ class Feature:
     """Base class for selecting parts of the system that a restraint acts on.
        This class should not be used itself; instead,
        see :class:`ResidueFeature`, :class:`AtomFeature`,
-       :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
+       :class:`NonPolyFeature`, :class:`InterfaceResidueFeature`,
+       and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` or
@@ -640,7 +642,14 @@ class ResidueFeature(Feature):
               :class:`ihm.AsymUnit`, :class:`ihm.EntityRange`,
               :class:`ihm.Residue`, and/or :class:`ihm.Entity` objects.
        :param str details: Additional text describing this feature.
+       :param bool by_residue: If specified, indicates whether the residue
+              range is represented by individual residues, rather than the
+              closest primitive object with the highest resolution.
+       :param str rep_atom: If by_residue is True, the atom used to represent
+              the residue in three dimensions (usually CA or CB).
     """
+
+    _interface = False
 
     # Type is 'residue' if each range selects a single residue, otherwise
     # it is 'residue range'
@@ -651,12 +660,13 @@ class ResidueFeature(Feature):
         return 'residue'
     type = property(__get_type)
 
-    def __init__(self, ranges, details=None):
+    def __init__(self, ranges, details=None, by_residue=None, rep_atom=None):
         self.ranges, self.details = ranges, details
+        self.by_residue, self.rep_atom = by_residue, rep_atom
         _ = self._get_entity_type()
 
     def _signature(self):
-        return tuple(self.ranges)
+        return tuple(self.ranges) + (self.by_residue, self.rep_atom)
 
     def _all_entities_or_asyms(self):
         return self.ranges
@@ -670,6 +680,34 @@ class ResidueFeature(Feature):
             raise ValueError("%s cannot select non-polymeric entities" % self)
         else:
             return _get_entity(self.ranges[0]).type if self.ranges else None
+
+
+class InterfaceResidueFeature(ResidueFeature):
+    """Selection of one or residues from the system that are identified to
+       be at the binding site.
+
+       :param binding_partners: The binding partners at the interface. Each
+              partner can be an :class:`ihm.AsymUnit` if the specific chain is
+              known, or :class:`ihm.Entity` otherwise.
+       :type binding_partner: list of :class:`ihm.Entity`
+             or :class:`ihm.AsymUnit`
+       :param dataset: Reference to the data from which the interface
+              residue is determined.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+
+       See :class:`ResidueFeature` for a description of the other parameters.
+    """
+
+    _interface = True
+
+    def __init__(self, ranges, binding_partners, dataset, details=None,
+                 by_residue=None, rep_atom=None):
+        super().__init__(ranges=ranges, details=details,
+                         by_residue=by_residue, rep_atom=rep_atom)
+        self.binding_partners, self.dataset = binding_partners, dataset
+
+    def _signature(self):
+        return super()._signature() + tuple(self.binding_partners)
 
 
 class AtomFeature(Feature):
@@ -891,3 +929,211 @@ class HDXRestraint(Restraint):
         self.protection_factor = protection_factor
         self.details = details
     _all_features = property(lambda self: (self.feature,))
+
+
+class HydroxylRadicalFPRestraint(Restraint):
+    """Hydroxyl radical footprinting restraint on a residue.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param residue: The residue to restrain.
+       :type residue: :class:`ihm.Residue`
+       :param float predicted_sasa: The predicted solvent accessible
+              surface area.
+       :param float rate: The footprinting rate.
+       :param float rate_error: The error in the footprinting rate.
+       :param float log_pf: Log (base 10) of the protection factor.
+       :param float log_pf_error: The error in the base 10 log of the
+              protection factor.
+       :param software: The software used to obtain the restraint.
+       :type software: :class:`~ihm.Software`
+    """
+
+    assembly = None  # no struct_assembly_id for hydroxyl radical restraints
+
+    def __init__(self, dataset, residue, predicted_sasa, rate=None,
+                 rate_error=None, log_pf=None, log_pf_error=None,
+                 software=None):
+        self.dataset = dataset
+        self.residue = residue
+        self.predicted_sasa = predicted_sasa
+        self.rate, self.rate_error = rate, rate_error
+        self.log_pf, self.log_pf_error = log_pf, log_pf_error
+        self.software = software
+
+
+class ProbeType:
+    """Information about the chemistry of a probe, e.g. as used in an
+       EPR experiment.
+
+       These objects are used in :class:`ConjugateProbe` or in
+       :class:`LigandProbe`.
+
+       :param str name: Author-provided name for the probe.
+       :param bool intrinsic: True if the probe is an intrinsic part of the
+              biomolecule, False if it has been synthentically introduced.
+       :param bool covalent: True if the probe is covalently linked to a
+              particular residue in the polymeric macromolecule, or False
+              for non-covalently-linked (ligand) probes.
+       :param bool reactive: True iff the probe has a reactive form.
+       :param str reactive_name: Author-provided name for the reactive probe.
+       :param reactive_descriptor: The chemical descriptor of the reactive
+              probe, if available and applicable.
+       :type reactive_descriptor: :class:`ihm.ChemDescriptor`
+       :param descriptor: The chemical descriptor of the probe, if available.
+       :type descriptor: :class:`ihm.ChemDescriptor`
+    """
+    def __init__(self, name, intrinsic, covalent, reactive, reactive_name=None,
+                 reactive_descriptor=None, descriptor=None):
+        self.name, self.intrinsic = name, intrinsic
+        self.covalent, self.descriptor = covalent, descriptor
+        self.reactive = reactive
+        self.reactive_name = reactive_name
+        self.reactive_descriptor = reactive_descriptor
+
+    _probe_origin_map = {True: 'intrinsic', False: 'extrinsic'}
+    _probe_link_map = {True: 'covalent', False: 'ligand'}
+
+    _probe_origin = property(
+        lambda s: s._probe_origin_map.get(s.intrinsic, s.intrinsic))
+
+    _probe_link_type = property(
+        lambda s: s._probe_link_map.get(s.covalent, s.covalent))
+
+
+class ProbePosition:
+    """A specific residue position where probes are covalently attached.
+
+       See also :class:`ConjugateProbe`.
+
+       :param residue: The residue where the probes are attached.
+       :type residue: :class:`ihm.Residue`
+       :param bool mutated: True iff the residue is mutated.
+       :param bool modified: True iff the residue is chemically modified.
+       :param mutated_chem_comp: The chemical component of the mutated residue,
+              if available and applicable.
+       :type mutated_chem_comp: :class:`ihm.ChemComp`
+       :param modified_descriptor: The chemical descriptor of the
+              modified residue, if available and applicable.
+       :type descriptor: :class:`ihm.ChemDescriptor`
+       :param str description: Additional information about the position.
+    """
+    def __init__(self, residue, mutated, modified, mutated_chem_comp=None,
+                 modified_descriptor=None, description=None):
+        self.residue = residue
+        self.mutated, self.modified = mutated, modified
+        self.mutated_chem_comp = mutated_chem_comp
+        self.modified_descriptor = modified_descriptor
+        self.description = description
+
+
+class Probe:
+    """Base class for all probes, e.g. as used in EPR experiments.
+       Use a subclass, such as :class:`ConjugateProbe` or :class:`LigandProbe`.
+
+       See also :class:`EPRRestraint`.
+
+       These objects should be added to :attr:`ihm.System.probes`.
+    """
+    pass
+
+
+class ConjugateProbe(Probe):
+    """Details of a probe that is covalently attached to a residue.
+
+       These objects should be added to :attr:`ihm.System.probes`.
+
+       :param probe_type: Information about the probe's chemistry.
+       :type probe_type: :class:`ProbeType`
+       :param position: Identifies where the probe is attached.
+       :type position: :class:`ProbePosition`
+       :param dataset: The experimental dataset corresponding to the probe.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param descriptor: The chemical descriptor of the polymeric residue
+              conjugate with the probe.
+       :type descriptor: :class:`ihm.ChemDescriptor`
+       :param bool ambiguous_stoichiometry: Whether there is ambiguity
+              regarding the stoichiometry of the labeled site.
+       :param float probe_stoichiometry: The stoichiometry of the probe
+              labeling site, if known.
+       :param str details: Additional details regarding the conjugate.
+    """
+    def __init__(self, probe_type, position, dataset, descriptor=None,
+                 ambiguous_stoichiometry=None, probe_stoichiometry=None,
+                 details=None):
+        self.probe_type, self.position = probe_type, position
+        self.dataset, self.descriptor = dataset, descriptor
+        self.ambiguous_stoichiometry = ambiguous_stoichiometry
+        self.probe_stoichiometry = probe_stoichiometry
+        self.details = details
+
+
+class LigandProbe(Probe):
+    """Details of a probe that is a non-polymeric entity (ligand).
+
+       These objects should be added to :attr:`ihm.System.probes`.
+
+       :param probe_type: Information about the probe's chemistry.
+       :type probe_type: :class:`ProbeType`
+       :param entity: The entity of the ligand.
+       :type entity: :class:`ihm.Entity`
+       :param dataset: The experimental dataset corresponding to the probe.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param str details: Additional details regarding the probe.
+    """
+    def __init__(self, probe_type, entity, dataset, details=None):
+        self.probe_type, self.entity = probe_type, entity
+        self.dataset, self.details = dataset, details
+
+
+class EPRRestraint(Restraint):
+    """Restrain part of the system to match electron paramagnetic resonance
+       (EPR) data.
+
+       See also :class:`Probe`.
+
+       :param dataset: Reference to the EPR data.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param str fitting_particle_type: The type of particle fit to
+              the EPR data.
+       :param str fitting_method: The method used to fit the model
+              to the EPR data.
+       :param fitting_method_citation: The publication describing the fitting
+              method.
+       :type fitting_method_citation: :class:`~ihm.Citation`
+       :param bool multi_state: Whether multiple state fitting was done.
+       :param software: The software used to perform the fitting.
+       :type software: :class:`~ihm.Software`
+       :param str details: Additional details regarding the fitting.
+    """
+
+    assembly = None  # no struct_assembly_id for EPR restraints
+
+    def __init__(self, dataset, fitting_particle_type=None,
+                 fitting_method=None, fitting_method_citation=None,
+                 multi_state=None, software=None, details=None):
+        self.dataset = dataset
+        self.fitting_particle_type = fitting_particle_type
+        self.fitting_method = fitting_method
+        self.fitting_method_citation = fitting_method_citation
+        self.multi_state = multi_state
+        self.software, self.details = software, details
+
+        #: Information about the fit of each model to this restraint's data.
+        #: This is a Python dict where keys are :class:`~ihm.model.Model`
+        #: objects and values are :class:`EPRRestraintFit` objects.
+        self.fits = {}
+
+
+class EPRRestraintFit:
+    """Information on the fit of a model to an :class:`EPRRestraint`.
+       See :attr:`EPRRestaint.fits`.
+
+       :param float chi_value: The chi value resulting from fitting
+              the model to the EPR data.
+    """
+    __slots__ = ["chi_value"]  # Reduce memory usage
+
+    def __init__(self, chi_value=None):
+        self.chi_value = chi_value

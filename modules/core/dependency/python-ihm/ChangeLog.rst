@@ -1,3 +1,35 @@
+2.11 - 2026-06-05
+=================
+  - Hydroxyl radical footprinting data is now supported with the
+    new :class:`ihm.restraint.HydroxylRadicalFPRestraint` class (#193).
+  - EPR data is now supported using the new :class:`ihm.restraint.EPRRestraint`
+    and :class:`ihm.restraint.Probe` classes (#190).
+  - Interface residues (those identified by experiments to be at the binding
+    interface) can now be used as features using the new
+    :class:`ihm.restraint.InterfaceResidueFeature` class (#191).
+  - :class:`ihm.restraint.ResidueFeature` adds ``by_residue`` and ``rep_atom``
+    fields to annotate how residue features are represented.
+  - ``make_mmcif`` will now fall back to ISO-8859-1 encoding if the input
+    mmCIF is not valid UTF-8 (#184).
+  - ``make_mmcif`` now preserves non-IHM data present in the mmCIF
+    ``struct`` and ``struct_asym`` tables.
+  - ``make_mmcif`` now preserves the original IDs (e.g. for software, datasets)
+    present in the input mmCIF file, rather than reassigning them (#187).
+  - :class:`ihm.Citation` now allows specifying the ASTM, CSD, and/or ISSN
+    journal codes, and :meth:`ihm.Citation.from_pubmed_id` will fill in the
+    ISSN code from a PubMed ID.
+  - An explicit formula weight can now be provided to :class:`ChemComp`
+    or :class:`Entity`, which will be used instead of calculating the mass
+    automatically based on the chemical formula and element masses.
+    The latter calculation now takes leaving groups into account and so
+    better estimates the total mass of polypeptides or polynucleotides.
+  - Bugfix: the ``chem_comp`` table no longer includes components that
+    are present only in the reference database sequence (#186).
+  - Bugfix: better error message for missing features (#185).
+  - Bugfix: starting model sequence offset is now applied when reading
+    comparative modeling template structures (#188).
+  - Bugfix: more consistent detection of the complete assembly (#189).
+
 2.10 - 2026-04-10
 =================
   - The new classes :class:`ihm.reference.InsertionSeqDif`

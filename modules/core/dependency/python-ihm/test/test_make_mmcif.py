@@ -377,10 +377,12 @@ class Tests(unittest.TestCase):
         with open('output.cif') as fh:
             contents = fh.readlines()
         ind = contents.index('_chem_comp.formula_weight\n')
+        # Note that the mass for MG in our mock CCD is deliberately wrong
+        # (26, not 24) to ensure that we use it instead of the element mass
         self.assertEqual(
             contents[ind + 1:ind + 5],
             ["ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094\n",
-             "MG non-polymer 'MAGNESIUM ION' Mg 24.305\n",
+             "MG non-polymer 'MAGNESIUM ION' Mg 26.305\n",
              'ZN other . . .\n',
              'invalid-chem-comp other . . .\n'])
         os.unlink('output.cif')
@@ -407,6 +409,16 @@ class Tests(unittest.TestCase):
         ind = contents.index('_struct_ref.details\n')
         self.assertEqual(
             contents[ind + 1], '1 1 UNP Q90VU7_HV1 Q90VU7 26 AADG\n')
+        os.unlink('output.cif')
+
+    def test_non_utf8_encoded(self):
+        """Test handling of files that are not UTF-8-encoded"""
+        incif = utils.get_input_file_name(TOPDIR, 'non_utf8_encoded.cif')
+        subprocess.check_call([sys.executable, MAKE_MMCIF, incif])
+        with open('output.cif') as fh:
+            s, = ihm.reader.read(fh)
+        self.assertEqual(s.title,
+                         'Test with non-utf8-encoded symbols such as Å')
         os.unlink('output.cif')
 
 
