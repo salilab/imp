@@ -1,4 +1,5 @@
 import IMP
+import IMP.pmi.topology
 import IMP.test
 
 
