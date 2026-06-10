@@ -684,10 +684,12 @@ _ihm_sphere_obj_site.model_id
         nup84_2.add_representation(resolutions=[1])
 
         nup85 = st2.create_molecule("Nup85", "GGGGSELMGG", "B")
-        # Residues S, E should be residues 8, 9 in test.nup85.cif; map them
-        # to FASTA sequence
+        # Residues S, L should be residues 8, 10 in test.nup85.cif; map them
+        # to FASTA sequence (residue 9, E, is missing in that file)
+        # (Note that this creates two segments that point to the same
+        # starting model.)
         nup85.add_structure(self.get_input_file_name('test.nup85.cif'), 'A',
-                            res_range=(8, 9), offset=-3)
+                            res_range=(8, 10), offset=-3)
         nup85.add_representation(residues=nup85[4:8], resolutions=[1])
         _ = s.build()
         # Since we didn't represent the first 4 or last 2 residues in nup85,
@@ -772,7 +774,7 @@ _ihm_starting_model_coord.ordinal_id
 1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
 1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
 2 ATOM 1 C CA SER 2 B 1 -8.986 11.688 -5.817 91.820 3
-2 ATOM 2 C CA GLU 2 B 2 -7.986 18.688 -5.817 91.820 4
+2 ATOM 2 C CA LEU 2 B 3 -7.986 18.688 -5.817 91.820 4
 #
 """)
 
