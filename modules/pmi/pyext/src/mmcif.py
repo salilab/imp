@@ -1850,7 +1850,6 @@ def _trim_unrep_termini(entity, asyms, representations):
     # If N terminal deletions, we must fix the numbering of all segments
     # and starting models
     if pmi_offset != 0:
-        seen_models = set()
         for rep in representations:
             for seg in rep:
                 if seg.asym_unit.entity is entity:
@@ -1859,11 +1858,6 @@ def _trim_unrep_termini(entity, asyms, representations):
                                                   seg_range[1] - pmi_offset)
                     if seg.starting_model:
                         model = seg.starting_model
-                        # Make sure we only modify a given StartingModel
-                        # once (it may be referenced by multiple segments)
-                        if id(model) in seen_models:
-                            continue
-                        seen_models.add(id(model))
                         seg_range = model.asym_unit.seq_id_range
                         model.asym_unit.seq_id_range = \
                             (seg_range[0] - pmi_offset,

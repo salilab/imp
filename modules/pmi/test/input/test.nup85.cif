@@ -50,4 +50,4 @@ _atom_site.label_entity_id
 _atom_site.id
 _atom_site.pdbx_PDB_model_num
 ATOM C CA . SER A A 1 8 ? -8.986 11.688 -5.817 1.000 91.82 1 1 1
-ATOM C CA . LEU A A 1 10 ? -7.986 18.688 -5.817 1.000 91.82 1 2 1
+ATOM C CA . GLU A A 1 9 ? -7.986 18.688 -5.817 1.000 91.82 1 2 1
