@@ -98,7 +98,7 @@ jobs:
         run: |
           cd build/coverage
           coverage combine && coverage xml && mv coverage.xml ../..
-      - uses: codecov/codecov-action@v6
+      - uses: codecov/codecov-action@v7
         if: matrix.cmake_build != 'Debug'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
