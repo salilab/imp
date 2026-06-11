@@ -237,6 +237,7 @@ void Model::clear_particle_caches(ParticleIndex pi) {
   internal::ObjectsAttributeTable::clear_caches(pi);
   internal::ParticleAttributeTable::clear_caches(pi);
   internal::ParticlesAttributeTable::clear_caches(pi);
+  internal::Vector3DAttributeTable::clear_caches(pi);
 }
 
 void Model::add_data(ModelKey mk, Object *o) {
