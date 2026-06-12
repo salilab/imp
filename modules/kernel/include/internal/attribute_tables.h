@@ -987,6 +987,144 @@ class FloatAttributeTable {
 
 IMP_SWAP(FloatAttributeTable);
 
+class Vector3DDerivAttributeTable {
+  BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DDerivKey>> data_;
+  BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DDerivKey>> derivatives_;
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
+       *write_derivatives_mask_;
+#endif
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Note that we don't serialize masks; they are handled by Model
+    ar(data_, derivatives_);
+  }
+
+ public:
+  typedef typename ::IMP::Vector3DDerivKey Key;
+
+  void swap_with(Vector3DDerivAttributeTable &o) {
+    IMP_SWAP_MEMBER(data_);
+    IMP_SWAP_MEMBER(derivatives_);
+  }
+
+  Vector3DDerivAttributeTable()
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+      : read_mask_(nullptr), write_mask_(nullptr), add_remove_mask_(nullptr),
+        read_derivatives_mask_(nullptr), write_derivatives_mask_(nullptr)
+#endif
+  {}
+
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  void set_masks(Mask *read_mask, Mask *write_mask, Mask *add_remove_mask,
+                 Mask *read_derivatives_mask, Mask *write_derivatives_mask) {
+    data_.set_masks(read_mask, write_mask, add_remove_mask);
+    derivatives_.set_masks(read_derivatives_mask, write_derivatives_mask,
+                           add_remove_mask);
+    read_mask_ = read_mask;
+    write_mask_ = write_mask;
+    add_remove_mask_ = add_remove_mask;
+    read_derivatives_mask_ = read_derivatives_mask;
+    write_derivatives_mask_ = write_derivatives_mask;
+  }
+#endif
+
+  void zero_derivatives() {
+    derivatives_.fill(algebra::Vector3D(0, 0, 0));
+  }
+
+  void clear_caches(ParticleIndex p) {
+    data_.clear_caches(p);
+  }
+
+  void add_cache_attribute(Key k, ParticleIndex p, algebra::Vector3D value) {
+    data_.add_cache_attribute(k, p, value);
+  }
+
+  void remove_attribute(Key k, ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle, k, REMOVE, ATTRIBUTE);
+    data_.remove_attribute(k, particle);
+    derivatives_.remove_attribute(k, particle);
+  }
+
+  algebra::Vector3D get_derivative(Vector3DDerivKey k, ParticleIndex particle,
+                          bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+    IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there");
+    return derivatives_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
+  }
+
+  void add_to_derivative(Key k, ParticleIndex particle, algebra::Vector3D &v,
+                         const DerivativeAccumulator &da) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there: "
+                    << k.get_string() << " on particle " << particle);
+    IMP_ACCUMULATE(derivatives_.access_attribute(k, particle),
+		   algebra::Vector3D(da(v[0]), da(v[1]), da(v[2])));
+  }
+
+  void add_attribute(Key k, ParticleIndex particle, algebra::Vector3D value) {
+    data_.add_attribute(k, particle, value);
+    derivatives_.add_attribute(k, particle, algebra::Vector3D(0,0,0));
+  }
+
+  bool get_has_attribute(Key k, ParticleIndex particle) const {
+    return data_.get_has_attribute(k, particle);
+  }
+
+  void set_attribute(Key k, ParticleIndex particle, algebra::Vector3D v) {
+    data_.set_attribute(k, particle, v);
+  }
+
+  algebra::Vector3D get_attribute(Key k, ParticleIndex particle,
+                         bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+    return data_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
+  }
+
+  algebra::Vector3D &access_attribute(Key k, ParticleIndex particle) {
+    return data_.access_attribute(k, particle);
+  }
+
+  algebra::Vector3D const* access_attribute_data(Key k) const {
+    return data_.access_attribute_data(k);
+  }
+
+  algebra::Vector3D* access_attribute_data(Key k) {
+    return data_.access_attribute_data(k);
+  }
+
+  algebra::Vector3D const* access_derivative_data(Key k) const {
+    return derivatives_.access_attribute_data(k);
+  }
+
+  algebra::Vector3D* access_derivative_data(Key k) {
+    return derivatives_.access_attribute_data(k);
+  }
+
+  unsigned get_attribute_size(Key k) const {
+    return data_.get_attribute_size(k);
+  }
+
+  unsigned get_derivative_size(Key k) const {
+    return derivatives_.get_attribute_size(k);
+  }
+
+  void clear_attributes(ParticleIndex particle) {
+    data_.clear_attributes(particle);
+    derivatives_.clear_attributes(particle);
+  }
+
+  IMP::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
+    return data_.get_attribute_keys(particle);
+  }
+
+  unsigned int size() const { return data_.size(); }
+  unsigned int size(unsigned int i) const { return data_.size(i); }
+};
+
 typedef BasicAttributeTable<internal::StringAttributeTableTraits>
     StringAttributeTable;
 typedef BasicAttributeTable<internal::IntAttributeTableTraits>
@@ -1005,7 +1143,7 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
     ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
-typedef BasicAttributeTable<internal::Vector3DAttributeTableTraits>
+typedef BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DKey>>
     Vector3DAttributeTable;
 
 typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
@@ -1038,6 +1176,12 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::set_attribute;       \
   using Base::get_attribute;       \
   using Base::access_attribute
+#define IMP_MODEL_DERIV_IMPORT(Base)     \
+  IMP_MODEL_IMPORT(Base);                \
+  using Base::get_derivative;            \
+  using Base::get_derivative_size;       \
+  using Base::access_derivative_data;    \
+  using Base::add_to_derivative
 #define IMP_MODEL_SPARSE_IMPORT(Base)     \
   using Base::add_attribute;       \
   using Base::remove_attribute;    \

@@ -102,6 +102,10 @@ IMP_VALUES(SparseParticleIndexKey, SparseParticleIndexKeys);
 typedef Key<16> Vector3DKey;
 IMP_VALUES(Vector3DKey, Vector3DKeys);
 
+//! The type used to identify 3D vector attributes&derivatives in the Particles
+typedef Key<17> Vector3DDerivKey;
+IMP_VALUES(Vector3DDerivKey, Vector3DDerivKeys);
+
 /** @} */
 
 class Restraint;

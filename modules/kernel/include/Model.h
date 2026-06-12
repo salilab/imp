@@ -103,7 +103,8 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::SparseStringAttributeTable,
                               public internal::SparseIntAttributeTable,
                               public internal::SparseFloatAttributeTable,
-                              public internal::SparseParticleAttributeTable
+                              public internal::SparseParticleAttributeTable,
+                              public internal::Vector3DDerivAttributeTable
 #endif
                               {
   typedef std::set<ModelObject *> Edges;
@@ -200,7 +201,8 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::SparseStringAttributeTable>(this),
        cereal::base_class<internal::SparseIntAttributeTable>(this),
        cereal::base_class<internal::SparseFloatAttributeTable>(this),
-       cereal::base_class<internal::SparseParticleAttributeTable>(this));
+       cereal::base_class<internal::SparseParticleAttributeTable>(this),
+       cereal::base_class<internal::Vector3DDerivAttributeTable>(this));
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
@@ -337,7 +339,7 @@ class IMPKERNELEXPORT Model : public Object
 
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  IMP_MODEL_IMPORT(internal::FloatAttributeTable);
+  IMP_MODEL_DERIV_IMPORT(internal::FloatAttributeTable);
   IMP_MODEL_IMPORT(internal::StringAttributeTable);
   IMP_MODEL_IMPORT(internal::IntAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectAttributeTable);
@@ -352,6 +354,13 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_SPARSE_IMPORT(internal::SparseIntAttributeTable);
   IMP_MODEL_SPARSE_IMPORT(internal::SparseFloatAttributeTable);
   IMP_MODEL_SPARSE_IMPORT(internal::SparseParticleAttributeTable);
+  IMP_MODEL_DERIV_IMPORT(internal::Vector3DDerivAttributeTable);
+
+  void zero_derivatives() {
+    internal::FloatAttributeTable::zero_derivatives();
+    internal::Vector3DDerivAttributeTable::zero_derivatives();
+  }
+
 #endif
   //! Clear all the cache attributes of a given particle.
   void clear_particle_caches(ParticleIndex pi);
@@ -473,6 +482,11 @@ class IMPKERNELEXPORT Model : public Object
   void add_cache_attribute(Type##Key attribute_key, ParticleIndex particle, \
                            Value value)
 
+#define IMP_MODEL_DERIV_ATTRIBUTE_METHODS(Type, Value)                      \
+  IMP_MODEL_ATTRIBUTE_METHODS(Type, Value);                                 \
+  void add_to_derivative(Type##Key attribute_key, ParticleIndex particle,   \
+		         Value &v, const DerivativeAccumulator &da)
+
 #define IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(Type, Value)                     \
   void add_attribute(Type##Key attribute_key, ParticleIndex particle,       \
                      Value value);                                          \
@@ -487,6 +501,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
   IMP_MODEL_ATTRIBUTE_METHODS(Floats, Floats);
   IMP_MODEL_ATTRIBUTE_METHODS(Vector3D, IMP::algebra::Vector3D);
+  IMP_MODEL_DERIV_ATTRIBUTE_METHODS(Vector3DDeriv, IMP::algebra::Vector3D);
   IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);

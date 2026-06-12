@@ -383,6 +383,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP, SparseStringKey, Key, SparseStringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, SparseParticleIndexKey, Key,
                         SparseParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, Vector3DKey, Key, Vector3DKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, Vector3DDerivKey, Key, Vector3DDerivKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
@@ -448,6 +449,7 @@ namespace IMP {
   %template(SparseFloatKey) ::IMP::Key<14>;
   %template(SparseParticleIndexKey) ::IMP::Key<15>;
   %template(Vector3DKey) ::IMP::Key<16>;
+  %template(Vector3DDerivKey) ::IMP::Key<17>;
 }
 
 %inline %{

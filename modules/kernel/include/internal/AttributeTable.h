@@ -224,39 +224,49 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
 
 };
 
-struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
-                                                           Vector3DKey> {
-  typedef IndexVector<ParticleIndexTag, algebra::Vector3D,
-                      std::allocator<algebra::Vector3D>,
-                      vector_equal<algebra::Vector3D> > Container;
+template <class K>
+struct Vector3DAttributeTableTraits {
+  typedef K Key;
+  typedef algebra::Vector3D Value;
+  typedef algebra::Vector3D PassValue;
+  typedef IndexVector<ParticleIndexTag, Value, std::allocator<Value>,
+                      vector_equal<Value>> Container;
+  typedef PassValue const* ContainerConstDataAccess;
+  typedef Value* ContainerDataAccess;
 
-  static algebra::Vector3D get_invalid() {
+  static Value get_invalid() {
     double inv = FloatAttributeTableTraits::get_invalid();
-    return algebra::Vector3D(inv, inv, inv);
+    return Value(inv, inv, inv);
   }
 
-  static bool get_is_valid(const algebra::Vector3D &f) {
+  static bool get_is_valid(const Value &f) {
     double inv = FloatAttributeTableTraits::get_invalid();
     return std::get<0>(f) != inv;
   }
-  static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
+
+  static bool is_equal(const Value &a, const Value &b) {
     return std::equal(a.begin(), a.end(), b.begin());
   }
-  static algebra::Vector3D min(const algebra::Vector3D &a,
-                               const algebra::Vector3D &b) {
+
+  static Value min(const Value &a, const Value &b) {
     IMP_UNUSED(b);
     return a;
   }
-  static algebra::Vector3D max(const algebra::Vector3D &a,
-                               const algebra::Vector3D &b) {
+
+  static Value max(const Value &a, const Value &b) {
     IMP_UNUSED(a);
     return b;
   }
-  //
+
   //! allow direct const access to the container data
-  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  static ContainerConstDataAccess access_container_data(Container const& c) {
+    return c.data();
+  }
+
   //! allow direct non-const access to the container data
-  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+  static ContainerDataAccess access_container_data(Container& c) {
+    return c.data();
+  }
 };
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
