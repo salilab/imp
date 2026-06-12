@@ -1066,14 +1066,23 @@ class Vector3DDerivAttributeTable {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there: "
                     << k.get_string() << " on particle " << particle);
-    IMP_ACCUMULATE(derivatives_.access_attribute(k, particle),
-		   algebra::Vector3D(da(v[0]), da(v[1]), da(v[2])));
+    algebra::Vector3D deriv;
+    auto dit = deriv.begin();
+    auto vit = v.begin();
+    while (vit != v.end()) {
+      *dit = da(*vit);
+      dit++;
+      vit++;
+    }
+    IMP_ACCUMULATE(derivatives_.access_attribute(k, particle), deriv);
   }
 
   void add_attribute(Key k, ParticleIndex particle,
                      const algebra::Vector3D &value) {
     data_.add_attribute(k, particle, value);
-    derivatives_.add_attribute(k, particle, algebra::Vector3D(0,0,0));
+    algebra::Vector3D zero;
+    std::fill(zero.begin(), zero.end(), 0.0);
+    derivatives_.add_attribute(k, particle, zero);
   }
 
   bool get_has_attribute(Key k, ParticleIndex particle) const {
