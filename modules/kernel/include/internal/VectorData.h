@@ -1,18 +1,19 @@
 /**
- *  \file cgal_predicates.h
- *  \brief predicates implemented using CGAL
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  \file VectorData.h
+ *  \brief Underlying storage for VectorD
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
-#ifndef IMPALGEBRA_INTERNAL_VECTOR_H
-#define IMPALGEBRA_INTERNAL_VECTOR_H
-#include <IMP/algebra/algebra_config.h>
-#include <boost/scoped_array.hpp>
+#ifndef IMPKERNEL_INTERNAL_VECTOR_BASE_H
+#define IMPKERNEL_INTERNAL_VECTOR_BASE_H
+
+#include <IMP/kernel_config.h>
 #include <IMP/exception.h>
+#include <boost/scoped_array.hpp>
 #include <cereal/access.hpp>
 #include <limits>
 
-IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class T>
 inline T get_null_value() {
@@ -151,6 +152,6 @@ class VectorData<T, -1, KNOWN_DEFAULT> {
   }
 };
 
-IMPALGEBRA_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif /* IMPALGEBRA_INTERNAL_VECTOR_H */
+#endif /* IMPKERNEL_INTERNAL_VECTOR_BASE_H */

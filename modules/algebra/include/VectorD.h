@@ -20,7 +20,6 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/range.hpp>
-#include "internal/vector.h"
 
 #include <limits>
 #include <cmath>

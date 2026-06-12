@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/VectorBaseD.h   \brief Simple D vector class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,11 +15,11 @@
 #include <IMP/random.h>
 #include <IMP/utility.h>
 #include <IMP/types.h>
+#include <IMP/internal/VectorData.h>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/range.hpp>
 #include <cereal/access.hpp>
-#include "internal/vector.h"
 
 #include <limits>
 #include <cmath>
@@ -259,7 +259,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   unsigned int get_dimension() const { return data_.get_dimension(); }
 
  private:
-  internal::VectorData<double, D, false> data_;
+  IMP::internal::VectorData<double, D, false> data_;
 };
 
 //! Returns a unit vector pointing at the same direction as this vector.
