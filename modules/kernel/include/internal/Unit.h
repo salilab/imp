@@ -326,7 +326,7 @@ template <class Tag, int EXP, class Units>
 inline typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type
 square(Unit<Tag, EXP, Units> o) {
   return typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type(
-      square(o.get_value()));
+      ::IMP::square(o.get_value()));
 }
 
 template <class Tag, int EXP, class Units>
