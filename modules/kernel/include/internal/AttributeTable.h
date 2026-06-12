@@ -236,7 +236,9 @@ struct Vector3DAttributeTableTraits {
 
   static Value get_invalid() {
     double inv = FloatAttributeTableTraits::get_invalid();
-    return Value(inv, inv, inv);
+    Value val;
+    std::fill(val.begin(), val.end(), inv);
+    return val;
   }
 
   static bool get_is_valid(const Value &f) {

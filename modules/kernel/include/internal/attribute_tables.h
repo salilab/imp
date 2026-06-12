@@ -1032,14 +1032,17 @@ class Vector3DDerivAttributeTable {
 #endif
 
   void zero_derivatives() {
-    derivatives_.fill(algebra::Vector3D(0, 0, 0));
+    algebra::Vector3D zero;
+    std::fill(zero.begin(), zero.end(), 0.0);
+    derivatives_.fill(zero);
   }
 
   void clear_caches(ParticleIndex p) {
     data_.clear_caches(p);
   }
 
-  void add_cache_attribute(Key k, ParticleIndex p, algebra::Vector3D value) {
+  void add_cache_attribute(Key k, ParticleIndex p,
+                           const algebra::Vector3D &value) {
     data_.add_cache_attribute(k, p, value);
   }
 
@@ -1057,7 +1060,8 @@ class Vector3DDerivAttributeTable {
     return derivatives_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
   }
 
-  void add_to_derivative(Key k, ParticleIndex particle, algebra::Vector3D &v,
+  void add_to_derivative(Key k, ParticleIndex particle,
+                         const algebra::Vector3D &v,
                          const DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there: "
@@ -1066,7 +1070,8 @@ class Vector3DDerivAttributeTable {
 		   algebra::Vector3D(da(v[0]), da(v[1]), da(v[2])));
   }
 
-  void add_attribute(Key k, ParticleIndex particle, algebra::Vector3D value) {
+  void add_attribute(Key k, ParticleIndex particle,
+                     const algebra::Vector3D &value) {
     data_.add_attribute(k, particle, value);
     derivatives_.add_attribute(k, particle, algebra::Vector3D(0,0,0));
   }
@@ -1075,7 +1080,8 @@ class Vector3DDerivAttributeTable {
     return data_.get_has_attribute(k, particle);
   }
 
-  void set_attribute(Key k, ParticleIndex particle, algebra::Vector3D v) {
+  void set_attribute(Key k, ParticleIndex particle,
+                     const algebra::Vector3D &v) {
     data_.set_attribute(k, particle, v);
   }
 
