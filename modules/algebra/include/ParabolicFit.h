@@ -2,7 +2,7 @@
  * \file IMP/algebra/ParabolicFit.h
  * \brief Fit data with parabola
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,7 @@
 #define IMPALGEBRA_PARABOLIC_FIT_H
 
 #include "Vector2D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <vector>
 

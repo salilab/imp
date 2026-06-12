@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Torus3D.h
  *  \brief Represent a torus in 3D.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_TORUS_3D_H
@@ -12,7 +12,7 @@
 #include "Rotation3D.h"
 #include "Transformation3D.h"
 #include "Segment3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <IMP/showable_macros.h>
 #include <iostream>
 #include "constants.h"

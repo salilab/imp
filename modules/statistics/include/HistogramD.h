@@ -1,7 +1,7 @@
 /**
  * \file IMP/statistics/HistogramD.h \brief Holds a histogram
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,7 +9,7 @@
 #define IMPSTATISTICS_HISTOGRAM_D_H
 #include <IMP/statistics/statistics_config.h>
 #include "internal/histogram.h"
-#include <IMP/algebra/GeometricPrimitiveD.h>
+#include <IMP/GeometricPrimitiveD.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/GridD.h>
@@ -24,7 +24,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 template <int D, class Grid = algebra::GridD<
                      D, typename algebra::DenseGridStorageD<D, double>, double,
                      typename algebra::DefaultEmbeddingD<D> > >
-class HistogramD : public algebra::GeometricPrimitiveD<D> {
+class HistogramD : public GeometricPrimitiveD<D> {
  public:
   typedef Grid CountGrid;
   HistogramD() : count_(std::numeric_limits<double>::max()) {}

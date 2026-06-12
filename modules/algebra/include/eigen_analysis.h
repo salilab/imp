@@ -2,7 +2,7 @@
  *  \file IMP/algebra/eigen_analysis.h
  *  \brief Principal component analysis of a set of points
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_EIGEN_ANALYSIS_H
@@ -10,7 +10,7 @@
 
 #include "VectorD.h"
 #include "Transformation3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include "IMP/algebra/internal/utility.h"
 #include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/log.h>

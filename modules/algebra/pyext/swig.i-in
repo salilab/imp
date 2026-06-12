@@ -75,19 +75,6 @@ namespace multi_array_types {
 }
 }
 
-
-
-
-/* to extend */
-%include "IMP/algebra/GeometricPrimitiveD.h"
-%template(_GeometricPrimitive1D) IMP::algebra::GeometricPrimitiveD<1>;
-%template(_GeometricPrimitive2D) IMP::algebra::GeometricPrimitiveD<2>;
-%template(_GeometricPrimitive3D) IMP::algebra::GeometricPrimitiveD<3>;
-%template(_GeometricPrimitive4D) IMP::algebra::GeometricPrimitiveD<4>;
-%template(_GeometricPrimitive5D) IMP::algebra::GeometricPrimitiveD<5>;
-%template(_GeometricPrimitive6D) IMP::algebra::GeometricPrimitiveD<6>;
-%template(_GeometricPrimitiveKD) IMP::algebra::GeometricPrimitiveD<-1>;
-
 %include "IMP_algebra.bounding_box.i"
 %include "IMP_algebra.vector.i"
 %include "IMP_algebra.transformation2d.i"

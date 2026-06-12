@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Transformation2D.h
  *  \brief 2D transformations.
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,7 @@
 
 #include "Vector2D.h"
 #include "Rotation2D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

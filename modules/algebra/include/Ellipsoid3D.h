@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Ellipsoid3D.h   \brief Simple 3D ellipsoid class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #include "BoundingBoxD.h"
 #include "Transformation3D.h"
 #include "ReferenceFrame3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

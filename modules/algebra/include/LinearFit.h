@@ -2,7 +2,7 @@
  * \file IMP/algebra/LinearFit.h
  * \brief Linear fit of data points
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,7 @@
 #define IMPALGEBRA_LINEAR_FIT_H
 
 #include "Vector2D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <vector>
 

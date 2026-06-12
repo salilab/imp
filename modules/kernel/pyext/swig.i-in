@@ -160,6 +160,15 @@ IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
 %rename(_RAII) IMP::RAII;
 %rename(_Value) IMP::Value;
 
+%include "IMP/GeometricPrimitiveD.h"
+%template(_GeometricPrimitive1D) IMP::GeometricPrimitiveD<1>;
+%template(_GeometricPrimitive2D) IMP::GeometricPrimitiveD<2>;
+%template(_GeometricPrimitive3D) IMP::GeometricPrimitiveD<3>;
+%template(_GeometricPrimitive4D) IMP::GeometricPrimitiveD<4>;
+%template(_GeometricPrimitive5D) IMP::GeometricPrimitiveD<5>;
+%template(_GeometricPrimitive6D) IMP::GeometricPrimitiveD<6>;
+%template(_GeometricPrimitiveKD) IMP::GeometricPrimitiveD<-1>;
+
 %include "IMP/InputAdaptor.h"
 %include "IMP/NonCopyable.h"
 %include "IMP/RAII.h"

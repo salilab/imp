@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/SphereD.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #include "BoundingBoxD.h"
 #include "VectorD.h"
 #include "utility.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <cmath>
 

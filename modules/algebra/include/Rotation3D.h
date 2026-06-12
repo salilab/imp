@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Rotation3D.h   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,7 @@
 #include "Vector3D.h"
 #include "utility.h"
 #include "constants.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <Eigen/Dense>
 

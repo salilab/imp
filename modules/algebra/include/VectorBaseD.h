@@ -9,7 +9,7 @@
 #define IMPALGEBRA_VECTOR_BASE_D_H
 
 #include <IMP/algebra/algebra_config.h>
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <IMP/check_macros.h>
 #include <IMP/exception.h>
 #include <IMP/random.h>

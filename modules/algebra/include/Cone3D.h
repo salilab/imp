@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Cone3D.h
  *  \brief Represent a cone in 3D.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_CONE_3D_H
@@ -13,7 +13,7 @@
 #include "SpherePatch3D.h"
 #include "Plane3D.h"
 #include "Segment3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <IMP/showable_macros.h>
 #include <IMP/warning_macros.h>
 #include <cereal/access.hpp>
