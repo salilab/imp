@@ -169,6 +169,19 @@ IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
 %template(_GeometricPrimitive6D) IMP::GeometricPrimitiveD<6>;
 %template(_GeometricPrimitiveKD) IMP::GeometricPrimitiveD<-1>;
 
+%include "IMP/internal/VectorBaseD.h"
+namespace IMP {
+ namespace internal {
+   %template(_VectorBaseKD) VectorBaseD<-1>;
+   %template(_VectorBase1D) VectorBaseD<1>;
+   %template(_VectorBase2D) VectorBaseD<2>;
+   %template(_VectorBase3D) VectorBaseD<3>;
+   %template(_VectorBase4D) VectorBaseD<4>;
+   %template(_VectorBase5D) VectorBaseD<5>;
+   %template(_VectorBase6D) VectorBaseD<6>;
+ }
+}
+
 %include "IMP/InputAdaptor.h"
 %include "IMP/NonCopyable.h"
 %include "IMP/RAII.h"

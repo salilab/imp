@@ -24,7 +24,7 @@
 #endif
 
 #define IMP_ALGEBRA_VECTOR_METHODS(D)                                         \
-  typedef VectorBaseD<D> P;                                                   \
+  typedef IMP::internal::VectorBaseD<D> P;                                    \
                                                                               \
  public:                                                                      \
   /** \brief Will accept a list of floats from Python. */                     \
@@ -44,7 +44,7 @@
   VectorD(It b, It e)                                                         \
       : P(boost::make_iterator_range(b, e)) {}                                \
   VectorD() {}                                                                \
-  VectorD get_unit_vector() const { return algebra::get_unit_vector(*this); } \
+  VectorD get_unit_vector() const { return IMP::internal::get_unit_vector(*this); } \
   VectorD operator*(double s) const {                                         \
     VectorD ret(*this);                                                       \
     ret *= s;                                                                 \

@@ -82,19 +82,6 @@ namespace multi_array_types {
 %include "IMP_algebra.segment3d.i"
 
 /* Wrap our own classes */
-%include "IMP/algebra/VectorBaseD.h"
-namespace IMP {
- namespace algebra {
-   %template(_VectorBaseKD) VectorBaseD<-1>;
-   %template(_VectorBase1D) VectorBaseD<1>;
-   %template(_VectorBase2D) VectorBaseD<2>;
-   %template(_VectorBase3D) VectorBaseD<3>;
-   %template(_VectorBase4D) VectorBaseD<4>;
-   %template(_VectorBase5D) VectorBaseD<5>;
-   %template(_VectorBase6D) VectorBaseD<6>;
- }
-}
-
 %include "IMP/algebra/VectorD.h"
 %include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"

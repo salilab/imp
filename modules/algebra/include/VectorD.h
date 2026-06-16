@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/VectorD.h   \brief Simple D vector class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,7 +9,7 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include <IMP/algebra/algebra_config.h>
-#include "VectorBaseD.h"
+#include <IMP/internal/VectorBaseD.h>
 #include <IMP/types.h>
 #include <IMP/check_macros.h>
 #include <IMP/exception.h>
@@ -35,14 +35,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \geometry
  */
 template <int D>
-class VectorD : public VectorBaseD<D> {
+class VectorD : public IMP::internal::VectorBaseD<D> {
   /* implementing it via a specialization is in order to get swig
      to only use the right constructors as well as C++. */
   IMP_ALGEBRA_VECTOR_METHODS(D);
 };
 
 template <>
-class VectorD<-1> : public VectorBaseD<-1> {
+class VectorD<-1> : public IMP::internal::VectorBaseD<-1> {
   std::vector<double> get_range(double x0, double x1, double x2, double x3,
                                 double x4, double x5) {
     IMP_USAGE_CHECK(x0 != std::numeric_limits<double>::max(),
@@ -68,7 +68,7 @@ class VectorD<-1> : public VectorBaseD<-1> {
 };
 
 template <>
-class VectorD<1> : public VectorBaseD<1> {
+class VectorD<1> : public IMP::internal::VectorBaseD<1> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(1);
 
@@ -76,7 +76,7 @@ class VectorD<1> : public VectorBaseD<1> {
   VectorD(double x) { P::operator[](0) = x; }
 };
 template <>
-class VectorD<2> : public VectorBaseD<2> {
+class VectorD<2> : public IMP::internal::VectorBaseD<2> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(2);
 
@@ -86,7 +86,7 @@ class VectorD<2> : public VectorBaseD<2> {
   }
 };
 template <>
-class VectorD<3> : public VectorBaseD<3> {
+class VectorD<3> : public IMP::internal::VectorBaseD<3> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(3);
 
@@ -97,7 +97,7 @@ class VectorD<3> : public VectorBaseD<3> {
   }
 };
 template <>
-class VectorD<4> : public VectorBaseD<4> {
+class VectorD<4> : public IMP::internal::VectorBaseD<4> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(4);
 
@@ -109,7 +109,7 @@ class VectorD<4> : public VectorBaseD<4> {
   }
 };
 template <>
-class VectorD<5> : public VectorBaseD<5> {
+class VectorD<5> : public IMP::internal::VectorBaseD<5> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(5);
 
@@ -122,7 +122,7 @@ class VectorD<5> : public VectorBaseD<5> {
   }
 };
 template <>
-class VectorD<6> : public VectorBaseD<6> {
+class VectorD<6> : public IMP::internal::VectorBaseD<6> {
  public:
   IMP_ALGEBRA_VECTOR_METHODS(6);
 
