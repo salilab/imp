@@ -82,6 +82,24 @@ void show_attributes(Model *m, const Keys &fks, ParticleIndex id,
     preout.set_prefix("");
   }
 }
+
+template <class Keys, class GetValue>
+void show_attributes_with_derivatives(
+                     Model *m, const Keys &fks, ParticleIndex id,
+                     std::string name, GetValue v,
+                     internal::PrefixStream &preout) {
+  if (!fks.empty()) {
+    preout << name << " attributes:" << std::endl;
+    preout.set_prefix("  ");
+    for (const auto &k : fks) {
+      preout << k << ": ";
+      preout << v(m->get_attribute(k, id, false));
+      preout << " (" << v(m->get_derivative(k, id, false)) << ") ";
+      preout << std::endl;
+    }
+    preout.set_prefix("");
+  }
+}
 }
 
 void Particle::show(std::ostream &out) const {
@@ -130,6 +148,22 @@ void Particle::show(std::ostream &out) const {
         get_model(),
         get_model()->internal::IntsAttributeTable::get_attribute_keys(id_), id_,
         "ints", SizeValue<IdentityValue>(), preout);
+    show_attributes(
+        get_model(),
+        get_model()->internal::Vector3DAttributeTable::get_attribute_keys(id_),
+        id_, "Vector3D", IdentityValue(), preout);
+    show_attributes_with_derivatives(
+        get_model(),
+        get_model()->internal::Vector3DDerivAttributeTable::get_attribute_keys(id_),
+        id_, "Vector3DDeriv", IdentityValue(), preout);
+    show_attributes(
+        get_model(),
+        get_model()->internal::Vector4DAttributeTable::get_attribute_keys(id_),
+        id_, "Vector4D", IdentityValue(), preout);
+    show_attributes_with_derivatives(
+        get_model(),
+        get_model()->internal::Vector4DDerivAttributeTable::get_attribute_keys(id_),
+        id_, "Vector4DDeriv", IdentityValue(), preout);
   }
 }
 
