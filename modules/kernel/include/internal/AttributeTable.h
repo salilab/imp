@@ -14,7 +14,7 @@
 #include <IMP/Object.h>
 #include <IMP/Array.h>
 #include <IMP/Pointer.h>
-#include <IMP/Vector3D.h>
+#include <IMP/VectorD.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
 #include <boost/container/flat_map.hpp>
@@ -224,11 +224,11 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
 
 };
 
-template <class K>
-struct Vector3DAttributeTableTraits {
+template <unsigned D, class K>
+struct VectorDAttributeTableTraits {
   typedef K Key;
-  typedef Vector3D Value;
-  typedef Vector3D PassValue;
+  typedef VectorD<D> Value;
+  typedef VectorD<D> PassValue;
   typedef IndexVector<ParticleIndexTag, Value, std::allocator<Value>,
                       vector_equal<Value>> Container;
   typedef PassValue const* ContainerConstDataAccess;

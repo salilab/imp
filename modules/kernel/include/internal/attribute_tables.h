@@ -987,9 +987,10 @@ class FloatAttributeTable {
 
 IMP_SWAP(FloatAttributeTable);
 
-class Vector3DDerivAttributeTable {
-  BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DDerivKey>> data_;
-  BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DDerivKey>> derivatives_;
+template<unsigned D, class K>
+class VectorDDerivAttributeTable {
+  BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> data_;
+  BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> derivatives_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
        *write_derivatives_mask_;
@@ -1003,14 +1004,14 @@ class Vector3DDerivAttributeTable {
   }
 
  public:
-  typedef typename ::IMP::Vector3DDerivKey Key;
+  typedef K Key;
 
-  void swap_with(Vector3DDerivAttributeTable &o) {
+  void swap_with(VectorDDerivAttributeTable<D, K> &o) {
     IMP_SWAP_MEMBER(data_);
     IMP_SWAP_MEMBER(derivatives_);
   }
 
-  Vector3DDerivAttributeTable()
+  VectorDDerivAttributeTable()
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       : read_mask_(nullptr), write_mask_(nullptr), add_remove_mask_(nullptr),
         read_derivatives_mask_(nullptr), write_derivatives_mask_(nullptr)
@@ -1032,7 +1033,7 @@ class Vector3DDerivAttributeTable {
 #endif
 
   void zero_derivatives() {
-    Vector3D zero;
+    VectorD<D> zero;
     std::fill(zero.begin(), zero.end(), 0.0);
     derivatives_.fill(zero);
   }
@@ -1042,7 +1043,7 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_cache_attribute(Key k, ParticleIndex p,
-                           const Vector3D &value) {
+                           const VectorD<D> &value) {
     data_.add_cache_attribute(k, p, value);
   }
 
@@ -1052,8 +1053,8 @@ class Vector3DDerivAttributeTable {
     derivatives_.remove_attribute(k, particle);
   }
 
-  Vector3D get_derivative(Vector3DDerivKey k, ParticleIndex particle,
-                          bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+  VectorD<D> get_derivative(Key k, ParticleIndex particle,
+                            bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
     IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there");
@@ -1061,7 +1062,7 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_to_derivative(Key k, ParticleIndex particle,
-                         const Vector3D &v,
+                         const VectorD<D> &v,
                          const DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there: "
@@ -1076,9 +1077,9 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_attribute(Key k, ParticleIndex particle,
-                     const Vector3D &value) {
+                     const VectorD<D> &value) {
     data_.add_attribute(k, particle, value);
-    Vector3D zero;
+    VectorD<D> zero;
     std::fill(zero.begin(), zero.end(), 0.0);
     derivatives_.add_attribute(k, particle, zero);
   }
@@ -1088,32 +1089,32 @@ class Vector3DDerivAttributeTable {
   }
 
   void set_attribute(Key k, ParticleIndex particle,
-                     const Vector3D &v) {
+                     const VectorD<D> &v) {
     data_.set_attribute(k, particle, v);
   }
 
-  Vector3D get_attribute(Key k, ParticleIndex particle,
-                         bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+  VectorD<D> get_attribute(Key k, ParticleIndex particle,
+                           bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
     return data_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
   }
 
-  Vector3D &access_attribute(Key k, ParticleIndex particle) {
+  VectorD<D> &access_attribute(Key k, ParticleIndex particle) {
     return data_.access_attribute(k, particle);
   }
 
-  Vector3D const* access_attribute_data(Key k) const {
+  VectorD<D> const* access_attribute_data(Key k) const {
     return data_.access_attribute_data(k);
   }
 
-  Vector3D* access_attribute_data(Key k) {
+  VectorD<D>* access_attribute_data(Key k) {
     return data_.access_attribute_data(k);
   }
 
-  Vector3D const* access_derivative_data(Key k) const {
+  VectorD<D> const* access_derivative_data(Key k) const {
     return derivatives_.access_attribute_data(k);
   }
 
-  Vector3D* access_derivative_data(Key k) {
+  VectorD<D>* access_derivative_data(Key k) {
     return derivatives_.access_attribute_data(k);
   }
 
@@ -1156,8 +1157,10 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
     ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
-typedef BasicAttributeTable<internal::Vector3DAttributeTableTraits<Vector3DKey>>
+typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<3, Vector3DKey>>
     Vector3DAttributeTable;
+typedef VectorDDerivAttributeTable<3, Vector3DDerivKey>
+    Vector3DDerivAttributeTable;
 
 typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
     SparseStringAttributeTable;
