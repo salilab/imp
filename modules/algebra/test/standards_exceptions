@@ -23,5 +23,7 @@ value_object_exceptions=['DenseDoubleGrid3D',
                          'SparseUnboundedIntGrid3D',
                          'SparseUnboundedIntGridKD',
                          'Matrix2D', 'Matrix3D',
-                         'LinearFit', 'ParabolicFit']
+                         'LinearFit', 'ParabolicFit', 'VectorKD',
+                         'Vector1D', 'Vector2D', 'Vector3D',
+                         'Vector4D', 'Vector5D', 'Vector6D']
 spelling_exceptions=["xyz", "zyz", "zxz", "kd", "connolly", "rasterized", "rmsd", "wrt"]

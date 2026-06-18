@@ -46,7 +46,7 @@ value_object_exceptions=['Exception', 'TypeException',
                                            'RestraintBase', 'ScoreStateBase']
 
 spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx",
-                     "numpy", "uncached"]
+                     "numpy", "uncached", "kd"]
 
 doc_spelling_exceptions=["num", "args", "pyext",
            "src", "py", "docstring", "multifit", "cnmultifit"]
