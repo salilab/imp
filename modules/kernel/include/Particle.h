@@ -23,7 +23,7 @@
 #include <IMP/Array.h>
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/Vector3D.h>
 #include <utility>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Floats, floats, Floats);
 #ifndef SWIG
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Vector3D, vector3d,
-                                          algebra::Vector3D);
+                                          Vector3D);
 #endif
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Ints, ints, Ints);
@@ -259,7 +259,7 @@ Particle *Particle::get_value(ParticleIndexKey k) const {
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Floats, floats, Floats);
 #ifndef SWIG
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Vector3D, vector3d, algebra::Vector3D);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Vector3D, vector3d, Vector3D);
 #endif
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Ints, ints, Ints);

@@ -12,7 +12,6 @@
 #include "Vector3D.h"
 #include "Segment3D.h"
 #include "BoundingBoxD.h"
-#include "algebra_macros.h"
 #include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 

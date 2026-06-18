@@ -8,10 +8,9 @@
 #ifndef IMPALGEBRA_SPHERE_D_H
 #define IMPALGEBRA_SPHERE_D_H
 
-#include "algebra_macros.h"
 #include "constants.h"
 #include "BoundingBoxD.h"
-#include "VectorD.h"
+#include <IMP/algebra/VectorD.h>
 #include "utility.h"
 #include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>

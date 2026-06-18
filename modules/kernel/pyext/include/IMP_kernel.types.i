@@ -1125,3 +1125,82 @@ typedef unsigned int uint32_t;
   %}
 }
 %enddef
+
+%define IMP_SWIG_VALUE_D_NOKD(Namespace, Namebase)
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##1D, Namebase##D, Namebase##1Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##2D, Namebase##D, Namebase##2Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##3D, Namebase##D, Namebase##3Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##4D, Namebase##D, Namebase##4Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##5D, Namebase##D, Namebase##5Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##6D, Namebase##D, Namebase##6Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<1>, Namebase##D, Namebase##test##1,Namebase##1Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<2>, Namebase##D, Namebase##test##2,Namebase##2Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<3>, Namebase##D, Namebase##test##3,Namebase##3Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<4>, Namebase##D, Namebase##test##4,Namebase##4Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Namebase##5Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
+
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::Vector<Namespace::Namebase##D< 1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::Vector<Namespace::Namebase##D< 1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::Vector<Namespace::Namebase##D< 2 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::Vector<Namespace::Namebase##D< 2 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::Vector<Namespace::Namebase##D< 3 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::Vector<Namespace::Namebase##D< 3 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::Vector<Namespace::Namebase##D< 4 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::Vector<Namespace::Namebase##D< 4 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::Vector<Namespace::Namebase##D< 5 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::Vector<Namespace::Namebase##D< 5 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,const&);
+IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
+%feature("python:maybecall", "0") Namespace::Namebase##D::__cmp__;
+%feature("python:maybecall", "0") Namespace::Namebase##D::__eq__;
+%extend Namespace::Namebase##D {
+  int __cmp__(const Namebase##D<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::ValueException);
+  }
+  bool __eq__(const Namebase##D<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::ValueException);
+  }
+}
+%enddef
+
+
+%define IMP_SWIG_VALUE_D(Namespace, Namebase)
+IMP_SWIG_VALUE_D_NOKD(Namespace, Namebase);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##KD, Namebase##D, Namebase##KDs);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
+
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace::Namebase##D< -1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace::Namebase##D< -1 > >,const&);
+%enddef
+
+%define IMP_SWIG_TEMPLATE_D_NOKD(Namespace, Namebase)
+%template(Namebase##1D) Namespace::Namebase##D<1>;
+%template(Namebase##2D) Namespace::Namebase##D<2>;
+%template(Namebase##3D) Namespace::Namebase##D<3>;
+%template(Namebase##4D) Namespace::Namebase##D<4>;
+%template(Namebase##5D) Namespace::Namebase##D<5>;
+%template(Namebase##6D) Namespace::Namebase##D<6>;
+%enddef
+
+
+%define IMP_SWIG_TEMPLATE_D(Namespace, Namebase)
+IMP_SWIG_TEMPLATE_D_NOKD(Namespace, Namebase);
+%template(Namebase##KD) Namespace::Namebase##D<-1>;
+%enddef
+
+%define IMP_SWIG_FUNCTION_TEMPLATE_D(function_name)
+namespace IMP {
+%template(function_name##_1d) function_name##_d<1>;
+%template(function_name##_2d) function_name##_d<2>;
+%template(function_name##_3d) function_name##_d<3>;
+%template(function_name##_4d) function_name##_d<4>;
+%template(function_name##_5d) function_name##_d<5>;
+%template(function_name##_6d) function_name##_d<6>;
+}
+%enddef

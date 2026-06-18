@@ -402,12 +402,12 @@ class FloatAttributeTable {
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
               sphere_equal<algebra::Sphere3D> > sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D,
-              std::allocator<algebra::Vector3D>,
-              vector_equal<algebra::Vector3D> > internal_coordinates_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D,
-              std::allocator<algebra::Vector3D>,
-              vector_equal<algebra::Vector3D> >
+  IndexVector<ParticleIndexTag, Vector3D,
+              std::allocator<Vector3D>,
+              vector_equal<Vector3D> > internal_coordinates_;
+  IndexVector<ParticleIndexTag, Vector3D,
+              std::allocator<Vector3D>,
+              vector_equal<Vector3D> >
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
@@ -429,7 +429,7 @@ class FloatAttributeTable {
 
   algebra::Sphere3D get_invalid_sphere() const {
     double iv = internal::FloatAttributeTableTraits::get_invalid();
-    algebra::Sphere3D ivs(algebra::Vector3D(iv, iv, iv), iv);
+    algebra::Sphere3D ivs(Vector3D(iv, iv, iv), iv);
     return ivs;
   }
 
@@ -477,7 +477,7 @@ class FloatAttributeTable {
     return spheres_[particle];
   }
 
-  algebra::Vector3D &get_internal_coordinates(ParticleIndex particle) {
+  Vector3D &get_internal_coordinates(ParticleIndex particle) {
     IMP_CHECK_MASK(read_mask_, particle, FloatKey(5), GET, ATTRIBUTE);
     IMP_USAGE_CHECK(internal_coordinates_[particle][0] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
@@ -501,7 +501,7 @@ class FloatAttributeTable {
          faster implementations of evaluate_index() etc.
   */
   static void add_to_coordinate_derivatives(algebra::Sphere3D& xyzr_deriv,
-                                     const algebra::Vector3D &v,
+                                     const Vector3D &v,
                                      const DerivativeAccumulator &da) {
     IMP_ACCUMULATE(xyzr_deriv[0], da(v[0]));
     IMP_ACCUMULATE(xyzr_deriv[1], da(v[1]));
@@ -511,7 +511,7 @@ class FloatAttributeTable {
   //! add derivatives in v to xyz derivative of particle, after
   //! transforming the derivative using da
   void add_to_coordinate_derivatives(ParticleIndex particle,
-                                     const algebra::Vector3D &v,
+                                     const Vector3D &v,
                                      const DerivativeAccumulator &da) {
     IMP_CHECK_MASK(write_derivatives_mask_, particle, FloatKey(0), SET,
                    DERIVATIVE);
@@ -521,7 +521,7 @@ class FloatAttributeTable {
   }
 
   void add_to_internal_coordinate_derivatives(ParticleIndex particle,
-                                              const algebra::Vector3D &v,
+                                              const Vector3D &v,
                                               const DerivativeAccumulator &da) {
     IMP_CHECK_MASK(write_derivatives_mask_, particle, FloatKey(4), SET,
                    DERIVATIVE);
@@ -532,7 +532,7 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][2], da(v[2]));
   }
 
-  const algebra::Vector3D &get_coordinate_derivatives(ParticleIndex particle)
+  const Vector3D &get_coordinate_derivatives(ParticleIndex particle)
       const {
     IMP_CHECK_MASK(read_derivatives_mask_, particle, FloatKey(0), GET,
                    DERIVATIVE);
@@ -542,13 +542,13 @@ class FloatAttributeTable {
   }
   void zero_derivatives() {
     /*std::fill(sphere_derivatives_.begin(), sphere_derivatives_.end(),
-      algebra::Sphere3D(algebra::Vector3D(0,0,0), 0));*/
+      algebra::Sphere3D(Vector3D(0,0,0), 0));*/
     // make more efficient
     std::fill(sphere_derivatives_.begin(), sphere_derivatives_.end(),
-              algebra::Sphere3D(algebra::Vector3D(0, 0, 0), 0));
+              algebra::Sphere3D(Vector3D(0, 0, 0), 0));
     std::fill(internal_coordinate_derivatives_.begin(),
               internal_coordinate_derivatives_.end(),
-              algebra::Vector3D(0, 0, 0));
+              Vector3D(0, 0, 0));
     derivatives_.fill(0);
   }
   void clear_caches(ParticleIndex) {}
@@ -789,19 +789,19 @@ class FloatAttributeTable {
   unsigned get_internal_coordinates_size() const {
     return internal_coordinates_.size();
   }
-  algebra::Vector3D const* access_internal_coordinates_data() const{
+  Vector3D const* access_internal_coordinates_data() const{
     return internal_coordinates_.data();
   }
-  algebra::Vector3D * access_internal_coordinates_data() {
+  Vector3D * access_internal_coordinates_data() {
     return internal_coordinates_.data();
   }
   unsigned get_internal_coordinate_derivatives_size() const {
     return internal_coordinate_derivatives_.size();
   }
-  algebra::Vector3D const* access_internal_coordinate_derivatives_data() const{
+  Vector3D const* access_internal_coordinate_derivatives_data() const{
     return internal_coordinate_derivatives_.data();
   }
-  algebra::Vector3D * access_internal_coordinate_derivatives_data() {
+  Vector3D * access_internal_coordinate_derivatives_data() {
     return internal_coordinate_derivatives_.data();
   }
   //! Get the size of the attribute table for the given key.
@@ -1032,7 +1032,7 @@ class Vector3DDerivAttributeTable {
 #endif
 
   void zero_derivatives() {
-    algebra::Vector3D zero;
+    Vector3D zero;
     std::fill(zero.begin(), zero.end(), 0.0);
     derivatives_.fill(zero);
   }
@@ -1042,7 +1042,7 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_cache_attribute(Key k, ParticleIndex p,
-                           const algebra::Vector3D &value) {
+                           const Vector3D &value) {
     data_.add_cache_attribute(k, p, value);
   }
 
@@ -1052,7 +1052,7 @@ class Vector3DDerivAttributeTable {
     derivatives_.remove_attribute(k, particle);
   }
 
-  algebra::Vector3D get_derivative(Vector3DDerivKey k, ParticleIndex particle,
+  Vector3D get_derivative(Vector3DDerivKey k, ParticleIndex particle,
                           bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
     IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
@@ -1061,7 +1061,7 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_to_derivative(Key k, ParticleIndex particle,
-                         const algebra::Vector3D &v,
+                         const Vector3D &v,
                          const DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there: "
@@ -1076,9 +1076,9 @@ class Vector3DDerivAttributeTable {
   }
 
   void add_attribute(Key k, ParticleIndex particle,
-                     const algebra::Vector3D &value) {
+                     const Vector3D &value) {
     data_.add_attribute(k, particle, value);
-    algebra::Vector3D zero;
+    Vector3D zero;
     std::fill(zero.begin(), zero.end(), 0.0);
     derivatives_.add_attribute(k, particle, zero);
   }
@@ -1088,32 +1088,32 @@ class Vector3DDerivAttributeTable {
   }
 
   void set_attribute(Key k, ParticleIndex particle,
-                     const algebra::Vector3D &v) {
+                     const Vector3D &v) {
     data_.set_attribute(k, particle, v);
   }
 
-  algebra::Vector3D get_attribute(Key k, ParticleIndex particle,
+  Vector3D get_attribute(Key k, ParticleIndex particle,
                          bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
     return data_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
   }
 
-  algebra::Vector3D &access_attribute(Key k, ParticleIndex particle) {
+  Vector3D &access_attribute(Key k, ParticleIndex particle) {
     return data_.access_attribute(k, particle);
   }
 
-  algebra::Vector3D const* access_attribute_data(Key k) const {
+  Vector3D const* access_attribute_data(Key k) const {
     return data_.access_attribute_data(k);
   }
 
-  algebra::Vector3D* access_attribute_data(Key k) {
+  Vector3D* access_attribute_data(Key k) {
     return data_.access_attribute_data(k);
   }
 
-  algebra::Vector3D const* access_derivative_data(Key k) const {
+  Vector3D const* access_derivative_data(Key k) const {
     return derivatives_.access_attribute_data(k);
   }
 
-  algebra::Vector3D* access_derivative_data(Key k) {
+  Vector3D* access_derivative_data(Key k) {
     return derivatives_.access_attribute_data(k);
   }
 

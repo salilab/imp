@@ -11,7 +11,6 @@
 #include "Vector3D.h"
 #include "Transformation3D.h"
 #include "ReferenceFrame3D.h"
-#include "algebra_macros.h"
 #include <IMP/GeometricPrimitiveD.h>
 #include <iostream>
 #include <cereal/access.hpp>

@@ -523,6 +523,9 @@ namespace IMP {
   class ScoreStates;
 }
 
+%include "IMP_kernel.vector.i"
+%include "IMP/VectorD.h"
+%include "IMP/Vector3D.h"
 %include "IMP/RestraintInfo.h"
 %include "IMP/Restraint.h"
 %include "IMP/RestraintSet.h"
@@ -565,6 +568,11 @@ namespace IMP {
 %include "IMP/particle_index.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
+
+IMP_SWIG_TEMPLATE_D(IMP, Vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_basis_vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_zero_vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_ones_vector);
 
 namespace IMP {
   %template(_RestraintsScoringFunction) ::IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints>;

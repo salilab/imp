@@ -11,7 +11,6 @@
 #include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
-#include "algebra_macros.h"
 #include <IMP/GeometricPrimitiveD.h>
 #include <iostream>
 #include <cereal/access.hpp>

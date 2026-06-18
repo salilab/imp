@@ -81,7 +81,7 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data,
 }
 
 PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
-                                    algebra::Vector3D *data, bool read_only)
+                                    Vector3D *data, bool read_only)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
@@ -94,7 +94,7 @@ PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
   dims[0] = sz;
   dims[1] = 3;
 
-  static_assert(sizeof(algebra::Vector3D) == 3 * sizeof(double),
+  static_assert(sizeof(Vector3D) == 3 * sizeof(double),
                 "Vector3D size != 3 * double size");
   PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
                               data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
