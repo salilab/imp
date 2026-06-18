@@ -97,6 +97,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::IntsAttributeTable,
                               public internal::FloatsAttributeTable,
                               public internal::Vector3DAttributeTable,
+                              public internal::Vector4DAttributeTable,
                               public internal::ObjectsAttributeTable,
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable,
@@ -104,7 +105,8 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::SparseIntAttributeTable,
                               public internal::SparseFloatAttributeTable,
                               public internal::SparseParticleAttributeTable,
-                              public internal::Vector3DDerivAttributeTable
+                              public internal::Vector3DDerivAttributeTable,
+                              public internal::Vector4DDerivAttributeTable
 #endif
                               {
   typedef std::set<ModelObject *> Edges;
@@ -202,7 +204,9 @@ class IMPKERNELEXPORT Model : public Object
        cereal::base_class<internal::SparseIntAttributeTable>(this),
        cereal::base_class<internal::SparseFloatAttributeTable>(this),
        cereal::base_class<internal::SparseParticleAttributeTable>(this),
-       cereal::base_class<internal::Vector3DDerivAttributeTable>(this));
+       cereal::base_class<internal::Vector3DDerivAttributeTable>(this),
+       cereal::base_class<internal::Vector4DAttributeTable>(this),
+       cereal::base_class<internal::Vector4DDerivAttributeTable>(this));
 
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
       size_t count;
@@ -347,6 +351,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::IntsAttributeTable);
   IMP_MODEL_IMPORT(internal::FloatsAttributeTable);
   IMP_MODEL_IMPORT(internal::Vector3DAttributeTable);
+  IMP_MODEL_IMPORT(internal::Vector4DAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectsAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
@@ -355,10 +360,12 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_SPARSE_IMPORT(internal::SparseFloatAttributeTable);
   IMP_MODEL_SPARSE_IMPORT(internal::SparseParticleAttributeTable);
   IMP_MODEL_DERIV_IMPORT(internal::Vector3DDerivAttributeTable);
+  IMP_MODEL_DERIV_IMPORT(internal::Vector4DDerivAttributeTable);
 
   void zero_derivatives() {
     internal::FloatAttributeTable::zero_derivatives();
     internal::Vector3DDerivAttributeTable::zero_derivatives();
+    internal::Vector4DDerivAttributeTable::zero_derivatives();
   }
 
 #endif
@@ -501,7 +508,9 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
   IMP_MODEL_ATTRIBUTE_METHODS(Floats, Floats);
   IMP_MODEL_ATTRIBUTE_METHODS(Vector3D, IMP::Vector3D);
+  IMP_MODEL_ATTRIBUTE_METHODS(Vector4D, IMP::Vector4D);
   IMP_MODEL_DERIV_ATTRIBUTE_METHODS(Vector3DDeriv, IMP::Vector3D);
+  IMP_MODEL_DERIV_ATTRIBUTE_METHODS(Vector4DDeriv, IMP::Vector4D);
   IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);

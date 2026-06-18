@@ -1161,6 +1161,10 @@ typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<3, Vector3DKey
     Vector3DAttributeTable;
 typedef VectorDDerivAttributeTable<3, Vector3DDerivKey>
     Vector3DDerivAttributeTable;
+typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<4, Vector4DKey>>
+    Vector4DAttributeTable;
+typedef VectorDDerivAttributeTable<4, Vector4DDerivKey>
+    Vector4DDerivAttributeTable;
 
 typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
     SparseStringAttributeTable;
