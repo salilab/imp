@@ -123,6 +123,12 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 
+  void add_to_derivative(Vector3DDerivKey key, const Vector3D &value,
+                         const DerivativeAccumulator &da);
+
+  void add_to_derivative(Vector4DDerivKey key, const Vector4D &value,
+                         const DerivativeAccumulator &da);
+
   void set_is_optimized(FloatKey k, bool tf);
 
   //! returns true if key k is marked by model as optimized
@@ -130,6 +136,12 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 
   //! returns the derivative of the specified particle attribute
   inline Float get_derivative(FloatKey k) const;
+
+  //! returns the derivative of the specified particle attribute
+  inline Vector3D get_derivative(Vector3DDerivKey k) const;
+
+  //! returns the derivative of the specified particle attribute
+  inline Vector4D get_derivative(Vector4DDerivKey k) const;
   /** @} */
 
   /** \name Particle attributes
@@ -216,6 +228,16 @@ bool Particle::get_is_optimized(FloatKey k) const {
 }
 
 Float Particle::get_derivative(FloatKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(k, id_);
+}
+
+Vector3D Particle::get_derivative(Vector3DDerivKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(k, id_);
+}
+
+Vector4D Particle::get_derivative(Vector4DDerivKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_derivative(k, id_);
 }

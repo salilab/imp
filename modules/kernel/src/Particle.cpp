@@ -188,6 +188,19 @@ void Particle::add_to_derivative(FloatKey key, Float value,
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_to_derivative(key, id_, value, da);
 }
+
+void Particle::add_to_derivative(Vector3DDerivKey key, const Vector3D &value,
+                                 const DerivativeAccumulator &da) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_to_derivative(key, id_, value, da);
+}
+
+void Particle::add_to_derivative(Vector4DDerivKey key, const Vector4D &value,
+                                 const DerivativeAccumulator &da) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_to_derivative(key, id_, value, da);
+}
+
 void Particle::set_is_optimized(FloatKey k, bool tf) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->set_is_optimized(k, id_, tf);

@@ -177,8 +177,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_age(), 4)
         self.assertEqual(m.get_removed_particles_attributes_age(), 3)
 
-    def test_derivatives(self):
-        """Test get/set of derivatives"""
+    def test_float_derivatives(self):
+        """Test get/set of Float derivatives"""
         (model, particles) = self.setup()
         p = particles[0]
         self.assertEqual(p.get_derivative(xkey), 0.0)
@@ -190,6 +190,42 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p.get_derivative(xkey), 30.0)
         model.add_to_derivative(xkey, p.get_index(), 10.0, da)
         self.assertEqual(p.get_derivative(xkey), 50.0)
+
+    def test_vector3d_derivatives(self):
+        """Test get/set of Vector3D derivatives"""
+        k = IMP.Vector3DDerivKey("test_3d_derivs")
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        m.add_attribute(k, p, IMP.Vector3D(1,2,3))
+        deriv = p.get_derivative(k)
+        self.assertAlmostEqual(deriv[0], 0.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[1], 0.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[2], 0.0, delta=1e-5)
+        da = IMP.DerivativeAccumulator()
+        p.add_to_derivative(k, IMP.Vector3D(10.0, 15.0, 20.0), da)
+        deriv = p.get_derivative(k)
+        self.assertAlmostEqual(deriv[0], 10.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[1], 15.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[2], 20.0, delta=1e-5)
+
+    def test_vector4d_derivatives(self):
+        """Test get/set of Vector4D derivatives"""
+        k = IMP.Vector4DDerivKey("test_4d_derivs")
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        m.add_attribute(k, p, IMP.Vector4D(1,2,3,4))
+        deriv = p.get_derivative(k)
+        self.assertAlmostEqual(deriv[0], 0.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[1], 0.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[2], 0.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[3], 0.0, delta=1e-5)
+        da = IMP.DerivativeAccumulator()
+        p.add_to_derivative(k, IMP.Vector4D(10.0, 15.0, 20.0, 40.0), da)
+        deriv = p.get_derivative(k)
+        self.assertAlmostEqual(deriv[0], 10.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[1], 15.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[2], 20.0, delta=1e-5)
+        self.assertAlmostEqual(deriv[3], 40.0, delta=1e-5)
 
     def test_browsing(self):
         """Test browsing of particle attributes"""
