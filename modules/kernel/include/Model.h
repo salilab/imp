@@ -492,7 +492,8 @@ class IMPKERNELEXPORT Model : public Object
 #define IMP_MODEL_DERIV_ATTRIBUTE_METHODS(Type, Value)                      \
   IMP_MODEL_ATTRIBUTE_METHODS(Type, Value);                                 \
   void add_to_derivative(Type##Key attribute_key, ParticleIndex particle,   \
-		         const Value &v, const DerivativeAccumulator &da)
+		         const Value &v, const DerivativeAccumulator &da);  \
+  void set_is_optimized(Type##Key, ParticleIndex, bool)
 
 #define IMP_MODEL_SPARSE_ATTRIBUTE_METHODS(Type, Value)                     \
   void add_attribute(Type##Key attribute_key, ParticleIndex particle,       \

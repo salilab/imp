@@ -95,6 +95,7 @@ void show_attributes_with_derivatives(
       preout << k << ": ";
       preout << v(m->get_attribute(k, id, false));
       preout << " (" << v(m->get_derivative(k, id, false)) << ") ";
+      preout << (m->get_is_optimized(k, id) ? " (optimized)" : "");
       preout << std::endl;
     }
     preout.set_prefix("");
@@ -205,6 +206,17 @@ void Particle::set_is_optimized(FloatKey k, bool tf) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->set_is_optimized(k, id_, tf);
 }
+
+void Particle::set_is_optimized(Vector3DDerivKey k, bool tf) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->set_is_optimized(k, id_, tf);
+}
+
+void Particle::set_is_optimized(Vector4DDerivKey k, bool tf) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->set_is_optimized(k, id_, tf);
+}
+
 void Particle::add_attribute(ParticleIndexKey k, Particle *v) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_attribute(k, id_, v->get_index());

@@ -412,7 +412,7 @@ class FloatAttributeTable {
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
-  BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
+  BasicAttributeTable<internal::BoolAttributeTableTraits<FloatKey>> optimizeds_;
   FloatRanges ranges_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
@@ -864,13 +864,13 @@ class FloatAttributeTable {
     return internal::FloatAttributeTableTraits::access_container_data
       (derivatives_.access_data()[ki]);
   }
-  BoolAttributeTableTraits::Container const&
+  BoolAttributeTableTraits<FloatKey>::Container const&
     access_optimizeds_data(FloatKey k) const{
     IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
                     "trying to access an attribute that was not added to this model");
     return optimizeds_.access_data()[k.get_index()];
   }
-  BoolAttributeTableTraits::Container&
+  BoolAttributeTableTraits<FloatKey>::Container&
     access_optimizeds_data(FloatKey k){
     IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
                     "trying to access an attribute that was not added to this model");
@@ -991,6 +991,8 @@ template<unsigned D, class K>
 class VectorDDerivAttributeTable {
   BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> data_;
   BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> derivatives_;
+  // make use bitset
+  BasicAttributeTable<internal::BoolAttributeTableTraits<K>> optimizeds_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
        *write_derivatives_mask_;
@@ -1000,7 +1002,7 @@ class VectorDDerivAttributeTable {
 
   template<class Archive> void serialize(Archive &ar) {
     // Note that we don't serialize masks; they are handled by Model
-    ar(data_, derivatives_);
+    ar(data_, derivatives_, optimizeds_);
   }
 
  public:
@@ -1009,6 +1011,7 @@ class VectorDDerivAttributeTable {
   void swap_with(VectorDDerivAttributeTable<D, K> &o) {
     IMP_SWAP_MEMBER(data_);
     IMP_SWAP_MEMBER(derivatives_);
+    IMP_SWAP_MEMBER(optimizeds_);
   }
 
   VectorDDerivAttributeTable()
@@ -1024,6 +1027,7 @@ class VectorDDerivAttributeTable {
     data_.set_masks(read_mask, write_mask, add_remove_mask);
     derivatives_.set_masks(read_derivatives_mask, write_derivatives_mask,
                            add_remove_mask);
+    optimizeds_.set_masks(read_mask, write_mask, add_remove_mask);
     read_mask_ = read_mask;
     write_mask_ = write_mask;
     add_remove_mask_ = add_remove_mask;
@@ -1051,6 +1055,21 @@ class VectorDDerivAttributeTable {
     IMP_CHECK_MASK(add_remove_mask_, particle, k, REMOVE, ATTRIBUTE);
     data_.remove_attribute(k, particle);
     derivatives_.remove_attribute(k, particle);
+    if (optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.remove_attribute(k, particle);
+    }
+  }
+
+  bool get_is_optimized(Key k, ParticleIndex particle) const {
+    return optimizeds_.get_has_attribute(k, particle);
+  }
+
+  void set_is_optimized(Key k, ParticleIndex particle, bool tf) {
+    if (tf && !optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.add_attribute(k, particle, true);
+    } else if (!tf && optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.remove_attribute(k, particle);
+    }
   }
 
   VectorD<D> get_derivative(Key k, ParticleIndex particle,
@@ -1077,11 +1096,14 @@ class VectorDDerivAttributeTable {
   }
 
   void add_attribute(Key k, ParticleIndex particle,
-                     const VectorD<D> &value) {
+                     const VectorD<D> &value, bool opt=false) {
     data_.add_attribute(k, particle, value);
     VectorD<D> zero;
     std::fill(zero.begin(), zero.end(), 0.0);
     derivatives_.add_attribute(k, particle, zero);
+    if (opt) {
+      optimizeds_.add_attribute(k, particle, true);
+    }
   }
 
   bool get_has_attribute(Key k, ParticleIndex particle) const {
@@ -1129,6 +1151,7 @@ class VectorDDerivAttributeTable {
   void clear_attributes(ParticleIndex particle) {
     data_.clear_attributes(particle);
     derivatives_.clear_attributes(particle);
+    optimizeds_.clear_attributes(particle);
   }
 
   IMP::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
@@ -1201,6 +1224,8 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::get_derivative;            \
   using Base::get_derivative_size;       \
   using Base::access_derivative_data;    \
+  using Base::set_is_optimized;          \
+  using Base::get_is_optimized;          \
   using Base::add_to_derivative
 #define IMP_MODEL_SPARSE_IMPORT(Base)     \
   using Base::add_attribute;       \

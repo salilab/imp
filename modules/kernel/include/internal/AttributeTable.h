@@ -271,7 +271,8 @@ struct VectorDAttributeTableTraits {
   }
 };
 
-struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
+template <class K>
+struct BoolAttributeTableTraits : public DefaultTraits<bool, K> {
   struct Container : public boost::dynamic_bitset<> {
     friend class cereal::access;
 
@@ -366,7 +367,13 @@ inline int use_xyz_to_disable_warning() {
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
-        IMP::internal::BoolAttributeTableTraits::Container,
+        IMP::internal::BoolAttributeTableTraits<IMP::FloatKey>::Container,
+        cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+        IMP::internal::BoolAttributeTableTraits<IMP::Vector3DDerivKey>::Container,
+        cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+        IMP::internal::BoolAttributeTableTraits<IMP::Vector4DDerivKey>::Container,
         cereal::specialization::member_serialize);
 
 #endif /* IMPKERNEL_ATTRIBUTE_TABLE_H */

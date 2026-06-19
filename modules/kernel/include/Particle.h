@@ -130,9 +130,13 @@ class IMPKERNELEXPORT Particle : public ModelObject {
                          const DerivativeAccumulator &da);
 
   void set_is_optimized(FloatKey k, bool tf);
+  void set_is_optimized(Vector3DDerivKey k, bool tf);
+  void set_is_optimized(Vector4DDerivKey k, bool tf);
 
   //! returns true if key k is marked by model as optimized
   inline bool get_is_optimized(FloatKey k) const;
+  inline bool get_is_optimized(Vector3DDerivKey k) const;
+  inline bool get_is_optimized(Vector4DDerivKey k) const;
 
   //! returns the derivative of the specified particle attribute
   inline Float get_derivative(FloatKey k) const;
@@ -223,6 +227,16 @@ class IMPKERNELEXPORT ParticleAdaptor : public InputAdaptor {
 #ifndef IMP_DOXYGEN
 
 bool Particle::get_is_optimized(FloatKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+
+bool Particle::get_is_optimized(Vector3DDerivKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+
+bool Particle::get_is_optimized(Vector4DDerivKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_is_optimized(k, id_);
 }
