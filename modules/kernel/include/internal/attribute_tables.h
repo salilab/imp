@@ -412,7 +412,7 @@ class FloatAttributeTable {
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
-  BasicAttributeTable<internal::BoolAttributeTableTraits<FloatKey>> optimizeds_;
+  BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
   FloatRanges ranges_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
@@ -864,13 +864,13 @@ class FloatAttributeTable {
     return internal::FloatAttributeTableTraits::access_container_data
       (derivatives_.access_data()[ki]);
   }
-  BoolAttributeTableTraits<FloatKey>::Container const&
+  BoolAttributeTableTraits::Container const&
     access_optimizeds_data(FloatKey k) const{
     IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
                     "trying to access an attribute that was not added to this model");
     return optimizeds_.access_data()[k.get_index()];
   }
-  BoolAttributeTableTraits<FloatKey>::Container&
+  BoolAttributeTableTraits::Container&
     access_optimizeds_data(FloatKey k){
     IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
                     "trying to access an attribute that was not added to this model");
@@ -992,7 +992,7 @@ class VectorDDerivAttributeTable {
   BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> data_;
   BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> derivatives_;
   // make use bitset
-  BasicAttributeTable<internal::BoolAttributeTableTraits<K>> optimizeds_;
+  BasicAttributeTable<internal::GenericBoolAttributeTableTraits<K>> optimizeds_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
        *write_derivatives_mask_;
