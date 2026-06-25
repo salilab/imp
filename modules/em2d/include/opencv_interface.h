@@ -15,6 +15,11 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+// OpenCV 5 includes
+#if !defined(CV_VERSION_EPOCH) && CV_VERSION_MAJOR >= 5
+# include <opencv2/geometry/2d.hpp>
+#endif
+
 #include <iostream>
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
