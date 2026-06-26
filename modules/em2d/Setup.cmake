@@ -1,0 +1,16 @@
+if("${OPENCV3_LIBRARIES}" STREQUAL "" AND "${OPENCV5_LIBRARIES}" STREQUAL "")
+  message(STATUS "Required dependency of OpenCV 3 or later not found")
+# disable em2d
+  file(STRINGS ${CMAKE_BINARY_DIR}/build_info/disabled disabled)
+  list(APPEND disabled "em2d")
+  list(REMOVE_DUPLICATES disabled)
+  foreach(l ${disabled})
+    if(DEFINED output)
+      set(output "${output}
+${l}")
+    else()
+      set(output ${l})
+    endif()
+  endforeach(l)
+  file(WRITE ${CMAKE_BINARY_DIR}/build_info/disabled ${output})
+endif()
