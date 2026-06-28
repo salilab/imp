@@ -393,63 +393,6 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                                       DerivativeAccumulator &da);
 #endif
 
-  /**  Update the translational and rotational derivatives
-       on the rigid body center of mass, using the Cartesian derivative
-       vector at a specified location (the point where the force is
-       being applied).
-
-       Updates both the quaternion derivatives and the torque.
-
-      @param local_derivative The derivative vector in local rigid body coordinates
-      @param local_location   The location where the derivative is taken in local
-                              rigid body coordinates
-      @param da               Accumulates the output derivative over the rigid body
-                              center of mass (translation and rotation torque, quaternion)
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  void add_to_derivatives(const algebra::Vector3D &local_derivative,
-                          const algebra::Vector3D &local_location,
-                          DerivativeAccumulator &da);
-
-  /** Faster version of the above, if all is cached.
-
-      @param local_derivative    The derivative vector in local rigid body coordinates
-      @param global_derivative   The derivative vector in global coordinates
-      @param local_location      The location where the derivative is taken in local
-                                 rigid body coordinates
-      @param rot_local_to_global Rotation matrix from local rigid body to
-                                 global coordinates
-      @param da                  Accumulates the output derivative over the rigid body
-                                 center of mass (translation and rotation torque, quaternion)
-  */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  void add_to_derivatives(const algebra::Vector3D &local_derivative,
-                          const algebra::Vector3D &global_derivative,
-                          const algebra::Vector3D &local_location,
-                          const algebra::Rotation3D &rot_local_to_global,
-                          DerivativeAccumulator &da);
-
-  /** Update the rotational derivatives from another body specified by the
-      rotation from the other body's local coordinates to this body's local
-      coordinates. The provided quaternion derivative on the other body are in
-      the reference frame of the other body.
-
-      Updates only quaternion derivatives.
-
-      @param other_qderiv        The derivative on the quaternion taking the other body's
-                                 local coordinates to global.
-      @param rot_other_to_local  Rotation taking the local coordinates of the other body
-                                 to this body's local coordinates.
-      @param rot_local_to_global Rotation taking this rigid body's local coordinates to
-                                 global coordinates.
-      @param da               Accumulates the output derivatives.
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
-                                            const algebra::Rotation3D &rot_other_to_local,
-                                            const algebra::Rotation3D &rot_local_to_global,
-                                            DerivativeAccumulator &da);
-
   /** Add to quaternion derivative of this rigid body
       Note that this method does not update the torque.
 
@@ -791,25 +734,6 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
                                      get_particle_index(), deriv_parent[i], da);
     }
   }
-
-  /** Update the rotational derivatives of the internal transformation.
-
-      Updates only local quaternion derivatives.
-
-      @param local_qderiv        The derivative on the quaternion taking this non-rigid
-                                 body's local coordinates to global.
-      @param rot_local_to_parent  Rotation taking the local coordinates of the non-rigid
-                                  body to its parent's.
-      @param rot_parent_to_global Rotation taking the parent rigid body's local coordinates
-                                  to global coordinates.
-      @param da               Accumulates the output derivatives.
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  void add_to_internal_rotational_derivatives(
-             const algebra::Vector4D &local_qderiv,
-             const algebra::Rotation3D &rot_local_to_parent,
-             const algebra::Rotation3D &rot_parent_to_global,
-             DerivativeAccumulator &da);
 
   /** Add to internal quaternion derivatives of this non-rigid body
 
