@@ -2,7 +2,7 @@
  *  \file IMP/algebra/geometric_alignment.h
  *  \brief align sets of points.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
@@ -85,8 +85,12 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   IMP_LOG_VERBOSE("H is " << H << std::endl);
+#if EIGEN_MAJOR_VERSION >= 5
+  auto svd = H.jacobiSvd<Eigen::ComputeFullV | Eigen::ComputeFullU>();
+#else
   Eigen::JacobiSVD<Eigen::Matrix3d> svd =
       H.jacobiSvd(Eigen::ComputeFullV | Eigen::ComputeFullU);
+#endif
   Eigen::Matrix3d U = svd.matrixU(), V = svd.matrixV();
   Eigen::Vector3d SV = svd.singularValues();
   IMP_LOG_VERBOSE("SVD is " << U << std::endl << V << std::endl);

@@ -122,7 +122,11 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   Eigen::MatrixXd cov = internal::get_covariance_matrix(ps, m);
   IMP_LOG_VERBOSE("The covariance matrix is " << cov << std::endl);
 
+#if EIGEN_MAJOR_VERSION >= 5
+  auto svd = cov.jacobiSvd<Eigen::ComputeFullV>();
+#else
   Eigen::JacobiSVD<Eigen::MatrixXd> svd = cov.jacobiSvd(Eigen::ComputeFullV);
+#endif
   Eigen::MatrixXd V = svd.matrixV();
   Eigen::VectorXd SV = svd.singularValues();
 

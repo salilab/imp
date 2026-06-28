@@ -424,7 +424,11 @@ void Image2D<T>::compute_PCA() {
   cov(1, 0) = varxy;
   cov(1, 1) = vary;
 
+#if EIGEN_MAJOR_VERSION >= 5
+  auto svd = cov.jacobiSvd<Eigen::ComputeFullV>();
+#else
   Eigen::JacobiSVD<Eigen::Matrix2d> svd = cov.jacobiSvd(Eigen::ComputeFullV);
+#endif
   Eigen::Matrix2d V = svd.matrixV();
   Eigen::Vector2d SV = svd.singularValues();
 
