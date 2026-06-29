@@ -633,7 +633,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
     IMP_USAGE_CHECK(
         get_model()->get_has_attribute(
             internal::rigid_body_data().lquaternion_[0], get_particle_index()),
-        "Can only set the internal transformation if member is a "
+        "Can only get the internal transformation if member is a "
             << "rigid body itself.");
     algebra::Vector3D tr =
         get_model()->get_internal_coordinates(get_particle_index());
