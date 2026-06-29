@@ -31,6 +31,33 @@ namespace IMP {
   %}
 }
 
+/* Add support for slicing to get/set of VectorD */
+namespace IMP {
+  %feature("shadow") VectorD<D>::__getitem__ %{
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(len(self)))]
+        else:
+            return $action(self, index)
+  %}
+
+  %feature("shadow") VectorD<D>::__setitem__ %{
+    def __setitem__(self, index, val):
+        if isinstance(index, slice):
+            if not hasattr(val, '__iter__'):
+                raise TypeError("must assign iterable to extended slice")
+            inds = range(*index.indices(len(self)))
+            if len(inds) != len(val):
+                raise ValueError(
+                    "attempt to assign sequence of size %d "
+                    "to extended slice of size %d" % (len(val), len(inds)))
+            for ind, v in zip(inds, val):
+                self[ind] = v
+        else:
+            return $action(self, index, val)
+  %}
+}
+
 %feature("python:maybecall", "0") IMP::VectorD<D>::__cmp__;
 %feature("python:maybecall", "0") IMP::VectorD<D>::__eq__;
 %extend IMP::VectorD<D> {

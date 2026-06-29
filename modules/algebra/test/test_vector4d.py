@@ -21,6 +21,28 @@ class Tests(IMP.test.TestCase):
         v[0] = 10.0
         self.assertEqual(v[0], 10.0)
 
+    def test_component_slice(self):
+        """Check Vector4D components by slice"""
+        v = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
+        self.assertSequenceAlmostEqual(v[0:3], [1.0, 2.0, 3.0], delta=1e-4)
+        self.assertSequenceAlmostEqual(v[3:0:-1], [4.0, 3.0, 2.0], delta=1e-4)
+        self.assertSequenceAlmostEqual(v[:], [1.0, 2.0, 3.0, 4.0], delta=1e-4)
+
+        v[3:0:-1] = [30., 40., 50.]
+        self.assertLess(IMP.algebra.get_distance(
+            v, IMP.algebra.Vector4D(1., 50., 40., 30.)), 1e-3)
+
+        with self.assertRaises(TypeError) as context:
+            v[0:3] = 42
+        self.assertEqual(str(context.exception),
+                         'must assign iterable to extended slice')
+
+        with self.assertRaises(ValueError) as context:
+            v[0:3] = [42.0, 24.0]
+        self.assertEqual(str(context.exception),
+                         'attempt to assign sequence of size 2 to '
+                         'extended slice of size 3')
+
     def test_len(self):
         """Check Vector4D length"""
         v1 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
