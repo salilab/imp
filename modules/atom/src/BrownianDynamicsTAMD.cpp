@@ -2,7 +2,7 @@
  *  \file BrownianDynamicsTAMD.cpp  \brief Simple Brownian dynamics optimizer
  *        with TAMD adjustments.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -97,15 +97,12 @@ namespace {
   }
 
   // radians at each axis
-  inline algebra::Vector3D get_torque_bdb(ParticleIndex pi,
-                                          double dt, double ikT,
-					  double rotational_diffusion_coefficient,
-					  double const* torque_tables[]) {
-    algebra::Vector3D torque(torque_tables[0][pi.get_index()],
-			     torque_tables[1][pi.get_index()],
-			     torque_tables[2][pi.get_index()]);
+  inline algebra::Vector3D get_torque_bdb(
+           ParticleIndex pi, double dt, double ikT,
+           double rotational_diffusion_coefficient,
+           algebra::Vector3D const* torque_table) {
     double factor= rotational_diffusion_coefficient*dt*ikT;
-  return -torque*factor; // minus because torque acts opposite to energy derivative
+    return -torque_table[pi.get_index()]*factor; // minus because torque acts opposite to energy derivative
     // unit::Angstrom R(sampler_());
     // if(TAMDParticle::get_is_setup(m, pi)){
     //   TAMDParticle tamd(m, pi);
@@ -219,7 +216,7 @@ BrownianDynamicsTAMD::compute_rotation_0
 (ParticleIndex pi,
  double dtfs, double ikT,
  double rotational_diffusion_coefficient,
- double const* torque_tables[])
+ algebra::Vector3D const* torque_table)
 {
   //  core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma_bdb(dtfs, rotational_diffusion_coefficient);
@@ -231,7 +228,7 @@ BrownianDynamicsTAMD::compute_rotation_0
   //nt = nt * rrot;
   algebra::Vector3D torque( get_torque_bdb(pi, dtfs, ikT,
 					   rotational_diffusion_coefficient,
-                                           torque_tables) );
+                                           torque_table) );
   double tangle = torque.get_magnitude();
   if (tangle == 0) {
     return rrot;
@@ -258,11 +255,8 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   if(m->get_has_attribute(rdck)){
     double const* rotational_diffusion_coefficient_table=
       m->FloatAttributeTable::access_attribute_data(rdck);
-    double const* torque_tables[3];
-    for(unsigned int i = 0; i < 3; i++){
-      torque_tables[i]=
-        core::RigidBody::access_torque_i_data(m, i);
-    }
+    algebra::Vector3D const* torque_table;
+    torque_table = core::RigidBody::access_torque_data(m);
     double* quaternion_tables[4];
     for(unsigned int i = 0; i < 4; i++){
       quaternion_tables[i]=
@@ -277,7 +271,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
       if(IMP::internal::FloatAttributeTableTraits::get_is_valid(rdc)){
         // std::cout << "rb" << std::endl;
         rot=compute_rotation_0
-          (pi, dtfs, ikT, rdc, torque_tables);
+          (pi, dtfs, ikT, rdc, torque_table);
         core::RigidBody(m, pi).apply_rotation_lazy_using_internal_tables
           (rot, quaternion_tables);
       }

@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamicsTAMD.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -114,7 +114,7 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
   inline algebra::Rotation3D
     compute_rotation_0(ParticleIndex pi, double dtfs, double ikT,
                        double rotational_diffusion_coefficient_table,
-                       double const* torque_tables[]) ;
+                       algebra::Vector3D const* torque_table);
 };
 
 IMPATOM_END_NAMESPACE
