@@ -588,23 +588,14 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   void set_internal_transformation(const algebra::Transformation3D &v) {
     IMP_USAGE_CHECK(
         get_model()->get_has_attribute(
-            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+            internal::rigid_body_data().lquaternion_, get_particle_index()),
         "Can only set the internal transformation if member is"
             << " a rigid body itself.");
     set_internal_coordinates(v.get_translation());
 
-    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[0],
+    get_model()->set_attribute(internal::rigid_body_data().lquaternion_,
                                get_particle_index(),
-                               v.get_rotation().get_quaternion()[0]);
-    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[1],
-                               get_particle_index(),
-                               v.get_rotation().get_quaternion()[1]);
-    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[2],
-                               get_particle_index(),
-                               v.get_rotation().get_quaternion()[2]);
-    get_model()->set_attribute(internal::rigid_body_data().lquaternion_[3],
-                               get_particle_index(),
-                               v.get_rotation().get_quaternion()[3]);
+                               v.get_rotation().get_quaternion());
     get_rigid_body().get_model()->clear_particle_caches(get_particle_index());
   }
 
@@ -616,20 +607,14 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   algebra::Transformation3D get_internal_transformation() const {
     IMP_USAGE_CHECK(
         get_model()->get_has_attribute(
-            internal::rigid_body_data().lquaternion_[0], get_particle_index()),
+            internal::rigid_body_data().lquaternion_, get_particle_index()),
         "Can only get the internal transformation if member is a "
             << "rigid body itself.");
     algebra::Vector3D tr =
         get_model()->get_internal_coordinates(get_particle_index());
     algebra::Rotation3D rot(
-        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[0],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[1],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[2],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().lquaternion_[3],
-                                   get_particle_index()));
+        get_model()->get_attribute(internal::rigid_body_data().lquaternion_,
+                                   get_particle_index()), true);
     return algebra::Transformation3D(rot, tr);
   }
 
@@ -658,7 +643,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
     return internal::rigid_body_data().child_keys_;
   }
 
-  static FloatKeys get_internal_rotation_keys() {
+  static Vector4DDerivKey get_internal_rotation_key() {
     return internal::rigid_body_data().lquaternion_;
   }
 };
@@ -729,13 +714,11 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
                                               DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(
         get_model()->get_has_attribute(
-            get_internal_rotation_keys()[0], get_particle_index()),
+            get_internal_rotation_key(), get_particle_index()),
         "Can only set derivatives of internal rotation if member is a "
             << "rigid body itself.");
-    for (unsigned int i = 0; i < 4; ++i) {
-      get_model()->add_to_derivative(get_internal_rotation_keys()[i],
-                                     get_particle_index(), qderiv[i], da);
-    }
+    get_model()->add_to_derivative(get_internal_rotation_key(),
+                                   get_particle_index(), qderiv, da);
   }
 
 
@@ -751,12 +734,8 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
 
   //! Get derivatives wrt quaternion component of internal transformation.
   algebra::Vector4D get_internal_rotational_derivatives() const {
-    algebra::Vector4D ret;
-    for (unsigned int i = 0; i < 4; ++i) {
-      ret[i] = get_model()->get_derivative(
-        get_internal_rotation_keys()[i], get_particle_index());
-    }
-    return ret;
+    return get_model()->get_derivative(
+      get_internal_rotation_key(), get_particle_index());
   }
 };
 
