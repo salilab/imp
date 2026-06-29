@@ -94,8 +94,7 @@ class _AllRigidBodies:
 _RB_LIST_KEY = IMP.ModelKey("rigid body list")
 _RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
                  for i in range(4)]
-_RB_LQUAT_KEYS = [IMP.FloatKey("rigid_body_local_quaternion_%d" % i)
-                  for i in range(4)]
+_RB_LQUAT_KEY = IMP.Vector4DDerivKey("rigid_body_local_quaternion")
 _RB_IS_RIGID_KEY = IMP.IntKey("rigid_body__is_rigid")
 
 
@@ -126,8 +125,7 @@ def _get_rigid_bodies(m):
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
         body_members = rb.get_body_member_particle_indexes()
-        lquaternion = jnp.stack([m.get_numpy(rk)[body_members]
-                                 for rk in _RB_LQUAT_KEYS], axis=1)
+        lquaternion = m.get_numpy(_RB_LQUAT_KEY)[body_members]
         bodies.append(_RigidBody(
             rb_index=i, particle_index=int(rb_ind),
             member_particle_indexes=rb.get_member_particle_indexes(),
