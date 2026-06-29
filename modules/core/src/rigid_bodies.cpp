@@ -49,12 +49,8 @@ void RigidBody::normalize_rotation() {
 
   if(true){ // TODO: BR - the attribute of torque is never used is it? MAKE SURE!!! this is actually angular momentum (and I don't know that it's ever used in imp this way - I think it is called velocity in MD module.
     // evil hack
-    get_model()->set_attribute(internal::rigid_body_data().torque_[0],
-                               get_particle_index(), 0);
-    get_model()->set_attribute(internal::rigid_body_data().torque_[1],
-                               get_particle_index(), 0);
-    get_model()->set_attribute(internal::rigid_body_data().torque_[2],
-                               get_particle_index(), 0);
+    get_model()->set_attribute(internal::rigid_body_data().torque_,
+                               get_particle_index(), algebra::Vector3D(0,0,0));
   }
 }
 

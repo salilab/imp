@@ -181,18 +181,11 @@ void _NormalizeRotation::apply_indexes(
 
   // evil hack - to reset all torques (BR: is it needed anywhere? for the attribute rather than the derivative? who ever used the torque attribute rather than derivative? it's supposedly angular momentum but it's never used anywhere this way, and why should it be reset anyway?)
   if(true){
-    for(unsigned int i = 0; i < 3; i++){
-      double* torque_table_i=
-        core::RigidBody::access_torque_i_data(m, i);
-      for (unsigned int j = lower_bound; j < upper_bound; j++) {
-        torque_table_i[j]=0;
-      } // for j
-    } // for i
-    //      ParticleIndex pi_j=pis[j];
-    // m->set_attribute(internal::rigid_body_data().torque_[0], pi_j, 0);
-    //m->set_attribute(internal::rigid_body_data().torque_[1], pi_j, 0);
-    // m->set_attribute(internal::rigid_body_data().torque_[2], pi_j, 0);
-    //  } // for j
+    algebra::Vector3D* torque_table =
+      core::RigidBody::access_torque_data(m);
+    for (unsigned int j = lower_bound; j < upper_bound; j++) {
+      torque_table[j] = algebra::Vector3D(0, 0, 0);
+    }
   }
 }
 

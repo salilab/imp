@@ -417,37 +417,23 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const {
-    algebra::Vector3D ret;
-    for (unsigned int i = 0; i < 3; ++i) {
-      ret[i] = get_model()->get_derivative(
-          internal::rigid_body_data().torque_[i], get_particle_index());
-    }
-    return ret;
+    return get_model()->get_derivative(
+      internal::rigid_body_data().torque_, get_particle_index());
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-   //! expert method for fast const-access to internal torque
-  //! of coordinate #i table
-  static double const* access_torque_i_data
-    (IMP::Model const* m, unsigned int i)
+  //! expert method for fast const-access to internal torque table
+  static algebra::Vector3D const* access_torque_data(IMP::Model const* m)
   {
-    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
-    FloatKey k=
-          internal::rigid_body_data().torque_[i];
-    double const* ret=m->access_derivative_data(k);
-    return ret;
+    Vector3DDerivKey k = internal::rigid_body_data().torque_;
+    return m->access_derivative_data(k);
   }
 
-  //! expert method for fast access to internal torque
-  //! of coordinate #i table
-  static double* access_torque_i_data
-    (IMP::Model* m, unsigned int i)
+  //! expert method for fast access to internal torque table
+  static algebra::Vector3D *access_torque_data(IMP::Model *m)
   {
-    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
-    FloatKey k=
-          internal::rigid_body_data().torque_[i];
-    double* ret=m->access_derivative_data(k);
-    return ret;
+    Vector3DDerivKey k = internal::rigid_body_data().torque_;
+    return m->access_derivative_data(k);
   }
 
   //! expert method for fast const-access to internal quaternion coordinate #i table
@@ -560,11 +546,9 @@ void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
 
 // inline implementation
 void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
-                                   DerivativeAccumulator &da) {
-  for (unsigned int i = 0; i < 3; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                   get_particle_index(), torque_local[i], da);
-  }
+                              DerivativeAccumulator &da) {
+  get_model()->add_to_derivative(internal::rigid_body_data().torque_,
+                                 get_particle_index(), torque_local, da);
 }
 
 #endif

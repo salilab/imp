@@ -2,7 +2,7 @@
  *  \file rigid_bodies.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_RIGID_BODIES_H
@@ -26,7 +26,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 struct RigidBodyData {
   FloatKeys child_keys_;
   FloatKeys quaternion_;
-  FloatKeys torque_;
+  Vector3DDerivKey torque_;
   FloatKeys lquaternion_;
   IntKey is_rigid_key_;
   ParticleIndexesKey members_;
@@ -46,10 +46,7 @@ struct RigidBodyData {
     quaternion_[2] = FloatKey((pre + "quaternion_2").c_str());
     quaternion_[3] = FloatKey((pre + "quaternion_3").c_str());
     is_rigid_key_ = IntKey(pre + "_is_rigid");
-    torque_.resize(3);
-    torque_[0] = FloatKey((pre + "torque_0").c_str());
-    torque_[1] = FloatKey((pre + "torque_1").c_str());
-    torque_[2] = FloatKey((pre + "torque_2").c_str());
+    torque_ = Vector3DDerivKey((pre + "torque").c_str());
     lquaternion_.resize(4);
     lquaternion_[0] = FloatKey((pre + "local_quaternion_0").c_str());
     lquaternion_[1] = FloatKey((pre + "local_quaternion_1").c_str());
@@ -140,9 +137,7 @@ inline void add_required_attributes_for_body(Model *m,
     m->add_attribute(rigid_body_data().quaternion_[i], p, 0);
     m->set_range(rigid_body_data().quaternion_[i], FloatRange(0, 1));
   }
-  for (unsigned int i = 0; i < 3; ++i) {
-    m->add_attribute(rigid_body_data().torque_[i], p, 0);
-  }
+  m->add_attribute(rigid_body_data().torque_, p, algebra::Vector3D(0,0,0));
   if (!XYZ::get_is_setup(m, p)) {
     XYZ::setup_particle(m, p);
   }
@@ -152,9 +147,7 @@ inline void remove_required_attributes_for_body(
   for (unsigned int i = 0; i < 4; ++i) {
     m->remove_attribute(rigid_body_data().quaternion_[i], p);
   }
-  for (unsigned int i = 0; i < 3; ++i) {
-    m->remove_attribute(rigid_body_data().torque_[i], p);
-  }
+  m->remove_attribute(rigid_body_data().torque_, p);
   if (m->get_has_attribute(internal::rigid_body_data().members_, p)) {
     m->remove_attribute(internal::rigid_body_data().members_, p);
   }
