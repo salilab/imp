@@ -74,15 +74,17 @@ namespace cereal {
       m.create(rows, cols, type);
     }
 
-    if (continuous) {
-      size_t data_size = rows * cols * m.elemSize();
-      auto mat_data = cereal::binary_data(m.data, data_size);
-      ar(mat_data);
-    } else {
-      size_t row_size = cols * m.elemSize();
-      for (int i = 0; i < rows; ++i) {
-        auto row_data = cereal::binary_data(m.ptr(i), row_size);
-        ar(row_data);
+    if (!m.empty()) {
+      if (continuous) {
+        size_t data_size = rows * cols * m.elemSize();
+        auto mat_data = cereal::binary_data(m.data, data_size);
+        ar(mat_data);
+      } else {
+        size_t row_size = cols * m.elemSize();
+        for (int i = 0; i < rows; ++i) {
+          auto row_data = cereal::binary_data(m.ptr(i), row_size);
+          ar(row_data);
+        }
       }
     }
   }
