@@ -516,6 +516,11 @@ class Decorators;
 %include "IMP/model_object_helpers.h"
 %include "IMP/input_output.h"
 %include "IMP/utility.h"
+
+%include "IMP_kernel.vector.i"
+%include "IMP/VectorD.h"
+%include "IMP/Vector3D.h"
+
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/ScoreAccumulator.h"
 %include "IMP/ScoreState.h"
@@ -527,9 +532,6 @@ namespace IMP {
   class ScoreStates;
 }
 
-%include "IMP_kernel.vector.i"
-%include "IMP/VectorD.h"
-%include "IMP/Vector3D.h"
 %include "IMP/RestraintInfo.h"
 %include "IMP/Restraint.h"
 %include "IMP/RestraintSet.h"
