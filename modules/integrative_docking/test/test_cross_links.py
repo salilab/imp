@@ -87,7 +87,8 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple_score(self):
         """Simple test of cross linking score application"""
         p = self.run_application('cross_links_score',
-                                 [self.get_input_file_name('static.pdb'),
+                                 ['-o', 'cxms_score.tss.res',
+                                  self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'),
                                   self.get_input_file_name(
                                       'transforms-foxs10'),
@@ -97,11 +98,11 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         # count the number of lines in output file
-        with open('cxms_score.res', 'r') as fin:
+        with open('cxms_score.tss.res', 'r') as fin:
             text = fin.read()
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 15)
-        os.unlink('cxms_score.res')
+        os.unlink('cxms_score.tss.res')
 
     def test_cross_links_score_version(self):
         """Test --version of cross_links_score"""
