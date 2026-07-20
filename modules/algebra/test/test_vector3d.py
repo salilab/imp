@@ -2,7 +2,6 @@ import IMP.test
 import IMP.algebra
 import io
 import math
-import sys
 import pickle
 import operator
 
@@ -185,10 +184,7 @@ class Tests(IMP.test.TestCase):
     def test_show(self):
         """Check vector 3D show"""
         v = IMP.algebra.Vector3D(1, 2, 3)
-        if sys.version_info[0] >= 3:
-            out = io.StringIO()
-        else:
-            out = io.BytesIO()
+        out = io.StringIO()
         print(v, file=out)
         self.assertEqual(out.getvalue().find("Swig"), -1)
 

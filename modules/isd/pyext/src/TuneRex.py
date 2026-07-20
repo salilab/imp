@@ -7,7 +7,6 @@ replica-exchange simulation by tuning its parameters.
 Author: Yannick Spill
 """
 
-import sys
 import rpy2.robjects as robjects
 
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
@@ -723,10 +722,6 @@ def mean_first_passage_times(
 
     else:
         # prdb('not using average AR')
-        if sys.version_info[0] >= 3:
-            izip = zip
-        else:
-            from itertools import izip
         # the algorithm looks for replicas that start at the lowest temp, and
         # records the farthest state it went to before returning to zero. Once
         # back it increments the counter of all concerned replicas. Similar
@@ -741,7 +736,7 @@ def mean_first_passage_times(
         timesN = [[] for i in range(N)]
 
         # prdb('looping over replicanums')
-        for time, frame in enumerate(izip(*replicanums)):
+        for time, frame in enumerate(zip(*replicanums)):
             # case of the replica in state 0
             if not already0[frame[0]]:
                 last0[frame[0]] = time

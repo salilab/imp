@@ -1,5 +1,4 @@
 import gzip
-import sys
 from math import exp, log
 from random import sample
 import ast
@@ -147,8 +146,8 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             # generate a number of restraints for each data point value
             datacyst = IMP.isd.CysteineCrossLinkData(
                 fexp, fmod_grid, omega2_grid, beta_grid)
-            cystrest = IMP.isd.CysteineCrossLinkRestraint(m,
-                beta, sigma, epsilon, weight, crossdata, datacyst)
+            cystrest = IMP.isd.CysteineCrossLinkRestraint(
+                m, beta, sigma, epsilon, weight, crossdata, datacyst)
             cystrest.add_contribution(ps[0], ps[1])
             cystrest.add_contribution(ps[0], ps[2])
             restdict[fexp] = cystrest
@@ -161,8 +160,7 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
         del newr1
 
         f = gzip.open(
-            self.get_input_file_name('test_CysteineCrosslink.data.gz'),
-            'rt' if sys.version_info[0] >= 3 else 'rb')
+            self.get_input_file_name('test_CysteineCrosslink.data.gz'), 'rt')
 
         testlist = []
 

@@ -2,12 +2,7 @@ import IMP.test
 import ihm
 import ihm.reader
 import ihm.dumper
-import sys
-
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
+from io import StringIO
 
 
 class Tests(IMP.test.TestCase):

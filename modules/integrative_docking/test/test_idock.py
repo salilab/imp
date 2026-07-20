@@ -90,10 +90,6 @@ class Tests(IMP.test.ApplicationTestCase):
         app = self.import_python_application('idock')
         oldsubproc = app.subprocess
         old_stdout = sys.stdout
-        if sys.version_info[0] >= 3:
-            io_type = io.StringIO
-        else:
-            io_type = io.BytesIO
         try:
             app.subprocess = DummySubprocess
             self.assertRaises(OSError, app._run_binary, 'testpath', 'bad', [])
@@ -101,13 +97,13 @@ class Tests(IMP.test.ApplicationTestCase):
             self.assertEqual(app.subprocess.args,
                              ([os.path.join('testpath', 'bin'),
                                'arg1', 'arg2'],))
-            sys.stdout = io_type()
+            sys.stdout = io.StringIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
                              (['bin', 'arg1', 'arg2'],))
             self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
                              'bin arg1 arg2')
-            sys.stdout = io_type()
+            sys.stdout = io.StringIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'], out_file='foo')
             self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
                              'bin arg1 arg2 > foo')
