@@ -20,31 +20,16 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 void RigidBody::normalize_rotation() {
-  double &q0 = get_model()->access_attribute(
-      internal::rigid_body_data().quaternion_[0], get_particle_index());
-  double &q1 = get_model()->access_attribute(
-      internal::rigid_body_data().quaternion_[1], get_particle_index());
-  double &q2 = get_model()->access_attribute(
-      internal::rigid_body_data().quaternion_[2], get_particle_index());
-  double &q3 = get_model()->access_attribute(
-      internal::rigid_body_data().quaternion_[3], get_particle_index());
-  algebra::VectorD<4> v(q0, q1, q2, q3);
+  algebra::Vector4D &v = get_model()->access_attribute(
+      internal::rigid_body_data().quaternion_, get_particle_index());
   // IMP_LOG_TERSE( "Rotation was " << v << std::endl);
   double sm = v.get_squared_magnitude();
   if (sm < .001) {
-    //    v = algebra::VectorD<4>(1, 0, 0, 0);
     // IMP_LOG_TERSE( "Rotation is " << v << std::endl);
-    q0 = 1;
-    q1 = 0;
-    q2 = 0;
-    q3 = 0;
+    v = algebra::Vector4D(1, 0, 0, 0);
   } else if (std::abs(sm - 1.0) > .01) {
     v = v.get_unit_vector();
     // IMP_LOG_TERSE( "Rotation is " << v << std::endl);
-    q0 = v[0];
-    q1 = v[1];
-    q2 = v[2];
-    q3 = v[3];
   }
 
   if(true){ // TODO: BR - the attribute of torque is never used is it? MAKE SURE!!! this is actually angular momentum (and I don't know that it's ever used in imp this way - I think it is called velocity in MD module.
@@ -614,22 +599,14 @@ void RigidBody::remove_rigid_body_member(ParticleIndex pi) {
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
-  algebra::VectorD<4> v(get_particle()->get_derivative(
-                            internal::rigid_body_data().quaternion_[0]),
-                        get_particle()->get_derivative(
-                            internal::rigid_body_data().quaternion_[1]),
-                        get_particle()->get_derivative(
-                            internal::rigid_body_data().quaternion_[2]),
-                        get_particle()->get_derivative(
-                            internal::rigid_body_data().quaternion_[3]));
-  return v;
+  return get_particle()->get_derivative(
+                 internal::rigid_body_data().quaternion_);
 }
 
 bool RigidBody::get_coordinates_are_optimized() const {
-  for (unsigned int i = 0; i < 4; ++i) {
-    if (!get_particle()->get_is_optimized(
-             internal::rigid_body_data().quaternion_[i]))
-      return false;
+  if (!get_particle()->get_is_optimized(
+          internal::rigid_body_data().quaternion_)) {
+    return false;
   }
   return XYZ::get_coordinates_are_optimized();
 }
@@ -637,10 +614,8 @@ bool RigidBody::get_coordinates_are_optimized() const {
 void RigidBody::set_coordinates_are_optimized(bool tf) {
   const bool body = tf;
   const bool member = false;
-  for (unsigned int i = 0; i < 4; ++i) {
-    get_particle()->set_is_optimized(internal::rigid_body_data().quaternion_[i],
-                                     body);
-  }
+  get_particle()->set_is_optimized(internal::rigid_body_data().quaternion_,
+                                   body);
   XYZ::set_coordinates_are_optimized(body);
   for (unsigned int i = 0; i < get_number_of_members(); ++i) {
     get_member(i).set_coordinates_are_optimized(member);
@@ -729,11 +704,8 @@ RigidMembersRefiner *get_rigid_members_refiner() {
 
 namespace {
 bool check_rigid_body(Model *m, ParticleIndex pi) {
-  algebra::Vector4D v(
-      m->get_attribute(internal::rigid_body_data().quaternion_[0], pi),
-      m->get_attribute(internal::rigid_body_data().quaternion_[1], pi),
-      m->get_attribute(internal::rigid_body_data().quaternion_[2], pi),
-      m->get_attribute(internal::rigid_body_data().quaternion_[3], pi));
+  algebra::Vector4D v =
+      m->get_attribute(internal::rigid_body_data().quaternion_, pi);
   if (std::abs(v.get_magnitude() - 1) > .1) {
     IMP_THROW("Bad quaternion in rigid body: " << v, ValueException);
   }

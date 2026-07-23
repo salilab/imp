@@ -257,11 +257,8 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
       m->FloatAttributeTable::access_attribute_data(rdck);
     algebra::Vector3D const* torque_table;
     torque_table = core::RigidBody::access_torque_data(m);
-    double* quaternion_tables[4];
-    for(unsigned int i = 0; i < 4; i++){
-      quaternion_tables[i]=
-        core::RigidBody::access_quaternion_i_data(m, i);
-    }
+    algebra::Vector4D* quaternion_table;
+    quaternion_table = core::RigidBody::access_quaternion_data(m);
     for (unsigned int i = begin; i < end; ++i) {
       ParticleIndex pi= ps[i];
       algebra::Rotation3D rot(1,0,0,0);
@@ -273,7 +270,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
         rot=compute_rotation_0
           (pi, dtfs, ikT, rdc, torque_table);
         core::RigidBody(m, pi).apply_rotation_lazy_using_internal_tables
-          (rot, quaternion_tables);
+          (rot, quaternion_table);
       }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       else  {

@@ -8,8 +8,7 @@ except ImportError:
     jax = None
 
 
-_RB_QUAT_KEYS = [IMP.FloatKey("rigid_body_quaternion_%d" % i)
-                 for i in range(4)]
+_RB_QUAT_KEY = IMP.Vector4DDerivKey("rigid_body_quaternion")
 
 
 class Tests(IMP.test.TestCase):
@@ -283,16 +282,16 @@ class Tests(IMP.test.TestCase):
         mod = IMP.core._NormalizeRotation()
 
         # Zero quaternion should be reset to identity
-        for i in range(4):
-            rbd.set_value(_RB_QUAT_KEYS[i], 0.0)
+        m.set_attribute(_RB_QUAT_KEY, rbd,
+                        IMP.algebra.Vector4D(0.0, 0.0, 0.0, 0.0))
         mod.apply_index(m, rbd)
         rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
         self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
                          [10, 0, 0, 0])
 
         # Non-normalized quaternion should be normalized
-        for i, val in enumerate((0., 2., 0., 0.)):
-            rbd.set_value(_RB_QUAT_KEYS[i], val)
+        m.set_attribute(_RB_QUAT_KEY, rbd,
+                        IMP.algebra.Vector4D(0.0, 2.0, 0.0, 0.0))
         mod.apply_index(m, rbd)
         rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
         self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],

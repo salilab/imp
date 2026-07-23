@@ -43,23 +43,16 @@ void _AccumulateRigidBodyDerivatives::apply_index(
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   algebra::Vector4D oldderiv;
   algebra::Vector3D oldcartesian = rb.get_derivatives();
-  for (unsigned int j = 0; j < 4; ++j) {
-    oldderiv[j] = rb.get_particle()->get_derivative(
-        internal::rigid_body_data().quaternion_[j]);
-  }
+  oldderiv = rb.get_particle()->get_derivative(
+      internal::rigid_body_data().quaternion_);
 #endif
 
   rb.pull_back_members_adjoints(da);
 
   IMP_LOG_TERSE("Rigid body derivative is "
                 << m->get_particle(pi)->get_derivative(
-                       internal::rigid_body_data().quaternion_[0]) << " "
-                << m->get_particle(pi)->get_derivative(
-                       internal::rigid_body_data().quaternion_[1]) << " "
-                << m->get_particle(pi)->get_derivative(
-                       internal::rigid_body_data().quaternion_[2]) << " "
-                << m->get_particle(pi)->get_derivative(
-                       internal::rigid_body_data().quaternion_[3]) << " and ");
+                       internal::rigid_body_data().quaternion_)
+                << " and ");
 
   IMP_LOG_TERSE(
       "Translation deriv is " << static_cast<XYZ>(rb).get_derivatives() << ""
@@ -90,23 +83,14 @@ void _AccumulateRigidBodyDerivatives::apply_index(
     for (unsigned int j = 0; j < 4; ++j) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       double d = rb.get_particle()->get_derivative(
-                     internal::rigid_body_data().quaternion_[j]) -
+                     internal::rigid_body_data().quaternion_)[j] -
                  oldderiv[j];
 #endif
       IMP_INTERNAL_CHECK(std::abs(d - q[j]) < .05 * std::abs(d + q[j]) + .05,
                          "Derivatives do not match "
                              << oldderiv << ": "
                              << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[0])
-                             << " "
-                             << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[1])
-                             << " "
-                             << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[2])
-                             << " "
-                             << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[3])
+                                    internal::rigid_body_data().quaternion_)
                              << ": " << q);
     }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -146,31 +130,19 @@ void _NormalizeRotation::apply_indexes(
     unsigned int upper_bound) const
 {
   // direct access to tables for speed
-  double* quaternion_tables[4];
-  for(unsigned int i = 0; i < 4; i++){
-    quaternion_tables[i]=
-      core::RigidBody::access_quaternion_i_data(m, i);
-  }
+  algebra::Vector4D* quaternion_table;
+  quaternion_table = core::RigidBody::access_quaternion_data(m);
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     int pi=pis[i].get_index();
-    algebra::VectorD<4> v(quaternion_tables[0][pi],
-                        quaternion_tables[1][pi],
-                        quaternion_tables[2][pi],
-                        quaternion_tables[3][pi]);
+    algebra::Vector4D v = quaternion_table[pi];
     IMP_LOG_TERSE( "Rotation quaternion before normalization: " << v << std::endl);
     double sm = v.get_squared_magnitude();
     if (sm < .0001) {
       IMP_LOG_TERSE("Near-zero rotation quaternion set to identity");
-      quaternion_tables[0][pi] = 1;
-      quaternion_tables[1][pi] = 0;
-      quaternion_tables[2][pi] = 0;
-      quaternion_tables[3][pi] = 0;
+      quaternion_table[pi] = algebra::Vector4D(1, 0, 0, 0);
     } else if (std::abs(sm - 1.0) > .01) {
       double magnitude = std::sqrt(sm);
-      quaternion_tables[0][pi] = v[0]/magnitude;
-      quaternion_tables[1][pi] = v[1]/magnitude;
-      quaternion_tables[2][pi] = v[2]/magnitude;
-      quaternion_tables[3][pi] = v[3]/magnitude;
+      quaternion_table[pi] = v / magnitude;
       IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
     }
     IMP_INTERNAL_CHECK

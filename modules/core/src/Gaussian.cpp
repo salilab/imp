@@ -48,15 +48,10 @@ ObjectKey Gaussian::get_global_covariance_key(){
 }
 
 void Gaussian::update_global_covariance(){
- Eigen::Quaterniond q(
-      get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
-                                 get_particle_index()),
-      get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
-                                 get_particle_index()),
-      get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
-                                 get_particle_index()),
-      get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
-                                 get_particle_index()));
+  algebra::Vector4D v =
+      get_model()->get_attribute(internal::rigid_body_data().quaternion_,
+                                 get_particle_index());
+  Eigen::Quaterniond q(v[0], v[1], v[2], v[3]);
   Eigen::Matrix3d rot = q.toRotationMatrix();
   Eigen::Matrix3d rad = get_local_covariance();
   Eigen::Matrix3d covar = rot * (rad * rot.transpose());

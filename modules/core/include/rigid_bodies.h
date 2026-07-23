@@ -127,8 +127,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
  public:
   RigidMembers get_rigid_members() const;
 
-  //! Get keys for rotation quaternion.
-  static FloatKeys get_rotation_keys() {
+  //! Get key for rotation quaternion.
+  static Vector4DDerivKey get_rotation_key() {
     return internal::rigid_body_data().quaternion_;
   }
 
@@ -211,15 +211,9 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   //! transformation between the local rigid body coordinates
   //! global coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
-    algebra::VectorD<4> v(
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[2],
-                                   get_particle_index()),
-        get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
-                                   get_particle_index()));
+    algebra::VectorD<4> v =
+        get_model()->get_attribute(internal::rigid_body_data().quaternion_,
+                                   get_particle_index());
     IMP_USAGE_CHECK_FLOAT_EQUAL(v.get_squared_magnitude(), 1,
                                 "Rotation is not a unit vector: " << v);
     /*if (v.get_squared_magnitude() > 0){
@@ -249,10 +243,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   {
     algebra::VectorD<4> v =
       tr.get_transformation_to().get_rotation().get_quaternion();
-    get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
-    get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
-    get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
-    get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
+    get_model()->set_attribute(internal::rigid_body_data().quaternion_,
+                               get_particle_index(), v);
     set_coordinates(tr.get_transformation_to().get_translation());
   }
 
@@ -262,35 +254,29 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   //! use at own risk
   inline void set_rotation_lazy_using_internal_tables
     (const IMP::algebra::Rotation3D &rot,
-     double* quaternion_tables[])
+     IMP::algebra::Vector4D* quaternion_table)
   {
     algebra::VectorD<4> v =
       rot.get_quaternion();
     int pi=get_particle_index().get_index();
-    quaternion_tables[0][pi]=v[0];
-    quaternion_tables[1][pi]=v[1];
-    quaternion_tables[2][pi]=v[2];
-    quaternion_tables[3][pi]=v[3];
+    quaternion_table[pi] = v;
   }
 
   //! 'expert' method for setting the reference more quickly
   //! use at own risk
   inline void apply_rotation_lazy_using_internal_tables
     (const IMP::algebra::Rotation3D &rot,
-     double* quaternion_tables[])
+     IMP::algebra::Vector4D* quaternion_table)
   {
     int pi=get_particle_index().get_index();
     IMP::algebra::Rotation3D cur_rot
-      ( quaternion_tables[0][pi],
-        quaternion_tables[1][pi],
-        quaternion_tables[2][pi],
-        quaternion_tables[3][pi] );
+      ( quaternion_table[pi][0],
+        quaternion_table[pi][1],
+        quaternion_table[pi][2],
+        quaternion_table[pi][3] );
     algebra::VectorD<4> v=
       (cur_rot*rot).get_quaternion();;
-    quaternion_tables[0][pi]=v[0];
-    quaternion_tables[1][pi]=v[1];
-    quaternion_tables[2][pi]=v[2];
-    quaternion_tables[3][pi]=v[3];
+    quaternion_table[pi] = v;
   }
 
 #endif // IMP_DOXYGEN
@@ -436,26 +422,18 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     return m->access_derivative_data(k);
   }
 
-  //! expert method for fast const-access to internal quaternion coordinate #i table
-  static double const* access_quaternion_i_data
-    (IMP::Model const* m, unsigned int i)
+  //! expert method for fast const-access to internal quaternion table
+  static algebra::Vector4D const* access_quaternion_data(IMP::Model const* m)
   {
-    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
-    FloatKey k=
-          internal::rigid_body_data().quaternion_[i];
-    double const* ret=m->FloatAttributeTable::access_attribute_data(k);
-    return ret;
+    Vector4DDerivKey k = internal::rigid_body_data().quaternion_;
+    return m->::IMP::internal::Vector4DDerivAttributeTable::access_attribute_data(k);
   }
 
-  //! expert method for fast access to internal quaternion coordinate #i table
-  static double* access_quaternion_i_data
-    (IMP::Model* m, unsigned int i)
+  //! expert method for fast access to internal quaternion table
+  static algebra::Vector4D *access_quaternion_data(IMP::Model *m)
   {
-    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
-    FloatKey k=
-          internal::rigid_body_data().quaternion_[i];
-    double* ret=m->FloatAttributeTable::access_attribute_data(k);
-    return ret;
+    Vector4DDerivKey k = internal::rigid_body_data().quaternion_;
+    return m->::IMP::internal::Vector4DDerivAttributeTable::access_attribute_data(k);
   }
 
 
@@ -537,10 +515,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 // inline implementation
 void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
                                               DerivativeAccumulator &da) {
-  for (unsigned int i = 0; i < 4; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
-                                   get_particle_index(), qderiv[i], da);
-  }
+  get_model()->add_to_derivative(internal::rigid_body_data().quaternion_,
+                                 get_particle_index(), qderiv, da);
 }
 
 
