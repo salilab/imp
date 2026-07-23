@@ -224,8 +224,7 @@ class _SyncIMPModel:
             self._non_rigid = jax_model['rigid_bodies'].non_rigid_members
             self._rigid_body_indexes = _jax_rigid._get_rigid_body_indexes(
                 imp_model)
-            self._quaternion = [imp_model.get_numpy(rk)
-                                for rk in _jax_rigid._RB_QUAT_KEYS]
+            self._quaternion = imp_model.get_numpy(_jax_rigid._RB_QUAT_KEY)
             # todo: lquaternion (nested rigid bodies)
             for rb in jax_model['rigid_bodies'].body:
                 if rb.lquaternion.size > 0:
@@ -240,9 +239,7 @@ class _SyncIMPModel:
         self._xyz[:] = jm['xyz']
         if self._rigid_bodies:
             rbs = jm['rigid_bodies']
-            for i in range(4):
-                self._quaternion[i][self._rigid_body_indexes] \
-                    = rbs.quaternion[:, i]
+            self._quaternion[self._rigid_body_indexes] = rbs.quaternion
             if self._non_rigid is not None:
                 self._intcoord[self._non_rigid] = rbs.intcoord[self._non_rigid]
 
