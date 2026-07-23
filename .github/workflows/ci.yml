@@ -65,7 +65,7 @@ jobs:
           pip3 install codecov ${{ matrix.pip_extra_packages }}
       - name: Set up Python ${{ matrix.python-version }}
         if: matrix.os == 'macos-latest'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies (Mac)
