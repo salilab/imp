@@ -458,13 +458,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(int(cldb.get_number_of_xlid()*0.5),cldb50.get_number_of_xlid())
         cldb25=cldb.jackknife(0.25)
         self.assertEqual(int(cldb.get_number_of_xlid()*0.25),cldb25.get_number_of_xlid())
-        # assess randomness
-        cldb50_1=cldb.jackknife(0.5)
-        cldb50_1_set=set([xlid for xlid in cldb50_1.xlid_iterator()])
-        cldb50_2=cldb.jackknife(0.5)
-        cldb50_2_set=set([xlid for xlid in cldb50_2.xlid_iterator()])
-        self.assertNotEqual(cldb50_1_set,cldb50_2_set)
+        # Assess randomness by simply checking that two samples are different.
+        # This will fail about 0.5% of the time, so repeat test 5 times.
+        cldb50_1 = cldb.jackknife(0.5)
+        others = [cldb.jackknife(0.5) for _ in range(5)]
+        cldb50_1_set = frozenset(cldb50_1.xlid_iterator())
+        self.assertTrue(any(cldb50_1_set != frozenset(x.xlid_iterator())
+                            for x in others))
+
         # content of new databases must be identical for jackknifed crosslinks
+        cldb50_1 = cldb.jackknife(0.5)
+        cldb50_2 = cldb.jackknife(0.5)
         for xlid in cldb50_1.xlid_iterator():
             for n,xl in enumerate(cldb50_1[xlid]):
                 for key in xl:
