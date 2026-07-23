@@ -120,7 +120,7 @@ class Tests(IMP.test.TestCase):
             self.assertLessEqual(abs(get_axis_and_angle(q)[0]),1.0)
             self.assertAlmostEqual(transm,0.0,places=6)
 
-    def test_mc_mover_rotate_transalte(self):
+    def test_mc_mover_rotate_translate(self):
         mdl,root,mc,rb,_=self.setup_mv_mover_test(1.0,1.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
