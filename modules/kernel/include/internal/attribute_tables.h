@@ -1160,6 +1160,20 @@ class VectorDDerivAttributeTable {
 
   unsigned int size() const { return data_.size(); }
   unsigned int size(unsigned int i) const { return data_.size(i); }
+
+  FloatIndexes get_optimized_vector_attributes() const {
+    FloatIndexes ret;
+    for (unsigned int i = 0; i < optimizeds_.size(); ++i) {
+      for (unsigned int j = 0; j < optimizeds_.size(i); ++j) {
+        if (optimizeds_.get_has_attribute(Key(i), ParticleIndex(j))) {
+          for (unsigned int k = 0; k < D; ++k) {
+            ret.push_back(FloatIndex(ParticleIndex(j), Key(i), k));
+	  }
+        }
+      }
+    }
+    return ret;
+  }
 };
 
 typedef BasicAttributeTable<internal::StringAttributeTableTraits>

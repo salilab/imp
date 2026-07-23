@@ -37,7 +37,10 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
   */
   //!@{
   FloatIndexes get_optimized_attributes() const {
-    return get_model()->get_optimized_attributes();
+    Model *m = get_model();
+    return m->get_optimized_attributes()
+      + m->internal::Vector3DDerivAttributeTable::get_optimized_vector_attributes()
+      + m->internal::Vector4DDerivAttributeTable::get_optimized_vector_attributes();
   }
   void set_value(FloatIndex fi, double v) const {
     fi.set_value(get_model(), v);
