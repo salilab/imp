@@ -2,7 +2,7 @@
  *  \file IMP/core/ConjugateGradients.h
  *  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,9 +29,6 @@ IMPCORE_BEGIN_NAMESPACE
     looking at logged messages. If this estimate does not accurately reflect
     the scale, then you can use Model::set_range to set a more accurate
     range for the parameters.
-
-    \note Currently, rigid bodies are not handled (and will not be moved
-          by this optimizer).
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
