@@ -8,7 +8,7 @@ except ImportError:
     jax = None
 
 
-_RB_QUAT_KEY = IMP.Vector4DDerivKey("rigid_body_quaternion")
+_RB_QUAT_KEY = IMP.core.RigidBody.get_rotation_key()
 
 
 class Tests(IMP.test.TestCase):
