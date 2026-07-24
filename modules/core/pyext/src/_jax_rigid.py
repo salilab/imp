@@ -18,9 +18,9 @@ class _RigidBody:
     # Particle indexes of all members that are not themselves rigid bodies
     member_particle_indexes: jax.Array
     # Rigid body indexes of all members that are nested rigid bodies
-    body_member_indexes: jax.Array
-    # Rotation quaternion relative to parent rigid body for each nested body
-    lquaternion: jax.Array
+    body_member_rb_indexes: jax.Array
+    # Nested rigid body indexes of all members that are nested rigid bodies
+    body_member_nrb_indexes: jax.Array
 
     def get_transformation(self, jm):
         """Get the transformation for this body's reference frame"""
@@ -32,9 +32,9 @@ class _RigidBody:
         """Get transformation for the ith nested rigid body, relative to
            this (parent) rigid body's reference frame."""
         allrbs = jm['rigid_bodies']
-        child_body = allrbs.bodies[self.body_member_indexes[i]]
+        child_body = allrbs.bodies[self.body_member_rb_indexes[i]]
         return Transformation3D(
-            rotation=self.lquaternion[i],
+            rotation=allrbs.lquaternion[self.body_member_nrb_indexes[i]],
             translation=allrbs.intcoord[child_body.particle_index])
 
     def set_transformation_lazy(self, trans, jm):
@@ -59,8 +59,8 @@ class _RigidBody:
             trans.get_transformed(intcoord))
 
         # Update transformation of all nested rigid bodies
-        for i in range(len(self.body_member_indexes)):
-            body_index = self.body_member_indexes[i]
+        for i in range(len(self.body_member_rb_indexes)):
+            body_index = self.body_member_rb_indexes[i]
             jm = allrbs.bodies[body_index].set_transformation_lazy(
                 trans * self.get_internal_transformation(jm, i), jm)
         return jm
@@ -84,6 +84,12 @@ class _AllRigidBodies:
     quaternion: jax.Array
     # Mapping from particle index to rigid body index
     rb_index_from_particle: dict
+    # Rotation quaternion relative to parent rigid body for each nested body
+    lquaternion: jax.Array
+    # Mapping from particle index to nested rigid body index
+    nrb_index_from_particle: dict
+    # Mapping from nested rigid body index to particle index
+    particle_from_nrb_index: jax.Array
     # Particles that are non-rigid members of any rigid body
     # (these can change during sampling unlike rigid members)
     non_rigid_members: jax.Array
@@ -113,26 +119,43 @@ def _get_rigid_body_index(m, particle_index):
     return rb_index_from_particle[particle_index]
 
 
+def _get_nested_rigid_body_indexes(m, rigid_body_indexes):
+    """Get the particle indexes of all nested rigid bodies in the model"""
+    for pi in rigid_body_indexes:
+        # A nested rigid body is itself a member of another body
+        if IMP.core.RigidBodyMember.get_is_setup(m, pi):
+            yield pi
+
+
 def _get_rigid_bodies(m):
     particle_from_rb_index = _get_rigid_body_indexes(m)
     rb_index_from_particle = {int(pi): rbi for (rbi, pi) in
                               enumerate(particle_from_rb_index)}
+    particle_from_nrb_index = list(_get_nested_rigid_body_indexes(
+        m, particle_from_rb_index))
+    nrb_index_from_particle = {int(pi): rbi for (rbi, pi) in
+                               enumerate(particle_from_nrb_index)}
     intcoord = m.get_internal_coordinates_numpy()
     quaternion = jnp.asarray(m.get_numpy(_RB_QUAT_KEY)[particle_from_rb_index])
+    lquaternion = jnp.asarray(
+        m.get_numpy(_RB_LQUAT_KEY)[particle_from_nrb_index])
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
         body_members = rb.get_body_member_particle_indexes()
-        lquaternion = m.get_numpy(_RB_LQUAT_KEY)[body_members]
         bodies.append(_RigidBody(
             rb_index=i, particle_index=int(rb_ind),
             member_particle_indexes=rb.get_member_particle_indexes(),
-            lquaternion=lquaternion,
-            body_member_indexes=[rb_index_from_particle[i] for i in
-                                 body_members]))
+            body_member_rb_indexes=[rb_index_from_particle[i] for i in
+                                    body_members],
+            body_member_nrb_indexes=[nrb_index_from_particle[i] for i in
+                                     body_members]))
     is_rigid = m.get_numpy(_RB_IS_RIGID_KEY)
     return _AllRigidBodies(
         intcoord=intcoord, bodies=bodies,
         rb_index_from_particle=rb_index_from_particle,
+        nrb_index_from_particle=nrb_index_from_particle,
+        particle_from_nrb_index=particle_from_nrb_index,
         non_rigid_members=np.flatnonzero(is_rigid == 0),
-        quaternion=quaternion)
+        quaternion=quaternion,
+        lquaternion=lquaternion)

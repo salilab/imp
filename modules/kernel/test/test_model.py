@@ -671,32 +671,37 @@ class Tests(IMP.test.TestCase):
             d.set_radius(4)
             members.append(p)
         p = IMP.Particle(m)
-        rb1 = IMP.core.RigidBody.setup_particle(p, members[:4])
+        rb1 = IMP.core.RigidBody.setup_particle(p, members[:3])
         p = IMP.Particle(m)
-        rb2 = IMP.core.RigidBody.setup_particle(p, members[4:] + [rb1])
+        rb2 = IMP.core.RigidBody.setup_particle(p, members[3:6])
+        p = IMP.Particle(m)
+        rb3 = IMP.core.RigidBody.setup_particle(p, members[6:] + [rb2])
         # Test with both rigid and non-rigid members
-        rb2.set_is_rigid_member(members[4], False)
-        rb2.set_is_rigid_member(members[5], False)
+        rb3.set_is_rigid_member(members[6], False)
+        rb3.set_is_rigid_member(members[7], False)
 
         jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
         jm['xyz'] = jnp.asarray(jm['xyz'])
         rbs = jm['rigid_bodies']
-        self.assertEqual(len(rbs.bodies), 2)
-        body1 = rbs.bodies[1]
-        # rb2 should contain rb1
-        self.assertEqual(body1.body_member_indexes, [0])
-        self.assertEqual(body1.lquaternion.shape, (1, 4))
+        self.assertEqual(len(rbs.bodies), 3)
+        body2 = rbs.bodies[2]
+        # rb3 should contain rb2
+        self.assertEqual(body2.body_member_rb_indexes, [1])
+        self.assertEqual(body2.body_member_nrb_indexes, [0])
+        self.assertEqual(rbs.lquaternion.shape, (1, 4))
+        self.assertEqual(rbs.particle_from_nrb_index, [9])
+        self.assertEqual(rbs.nrb_index_from_particle, {9: 0})
 
         # Test that applying rigid body transformation to all members
         # (including rigid bodies) yields the correct global coordinates
 
         # Non-body members
-        old_coord = jm['xyz'][body1.member_particle_indexes]
+        old_coord = jm['xyz'][body2.member_particle_indexes]
         # Wipe old coordinates so we can be sure we are seeing the updated ones
-        jm['xyz'] = jm['xyz'].at[body1.member_particle_indexes].set(0.0)
-        trans = body1.get_transformation(jm)
-        jm = body1.set_transformation(trans, jm)
-        coord = jm['xyz'][body1.member_particle_indexes]
+        jm['xyz'] = jm['xyz'].at[body2.member_particle_indexes].set(0.0)
+        trans = body2.get_transformation(jm)
+        jm = body2.set_transformation(trans, jm)
+        coord = jm['xyz'][body2.member_particle_indexes]
         self.assertTrue(jnp.allclose(coord, old_coord))
 
         # Body member

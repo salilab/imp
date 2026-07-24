@@ -224,12 +224,10 @@ class _SyncIMPModel:
             self._non_rigid = jax_model['rigid_bodies'].non_rigid_members
             self._rigid_body_indexes = _jax_rigid._get_rigid_body_indexes(
                 imp_model)
+            self._nested_rigid_body_indexes = \
+                jax_model['rigid_bodies'].particle_from_nrb_index
             self._quaternion = imp_model.get_numpy(_jax_rigid._RB_QUAT_KEY)
-            # todo: lquaternion (nested rigid bodies)
-            for rb in jax_model['rigid_bodies'].body:
-                if rb.lquaternion.size > 0:
-                    raise NotImplementedError(
-                        "Nested rigid bodies not yet supported")
+            self._lquaternion = imp_model.get_numpy(_jax_rigid._RB_LQUAT_KEY)
             if self._non_rigid.size == 0:
                 self._non_rigid = None
             else:
@@ -240,6 +238,8 @@ class _SyncIMPModel:
         if self._rigid_bodies:
             rbs = jm['rigid_bodies']
             self._quaternion[self._rigid_body_indexes] = rbs.quaternion
+            self._lquaternion[self._nested_rigid_body_indexes] \
+                = rbs.lquaternion
             if self._non_rigid is not None:
                 self._intcoord[self._non_rigid] = rbs.intcoord[self._non_rigid]
 
