@@ -1,5 +1,4 @@
 import numpy as np
-import jax.numpy as jnp
 import jax.tree_util
 from dataclasses import dataclass
 from IMP.algebra._jax_util import Transformation3D
