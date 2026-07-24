@@ -1,4 +1,5 @@
 import numpy as np
+import jax.numpy as jnp
 import jax.tree_util
 from dataclasses import dataclass
 from IMP.algebra._jax_util import Transformation3D
@@ -117,7 +118,7 @@ def _get_rigid_bodies(m):
     rb_index_from_particle = {int(pi): rbi for (rbi, pi) in
                               enumerate(particle_from_rb_index)}
     intcoord = m.get_internal_coordinates_numpy()
-    quaternion = m.get_numpy(_RB_QUAT_KEY)[particle_from_rb_index]
+    quaternion = jnp.asarray(m.get_numpy(_RB_QUAT_KEY)[particle_from_rb_index])
     bodies = []
     for i, rb_ind in enumerate(particle_from_rb_index):
         rb = IMP.core.RigidBody(m, rb_ind)
