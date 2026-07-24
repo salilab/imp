@@ -277,8 +277,8 @@ class Tests(IMP.test.TestCase):
 
         rb = all_rbs[0]
         pi = rb.get_particle_index()
-        fks = rb.get_rotation_keys()
-        gc = GradientCalculator(sf, [pi] * 4, fks)
+        fks = rb.get_rotation_key()
+        gc = GradientCalculator(sf, [pi], [fks])
         grad_approx = gc.get_approximate_gradient(eps=1e-6)
         grad_exact = gc.get_exact_gradient()
         self.assertSequenceAlmostEqual(
