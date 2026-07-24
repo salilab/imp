@@ -57,7 +57,7 @@ inline const RigidBodyData &rigid_body_data(){
 }
 ;
 
-inline void set_model_ranges(Model *m) {
+inline void set_model_ranges(Model *) {
 }
 
 inline bool get_has_required_attributes_for_body(
