@@ -1,6 +1,38 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The IMP::em2d module has dropped support for building with OpenCV 2, but
+  now supports OpenCV 5.
+- [JAX](https://docs.jax.dev/) support is now more extensive, with
+  implementations for rigid bodies and many restraints. JAX can also be used
+  in PMI using the ``use_jax`` argument to IMP::pmi::macros::ReplicaExchange.
+- The GeometricPrimitiveD and VectorBaseD classes have been moved to the
+  kernel; the old headers in IMP::algebra are now deprecated.
+- IMP::Model can now be given Particle attributes that are 3D or 4D vectors.
+  There are also variants of these that are optimizable, just like FloatKeys,
+  which are now used to store the rotation quaternions and torque for
+  rigid bodies. In a breaking change, the methods that access quaternions
+  and torque directly (such as IMP::core::RigidBody::get_rotation_keys())
+  have been renamed and changed to return the new 3D or 4D attributes.
+- VectorD objects in Python can now be sliced (":" operator) like regular
+  Python arrays.
+- Several deprecated and unused IMP::core::RigidBody methods have been
+  removed: add_to_derivatives(), add_to_rotational_derivatives(),
+  and add_to_internal_rotational_derivatives(). Derivatives are handled instead
+  by the IMP::core::RigidBody::pull_back_members_adjoints() method.
+- IMP::SingletonDerivativeModifier (and the similar classes for pairs, triplets
+  and quads) is now deprecated. Use IMP::SingletonModifier instead, which
+  performs identically.
+- IMP::core::PeriodicOptimizerState has been removed; use IMP::OptimizerState
+  instead.
+- PMI functions for handling v1 stat files in the IMP::pmi::Output class
+  (init_stat(), write_stat(), write_stats()) are now deprecated. Use the
+  equivalent v2 functions instead (init_stat2(), write_stat2(), write_stats2()).
+- PMI output objects' get_output() method can now return either a dict
+  or a callable (which itself returns a dict). The latter can be used to
+  pass state, such as cached values, between calls.
+
 # 2.24.0 - 2026-01-29 # {#changelog_2_24_0}
 - The new IMP::emseqfinder module provides a method for assigning amino acid
   residue sequence to backbone fragments traced in an input cryo-electron
