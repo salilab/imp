@@ -26,7 +26,7 @@ ChangeLog {#changelog}
   performs identically.
 - IMP::core::PeriodicOptimizerState has been removed; use IMP::OptimizerState
   instead.
-- PMI functions for handling v1 stat files in the IMP::pmi::Output class
+- PMI functions for handling v1 stat files in the IMP::pmi::output::Output class
   (init_stat(), write_stat(), write_stats()) are now deprecated. Use the
   equivalent v2 functions instead (init_stat2(), write_stat2(), write_stats2()).
 - PMI output objects' get_output() method can now return either a dict
