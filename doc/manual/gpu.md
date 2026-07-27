@@ -8,7 +8,9 @@ This support uses the [JAX](https://docs.jax.dev/) Python library.
 To use the JAX support in optimization, first install the JAX library,
 for example with `pip install jax`. Then set up the system as per usual and
 replace any calls to IMP::core::MonteCarlo::optimize or
-IMP::atom::MolecularDynamics::optimize with `_optimize_jax()`.
+IMP::atom::MolecularDynamics::optimize with `_optimize_jax()`. If using
+PMI, JAX can be activated using the ``use_jax`` argument to
+IMP::pmi::macros::ReplicaExchange.
 
 The JAX code is still in active development and many caveats apply:
 
@@ -16,7 +18,7 @@ The JAX code is still in active development and many caveats apply:
    have JAX implementations. Trying to use others will result in a
    Python NotImplementedError exception.
  - Some IMP::ScoreState (aka constraint) classes do not yet work - this
-   includes common applications such as rigid bodies and close pair containers.
+   includes common applications such as close pair containers.
 
 To add JAX support for a particular IMP::Restraint, IMP::PairScore,
 IMP::core::MonteCarloMover, or IMP::OptimizerState,
