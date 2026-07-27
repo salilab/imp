@@ -45,7 +45,7 @@ IMPEM2DEXPORT void get_correlation2d(const cv::Mat &A, const cv::Mat &B,
                                      cv::Mat &corr);
 
 //! Correlation without preprocessing
-/** \returns the correlation matrix between two 2D matrices using FFT
+/** Returns the correlation matrix between two 2D matrices using FFT
     \param[in]  M1 matrix containing the dft of the first matrix
     \param[in]  M2 matrix containing the dft of the second matrix
     \param[out] corr matrix of results (It MUST have the right size in advance)
