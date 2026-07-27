@@ -16,6 +16,7 @@ jobs:
           skiptests: "expensive|medium|IMP\\.modeller\\-"
           # Newer versions of jax need numpy 2 (Ubuntu 24.04 has numpy 1)
           pip_extra_packages: jax==0.7.1
+          qtver: 5
           show_build: Release
           cmake_build: Release
           max_checks: USAGE
@@ -26,6 +27,7 @@ jobs:
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
+          qtver: 5
           show_build: Debug
           cmake_build: Debug
           max_checks: INTERNAL
@@ -36,6 +38,7 @@ jobs:
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
           skiptests: "expensive|medium|IMP\\.modeller\\-"
+          qtver: 6
           show_build: Fast
           cmake_build: Release
           max_checks: NONE
@@ -57,7 +60,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq libboost-all-dev swig libhdf5-dev libeigen3-dev \
-            cmake libcgal-dev libcgal-qt5-dev libcereal-dev \
+            cmake libcgal-dev libcgal-qt${{ matrix.qtver }}-dev libcereal-dev \
             libfftw3-dev libopencv-dev libgsl-dev libann-dev \
             libprotobuf-dev protobuf-compiler \
             libopenmpi-dev python3-dev python3-numpy python3-protobuf \
