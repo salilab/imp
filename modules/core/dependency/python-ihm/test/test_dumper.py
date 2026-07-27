@@ -3741,6 +3741,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         dataset = MockObject()
         dataset._id = 97
         dss = ihm.ChemDescriptor('DSS')
+        edc = ihm.ChemDescriptor('EDC')
         r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker=dss)
         # intra, unambiguous
         xxl1 = ihm.restraint.ExperimentalCrossLink(
@@ -3757,7 +3758,17 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         xxl5 = ihm.restraint.ExperimentalCrossLink(
             e1.residue(1), e2.residue(1), details='test xl')
         r.experimental_cross_links.extend(([xxl1], [xxl2, xxl3], [xxl4, xxl5]))
-        system.restraints.extend((r, MockObject()))
+
+        # Restraint with explicit 'Other' linker type
+        dataset2 = MockObject()
+        dataset2._id = 98
+        r2 = ihm.restraint.CrossLinkRestraint(dataset=dataset2, linker=edc)
+        r2._force_other = True
+        r2.experimental_cross_links.append(
+            [ihm.restraint.ExperimentalCrossLink(e1.residue(2),
+                                                 e1.residue(3))])
+
+        system.restraints.extend((r, MockObject(), r2))
 
         d = ihm.restraint.UpperBoundDistanceRestraint(25.0)
         xl1 = ihm.restraint.ResidueCrossLink(
@@ -3837,6 +3848,7 @@ _ihm_cross_link_list.details
 2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97 .
 3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97 .
 4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97 'test xl'
+5 4 foo 1 2 THR foo 1 3 CYS 2 Other 98 .
 #
 #
 loop_

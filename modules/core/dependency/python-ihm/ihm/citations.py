@@ -18,7 +18,7 @@ imp = ihm.Citation(
     authors=['Russel, D.', 'Lasker, K.', 'Webb, B.', 'Velázquez-Muriel, J.',
              'Tjioe, E.', 'Schneidman-Duhovny, D.', 'Peterson, B.',
              'Sali, A.'],
-    doi='10.1371/journal.pbio.1001244')
+    doi='10.1371/journal.pbio.1001244', journal_issn="1544-9173")
 
 
 pmi = ihm.Citation(
@@ -28,7 +28,7 @@ pmi = ihm.Citation(
     authors=['Saltzberg, D.', 'Greenberg, C.H.', 'Viswanath, S.',
              'Chemmama, I.', 'Webb, B.', 'Pellarin, R.', 'Echeverria, I.',
              'Sali, A.'],
-    doi='10.1007/978-1-4939-9608-7_15')
+    doi='10.1007/978-1-4939-9608-7_15', journal_issn="1064-3745")
 
 
 modeller = ihm.Citation(
@@ -36,7 +36,8 @@ modeller = ihm.Citation(
     title='Comparative protein modelling by satisfaction of '
           'spatial restraints.',
     journal='J Mol Biol', volume=234, page_range=(779, 815), year=1993,
-    authors=['Sali, A.', 'Blundell, T.L.'], doi='10.1006/jmbi.1993.1626')
+    authors=['Sali, A.', 'Blundell, T.L.'], doi='10.1006/jmbi.1993.1626',
+    journal_issn="0022-2836")
 
 
 psipred = ihm.Citation(
@@ -44,7 +45,8 @@ psipred = ihm.Citation(
     title='Protein secondary structure prediction based on position-specific '
           'scoring matrices.',
     journal='J Mol Biol', volume=292, page_range=(195, 202), year=1999,
-    authors=['Jones, D.T.'], doi='10.1006/jmbi.1999.3091')
+    authors=['Jones, D.T.'], doi='10.1006/jmbi.1999.3091',
+    journal_issn="0022-2836")
 
 
 disopred = ihm.Citation(
@@ -52,7 +54,8 @@ disopred = ihm.Citation(
     title='DISOPRED3: precise disordered region predictions with annotated '
           'protein-binding activity.',
     journal='Bioinformatics', volume=31, page_range=(857, 863), year=2015,
-    authors=['Jones, D.T.', 'Cozzetto D'], doi='10.1093/bioinformatics/btu744')
+    authors=['Jones, D.T.', 'Cozzetto D'], doi='10.1093/bioinformatics/btu744',
+    journal_issn="1367-4803")
 
 
 hhpred = ihm.Citation(
@@ -61,7 +64,7 @@ hhpred = ihm.Citation(
           'and structure prediction.',
     journal='Nucleic Acids Res', volume=33, page_range=('W244', 'W248'),
     year=2005, authors=['Söding, J.', 'Biegert, A.', 'Lupas, A.N.'],
-    doi='10.1093/nar/gki408')
+    doi='10.1093/nar/gki408', journal_issn="0305-1048")
 
 
 relion = ihm.Citation(
@@ -69,7 +72,8 @@ relion = ihm.Citation(
     title='RELION: implementation of a Bayesian approach to cryo-EM '
           'structure determination.',
     journal='J Struct Biol', volume=180, page_range=(519, 530), year=2012,
-    authors=['Scheres, S.H.'], doi='10.1016/j.jsb.2012.09.006')
+    authors=['Scheres, S.H.'], doi='10.1016/j.jsb.2012.09.006',
+    journal_issn="1047-8477")
 
 
 phyre2 = ihm.Citation(
@@ -79,7 +83,7 @@ phyre2 = ihm.Citation(
     journal='Nat Protoc', volume=10, page_range=('845', '858'), year=2015,
     authors=['Kelley, L.A.', 'Mezulis, S.', 'Yates, C.M.', 'Wass, M.N.',
              'Sternberg, M.J.'],
-    doi='10.1038/nprot.2015.053')
+    doi='10.1038/nprot.2015.053', journal_issn="1754-2189")
 
 
 swiss_model = ihm.Citation(
@@ -91,7 +95,7 @@ swiss_model = ihm.Citation(
     authors=['Waterhouse, A.', 'Bertoni, M.', 'Bienert, S.', 'Studer, G.',
              'Tauriello, G.', 'Gumienny, R.', 'Heer, F.T.', 'de Beer, T.A.P.',
              'Rempfer, C.', 'Bordoli, L.', 'Lepore, R.', 'Schwede, T.'],
-    doi='10.1093/nar/gky427')
+    doi='10.1093/nar/gky427', journal_issn="0305-1048")
 
 
 alphafold2 = ihm.Citation(
@@ -107,7 +111,7 @@ alphafold2 = ihm.Citation(
              'Zielinski, M.', 'Steinegger, M.', 'Pacholska, M.',
              'Berghammer, T.', 'Bodenstein, S.', 'Silver, D.', 'Vinyals, O.',
              'Senior, A.W.', 'Kavukcuoglu, K.', 'Kohli, P.', 'Hassabis, D.'],
-    doi='10.1038/s41586-021-03819-2')
+    doi='10.1038/s41586-021-03819-2', journal_issn="0028-0836")
 
 
 colabfold = ihm.Citation(
@@ -116,7 +120,7 @@ colabfold = ihm.Citation(
     journal='Nature Methods', volume=19, page_range=(679, 682), year=2022,
     authors=['Mirdita, M.', 'Schuetze, K.', 'Moriwaki, Y.', 'Heo, L.',
              'Ovchinnikov, S.', 'Steinegger, M.'],
-    doi='10.1038/s41592-022-01488-1')
+    doi='10.1038/s41592-022-01488-1', journal_issn="1548-7091")
 
 qmeandisco = ihm.Citation(
     pmid='31697312',
@@ -128,7 +132,7 @@ qmeandisco = ihm.Citation(
     year=2019,
     authors=['Studer, G.', 'Rempfer, C.', 'Waterhouse, A.M.', 'Gumienny, R.',
              'Haas, J.', 'Schwede, T.'],
-    doi='10.1093/bioinformatics/btz828')
+    doi='10.1093/bioinformatics/btz828', journal_issn="1367-4803")
 
 mmseqs2 = ihm.Citation(
     pmid='30615063',
@@ -139,4 +143,4 @@ mmseqs2 = ihm.Citation(
     page_range=(2856, 2858),
     year=2019,
     authors=['Mirdita, M.', 'Steinegger, M.', 'Soeding, J.'],
-    doi='10.1093/bioinformatics/bty1057')
+    doi='10.1093/bioinformatics/bty1057', journal_issn="1367-4803")

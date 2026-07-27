@@ -3361,14 +3361,15 @@ _ihm_cross_link_list.entity_id_2
 _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
+_ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
 _ihm_cross_link_list.details
-1 1 foo 1 2 THR foo 1 3 CYS 44 97 .
-2 2 foo 1 2 THR bar 2 3 PHE 44 97 'test xl'
-3 2 foo 1 2 THR bar 2 2 GLU 44 97 .
-4 3 foo 1 1 ALA bar 2 1 ASP 44 97 .
-5 4 foo 1 1 ALA bar 2 1 ASP 88 97 .
-6 5 foo 1 1 ALA bar 2 1 ASP 44 98 .
+1 1 foo 1 2 THR foo 1 3 CYS 44 . 97 .
+2 2 foo 1 2 THR bar 2 3 PHE 44 . 97 'test xl'
+3 2 foo 1 2 THR bar 2 2 GLU 44 . 97 .
+4 3 foo 1 1 ALA bar 2 1 ASP 44 . 97 .
+5 4 foo 1 1 ALA bar 2 1 ASP 88 Other 97 .
+6 5 foo 1 1 ALA bar 2 1 ASP 44 . 98 .
 """)
         s, = ihm.reader.read(fh)
         # Check grouping
@@ -3377,6 +3378,9 @@ _ihm_cross_link_list.details
         r1, r2, r3 = s.restraints
         self.assertEqual(r1.dataset._id, '97')
         self.assertEqual(r1.linker._id, '44')
+        self.assertFalse(hasattr(r1, '_force_other'))
+        self.assertEqual(r2.linker._id, '88')
+        self.assertTrue(r2._force_other)
         xl = r1.experimental_cross_links[1][0]
         self.assertEqual(xl.residue1.entity._id, '1')
         self.assertEqual(xl.residue2.entity._id, '2')

@@ -3119,6 +3119,7 @@ class _CrossLinkListHandler(Handler):
                  group_id, id, entity_id_1, entity_id_2, seq_id_1, seq_id_2,
                  linker_type, details):
         dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        _force_other = False
         if linker_chem_comp_descriptor_id is None and linker_type is not None:
             linker = self._get_linker_by_name(linker_type)
         else:
@@ -3126,9 +3127,12 @@ class _CrossLinkListHandler(Handler):
                 linker_chem_comp_descriptor_id)
             if linker_type:
                 self._linker_type[linker] = linker_type
+                _force_other = (linker_type.lower() == 'other')
         # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
         r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
+        if _force_other:
+            r._force_other = True
 
         xl_group = self.sysr.experimental_xl_groups.get_by_id(group_id)
         xl = self.sysr.experimental_xls.get_by_id(id)

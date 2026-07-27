@@ -2610,6 +2610,10 @@ class _CrossLinkDumper(Dumper):
                 if self._check:
                     util._check_residue(xl.residue1)
                     util._check_residue(xl.residue2)
+                if hasattr(r, '_force_other'):
+                    linker_type = 'Other'
+                else:
+                    linker_type = r.linker.auth_name
                 lp.write(id=xl._id, group_id=xl._group_id,
                          entity_description_1=entity1.description,
                          entity_id_1=entity1._id,
@@ -2620,7 +2624,7 @@ class _CrossLinkDumper(Dumper):
                          seq_id_2=xl.residue2.seq_id,
                          comp_id_2=_get_comp_id(entity2, xl.residue2.seq_id),
                          linker_chem_comp_descriptor_id=r.linker._id,
-                         linker_type=r.linker.auth_name,
+                         linker_type=linker_type,
                          dataset_list_id=r.dataset._id,
                          details=xl.details)
 
