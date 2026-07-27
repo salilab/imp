@@ -30,8 +30,8 @@ jobs:
           cmake_build: Debug
           max_checks: INTERNAL
           max_log: VERBOSE
-        - os: ubuntu-24.04
-          python-version: "3.12"
+        - os: ubuntu-26.04
+          python-version: "3.14"
           cxxflags: "--coverage"
           linkflags: "--coverage"
           cgaldir: "/usr/lib/x86_64-linux-gnu/cmake/CGAL/"
