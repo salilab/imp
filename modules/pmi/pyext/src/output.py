@@ -681,51 +681,8 @@ class Output:
         for rmfinfo in self.dictionary_rmfs.keys():
             self.write_rmf(rmfinfo[0])
 
-    @IMP.deprecated_method("2.25", "Use init_stat2() instead")
-    def init_stat(self, name, listofobjects):
-        if self.ascii:
-            flstat = open(name, 'w')
-            flstat.close()
-        else:
-            flstat = open(name, 'wb')
-            flstat.close()
-
-        # check that all objects in listofobjects have a get_output method
-        for o in listofobjects:
-            if not hasattr(o, "get_output"):
-                raise ValueError(
-                    "Output: object %s doesn't have get_output() method"
-                    % str(o))
-        self.dictionary_stats[name] = listofobjects
-
     def set_output_entry(self, key, value):
         self.initoutput.update({key: value})
-
-    @IMP.deprecated_method("2.25", "Use write_stat2() instead")
-    def write_stat(self, name, appendmode=True):
-        output = self.initoutput
-        for obj in self.dictionary_stats[name]:
-            d = obj.get_output()
-            # remove all entries that begin with _ (private entries)
-            dfiltered = dict((k, v) for k, v in d.items() if k[0] != "_")
-            output.update(dfiltered)
-
-        if appendmode:
-            writeflag = 'a'
-        else:
-            writeflag = 'w'
-
-        if self.ascii:
-            with open(name, writeflag) as flstat:
-                flstat.write("%s \n" % output)
-        else:
-            with open(name, writeflag + 'b') as flstat:
-                pickle.dump(output, flstat, 2)
-
-    @IMP.deprecated_method("2.25", "Use write_stats2() instead")
-    def write_stats(self):
-        for stat in self.dictionary_stats.keys():
-            self.write_stat(stat)
 
     def get_stat(self, name):
         output = {}
