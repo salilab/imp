@@ -85,7 +85,7 @@ class IMPEM2DEXPORT ClusterSet {
   /**
     \note This function merely adds 1 to the cluster ids, for compatibility
      with Matlab.
-    Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
+    Matlab format: https://www.mathworks.com/help/toolbox/stats/linkage.html
   */
   FloatsList get_linkage_matrix_in_matlab_format() const;
 
