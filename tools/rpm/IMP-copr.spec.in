@@ -347,6 +347,9 @@ python3 test_mock.py -v
 %endif
 
 %changelog
+* Wed Aug 05 2026 Ben Webb <benjamin.webb@ucsf.edu>   2.25.0-1
+- 2.25.0 release.
+
 * Thu Jan 29 2026 Ben Webb <benjamin.webb@ucsf.edu>   2.24.0-1
 - 2.24.0 release.
 

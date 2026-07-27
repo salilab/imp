@@ -1,3 +1,9 @@
+imp (2.25.0-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * IMP 2.25.0 release
+
+ -- Ben Webb <benjamin.webb@ucsf.edu>  Wed, 05 Aug 2026 11:03:43 -0700
+
 imp (2.24.0-2~@CODENAME@) @CODENAME@; urgency=low
 
   * Fix linkage against boost_system in Ubuntu 26.04

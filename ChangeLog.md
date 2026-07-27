@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.25.0 - 2026-08-05 # {#changelog_2_25_0}
 - The IMP::em2d module has dropped support for building with OpenCV 2, but
   now supports OpenCV 5.
 - [JAX](https://docs.jax.dev/) support is now more extensive, with
