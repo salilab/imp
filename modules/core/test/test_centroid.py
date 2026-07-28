@@ -11,6 +11,7 @@ except ImportError:
 
 wtkey = IMP.FloatKey("custom weight")
 
+
 class Tests(IMP.test.TestCase):
 
     """Tests for RefinerCover"""
