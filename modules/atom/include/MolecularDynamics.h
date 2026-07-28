@@ -2,7 +2,7 @@
  *  \file IMP/atom/MolecularDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,6 +14,8 @@
 #include "atom_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -109,6 +111,8 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
   /** Score based on the provided model */
   MolecularDynamics(Model *m);
 
+  MolecularDynamics() {}
+
   //! Return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
 
@@ -176,6 +180,12 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
 
   //! Maximum absolute value of a single velocity component
   Float velocity_cap_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Simulator>(this), degrees_of_freedom_, velocity_cap_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MolecularDynamics);
 };
 
 IMPATOM_END_NAMESPACE

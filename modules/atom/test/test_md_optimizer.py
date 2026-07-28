@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import functools
+import pickle
 try:
     import jax
     import jax.random
@@ -116,6 +117,23 @@ class Tests(IMP.test.TestCase):
         """Check MD standard object methods"""
         self.make_model()
         self.check_standard_object_methods(self.md)
+
+    def test_pickle(self):
+        """Test (un-)pickle of MolecularDynamics"""
+        self.make_model()
+        self.md.set_name("foo")
+        self.md.set_velocity_cap(42.0)
+        self.md.set_temperature(390.0)
+        self.md.set_maximum_time_step(10.0)
+        self.assertEqual(self.md.get_degrees_of_freedom(), 3)
+        dump = pickle.dumps(self.md)
+        newmd = pickle.loads(dump)
+        self.assertAlmostEqual(newmd.get_temperature(), 390.0, delta=1e-4)
+        self.assertAlmostEqual(newmd.get_maximum_time_step(), 10.0, delta=1e-4)
+        self.assertEqual(len(newmd.get_simulation_particle_indexes()), 1)
+        self.assertAlmostEqual(newmd.get_velocity_cap(), 42.0, delta=1e-4)
+        self.assertEqual(newmd.get_degrees_of_freedom(), 3)
+        self.assertEqual(newmd.get_name(), "foo")
 
     def test_get_scoring_function_core_restraints_sf(self):
         """Test get_scoring_function() using core.RestraintsScoringFunction"""

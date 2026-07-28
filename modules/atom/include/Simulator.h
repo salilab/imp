@@ -2,7 +2,7 @@
  *  \file IMP/atom/Simulator.h
  *  \brief Base class for "simulators", such as molecular dynamics.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,8 @@
 #include <IMP/Optimizer.h>
 #include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -47,6 +49,8 @@ class IMPATOMEXPORT Simulator : public Optimizer {
    */
   Simulator(Model *m, std::string name = "Simulator %1%",
             double wave_factor = 1.0);
+
+  Simulator() {}
 
   //! Simulate for a given time in fs
   /**
@@ -213,6 +217,13 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double current_time_;
   double last_time_step_;
   double wave_factor_;  // if >1.0, use simulate_wave() from do_optimize()
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Optimizer>(this), temperature_, max_time_step_,
+       current_time_, last_time_step_, wave_factor_,
+       mutable_access_particles());
+  }
 };
 
 IMP_OBJECTS(Simulator, Simulators);

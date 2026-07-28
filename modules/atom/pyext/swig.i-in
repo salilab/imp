@@ -79,7 +79,7 @@ IMP_SWIG_OBJECT_TEMPLATED(IMP::atom, _SwitchedLennardJonesTypedPairScore,
             LennardJonesTypedPairScore<IMP::atom::ForceSwitch>,
             _SwitchedLennardJonesTypedPairScores);
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
-IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector, NonAlternativePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonHydrogenMol2Selector, NonHydrogenMol2Selectors);

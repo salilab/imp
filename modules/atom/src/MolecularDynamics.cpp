@@ -199,4 +199,6 @@ void MolecularDynamics::assign_velocities(Float temperature) {
   }
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::atom::MolecularDynamics);
+
 IMPATOM_END_NAMESPACE
