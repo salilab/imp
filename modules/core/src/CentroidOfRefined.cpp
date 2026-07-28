@@ -90,4 +90,6 @@ IMP_SUMMARIZE_DECORATOR_DEF(Centroid, XYZ, XYZs,
                             (new DerivativesToRefined(ref)), // post
                             false);
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::CentroidOfRefined);
+
 IMPCORE_END_NAMESPACE

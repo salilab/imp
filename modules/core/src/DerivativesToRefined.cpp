@@ -48,4 +48,6 @@ ModelObjectsTemp DerivativesToRefined::do_get_outputs(
   return ret;
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::DerivativesToRefined);
+
 IMPCORE_END_NAMESPACE

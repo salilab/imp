@@ -46,4 +46,23 @@ ModelObjectsTemp FixedRefiner::do_get_inputs(
   return ModelObjectsTemp();
 }
 
+void FixedRefiner::set_model_from_id(uint32_t model_id)
+{
+  Model *m = Model::get_by_unique_id(model_id);
+  if (!m) {
+    IMP_THROW("Cannot unserialize FixedRefiner as it refers to a "
+              "Model that does not exist", ValueException);
+  } else {
+    m_ = m;
+  }
+
+}
+
+uint32_t FixedRefiner::get_model_id() const
+{
+  return m_->get_unique_id();
+}
+
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::FixedRefiner);
+
 IMPCORE_END_NAMESPACE

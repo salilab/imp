@@ -15,6 +15,8 @@
 #include <IMP/singleton_macros.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -30,9 +32,17 @@ class IMPCOREEXPORT DerivativesToRefined : public SingletonModifier {
   IMP::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonModifier>(this), refiner_, ks_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(DerivativesToRefined);
+
  public:
   //! Copy ks to the particles returned by r.
   DerivativesToRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
+
+  DerivativesToRefined() {}
 
   virtual void apply_index(Model *m, ParticleIndex a) const
       override;

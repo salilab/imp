@@ -3,11 +3,13 @@ import IMP.atom
 import IMP.test
 import IMP.core
 import IMP.algebra
+import pickle
 try:
     import jax
 except ImportError:
     jax = None
 
+wtkey = IMP.FloatKey("custom weight")
 
 class Tests(IMP.test.TestCase):
 
@@ -56,6 +58,31 @@ class Tests(IMP.test.TestCase):
         m.update()
         imp_coord = IMP.core.XYZ(p).get_coordinates()
         self.assertLess(IMP.algebra.get_distance(jax_coord, imp_coord), 0.01)
+
+    def test_pickle(self):
+        """Test (un-)pickle of CentroidOfRefined"""
+        m = IMP.Model()
+        ps = IMP.core.create_xyzr_particles(m, 10, 1)
+        fpr = IMP.core.FixedRefiner(ps)
+        cr = IMP.core.CentroidOfRefined(fpr, wtkey)
+        cr.set_name("foo")
+        dump = pickle.dumps(cr)
+        newcr = pickle.loads(dump)
+        self.assertEqual(newcr.get_weight(), wtkey)
+        self.assertEqual(newcr.get_name(), "foo")
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of CentroidOfRefined via polymorphic pointer"""
+        m = IMP.Model()
+        ps = IMP.core.create_xyzr_particles(m, 10, 1)
+        fpr = IMP.core.FixedRefiner(ps)
+        cr = IMP.core.CentroidOfRefined(fpr, wtkey)
+        cr.set_name("foo")
+        sc = IMP.core.SingletonConstraint(cr, None, m, ps[0])
+        dump = pickle.dumps(sc)
+        newsc = pickle.loads(dump)
+        newcr = newsc.get_before_modifier()
+        self.assertEqual(newcr.get_name(), "foo")
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
  *  \file IMP/Refiner.h
  *  \brief Refine a particle into a list of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_REFINER_H
@@ -15,6 +15,8 @@
 #include <IMP/deprecation_macros.h>
 #include <IMP/check_macros.h>
 #include "model_object_helpers.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -34,6 +36,12 @@ class DerivativeAccumulator;
 class IMPKERNELEXPORT Refiner : public ParticleInputs, public Object {
   struct Accessor;
   bool is_by_ref_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    // ParticleInputs has no members, so nothing to serialize
+    ar(cereal::base_class<Object>(this), is_by_ref_);
+  }
 
  public:
   //! Constructs the refiner

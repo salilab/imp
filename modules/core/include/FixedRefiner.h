@@ -2,7 +2,7 @@
  *  \file IMP/core/FixedRefiner.h
  *  \brief A particle refiner which returns a fixed set of particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_FIXED_REFINER_H
@@ -13,6 +13,8 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Refiner.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -23,12 +25,31 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   Model* m_;
   ParticleIndexes pis_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Refiner>(this));
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      uint32_t model_id = get_model_id();
+      ar(model_id);
+    } else {
+      uint32_t model_id;
+      ar(model_id);
+      set_model_from_id(model_id);
+    }
+    ar(pis_);
+  }
+  void set_model_from_id(uint32_t model_id);
+  uint32_t get_model_id() const;
+  IMP_OBJECT_SERIALIZE_DECL(FixedRefiner);
+
  public:
   //! Store the set of particles
   FixedRefiner(const ParticlesTemp &ps);
 
   //! Store the set of particle indexes from passed model
   FixedRefiner(Model* m, const ParticleIndexes &pis);
+
+  FixedRefiner() {}
 
   virtual bool get_can_refine(Particle *) const override
   { return true; }

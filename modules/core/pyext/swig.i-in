@@ -20,7 +20,7 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingSphere3DSingletonScore, BoundingSph
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
 #endif
 IMP_SWIG_OBJECT( IMP::core, NearestNeighborsClosePairsFinder, NearestNeighborsClosePairsFinders);
-IMP_SWIG_OBJECT( IMP::core, CentroidOfRefined, CentroidOfRefineds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, CentroidOfRefined, CentroidOfRefineds);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ChecksScoreState, ChecksScoreStates);
 IMP_SWIG_OBJECT( IMP::core, ChildrenRefiner, ChildrenRefiners);
 IMP_SWIG_OBJECT( IMP::core, ClosePairsFinder, ClosePairsFinders);
@@ -32,14 +32,14 @@ IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantRestraint, ConstantRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Cosine, Cosines);
 IMP_SWIG_OBJECT( IMP::core, CoverRefined, CoverRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
-IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DerivativesToRefined, DerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistanceRestraint, DistanceRestraints);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
-IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, FixedRefiner, FixedRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Harmonic, Harmonics);
 IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);

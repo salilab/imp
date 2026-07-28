@@ -17,6 +17,9 @@
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 #include "DerivativesToRefined.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -36,6 +39,12 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
   FloatKeys ks_;
   FloatKey w_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<SingletonModifier>(this), refiner_, ks_, w_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(CentroidOfRefined);
+
  public:
   //! Set the keys ks to be the average of the refined particles.
   /**
@@ -49,6 +58,8 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
    */
   CentroidOfRefined(Refiner *r, FloatKey weight = FloatKey(),
                     FloatKeys ks = XYZ::get_xyz_keys());
+
+  CentroidOfRefined() {}
 
   Refiner *get_refiner() const { return refiner_; }
   FloatKey get_weight() const { return w_; }
