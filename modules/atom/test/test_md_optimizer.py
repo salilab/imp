@@ -225,7 +225,6 @@ class Tests(IMP.test.TestCase):
                  "for step %d, particle %d"
         for (num, step) in enumerate(traj[:-1]):
             newvx = vxfunc(vx)
-            print(num)
             for n in range(len(coor)):
                 self.assertAlmostEqual(vx, step[n][3][0], delta=1e-3,
                                        msg=velmsg % (vx, step[n][3][0],
