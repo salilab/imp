@@ -2,7 +2,7 @@
  *  \file internal/scoring_functions.h
  *  \brief Various useful utilities for scoring functions.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SCORING_FUNCTIONS_H
@@ -14,6 +14,8 @@
 #include <IMP/object_macros.h>
 #include "restraint_evaluation.h"
 #include "RestraintsScoringFunction.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 #include "evaluate_utility.h"
 #include "utility.h"
@@ -43,6 +45,12 @@ template <class RestraintType>
 class RestraintScoringFunction : public ScoringFunction {
   PointerMember<RestraintType> r_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<ScoringFunction>(this), r_);
+  }
+  IMP_OBJECT_SERIALIZE_DECL(RestraintScoringFunction<RestraintType>);
+
  public:
   RestraintScoringFunction(RestraintType *r)
       : ScoringFunction(IMP::internal::get_model(r),
@@ -50,6 +58,9 @@ class RestraintScoringFunction : public ScoringFunction {
         r_(r) {}
   RestraintScoringFunction(RestraintType *r, std::string name)
       : ScoringFunction(IMP::internal::get_model(r), name), r_(r) {}
+
+  RestraintScoringFunction() {}
+
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) override;
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,

@@ -247,4 +247,7 @@ RestraintsTemp get_restraints(const RestraintsTemp &rs) {
 
 IMP_OBJECT_SERIALIZE_IMPL(IMP::RestraintSet);
 
+template<>
+IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::RestraintScoringFunction<IMP::RestraintSet>);
+
 IMPKERNEL_END_NAMESPACE
