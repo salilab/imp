@@ -26,5 +26,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(at0, at1)
         self.assertNotEqual(at0, at2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

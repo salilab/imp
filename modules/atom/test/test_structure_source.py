@@ -14,5 +14,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.get_source_id(),'1ABC')
         self.assertEqual(s.get_source_chain_id(),'G')
 
+
 if __name__ == '__main__':
     IMP.test.main()

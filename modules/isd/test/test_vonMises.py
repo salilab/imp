@@ -84,5 +84,6 @@ class Tests(IMP.test.TestCase):
                                        2 * pi * i0(randno[2])),
                                    delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -26,5 +26,6 @@ class Tests(IMP.test.ApplicationTestCase):
         # The best scoring model should be close to native
         self.assertLess(rmsds[0], 4.0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -16,5 +16,6 @@ class Tests(IMP.test.TestCase):
         print(extra)
         self.assertEqual(IMP.get_bool_flag("myboolflag"), False)
 
+
 if __name__ == '__main__':
     IMP.test.main()

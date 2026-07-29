@@ -50,5 +50,6 @@ class Tests(IMP.test.TestCase):
         self._testit(IMP.display.PymolWriter(nm),
                      nm)
 
+
 if __name__ == '__main__':
     IMP.test.main()

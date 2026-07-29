@@ -43,5 +43,6 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
         db_clusters.close()
         os.remove(fn_db_clusters)
 
+
 if __name__ == '__main__':
     IMP.test.main()

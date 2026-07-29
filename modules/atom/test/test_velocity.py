@@ -39,5 +39,6 @@ class Tests(IMP.test.TestCase):
                                                  IMP.algebra.Vector4D(1,2,3,4)),
                         1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

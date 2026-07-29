@@ -48,5 +48,6 @@ class Tests(IMP.test.TestCase):
         #self.assertEqual(p[0], p.get(0))
         #self.assert_(isinstance(p.get_name(), str))
 
+
 if __name__ == '__main__':
     IMP.test.main()

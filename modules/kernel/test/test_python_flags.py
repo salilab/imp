@@ -32,5 +32,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(extra[0], "zero")
         self.assertEqual(extra[1], "one")
 
+
 if __name__ == '__main__':
     IMP.test.main()

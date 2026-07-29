@@ -56,5 +56,6 @@ class CnFittingTests(IMP.test.TestCase):
             for rb in self.ref_rbs:
                 IMP.core.transform(rb, t.get_inverse())
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -99,5 +99,6 @@ class Tests(IMP.test.TestCase):
 
         self.assertEqual(0, len(IMP.atom.get_chi_dihedral_particle_indexes(gly)))
 
+
 if __name__ == '__main__':
     IMP.test.main()

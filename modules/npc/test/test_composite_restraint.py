@@ -103,5 +103,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score, 10.0, delta=1e-6)
         self.assertEqual(pairs, [])
 
+
 if __name__ == '__main__':
     IMP.test.main()

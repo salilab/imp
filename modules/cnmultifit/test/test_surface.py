@@ -40,5 +40,6 @@ ATOM      2  CA  ALA A   2     -18.390   4.442 -18.049  1.00  0.00           C
             IMP.multifit.write_connolly_surface = old
         os.unlink('test.pdb')
 
+
 if __name__ == '__main__':
     IMP.test.main()

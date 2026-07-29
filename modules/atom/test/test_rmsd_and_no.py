@@ -75,5 +75,6 @@ class Tests(IMP.test.TestCase):
         nat_ove = IMP.atom.get_native_overlap(xyz, xyz1, 6)
         self.assertAlmostEqual(nat_ove, 100, 2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

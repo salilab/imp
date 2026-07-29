@@ -61,5 +61,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(c.elements, 23)
         self.assertEqual(c.solutions_ids, ["foo", "bar"])
 
+
 if __name__ == '__main__':
     IMP.test.main()

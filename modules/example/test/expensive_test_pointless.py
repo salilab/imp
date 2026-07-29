@@ -15,5 +15,6 @@ class DistanceTests(IMP.test.TestCase):
         for i in range(0, 100000):
             p = IMP.Particle(m)
 
+
 if __name__ == '__main__':
     IMP.test.main()

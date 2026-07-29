@@ -117,5 +117,6 @@ class Tests(IMP.test.TestCase):
             # invalid or do not contain required parameters
             p = IMP.multifit.AlignmentParams(IMP.multifit.get_data_path(d))
 
+
 if __name__ == '__main__':
     IMP.test.main()

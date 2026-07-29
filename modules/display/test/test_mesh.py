@@ -27,5 +27,6 @@ class Tests(IMP.test.TestCase):
         w = IMP.display.PymolWriter(self.get_tmp_file_name("skin.pym"))
         w.add_geometry(g)
 
+
 if __name__ == '__main__':
     IMP.test.main()

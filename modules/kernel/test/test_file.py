@@ -87,5 +87,6 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertEqual(IMP.get_absolute_path(relpth), abspth)
 
+
 if __name__ == '__main__':
     IMP.test.main()

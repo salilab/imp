@@ -126,5 +126,6 @@ class Tests(IMP.test.TestCase):
                 copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
                 self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
+
 if __name__ == '__main__':
     IMP.test.main()

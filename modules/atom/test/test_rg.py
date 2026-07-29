@@ -63,5 +63,6 @@ class Tests(IMP.test.TestCase):
         rg1 = IMP.atom.get_radius_of_gyration(ps)
         self.assertAlmostEqual(rg0, rg1, delta=1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

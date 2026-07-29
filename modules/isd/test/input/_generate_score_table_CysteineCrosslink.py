@@ -166,6 +166,7 @@ def get_log_grid(gmin, gmax, ngrid):
         grid.append(gmin * exp(float(i) / ngrid * log(gmax / gmin)))
     return grid
 
+
 ps = []
 # setting up ps
 p0 = IMP.Particle(m)

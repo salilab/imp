@@ -75,5 +75,7 @@ class Tests(IMP.test.TestCase):
                 test_not_empty()
                 # print "collision"
         assert tested, "Never cleared"
+
+
 if __name__ == '__main__':
     IMP.test.main()

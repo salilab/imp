@@ -19,5 +19,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(self.anchors_data.get_number_of_points(), 3)
         self.assertEqual(self.anchors_data.get_number_of_edges(), 2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

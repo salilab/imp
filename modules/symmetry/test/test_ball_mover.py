@@ -53,5 +53,6 @@ class Test(IMP.test.TestCase):
             for j in range(3):
                 self.assertAlmostEqual(new[i][j], old[i][j])
 
+
 if __name__ == '__main__':
     IMP.test.main()

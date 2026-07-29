@@ -27,5 +27,6 @@ class Test(IMP.test.TestCase):
             score = self.rst[pdb].evaluate(False)
             self.assertAlmostEqual(score, self.ref_scores[pdb])
 
+
 if __name__ == '__main__':
     IMP.test.main()

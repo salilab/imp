@@ -20,5 +20,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(settings.get_assembly_header().get_resolution(), 20)
         self.assertEqual(settings.get_number_of_component_headers(), 4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

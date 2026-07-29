@@ -26,5 +26,6 @@ class Tests(IMP.test.TestCase):
             c = cluster.get_cluster(i)
             self._assert_same_bin(c, vs, 2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

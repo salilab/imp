@@ -61,8 +61,8 @@ class Tests(IMP.test.TestCase):
         Test setting up a graph. Tests functionality of graphNode.py
         """
         state_dict, expected_subcomplexes, exp_comp_map = setup_system()
-                # set input dir
         with IMP.test.temporary_directory() as tmpdir:
+            # set input dir
             input_dir = os.path.join(tmpdir, 'data')
             shutil.copytree(self.get_input_file_name('data'), input_dir)
             temp_key = list(exp_comp_map.keys())

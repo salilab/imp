@@ -152,5 +152,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")
 
+
 if __name__ == '__main__':
     IMP.test.main()

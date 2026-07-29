@@ -45,5 +45,6 @@ class Tests(IMP.test.TestCase):
         lines = [int(x.rstrip('\r\n')) for x in lines]
         self.assertEqual(lines, list(contents))
 
+
 if __name__ == '__main__':
     IMP.test.main()

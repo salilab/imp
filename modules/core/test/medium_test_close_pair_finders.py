@@ -211,5 +211,6 @@ class Tests(IMP.test.TestCase):
         self._check_biclose_pairs(m, IMP.get_indexes(ps), IMP.get_indexes(ps2),
                                   dist, cps)
 
+
 if __name__ == '__main__':
     IMP.test.main()

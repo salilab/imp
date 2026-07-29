@@ -98,5 +98,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(t.get_string(), "foobar")
         self.assertEqual(t.get_String(), "foobar")
 
+
 if __name__ == '__main__':
     IMP.test.main()

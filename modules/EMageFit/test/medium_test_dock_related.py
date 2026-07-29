@@ -60,5 +60,6 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
         self.import_python_application('emagefit_dock')
 
+
 if __name__ == '__main__':
     IMP.test.main()

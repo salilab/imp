@@ -633,5 +633,6 @@ class Tests(IMP.test.TestCase):
                           'OG', 'HG', 'H2', 'H3', 'N', 'CA', 'C', 'DUM', 'H',
                           'HA3', 'HA2', 'O', 'OXT'])
 
+
 if __name__ == '__main__':
     IMP.test.main()

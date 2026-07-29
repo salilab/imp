@@ -21,5 +21,6 @@ class Tests(IMP.test.TestCase):
         score = d.evaluate(False)
         self.assertAlmostEqual(score, 896.6609, delta=5.0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

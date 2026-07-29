@@ -61,5 +61,6 @@ class Tests(IMP.test.TestCase):
             dist = chi2.get_chi_square_experimental(0)
             self.assertAlmostEqual(dist_ref, dist, delta=0.00001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

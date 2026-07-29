@@ -81,5 +81,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(
                 mt.get_vertex_name(v0),
                 newMergeTree.get_vertex_name(v1))
+
+
 if __name__ == '__main__':
     IMP.test.main()

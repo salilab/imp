@@ -41,5 +41,6 @@ class Tests(IMP.test.TestCase):
             self.assertRaisesUsageException(__import__,
                                             'deprecated_module')
 
+
 if __name__ == '__main__':
     IMP.test.main()

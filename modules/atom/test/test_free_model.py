@@ -31,5 +31,6 @@ class Tests(IMP.test.TestCase):
         h = init_linear()
         self.assertRaises(IMP.InternalException, h.show)
 
+
 if __name__ == '__main__':
     IMP.test.main()

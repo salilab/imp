@@ -61,5 +61,6 @@ class Tests(IMP.test.TestCase):
                 IMP.core.XYZs(IMP.core.get_leaves(mhs[i + 1])))
             self.assertAlmostEqual(rmsd, 5 * (i + 1), delta=.05)
 
+
 if __name__ == '__main__':
     IMP.test.main()

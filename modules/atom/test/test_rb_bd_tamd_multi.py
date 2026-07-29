@@ -149,17 +149,11 @@ class Tests(IMP.test.TestCase):
         root, all_centroids, all_images, R \
             = self._create_tamd_hierarchy(m,
                                           5, 2,
-#                                          T_factors = [3,2.5,2,1.5],
-                                          T_factors = [12,12,6,3],
-                                          F_factors = [225*225,45,45,15],
+                                          T_factors=[12,12,6,3],
+                                          F_factors=[225*225,45,45,15],
 #                                          Ks = [60,40,20,10] ) # TAMD multi on
-                                          Ks = [1e-12, 10, 10, 10])# TAMD singular on
+                                          Ks=[1e-12, 10, 10, 10])# TAMD singular on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
-            # = self._create_tamd_hierarchy(m,
-            #                               5, 2,
-            #                               [1.1,1.1,1.1,1.1],
-            #                               [16,8,4,2],
-            #                               [5,5,5,5] )
         # Add more restraints to R:
         excluded_vol = IMP.core.SoftSpherePairScore(100)
         attraction = IMP.core.HarmonicSphereDistancePairScore(5, 5)
@@ -248,6 +242,7 @@ class Tests(IMP.test.TestCase):
 #            if(energy < e_threshold):
 #                break
 #        self.assertLess(energy, e_threshold)
+
 
 if __name__ == '__main__':
     IMP.test.main()

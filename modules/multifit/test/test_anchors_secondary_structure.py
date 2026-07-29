@@ -76,5 +76,7 @@ class Tests(IMP.test.TestCase):
             0.9)
         self.assertEqual(set(matches[0]), set([0, 1]))
         self.assertEqual(set(matches[1]), set([1, 2]))
+
+
 if __name__ == '__main__':
     IMP.test.main()

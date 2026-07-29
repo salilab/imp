@@ -260,5 +260,6 @@ class Tests(IMP.test.TestCase):
                     [sigmah, sigmaf, sigmaf], NREPS)
         print("FINISHED HARMONIC\n")
 
+
 if __name__ == '__main__':
     IMP.test.main()

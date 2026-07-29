@@ -221,7 +221,8 @@ class Tests(IMP.test.TestCase):
             for p in self.model_ps:
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
-                self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
+                self.assertXYZDerivativesInTolerance(
+                    self.sf, d, tolerance=1e-2, percentage=10.0)
 
     def test_gem_derivatives_with_slope(self):
         """test accuracy of GMM derivatives"""
@@ -233,7 +234,8 @@ class Tests(IMP.test.TestCase):
             for p in self.model_ps:
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
-                self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
+                self.assertXYZDerivativesInTolerance(
+                    self.sf, d, tolerance=1e-2, percentage=10.0)
         self.gem.set_slope(0.0)
 
     def test_rasterize(self):
@@ -277,6 +279,7 @@ class LocalTests(IMP.test.TestCase):
             score = self.sf.evaluate(False)
             pycc, pyscore = gem_score(self.model_ps, self.density_ps)
             print(score,pycc,pyscore)
+
 
 if __name__ == '__main__':
     IMP.test.main()

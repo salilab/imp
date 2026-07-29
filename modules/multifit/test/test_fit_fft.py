@@ -40,5 +40,6 @@ class Tests(IMP.test.TestCase):
         os.unlink(self.get_input_file_name('twoblobsA.fitting.out'))
         os.unlink(self.get_input_file_name('twoblobsB.fitting.out'))
 
+
 if __name__ == '__main__':
     IMP.test.main()

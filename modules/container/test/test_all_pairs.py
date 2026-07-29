@@ -35,5 +35,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(apc.get()),
                          len(lp.get()) * (len(lp.get()) - 1) / 2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

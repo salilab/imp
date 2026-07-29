@@ -381,5 +381,6 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.isd.Scale(m, ind3).get_scale(), 0.5,
                                    delta=1e-6)
 
+
 if __name__ == '__main__':
     IMP.test.main()

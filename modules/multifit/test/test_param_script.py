@@ -61,5 +61,6 @@ class Tests(IMP.test.TestCase):
                   'testasmb.input.refined'):
             os.unlink(f)
 
+
 if __name__ == '__main__':
     IMP.test.main()

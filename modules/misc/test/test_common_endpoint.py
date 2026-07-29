@@ -29,5 +29,6 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(cepc.get_value((bonds[0].get_particle(),
                                          bonds[2].get_particle())))
 
+
 if __name__ == '__main__':
     IMP.test.main()

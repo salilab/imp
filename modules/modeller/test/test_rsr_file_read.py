@@ -270,5 +270,6 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         assertSimilarModellerIMPScores(self, sf, modmodel, protein)
 
+
 if __name__ == '__main__':
     IMP.test.main()

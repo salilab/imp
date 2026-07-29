@@ -41,7 +41,8 @@ class Tests(IMP.test.TestCase):
         print("Mean rot angle per dt/real rotD/estimated rotD: ",
               IMP.atom.get_diffusion_angle(real_D, dt),
               real_D, estimate_D)
-        self.assertAlmostEqual(real_D, estimate_D, delta= .05*(real_D+estimate_D))
+        self.assertAlmostEqual(real_D, estimate_D,
+                               delta=.05*(real_D+estimate_D))
         return estimate_D
 
     def test_rot(self):
@@ -52,7 +53,8 @@ class Tests(IMP.test.TestCase):
         # verify numerical stability and robustness to step size
         self.assertAlmostEqual(estimate1000,
                                estimate10,
-                               delta= .05*(estimate10+estimate1000))
+                               delta=.05*(estimate10+estimate1000))
+
 
 if __name__ == '__main__':
     IMP.test.main()

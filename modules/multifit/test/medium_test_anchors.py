@@ -58,5 +58,6 @@ density header
         os.unlink('test.out.txt')
         os.unlink('test.out.cmm')
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -37,5 +37,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(t.get_vertices(), [desc0])
         self.assertRaisesUsageException(t.remove_vertex, desc1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

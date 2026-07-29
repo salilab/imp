@@ -85,5 +85,6 @@ class Tests(IMP.test.TestCase):
             IMP.atom.Atom(ps[12].get_particle()).get_element(),
             IMP.atom.Na)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -14,5 +14,6 @@ class Tests(IMP.test.TestCase):
         rows = csv_related.read_csv_keyword(fn, "id")
         self.assertEqual(len(rows), 3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

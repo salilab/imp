@@ -63,5 +63,6 @@ class Tests(IMP.test.TestCase):
         finally:
             urllib.request.urlopen = orig_urlopen
 
+
 if __name__ == '__main__':
     IMP.test.main()

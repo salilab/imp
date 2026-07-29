@@ -68,5 +68,6 @@ class Tests(IMP.test.TestCase):
         # Default value for limit should be reasonable
         h = IMP.core.TruncatedHarmonicBound(10., 0.1, 10.)
 
+
 if __name__ == '__main__':
     IMP.test.main()

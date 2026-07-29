@@ -273,5 +273,6 @@ class TestNOERestraintApplied(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.core.get_distance(self.p0, self.p1),
                                1.0, delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

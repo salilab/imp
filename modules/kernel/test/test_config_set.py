@@ -216,5 +216,6 @@ class Tests(IMP.test.TestCase):
         self._test_base(m, ps[0], 0, ps[1])
         self._test_base(m, ps[1], 1, ps[1])
 
+
 if __name__ == '__main__':
     IMP.test.main()

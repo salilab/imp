@@ -20,6 +20,7 @@ class TrivialParticleStates(IMP.domino.ParticleStates):
     def do_show(self, stream):
         pass
 
+
 key = IMP.IntKey("assignment")
 
 

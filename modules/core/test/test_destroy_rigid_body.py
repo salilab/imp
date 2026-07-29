@@ -92,5 +92,6 @@ class Tests(IMP.test.TestCase):
         self._check_distance(ps[2], ps[3], 1)
         self._check_separated(ps[1], ps[2])
 
+
 if __name__ == '__main__':
     IMP.test.main()

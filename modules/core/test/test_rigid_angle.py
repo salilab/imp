@@ -45,5 +45,6 @@ class Tests(IMP.test.TestCase):
         m, p1, p2, b1, b2, ps, rs = self.make_system()
         ps.show()
 
+
 if __name__ == '__main__':
     IMP.test.main()

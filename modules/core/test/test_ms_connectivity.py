@@ -166,5 +166,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score, lscore, delta=.1)
 #        self.assertGreaterEqual(sum, 4, "Wrong number of close pairs")
 
+
 if __name__ == '__main__':
     IMP.test.main()

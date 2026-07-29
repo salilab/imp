@@ -278,7 +278,7 @@ class Tests(IMP.test.TestCase):
 
         # check that you get ALL gaussians when requesting one
         sel = IMP.atom.Selection(mh,residue_index=idxs[5],
-                                 representation_type = IMP.atom.DENSITIES)
+                                 representation_type=IMP.atom.DENSITIES)
         self.assertEqual(sel.get_selected_particles(),
                          [h.get_particle() for h in density_frag.get_children()])
 
@@ -350,6 +350,7 @@ class Tests(IMP.test.TestCase):
         rep.update_parents()
         for p in selB.get_selected_particles() + selD.get_selected_particles():
             self.assertEqual(IMP.atom.get_molecule_name(IMP.atom.Hierarchy(p)),'heyjake')
+
 
 if __name__ == '__main__':
     IMP.test.main()

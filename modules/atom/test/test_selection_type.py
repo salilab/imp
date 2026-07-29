@@ -274,5 +274,7 @@ class Tests(IMP.test.TestCase):
         # does selection still get the terminus?
         term2 = IMP.atom.Selection(r,terminus=IMP.atom.Selection.N).get_selected_particles()
         self.assertEqual(term,term2)
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -28,5 +28,6 @@ class Tests(IMP.test.TestCase):
             sf.evaluate(False)
             IMP.rmf.save_frame(f, str(0))
 
+
 if __name__ == '__main__':
     IMP.test.main()

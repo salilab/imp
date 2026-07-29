@@ -26,5 +26,6 @@ class Tests(IMP.test.TestCase):
         r1 = IMP.multifit.RadiusOfGyrationRestraint(ps, 50)
         self.assertLessEqual(r1.evaluate(False), 0.01)
 
+
 if __name__ == '__main__':
     IMP.test.main()

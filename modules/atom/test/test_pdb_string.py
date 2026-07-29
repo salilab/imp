@@ -113,5 +113,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(coord[1], 1000.400, delta=0.001)
         self.assertAlmostEqual(coord[2], 2000.600, delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

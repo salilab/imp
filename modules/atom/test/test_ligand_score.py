@@ -59,5 +59,6 @@ class Tests(IMP.test.ApplicationTestCase):
             self.assertEqual(m.group(1), nligand)
             self.assertAlmostEqual(float(m.group(2)), score, delta=0.01)
 
+
 if __name__ == '__main__':
     IMP.test.main()

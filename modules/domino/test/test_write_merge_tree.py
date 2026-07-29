@@ -35,5 +35,7 @@ class Tests(IMP.test.TestCase):
                          list(mbt.get_vertices()))
         self.assertEqual(mbt2.get_vertex_name(0),
                          mbt.get_vertex_name(0))
+
+
 if __name__ == '__main__':
     IMP.test.main()

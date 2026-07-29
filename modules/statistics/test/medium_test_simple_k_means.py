@@ -38,5 +38,6 @@ class Tests(IMP.test.TestCase):
                     found = True
             self.assertTrue(found)
 
+
 if __name__ == '__main__':
     IMP.test.main()

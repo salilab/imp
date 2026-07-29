@@ -164,5 +164,6 @@ class Tests(IMP.test.TestCase):
         assert not IMP.core.RigidMember.get_is_setup(m, nr0[0])
         assert IMP.core.NonRigidMember.get_is_setup(m, nr0[0])
 
+
 if __name__ == '__main__':
     IMP.test.main()

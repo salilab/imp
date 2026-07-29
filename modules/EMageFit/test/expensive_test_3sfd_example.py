@@ -36,5 +36,6 @@ for line in sys.stdin.readlines():
                 os.unlink('solution-%03d.pdb' % i)
             self.run_shell_command(cmds[-1])
 
+
 if __name__ == '__main__':
     IMP.test.main()

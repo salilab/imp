@@ -221,5 +221,6 @@ class Tests(IMP.test.TestCase):
         for a in m:
             self.assertIsInstance(a, IMP.OptimizerState)
 
+
 if __name__ == '__main__':
     IMP.test.main()

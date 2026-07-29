@@ -53,5 +53,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sorted(pis),
                          sorted(x.get_particle_index() for x in atoms))
 
+
 if __name__ == '__main__':
     IMP.test.main()

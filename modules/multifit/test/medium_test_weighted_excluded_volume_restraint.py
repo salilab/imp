@@ -104,5 +104,6 @@ class Tests(IMP.test.TestCase):
             xyz.set_coordinates(
                 t.get_inverse().get_transformed(xyz.get_coordinates()))
 
+
 if __name__ == '__main__':
     IMP.test.main()

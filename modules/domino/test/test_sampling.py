@@ -91,5 +91,7 @@ class Tests(IMP.test.TestCase):
                 (IMP.core.get_distance(IMP.core.XYZ(ps[1]), IMP.core.XYZ(ps[2])) - 1) ** 2, .1)
 
         # test that they are the right distance
+
+
 if __name__ == '__main__':
     IMP.test.main()

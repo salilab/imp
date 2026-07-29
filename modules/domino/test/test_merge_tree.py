@@ -22,5 +22,6 @@ class Tests(IMP.test.TestCase):
         mbt = IMP.domino.get_balanced_merge_tree(jt)
         # IMP.show_graphviz(mbt)
 
+
 if __name__ == '__main__':
     IMP.test.main()

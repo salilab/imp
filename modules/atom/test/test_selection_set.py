@@ -175,5 +175,6 @@ class Tests(IMP.test.TestCase):
         s2 &= IMP.atom.Selection(h, atom_type=IMP.atom.AT_C)
         assert_ok(s3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

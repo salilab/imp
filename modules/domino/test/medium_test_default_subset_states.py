@@ -125,5 +125,7 @@ class Tests(IMP.test.TestCase):
         self._test_basic(IMP.domino.RecursiveAssignmentsTable)
         self._test_equivalencies(IMP.domino.RecursiveAssignmentsTable)
         self._test_explicit(IMP.domino.RecursiveAssignmentsTable)
+
+
 if __name__ == '__main__':
     IMP.test.main()

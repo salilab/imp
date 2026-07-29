@@ -82,5 +82,6 @@ class Tests(IMP.test.TestCase):
         prs = IMP.container.PairsRestraint(sps, bpc, "membrane mbm restraint")
         self.assertAlmostEqual(prs.unprotected_evaluate(None), 288.0, delta=1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -29,5 +29,7 @@ class Tests(IMP.test.TestCase):
     def test_in_python(self):
         """Test that RMF exceptions can be caught in python"""
         self.assertRaises(IOError, RMF.test_throw_exception)
+
+
 if __name__ == '__main__':
     IMP.test.main()

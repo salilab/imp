@@ -31,5 +31,6 @@ class Tests(IMP.test.TestCase):
         assertSimilarModellerIMPScores(self, sf, modmodel, protein)
         self.assertAlmostEqual(sf.evaluate(False), 9.80, delta=1e-2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

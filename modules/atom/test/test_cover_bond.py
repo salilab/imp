@@ -44,5 +44,6 @@ class Tests(IMP.test.TestCase):
         c.apply_index(m, b)
         self.check_cover(b.get_particle(), ps)
 
+
 if __name__ == '__main__':
     IMP.test.main()

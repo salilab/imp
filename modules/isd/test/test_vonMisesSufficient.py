@@ -187,5 +187,6 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
                                    fn2.density(),
                                    delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

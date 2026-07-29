@@ -19,5 +19,6 @@ class Tests(IMP.test.ApplicationTestCase):
             os.unlink('mean_merged.dat')
             os.unlink('summary.txt')
 
+
 if __name__ == '__main__':
     IMP.test.main()

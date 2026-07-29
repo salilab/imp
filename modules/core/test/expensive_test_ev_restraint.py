@@ -93,5 +93,6 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print(o.optimize(1000))
         print("inspect", sf.evaluate(False))
 
+
 if __name__ == '__main__':
     IMP.test.main()

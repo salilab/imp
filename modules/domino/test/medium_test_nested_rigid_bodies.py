@@ -58,5 +58,6 @@ class Tests(IMP.test.TestCase):
         cg = ds.create_sample()
         print(cg.get_number_of_configurations())
 
+
 if __name__ == '__main__':
     IMP.test.main()

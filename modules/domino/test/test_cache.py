@@ -95,5 +95,6 @@ class Tests(IMP.test.TestCase):
         f.get_is_ok(IMP.domino.Assignment([0]))
         self.assertEqual(lr.count, 3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

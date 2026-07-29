@@ -69,5 +69,6 @@ class Tests(IMP.test.TestCase):
         """Test the simplex optimizer with given starting conditions"""
         self.probabilistic_check("self._test_it", .5)
 
+
 if __name__ == '__main__':
     IMP.test.main()

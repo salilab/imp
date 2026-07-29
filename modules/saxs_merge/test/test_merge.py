@@ -303,5 +303,6 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertEqual(set(zip(test['q'], test['eorigin'])),
                          set([(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (3, 1)]))
 
+
 if __name__ == "__main__":
     IMP.test.main()

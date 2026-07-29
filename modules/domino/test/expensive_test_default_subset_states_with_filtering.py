@@ -192,5 +192,6 @@ class Tests(IMP.test.TestCase):
         self._test_filtering(IMP.domino.BranchAndBoundAssignmentsTable)
         self._test_total_filtering(IMP.domino.BranchAndBoundAssignmentsTable)
 
+
 if __name__ == '__main__':
     IMP.test.main()

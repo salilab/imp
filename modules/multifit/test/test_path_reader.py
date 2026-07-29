@@ -15,5 +15,6 @@ class Tests(IMP.test.TestCase):
         print(len(paths))
         self.assertEqual(len(paths), 684)
 
+
 if __name__ == '__main__':
     IMP.test.main()

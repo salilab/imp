@@ -42,5 +42,6 @@ class Tests(IMP.test.TestCase):
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
         self.assertIn(' charge= ', str(c))
 
+
 if __name__ == '__main__':
     IMP.test.main()

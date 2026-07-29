@@ -79,5 +79,6 @@ class Tests(IMP.test.TestCase):
         nd10b= self._test_d_for_dt(10,[.5,.1,.2])
         self.assertAlmostEqual(nd10, nd10b, delta=.1*(nd10+nd10000))
 
+
 if __name__ == '__main__':
     IMP.test.main()

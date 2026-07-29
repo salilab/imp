@@ -37,5 +37,7 @@ class Tests(IMP.test.TestCase):
         ssl[ls.index(ps[0])] = 6
         ss = IMP.domino.Assignment(ssl)
         self.assertEqual(sf.get_is_ok(ss), False)
+
+
 if __name__ == '__main__':
     IMP.test.main()

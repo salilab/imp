@@ -71,5 +71,7 @@ class Tests(IMP.test.TestCase):
             ) + cpss.get_number_of_partial_rebuilds(
             ),
             2)
+
+
 if __name__ == '__main__':
     IMP.test.main()

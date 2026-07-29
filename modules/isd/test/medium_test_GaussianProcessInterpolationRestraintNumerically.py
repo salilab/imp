@@ -603,5 +603,6 @@ class Tests(IMP.test.TestCase):
         cg.optimize(100)
         self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

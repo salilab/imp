@@ -31,5 +31,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sf.evaluate(False), len(apc.get_indexes()))
         self.assertEqual(sf.evaluate(False), len(apc.get_indexes()))
 
+
 if __name__ == '__main__':
     IMP.test.main()

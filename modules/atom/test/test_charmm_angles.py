@@ -59,5 +59,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(a.get_stiffness(), 0.0, delta=1e-6)
         self.assertEqual(a.get_multiplicity(), 0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

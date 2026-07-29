@@ -103,5 +103,6 @@ class Tests(IMP.test.TestCase):
         self.assertColorEqual(IMP.display.get_gnuplot_color(0.5),
                               0.675, 0.125, 0.3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

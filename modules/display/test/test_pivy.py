@@ -37,5 +37,7 @@ class Tests(IMP.test.TestCase):
         pw = IMP.display.PivyWriter()
         pw.add_geometry([g0, g1, g2, gx, gy, gz])
         pw.show()
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -74,5 +74,6 @@ class Tests(IMP.test.TestCase):
         t = ff.create_topology(h)
         self.assertEqual(self.get_num_res(t), [3, 2])
 
+
 if __name__ == '__main__':
     IMP.test.main()

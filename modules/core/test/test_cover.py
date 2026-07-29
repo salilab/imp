@@ -38,5 +38,6 @@ class Tests(IMP.test.TestCase):
             bb += IMP.algebra.BoundingBox3D(d.get_coordinates())
         self.assertTrue(bb.get_contains(cd.get_coordinates()))
 
+
 if __name__ == '__main__':
     IMP.test.main()

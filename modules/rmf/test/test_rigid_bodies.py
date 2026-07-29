@@ -227,5 +227,6 @@ class Tests(IMP.test.TestCase):
         for c, newc in zip(coords, new_coords):
             self.assertAlmostEqual((c - newc).get_magnitude(), 0, delta=.1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

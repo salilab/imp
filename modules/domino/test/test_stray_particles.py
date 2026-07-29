@@ -20,5 +20,7 @@ class Tests(IMP.test.TestCase):
         sampler.set_restraints([])
         sample = sampler.create_sample()
         self.assertEqual(sample.get_number_of_configurations(), 1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

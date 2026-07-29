@@ -20,5 +20,6 @@ class ComplexApplicationTest(IMP.test.ApplicationTestCase):
         self.assertTrue(lines[1].rstrip('\r\n').endswith(' /></marker_set>'))
         os.unlink('mini.cmm')
 
+
 if __name__ == '__main__':
     IMP.test.main()

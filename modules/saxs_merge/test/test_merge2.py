@@ -273,5 +273,6 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
                          set([(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (3, 1),
                               (1.1, 2), (2.1, 2), (3, 2), (4, 2)]))
 
+
 if __name__ == "__main__":
     IMP.test.main()

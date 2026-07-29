@@ -52,5 +52,6 @@ prot_lib = %s
         os.unlink('multifit.output.symm.ref')
         os.unlink('trimer.param')
 
+
 if __name__ == '__main__':
     IMP.test.main()

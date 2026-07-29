@@ -16,5 +16,6 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(atom0.get_x(), 10, delta=1)
             self.assertRaises(ValueError, IMP.atom.read_pdb, pdb, 21, h)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -15,5 +15,6 @@ class Tests(IMP.test.TestCase):
 
         self.assertGreater(wlc.evaluate_with_derivative(180)[1], 4.2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

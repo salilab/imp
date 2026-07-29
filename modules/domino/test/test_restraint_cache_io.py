@@ -71,5 +71,6 @@ class Tests(IMP.test.TestCase):
             cache0.get_number_of_entries(),
             cache1.get_number_of_entries())
 
+
 if __name__ == '__main__':
     IMP.test.main()

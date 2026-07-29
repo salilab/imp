@@ -56,5 +56,6 @@ class Tests(IMP.test.TestCase):
             num_deriv = IMP.test.numerical_derivative(func, dist, 0.01)
             self.assertAlmostEqual(deriv, num_deriv, delta=1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

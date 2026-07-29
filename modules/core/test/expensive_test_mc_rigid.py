@@ -78,5 +78,6 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.assertAlmostEqual(e, 0.0, places=2)
         print("all done")
 
+
 if __name__ == '__main__':
     IMP.test.main()

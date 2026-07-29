@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top,
-                        chains = (('foo', 'ACG', 'X'), ('baz', 'ACG', 'Y')))
+                        chains=(('foo', 'ACG', 'X'), ('baz', 'ACG', 'Y')))
         chain0 = top.get_child(0).get_child(0)
         self.assertTrue(IMP.atom.Chain.get_is_setup(chain0))
         IMP.atom.Chain(chain0).set_chain_type(IMP.atom.RNA)
@@ -139,7 +139,7 @@ class Tests(IMP.test.TestCase):
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         top.set_name("Top node")
         self.add_chains(m, top,
-                        chains = (('foo', 'ACGT', 'X'), ('baz', 'ACCT', 'X')))
+                        chains=(('foo', 'ACGT', 'X'), ('baz', 'ACCT', 'X')))
         c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual([x.id for x in c.system.asym_units],
@@ -151,8 +151,8 @@ class Tests(IMP.test.TestCase):
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         top.set_name("Top node")
         self.add_chains(m, top,
-                        chains = (('foo', 'ACGT', 'X'), ('foo', 'ACCT', 'Y'),
-                                  ('foo', 'ACGT', 'Z')))
+                        chains=(('foo', 'ACGT', 'X'), ('foo', 'ACCT', 'Y'),
+                                ('foo', 'ACGT', 'Z')))
         c = IMP.mmcif.Writer()
         c.add_model([top], [])
         self.assertEqual([x.id for x in c.system.asym_units],
@@ -410,7 +410,7 @@ class Tests(IMP.test.TestCase):
 
         top2 = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         self.add_chains(m, top2,
-                        chains = (('foo', 'ACGT', 'X'), ('bar', 'ACGT', 'Y')))
+                        chains=(('foo', 'ACGT', 'X'), ('bar', 'ACGT', 'Y')))
 
         c = IMP.mmcif.Writer()
         c.add_model([top1, top2], [])

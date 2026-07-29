@@ -70,5 +70,6 @@ class TestISDRestraint(IMP.test.TestCase):
         self.assertEqual(isdr.get_probability(),math.pi)
         self.assertEqual(isdr.unprotected_evaluate(None),-math.log(math.pi))
 
+
 if __name__ == '__main__':
     IMP.test.main()

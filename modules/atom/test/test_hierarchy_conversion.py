@@ -30,5 +30,6 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(nullh.get_is_valid())
         self.assertFalse(nullh)
 
+
 if __name__ == '__main__':
     IMP.test.main()

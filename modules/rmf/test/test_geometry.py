@@ -81,5 +81,6 @@ class Tests(IMP.test.TestCase):
             gs[0].set_name("after")
             w.add_geometry(gs[0])
 
+
 if __name__ == '__main__':
     IMP.test.main()

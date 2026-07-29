@@ -11,5 +11,6 @@ class ExampleApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
 
+
 if __name__ == '__main__':
     IMP.test.main()

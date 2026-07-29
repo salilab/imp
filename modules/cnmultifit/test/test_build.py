@@ -31,5 +31,6 @@ class Tests(IMP.test.TestCase):
         finally:
             IMP.cnmultifit.do_all_fitting = old
 
+
 if __name__ == '__main__':
     IMP.test.main()

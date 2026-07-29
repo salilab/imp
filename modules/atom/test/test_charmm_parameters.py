@@ -318,5 +318,6 @@ class Tests(IMP.test.TestCase):
             # Make sure each new atom type has the correct element
             self.assertEqual(a.get_element(), t.get_element(element))
 
+
 if __name__ == '__main__':
     IMP.test.main()

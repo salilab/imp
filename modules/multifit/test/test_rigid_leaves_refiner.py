@@ -28,5 +28,6 @@ class Tests(IMP.test.TestCase):
         ps = r.get_inputs(m, [rb])
         self.assertEqual(len(ps), 801)
 
+
 if __name__ == '__main__':
     IMP.test.main()

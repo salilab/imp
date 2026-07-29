@@ -12,5 +12,6 @@ class Tests(IMP.test.TestCase):
             "not/exist")
         print("HO")
 
+
 if __name__ == '__main__':
     IMP.test.main()

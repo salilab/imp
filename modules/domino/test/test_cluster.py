@@ -45,5 +45,7 @@ class Tests(IMP.test.TestCase):
         print("Solutions are")
         for s in ssl:
             print(s)
+
+
 if __name__ == '__main__':
     IMP.test.main()

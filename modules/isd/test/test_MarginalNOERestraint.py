@@ -283,5 +283,6 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.get_probability(),
                                    exp(-self.noe.evaluate(False)), delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

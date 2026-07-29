@@ -17,5 +17,6 @@ class Tests(IMP.test.TestCase):
         m.remove_data(mk)
         self.assertFalse(m.get_has_data(mk))
 
+
 if __name__ == '__main__':
     IMP.test.main()

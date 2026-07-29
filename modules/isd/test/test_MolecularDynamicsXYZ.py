@@ -238,5 +238,6 @@ class Tests(IMP.test.TestCase):
         scaler.rescale_velocities()
         self._check_temperature(50.0, 0.1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

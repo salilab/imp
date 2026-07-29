@@ -114,5 +114,6 @@ class Tests(IMP.test.TestCase):
             # to assert that
             print(hist)
 
+
 if __name__ == '__main__':
     IMP.test.main()

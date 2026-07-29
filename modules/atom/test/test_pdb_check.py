@@ -16,5 +16,6 @@ class PDBCheckApplicationTest(IMP.test.ApplicationTestCase):
         if len(lines) > 1:
             self.assertEqual(lines[0].rstrip('\r\n'), 'Atom not found "H"')
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -45,5 +45,6 @@ class Tests(IMP.test.TestCase):
 
             self.assertEqual(len(con_comp), i + 1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

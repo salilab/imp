@@ -152,5 +152,6 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
                     tolerance=1e-2,
                     percentage=5.)
 
+
 if __name__ == '__main__':
     IMP.test.main()

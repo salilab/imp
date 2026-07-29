@@ -249,5 +249,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(kappa, expkappa, delta=1e-6)
         self.assertAlmostEqual(E, expE, delta=1e-6)
 
+
 if __name__ == '__main__':
     IMP.test.main()

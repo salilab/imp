@@ -138,5 +138,7 @@ class TestGaussian(IMP.test.TestCase):
         r0 = self.g0.get_reference_frame().get_transformation_to().get_rotation().get_quaternion()
         r1 = g1.get_reference_frame().get_transformation_to().get_rotation().get_quaternion()
         self.assertEqual(IMP.algebra.get_distance(r0,r1),0)
+
+
 if __name__ == '__main__':
     IMP.test.main()

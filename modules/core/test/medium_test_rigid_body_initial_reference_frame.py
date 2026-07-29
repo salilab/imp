@@ -119,5 +119,6 @@ class Tests(IMP.test.TestCase):
                 rbs = conf[j][-1]
                 self._test_conf_against_reference(rbs, rbs_ref)
 
+
 if __name__ == '__main__':
     IMP.test.main()

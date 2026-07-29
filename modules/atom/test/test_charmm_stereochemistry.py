@@ -103,5 +103,6 @@ class SelectionTests(IMP.test.TestCase):
         ps = r.get_inputs()
         self.assertEqual(len(ps), 75)
 
+
 if __name__ == '__main__':
     IMP.test.main()

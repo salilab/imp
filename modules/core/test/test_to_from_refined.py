@@ -59,5 +59,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p0.get_derivative(ks[0]), 5)
         self.assertEqual(p0.get_derivative(ks[1]), 10)
 
+
 if __name__ == '__main__':
     IMP.test.main()

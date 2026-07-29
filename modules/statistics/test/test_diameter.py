@@ -28,5 +28,6 @@ class Tests(IMP.test.TestCase):
                     d = (vs[a] - vs[b]).get_magnitude()
                     self.assertLess(d, 14)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -57,5 +57,6 @@ class Tests(IMP.test.TestCase):
                     0, 0, 0])
         self.assertAlmostEqual(r.evaluate(False), 100., delta=1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

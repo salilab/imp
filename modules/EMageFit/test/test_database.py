@@ -119,5 +119,6 @@ class Tests(IMP.test.TestCase):
         self.db.close()
         os.remove(self.fn)
 
+
 if __name__ == '__main__':
     IMP.test.main()

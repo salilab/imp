@@ -72,5 +72,7 @@ class Tests(IMP.test.TestCase):
         # mdl.update()
         # we acpect a rmsd of 0
         self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1, xyz2), 0., delta=.01)
+
+
 if __name__ == '__main__':
     IMP.test.main()

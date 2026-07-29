@@ -15,5 +15,6 @@ class Tests(IMP.test.TestCase):
             pass
         os.unlink(nm)
 
+
 if __name__ == '__main__':
     IMP.test.main()

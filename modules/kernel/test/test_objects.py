@@ -19,5 +19,6 @@ class Tests(IMP.test.TestCase):
             self.assertTrue(found,
                             '%s not found in live objects: %s' % (m, allobjs))
 
+
 if __name__ == '__main__':
     IMP.test.main()

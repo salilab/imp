@@ -33,5 +33,6 @@ class Tests(IMP.test.TestCase):
         m.update()
         self.check_cover(p, ps)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -109,5 +109,6 @@ class Tests(IMP.test.TestCase):
                          "Should not have a parent")
         self.assertEqual(84, len(desc))
 
+
 if __name__ == '__main__':
     IMP.test.main()

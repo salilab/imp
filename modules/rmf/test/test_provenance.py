@@ -119,5 +119,6 @@ class Tests(IMP.test.TestCase):
             h2 = IMP.rmf.create_hierarchies(f, m)
             self.check_provenance(h2[0])
 
+
 if __name__ == '__main__':
     IMP.test.main()

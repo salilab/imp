@@ -28,5 +28,7 @@ class Tests(IMP.test.TestCase):
         print("eval single")
         for rc in cdr:
             print(rc.evaluate(False))
+
+
 if __name__ == '__main__':
     IMP.test.main()

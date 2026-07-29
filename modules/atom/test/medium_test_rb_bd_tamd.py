@@ -162,5 +162,6 @@ class Tests(IMP.test.TestCase):
 #                break
 #        self.assertLess(energy, e_threshold)
 
+
 if __name__ == '__main__':
     IMP.test.main()

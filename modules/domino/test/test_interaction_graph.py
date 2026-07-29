@@ -96,5 +96,6 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
             # g.show()
 
+
 if __name__ == '__main__':
     IMP.test.main()

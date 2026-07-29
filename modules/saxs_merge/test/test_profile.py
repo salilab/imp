@@ -1020,5 +1020,6 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p.set_flag_interval("test", 0.01, 0.02, False)
         self.assertRaises(KeyError, p.get_mean, filter='blah', num=20)
 
+
 if __name__ == "__main__":
     IMP.test.main()

@@ -39,5 +39,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(dist, 53.32, delta=0.01)
         self.assertAlmostEqual(ang, 1.82, delta=0.01)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -13,5 +13,6 @@ class Tests(IMP.test.TestCase):
             IMP.domino.get_example_path("custom_filter.py"))
         self.assertEqual(vars['cs'].get_number_of_configurations(), 1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

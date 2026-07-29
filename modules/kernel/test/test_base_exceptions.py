@@ -24,5 +24,6 @@ class Tests(IMP.test.TestCase):
         self.assertSubclass(IMP.ValueException, ValueError)
         self.assertSubclass(IMP.TypeException, TypeError)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -54,5 +54,7 @@ class Tests(IMP.test.TestCase):
             self.assertLess((IMP.core.get_distance(ds[1], ds[2]) - 1) ** 2, .1)
 
         # test that they are the right distance
+
+
 if __name__ == '__main__':
     IMP.test.main()

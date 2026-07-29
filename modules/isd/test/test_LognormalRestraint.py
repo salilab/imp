@@ -726,5 +726,6 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                                    gr.evaluate(False), delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

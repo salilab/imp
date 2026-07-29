@@ -43,5 +43,7 @@ class Tests(IMP.test.TestCase):
         print("pairs are", ppi)
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

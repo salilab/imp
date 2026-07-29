@@ -40,5 +40,6 @@ class Tests(IMP.test.TestCase):
 
         self.assertIn(' CHARMM type= ', str(c))
 
+
 if __name__ == '__main__':
     IMP.test.main()

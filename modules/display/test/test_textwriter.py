@@ -59,5 +59,6 @@ class Tests(IMP.test.TestCase):
             self.get_tmp_file_name("test.%1%.dum"))
         print("done")
 
+
 if __name__ == '__main__':
     IMP.test.main()

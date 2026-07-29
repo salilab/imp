@@ -88,5 +88,6 @@ class Tests(IMP.test.TestCase):
                                    * exp(-(randno[0] - randno[2]) ** 2 / (2 * randno[3] ** 2)),
                                    delta=0.001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

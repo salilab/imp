@@ -42,5 +42,6 @@ class Tests(IMP.test.TestCase):
         r.show()
         self.assertNotEqual(r, IMP.atom.Hierarchy())
 
+
 if __name__ == '__main__':
     IMP.test.main()

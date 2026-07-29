@@ -53,5 +53,6 @@ class Test(IMP.test.TestCase):
         self.assertAlmostEqual(my_test_value_1, friend_test_value_0,
                                delta=0.0001)
 
+
 if __name__ == '__main__':
     IMP.test.main()

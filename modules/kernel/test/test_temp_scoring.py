@@ -40,5 +40,6 @@ class Tests(IMP.test.TestCase):
         del m
         dirchk.assert_number(0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -19,5 +19,6 @@ class Tests(IMP.test.TestCase):
         for g in [IMP.atom.Hierarchy(g) for g in got]:
             self.assertEqual(IMP.atom.Residue(g.get_parent()).get_index(), 10)
 
+
 if __name__ == '__main__':
     IMP.test.main()

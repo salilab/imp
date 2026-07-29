@@ -970,5 +970,6 @@ class Tests(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(PFunc, val, 1.)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

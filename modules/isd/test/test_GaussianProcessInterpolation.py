@@ -477,5 +477,6 @@ class Tests(IMP.test.TestCase):
         if skipnan > 10:  # less than 10%
             self.fail("too much NANs")
 
+
 if __name__ == '__main__':
     IMP.test.main()

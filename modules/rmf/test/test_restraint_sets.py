@@ -77,5 +77,6 @@ class Tests(IMP.test.TestCase):
             rb1 = rsnrs0.get_restraints()[0]
             self.assertEqual(rb0, rb1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

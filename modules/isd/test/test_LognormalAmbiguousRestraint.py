@@ -29,5 +29,6 @@ class Tests(IMP.test.TestCase):
                                lnar.evaluate(False), delta=1e-4)
         self.assertEqual(lnar.get_number_of_contributions(), 1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

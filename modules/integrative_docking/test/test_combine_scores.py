@@ -83,5 +83,6 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
         self.assertIn("Can't open file", err)
         self.assertNotEqual(p.returncode, 0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

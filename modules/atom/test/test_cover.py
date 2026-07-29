@@ -82,5 +82,6 @@ class Tests(IMP.test.TestCase):
         print("done")
         IMP.set_log_level(IMP.MEMORY)
 
+
 if __name__ == '__main__':
     IMP.test.main()

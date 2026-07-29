@@ -42,5 +42,6 @@ class Tests(IMP.test.TestCase):
         ps2 = IMP.core.TypedPairScore(typekey, False)
         self.assertRaises(ValueError, ps2.evaluate_index, m, (pa, pb), da)
 
+
 if __name__ == '__main__':
     IMP.test.main()

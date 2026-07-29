@@ -58,5 +58,6 @@ class Tests(IMP.test.TestCase):
             jax_score = s(jm)
             self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
 
+
 if __name__ == '__main__':
     IMP.test.main()

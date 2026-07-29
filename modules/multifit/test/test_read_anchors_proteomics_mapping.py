@@ -24,5 +24,6 @@ class Tests(IMP.test.TestCase):
                              os.path.join(input_dir, '1z5s_15_14_anchors.txt')))
         self.assertEqual(mapping.get_paths_for_protein("A"), [])
 
+
 if __name__ == '__main__':
     IMP.test.main()

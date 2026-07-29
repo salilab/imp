@@ -45,5 +45,6 @@ class Tests(IMP.test.TestCase):
         self.assertIn('origin_z = -30.0', contents)
         os.unlink('test.params')
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -71,5 +71,6 @@ class Tests(IMP.test.TestCase):
         imp_score = sf.evaluate(True)
         self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
+
 if __name__ == '__main__':
     IMP.test.main()

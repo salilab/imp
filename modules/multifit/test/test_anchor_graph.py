@@ -39,5 +39,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(probs[2], 0.92, 1)
         self.anchor_graph.show()
 
+
 if __name__ == '__main__':
     IMP.test.main()

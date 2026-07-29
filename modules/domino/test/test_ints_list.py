@@ -13,5 +13,6 @@ class Tests(IMP.test.TestCase):
         out = IMP.domino._get_ints_list(iin)
         self.assertEqual(iin, [list(x) for x in out])
 
+
 if __name__ == '__main__':
     IMP.test.main()

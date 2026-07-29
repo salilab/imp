@@ -14,5 +14,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.IntKey("2"), k2)
         self.assertNotEqual(k2, ak1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

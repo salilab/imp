@@ -30,5 +30,6 @@ class Tests(IMP.test.TestCase):
         os.unlink('segment_out.pdb')
         os.unlink('load_configuration.cmd')
 
+
 if __name__ == '__main__':
     IMP.test.main()

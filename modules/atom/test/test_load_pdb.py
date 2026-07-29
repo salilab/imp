@@ -24,5 +24,6 @@ class Tests(IMP.test.TestCase):
                                 ).get_quaternion()).get_magnitude(),
                                0, delta=.1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

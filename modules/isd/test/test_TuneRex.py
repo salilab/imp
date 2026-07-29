@@ -87,9 +87,3 @@ class Tests(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-        # tune_data={'rate':100000,'method':'cv','targetAR':0.4,'alpha':0.1,
-        #   'CvMethod':'constant'})
-        # for i in xrange(50000):
-        #    replica.replica_exchange()
-        #    replica.write_rex_stats()

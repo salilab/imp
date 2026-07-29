@@ -96,5 +96,6 @@ class Tests(IMP.test.TestCase):
         jt.show()
         self._check_jt_property(jt)
 
+
 if __name__ == '__main__':
     IMP.test.main()

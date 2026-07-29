@@ -379,5 +379,6 @@ class Tests(IMP.test.TestCase):
                             self.particles[jpart].get_nuisance_derivative(),
                             0.0)
 
+
 if __name__ == '__main__':
     IMP.test.main()

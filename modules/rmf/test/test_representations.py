@@ -113,5 +113,6 @@ class Tests(IMP.test.TestCase):
         fh = RMF.open_rmf_file_read_only(rmfname)
         IMP.rmf.link_hierarchies(fh, h2)
 
+
 if __name__ == '__main__':
     IMP.test.main()

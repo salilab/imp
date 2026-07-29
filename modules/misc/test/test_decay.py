@@ -28,5 +28,6 @@ class Tests(IMP.test.TestCase):
         # probabilistic
         self.assertAlmostEqual(nout, .53 * np, delta=100)
 
+
 if __name__ == '__main__':
     IMP.test.main()

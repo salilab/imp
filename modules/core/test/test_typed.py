@@ -18,5 +18,6 @@ class Tests(IMP.test.TestCase):
         t = IMP.core.Typed(p1)
         self.assertEqual(t.get_type(), pt)
 
+
 if __name__ == '__main__':
     IMP.test.main()

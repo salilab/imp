@@ -75,5 +75,6 @@ class Tests(IMP.test.TestCase):
             lscore = lscore + ss.evaluate_index(m, (p[0], p[1]), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

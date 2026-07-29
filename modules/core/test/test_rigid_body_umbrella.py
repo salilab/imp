@@ -90,5 +90,6 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         observed = asarray(self.rbu.get_x0())
         self.assertTrue(allclose(observed, x2))
 
+
 if __name__ == '__main__':
     IMP.test.main()

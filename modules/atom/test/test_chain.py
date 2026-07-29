@@ -61,5 +61,6 @@ class Tests(IMP.test.TestCase):
         t = c.get_chain_type()
         self.assertEqual(t,IMP.atom.Polyribonucleotide)
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -765,5 +765,6 @@ class Tests(IMP.test.TestCase):
             self.s.add_to_nuisance_derivative(
                 -self.s.get_nuisance_derivative(), self.DA)
 
+
 if __name__ == '__main__':
     IMP.test.main()

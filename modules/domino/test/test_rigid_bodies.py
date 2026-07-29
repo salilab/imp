@@ -164,5 +164,7 @@ class Tests(IMP.test.TestCase):
                                  0)
                 self.assertEqual(len(ig.get_in_neighbors(v)),
                                  0)
+
+
 if __name__ == '__main__':
     IMP.test.main()

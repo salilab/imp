@@ -157,5 +157,6 @@ class Tests(IMP.test.TestCase):
             r = IMP.core.Reference(rs2[1])
             self.assertEqual(r.get_reference_particle(), rs2[0])
 
+
 if __name__ == '__main__':
     IMP.test.main()

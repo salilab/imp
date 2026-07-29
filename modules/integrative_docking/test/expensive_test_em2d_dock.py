@@ -66,5 +66,6 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
         self.assertEqual(number_of_lines, 13)
         os.unlink('em2d_score.res')
 
+
 if __name__ == '__main__':
     IMP.test.main()

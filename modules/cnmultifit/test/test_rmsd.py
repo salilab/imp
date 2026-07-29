@@ -54,5 +54,6 @@ class Tests(IMP.test.TestCase):
         os.unlink('rmsd.output')
         os.unlink('multifit.param')
 
+
 if __name__ == '__main__':
     IMP.test.main()

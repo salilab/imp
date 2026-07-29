@@ -57,5 +57,6 @@ for n, line in enumerate(open(trans_in)):
                 wc = len(fh.readlines())
             self.assertEqual(wc, 6) # account for 3 header lines
 
+
 if __name__ == '__main__':
     IMP.test.main()

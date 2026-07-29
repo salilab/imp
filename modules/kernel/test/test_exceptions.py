@@ -27,5 +27,6 @@ class Tests(IMP.test.TestCase):
         # check that they are hoisted to IMP
         IMP.IOException
 
+
 if __name__ == '__main__':
     IMP.test.main()

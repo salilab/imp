@@ -43,5 +43,6 @@ class Tests(IMP.test.TestCase):
                 d = IMP.core.XYZR(h)
                 self.assertEqual(d.get_x(), i)
 
+
 if __name__ == '__main__':
     IMP.test.main()

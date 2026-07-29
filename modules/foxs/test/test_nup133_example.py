@@ -37,5 +37,6 @@ class Tests(IMP.test.ApplicationTestCase):
             for e in expected:
                 os.unlink(e)
 
+
 if __name__ == '__main__':
     IMP.test.main()

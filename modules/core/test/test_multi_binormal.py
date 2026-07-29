@@ -27,5 +27,6 @@ class Tests(IMP.test.TestCase):
         for deriv in (False, True):
             self.assertAlmostEqual(r.evaluate(deriv), 1.40246, delta=1e-4)
 
+
 if __name__ == '__main__':
     IMP.test.main()

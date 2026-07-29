@@ -27,5 +27,6 @@ class TestEMRestraint(IMP.test.TestCase):
                                                         pair[0], pair[1]))
         print(rs.evaluate(False))
 
+
 if __name__ == '__main__':
     IMP.test.main()

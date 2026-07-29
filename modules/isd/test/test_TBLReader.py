@@ -64,5 +64,6 @@ class Tests(IMP.test.TestCase):
         if self.tmpfile:
             os.remove(self.tmpfile)
 
+
 if __name__ == '__main__':
     IMP.test.main()

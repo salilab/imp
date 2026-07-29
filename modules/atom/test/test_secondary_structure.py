@@ -118,5 +118,6 @@ class Tests(IMP.test.TestCase):
             delta=1e-6)
         self.assertAlmostEqual(ssres[1].get_prob_strand(), 0.0, delta=1e-6)
 
+
 if __name__ == '__main__':
     IMP.test.main()

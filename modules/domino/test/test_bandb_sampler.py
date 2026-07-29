@@ -55,5 +55,6 @@ class Tests(IMP.test.TestCase):
             self.assertNotIn(s, all_states)
             all_states.append(s)
 
+
 if __name__ == '__main__':
     IMP.test.main()

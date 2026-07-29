@@ -39,6 +39,7 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
         os.remove(fn_database)
         os.remove(fn_pdb)
 
+
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout)
     logging.root.setLevel(logging.DEBUG)

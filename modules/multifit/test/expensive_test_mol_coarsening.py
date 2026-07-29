@@ -25,5 +25,6 @@ class Tests(IMP.test.TestCase):
             dmap, 0.2, num_beads, self.mdl, 5)
         self.assertEqual(len(IMP.core.get_leaves(cmh)), num_beads)
 
+
 if __name__ == '__main__':
     IMP.test.main()

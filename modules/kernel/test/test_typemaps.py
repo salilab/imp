@@ -320,5 +320,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(missing), 0,
                          "The following methods are not found in decorators: " + str(missing))
 
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -109,5 +109,6 @@ class Tests(IMP.test.TestCase):
                 est = si
             self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
 
+
 if __name__ == '__main__':
     IMP.test.main()

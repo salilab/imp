@@ -140,5 +140,7 @@ class Tests(IMP.test.TestCase):
             if pr.evaluate(False) <= max_score:
                 ok_combs = ok_combs + 1
         self.assertEqual(cs.get_number_of_configurations(), ok_combs)
+
+
 if __name__ == '__main__':
     IMP.test.main()

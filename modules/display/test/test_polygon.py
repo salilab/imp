@@ -48,5 +48,6 @@ class Tests(IMP.test.TestCase):
         pg.set_name("reversed")
         w.add_geometry(pg)
 
+
 if __name__ == '__main__':
     IMP.test.main()

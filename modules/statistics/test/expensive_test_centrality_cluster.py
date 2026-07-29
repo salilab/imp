@@ -28,5 +28,7 @@ class Tests(IMP.test.TestCase):
             for j in cl:
                 cm = j % 2
                 self.assertEqual(cm, mod)
+
+
 if __name__ == '__main__':
     IMP.test.main()

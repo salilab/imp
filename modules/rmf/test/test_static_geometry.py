@@ -51,5 +51,6 @@ class Tests(IMP.test.TestCase):
                 cg = g.get_components()
                 self.assertEqual(len(cg), 1)
 
+
 if __name__ == '__main__':
     IMP.test.main()

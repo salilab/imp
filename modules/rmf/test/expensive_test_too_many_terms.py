@@ -32,5 +32,7 @@ class Tests(IMP.test.TestCase):
             print(num_nodes)
             self.assertEqual(num_nodes,
                              len(m.get_particle_indexes()) + 1 + 1)
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -194,5 +194,6 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         for out in ('jmoltable.cif', 'jmoltable.html', 'canvas.plt'):
             os.unlink(out)
 
+
 if __name__ == '__main__':
     IMP.test.main()
