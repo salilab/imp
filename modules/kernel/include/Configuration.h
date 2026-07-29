@@ -72,7 +72,7 @@ class IMPKERNELEXPORT Configuration : public IMP::Object {
 
   void load_configuration() const;
   //! Swap the current configuration with that in the Model
-  /** This should be faster than loading (or at least not slower.
+  /** This should be faster than loading (or at least not slower).
    */
   void swap_configuration();
   IMP_OBJECT_METHODS(Configuration);
