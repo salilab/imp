@@ -8,7 +8,7 @@ try:
     import sympy
     from sympy.physics.units import *
     use_sympy = True
-except:
+except ImportError:
     use_sympy = False
 
 NREPS = 10000

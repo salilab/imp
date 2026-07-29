@@ -195,11 +195,8 @@ class Tests(IMP.test.TestCase):
         rbp0.set_name("rb0")
         rbp1 = IMP.Particle(m)
         rbp1.set_name("rb1")
-        try:
-            before = IMP.Object.get_number_of_live_objects()
-            names_before = IMP.Object.get_live_object_names()
-        except:
-            pass
+        before = IMP.Object.get_number_of_live_objects()
+        names_before = IMP.get_live_object_names()
         rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1 = IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         IMP.core.RigidBody.teardown_particle(rb1)
@@ -219,17 +216,14 @@ class Tests(IMP.test.TestCase):
         IMP.core.RigidBody.teardown_particle(rb1)
         failure = False
         # check cleanup
-        try:
-            after = IMP.Object.get_number_of_live_objects()
-            names_after = IMP.Object.get_live_object_names()
-            for n in names_after:
-                if n not in names_before:
-                    print("found new object", n)
-            print(before, after, names_before, names_after)
-            if before != after or len(names_before) != len(names_after):
-                failure = True
-        except:
-            pass
+        after = IMP.Object.get_number_of_live_objects()
+        names_after = IMP.get_live_object_names()
+        for n in names_after:
+            if n not in names_before:
+                print("found new object", n)
+        print(before, after, names_before, names_after)
+        if before != after or len(names_before) != len(names_after):
+            failure = True
         self.assertTrue(not failure)
 
     def test_update_rigid_body_members(self):
