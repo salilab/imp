@@ -1,6 +1,5 @@
 # general imports
-from numpy import *
-
+from numpy import exp, log, pi
 
 # imp general
 import IMP
