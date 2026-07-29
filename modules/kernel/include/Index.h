@@ -184,8 +184,8 @@ void resize_to_fit(Container &v, Index<Tag> i, const T &default_value = T()) {
 IMPKERNEL_END_NAMESPACE
 
 namespace cereal {
-  template <class Archive, class Tag, class T>
-  struct specialize<Archive, IMP::IndexVector<Tag, T>,
+  template <class Archive, class Tag, class T, class Allocator, class Equal>
+  struct specialize<Archive, IMP::IndexVector<Tag, T, Allocator, Equal>,
                     cereal::specialization::member_load_save> {};
 }
 
