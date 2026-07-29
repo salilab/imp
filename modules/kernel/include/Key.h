@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Key.h    \brief Keys to cache lookup of attribute strings.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -62,14 +62,23 @@ class Key : public Value {
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    // Serialize Keys by string, not the internal index, which could change
+    // Serialize Keys by string, not the internal index, which could change.
+    // An empty string corresponds to a default-initialized Key (it is not
+    // allowed to create a real Key with an empty name).
     if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
-      std::string name = get_string();
+      std::string name;
+      if (!is_default()) {
+        name = get_string();
+      }
       ar(name);
     } else {
       std::string name;
       ar(name);
-      str_ = find_or_add_index(name);
+      if (name.empty()) {
+        str_ = -1;
+      } else {
+        str_ = find_or_add_index(name);
+      }
     }
   }
 

@@ -60,8 +60,8 @@ class Tests(IMP.test.TestCase):
         imp_coord = IMP.core.XYZ(p).get_coordinates()
         self.assertLess(IMP.algebra.get_distance(jax_coord, imp_coord), 0.01)
 
-    def test_pickle(self):
-        """Test (un-)pickle of CentroidOfRefined"""
+    def test_pickle_custom_weight(self):
+        """Test (un-)pickle of CentroidOfRefined with custom weight key"""
         m = IMP.Model()
         ps = IMP.core.create_xyzr_particles(m, 10, 1)
         fpr = IMP.core.FixedRefiner(ps)
@@ -70,6 +70,18 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(cr)
         newcr = pickle.loads(dump)
         self.assertEqual(newcr.get_weight(), wtkey)
+        self.assertEqual(newcr.get_name(), "foo")
+
+    def test_pickle_default_weight(self):
+        """Test (un-)pickle of CentroidOfRefined with default weight key"""
+        m = IMP.Model()
+        ps = IMP.core.create_xyzr_particles(m, 10, 1)
+        fpr = IMP.core.FixedRefiner(ps)
+        cr = IMP.core.CentroidOfRefined(fpr)
+        cr.set_name("foo")
+        dump = pickle.dumps(cr)
+        newcr = pickle.loads(dump)
+        self.assertEqual(newcr.get_weight(), IMP.FloatKey())
         self.assertEqual(newcr.get_name(), "foo")
 
     def test_pickle_polymorphic(self):
