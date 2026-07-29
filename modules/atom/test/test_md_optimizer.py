@@ -135,6 +135,34 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(newmd.get_degrees_of_freedom(), 3)
         self.assertEqual(newmd.get_name(), "foo")
 
+    def test_restart(self):
+        """Test restart of MolecularDynamics"""
+        def run_100(md):
+            md.assign_velocities(300.0)
+            return md.optimize(100)
+
+        self.make_model()
+        s = IMP.core.DistanceToSingletonScore(
+            IMP.core.Harmonic(1.0, 10.0), IMP.algebra.Vector3D(0,0,0))
+        r = IMP.core.SingletonRestraint(self.model, s, self.particles[0])
+        sf = IMP.core.RestraintsScoringFunction([r])
+        self.md.set_scoring_function(sf)
+        score1 = run_100(self.md)
+
+        # Save state of MD and random number generator
+        rstate = IMP.random_number_generator.get_state()
+        dump = pickle.dumps((self.model, self.md, rstate))
+
+        score2 = run_100(self.md)
+
+        # Restore state of MD and random number generator
+        newm, newmd, newrstate = pickle.loads(dump)
+        IMP.random_number_generator.set_state(rstate)
+        score3 = run_100(newmd)
+
+        self.assertGreater(abs(score1 - score2), 10.0)
+        self.assertAlmostEqual(score2, score3, delta=1e-4)
+
     def test_get_scoring_function_core_restraints_sf(self):
         """Test get_scoring_function() using core.RestraintsScoringFunction"""
         self.make_model()
