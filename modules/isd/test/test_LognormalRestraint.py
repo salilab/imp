@@ -1,5 +1,5 @@
 # general imports
-from numpy import log, exp, pi
+from numpy import log, exp, pi, random, sqrt
 
 # imp general
 import IMP
