@@ -1,7 +1,7 @@
 /**
  *  \file IMP/random.h    \brief Random number generators used by IMP.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,8 @@
 #include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
 #include <random>
+#include <sstream>
+#include <cereal/access.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -20,6 +22,24 @@ class RandomNumberGenerator : public std::mt19937 {
   typedef std::mt19937 T;
   T::result_type last_seed_;
   unsigned seed_counter_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(last_seed_, seed_counter_);
+
+    // Serialize the generator itself. The only supported way to get/set the
+    // internal state is via the << and >> operators (as text)
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      std::string rstate;
+      ar(rstate);
+      std::istringstream iss(rstate);
+      iss >> *this;
+    } else {
+      std::ostringstream oss;
+      oss << *this;
+      ar(oss.str());
+    }
+  }
 
 public:
   RandomNumberGenerator()

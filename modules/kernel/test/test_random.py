@@ -69,6 +69,18 @@ class Tests(IMP.test.TestCase):
               np.mean(npR), np.median(npR), np.min(npR), np.max(npR),
               np.std(npR))
 
+    def test_serialize(self):
+        """Test (un)serialization of random number generator"""
+        rstate = IMP.random_number_generator.get_state()
+        rseq1 = [IMP.random_number_generator() for _ in range(10)]
+        rseq2 = [IMP.random_number_generator() for _ in range(10)]
+
+        # Restore state; rseq3 should now equal rseq1
+        IMP.random_number_generator.set_state(rstate)
+        rseq3 = [IMP.random_number_generator() for _ in range(10)]
+        self.assertNotEqual(rseq1, rseq2)
+        self.assertEqual(rseq1, rseq3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

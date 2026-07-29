@@ -12,6 +12,35 @@ namespace IMP {
   const RandomNumberGenerator random_number_generator;
 };
 
+%extend IMP::RandomNumberGenerator {
+  //! Get the current state as a binary blob (for serialization)
+  PyObject *get_state() const {
+    std::ostringstream oss;
+    cereal::BinaryOutputArchive ba(oss);
+    ba(*self);
+    std::string s = oss.str();
+    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
+    if (p) {
+      return p;
+    } else {
+      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
+    }
+  }
+
+  //! Set the current state from a binary blob (for unserialization)
+  void set_state(PyObject *p) {
+    char *buf;
+    Py_ssize_t len;
+    if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
+      throw IMP::IndexException("PyBytes_AsStringAndSize failed");
+    }
+    std::string s(buf, len);
+    std::istringstream iss(s);
+    cereal::BinaryInputArchive ba(iss);
+    ba(*self);
+  }
+}
+
 %include "IMP/random_utils.h"
 %inline %{
   // Provide non-templated versions for Python, and return vectors (rather
