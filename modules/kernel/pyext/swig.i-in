@@ -359,7 +359,7 @@ IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
 IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP, RestraintInfo, RestraintInfos);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
-IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
+IMP_SWIG_OBJECT_SERIALIZE(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT_SERIALIZE(IMP,Model, Models);
 IMP_SWIG_OBJECT_SERIALIZE(IMP,Particle, Particles);
 

@@ -152,4 +152,18 @@ void Configuration::swap_configuration() {
   IMP_CONFIG_FOREACH(IMP_CONFIG_SWAP);
 }
 
+uint32_t Configuration::get_model_id() const {
+  return model_->get_unique_id();
+}
+
+void Configuration::set_model_from_id(uint32_t model_id) {
+  Model *m = Model::get_by_unique_id(model_id);
+  if (!m) {
+    IMP_THROW("Cannot unserialize Configuration as it refers to a "
+              "Model that does not exist", ValueException);
+  } else {
+    model_ = m;
+  }
+}
+
 IMPKERNEL_END_NAMESPACE

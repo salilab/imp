@@ -13,6 +13,8 @@
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include "Model.h"
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -39,6 +41,25 @@ class IMPKERNELEXPORT Configuration : public IMP::Object {
   internal::Vector3DDerivAttributeTable vector3d_derivs_;
   internal::Vector4DDerivAttributeTable vector4d_derivs_;
 
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<Object>(this));
+    if (std::is_base_of<cereal::detail::OutputArchiveBase, Archive>::value) {
+      uint32_t model_id = get_model_id();
+      ar(model_id);
+    } else {
+      uint32_t model_id;
+      ar(model_id);
+      set_model_from_id(model_id);
+    }
+    ar(base_, floats_, float_lists_, strings_, ints_, objects_, weak_objects_,
+       int_lists_, object_lists_, particles_, particle_lists_, vector3ds_,
+       vector4ds_, sparse_strings_, sparse_ints_, sparse_floats_,
+       sparse_particles_, vector3d_derivs_, vector4d_derivs_);
+  }
+  void set_model_from_id(uint32_t model_id);
+  uint32_t get_model_id() const;
+
  public:
   Configuration(Model *m, std::string name = "Configuration %1%");
   //! Only store parts of the configuration that have changed from base
@@ -46,6 +67,9 @@ class IMPKERNELEXPORT Configuration : public IMP::Object {
       attributes.*/
   Configuration(Model *m, Configuration *base,
                 std::string name = "Configuration %1%");
+
+  Configuration() : Object("") {}
+
   void load_configuration() const;
   //! Swap the current configuration with that in the Model
   /** This should be faster than loading (or at least not slower.
