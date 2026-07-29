@@ -249,6 +249,29 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(newmc.get_maximum_difference(),
                                10.0, delta=1e-4)
 
+    def test_restart(self):
+        """Test restart of MonteCarlo"""
+        bb = IMP.algebra.get_unit_bounding_box_3d()
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(30)]
+        m, mc = setup_system(coords, False)
+        mc.set_kt(1.)
+
+        score1 = mc.optimize(100)
+
+        # Save state of MC and random number generator
+        rstate = IMP.random_number_generator.get_state()
+        dump = pickle.dumps((m, mc, rstate))
+
+        score2 = mc.optimize(100)
+
+        # Restore state of MC and random number generator
+        newm, newmc, newrstate = pickle.loads(dump)
+        IMP.random_number_generator.set_state(rstate)
+        score3 = newmc.optimize(100)
+
+        self.assertGreater(abs(score1 - score2), 0.5)
+        self.assertAlmostEqual(score2, score3, delta=1e-4)
+
     def test_pair_container_moved_same_trajectory(self):
         """MonteCarlo trajectory should not be changed by set_score_moved()
            when using ListPairContainer"""
