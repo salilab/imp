@@ -58,7 +58,7 @@ IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, Linear, Linears);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, LogNormalMover, LogNormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
-IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, MonteCarlo, MonteCarlos);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithLocalOptimization, MonteCarloWithLocalOptimizations);
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithBasinHopping, MonteCarloWithBasinHoppings);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);

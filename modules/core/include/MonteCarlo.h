@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/MonteCarlo.h    \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,8 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 #include <boost/random/uniform_real_distribution.hpp>
 
@@ -44,6 +46,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MonteCarlo : public Optimizer {
  public:
   MonteCarlo(Model *m);
+
+  MonteCarlo() : rand_(0, 1) {}
 
  protected:
   ParticleIndexes reset_pis_;
@@ -226,6 +230,16 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   double min_score_;
   IMP::PointerMember<Configuration> best_;
   ::boost::random::uniform_real_distribution<> rand_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    // don't serialize rand_ as it is constant (0, 1)
+    ar(cereal::base_class<Optimizer>(this), temp_, last_energy_, best_energy_,
+       max_difference_, stat_downward_steps_taken_, stat_upward_steps_taken_,
+       stat_num_failures_, return_best_, score_moved_, min_score_, best_,
+       mutable_access_movers());
+  }
+  IMP_OBJECT_SERIALIZE_DECL(MonteCarlo);
 };
 
 //! This variant of Monte Carlo that relaxes after each move

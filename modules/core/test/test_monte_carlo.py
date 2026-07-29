@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.container
+import pickle
 try:
     import jax
     import jax.random
@@ -221,6 +222,32 @@ class Tests(IMP.test.TestCase):
         mc2_score = mc2.optimize(100)
 
         self.assertAlmostEqual(mc1_score, mc2_score, delta=1e-2)
+
+    def test_pickle(self):
+        """Test (un-)pickle of MonteCarlo"""
+        bb = IMP.algebra.get_unit_bounding_box_3d()
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
+        m, mc = setup_system(coords, False)
+        mc.set_name("foo")
+        mc.set_kt(1.)
+        mc.set_last_accepted_energy(42.0)
+        mc.set_number_of_downward_steps(19)
+        mc.set_number_of_upward_steps(22)
+        mc.set_number_of_rejected_steps(33)
+        mc.set_score_threshold(20.0)
+        mc.set_maximum_difference(10.0)
+        dump = pickle.dumps(mc)
+        newmc = pickle.loads(dump)
+        self.assertEqual(newmc.get_name(), "foo")
+        self.assertAlmostEqual(newmc.get_kt(), 1., delta=1e-4)
+        self.assertAlmostEqual(newmc.get_last_accepted_energy(), 42.0,
+                               delta=1e-4)
+        self.assertEqual(newmc.get_number_of_downward_steps(), 19)
+        self.assertEqual(newmc.get_number_of_upward_steps(), 22)
+        self.assertEqual(newmc.get_number_of_proposed_steps(), 19 + 22 + 33)
+        self.assertAlmostEqual(newmc.get_score_threshold(), 20.0, delta=1e-4)
+        self.assertAlmostEqual(newmc.get_maximum_difference(),
+                               10.0, delta=1e-4)
 
     def test_pair_container_moved_same_trajectory(self):
         """MonteCarlo trajectory should not be changed by set_score_moved()

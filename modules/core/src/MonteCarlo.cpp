@@ -238,4 +238,6 @@ void MonteCarloWithBasinHopping::do_step() {
   cleanup.reset();
 }
 
+IMP_OBJECT_SERIALIZE_IMPL(IMP::core::MonteCarlo);
+
 IMPCORE_END_NAMESPACE
