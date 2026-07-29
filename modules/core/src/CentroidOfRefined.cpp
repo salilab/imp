@@ -2,7 +2,7 @@
  *  \file CentroidOfRefined.cpp
  *  \brief CentroidOf a the refined particles with a sphere.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/core/CentroidOfRefined.h"
@@ -38,12 +38,12 @@ void CentroidOfRefined::apply_index(Model *m,
   double tw = 0;
   if (w_ != FloatKey()) {
     IMP_USAGE_CHECK( m->get_has_attribute(w_, pi),
-                     "Centroid particle lacks non-trivial weight key" << w_ );
+                     "Centroid particle lacks non-trivial weight key " << w_ );
     for (unsigned int i = 0; i < n; ++i) {
       ParticleIndex cur_pi = pis[i];
       IMP_USAGE_CHECK( m->get_has_attribute(w_, cur_pi),
                        "CentroidOfRefined - Fine particle #" << i
-                       << " lacks non-trivial weight key" << w_);
+                       << " lacks non-trivial weight key " << w_);
       tw += m->get_attribute(w_, cur_pi);
     }
     m->set_attribute(w_, pi, tw);
