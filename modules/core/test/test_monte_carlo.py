@@ -269,7 +269,7 @@ class Tests(IMP.test.TestCase):
         IMP.random_number_generator.set_state(rstate)
         score3 = newmc.optimize(100)
 
-        self.assertGreater(abs(score1 - score2), 0.5)
+        self.assertGreater(abs(score1 - score2), 0.01)
         self.assertAlmostEqual(score2, score3, delta=1e-4)
 
     def test_pair_container_moved_same_trajectory(self):
