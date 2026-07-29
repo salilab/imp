@@ -31,14 +31,14 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -156,14 +156,14 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -261,14 +261,14 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -367,14 +367,14 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -473,14 +473,14 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -570,14 +570,14 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
@@ -658,14 +658,14 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except:
+        except TypeError:
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except:
+        except TypeError:
             return
         n.set_nuisance(random.uniform(min, max))
 
