@@ -2,7 +2,7 @@
  *  \file IMP/Configuration.h
  *  \brief Store a set of configurations of the model.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,6 +30,14 @@ class IMPKERNELEXPORT Configuration : public IMP::Object {
   internal::ObjectsAttributeTable object_lists_;
   internal::ParticleAttributeTable particles_;
   internal::ParticlesAttributeTable particle_lists_;
+  internal::Vector3DAttributeTable vector3ds_;
+  internal::Vector4DAttributeTable vector4ds_;
+  internal::SparseStringAttributeTable sparse_strings_;
+  internal::SparseIntAttributeTable sparse_ints_;
+  internal::SparseFloatAttributeTable sparse_floats_;
+  internal::SparseParticleAttributeTable sparse_particles_;
+  internal::Vector3DDerivAttributeTable vector3d_derivs_;
+  internal::Vector4DDerivAttributeTable vector4d_derivs_;
 
  public:
   Configuration(Model *m, std::string name = "Configuration %1%");

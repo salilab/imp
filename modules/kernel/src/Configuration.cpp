@@ -3,7 +3,7 @@
  *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,26 +13,40 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-#define IMP_CONFIG_FOREACH(OPERATION)  \
-  OPERATION(floats, Float);            \
-  OPERATION(float_lists, Floats);      \
-  OPERATION(strings, String);          \
-  OPERATION(ints, Int);                \
-  OPERATION(objects, Object);          \
-  OPERATION(weak_objects, WeakObject); \
-  OPERATION(int_lists, Ints);          \
-  OPERATION(object_lists, Objects);    \
-  OPERATION(particles, Particle);      \
-  OPERATION(particle_lists, Particles)
+#define IMP_CONFIG_FOREACH(OPERATION)                                          \
+  OPERATION(floats, Float, Float, are_equal);                                  \
+  OPERATION(float_lists, Floats, Floats, are_equal);                           \
+  OPERATION(strings, String, String, are_equal);                               \
+  OPERATION(ints, Int, Int, are_equal);                                        \
+  OPERATION(objects, Object, Object, are_equal);                               \
+  OPERATION(weak_objects, WeakObject, WeakObject, are_equal);                  \
+  OPERATION(int_lists, Ints, Ints, are_equal);                                 \
+  OPERATION(object_lists, Objects, Objects, are_equal);                        \
+  OPERATION(particles, Particle, Particle, are_equal);                         \
+  OPERATION(particle_lists, Particles, Particles, are_equal);                  \
+  OPERATION(vector3ds, Vector3D, Vector3D, vector_equal);                      \
+  OPERATION(vector4ds, Vector4D, Vector4D, vector_equal);                      \
+  OPERATION(sparse_strings, SparseString, SparseString, are_equal);            \
+  OPERATION(sparse_ints, SparseInt, SparseInt, are_equal);                     \
+  OPERATION(sparse_floats, SparseFloat, SparseFloat, are_equal);               \
+  OPERATION(sparse_particles, SparseParticleIndex, SparseParticle, are_equal); \
+  OPERATION(vector3d_derivs, Vector3DDeriv, Vector3DDeriv, vector_equal);      \
+  OPERATION(vector4d_derivs, Vector4DDeriv, Vector4DDeriv, vector_equal)
 
 Configuration::Configuration(Model *m, std::string name)
     : Object(name), model_(m) {
-#define IMP_CONFIG_COPY(name, Name) name##_ = *m;
+#define IMP_CONFIG_COPY(name, Name, TablePre, Equal) name##_ = *m;
 
   IMP_CONFIG_FOREACH(IMP_CONFIG_COPY);
 }
 
 namespace {
+// use exact equality for VectorD
+template <class T>
+bool vector_equal(const T&a, const T&b) {
+  return std::equal(a.begin(), a.end(), b.begin());
+}
+
 template <class T>
 bool are_equal(const T &a, const T &b) {
   return a == b;
@@ -50,10 +64,10 @@ bool are_not_equal(const Vector<T> &a, const Vector<T> &b) {
 }
 }
 
-#define IMP_CONFIG_CHECK_COPY(name, Name)                                      \
+#define IMP_CONFIG_CHECK_COPY(name, Name, TablePre, Equal)                    \
   {                                                                            \
-    const internal::Name##AttributeTable &mtable =                             \
-        static_cast<internal::Name##AttributeTable &>(*model_);                \
+    const internal::TablePre##AttributeTable &mtable =                        \
+        static_cast<internal::TablePre##AttributeTable &>(*model_);           \
     for (unsigned int i = 0; i < mtable.size(); ++i) {                         \
       if (add_remove_found) break;                                             \
       for (unsigned int j = 0; j < mtable.size(i); ++j) {                      \
@@ -64,7 +78,7 @@ bool are_not_equal(const Vector<T> &a, const Vector<T> &b) {
           break;                                                               \
         }                                                                      \
         if (mtable.get_has_attribute(Name##Key(i), ParticleIndex(j)) &&        \
-            !are_equal(mtable.get_attribute(Name##Key(i), ParticleIndex(j)),   \
+            !Equal(mtable.get_attribute(Name##Key(i), ParticleIndex(j)),       \
                        base->name##_.get_attribute(Name##Key(i),               \
                                                    ParticleIndex(j)))) {       \
           name##_.add_attribute(                                               \
@@ -88,10 +102,10 @@ Configuration::Configuration(Model *m, Configuration *base,
   }
 }
 
-#define IMP_CONFIG_COPY_BACK_BASE(name, Name)                                 \
+#define IMP_CONFIG_COPY_BACK_BASE(name, Name, TablePre, Equal)                \
   {                                                                           \
-    internal::Name##AttributeTable &mtable =                                  \
-        static_cast<internal::Name##AttributeTable &>(*model_);               \
+    internal::TablePre##AttributeTable &mtable =                             \
+        static_cast<internal::TablePre##AttributeTable &>(*model_);          \
     for (unsigned int i = 0; i < mtable.size(); ++i) {                        \
       for (unsigned int j = 0; j < mtable.size(i); ++j) {                     \
         if (mtable.get_has_attribute(Name##Key(i), ParticleIndex(j))) {       \
@@ -109,8 +123,8 @@ Configuration::Configuration(Model *m, Configuration *base,
     }                                                                         \
   }
 
-#define IMP_CONFIG_COPY_BACK(name, Name) \
-  static_cast<internal::Name##AttributeTable &>(*model_) = ncthis->name##_
+#define IMP_CONFIG_COPY_BACK(name, Name, TablePre, Equal) \
+  static_cast<internal::TablePre##AttributeTable &>(*model_) = ncthis->name##_
 
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
@@ -126,8 +140,8 @@ void Configuration::load_configuration() const {
   }
 }
 
-#define IMP_CONFIG_SWAP(name, Name) \
-  swap(static_cast<internal::Name##AttributeTable &>(*model_), name##_)
+#define IMP_CONFIG_SWAP(name, Name, TablePre, Equal) \
+  swap(static_cast<internal::TablePre##AttributeTable &>(*model_), name##_)
 
 void Configuration::swap_configuration() {
   IMP_OBJECT_LOG;
