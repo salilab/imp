@@ -72,6 +72,11 @@ ModelKey get_rb_list_key() {
   return key;
 }
 
+ModelKey get_rb_norm_score_state_key() {
+  static ModelKey key("rigid body normalize score state");
+  return key;
+}
+
 }
 
 namespace {
@@ -182,6 +187,18 @@ void RigidBody::teardown_constraints(Particle *p) {
       IMP_INTERNAL_CHECK(_1 != p->get_index(), "Index was not removed");
     });
 #endif
+    // If this was the last rigid body, remove the ScoreState that normalizes
+    // rotation of all rigid bodies, and remove the rigid body list itself
+    if (list->end() - list->begin() == 0) {
+      Model *m = p->get_model();
+      ModelKey normk = get_rb_norm_score_state_key();
+      if (m->get_has_data(normk)) {
+        Object *o = m->get_data(normk);
+        m->remove_score_state(dynamic_cast<ScoreState *>(o));
+        m->remove_data(normk);
+        m->remove_data(mk);
+      }
+    }
   }
 }
 
@@ -226,6 +243,8 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
     IMP_NEW(internal::_RigidBodyNormalizeConstraint, c1,
             (nr, null, list, "normalize rigid bodies"));
     d.get_model()->add_score_state(c1);
+    ModelKey normk = get_rb_norm_score_state_key();
+    d.get_model()->add_data(normk, c1);
     d.get_model()->add_data(mk, list);
   }
 }
