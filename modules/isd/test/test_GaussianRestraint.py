@@ -30,21 +30,21 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -168,21 +168,21 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -281,21 +281,21 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -395,21 +395,21 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -509,21 +509,21 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -609,21 +609,21 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
@@ -708,21 +708,21 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
     def get_value(self, p):
         try:
             v = Nuisance(p).get_nuisance()
-        except TypeError:
+        except (TypeError, NotImplementedError):
             v = p
         return v
 
     def change_value(self, p, min=0.1, max=100):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(random.uniform(min, max))
 
     def change_sign(self, p):
         try:
             n = Nuisance(p)
-        except TypeError:
+        except (TypeError, NotImplementedError):
             return
         n.set_nuisance(n.get_nuisance() * (2 * random.randint(2) - 1))
 
