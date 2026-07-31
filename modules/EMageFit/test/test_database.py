@@ -1,11 +1,6 @@
 import IMP
 import IMP.test
-import IMP.core as core
-import IMP.atom as atom
-import IMP.em2d as em2d
-import sys
 import os
-from math import *
 import IMP.EMageFit.database as database
 
 
@@ -83,7 +78,7 @@ class Tests(IMP.test.TestCase):
         my_table = self.tables[0]
         name = "newcol"
         cols = self.db.get_table_column_names(my_table)
-        self.assertTrue(not name in cols)
+        self.assertTrue(name not in cols)
 
         self.db.add_column(my_table, name, float)
         cols = self.db.get_table_column_names(my_table)
@@ -91,7 +86,7 @@ class Tests(IMP.test.TestCase):
 
         self.db.drop_columns(my_table, [name])
         cols = self.db.get_table_column_names(my_table)
-        self.assertTrue(not name in cols)
+        self.assertTrue(name not in cols)
 
     def test_merging(self):
         """ of merging databases """

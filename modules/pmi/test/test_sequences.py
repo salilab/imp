@@ -3,6 +3,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import os
 
+
 class Tests(IMP.test.TestCase):
 
     def test_sequences(self):

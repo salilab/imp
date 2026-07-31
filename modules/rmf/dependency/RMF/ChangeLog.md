@@ -1,6 +1,10 @@
 Change Log {#changelog}
 ==========
 
+# 1.7.1 - 2026-04-29 # {#changelog_1_7_1}
+- Fix build with Boost 1.89 or later.
+- Minor build and documentation fixes.
+
 # 1.7.0 - 2024-12-04 # {#changelog_1_7_0}
 - Python 2 is no longer supported; the minimum supported Python version is 3.6.
 - CMake 2 is no longer supported; the minimum supported CMake version is 3.14.

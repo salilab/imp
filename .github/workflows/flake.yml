@@ -13,12 +13,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
     - name: Test
       run: |
         pip install flake8
         flake8 . --extend-exclude '*/test/*,*/examples/*,*/data/*,*/utility/*,*/dependency/*,dependencies.py,setup_git.py,*/pmi1/*,*/dev_tools/*,*/benchmark/*,*/scripts/*,*/broken-examples/*,components/*'
+        flake8 modules/*/test --ignore=F841,E501,E265,E305,E231,E225,E226,E116,E128,W503,W504,E126,E402,E127,E741,F403,F405,E261,E251,E722 --extend-exclude '*/bff/*,*/sampcon/*,*/pmi1/*,*/pmi/*,*/npctransport/*,*/bayesianem/*'

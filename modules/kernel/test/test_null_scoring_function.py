@@ -1,5 +1,4 @@
 import IMP.test
-import os
 
 
 class Tests(IMP.test.TestCase):

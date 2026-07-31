@@ -350,9 +350,10 @@ class IDock:
                       for x in self._all_experimental_scorers]
         data_types = ", ".join(data_types[:-1]) + " and/or " + data_types[-1]
         epilog = """Note that in order to run this application, you must also
-have PatchDock (available from http://bioinfo3d.cs.tau.ac.il/PatchDock/)
-installed. See the --patch_dock parameter to tell idock
-where the PatchDock program is installed."""
+have PatchDock (available from
+https://bio3d.cs.huji.ac.il/webserver/patchdock/) installed. See the
+--patch_dock parameter to tell idock where the PatchDock
+program is installed."""
         p = IMP.ArgumentParser(description="Integrative pairwise docking "
                                            "using %s data" % data_types,
                                epilog=epilog)

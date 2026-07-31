@@ -4,6 +4,7 @@ import IMP.algebra
 import IMP.core
 import IMP.npc
 
+
 class Tests(IMP.test.TestCase):
 
     def evaluate_config(self, m, particles):

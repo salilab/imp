@@ -49,6 +49,12 @@ class HarmonicWell : public UnaryFunction {
     IMP_USAGE_CHECK(k >= 0, "The k should be non-negative");
   }
 
+  //! Return the lower and upper bounds
+  FloatRange get_well() const { return FloatRange(lb_, ub_); }
+
+  //! Return the spring constant
+  double get_k() const { return k_; }
+
   virtual DerivativePair evaluate_with_derivative(
                   double feature) const override {
     return DerivativePair(get_score(feature), get_derivative(feature));

@@ -1,5 +1,4 @@
 import IMP.test
-import io
 
 
 class NullConstraint(IMP.Constraint):

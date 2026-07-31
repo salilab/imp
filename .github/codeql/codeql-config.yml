@@ -1,0 +1,3 @@
+paths-ignore:
+  - modules/rmf/dependency/RMF
+  - modules/core/dependency/python-ihm

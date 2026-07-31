@@ -1,16 +1,7 @@
-# general imports
 from numpy import *
-from random import uniform
-
-
-# imp general
 import IMP
-
-# our project
-from IMP.isd import Scale, HybridMonteCarlo
-
-# unit testing framework
 import IMP.test
+import IMP.isd
 
 vel_key_nuisance = IMP.FloatKey("vel")
 kB = 1.381 * 6.02214 / 4184.0

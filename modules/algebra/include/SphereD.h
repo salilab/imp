@@ -1,19 +1,18 @@
 /**
  *  \file IMP/algebra/SphereD.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPALGEBRA_SPHERE_D_H
 #define IMPALGEBRA_SPHERE_D_H
 
-#include "algebra_macros.h"
 #include "constants.h"
 #include "BoundingBoxD.h"
-#include "VectorD.h"
+#include <IMP/algebra/VectorD.h>
 #include "utility.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <cmath>
 

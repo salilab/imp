@@ -3,7 +3,6 @@
 
 import IMP.atom
 import os.path
-import sys
 
 IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
 IMP.set_log_level(IMP.WARNING)

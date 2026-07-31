@@ -4,7 +4,6 @@ import IMP.algebra
 import IMP.core
 import IMP.npc
 import IMP.container
-import pickle
 
 
 def setup_system_toroid():
@@ -14,6 +13,7 @@ def setup_system_toroid():
         IMP.Particle(m),
         IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.0,80.0,50.0), 0.4))
     return m, membrane, p
+
 
 def setup_system_indent():
     m = IMP.Model()

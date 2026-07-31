@@ -24,8 +24,8 @@ Additionally the protocol calculates SOAP score based on an atomic statistical p
  - a SOAP score (SOAP)
 
 The protocol proceeds by first sampling complex models using
-[PatchDock](http://bioinfo3d.cs.tau.ac.il/PatchDock/) for pairwise protein
-docking, followed by
+[PatchDock](https://bio3d.cs.huji.ac.il/webserver/patchdock/)
+for pairwise protein docking, followed by
 \ref idock_progs "filtering based on fit to the experimental data",
 clustering and composite scoring.
 

@@ -82,6 +82,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: ResidueFeature
    :members:
 
+.. autoclass:: InterfaceResidueFeature
+   :members:
+
 .. autoclass:: AtomFeature
    :members:
 
@@ -110,4 +113,28 @@ The :mod:`ihm.restraint` Python module
    :members:
 
 .. autoclass:: HDXRestraint
+   :members:
+
+.. autoclass:: HydroxylRadicalFPRestraint
+   :members:
+
+.. autoclass:: ProbeType
+   :members:
+
+.. autoclass:: ProbePosition
+   :members:
+
+.. autoclass:: Probe
+   :members:
+
+.. autoclass:: ConjugateProbe
+   :members:
+
+.. autoclass:: LigandProbe
+   :members:
+
+.. autoclass:: EPRRestraint
+   :members:
+
+.. autoclass:: EPRRestraintFit
    :members:

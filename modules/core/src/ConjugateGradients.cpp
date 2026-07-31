@@ -22,8 +22,6 @@
     }                                                \
   }
 
-#define IMP_CG_SCALE
-
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
@@ -60,11 +58,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
     IMP_CHECK_VALUE(x[i]);
-#ifdef IMP_CG_SCALE
     double v = get_scaled_value(float_indices[i]);  // scaled
-#else
-    double v = get_value(float_indices[i]);  // scaled
-#endif
     if (std::abs(x[i] - v) > max_change_) {
       if (x[i] < v) {
         x[i] = v - max_change_;
@@ -72,11 +66,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
         x[i] = v + max_change_;
       }
     }
-#ifdef IMP_CG_SCALE
     set_scaled_value(float_indices[i], x[i]);
-#else
-    set_value(float_indices[i], x[i]);
-#endif
   }
 
   NT score;
@@ -90,11 +80,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   }
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
-#ifdef IMP_CG_SCALE
     dscore[i] = get_scaled_derivative(float_indices[i]);  // scaled
-#else
-    dscore[i] = get_derivative(float_indices[i]);  // scaled
-#endif
     IMP_USAGE_CHECK(is_good_value(dscore[i]), "Bad input to CG");
   }
   return score;
@@ -271,11 +257,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
-#ifdef IMP_CG_SCALE
     x[i] = get_scaled_value(float_indices[i]);  // scaled
-#else
-    x[i] = get_value(float_indices[i]);            // scaled
-#endif
     IMP_USAGE_CHECK(
         !IMP::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),
         "Bad input to CG");

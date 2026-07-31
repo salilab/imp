@@ -37,6 +37,8 @@
                           DerivativeAccumulator *da) const;            \
     ModelObjectsTemp do_get_inputs(                            \
         Model *m, const ParticleIndexes &pis) const;   \
+    Functor& get_score_functor();                      \
+    const Functor& get_score_functor() const;          \
     Accessors                                          \
     IMP_OBJECT_METHODS(Name);                                          \
   }

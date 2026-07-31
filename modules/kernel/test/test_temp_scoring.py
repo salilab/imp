@@ -1,8 +1,6 @@
 import IMP
 import IMP.test
 import IMP.core
-import io
-import random
 
 
 class DummyRestraint(IMP.Restraint):

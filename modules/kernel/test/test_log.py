@@ -1,6 +1,6 @@
 import IMP.test
-import sys
 from io import BytesIO
+
 
 class Tests(IMP.test.TestCase):
 

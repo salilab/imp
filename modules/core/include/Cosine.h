@@ -41,6 +41,10 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
 
   virtual double evaluate(double feature) const override;
 
+  Float get_force_constant() const { return force_constant_; }
+  int get_periodicity() const { return periodicity_; }
+  Float get_phase() const { return phase_; }
+
   IMP_OBJECT_METHODS(Cosine);
 
   void do_show(std::ostream &out) const;

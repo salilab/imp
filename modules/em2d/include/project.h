@@ -142,7 +142,7 @@ IMPEM2DEXPORT em2d::Images get_projections(
 
 //! Generates a projection from particles
 /**
-  \param[in] img
+  \param[out] img the projection will be stored here
   \param[in] ps particles to project
   \param[in] reg Registration value with the parameters of the projection
   \param[in] options
@@ -150,7 +150,6 @@ IMPEM2DEXPORT em2d::Images get_projections(
              for speeding the projection procedure if they are given.
              If nullptr, they are computed
   \param[in] name
-  \return img the projection will be stored here
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT void get_projection(em2d::Image *img,

@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Statistical.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_STATISTICAL_H
@@ -112,6 +112,22 @@ class Statistical : public Score {
   bool get_is_trivially_zero(Model *m, const ParticleIndexPair &p,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(get_maximum_range(m, p));
+  }
+
+  double get_offset() const { return table_->get_offset(); }
+  double get_threshold() const { return threshold_; }
+  double get_max() const { return table_->get_max(); }
+  double get_spacing() const { return table_->get_bin_width(); }
+  Floats get_values(unsigned int i, unsigned int j) const {
+    return table_->get_values(i, j);
+  }
+  Floats get_second_derivatives(unsigned int i, unsigned int j) const {
+    return table_->get_second_derivatives(i, j);
+  }
+  bool get_is_bipartite() const { return BIPARTITE; }
+  bool get_is_interpolated() const { return INTERPOLATE; }
+  IntPair get_number_of_particle_types() const {
+    return table_->get_number_of_particle_types();
   }
 };
 

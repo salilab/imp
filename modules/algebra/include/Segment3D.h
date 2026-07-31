@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Segment3D.h
  *  \brief Simple implementation of segments in 3D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_SEGMENT_3D_H
@@ -11,8 +11,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
-#include "algebra_macros.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <iostream>
 #include <cereal/access.hpp>
 #include "constants.h"

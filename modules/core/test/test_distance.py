@@ -1,8 +1,11 @@
 import IMP
 import IMP.core
 import IMP.test
-import io
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -180,6 +183,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(obj_rsr.get_version_info().get_module(), "IMP::core")
         self.assertIs(type(obj_rsr.get_derived_object()),
                       IMP.core.DistanceRestraint)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of DistanceRestraint"""
+        uf = IMP.core.Harmonic(1.0, 0.1)
+        rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
+                                         self.particles[0], self.particles[1])
+        imp_score = rsr.evaluate(False)
+        ji = rsr._get_jax()
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        jax_score = f(jm)
+        # Restraint should return a JAX scalar as the score
+        self.assertEqual(jax_score.shape, ())
+        self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 
 if __name__ == '__main__':

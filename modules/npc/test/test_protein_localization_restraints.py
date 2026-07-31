@@ -181,7 +181,7 @@ class Tests(IMP.test.TestCase):
         """Test MembraneSurfaceLocationConditionalRestraint"""
         m, p1 = setup_system()
         p2 = IMP.core.XYZR.setup_particle(
-           IMP.Particle(m),
+            IMP.Particle(m),
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(4,0,0.), 0.4))
         r = IMP.npc.MembraneSurfaceLocationConditionalRestraint(
             m, [p1], [p2], 40.0, 10.0, 3.0, 0.5)
@@ -211,7 +211,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(info['type'], 'IMP.npc.XAxialPositionRestraint')
         self._check_pickle(r, score=3.920)
 
-
     def test_x_axial_lower(self):
         """Test XAxialPositionLowerRestraint"""
         m, p = setup_system()
@@ -223,7 +222,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(info['type'], 'IMP.npc.XAxialPositionLowerRestraint')
         self._check_pickle(r, score=3.920)
 
-
     def test_x_axial_upper(self):
         """Test XAxialPositionUpperRestraint"""
         m, p = setup_system()
@@ -234,7 +232,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(info['sigma'], 0.5, delta=1e-4)
         self.assertEqual(info['type'], 'IMP.npc.XAxialPositionUpperRestraint')
         self._check_pickle(r, score=11.52)
-
 
     def test_overall(self):
         """Test OverallPositionRestraint"""

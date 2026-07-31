@@ -9,6 +9,7 @@ import ihm.dumper
 class TestPO(IMP.pmi.output.ProtocolOutput):
     _file_datasets = []
     _each_metadata = []
+
     def _add_state(self, obj):
         return self
 
@@ -25,7 +26,7 @@ class Tests(IMP.test.TestCase):
     def test_full_topology_reader(self):
         """Test full run with TopologyReader"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         mdl = IMP.Model()

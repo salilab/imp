@@ -15,7 +15,7 @@ import IMP.pmi.macros
 import RMF
 import IMP.rmf
 import sys
-from math import *
+
 
 class MockCommunicator:
     def __init__(self, numproc, rank):
@@ -206,7 +206,6 @@ class Tests(IMP.test.TestCase):
         rbs_trans_after={}
         fbs_position_after={}
 
-
         for rb in rbs:
             rbs_trans_before[rb]=rb.get_reference_frame().get_transformation_to()
 
@@ -244,13 +243,10 @@ class Tests(IMP.test.TestCase):
                 self.assertNotEqual(position_after[i],position_before[i])
                 self.assertNotEqual(rotation_after[i],rotation_before[i])
 
-
-
-
     def test_select_all_resolutions_and_densities_sklearn(self):
         """Test this actually check selec_all_resoltions and get_densities"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except:
             self.skipTest("Require sklearn for this test")
         mdl = IMP.Model()
@@ -274,7 +270,8 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         ps = IMP.pmi.tools.select_at_all_resolutions(mol.get_hierarchy(),residue_index=93)
-        self.assertEqual(len(ps),14) #should get res0, res10, and ALL densities
+        # should get res0, res10, and ALL densities
+        self.assertEqual(len(ps), 14)
 
         leaves=[]
         for r in rs:
@@ -377,7 +374,6 @@ class Tests(IMP.test.TestCase):
         inds1=sorted(list(set([p.get_index() for p in leaves])))
         inds2=sorted(p.get_index() for p in ps)
         self.assertEqual(inds1,inds2)
-
 
     def test_get_name(self):
         """Test pmi::get_molecule_name_and_copy()"""
@@ -529,7 +525,8 @@ class Tests(IMP.test.TestCase):
 
         # test input particles and input hierarchies
 
-        compare7 = [IMP.atom.Hierarchy(p) for sublist in compare3 for p in sublist ]
+        compare7 = [IMP.atom.Hierarchy(p) for sublist in compare3
+                    for p in sublist]
         test7 = IMP.pmi.tools.input_adaptor(compare7,flatten=True,pmi_resolution=1)
         compare8 = [p for sublist in compare3 for p in sublist]
         test8 = IMP.pmi.tools.input_adaptor(compare8,flatten=True,pmi_resolution=1)

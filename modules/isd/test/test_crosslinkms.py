@@ -72,7 +72,8 @@ class CrossLinkMS:
             else:
                 R=IMP.core.XYZR(p1).get_radius()
                 dist=36.0/35.0*R
-            if dist <= 0.001: dist = 0.001
+            if dist <= 0.001:
+                dist = 0.001
             psi = psi.get_scale()
             sigmai = sigma1.get_scale()
             sigmaj = sigma2.get_scale()
@@ -102,7 +103,6 @@ class CrossLinkMS:
         prob = 1.0 - onemprob
 
         return prob
-
 
     def sphere_cap(self,r1, r2, d):
         sc = 0.0
@@ -142,7 +142,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
         xyz1.set_coordinates((0, 0, 0))
         xyz2.set_coordinates((0, 0, 0))
-
 
         sigma1 = setupnuisance(m, 5, 0, 100, False)
         sigma2 = setupnuisance(m, 5, 0, 100, False)
@@ -260,7 +259,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(30, 30, 30))
 
-
         restraints=[]
         restraints_lp=[]
         test_restraints=[]
@@ -283,7 +281,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
             ambiguity=random.randint(1,6)
             for a in range(ambiguity):
                 sameparticle=bool(random.randint(0,1))
-
 
                 p1=IMP.Particle(m)
                 d1 = IMP.core.XYZR.setup_particle(p1)
@@ -315,7 +312,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
         lw = IMP.isd.LogWrapper(restraints,1.0)
         restraint_set_lp=IMP.RestraintSet(restraints_lp,1.0)
-        test_score=sum([-log(r.get_probability()) for r  in test_restraints])
+        test_score=sum([-log(r.get_probability()) for r in test_restraints])
         for nr,r in enumerate(restraints):
             score=-log(r.unprotected_evaluate(None))
             score_lp=restraints_lp[nr].unprotected_evaluate(None)
@@ -325,8 +322,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.assertAlmostEqual(lw.unprotected_evaluate(None),restraint_set_lp.unprotected_evaluate(None),places=4)
         self.assertAlmostEqual(lw.unprotected_evaluate(None),test_score,places=4)
         self.assertAlmostEqual(restraint_set_lp.unprotected_evaluate(None),test_score,places=4)
-
-
 
     def test_score_same_bead(self):
         """
@@ -344,7 +339,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         xyz1 = IMP.core.XYZR.setup_particle(p1)
 
         xyz1.set_coordinates((0, 0, 0))
-
 
         sigma1 = setupnuisance(m, 5, 0, 100, False)
         psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
@@ -388,7 +382,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         score_jax = jax_score_func(X)
                         self.assertAlmostEqual(score_lp, score_jax, delta=1e-3)
 
-
     def test_score_two_fold_ambiguity(self):
         IMP.test.TestCase.setUp(self)
 
@@ -407,7 +400,6 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         xyz1.set_coordinates((0, 0, 0))
         xyz2.set_coordinates((0, 0, 0))
         xyz3.set_coordinates((40, 0, 0))
-
 
         sigma1 = setupnuisance(m, 5, 0, 100, False)
         sigma2 = setupnuisance(m, 5, 0, 100, False)

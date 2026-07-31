@@ -74,6 +74,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(a.seq_dif[0].details, 'Test mutation')
 
     def _get_from_uniprot_accession(self, fasta_fname):
+        return self._mocked_uniprot_urlopen(
+            fasta_fname, ihm.reference.UniProtSequence.from_accession,
+            'testacc')
+
+    def _mocked_uniprot_urlopen(self, fasta_fname, func, *args):
         def mock_urlopen(url):
             self.assertTrue(url.endswith('/testacc.fasta'))
             fname = utils.get_input_file_name(TOPDIR, fasta_fname)
@@ -83,7 +88,7 @@ class Tests(unittest.TestCase):
         try:
             orig_urlopen = urllib.request.urlopen
             urllib.request.urlopen = mock_urlopen
-            return ihm.reference.UniProtSequence.from_accession('testacc')
+            return func(*args)
         finally:
             urllib.request.urlopen = orig_urlopen
 
@@ -114,6 +119,32 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(r.sequence), 726)
         self.assertEqual(r.sequence[:20], 'MELSPTYQTERFTKFSDTLK')
         self.assertIsNone(r.details)
+
+    def test_uniprot_sequence_add_missing_sequence(self):
+        """Test UniProtSequence.add_missing_sequence()"""
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='testacc', sequence=None)
+        self._mocked_uniprot_urlopen('P52891.fasta', r.add_missing_sequence)
+        # Sequence and details should have been added
+        self.assertEqual(len(r.sequence), 726)
+        self.assertEqual(r.sequence[:20], 'MELSPTYQTERFTKFSDTLK')
+        self.assertEqual(
+            r.details,
+            'Nucleoporin NUP84 OS=Saccharomyces cerevisiae (strain ATCC '
+            '204508 / S288c) OX=559292 GN=NUP84 PE=1 SV=1')
+        # If details already present, they should not be overwritten
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='testacc', sequence=None,
+            details='foo')
+        self._mocked_uniprot_urlopen('P52891.fasta', r.add_missing_sequence)
+        self.assertEqual(r.details, 'foo')
+        # If sequence already present, should not be overwritten
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='testacc', sequence='MEL',
+            details='foo')
+        self._mocked_uniprot_urlopen('P52891.fasta', r.add_missing_sequence)
+        self.assertEqual(r.sequence, 'MEL')
+        self.assertEqual(r.details, 'foo')
 
 
 if __name__ == '__main__':

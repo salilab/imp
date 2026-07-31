@@ -1,8 +1,6 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import RMF
-from IMP.algebra import *
 
 
 class Tests(IMP.test.TestCase):
@@ -95,7 +93,8 @@ class Tests(IMP.test.TestCase):
                     d.set_radius(.5)
                     IMP.atom.Mass.setup_particle(p, .1)
                     r.add_child(IMP.atom.Hierarchy.setup_particle(p))
-                    if i > 1: rbd.add_member(p)
+                    if i > 1:
+                        rbd.add_member(p)
             fn = self.get_tmp_file_name("rigid" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [top])
@@ -124,7 +123,8 @@ class Tests(IMP.test.TestCase):
                 d.set_radius(.5)
                 IMP.atom.Mass.setup_particle(p, .1)
                 r.add_child(IMP.atom.Hierarchy.setup_particle(p))
-                if i > 1: rbd.add_member(p)
+                if i > 1:
+                    rbd.add_member(p)
             fn = self.get_tmp_file_name("rigid" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])

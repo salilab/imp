@@ -75,39 +75,12 @@ namespace multi_array_types {
 }
 }
 
-
-
-
-/* to extend */
-%include "IMP/algebra/GeometricPrimitiveD.h"
-%template(_GeometricPrimitive1D) IMP::algebra::GeometricPrimitiveD<1>;
-%template(_GeometricPrimitive2D) IMP::algebra::GeometricPrimitiveD<2>;
-%template(_GeometricPrimitive3D) IMP::algebra::GeometricPrimitiveD<3>;
-%template(_GeometricPrimitive4D) IMP::algebra::GeometricPrimitiveD<4>;
-%template(_GeometricPrimitive5D) IMP::algebra::GeometricPrimitiveD<5>;
-%template(_GeometricPrimitive6D) IMP::algebra::GeometricPrimitiveD<6>;
-%template(_GeometricPrimitiveKD) IMP::algebra::GeometricPrimitiveD<-1>;
-
 %include "IMP_algebra.bounding_box.i"
-%include "IMP_algebra.vector.i"
 %include "IMP_algebra.transformation2d.i"
 %include "IMP_algebra.transformation3d.i"
 %include "IMP_algebra.segment3d.i"
 
 /* Wrap our own classes */
-%include "IMP/algebra/VectorBaseD.h"
-namespace IMP {
- namespace algebra {
-   %template(_VectorBaseKD) VectorBaseD<-1>;
-   %template(_VectorBase1D) VectorBaseD<1>;
-   %template(_VectorBase2D) VectorBaseD<2>;
-   %template(_VectorBase3D) VectorBaseD<3>;
-   %template(_VectorBase4D) VectorBaseD<4>;
-   %template(_VectorBase5D) VectorBaseD<5>;
-   %template(_VectorBase6D) VectorBaseD<6>;
- }
-}
-
 %include "IMP/algebra/VectorD.h"
 %include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"
@@ -132,7 +105,6 @@ namespace IMP {
  }
 }
 
-IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Vector);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, BoundingBox);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, UnitSimplex);
@@ -212,9 +184,6 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_D(Vector, get_vertices, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Vector, Vector);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Sphere, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_squared_distance, Vector, Vector);
-IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_basis_vector);
-IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_zero_vector);
-IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_ones_vector);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_bounding_box);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_cube);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_sphere);
@@ -273,4 +242,23 @@ double get_weighted_rmsd(const IMP::algebra::Vector3Ds &v0,
 %pythoncode %{
   LinearFit=LinearFit2D
   ParabolicFit=ParabolicFit2D
+%}
+
+// Make aliases of VectorD from kernel
+%pythoncode %{
+  def __setup_vector_d_aliases():
+      for n in "123456K":
+          for func in ('get_basis_vector', 'get_zero_vector',
+                       'get_ones_vector'):
+              funcname = func + "_" + n.lower() + 'd'
+              globals()[funcname] = getattr(IMP, funcname)
+          for cls in ('Vector' + n + 'D', 'Vector' + n + 'Ds'):
+              globals()[cls] = getattr(IMP, cls)
+
+  __setup_vector_d_aliases()
+
+  get_vector_product = IMP.get_vector_product
+  get_orthogonal_vector = IMP.get_orthogonal_vector
+  get_centroid = IMP.get_centroid
+  get_radius_of_gyration = IMP.get_radius_of_gyration
 %}

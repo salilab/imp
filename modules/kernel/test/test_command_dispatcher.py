@@ -3,6 +3,7 @@ import sys
 import IMP.test
 import io
 
+
 class TestModule:
     _all_commands = ['foo', 'bar']
 
@@ -29,10 +30,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.old_argv = sys.argv
         self.old_stdout = sys.stdout
-        if sys.version_info[0] >= 3:
-            sys.stdout = io.StringIO()
-        else:
-            sys.stdout = io.BytesIO()
+        sys.stdout = io.StringIO()
         sys.modules['TestModule'] = TestModule
         sys.modules['TestModule.submodule'] = TestModule.submodule
         sys.modules['TestModule.foo'] = TestModule.foo
@@ -131,6 +129,7 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(SystemExit, c.main)
         out = sys.stdout.getvalue()
         self.assertIn("Unknown command: 'garbage'", out)
+
 
 if __name__ == '__main__':
     IMP.test.main()

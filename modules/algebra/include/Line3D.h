@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Line3D.h
  *  \brief Simple implementation of lines in 3D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_LINE_3D_H
@@ -12,8 +12,7 @@
 #include "Vector3D.h"
 #include "Segment3D.h"
 #include "BoundingBoxD.h"
-#include "algebra_macros.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

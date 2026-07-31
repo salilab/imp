@@ -2,9 +2,11 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 def make_bond(p1, p2):
     return IMP.atom.create_bond(IMP.atom.Bonded(p1), IMP.atom.Bonded(p2),
                                 IMP.atom.Bond.SINGLE)
+
 
 class Tests(IMP.test.TestCase):
 

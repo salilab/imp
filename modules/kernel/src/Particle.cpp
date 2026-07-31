@@ -82,6 +82,25 @@ void show_attributes(Model *m, const Keys &fks, ParticleIndex id,
     preout.set_prefix("");
   }
 }
+
+template <class Keys, class GetValue>
+void show_attributes_with_derivatives(
+                     Model *m, const Keys &fks, ParticleIndex id,
+                     std::string name, GetValue v,
+                     internal::PrefixStream &preout) {
+  if (!fks.empty()) {
+    preout << name << " attributes:" << std::endl;
+    preout.set_prefix("  ");
+    for (const auto &k : fks) {
+      preout << k << ": ";
+      preout << v(m->get_attribute(k, id, false));
+      preout << " (" << v(m->get_derivative(k, id, false)) << ") ";
+      preout << (m->get_is_optimized(k, id) ? " (optimized)" : "");
+      preout << std::endl;
+    }
+    preout.set_prefix("");
+  }
+}
 }
 
 void Particle::show(std::ostream &out) const {
@@ -130,6 +149,22 @@ void Particle::show(std::ostream &out) const {
         get_model(),
         get_model()->internal::IntsAttributeTable::get_attribute_keys(id_), id_,
         "ints", SizeValue<IdentityValue>(), preout);
+    show_attributes(
+        get_model(),
+        get_model()->internal::Vector3DAttributeTable::get_attribute_keys(id_),
+        id_, "Vector3D", IdentityValue(), preout);
+    show_attributes_with_derivatives(
+        get_model(),
+        get_model()->internal::Vector3DDerivAttributeTable::get_attribute_keys(id_),
+        id_, "Vector3DDeriv", IdentityValue(), preout);
+    show_attributes(
+        get_model(),
+        get_model()->internal::Vector4DAttributeTable::get_attribute_keys(id_),
+        id_, "Vector4D", IdentityValue(), preout);
+    show_attributes_with_derivatives(
+        get_model(),
+        get_model()->internal::Vector4DDerivAttributeTable::get_attribute_keys(id_),
+        id_, "Vector4DDeriv", IdentityValue(), preout);
   }
 }
 
@@ -154,10 +189,34 @@ void Particle::add_to_derivative(FloatKey key, Float value,
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_to_derivative(key, id_, value, da);
 }
+
+void Particle::add_to_derivative(Vector3DDerivKey key, const Vector3D &value,
+                                 const DerivativeAccumulator &da) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_to_derivative(key, id_, value, da);
+}
+
+void Particle::add_to_derivative(Vector4DDerivKey key, const Vector4D &value,
+                                 const DerivativeAccumulator &da) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_to_derivative(key, id_, value, da);
+}
+
 void Particle::set_is_optimized(FloatKey k, bool tf) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->set_is_optimized(k, id_, tf);
 }
+
+void Particle::set_is_optimized(Vector3DDerivKey k, bool tf) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->set_is_optimized(k, id_, tf);
+}
+
+void Particle::set_is_optimized(Vector4DDerivKey k, bool tf) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->set_is_optimized(k, id_, tf);
+}
+
 void Particle::add_attribute(ParticleIndexKey k, Particle *v) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_attribute(k, id_, v->get_index());

@@ -2,6 +2,11 @@ import IMP
 import IMP.test
 import IMP.core
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
+
 
 def make_score():
     m = IMP.Model()
@@ -37,6 +42,18 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(r)
         newr = pickle.loads(dump)
         self.assertAlmostEqual(newr.evaluate(False), 9.2736, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of DistancePairScore"""
+        import jax.numpy as jnp
+        m, p1, p2, s = make_score()
+        imp_score = s.evaluate_index(m, (p1, p2), None)
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]))
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        jax_score = f(jm)
+        self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 
 if __name__ == '__main__':

@@ -3,8 +3,8 @@ import IMP.mmcif.metadata
 import IMP.mmcif.data
 import ihm
 import urllib.request
-import sys
 from io import StringIO
+
 
 class MockSystem:
     def __init__(self):

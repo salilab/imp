@@ -1,6 +1,7 @@
 import IMP
+import IMP.pmi.topology
 import IMP.test
-import IMP.pmi.tools as tools
+
 
 class Tests(IMP.test.TestCase):
 

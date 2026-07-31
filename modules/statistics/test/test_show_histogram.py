@@ -74,10 +74,6 @@ class Tests(IMP.test.TestCase):
 
     def test_histogram_1d(self):
         """Check showing the histogram1D of a gaussian"""
-        try:
-            import numpy
-        except ImportError:
-            self.skipTest('no numpy module present')
         hist = IMP.statistics.Histogram1D(
             5.0, IMP.algebra.BoundingBox1D(IMP.algebra.Vector1D(-100),
                                            IMP.algebra.Vector1D(100)))
@@ -132,7 +128,7 @@ class Tests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector3D(x, y, z))
         print(hist.get_counts())
         print(hist.get_frequencies())
-        if not "DISPLAY" in os.environ.keys():
+        if "DISPLAY" not in os.environ.keys():
             self.skipTest("no DISPLAY variable found")
         IMP.statistics.show_histogram(
             hist.get_frequencies(),

@@ -43,6 +43,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.Hierarchy(frag1).add_child(r4)
         IMP.atom.Hierarchy(frag1).add_child(r5)
         IMP.atom.Hierarchy(frag2).add_child(r6)
+
         def assert_residue_index(func, start_res, exp_index):
             r = func(start_res)
             self.assertTrue(IMP.atom.Residue.get_is_setup(r))

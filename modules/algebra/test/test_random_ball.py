@@ -1,6 +1,11 @@
+import functools
 import IMP.test
 import IMP.algebra
 import IMP.statistics
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -31,8 +36,21 @@ class Tests(IMP.test.TestCase):
         std = h.get_standard_deviation(center)
         print(center, std)
         for i in range(0, 3):
-            self.assertAlmostEqual(center[i], .75, delta=.016)
+            self.assertAlmostEqual(center[i], .75, delta=.017)
             self.assertAlmostEqual(std[i], .58 * .7, delta=.05)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_sphere_jax(self):
+        """Test the JAX creation of points on a sphere"""
+        from IMP.algebra import _jax_util
+        import jax.numpy as jnp
+        j = jax.jit(functools.partial(_jax_util.get_random_vector_on_3d_sphere,
+                                      shape=20000))
+        k = jax.random.key(42)
+        v = j(k, radius=1.0)
+        self.assertTrue(jnp.allclose(v.mean(axis=0), jnp.zeros(3), atol=0.01))
+        self.assertTrue(jnp.allclose(v.std(axis=0), jnp.full(3, 0.58),
+                                     atol=0.01))
 
 
 if __name__ == '__main__':

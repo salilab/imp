@@ -2,7 +2,7 @@
  *  \file atom/ImproperSingletonScore.h
  *  \brief A score on the deviation of an improper angle from ideality.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/atom/ImproperSingletonScore.h>
@@ -14,7 +14,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f) : f_(f) {}
+ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f)
+    : SingletonScore("ImproperSingletonScore%1%"), f_(f) {}
 
 double ImproperSingletonScore::evaluate_index(Model *m,
                                               ParticleIndex pi,

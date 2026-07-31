@@ -1,7 +1,7 @@
 /**
  *  \file IMP/constants.h    \brief Various useful constants.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,12 +9,17 @@
 #define IMPKERNEL_CONSTANTS_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/algebra/constants.h>
 #include <cmath>
 
 IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-static const double PI = algebra::PI;
+#if defined(_GLIBCXX_USE_C99_MATH) && defined(__GNUC__)
+//! the constant pi
+static const double PI = M_PI;
+#else
+//! the constant pi
+static const double PI = 3.1415926535897931;
+#endif  // C99
 #endif
 
 //! Use this value when you want to turn off maximum for restraint evaluation

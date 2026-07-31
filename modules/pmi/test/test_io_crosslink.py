@@ -5,9 +5,8 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import os
-import sys
-
 import IMP.pmi.io.crosslink
+
 
 class Tests(IMP.test.TestCase):
 
@@ -109,7 +108,6 @@ class Tests(IMP.test.TestCase):
 
     def test_setup_cldb(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
-
 
         expected_dict={'1': [{'XLUniqueID': '1', 'IDScore': 10.0,
                             'Residue1': 1, 'Protein2': 'AAA', 'Protein1':
@@ -256,8 +254,6 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(xl[cldb.link_type_key],e[8])
             nxl+=1
 
-
-
     def test_msstudio_style_no_id(self):
         rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
@@ -292,7 +288,6 @@ class Tests(IMP.test.TestCase):
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase()
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_proxl.dat"),FixedFormatParser=ffp)
 
-
         expected_list=[('1',1,"A","B",24,39),
                        ('2',1,"A","A",24,125),
                        ('3',1,"B","A",37,45),
@@ -312,7 +307,6 @@ class Tests(IMP.test.TestCase):
     def test_align_sequence(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
         cldb.align_sequence(self.get_input_file_name('xl_dataset_test_alignment.dat'))
-
 
         expected_list=[('1',1,"AAA","AAA",1,6),
                        ('1',2,"AAA","AAA",12,28),
@@ -347,26 +341,25 @@ class Tests(IMP.test.TestCase):
         for xl in cldb:
             self.assertEqual(fo.evaluate(xl),xl[cldb.protein1_key]=="AAA")
 
-        fo=FO(cldb.protein1_key,operator.eq,"AAA")|FO(cldb.protein2_key,operator.eq,"BBB")
+        fo=FO(cldb.protein1_key,operator.eq,"AAA") | FO(cldb.protein2_key,operator.eq,"BBB")
 
         for xl in cldb:
-            self.assertEqual(fo.evaluate(xl),((xl[cldb.protein1_key]=="AAA")|(xl[cldb.protein2_key]=="BBB") ))
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.protein1_key]=="AAA") | (xl[cldb.protein2_key]=="BBB")))
 
-        fo=(FO(cldb.protein1_key,operator.eq,"AAA")|FO(cldb.protein2_key,operator.eq,"BBB"))&FO("sample",operator.eq,"human")
-
-        for xl in cldb:
-            self.assertEqual(fo.evaluate(xl),((xl[cldb.protein1_key]=="AAA")|(xl[cldb.protein2_key]=="BBB") )&(xl["sample"]=="human"))
-
-        fo=(FO(cldb.residue1_key,operator.gt,30)|FO(cldb.protein2_key,operator.eq,"BBB"))
+        fo=(FO(cldb.protein1_key,operator.eq,"AAA") | FO(cldb.protein2_key,operator.eq,"BBB")) & FO("sample",operator.eq,"human")
 
         for xl in cldb:
-            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]>30)|(xl[cldb.protein2_key]=="BBB") ))
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.protein1_key]=="AAA") | (xl[cldb.protein2_key]=="BBB")) & (xl["sample"]=="human"))
 
-        fo=~(FO(cldb.residue1_key,operator.gt,30)|FO(cldb.protein2_key,operator.eq,"BBB"))
+        fo = (FO(cldb.residue1_key,operator.gt,30) | FO(cldb.protein2_key,operator.eq,"BBB"))
 
         for xl in cldb:
-            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]<=30)&(xl[cldb.protein2_key]!="BBB") ))
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]>30) | (xl[cldb.protein2_key]=="BBB")))
 
+        fo = ~(FO(cldb.residue1_key,operator.gt,30) | FO(cldb.protein2_key,operator.eq,"BBB"))
+
+        for xl in cldb:
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]<=30) & (xl[cldb.protein2_key]!="BBB")))
 
     def test_filter_cldbkc(self):
         import operator
@@ -406,7 +399,6 @@ class Tests(IMP.test.TestCase):
             expected_crosslinks.remove(array)
 
         self.assertEqual(len(expected_crosslinks),0)
-
 
     def test_filter_out_same_residues(self):
         cldb=self.setup_cldb("xl_dataset_test_same_residues.dat")
@@ -466,13 +458,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(int(cldb.get_number_of_xlid()*0.5),cldb50.get_number_of_xlid())
         cldb25=cldb.jackknife(0.25)
         self.assertEqual(int(cldb.get_number_of_xlid()*0.25),cldb25.get_number_of_xlid())
-        # assess randomness
-        cldb50_1=cldb.jackknife(0.5)
-        cldb50_1_set=set([xlid for xlid in cldb50_1.xlid_iterator()])
-        cldb50_2=cldb.jackknife(0.5)
-        cldb50_2_set=set([xlid for xlid in cldb50_2.xlid_iterator()])
-        self.assertNotEqual(cldb50_1_set,cldb50_2_set)
+        # Assess randomness by simply checking that two samples are different.
+        # This will fail about 0.5% of the time, so repeat test 5 times.
+        cldb50_1 = cldb.jackknife(0.5)
+        others = [cldb.jackknife(0.5) for _ in range(5)]
+        cldb50_1_set = frozenset(cldb50_1.xlid_iterator())
+        self.assertTrue(any(cldb50_1_set != frozenset(x.xlid_iterator())
+                            for x in others))
+
         # content of new databases must be identical for jackknifed crosslinks
+        cldb50_1 = cldb.jackknife(0.5)
+        cldb50_2 = cldb.jackknife(0.5)
         for xlid in cldb50_1.xlid_iterator():
             for n,xl in enumerate(cldb50_1[xlid]):
                 for key in xl:
@@ -481,7 +477,6 @@ class Tests(IMP.test.TestCase):
             for n,xl in enumerate(cldb50_2[xlid]):
                 for key in xl:
                     self.assertEqual(xl[key],cldb.data_base[xlid][n][key])
-
 
     def test_redundancy(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
@@ -542,8 +537,6 @@ class Tests(IMP.test.TestCase):
                 ['AAA', 'BBB', 'CCC'])
 
     def test_offset_residue(self):
-        import operator
-        from IMP.pmi.io.crosslink import FilterOperator as FO
         cldb1=self.setup_cldb("xl_dataset_test.dat")
         cldb2=self.setup_cldb("xl_dataset_test.dat")
         cldb1.offset_residue_index('AAA',100)
@@ -598,7 +591,7 @@ class Tests(IMP.test.TestCase):
 
     def test_jaccard_distance(self):
         try:
-            import scipy.spatial
+            import scipy.spatial  # noqa: F401
         except ImportError:
             self.skipTest("no scipy spatial")
 
@@ -615,8 +608,8 @@ class Tests(IMP.test.TestCase):
     def test_plot_matrix(self):
         """Test JaccardDistanceMatrix.plot_matrix()"""
         try:
-            import matplotlib
-            import scipy.spatial
+            import matplotlib  # noqa: F401
+            import scipy.spatial  # noqa: F401
         except ImportError:
             self.skipTest("no scipy spatial or matplotlib")
         cldb1=self.setup_cldb("xl_dataset_test.dat")
@@ -647,7 +640,6 @@ class Tests(IMP.test.TestCase):
         cldb.set_name("master")
         cldb.create_set_from_file(self.get_input_file_name("proteasome_xlinks.csv"))
         matched,non_matched=cldb.check_cross_link_consistency()
-
 
         calc_matched=dict([(prot,len(matched[prot])) for prot in matched])
         calc_non_matched=dict([(prot,len(non_matched[prot])) for prot in non_matched])

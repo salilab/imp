@@ -2,7 +2,7 @@
  *  \file IMP/algebra/GeometricPrimitiveD.h
  *  \brief Base class for geometric types.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,38 +10,13 @@
 #define IMPALGEBRA_GEOMETRIC_PRIMITIVE_D_H
 
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/Vector.h>
-#include <IMP/utility_macros.h>
+#include <IMP/GeometricPrimitiveD.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! Base class for geometric types.
-/** Geometric primitives in \imp behave a bit differently than most values.
+IMPALGEBRA_DEPRECATED_HEADER(2.25, "Use IMP/GeometricPrimitiveD.h instead")
 
-    Most classes in \imp are initialized to a defined state (sometimes a null
-    state) by their default constructor. For efficiency reasons, certain ones,
-    mostly low-level geometric types, are not. They act like built in types
-    in C++ in that they only have a defined state if set (or initialized).
-
-    In addition, they are not comparable, or hashable.
-
-    See the \ref geometricprimitives entry for more information.
-*/
-template <int D>
-class GeometricPrimitiveD {
- protected:
-  GeometricPrimitiveD() {}
-};
-
-#ifndef IMP_DOXYGEN
-typedef GeometricPrimitiveD<1> GeometricPrimitive1D;
-typedef GeometricPrimitiveD<2> GeometricPrimitive2D;
-typedef GeometricPrimitiveD<3> GeometricPrimitive3D;
-typedef GeometricPrimitiveD<4> GeometricPrimitive4D;
-typedef GeometricPrimitiveD<5> GeometricPrimitive5D;
-typedef GeometricPrimitiveD<6> GeometricPrimitive6D;
-typedef GeometricPrimitiveD<-1> GeometricPrimitiveKD;
-#endif
+using IMP::GeometricPrimitiveD;
 
 IMPALGEBRA_END_NAMESPACE
 

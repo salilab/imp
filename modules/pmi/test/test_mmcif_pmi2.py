@@ -145,7 +145,7 @@ _entity.pdbx_description
 _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
-1 polymer man Nup84 532.606 1 .
+1 polymer man Nup84 478.561 1 .
 #
 """)
 
@@ -158,14 +158,14 @@ _entity.details
         state = s.create_state()
         nup84 = state.create_molecule("Nup84", "GGGMELSGGGG", "A")
         # Only "MELS" is represented, so the output entity should be of
-        # length 4 and weigh 532, not the full PMI sequence
+        # length 4 and weigh 479, not the full PMI sequence
         nup84.add_representation(residues=nup84[3:7], resolutions=[1])
         hier = s.build()
         self.assertEqual(''.join(x.code
                                  for x in po.system.entities[0].sequence),
                          'MELS')
         self.assertAlmostEqual(po.system.entities[0].formula_weight,
-                               532.606, delta=1e-2)
+                               478.561, delta=1e-2)
 
     def test_model_representation(self):
         """Test ModelRepresentationDumper with PMI2-style init"""

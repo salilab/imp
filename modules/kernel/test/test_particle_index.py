@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.container
 
+
 class Tests(IMP.test.TestCase):
 
     def test_no_model(self):

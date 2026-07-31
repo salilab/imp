@@ -7,13 +7,15 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import ihm.reader
-import os,shutil
+import os
+import shutil
 
 try:
     import IMP.mpi
     rem = IMP.mpi.ReplicaExchange()
 except ImportError:
     rem = None
+
 
 class Tests(IMP.test.TestCase):
 
@@ -198,7 +200,7 @@ ENDMDL'''.split("\n")
             replica_exchange_object=rem)
         rex.execute_macro()
         for i in range(3):
-            self.assertTrue(os.path.isfile('pdb_test/pdbs/model.%i.pdb'%i))
+            self.assertTrue(os.path.isfile('pdb_test/pdbs/model.%i.pdb' % i))
         mhtest = IMP.atom.read_pdb('pdb_test/pdbs/model.0.pdb',mdl)
         self.assertEqual(len(IMP.core.get_leaves(mhtest)),17)
         shutil.rmtree("pdb_test/")
@@ -249,8 +251,8 @@ ENDMDL'''.split("\n")
             replica_exchange_object=rem)
         rex.execute_macro()
         for i in range(3):
-            self.assertTrue(os.path.isfile('pdb_test/pdbs/0/model.%i.pdb'%i))
-            self.assertTrue(os.path.isfile('pdb_test/pdbs/1/model.%i.pdb'%i))
+            self.assertTrue(os.path.isfile('pdb_test/pdbs/0/model.%i.pdb' % i))
+            self.assertTrue(os.path.isfile('pdb_test/pdbs/1/model.%i.pdb' % i))
         testA = IMP.atom.read_pdb('pdb_test/pdbs/0/model.0.pdb',mdl)
         self.assertEqual(len(IMP.core.get_leaves(testA)),53)
         testB = IMP.atom.read_pdb('pdb_test/pdbs/1/model.0.pdb',mdl)
@@ -265,8 +267,10 @@ ENDMDL'''.split("\n")
             replica_exchange_object=rem)
         rex.execute_macro()
         for i in range(3):
-            self.assertTrue(os.path.isfile('mmcif_test/pdbs/0/model.%i.cif'%i))
-            self.assertTrue(os.path.isfile('mmcif_test/pdbs/1/model.%i.cif'%i))
+            self.assertTrue(
+                os.path.isfile('mmcif_test/pdbs/0/model.%i.cif' % i))
+            self.assertTrue(
+                os.path.isfile('mmcif_test/pdbs/1/model.%i.cif' % i))
         testA = IMP.atom.read_mmcif('mmcif_test/pdbs/0/model.0.cif', mdl)
         self.assertEqual(len(IMP.core.get_leaves(testA)), 53)
         testB = IMP.atom.read_mmcif('mmcif_test/pdbs/1/model.0.cif', mdl)

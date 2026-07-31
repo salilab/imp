@@ -36,8 +36,10 @@ class Tests(IMP.test.TestCase):
                 assert_restraint_evaluate_moved(r)
             else:
                 self.assertIsNone(r.moved_evaluate)
+
         def assert_restraint_evaluate(r):
             self.assertFalse(r.moved_evaluate)
+
         def assert_restraint_evaluate_moved(r):
             self.assertTrue(r.moved_evaluate)
         m = IMP.Model()
@@ -48,6 +50,7 @@ class Tests(IMP.test.TestCase):
         r1 = LogRestraint(m, [p1], 100.0)
         r4 = LogRestraint(m, [p4], 10.0)
         lw = IMP.isd.LogWrapper([r1, r4], 1.0)
+
         def clear_restraints():
             r1.moved_evaluate = r4.moved_evaluate = None
         # Plain evaluate should *not* call the evaluate_moved method on r1,r4

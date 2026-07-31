@@ -6,6 +6,7 @@ import IMP.rmf
 import RMF
 import os
 
+
 class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -47,7 +48,6 @@ class Tests(IMP.test.TestCase):
                                    IMP.algebra.Vector3D(check_coords[i])), 1e-3)
         os.unlink('top_3.rmf3')
         os.unlink('top_3.out')
-
 
     def test_get_best_models(self):
         results = IMP.pmi.io.get_best_models(self.stat_files,
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
 
         # testing first coordinate of med2 for each frame
         check_coords=[[17.23349762, 27.99548721,-8.91260719],
-                      [24.54545784, 59.26082993, -3.0899663 ],
+                      [24.54545784, 59.26082993, -3.0899663],
                       [25.41869354, 63.82009125, -16.76820946],
                       [26.21087265, 61.21968079, -16.91023064],
                       [25.74103165, 60.64290619, -11.03559399],

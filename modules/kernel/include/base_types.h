@@ -102,6 +102,18 @@ IMP_VALUES(SparseParticleIndexKey, SparseParticleIndexKeys);
 typedef Key<16> Vector3DKey;
 IMP_VALUES(Vector3DKey, Vector3DKeys);
 
+//! The type used to identify 3D vector attributes&derivatives in the Particles
+typedef Key<17> Vector3DDerivKey;
+IMP_VALUES(Vector3DDerivKey, Vector3DDerivKeys);
+
+//! The type used to identify 4D vector attributes in the Particles
+typedef Key<18> Vector4DKey;
+IMP_VALUES(Vector4DKey, Vector4DKeys);
+
+//! The type used to identify 4D vector attributes&derivatives in the Particles
+typedef Key<19> Vector4DDerivKey;
+IMP_VALUES(Vector4DDerivKey, Vector4DDerivKeys);
+
 /** @} */
 
 class Restraint;

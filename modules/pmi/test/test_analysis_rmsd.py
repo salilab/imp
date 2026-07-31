@@ -1,4 +1,3 @@
-import os
 import IMP
 import IMP.test
 import IMP.pmi
@@ -7,17 +6,17 @@ import IMP.pmi.macros
 import IMP.pmi.analysis
 
 
-
 class Tests(IMP.test.TestCase):
     def setUp(self):
         if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
             self.skipTest("test too slow to run in debug mode")
         mdl = IMP.Model()
         IMP.test.TestCase.setUp(self)
-        reader = IMP.pmi.topology.TopologyReader(self.get_input_file_name('1mda/1mda_topology.dat'),
-                                                 pdb_dir =   self.get_input_file_name('1mda/'),
-                                                 fasta_dir = self.get_input_file_name('1mda/'),
-                                                 gmm_dir =   self.get_input_file_name('1mda/gmm'))
+        reader = IMP.pmi.topology.TopologyReader(
+            self.get_input_file_name('1mda/1mda_topology.dat'),
+            pdb_dir=self.get_input_file_name('1mda/'),
+            fasta_dir=self.get_input_file_name('1mda/'),
+            gmm_dir=self.get_input_file_name('1mda/gmm'))
 
         bs = IMP.pmi.macros.BuildSystem(mdl)
         bs.add_state(reader)

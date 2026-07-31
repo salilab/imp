@@ -42,10 +42,10 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZ.setup_particle(m, p2, IMP.algebra.Vector3D(4,5,6))
         p = IMP.example.ExamplePairScore(2.0, 10.0)
 
-        ji = p._get_jax()
-        X = ji.get_jax_model(m)
+        ji = p._get_jax(m, jnp.array([[p1, p2]]))
+        X = ji.get_jax_model()
         f = jax.jit(ji.score_func)
-        self.assertAlmostEqual(f(X, jnp.array([[p1, p2]])), 51.08, delta=0.01)
+        self.assertAlmostEqual(f(X), 51.08, delta=0.01)
 
 
 if __name__ == '__main__':

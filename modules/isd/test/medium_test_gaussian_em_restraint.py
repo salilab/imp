@@ -5,9 +5,7 @@ import IMP.isd.gmm_tools
 import IMP.algebra
 import IMP.test
 import numpy as np
-from math import cos, sin, pi, sqrt, exp, log
-from copy import deepcopy
-import itertools
+from math import pi, sqrt, exp, log
 import pickle
 
 
@@ -21,6 +19,7 @@ def create_test_points(mu, radii):
         t[i] -= radii[i]
         testers.append(t)
     return testers
+
 
 def score_gaussian_overlap(p0, p1):
     g0 = IMP.core.Gaussian(p0).get_gaussian()
@@ -67,6 +66,7 @@ def gem_score(model_ps, density_ps,slope=0.0):
     dist = -log(cc) + slope_score
     return cc, dist
 
+
 def create_random_gaussians(m,randstate,num,spherical,rad_scale=1.0):
     ret=[]
     for n in range(num):
@@ -87,16 +87,19 @@ def create_random_gaussians(m,randstate,num,spherical,rad_scale=1.0):
         ret.append(p)
     return ret
 
+
 def shuffle_particles(ps,t=2.0,r=0.01):
-    for np,p in enumerate(ps):
-        trans=IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0),
-                                                          t,r)
+    for p in ps:
+        trans = IMP.algebra.get_random_local_transformation(
+            IMP.algebra.Vector3D(0,0,0), t, r)
         d=IMP.core.RigidBody(p)
         IMP.core.transform(d,trans)
+
 
 def reset_coords(ps,orig_coords):
     for p,c in zip(ps,orig_coords):
         IMP.core.XYZ(p).set_coordinates(c)
+
 
 class Tests(IMP.test.TestCase):
     def setUp(self):
@@ -209,17 +212,17 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(cc, pycc, delta=0.02)
         self.gem.set_slope(0.0)
 
-
     def test_gem_derivatives(self):
         """test accuracy of GMM derivatives"""
         reset_coords(self.model_ps,self.orig_coords)
         for i in range(10):
             shuffle_particles(self.model_ps)
             self.gem.evaluate(True)
-            for np, p in enumerate(self.model_ps):
+            for p in self.model_ps:
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
                 self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
+
     def test_gem_derivatives_with_slope(self):
         """test accuracy of GMM derivatives"""
         self.gem.set_slope(0.1)
@@ -227,7 +230,7 @@ class Tests(IMP.test.TestCase):
         for i in range(10):
             shuffle_particles(self.model_ps)
             self.gem.evaluate(True)
-            for np, p in enumerate(self.model_ps):
+            for p in self.model_ps:
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
                 self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
@@ -240,6 +243,7 @@ class Tests(IMP.test.TestCase):
         self.gem.set_was_used(True)
         dmap = IMP.isd.gmm_tools.gmm2map(self.model_ps,1.0,fast=False)
         dmap.set_was_used(True)
+
 
 class LocalTests(IMP.test.TestCase):
     def test_local_score(self):

@@ -30,6 +30,9 @@ class UnaryFunctionEvaluate : public Score {
  public:
   UnaryFunctionEvaluate(IMP::UnaryFunction *uf) : uf_(uf) {}
   UnaryFunctionEvaluate() {}
+
+  IMP::UnaryFunction *get_unary_function() const { return uf_; }
+
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

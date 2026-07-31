@@ -1,10 +1,10 @@
-import os
 import IMP
 import IMP.test
 import IMP.pmi.tools
 import IMP.pmi.output
 import IMP.rmf
 import RMF
+
 
 class Tests(IMP.test.TestCase):
 
@@ -167,7 +167,7 @@ class Tests(IMP.test.TestCase):
         stath_read=IMP.pmi.output.StatHierarchyHandler(m,'data.pkl')
         lvs_read=IMP.atom.get_leaves(stath_read)
 
-        for n,d  in enumerate(stath):
+        for n,d in enumerate(stath):
             self._check_data_identity(d,stath_read[n])
             self._check_coordinate_identity(lvs, lvs_read)
 

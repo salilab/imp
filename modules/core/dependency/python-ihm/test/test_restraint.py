@@ -182,6 +182,7 @@ class Tests(unittest.TestCase):
         a = ihm.AsymUnit(e)
         f = ihm.restraint.ResidueFeature(ranges=[])
         self.assertIsNone(f._get_entity_type())
+        self.assertFalse(f._interface)
 
         # No ranges - type is 'residue'
         f = ihm.restraint.ResidueFeature(ranges=[])
@@ -198,6 +199,16 @@ class Tests(unittest.TestCase):
         # At least one range is a true range
         f = ihm.restraint.ResidueFeature(ranges=[a(3, 4)])
         self.assertEqual(f.type, 'residue range')
+
+    def test_interface_residue_feature(self):
+        """Test InterfaceResidueFeature class"""
+        e1 = ihm.Entity('AHCDAH')
+        e2 = ihm.Entity('CC')
+        a = ihm.AsymUnit(e1)
+        f = ihm.restraint.InterfaceResidueFeature(
+            ranges=[a(3, 4)], binding_partners=[e2], dataset='ds')
+        self.assertTrue(f._interface)
+        _ = f._signature()
 
     def test_geometric_restraint(self):
         """Test GeometricRestraint class"""

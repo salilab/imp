@@ -32,6 +32,9 @@ class HarmonicLowerBound : public Score {
  public:
   HarmonicLowerBound(double k) : k_(k) {}
   HarmonicLowerBound() {}
+
+  double get_k() const { return k_; }
+
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

@@ -2,6 +2,13 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+try:
+    import jax
+except ImportError:
+    jax = None
+
+
+_RB_QUAT_KEY = IMP.core.RigidBody.get_rotation_key()
 
 
 class Tests(IMP.test.TestCase):
@@ -125,8 +132,8 @@ class Tests(IMP.test.TestCase):
                      IMP.core.RigidMember.setup_particle(
                            IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
         non_rigid_body = IMP.core.RigidBody.setup_particle(
-                         IMP.core.NonRigidMember.setup_particle(
-                           IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
+            IMP.core.NonRigidMember.setup_particle(
+                IMP.Particle(m)), IMP.algebra.ReferenceFrame3D())
         rb.add_member(rigid_member)
         rb.add_non_rigid_member(non_rigid_member)
         rb.add_member(rigid_body)
@@ -224,6 +231,138 @@ class Tests(IMP.test.TestCase):
         except:
             pass
         self.assertTrue(not failure)
+
+    def test_update_rigid_body_members(self):
+        """Test _UpdateRigidBodyMembers modifier"""
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        # Make sure that modifier recreates the original member coordinates
+        mod = IMP.core._UpdateRigidBodyMembers()
+        oldxyz = cs[0].get_coordinates()
+        cs[0].set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
+        mod.apply_index(m, rbd)
+        self.assertLess(
+            IMP.algebra.get_distance(oldxyz, cs[0].get_coordinates()), 1e-3)
+
+    def test_accumulate_rigid_body_derivatives(self):
+        """Test _AccumulateRigidBodyDerivatives modifier"""
+        m = IMP.Model()
+        p = self._create_hierarchy(m, n=10)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        rbd.set_coordinates_are_optimized(True)
+        rs = self._add_rb_restraints(rbd)
+        sf = IMP.core.RestraintsScoringFunction(rs)
+        x = sf.evaluate(True)
+        d = IMP.DerivativeAccumulator(1.0)
+        for x in cs:
+            x.add_to_derivatives(IMP.algebra.Vector3D(1000, 2000, 3000), d)
+        # Derivatives on the rigid body should be (roughly) 10x those on
+        # individual particles
+        mod = IMP.core._AccumulateRigidBodyDerivatives()
+        mod.apply_index(m, rbd)
+        derivs = rbd.get_derivatives()
+        self.assertLess(IMP.algebra.get_distance(
+            derivs, IMP.algebra.Vector3D(10000, 20000, 30000)), 40.)
+
+    def test_normalize_rotation(self):
+        """Test _NormalizeRotation modifier"""
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        mod = IMP.core._NormalizeRotation()
+
+        # Zero quaternion should be reset to identity
+        m.set_attribute(_RB_QUAT_KEY, rbd,
+                        IMP.algebra.Vector4D(0.0, 0.0, 0.0, 0.0))
+        mod.apply_index(m, rbd)
+        rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
+        self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
+                         [10, 0, 0, 0])
+
+        # Non-normalized quaternion should be normalized
+        m.set_attribute(_RB_QUAT_KEY, rbd,
+                        IMP.algebra.Vector4D(0.0, 2.0, 0.0, 0.0))
+        mod.apply_index(m, rbd)
+        rot = rbd.get_reference_frame().get_transformation_to().get_rotation()
+        self.assertEqual([int(x * 10.) for x in rot.get_quaternion()],
+                         [0, 10, 0, 0])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rigid_body_normalize_constraint(self):
+        """Test JAX _RigidBodyNormalizeConstraint"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        # _RigidBodyNormalizeConstraint should have been created automatically;
+        # find it by name
+        ss, = [s.get_derived_object() for s in m.get_ordered_score_states()
+               if s.get_name().startswith('normalize')]
+        ji = ss._get_jax()
+        jm = ji.get_jax_model()
+        apply_func = jax.jit(ji.apply_func)
+
+        # Zero quaternion should be reset to identity
+        jm['rigid_bodies'].quaternion = jnp.array([[0., 0., 0., 0.]])
+        jm = apply_func(jm)
+        self.assertEqual(
+            [int(x * 10.) for x in jm['rigid_bodies'].quaternion[0]],
+            [10, 0, 0, 0])
+
+        # Non-normalized quaternion should be normalized
+        jm['rigid_bodies'].quaternion = jnp.array([[0., 2., 0., 0.]])
+        jm = apply_func(jm)
+        self.assertEqual(
+            [int(x * 10.) for x in jm['rigid_bodies'].quaternion[0]],
+            [0, 10, 0, 0])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rigid_body_position_constraint(self):
+        """Test JAX _RigidBodyPositionConstraint"""
+        import IMP._jax_util
+        import numpy as np
+
+        m = IMP.Model()
+        p = self._create_hierarchy(m)
+        h = IMP.core.Hierarchy(p)
+        children = h.get_children()
+        cs0_index = int(children[0].get_particle_index())
+        cs = IMP.core.XYZs(children)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        # _RigidBodyPositionConstraint should have been created automatically;
+        # find it by name
+        ss, = [s.get_derived_object() for s in m.get_ordered_score_states()
+               if s.get_name().endswith('rigid body positions')]
+        ji = ss._get_jax()
+        jm = ji.get_jax_model()
+        apply_func = jax.jit(ji.apply_func)
+
+        oldxyz = jm['xyz'][cs0_index].copy()
+
+        # Make sure that constraint recreates the original member coordinates
+        jm['xyz'][cs0_index] = [0,0,0]
+        jm = apply_func(jm)
+        newxyz = jm['xyz'][cs0_index]
+
+        np.testing.assert_allclose(oldxyz, newxyz, rtol=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

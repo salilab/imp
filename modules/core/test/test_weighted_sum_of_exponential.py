@@ -2,6 +2,10 @@ import math
 import IMP
 import IMP.test
 import IMP.core
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def _sum_of_exponent(fs, weights, x, d=1.):
@@ -24,6 +28,7 @@ def _derv_sum_of_exponent(fs, weights, x, d=1.):
 class Tests(IMP.test.TestCase):
 
     def test_values(self):
+        """Check value of WeightedSumOfExponential function"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7])
@@ -49,6 +54,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(deriv, exp_deriv, delta=1e-4)
 
     def test_update_functions(self):
+        """Test changing WeightedSumOfExponential parameters"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 2.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.5, .5])
@@ -57,6 +63,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.evaluate(0), .566219, delta=1e-6)
 
     def test_accessors(self):
+        """Test WeightedSumOfExponential accessors"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7], 2.)
@@ -71,6 +78,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.get_denominator(), 3.)
 
     def test_errors(self):
+        """Test handling of incorrect inputs to WeightedSumOfExponential"""
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         self.assertRaisesUsageException(IMP.core.WeightedSumOfExponential,
@@ -82,6 +90,26 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7])
         self.assertRaisesUsageException(sf.set_weights, [1.])
         self.assertRaisesUsageException(sf.set_denominator, 0.)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of WeightedSumOfExponential"""
+        import jax.numpy as jnp
+        f1 = IMP.core.Harmonic(0., 1.)
+        f2 = IMP.core.Harmonic(2., 3.)
+        sf = IMP.core.WeightedSumOfExponential([f1, f2], [.3, .7])
+        jsf = jax.jit(sf._get_jax())
+        imp_score = sf.evaluate(4.0)
+        jax_score = jsf(4.0)
+        self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
+        # Should also work if given an array
+        vals = jnp.array([4.0, 6.0])
+        scores = jsf(vals)
+        self.assertEqual(scores.shape, (2,))
+        self.assertAlmostEqual(scores[0], 6.300, delta=1e-3)
+        self.assertAlmostEqual(scores[0], jsf(vals[0]), delta=1e-3)
+        self.assertAlmostEqual(scores[1], 19.198, delta=1e-3)
+        self.assertAlmostEqual(scores[1], jsf(vals[1]), delta=1e-3)
 
 
 if __name__ == '__main__':

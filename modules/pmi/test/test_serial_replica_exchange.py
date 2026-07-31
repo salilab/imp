@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.pmi.samplers
 
+
 class Tests(IMP.test.TestCase):
 
     def test_serial(self):

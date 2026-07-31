@@ -1,9 +1,9 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import RMF
 import os
 import sys
+
 
 class Tests(IMP.test.TestCase):
 

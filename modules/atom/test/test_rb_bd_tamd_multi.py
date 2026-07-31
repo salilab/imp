@@ -5,8 +5,6 @@ import IMP.atom
 import IMP.rmf
 import IMP.container
 import RMF
-import math
-
 
 
 class Tests(IMP.test.TestCase):
@@ -17,7 +15,7 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         bb = IMP.algebra.BoundingBox3D([0,0,0],[50,50,50])
-        d.set_coordinates( IMP.algebra.get_random_vector_in(bb) )
+        d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
         d.set_radius(2)
         d.set_coordinates_are_optimized(True)
         IMP.atom.Mass.setup_particle(p, 1)
@@ -25,7 +23,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.Hierarchy.setup_particle(p)
         return p
 
-    def _create_tamd_image( self, p, name, T_factor, F_factor):
+    def _create_tamd_image(self, p, name, T_factor, F_factor):
         '''
         Create a TAMD image of centroid particle p
 
@@ -41,18 +39,17 @@ class Tests(IMP.test.TestCase):
         pstar = IMP.Particle(p.get_model(), name)
         pstarD = IMP.core.XYZR.setup_particle(pstar)
         pD = IMP.core.XYZR(p)
-        pstarD.set_coordinates( pD.get_coordinates() )
-        pstarD.set_radius( pD.get_radius() )
-        pstarD.set_coordinates_are_optimized( True )
+        pstarD.set_coordinates(pD.get_coordinates())
+        pstarD.set_radius(pD.get_radius())
+        pstarD.set_coordinates_are_optimized(True)
         pstarH = IMP.core.Hierarchy.setup_particle(pstar)
-        IMP.atom.Diffusion.setup_particle( pstar )
-        IMP.atom.TAMDParticle.setup_particle( pstar, p, T_factor, F_factor)
+        IMP.atom.Diffusion.setup_particle(pstar)
+        IMP.atom.TAMDParticle.setup_particle(pstar, p, T_factor, F_factor)
         pMass = IMP.atom.Mass(p)
-        IMP.atom.Mass.setup_particle( pstar, pMass.get_mass() )
+        IMP.atom.Mass.setup_particle(pstar, pMass.get_mass())
         return pstar
 
-
-    def _create_tamd_hierarchy( self, m, nlevels, d, T_factors, F_factors, Ks ):
+    def _create_tamd_hierarchy(self, m, nlevels, d, T_factors, F_factors, Ks):
         """
         Create a TAMD hierarchy of nlevels depth with a core for
         each d centroids in a lower level, with a real centroid and
@@ -81,7 +78,7 @@ class Tests(IMP.test.TestCase):
         R=[] # all restraints with image particles
         for i in range(d):
             if nlevels==1:
-                p =  self._create_singleton_particle(m, "leaf")
+                p = self._create_singleton_particle(m, "leaf")
                 child_centroids = []
                 child_images = []
                 child_R = []
@@ -109,7 +106,7 @@ class Tests(IMP.test.TestCase):
         pD.set_coordinates_are_optimized(True) # TODO: very unclear if this is needed or dangerous - to get BD to evaluate on it
         pDiffusion = IMP.atom.Diffusion.setup_particle(p)
         for child in children:
-            pH.add_child( IMP.core.Hierarchy( child ) )
+            pH.add_child(IMP.core.Hierarchy(child))
         print(pH.get_children())
         refiner = IMP.core.ChildrenRefiner(
             IMP.core.Hierarchy.get_default_traits())
@@ -117,10 +114,10 @@ class Tests(IMP.test.TestCase):
         m.update() # so center of mass is up to date
 
         # Add a TAMD image of centroid with a spring
-        pstar = self._create_tamd_image(  p,
-                                          "TAMD image %d",
-                                          T_factors[0],
-                                          F_factors[0] )
+        pstar = self._create_tamd_image(p,
+                                        "TAMD image %d",
+                                        T_factors[0],
+                                        F_factors[0])
         images.append(pstar)
         spring = IMP.core.HarmonicDistancePairScore(0, Ks[0])
         r=IMP.core.PairRestraint(m, spring, (p, pstar))
@@ -133,7 +130,7 @@ class Tests(IMP.test.TestCase):
         get leave particles by certain order that is guaranteed to cluster
         leave particles with a common ancestor together, for hierarchy h
         '''
-        if(h.get_number_of_children() == 0):
+        if h.get_number_of_children() == 0:
             return [h.get_particle()]
         leaves = []
         for child in h.get_children():
@@ -156,7 +153,7 @@ class Tests(IMP.test.TestCase):
                                           T_factors = [12,12,6,3],
                                           F_factors = [225*225,45,45,15],
 #                                          Ks = [60,40,20,10] ) # TAMD multi on
-                                          Ks = [1e-12, 10, 10, 10] )# TAMD singular on
+                                          Ks = [1e-12, 10, 10, 10])# TAMD singular on
 #                                         Ks = [5e-12,5e-12,5e-12,5e-12] ) # TAMD off
             # = self._create_tamd_hierarchy(m,
             #                               5, 2,
@@ -169,9 +166,9 @@ class Tests(IMP.test.TestCase):
         # Repulsion between fine particles
         rootH = IMP.core.Hierarchy(root)
         leaves= self._get_ordered_leaves(rootH)
-        cpc = IMP.container.ClosePairContainer( leaves, 2, 1 )
+        cpc = IMP.container.ClosePairContainer(leaves, 2, 1)
         r = IMP.container.PairsRestraint(excluded_vol, cpc, "Excluded_vol")
-        R.append( r )
+        R.append(r)
         # Attraction between consecutive leaves
         for i in range(len(leaves)-1):
             r = IMP.core.PairRestraint(m, attraction,
@@ -181,20 +178,17 @@ class Tests(IMP.test.TestCase):
         print(R)
 
         # LOCAL WELLS:
-        if(LOCAL_WELLS):
+        if LOCAL_WELLS:
             thb1 = IMP.core.TruncatedHarmonicBound(27.5, 0.175, 8, 20)
             thb2 = IMP.core.TruncatedHarmonicBound(52.5, 0.175, 8, 20)
             dr1 = IMP.core.DistanceRestraint(m, thb1, leaves[0], leaves[-1])
-            #                                        "local_well_1")
             dr2 = IMP.core.DistanceRestraint(m, thb2, leaves[0], leaves[-1])
-            #                                        "local_well_2")
-            R = R + [dr2] #, dr1]
+            R = R + [dr2]
 
         # Define BD
         bd = IMP.atom.BrownianDynamicsTAMD(m)
         sf = IMP.core.RestraintsScoringFunction(R)
         bd.set_maximum_time_step(5)
-
 
         bd.set_scoring_function(sf)
 
@@ -208,8 +202,8 @@ class Tests(IMP.test.TestCase):
 #            os.update_always("Init opt %d" % i)
             for centroid, image in zip(all_centroids, all_images):
                 print(centroid, image)
-                centroid_coords =  IMP.core.XYZ(centroid).get_coordinates()
-                IMP.core.XYZ(image).set_coordinates( centroid_coords )
+                centroid_coords = IMP.core.XYZ(centroid).get_coordinates()
+                IMP.core.XYZ(image).set_coordinates(centroid_coords)
 
         bd.optimize(100)
 
@@ -227,7 +221,7 @@ class Tests(IMP.test.TestCase):
             h=queue[0]
             queue=queue[1:] # pop first
             queue = queue + h.get_children()
-            IMP.rmf.add_hierarchies(rmf, [h] )
+            IMP.rmf.add_hierarchies(rmf, [h])
         for p in all_images:
             IMP.rmf.add_hierarchies(rmf, [IMP.core.Hierarchy(p)])
 #        IMP.rmf.add_restraints(rmf, R)
@@ -246,8 +240,8 @@ class Tests(IMP.test.TestCase):
             bd.optimize(round_cycles)
             energy = sf.evaluate(False)
             total_cycles += round_cycles
-            ter1 = IMP.core.XYZ( leaves[0] )
-            ter2 = IMP.core.XYZ( leaves[-1] )
+            ter1 = IMP.core.XYZ(leaves[0])
+            ter2 = IMP.core.XYZ(leaves[-1])
             dTer = IMP.core.get_distance(ter1, ter2)
             print("energy after %d cycles = %.2f  dTer %.2f"
                   % (total_cycles, energy, dTer))

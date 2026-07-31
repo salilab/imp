@@ -23,7 +23,7 @@
 #include <IMP/Array.h>
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/Vector3D.h>
 #include <utility>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Floats, floats, Floats);
 #ifndef SWIG
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Vector3D, vector3d,
-                                          algebra::Vector3D);
+                                          Vector3D);
 #endif
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Ints, ints, Ints);
@@ -123,13 +123,29 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 
+  void add_to_derivative(Vector3DDerivKey key, const Vector3D &value,
+                         const DerivativeAccumulator &da);
+
+  void add_to_derivative(Vector4DDerivKey key, const Vector4D &value,
+                         const DerivativeAccumulator &da);
+
   void set_is_optimized(FloatKey k, bool tf);
+  void set_is_optimized(Vector3DDerivKey k, bool tf);
+  void set_is_optimized(Vector4DDerivKey k, bool tf);
 
   //! returns true if key k is marked by model as optimized
   inline bool get_is_optimized(FloatKey k) const;
+  inline bool get_is_optimized(Vector3DDerivKey k) const;
+  inline bool get_is_optimized(Vector4DDerivKey k) const;
 
   //! returns the derivative of the specified particle attribute
   inline Float get_derivative(FloatKey k) const;
+
+  //! returns the derivative of the specified particle attribute
+  inline Vector3D get_derivative(Vector3DDerivKey k) const;
+
+  //! returns the derivative of the specified particle attribute
+  inline Vector4D get_derivative(Vector4DDerivKey k) const;
   /** @} */
 
   /** \name Particle attributes
@@ -215,7 +231,27 @@ bool Particle::get_is_optimized(FloatKey k) const {
   return get_model()->get_is_optimized(k, id_);
 }
 
+bool Particle::get_is_optimized(Vector3DDerivKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+
+bool Particle::get_is_optimized(Vector4DDerivKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+
 Float Particle::get_derivative(FloatKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(k, id_);
+}
+
+Vector3D Particle::get_derivative(Vector3DDerivKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(k, id_);
+}
+
+Vector4D Particle::get_derivative(Vector4DDerivKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_derivative(k, id_);
 }
@@ -259,7 +295,7 @@ Particle *Particle::get_value(ParticleIndexKey k) const {
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Floats, floats, Floats);
 #ifndef SWIG
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Vector3D, vector3d, algebra::Vector3D);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Vector3D, vector3d, Vector3D);
 #endif
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Ints, ints, Ints);

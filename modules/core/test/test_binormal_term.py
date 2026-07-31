@@ -2,7 +2,6 @@ import IMP.core
 import IMP
 import IMP.test
 import io
-import sys
 import pickle
 
 
@@ -15,10 +14,7 @@ class Tests(IMP.test.TestCase):
         t.set_weight(0.8)
         t.set_means([10., 20.])
         t.set_standard_deviations([1., 2.])
-        if sys.version_info[0] >= 3:
-            out = io.StringIO()
-        else:
-            out = io.BytesIO()
+        out = io.StringIO()
         print(t, file=out)
         self.assertIn("means: 10, 20", out.getvalue())
 
@@ -32,12 +28,10 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(t)
 
         newt = pickle.loads(dump)
-        if sys.version_info[0] >= 3:
-            out = io.StringIO()
-        else:
-            out = io.BytesIO()
+        out = io.StringIO()
         print(newt, file=out)
         self.assertIn("means: 10, 20", out.getvalue())
+
 
 if __name__ == '__main__':
     IMP.test.main()

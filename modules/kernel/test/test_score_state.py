@@ -19,9 +19,6 @@ class LoggingScoreState(IMP.ScoreState):
     def do_before_evaluate(self):
         self.log.append('update' + self.suffix)
 
-    def do_show(self, out):
-        print("Hi")
-
     def get_type_name(self):
         return "LoggingScoreState"
 
@@ -82,6 +79,7 @@ class Tests(IMP.test.TestCase):
         noskip = LoggingScoreState(m, log, inputs=[p4], outputs=[p6],
                                    can_skip=False, suffix='noskip')
         r = IMP._ConstRestraint(m, [p1, p2, p3, p4, p5, p6], 1)
+
         def assert_score_states(meth, exp_ss, *args):
             del log[:]
             meth(False, *args)

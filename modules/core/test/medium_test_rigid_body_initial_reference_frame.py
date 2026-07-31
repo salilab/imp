@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 import IMP
@@ -8,6 +7,7 @@ import IMP.core
 import IMP.test
 
 fmt = ", ".join(["%.3f"] * 7)
+
 
 class Tests(IMP.test.TestCase):
     """Test the consistency of body centric initial reference frame

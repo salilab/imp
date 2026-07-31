@@ -87,7 +87,7 @@ rs.append(r)
 
 cont = IMP.container.ListSingletonContainer(m, impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
-rs.append(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
+rs.append(IMP.container.SingletonsRestraint(bss, cont, "impropers"))
 
 # Add radii from the forcefield, used for close pairs calculation
 ff.add_radii(prot)
@@ -129,3 +129,7 @@ IMP.set_check_level(IMP.USAGE)
 
 # Finally, evaluate the score of the whole system (without derivatives)
 print(score_func.evaluate(False))
+
+# Alternatively we can score the system on a GPU if the JAX Python
+# module is available::
+# print(score_func._evaluate_jax())

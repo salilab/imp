@@ -1,6 +1,10 @@
 import IMP
 import IMP.core
 import IMP.test
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class PythonRestraint(IMP.Restraint):
@@ -67,6 +71,31 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         cr = PythonRestraint(m)
         self.assertRaises(NotImplementedError, cr._get_jax)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_const_singleton_score(self):
+        """Test JAX implementation of _ConstSingletonScore"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        ss = IMP._ConstSingletonScore(10.0)
+        r = IMP.core.SingletonRestraint(m, ss, p)
+        ji = r._get_jax()
+        jm = ji.get_jax_model()
+        s = jax.jit(ji.score_func)
+        self.assertAlmostEqual(s(jm), 10.0, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_const_pair_score(self):
+        """Test JAX implementation of _ConstPairScore"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        ps = IMP._ConstPairScore(10.0)
+        r = IMP.core.PairRestraint(m, ps, (p1, p2))
+        ji = r._get_jax()
+        jm = ji.get_jax_model()
+        s = jax.jit(ji.score_func)
+        self.assertAlmostEqual(s(jm), 10.0, delta=1e-4)
 
 
 if __name__ == '__main__':

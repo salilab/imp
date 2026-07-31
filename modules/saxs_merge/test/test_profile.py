@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-import sys
 import os
 import tempfile
 import shutil
 
 import IMP.test
 import IMP.isd
-try:
-    import numpy
-except ImportError:
-    numpy = None
+import numpy
 
 IMP.set_log_level(0)
 
@@ -38,10 +34,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
 
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
-        if numpy is None:
-            self.skipTest("could not import numpy")
         try:
-            import scipy
+            import scipy # noqa: F401
         except ImportError:
             self.skipTest("could not import scipy")
         merge = self.import_python_application('saxs_merge')

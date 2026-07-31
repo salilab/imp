@@ -5,12 +5,14 @@ import IMP.container
 import IMP.algebra
 import math
 
+
 def make_histogram(values, bin_low, bin_high, bin_size):
     hist = [0] * (int)((bin_high - bin_low) / bin_size)
     for v in values:
         bin_index = (int)((v - bin_low) / bin_size)
         hist[bin_index] += 1
     return hist
+
 
 class Tests(IMP.test.TestCase):
 
@@ -99,6 +101,7 @@ class Tests(IMP.test.TestCase):
             mover.reject()
         for i in range(3):
             hist = make_histogram(displacement[i], 0, 5.0, 1.0)
+
             def volume_for_bin(i):
                 high_val = i + 1.0
                 low_val = i

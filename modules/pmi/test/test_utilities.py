@@ -4,6 +4,7 @@ import IMP.core
 import IMP.pmi
 import random
 
+
 class Tests(IMP.test.TestCase):
 
     def python_version_min_distance(self,xyzrs1,xyzrs2):
@@ -11,9 +12,12 @@ class Tests(IMP.test.TestCase):
         for xyzr1 in xyzrs1:
             for xyzr2 in xyzrs2:
                 d=IMP.core.get_distance(xyzr1,xyzr2)
-                if mindist < 0 : mindist = d
-                if mindist > d : mindist = d
-        if mindist < 0 : mindist = 0
+                if mindist < 0:
+                    mindist = d
+                if mindist > d:
+                    mindist = d
+        if mindist < 0:
+            mindist = 0
         return mindist
 
     def python_version_array_of_distances(self,particlestemps):

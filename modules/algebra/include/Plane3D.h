@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Plane3D.h   \brief Simple 3D plane class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

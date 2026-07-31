@@ -9,6 +9,7 @@ import pickle
 def score_1state(p0, p1):
     pass
 
+
 class TestAtomicXL_1State(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -52,7 +53,6 @@ class TestAtomicXL_1State(IMP.test.TestCase):
                 self.d1,
                 tolerance=1e-2,
                 percentage=3.0)
-
 
     def test_atomic_xl_derivatives_with_slope(self):
         """Test single-contribution derivs with slope"""

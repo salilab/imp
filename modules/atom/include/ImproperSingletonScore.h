@@ -2,7 +2,7 @@
  *  \file IMP/atom/ImproperSingletonScore.h
  *  \brief A score on the deviation of an improper angle from ideality.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_IMPROPER_SINGLETON_SCORE_H
@@ -38,6 +38,7 @@ class IMPATOMEXPORT ImproperSingletonScore : public SingletonScore {
  public:
   //! Use f to penalize deviations in angle
   ImproperSingletonScore(UnaryFunction *f);
+  UnaryFunction *get_unary_function() const { return f_; }
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(

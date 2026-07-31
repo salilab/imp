@@ -134,6 +134,8 @@ def patch_py_wrapper(infile, outfile, module):
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 # 3. Handle our custom %ifdelete directive
 #    (see modules/kernel/pyext/include/IMP_kernel.exceptions.i)
+# 4. Work around SWIG bug https://github.com/swig/swig/issues/3279
+#    by disabling clang optimization in SWIG_Python_ConvertPtrAndOwn
 def patch_file(infile, out, options):
     with open(infile, 'r') as fh:
         lines = fh.readlines()
@@ -160,6 +162,9 @@ def patch_file(infile, out, options):
                 line = '#if 1\n'
             else:
                 line = '#if 0\n'
+        if line.startswith('SWIG_Python_ConvertPtrAndOwn'):
+            line = "#ifdef __clang__\n__attribute__((optnone)) " \
+                    + line + "#else\n" + line + "#endif\n"
         lines[i] = line
     tools.rewrite(out, "".join(lines), verbose=False)
 

@@ -81,7 +81,7 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data,
 }
 
 PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
-                                    algebra::Vector3D *data, bool read_only)
+                                    Vector3D *data, bool read_only)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
@@ -94,8 +94,48 @@ PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
   dims[0] = sz;
   dims[1] = 3;
 
-  static_assert(sizeof(algebra::Vector3D) == 3 * sizeof(double),
+  static_assert(sizeof(Vector3D) == 3 * sizeof(double),
                 "Vector3D size != 3 * double size");
+  PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
+                              data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
+                              NULL);
+  if (!obj) {
+    return NULL;
+  }
+
+  /* Ensure that the Model is kept around as long as the numpy object
+     is alive. */
+  Py_INCREF(m_pyobj);
+  if (PyArray_SetBaseObject((PyArrayObject *)obj, m_pyobj) != 0) {
+    Py_DECREF(m_pyobj);
+    Py_DECREF(obj);
+    return NULL;
+  }
+
+  return obj;
+#else
+  PyErr_SetString(PyExc_NotImplementedError,
+                  "IMP was built without NumPy support");
+  return NULL;
+#endif
+}
+
+PyObject *_get_vector4ds_data_numpy(PyObject *m_pyobj, unsigned sz,
+                                    Vector4D *data, bool read_only)
+{
+#if IMP_KERNEL_HAS_NUMPY
+  if (numpy_import_retval != 0) {
+    PyErr_SetString(PyExc_ImportError,
+                    "IMP's NumPy support did not initialize correctly");
+    return NULL;
+  }
+
+  npy_intp dims[2];
+  dims[0] = sz;
+  dims[1] = 4;
+
+  static_assert(sizeof(Vector4D) == 4 * sizeof(double),
+                "Vector4D size != 4 * double size");
   PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
                               data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
                               NULL);
@@ -243,6 +283,62 @@ PyObject *_get_vector3ds_numpy(IMP::Model *m, IMP::Vector3DKey k,
        read_only);
 }
 
+PyObject *_get_vector3dderiv_numpy(IMP::Model *m, IMP::Vector3DDerivKey k,
+                                   PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz
+      = m->IMP::internal::Vector3DDerivAttributeTable::get_attribute_size(k);
+  return _get_vector3ds_data_numpy(m_pyobj, sz,
+    sz == 0 ? nullptr
+      : m->IMP::internal::Vector3DDerivAttributeTable::access_attribute_data(k),
+    read_only);
+}
+
+PyObject *_get_vector3dderiv_derivatives_numpy(
+               IMP::Model *m, IMP::Vector3DDerivKey k,
+               PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz
+      = m->IMP::internal::Vector3DDerivAttributeTable::get_derivative_size(k);
+  return _get_vector3ds_data_numpy(m_pyobj, sz,
+    sz == 0 ? nullptr
+     : m->IMP::internal::Vector3DDerivAttributeTable::access_derivative_data(k),
+    read_only);
+}
+
+PyObject *_get_vector4ds_numpy(IMP::Model *m, IMP::Vector4DKey k,
+                               PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz = m->IMP::internal::Vector4DAttributeTable::get_attribute_size(k);
+  return _get_vector4ds_data_numpy(m_pyobj, sz,
+       sz == 0 ? nullptr
+        : m->IMP::internal::Vector4DAttributeTable::access_attribute_data(k),
+       read_only);
+}
+
+PyObject *_get_vector4dderiv_numpy(IMP::Model *m, IMP::Vector4DDerivKey k,
+                                   PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz
+      = m->IMP::internal::Vector4DDerivAttributeTable::get_attribute_size(k);
+  return _get_vector4ds_data_numpy(m_pyobj, sz,
+    sz == 0 ? nullptr
+      : m->IMP::internal::Vector4DDerivAttributeTable::access_attribute_data(k),
+    read_only);
+}
+
+PyObject *_get_vector4dderiv_derivatives_numpy(
+               IMP::Model *m, IMP::Vector4DDerivKey k,
+               PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz
+      = m->IMP::internal::Vector4DDerivAttributeTable::get_derivative_size(k);
+  return _get_vector4ds_data_numpy(m_pyobj, sz,
+    sz == 0 ? nullptr
+     : m->IMP::internal::Vector4DDerivAttributeTable::access_derivative_data(k),
+    read_only);
+}
+
 PyObject *_get_spheres_numpy(IMP::Model *m, PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->get_spheres_size();
@@ -298,7 +394,10 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
            k as a NumPy array. See Model::get_ints_numpy() for more details."""
         _numpy_meth_map = {IntKey: _get_ints_numpy,
                            FloatKey: _get_floats_numpy,
-                           Vector3DKey: _get_vector3ds_numpy}
+                           Vector3DKey: _get_vector3ds_numpy,
+                           Vector3DDerivKey: _get_vector3dderiv_numpy,
+                           Vector4DKey: _get_vector4ds_numpy,
+                           Vector4DDerivKey: _get_vector4dderiv_numpy}
         return _numpy_meth_map[type(k)](self, k, self, read_only)
 
     def get_floats_numpy(self, k, read_only=False):
@@ -307,9 +406,13 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
         return _get_floats_numpy(self, k, self, read_only)
 
     def get_derivatives_numpy(self, k, read_only=False):
-        """Get the model's attribute derivatives array for FloatKey k
+        """Get the model's attribute derivatives array for key k
            as a NumPy array. See Model::get_ints_numpy() for more details."""
-        return _get_derivatives_numpy(self, k, self, read_only)
+        _numpy_meth_map = {
+            FloatKey: _get_derivatives_numpy,
+            Vector3DDerivKey: _get_vector3dderiv_derivatives_numpy,
+            Vector4DDerivKey: _get_vector4dderiv_derivatives_numpy}
+        return _numpy_meth_map[type(k)](self, k, self, read_only)
 
     def get_vector3ds_numpy(self, k, read_only=False):
         """Get the model's attribute array for Vector3DKey k as a NumPy array.

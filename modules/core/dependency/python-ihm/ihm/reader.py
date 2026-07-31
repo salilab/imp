@@ -16,6 +16,7 @@ import ihm.source
 import ihm.cross_linkers
 import ihm.multi_state_scheme
 import ihm.flr
+import numbers
 import inspect
 import warnings
 import collections
@@ -161,20 +162,35 @@ class _ChemCompIDMapper(IDMapper):
             self._standard_by_id.update((item[1].id, item[1])
                                         for item in alphabet._comps.items())
 
-    def get_by_id(self, objid, newcls=None):
+    def get_by_id(self, objid, newcls=None, add_to_list=True):
         # Don't modify class of standard residue types
         if objid in self._standard_by_id:
             obj = self._standard_by_id[objid]
             if objid not in self._obj_by_id:
                 self._obj_by_id[objid] = obj
-                self.system_list.append(obj)
+                if add_to_list:
+                    self.system_list.append(obj)
             return obj
         else:
             # Assign nonpolymer class based on the ID
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
                 newcls = (ihm.WaterChemComp if objid == 'HOH'
                           else ihm.NonPolymerChemComp)
-            return super().get_by_id(objid, newcls)
+            if add_to_list:
+                return super().get_by_id(objid, newcls)
+            else:
+                # Temporarily set system_list=None so that super class
+                # method does not add the new object
+                bkp = self.system_list
+                try:
+                    self.system_list = None
+                    return super().get_by_id(objid, newcls)
+                finally:
+                    self.system_list = bkp
+
+    def get_by_id_or_none(self, objid, newcls=None, add_to_list=True):
+        return (None if objid in (None, ihm.unknown)
+                else self.get_by_id(objid, newcls, add_to_list))
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -254,16 +270,30 @@ class _FeatureIDMapper(IDMapper):
         elif newcls is ihm.restraint.PseudoSiteFeature:
             # Pseudo site constructor needs "site" argument
             return newcls(None)
+        elif newcls is ihm.restraint.InterfaceResidueFeature:
+            # constructor needs ranges, binding_partners and dataset argument
+            return newcls([], [], None)
         else:
             # Make subclass (takes one ranges/atoms argument)
             return newcls([])
 
     def _update_old_object(self, obj, newcls=None):
+        # Don't downgrade an InterfaceResidue to a Residue
+        if (newcls is ihm.restraint.ResidueFeature
+                and obj.__class__ is ihm.restraint.InterfaceResidueFeature):
+            return
         super()._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         if (newcls is ihm.restraint.ResidueFeature
                 and not hasattr(obj, 'ranges')):
             obj.ranges = []
+        elif newcls is ihm.restraint.InterfaceResidueFeature:
+            if not hasattr(obj, 'ranges'):
+                obj.ranges = []
+            if not hasattr(obj, 'binding_partners'):
+                obj.binding_partners = []
+            if not hasattr(obj, 'dataset'):
+                obj.dataset = []
         elif (newcls is ihm.restraint.AtomFeature
               and not hasattr(obj, 'atoms')):
             obj.atoms = []
@@ -564,6 +594,11 @@ class SystemReader:
             self.system.restraints, self.datasets,
             ihm.restraint.SASRestraint, None)
 
+        #: Mapping from ID to :class:`ihm.restraint.EPRRestraint` objects
+        self.epr_restraints = _DatasetAssemblyIDMapper(
+            self.system.restraints, self.datasets,
+            ihm.restraint.EPRRestraint)
+
         #: Mapping from ID to :class:`ihm.restraint.Feature` objects
         self.features = _FeatureIDMapper(self.system.orphan_features,
                                          ihm.restraint.Feature)
@@ -589,6 +624,12 @@ class SystemReader:
             self.system.restraints, ihm.restraint.PredictedContactRestraint,
             *(None,) * 5)
 
+        #: Mapping from ID to :class:`ihm.restraint.HydroxylRadicalFPRestraint`
+        #: objects
+        self.hydro_rad_restraints = IDMapper(
+            self.system.restraints, ihm.restraint.HydroxylRadicalFPRestraint,
+            *(None,) * 3)
+
         #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
         #: :class:`ihm.restraint.DerivedDistanceRestraint` objects
         self.dist_restraint_groups = IDMapper(
@@ -597,6 +638,11 @@ class SystemReader:
         #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
         #: :class:`ihm.restraint.PredictedContactRestraint` objects
         self.pred_cont_restraint_groups = IDMapper(
+            self.system.restraint_groups, ihm.restraint.RestraintGroup)
+
+        #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
+        #: :class:`ihm.restraint.HydroxylRadicalFPRestraint` objects
+        self.hydro_rad_restraint_groups = IDMapper(
             self.system.restraint_groups, ihm.restraint.RestraintGroup)
 
         #: Mapping from ID to :class:`ihm.geometry.GeometricObject` objects
@@ -679,6 +725,23 @@ class SystemReader:
             self.system._orphan_relaxation_times,
             ihm.multi_state_scheme.RelaxationTime,
             *(None,) * 2)
+
+        #: Mapping from ID to :class:`ihm.restraint.ProbeType` objects
+        self.probe_types = IDMapper(self.system._orphan_probe_types,
+                                    ihm.restraint.ProbeType, *(None,) * 4)
+
+        #: Mapping from ID to :class:`ihm.restraint.ProbePosition` objects
+        self.probe_positions = IDMapper(
+            self.system._orphan_probe_positions,
+            ihm.restraint.ProbePosition, *(None,) * 3)
+
+        #: Mapping from ID to :class:`ihm.restraint.ConjugateProbe` objects
+        self.conjugate_probes = IDMapper(
+            self.system.probes, ihm.restraint.ConjugateProbe, *(None,) * 3)
+
+        #: Mapping from ID to :class:`ihm.restraint.LigandProbe` objects
+        self.ligand_probes = IDMapper(
+            self.system.probes, ihm.restraint.LigandProbe, *(None,) * 3)
 
         # FLR part
 
@@ -863,6 +926,18 @@ class SystemReader:
         for e in self.system.entities:
             e.sequence = tuple(e.sequence)
 
+        # If the input file defines the complete assembly, transfer
+        # user-provided info to system.complete_assembly.
+        # (Assembly._signature() may hash Entities, so the sequence
+        # needs to be immutable first.)
+        self.system._make_complete_assembly()
+        complete_sig = self.system.complete_assembly._signature()
+
+        for a in self.system.orphan_assemblies:
+            if complete_sig is not None and a._signature() == complete_sig:
+                self.system.complete_assembly.name = a.name
+                self.system.complete_assembly.description = a.description
+
 
 class Handler:
     """Base class for all handlers of mmCIF data.
@@ -967,6 +1042,16 @@ class Handler:
             if d is not None:
                 setattr(obj, val, d)
 
+    def preserve_optional_fields(self, data, keys=[], mapkeys={}):
+        """Read optional fields and return them as a dict. If no optional
+           fields were present, return None. This is intended to be used
+           to preserve little-used mmCIF fields that we don't support
+           directly, e.g. for make_mmcif."""
+        fields = {k: data[k] for k in keys}
+        fields.update({v: data[k] for k, v in mapkeys.items()})
+        if any(v is not None for v in fields.values()):
+            return fields
+
     system = property(lambda self: self.sysr.system,
                       doc="The :class:`ihm.System` object to read into")
 
@@ -982,10 +1067,17 @@ class _CollectionHandler(Handler):
 class _StructHandler(Handler):
     category = '_struct'
 
-    def __call__(self, title, entry_id, pdbx_model_details):
+    def __call__(self, title, entry_id, pdbx_model_details,
+                 pdbx_casp_flag, pdbx_descriptor, pdbx_details,
+                 pdbx_model_type_details):
         self.copy_if_present(self.system, locals(), keys=('title',),
                              mapkeys={'entry_id': 'id',
                                       'pdbx_model_details': 'model_details'})
+        # Preserve less commonly-used struct fields
+        self.system._struct_pdbx_details = self.preserve_optional_fields(
+            locals(), keys=('pdbx_descriptor', 'pdbx_details',
+                            'pdbx_model_type_details'),
+            mapkeys={'pdbx_casp_flag': 'pdbx_CASP_flag'})
 
 
 class _AuditConformHandler(Handler):
@@ -1024,7 +1116,8 @@ class _CitationHandler(Handler):
 
     def __call__(self, id, title, year, pdbx_database_id_pubmed,
                  journal_abbrev, journal_volume, pdbx_database_id_doi,
-                 page_first, page_last):
+                 page_first, page_last, journal_id_astm, journal_id_csd,
+                 journal_id_issn):
         s = self.sysr.citations.get_by_id(id)
         s.is_primary = (id == 'primary')
         self.copy_if_present(
@@ -1032,6 +1125,9 @@ class _CitationHandler(Handler):
             mapkeys={'pdbx_database_id_pubmed': 'pmid',
                      'journal_abbrev': 'journal',
                      'journal_volume': 'volume',
+                     'journal_id_astm': 'journal_astm',
+                     'journal_id_csd': 'journal_csd',
+                     'journal_id_issn': 'journal_issn',
                      'pdbx_database_id_doi': 'doi'})
         if page_first is not None:
             if page_last is not None:
@@ -1184,11 +1280,12 @@ class _ChemCompHandler(Handler):
                              for x in inspect.getmembers(ihm, inspect.isclass)
                              if issubclass(x[1], ihm.ChemComp))
 
-    def __call__(self, type, id, name, formula):
+    def __call__(self, type, id, name, formula, formula_weight: float):
         typ = 'other' if type is None else type.lower()
         s = self.sysr.chem_comps.get_by_id(
             id, self.type_map.get(typ, ihm.ChemComp))
-        self.copy_if_present(s, locals(), keys=('name', 'formula'))
+        self.copy_if_present(s, locals(), keys=('name', 'formula',
+                                                'formula_weight'))
 
 
 class _ChemDescriptorHandler(Handler):
@@ -1215,11 +1312,11 @@ class _EntityHandler(Handler):
             if issubclass(x[1], ihm.source.Source)
             and x[1] is not ihm.source.Source)
 
-    def __call__(self, id, details, type, src_method, formula_weight,
+    def __call__(self, id, details, type, src_method, formula_weight: float,
                  pdbx_description, pdbx_number_of_molecules):
         s = self.sysr.entities.get_by_id(id)
         self.copy_if_present(
-            s, locals(), keys=('details',),
+            s, locals(), keys=('details', 'formula_weight'),
             mapkeys={'pdbx_description': 'description',
                      'pdbx_number_of_molecules': 'number_of_molecules'})
         if src_method:
@@ -1324,11 +1421,22 @@ class _StructRefSeqHandler(Handler):
 class _StructRefSeqDifHandler(Handler):
     category = '_struct_ref_seq_dif'
 
-    def __call__(self, align_id, seq_num: int, db_mon_id, mon_id, details):
+    def __call__(self, align_id, seq_num: int, pdbx_seq_db_seq_num: int,
+                 db_mon_id, mon_id, details):
         align = self.sysr.alignments.get_by_id(align_id)
-        db_monomer = self.sysr.chem_comps.get_by_id_or_none(db_mon_id)
+        # db_mon_id relates to the database, not our structure, so this
+        # component should *not* go in system._orphan_chem_comps
+        db_monomer = self.sysr.chem_comps.get_by_id_or_none(
+            db_mon_id, add_to_list=False)
         monomer = self.sysr.chem_comps.get_by_id_or_none(mon_id)
         sd = ihm.reference.SeqDif(seq_num, db_monomer, monomer, details)
+        # db_seq_id isn't exposed in the base class constructor
+        sd.db_seq_id = pdbx_seq_db_seq_num
+        # Set more appropriate type if possible
+        if monomer and not db_monomer:
+            sd.__class__ = ihm.reference.InsertionSeqDif
+        elif db_monomer and not monomer:
+            sd.__class__ = ihm.reference.DeletionSeqDif
         align.seq_dif.append(sd)
 
 
@@ -1417,12 +1525,21 @@ class _EntityNonPolyHandler(Handler):
 class _StructAsymHandler(Handler):
     category = '_struct_asym'
 
-    def __call__(self, id, entity_id, details):
+    def __call__(self, id, entity_id, details, pdbx_pdb_id, pdbx_alt_id,
+                 pdbx_blank_pdb_chainid_flag, pdbx_type, pdbx_order,
+                 pdbx_modified):
         s = self.sysr.asym_units.get_by_id(id)
         # Keep this ID (like a user-assigned ID); don't reassign it on output
         s.id = id
         s.entity = self.sysr.entities.get_by_id(entity_id)
         self.copy_if_present(s, locals(), keys=('details',))
+        # Preserve less commonly-used struct_asym fields
+        s._pdbx_details = self.preserve_optional_fields(
+            locals(), keys=('pdbx_alt_id', 'pdbx_type',
+                            'pdbx_order', 'pdbx_modified'),
+            mapkeys={'pdbx_pdb_id': 'pdbx_PDB_id',
+                     'pdbx_blank_pdb_chainid_flag':
+                     'pdbx_blank_PDB_chainid_flag'})
 
 
 class _AssemblyHandler(Handler):
@@ -1460,21 +1577,10 @@ class _AssemblyDetailsHandler(Handler):
         for (a, obj, entity_poly_segment_id) in self._read_args:
             a.append(self.sysr.ranges.get(obj, entity_poly_segment_id))
 
-        self.system._make_complete_assembly()
-        # The order of components should not matter, so put in a consistent
-        # order so we can compare against other assemblies
-        complete = sorted(self.system.complete_assembly,
-                          key=lambda x: id(x))
-
         for a in self.system.orphan_assemblies:
             # Any EntityRange or AsymUnitRange which covers an entire entity,
             # replace with Entity or AsymUnit object
             a[:] = [self._handle_component(x) for x in a]
-            # If the input file defines the complete assembly, transfer
-            # user-provided info to system.complete_assembly
-            if sorted(a, key=lambda x: id(x)) == complete:
-                self.system.complete_assembly.name = a.name
-                self.system.complete_assembly.description = a.description
 
     def _handle_component(self, comp):
         if isinstance(comp, ihm.EntityRange) \
@@ -1553,6 +1659,7 @@ class _ExtFileHandler(Handler):
         # Handle DOI that is itself a file
         if file_path is None:
             f.path = '.'
+        f._allow_duplicates = True
 
 
 class _DatasetListHandler(Handler):
@@ -1750,7 +1857,7 @@ class _StartingModelDetailsHandler(Handler):
         # We might not have a suitable range yet for this ID, so fill this
         # in at finalize time
         m.asym_unit = (asym_id, entity_poly_segment_id)
-        m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
+        m.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         self.copy_if_present(
             m, locals(), keys=('description',),
             mapkeys={'starting_model_auth_asym_id': 'asym_id'})
@@ -1803,6 +1910,20 @@ class _StartingComparativeModelsHandler(Handler):
             dataset, asym_id, seq_id_range, template_seq_id_range,
             identity, aln)
         m.templates.append(t)
+
+    def finalize(self):
+        # Convert template range from IHM to template numbering by
+        # subtracting the starting model offset
+        for m in self.system.orphan_starting_models:
+            if m.offset:
+                for t in m.templates:
+                    seq_id_begin = t.seq_id_range[0]
+                    if isinstance(seq_id_begin, numbers.Integral):
+                        seq_id_begin -= m.offset
+                    seq_id_end = t.seq_id_range[1]
+                    if isinstance(seq_id_end, numbers.Integral):
+                        seq_id_end -= m.offset
+                    t.seq_id_range = (seq_id_begin, seq_id_end)
 
 
 class _ProtocolHandler(Handler):
@@ -2196,18 +2317,42 @@ class _SASRestraintHandler(Handler):
         r.fits[model] = ihm.restraint.SASRestraintFit(chi_value=chi_value)
 
 
+class _EPRRestraintHandler(Handler):
+    category = '_ihm_epr_restraint'
+
+    def __call__(self, dataset_list_id, model_id, fitting_particle_type,
+                 fitting_method, fitting_method_citation_id,
+                 fitting_state, fitting_software_id, chi_value: float,
+                 details):
+        # EPR restraints don't have their own IDs - they use the dataset ID
+        r = self.sysr.epr_restraints.get_by_dataset(dataset_list_id, None)
+        r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
+            fitting_method_citation_id)
+        r.software = self.sysr.software.get_by_id_or_none(fitting_software_id)
+        self.copy_if_present(
+            r, locals(),
+            keys=('fitting_particle_type', 'fitting_method', 'details'))
+        fs = (fitting_state if fitting_state not in (None, ihm.unknown)
+              else 'Single')
+        r.multi_state = fs.lower() != 'single'
+
+        model = self.sysr.models.get_by_id(model_id)
+        r.fits[model] = ihm.restraint.EPRRestraintFit(chi_value=chi_value)
+
+
 class _SphereObjSiteHandler(Handler):
     category = '_ihm_sphere_obj_site'
     ignored_keywords = ['ordinal_id']
 
-    def __call__(self, model_id, asym_id, rmsf: float, seq_id_begin,
-                 seq_id_end, cartn_x, cartn_y, cartn_z, object_radius):
+    def __call__(self, model_id, asym_id, rmsf: float, seq_id_begin: int,
+                 seq_id_end: int, cartn_x: float, cartn_y: float,
+                 cartn_z: float, object_radius: float):
         model = self.sysr.models.get_by_id(model_id)
         asym = self.sysr.asym_units.get_by_id(asym_id)
         s = ihm.model.Sphere(
-            asym_unit=asym, seq_id_range=(int(seq_id_begin), int(seq_id_end)),
-            x=float(cartn_x), y=float(cartn_y), z=float(cartn_z),
-            radius=float(object_radius), rmsf=rmsf)
+            asym_unit=asym, seq_id_range=(seq_id_begin, seq_id_end),
+            x=cartn_x, y=cartn_y, z=cartn_z,
+            radius=object_radius, rmsf=rmsf)
         model.add_sphere(s)
 
 
@@ -2216,7 +2361,8 @@ class _AtomSiteHandler(Handler):
 
     def __init__(self, *args):
         super().__init__(*args)
-        self._missing_sequence = collections.defaultdict(dict)
+        self._missing_poly_sequence = collections.defaultdict(dict)
+        self._missing_nonpoly_chem_comp = collections.defaultdict(dict)
         # Mapping from asym+auth_seq_id to internal ID
         self._seq_id_map = {}
 
@@ -2255,7 +2401,7 @@ class _AtomSiteHandler(Handler):
             asym = self.sysr.asym_units.get_by_id(auth_asym_id)
             # Chances are the entity_poly table is missing too, so remember
             # the comp_id to help us construct missing sequence info
-            self._missing_sequence[asym][seq_id] = label_comp_id
+            self._missing_poly_sequence[asym][seq_id] = label_comp_id
         else:
             asym = self.sysr.asym_units.get_by_id(label_asym_id)
         auth_seq_id = self.get_int_or_string(auth_seq_id)
@@ -2266,10 +2412,15 @@ class _AtomSiteHandler(Handler):
         else:
             our_seq_id = seq_id
         group = 'ATOM' if group_pdb is None else group_pdb
+        het = group != 'ATOM'
+        if het:
+            # Remember the comp_id to help us construct missing
+            # pdbx_entity_nonpoly if needed
+            self._missing_nonpoly_chem_comp[asym] = label_comp_id
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=our_seq_id, atom_id=label_atom_id,
             type_symbol=type_symbol, x=cartn_x, y=cartn_y,
-            z=cartn_z, het=group != 'ATOM', biso=b_iso_or_equiv,
+            z=cartn_z, het=het, biso=b_iso_or_equiv,
             occupancy=occupancy, alt_id=label_alt_id)
         model.add_atom(a)
 
@@ -2284,7 +2435,7 @@ class _AtomSiteHandler(Handler):
     def finalize(self):
         # Fill in missing Entity information from comp_ids
         entity_from_seq = {}
-        for asym, comp_from_seq_id in self._missing_sequence.items():
+        for asym, comp_from_seq_id in self._missing_poly_sequence.items():
             if asym.entity is None:
                 # Fill in gaps in seq_id with UNK residues
                 seq_len = max(comp_from_seq_id.keys())
@@ -2299,6 +2450,12 @@ class _AtomSiteHandler(Handler):
                     asym.entity = ihm.Entity(seq)
                     entity_from_seq[seq] = asym.entity
                     self.system.entities.append(asym.entity)
+
+        for asym, comp_id in self._missing_nonpoly_chem_comp.items():
+            if (asym.entity and asym.entity.type != 'branched'
+                    and len(asym.entity.sequence) == 0):
+                cc = self.sysr.chem_comps.get_by_id(comp_id)
+                asym.entity.sequence = (cc,)
 
 
 class _StartingModelCoordHandler(Handler):
@@ -2333,15 +2490,32 @@ class _StartingModelSeqDifHandler(Handler):
 class _PolyResidueFeatureHandler(Handler):
     category = '_ihm_poly_residue_feature'
 
-    def __call__(self, feature_id, entity_id, asym_id, seq_id_begin,
-                 seq_id_end):
+    _gran_map = {'by-residue': True, 'by-feature': False}
+
+    def __call__(self, feature_id, entity_id, asym_id, seq_id_begin: int,
+                 seq_id_end: int, residue_range_granularity, rep_atom):
         f = self.sysr.features.get_by_id(
             feature_id, ihm.restraint.ResidueFeature)
+        f.rep_atom = rep_atom
+        f.by_residue = self._gran_map.get(residue_range_granularity,
+                                          residue_range_granularity)
         asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
-        r1 = int(seq_id_begin)
-        r2 = int(seq_id_end)
         # allow out-of-range ranges
-        f.ranges.append(asym_or_entity(r1, r2))
+        f.ranges.append(asym_or_entity(seq_id_begin, seq_id_end))
+
+
+class _InterfaceResidueFeatureHandler(Handler):
+    category = '_ihm_interface_residue_feature'
+
+    def __call__(self, feature_id, binding_partner_entity_id,
+                 binding_partner_asym_id, dataset_list_id, details):
+        f = self.sysr.features.get_by_id(
+            feature_id, ihm.restraint.InterfaceResidueFeature)
+        asym_or_entity = self._get_asym_or_entity(binding_partner_asym_id,
+                                                  binding_partner_entity_id)
+        f.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        f.details = details or f.details
+        f.binding_partners.append(asym_or_entity)
 
 
 class _FeatureListHandler(Handler):
@@ -2493,6 +2667,27 @@ class _PredictedContactRestraintHandler(Handler):
                                                       distance_upper_limit)
         r.by_residue = self.get_lower(model_granularity) == 'by-residue'
         r.probability = probability
+        r.software = self.sysr.software.get_by_id_or_none(software_id)
+
+
+class _HydroxylRadicalRestraintHandler(Handler):
+    category = '_ihm_hydroxyl_radical_fp_restraint'
+
+    def __call__(self, id, group_id, dataset_list_id, asym_id,
+                 seq_id: int, predicted_sasa: float,
+                 fp_rate: float, fp_rate_error: float,
+                 log_pf: float, log_pf_error: float,
+                 software_id):
+        r = self.sysr.hydro_rad_restraints.get_by_id(id)
+        if group_id is not None:
+            rg = self.sysr.hydro_rad_restraint_groups.get_by_id(group_id)
+            rg.append(r)
+        r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        r.residue = asym.residue(seq_id)
+        r.predicted_sasa = predicted_sasa
+        r.rate, r.rate_error = fp_rate, fp_rate_error
+        r.log_pf, r.log_pf_error = log_pf, log_pf_error
         r.software = self.sysr.software.get_by_id_or_none(software_id)
 
 
@@ -2924,6 +3119,7 @@ class _CrossLinkListHandler(Handler):
                  group_id, id, entity_id_1, entity_id_2, seq_id_1, seq_id_2,
                  linker_type, details):
         dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        _force_other = False
         if linker_chem_comp_descriptor_id is None and linker_type is not None:
             linker = self._get_linker_by_name(linker_type)
         else:
@@ -2931,9 +3127,12 @@ class _CrossLinkListHandler(Handler):
                 linker_chem_comp_descriptor_id)
             if linker_type:
                 self._linker_type[linker] = linker_type
+                _force_other = (linker_type.lower() == 'other')
         # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
         r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
+        if _force_other:
+            r._force_other = True
 
         xl_group = self.sysr.experimental_xl_groups.get_by_id(group_id)
         xl = self.sysr.experimental_xls.get_by_id(id)
@@ -3256,6 +3455,77 @@ class _RelaxationTimeMultiStateSchemeHandler(Handler):
             # Otherwise, add it to the multi-state scheme
             else:
                 mss.add_relaxation_time(r)
+
+
+class _ProbeListHandler(Handler):
+    category = '_ihm_probe_list'
+
+    _origin_map = {'intrinsic': True, 'extrinsic': False}
+    _link_map = {'covalent': True, 'ligand': False}
+
+    def __call__(self, probe_id, probe_name, reactive_probe_flag: bool,
+                 reactive_probe_name, probe_origin, probe_link_type,
+                 probe_chem_comp_descriptor_id,
+                 reactive_probe_chem_comp_descriptor_id):
+        p = self.sysr.probe_types.get_by_id(probe_id)
+        p.name = probe_name
+        origin = self.get_lower(probe_origin)
+        p.intrinsic = self._origin_map.get(origin, origin)
+        link_type = self.get_lower(probe_link_type)
+        p.covalent = self._link_map.get(link_type, link_type)
+        p.descriptor = self.sysr.chem_descriptors.get_by_id_or_none(
+            probe_chem_comp_descriptor_id)
+        p.reactive = reactive_probe_flag
+        p.reactive_descriptor = self.sysr.chem_descriptors.get_by_id_or_none(
+            reactive_probe_chem_comp_descriptor_id)
+        p.reactive_name = reactive_probe_name
+
+
+class _ProbePositionHandler(Handler):
+    category = '_ihm_poly_probe_position'
+
+    def __call__(self, id, entity_id, seq_id: int, mutation_flag: bool,
+                 mut_res_chem_comp_id, modification_flag: bool,
+                 mod_res_chem_comp_descriptor_id, description):
+        pp = self.sysr.probe_positions.get_by_id(id)
+        entity = self.sysr.entities.get_by_id(entity_id)
+        pp.residue = entity.residue(seq_id)
+        pp.mutated = mutation_flag
+        pp.mutated_chem_comp = self.sysr.chem_comps.get_by_id_or_none(
+            mut_res_chem_comp_id)
+        pp.modified = modification_flag
+        pp.modified_descriptor = self.sysr.chem_descriptors.get_by_id_or_none(
+            mod_res_chem_comp_descriptor_id)
+        pp.description = description
+
+
+class _ProbeConjugateHandler(Handler):
+    category = '_ihm_poly_probe_conjugate'
+
+    def __call__(self, id, probe_id, position_id, chem_comp_descriptor_id,
+                 ambiguous_stoichiometry_flag: bool,
+                 probe_stoichiometry: float, details, dataset_list_id):
+        p = self.sysr.conjugate_probes.get_by_id(id)
+        p.probe_type = self.sysr.probe_types.get_by_id(probe_id)
+        p.position = self.sysr.probe_positions.get_by_id(position_id)
+        p.descriptor = self.sysr.chem_descriptors.get_by_id_or_none(
+            chem_comp_descriptor_id)
+        p.ambiguous_stoichiometry = ambiguous_stoichiometry_flag
+        p.probe_stoichiometry = probe_stoichiometry
+        p.details = details
+        p.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+
+
+class _LigandProbeHandler(Handler):
+    category = '_ihm_ligand_probe'
+
+    def __call__(self, probe_id, entity_id, details, dataset_list_id):
+        # At most one ligand probe per type, so it reuses probe_id
+        p = self.sysr.ligand_probes.get_by_id(probe_id)
+        p.probe_type = self.sysr.probe_types.get_by_id(probe_id)
+        p.entity = self.sysr.entities.get_by_id(entity_id)
+        p.details = details
+        p.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
 
 
 # FLR part
@@ -3910,9 +4180,11 @@ class IHMVariant(Variant):
         _EM2DRestraintHandler, _EM2DFittingHandler, _SASRestraintHandler,
         _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
         _PolyResidueFeatureHandler, _PolyAtomFeatureHandler,
+        _InterfaceResidueFeatureHandler,
         _NonPolyFeatureHandler, _PseudoSiteFeatureHandler, _PseudoSiteHandler,
         _DerivedDistanceRestraintHandler, _HDXRestraintHandler,
         _PredictedContactRestraintHandler,
+        _HydroxylRadicalRestraintHandler, _EPRRestraintHandler,
         _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
         _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
         _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,
@@ -3924,7 +4196,9 @@ class IHMVariant(Variant):
         _OrderedModelHandler, _OrderedEnsembleHandler,
         _MultiStateSchemeHandler, _MultiStateSchemeConnectivityHandler,
         _KineticRateHandler,
-        _RelaxationTimeHandler, _RelaxationTimeMultiStateSchemeHandler
+        _RelaxationTimeHandler, _RelaxationTimeMultiStateSchemeHandler,
+        _ProbeListHandler, _ProbePositionHandler, _ProbeConjugateHandler,
+        _LigandProbeHandler
     ]
 
     def get_handlers(self, sysr):

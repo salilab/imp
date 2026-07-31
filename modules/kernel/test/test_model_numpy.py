@@ -1,7 +1,7 @@
 import IMP
 import IMP.core
 import IMP.test
-import sys
+
 
 class Tests(IMP.test.TestCase):
 
@@ -266,6 +266,77 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertRaises(NotImplementedError,
                               m1.get_internal_coordinate_derivatives_numpy)
+
+    def test_get_numpy_vector3d(self):
+        """Test get_numpy method for Vector3DKey"""
+        k = IMP.Vector3DKey("test v3dkey")
+        m1, m2, p1, p2, p3 = self._get_numpy_vectornd(IMP.Vector3D, 3, k)
+
+    def test_numpy_vector3d_deriv(self):
+        """Test numpy methods for Vector3DDerivKey"""
+        k = IMP.Vector3DDerivKey("test v3dderivkey")
+        self._test_numpy_vector_nd_deriv(IMP.Vector3D, 3, k)
+
+    def test_get_numpy_vector4d(self):
+        """Test get_numpy method for Vector4DKey"""
+        k = IMP.Vector4DKey("test v4dkey")
+        m1, m2, p1, p2, p3 = self._get_numpy_vectornd(IMP.Vector4D, 4, k)
+
+    def test_numpy_vector4d_deriv(self):
+        """Test numpy methods for Vector4DDerivKey"""
+        k = IMP.Vector4DDerivKey("test v4dderivkey")
+        self._test_numpy_vector_nd_deriv(IMP.Vector4D, 4, k)
+
+    def _test_numpy_vector_nd_deriv(self, vector_cls, n, k):
+        m1, m2, p1, p2, p3 = self._get_numpy_vectornd(vector_cls, n, k)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            c = m1.get_derivatives_numpy(k)
+            self.assertIs(c.base, m1)
+            self.assertEqual(len(c), 2) # no VectorD derivatives for p3
+            self.assertAlmostEqual(c[0][0], 0.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][1], 0.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][2], 0.0, delta=1e-4)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_derivatives_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, 42.0)
+
+    def _get_numpy_vectornd(self, vector_cls, n, k):
+        m1 = IMP.Model("numpy VectorDKey")
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+
+        m2 = IMP.Model("numpy no VectorDKey")
+        p12 = IMP.Particle(m2)
+
+        m1.add_attribute(k, p1, vector_cls(*range(1, 1 + n)))
+        m1.add_attribute(k, p2, vector_cls(*range(5, 5 + n)))
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            c = m1.get_numpy(k)
+            self.assertIs(c.base, m1)
+            self.assertEqual(c.shape, (2, n)) # no VectorD attribute for p3
+            self.assertAlmostEqual(c[0][0], 1.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][1], 2.0, delta=1e-4)
+            self.assertAlmostEqual(c[0][2], 3.0, delta=1e-4)
+
+            self.assertAlmostEqual(c[1][0], 5.0, delta=1e-4)
+            self.assertAlmostEqual(c[1][1], 6.0, delta=1e-4)
+            self.assertAlmostEqual(c[1][2], 7.0, delta=1e-4)
+            c[1][0] = 24.0
+            self.assertAlmostEqual(m1.get_attribute(k, p2)[0],
+                                   24.0, delta=1e-6)
+
+            # Read-only array should raise ValueError on assignment
+            c = m1.get_numpy(k, read_only=True)
+            self.assertRaises(ValueError, c[1].__setitem__, 0, 24.0)
+
+            c = m2.get_numpy(k)
+            self.assertIs(c.base, m2)
+            self.assertEqual(len(c), 0) # no Vector3D for this model
+        return m1, m2, p1, p2, p3
 
 
 if __name__ == '__main__':

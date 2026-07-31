@@ -1,4 +1,3 @@
-import unittest
 import IMP.rmf
 import IMP.test
 import IMP.core
@@ -204,7 +203,6 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(fn)
             rmfh = IMP.rmf.create_hierarchies(f, m)[0]
 
-
             lvs=IMP.atom.get_leaves(hroot1)
             rmflvs=IMP.atom.get_leaves(rmfh)
             self.assertEqual(len(rmflvs),len(lvs))
@@ -226,8 +224,6 @@ class Tests(IMP.test.TestCase):
             # however the following fails
             self.assertEqual(len(rmfrbs),1)
             self.assertEqual(len(list(rmfrbs)[0].get_rigid_members()),len(rb.get_rigid_members()))
-
-
 
     def test_nested_rigid_body(self):
         """Test loading and saving of rigid bodies that contain
@@ -342,6 +338,7 @@ class Tests(IMP.test.TestCase):
                         0,
                         delta=.1)
                 print("ok")
+
     def test_nested_rigid_body_linking(self):
         """Test create, save, load, link, and save with nested rigid bodies"""
         for suffix in IMP.rmf.suffixes:
@@ -420,8 +417,7 @@ class Tests(IMP.test.TestCase):
                 coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
             del f
 
-
-            ######## this is the new code ########
+            # this is the new code ########
             # copy the just-written RMF file to a new RMF file
             #  the copy is performed by creating a new RMF, linking the hier,
             #  and loading/saving frames one by one
@@ -449,7 +445,6 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(out_fn)
             r2 = IMP.rmf.create_hierarchies(f,m)[0]
             #####################################
-
 
             IMP.set_log_level(IMP.VERBOSE)
             for pi in m.get_particle_indexes():
@@ -518,7 +513,6 @@ class Tests(IMP.test.TestCase):
                 rbd.add_non_rigid_member(p)
                 ps.append(p)
                 nrbps.append(p)
-
 
             # setup output
             fn = self.get_tmp_file_name("rigid_implicit" + suffix)

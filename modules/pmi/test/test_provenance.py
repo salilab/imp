@@ -4,6 +4,7 @@ import IMP.pmi.macros
 import IMP.pmi.topology
 import IMP.pmi.tools
 
+
 class Tests(IMP.test.TestCase):
 
     def make_representation(self):

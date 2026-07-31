@@ -14,13 +14,12 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         bb = IMP.algebra.BoundingBox3D([0,0,0],[50,50,50])
-        d.set_coordinates( IMP.algebra.get_random_vector_in(bb) )
+        d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
         d.set_radius(2)
         d.set_coordinates_are_optimized(True)
         IMP.atom.Mass.setup_particle(p, 1)
         IMP.atom.Diffusion.setup_particle(p)
         return p
-
 
     def _create_tamd_centroid(self, m):
         """Create a TAMD centroid for a bunch of particles,
@@ -42,7 +41,7 @@ class Tests(IMP.test.TestCase):
             fine_p = self._create_fine_particle(m, "fine particle %d" % i)
             fine_particles.append(fine_p)
             fine_pH = IMP.core.Hierarchy.setup_particle(fine_p)
-            pH.add_child( fine_pH )
+            pH.add_child(fine_pH)
         print(pH.get_children())
         refiner = IMP.core.ChildrenRefiner(
             IMP.core.Hierarchy.get_default_traits())
@@ -52,17 +51,15 @@ class Tests(IMP.test.TestCase):
         # TAMD realization of centroid (S for star)
         pstar = IMP.Particle(m, "centroid*")
         pstarD = IMP.core.XYZR.setup_particle(pstar)
-        pstarD.set_coordinates( pD.get_coordinates() )
-        pstarD.set_radius( pD.get_radius() )
-        pstarD.set_coordinates_are_optimized( True )
+        pstarD.set_coordinates(pD.get_coordinates())
+        pstarD.set_radius(pD.get_radius())
+        pstarD.set_coordinates_are_optimized(True)
         pstarH = IMP.core.Hierarchy.setup_particle(pstar)
-        IMP.atom.Diffusion.setup_particle( pstar )
-        IMP.atom.TAMDParticle.setup_particle( pstar, p, 100.0, 4.0)
-        IMP.atom.Mass.setup_particle( pstar, 2)
+        IMP.atom.Diffusion.setup_particle(pstar)
+        IMP.atom.TAMDParticle.setup_particle(pstar, p, 100.0, 4.0)
+        IMP.atom.Mass.setup_particle(pstar, 2)
 
         return (p, fine_particles, pstar)
-
-
 
     @IMP.test.expectedFailure
     def test_bonded(self):
@@ -74,18 +71,18 @@ class Tests(IMP.test.TestCase):
         m.set_log_level(IMP.SILENT)
         cores=[]
         for i in range(10):
-            cores.append( self._create_tamd_centroid(m) )
+            cores.append(self._create_tamd_centroid(m))
 #        p2, fparticles2, p2S = self._create_tamd_centroid(m)
 #        p3, fparticles3, p3S = self._create_tamd_centroid(m)
 
-        for p in ([cores[0][0]] + cores[0][1]+ [cores[0][2]] ):
-            IMP.display.Colored.setup_particle( p, IMP.display.Color(1, 0, 0) )
-        for p in ([cores[1][0]] + cores[1][1]+ [cores[1][2]] ):
-            IMP.display.Colored.setup_particle( p, IMP.display.Color(0, 1, 0) )
-        for p in ([cores[2][0]] + cores[2][1]+ [cores[2][2]] ):
-            IMP.display.Colored.setup_particle( p, IMP.display.Color(0, 0, 1) )
-        for p in ([cores[3][0]] + cores[3][1]+ [cores[3][2]] ):
-            IMP.display.Colored.setup_particle( p, IMP.display.Color(1, 1, 0) )
+        for p in ([cores[0][0]] + cores[0][1]+ [cores[0][2]]):
+            IMP.display.Colored.setup_particle(p, IMP.display.Color(1, 0, 0))
+        for p in ([cores[1][0]] + cores[1][1]+ [cores[1][2]]):
+            IMP.display.Colored.setup_particle(p, IMP.display.Color(0, 1, 0))
+        for p in ([cores[2][0]] + cores[2][1]+ [cores[2][2]]):
+            IMP.display.Colored.setup_particle(p, IMP.display.Color(0, 0, 1))
+        for p in ([cores[3][0]] + cores[3][1]+ [cores[3][2]]):
+            IMP.display.Colored.setup_particle(p, IMP.display.Color(1, 1, 0))
 
         # Add Restraints:
         spring = IMP.core.HarmonicDistancePairScore(0, 0.00000001)
@@ -101,7 +98,8 @@ class Tests(IMP.test.TestCase):
             for p1 in core1[1]:
                 for core2 in cores:
                     for p2 in core2[1]:
-                        if(p1 == p2): continue
+                        if p1 == p2:
+                            continue
                         r = IMP.core.PairRestraint(m, excluded_vol,
                                                    (p1, p2), "Excluded_vol")
                         R.append(r)
@@ -120,7 +118,6 @@ class Tests(IMP.test.TestCase):
         bd = IMP.atom.BrownianDynamicsTAMD(m)
         sf = IMP.core.RestraintsScoringFunction(R)
         bd.set_maximum_time_step(5)
-
 
         # Attach RMF
 #        RMF.set_log_level("Off")
@@ -148,8 +145,8 @@ class Tests(IMP.test.TestCase):
             m.update()
             os.update_always("Init opt %d" % i)
             for core in cores:
-                centroid =  IMP.core.XYZ(core[0]).get_coordinates()
-                IMP.core.XYZ(core[2]).set_coordinates( centroid )
+                centroid = IMP.core.XYZ(core[0]).get_coordinates()
+                IMP.core.XYZ(core[2]).set_coordinates(centroid)
 
         max_cycles = 50
         round_cycles = 25

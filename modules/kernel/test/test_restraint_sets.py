@@ -152,8 +152,10 @@ class Tests(IMP.test.TestCase):
                 assert_restraint_evaluate_moved(r)
             else:
                 self.assertIsNone(r.moved_evaluate)
+
         def assert_restraint_evaluate(r):
             self.assertFalse(r.moved_evaluate)
+
         def assert_restraint_evaluate_moved(r):
             self.assertTrue(r.moved_evaluate)
         m = IMP.Model()
@@ -169,6 +171,7 @@ class Tests(IMP.test.TestCase):
         innerrs = IMP.RestraintSet(m, 1.0, 'rs')
         innerrs.add_restraints([r1, r4])
         rs.add_restraint(innerrs)
+
         def clear_restraints():
             r1.moved_evaluate = r4.moved_evaluate = None
         # Plain evaluate should *not* call the evaluate_moved method on r1,r4

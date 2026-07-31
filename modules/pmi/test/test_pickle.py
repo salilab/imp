@@ -10,6 +10,7 @@ import pickle
 import shutil
 import os
 
+
 def make_system():
     m = IMP.Model()
     s = IMP.pmi.topology.System(m)

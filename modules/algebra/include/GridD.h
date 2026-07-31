@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/GridD.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 #include "grid_indexes.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/Vector.h>
 #include <IMP/showable_macros.h>

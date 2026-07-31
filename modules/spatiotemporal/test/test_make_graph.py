@@ -9,9 +9,9 @@ import IMP.spatiotemporal.graphNode as graphNode
 import IMP.spatiotemporal.prepare_protein_library as prepare_protein_library
 import shutil
 import os
-import sys
 import itertools
 import numpy as np
+
 
 def setup_system():
     """
@@ -23,6 +23,7 @@ def setup_system():
     # exp_comp_map is a dictionary that describes protein stoicheometery. The key describes the protein, which should correspond to names within the expected_subcomplexes. For each of these proteins, a csv file should be provided with protein copy number data
     exp_comp = {'A': 'exp_comp_A.csv', 'B': 'exp_comp_B.csv'}
     return time_dict, subcomplexes, exp_comp
+
 
 class Tests(IMP.test.TestCase):
 
@@ -54,7 +55,6 @@ class Tests(IMP.test.TestCase):
             check_config.close()
             self.assertEqual(line1[0:2], 'A1')
             self.assertEqual(line2[0:2], 'B2')
-
 
     def test_graph_setup(self):
         """
@@ -125,8 +125,6 @@ class Tests(IMP.test.TestCase):
                 if trajectory[0][0].get_label() == '1' and trajectory[0][1].get_label() == '1' and trajectory[0][2].get_label() == '1':
                     self.assertAlmostEqual(trajectory[1], 2.0, delta=1e-4)
 
-    @IMP.test.skipIf(sys.version_info[0] < 3,
-                     "Does not work with ancient numpy in Python 2")
     def test_temporal_scoring(self):
         """
         Tests spatiotemporal rule functionality. Found in draw_edge function of graphNode
@@ -160,8 +158,6 @@ class Tests(IMP.test.TestCase):
                 if trajectory[0][0].get_label() == '1' and trajectory[0][1].get_label() == '2' and trajectory[0][2].get_label() == '1':
                     self.assertAlmostEqual(trajectory[1], 6.701131199228036, delta=1e-4)
 
-    @IMP.test.skipIf(sys.version_info[0] < 3,
-                     "Does not work with ancient numpy in Python 2")
     def test_writing_output(self):
         """
         Tests writing text output. From write_output.py
@@ -205,12 +201,12 @@ class Tests(IMP.test.TestCase):
             output=self.get_tmp_file_name('output')
             skip=0
             try:
-                from graphviz import Digraph
+                from graphviz import Digraph  # noqa: F401
             except ImportError:
                 self.skipTest('graphviz not available, will not test drawing graph')
             try:
-                from matplotlib import cm
-                from matplotlib import colors as clr
+                from matplotlib import cm  # noqa: F401
+                from matplotlib import colors as clr  # noqa: F401
             except ImportError:
                 self.skipTest('matplotlib not available, will not test drawing graph')
             nodes, graph, graph_prob, graph_scores = spatiotemporal.create_DAG(state_dict, input_dir=input,output_dir=output, draw_dag=True,out_labeled_pdf=False,out_cdf=False,out_pdf=False)

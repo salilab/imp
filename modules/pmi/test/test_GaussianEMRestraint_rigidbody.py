@@ -6,6 +6,7 @@ import IMP.test
 import IMP.pmi.restraints.em
 import math
 
+
 class Tests(IMP.test.TestCase):
 
     def test_GaussianEMRestraint_rigid_body(self):
@@ -52,7 +53,6 @@ class Tests(IMP.test.TestCase):
 
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
-
 
         m1.add_representation(m1.get_residues(),resolutions=[1], setup_particles_as_densities=True)
         hier = m1.build()

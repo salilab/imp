@@ -55,7 +55,9 @@ IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
     (double x0, double k,
      std::string name = "HarmonicUpperBoundSphereDistancePairScore%1%"),
     (score_functor::Shift<score_functor::HarmonicUpperBound>(
-        x0, score_functor::HarmonicUpperBound(k))), );
+        x0, score_functor::HarmonicUpperBound(k))),
+    double get_x0() const { return get_score_functor().get_x0(); }
+    double get_k() const { return get_score_functor().get_k(); });
 
 //!A harmonic upper bound on the diameter of the span of two spheres
 /** This restraint restraints how far the furthest points of two spheres
@@ -185,10 +187,11 @@ typedef score_functor::SphereDistance<score_functor::HarmonicLowerBound>
 /** This class is equivalent to, but faster than a
     SphereDistancePairScore with a HarmonicLowerBound.
 */
-IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore, SoftSphereDistanceScore,
-                                (double k,
-                                 std::string name = "SoftSpherePairScore%1%"),
-                                (score_functor::HarmonicLowerBound(k)), );
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(
+    SoftSpherePairScore, SoftSphereDistanceScore,
+    (double k, std::string name = "SoftSpherePairScore%1%"),
+    (score_functor::HarmonicLowerBound(k)),
+    double get_k() const { return get_score_functor().get_k(); });
 
 IMPCORE_END_NAMESPACE
 

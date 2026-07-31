@@ -19,6 +19,7 @@ output1_categories = ['AtomicXLRestraint', 'AtomicXLRestraint_0_BestDist',
         'SimplifiedModel_Total_Score', 'Stopwatch_None_delta_seconds',
         'rmf_file', 'rmf_frame_index']
 
+
 class Tests(IMP.test.TestCase):
     def test_flatten(self):
         """Test _flatten function"""
@@ -251,7 +252,7 @@ class Tests(IMP.test.TestCase):
     def test_plot_fields(self):
         """Test the plot_fields function"""
         try:
-            import matplotlib
+            import matplotlib  # noqa: F401
         except ImportError:
             self.skipTest("no matplotlib package")
         fs = {'score': [42., 32., 22., 11., 0.],
@@ -267,7 +268,7 @@ class Tests(IMP.test.TestCase):
     def test_plot_field_histogram(self):
         """Test the plot_field_histogram function"""
         try:
-            import matplotlib
+            import matplotlib  # noqa: F401
         except ImportError:
             self.skipTest("no matplotlib package")
         scores = [[42., 32., 22., 11., 0.], [10., 20., 30., 40., 50.]]

@@ -1,6 +1,6 @@
 \brief Python classes to represent, score, sample and analyze models.
 
-[![Build Status](https://github.com/salilab/pmi/workflows/build/badge.svg?branch=develop)](https://github.com/salilab/pmi/actions?query=workflow%3Abuild)
+[![Build Status](https://github.com/salilab/pmi/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/salilab/pmi/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/salilab/pmi/branch/develop/graph/badge.svg)](https://codecov.io/gh/salilab/pmi)
 
 This module contains a variety of high-level Python

@@ -1,6 +1,6 @@
-import sys
 import IMP
 import IMP.test
+import IMP.core
 try:
     import jax
 except ImportError:
@@ -44,8 +44,8 @@ class Tests(IMP.test.TestCase):
         self.assertIs(type(sf.get_derived_object()), IMP.ScoringFunction)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_jax_score(self):
-        """Test JAX score of implicit RestraintScoringFunction"""
+    def test_jax_single_score(self):
+        """Test JAX score of implicit single RestraintScoringFunction"""
         m = IMP.Model()
         p = IMP.Particle(m)
         r1 = IMP._ConstRestraint(m, [p], 42)
@@ -61,6 +61,25 @@ class Tests(IMP.test.TestCase):
         X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 552.0, delta=0.1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multiple_score(self):
+        """Test JAX score of implicit multiple RestraintsScoringFunction"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r1.set_weight(2.0)
+        r2 = IMP._ConstRestraint(m, [p], 18)
+        r2.set_weight(3.0)
+        c = IMP.core.ConjugateGradients()
+        c.set_scoring_function([r1, r2])
+        sf = c.get_scoring_function().get_derived_object()
+        self.assertIsInstance(sf, IMP._RestraintsScoringFunction)
+
+        ji = sf._get_jax()
+        X = ji.get_jax_model()
+        j = jax.jit(ji.score_func)
+        self.assertAlmostEqual(j(X), 138.0, delta=0.1)
 
 
 if __name__ == '__main__':

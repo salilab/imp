@@ -1,7 +1,5 @@
-import unittest
 import IMP.atom
 import IMP.test
-from IMP.algebra import *
 
 
 class Tests(IMP.test.TestCase):

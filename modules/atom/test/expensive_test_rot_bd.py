@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.container
 import IMP.atom
-import math
 
 radius = 5
 
@@ -44,7 +43,6 @@ class Tests(IMP.test.TestCase):
               real_D, estimate_D)
         self.assertAlmostEqual(real_D, estimate_D, delta= .05*(real_D+estimate_D))
         return estimate_D
-
 
     def test_rot(self):
         """Check rigid body brownian dynamics correlation time"""

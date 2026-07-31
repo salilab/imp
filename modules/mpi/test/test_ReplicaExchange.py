@@ -1,17 +1,7 @@
 #!/usr/bin/env python
 
-# general imports
-from numpy import *
-from random import uniform
-
-# imp general
 import IMP
-
-import math
-
 import IMP.mpi
-
-# unit testing framework
 import IMP.test
 
 rem = IMP.mpi.ReplicaExchange()

@@ -1,11 +1,19 @@
 import IMP.test
-import sys
 from io import StringIO
 
+
 # argparse processing terminates early for --help or --version
-class HelpTermination(Exception): pass
-class AdvancedHelpTermination(Exception): pass
-class VersionTermination(Exception): pass
+class HelpTermination(Exception):
+    pass
+
+
+class AdvancedHelpTermination(Exception):
+    pass
+
+
+class VersionTermination(Exception):
+    pass
+
 
 def get_test_argparse():
     a = IMP.ArgumentParser()
@@ -13,12 +21,14 @@ def get_test_argparse():
     a.add_argument('pos', help='test positional argument')
     return a
 
+
 def parse_args(parser, args):
     """Run parser.parse_args() on args; return its result plus the command line
        that was passed on to IMP's internal Boost-based parser"""
     class MockSetup:
         def __init__(self):
             self.argv = []
+
         def __call__(self, argv, desc, posdesc, num_pos):
             self.argv = argv[1:]
             if '-h' in argv or '--help' in argv:

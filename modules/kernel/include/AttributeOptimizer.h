@@ -2,7 +2,7 @@
  *  \file IMP/AttributeOptimizer.h
  *  \brief Base class for optimizers that act on individual attributes.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,18 +37,21 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
   */
   //!@{
   FloatIndexes get_optimized_attributes() const {
-    return get_model()->get_optimized_attributes();
+    Model *m = get_model();
+    return m->get_optimized_attributes()
+      + m->internal::Vector3DDerivAttributeTable::get_optimized_vector_attributes()
+      + m->internal::Vector4DDerivAttributeTable::get_optimized_vector_attributes();
   }
   void set_value(FloatIndex fi, double v) const {
-    get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
+    fi.set_value(get_model(), v);
   }
 
   Float get_value(FloatIndex fi) const {
-    return get_model()->get_attribute(fi.get_key(), fi.get_particle());
+    return fi.get_value(get_model());
   }
 
   Float get_derivative(FloatIndex fi) const {
-    return get_model()->get_derivative(fi.get_key(), fi.get_particle());
+    return fi.get_derivative(get_model());
   }
 
   //!@}
@@ -73,23 +76,40 @@ class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
       scaled to vary over a similar range. These accessors use the
       Model::get_range ranges to scale the values before returning
       them and unscale them before setting them.
+
+      For now, Vector3D and Vector4D values are not scaled.
   */
   //{@
   void set_scaled_value(FloatIndex fi, Float v) const {
-    double wid = get_width(fi.get_key());
-    set_value(fi, v * wid);
+    FloatKey k = fi.get_float_key();
+    if (k == FloatKey()) {
+      set_value(fi, v);
+    } else {
+      double wid = get_width(k);
+      set_value(fi, v * wid);
+    }
   }
 
   double get_scaled_value(FloatIndex fi) const {
     double uv = get_value(fi);
-    double wid = get_width(fi.get_key());
-    return uv / wid;
+    FloatKey k = fi.get_float_key();
+    if (k == FloatKey()) {
+      return uv;
+    } else {
+      double wid = get_width(fi.get_float_key());
+      return uv / wid;
+    }
   }
 
   double get_scaled_derivative(FloatIndex fi) const {
     double uv = get_derivative(fi);
-    double wid = get_width(fi.get_key());
-    return uv * wid;
+    FloatKey k = fi.get_float_key();
+    if (k == FloatKey()) {
+      return uv;
+    } else {
+      double wid = get_width(fi.get_float_key());
+      return uv * wid;
+    }
   }
 
   //! Clear the cache of range information. Do this at the start of

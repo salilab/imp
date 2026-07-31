@@ -52,18 +52,21 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
       # the corresponding most-derived Python type
       modname = self.get_version_info().get_module().replace('::', '.')
       type_name = self.get_type_name()
-      # IMP.core.RestraintsScoringFunction is a typedef for
-      # IMP.GenericRestraintsScoringFunction; map to the real Python class
-      if modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
-          modname = 'IMP.core'
-          type_name = 'RestraintsScoringFunction'
-      elif (modname == 'IMP.core'
-            and type_name == 'GenericBoundingBox3DSingletonScore'):
+      if (modname == 'IMP.core'
+          and type_name == 'GenericBoundingBox3DSingletonScore'):
           type_name = 'BoundingBox3DSingletonScore'
+      elif (modname == 'IMP.core'
+            and type_name == 'GenericAttributeSingletonScore'):
+          type_name = 'AttributeSingletonScore'
+      elif (modname == 'IMP.core'
+            and type_name == 'GenericBoundingSphere3DSingletonScore'):
+          type_name = 'BoundingSphere3DSingletonScore'
       elif modname == 'IMP' and type_name == 'RestraintScoringFunction':
           # The implicit RestraintScoringFunction isn't exposed to Python,
           # so just return the base class
           return self
+      elif modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
+          type_name = '_RestraintsScoringFunction'
       modobj = sys.modules[modname]
       clsobj = getattr(modobj, type_name)
       return clsobj.get_from(self)
@@ -156,6 +159,28 @@ IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
 %rename(_NonCopyable) IMP::NonCopyable;
 %rename(_RAII) IMP::RAII;
 %rename(_Value) IMP::Value;
+
+%include "IMP/GeometricPrimitiveD.h"
+%template(_GeometricPrimitive1D) IMP::GeometricPrimitiveD<1>;
+%template(_GeometricPrimitive2D) IMP::GeometricPrimitiveD<2>;
+%template(_GeometricPrimitive3D) IMP::GeometricPrimitiveD<3>;
+%template(_GeometricPrimitive4D) IMP::GeometricPrimitiveD<4>;
+%template(_GeometricPrimitive5D) IMP::GeometricPrimitiveD<5>;
+%template(_GeometricPrimitive6D) IMP::GeometricPrimitiveD<6>;
+%template(_GeometricPrimitiveKD) IMP::GeometricPrimitiveD<-1>;
+
+%include "IMP/internal/VectorBaseD.h"
+namespace IMP {
+ namespace internal {
+   %template(_VectorBaseKD) VectorBaseD<-1>;
+   %template(_VectorBase1D) VectorBaseD<1>;
+   %template(_VectorBase2D) VectorBaseD<2>;
+   %template(_VectorBase3D) VectorBaseD<3>;
+   %template(_VectorBase4D) VectorBaseD<4>;
+   %template(_VectorBase5D) VectorBaseD<5>;
+   %template(_VectorBase6D) VectorBaseD<6>;
+ }
+}
 
 %include "IMP/InputAdaptor.h"
 %include "IMP/NonCopyable.h"
@@ -380,6 +405,9 @@ IMP_SWIG_VALUE_INSTANCE(IMP, SparseStringKey, Key, SparseStringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, SparseParticleIndexKey, Key,
                         SparseParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, Vector3DKey, Key, Vector3DKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, Vector4DKey, Key, Vector4DKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, Vector3DDerivKey, Key, Vector3DDerivKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, Vector4DDerivKey, Key, Vector4DDerivKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
@@ -387,6 +415,28 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 IMP_SWIG_BASE_OBJECT(IMP, ScoringFunction, ScoringFunctions);
 IMP_SWIG_BASE_OBJECT(IMP, ModelObject, ModelObjects);
 
+IMP_SWIG_OBJECT_TEMPLATED(IMP::internal, _RestraintsScoringFunction, GenericRestraintsScoringFunction<::IMP::Restraints>, _RestraintsScoringFunctions);
+
+%extend IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints> {
+  %pythoncode %{
+    def __get_restraints(self):
+        return IMP._list_util.VarList(
+            getdimfunc=self.get_number_of_restraints,
+            getfunc=self.get_restraint, erasefunc=self.erase_restraint,
+            appendfunc=self.add_restraint, extendfunc=self.add_restraints,
+            clearfunc=self.clear_restraints,
+            indexfunc=self._python_index_restraint)
+
+    def __set_restraints(self, obj):
+        IMP._list_util.set_varlist(self.restraints, obj)
+
+    def __del_restraints(self):
+        IMP._list_util.del_varlist(self.restraints)
+
+    restraints = property(__get_restraints, __set_restraints,
+                          __del_restraints, doc="List of Restraints")
+  %}
+}
 
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
@@ -423,6 +473,9 @@ namespace IMP {
   %template(SparseFloatKey) ::IMP::Key<14>;
   %template(SparseParticleIndexKey) ::IMP::Key<15>;
   %template(Vector3DKey) ::IMP::Key<16>;
+  %template(Vector3DDerivKey) ::IMP::Key<17>;
+  %template(Vector4DKey) ::IMP::Key<18>;
+  %template(Vector4DDerivKey) ::IMP::Key<19>;
 }
 
 %inline %{
@@ -463,6 +516,11 @@ class Decorators;
 %include "IMP/model_object_helpers.h"
 %include "IMP/input_output.h"
 %include "IMP/utility.h"
+
+%include "IMP_kernel.vector.i"
+%include "IMP/VectorD.h"
+%include "IMP/Vector3D.h"
+
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/ScoreAccumulator.h"
 %include "IMP/ScoreState.h"
@@ -480,6 +538,7 @@ namespace IMP {
 %include "IMP_kernel.particle.i"
 %include "IMP/dependency_graph.h"
 %include "IMP/ScoringFunction.h"
+%include "IMP/internal/RestraintsScoringFunction.h"
 %include "IMP/Undecorator.h"
 %include "IMP/Model.h"
 %include "IMP/Decorator.h"
@@ -516,6 +575,14 @@ namespace IMP {
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
 
+IMP_SWIG_TEMPLATE_D(IMP, Vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_basis_vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_zero_vector);
+IMP_SWIG_FUNCTION_TEMPLATE_D(get_ones_vector);
+
+namespace IMP {
+  %template(_RestraintsScoringFunction) ::IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints>;
+}
 
 namespace IMP {
   %template(ScopedSetFloatAttribute) ::IMP::ScopedSetAttribute<FloatKey, Float>;

@@ -12,11 +12,12 @@ import IMP.pmi.restraints.em
 import IMP.pmi.tools
 import IMP.pmi.macros
 
+
 class TestGaussianEMRestraint(IMP.test.TestCase):
 
     def test_gaussian_em(self):
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -119,7 +120,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
     def test_fit_gmm_per_residue(self):
         """Fit GMM to 1 bead per residue representation"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 

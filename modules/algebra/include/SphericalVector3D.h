@@ -2,7 +2,7 @@
  *  \file IMP/algebra/SphericalVector3D.h
  *  \brief Stores and converts spherical coordinates
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
@@ -13,7 +13,7 @@
 #include "IMP/exception.h"
 #include "constants.h"
 #include <IMP/showable_macros.h>
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 #include <cmath>
 

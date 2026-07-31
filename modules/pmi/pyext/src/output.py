@@ -579,15 +579,24 @@ class Output:
             IMP.rmf.add_restraints(rh, rs)
         if geometries is not None:
             IMP.rmf.add_geometries(rh, geometries)
+        dict_objects = []
+        callable_objects = []
         if listofobjects is not None:
             cat = rh.get_category("stat")
             outputkey_rmfkey = {}
             for o in listofobjects:
-                if "get_output" not in dir(o):
+                if not hasattr(o, "get_output"):
                     raise ValueError(
                         "Output: object %s doesn't have get_output() method"
                         % str(o))
+                # get_output() can return either a dict or a callable;
+                # store these in different lists
                 output = o.get_output()
+                if callable(output):
+                    callable_objects.append(output)
+                    output = output(None)
+                else:
+                    dict_objects.append(o)
                 for outputkey in output:
                     rmftag = RMF.string_tag
                     if isinstance(output[outputkey], float):
@@ -605,7 +614,8 @@ class Output:
             outputkey_rmfkey["rmf_frame_index"] = \
                 rh.get_key(cat, "rmf_frame_index", RMF.int_tag)
 
-        self.dictionary_rmfs[name] = (rh, cat, outputkey_rmfkey, listofobjects)
+        self.dictionary_rmfs[name] = (rh, cat, outputkey_rmfkey,
+                                      dict_objects, callable_objects)
 
     def add_restraints_to_rmf(self, name, objectlist):
         for o in _flatten(objectlist):
@@ -636,9 +646,16 @@ class Output:
         IMP.rmf.save_frame(self.dictionary_rmfs[name][0])
         if self.dictionary_rmfs[name][1] is not None:
             outputkey_rmfkey = self.dictionary_rmfs[name][2]
-            listofobjects = self.dictionary_rmfs[name][3]
-            for o in listofobjects:
-                output = o.get_output()
+            dict_objects = self.dictionary_rmfs[name][3]
+            callable_objects = self.dictionary_rmfs[name][4]
+
+            def all_output():
+                for obj in dict_objects:
+                    yield obj.get_output()
+                for obj in callable_objects:
+                    yield obj(None)
+
+            for output in all_output():
                 for outputkey in output:
                     rmfkey = outputkey_rmfkey[outputkey]
                     try:
@@ -664,6 +681,7 @@ class Output:
         for rmfinfo in self.dictionary_rmfs.keys():
             self.write_rmf(rmfinfo[0])
 
+    @IMP.deprecated_method("2.25", "Use init_stat2() instead")
     def init_stat(self, name, listofobjects):
         if self.ascii:
             flstat = open(name, 'w')
@@ -674,7 +692,7 @@ class Output:
 
         # check that all objects in listofobjects have a get_output method
         for o in listofobjects:
-            if "get_output" not in dir(o):
+            if not hasattr(o, "get_output"):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() method"
                     % str(o))
@@ -683,6 +701,7 @@ class Output:
     def set_output_entry(self, key, value):
         self.initoutput.update({key: value})
 
+    @IMP.deprecated_method("2.25", "Use write_stat2() instead")
     def write_stat(self, name, appendmode=True):
         output = self.initoutput
         for obj in self.dictionary_stats[name]:
@@ -697,14 +716,13 @@ class Output:
             writeflag = 'w'
 
         if self.ascii:
-            flstat = open(name, writeflag)
-            flstat.write("%s \n" % output)
-            flstat.close()
+            with open(name, writeflag) as flstat:
+                flstat.write("%s \n" % output)
         else:
-            flstat = open(name, writeflag + 'b')
-            pickle.dump(output, flstat, 2)
-            flstat.close()
+            with open(name, writeflag + 'b') as flstat:
+                pickle.dump(output, flstat, 2)
 
+    @IMP.deprecated_method("2.25", "Use write_stats2() instead")
     def write_stats(self):
         for stat in self.dictionary_stats.keys():
             self.write_stat(stat)
@@ -719,7 +737,8 @@ class Output:
         flstat = open(name, 'w')
         output = self.initoutput
         for o in listofobjects:
-            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+            if (not hasattr(o, "get_test_output")
+                    and not hasattr(o, "get_output")):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() or "
                     "get_test_output() method" % str(o))
@@ -728,8 +747,11 @@ class Output:
         for obj in self.dictionary_stats[name]:
             try:
                 d = obj.get_test_output()
-            except:  # noqa: E722
+            except AttributeError:
                 d = obj.get_output()
+                if callable(d):
+                    # Get any scores using the current IMP Model
+                    d = d(None)
             # remove all entries that begin with _ (private entries)
             dfiltered = dict((k, v) for k, v in d.items() if k[0] != "_")
             output.update(dfiltered)
@@ -739,15 +761,20 @@ class Output:
     def test(self, name, listofobjects, tolerance=1e-5):
         output = self.initoutput
         for o in listofobjects:
-            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+            if (not hasattr(o, "get_test_output")
+                    and not hasattr(o, "get_output")):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() or "
                     "get_test_output() method" % str(o))
         for obj in listofobjects:
             try:
-                output.update(obj.get_test_output())
-            except:  # noqa: E722
-                output.update(obj.get_output())
+                out = obj.get_test_output()
+            except AttributeError:
+                out = obj.get_output()
+                if callable(out):
+                    # Get any scores using the current IMP Model
+                    out = out(None)
+            output.update(out)
 
         flstat = open(name, 'r')
 
@@ -813,7 +840,18 @@ class Output:
         return versions
 
     def init_stat2(self, name, listofobjects, extralabels=None,
-                   listofsummedobjects=None):
+                   listofsummedobjects=None, jax_model=None):
+        """Write the header for a stat file in v2 format.
+           Lines can then be written to the stat file by calling write_stat2()
+           with the same file name.
+
+           @param name The file name to write to.
+           @param listofobjects PMI objects that will be reported in the file.
+                  Each object must implement the get_output() method.
+                  This can either return a dict containing data from the
+                  current state of the model, or a callable which returns
+                  a similar dict of data each time it is called.
+        """
         # this is a new stat file that should be less
         # space greedy!
         # listofsummedobjects must be in the form
@@ -834,13 +872,22 @@ class Output:
              str(self.get_versions_of_relevant_modules())})
         stat2_inverse = {}
 
+        dict_objects = []
+        callable_objects = []
         for obj in listofobjects:
-            if "get_output" not in dir(obj):
+            if not hasattr(obj, "get_output"):
                 raise ValueError(
                     "Output: object %s doesn't have get_output() method"
                     % str(obj))
             else:
+                # get_output() can return either a dict or a callable;
+                # store these in different lists
                 d = obj.get_output()
+                if callable(d):
+                    callable_objects.append(d)
+                    d = d(jax_model)
+                else:
+                    dict_objects.append(obj)
                 # remove all entries that begin with _ (private entries)
                 dfiltered = dict((k, v)
                                  for k, v in d.items() if k[0] != "_")
@@ -849,7 +896,7 @@ class Output:
         # check for customizable entries
         for obj in listofsummedobjects:
             for t in obj[0]:
-                if "get_output" not in dir(t):
+                if not hasattr(t, "get_output"):
                     raise ValueError(
                         "Output: object %s doesn't have get_output() method"
                         % str(t))
@@ -871,19 +918,29 @@ class Output:
         flstat.write("%s \n" % stat2_keywords)
         flstat.close()
         self.dictionary_stats2[name] = (
-            listofobjects,
+            dict_objects, callable_objects,
             stat2_inverse,
             listofsummedobjects,
             extralabels)
 
-    def write_stat2(self, name, appendmode=True):
+    def write_stat2(self, name, appendmode=True, jax_model=None):
+        """Write a single line to a stat file previously created
+           with init_stat2().
+
+           @param name The file name to write to.
+        """
         output = {}
-        (listofobjects, stat2_inverse, listofsummedobjects,
+        (dict_objects, callable_objects, stat2_inverse, listofsummedobjects,
          extralabels) = self.dictionary_stats2[name]
 
+        def all_output():
+            for obj in dict_objects:
+                yield obj.get_output()
+            for obj in callable_objects:
+                yield obj(jax_model)
+
         # writing objects
-        for obj in listofobjects:
-            od = obj.get_output()
+        for od in all_output():
             dfiltered = dict((k, v) for k, v in od.items() if k[0] != "_")
             for k in dfiltered:
                 output.update({stat2_inverse[k]: od[k]})
@@ -903,14 +960,8 @@ class Output:
             else:
                 output.update({stat2_inverse[k]: "None"})
 
-        if appendmode:
-            writeflag = 'a'
-        else:
-            writeflag = 'w'
-
-        flstat = open(name, writeflag)
-        flstat.write("%s \n" % output)
-        flstat.close()
+        with open(name, 'a' if appendmode else 'w') as flstat:
+            flstat.write("%s \n" % output)
 
     def write_stats2(self):
         for stat in self.dictionary_stats2.keys():

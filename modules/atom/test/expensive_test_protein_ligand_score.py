@@ -2,8 +2,6 @@ import IMP
 import IMP.test
 import IMP.atom
 import IMP.core
-import os
-import time
 
 
 class Tests(IMP.test.TestCase):

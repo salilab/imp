@@ -65,6 +65,11 @@ class IMPSCOREFUNCTOREXPORT RawOpenCubicSpline {
   }
   double get_last() const { return values_.back(); }
   double get_first() const { return values_.front(); }
+
+  Floats get_values() const { return values_; }
+
+  //! Get the calculated second derivatives corresponding to the spline values
+  Floats get_second_derivatives() const { return second_derivs_; }
 };
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE

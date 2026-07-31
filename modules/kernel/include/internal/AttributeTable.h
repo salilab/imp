@@ -1,7 +1,7 @@
 /**
  *  \file AttributeTable.h    \brief Keys to cache lookup of attribute strings.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,7 @@
 #include <IMP/Object.h>
 #include <IMP/Array.h>
 #include <IMP/Pointer.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/VectorD.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
 #include <boost/container/flat_map.hpp>
@@ -224,42 +224,55 @@ struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
 
 };
 
-struct Vector3DAttributeTableTraits : public DefaultTraits<algebra::Vector3D,
-                                                           Vector3DKey> {
-  typedef IndexVector<ParticleIndexTag, algebra::Vector3D,
-                      std::allocator<algebra::Vector3D>,
-                      vector_equal<algebra::Vector3D> > Container;
+template <unsigned D, class K>
+struct VectorDAttributeTableTraits {
+  typedef K Key;
+  typedef VectorD<D> Value;
+  typedef VectorD<D> PassValue;
+  typedef IndexVector<ParticleIndexTag, Value, std::allocator<Value>,
+                      vector_equal<Value>> Container;
+  typedef PassValue const* ContainerConstDataAccess;
+  typedef Value* ContainerDataAccess;
 
-  static algebra::Vector3D get_invalid() {
+  static Value get_invalid() {
     double inv = FloatAttributeTableTraits::get_invalid();
-    return algebra::Vector3D(inv, inv, inv);
+    Value val;
+    std::fill(val.begin(), val.end(), inv);
+    return val;
   }
 
-  static bool get_is_valid(const algebra::Vector3D &f) {
+  static bool get_is_valid(const Value &f) {
     double inv = FloatAttributeTableTraits::get_invalid();
     return std::get<0>(f) != inv;
   }
-  static bool is_equal(const algebra::Vector3D &a, const algebra::Vector3D &b) {
+
+  static bool is_equal(const Value &a, const Value &b) {
     return std::equal(a.begin(), a.end(), b.begin());
   }
-  static algebra::Vector3D min(const algebra::Vector3D &a,
-                               const algebra::Vector3D &b) {
+
+  static Value min(const Value &a, const Value &b) {
     IMP_UNUSED(b);
     return a;
   }
-  static algebra::Vector3D max(const algebra::Vector3D &a,
-                               const algebra::Vector3D &b) {
+
+  static Value max(const Value &a, const Value &b) {
     IMP_UNUSED(a);
     return b;
   }
-  //
+
   //! allow direct const access to the container data
-  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  static ContainerConstDataAccess access_container_data(Container const& c) {
+    return c.data();
+  }
+
   //! allow direct non-const access to the container data
-  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+  static ContainerDataAccess access_container_data(Container& c) {
+    return c.data();
+  }
 };
 
-struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
+template <class K>
+struct GenericBoolAttributeTableTraits : public DefaultTraits<bool, K> {
   struct Container : public boost::dynamic_bitset<> {
     friend class cereal::access;
 
@@ -285,6 +298,8 @@ struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
   static ContainerDataAccess access_container_data(Container&       c) { return c; }
 
 };
+
+typedef GenericBoolAttributeTableTraits<FloatKey> BoolAttributeTableTraits;
 
 struct StringAttributeTableTraits : public DefaultTraits<String, StringKey> {
   static Value get_invalid() { return "This is an invalid string in IMP"; }
@@ -354,7 +369,13 @@ inline int use_xyz_to_disable_warning() {
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
-        IMP::internal::BoolAttributeTableTraits::Container,
-        cereal::specialization::member_serialize);
+   IMP::internal::GenericBoolAttributeTableTraits<IMP::FloatKey>::Container,
+   cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+   IMP::internal::GenericBoolAttributeTableTraits<IMP::Vector3DDerivKey>::Container,
+   cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(
+   IMP::internal::GenericBoolAttributeTableTraits<IMP::Vector4DDerivKey>::Container,
+   cereal::specialization::member_serialize);
 
 #endif /* IMPKERNEL_ATTRIBUTE_TABLE_H */

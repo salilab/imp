@@ -402,12 +402,12 @@ class FloatAttributeTable {
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
               sphere_equal<algebra::Sphere3D> > sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D,
-              std::allocator<algebra::Vector3D>,
-              vector_equal<algebra::Vector3D> > internal_coordinates_;
-  IndexVector<ParticleIndexTag, algebra::Vector3D,
-              std::allocator<algebra::Vector3D>,
-              vector_equal<algebra::Vector3D> >
+  IndexVector<ParticleIndexTag, Vector3D,
+              std::allocator<Vector3D>,
+              vector_equal<Vector3D> > internal_coordinates_;
+  IndexVector<ParticleIndexTag, Vector3D,
+              std::allocator<Vector3D>,
+              vector_equal<Vector3D> >
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
@@ -429,7 +429,7 @@ class FloatAttributeTable {
 
   algebra::Sphere3D get_invalid_sphere() const {
     double iv = internal::FloatAttributeTableTraits::get_invalid();
-    algebra::Sphere3D ivs(algebra::Vector3D(iv, iv, iv), iv);
+    algebra::Sphere3D ivs(Vector3D(iv, iv, iv), iv);
     return ivs;
   }
 
@@ -477,7 +477,7 @@ class FloatAttributeTable {
     return spheres_[particle];
   }
 
-  algebra::Vector3D &get_internal_coordinates(ParticleIndex particle) {
+  Vector3D &get_internal_coordinates(ParticleIndex particle) {
     IMP_CHECK_MASK(read_mask_, particle, FloatKey(5), GET, ATTRIBUTE);
     IMP_USAGE_CHECK(internal_coordinates_[particle][0] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
@@ -501,7 +501,7 @@ class FloatAttributeTable {
          faster implementations of evaluate_index() etc.
   */
   static void add_to_coordinate_derivatives(algebra::Sphere3D& xyzr_deriv,
-                                     const algebra::Vector3D &v,
+                                     const Vector3D &v,
                                      const DerivativeAccumulator &da) {
     IMP_ACCUMULATE(xyzr_deriv[0], da(v[0]));
     IMP_ACCUMULATE(xyzr_deriv[1], da(v[1]));
@@ -511,7 +511,7 @@ class FloatAttributeTable {
   //! add derivatives in v to xyz derivative of particle, after
   //! transforming the derivative using da
   void add_to_coordinate_derivatives(ParticleIndex particle,
-                                     const algebra::Vector3D &v,
+                                     const Vector3D &v,
                                      const DerivativeAccumulator &da) {
     IMP_CHECK_MASK(write_derivatives_mask_, particle, FloatKey(0), SET,
                    DERIVATIVE);
@@ -521,7 +521,7 @@ class FloatAttributeTable {
   }
 
   void add_to_internal_coordinate_derivatives(ParticleIndex particle,
-                                              const algebra::Vector3D &v,
+                                              const Vector3D &v,
                                               const DerivativeAccumulator &da) {
     IMP_CHECK_MASK(write_derivatives_mask_, particle, FloatKey(4), SET,
                    DERIVATIVE);
@@ -532,7 +532,7 @@ class FloatAttributeTable {
     IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][2], da(v[2]));
   }
 
-  const algebra::Vector3D &get_coordinate_derivatives(ParticleIndex particle)
+  const Vector3D &get_coordinate_derivatives(ParticleIndex particle)
       const {
     IMP_CHECK_MASK(read_derivatives_mask_, particle, FloatKey(0), GET,
                    DERIVATIVE);
@@ -542,13 +542,13 @@ class FloatAttributeTable {
   }
   void zero_derivatives() {
     /*std::fill(sphere_derivatives_.begin(), sphere_derivatives_.end(),
-      algebra::Sphere3D(algebra::Vector3D(0,0,0), 0));*/
+      algebra::Sphere3D(Vector3D(0,0,0), 0));*/
     // make more efficient
     std::fill(sphere_derivatives_.begin(), sphere_derivatives_.end(),
-              algebra::Sphere3D(algebra::Vector3D(0, 0, 0), 0));
+              algebra::Sphere3D(Vector3D(0, 0, 0), 0));
     std::fill(internal_coordinate_derivatives_.begin(),
               internal_coordinate_derivatives_.end(),
-              algebra::Vector3D(0, 0, 0));
+              Vector3D(0, 0, 0));
     derivatives_.fill(0);
   }
   void clear_caches(ParticleIndex) {}
@@ -789,19 +789,19 @@ class FloatAttributeTable {
   unsigned get_internal_coordinates_size() const {
     return internal_coordinates_.size();
   }
-  algebra::Vector3D const* access_internal_coordinates_data() const{
+  Vector3D const* access_internal_coordinates_data() const{
     return internal_coordinates_.data();
   }
-  algebra::Vector3D * access_internal_coordinates_data() {
+  Vector3D * access_internal_coordinates_data() {
     return internal_coordinates_.data();
   }
   unsigned get_internal_coordinate_derivatives_size() const {
     return internal_coordinate_derivatives_.size();
   }
-  algebra::Vector3D const* access_internal_coordinate_derivatives_data() const{
+  Vector3D const* access_internal_coordinate_derivatives_data() const{
     return internal_coordinate_derivatives_.data();
   }
-  algebra::Vector3D * access_internal_coordinate_derivatives_data() {
+  Vector3D * access_internal_coordinate_derivatives_data() {
     return internal_coordinate_derivatives_.data();
   }
   //! Get the size of the attribute table for the given key.
@@ -987,6 +987,195 @@ class FloatAttributeTable {
 
 IMP_SWAP(FloatAttributeTable);
 
+template<unsigned D, class K>
+class VectorDDerivAttributeTable {
+  BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> data_;
+  BasicAttributeTable<internal::VectorDAttributeTableTraits<D, K>> derivatives_;
+  // make use bitset
+  BasicAttributeTable<internal::GenericBoolAttributeTableTraits<K>> optimizeds_;
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
+       *write_derivatives_mask_;
+#endif
+
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    // Note that we don't serialize masks; they are handled by Model
+    ar(data_, derivatives_, optimizeds_);
+  }
+
+ public:
+  typedef K Key;
+
+  void swap_with(VectorDDerivAttributeTable<D, K> &o) {
+    IMP_SWAP_MEMBER(data_);
+    IMP_SWAP_MEMBER(derivatives_);
+    IMP_SWAP_MEMBER(optimizeds_);
+  }
+
+  VectorDDerivAttributeTable()
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+      : read_mask_(nullptr), write_mask_(nullptr), add_remove_mask_(nullptr),
+        read_derivatives_mask_(nullptr), write_derivatives_mask_(nullptr)
+#endif
+  {}
+
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  void set_masks(Mask *read_mask, Mask *write_mask, Mask *add_remove_mask,
+                 Mask *read_derivatives_mask, Mask *write_derivatives_mask) {
+    data_.set_masks(read_mask, write_mask, add_remove_mask);
+    derivatives_.set_masks(read_derivatives_mask, write_derivatives_mask,
+                           add_remove_mask);
+    optimizeds_.set_masks(read_mask, write_mask, add_remove_mask);
+    read_mask_ = read_mask;
+    write_mask_ = write_mask;
+    add_remove_mask_ = add_remove_mask;
+    read_derivatives_mask_ = read_derivatives_mask;
+    write_derivatives_mask_ = write_derivatives_mask;
+  }
+#endif
+
+  void zero_derivatives() {
+    VectorD<D> zero;
+    std::fill(zero.begin(), zero.end(), 0.0);
+    derivatives_.fill(zero);
+  }
+
+  void clear_caches(ParticleIndex p) {
+    data_.clear_caches(p);
+  }
+
+  void add_cache_attribute(Key k, ParticleIndex p,
+                           const VectorD<D> &value) {
+    data_.add_cache_attribute(k, p, value);
+  }
+
+  void remove_attribute(Key k, ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle, k, REMOVE, ATTRIBUTE);
+    data_.remove_attribute(k, particle);
+    derivatives_.remove_attribute(k, particle);
+    if (optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.remove_attribute(k, particle);
+    }
+  }
+
+  bool get_is_optimized(Key k, ParticleIndex particle) const {
+    return optimizeds_.get_has_attribute(k, particle);
+  }
+
+  void set_is_optimized(Key k, ParticleIndex particle, bool tf) {
+    if (tf && !optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.add_attribute(k, particle, true);
+    } else if (!tf && optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.remove_attribute(k, particle);
+    }
+  }
+
+  VectorD<D> get_derivative(Key k, ParticleIndex particle,
+                            bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+    IMP_INTERNAL_CHECK_VARIABLE(IMP_ATTRIBUTE_CHECKED_PARAM);
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there");
+    return derivatives_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
+  }
+
+  void add_to_derivative(Key k, ParticleIndex particle,
+                         const VectorD<D> &v,
+                         const DerivativeAccumulator &da) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there: "
+                    << k.get_string() << " on particle " << particle);
+    auto dit = derivatives_.access_attribute(k, particle).begin();
+    auto vit = v.begin();
+    while (vit != v.end()) {
+      IMP_ACCUMULATE(*dit, da(*vit));
+      dit++;
+      vit++;
+    }
+  }
+
+  void add_attribute(Key k, ParticleIndex particle,
+                     const VectorD<D> &value, bool opt=false) {
+    data_.add_attribute(k, particle, value);
+    VectorD<D> zero;
+    std::fill(zero.begin(), zero.end(), 0.0);
+    derivatives_.add_attribute(k, particle, zero);
+    if (opt) {
+      optimizeds_.add_attribute(k, particle, true);
+    }
+  }
+
+  bool get_has_attribute(Key k, ParticleIndex particle) const {
+    return data_.get_has_attribute(k, particle);
+  }
+
+  void set_attribute(Key k, ParticleIndex particle,
+                     const VectorD<D> &v) {
+    data_.set_attribute(k, particle, v);
+  }
+
+  VectorD<D> get_attribute(Key k, ParticleIndex particle,
+                           bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const {
+    return data_.get_attribute(k, particle, IMP_ATTRIBUTE_CHECKED_PARAM);
+  }
+
+  VectorD<D> &access_attribute(Key k, ParticleIndex particle) {
+    return data_.access_attribute(k, particle);
+  }
+
+  VectorD<D> const* access_attribute_data(Key k) const {
+    return data_.access_attribute_data(k);
+  }
+
+  VectorD<D>* access_attribute_data(Key k) {
+    return data_.access_attribute_data(k);
+  }
+
+  VectorD<D> const* access_derivative_data(Key k) const {
+    return derivatives_.access_attribute_data(k);
+  }
+
+  VectorD<D>* access_derivative_data(Key k) {
+    return derivatives_.access_attribute_data(k);
+  }
+
+  unsigned get_attribute_size(Key k) const {
+    return data_.get_attribute_size(k);
+  }
+
+  unsigned get_derivative_size(Key k) const {
+    return derivatives_.get_attribute_size(k);
+  }
+
+  void clear_attributes(ParticleIndex particle) {
+    data_.clear_attributes(particle);
+    derivatives_.clear_attributes(particle);
+    optimizeds_.clear_attributes(particle);
+  }
+
+  IMP::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
+    return data_.get_attribute_keys(particle);
+  }
+
+  unsigned int size() const { return data_.size(); }
+  unsigned int size(unsigned int i) const { return data_.size(i); }
+
+  FloatIndexes get_optimized_vector_attributes() const {
+    FloatIndexes ret;
+    for (unsigned int i = 0; i < optimizeds_.size(); ++i) {
+      for (unsigned int j = 0; j < optimizeds_.size(i); ++j) {
+        if (optimizeds_.get_has_attribute(Key(i), ParticleIndex(j))) {
+          for (unsigned int k = 0; k < D; ++k) {
+            ret.push_back(FloatIndex(ParticleIndex(j), Key(i), k));
+	  }
+        }
+      }
+    }
+    return ret;
+  }
+};
+
 typedef BasicAttributeTable<internal::StringAttributeTableTraits>
     StringAttributeTable;
 typedef BasicAttributeTable<internal::IntAttributeTableTraits>
@@ -1005,8 +1194,14 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
     ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
-typedef BasicAttributeTable<internal::Vector3DAttributeTableTraits>
+typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<3, Vector3DKey>>
     Vector3DAttributeTable;
+typedef VectorDDerivAttributeTable<3, Vector3DDerivKey>
+    Vector3DDerivAttributeTable;
+typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<4, Vector4DKey>>
+    Vector4DAttributeTable;
+typedef VectorDDerivAttributeTable<4, Vector4DDerivKey>
+    Vector4DDerivAttributeTable;
 
 typedef SparseBasicAttributeTable<internal::SparseStringAttributeTableTraits>
     SparseStringAttributeTable;
@@ -1038,6 +1233,14 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::set_attribute;       \
   using Base::get_attribute;       \
   using Base::access_attribute
+#define IMP_MODEL_DERIV_IMPORT(Base)     \
+  IMP_MODEL_IMPORT(Base);                \
+  using Base::get_derivative;            \
+  using Base::get_derivative_size;       \
+  using Base::access_derivative_data;    \
+  using Base::set_is_optimized;          \
+  using Base::get_is_optimized;          \
+  using Base::add_to_derivative
 #define IMP_MODEL_SPARSE_IMPORT(Base)     \
   using Base::add_attribute;       \
   using Base::remove_attribute;    \

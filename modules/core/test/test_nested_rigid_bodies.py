@@ -15,28 +15,51 @@ class GradientCalculator:
 
     def get_approximate_gradient(self, eps=1e-6):
         """Approximate gradient with central differences"""
+        # Note that for rotations this relies on creating
+        # slightly unnormalized quaternions. But the rigid body APIs
+        # *should* allow for this.
         grad = []
         for pi, fk in zip(self.pis, self.fks):
             if not self.m.get_particle(pi).get_is_optimized(fk):
-                grad.append(0.0)
+                if isinstance(fk, IMP.Vector4DDerivKey):
+                    grad.extend((0.0, 0.0, 0.0, 0.0))
+                else:
+                    grad.append(0.0)
                 continue
             v0 = self.m.get_attribute(fk, pi)
-            self.m.set_attribute(fk, pi, v0 - eps / 2)
-            Sminus = self.sf.evaluate(True)
-            self.m.set_attribute(fk, pi, v0 + eps / 2)
-            Splus = self.sf.evaluate(True)
-            self.m.set_attribute(fk, pi, v0)
-            self.m.update()
-            grad.append((Splus - Sminus) / eps)
+            if isinstance(fk, IMP.Vector4DDerivKey):
+                for i in range(4):
+                    v1 = IMP.algebra.Vector4D(v0)
+                    v1[i] = v0[i] - eps / 2
+                    self.m.set_attribute(fk, pi, v1)
+                    Sminus = self.sf.evaluate(True)
+                    v1[i] = v0[i] + eps / 2
+                    self.m.set_attribute(fk, pi, v1)
+                    Splus = self.sf.evaluate(True)
+                    grad.append((Splus - Sminus) / eps)
+                    self.m.set_attribute(fk, pi, v0)
+                    self.m.update()
+            else:
+                self.m.set_attribute(fk, pi, v0 - eps / 2)
+                Sminus = self.sf.evaluate(True)
+                self.m.set_attribute(fk, pi, v0 + eps / 2)
+                Splus = self.sf.evaluate(True)
+                grad.append((Splus - Sminus) / eps)
+                self.m.set_attribute(fk, pi, v0)
+                self.m.update()
         return np.array(grad)
 
     def get_exact_gradient(self):
         """Get IMP's computed gradient"""
         self.sf.evaluate(True)
-        return np.array(
-            [self.m.get_particle(pi).get_derivative(fk)
-             for pi, fk in zip(self.pis, self.fks)]
-        )
+        all_deriv = []
+        for pi, fk in zip(self.pis, self.fks):
+            deriv = self.m.get_particle(pi).get_derivative(fk)
+            if isinstance(deriv, IMP.algebra.Vector4D):
+                all_deriv.extend(deriv)
+            else:
+                all_deriv.append(deriv)
+        return np.array(all_deriv)
 
 
 class DummyRestraint(IMP.Restraint):
@@ -213,7 +236,8 @@ class Tests(IMP.test.TestCase):
             if np.random.uniform() < prob_nonrigid:
                 rb.add_non_rigid_member(rb_nested)
                 nrm = IMP.core.NonRigidMember(rb_nested)
-                for k in nrm.get_internal_coordinate_keys() + nrm.get_internal_rotation_keys():
+                for k in (nrm.get_internal_coordinate_keys()
+                          + [nrm.get_internal_rotation_key()]):
                     nrm.get_particle().set_is_optimized(k, True)
             else:
                 rb.add_member(rb_nested)
@@ -231,10 +255,7 @@ class Tests(IMP.test.TestCase):
         pis, fks = list(
             zip(*[(p.get_particle_index(), fk)
                   for p in all_beads + all_rbs[1:]
-                  for fk in IMP.core.RigidBodyMember(p).get_internal_coordinate_keys()
-                 ]
-               )
-        )
+                  for fk in IMP.core.RigidBodyMember(p).get_internal_coordinate_keys()]))
 
         gc = GradientCalculator(sf, pis, fks)
         grad_approx = gc.get_approximate_gradient(eps=1e-6)
@@ -246,8 +267,8 @@ class Tests(IMP.test.TestCase):
         for rb in all_rbs[1:]:
             pi = rb.get_particle_index()
             nrm = IMP.core.RigidBodyMember(rb)
-            fks = nrm.get_internal_rotation_keys()
-            gc = GradientCalculator(sf, [pi] * 4, fks)
+            fks = nrm.get_internal_rotation_key()
+            gc = GradientCalculator(sf, [pi], [fks])
             grad_approx = gc.get_approximate_gradient(eps=1e-6)
             grad_exact = gc.get_exact_gradient()
             self.assertSequenceAlmostEqual(
@@ -256,8 +277,8 @@ class Tests(IMP.test.TestCase):
 
         rb = all_rbs[0]
         pi = rb.get_particle_index()
-        fks = rb.get_rotation_keys()
-        gc = GradientCalculator(sf, [pi] * 4, fks)
+        fks = rb.get_rotation_key()
+        gc = GradientCalculator(sf, [pi], [fks])
         grad_approx = gc.get_approximate_gradient(eps=1e-6)
         grad_exact = gc.get_exact_gradient()
         self.assertSequenceAlmostEqual(
@@ -339,8 +360,7 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         sf.evaluate(True)
 
-        rot_global_to_parent = rb.get_reference_frame(
-            ).get_transformation_to().get_rotation().get_inverse()
+        rot_global_to_parent = rb.get_reference_frame().get_transformation_to().get_rotation().get_inverse()
         exp_lderv = rot_global_to_parent * point.get_derivatives()
         lderv = IMP.core.NonRigidMember(nrb).get_internal_derivatives()
         self.assertGreater(lderv.get_magnitude(), 0)

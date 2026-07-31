@@ -2,7 +2,7 @@
  *  \file PMFTable.h
  *  \brief A table for storing potentials
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,6 +41,7 @@ struct PMFTable : public Object {
   double bin_width_;
   double max_;
   double offset_;
+  IntPair number_of_particle_types_;
   typedef typename StorageSelector<SPARSE>::Type Storage;
   Storage data_;
   void order(unsigned int &i, unsigned int &j) const {
@@ -98,8 +99,8 @@ struct PMFTable : public Object {
     bin_width_ = bin;
     inverse_bin_width_ = 1.0 / bin;
     Ints dims(2);
-    dims[0] = np;
-    dims[1] = nl;
+    dims[0] = number_of_particle_types_.first = np;
+    dims[1] = number_of_particle_types_.second = nl;
     data_ = Storage(dims);
     int bins_read = -1;
     unsigned int read_entries = 0;
@@ -194,6 +195,19 @@ struct PMFTable : public Object {
     }
   }
   double get_max() const { return max_; }
+  double get_offset() const { return offset_; }
+  double get_bin_width() const { return bin_width_; }
+  Floats get_values(unsigned int i, unsigned int j) const {
+    order(i, j);
+    return get(i, j).get_values();
+  }
+  Floats get_second_derivatives(unsigned int i, unsigned int j) const {
+    order(i, j);
+    return get(i, j).get_second_derivatives();
+  }
+  IntPair get_number_of_particle_types() const {
+    return number_of_particle_types_;
+  }
   DerivativePair get_score_with_derivative(unsigned int i, unsigned int j,
                                            double dist) const {
     if (dist >= max_ - .5 * bin_width_ || dist <= offset_) {

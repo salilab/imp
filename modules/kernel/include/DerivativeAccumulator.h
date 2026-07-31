@@ -2,7 +2,7 @@
  *  \file IMP/DerivativeAccumulator.h
  *  \brief Class for adding derivatives from restraints to the model.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,7 @@
 #include <IMP/value_macros.h>
 #include <IMP/math.h>
 #include <IMP/exception.h>
+#include <IMP/VectorD.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -31,13 +32,33 @@ class IMPKERNELEXPORT DerivativeAccumulator {
   DerivativeAccumulator(const DerivativeAccumulator &copy, double weight)
       : weight_(copy.weight_ * weight) {}
 
-  //! Scale a value appropriately.
+  //! Scale a float value appropriately.
   /** \param[in] value Value to add to the float attribute derivative.
    */
   double operator()(const double value) const {
     IMP_INTERNAL_CHECK(!isnan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
+
+  //! Scale a Vector3D value appropriately.
+  /** \param[in] value Value to add to the Vector3D attribute derivative.
+   */
+  Vector3D operator()(const Vector3D &value) const {
+    return Vector3D(operator()(std::get<0>(value)),
+                    operator()(std::get<1>(value)),
+                    operator()(std::get<2>(value)));
+  }
+
+  //! Scale a Vector4D value appropriately.
+  /** \param[in] value Value to add to the Vector4D attribute derivative.
+   */
+  Vector4D operator()(const Vector4D &value) const {
+    return Vector4D(operator()(std::get<0>(value)),
+                    operator()(std::get<1>(value)),
+                    operator()(std::get<2>(value)),
+                    operator()(std::get<3>(value)));
+  }
+
   double get_weight() const { return weight_; }
   IMP_SHOWABLE_INLINE(DerivativeAccumulator, out << weight_);
 

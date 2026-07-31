@@ -225,13 +225,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "uses{2}=The \1 uses \ref \2 \"\2\" in order to improve its functionality. It will fall back on less good code without it." \
                          "requires{2}=The \1 requires \ref \2 \"\2\" in order to function."
 
-# This tag can be used to specify a number of word-keyword mappings (TCL only).
-# A mapping has the form "name=value". For example adding
-# "class=itcl::class" will allow you to use the command class in the
-# itcl::class meaning.
-
-TCL_SUBST              =
-
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
 # For instance, some of the names that are used will be different. The list
@@ -1002,12 +995,6 @@ HTML_COLORSTYLE_SAT    = 100
 
 HTML_COLORSTYLE_GAMMA  = 80
 
-# If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML
-# page will contain the date and time when the page was generated. Setting
-# this to NO can help when comparing the output of multiple runs.
-
-HTML_TIMESTAMP         = NO
-
 # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
 # documentation will contain sections that can be hidden and shown after the
 # page has loaded.
@@ -1421,13 +1408,6 @@ LATEX_BATCHMODE        = YES
 
 LATEX_HIDE_INDICES     = NO
 
-# If LATEX_SOURCE_CODE is set to YES then doxygen will include
-# source code with syntax highlighting in the LaTeX output.
-# Note that which sources are shown also depends on other settings
-# such as SOURCE_BROWSER.
-
-LATEX_SOURCE_CODE      = NO
-
 # The LATEX_BIB_STYLE tag can be used to specify the style to use for the
 # bibliography, e.g. plainnat, or ieeetr. The default style is "plain". See
 # http://en.wikipedia.org/wiki/BibTeX for more info.
@@ -1713,15 +1693,6 @@ PERL_PATH              = /usr/bin/perl
 # install and use dot, since it yields more powerful graphs.
 
 CLASS_DIAGRAMS         = @IS_HTML@
-
-# You can define message sequence charts within doxygen comments using the \msc
-# command. Doxygen will then run the mscgen tool (see
-# http://www.mcternan.me.uk/mscgen/) to produce the chart and insert it in the
-# documentation. The MSCGEN_PATH tag allows you to specify the directory where
-# the mscgen tool resides. If left empty the tool is assumed to be found in the
-# default search path.
-
-MSCGEN_PATH            =
 
 # If set to YES, the inheritance and collaboration graphs will hide
 # inheritance and usage relations if the target is undocumented

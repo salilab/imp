@@ -892,7 +892,7 @@ class FusionRestraint:
 
     def get_output(self):
         output = {}
-        score = self.weight * self.rs.unprotected_evaluate(None)
+        score = self.evaluate()
         output["_TotalScore"] = str(score)
         output["FusionRestraint_" + self.label] = str(score)
         return output

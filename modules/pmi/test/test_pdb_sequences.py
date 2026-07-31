@@ -2,6 +2,7 @@ import IMP.test
 import IMP.pmi
 import IMP.pmi.topology
 
+
 class Tests(IMP.test.TestCase):
 
     def test_read_sequences_pdb(self):

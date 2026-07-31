@@ -31,7 +31,7 @@ ParticleIndexes create_particles_from_pdb(TextInput in, Model *m) {
     m->add_attribute(xyzr_keys[1], p, 0);
     m->add_attribute(xyzr_keys[2], p, 0);
     m->add_attribute(xyzr_keys[3], p, 0);
-    m->get_sphere(p) = algebra::Sphere3D(algebra::Vector3D(x, y, z), 2);
+    m->get_sphere(p) = algebra::Sphere3D(Vector3D(x, y, z), 2);
     ret.push_back(p);
   } while (true);
   return ret;

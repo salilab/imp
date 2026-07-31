@@ -47,7 +47,7 @@ algebra::VectorKD ConfigurationSetXYZEmbedding::get_point(unsigned int a)
     algebra::Vector3Ds vsc;
     IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
     { vsc.push_back(get_coordinates(sc_->get_model(), _1)); });
-    tr = get_transformation_aligning_first_to_second(vsc, vs0);
+    tr = algebra::get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
     cs_->load_configuration(a);
   }

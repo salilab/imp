@@ -79,7 +79,6 @@ class Tests(IMP.test.TestCase):
         cr2.add_to_model()
         print(cr2.get_output())
 
-
         restraints = '''#
         Rpb3 Rpb4 100 150 0.5
         Rpb4 Rpb4 50 150 0.7'''

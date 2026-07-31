@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import math
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def _testfunc(val):
@@ -78,6 +82,60 @@ class Tests(IMP.test.TestCase):
         closed_spline.set_was_used(False)
         open_spline.show()
         closed_spline.show()
+
+    def test_closed_accessors(self):
+        """Test ClosedCubicSpline accessors"""
+        s = IMP.core.ClosedCubicSpline([1.0, 2.0, 4.0], 4.0, 10.0)
+        self.assertAlmostEqual(s.get_minrange(), 4.0, delta=1e-4)
+        self.assertAlmostEqual(s.get_spacing(), 10.0, delta=1e-4)
+        v = s.get_values()
+        self.assertEqual(len(v), 3)
+        self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
+        v2 = s.get_second_derivatives()
+        self.assertEqual(len(v2), 3)
+
+    def test_open_accessors(self):
+        """Test OpenCubicSpline accessors"""
+        s = IMP.core.OpenCubicSpline([1.0, 2.0, 4.0], 4.0, 10.0, extend=True)
+        self.assertAlmostEqual(s.get_minrange(), 4.0, delta=1e-4)
+        self.assertAlmostEqual(s.get_spacing(), 10.0, delta=1e-4)
+        self.assertTrue(s.get_extend())
+        v = s.get_values()
+        self.assertEqual(len(v), 3)
+        self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
+        v2 = s.get_second_derivatives()
+        self.assertEqual(len(v2), 3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_closed_jax(self):
+        """Test JAX implementation of ClosedCubicSpline"""
+        import jax
+        import jax.numpy as jnp
+        s = IMP.core.ClosedCubicSpline([1.0, 2.0, 4.0], 10.0, 2.0)
+        f = jax.jit(s._get_jax())
+        vals = [10.2, 12.2, 15.9]
+        for val in vals:
+            self.assertAlmostEqual(s.evaluate(val), f(val), delta=1e-3)
+        # Check given array as input
+        fs = f(jnp.asarray(vals))
+        self.assertEqual(len(fs), 3)
+        self.assertAlmostEqual(fs[0], f(vals[0]), delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_open_jax(self):
+        """Test JAX implementation of OpenCubicSpline"""
+        import jax
+        import jax.numpy as jnp
+        s = IMP.core.OpenCubicSpline([1.0, 2.0, 4.0], 10.0, 2.0, extend=True)
+        f = jax.jit(s._get_jax())
+        vals = [1.0, 10.2, 12.2, 13.9, 26.0]
+        for val in vals:
+            self.assertAlmostEqual(s.evaluate(val), f(val), delta=1e-3)
+        # Check given array as input
+        fs = f(jnp.asarray(vals))
+        self.assertEqual(len(fs), 5)
+        self.assertAlmostEqual(fs[0], f(vals[0]), delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

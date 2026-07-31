@@ -1,13 +1,9 @@
 import IMP
 import IMP.test
-import IMP.algebra as alg
 import IMP.em2d
-import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.utility as utility
 import IMP.EMageFit.solutions_io as solutions_io
-import sys
 import os
-import itertools
 import IMP.EMageFit.sampling
 
 

@@ -3,6 +3,10 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.atom
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -102,6 +106,21 @@ class Tests(IMP.test.TestCase):
             for i in range(steps, 20):
                 self.assertAlmostEqual(ts[i], 298.0, delta=0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_berendsen_thermostat(self):
+        """Test JAX implementation of Berendsen thermostat"""
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(0.1, 0, 0)]],
+                                     copies=10)
+        scaler = IMP.atom.BerendsenThermostatOptimizerState(ps, 298.0, 8.0)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_maximum_time_step(4.0)
+        md.set_scoring_function([])
+        md.add_optimizer_state(scaler)
+        md._optimize_jax(20)
+        ts = md.get_kinetic_temperature(md.get_kinetic_energy())
+        self.assertAlmostEqual(ts, 298.0, delta=0.1)
+
     def test_langevin_thermostat(self):
         """Test Langevin thermostat"""
         # Need many particles due to random forces
@@ -122,6 +141,23 @@ class Tests(IMP.test.TestCase):
         # After a while, temperature should have stabilized at set value
         equilibrium_temp = sum(ts[40:140]) / 100.0
         self.assertAlmostEqual(equilibrium_temp, 298.0, delta=20.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_langevin_thermostat(self):
+        """Test JAX implementation of Langevin thermostat"""
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(0.1, 0, 0)]],
+                                     copies=1000)
+        scaler = IMP.atom.LangevinThermostatOptimizerState(m, ps, 298.0, 0.1)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_maximum_time_step(4.0)
+        # Test MD with NullScoringFunction
+        md.set_scoring_function([])
+        md.add_optimizer_state(scaler)
+        md._optimize_jax(100)
+        ts = md.get_kinetic_temperature(md.get_kinetic_energy())
+        self.assertAlmostEqual(ts, 298.0, delta=50.0)
+
 
 if __name__ == '__main__':
     IMP.test.main()

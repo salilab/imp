@@ -15,7 +15,7 @@ IMPATOM_BEGIN_NAMESPACE
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
     Model *m, ParticleIndexesAdaptor pis, Float temperature, double gamma)
     : OptimizerState(m, "LangevinThermostatOptimizerState%1%"),
-      pis_(get_particles(m, pis)),
+      pis_(::IMP::get_particles(m, pis)),
       temperature_(temperature),
       gamma_(gamma) {
   IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);

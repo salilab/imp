@@ -27,12 +27,16 @@ class MockGaussianEMRestraint(IMP.Restraint):
         self.em_filename = em_filename
         self.inputs = inputs
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return self.inputs
 
@@ -53,12 +57,16 @@ class MockCrossLinkRestraint(IMP.RestraintSet):
     def __init__(self, m, xlms_filename):
         self.xlms_filename = xlms_filename
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return []
 
@@ -76,12 +84,16 @@ class MockSAXSRestraint(IMP.Restraint):
     def __init__(self, m, dat_filename):
         self.dat_filename = dat_filename
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return []
 
@@ -99,12 +111,16 @@ class MockSAXSRestraint(IMP.Restraint):
 class MockZAxialRestraint(IMP.Restraint):
     def __init__(self, m):
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return []
 
@@ -122,12 +138,16 @@ class MockPCAFitRestraint(IMP.Restraint):
     def __init__(self, m, image_filenames):
         self.image_filenames = image_filenames
         super().__init__(m, "MockRestraint %1%")
+
     def unprotected_evaluate(self, accum):
         return 0.
+
     def get_version_info(self):
         return IMP.VersionInfo("IMP authors", "0.1")
+
     def do_show(self, fh):
         fh.write('MockRestraint')
+
     def do_get_inputs(self):
         return []
 

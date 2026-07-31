@@ -19,7 +19,6 @@ No repository directories are changed.
 
 import os
 import os.path
-import platform
 import tools
 from argparse import ArgumentParser
 
@@ -114,78 +113,44 @@ def link_python(modules):
                        filt=_ExcludeTopLevelPythonInit(topdir))
 
 
-def _make_test_driver(outf, cpps):
-    out = open(outf, "w")
-    out.write("""import IMP
-import IMP.test
-import sys
-try:
-    import subprocess
-except ImportError:
-    subprocess = None
-
-class TestCppProgram(IMP.test.TestCase):
-""")
-    for t in cpps:
-        tbase = os.path.splitext(t)[0]
-        # remove suffix
-        nm = os.path.split(str(tbase))[1].replace(".", "_")
-        # Strip .exe extension, so test name on Windows matches other platforms
-        exename = os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
-        if platform.system == "Windows":
-            exename = exename + ".exe"
-        out.write("""    def test_%(name)s(self):
-        \"\"\"Running C++ test %(name)s\"\"\"
-        if subprocess is None:
-            self.skipTest("subprocess module unavailable")
-        # Note: Windows binaries look for needed DLLs in the current
-        # directory. So we need to change into the directory where the DLLs
-        # have been installed for the binary to load correctly.
-        p = subprocess.Popen(["%(path)s"],
-                             shell=False, cwd="%(libdir)s")
-        self.assertEqual(p.wait(), 0)
-"""
-                  % {'name': nm, 'path': os.path.abspath(exename),
-                     'libdir': os.path.abspath("lib")})
-    out.write("""
-if __name__ == '__main__':
-    IMP.test.main()
-""")
-
-
 def generate_tests(modules):
     template = """import IMP
 import IMP.test
 import %(module)s
 
-spelling_exceptions=%(spelling_exceptions)s
-python_only=%(python_only)s
+spelling_exceptions = %(spelling_exceptions)s
+python_only = %(python_only)s
+
 
 class StandardsTest(IMP.test.TestCase):
     def test_value_objects(self):
         "Test that module classes are either values or objects"
         if python_only:
             self.skipTest("this module is Python-only")
-        exceptions= %(value_object_exceptions)s
-        return self.assertValueObjects(%(module)s,exceptions)
+        exceptions = %(value_object_exceptions)s
+        return self.assertValueObjects(%(module)s, exceptions)
+
     def test_classes(self):
         "Test that module class names follow the standards"
-        exceptions=%(value_object_exceptions)s
+        exceptions = %(value_object_exceptions)s
         return self.assertClassNames(%(module)s, exceptions,
                                      spelling_exceptions)
+
     def test_functions(self):
         "Test that module function names follow the standards"
-        exceptions= %(function_name_exceptions)s
+        exceptions = %(function_name_exceptions)s
         return self.assertFunctionNames(%(module)s, exceptions,
                                         spelling_exceptions)
+
     def test_show(self):
         "Test all objects have show"
-        exceptions=%(show_exceptions)s
+        exceptions = %(show_exceptions)s
         return self.assertShow(%(module)s, exceptions)
+
 
 if __name__ == '__main__':
     IMP.test.main()
-    """
+"""
     target = os.path.join("test")
     tools.mkdir(target)
     for module in modules:

@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 
+
 class Tests(IMP.test.TestCase):
     """Test the RigidBodyAnglePairScore"""
 

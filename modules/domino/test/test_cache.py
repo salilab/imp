@@ -3,7 +3,6 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.algebra
-import random
 
 
 class LogRestraint(IMP.Restraint):

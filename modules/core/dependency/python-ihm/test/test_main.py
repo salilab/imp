@@ -1,6 +1,7 @@
 import utils
 import os
 import unittest
+import warnings
 import urllib.request
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -70,6 +71,15 @@ class Tests(unittest.TestCase):
         # Formula with known elements and formal charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
         self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
+        # User-specified weight
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1',
+                              formula_weight=999.00)
+        self.assertEqual(len(w), 1)
+        self.assertIn("differs from the weight calculated from the "
+                      "chemical formula", str(w[0].message))
+        self.assertAlmostEqual(cc.formula_weight, 999.000, delta=0.01)
 
     def test_peptide_chem_comp(self):
         """Test PeptideChemComp class"""
@@ -147,13 +157,19 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(a._comps['Z'].formula_weight, 114.124,
                                delta=0.01)
 
+        self.assertEqual(a._comps['O'].id, 'PYL')
+        self.assertEqual(a._comps['O'].name, "PYRROLYSINE")
+        self.assertEqual(a._comps['O'].formula, 'C12 H21 N3 O3')
+        self.assertAlmostEqual(a._comps['O'].formula_weight, 255.318,
+                               delta=0.01)
+
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 25)
-        self.assertEqual(len(a.values), 25)
+        self.assertEqual(len(a.keys), 26)
+        self.assertEqual(len(a.values), 26)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 25)
+        self.assertEqual(len(a.items), 26)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
@@ -240,10 +256,17 @@ class Tests(unittest.TestCase):
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
         e1 = ihm.Entity('AHCD')
-        self.assertAlmostEqual(e1.formula_weight, 499.516, delta=0.1)
+        self.assertAlmostEqual(e1.formula_weight, 445.471, delta=0.1)
+        e1 = ihm.Entity('ACGA', alphabet=ihm.RNAAlphabet)
+        self.assertAlmostEqual(e1.formula_weight, 1263.852, delta=0.1)
+        e1 = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
+        self.assertAlmostEqual(e1.formula_weight, 557.437, delta=0.1)
         # Entity containing a component with unknown weight
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         self.assertIsNone(heme.formula_weight)
+        # Entity with user-provided weight
+        e1 = ihm.Entity('AHCD', formula_weight=999.000)
+        self.assertAlmostEqual(e1.formula_weight, 999.000, delta=0.1)
 
     def test_entity_type(self):
         """Test Entity.type"""
@@ -382,6 +405,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(c.is_primary)
         c = self._get_from_pubmed_id('pubmed_api.json', is_primary=True)
         self.assertTrue(c.is_primary)
+        self.assertEqual(c.journal_issn, '0028-0836')
 
     def test_citation_from_pubmed_id_one_page(self):
         """Test Citation.from_pubmed_id() with page rather than range"""
@@ -638,6 +662,14 @@ class Tests(unittest.TestCase):
         # Same signature if ranges completely overlap
         asm2 = ihm.Assembly([a1, a2(1, 2), a2(3, 3), anonpol])
         self.assertEqual(asm._signature(), asm2._signature())
+
+        # Assembly can contain bare entities or ranges
+        asm2 = ihm.Assembly([e1, e1(1, 2)])
+        self.assertIsNotNone(asm2._signature())
+
+        # Incomplete assembly has a signature of None
+        asm2 = ihm.Assembly([ihm.AsymUnit(None)])
+        self.assertIsNone(asm2._signature())
 
     def test_remove_identical(self):
         """Test remove_identical function"""

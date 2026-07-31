@@ -2,7 +2,7 @@
  *  \file IMP/core/DerivativesFromRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_FROM_REFINED_H
@@ -14,7 +14,7 @@
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/Pointer.h>
-#include <IMP/SingletonDerivativeModifier.h>
+#include <IMP/SingletonModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -26,8 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
  of the atoms of a protein by a sphere per residue.
  \include cover_particles.py
  */
-class IMPCOREEXPORT DerivativesFromRefined
-    : public SingletonDerivativeModifier {
+class IMPCOREEXPORT DerivativesFromRefined : public SingletonModifier {
   IMP::PointerMember<Refiner> refiner_;
   FloatKeys ks_;
 

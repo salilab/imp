@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.container
 import IMP.display
-import math
 
 
 class Tests(IMP.test.TestCase):

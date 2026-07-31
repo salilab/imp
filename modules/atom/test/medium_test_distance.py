@@ -2,8 +2,6 @@ import IMP
 import IMP.test
 import IMP.core as core
 import IMP.atom as atom
-import IMP.algebra as alg
-import math
 
 
 class Tests(IMP.test.TestCase):

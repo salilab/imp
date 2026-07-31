@@ -5,8 +5,6 @@ import IMP.core
 import IMP.container
 import IMP.test
 
-import math
-
 
 class Volume(IMP.test.TestCase):
 
@@ -50,35 +48,6 @@ class Volume(IMP.test.TestCase):
                 pass
         self.assertLess(sf.evaluate(False), .2)
 
-    def _test_volume_2(self):
-        """Testing that volume restraint can change radius"""
-        m = IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
-        ps = []
-        p = IMP.Particle(m)
-        inits = Sphere3D(get_random_vector_in(BoundingBox3D(Vector3D(0, 0, 0),
-                                                            Vector3D(
-                                                                5, 5, 5))),
-                         4)
-        print(inits)
-        d = XYZR.setup_particle(p, inits)
-        print(d)
-        ps.append(p)
-        d.set_coordinates_are_optimized(True)
-        d.get_particle().set_is_optimized(XYZR.get_radius_key(), True)
-        sc = ListSingletonContainer(ps)
-        vr = VolumeRestraint(
-            Harmonic(0, .001), sc, 5 ** 3 * 3.1415 * 4.0 / 3.0 * len(ps))
-        sf = IMP.core.RestraintsScoringFunction([vr])
-        #c= SteepestDescent()
-        # c.set_step_size(.1)
-        # c.set_threshold(1)
-        c = MonteCarlo(m)
-        c.set_scoring_function(sf)
-        c.set_score_threshold(.1)
-        c.optimize(20)
-        print(d)
-        self.assertAlmostEqual(d.get_radius(), 5, delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

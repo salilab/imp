@@ -4,6 +4,7 @@ import IMP.core
 import IMP.isd
 import IMP.container
 
+
 def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
 
     nuisance = IMP.isd.Scale.setup_particle(IMP.Particle(m), initialvalue)

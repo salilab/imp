@@ -1,16 +1,7 @@
-# general imports
-from numpy import *
-from random import uniform
 import pickle
-
-# imp general
 import IMP
 import IMP.core
-
-# our project
 from IMP.isd import Nuisance, Scale, Switching
-
-# unit testing framework
 import IMP.test
 
 

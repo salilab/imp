@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Reflection3D.h   \brief Reflect about a plane in 3D.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -9,8 +9,8 @@
 #define IMPALGEBRA_REFLECTION_3D_H
 
 #include <IMP/algebra/algebra_config.h>
+#include <IMP/GeometricPrimitiveD.h>
 #include "Plane3D.h"
-#include "GeometricPrimitiveD.h"
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

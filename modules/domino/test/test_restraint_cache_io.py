@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
-import RMF
 import random
 
 num_particles = 3
@@ -39,7 +38,7 @@ class Tests(IMP.test.TestCase):
         if not IMP.domino.IMP_DOMINO_HAS_RMF:
             self.skipTest("domino configured without RMF")
         else:
-            import RMF
+            import RMF  # noqa: F401
         bb = IMP.algebra.BoundingBox3D([0, 0, 0], [10, 10, 10])
         vs = [IMP.algebra.get_random_vector_in(bb)
               for i in range(0, num_states)]

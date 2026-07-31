@@ -1,7 +1,6 @@
 import IMP.test
 import sys
 import os
-import re
 
 
 class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):

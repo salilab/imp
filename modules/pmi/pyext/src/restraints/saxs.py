@@ -247,11 +247,11 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
         self.saxs.set_cov(0, self.cov)
 
     def write_covariance_matrix(self, fname):
-        fl = open(fname, 'w')
-        for line in self.cov:
-            for i in line:
-                fl.write('%G ' % i)
-            fl.write('\n')
+        with open(fname, 'w') as fl:
+            for line in self.cov:
+                for i in line:
+                    fl.write('%G ' % i)
+                fl.write('\n')
 
     def get_output(self):
         output = super().get_output()

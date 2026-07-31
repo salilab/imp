@@ -1,12 +1,12 @@
-full_name="OpenCV 3 or later"
+full_name="OpenCV 3 or 4"
 pkg_config_name="opencv4:opencv"
 libraries="opencv_core:opencv_imgproc:opencv_highgui:opencv_imgcodecs"
 headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/highgui/highgui.hpp:opencv2/core/version.hpp"
 body="""
-#if CV_MAJOR_VERSION>=3
+#if CV_MAJOR_VERSION>=3 && CV_MAJOR_VERSION < 5
 new cv::Mat();
 #else
-#error "Version is not at least 3.0"
+#error "Version is not at least 3.0 and less than 5.0"
 #endif
 """
 versionheader="opencv2/core/version.hpp"

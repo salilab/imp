@@ -2,7 +2,7 @@
  *  \file IMP/algebra/UnitSimplexD.h
  *  \brief Simple unit simplex class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,8 +11,8 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/algebra/Triangle3D.h>
-#include <IMP/algebra/GeometricPrimitiveD.h>
 #include <IMP/algebra/VectorD.h>
+#include <IMP/GeometricPrimitiveD.h>
 #include <IMP/showable_macros.h>
 #include <boost/math/special_functions/gamma.hpp>
 #include <cereal/access.hpp>

@@ -2,7 +2,7 @@
  *  \file IMP/core/GenericAttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H
@@ -36,6 +36,8 @@ class GenericAttributeSingletonScore : public SingletonScore {
   }
   //! get access to the unary function object used for scoring the attribute
   UF* get_unary_function() {return f_;};
+  //! Get the attribute key used
+  FloatKey get_key() const {return k_;};
   IMP_SINGLETON_SCORE_METHODS(GenericAttributeSingletonScore);
   IMP_OBJECT_METHODS(GenericAttributeSingletonScore);
   ;
@@ -44,7 +46,7 @@ class GenericAttributeSingletonScore : public SingletonScore {
 template <class UF>
 inline GenericAttributeSingletonScore<UF>::GenericAttributeSingletonScore(
     UF *f, FloatKey k)
-    : f_(f), k_(k) {}
+    : SingletonScore("AttributeSingletonScore%1%"), f_(f), k_(k) {}
 template <class UF>
 inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
     Model *m, ParticleIndex pi,

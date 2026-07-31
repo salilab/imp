@@ -1,5 +1,3 @@
-import sys
-import os
 import IMP
 import IMP.em
 import IMP.test

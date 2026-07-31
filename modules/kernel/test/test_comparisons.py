@@ -1,12 +1,11 @@
 import IMP.test
-import sys
 import random
-from io import StringIO
 
-if sys.version_info[0] >=3 :
-    def cmp(x, y):
-        """Return -1 if x < y, 0 if x == y and 1 if x > y"""
-        return (x > y) - (x < y)
+
+def cmp(x, y):
+    """Return -1 if x < y, 0 if x == y and 1 if x > y"""
+    return (x > y) - (x < y)
+
 
 class Tests(IMP.test.TestCase):
 
@@ -41,6 +40,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(cp, icp)
             self.assertEqual(lt, ilt)
             self.assertEqual(eq, ieq)
+
 
 if __name__ == '__main__':
     IMP.test.main()

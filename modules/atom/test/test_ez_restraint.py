@@ -2,8 +2,6 @@ import IMP
 import IMP.test
 import IMP.atom
 
-from math import *
-
 
 class Test(IMP.test.TestCase):
 

@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Triangle3D.h
  *  \brief Represent a triangle in 3D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_TRIANGLE_3D_H
@@ -11,8 +11,7 @@
 #include "Vector3D.h"
 #include "Transformation3D.h"
 #include "ReferenceFrame3D.h"
-#include "algebra_macros.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <iostream>
 #include <cereal/access.hpp>
 #include "constants.h"

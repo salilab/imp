@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import IMP.parallel
 
 # Set a shorter default heartbeat timeout, so failures to start up workers

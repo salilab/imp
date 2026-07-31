@@ -1,10 +1,7 @@
 import IMP
 import IMP.test
-import sys
 import IMP.core
 import IMP.container
-import os
-import time
 
 
 class Tests(IMP.test.TestCase):

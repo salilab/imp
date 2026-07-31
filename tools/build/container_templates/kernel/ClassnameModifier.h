@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_MODIFIER_H
@@ -22,8 +22,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     \see IMP::ClassnamePredicate
 
-    Implementers should see IMP_CLASSNAME_MODIFIER(). Also see
-    ClassnameDerivativeModifier.
+    Implementers should see IMP_CLASSNAME_MODIFIER().
  */
 class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
                                           public ParticleOutputs,

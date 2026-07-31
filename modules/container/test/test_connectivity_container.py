@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.container
 import IMP.display
-import math
 
 
 def nudge_particle(p, sz):
@@ -100,10 +99,6 @@ class Tests(IMP.test.TestCase):
                     print(d1)
                     print((p0.get_particle(), p1.get_particle()))
                     self.assertLessEqual(IMP.core.get_distance(d0, d1), 0.1)
-                    # self.assert_(cpc.get_contains_particle_pair((p0.get_particle(), p1.get_particle()))
-                                 # or
-                                 # cpc.get_contains_particle_pair((p1.get_particle(),
-                                 # p0.get_particle())))
 
 
 if __name__ == '__main__':

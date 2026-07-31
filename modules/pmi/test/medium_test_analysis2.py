@@ -12,16 +12,17 @@ import tempfile
 nicemodules = True
 try:
     import numpy as np
-    import scipy
-    import sklearn
+    import scipy  # noqa: F401
+    import sklearn  # noqa: F401
     import IMP.pmi.analysis
     import IMP.pmi.io
     import IMP.pmi.dof
     import IMP.pmi.macros
     import IMP.pmi.restraints.basic
-    import matplotlib
+    import matplotlib  # noqa: F401
 except ImportError:
     nicemodules = False
+
 
 def get_drms(coords0,coords1):
     total = 0.0
@@ -35,6 +36,7 @@ def get_drms(coords0,coords1):
             ct += 1
     return sqrt(total/ct)
 
+
 def coords_from_rmf(filename,nframes,mdl,molecules):
     rh0 = RMF.open_rmf_file_read_only(filename)
     hier0 = IMP.rmf.create_hierarchies(rh0,mdl)[0]
@@ -46,12 +48,14 @@ def coords_from_rmf(filename,nframes,mdl,molecules):
     del rh0
     return coords
 
+
 def get_dist(cl0,cl1):
     dist = 0.0
     for x0,x1 in itertools.product(cl0,cl1):
         dist += get_drms(x0,x1)
     dist /= float(len(cl0)*len(cl1))
     return dist
+
 
 class Tests(IMP.test.TestCase):
     def init_topology(self,mdl):
@@ -91,8 +95,7 @@ class Tests(IMP.test.TestCase):
                 mdl, root_hier=hier, output_objects=[dr],
                 monte_carlo_sample_objects=dof.get_movers(),
                 number_of_frames=10, number_of_best_scoring_models=0,
-                global_output_directory = \
-                self.get_input_file_name("pmi2_sample_0/"))
+                global_output_directory=self.get_input_file_name("pmi2_sample_0/"))
         rex.execute_macro()
 
         trans = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(10,10,10))
@@ -104,8 +107,7 @@ class Tests(IMP.test.TestCase):
                 mdl, root_hier=hier, output_objects=[dr],
                 monte_carlo_sample_objects=dof.get_movers(),
                 number_of_frames=10, number_of_best_scoring_models=0,
-                global_output_directory = \
-                self.get_input_file_name("pmi2_sample_1/"),
+                global_output_directory=self.get_input_file_name("pmi2_sample_1/"),
                 replica_exchange_object=rex.get_replica_exchange_object())
         rex2.execute_macro()
 
@@ -145,8 +147,7 @@ class Tests(IMP.test.TestCase):
                 mdl, root_hier=hier, output_objects=[dr],
                 monte_carlo_sample_objects=dof.get_movers(),
                 number_of_frames=10, number_of_best_scoring_models=0,
-                global_output_directory = \
-                self.get_input_file_name("pmi2_sample_res5/"))
+                global_output_directory=self.get_input_file_name("pmi2_sample_res5/"))
         rex.execute_macro()
 
     def init_with_copies(self,mdl):
@@ -182,8 +183,7 @@ class Tests(IMP.test.TestCase):
                 mdl, root_hier=hier,
                 monte_carlo_sample_objects=dof.get_movers(),
                 number_of_frames=1, number_of_best_scoring_models=0,
-                global_output_directory = \
-                self.get_input_file_name("pmi2_copies_0/"))
+                global_output_directory=self.get_input_file_name("pmi2_copies_0/"))
         rex.execute_macro()
 
         coords0A = [IMP.core.XYZ(p).get_coordinates() for p in ps0]
@@ -198,8 +198,7 @@ class Tests(IMP.test.TestCase):
                 mdl, root_hier=hier,
                 monte_carlo_sample_objects=dof.get_movers(),
                 number_of_frames=1, number_of_best_scoring_models=0,
-                global_output_directory = \
-                self.get_input_file_name("pmi2_copies_1/"),
+                global_output_directory=self.get_input_file_name("pmi2_copies_1/"),
                 replica_exchange_object=rex.get_replica_exchange_object())
         rex2.execute_macro()
 
@@ -208,7 +207,6 @@ class Tests(IMP.test.TestCase):
 
         rmsd = IMP.algebra.get_rmsd(coords0A+coords1A,coords1B+coords0B)
         return rmsd
-
 
     def test_get_model_density(self):
         """Test creation of density correctly averages frames for res=5"""

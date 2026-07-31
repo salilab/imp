@@ -53,10 +53,9 @@ class Tests(IMP.test.TestCase):
                 d0 = IMP.core.XYZR(l0.get_particle())
                 d1 = IMP.core.XYZR(l1.get_particle())
                 if (IMP.core.get_distance(d0, d1) < .95 * threshold):
-                    print("looking for", l0.get_particle().get_name() + " " \
-                        + \
-                        l1.get_particle().get_name(), IMP.core.get_distance(
-                            d0, d1))
+                    print("looking for", l0.get_particle().get_name() + " "
+                          + l1.get_particle().get_name(),
+                          IMP.core.get_distance(d0, d1))
                     self.assertTrue(lps.get_contains((l0.get_particle(),
                                                       l1.get_particle())))
                 else:
@@ -88,8 +87,9 @@ class Tests(IMP.test.TestCase):
         apd.sort(key=lambda a: a[0])
         # print apd
         for p in lps.get_particle_pairs():
-            print(IMP.core.get_distance(IMP.core.XYZR(p[0]), IMP.core.XYZR(p[1])),\
-                p[0].get_name(), p[1].get_name())
+            print(IMP.core.get_distance(IMP.core.XYZR(p[0]),
+                                        IMP.core.XYZR(p[1])),
+                  p[0].get_name(), p[1].get_name())
         for i in range(0, k):
             print("looking for", apd[i][0], apd[i][1][0].get_name(), apd[i][1][1].get_name())
             self.assertTrue(lps.get_contains(apd[i][1]))

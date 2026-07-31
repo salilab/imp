@@ -653,25 +653,11 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
 
 def save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
               gzip=False, mode='w', bin=True):
-
-    import os
-    import tempfile
-
-    path, _filename = os.path.split(filename)
-
-    temp_path, temp_filename = os.path.split(tempfile.mktemp())
-    temp_filename = os.path.join(path, temp_filename)
-
-    _save_dump(x, temp_filename, err_msg, delay, show_io_err,
-               gzip, bin)
-
-    # if that worked, dump properly
-
     if mode == 'w':
-        os.rename(temp_filename, filename)
+        _save_dump(x, filename, err_msg, delay, show_io_err,
+                   gzip, bin)
 
     elif mode == 'a':
-        os.unlink(temp_filename)
         Dump(x, filename, mode='a', gzip=gzip, bin=bin)
 
     else:

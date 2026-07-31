@@ -4,8 +4,6 @@ import IMP.core
 import IMP.container
 import pickle
 
-from math import *
-
 
 class NormalMoverTest(IMP.test.TestCase):
 

@@ -58,7 +58,7 @@ class IMPATOMEXPORT Angle : public Decorator {
 IMP_DECORATORS(Angle, Angles, ParticlesTemp);
 
 //! A particle that describes a dihedral angle between four particles.
-/** An Angle decorator is a simple container of four particles, together
+/** A Dihedral decorator is a simple container of four particles, together
     with an ideal value (in radians) for the angle, a multiplicity
     and a stiffness.
 

@@ -102,7 +102,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         status_1 = []
         for x in mol:
             status_1.append(x in mol_beads_1)
-            self.assertEqual(x in mol_beads_1, not x in mol.get_represented())
+            self.assertEqual(x in mol_beads_1, x not in mol.get_represented())
 
         mol.add_representation(mol_beads_1,
                                resolutions=[10],
@@ -167,7 +167,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         status_1 = []
         for x in mol:
             status_1.append(x in mol_beads_1)
-            self.assertEqual(x in mol_beads_1, not x in mol.get_represented())
+            self.assertEqual(x in mol_beads_1, x not in mol.get_represented())
 
         mol.add_representation(mol_beads_1,
                                resolutions=[10],
@@ -181,7 +181,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         status_2 = []
         for x in mol:
             status_2.append(x in mol_beads_2)
-            self.assertEqual(x in mol_beads_2, not x in mol.get_represented())
+            self.assertEqual(x in mol_beads_2, x not in mol.get_represented())
             self.assertFalse(x in mol_beads_2)
 
         hier = s.build()
@@ -203,7 +203,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # and this test fails
 
         for x in mol:
-            self.assertEqual(x in mol_beads_3, not x in mol.get_represented())
+            self.assertEqual(x in mol_beads_3, x not in mol.get_represented())
             self.assertFalse(x in mol_beads_3)
 
     def test_num_residues(self):
@@ -222,7 +222,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
     def test_num_unstruct_res(self):
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -247,7 +247,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         IMP.atom.Hierarchy does not have a function get_residue_type()
         """
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -266,7 +266,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
     def test_molecule_rigid_members(self):
         """None of the leaves of the molecule are RigidMembers"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -292,7 +292,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
     def test_molecule_rigid_members1(self):
         """None of the leaves of the selection (Resolution=10) are RigidMembers"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -325,7 +325,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         all leaves of the molecule are of type RigidMember
         """
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -915,7 +915,7 @@ class Tests(IMP.test.TestCase):
     def test_setup_densities(self):
         """Test creating collective densities"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 
@@ -1023,7 +1023,7 @@ class Tests(IMP.test.TestCase):
     def test_ideal_helix(self):
         """Test you can build an ideal helix"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
 

@@ -31,6 +31,9 @@ class HarmonicUpperBound : public Score {
  public:
   HarmonicUpperBound(double k) : k_(k) {}
   HarmonicUpperBound() {}
+
+  double get_k() const { return k_; }
+
   template <unsigned int D>
   double get_score(Model *,
                    const Array<D, ParticleIndex> &,

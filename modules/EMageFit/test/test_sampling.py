@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.algebra as alg
-import sys
 import os
 
 import IMP.EMageFit.sampling as sampling

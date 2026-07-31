@@ -4,6 +4,7 @@ import IMP.pmi
 import IMP.pmi.io
 import os
 
+
 class Tests(IMP.test.TestCase):
 
     def test_parse_dssp_single_chain(self):

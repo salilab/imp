@@ -7,6 +7,7 @@ import math
 # unit testing framework
 import IMP.test
 
+
 class ISDRestraint(IMP.isd.ISDRestraint):
     def __init__(self,m):
         super().__init__(m, "ISDRestraint %1%")
@@ -24,6 +25,7 @@ class ISDRestraint2(IMP.isd.ISDRestraint):
 
     def do_get_inputs(self):
         return []
+
 
 class ISDRestraint3(IMP.isd.ISDRestraint):
     def __init__(self,m):

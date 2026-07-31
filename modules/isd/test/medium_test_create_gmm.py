@@ -2,11 +2,12 @@ import IMP
 import IMP.core
 from IMP.isd import create_gmm
 import IMP.test
-import sys
 import os
+
 
 class MockArgs:
     pass
+
 
 class Tests(IMP.test.TestCase):
 
@@ -39,7 +40,7 @@ class Tests(IMP.test.TestCase):
     def test_from_pdb(self):
         """Test create_gmm from a PDB file"""
         try:
-            import sklearn.mixture
+            import sklearn.mixture  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the sklearn Python module")
         self.run_python_module(create_gmm,
@@ -57,7 +58,7 @@ class Tests(IMP.test.TestCase):
     def test_from_pdb_chain(self):
         """Test create_gmm from a single chain of a PDB file"""
         try:
-            import sklearn.mixture
+            import sklearn.mixture  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the sklearn Python module")
         self.run_python_module(create_gmm,
@@ -76,7 +77,7 @@ class Tests(IMP.test.TestCase):
     def test_from_mrc(self):
         """Test create_gmm from an MRC file"""
         try:
-            import sklearn.mixture
+            import sklearn.mixture  # noqa: F401
         except ImportError:
             self.skipTest("this test requires the sklearn Python module")
         self.run_python_module(create_gmm,

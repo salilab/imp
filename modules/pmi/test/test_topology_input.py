@@ -10,11 +10,13 @@ import IMP.rmf
 import IMP.pmi.plotting
 import IMP.pmi.plotting.topology
 
+
 def children_as_dict(h):
     cdict={}
     for c in h.get_children():
         cdict[c.get_name()]=c
     return cdict
+
 
 class Tests(IMP.test.TestCase):
     def test_old(self):
@@ -64,7 +66,7 @@ class Tests(IMP.test.TestCase):
 
     def test_beads(self):
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         mdl = IMP.Model()
@@ -218,11 +220,11 @@ class Tests(IMP.test.TestCase):
 
     def test_draw_molecular_composition(self):
         try:
-            import matplotlib
+            import matplotlib  # noqa: F401
         except ImportError:
             self.skipTest("no matplotlib package")
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         mdl = IMP.Model()
@@ -237,11 +239,10 @@ class Tests(IMP.test.TestCase):
         root_hier, dof = bs.execute_macro()
         IMP.pmi.plotting.topology.draw_component_composition(dof)
 
-
     def test_set_movers(self):
         """Check if rigid bodies etc are set up as requested"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         mdl = IMP.Model()
@@ -276,7 +277,7 @@ class Tests(IMP.test.TestCase):
     def test_build_system(self):
         """Test the new BuildSystem macro including beads and ideal helix"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         mdl = IMP.Model()
@@ -294,16 +295,16 @@ class Tests(IMP.test.TestCase):
         sel1 = IMP.atom.Selection(root_hier,molecule="Prot1",
                                   resolution=1,copy_index=0).get_selected_particles()
         #                          res1 bead
-        self.assertEqual(len(sel1), 7  + 2 )
+        self.assertEqual(len(sel1), 7 + 2)
 
         sel1 = IMP.atom.Selection(root_hier,molecule="Prot1",
                                   resolution=1,copy_index=1).get_selected_particles()
         #                          res1 bead
-        self.assertEqual(len(sel1), 7  + 2 )
+        self.assertEqual(len(sel1), 7 + 2)
 
         sel1D = IMP.atom.Selection(root_hier,molecule="Prot1",
                                   representation_type=IMP.atom.DENSITIES).get_selected_particles()
-        self.assertEqual(len(sel1D),6) #3 each
+        self.assertEqual(len(sel1D),6)  # 3 each
 
         sel2 = IMP.atom.Selection(root_hier,molecule="Prot2",
                                   resolution=10,
@@ -355,12 +356,12 @@ class Tests(IMP.test.TestCase):
         fbs = dof.get_flexible_beads()
         self.assertEqual(len(rbs),5)
         #                         Prot1x2 Prot3
-        self.assertEqual(len(fbs), 4   +  2)
+        self.assertEqual(len(fbs), 4 + 2)
 
     def test_build_system_mmcif(self):
         """Test BuildSystem macro with mmCIF input files"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         tfile = self.get_input_file_name('topology_mmcif.txt')
@@ -369,7 +370,7 @@ class Tests(IMP.test.TestCase):
     def test_build_system_binary_cif(self):
         """Test BuildSystem macro with BinaryCIF input files"""
         try:
-            import sklearn
+            import sklearn  # noqa: F401
         except ImportError:
             self.skipTest("no sklearn package")
         tfile = self.get_input_file_name('topology_bcif.txt')
@@ -390,7 +391,7 @@ class Tests(IMP.test.TestCase):
         sel1 = IMP.atom.Selection(root_hier,molecule="Prot1",
                                   resolution=1,
                                   copy_index=0).get_selected_particles()
-        self.assertEqual(len(sel1), 7  + 2 )
+        self.assertEqual(len(sel1), 7 + 2)
 
 
 if __name__=="__main__":

@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
+
 class Tests(IMP.test.TestCase):
 
     def test_linear_velocity(self):

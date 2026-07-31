@@ -79,7 +79,6 @@ class Tests(IMP.test.TestCase):
                 self.assertAlmostEqual(score / corr_score, 1, delta=1e-6)
                 self.assertAlmostEqual(deriv / corr_derv, 1, delta=1e-6)
 
-
     def test_special_values(self):
         """Test special distance values are correctly calculated."""
         for i in range(10):

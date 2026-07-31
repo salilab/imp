@@ -10,10 +10,10 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/bracket_macros.h>
-#include "internal/vector.h"
 #include "internal/grid_internal.h"
 #include <IMP/types.h>
 #include <IMP/Value.h>
+#include <IMP/internal/VectorData.h>
 #include <IMP/exception.h>
 #include <cereal/access.hpp>
 // for swig wrappers
@@ -29,7 +29,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <int D>
 class ExtendedGridIndexD : public Value {
-  internal::VectorData<int, D, true> data_;
+  IMP::internal::VectorData<int, D, true> data_;
 
   friend class cereal::access;
 
@@ -62,8 +62,10 @@ class ExtendedGridIndexD : public Value {
   ExtendedGridIndexD(Filled, int dim, int value) : data_(dim) {
     std::fill(data_.get_data(), data_.get_data() + dim, value);
   }
-  const internal::VectorData<int, D, true>& get_data() const { return data_; }
-  internal::VectorData<int, D, true>& access_data() { return data_; }
+  const IMP::internal::VectorData<int, D, true>& get_data() const {
+    return data_;
+  }
+  IMP::internal::VectorData<int, D, true>& access_data() { return data_; }
 #endif
 //! Create a grid cell from three arbitrary indexes
 /** \note Only use this from Python. */
@@ -168,7 +170,7 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D>& ind) {
 */
 template <int D>
 class GridIndexD : public Value {
-  internal::VectorData<int, D, true> data_;
+  IMP::internal::VectorData<int, D, true> data_;
 
   friend class cereal::access;
 
@@ -195,8 +197,10 @@ class GridIndexD : public Value {
 
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const internal::VectorData<int, D, true>& get_data() const { return data_; }
-  internal::VectorData<int, D, true>& access_data() { return data_; }
+  const IMP::internal::VectorData<int, D, true>& get_data() const {
+    return data_;
+  }
+  IMP::internal::VectorData<int, D, true>& access_data() { return data_; }
   struct Uninitialized {};
   GridIndexD(Uninitialized, int dim) : data_(dim) {}
   struct Filled {};

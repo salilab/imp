@@ -5,10 +5,7 @@
 import sqlite3 as sqlite
 import os
 import csv
-import sys
 import logging
-if sys.version_info[0] == 2:
-    input = raw_input  # noqa: F821
 
 log = logging.getLogger("Database")
 

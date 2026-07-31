@@ -11,6 +11,7 @@ def _make_test_restraint():
     p = IMP.isd.UniformPrior(m, sigma, 1000, 100, 0.01)
     return m, sigma, p
 
+
 class Tests(IMP.test.TestCase):
     def test_uniform_prior(self):
         """Test UniformPrior"""

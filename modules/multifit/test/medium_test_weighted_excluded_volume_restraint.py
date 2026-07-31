@@ -1,13 +1,8 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import IMP.multifit
-import os
-try:
-    from time import process_time  # needs python 3.3 or later
-except ImportError:
-    from time import clock as process_time
+import time
 
 
 class Tests(IMP.test.TestCase):
@@ -93,20 +88,21 @@ class Tests(IMP.test.TestCase):
             xyz.set_coordinates(t.get_transformed(xyz.get_coordinates()))
             # check that when the proteins are not connected (self.c_r>0) the excluded volume
             # restraint is bigger than 0
-            start = process_time()
+            start = time.process_time()
             # to make sure the coordinates were transformed
             self.mdl.update()
-            end = process_time()
+            end = time.process_time()
             print("Time elapsed for PairRestraint evaluation = ", end - start, "seconds")
             conn_r = self.c_r.evaluate(False)
             w_exc_vol_r = self.wev_r.evaluate(False)
             self.assertTrue(
-                ((conn_r == 0.)and(w_exc_vol_r > 0.))or(
-                    (conn_r > 0.)and(w_exc_vol_r == 0.)),
+                (conn_r == 0. and w_exc_vol_r > 0.)
+                or (conn_r > 0. and w_exc_vol_r == 0.),
                 "inconsistency between connectivity and excluded volume restraint")
             # print "connectivity "+str(conn_r) + " | excluded-volume " +
             # str(w_exc_vol_r)
             xyz.set_coordinates(
                 t.get_inverse().get_transformed(xyz.get_coordinates()))
+
 if __name__ == '__main__':
     IMP.test.main()

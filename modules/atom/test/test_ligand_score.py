@@ -6,6 +6,7 @@ import re
 rank_score = IMP.atom.get_data_path('protein_ligand_rank_score.lib')
 pose_score = IMP.atom.get_data_path('protein_ligand_pose_score.lib')
 
+
 class Tests(IMP.test.ApplicationTestCase):
 
     def get_inputs(self, ext='pdb'):

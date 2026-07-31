@@ -635,17 +635,83 @@ class Tests(IMP.test.TestCase):
         d3.set_coordinates(IMP.algebra.Vector3D(4,5,6))
         d3.set_radius(4)
         rb4 = IMP.core.RigidBody.setup_particle(p4, [p3])
+        rb4.set_is_rigid_member(p3, False)
 
         ms = IMP._jax_util._get_jax_model(m1, ('rigid_bodies',))
         rbs = ms['rigid_bodies']
         # 2 rigid bodies
         self.assertEqual(len(rbs.quaternion), 2)
         self.assertEqual(rbs.rb_index_from_particle, {1: 0, 3: 1})
-        self.assertEqual(list(rbs.particle_from_rb_index), [1, 3])
+        self.assertEqual(rbs.bodies[0].rb_index, 0)
+        self.assertEqual(rbs.bodies[0].particle_index, 1)
+        self.assertEqual(rbs.bodies[0].member_particle_indexes, [0])
+        self.assertEqual(rbs.bodies[1].rb_index, 1)
+        self.assertEqual(rbs.bodies[1].particle_index, 3)
+        self.assertEqual(rbs.bodies[1].member_particle_indexes, [2])
         # No internal coordinate for rb4, so len==3
         self.assertEqual(len(rbs.intcoord), 3)
         self.assertEqual([int(x) for x in rbs.quaternion[0]], [1, 0, 0, 0])
         self.assertEqual([int(x) for x in rbs.quaternion[1]], [1, 0, 0, 0])
+        # A single non-rigid member
+        self.assertEqual(rbs.non_rigid_members, [2])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_model_rigid_transform(self):
+        """Test JAX rigid body transform"""
+        import jax.numpy as jnp
+        import IMP._jax_util
+        m = IMP.Model()
+        members = []
+        for v in [[1., 2., 3.], [4., 5., 6.], [7, 8, 9.],
+                  [10., -3., 6.], [12., 3., 8.], [102., 104, 106.],
+                  [90, 98., 102.], [96., 90., 99.]]:
+            p = IMP.Particle(m)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_coordinates(IMP.algebra.Vector3D(v))
+            d.set_radius(4)
+            members.append(p)
+        p = IMP.Particle(m)
+        rb1 = IMP.core.RigidBody.setup_particle(p, members[:3])
+        p = IMP.Particle(m)
+        rb2 = IMP.core.RigidBody.setup_particle(p, members[3:6])
+        p = IMP.Particle(m)
+        rb3 = IMP.core.RigidBody.setup_particle(p, members[6:] + [rb2])
+        # Test with both rigid and non-rigid members
+        rb3.set_is_rigid_member(members[6], False)
+        rb3.set_is_rigid_member(members[7], False)
+
+        jm = IMP._jax_util._get_jax_model(m, ('rigid_bodies',))
+        jm['xyz'] = jnp.asarray(jm['xyz'])
+        rbs = jm['rigid_bodies']
+        self.assertEqual(len(rbs.bodies), 3)
+        body2 = rbs.bodies[2]
+        # rb3 should contain rb2
+        self.assertEqual(body2.body_member_rb_indexes, [1])
+        self.assertEqual(body2.body_member_nrb_indexes, [0])
+        self.assertEqual(rbs.lquaternion.shape, (1, 4))
+        self.assertEqual(rbs.particle_from_nrb_index, [9])
+        self.assertEqual(rbs.nrb_index_from_particle, {9: 0})
+
+        # Test that applying rigid body transformation to all members
+        # (including rigid bodies) yields the correct global coordinates
+
+        # Non-body members
+        old_coord = jm['xyz'][body2.member_particle_indexes]
+        # Wipe old coordinates so we can be sure we are seeing the updated ones
+        jm['xyz'] = jm['xyz'].at[body2.member_particle_indexes].set(0.0)
+        trans = body2.get_transformation(jm)
+        jm = body2.set_transformation(trans, jm)
+        coord = jm['xyz'][body2.member_particle_indexes]
+        self.assertTrue(jnp.allclose(coord, old_coord))
+
+        # Body member
+        tr = rb1.get_reference_frame().get_transformation_to()
+        new_trans = rbs.bodies[0].get_transformation(jm)
+        self.assertTrue(jnp.allclose(
+            new_trans.translation, jnp.asarray(list(tr.get_translation()))))
+        self.assertTrue(jnp.allclose(
+            new_trans.rotation,
+            jnp.asarray(list(tr.get_rotation().get_quaternion()))))
 
 
 if __name__ == '__main__':

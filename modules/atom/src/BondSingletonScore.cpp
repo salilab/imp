@@ -2,7 +2,7 @@
  *  \file BondSingletonScore.cpp
  *  \brief A score based a bond decorator.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/atom/BondSingletonScore.h"
@@ -14,7 +14,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-BondSingletonScore::BondSingletonScore(UnaryFunction *f) : f_(f) {}
+BondSingletonScore::BondSingletonScore(UnaryFunction *f)
+    : SingletonScore("BondSingletonScore%1%"), f_(f) {}
 
 double BondSingletonScore::evaluate_index(Model *m,
                                           ParticleIndex pi,

@@ -9,7 +9,6 @@ import math
 
 class Tests(IMP.test.TestCase):
 
-
     def test_functionalities(self):
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
@@ -53,7 +52,6 @@ class Tests(IMP.test.TestCase):
         for r in range(100):
             d.set_coordinates((r,0,0))
             cr.unprotected_evaluate(None)
-
 
     def test_angles(self):
         mdl = IMP.Model()

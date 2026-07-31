@@ -4,6 +4,7 @@ import IMP.core
 import IMP.algebra
 import IMP.test
 
+
 def bead2gaussian(center,radius,mdl,p=None):
     trans = IMP.algebra.Transformation3D(
         IMP.algebra.get_identity_rotation_3d(),center)
@@ -13,7 +14,6 @@ def bead2gaussian(center,radius,mdl,p=None):
         return IMP.core.Gaussian.setup_particle(IMP.Particle(mdl),shape)
     else:
         return IMP.core.Gaussian.setup_particle(p,shape)
-
 
 
 class Tests(IMP.test.TestCase):
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         # read in system
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         ch = mh.get_children()[0]
-        idxs = [IMP.atom.Residue(h).get_index() \
+        idxs = [IMP.atom.Residue(h).get_index()
                 for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
 
         # prepare hierarchy
@@ -84,7 +84,6 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         mh.set_name("res0")
-
 
         res1 = IMP.atom.create_simplified_along_backbone(mh,1)
         res1.set_name('res1')
@@ -229,7 +228,7 @@ class Tests(IMP.test.TestCase):
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         ch = mh.get_children()[0]
         rep = IMP.atom.Representation.setup_particle(ch,0)
-        idxs = [IMP.atom.Residue(h).get_index() \
+        idxs = [IMP.atom.Residue(h).get_index()
                 for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
 
         # also create densities
@@ -252,7 +251,7 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         ch = mh.get_children()[0]
-        idxs = [IMP.atom.Residue(h).get_index() \
+        idxs = [IMP.atom.Residue(h).get_index()
                 for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
         rep = IMP.atom.Representation.setup_particle(ch,0)
 
@@ -277,13 +276,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(20,IMP.atom.DENSITIES),
                          density_frag.get_particle())
 
-        ## check that you get ALL gaussians when requesting one
+        # check that you get ALL gaussians when requesting one
         sel = IMP.atom.Selection(mh,residue_index=idxs[5],
                                  representation_type = IMP.atom.DENSITIES)
         self.assertEqual(sel.get_selected_particles(),
                          [h.get_particle() for h in density_frag.get_children()])
 
-        ## check that you get ONLY the correct bead
+        # check that you get ONLY the correct bead
         sel10 = IMP.atom.Selection(mh,residue_index=idxs[0],resolution=10)
         self.assertEqual(sel10.get_selected_particles()[0],
                          res10.get_children()[0])
@@ -304,6 +303,7 @@ class Tests(IMP.test.TestCase):
 
         # now test clone has the same representations and resolutions
         clone = IMP.atom.Representation(IMP.atom.create_clone(rep))
+
         def compare_leaves(h0,h1):
             lv0 = IMP.core.XYZs(IMP.core.get_leaves(h0))
             lv1 = IMP.core.XYZs(IMP.core.get_leaves(h1))

@@ -1621,3 +1621,34 @@ def color2rgb(colorname):
         return tuple(int(colorname[i:i+2], 16) / 255. for i in (1, 3, 5))
     else:
         return d[colorname]
+
+
+class RestraintStatScorer:
+    """Score a single restraint, for use in stat files.
+       Every time this object is called, it returns the weighted score
+       of the restraint for the current model configuration. This is
+       primarily used in a PMI restraint's get_output() method to obtain
+       restraint scores for stat file output.
+
+       @param name The name of the score in the stat file.
+       @param weight_object A Python object with a 'weight' attribute
+              (usually a PMI restraint) which is used to weight the score.
+       @param restraint The IMP Restraint to score.
+    """
+    def __init__(self, name, weight_object, restraint):
+        self.name, self.restraint = name, restraint
+        self._weight_object = weight_object
+        self._jax_score = None
+
+    def __call__(self, jm=None):
+        """Get the score for the current JAX Model if `jm` is given,
+           otherwise for the current IMP Model."""
+        if jm is not None:
+            if self._jax_score is None:
+                import jax
+                ji = self.restraint._get_jax()
+                self._jax_score = jax.jit(ji.score_func)
+            return self._jax_score(jm)
+        else:
+            weight = self._weight_object.weight
+            return weight * self.restraint.unprotected_evaluate(None)

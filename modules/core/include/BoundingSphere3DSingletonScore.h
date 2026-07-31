@@ -4,7 +4,7 @@
  *         increase as particles are exiting the sphere boundaries, and must
  *         be zero within the sphere and positive outside of it.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_SPHERE_3D_SINGLETON_SCORE_H
@@ -41,16 +41,20 @@ class GenericBoundingSphere3DSingletonScore : public SingletonScore {
       Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
+
+  UF *get_unary_function() const { return f_; }
+  algebra::Sphere3D get_sphere() const { return sphere_; }
+
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingSphere3DSingletonScore);
   IMP_OBJECT_METHODS(GenericBoundingSphere3DSingletonScore);
-  ;
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class UF>
 GenericBoundingSphere3DSingletonScore<UF>::GenericBoundingSphere3DSingletonScore(
     UF *f, const algebra::Sphere3D &sphere)
-    : f_(f), sphere_(sphere) {
+    : SingletonScore("BoundingSphere3DSingletonScore%1%"), f_(f),
+      sphere_(sphere) {
   IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) < .000001,
                   "The unary function should return "
                   " 0 when passed a value of 0. Not "

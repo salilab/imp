@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/SpherePatch3D.h   \brief Simple 3D sphere patch class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,7 +10,7 @@
 
 #include "Sphere3D.h"
 #include "Plane3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include <cereal/access.hpp>
 
 IMPALGEBRA_BEGIN_NAMESPACE

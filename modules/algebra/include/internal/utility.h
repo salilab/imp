@@ -9,8 +9,9 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include <Eigen/Dense>
-#include "../VectorD.h"
+#include <IMP/VectorD.h>
 #include <vector>
+
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>

@@ -154,6 +154,7 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(IndexError, lambda: sf.restraints[42])
         self.assertRaises(IndexError, lambda: sf.restraints[-42])
         del sf.restraints[1]
+
         def _delfunc():
             del sf.restraints[42]
         self.assertRaises(IndexError, _delfunc)

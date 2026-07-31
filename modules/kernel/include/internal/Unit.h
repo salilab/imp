@@ -10,7 +10,6 @@
 
 #include "ExponentialNumber.h"
 #include "../utility.h"
-#include <IMP/algebra/utility.h>
 #include <boost/mpl/vector_c.hpp>
 #include <boost/mpl/clear.hpp>
 #include <boost/mpl/at.hpp>
@@ -327,7 +326,7 @@ template <class Tag, int EXP, class Units>
 inline typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type
 square(Unit<Tag, EXP, Units> o) {
   return typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type(
-      ::IMP::algebra::get_squared(o.get_value()));
+      ::IMP::square(o.get_value()));
 }
 
 template <class Tag, int EXP, class Units>

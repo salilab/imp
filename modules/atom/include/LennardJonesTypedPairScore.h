@@ -2,7 +2,7 @@
  *  \file IMP/atom/LennardJonesTypedPairScore.h
  *  \brief Lennard-Jones score between a pair of particles.
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_LENNARD_JONES_TYPED_PAIR_SCORE_H
@@ -65,6 +65,20 @@ public:
   }
 
   double get_attractive_weight() const { return attractive_weight_; }
+
+  //! Return the precalculated repulsive factors for each pair of LJ types
+  /** This will become invalid if new types are added or well depths
+      or radii are changed. */
+  Floats get_repulsive_type_factors() const { return params_->aij_; }
+
+  //! Return the precalculated attractive factors for each pair of LJ types
+  /** This will become invalid if new types are added or well depths
+      or radii are changed. */
+  Floats get_attractive_type_factors() const { return params_->bij_; }
+
+  SmoothingFuncT *get_smoothing_function() const {
+    return smoothing_function_;
+  }
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,

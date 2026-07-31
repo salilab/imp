@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
-import os
 
 
 class DummyWriter(IMP.display.TextWriter):

@@ -2,17 +2,8 @@ import IMP
 import IMP.test
 import IMP.core as core
 import IMP.atom as atom
-import IMP.em2d as em2d
-import IMP.EMageFit.utility as utility
-import IMP.EMageFit.imp_general.io as io
-import IMP.EMageFit.imp_general.representation as representation
-import IMP.EMageFit.solutions_io as solutions_io
 import IMP.algebra as alg
 
-import sys
-import os
-import itertools
-import unittest
 
 try:
     import IMP.EMageFit.buildxlinks as bx

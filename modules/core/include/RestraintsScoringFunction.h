@@ -2,7 +2,7 @@
  *  \file IMP/core/RestraintsScoringFunction.h
  *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,13 +24,13 @@ class RestraintsScoringFunction :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ScoringFunction
 #else
-    public IMP::internal::RestraintsScoringFunction
+    public IMP::internal::_RestraintsScoringFunction
 #endif
 {
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<IMP::internal::RestraintsScoringFunction>(this));
+    ar(cereal::base_class<IMP::internal::_RestraintsScoringFunction>(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(RestraintsScoringFunction);
 
@@ -38,10 +38,10 @@ class RestraintsScoringFunction :
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             double weight = 1.0, double max = NO_MAX,
                             std::string name = "RestraintsScoringFunction%1%")
-      : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
+      : IMP::internal::_RestraintsScoringFunction(rs, weight, max, name) {}
   RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             std::string name)
-      : IMP::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name) {}
+      : IMP::internal::_RestraintsScoringFunction(rs, 1.0, NO_MAX, name) {}
 
   RestraintsScoringFunction() {}
 #if defined(SWIG)
@@ -68,10 +68,9 @@ class RestraintsScoringFunction :
   unsigned int _python_index_restraint(Restraint *r, unsigned int start,
                                        unsigned int stop);
   IMP_LIST_PYTHON_IMPL(restraint, restraints, Restraints, Restraints)
+#endif
 
   IMP_OBJECT_METHODS(RestraintsScoringFunction);
-
-#endif
 };
 
 IMPCORE_END_NAMESPACE

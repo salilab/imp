@@ -2,12 +2,11 @@
 from numpy import *
 from random import uniform
 
-
 # imp general
 import IMP
 
 # our project
-from IMP.isd import Scale, JeffreysRestraint, NOERestraint
+from IMP.isd import Scale
 
 # unit testing framework
 import IMP.test

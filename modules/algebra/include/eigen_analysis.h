@@ -2,7 +2,7 @@
  *  \file IMP/algebra/eigen_analysis.h
  *  \brief Principal component analysis of a set of points
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_EIGEN_ANALYSIS_H
@@ -10,7 +10,7 @@
 
 #include "VectorD.h"
 #include "Transformation3D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include "IMP/algebra/internal/utility.h"
 #include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/log.h>
@@ -122,7 +122,11 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   Eigen::MatrixXd cov = internal::get_covariance_matrix(ps, m);
   IMP_LOG_VERBOSE("The covariance matrix is " << cov << std::endl);
 
+#if EIGEN_MAJOR_VERSION >= 5
+  auto svd = cov.jacobiSvd<Eigen::ComputeFullV>();
+#else
   Eigen::JacobiSVD<Eigen::MatrixXd> svd = cov.jacobiSvd(Eigen::ComputeFullV);
+#endif
   Eigen::MatrixXd V = svd.matrixV();
   Eigen::VectorXd SV = svd.singularValues();
 

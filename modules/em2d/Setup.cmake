@@ -1,5 +1,5 @@
-if("${OPENCV3_LIBRARIES}" STREQUAL "" AND "${OPENCV22_LIBRARIES}" STREQUAL "" AND "${OPENCV21_LIBRARIES}" STREQUAL "")
-  message(STATUS "Required dependency of OpenCV 2.1 or later not found")
+if("${OPENCV3_LIBRARIES}" STREQUAL "" AND "${OPENCV5_LIBRARIES}" STREQUAL "")
+  message(STATUS "Required dependency of OpenCV 3 or later not found")
 # disable em2d
   file(STRINGS ${CMAKE_BINARY_DIR}/build_info/disabled disabled)
   list(APPEND disabled "em2d")

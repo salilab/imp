@@ -41,7 +41,7 @@ jobs:
           max_checks: NONE
           max_log: NONE
         - os: macos-latest
-          python-version: "3.13"
+          python-version: "3.14"
           cxxflags: "-std=c++17 --coverage"
           linkflags: "--coverage"
           cgaldir: "/opt/homebrew/lib/cmake/CGAL/"
@@ -51,7 +51,7 @@ jobs:
           max_checks: USAGE
           max_log: VERBOSE
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Install dependencies (Linux)
         if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
         run: |
@@ -65,7 +65,7 @@ jobs:
           pip3 install codecov ${{ matrix.pip_extra_packages }}
       - name: Set up Python ${{ matrix.python-version }}
         if: matrix.os == 'macos-latest'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies (Mac)
@@ -98,7 +98,7 @@ jobs:
         run: |
           cd build/coverage
           coverage combine && coverage xml && mv coverage.xml ../..
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         if: matrix.cmake_build != 'Debug'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -3,7 +3,6 @@ import IMP.foxs
 import shutil
 import sys
 import os
-import re
 
 
 class Tests(IMP.test.ApplicationTestCase):

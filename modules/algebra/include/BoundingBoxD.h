@@ -9,9 +9,9 @@
 #define IMPALGEBRA_BOUNDING_BOX_D_H
 
 #include <IMP/algebra/algebra_config.h>
-#include "VectorD.h"
+#include <IMP/algebra/VectorD.h>
+#include <IMP/algebra/geometric_primitive_macros.h>
 #include "internal/utility.h"
-#include "algebra_macros.h"
 #include <IMP/exception.h>
 #include <cereal/access.hpp>
 

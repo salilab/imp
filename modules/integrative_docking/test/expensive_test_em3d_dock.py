@@ -16,7 +16,7 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
 
-        m = re.search('Best\s+score\s+=\s+-([\d\.]+)\r?', err)
+        m = re.search(r'Best\s+score\s+=\s+-([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
         self.assertAlmostEqual(float(m.group(1)), 0.13, delta=0.02)
 

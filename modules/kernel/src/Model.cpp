@@ -70,6 +70,11 @@ Model::Model(std::string name)
   internal::SparseParticleAttributeTable::set_masks(&this->Masks::read_mask_,
                                             &this->Masks::write_mask_,
                                             &this->Masks::add_remove_mask_);
+  internal::Vector3DDerivAttributeTable::set_masks(&this->Masks::read_mask_,
+                                        &this->Masks::write_mask_,
+                                        &this->Masks::add_remove_mask_,
+                                        &this->Masks::read_derivatives_mask_,
+                                        &this->Masks::write_derivatives_mask_);
 #endif
 }
 
@@ -166,6 +171,7 @@ void Model::do_remove_particle(ParticleIndex pi) {
   internal::SparseIntAttributeTable::clear_attributes(pi);
   internal::SparseFloatAttributeTable::clear_attributes(pi);
   internal::SparseParticleAttributeTable::clear_attributes(pi);
+  internal::Vector3DDerivAttributeTable::clear_attributes(pi);
   free_particles_.push_back(pi);
   particle_index_[pi]->set_model(nullptr);
   particle_index_[pi] = nullptr;
@@ -237,6 +243,8 @@ void Model::clear_particle_caches(ParticleIndex pi) {
   internal::ObjectsAttributeTable::clear_caches(pi);
   internal::ParticleAttributeTable::clear_caches(pi);
   internal::ParticlesAttributeTable::clear_caches(pi);
+  internal::Vector3DAttributeTable::clear_caches(pi);
+  internal::Vector3DDerivAttributeTable::clear_caches(pi);
 }
 
 void Model::add_data(ModelKey mk, Object *o) {

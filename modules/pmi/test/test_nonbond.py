@@ -6,6 +6,7 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.tools
 
+
 class Tests(IMP.test.TestCase):
     def make_representation(self):
         pdbfile = self.get_input_file_name("nonbond.pdb")

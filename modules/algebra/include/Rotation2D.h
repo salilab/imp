@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Rotation2D.h
  *  \brief Represent a rotation in 2D space.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ROTATION_2D_H
@@ -11,7 +11,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include "utility.h"
 #include "Vector2D.h"
-#include "GeometricPrimitiveD.h"
+#include <IMP/GeometricPrimitiveD.h>
 #include "constants.h"
 #include <IMP/random.h>
 #include <boost/random/uniform_01.hpp>

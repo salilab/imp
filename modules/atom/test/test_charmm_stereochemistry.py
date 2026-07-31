@@ -14,6 +14,7 @@ def get_all_atoms(pdb):
             atoms[aid] = a.get_particle()
     return atoms
 
+
 class Tests(IMP.test.TestCase):
 
     """Test CHARMM stereochemistry restraint"""
@@ -79,6 +80,7 @@ class SelectionTests(IMP.test.TestCase):
 
     def assertContainsPair(self, pf, atoms, a1, a2):
         self.assertEqual(pf.get_value([atoms[a1], atoms[a2]]), True)
+
     def assertDoesNotContainsPair(self, pf, atoms, a1, a2):
         self.assertEqual(pf.get_value([atoms[a1], atoms[a2]]), False)
 

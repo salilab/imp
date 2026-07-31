@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.display
 import io
-import sys
+
 
 class Tests(IMP.test.TestCase):
 
@@ -17,14 +17,14 @@ class Tests(IMP.test.TestCase):
             w.add_geometry(g)
         del w
         bstr = buf.getvalue()
-        if sys.version_info[0] >= 3:
-            bstr = bstr.decode('ascii')
+        bstr = bstr.decode('ascii')
         print(bstr)
         self.assertNotEqual(bstr.find("from pymol.cgo import"), -1)
         for i in range(0, 5):
             self.assertNotEqual(
                 bstr.find("cmd.load_cgo(data[k], k, " + str(i + 1)),
                 -1)
+
 
 if __name__ == '__main__':
     IMP.test.main()
