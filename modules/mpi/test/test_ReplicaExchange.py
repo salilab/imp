@@ -3,8 +3,7 @@
 import IMP
 import IMP.mpi
 import IMP.test
-
-rem = IMP.mpi.ReplicaExchange()
+import pickle
 
 
 class Test(IMP.test.TestCase):
@@ -18,6 +17,7 @@ class Test(IMP.test.TestCase):
 
     def testSetGetMyParameters(self):
         "Test Replica Exchange set and get my parameters"
+        rem = IMP.mpi.ReplicaExchange()
         myindex = rem.get_my_index()
         test_value_in = float(myindex) * 2.0
         rem.set_my_parameter("test", [test_value_in])
@@ -26,6 +26,7 @@ class Test(IMP.test.TestCase):
 
     def testGetFriendParameter(self):
         "Test Replica Exchange get friend parameter"
+        rem = IMP.mpi.ReplicaExchange()
         myindex = rem.get_my_index()
         my_test_value = float(myindex) * 2.0
         rem.set_my_parameter("test", [my_test_value])
@@ -37,6 +38,7 @@ class Test(IMP.test.TestCase):
 
     def testExchange(self):
         "Test Replica Exchange do exchange"
+        rem = IMP.mpi.ReplicaExchange()
         myindex = rem.get_my_index()
         my_test_value_0 = float(myindex) * 2.0
         rem.set_my_parameter("test", [my_test_value_0])
@@ -52,6 +54,18 @@ class Test(IMP.test.TestCase):
 
         self.assertAlmostEqual(my_test_value_1, friend_test_value_0,
                                delta=0.0001)
+
+    def test_pickle(self):
+        """Test (un-)pickle of ReplicaExchange"""
+        rem = IMP.mpi.ReplicaExchange()
+        rem.set_name("foo")
+        rem.set_my_parameter("test", [42.0])
+        dump = pickle.dumps(rem)
+        newrem = pickle.loads(dump)
+        self.assertEqual(newrem.get_name(), "foo")
+        val = newrem.get_my_parameter("test")
+        self.assertEqual(len(val), 1)
+        self.assertAlmostEqual(val[0], 42.0, delta=1e-5)
 
 
 if __name__ == '__main__':

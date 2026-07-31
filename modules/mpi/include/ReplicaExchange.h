@@ -2,7 +2,7 @@
  *  \file IMP/mpi/ReplicaExchange.h
  *  \brief A class to do replica exchange in a generic Hamiltonian parameter
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMPI_REPLICA_EXCHANGE_H
@@ -12,6 +12,8 @@
 #include <IMP/Object.h>
 #include <IMP/types.h>
 #include <string>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
 
 // We only want the C API, so try to suppress the C++ API
 #ifndef MPICH_SKIP_MPICXX
@@ -40,10 +42,15 @@ class IMPMPIEXPORT ReplicaExchange : public Object {
   Ints index_;
   //! List of number of exchanges accepted
   Ints exarray_;
-  //! MPI status
-  MPI_Status status_;
   //! Exchange parameters
   std::map<std::string, Floats> parameters_;
+
+  friend class cereal::access;
+
+ template<class Archive> void serialize(Archive &ar) {
+   ar(cereal::base_class<Object>(this), myrank_, nproc_, index_, exarray_,
+      parameters_);
+ }
 
  private:
   //! Create list of replica indices

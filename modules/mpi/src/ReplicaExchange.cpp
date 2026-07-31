@@ -2,7 +2,7 @@
  *  \file ReplicaExchange.cpp
  *  \brief Replica Exchange
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/mpi/ReplicaExchange.h>
@@ -103,8 +103,9 @@ Floats ReplicaExchange::get_friend_parameter(std::string key, int findex) {
 
   double* fparameters = new double[nparam];
 
+  MPI_Status status;
   MPI_Sendrecv(myparameters, nparam, MPI_DOUBLE, frank, myrank_, fparameters,
-               nparam, MPI_DOUBLE, frank, frank, MPI_COMM_WORLD, &status_);
+               nparam, MPI_DOUBLE, frank, frank, MPI_COMM_WORLD, &status);
 
   Floats fpar(fparameters, fparameters + nparam);
   delete[] myparameters;
@@ -125,8 +126,9 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1,
   if (myrank_ < frank) {
       //we do the exchange
       double fscore;
+      MPI_Status status;
 
-      MPI_Recv(&fscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD, &status_);
+      MPI_Recv(&fscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD, &status);
       do_accept = get_acceptance(myscore, fscore);
       int atmp = (int)do_accept;
       MPI_Send(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD);
@@ -136,7 +138,8 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1,
   } else {
       MPI_Send(&myscore, 1, MPI_DOUBLE, frank, 0, MPI_COMM_WORLD);
       int atmp;
-      MPI_Recv(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD, &status_);
+      MPI_Status status;
+      MPI_Recv(&atmp, 1, MPI_INT, frank, 0, MPI_COMM_WORLD, &status);
       do_accept = (bool)atmp;
   }
 

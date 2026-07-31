@@ -1,4 +1,4 @@
-IMP_SWIG_OBJECT(IMP::mpi, ReplicaExchange, ReplicaExchanges);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::mpi, ReplicaExchange, ReplicaExchanges);
 //IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 //IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
 
