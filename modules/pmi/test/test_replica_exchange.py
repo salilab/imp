@@ -5,6 +5,8 @@ import IMP.pmi.macros
 import IMP.pmi.restraints.basic
 import IMP.pmi.dof
 import shutil
+import os
+import ast
 try:
     import jax
 except ImportError:
@@ -76,6 +78,51 @@ class MockREX(IMP.pmi.macros.ReplicaExchange):
                      'num_sample_rounds':2,
                      'number_of_frames':100}
         self.replica_exchange_object = MockSampler()
+
+
+class StatFileBase:
+    def __init__(self, header_line):
+        self._d = ast.literal_eval(header_line)
+        self._keymap = {k: v for (k, v) in self._d.items()
+                        if isinstance(k, int)}
+        self._eqkeys = [k for (k, v) in self._keymap.items()
+                        if v not in ('Stopwatch_None_delta_seconds',
+                                     'rmf_file', 'rmf_frame_index')]
+
+    def same_header(self, other):
+        return self._keymap == other._keymap
+
+    def assert_same_line(self, line1, line2, tf):
+        # Reached EOF in one file
+        tf.assertTrue(line1 != '', 'stat file 1 reached EOF')
+        tf.assertTrue(line2 != '', 'stat file 2 reached EOF')
+
+        line1 = ast.literal_eval(line1)
+        line2 = ast.literal_eval(line2)
+        # All keys should be exactly equal
+        for k in self._eqkeys:
+            tf.assertEqual(line1[k], line2[k],
+                           "%r != %r for stat file keyword %r"
+                           % (line1[k], line2[k], self._keymap[k]))
+        return line1, line2
+
+
+class StatFile(StatFileBase):
+    def __init__(self, header_line):
+        super().__init__(header_line)
+        revkeymap = {v: k for (k, v) in self._d.items()
+                     if isinstance(k, int)}
+        self._rmf_key = revkeymap['rmf_file']
+        self._rmf_frame_key = revkeymap['rmf_frame_index']
+
+    def assert_same_line(self, line1, line2, tf):
+        line1, line2 = super().assert_same_line(line1, line2, tf)
+        return (line1[self._rmf_key], line2[self._rmf_key],
+                line1[self._rmf_frame_key], line2[self._rmf_frame_key])
+
+
+class ReplicaStatFile(StatFileBase):
+    pass
 
 
 class Tests(IMP.test.TestCase):
@@ -173,6 +220,99 @@ class Tests(IMP.test.TestCase):
             global_output_directory='test_adaptive/')
         rex.execute_macro()
         shutil.rmtree('test_adaptive')
+
+    def test_restart(self):
+        """Test restart of ReplicaExchange"""
+        def setup_system():
+            m = IMP.Model()
+            s = IMP.pmi.topology.System(m)
+            st1 = s.create_state()
+            nup84 = st1.create_molecule("Nup84", "MELS", "X")
+            nup84.add_structure(
+                self.get_input_file_name("test.nup84.pdb"), "A")
+            nup84.add_representation(resolutions=[1])
+            hier = s.build()
+            dof = IMP.pmi.dof.DegreesOfFreedom(nup84)
+            dof.create_flexible_beads(nup84, max_trans=1.0, resolution=1)
+
+            dr1 = IMP.pmi.restraints.basic.DistanceRestraint(
+                root_hier=hier, tuple_selection1=(2,2,"Nup84"),
+                tuple_selection2=(3,3,"Nup84"), distancemin=10, distancemax=10)
+            dr1.add_to_model()
+            return m, hier, dr1, dof
+
+        IMP.random_number_generator.seed(42)
+        m, hier, dr1, dof = setup_system()
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=hier, monte_carlo_steps=10, number_of_frames=10,
+            output_objects=[dr1],
+            monte_carlo_sample_objects=dof.get_movers(),
+            number_of_best_scoring_models=0,
+            monte_carlo_temperature=1.0,
+            global_output_directory='test_full')
+        rex.execute_macro()
+
+        IMP.random_number_generator.seed(42)
+        m, hier, dr1, dof = setup_system()
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=hier, monte_carlo_steps=10, number_of_frames=10,
+            output_objects=[dr1],
+            monte_carlo_sample_objects=dof.get_movers(),
+            number_of_best_scoring_models=0,
+            monte_carlo_temperature=1.0,
+            global_output_directory='test_restart')
+        rex.set_restart(7)
+        rex.execute_macro()
+        IMP.pmi.macros.restart_replica_exchange('test_restart/restart')
+
+        # Restarted simulation should yield same outputs as the original
+        # (except for the RMF files, which will have some duplicated frames)
+        self._compare_stat('test_full/stat.0.out',
+                           'test_restart/stat.0.out')
+        self._compare_replica_stat('test_full/stat_replica.0.out',
+                                   'test_restart/stat_replica.0.out')
+
+        self.assertTrue(os.path.exists('test_full/rmfs/0.rmf3'))
+        self.assertTrue(os.path.exists('test_restart/rmfs/0.rmf3'))
+        self.assertTrue(os.path.exists('test_restart/rmfs/0.rs1.rmf3'))
+        shutil.rmtree('test_restart')
+        shutil.rmtree('test_full')
+
+    def _compare_stat(self, full, restart):
+        with open(full) as fh_full, open(restart) as fh_rst:
+            sf_full = StatFile(fh_full.readline())
+            sf_rst = StatFile(fh_rst.readline())
+            self.assertTrue(sf_full.same_header(sf_rst))
+            for i in range(10):
+                line_full = fh_full.readline()
+                line_rst = fh_rst.readline()
+                (rmf_full, rmf_rst, frame_full, frame_rst) \
+                    = sf_full.assert_same_line(line_full, line_rst, self)
+                # Restarted simulation should change to a new RMF at frame 7
+                self.assertTrue(rmf_full.endswith('0.rmf3'))
+                self.assertEqual(frame_full, i)
+                if i < 7:
+                    self.assertTrue(rmf_rst.endswith('0.rmf3'))
+                    self.assertEqual(frame_rst, i)
+                else:
+                    self.assertTrue(rmf_rst.endswith('0.rs1.rmf3'))
+                    self.assertEqual(frame_rst, i - 7)
+            # Should have reached the end of each file
+            self.assertEqual(fh_full.readline(), "")
+            self.assertEqual(fh_rst.readline(), "")
+
+    def _compare_replica_stat(self, full, restart):
+        with open(full) as fh_full, open(restart) as fh_rst:
+            sf_full = ReplicaStatFile(fh_full.readline())
+            sf_rst = ReplicaStatFile(fh_rst.readline())
+            self.assertTrue(sf_full.same_header(sf_rst))
+            for i in range(10):
+                line_full = fh_full.readline()
+                line_rst = fh_rst.readline()
+                sf_full.assert_same_line(line_full, line_rst, self)
+            # Should have reached the end of each file
+            self.assertEqual(fh_full.readline(), "")
+            self.assertEqual(fh_rst.readline(), "")
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):

@@ -44,8 +44,8 @@ class Tests(IMP.test.TestCase):
                       replica_exchange_minimum_temperature=1.0,
                       replica_exchange_maximum_temperature=2.5,
                       number_of_best_scoring_models=10,
-                      monte_carlo_steps=10,
-                      number_of_frames=100,
+                      monte_carlo_steps=30,
+                      number_of_frames=200,
                       write_initial_rmf=True,
                       initial_rmf_name_suffix="initial",
                       stat_file_name_suffix="stat",
@@ -155,8 +155,8 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(IMP.core.SampleProvenance.get_is_setup(prov))
         samp = IMP.core.SampleProvenance(prov)
         self.assertEqual(samp.get_method(), 'Monte Carlo')
-        self.assertEqual(samp.get_number_of_frames(), 100)
-        self.assertEqual(samp.get_number_of_iterations(), 10)
+        self.assertEqual(samp.get_number_of_frames(), 200)
+        self.assertEqual(samp.get_number_of_iterations(), 30)
 
     def test_macro_rmf_stat(self):
         """setting up the representation
@@ -186,8 +186,8 @@ class Tests(IMP.test.TestCase):
             monte_carlo_temperature=1.0,
             replica_exchange_minimum_temperature=1.0,
             replica_exchange_maximum_temperature=2.5,
-            number_of_best_scoring_models=10, monte_carlo_steps=10,
-            number_of_frames=100, write_initial_rmf=True,
+            number_of_best_scoring_models=10, monte_carlo_steps=30,
+            number_of_frames=200, write_initial_rmf=True,
             initial_rmf_name_suffix="initial",
             stat_file_name_suffix="stat", best_pdb_name_suffix="model",
             do_clean_first=True, do_create_directories=True,

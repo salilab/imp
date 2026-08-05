@@ -44,10 +44,10 @@ class _SerialReplicaExchange:
 
 
 class _SamplerBase:
-    def __init__(self, model):
+    def __init__(self, model, start_frame):
         self.model = model
         # that is -1 because mc/md has not yet run
-        self.nframe = -1
+        self.nframe = start_frame - 1
         self.simulated_annealing = False
 
     def set_simulated_annealing(self, min_temp, max_temp, min_temp_time,
@@ -78,7 +78,7 @@ class MonteCarlo(_SamplerBase):
         isd_available = False
 
     def __init__(self, model, objects=None, temp=1.0, filterbyname=None,
-                 score_moved=False):
+                 score_moved=False, start_frame=0):
         """Setup Monte Carlo sampling
         @param model         The IMP Model
         @param objects       What to sample (a list of Movers)
@@ -86,8 +86,9 @@ class MonteCarlo(_SamplerBase):
         @param filterbyname Not used
         @param score_moved   If True, attempt to speed up sampling by
                caching scoring function terms on particles that didn't move
+        @param start_frame The starting frame number
         """
-        super().__init__(model)
+        super().__init__(model, start_frame=start_frame)
         self.losp = [
             "Rigid_Bodies",
             "Floppy_Bodies",
@@ -256,15 +257,16 @@ class MolecularDynamics(_SamplerBase):
     """Sample using molecular dynamics"""
 
     def __init__(self, model, objects, kt, gamma=0.01, maximum_time_step=1.0,
-                 sf=None, use_jax=False):
+                 sf=None, use_jax=False, start_frame=0):
         """Setup MD
         @param model The IMP Model
         @param objects What to sample. Use flat list of particles
         @param kt Temperature
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step
+        @param start_frame The starting frame number
         """
-        super().__init__(model)
+        super().__init__(model, start_frame=start_frame)
 
         # check if using PMI1 objects dictionary, or just list of particles
         try:
@@ -344,6 +346,32 @@ class ConjugateGradients:
         return output
 
 
+class _ReplicaExchangeStats:
+    """Statistics for replica exchange.
+       This is in a separate class so that we can pickle it easily for
+       restarts"""
+    def __init__(self):
+        self.nattempts = 0
+        self.nmintemp = 0
+        self.nmaxtemp = 0
+        self.nsuccess = 0
+
+    def get_output(self):
+        output = {}
+        if self.nattempts != 0:
+            output["ReplicaExchange_SwapSuccessRatio"] = str(
+                float(self.nsuccess) / self.nattempts)
+            output["ReplicaExchange_MinTempFrequency"] = str(
+                float(self.nmintemp) / self.nattempts)
+            output["ReplicaExchange_MaxTempFrequency"] = str(
+                float(self.nmaxtemp) / self.nattempts)
+        else:
+            output["ReplicaExchange_SwapSuccessRatio"] = str(0)
+            output["ReplicaExchange_MinTempFrequency"] = str(0)
+            output["ReplicaExchange_MaxTempFrequency"] = str(0)
+        return output
+
+
 class ReplicaExchange:
     """Sample using replica exchange"""
 
@@ -396,10 +424,8 @@ class ReplicaExchange:
         self.rem.set_my_parameter("temp", [self.temperatures[myindex]])
         for so in self.samplerobjects:
             so.set_kt(self.temperatures[myindex])
-        self.nattempts = 0
-        self.nmintemp = 0
-        self.nmaxtemp = 0
-        self.nsuccess = 0
+        # Acceptance, etc. statistics
+        self.stats = _ReplicaExchangeStats()
 
     def get_temperatures(self):
         return self.temperatures
@@ -418,10 +444,10 @@ class ReplicaExchange:
         mytemp = self.rem.get_my_parameter("temp")[0]
 
         if mytemp == self.TEMPMIN_:
-            self.nmintemp += 1
+            self.stats.nmintemp += 1
 
         if mytemp == self.TEMPMAX_:
-            self.nmaxtemp += 1
+            self.stats.nmaxtemp += 1
 
         # score divided by kbt
         myscore = score / mytemp
@@ -435,26 +461,15 @@ class ReplicaExchange:
         # try exchange
         flag = self.rem.do_exchange(myscore, fscore, findex)
 
-        self.nattempts += 1
+        self.stats.nattempts += 1
         # if accepted, change temperature
         if (flag):
             for so in self.samplerobjects:
                 so.set_kt(ftemp)
-            self.nsuccess += 1
+            self.stats.nsuccess += 1
 
     def get_output(self):
-        output = {}
-        if self.nattempts != 0:
-            output["ReplicaExchange_SwapSuccessRatio"] = str(
-                float(self.nsuccess) / self.nattempts)
-            output["ReplicaExchange_MinTempFrequency"] = str(
-                float(self.nmintemp) / self.nattempts)
-            output["ReplicaExchange_MaxTempFrequency"] = str(
-                float(self.nmaxtemp) / self.nattempts)
-        else:
-            output["ReplicaExchange_SwapSuccessRatio"] = str(0)
-            output["ReplicaExchange_MinTempFrequency"] = str(0)
-            output["ReplicaExchange_MaxTempFrequency"] = str(0)
+        output = self.stats.get_output()
         output["ReplicaExchange_CurrentTemp"] = str(self.get_my_temp())
         return output
 

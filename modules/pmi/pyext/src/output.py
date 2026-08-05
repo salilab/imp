@@ -797,7 +797,7 @@ class Output:
         return versions
 
     def init_stat2(self, name, listofobjects, extralabels=None,
-                   listofsummedobjects=None, jax_model=None):
+                   listofsummedobjects=None, jax_model=None, append=False):
         """Write the header for a stat file in v2 format.
            Lines can then be written to the stat file by calling write_stat2()
            with the same file name.
@@ -819,7 +819,6 @@ class Output:
             listofsummedobjects = []
         if extralabels is None:
             extralabels = []
-        flstat = open(name, 'w')
         output = {}
         stat2_keywords = {"STAT2HEADER": "STAT2HEADER"}
         stat2_keywords.update(
@@ -872,13 +871,60 @@ class Output:
             stat2_keywords.update({n: k})
             stat2_inverse.update({k: n})
 
-        flstat.write("%s \n" % stat2_keywords)
-        flstat.close()
+        if append:
+            self._check_append_header(name, stat2_keywords)
+        else:
+            with open(name, 'w') as flstat:
+                flstat.write("%s \n" % stat2_keywords)
+
         self.dictionary_stats2[name] = (
             dict_objects, callable_objects,
             stat2_inverse,
             listofsummedobjects,
             extralabels)
+
+    def _check_append_header(self, name, stat2_keywords):
+        """Verify that existing file header matches our data structure"""
+        with open(name) as flstat:
+            header = flstat.readline()
+        d = ast.literal_eval(header)
+        if not isinstance(d, dict) or 'STAT2HEADER' not in d:
+            raise ValueError(
+                f"stat file {name} first line is not a valid header")
+        d = {k: v for (k, v) in d.items() if isinstance(k, int)}
+        newd = {k: v for (k, v) in stat2_keywords.items()
+                if isinstance(k, int)}
+        if d != newd:
+            raise ValueError(
+                f"stat file {name} header does not match append data")
+
+    def _count_stat2_nframe(self, name, nframe_key, nframe):
+        """Count the number of stat file lines up to the given frame"""
+        with open(name, "r") as flstat:
+            header = flstat.readline()
+            d = ast.literal_eval(header)
+            keymap = {v: k for (k, v) in d.items() if isinstance(k, int)}
+            nframe_key = keymap[nframe_key]
+            nline = 0
+            while True:
+                line = flstat.readline()
+                nline += 1
+                if not line:
+                    return None
+                nframe_file = int(ast.literal_eval(line)[nframe_key])
+                if nframe_file >= nframe:
+                    return nline - 1
+
+    def _truncate_stat2_nline(self, name, nline):
+        """Truncate the given stat file to have exactly `nline` non-header
+           lines"""
+        # Open in binary mode because we only care about line endings, not
+        # encoding; this might be a little faster
+        with open(name, "rb+") as flstat:
+            _ = flstat.readline()
+            for _ in range(nline):
+                _ = flstat.readline()
+            flstat.truncate(flstat.tell())
 
     def write_stat2(self, name, appendmode=True, jax_model=None):
         """Write a single line to a stat file previously created

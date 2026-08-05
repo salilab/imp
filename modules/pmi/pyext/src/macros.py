@@ -62,6 +62,72 @@ class _RMFRestraints:
             raise IndexError("Out of range")
 
 
+class _StatFile:
+    """All output statistics objects to add to stat files and/or RMFs"""
+    def __init__(self, output_objects, rmf_output_objects):
+        self.objects = self.rmf_objects = None
+        # Don't modify user-provided objects; use a copy instead
+        if output_objects is not None:
+            self.objects = output_objects[:]
+        if rmf_output_objects is not None:
+            self.rmf_objects = rmf_output_objects[:]
+
+    def append(self, obj):
+        if self.objects is not None:
+            self.objects.append(obj)
+        if self.rmf_objects is not None:
+            self.rmf_objects.append(obj)
+
+
+class _RestartInfo:
+    """Parameters for writing restart files"""
+    def __init__(self, frames, restart_dir):
+        self._frames = frames
+        self._restart_dir = restart_dir
+        # Number of the restart; this will be incremented every time we
+        # run execute_macro()
+        self._number = -1
+
+    def _write_frame(self, rex, frame, myindex, rex_stats):
+        """Possibly write a restart file for the replica exchange run `rex`"""
+        if frame % self._frames != 0:
+            return
+        print(f'--- writing restart file at frame {frame}')
+        d = Path(rex.vars["global_output_directory"]) / self._restart_dir
+        d.mkdir(exist_ok=True)
+        fname = d / f'restart.{myindex}.pck'
+
+        r = _RestartRun(rex, frame, rex_stats)
+        with open(fname, 'wb') as fh:
+            pickle.dump(r, fh)
+
+    restarted = property(lambda self: self._number > 0,
+                         doc="True iff this simulation has been restarted")
+
+
+class _RestartRun:
+    """Information about a restarted simulation (usually pickled)"""
+    def __init__(self, rex, frame, rex_stats):
+        # Ensure that IMP::Model is unpickled before the PMI rex macro so that
+        # model IDs are resolved correctly
+        self._pck_info = (rex.model, rex)
+        self._rstate = IMP.random_number_generator.get_state()
+        self._frame = frame
+        self._rex_stats = rex_stats
+
+    def execute_macro(self):
+        """Restart the interrupted replica exchange simulation"""
+        m, rex = self._pck_info
+        IMP.random_number_generator.set_state(self._rstate)
+        rex._restart_from_frame = self._frame
+        rex._rex_stats = self._rex_stats
+        return rex.execute_macro()
+
+    def get_number_of_replicas(self):
+        rex = self._pck_info[1]
+        return rex.replica_exchange_object.get_number_of_replicas()
+
+
 class ReplicaExchange:
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
@@ -188,6 +254,8 @@ class ReplicaExchange:
         """
         self.model = model
         self.vars = {}
+        self._restart = None
+        self._restart_from_frame = 0
 
         # add check hierarchy is multistate
         if output_objects == []:
@@ -274,6 +342,24 @@ class ReplicaExchange:
         self.nestor_restraints = nestor_restraints
         self.nestor_rmf_fname = nestor_rmf_fname_prefix
 
+    def set_restart(self, frames, restart_dir="restart"):
+        """Enable a simulation to be restarted if it is interrupted.
+
+           If enabled, restart files containing a complete description of
+           the IMP system are written periodically during the simulation.
+           If the simulation is interrupted, it can be restarted using
+           the restart_replica_exchange function, which reads these files.
+
+           @param frames How often a restart file should be written
+                  (number of frames), or zero to not write restart files
+           @param restart_dir The directory under `global_output_directory`
+                  where restart files are written.
+        """
+        if frames == 0:
+            self._restart = None
+        else:
+            self._restart = _RestartInfo(frames, restart_dir)
+
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
             self.vars["geometries"] = list(geometries)
@@ -286,6 +372,8 @@ class ReplicaExchange:
         print("--- it stores the best scoring pdb models in pdbs/")
         print("--- the stat.*.out and rmfs/*.rmf3 are saved only at the "
               "lowest temperature")
+        if self._restart and self._restart.restarted:
+            print("--- this is a restart of a failed simulation")
         print("--- variables:")
         for k, v in sorted(self.vars.items(), key=itemgetter(0)):
             print("------", k.ljust(30), v)
@@ -320,7 +408,8 @@ class ReplicaExchange:
         sampler_mc = IMP.pmi.samplers.MonteCarlo(
             self.model, self.monte_carlo_sample_objects,
             self.vars["monte_carlo_temperature"],
-            score_moved=self.score_moved)
+            score_moved=self.score_moved,
+            start_frame=self._restart_from_frame)
         if self.use_jax:
             sampler_mc.set_use_jax(self.vars["monte_carlo_steps"])
         if self.vars["simulated_annealing"]:
@@ -334,17 +423,14 @@ class ReplicaExchange:
         if self.vars["self_adaptive"]:
             sampler_mc.set_self_adaptive(
                 isselfadaptive=self.vars["self_adaptive"])
-        if self.output_objects is not None:
-            self.output_objects.append(sampler_mc)
-        if self.rmf_output_objects is not None:
-            self.rmf_output_objects.append(sampler_mc)
         return sampler_mc
 
     def _setup_md_sampler(self):
         sampler_md = IMP.pmi.samplers.MolecularDynamics(
             self.model, self.molecular_dynamics_sample_objects,
             self.vars["monte_carlo_temperature"],
-            maximum_time_step=self.molecular_dynamics_max_time_step)
+            maximum_time_step=self.molecular_dynamics_max_time_step,
+            start_frame=self._restart_from_frame)
         if self.use_jax:
             sampler_md.set_use_jax(self.vars["molecular_dynamics_steps"])
         if self.vars["simulated_annealing"]:
@@ -355,10 +441,6 @@ class ReplicaExchange:
             nfmax = self.vars[
                 "simulated_annealing_maximum_temperature_nframes"]
             sampler_md.set_simulated_annealing(tmin, tmax, nfmin, nfmax)
-        if self.output_objects is not None:
-            self.output_objects.append(sampler_md)
-        if self.rmf_output_objects is not None:
-            self.rmf_output_objects.append(sampler_md)
         return sampler_md
 
     def _get_jax_model(self, sampler_mc):
@@ -366,6 +448,13 @@ class ReplicaExchange:
             return sampler_mc.get_jax_model()
 
     def execute_macro(self):
+        # Are we restarting a failed simulation?
+        restarted = False
+        if self._restart:
+            self._restart._number += 1
+            restarted = self._restart.restarted
+
+        stat_file = _StatFile(self.output_objects, self.rmf_output_objects)
         temp_index_factor = 100000.0
         samplers = []
         sampler_mc = None
@@ -373,11 +462,13 @@ class ReplicaExchange:
         if self.monte_carlo_sample_objects is not None:
             print("Setting up MonteCarlo")
             sampler_mc = self._setup_mc_sampler()
+            stat_file.append(sampler_mc)
             samplers.append(sampler_mc)
 
         if self.molecular_dynamics_sample_objects is not None:
             print("Setting up MolecularDynamics")
             sampler_md = self._setup_md_sampler()
+            stat_file.append(sampler_md)
             samplers.append(sampler_md)
 
 # -------------------------------------------------------------------------
@@ -388,12 +479,13 @@ class ReplicaExchange:
             self.vars["replica_exchange_maximum_temperature"], samplers,
             replica_exchange_object=self.replica_exchange_object)
         self.replica_exchange_object = rex.rem
+        if restarted:
+            # Restore replica exchange stats from restart
+            rex.stats = self._rex_stats
+            del self._rex_stats
 
         myindex = rex.get_my_index()
-        if self.output_objects is not None:
-            self.output_objects.append(rex)
-        if self.rmf_output_objects is not None:
-            self.rmf_output_objects.append(rex)
+        stat_file.append(rex)
         # must reset the minimum temperature due to the
         # different binary length of rem.get_my_parameter double and python
         # float
@@ -421,11 +513,7 @@ class ReplicaExchange:
 
 # -------------------------------------------------------------------------
 
-        sw = IMP.pmi.tools.Stopwatch()
-        if self.output_objects is not None:
-            self.output_objects.append(sw)
-        if self.rmf_output_objects is not None:
-            self.rmf_output_objects.append(sw)
+        stat_file.append(IMP.pmi.tools.Stopwatch())
 
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
 
@@ -440,15 +528,23 @@ class ReplicaExchange:
             self.model.update()
 
         if not self.test_mode and not self.nest:
-            if self.output_objects is not None:
+            if stat_file.objects is not None:
                 output.init_stat2(low_temp_stat_file,
-                                  self.output_objects,
+                                  stat_file.objects,
                                   extralabels=["rmf_file", "rmf_frame_index"],
-                                  jax_model=self._get_jax_model(sampler_mc))
+                                  jax_model=self._get_jax_model(sampler_mc),
+                                  append=restarted)
+                # todo: also truncate outputs from MD?
+                if restarted and sampler_mc:
+                    nline = output._count_stat2_nframe(
+                        low_temp_stat_file, 'MonteCarlo_Nframe',
+                        self._restart_from_frame)
+                    if nline is not None:
+                        output._truncate_stat2_nline(low_temp_stat_file, nline)
         else:
             print("Stat file writing is disabled")
 
-        if self.rmf_output_objects is not None and not self.nest:
+        if stat_file.rmf_objects is not None and not self.nest:
             print("Stat info being written in the rmf file")
 
         if not self.test_mode and not self.nest:
@@ -459,7 +555,11 @@ class ReplicaExchange:
             if not self.test_mode:
                 output.init_stat2(replica_stat_file, [rex],
                                   extralabels=["score"],
-                                  jax_model=self._get_jax_model(sampler_mc))
+                                  jax_model=self._get_jax_model(sampler_mc),
+                                  append=restarted)
+                if restarted:
+                    output._truncate_stat2_nline(
+                        replica_stat_file, self._restart_from_frame)
 
             print("Setting up best pdb files")
             if not self.is_multi_state:
@@ -502,12 +602,12 @@ class ReplicaExchange:
         else:
             output_hierarchies = [self.root_hier]
 
-        if not self.test_mode and not self.nest:
+        if not self.test_mode and not self.nest and not restarted:
             print("Setting up and writing initial rmf coordinate file")
             init_suffix = globaldir + self.vars["initial_rmf_name_suffix"]
             output.init_rmf(init_suffix + "." + str(myindex) + ".rmf3",
                             output_hierarchies,
-                            listofobjects=self.rmf_output_objects)
+                            listofobjects=stat_file.rmf_objects)
             if self._rmf_restraints:
                 output.add_restraints_to_rmf(
                     init_suffix + "." + str(myindex) + ".rmf3",
@@ -524,10 +624,13 @@ class ReplicaExchange:
 
         if not self.test_mode and not self.nest:
             print("Setting up production rmf files")
-            rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
+            if restarted:
+                rmfname = f"{rmf_dir}/{myindex}.rs{self._restart._number}.rmf3"
+            else:
+                rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
             output.init_rmf(rmfname, output_hierarchies,
                             geometries=self.vars["geometries"],
-                            listofobjects=self.rmf_output_objects)
+                            listofobjects=stat_file.rmf_objects)
 
             if self._rmf_restraints:
                 output.add_restraints_to_rmf(rmfname, self._rmf_restraints)
@@ -539,7 +642,7 @@ class ReplicaExchange:
 
             output.init_rmf(nestor_rmf_fname, output_hierarchies,
                             geometries=self.vars["geometries"],
-                            listofobjects=self.rmf_output_objects)
+                            listofobjects=stat_file.rmf_objects)
 
         ntimes_at_low_temp = 0
 
@@ -551,7 +654,9 @@ class ReplicaExchange:
             nframes = 1
 
         sampled_likelihoods = []
-        for i in range(nframes):
+        for i in range(self._restart_from_frame, nframes):
+            if self._restart and i != self._restart_from_frame:
+                self._restart._write_frame(self, i, myindex, rex.stats)
             if self.test_mode:
                 score = 0.
             else:
@@ -620,7 +725,7 @@ class ReplicaExchange:
                     else:
                         output.set_output_entry("rmf_file", rmfname)
                         output.set_output_entry("rmf_frame_index", '-1')
-                    if self.output_objects is not None:
+                    if stat_file.objects is not None:
                         output.write_stat2(
                             low_temp_stat_file,
                             jax_model=self._get_jax_model(sampler_mc))
@@ -647,6 +752,33 @@ class ReplicaExchange:
         if not self.test_mode and not self.nest:
             print("closing production rmf files")
             output.close_rmf(rmfname)
+
+
+def restart_replica_exchange(restart_dir):
+    """Continue a failed ReplicaExchange sampling run.
+
+       @see ReplicaExchange.set_restart
+
+       @param restart_dir The directory containing the restart file(s).
+    """
+    # Make sure that we are running MPI with the same number of replicas
+    # as the original run
+    try:
+        import IMP.mpi
+        r = IMP.mpi.ReplicaExchange()
+        nproc, myindex = r.get_number_of_replicas(), r.get_my_index()
+    except ImportError:
+        # Not running with MPI; assume just one replica
+        nproc, myindex = 1, 0
+
+    with open(f'{restart_dir}/restart.{myindex}.pck', 'rb') as fh:
+        mc = pickle.load(fh)
+    old_nproc = mc.get_number_of_replicas()
+    if old_nproc != nproc:
+        raise ValueError(
+            f"Mismatch trying to read restart files: the original run used "
+            f"{old_nproc} replicas and this run has {nproc}")
+    return mc.execute_macro()
 
 
 class BuildSystem:
