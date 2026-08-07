@@ -322,19 +322,19 @@ struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
   static std::string get_cpp_object(PyObject* o, SwigData) {
-    if (!o || !PyString_Check(o)) {
+    if (!o || !PyBytes_Check(o)) {
       throw std::runtime_error("wrong type");
     } else {
-      return std::string(PyString_AsString(o));
+      return std::string(PyBytes_AsString(o));
     }
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData) {
-    return PyString_Check(o);
+    return PyBytes_Check(o);
   }
   template <class SwigData>
   static PyObject* create_python_object(std::string f, SwigData, int) {
-    return PyString_FromString(f.c_str());
+    return PyUnicode_FromString(f.c_str());
   }
 };
 
@@ -372,20 +372,20 @@ struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
   static int get_cpp_object(PyObject* o, SwigData) {
-    if (!PyInt_Check(o)) {
+    if (!PyLong_Check(o)) {
       throw std::runtime_error("wrong type");
     } else {
-      return PyInt_AsLong(o);
+      return PyLong_AsLong(o);
     }
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData) {
-    return PyInt_Check(o);
+    return PyLong_Check(o);
   }
   template <class SwigData>
   static PyObject* create_python_object(int f, SwigData, int) {
     // These may or may not have a ref count
-    return PyInt_FromLong(f);
+    return PyLong_FromLong(f);
   }
 };
 
