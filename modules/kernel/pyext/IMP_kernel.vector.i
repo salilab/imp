@@ -19,8 +19,8 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD<D>::__idiv__(double) %{
-    def __idiv__(self, *args):
+  %feature("shadow") VectorD<D>::__itruediv__(double) %{
+    def __itruediv__(self, *args):
         $action(self, *args)
         return self
   %}
@@ -65,7 +65,7 @@ namespace IMP {
      generate a new SWIG wrapper for the return value (see above). */
   void __iadd__(const IMP::VectorD<D> &o) { self->operator+=(o); }
   void __imul__(double f) { self->operator*=(f); }
-  void __idiv__(double f) { self->operator/=(f); }
+  void __itruediv__(double f) { self->operator/=(f); }
   void __isub__(const IMP::VectorD<D> &o) { self->operator-=(o); }
   unsigned int __len__() { return self->get_dimension(); }
   const IMP::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
@@ -81,12 +81,6 @@ namespace IMP {
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::ValueException);
   }
-
-  /* Support new-style "true" division */
-  %pythoncode %{
-  __truediv__ = __div__
-  __itruediv__ = __idiv__
-  %}
 };
 
 IMP_SWIG_VALUE_SERIALIZE_IMPL(IMP, VectorD<D>);

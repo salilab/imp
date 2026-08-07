@@ -14,8 +14,8 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
-  %feature("shadow") Transformation2D::__idiv__(double) %{
-    def __idiv__(self, *args):
+  %feature("shadow") Transformation2D::__itruediv__(double) %{
+    def __itruediv__(self, *args):
         $action(self, *args)
         return self
   %}
@@ -24,18 +24,11 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
-  %feature("shadow") Rotation2D::__idiv__(double) %{
-    def __idiv__(self, *args):
+  %feature("shadow") Rotation2D::__itruediv__(double) %{
+    def __itruediv__(self, *args):
         $action(self, *args)
         return self
   %}
 
  }
-}
-
-%extend IMP::algebra::Transformation2D {
-  /* Support new-style "true" division */
-  %pythoncode %{
-  __truediv__ = __div__
-  %}
 }
