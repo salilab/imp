@@ -328,9 +328,9 @@ protected:
       // Python exception will be reraised when SWIG method finishes
       throw std::ostream::failure("Python error on read");
     } else {
-      if (PyString_Check(result)) {
-        if (PyString_Size(result) == 1) {
-          int c = peeked_ = (unsigned char)(PyString_AsString(result)[0]);
+      if (PyBytes_Check(result)) {
+        if (PyBytes_Size(result) == 1) {
+          int c = peeked_ = (unsigned char)(PyBytes_AsString(result)[0]);
           Py_DECREF(result);
           return c;
         } else {
@@ -352,9 +352,9 @@ protected:
     if (!result) {
       throw std::ostream::failure("Python error on read");
     } else {
-      if (PyString_Check(result)) {
-        int len = PyString_Size(result);
-        char *str = PyString_AsString(result);
+      if (PyBytes_Check(result)) {
+        int len = PyBytes_Size(result);
+        char *str = PyBytes_AsString(result);
         if (len > n) {
           Py_DECREF(result);
           PyErr_SetString(PyExc_IOError, "Python file-like object read method "

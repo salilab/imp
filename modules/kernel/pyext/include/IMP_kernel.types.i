@@ -33,7 +33,7 @@
    whether it's signed or not. So we override the default here and force the
    hash value into a signed type, so it will always fit into a Python 'int'. */
 %typemap(out) std::size_t __hash__ {
-  $result = PyInt_FromLong(static_cast<long>($1));
+  $result = PyLong_FromLong(static_cast<long>($1));
 }
 
 /* Add additional IMP_CONTAINER methods for scripting languages */

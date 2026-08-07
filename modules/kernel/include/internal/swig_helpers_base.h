@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers_base.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2024 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_HELPERS_BASE_H
@@ -863,7 +863,7 @@ struct Convert<std::string> {
                                     argtype),
                   ValueException);
       }
-      std::string s(PyString_AsString(obj));
+      std::string s(PyBytes_AsString(obj));
       Py_DECREF(obj);
       return s;
     }
@@ -910,16 +910,13 @@ struct Convert<double> : public ConvertFloatBase {
   static const int converter = 12;
 };
 
-/* with swig 2.0.6 we seem to need both the Int and Long checks */
 template <>
 struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
   static int get_cpp_object(PyObject* o, const char *symname, int argnum,
                             const char *argtype, SwigData, SwigData, SwigData) {
-    if (PyInt_Check(o)) {
-      return PyInt_AsLong(o);
-    } else if (PyLong_Check(o)) {
+    if (PyLong_Check(o)) {
       return PyLong_AsLong(o);
     } else {
       long ret = PyLong_AsLong(o);
@@ -933,12 +930,12 @@ struct Convert<int> {
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
-    return PyLong_Check(o) || PyInt_Check(o) || PyNumber_Check(o);
+    return PyLong_Check(o) || PyNumber_Check(o);
   }
   template <class SwigData>
   static PyObject* create_python_object(int f, SwigData, int) {
     // These may or may not have a ref count
-    return PyInt_FromLong(f);
+    return PyLong_FromLong(f);
   }
 };
 
