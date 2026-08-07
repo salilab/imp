@@ -97,6 +97,16 @@ rex = IMP.pmi.macros.ReplicaExchange(
     mdl, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),
     global_output_directory='auto_output/', output_objects=output_objects,
     monte_carlo_steps=10, number_of_best_scoring_models=0, number_of_frames=5)
+
+# ReplicaExchange can write restart or checkout files periodically so that
+# an interrupted simulation can be restarted (using the
+# IMP.pmi.macros.restart_replica_exchange function).
+# See auto_output/restart/README.txt after running this script for more
+# information. For demonstration purposes we write restarts every 4 frames
+# here, but for real simulations a much larger value is recommended.
+rex.set_restart(4)
+
+# Actually run the sampling
 rex.execute_macro()
 
 os.remove(tf.name)

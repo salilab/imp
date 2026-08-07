@@ -85,8 +85,8 @@ class _RestartInfo:
         self._frames = frames
         self._restart_dir = restart_dir
         # Number of the restart; this will be incremented every time we
-        # run execute_macro()
-        self._number = -1
+        # run _RestartRun.execute_macro()
+        self._number = 0
 
     def _write_frame(self, rex, frame, myindex, rex_stats):
         """Possibly write a restart file for the replica exchange run `rex`"""
@@ -96,10 +96,35 @@ class _RestartInfo:
         d = Path(rex.vars["global_output_directory"]) / self._restart_dir
         d.mkdir(exist_ok=True)
         fname = d / f'restart.{myindex}.pck'
+        # Keep a backup of the previous restart
+        if fname.exists():
+            prev = d / f'restart.{myindex}.prev.pck'
+            fname.replace(prev)
+        else:
+            self._write_readme(d / 'README.txt')
 
         r = _RestartRun(rex, frame, rex_stats)
         with open(fname, 'wb') as fh:
             pickle.dump(r, fh)
+
+    def _write_readme(self, fname):
+        with open(fname, 'w') as fh:
+            fh.write("""
+This directory contains files that can be used to restart an interrupted
+simulation. To do so, use the IMP.pmi.macros.restart_replica_exchange function.
+
+Restart files are Python pickles that contain the current configuration of
+the IMP model (e.g. coordinates), the scoring function, and the PMI sampler
+(e.g. Monte Carlo movers and acceptance statistics). Each replica has its own
+internal state and thus its own restart file. Files for the previous restart
+are also kept (with a .prev.pck extension) in case the most recent restart
+is corrupted.
+
+Restart files contain IMP internal state and so will probably not work with
+a different version of IMP, or on a different operating system. As with all
+Python pickles, these files may contain executable Python code and so you
+should not use a restart file from an untrusted source.
+""")
 
     restarted = property(lambda self: self._number > 0,
                          doc="True iff this simulation has been restarted")
@@ -119,6 +144,7 @@ class _RestartRun:
         """Restart the interrupted replica exchange simulation"""
         m, rex = self._pck_info
         IMP.random_number_generator.set_state(self._rstate)
+        rex._restart._number += 1
         rex._restart_from_frame = self._frame
         rex._rex_stats = self._rex_stats
         return rex.execute_macro()
@@ -346,9 +372,18 @@ class ReplicaExchange:
         """Enable a simulation to be restarted if it is interrupted.
 
            If enabled, restart files containing a complete description of
-           the IMP system are written periodically during the simulation.
-           If the simulation is interrupted, it can be restarted using
-           the restart_replica_exchange function, which reads these files.
+           the IMP system are written periodically during the simulation,
+           one per replica. If the simulation is interrupted, it can be
+           restarted using the restart_replica_exchange function, which
+           reads these files. Files for the previous restart are also kept
+           (with a .prev.pck extension) in case the most recent restart
+           is corrupted.
+
+           Restart files contain IMP internal state and so will probably
+           not work with a different version of IMP, or on a different
+           operating system. As with all Python pickles, these files may
+           contain executable Python code and so you should not use a
+           restart file from an untrusted source.
 
            @param frames How often a restart file should be written
                   (number of frames), or zero to not write restart files
@@ -449,10 +484,7 @@ class ReplicaExchange:
 
     def execute_macro(self):
         # Are we restarting a failed simulation?
-        restarted = False
-        if self._restart:
-            self._restart._number += 1
-            restarted = self._restart.restarted
+        restarted = self._restart.restarted if self._restart else False
 
         stat_file = _StatFile(self.output_objects, self.rmf_output_objects)
         temp_index_factor = 100000.0
@@ -754,12 +786,15 @@ class ReplicaExchange:
             output.close_rmf(rmfname)
 
 
-def restart_replica_exchange(restart_dir):
+def restart_replica_exchange(restart_dir, prev=False):
     """Continue a failed ReplicaExchange sampling run.
 
        @see ReplicaExchange.set_restart
 
        @param restart_dir The directory containing the restart file(s).
+       @param prev If True, use the previous restart
+              (e.g. `restart.0.prev.pck`) rather than the most recent
+              restart (e.g. `restart.0.pck`)
     """
     # Make sure that we are running MPI with the same number of replicas
     # as the original run
@@ -771,7 +806,8 @@ def restart_replica_exchange(restart_dir):
         # Not running with MPI; assume just one replica
         nproc, myindex = 1, 0
 
-    with open(f'{restart_dir}/restart.{myindex}.pck', 'rb') as fh:
+    ext = 'prev.pck' if prev else 'pck'
+    with open(f'{restart_dir}/restart.{myindex}.{ext}', 'rb') as fh:
         mc = pickle.load(fh)
     old_nproc = mc.get_number_of_replicas()
     if old_nproc != nproc:

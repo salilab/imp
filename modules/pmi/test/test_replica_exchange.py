@@ -13,6 +13,28 @@ except ImportError:
     jax = None
 
 
+class StopSamplerError(Exception):
+    pass
+
+
+def _run_rex_and_stop_at_frame(rex, frame):
+    """Run replica exchange but make it stop early, at the given frame"""
+    orig_set_output_entry = IMP.pmi.output.Output.set_output_entry
+
+    def set_output_entry(obj, key, val):
+        if key == 'rmf_frame_index' and val == frame:
+            raise StopSamplerError("stop")
+        return orig_set_output_entry(obj, key, val)
+
+    IMP.pmi.output.Output.set_output_entry = set_output_entry
+    try:
+        rex.execute_macro()
+    except StopSamplerError:
+        pass
+    finally:
+        IMP.pmi.output.Output.set_output_entry = orig_set_output_entry
+
+
 class JAXDistanceRestraint(IMP.Restraint):
     """A simple distance restraint that has only a JAX implementation"""
     def __init__(self, m, p1, p2, d, k):
@@ -211,13 +233,17 @@ class Tests(IMP.test.TestCase):
         dr1.add_to_model()
 
         rex = IMP.pmi.macros.ReplicaExchange(
-            m, root_hier=hier, monte_carlo_steps=100, number_of_frames=1,
+            m, root_hier=hier, monte_carlo_steps=100, number_of_frames=10,
             output_objects=[dr1],
             monte_carlo_sample_objects=dof.get_movers(),
             number_of_best_scoring_models=0,
             monte_carlo_temperature=0.0,
             self_adaptive=True,
             global_output_directory='test_adaptive/')
+        # Test writing restart files too
+        rex.set_restart(6)
+        rex.execute_macro()
+        # Make sure that we can run execute_macro() more than once
         rex.execute_macro()
         shutil.rmtree('test_adaptive')
 
@@ -252,6 +278,7 @@ class Tests(IMP.test.TestCase):
             global_output_directory='test_full')
         rex.execute_macro()
 
+        # Test simulation with a single restart
         IMP.random_number_generator.seed(42)
         m, hier, dr1, dof = setup_system()
         rex = IMP.pmi.macros.ReplicaExchange(
@@ -260,25 +287,57 @@ class Tests(IMP.test.TestCase):
             monte_carlo_sample_objects=dof.get_movers(),
             number_of_best_scoring_models=0,
             monte_carlo_temperature=1.0,
-            global_output_directory='test_restart')
+            global_output_directory='test_single_restart')
         rex.set_restart(7)
         rex.execute_macro()
-        IMP.pmi.macros.restart_replica_exchange('test_restart/restart')
+
+        IMP.pmi.macros.restart_replica_exchange('test_single_restart/restart')
 
         # Restarted simulation should yield same outputs as the original
         # (except for the RMF files, which will have some duplicated frames)
         self._compare_stat('test_full/stat.0.out',
-                           'test_restart/stat.0.out')
+                           'test_single_restart/stat.0.out')
         self._compare_replica_stat('test_full/stat_replica.0.out',
-                                   'test_restart/stat_replica.0.out')
+                                   'test_single_restart/stat_replica.0.out')
 
         self.assertTrue(os.path.exists('test_full/rmfs/0.rmf3'))
-        self.assertTrue(os.path.exists('test_restart/rmfs/0.rmf3'))
-        self.assertTrue(os.path.exists('test_restart/rmfs/0.rs1.rmf3'))
-        shutil.rmtree('test_restart')
+        self.assertTrue(os.path.exists('test_single_restart/rmfs/0.rmf3'))
+        self.assertTrue(os.path.exists('test_single_restart/rmfs/0.rs1.rmf3'))
+        self.assertTrue(os.path.exists(
+            'test_single_restart/restart/README.txt'))
+        shutil.rmtree('test_single_restart')
+
+        # Test simulation with two restarts
+        IMP.random_number_generator.seed(42)
+        m, hier, dr1, dof = setup_system()
+        rex = IMP.pmi.macros.ReplicaExchange(
+            m, root_hier=hier, monte_carlo_steps=10, number_of_frames=10,
+            output_objects=[dr1],
+            monte_carlo_sample_objects=dof.get_movers(),
+            number_of_best_scoring_models=0,
+            monte_carlo_temperature=1.0,
+            global_output_directory='test_two_restart')
+        rex.set_restart(2)
+        _run_rex_and_stop_at_frame(rex, 5)
+
+        # First simulation should cover frames 0-1,
+        # first restart frames 2-7, second restart frames 8-9:
+        IMP.pmi.macros.restart_replica_exchange('test_two_restart/restart',
+                                                prev=True)
+        IMP.pmi.macros.restart_replica_exchange('test_two_restart/restart')
+        self._compare_stat('test_full/stat.0.out',
+                           'test_two_restart/stat.0.out', two=True)
+        self._compare_replica_stat('test_full/stat_replica.0.out',
+                                   'test_two_restart/stat_replica.0.out')
+        self.assertTrue(os.path.exists(
+            'test_two_restart/restart/restart.0.pck'))
+        self.assertTrue(os.path.exists(
+            'test_two_restart/restart/restart.0.prev.pck'))
+        shutil.rmtree('test_two_restart')
+
         shutil.rmtree('test_full')
 
-    def _compare_stat(self, full, restart):
+    def _compare_stat(self, full, restart, two=False):
         with open(full) as fh_full, open(restart) as fh_rst:
             sf_full = StatFile(fh_full.readline())
             sf_rst = StatFile(fh_rst.readline())
@@ -288,15 +347,28 @@ class Tests(IMP.test.TestCase):
                 line_rst = fh_rst.readline()
                 (rmf_full, rmf_rst, frame_full, frame_rst) \
                     = sf_full.assert_same_line(line_full, line_rst, self)
-                # Restarted simulation should change to a new RMF at frame 7
                 self.assertTrue(rmf_full.endswith('0.rmf3'))
                 self.assertEqual(frame_full, i)
-                if i < 7:
-                    self.assertTrue(rmf_rst.endswith('0.rmf3'))
-                    self.assertEqual(frame_rst, i)
+                if not two:
+                    # Single-restarted simulation should change to a new RMF
+                    # at frame 7
+                    if i < 7:
+                        self.assertTrue(rmf_rst.endswith('0.rmf3'))
+                        self.assertEqual(frame_rst, i)
+                    else:
+                        self.assertTrue(rmf_rst.endswith('0.rs1.rmf3'))
+                        self.assertEqual(frame_rst, i - 7)
                 else:
-                    self.assertTrue(rmf_rst.endswith('0.rs1.rmf3'))
-                    self.assertEqual(frame_rst, i - 7)
+                    # Similar for double-restarted simulation
+                    if i < 2:
+                        self.assertTrue(rmf_rst.endswith('0.rmf3'))
+                        self.assertEqual(frame_rst, i)
+                    elif i < 8:
+                        self.assertTrue(rmf_rst.endswith('0.rs1.rmf3'))
+                        self.assertEqual(frame_rst, i - 2)
+                    else:
+                        self.assertTrue(rmf_rst.endswith('0.rs2.rmf3'))
+                        self.assertEqual(frame_rst, i - 8)
             # Should have reached the end of each file
             self.assertEqual(fh_full.readline(), "")
             self.assertEqual(fh_rst.readline(), "")
