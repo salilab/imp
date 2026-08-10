@@ -93,13 +93,15 @@ class BoundingBoxD {
     }
   }
 
-  unsigned int get_dimension() const { return get_corner(0).get_dimension(); }
+  unsigned int get_dimension() const {
+    return get_corner<0>().get_dimension();
+  }
 
   //! Extend the current bounding box to include the other
   const BoundingBoxD<D> &operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
-      b_[0][i] = std::min(o.get_corner(0)[i], get_corner(0)[i]);
-      b_[1][i] = std::max(o.get_corner(1)[i], get_corner(1)[i]);
+      b_[0][i] = std::min(o.get_corner<0>()[i], get_corner<0>()[i]);
+      b_[1][i] = std::max(o.get_corner<1>()[i], get_corner<1>()[i]);
     }
     return *this;
   }
@@ -142,16 +144,27 @@ class BoundingBoxD {
     return b_[i];
   }
 
+  //! For 0 return lower corner and for 1, the upper corner
+  /** This version is templated and does the bounds check at compile
+      time, so should be a little faster. */
+  template <unsigned int CORNER>
+  const VectorD<D> &get_corner() const {
+    static_assert(CORNER < 2, "Can only use 0 or 1");
+    return b_[CORNER];
+  }
+
   //! True if the point o is contained within this bounding box
   bool get_contains(const VectorD<D> &o) const {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
-      if (o[i] < get_corner(0)[i] || o[i] > get_corner(1)[i]) return false;
+      if (o[i] < get_corner<0>()[i] || o[i] > get_corner<1>()[i]) {
+        return false;
+      }
     }
     return true;
   }
   //! True if the input bounding box is completely contained within this one
   bool get_contains(const BoundingBoxD &bb) const {
-    return get_contains(bb.get_corner(0)) && get_contains(bb.get_corner(1));
+    return get_contains(bb.get_corner<0>()) && get_contains(bb.get_corner<1>());
   }
 
   IMP_SHOWABLE_INLINE(BoundingBoxD, out << b_[0] << ": " << b_[1]);
@@ -170,17 +183,17 @@ template <int D>
 inline double get_volume(const BoundingBoxD<D> &bb) {
   double v = 1;
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
-    v *= bb.get_corner(1)[i] - bb.get_corner(0)[i];
+    v *= bb.template get_corner<1>()[i] - bb.template get_corner<0>()[i];
   }
   return v;
 }
 
 IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box, IMP_UNUSED(g);
-                              IMP_NOT_IMPLEMENTED,
-                              return (g.get_corner(1)[0] - g.get_corner(0)[0]) *
-                                     (g.get_corner(1)[1] - g.get_corner(0)[1]) *
-                                     (g.get_corner(1)[2] - g.get_corner(0)[2]),
-                              return g);
+     IMP_NOT_IMPLEMENTED,
+     return (g.template get_corner<1>()[0] - g.template get_corner<0>()[0]) *
+            (g.template get_corner<1>()[1] - g.template get_corner<0>()[1]) *
+            (g.template get_corner<1>()[2] - g.template get_corner<0>()[2]),
+     return g);
 
 //! Box with radius one
 /** \see BoundingBoxD */
@@ -218,8 +231,12 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
   IMP_USAGE_CHECK(a.get_dimension() == b.get_dimension(),
                   "Dimensions of bounding boxes don't match.");
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
-    if (a.get_corner(0)[i] > b.get_corner(1)[i]) return false;
-    if (b.get_corner(0)[i] > a.get_corner(1)[i]) return false;
+    if (a.template get_corner<0>()[i] > b.template get_corner<1>()[i]) {
+      return false;
+    }
+    if (b.template get_corner<0>()[i] > a.template get_corner<1>()[i]) {
+      return false;
+    }
   }
   return true;
 }
@@ -230,24 +247,22 @@ template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
   /* Make sure that for D=-1 the vectors ic[01] get the correct dimension */
-  VectorD<D> ic0 = a.get_corner(0);
-  VectorD<D> ic1 = a.get_corner(1);
+  VectorD<D> ic0 = a.template get_corner<0>();
+  VectorD<D> ic1 = a.template get_corner<1>();
   // set low
-  int j = 0;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
-    if (a.get_corner(j)[i] > b.get_corner(j)[i]) {
-      ic0[i] = a.get_corner(j)[i];
+    if (a.template get_corner<0>()[i] > b.template get_corner<0>()[i]) {
+      ic0[i] = a.template get_corner<0>()[i];
     } else {
-      ic0[i] = b.get_corner(j)[i];
+      ic0[i] = b.template get_corner<0>()[i];
     }
   }
   // set top
-  j = 1;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
-    if (a.get_corner(j)[i] < b.get_corner(j)[i]) {
-      ic1[i] = a.get_corner(j)[i];
+    if (a.template get_corner<1>()[i] < b.template get_corner<1>()[i]) {
+      ic1[i] = a.template get_corner<1>()[i];
     } else {
-      ic1[i] = b.get_corner(j)[i];
+      ic1[i] = b.template get_corner<1>()[i];
     }
   }
   return BoundingBoxD<D>(ic0, ic1);
@@ -267,9 +282,9 @@ inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
 /** \see BoundingBoxD */
 template <int D>
 inline double get_maximum_length(const BoundingBoxD<D> &a) {
-  double e = a.get_corner(1)[0] - a.get_corner(0)[0];
+  double e = a.template get_corner<1>()[0] - a.template get_corner<0>()[0];
   for (unsigned int i = 1; i < a.get_dimension(); ++i) {
-    double ce = a.get_corner(1)[0] - a.get_corner(0)[0];
+    double ce = a.template get_corner<1>()[0] - a.template get_corner<0>()[0];
     e = std::max(ce, e);
   }
   return e;
@@ -281,8 +296,8 @@ template <int D>
 inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   if (D == 1) {
     Vector<VectorD<D> > ret(2);
-    ret[0] = bb.get_corner(0);
-    ret[1] = bb.get_corner(1);
+    ret[0] = bb.template get_corner<0>();
+    ret[1] = bb.template get_corner<1>();
     return ret;
   }
   if (D == -1) {
@@ -290,8 +305,8 @@ inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   }
   VectorD<internal::DMinus1<D>::D> c0, c1;
   for (int i = 0; i < D - 1; ++i) {
-    c0[i] = bb.get_corner(0)[i];
-    c1[i] = bb.get_corner(1)[i];
+    c0[i] = bb.template get_corner<0>()[i];
+    c1[i] = bb.template get_corner<1>()[i];
   }
   BoundingBoxD<internal::DMinus1<D>::D> bbm1(c0, c1);
   Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
@@ -301,9 +316,9 @@ inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
     for (int j = 0; j < D - 1; ++j) {
       cur[j] = recurse[i][j];
     }
-    cur[D - 1] = bb.get_corner(0)[D - 1];
+    cur[D - 1] = bb.template get_corner<0>()[D - 1];
     ret.push_back(cur);
-    cur[D - 1] = bb.get_corner(1)[D - 1];
+    cur[D - 1] = bb.template get_corner<1>()[D - 1];
     ret.push_back(cur);
   }
   return ret;
