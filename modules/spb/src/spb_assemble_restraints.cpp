@@ -2,7 +2,7 @@
  *  \file spb_create_restraints.cpp
  *  \brief Assemble the restraints
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <fstream>
@@ -21,17 +21,17 @@ using namespace IMP::spb;
 
 IMPSPB_BEGIN_NAMESPACE
 
-std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
+std::map<std::string, IMP::Pointer<RestraintSet>> spb_assemble_restraints(
     Model *m, RestraintSet *allrs, SPBParameters &mydata,
     atom::Hierarchies &all_mol, container::ListSingletonContainer *CP_ps,
     container::ListSingletonContainer *IL2_ps,
-    std::map<std::string, IMP::Pointer<Particle> > ISD_ps) {
+    std::map<std::string, IMP::Pointer<Particle>> ISD_ps) {
 
   CP_ps->set_was_used(true);
   IL2_ps->set_was_used(true);
 
   // prepare the map of RestraintSet
-  std::map<std::string, IMP::Pointer<RestraintSet> > rst_map;
+  std::map<std::string, IMP::Pointer<RestraintSet>> rst_map;
   //
   // Excluded volume
   //

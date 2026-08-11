@@ -2,7 +2,7 @@
  *  \file nmr_rtc_score.cpp \brief A program for NMR residue type content \
  * scoring of docking models.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/Model.h>
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
       "output file name, default name nmr_rtc_score.res");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-     ("input-files", po::value<std::vector<std::string> >(),
+     ("input-files", po::value<std::vector<std::string>>(),
       "input PDB, transformation and profile files");
 
   po::options_description cmdline_options;
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
   std::string receptor_pdb_residue_content, ligand_pdb_residue_content;
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() != 5) {
     std::cout << desc << "\n";

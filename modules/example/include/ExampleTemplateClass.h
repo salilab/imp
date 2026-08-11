@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleTemplateClass.h
  *  \brief Show how to manage a template class with Python.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -52,7 +52,7 @@ class ExampleTemplateClassD {
 };
 
 typedef ExampleTemplateClassD<3> ExampleTemplateClass3D;
-typedef Vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
+typedef Vector<ExampleTemplateClassD<3>> ExampleTemplateClass3Ds;
 
 IMPEXAMPLE_END_NAMESPACE
 

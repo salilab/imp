@@ -2,7 +2,7 @@
  * \file em2d_single_score.cpp \brief A program to score a single
  * docking model in PDB file
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -65,7 +65,7 @@ to be considered for the EM image \
     ;
   po::options_description hidden("Hidden options");
   hidden.add_options()
-     ("input-files", po::value<std::vector<std::string> >(),
+     ("input-files", po::value<std::vector<std::string>>(),
       "input PDB and image files");
 
   po::options_description cmdline_options;
@@ -94,7 +94,7 @@ to be considered for the EM image \
   if (vm.count("ca-only")) residue_level = true;
   if (vm.count("input-files")) {
     std::vector<std::string> files =
-        vm["input-files"].as<std::vector<std::string> >();
+        vm["input-files"].as<std::vector<std::string>>();
     if (files.size() < 2) {
       std::cout << desc << "\n";
       return 0;

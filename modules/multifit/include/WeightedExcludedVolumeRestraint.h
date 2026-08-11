@@ -2,7 +2,7 @@
  *  \file IMP/multifit/WeightedExcludedVolumeRestraint.h
  *  \brief Calculate weighted excluded volume between rigid bodies
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -63,7 +63,7 @@ class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
   mutable em::SurfaceShellDensityMaps rbs_surface_maps_;
   // reference to the IMP environment
   // derivatives
-  std::vector<std::vector<float> > rb_refined_dx_, rb_refined_dy_,
+  std::vector<std::vector<float>> rb_refined_dx_, rb_refined_dy_,
       rb_refined_dz_;
   //  bool special_treatment_of_particles_outside_of_density_;
   // rigid bodies handling

@@ -1,7 +1,7 @@
 /**
  *  \file bond_graph.cpp     \brief Decorators for a bond
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,11 +55,11 @@ namespace {
 void bgl_concept_checks() IMP_UNUSED_FUNCTION;
 void bgl_concept_checks() {
 
-  boost::function_requires<boost::VertexListGraphConcept<BondGraph> >();
-  boost::function_requires<boost::AdjacencyGraphConcept<BondGraph> >();
-  boost::function_requires<boost::EdgeListGraphConcept<BondGraph> >();
-  boost::function_requires<boost::IncidenceGraphConcept<BondGraph> >();
-  boost::function_requires<boost::BidirectionalGraphConcept<BondGraph> >();
+  boost::function_requires<boost::VertexListGraphConcept<BondGraph>>();
+  boost::function_requires<boost::AdjacencyGraphConcept<BondGraph>>();
+  boost::function_requires<boost::EdgeListGraphConcept<BondGraph>>();
+  boost::function_requires<boost::IncidenceGraphConcept<BondGraph>>();
+  boost::function_requires<boost::BidirectionalGraphConcept<BondGraph>>();
 
   BondGraph a, b;
   ParticleIndexKey pk("isomaping");

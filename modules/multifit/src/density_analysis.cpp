@@ -2,7 +2,7 @@
  *  \file density_analysis.cpp
  *  \brief tools for analyzing density maps
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,7 +21,7 @@ namespace {
 typedef boost::adjacency_list<
     boost::vecS, boost::vecS, boost::undirectedS,
     boost::property<boost::vertex_index_t, long>,
-    boost::property<boost::edge_centrality_t, double> > DensityGraph;
+    boost::property<boost::edge_centrality_t, double>> DensityGraph;
 typedef boost::graph_traits<DensityGraph>::vertex_descriptor DGVertex;
 typedef boost::graph_traits<DensityGraph>::edge_descriptor DGEdge;
 

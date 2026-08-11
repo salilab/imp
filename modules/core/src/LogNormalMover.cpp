@@ -2,7 +2,7 @@
  *  \file LogNormalMover.cpp
  *  \brief A modifier that perturbs a point with a log-normal distribution.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -59,7 +59,7 @@ MonteCarloMoverResult LogNormalMover::do_propose() {
   IMP_OBJECT_LOG;
   boost::normal_distribution<double> mrng(0, stddev_);
   boost::variate_generator<RandomNumberGenerator &,
-                           boost::normal_distribution<double> >
+                           boost::normal_distribution<double>>
       sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0; i < pis_.size(); ++i) {

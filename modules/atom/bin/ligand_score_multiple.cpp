@@ -1,7 +1,7 @@
 /**
  *  \file ligand_score.cpp   \brief A class for reading mol2 files
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(),
+    ("input-files", po::value<std::vector<std::string>>(),
      "input files");
 
   po::options_description allopt;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
   // parse filenames
   std::vector<std::string> files;
   if(vm.count("input-files")) {
-    files = vm["input-files"].as< std::vector<std::string> >();
+    files = vm["input-files"].as< std::vector<std::string>>();
   }
   if(vm.count("help") || (files.size() !=2 && files.size() != 3)) {
     std::cout << desc << "\n"; return 0;

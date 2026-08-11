@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_ISD_particles.h
  *  \brief SPB ISD particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 
 IMPSPB_BEGIN_NAMESPACE
 
-IMPSPBEXPORT std::map<std::string, IMP::Pointer<Particle> >
+IMPSPBEXPORT std::map<std::string, IMP::Pointer<Particle>>
 add_ISD_particles(Model *m, RestraintSet *allrs, spb::SPBParameters mydata,
                   core::MonteCarloMovers &mvs);
 

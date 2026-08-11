@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -73,7 +73,7 @@ class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
   Float radius_;
   ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  Vector<std::pair<Restraint *, Ints> > deps_;
+  Vector<std::pair<Restraint *, Ints>> deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(

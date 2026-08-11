@@ -39,7 +39,7 @@ class ClassnameConstraint :
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
                     IMP::internal::TupleConstraint<ClassnameModifier,
-                                        ClassnameModifier> >(this));
+                                        ClassnameModifier>>(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(ClassnameConstraint);
 

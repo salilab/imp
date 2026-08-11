@@ -2,7 +2,7 @@
  * \file IMP/atom/CHARMMParameters.h
  * \brief access to CHARMM force field parameters
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -85,14 +85,14 @@ class CHARMMTopology;
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, Element> atom_type_to_element_;
-  std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >
+  std::map<ResidueType, Pointer<CHARMMIdealResidueTopology>>
       residue_topologies_;
-  std::map<std::string, Pointer<CHARMMPatch> > patches_;
+  std::map<std::string, Pointer<CHARMMPatch>> patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
   typedef Vector<std::pair<internal::CHARMMDihedralNames,
-                                 CHARMMDihedralParameters> > DihedralParameters;
+                                 CHARMMDihedralParameters>> DihedralParameters;
   DihedralParameters dihedral_parameters_;
   DihedralParameters improper_parameters_;
 
@@ -140,7 +140,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
   CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const {
     std::map<ResidueType,
-             Pointer<CHARMMIdealResidueTopology> >::const_iterator it =
+             Pointer<CHARMMIdealResidueTopology>>::const_iterator it =
         residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
       return it->second;
@@ -172,7 +172,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 #endif
 
   CHARMMPatch *get_patch(std::string name) const {
-    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it =
+    std::map<std::string, Pointer<CHARMMPatch>>::const_iterator it =
         patches_.find(name);
     if (it != patches_.end()) {
       return it->second;

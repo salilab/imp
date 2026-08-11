@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h \brief A Bayesian inference-based
  *  sampler.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/domino_config.h>
@@ -614,7 +614,7 @@ MergeTree get_merge_tree(ScoringFunctionAdaptor rs,
 namespace {
 typedef boost::adjacency_list<boost::listS, boost::listS, boost::undirectedS,
                               boost::property<boost::vertex_name_t, Subset>,
-                              boost::property<boost::edge_name_t, int> >
+                              boost::property<boost::edge_name_t, int>>
     StableSubsetGraph;
 typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
 typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;

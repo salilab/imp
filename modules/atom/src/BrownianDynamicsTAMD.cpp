@@ -57,7 +57,7 @@ IMPATOM_BEGIN_NAMESPACE
 namespace {
 
 typedef boost::variate_generator<RandomNumberGenerator &,
-                                 boost::normal_distribution<double> > RNG;
+                                 boost::normal_distribution<double>> RNG;
 }
 
 

@@ -1,7 +1,7 @@
 /**
  *  \file KMRectangle.cpp   \brief Orthogonal (axis aligned) rectangle
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/internal/centrality_clustering.h>
@@ -48,12 +48,12 @@ namespace {
 typedef boost::adjacency_matrix<
     boost::undirectedS, boost::no_property,
     boost::property<boost::edge_weight_t, double,
-                    boost::property<boost::edge_centrality_t, double> > > Graph;
+                    boost::property<boost::edge_centrality_t, double>>> Graph;
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                               boost::undirectedS,
                               boost::no_property,
                               boost::property<boost::edge_weight_t,
-                              double> > Graph;*/
+                              double>> Graph;*/
 typedef boost::graph_traits<Graph> Traits;
 
 typedef boost::vector_property_map<Traits::vertex_descriptor> PM;

@@ -2,7 +2,7 @@
  *  \file IMP/spb/DistanceRMSDMetric.h
  *  \brief Distance RMSD Metric
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_RMSD_METRIC_H
@@ -26,7 +26,7 @@ class IMPSPBEXPORT DistanceRMSDMetric : public statistics::Metric {
   IMP::PointerMember<IMP::Particle> pz_;
   Floats weight_;
   std::vector<Floats> matrices_;
-  std::vector<std::vector<unsigned> > matrixmap_;
+  std::vector<std::vector<unsigned>> matrixmap_;
 
   void initialize(Ints align);
   Floats get_distance_matrix(algebra::Vector3Ds coords) const;

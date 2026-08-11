@@ -1,7 +1,7 @@
 /**
  *  \file dihedrals.cpp   \brief Helpers to extract dihedral information.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -95,7 +95,7 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
     std::cout << "This is not any of those" << std::endl;
   }
   */
-  static std::map<ResidueType, Vector<AtomTypes> > chi_dihedral_atom_types;
+  static std::map<ResidueType, Vector<AtomTypes>> chi_dihedral_atom_types;
 
   AtomTypes chi1_cg;
   chi1_cg.push_back(AT_N);

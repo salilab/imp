@@ -23,7 +23,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 //! Dynamically build a histogram embedded in D-dimensional space.
 template <int D, class Grid = algebra::GridD<
                      D, typename algebra::DenseGridStorageD<D, double>, double,
-                     typename algebra::DefaultEmbeddingD<D> > >
+                     typename algebra::DefaultEmbeddingD<D>>>
 class HistogramD : public GeometricPrimitiveD<D> {
  public:
   typedef Grid CountGrid;

@@ -1,7 +1,7 @@
 /**
  * \file IMP/atom/ForceFieldParameters.h \brief force field base class
  *
- * Copyright 2007-2025 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -68,7 +68,7 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::Object {
   std::map<ResidueType, AtomTypeMap> atom_res_type_2_force_field_atom_type_;
 
   // a list of residue bonds
-  std::map<ResidueType, Vector<Bond> > residue_bonds_;
+  std::map<ResidueType, Vector<Bond>> residue_bonds_;
 
   // map that holds force_field parameters according to force_field atom types
   // key=force_field_atom_type, value=(epsilon,radius)

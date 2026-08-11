@@ -2,7 +2,7 @@
  *  \file IMP/multifit/protein_anchors_mapping_reader.h
  *  \brief handles reading matches between a protein and its anchors
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -71,7 +71,7 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
 IMPMULTIFITEXPORT
 void write_protein_anchors_mapping(
     const std::string &anchors_prot_map_fn, const std::string &anchors_fn,
-    const std::vector<std::pair<String, String> > &prot_paths);
+    const std::vector<std::pair<String, String>> &prot_paths);
 
 // write the protein anchors mapping
 IMPMULTIFITEXPORT

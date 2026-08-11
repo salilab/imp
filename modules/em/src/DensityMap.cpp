@@ -2,7 +2,7 @@
  *  \file DensityMap.cpp
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -1545,12 +1545,12 @@ algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
 
 DensityMap *create_density_map(algebra::DenseGrid3D<float> &grid) {
   return create_density_map<algebra::DenseGridStorageD<3, float>, float,
-                            algebra::DefaultEmbeddingD<3> >(grid);
+                            algebra::DefaultEmbeddingD<3>>(grid);
 }
 
 DensityMap *create_density_map(algebra::DenseGrid3D<double> &grid) {
   return create_density_map<algebra::DenseGridStorageD<3, double>, double,
-                            algebra::DefaultEmbeddingD<3> >(grid);
+                            algebra::DefaultEmbeddingD<3>>(grid);
 }
 
 DensityMap *get_binarized_interior(DensityMap *dmap) {

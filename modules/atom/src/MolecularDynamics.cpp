@@ -1,7 +1,7 @@
 /**
  *  \file MolecularDynamics.cpp  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -175,7 +175,7 @@ void MolecularDynamics::assign_velocities(Float temperature) {
 
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<RandomNumberGenerator &,
-                           boost::normal_distribution<Float> >
+                           boost::normal_distribution<Float>>
       sampler(random_number_generator, mrng);
 
   for (ParticlesTemp::iterator iter = ps.begin(); iter != ps.end();

@@ -2,7 +2,7 @@
  *  \file IMP/domino/particle_states.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,7 +72,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::Object {
   typedef boost::unordered_map<Particle *,
-                               IMP::PointerMember<ParticleStates> > Map;
+                               IMP::PointerMember<ParticleStates>> Map;
   Map enumerators_;
   friend class DominoSampler;
 

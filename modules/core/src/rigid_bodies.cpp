@@ -829,7 +829,7 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
 
 void show_rigid_body_hierarchy(RigidBody rb, TextOutput out) {
   Model *m = rb.get_model();
-  Vector<boost::tuple<std::string, std::string, ParticleIndex> >
+  Vector<boost::tuple<std::string, std::string, ParticleIndex>>
       queue;
   queue.push_back(
       boost::make_tuple(std::string(), std::string(), rb.get_particle_index()));

@@ -353,7 +353,7 @@ MinimumClassnameRestraint::MinimumClassnameRestraint(
     : Restraint(c->get_model(), name), f_(f), c_(c), n_(n) {}
 
 namespace {
-typedef algebra::internal::MinimalSet<double, INDEXTYPE, std::less<double> >
+typedef algebra::internal::MinimalSet<double, INDEXTYPE, std::less<double>>
     ClassnameMinimumMS;
 template <class C, class F>
 ClassnameMinimumMS find_minimal_set_ClassnameMinimum(C *c, F *f,
@@ -435,7 +435,7 @@ MinimumClassnameScore::MinimumClassnameScore(const ClassnameScoresTemp &scores,
 
 namespace {
 typedef algebra::internal::MinimalSet<
-    double, ClassnameScore *, std::less<double> > MinimumClassnameScoreMS;
+    double, ClassnameScore *, std::less<double>> MinimumClassnameScoreMS;
 template <class It>
 MinimumClassnameScoreMS find_minimal_set_MinimumClassnameScore(It b, It e,
                                                                Model *m,

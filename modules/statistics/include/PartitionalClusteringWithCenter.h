@@ -2,7 +2,7 @@
  *  \file IMP/statistics/PartitionalClusteringWithCenter.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,7 +33,7 @@ class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter
   template <int D>
   PartitionalClusteringWithCenter(
       const IMP::Vector<Ints> &clusters,
-      const IMP::Vector<algebra::VectorD<D> > &centers, const Ints &reps)
+      const IMP::Vector<algebra::VectorD<D>> &centers, const Ints &reps)
       : PartitionalClustering("k-means"),
         clusters_(clusters),
         reps_(reps),

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/multifit/merge_tree_utils.h
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMULTIFIT_MERGE_TREE_UTILS_H
@@ -30,7 +30,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 namespace MTU {
 typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
-                                boost::property<boost::edge_weight_t, double> >
+                                boost::property<boost::edge_weight_t, double>>
     DependencyGraph;
 typedef boost::graph_traits<DependencyGraph>::edge_descriptor DGEdge;
 typedef DependencyGraph::edge_property_type DGWeight;

@@ -31,7 +31,7 @@ struct StorageSelector {
 template <>
 struct StorageSelector<true> {
   typedef algebra::SparseGridStorageD<2, RawOpenCubicSpline,
-                                      algebra::UnboundedGridRangeD<2> > Type;
+                                      algebra::UnboundedGridRangeD<2>> Type;
 };
 
 template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>

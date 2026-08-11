@@ -2,7 +2,7 @@
  *  \file IMP/domino/assignment_tables.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -117,7 +117,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  boost::unordered_map<Subset, IMP::PointerMember<AssignmentContainer> >
+  boost::unordered_map<Subset, IMP::PointerMember<AssignmentContainer>>
       states_;
 
  public:

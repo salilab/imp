@@ -2,7 +2,7 @@
  * \file IMP/atom/HelixRestraint.h
  * \brief Class to maintain helix shape (dihedrals + elastic network)
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! Restraint a set of residues to use ideal helix dihedrals and bonds
 class IMPATOMEXPORT HelixRestraint : public Restraint {
-  IMP::Vector<IMP::PointerMember<core::MultipleBinormalRestraint> > dihedral_rs_;
+  IMP::Vector<IMP::PointerMember<core::MultipleBinormalRestraint>> dihedral_rs_;
   IMP::PointerMember<core::HarmonicDistancePairScore> bond_ON_score_;
   ParticleIndexPairs bonds_ON_;
  public:

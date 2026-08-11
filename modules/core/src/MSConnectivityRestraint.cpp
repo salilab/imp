@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types. It also handles multiple copies of the same particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -314,7 +314,7 @@ bool is_connected(NNGraph &G) {
 }
 }
 
-typedef std::set<std::pair<unsigned int, unsigned int> > EdgeSet;
+typedef std::set<std::pair<unsigned int, unsigned int>> EdgeSet;
 
 class MSConnectivityScore {
  public:
@@ -391,7 +391,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G,
   Ints components(num_vertices(ng));
   int ncomp = boost::connected_components(ng, &components[0]);
   if (ncomp == 1) return;
-  Vector<std::pair<unsigned int, unsigned int> > candidates;
+  Vector<std::pair<unsigned int, unsigned int>> candidates;
   NNGraph::edge_iterator e, end;
   for (boost::tie(e, end) = edges(G); e != end; ++e) {
     unsigned int src = boost::get(vertex_id, source(*e, G));
@@ -621,7 +621,7 @@ NNGraph MSConnectivityScore::find_threshold() const {
          min_dist = restraint_.particle_matrix_.min_distance();
   NNGraph g = create_nn_graph(min_dist);
   {
-    std::set<std::pair<unsigned int, unsigned int> > picked;
+    std::set<std::pair<unsigned int, unsigned int>> picked;
     if (perform_search(g, picked)) {
       return pick_graph(picked);
     }

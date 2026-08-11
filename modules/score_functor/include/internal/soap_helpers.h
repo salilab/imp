@@ -2,7 +2,7 @@
  * \file soap_helpers.h
  * \brief Helper functions for SOAP.
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,7 +40,7 @@ class SoapDoublets {
   typedef std::pair<atom::ResidueType, atom::AtomType> Key;
   typedef std::map<Key, OtherAtoms> DoubletMap;
 
-  typedef std::map<ParticleIndex, std::vector<SoapModelDoublet> > CacheMap;
+  typedef std::map<ParticleIndex, std::vector<SoapModelDoublet>> CacheMap;
 
   DoubletMap doublets_;
 

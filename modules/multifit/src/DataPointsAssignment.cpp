@@ -2,7 +2,7 @@
  *  \file DataPointsAssignment.cpp
  *  \brief Tools for data points assignment, after anchor point segmentation
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -122,7 +122,7 @@ void DataPointsAssignment::set_clusters() {
 
 void DataPointsAssignment::set_edges(double voxel_size) {
   // create projected density maps for each cluster
-  std::vector<Pointer<em::SampledDensityMap> > dmaps;
+  std::vector<Pointer<em::SampledDensityMap>> dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
   Pointer<Model> mdl = new Model();
   for (int i = 0; i < cluster_engine_->get_number_of_clusters(); i++) {
@@ -208,7 +208,7 @@ void write_segment_as_mrc(em::DensityMap *dmap, const DataPointsAssignment &dpa,
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap, int segment_id) {
   algebra::Vector3Ds vecs = dpa.get_cluster_xyz(segment_id);
-  std::vector<std::pair<float, algebra::Vector3D> > data_for_sorting;
+  std::vector<std::pair<float, algebra::Vector3D>> data_for_sorting;
   for (algebra::Vector3Ds::iterator it = vecs.begin(); it != vecs.end(); it++) {
     data_for_sorting.push_back(
         std::pair<float, algebra::Vector3D>(dmap->get_value(*it), *it));
@@ -221,7 +221,7 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       DensGrid *dmap, int segment_id) {
   algebra::Vector3Ds vecs = dpa.get_cluster_xyz(segment_id);
-  std::vector<std::pair<float, algebra::Vector3D> > data_for_sorting;
+  std::vector<std::pair<float, algebra::Vector3D>> data_for_sorting;
   for (algebra::Vector3Ds::iterator it = vecs.begin(); it != vecs.end(); it++) {
     data_for_sorting.push_back(std::pair<float, algebra::Vector3D>(
         (*dmap)[dmap->get_nearest_index(*it)], *it));

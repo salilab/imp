@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,9 +47,9 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 namespace {
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                       boost::undirectedS, boost::no_property,
-                      boost::property<boost::edge_weight_t, double> > Graph;*/
+                      boost::property<boost::edge_weight_t, double>> Graph;*/
 typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
-                                boost::property<boost::edge_weight_t, double> >
+                                boost::property<boost::edge_weight_t, double>>
     Graph;
 typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;

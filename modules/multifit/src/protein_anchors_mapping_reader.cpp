@@ -2,7 +2,7 @@
  *  \file protein_anchors_mapping_reader.cpp
  *  \brief handles reading matches between a protein and its anchors
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -197,11 +197,11 @@ void write_protein_anchors_mapping(const std::string &anchors_prot_map_fn,
 
 void write_protein_anchors_mapping(
     const std::string &anchors_prot_map_fn, const std::string &anchors_fn,
-    const std::vector<std::pair<String, String> > &prot_paths) {
+    const std::vector<std::pair<String, String>> &prot_paths) {
   std::ofstream out;
   out.open(anchors_prot_map_fn.c_str(), std::ios::out);
   out << "|anchors|" << anchors_fn << "|" << std::endl;
-  for (std::vector<std::pair<String, String> >::const_iterator it =
+  for (std::vector<std::pair<String, String>>::const_iterator it =
            prot_paths.begin();
        it != prot_paths.end(); it++) {
     out << "|protein|" << it->first << "|" << it->second << "|" << std::endl;

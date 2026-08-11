@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.cpp
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -1036,7 +1036,7 @@ HierarchyTree get_hierarchy_tree(Hierarchy h) {
   HierarchyTree ret;
   typedef boost::property_map<HierarchyTree, boost::vertex_name_t>::type VM;
   VM vm = boost::get(boost::vertex_name, ret);
-  Vector<std::pair<int, Hierarchy> > queue;
+  Vector<std::pair<int, Hierarchy>> queue;
   int v = boost::add_vertex(ret);
   vm[v] = h;
   queue.push_back(std::make_pair(v, h));

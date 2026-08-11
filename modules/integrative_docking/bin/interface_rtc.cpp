@@ -2,7 +2,7 @@
  *  \file interface_rtc.cpp \brief A program for computing NMR residue
  * type content of a single interface.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/helpers.h>
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     ("version", "Show version info and exit.");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input PDBs");
+    ("input-files", po::value<std::vector<std::string>>(), "input PDBs");
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
   std::string receptor_pdb, ligand_pdb;
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() != 2) {
     std::cout << desc << "\n";

@@ -2,7 +2,7 @@
  * \file soap_bond_separation.h
  * \brief SOAP bond separation filter
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -177,7 +177,7 @@ class SoapBondSeparation {
   bool disulfide_;
   ResidueTypeMap residue_type_map_;
 
-  typedef std::vector<std::pair<Residue, int> > NearbyCys;
+  typedef std::vector<std::pair<Residue, int>> NearbyCys;
   // Get all CYS residues within ssseq residues of the given residue
   NearbyCys get_nearby_cys(Chain chain, int ind, int num_in_chain,
                            int ssseq) const {

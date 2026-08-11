@@ -49,13 +49,13 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   PointerMember<ClassnameContainer> input_;
 #if IMP_CONTAINER_HAS_ROBIN_MAP==1
   typedef tsl::robin_map<int, PLURALINDEXTYPE> t_lists_map;
-  typedef tsl::robin_map<int, PointerMember<ClassnameScore> > t_score_map;
+  typedef tsl::robin_map<int, PointerMember<ClassnameScore>> t_score_map;
 #elif IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
   typedef google::dense_hash_map<int, PLURALINDEXTYPE> t_lists_map;
-  typedef google::dense_hash_map<int, PointerMember<ClassnameScore> > t_score_map;
+  typedef google::dense_hash_map<int, PointerMember<ClassnameScore>> t_score_map;
 #else
   typedef IMP_KERNEL_LARGE_UNORDERED_MAP<int, PLURALINDEXTYPE> t_lists_map;
-  typedef IMP_KERNEL_LARGE_UNORDERED_MAP<int, PointerMember<ClassnameScore> > t_score_map;
+  typedef IMP_KERNEL_LARGE_UNORDERED_MAP<int, PointerMember<ClassnameScore>> t_score_map;
 #endif
   mutable t_lists_map lists_;
   t_score_map scores_;

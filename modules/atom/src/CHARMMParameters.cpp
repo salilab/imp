@@ -2,7 +2,7 @@
  * \file CHARMMParameters \brief access to CHARMMParameters
  *  force field parameters
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/CHARMMParameters.h>
@@ -289,7 +289,7 @@ void parse_patch_line(std::string line, std::string &first, std::string &last,
   }
 }
 
-typedef std::map<Particle *, Vector<IMP::atom::Bond> > BondMap;
+typedef std::map<Particle *, Vector<IMP::atom::Bond>> BondMap;
 
 // Build a simple mapping from Particles to bonds that connect them.
 // Note
@@ -754,7 +754,7 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const {
 }
 
 Vector<std::pair<internal::CHARMMDihedralNames,
-                       CHARMMDihedralParameters> >::const_iterator
+                       CHARMMDihedralParameters>>::const_iterator
 CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
                                 DihedralParameters::const_iterator end,
                                 const internal::CHARMMDihedralNames &dihedral,

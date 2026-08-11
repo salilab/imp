@@ -532,12 +532,12 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   static const char *get_name() { return "restraint load"; }
 
   /** Create all the entities under the passed root.*/
-  Vector<Pointer<Restraint> > create(RMF::NodeConstHandle rt, Model *m) {
+  Vector<Pointer<Restraint>> create(RMF::NodeConstHandle rt, Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
-    Vector<Pointer<Restraint> > ret;
+    Vector<Pointer<Restraint>> ret;
     // Do a first pass to create any particles referenced by restraints.
     // We need to do this as sometimes a restraint will use a particle as
     // a feature before another restraint declares the particle as an input

@@ -1,7 +1,7 @@
 /**
  *  \file saxs_score.cpp \brief A program for SAXS scoring of docking models.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/helpers.h>
@@ -97,7 +97,7 @@ recommended q value is 0.2")("offset,f",
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-      ("input-files", po::value<std::vector<std::string> >(),
+      ("input-files", po::value<std::vector<std::string>>(),
        "input PDB, transformation and profile files");
 
   po::options_description cmdline_options;
@@ -123,7 +123,7 @@ recommended q value is 0.2")("offset,f",
   std::string static_pdb, transformed_pdb, trans_file, dat_file;
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() != 4) {
     std::cout << desc << "\n";
@@ -267,10 +267,10 @@ recommended q value is 0.2")("offset,f",
   out_file.precision(3);
 
   // prepare scoring functions
-  IMP::Pointer<ProfileFitter<ChiScore> > saxs_chi_score;
-  IMP::Pointer<ProfileFitter<RatioVolatilityScore> > saxs_vr_score;
-  IMP::Pointer<WeightedProfileFitter<ChiScore> > weighted_chi_score;
-  IMP::Pointer<WeightedProfileFitter<RatioVolatilityScore> > weighted_vr_score;
+  IMP::Pointer<ProfileFitter<ChiScore>> saxs_chi_score;
+  IMP::Pointer<ProfileFitter<RatioVolatilityScore>> saxs_vr_score;
+  IMP::Pointer<WeightedProfileFitter<ChiScore>> weighted_chi_score;
+  IMP::Pointer<WeightedProfileFitter<RatioVolatilityScore>> weighted_vr_score;
 
   if (weighted_fit) {
     if(vr_score)

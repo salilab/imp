@@ -1,7 +1,7 @@
 /**
  *  \file Atom.cpp   \brief Simple atoms decorator.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -284,7 +284,7 @@ void Representation::show(std::ostream& out) const { out << "Resolutions: " << g
 void show_with_representations(Hierarchy h,
                                std::ostream& stream) {
   // search through tree + representations
-  Vector<boost::tuple<std::string, std::string, Hierarchy> > stack;
+  Vector<boost::tuple<std::string, std::string, Hierarchy>> stack;
   stack.push_back(boost::make_tuple(std::string(), std::string(), h));
   do {
     boost::tuple<std::string, std::string, Hierarchy> &back = stack.back();

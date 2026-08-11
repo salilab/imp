@@ -2,7 +2,7 @@
  *  \file soap_score.cpp \brief A program for scoring of docking models
  *  with SOAP statistical potentials
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,7 +36,7 @@ namespace {
 
 void read_input_file(
     const std::string input_file_name,
-    std::vector<std::pair<std::string, std::string> >& file_names) {
+    std::vector<std::pair<std::string, std::string>>& file_names) {
   std::ifstream input_file(input_file_name.c_str());
   if (!input_file) {
     std::cerr << "Can't find input file " << input_file_name << std::endl;
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     ;
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input PDBs");
+    ("input-files", po::value<std::vector<std::string>>(), "input PDBs");
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
   // parse filenames
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() < 1) {
     std::cout << desc << "\n";
@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
   }
 
   // Option 1: score pairs of PDBs from filenames.txt
-  std::vector<std::pair<std::string, std::string> > file_names;
+  std::vector<std::pair<std::string, std::string>> file_names;
   if (files.size() == 1) {
     read_input_file(files[0], file_names);
 

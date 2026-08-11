@@ -2,7 +2,7 @@
  *  \file VQClustering.cpp
  *  \brief Vector quantization clustering. Based on Wriggers et at, JMB 1998
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -155,7 +155,7 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
 }  // end sampling
 
 void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
-  std::vector<std::vector<int> > closest_center;
+  std::vector<std::vector<int>> closest_center;
   double min_dist, curr_dist;
   int closest_center_ind = 0;
   Array1DD att_sum(Eigen::VectorXd::Zero(dim_));

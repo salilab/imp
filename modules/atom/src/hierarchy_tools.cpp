@@ -2,7 +2,7 @@
  *  \file atom/hierarchy_tools.cpp
  *  \brief A decorator for a point particle that has an electrostatic charge.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -474,7 +474,7 @@ void assign_residues(IMP::atom::Hierarchy in,
                      const IMP::atom::Hierarchies &out) {
   IMP_FUNCTION_LOG;
   IMP_KERNEL_LARGE_UNORDERED_MAP<IMP::atom::Hierarchy,
-                               IMP_KERNEL_SMALL_UNORDERED_SET<int> > indexes;
+                               IMP_KERNEL_SMALL_UNORDERED_SET<int>> indexes;
   for(IMP::atom::Hierarchy l : IMP::atom::get_leaves(in)) {
     IMP::core::XYZR d(l);
     IMP::Ints cur;
@@ -504,7 +504,7 @@ void assign_residues(IMP::atom::Hierarchy in,
     }
     indexes[min].insert(cur.begin(), cur.end());
   }
-  typedef std::pair<IMP::atom::Hierarchy, IMP_KERNEL_SMALL_UNORDERED_SET<int> >
+  typedef std::pair<IMP::atom::Hierarchy, IMP_KERNEL_SMALL_UNORDERED_SET<int>>
       IP;
   for(IP ip : indexes) {
     IMP::atom::Fragment::setup_particle(

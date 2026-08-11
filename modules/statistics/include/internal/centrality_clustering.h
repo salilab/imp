@@ -2,7 +2,7 @@
  *  \file internal/centrality_clustering.h
  *  \brief Clustering
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -31,13 +31,13 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 typedef boost::adjacency_matrix<
     boost::undirectedS, boost::no_property,
     boost::property<boost::edge_weight_t, double,
-                    boost::property<boost::edge_centrality_t, double> > >
+                    boost::property<boost::edge_centrality_t, double>>>
     CentralityGraph;
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
   boost::undirectedS,
   boost::no_property,
   boost::property<boost::edge_weight_t,
-  double> > Graph;*/
+  double>> Graph;*/
 typedef boost::graph_traits<CentralityGraph> CentralityTraits;
 
 IMPSTATISTICSEXPORT PartitionalClustering *get_centrality_clustering(

@@ -2,7 +2,7 @@
  *  \file VelocityScalingOptimizerState.cpp
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,7 +36,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
                      "Simulators (e.g. molecular dynamics).");
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<RandomNumberGenerator &,
-                           boost::normal_distribution<Float> >
+                           boost::normal_distribution<Float>>
       sampler(random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     Particle *p = pis_[i];

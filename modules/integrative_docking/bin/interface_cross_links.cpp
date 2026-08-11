@@ -2,7 +2,7 @@
  *  \file interface_rtc.cpp \brief A program for computing NMR residue
  * type content of a single interface.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/helpers.h>
@@ -34,7 +34,7 @@ void select_cross_links(const std::vector<CrossLink>& cross_links,
                         std::vector<CrossLink>& selected_cross_links) {
   boost::random::uniform_real_distribution<> uni_dist(0, 1);
   boost::variate_generator<IMP::RandomNumberGenerator&,
-        boost::random::uniform_real_distribution<> > uni(
+        boost::random::uniform_real_distribution<>> uni(
                         IMP::random_number_generator, uni_dist);
 
   for (unsigned int i = 0; i < cross_links.size(); i++) {
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
       "output file name, default name cross_links.dat");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input PDBs");
+    ("input-files", po::value<std::vector<std::string>>(), "input PDBs");
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
   std::string receptor_pdb, ligand_pdb;
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() != 3) {
     std::cout << desc << "\n";

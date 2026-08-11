@@ -2,7 +2,7 @@
  *  \file IMP/domino/subset_filters.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -166,7 +166,7 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   ParticlesTemp elements_;
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
-                               boost::vector_property_map<int> > disjoint_sets_;
+                               boost::vector_property_map<int>> disjoint_sets_;
   boost::unordered_map<const Particle *, int> index_;
   mutable Vector<ParticlesTemp> sets_;
   mutable boost::unordered_map<const Particle *, int> set_indexes_;
@@ -254,7 +254,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   boost::unordered_map<Particle *, int> map_;
-  Vector<boost::dynamic_bitset<> > states_;
+  Vector<boost::dynamic_bitset<>> states_;
   Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle *p) const;

@@ -3,7 +3,7 @@
  * \brief Enumeration of an ensemble of good scoring MultiStateModels
  *
  * \authors Dina Schneidman
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -36,10 +36,10 @@ private:
 
   void rescore(Ensemble& ensemble,
                Ensemble& rescored_ensemble,
-               Vector<Vector<saxs::WeightedFitParameters> >& rfps) const;
+               Vector<Vector<saxs::WeightedFitParameters>>& rfps) const;
 
   void output(Ensemble& ensemble,
-              const Vector<Vector<saxs::WeightedFitParameters> >& fps) const;
+              const Vector<Vector<saxs::WeightedFitParameters>>& fps) const;
 
   double get_score(const MultiStateModel& e) const {
     double ret = 0;

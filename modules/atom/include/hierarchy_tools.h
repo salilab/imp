@@ -2,7 +2,7 @@
  *  \file IMP/atom/hierarchy_tools.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_HIERARCHY_TOOLS_H
@@ -180,7 +180,7 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
   mutable boost::unordered_map<Particle *,
-                               Pointer<display::Geometry> > components_;
+                               Pointer<display::Geometry>> components_;
 
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = 0)
@@ -205,7 +205,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
   mutable boost::unordered_map<ParticleIndex,
-                               Pointer<display::Geometry> > components_;
+                               Pointer<display::Geometry>> components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)

@@ -2,7 +2,7 @@
  *  \file CellMover.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra/vector_generators.h>
@@ -79,7 +79,7 @@ core::MonteCarloMoverResult CellMover::do_propose() {
   boost::random::uniform_real_distribution<> rand(0, 1);
   boost::normal_distribution<double> mrng(0, max_translation_);
   boost::variate_generator<IMP::RandomNumberGenerator &,
-                           boost::normal_distribution<double> >
+                           boost::normal_distribution<double>>
       sampler(IMP::random_number_generator, mrng);
 
   // scale decorator

@@ -2,7 +2,7 @@
  * \file em3d_single_score.cpp \brief A program to score a single
  * docking model in PDB file
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/EMFit.h>
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
       "output file name, default name em_fit_pdb.res");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-     ("input-files", po::value<std::vector<std::string> >(),
+     ("input-files", po::value<std::vector<std::string>>(),
       "input PDB, feature points and density map files");
 
   po::options_description cmdline_options;
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
   // read options
   std::vector<std::string> files;
   if (vm.count("input-files"))
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   if (vm.count("help") || files.size() < 2) {
     std::cout << desc << "\n";
     return 0;

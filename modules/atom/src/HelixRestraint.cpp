@@ -2,7 +2,7 @@
  * \file IMP/atom/HelixRestraint.cpp
  * \brief Class to maintain helix shape (dihedrals + elastic network)
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/HelixRestraint.h>
@@ -63,7 +63,7 @@ Float HelixRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   Float score = 0.0;
   Model *m = get_model();
   for (IMP::Vector<IMP::PointerMember<
-         core::MultipleBinormalRestraint> >::const_iterator td = dihedral_rs_.begin();
+         core::MultipleBinormalRestraint>>::const_iterator td = dihedral_rs_.begin();
        td != dihedral_rs_.end(); ++td){
     score += (*td)->unprotected_evaluate(accum);
   }
@@ -79,7 +79,7 @@ ModelObjectsTemp HelixRestraint::do_get_inputs() const {
   ModelObjectsTemp ps;
   Model *m = get_model();
   for (IMP::Vector<IMP::PointerMember<
-         core::MultipleBinormalRestraint> >::const_iterator td = dihedral_rs_.begin();
+         core::MultipleBinormalRestraint>>::const_iterator td = dihedral_rs_.begin();
        td != dihedral_rs_.end(); ++td){
     ModelObjectsTemp bps = (*td)->get_inputs();
     ps.insert(ps.end(), bps.begin(), bps.end());

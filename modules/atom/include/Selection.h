@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.h
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H
@@ -351,7 +351,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable boost::unordered_map<Particle *, Pointer<Geometry> >
+  mutable boost::unordered_map<Particle *, Pointer<Geometry>>
       components_;
 
  public:

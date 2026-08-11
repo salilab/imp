@@ -2,7 +2,7 @@
  *  \file spb_ISD_particles.cpp
  *  \brief SPB ISD particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <map>
@@ -24,10 +24,10 @@ using namespace IMP::spb;
 
 IMPSPB_BEGIN_NAMESPACE
 
-std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles(
+std::map<std::string, IMP::Pointer<Particle>> add_ISD_particles(
     Model *m, RestraintSet *allrs, SPBParameters mydata,
     core::MonteCarloMovers &mvs) {
-  std::map<std::string, IMP::Pointer<Particle> > ISD_ps;
+  std::map<std::string, IMP::Pointer<Particle>> ISD_ps;
   IMP_NEW(NuisanceRangeModifier, nrm, ());
 
   if (mydata.add_fret) {

@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -164,7 +164,7 @@ recommended q value is 0.2")
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value< std::vector<std::string> >(),
+    ("input-files", po::value< std::vector<std::string>>(),
      "input profile files")
     ;
 
@@ -185,7 +185,7 @@ recommended q value is 0.2")
 
   std::vector<std::string> files;
   if(vm.count("input-files")) {
-    files = vm["input-files"].as< std::vector<std::string> >();
+    files = vm["input-files"].as< std::vector<std::string>>();
   }
   if(vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";

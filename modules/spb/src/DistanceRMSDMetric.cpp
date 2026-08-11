@@ -2,7 +2,7 @@
  *  \file DistanceRMSDMetric.cpp
  *  \brief Distance RMSD Metric with PBC and identical particles
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <boost/property_map/property_map.hpp>
@@ -36,7 +36,7 @@ void DistanceRMSDMetric::initialize(Ints align) {
   types.erase(std::unique(types.begin(), types.end()), types.end());
 
   // list of pair types
-  std::vector<std::pair<int, int> > pair_types;
+  std::vector<std::pair<int, int>> pair_types;
   for (unsigned i = 0; i < types.size(); ++i) {
     for (unsigned j = i; j < types.size(); ++j) {
       pair_types.push_back(std::pair<int, int>(types[i], types[j]));
@@ -44,7 +44,7 @@ void DistanceRMSDMetric::initialize(Ints align) {
   }
 
   // list of particles pairs = number of entries in distance map
-  std::vector<std::pair<int, int> > pairs;
+  std::vector<std::pair<int, int>> pairs;
   for (unsigned i = 0; i < align.size() - 1; ++i) {
     for (unsigned j = i + 1; j < align.size(); ++j) {
       pairs.push_back(std::pair<int, int>(align[i], align[j]));

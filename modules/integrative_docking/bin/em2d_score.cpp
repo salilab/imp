@@ -2,7 +2,7 @@
  * \file em2d_score.cpp \brief A program to score docking models given a list
  * of transformations for a ligand
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -65,7 +65,7 @@ CA atoms only (default = false)")(
       "output file name, default name em2d_score.res");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-     ("input-files", po::value<std::vector<std::string> >(),
+     ("input-files", po::value<std::vector<std::string>>(),
       "input PDB and image files");
 
   po::options_description cmdline_options;
@@ -94,7 +94,7 @@ CA atoms only (default = false)")(
   if (vm.count("ca-only")) residue_level = true;
   if (vm.count("input-files")) {
     std::vector<std::string> files =
-        vm["input-files"].as<std::vector<std::string> >();
+        vm["input-files"].as<std::vector<std::string>>();
     if (files.size() < 4) {
       std::cout << desc << "\n";
       return 0;
@@ -153,7 +153,7 @@ CA atoms only (default = false)")(
   read_trans_file(trans_file, transforms);
 
   // read images
-  std::vector<IMP::em2d::internal::Image2D<> > images(image_files.size());
+  std::vector<IMP::em2d::internal::Image2D<>> images(image_files.size());
   double max_distance = 0.0;
   for (unsigned int i = 0; i < image_files.size(); i++) {
     images[i].read_PGM(image_files[i]);

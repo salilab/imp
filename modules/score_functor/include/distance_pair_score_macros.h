@@ -3,7 +3,7 @@
  *  \brief Various important macros
  *                           for implementing decorators.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,7 +50,7 @@
     friend class cereal::access;                                       \
     template<class Archive> void serialize(Archive &ar) {              \
       ar(cereal::base_class<                                           \
-          IMP::score_functor::DistancePairScore<Functor> >(this));     \
+          IMP::score_functor::DistancePairScore<Functor>>(this));      \
     }                                                                  \
     IMP_OBJECT_SERIALIZE_DECL(Name);                                   \
                                                                        \
