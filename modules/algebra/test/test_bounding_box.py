@@ -27,15 +27,18 @@ class Tests(IMP.test.TestCase):
             v = IMP.algebra.get_random_vector_in(small_box)
             points.append(v)
         bb = IMP.algebra.BoundingBox3D(points)
-        self.assertAlmostEqual(IMP.algebra.get_distance(
-            bb.get_corner(0), IMP.algebra.Vector3D(0, 0, 0)), 0.001, places=1)
-        self.assertAlmostEqual(
+        self.assertLess(
+            IMP.algebra.get_distance(bb.get_corner(0),
+                                     IMP.algebra.Vector3D(0, 0, 0)), 0.001)
+        self.assertLess(
             IMP.algebra.get_distance(bb.get_corner(1),
-                                     IMP.algebra.Vector3D(10,
-                                                          10,
-                                                          10)),
-            0.001,
-            places=1)
+                                     IMP.algebra.Vector3D(10, 10, 10)), 0.001)
+        self.assertLess(
+            IMP.algebra.get_distance(bb.get_corner(0), bb.get_corner_0()),
+            0.001)
+        self.assertLess(
+            IMP.algebra.get_distance(bb.get_corner(1), bb.get_corner_1()),
+            0.001)
 
     def test_bounding_box_union(self):
         """Check the union function"""
