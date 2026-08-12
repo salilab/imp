@@ -106,7 +106,7 @@ class IsCollisionPairPredicate : public PairPredicate {
 template <class Predicate, class Score = SingletonScore>
 class PredicateSingletonScore : public SingletonScore {
   PointerMember<Predicate> pred_;
-  Vector<PointerMember<Score> > scores_;
+  Vector<PointerMember<Score>> scores_;
   int offset_;
   Score *get_score(int val) const {
     if (val < offset_ || val > scores_.size() + offset_) {
@@ -153,7 +153,7 @@ inline double PredicateSingletonScore<Predicate, Score>::evaluate_index(
 template <class Predicate, class Score>
 inline PredicateSingletonScore<Predicate, Score> *
 create_predicates_singleton_score(Predicate *pred, int val, Score *score) {
-  Pointer<PredicateSingletonScore<Predicate, Score> > ret =
+  Pointer<PredicateSingletonScore<Predicate, Score>> ret =
       new PredicateSingletonScore<Predicate, Score>(pred);
   ret->set_score(val, score);
   return ret;

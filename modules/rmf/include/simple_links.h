@@ -30,7 +30,7 @@ IMPRMF_BEGIN_NAMESPACE
 */
 template <class O>
 class SimpleLoadLink : public LoadLink {
-  Vector<Pointer<O> > os_;
+  Vector<Pointer<O>> os_;
   RMF::NodeIDs nhs_;
 
  protected:
@@ -57,12 +57,12 @@ class SimpleLoadLink : public LoadLink {
 
  public:
   /** Create all the entities under the passed root.*/
-  Vector<Pointer<O> > create(RMF::NodeConstHandle rt) {
+  Vector<Pointer<O>> create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating IMP objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
-    Vector<Pointer<O> > ret;
+    Vector<Pointer<O>> ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
       IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
@@ -77,13 +77,13 @@ class SimpleLoadLink : public LoadLink {
   }
 
   /** Create all the entities under the passed root.*/
-  Vector<Pointer<O> > create(RMF::NodeConstHandle rt,
+  Vector<Pointer<O>> create(RMF::NodeConstHandle rt,
                                          Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
-    Vector<Pointer<O> > ret;
+    Vector<Pointer<O>> ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
       IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
@@ -98,7 +98,7 @@ class SimpleLoadLink : public LoadLink {
   }
 
   void link(RMF::NodeConstHandle rt,
-            const Vector<Pointer<O> > &ps) {
+            const Vector<Pointer<O>> &ps) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Linking " << rt << " to " << ps << std::endl);
 
@@ -130,7 +130,7 @@ class SimpleLoadLink : public LoadLink {
 */
 template <class O>
 class SimpleSaveLink : public SaveLink {
-  Vector<Pointer<O> > os_;
+  Vector<Pointer<O>> os_;
   RMF::NodeIDs nhs_;
 
  protected:
@@ -154,7 +154,7 @@ class SimpleSaveLink : public SaveLink {
   SimpleSaveLink(std::string name) : SaveLink(name) {}
 
  public:
-  void add(RMF::NodeHandle parent, const Vector<Pointer<O> > &os) {
+  void add(RMF::NodeHandle parent, const Vector<Pointer<O>> &os) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();

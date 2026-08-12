@@ -43,7 +43,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     // Accessors
     const DOFValues& get_DOFValues() const { return vec_; }
 
-    const std::vector<std::pair<const RRTNode*, float> >& get_edges() const {
+    const std::vector<std::pair<const RRTNode*, float>>& get_edges() const {
       return edges_;
     }
 
@@ -76,7 +76,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
    private:
     const DOFValues vec_;
     // a node and a distance between two dofs
-    std::vector<std::pair<const RRTNode*, float> > edges_;
+    std::vector<std::pair<const RRTNode*, float>> edges_;
     int id_;
     float score_;
     static int node_counter_;

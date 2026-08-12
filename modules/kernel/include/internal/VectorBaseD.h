@@ -283,7 +283,7 @@ inline VT get_unit_vector(VT vt) {
     // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
     //       (2) D might be -1, so use get_dimension()
     static boost::variate_generator<RandomNumberGenerator,
-      boost::normal_distribution<> >
+      boost::normal_distribution<>>
       generator(IMP::random_number_generator,
                 ::boost::normal_distribution<>(0, 1.0));
     for (unsigned int i = 0; i < vt.get_dimension(); ++i) {

@@ -28,7 +28,7 @@ core::MonteCarloMoverResult RevoluteJointMover::do_propose() {
   IMP_OBJECT_LOG;
   boost::normal_distribution<double> mrng(0, stddev_);
   boost::variate_generator<RandomNumberGenerator &,
-                           boost::normal_distribution<double> >
+                           boost::normal_distribution<double>>
       sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0; i < joints_.size(); ++i) {

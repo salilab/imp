@@ -40,7 +40,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
 
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
-                IMP::internal::ListLikeContainer<PairContainer> >(this),
+                IMP::internal::ListLikeContainer<PairContainer>>(this),
        c_, cpf_, moved_count_, first_call_, distance_, slack_, updates_,
        rebuilds_, partial_rebuilds_, mutable_access_pair_filters());
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {

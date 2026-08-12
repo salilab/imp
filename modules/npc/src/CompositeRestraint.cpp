@@ -31,7 +31,7 @@ namespace {
   /* Graph type used for the original fully-connected graph */
   typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
                                   boost::property<boost::edge_weight_t,
-                                                  double> > FullGraph;
+                                                  double>> FullGraph;
   typedef boost::property_map<FullGraph, boost::edge_weight_t>::type
                                                  FullGraphWeightMap;
   typedef boost::graph_traits<FullGraph>::edge_descriptor FullGraphEdge;
@@ -41,7 +41,7 @@ namespace {
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                 boost::undirectedS, boost::no_property,
                                 boost::property<boost::edge_weight_t,
-                                                double> > Graph;
+                                                double>> Graph;
   typedef boost::property_map<Graph, boost::edge_weight_t>::type
                                                  WeightMap;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;

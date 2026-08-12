@@ -42,7 +42,7 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
 
  private:
   //  boost::mt19937 rng_; // init random number generator
-  mutable std::vector<boost::random::uniform_real_distribution<> > u_rand_;
+  mutable std::vector<boost::random::uniform_real_distribution<>> u_rand_;
   DihedralAngleRevoluteJoints joints_;
 };
 

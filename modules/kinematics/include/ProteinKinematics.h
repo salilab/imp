@@ -348,7 +348,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
     // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;
 
-  boost::unordered_map<int, boost::unordered_map<int, Pointer<DihedralAngleRevoluteJoint> > > rigid_bodies_2_joint_map_;
+  boost::unordered_map<int, boost::unordered_map<int, Pointer<DihedralAngleRevoluteJoint>>> rigid_bodies_2_joint_map_;
 
   DihedralAngleRevoluteJoints loop_joints_;
 };

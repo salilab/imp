@@ -370,7 +370,7 @@ void ProteinKinematics::build_rigid_bodies() {
   unsigned int num = boost::connected_components(graph_, &component[0]);
 
   // store the atoms of each rigid body using node index
-  std::vector<std::vector<int> > rigid_bodies_atoms(num);
+  std::vector<std::vector<int>> rigid_bodies_atoms(num);
   for (unsigned int i = 0; i < component.size(); i++) {
     rigid_bodies_atoms[component[i]].push_back(i);
   }

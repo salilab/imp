@@ -34,7 +34,7 @@ extern IMPKERNELEXPORT boost::program_options::variables_map variables_map;
 extern IMPKERNELEXPORT AdvancedFlag<CheckLevel, IMP_HAS_CHECKS != IMP_NONE>
     check_level;
 #if !IMP_KERNEL_HAS_LOG4CXX
-extern IMPKERNELEXPORT Vector<std::pair<const char *, const void *> >
+extern IMPKERNELEXPORT Vector<std::pair<const char *, const void *>>
     log_contexts;
 extern IMPKERNELEXPORT int log_context_initializeds;
 extern IMPKERNELEXPORT unsigned int log_indent;

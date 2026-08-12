@@ -139,11 +139,11 @@ FormFactorTable::FormFactorTable(const std::string& table_name, double min_q,
         algebra::get_rounded((max_q_ - min_q_) / delta_q_) + 1;
     Vector<double> form_factor_template(number_of_q_entries, 0.0);
     form_factors_ =
-        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
+        Vector<Vector<double>>(HEAVY_ATOM_SIZE, form_factor_template);
     vacuum_form_factors_ =
-        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
+        Vector<Vector<double>>(HEAVY_ATOM_SIZE, form_factor_template);
     dummy_form_factors_ =
-        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
+        Vector<Vector<double>>(HEAVY_ATOM_SIZE, form_factor_template);
 
     // compute all the form factors
     compute_form_factors_all_atoms();

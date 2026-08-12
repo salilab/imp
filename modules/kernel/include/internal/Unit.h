@@ -61,27 +61,27 @@ namespace pl = boost::mpl::placeholders;
  */
 template <class UA, class UB>
 struct Divide {
-  typedef typename transform<UA, UB, minus<pl::_1, pl::_2> >::type type;
+  typedef typename transform<UA, UB, minus<pl::_1, pl::_2>>::type type;
 };
 
 template <class UA>
 struct Inverse {
-  typedef typename transform<UA, minus<int_<0>, pl::_1> >::type type;
+  typedef typename transform<UA, minus<int_<0>, pl::_1>>::type type;
 };
 
 template <class UA, class UB>
 struct Multiply {
-  typedef typename transform<UA, UB, plus<pl::_1, pl::_2> >::type type;
+  typedef typename transform<UA, UB, plus<pl::_1, pl::_2>>::type type;
 };
 
 template <class UA>
 struct Sqrt {
-  typedef typename transform<UA, divides<pl::_1, int_<2> > >::type type;
+  typedef typename transform<UA, divides<pl::_1, int_<2>>>::type type;
 };
 
 template <class UA, class UB>
 struct Exponentiate {
-  typedef typename transform<UA, UB, multiplies<pl::_1, pl::_2> >::type type;
+  typedef typename transform<UA, UB, multiplies<pl::_1, pl::_2>>::type type;
 };
 
 template <class InputVector, int SZ>
@@ -101,37 +101,37 @@ struct DoNormalize<InputVector, 0> {
 
 template <class InputVector>
 struct DoNormalize<InputVector, 1> {
-  typedef vector_c<int, at<InputVector, int_<0> >::type::value> type;
+  typedef vector_c<int, at<InputVector, int_<0>>::type::value> type;
 };
 
 template <class InputVector>
 struct DoNormalize<InputVector, 2> {
-  typedef vector_c<int, at<InputVector, int_<0> >::type::value,
-                   at<InputVector, int_<1> >::type::value> type;
+  typedef vector_c<int, at<InputVector, int_<0>>::type::value,
+                   at<InputVector, int_<1>>::type::value> type;
 };
 
 template <class InputVector>
 struct DoNormalize<InputVector, 3> {
-  typedef vector_c<int, at<InputVector, int_<0> >::type::value,
-                   at<InputVector, int_<1> >::type::value,
-                   at<InputVector, int_<2> >::type::value> type;
+  typedef vector_c<int, at<InputVector, int_<0>>::type::value,
+                   at<InputVector, int_<1>>::type::value,
+                   at<InputVector, int_<2>>::type::value> type;
 };
 
 template <class InputVector>
 struct DoNormalize<InputVector, 4> {
-  typedef vector_c<int, at<InputVector, int_<0> >::type::value,
-                   at<InputVector, int_<1> >::type::value,
-                   at<InputVector, int_<2> >::type::value,
-                   at<InputVector, int_<3> >::type::value> type;
+  typedef vector_c<int, at<InputVector, int_<0>>::type::value,
+                   at<InputVector, int_<1>>::type::value,
+                   at<InputVector, int_<2>>::type::value,
+                   at<InputVector, int_<3>>::type::value> type;
 };
 
 template <class InputVector>
 struct DoNormalize<InputVector, 5> {
-  typedef vector_c<int, at<InputVector, int_<0> >::type::value,
-                   at<InputVector, int_<1> >::type::value,
-                   at<InputVector, int_<2> >::type::value,
-                   at<InputVector, int_<3> >::type::value,
-                   at<InputVector, int_<4> >::type::value> type;
+  typedef vector_c<int, at<InputVector, int_<0>>::type::value,
+                   at<InputVector, int_<1>>::type::value,
+                   at<InputVector, int_<2>>::type::value,
+                   at<InputVector, int_<3>>::type::value,
+                   at<InputVector, int_<4>>::type::value> type;
 };
 
 template <class InputVector>
@@ -147,7 +147,7 @@ struct PrintUnits {
 
   void operator()(std::ostream &out) const {
     std::string str = get_unit_name<Tag>(O);
-    int e = boost::mpl::at<Units, typename boost::mpl::int_<O> >::type::value;
+    int e = boost::mpl::at<Units, typename boost::mpl::int_<O>>::type::value;
     if (e != 0) {
       out << " " << str;
       if (e != 1) {
@@ -166,7 +166,7 @@ struct PrintUnits<Tag, O, O, Units> {
 
 //! \internal Specializaton for singleton units
 template <class Tag, int O>
-struct PrintUnits<Tag, O, O, boost::mpl::vector_c<int> > {
+struct PrintUnits<Tag, O, O, boost::mpl::vector_c<int>> {
   void operator()(std::ostream &out) const {
     std::string str = get_unit_name<Tag>(O);
     out << " " << str;
@@ -179,7 +179,7 @@ struct IsNoUnits {
   typedef IsNoUnits<O + 1, SZ, Units> Next;
   static const bool value =
       Next::value &&
-      !(boost::mpl::at<Units, typename boost::mpl::int_<O> >::type::value);
+      !(boost::mpl::at<Units, typename boost::mpl::int_<O>>::type::value);
 };
 
 template <int O, class Units>
@@ -323,9 +323,9 @@ inline Unit<Tag, EXP / 2, typename internal::Sqrt<Units>::type> sqrt(
 /** \internal
  */
 template <class Tag, int EXP, class Units>
-inline typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type
+inline typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units>>::type
 square(Unit<Tag, EXP, Units> o) {
-  return typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units> >::type(
+  return typename Multiply<Unit<Tag, EXP, Units>, Unit<Tag, EXP, Units>>::type(
       ::IMP::square(o.get_value()));
 }
 
@@ -345,18 +345,18 @@ inline Unit<Tag, EXP, Units> operator*(int d, Unit<Tag, EXP, Units> o) {
 
 template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
 inline typename Multiply<Unit<Tag, EXP0, Units0>,
-                         Unit<Tag, EXP1, Units1> >::type
+                         Unit<Tag, EXP1, Units1>>::type
 operator*(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
   return typename Multiply<Unit<Tag, EXP0, Units0>,
-                           Unit<Tag, EXP1, Units1> >::type(a.get_value() *
+                           Unit<Tag, EXP1, Units1>>::type(a.get_value() *
                                                            b.get_value());
 }
 
 template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
-inline typename Divide<Unit<Tag, EXP0, Units0>, Unit<Tag, EXP1, Units1> >::type
+inline typename Divide<Unit<Tag, EXP0, Units0>, Unit<Tag, EXP1, Units1>>::type
 operator/(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
   return typename Divide<Unit<Tag, EXP0, Units0>,
-                         Unit<Tag, EXP1, Units1> >::type(a.get_value() /
+                         Unit<Tag, EXP1, Units1>>::type(a.get_value() /
                                                          b.get_value());
 }
 
@@ -366,9 +366,9 @@ inline Unit<Tag, EXP, Units> operator/(Unit<Tag, EXP, Units> o, double d) {
 }
 
 template <class Tag, int EXP, class Units>
-inline typename Inverse<Unit<Tag, EXP, Units> >::type operator/(
+inline typename Inverse<Unit<Tag, EXP, Units>>::type operator/(
     double d, Unit<Tag, EXP, Units> o) {
-  return typename Inverse<Unit<Tag, EXP, Units> >::type(d / o.get_value());
+  return typename Inverse<Unit<Tag, EXP, Units>>::type(d / o.get_value());
 }
 
 template <class Tag, int EXP, int EXP2, class Units>

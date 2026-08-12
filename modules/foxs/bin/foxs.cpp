@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
   float pr_dmax = 0.0;
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(),
+    ("input-files", po::value<std::vector<std::string>>(),
      "input PDB and profile files")
     ("form_factor_table,f", po::value<std::string>(&form_factor_table_file),
      "ff table name")
@@ -125,7 +125,7 @@ constant form factor (default = false)")
   bool fit = true;
   std::vector<std::string> files, pdb_files, dat_files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";

@@ -144,7 +144,7 @@ Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   // dmdm.resize(0,0); // free up some space
 
   // d2E/(dOm_kl dOm_mn) * dOm_kl/dTheta_i * dOm_mn/dTheta_j
-  std::vector<std::vector<Eigen::MatrixXd> > dodo;
+  std::vector<std::vector<Eigen::MatrixXd>> dodo;
   //  get values
   for (unsigned m = 0; m < M_; ++m)  // row of second matrix
   {

@@ -57,11 +57,11 @@ int main(int argc, char *argv[]) {
   //
   // ISD PARTICLES
   //
-  std::map<std::string, IMP::Pointer<Particle> > ISD_ps =
+  std::map<std::string, IMP::Pointer<Particle>> ISD_ps =
       add_ISD_particles(m, allrs, mydata, mvs);
   // create list of particles from map
   Particles ISD_ps_list;
-  std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
+  std::map<std::string, IMP::Pointer<Particle>>::iterator itr;
   for (itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr) {
     ISD_ps_list.push_back((*itr).second);
   }

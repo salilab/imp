@@ -37,7 +37,7 @@ use 0.8 for elongated proteins")
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input files");
+    ("input-files", po::value<std::vector<std::string>>(), "input files");
 
   po::options_description allopt;
   allopt.add(desc).add(hidden);
@@ -57,7 +57,7 @@ use 0.8 for elongated proteins")
 
   std::vector<std::string> files, pdb_files, dat_files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";

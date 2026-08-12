@@ -69,7 +69,7 @@ void read_pdb(const std::string file,
 
 void read_filenames(const std::string filenames_file,
                     std::vector<std::pair<double,
-                                          std::string> >& file_name_score_pairs) {
+                                          std::string>>& file_name_score_pairs) {
   // open input file with profile file names
   std::ifstream in_file(filenames_file.c_str());
   if(!in_file) {
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
     desc("Usage: <filenames> <pdb_file1> <pdb_file2> ...");
   desc.add_options()
     ("help", "filenames file includes filenames and their scores")
-    ("input-files", po::value< std::vector<std::string> >(),
+    ("input-files", po::value< std::vector<std::string>>(),
      "input profile files")
     ("rmsd-threshold,r", po::value<float>(&rmsd_threshold)->default_value(2.0),
      "rmsd threshold for structure similarity (default = 2.0)")
@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
 
   std::vector<std::string> files;
   if(vm.count("input-files")) {
-    files = vm["input-files"].as< std::vector<std::string> >();
+    files = vm["input-files"].as< std::vector<std::string>>();
   }
   if(vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";
@@ -138,7 +138,7 @@ int main(int argc, char* argv[]) {
   if (vm.count("transformation")) transformation = false;
 
   // read the scores
-  std::vector<std::pair<double, std::string> > file_name_score_pairs;
+  std::vector<std::pair<double, std::string>> file_name_score_pairs;
   read_filenames(files[0], file_name_score_pairs);
   std::sort(file_name_score_pairs.begin(), file_name_score_pairs.end());
 

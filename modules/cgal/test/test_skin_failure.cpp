@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
               << " " << .9 << std::endl;
   }
   CGAL::Polyhedron_3<IKernel> p;
-  CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel> > skin_surface(
+  CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel>> skin_surface(
       l.begin(), l.end());
   // CGAL::mesh_skin_surface_3(skin_surface, p);
   return 0;

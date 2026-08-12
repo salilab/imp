@@ -31,10 +31,10 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
   const_cast<ChiFreeScore*>(this)->last_scale_updated_ = false;
   boost::random::uniform_real_distribution<> uni_dist(0, 1);
   boost::variate_generator<IMP::RandomNumberGenerator&,
-       boost::random::uniform_real_distribution<> > uni(
+       boost::random::uniform_real_distribution<>> uni(
                                IMP::random_number_generator, uni_dist);
 
-  Vector<std::pair<double, double> > chis(K_);
+  Vector<std::pair<double, double>> chis(K_);
   unsigned int bin_size = std::floor((double)exp_profile->size()) / ns_;
 
 

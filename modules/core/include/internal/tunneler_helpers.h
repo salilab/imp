@@ -76,7 +76,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     typedef std::vector<Eigen::Vector3d> com_type;
     com_type coms;
     typedef std::vector<Eigen::Quaterniond,
-            Eigen::aligned_allocator<Eigen::Quaterniond> > quats_type;
+            Eigen::aligned_allocator<Eigen::Quaterniond>> quats_type;
     quats_type quats;
     Coord() {}
     explicit Coord(Floats);

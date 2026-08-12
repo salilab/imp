@@ -293,7 +293,7 @@ GaussianProcessInterpolation::get_posterior_covariance_hessian(Floats x) const {
     if (Oopt[i]) dOmdp.push_back(get_Omega_derivative(i));
   }
   // add d2cov/(dOm_kl * dOm_mn) * dOm^kl/dp_i * dOm^mn/dp_j
-  std::vector<std::vector<Eigen::MatrixXd> > d2covdo;
+  std::vector<std::vector<Eigen::MatrixXd>> d2covdo;
   for (unsigned m = 0; m < M_; m++) {
     std::vector<Eigen::MatrixXd> tmp;
     for (unsigned n = 0; n < M_; n++) tmp.push_back(get_d2cov_dOm_dOm(x, m, n));

@@ -424,7 +424,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   }
   IMP_LOG_VERBOSE("Equation (39)" << std::endl);
   // implementation of equation (39) E^{BB}_{ij}
-  std::vector<std::vector<double> > E_bb(num_res);
+  std::vector<std::vector<double>> E_bb(num_res);
   for (size_t i = 0; i != num_res; ++i) {
     IMP_LOG_VERBOSE("Processing residue " << i << " out of " << num_res
                                           << std::endl);
@@ -463,8 +463,8 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   }
 
   // now we are ready to compute eq. (41) and (42)
-  std::vector<std::vector<double> > E_P(num_res);
-  std::vector<std::vector<double> > q(num_res);
+  std::vector<std::vector<double>> E_P(num_res);
+  std::vector<std::vector<double>> q(num_res);
   for (size_t i = 0; i != num_res; ++i) {
     E_P[i].resize(rotamers[i].get_size());
     q[i].resize(rotamers[i].get_size());

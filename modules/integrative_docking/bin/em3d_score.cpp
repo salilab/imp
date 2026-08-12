@@ -52,7 +52,7 @@ otherwise use cross correlation")(
       "output file name, default name em3d_score.res");
   po::options_description hidden("Hidden options");
   hidden.add_options()
-     ("input-files", po::value<std::vector<std::string> >(),
+     ("input-files", po::value<std::vector<std::string>>(),
       "input PDB, feature points and density map files");
 
   po::options_description cmdline_options;
@@ -76,7 +76,7 @@ otherwise use cross correlation")(
   // read options
   std::vector<std::string> files;
   if (vm.count("input-files"))
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   if (vm.count("help") || files.size() != 4) {
     std::cout << desc << "\n";
     return 0;

@@ -45,7 +45,7 @@ class IMPISDEXPORT FretRestraint : public Restraint {
   Floats GMMw_;
   unsigned Na_;
   mutable Floats power6_;
-  std::vector<std::vector<unsigned> > states_;
+  std::vector<std::vector<unsigned>> states_;
 
   friend class cereal::access;
 

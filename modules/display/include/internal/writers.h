@@ -33,7 +33,7 @@ class WriterFactoryHelper : public WriterFactory {
   }
 };
 
-std::map<std::string, std::shared_ptr<WriterFactory> > &
+std::map<std::string, std::shared_ptr<WriterFactory>> &
     get_writer_factory_table();
 
 struct WriterFactoryRegistrar {

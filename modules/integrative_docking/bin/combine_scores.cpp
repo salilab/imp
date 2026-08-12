@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     }
 
     // read files
-    std::vector<std::vector<Result> > results((argc - 1) / 2);
+    std::vector<std::vector<Result>> results((argc - 1) / 2);
     std::vector<float> weights;
     for (int i = 1; i < argc; i += 2) {
       int trans_num = read_results_file(argv[i], results[(i - 1) / 2]);

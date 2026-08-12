@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 /** Store the lowest n items seen so far.
  */
-template <class Score, class Data, class Less = std::less<Score> >
+template <class Score, class Data, class Less = std::less<Score>>
 class MinimalSet {
   unsigned int n_;
   typedef std::pair<Score, Data> MP;

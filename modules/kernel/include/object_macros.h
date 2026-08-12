@@ -43,9 +43,9 @@
  */
 #define IMP_OBJECTS(Name, PluralName)                              \
   /** A vector of reference-counting object pointers.*/                                    \
-  typedef IMP::Vector<IMP::Pointer<Name> > PluralName; \
+  typedef IMP::Vector<IMP::Pointer<Name>> PluralName; \
   /** A vector of weak (non reference-counting) pointers to specified objects. \see Name */                          \
-  typedef IMP::Vector<IMP::WeakPointer<Name> > PluralName##Temp;
+  typedef IMP::Vector<IMP::WeakPointer<Name>> PluralName##Temp;
 
 //! Typedefs a default instantiation for a generic (templated) object 
 /**

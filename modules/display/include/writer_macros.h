@@ -45,7 +45,7 @@
 #define IMP_REGISTER_WRITER(Name, suffix)                                  \
   namespace {                                                              \
   internal::WriterFactoryRegistrar Name##registrar(                        \
-      suffix, std::make_shared<internal::WriterFactoryHelper<Name> >()); \
+      suffix, std::make_shared<internal::WriterFactoryHelper<Name>>()); \
   }
 #endif
 

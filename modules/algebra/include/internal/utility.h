@@ -16,7 +16,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
 inline Eigen::MatrixXd get_covariance_matrix(
-    const Vector<VectorD<D> >& vs, const VectorD<D>& mean) {
+    const Vector<VectorD<D>>& vs, const VectorD<D>& mean) {
   unsigned int dim = mean.get_dimension();
   Eigen::MatrixXd cov(Eigen::MatrixXd::Zero(dim, dim));
   // calculate variance

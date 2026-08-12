@@ -73,7 +73,7 @@ class NearestNeighborD : public IMP::Object {
       : Object("NearestNeighbor%1%"), data_(b, e), eps_(epsilon) {
     instantiate(b, e);
   }
-  NearestNeighborD(const Vector<VectorD<D> > &vs, double epsilon = 0)
+  NearestNeighborD(const Vector<VectorD<D>> &vs, double epsilon = 0)
       : Object("NearestNeighbor%1%"),
         data_(vs.begin(), vs.end()),
         eps_(epsilon) {
@@ -183,8 +183,8 @@ typedef NearestNeighborD<-1> NearestNeighborKD;
     Later this can support balls by copying points multiple times.
  */
 class IMPALGEBRAEXPORT DynamicNearestNeighbor3D : public Object {
-  typedef GridD<3, SparseGridStorageD<3, Ints, UnboundedGridRangeD<3> >, Ints,
-                DefaultEmbeddingD<3> > Grid;
+  typedef GridD<3, SparseGridStorageD<3, Ints, UnboundedGridRangeD<3>>, Ints,
+                DefaultEmbeddingD<3>> Grid;
   Grid grid_;
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;

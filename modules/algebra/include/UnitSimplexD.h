@@ -127,8 +127,8 @@ IMP_VALUES(UnitSimplexKD, UnitSimplexKDs);
 
 //! Return a list of the vertices (bases) of the unit simplex.
 template <int D>
-inline Vector<VectorD<D> > get_vertices(const UnitSimplexD<D> &s) {
-  Vector<VectorD<D> > ret;
+inline Vector<VectorD<D>> get_vertices(const UnitSimplexD<D> &s) {
+  Vector<VectorD<D>> ret;
   int d = s.get_dimension();
   for (int i = 0; i < d; ++i)
     ret.push_back(get_basis_vector_kd<D>(d, i));

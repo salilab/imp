@@ -15,13 +15,13 @@
 
 IMPSPB_BEGIN_NAMESPACE
 
-IMPSPBEXPORT std::map<std::string, IMP::Pointer<RestraintSet> >
+IMPSPBEXPORT std::map<std::string, IMP::Pointer<RestraintSet>>
 spb_assemble_restraints(Model *m, RestraintSet *allrs,
                         spb::SPBParameters &myparam,
                         atom::Hierarchies &all_mol,
                         container::ListSingletonContainer *CP_ps,
                         container::ListSingletonContainer *IL2_ps,
-                        std::map<std::string, IMP::Pointer<Particle> > ISD_ps);
+                        std::map<std::string, IMP::Pointer<Particle>> ISD_ps);
 
 IMPSPB_END_NAMESPACE
 

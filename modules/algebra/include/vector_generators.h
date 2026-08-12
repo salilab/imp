@@ -113,7 +113,7 @@ inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
     \see SphereD
     */
 template <int D>
-inline Vector<VectorD<D> > get_uniform_surface_cover(const SphereD<D> &s,
+inline Vector<VectorD<D>> get_uniform_surface_cover(const SphereD<D> &s,
                                                            unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(), s.get_radius(),
                                         true);
@@ -131,7 +131,7 @@ IMPALGEBRAEXPORT Vector3Ds
     z coordinates are greater than those of the center of the sphere.
  */
 template <int D>
-inline Vector<VectorD<D> > get_uniform_upper_hemisphere_cover(
+inline Vector<VectorD<D>> get_uniform_upper_hemisphere_cover(
     const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(), s.get_radius(),
                                         false);
@@ -176,7 +176,7 @@ IMPALGEBRAEXPORT Vector3Ds
     list of centers of the cubes.
  */
 template <int D>
-Vector<VectorD<D> > get_grid_interior_cover_by_spacing(
+Vector<VectorD<D>> get_grid_interior_cover_by_spacing(
     const BoundingBoxD<D> &bb, double s) {
   const unsigned int dim = bb.get_dimension();
   Ints ns(dim);
@@ -195,7 +195,7 @@ Vector<VectorD<D> > get_grid_interior_cover_by_spacing(
     }
   }
   Ints cur(D, 0);
-  Vector<VectorD<D> > ret;
+  Vector<VectorD<D>> ret;
   do {
     ret.push_back(start + get_elementwise_product(cur, spacing));
     unsigned int i;

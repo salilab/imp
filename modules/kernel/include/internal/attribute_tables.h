@@ -398,16 +398,16 @@ class FloatAttributeTable {
   // vector<algebra::Sphere3D> sphere_derivatives_;
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
-              sphere_equal<algebra::Sphere3D> > spheres_;
+              sphere_equal<algebra::Sphere3D>> spheres_;
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
-              sphere_equal<algebra::Sphere3D> > sphere_derivatives_;
+              sphere_equal<algebra::Sphere3D>> sphere_derivatives_;
   IndexVector<ParticleIndexTag, Vector3D,
               std::allocator<Vector3D>,
-              vector_equal<Vector3D> > internal_coordinates_;
+              vector_equal<Vector3D>> internal_coordinates_;
   IndexVector<ParticleIndexTag, Vector3D,
               std::allocator<Vector3D>,
-              vector_equal<Vector3D> >
+              vector_equal<Vector3D>>
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;

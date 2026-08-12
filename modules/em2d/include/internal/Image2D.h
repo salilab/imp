@@ -87,7 +87,7 @@ class Image2D : public boost::multi_array<T, 2> {
   void write_PGM(const std::string& file_name) const;
   void transform_write_PGM(const ImageTransform& transform,
                            const std::string& out_file_name) const;
-  static void write_PGM(const std::vector<Image2D<> >& images,
+  static void write_PGM(const std::vector<Image2D<>>& images,
                         const std::string& filename);
 
   // basic access functions
@@ -273,7 +273,7 @@ void Image2D<T>::transform_write_PGM(const ImageTransform& transform,
 }
 
 template <class T>
-void Image2D<T>::write_PGM(const std::vector<Image2D<> >& images,
+void Image2D<T>::write_PGM(const std::vector<Image2D<>>& images,
                            const std::string& filename) {
   if (images.size() <= 0) return;
   std::ofstream outfile(filename.c_str(), std::ofstream::binary);
@@ -690,7 +690,7 @@ class EquivalenceTable : public DoubleHashMap {
     if (color2 > max_color_) max_color_ = color2;
   }
 
-  void build_equivalence_classes(std::vector<std::set<int> >& classes) {
+  void build_equivalence_classes(std::vector<std::set<int>>& classes) {
     // status of the current color: 0 - not processed, 1 - assigned a class,
     // 2 - equivalent colors assigned the same class
     std::vector<int> colors(max_color_, 0);
@@ -784,7 +784,7 @@ void Image2D<T>::get_connected_components(Image2D<int>& out_image) const {
   //  out_image.write_PGM("cc.pgm");
 
   // go over equivalent colors
-  std::vector<std::set<int> > classes;
+  std::vector<std::set<int>> classes;
   equivalent_colors.build_equivalence_classes(classes);
 
   for (unsigned int i = 0; i < out_image.num_elements(); i++)

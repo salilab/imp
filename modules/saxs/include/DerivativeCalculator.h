@@ -66,7 +66,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
   DeltaDistributionFunction precompute_derivative_helpers(
       const Profile* resampled_model_profile,
       const Particles& particles1, const Particles& particles2,
-      Vector<Vector<double> >& sinc_cos_values) const;
+      Vector<Vector<double>>& sinc_cos_values) const;
 
   /* compute dI(q)/dx_k for given q and k
   * dI(q)/dx_k = - 2 E^2(q) \sum_l (x_k-x_l)/d_{kl}^2 f_l f_k (sinc(q*d_{kl}) -
@@ -74,7 +74,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
   */
   void compute_intensity_derivatives(
       const DeltaDistributionFunction& delta_dist,
-      const Vector<Vector<double> >& sinc_cos_values, unsigned int iq,
+      const Vector<Vector<double>>& sinc_cos_values, unsigned int iq,
       algebra::Vector3D& dIdx) const;
 
  protected:
@@ -83,7 +83,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
  private:
   void compute_sinc_cos(double pr_resolution, double max_distance,
                         const Profile* model_profile,
-                        Vector<Vector<double> >& output_values) const;
+                        Vector<Vector<double>>& output_values) const;
 };
 
 IMPSAXS_END_NAMESPACE

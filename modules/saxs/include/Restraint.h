@@ -71,7 +71,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
  protected:
   ParticleIndexes particles_;
   Pointer<RigidBodiesProfileHandler> handler_;
-  Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
+  Pointer<ProfileFitter<ChiScore>> profile_fitter_;  // computes profiles
   // computes derivatives
   Pointer<DerivativeCalculator> derivative_calculator_;
  private:

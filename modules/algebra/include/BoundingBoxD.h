@@ -86,7 +86,7 @@ class BoundingBoxD {
   }
 
   //! Creating a bounding box from a set of points
-  BoundingBoxD(const Vector<VectorD<D> > &points) {
+  BoundingBoxD(const Vector<VectorD<D>> &points) {
     make_empty();
     for (unsigned int j = 0; j < points.size(); j++) {
       operator+=(points[j]);
@@ -298,9 +298,9 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 //! Return a list of the 2^D bounding points for the bounding box
 /** \see BoundingBoxD */
 template <int D>
-inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
+inline Vector<VectorD<D>> get_vertices(const BoundingBoxD<D> &bb) {
   if (D == 1) {
-    Vector<VectorD<D> > ret(2);
+    Vector<VectorD<D>> ret(2);
     ret[0] = bb.get_corner_0();
     ret[1] = bb.get_corner_1();
     return ret;
@@ -314,8 +314,8 @@ inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
     c1[i] = bb.get_corner_1()[i];
   }
   BoundingBoxD<internal::DMinus1<D>::D> bbm1(c0, c1);
-  Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
-  Vector<VectorD<D> > ret;
+  Vector<VectorD<internal::DMinus1<D>::D>> recurse = get_vertices(bbm1);
+  Vector<VectorD<D>> ret;
   for (unsigned int i = 0; i < recurse.size(); ++i) {
     VectorD<D> cur;
     for (int j = 0; j < D - 1; ++j) {

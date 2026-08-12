@@ -131,7 +131,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
     : public MovedSingletonContainer {
 
   // last reference frame and radius data for each body in bodies:
-  Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
+  Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D>> backup_;
 
   // rigid bodies whose members movements are tracked
   ParticleIndexes bodies_;

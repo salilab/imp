@@ -74,7 +74,7 @@ int main(int argc, char **argv)
   float angle_range = IMP::algebra::PI;
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value< std::vector<std::string> >(),
+    ("input-files", po::value< std::vector<std::string>>(),
      "input PDB and rotatable angles files")
     ("angle_range,r", po::value<float>(&angle_range)->default_value(IMP::algebra::PI),
      "angle range for sampling, (-angle < sampled_angle < +angle, default = PI)")
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 
   std::vector<std::string> files;
   if(vm.count("input-files")) {
-    files = vm["input-files"].as< std::vector<std::string> >();
+    files = vm["input-files"].as< std::vector<std::string>>();
   }
   if(vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";

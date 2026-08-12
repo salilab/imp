@@ -89,7 +89,7 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public Object {
   IntsLists sampled_solutions_;              // instead of cg
   domino::Assignments sampled_assignments_;  // instead of sampled_solutions
   // configurations sorted by score
-  std::vector<std::pair<int, float> > cg_sorted_;
+  std::vector<std::pair<int, float>> cg_sorted_;
   Pointer<RestraintSet> conn_rs_;
   Pointer<RestraintSet> conn_rs_with_filter_;
   Pointer<RestraintSet> xlink_rs_;

@@ -45,7 +45,7 @@ double MarginalHBondRestraint::unprotected_evaluate(
   double logsquares = 0;
   Vector<double> meandists;  // mean distances^-6, length(volumes_)
   // store interparticle distances^-6
-  Vector<Vector<double> > alldists;
+  Vector<Vector<double>> alldists;
   int ncontribs = volumes_.size();
   for (int i = 0; i < ncontribs; ++i)  // loop on all contributions
   {

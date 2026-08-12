@@ -85,8 +85,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     */
 template <class O>
 struct Pointer
-   : IMP::internal::PointerBase<IMP::internal::RefCountedPointerTraits<O> > {
-  typedef IMP::internal::PointerBase<IMP::internal::RefCountedPointerTraits<O> > P;
+   : IMP::internal::PointerBase<IMP::internal::RefCountedPointerTraits<O>> {
+  typedef IMP::internal::PointerBase<IMP::internal::RefCountedPointerTraits<O>> P;
   template <class Any>
   Pointer(const Any& o)
       : P(o) {}
@@ -141,8 +141,8 @@ struct Pointer
  */
 template <class O>
 struct PointerMember
-    : IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O> > {
-  typedef IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O>> {
+  typedef IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O>> P;
   template <class Any>
   PointerMember(const Any& o)
       : P(o) {}

@@ -124,10 +124,10 @@ class IMPKERNELEXPORT Model : public Object
   boost::unordered_map<FloatKey, FloatRange> ranges_;
 
   ParticleIndexes free_particles_;
-  IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
+  IndexVector<ParticleIndexTag, Pointer<Particle>> particle_index_;
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
-  internal::KeyVector<ModelKey, PointerMember<Object> > model_data_;
+  internal::KeyVector<ModelKey, PointerMember<Object>> model_data_;
 
 #if !defined(IMP_DOXYGEN)
   // Map unique ID to Model*

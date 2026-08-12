@@ -183,7 +183,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
   boost::program_options::positional_options_description m_positional;
   boost::program_options::options_description pos;
   pos.add_options()("positional",
-                    boost::program_options::value<std::vector<std::string> >(
+                    boost::program_options::value<std::vector<std::string>>(
                         &positional)->composing(),
                     "");
   boost::program_options::options_description all;
@@ -202,7 +202,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     boost::program_options::notify(internal::variables_map);
     if (internal::variables_map.count("positional") != 0) {
       positional =
-          internal::variables_map["positional"].as<std::vector<std::string> >();
+          internal::variables_map["positional"].as<std::vector<std::string>>();
     }
     if (internal::version) {
       std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;

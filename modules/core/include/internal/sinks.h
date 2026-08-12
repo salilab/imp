@@ -401,7 +401,7 @@ struct RigidBodyRigidBodyParticleIndexPairSinkWithMax
     fill_close_pairs(
         P::m_, RigidBodyParticleIndexPairSinkWithMax<PS>::get_hierarchy(a),
         RigidBodyParticleIndexPairSinkWithMax<PS>::get_hierarchy(b), P::dist_,
-        static_cast<ParticleIndexPairSinkWithMax<PS> >(*this));
+        static_cast<ParticleIndexPairSinkWithMax<PS>>(*this));
     return P::max_ > 0;
   }
   void check_contains(ParticleIndex, ParticleIndex) const {

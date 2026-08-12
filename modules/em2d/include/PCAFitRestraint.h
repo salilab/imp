@@ -102,7 +102,7 @@ public:
   Particles ps_;
 
   // EM2D images
-  std::vector<internal::Image2D<> > images_;
+  std::vector<internal::Image2D<>> images_;
 
   // Image file names (absolute paths)
   Strings image_files_;
@@ -117,7 +117,7 @@ public:
   unsigned int projection_number_;
 
   // from last score calculation
-  mutable std::vector<internal::Image2D<> > best_projections_;
+  mutable std::vector<internal::Image2D<>> best_projections_;
 
   // from last calculation
   mutable std::vector<internal::ProjectionInfo> best_projections_info_;

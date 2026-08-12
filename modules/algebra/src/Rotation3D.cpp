@@ -217,7 +217,7 @@ Rotation3D get_random_rotation_3d() {
 Rotation3Ds get_uniform_cover_rotations_3d(unsigned int n) {
   // "surface area" is 2 pi^2 r^3= 2pi^2.
   // each rotation has an area of approximately 4/3 pi distance^3
-  Vector<VectorD<4> > vs =
+  Vector<VectorD<4>> vs =
       internal::uniform_cover_sphere<4>(n, get_zero_vector_d<4>(), 1, false);
   Rotation3Ds ret;
   for (unsigned int i = 0; i < vs.size(); ++i) {

@@ -53,7 +53,7 @@
   typedef boost::adjacency_list<                                              \
       boost::vecS, boost::vecS, boost::directionality##S,                     \
       boost::property<boost::vertex_name_t, VertexData>,                      \
-      boost::property<boost::edge_name_t, EdgeData> > Name;                   \
+      boost::property<boost::edge_name_t, EdgeData>> Name;                    \
   typedef boost::property_map<Name, boost::vertex_name_t>::const_type         \
       Name##ConstVertexName;                                                  \
   typedef boost::property_map<Name, boost::edge_name_t>::const_type           \
@@ -94,7 +94,7 @@
   typedef boost::adjacency_list<                                             \
       boost::vecS, boost::vecS, boost::directionality##S,                    \
       boost::property<boost::vertex_name_t, VertexData>,                     \
-      boost::property<boost::edge_weight_t, double> > Name;                  \
+      boost::property<boost::edge_weight_t, double>> Name;                   \
   typedef boost::property_map<Name, boost::vertex_name_t>::const_type        \
       Name##ConstVertexName;                                                 \
   typedef boost::property_map<Name, boost::edge_weight_t>::const_type        \

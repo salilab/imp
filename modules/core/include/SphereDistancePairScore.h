@@ -42,7 +42,7 @@ IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SphereDistancePairScore, SphereDistanceScore,
                                 (score_functor::UnaryFunctionEvaluate(uf)), );
 
 typedef score_functor::SphereDistance<score_functor::Shift<
-    score_functor::HarmonicUpperBound> > HarmonicUpperBoundSphereDistanceScore;
+    score_functor::HarmonicUpperBound>> HarmonicUpperBoundSphereDistanceScore;
 
 //!A harmonic upper bound on the distance between two spheres
 /** \see XYZR
@@ -88,7 +88,7 @@ IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,
             HarmonicUpperBoundSphereDiameterPairScores);
 
 typedef score_functor::SphereDistance<
-    score_functor::Shift<score_functor::Harmonic> > HarmonicSphereDistanceScore;
+    score_functor::Shift<score_functor::Harmonic>> HarmonicSphereDistanceScore;
 
 //! A harmonic score on the distance between two spheres
 /** A harmonic score on the distance between two spheres, implicitly

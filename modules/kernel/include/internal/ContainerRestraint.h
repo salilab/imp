@@ -27,7 +27,7 @@ template <class Score, class Container>
 class ContainerRestraint : public Restraint {
   IMP::PointerMember<Container> pc_;
   IMP::Pointer<Score> ss_;
-  IMP::Pointer<AccumulatorScoreModifier<Score, Container> > acc_;
+  IMP::Pointer<AccumulatorScoreModifier<Score, Container>> acc_;
 
   friend class cereal::access;
 

@@ -44,7 +44,7 @@ class IMPCOREEXPORT DistanceRestraint :
 
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
-                  IMP::internal::TupleRestraint<DistancePairScore> >(this));
+                  IMP::internal::TupleRestraint<DistancePairScore>>(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(DistanceRestraint);
 

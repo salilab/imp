@@ -22,7 +22,7 @@ DerivativeCalculator::DerivativeCalculator(const Profile* exp_profile)
 void DerivativeCalculator::compute_sinc_cos(double pr_resolution,
                                             double max_distance,
                                             const Profile* model_profile,
-                                 Vector<Vector<double> >& output_values) const {
+                                 Vector<Vector<double>>& output_values) const {
   // can be input
   unsigned int nr = algebra::get_rounded(max_distance / pr_resolution) + 1;
   output_values.clear();
@@ -76,7 +76,7 @@ DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
                                const Profile* resampled_model_profile,
                                const Particles& particles1,
                                const Particles& particles2,
-                               Vector<Vector<double> >& sinc_cos_values) const {
+                               Vector<Vector<double>>& sinc_cos_values) const {
 
   // estimate upper limit on max_distance
   double max_distance = compute_max_distance(particles1, particles2);
@@ -93,7 +93,7 @@ DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
 */
 void DerivativeCalculator::compute_intensity_derivatives(
     const DeltaDistributionFunction& delta_dist,
-    const Vector<Vector<double> >& sinc_cos_values, unsigned int iq,
+    const Vector<Vector<double>>& sinc_cos_values, unsigned int iq,
     algebra::Vector3D& dIdx) const {
   dIdx = algebra::Vector3D(0.0, 0.0, 0.0);
   for (unsigned int ir = 0; ir < delta_dist.size(); ir++) {
@@ -124,7 +124,7 @@ void DerivativeCalculator::compute_chisquare_derivative(
 
   algebra::Vector3D dIdx, chisquare_derivative;
 
-  Vector<Vector<double> > sinc_cos_values;
+  Vector<Vector<double>> sinc_cos_values;
   DeltaDistributionFunction delta_dist = precompute_derivative_helpers(
       model_profile, particles1, particles2, sinc_cos_values);
 

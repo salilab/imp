@@ -179,7 +179,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     \see Grid3D
 */
 template <int D, class VT, class Base,
-          class Map = typename boost::unordered_map<GridIndexD<D>, VT> >
+          class Map = typename boost::unordered_map<GridIndexD<D>, VT>>
 class SparseGridStorageD : public Base {
   typedef Map Data;
   struct GetIndex {
@@ -332,9 +332,9 @@ class SparseGridStorageD : public Base {
   }
 #endif
 
-  Vector<GridIndexD<D> > get_indexes(
+  Vector<GridIndexD<D>> get_indexes(
       const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const {
-    return Vector<GridIndexD<D> >(indexes_begin(lb, ub),
+    return Vector<GridIndexD<D>>(indexes_begin(lb, ub),
                                         indexes_end(lb, ub));
   }
   /** @} */

@@ -20,7 +20,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 #if IMP_KERNEL_HAS_LOG4CXX
 namespace log {
 // eat std::endl and std::flush
-typedef std::basic_ostream<char, std::char_traits<char> > CoutType;
+typedef std::basic_ostream<char, std::char_traits<char>> CoutType;
 typedef CoutType& (*StandardEndLine)(CoutType&);
 inline log4cxx::helpers::CharMessageBuffer& operator<<(
     log4cxx::helpers::CharMessageBuffer& buf, StandardEndLine) {

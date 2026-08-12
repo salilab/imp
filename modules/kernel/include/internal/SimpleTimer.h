@@ -27,7 +27,7 @@ public:
   double elapsed() const {
     auto end_time = std::chrono::steady_clock::now();
     auto time_span = std::chrono::duration_cast<
-                      std::chrono::duration<double> >(end_time - start_time_);
+                      std::chrono::duration<double>>(end_time - start_time_);
     return time_span.count();
   }
 };

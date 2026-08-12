@@ -30,7 +30,7 @@ void get_random_numbers_normal_boost(RealType* p_random_array, unsigned int n,
                                   RealType mean, RealType stddev)
 {
   typedef boost::variate_generator<RandomNumberGenerator &,
-                                     boost::normal_distribution<RealType> > RNG;
+                                     boost::normal_distribution<RealType>> RNG;
   boost::normal_distribution<RealType> nd(mean, stddev);
   RNG sampler(IMP::random_number_generator, nd);
   for(unsigned int i=0; i<n; i++)

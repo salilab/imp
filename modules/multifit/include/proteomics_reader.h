@@ -237,7 +237,7 @@ class IMPMULTIFITEXPORT ProteomicsData : public Object {
   int num_allowed_violated_interactions_;
   // decide if it used to build the JT or just for scoring
   //=========residue cross links
-  std::vector<std::pair<IntPair, IntPair> > xlinks_;
+  std::vector<std::pair<IntPair, IntPair>> xlinks_;
   std::vector<bool> xlink_in_filter_;
   Floats xlink_len_;
   int num_allowed_violated_xlinks_;

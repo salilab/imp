@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT TypedPairScore : public PairScore {
   // The key used for the particle types.
   IntKey typekey_;
-  typedef std::map<std::pair<Int, Int>, IMP::PointerMember<PairScore> >
+  typedef std::map<std::pair<Int, Int>, IMP::PointerMember<PairScore>>
       ScoreMap;
   // Mapping from particle types to PairScores.
   ScoreMap score_map_;

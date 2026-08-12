@@ -56,7 +56,7 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
-            IMP::internal::ListLikeContainer<PairContainer> >(this),
+            IMP::internal::ListLikeContainer<PairContainer>>(this),
             sc_[0], sc_[1], key_, slack_, distance_,
             covers_[0], covers_[1], mutable_access_pair_filters());
     if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {

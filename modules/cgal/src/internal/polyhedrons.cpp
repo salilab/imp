@@ -121,7 +121,7 @@ IMP::Vector<algebra::Vector3Ds> get_facets(CGAL::Nef_polyhedron_3<K> &np) {
   typename CGAL::Polyhedron_3<K> p;
   np.convert_to_polyhedron(p);
   CGAL_postcondition(p.is_valid());
-  IMP::Vector<IMP::Vector<typename algebra::Vector3D> > ret;
+  IMP::Vector<IMP::Vector<typename algebra::Vector3D>> ret;
   for (typename CGAL::Polyhedron_3<K>::Face_iterator it = p.facets_begin();
        it != p.facets_end(); ++it) {
     ret.push_back(IMP::Vector<algebra::Vector3D>());
@@ -277,7 +277,7 @@ std::pair<algebra::Vector3Ds, Ints> get_skin_surface(
                           algebra::get_squared(ss[i].get_radius()));
   }
   CGAL::Polyhedron_3<IKernel> p;
-  CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel> > skin_surface(
+  CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel>> skin_surface(
       l.begin(), l.end());
   CGAL::mesh_skin_surface_3(skin_surface, p);
   return get_indexed_facets(p);
@@ -355,7 +355,7 @@ void cgal_triangulate_surface(const Grid &grid, double iso_level, C2t3 &c2t3) {
   // bs= Sphere_3(Point_3(30, 30, 0), 200);
   IMP_LOG_TERSE("Bounding sphere is" << bs << std::endl);
   IMP_LOG_TERSE("Scale is " << cs.get_scale() << std::endl);
-  typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid> > Surface_3;
+  typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid>> Surface_3;
 
   Surface_3 surface(cs,   // pointer to function
                     bs);  // bounding sphere

@@ -199,7 +199,7 @@ typedef Unit<internal::MolarTag, -6, SingletonUnit> Micromolar;
 template <int E>
 inline Molar molarity_from_count(double count,
                                  Unit<internal::MKSTag, E, Volume> volume) {
-  Unit<internal::MKSTag, -E, boost::mpl::vector_c<int, 0, -3, 0, 0, 0> >
+  Unit<internal::MKSTag, -E, boost::mpl::vector_c<int, 0, -3, 0, 0, 0>>
       per_cubic_meter(unit::ExponentialNumber<0>(count) / volume);
   typedef Inverse<CubicMeter>::type PerCubicMeter;
   PerCubicMeter moles_per_cubic_meter(per_cubic_meter / NA);
@@ -210,9 +210,9 @@ inline Molar molarity_from_count(double count,
 
 template <int E1>
 inline Unit<internal::MKSTag, E1 + 23 - 3,
-            boost::mpl::vector_c<int, 0, -3, 0, 0, 0> >
+            boost::mpl::vector_c<int, 0, -3, 0, 0, 0>>
 density_from_molarity(Unit<internal::MolarTag, E1, SingletonUnit> molar) {
-  Unit<internal::MKSTag, E1 + 23, boost::mpl::vector_c<int, 0, -3, 0, 0, 0> >
+  Unit<internal::MKSTag, E1 + 23, boost::mpl::vector_c<int, 0, -3, 0, 0, 0>>
       count_per_liter(molar.get_exponential_value() * NA);
   return count_per_liter * 1000.0;
 }

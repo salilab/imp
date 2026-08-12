@@ -19,7 +19,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 //! Cache Restraints that change when a Particle moves
 class MovedParticlesRestraintCache {
   Model *m_;
-  typedef std::map<ParticleIndex, std::set<Restraint *> > CacheMap;
+  typedef std::map<ParticleIndex, std::set<Restraint *>> CacheMap;
   CacheMap cache_;
 
 public:
@@ -61,7 +61,7 @@ public:
 //! Cache ScoreStates that change when a Particle moves
 class MovedParticlesScoreStateCache {
   Model *m_;
-  typedef std::map<ParticleIndex, std::set<ScoreState *> > CacheMap;
+  typedef std::map<ParticleIndex, std::set<ScoreState *>> CacheMap;
   CacheMap cache_;
 
 public:

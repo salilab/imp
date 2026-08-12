@@ -31,7 +31,7 @@ std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
 
 template <int D>
 class GridIteratorD {
-  Pointer<GridRangeData<D> > data_;
+  Pointer<GridRangeData<D>> data_;
   VectorD<D> cur_;
 
  public:
@@ -41,7 +41,7 @@ class GridIteratorD {
   typedef const VectorD<D> *pointer;
   typedef std::forward_iterator_tag iterator_category;
 
-  GridIteratorD(Pointer<GridRangeData<D> > d, reference cur)
+  GridIteratorD(Pointer<GridRangeData<D>> d, reference cur)
       : data_(d), cur_(cur) {}
   reference operator*() const { return cur_; }
   pointer operator->() const { return &cur_; }
@@ -90,7 +90,7 @@ class GridIteratorD {
 template <int D>
 class GridRangeD {
  private:
-  IMP::Pointer<GridRangeData<D> > data_;
+  IMP::Pointer<GridRangeData<D>> data_;
 
  public:
   typedef GridIteratorD<D> iterator;
@@ -106,8 +106,8 @@ class GridRangeD {
     return iterator(data_, data_->bb.get_corner_1());
   }
 #endif
-  Vector<VectorD<D> > get() const {
-    return Vector<VectorD<D> >(begin(), end());
+  Vector<VectorD<D>> get() const {
+    return Vector<VectorD<D>>(begin(), end());
   }
 };
 

@@ -75,7 +75,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <int D, class StorageT,
           // swig needs this for some reason
-          class Value, class EmbeddingT = DefaultEmbeddingD<D> >
+          class Value, class EmbeddingT = DefaultEmbeddingD<D>>
 class GridD : public StorageT,
               public EmbeddingT,
               public GeometricPrimitiveD<D> {
@@ -355,7 +355,7 @@ class GridD : public StorageT,
 
   typedef internal::GridIndexIterator<
       ExtendedGridIndexD<D>,
-      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > >
+      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D>>>
       ExtendedIndexIterator;
   ExtendedIndexIterator extended_indexes_begin(const BoundingBoxD<D> &bb)
       const {

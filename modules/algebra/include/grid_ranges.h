@@ -56,7 +56,7 @@ class UnboundedGridRangeD {
 #ifndef IMP_DOXYGEN
   typedef internal::GridIndexIterator<
       ExtendedGridIndexD<D>,
-      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > >
+      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D>>>
       ExtendedIndexIterator;
 #else
   class ExtendedIndexIterator;
@@ -72,9 +72,9 @@ class UnboundedGridRangeD {
     return ExtendedIndexIterator();
   }
 #endif
-  Vector<ExtendedGridIndexD<D> > get_extended_indexes(
+  Vector<ExtendedGridIndexD<D>> get_extended_indexes(
       const ExtendedGridIndexD<D>& lb, const ExtendedGridIndexD<D>& ub) const {
-    return Vector<ExtendedGridIndexD<D> >(extended_indexes_begin(lb, ub),
+    return Vector<ExtendedGridIndexD<D>>(extended_indexes_begin(lb, ub),
                                                 extended_indexes_end(lb, ub));
   }
 };
@@ -153,7 +153,7 @@ class BoundedGridRangeD {
 #else
   typedef internal::GridIndexIterator<
       ExtendedGridIndexD<D>,
-      internal::AllItHelp<ExtendedGridIndexD<D>, GridIndexD<D> > >
+      internal::AllItHelp<ExtendedGridIndexD<D>, GridIndexD<D>>>
       AllIndexIterator;
 #endif
   AllIndexIterator all_indexes_begin() const {
@@ -164,8 +164,8 @@ class BoundedGridRangeD {
   }
   AllIndexIterator all_indexes_end() const { return indexes_end(d_, d_); }
 #endif
-  Vector<GridIndexD<D> > get_all_indexes() const {
-    Vector<GridIndexD<D> > ret(all_indexes_begin(), all_indexes_end());
+  Vector<GridIndexD<D>> get_all_indexes() const {
+    Vector<GridIndexD<D>> ret(all_indexes_begin(), all_indexes_end());
     return ret;
   }
 /** @} */
@@ -190,11 +190,11 @@ class BoundedGridRangeD {
 #ifndef IMP_DOXYGEN
   typedef internal::GridIndexIterator<
       ExtendedGridIndexD<D>,
-      internal::AllItHelp<ExtendedGridIndexD<D>, GridIndexD<D> > >
+      internal::AllItHelp<ExtendedGridIndexD<D>, GridIndexD<D>>>
       IndexIterator;
   typedef internal::GridIndexIterator<
       ExtendedGridIndexD<D>,
-      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > >
+      internal::AllItHelp<ExtendedGridIndexD<D>, ExtendedGridIndexD<D>>>
       ExtendedIndexIterator;
 #else
   class IndexIterator;
@@ -203,8 +203,8 @@ class BoundedGridRangeD {
   IndexIterator indexes_begin(const ExtendedGridIndexD<D>& lb,
                               const ExtendedGridIndexD<D>& ub) const {
     ExtendedGridIndexD<D> eub = ub.get_uniform_offset(1);
-    std::pair<ExtendedGridIndexD<D>, ExtendedGridIndexD<D> > bp =
-        internal::intersect<ExtendedGridIndexD<D> >(lb, eub, d_);
+    std::pair<ExtendedGridIndexD<D>, ExtendedGridIndexD<D>> bp =
+        internal::intersect<ExtendedGridIndexD<D>>(lb, eub, d_);
     if (bp.first == bp.second) {
       return IndexIterator();
     } else {
@@ -230,14 +230,14 @@ class BoundedGridRangeD {
   }
 #endif
 
-  Vector<GridIndexD<D> > get_indexes(
+  Vector<GridIndexD<D>> get_indexes(
       const ExtendedGridIndexD<D>& lb, const ExtendedGridIndexD<D>& ub) const {
-    return Vector<GridIndexD<D> >(indexes_begin(lb, ub),
+    return Vector<GridIndexD<D>>(indexes_begin(lb, ub),
                                         indexes_end(lb, ub));
   }
-  Vector<ExtendedGridIndexD<D> > get_extended_indexes(
+  Vector<ExtendedGridIndexD<D>> get_extended_indexes(
       const ExtendedGridIndexD<D>& lb, const ExtendedGridIndexD<D>& ub) const {
-    return Vector<ExtendedGridIndexD<D> >(extended_indexes_begin(lb, ub),
+    return Vector<ExtendedGridIndexD<D>>(extended_indexes_begin(lb, ub),
                                                 extended_indexes_end(lb, ub));
   }
   /* @} */

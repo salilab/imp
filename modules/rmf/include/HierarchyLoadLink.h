@@ -63,7 +63,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
           load_gaussians(h),
           load_rigid_bodies(h) {}
   };
-  typedef boost::unordered_map<ParticleIndex, std::shared_ptr<Data> >
+  typedef boost::unordered_map<ParticleIndex, std::shared_ptr<Data>>
       DM;
   DM data_;
   virtual bool get_is(RMF::NodeConstHandle nh) const override {

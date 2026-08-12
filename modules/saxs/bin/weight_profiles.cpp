@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input files");
+    ("input-files", po::value<std::vector<std::string>>(), "input files");
 
   po::options_description allopt;
   allopt.add(desc).add(hidden);
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   std::vector<std::string> arguments, dat_files;
   IMP::Vector<double> weights;
   if(vm.count("input-files")) {
-    arguments = vm["input-files"].as< std::vector<std::string> >();
+    arguments = vm["input-files"].as< std::vector<std::string>>();
   }
   if(vm.count("help") || arguments.size() == 0) {
     std::cout << desc << "\n";

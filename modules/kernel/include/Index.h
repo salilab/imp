@@ -86,7 +86,7 @@ namespace {
     do not implement operator== (e.g. VectorD, SphereD), a custom comparison
     functor should be provided. */
 template <class Tag, class T, class Allocator = std::allocator<T>,
-          class Equal = std::equal_to<T> >
+          class Equal = std::equal_to<T>>
 class IndexVector : public Vector<T, Allocator> {
   typedef Vector<T, Allocator> P;
 

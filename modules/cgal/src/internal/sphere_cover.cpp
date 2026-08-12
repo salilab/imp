@@ -27,10 +27,10 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 template <int D>
-void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
+void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
                                 bool ALL) {
   unsigned int n = ret.size();
-  typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq> > K;
+  typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq>> K;
   typedef typename K::Point_d P;
   typedef ::CGAL::Convex_hull_d<K> CH;
   typedef CH::Vertex_handle VertexHandle;
@@ -49,7 +49,7 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
         indexes[opp_vh] = -static_cast<int>(i) - 1;
       }
     }
-    IMP::Vector<algebra::VectorD<D> > sums(n, algebra::get_zero_vector_d<D>());
+    IMP::Vector<algebra::VectorD<D>> sums(n, algebra::get_zero_vector_d<D>());
     Floats counts(n, 0);
     for (CH::Facet_iterator it = ch.facets_begin(); it != ch.facets_end();
          ++it) {
@@ -95,7 +95,7 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
   }
 }
 
-void refine_unit_sphere_cover_4d(IMP::Vector<algebra::VectorD<4> > &ret,
+void refine_unit_sphere_cover_4d(IMP::Vector<algebra::VectorD<4>> &ret,
                                  bool ALL) {
   refine_unit_sphere_cover_d(ret, ALL);
 }

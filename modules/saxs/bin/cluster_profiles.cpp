@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(),
+    ("input-files", po::value<std::vector<std::string>>(),
      "input files");
 
   po::options_description allopt;
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
   std::vector<std::string> files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() != 1) {
     std::cout << desc << "\n";
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 
   // read the profiles
   IMP::saxs::Profile *exp_profile = nullptr;
-  std::map<int, std::pair<std::string, IMP::saxs::Profile *> > fit_profiles;
+  std::map<int, std::pair<std::string, IMP::saxs::Profile *>> fit_profiles;
   bool fit_file = false;
   // open input file with profile file names - mes format
   std::ifstream in_file(files[0].c_str());
@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
     // compare to other profiles
     IMP_NEW(IMP::saxs::ChiScore, chi_score, ());
     chi_score->set_was_used(true);
-    std::map<int, std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
+    std::map<int, std::pair<std::string, IMP::saxs::Profile *>>::iterator it;
     for (it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
       std::string curr_file_name = it->second.first;
@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
     std::multimap<double, int> scored_profiles;
     IMP_NEW(IMP::saxs::ChiScore, chi_score, ());
     chi_score->set_was_used(true);
-    std::map<int, std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
+    std::map<int, std::pair<std::string, IMP::saxs::Profile *>>::iterator it;
     for (it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
       double score = chi_score->compute_score(exp_profile, curr_profile);

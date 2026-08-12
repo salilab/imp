@@ -36,7 +36,7 @@ IMPKERNEL_BEGIN_NAMESPACE
        - default construction
  */
 template <class Generator,
-          class Checker = std::equal_to<typename Generator::result_type> >
+          class Checker = std::equal_to<typename Generator::result_type>>
 class Memoizer {
   Generator gen_;
   Checker checker_;
@@ -250,7 +250,7 @@ class SparseSymmetricPairMemoizer {
     - Generator::operator()(Key, Cache);
 */
 template <class Generator,
-          class Checker = std::equal_to<typename Generator::result_type> >
+          class Checker = std::equal_to<typename Generator::result_type>>
 class LRUCache {
  public:
   typedef typename Generator::result_type Value;
@@ -271,7 +271,7 @@ class LRUCache {
   typedef boost::multi_index::hashed_unique<KeyMember> HashIndex;
   typedef boost::multi_index::sequenced<> Sequenced;
   typedef boost::multi_index_container<
-      KVP, boost::multi_index::indexed_by<HashIndex, Sequenced> > Map;
+      KVP, boost::multi_index::indexed_by<HashIndex, Sequenced>> Map;
   mutable Map map_;
   typedef typename boost::multi_index::template nth_index<
       Map, 0>::type::const_iterator LookupIterator;

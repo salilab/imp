@@ -265,13 +265,13 @@ class IMPSAXSEXPORT FormFactorTable {
   Vector<AtomFactorCoefficients> form_factors_coefficients_;
 
   // table of full form factors for 14 atom types
-  Vector<Vector<double> > form_factors_;
+  Vector<Vector<double>> form_factors_;
 
   // vacuum full form factors for 14 atom types
-  Vector<Vector<double> > vacuum_form_factors_;
+  Vector<Vector<double>> vacuum_form_factors_;
 
   // dummy full form factors for 14 atom types
-  Vector<Vector<double> > dummy_form_factors_;
+  Vector<Vector<double>> dummy_form_factors_;
 
   // min/max q and sampling resolution for form factor computation
   double min_q_, max_q_, delta_q_;

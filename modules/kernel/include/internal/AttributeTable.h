@@ -157,7 +157,7 @@ struct ObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef ObjectKey Key;
-  typedef IndexVector<ParticleIndexTag, Pointer<Object> > Container;
+  typedef IndexVector<ParticleIndexTag, Pointer<Object>> Container;
   typedef Pointer<Object> const* ContainerConstDataAccess;
   typedef Pointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
@@ -176,7 +176,7 @@ struct WeakObjectAttributeTableTraits {
   typedef Object *Value;
   typedef Object *PassValue;
   typedef WeakObjectKey Key;
-  typedef IndexVector<ParticleIndexTag, WeakPointer<Object> > Container;
+  typedef IndexVector<ParticleIndexTag, WeakPointer<Object>> Container;
   typedef WeakPointer<Object> const* ContainerConstDataAccess;
   typedef WeakPointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
@@ -277,7 +277,7 @@ struct GenericBoolAttributeTableTraits : public DefaultTraits<bool, K> {
     friend class cereal::access;
 
     template<class Archive> void serialize(Archive &ar) {
-      ar(cereal::base_class<boost::dynamic_bitset<> >(this));
+      ar(cereal::base_class<boost::dynamic_bitset<>>(this));
     }
 
     typedef boost::dynamic_bitset<> P;

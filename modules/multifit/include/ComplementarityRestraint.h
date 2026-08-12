@@ -87,7 +87,7 @@ class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint {
                                       double max) const override;
 #endif
  private:
-  typedef std::pair<algebra::Transformation3D, algebra::DenseGrid3D<float> >
+  typedef std::pair<algebra::Transformation3D, algebra::DenseGrid3D<float>>
       GridPair;
   typedef core::DataObject<GridPair> GridObject;
   GridObject *get_grid_object(core::RigidBody rb,

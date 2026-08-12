@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
   po::options_description hidden("Hidden options");
   hidden.add_options()
-    ("input-files", po::value<std::vector<std::string> >(), "input files");
+    ("input-files", po::value<std::vector<std::string>>(), "input files");
 
   po::options_description allopt;
   allopt.add(desc).add(hidden);
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
   std::vector<std::string> files, dat_files;
   if (vm.count("input-files")) {
-    files = vm["input-files"].as<std::vector<std::string> >();
+    files = vm["input-files"].as<std::vector<std::string>>();
   }
   if (vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
   }
 
   IMP::saxs::Profile *exp_saxs_profile = exp_profiles[0];
-  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore> >
+  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore>>
       saxs_score =
           new IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore>(exp_saxs_profile);
   for (unsigned int i = 1; i < exp_profiles.size(); i++) {

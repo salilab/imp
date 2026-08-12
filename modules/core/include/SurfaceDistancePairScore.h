@@ -67,7 +67,7 @@ IMP_FUNCTOR_SURFACE_DISTANCE_PAIR_SCORE(SurfaceDepthPairScore,
 
 
 typedef score_functor::PointToSphereDistance<
-    score_functor::Shift<score_functor::Harmonic> > HarmonicSurfaceDistanceScore;
+    score_functor::Shift<score_functor::Harmonic>> HarmonicSurfaceDistanceScore;
 
 //! A harmonic score on the distance between a surface and a sphere surface.
 /** \see Surface

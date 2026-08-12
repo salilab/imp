@@ -42,7 +42,7 @@ void ProfileClustering::cluster_profiles() {
 
   // compute Chi values and copy errors
   std::multimap<double, int> scored_profiles;
-  Pointer<ProfileFitter<ChiScore> > pf = new ProfileFitter<ChiScore>(exp_profile_);
+  Pointer<ProfileFitter<ChiScore>> pf = new ProfileFitter<ChiScore>(exp_profile_);
   IMP_NEW(ChiScore, chi_score, ());
   chi_score->set_was_used(true);
   Profiles resampled_profiles(profiles_.size());

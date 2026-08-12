@@ -11,7 +11,7 @@
 #include "IMP/Particle.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-extern Vector<std::pair<ParticleFunction, ParticleFunction> >
+extern Vector<std::pair<ParticleFunction, ParticleFunction>>
     particle_validators;
 
 void add_particle_check(ParticleFunction instance, ParticleFunction check) {

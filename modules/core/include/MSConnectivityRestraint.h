@@ -205,7 +205,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
       bool is_leaf() const { return get_number_of_children() == 0; }
       unsigned int get_parent(unsigned int idx) const { return parents_[idx]; }
       unsigned int get_child(unsigned int idx) const { return children_[idx]; }
-      typedef Vector<std::pair<unsigned int, int> > Label;
+      typedef Vector<std::pair<unsigned int, int>> Label;
       const Label &get_label() const { return label_; }
 
       Vector<unsigned int> parents_;

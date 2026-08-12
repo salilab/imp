@@ -87,7 +87,7 @@ double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
   int last_ns = 1;
   int opt_i = -1;
   std::vector<Floats> dists(1, Floats(1, 0.0));
-  std::vector<std::vector<algebra::Vector3D> > pos(
+  std::vector<std::vector<algebra::Vector3D>> pos(
       1, std::vector<algebra::Vector3D>(ps.size()));
   for (unsigned int j = 0; j < ps.size(); ++j) {
     pos[0][j] = core::XYZ(m, ps[j]).get_coordinates();

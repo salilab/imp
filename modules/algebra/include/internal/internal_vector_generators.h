@@ -94,7 +94,7 @@ template <int D>
 inline VectorD<D> get_random_vector_on(const UnitSimplexD<D> &s) {
   boost::exponential_distribution<> dist(1.0);
   boost::variate_generator<RandomNumberGenerator&,
-                           boost::exponential_distribution<double> >
+                           boost::exponential_distribution<double>>
       randexp(random_number_generator, dist);
   int d = s.get_dimension();
   VectorD<D> p = get_zero_vector_kd<D>(d);
@@ -152,10 +152,10 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   }*/
 
 template <int D>
-inline Vector<VectorD<D> > native_uniform_cover_unit_sphere(
+inline Vector<VectorD<D>> native_uniform_cover_unit_sphere(
     unsigned int d, unsigned int n, bool ALL) {
   static_assert(D != 3, "VectorD wrong size");
-  Vector<VectorD<D> > ret(n);
+  Vector<VectorD<D>> ret(n);
   for (unsigned int i = 0; i < std::min(d, n / (ALL ? 2 : 1)); ++i) {
     VectorD<D> v = get_basis_vector_kd(d, i);
     if (ALL) {
@@ -176,10 +176,10 @@ inline Vector<VectorD<D> > native_uniform_cover_unit_sphere(
 /*If all is true, cover the whole sphere.
  */
 template <int D>
-inline Vector<VectorD<D> > uniform_cover_sphere(unsigned int n,
+inline Vector<VectorD<D>> uniform_cover_sphere(unsigned int n,
                                                       const VectorD<D> &center,
                                                       double radius, bool ALL) {
-  Vector<VectorD<D> > ret =
+  Vector<VectorD<D>> ret =
       native_uniform_cover_unit_sphere<D>(center.get_dimension(), n, ALL);
   for (unsigned int i = 0; i < ret.size(); ++i) {
     if (!ALL && ret[i][center.get_dimension() - 1] < 0) {
@@ -193,10 +193,10 @@ inline Vector<VectorD<D> > uniform_cover_sphere(unsigned int n,
 
 /*If all is true, cover the whole sphere.
  */
-inline Vector<VectorD<4> > uniform_cover_sphere(unsigned int n,
+inline Vector<VectorD<4>> uniform_cover_sphere(unsigned int n,
                                                       const VectorD<4> &center,
                                                       double radius, bool ALL) {
-  Vector<VectorD<4> > ret =
+  Vector<VectorD<4>> ret =
       native_uniform_cover_unit_sphere<4>(center.get_dimension(), n, ALL);
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
   IMP::cgal::internal::refine_unit_sphere_cover_4d(ret, ALL);

@@ -37,9 +37,9 @@ typedef boost::disjoint_sets<LIndex, Parent> UF;
 
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                       boost::undirectedS, boost::no_property,
-                      boost::property<boost::edge_weight_t, double> > Graph;*/
+                      boost::property<boost::edge_weight_t, double>> Graph;*/
 typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
-                                boost::property<boost::edge_weight_t, double> >
+                                boost::property<boost::edge_weight_t, double>>
     Graph;
 typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 typedef Graph::edge_property_type Weight;

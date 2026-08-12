@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     ExtendedGridIndexD<4> elb(lb, lb + 4);
     ExtendedGridIndexD<4> eub(ub, ub + 4);
     std::cout << "eus " << elb << " " << eub << std::endl;
-    IMP::Vector<ExtendedGridIndexD<4> > ids =
+    IMP::Vector<ExtendedGridIndexD<4>> ids =
         ubgs.get_extended_indexes(elb, eub);
     for (unsigned int i = 0; i < ids.size(); ++i) {
       std::cout << ids[i] << "\n";

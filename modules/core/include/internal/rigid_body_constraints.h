@@ -106,7 +106,7 @@ class IMPCOREEXPORT _RigidBodyNormalizeConstraint
 #else
           : public IMP::internal::ContainerConstraint<
                _NormalizeRotation, NullSDM,
-               IMP::internal::StaticListContainer<SingletonContainer> >
+               IMP::internal::StaticListContainer<SingletonContainer>>
 #endif
 {
   friend class cereal::access;
@@ -114,7 +114,7 @@ class IMPCOREEXPORT _RigidBodyNormalizeConstraint
     ar(cereal::base_class<
           IMP::internal::ContainerConstraint<
             _NormalizeRotation, NullSDM,
-            IMP::internal::StaticListContainer<SingletonContainer> > >(this));
+            IMP::internal::StaticListContainer<SingletonContainer>>>(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(_RigidBodyNormalizeConstraint);
 public:
@@ -124,7 +124,7 @@ public:
        IMP::internal::StaticListContainer<SingletonContainer> *c,
        std::string name, bool can_skip=false)
  : IMP::internal::ContainerConstraint<_NormalizeRotation, NullSDM,
-            IMP::internal::StaticListContainer<SingletonContainer> >(
+            IMP::internal::StaticListContainer<SingletonContainer>>(
                             before, after, c, name, can_skip) {}
 #endif
 
@@ -153,7 +153,7 @@ class IMPCOREEXPORT _RigidBodyPositionConstraint
   template<class Archive> void serialize(Archive &ar) {
     ar(cereal::base_class<
                     IMP::internal::TupleConstraint<_UpdateRigidBodyMembers,
-                                      _AccumulateRigidBodyDerivatives> >(this));
+                                      _AccumulateRigidBodyDerivatives>>(this));
   }
   IMP_OBJECT_SERIALIZE_DECL(_RigidBodyPositionConstraint);
 

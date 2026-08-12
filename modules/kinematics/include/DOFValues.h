@@ -88,7 +88,7 @@ private:
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(cereal::base_class<std::vector<double> >(this));
+    ar(cereal::base_class<std::vector<double>>(this));
   }
 };
 

@@ -28,7 +28,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 //! Get indexes of container contents that involve any of the given particles
 template<typename Score> inline
 typename std::enable_if<!std::is_base_of<SingletonScore, Score>::value,
-                        std::vector<unsigned> >::type
+                        std::vector<unsigned>>::type
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument,
@@ -59,7 +59,7 @@ get_container_indexes(
 // a ParticleIndex, not a fixed-size array of indexes
 template<typename Score> inline
 typename std::enable_if<std::is_base_of<SingletonScore, Score>::value,
-                        std::vector<unsigned> >::type
+                        std::vector<unsigned>>::type
 get_container_indexes(
             Model *m,
             const Vector<typename Score::IndexArgument,
@@ -89,7 +89,7 @@ get_container_indexes(
 // the container contents or the model dependency graph change.
 template <class Score, class Container>
 class MovedIndexesMap {
-  typedef std::map<ParticleIndex, std::vector<unsigned> > CacheMap;
+  typedef std::map<ParticleIndex, std::vector<unsigned>> CacheMap;
   mutable CacheMap cache_;
   IMP::WeakPointer<Container> container_;
 

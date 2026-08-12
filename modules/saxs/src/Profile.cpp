@@ -310,7 +310,7 @@ void Profile::read_partial_profiles(const std::string& file_name) {
   }
 
   std::vector<double> qs;
-  std::vector<std::vector<double> > partial_profiles;
+  std::vector<std::vector<double>> partial_profiles;
   unsigned int psize = 6;
   // init
   partial_profiles.insert(partial_profiles.begin(), psize, Vector<double>());
@@ -724,8 +724,8 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   unsigned int number_of_distances = n / 2;
   unsigned int unit_size = particles.size() / n;
   // coordinates
-  Vector<Vector<algebra::Vector3D> > units(number_of_distances + 1,
-                                           Vector<algebra::Vector3D>(unit_size));
+  Vector<Vector<algebra::Vector3D>> units(number_of_distances + 1,
+                                          Vector<algebra::Vector3D>(unit_size));
   for (unsigned int i = 0; i <= number_of_distances; i++) {
     for (unsigned int j = 0; j < unit_size; j++) {
       units[i][j] = core::XYZ(particles[i * unit_size + j]).get_coordinates();

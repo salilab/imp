@@ -31,8 +31,8 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 template <class O>
 struct UncheckedWeakPointer
-    : IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O> > {
-  typedef IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O>> {
+  typedef IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O>> P;
   template <class Any>
   UncheckedWeakPointer(const Any& o)
       : P(o) {}
@@ -75,8 +75,8 @@ struct UncheckedWeakPointer
  */
 template <class O>
 struct WeakPointer
-    : IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O> > {
-  typedef IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O>> {
+  typedef IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O>> P;
   template <class Any>
   WeakPointer(const Any& o)
       : P(o) {}

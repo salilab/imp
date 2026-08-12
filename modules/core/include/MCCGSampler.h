@@ -43,7 +43,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
     int mc_steps_;
     typedef std::map<FloatKey, double> BallSizes;
     BallSizes ball_sizes_;
-    typedef std::map<FloatKey, std::pair<Float, Float> > Bounds;
+    typedef std::map<FloatKey, std::pair<Float, Float>> Bounds;
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;

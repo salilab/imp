@@ -61,7 +61,7 @@ inline FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
     boost::random::uniform_real_distribution<> uni_dist(0,1);
     boost::variate_generator<
          IMP::RandomNumberGenerator&,
-         boost::random::uniform_real_distribution<> >
+         boost::random::uniform_real_distribution<>>
                 uni(IMP::random_number_generator, uni_dist);
     for (int i=0;i<npoints;i++){
       algebra::Vector3D vs = algebra::get_random_vector_in(bbox);

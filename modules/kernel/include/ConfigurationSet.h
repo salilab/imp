@@ -28,7 +28,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 class IMPKERNELEXPORT ConfigurationSet : public IMP::Object {
   mutable Pointer<Model> model_;
   Pointer<Configuration> base_;
-  Vector<Pointer<Configuration> > configurations_;
+  Vector<Pointer<Configuration>> configurations_;
 
  public:
   ConfigurationSet(Model *m, std::string name = "ConfigurationSet %1%");

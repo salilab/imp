@@ -55,7 +55,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 bool print_time;
 SimpleTimer log_timer;
 #if !IMP_KERNEL_HAS_LOG4CXX
-Vector<std::pair<const char*, const void*> > log_contexts;
+Vector<std::pair<const char*, const void*>> log_contexts;
 int log_context_initializeds = -1;
 unsigned int log_indent = 0;
 std::ofstream fstream;
@@ -238,6 +238,6 @@ AdvancedFlag<bool> exceptions_on_deprecation(
 boost::unordered_set<std::string> printed_deprecation_messages;
 
 // particle validation
-Vector<std::pair<ParticleFunction, ParticleFunction> > particle_validators;
+Vector<std::pair<ParticleFunction, ParticleFunction>> particle_validators;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
