@@ -2,7 +2,7 @@
  *  \file FFTFitting.cpp
  *  \brief FFT based fitting
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
@@ -229,8 +229,8 @@ FFTFittingOutput *FFTFitting::do_global_fitting(
     const std::string &angles_filename) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
   algebra::Vector3D b1, b2;
-  b1 = bb.get_corner(0);
-  b2 = bb.get_corner(1);
+  b1 = bb.get_corner_0();
+  b2 = bb.get_corner_1();
   double max_trans = std::max(1.2 * (b2[0] - b1[0]), 1.2 * (b2[1] - b1[1]));
   max_trans = std::max(max_trans, 1.2 * (b2[2] - b2[2]));
   return do_local_fitting(

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/grid_utility.h  Utility functions for working with grids.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -38,8 +38,8 @@ inline const typename Storage::Value get_trilinearly_interpolated(
     const Vector3D &v, const typename Storage::Value &outside = 0) {
   // trilirp in z, y, x
   const Vector3D halfside = g.get_unit_cell() * .5;
-  const Vector3D bottom_sample = g.get_bounding_box().get_corner(0) + halfside;
-  const Vector3D top_sample = g.get_bounding_box().get_corner(1) - halfside;
+  const Vector3D bottom_sample = g.get_bounding_box().get_corner_0() + halfside;
+  const Vector3D top_sample = g.get_bounding_box().get_corner_1() - halfside;
   for (unsigned int i = 0; i < 3; ++i) {
     if (v[i] < bottom_sample[i] || v[i] >= top_sample[i]) {
       // std::cout << v << " was rejected." << std::endl;

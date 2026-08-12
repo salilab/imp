@@ -106,9 +106,9 @@ class GridD : public StorageT,
   };
 
   VectorD<D> get_sides(const Ints &ns, const BoundingBoxD<D> &bb) const {
-    VectorD<D> ret = bb.get_corner(1);
+    VectorD<D> ret = bb.get_corner_1();
     for (unsigned int i = 0; i < ret.get_dimension(); ++i) {
-      ret[i] -= bb.get_corner(0)[i];
+      ret[i] -= bb.get_corner_0()[i];
       ret[i] /= ns[i];
     }
     return ret;
@@ -119,7 +119,7 @@ class GridD : public StorageT,
     for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
       IMP_USAGE_CHECK(ds[i] > 0,
                       "Number of voxels cannot be 0 on dimension: " << i);
-      double bside = bb.get_corner(1)[i] - bb.get_corner(0)[i];
+      double bside = bb.get_corner_1()[i] - bb.get_corner_0()[i];
       double d = bside / ds[i];
       double cd = std::ceil(d);
       dd[i] = std::max<int>(1, static_cast<int>(cd));
@@ -138,7 +138,7 @@ class GridD : public StorageT,
   GridD(const Ints counts, const BoundingBoxD<D> &bb,
         Value default_value = Value())
       : Storage(counts, default_value),
-        Embedding(bb.get_corner(0), get_sides(counts, bb)) {
+        Embedding(bb.get_corner_0(), get_sides(counts, bb)) {
     IMP_USAGE_CHECK(D == 3, "Only in 3D");
   }
 
@@ -150,7 +150,7 @@ class GridD : public StorageT,
   GridD(double side, const BoundingBoxD<D> &bb,
         const Value &default_value = Value())
       : Storage(get_ns(Floats(bb.get_dimension(), side), bb), default_value),
-        Embedding(bb.get_corner(0),
+        Embedding(bb.get_corner_0(),
                   get_ones_vector_kd(bb.get_dimension(), side)) {
     IMP_USAGE_CHECK(
         Storage::get_is_bounded(),
@@ -165,7 +165,7 @@ class GridD : public StorageT,
   GridD(const VectorD<D> &sides, const BoundingBoxD<D> &bb,
         const Value &default_value = Value())
       : Storage(get_ns(sides.get_coordinates(), bb), default_value),
-        Embedding(bb.get_corner(0), sides) {
+        Embedding(bb.get_corner_0(), sides) {
     IMP_USAGE_CHECK(
         Storage::get_is_bounded(),
         "This grid constructor can only be used with bounded grids.");
@@ -270,12 +270,12 @@ class GridD : public StorageT,
   void set_bounding_box(const BoundingBoxD<D> &bb3) {
     Floats nuc(bb3.get_dimension());
     for (unsigned int i = 0; i < bb3.get_dimension(); ++i) {
-      double side = bb3.get_corner(1)[i] - bb3.get_corner(0)[i];
+      double side = bb3.get_corner_1()[i] - bb3.get_corner_0()[i];
       IMP_USAGE_CHECK(side > 0, "Can't have flat grid");
       nuc[i] = side / Storage::get_number_of_voxels(i);
     }
     Embedding::set_unit_cell(VectorD<D>(nuc.begin(), nuc.end()));
-    Embedding::set_origin(bb3.get_corner(0));
+    Embedding::set_origin(bb3.get_corner_0());
   }
 
   /** \name Get nearest
@@ -327,8 +327,8 @@ class GridD : public StorageT,
     return VoxelIterator(indexes_begin(bb), GetVoxel(this));
   }
   VoxelIterator voxels_end(const BoundingBoxD<D> &bb) {
-    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    // ExtendedIndex lb= get_extended_index(bb.get_corner_0());
+    // ExtendedIndex ub= get_extended_index(bb.get_corner_1());
     return VoxelIterator(indexes_end(bb), GetVoxel(this));
   }
 
@@ -342,13 +342,13 @@ class GridD : public StorageT,
   using Storage::indexes_end;
   typename Storage::IndexIterator indexes_begin(const BoundingBoxD<D> &bb)
       const {
-    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
-    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner_0());
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner_1());
     return Storage::indexes_begin(lb, ub);
   }
   typename Storage::IndexIterator indexes_end(const BoundingBoxD<D> &) const {
-    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    // ExtendedIndex lb= get_extended_index(bb.get_corner_0());
+    // ExtendedIndex ub= get_extended_index(bb.get_corner_1());
     return Storage::indexes_end(ExtendedGridIndexD<D>(),
                                 ExtendedGridIndexD<D>());
   }
@@ -359,14 +359,14 @@ class GridD : public StorageT,
       ExtendedIndexIterator;
   ExtendedIndexIterator extended_indexes_begin(const BoundingBoxD<D> &bb)
       const {
-    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner(0));
-    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner(1));
+    ExtendedGridIndexD<D> lb = get_extended_index(bb.get_corner_0());
+    ExtendedGridIndexD<D> ub = get_extended_index(bb.get_corner_1());
     ExtendedGridIndexD<D> eub = ub.get_offset(1, 1, 1);
     return ExtendedIndexIterator(lb, eub);
   }
   ExtendedIndexIterator extended_indexes_end(const BoundingBoxD<D> &) const {
-    // ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    // ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+    // ExtendedIndex lb= get_extended_index(bb.get_corner_0());
+    // ExtendedIndex ub= get_extended_index(bb.get_corner_1());
     return ExtendedIndexIterator();
   }
   using Storage::get_indexes;

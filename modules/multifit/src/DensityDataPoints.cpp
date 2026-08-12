@@ -2,7 +2,7 @@
  *  \file DataPoints.cpp
  *  \brief Handling of data for anchor points segmentation
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/DensityDataPoints.h>
@@ -26,8 +26,8 @@ void DensityDataPoints::set_density(const DensGrid &dens) {
   float spacing = dens.get_unit_cell()[0];
   dens_.reset(new DensGrid(spacing, bb));
   // copy data
-  DensGrid::ExtendedIndex lb = dens.get_extended_index(bb.get_corner(0)),
-                          ub = dens.get_extended_index(bb.get_corner(1));
+  DensGrid::ExtendedIndex lb = dens.get_extended_index(bb.get_corner_0()),
+                          ub = dens.get_extended_index(bb.get_corner_1());
   for (DensGrid::IndexIterator it = dens.indexes_begin(lb, ub);
        it != dens.indexes_end(lb, ub); ++it) {
     (*dens_)[*it] = dens[*it];
@@ -38,8 +38,8 @@ void DensityDataPoints::set_max_min_density_values() {
   max_value_ = -INT_MAX;
   min_value_ = INT_MAX;
   algebra::BoundingBox3D bb = dens_->get_bounding_box();
-  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner(0)),
-                          ub = dens_->get_extended_index(bb.get_corner(1));
+  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner_0()),
+                          ub = dens_->get_extended_index(bb.get_corner_1());
   for (DensGrid::IndexIterator it = dens_->indexes_begin(lb, ub);
        it != dens_->indexes_end(lb, ub); ++it) {
     if ((*dens_)[*it] < min_value_) min_value_ = (*dens_)[*it];
@@ -62,8 +62,8 @@ DensityDataPoints::DensityDataPoints(em::DensityMap *dens,
 void DensityDataPoints::populate_data() {
   algebra::Vector3Ds vecs;
   algebra::BoundingBox3D bb = dens_->get_bounding_box();
-  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner(0)),
-                          ub = dens_->get_extended_index(bb.get_corner(1));
+  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner_0()),
+                          ub = dens_->get_extended_index(bb.get_corner_1());
   for (DensGrid::IndexIterator it = dens_->indexes_begin(lb, ub);
        it != dens_->indexes_end(lb, ub); ++it) {
     if ((*dens_)[*it] > threshold_) {
@@ -121,8 +121,8 @@ em::DensityMap *grid2map(const DensGrid &dg, float spacing) {
   algebra::BoundingBox3D bb = algebra::get_bounding_box(dg);
   em::DensityMap *r_map = em::create_density_map(bb, spacing);
   r_map->set_origin(dg.get_origin());
-  DensGrid::ExtendedIndex lb = dg.get_extended_index(bb.get_corner(0)),
-                          ub = dg.get_extended_index(bb.get_corner(1));
+  DensGrid::ExtendedIndex lb = dg.get_extended_index(bb.get_corner_0()),
+                          ub = dg.get_extended_index(bb.get_corner_1());
   for (DensGrid::IndexIterator it = dg.indexes_begin(lb, ub);
        it != dg.indexes_end(lb, ub); ++it) {
     algebra::Vector3D cen = dg.get_center(*it);

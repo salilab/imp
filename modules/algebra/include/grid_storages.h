@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_storages.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -160,7 +160,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     typename Grid::ExtendedIndex lb(typename Grid::ExtendedIndex::Filled(),
                                     g.get_dimension(), 0);
     typename Grid::ExtendedIndex ub(BoundedGridRangeD<D>::get_end_index());
-    typename Grid::Vector corner = g.get_bounding_box().get_corner(0);
+    typename Grid::Vector corner = g.get_bounding_box().get_corner_0();
     typename Grid::Vector cell = g.get_unit_cell();
     typename Grid::Index cur;
     typename Grid::Vector center;

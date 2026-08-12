@@ -2,7 +2,7 @@
  *  \file SampledDensityMap.cpp
  *  \brief Sampled density map.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -359,7 +359,7 @@ void SampledDensityMap::determine_grid_size(double resolution,
     IMP_LOG_VERBOSE(std::endl);
     IMP_LOG_VERBOSE("max radius is: " << max_radius << std::endl);
   }
-  set_header(bb.get_corner(0), bb.get_corner(1), max_radius, resolution,
+  set_header(bb.get_corner_0(), bb.get_corner_1(), max_radius, resolution,
              voxel_size, sig_cutoff);
   data_.reset(new double[header_.get_number_of_voxels()]);
 }

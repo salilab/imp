@@ -2,7 +2,7 @@
  *  \file IMP/algebra/vector_generators.h
  *  \brief Functions to generate vectors.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -180,18 +180,18 @@ Vector<VectorD<D> > get_grid_interior_cover_by_spacing(
     const BoundingBoxD<D> &bb, double s) {
   const unsigned int dim = bb.get_dimension();
   Ints ns(dim);
-  algebra::VectorD<D> start(bb.get_corner(0));
-  algebra::VectorD<D> spacing(bb.get_corner(0));
+  algebra::VectorD<D> start(bb.get_corner_0());
+  algebra::VectorD<D> spacing(bb.get_corner_0());
   for (unsigned int i = 0; i < dim; ++i) {
-    double w = bb.get_corner(1)[i] - bb.get_corner(0)[i];
+    double w = bb.get_corner_1()[i] - bb.get_corner_0()[i];
     if (w < s) {
-      start[i] = bb.get_corner(0)[i] + w * .5;
+      start[i] = bb.get_corner_0()[i] + w * .5;
       spacing[i] = 1;
       ns[i] = 1;
     } else {
       ns[i] = static_cast<int>(std::floor(w / s));
       spacing[i] = w / ns[i];
-      start[i] = bb.get_corner(0)[i] + spacing[i] * .5;
+      start[i] = bb.get_corner_0()[i] + spacing[i] * .5;
     }
   }
   Ints cur(D, 0);

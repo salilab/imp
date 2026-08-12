@@ -46,14 +46,14 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
   unsigned int n[3];
   float hspace = spacing / 2.0;
   algebra::Vector3D offset(hspace, hspace, hspace);
-  algebra::Vector3D wid = bb.get_corner(1) - bb.get_corner(0);
+  algebra::Vector3D wid = bb.get_corner_1() - bb.get_corner_0();
   for (unsigned int i = 0; i < 3; ++i) {
     // Account for machine rounding - don't round 40.0000001 up to 41
     // (this would cause a "voxels don't match" check to fail later)
     n[i] = static_cast<int>(std::ceil(wid[i] / spacing - 1e-6));
   }
   ret->set_void_map(n[0], n[1], n[2]);
-  ret->set_origin(bb.get_corner(0) + offset);
+  ret->set_origin(bb.get_corner_0() + offset);
   ret->update_voxel_size(spacing);
   ret->get_header_writable()->compute_xyz_top();
   ret->set_name("created density map");
@@ -578,19 +578,19 @@ void DensityMap::add(const DensityMap *other) {
   int y_top_ind = header_.get_ny();
   int z_top_ind = header_.get_nz();
   /* Convert coordinates from edges of voxels to centers */
-  x_orig_ind = get_dim_index_by_location(bb.get_corner(0)[0] + hspace, 0);
-  y_orig_ind = get_dim_index_by_location(bb.get_corner(0)[1] + hspace, 1);
-  z_orig_ind = get_dim_index_by_location(bb.get_corner(0)[2] + hspace, 2);
-  x_top_ind = get_dim_index_by_location(bb.get_corner(1)[0] + hspace, 0);
-  y_top_ind = get_dim_index_by_location(bb.get_corner(1)[1] + hspace, 1);
-  z_top_ind = get_dim_index_by_location(bb.get_corner(1)[2] + hspace, 2);
+  x_orig_ind = get_dim_index_by_location(bb.get_corner_0()[0] + hspace, 0);
+  y_orig_ind = get_dim_index_by_location(bb.get_corner_0()[1] + hspace, 1);
+  z_orig_ind = get_dim_index_by_location(bb.get_corner_0()[2] + hspace, 2);
+  x_top_ind = get_dim_index_by_location(bb.get_corner_1()[0] + hspace, 0);
+  y_top_ind = get_dim_index_by_location(bb.get_corner_1()[1] + hspace, 1);
+  z_top_ind = get_dim_index_by_location(bb.get_corner_1()[2] + hspace, 2);
 
   int ox_orig_ind, oy_orig_ind, oz_orig_ind;
-  ox_orig_ind = other->get_dim_index_by_location(bb.get_corner(0)[0] + hspace,
+  ox_orig_ind = other->get_dim_index_by_location(bb.get_corner_0()[0] + hspace,
                                                  0);
-  oy_orig_ind = other->get_dim_index_by_location(bb.get_corner(0)[1] + hspace,
+  oy_orig_ind = other->get_dim_index_by_location(bb.get_corner_0()[1] + hspace,
                                                  1);
-  oz_orig_ind = other->get_dim_index_by_location(bb.get_corner(0)[2] + hspace,
+  oz_orig_ind = other->get_dim_index_by_location(bb.get_corner_0()[2] + hspace,
                                                  2);
 
   long my_znxny, other_znxny, my_znxny_ynx, other_znxny_ynx;
@@ -1055,8 +1055,8 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   algebra::Vector3D ll, ur;
   float hspace = header_.get_spacing() / 2.0;
   algebra::Vector3D offset(hspace, hspace, hspace);
-  ll = bb.get_corner(0);
-  ur = bb.get_corner(1);
+  ll = bb.get_corner_0();
+  ur = bb.get_corner_1();
   if (!is_part_of_volume(ll + offset)) {
     ll = get_origin() - offset;
   }
@@ -1078,14 +1078,14 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   // the bounding box in the original map, converted to voxel centers
   int z_start, y_start, x_start;
   int z_end, y_end, x_end;
-  x_start = get_dim_index_by_location(snapped_bb.get_corner(0)[0] + hspace, 0);
-  y_start = get_dim_index_by_location(snapped_bb.get_corner(0)[1] + hspace, 1);
-  z_start = get_dim_index_by_location(snapped_bb.get_corner(0)[2] + hspace, 2);
+  x_start = get_dim_index_by_location(snapped_bb.get_corner_0()[0] + hspace, 0);
+  y_start = get_dim_index_by_location(snapped_bb.get_corner_0()[1] + hspace, 1);
+  z_start = get_dim_index_by_location(snapped_bb.get_corner_0()[2] + hspace, 2);
   IMP_INTERNAL_CHECK(x_start >= 0 && y_start >= 0 && z_start >= 0,
                      "Crop origin outside density");
-  x_end = get_dim_index_by_location(snapped_bb.get_corner(1)[0] + hspace, 0);
-  y_end = get_dim_index_by_location(snapped_bb.get_corner(1)[1] + hspace, 1);
-  z_end = get_dim_index_by_location(snapped_bb.get_corner(1)[2] + hspace, 2);
+  x_end = get_dim_index_by_location(snapped_bb.get_corner_1()[0] + hspace, 0);
+  y_end = get_dim_index_by_location(snapped_bb.get_corner_1()[1] + hspace, 1);
+  z_end = get_dim_index_by_location(snapped_bb.get_corner_1()[2] + hspace, 2);
   c_nx = c_header->get_nx();
   c_ny = c_header->get_ny();
   for (int iz = z_start; iz < z_end; iz++) {  // z slowest

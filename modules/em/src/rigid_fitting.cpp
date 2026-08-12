@@ -2,7 +2,7 @@
  *  \file rigid_fitting.cpp
  *  \brief Rigid fitting functionality
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -432,17 +432,17 @@ Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
   algebra::Vector3D half_vox =
       algebra::Vector3D(1, 1, 1) * union_map->get_spacing() / 2;
   ux_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner(0) + half_vox, 0);
+      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 0);
   uy_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner(0) + half_vox, 1);
+      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 1);
   uz_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner(0) + half_vox, 2);
+      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 2);
   ux_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner(1) - half_vox, 0);
+      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 0);
   uy_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner(1) - half_vox, 1);
+      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 1);
   uz_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner(1) - half_vox, 2);
+      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 2);
   for (int iz = uz_start; iz < uz_end; iz++) {  // z slowest
     uz_temp = iz * uheader->get_nx() * uheader->get_ny();
     oz_temp = (iz - uz_start) * onx * ony;

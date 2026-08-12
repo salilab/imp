@@ -2,7 +2,7 @@
  *  \file BoxSweepClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -76,8 +76,8 @@ struct BoxNBLBbox {
   BoxNBLBbox(const algebra::BoundingBox3D &box, int i) : box_(box), id_(i) {}
   static unsigned int dimension() { return 3; }
   int id() const { return id_; }
-  NT min_coord(unsigned int i) const { return box_.get_corner(0)[i]; }
-  NT max_coord(unsigned int i) const { return box_.get_corner(1)[i]; }
+  NT min_coord(unsigned int i) const { return box_.get_corner_0()[i]; }
+  NT max_coord(unsigned int i) const { return box_.get_corner_1()[i]; }
   // make it so I can reused the callback provide by NBLSS
   operator const algebra::BoundingBox3D &() const { return box_; }
 };

@@ -137,7 +137,7 @@ void setup_as_approximation_internal(Particle *p,
     for (unsigned int i = 0; i < ss.size(); ++i) {
       bb += get_bounding_box(ss[i]);
     }
-    resolution = (bb.get_corner(0) - bb.get_corner(1)).get_magnitude() / 2.0;
+    resolution = (bb.get_corner_0() - bb.get_corner_1()).get_magnitude() / 2.0;
   }
   if (mass >= 0) {
     m = mass;

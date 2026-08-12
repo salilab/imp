@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/polyhedrons.h>
@@ -181,31 +181,31 @@ CGAL::Nef_polyhedron_3<K> create_cube(const algebra::BoundingBoxD<3> &bb) {
   CGAL_precondition(p.is_valid());
   typedef typename CGAL::Polyhedron_3<K>::Halfedge_handle Halfedge_handle;
   Halfedge_handle h = p.make_tetrahedron(
-      typename K::Point_3(bb.get_corner(1)[0], bb.get_corner(0)[1],
-                          bb.get_corner(0)[2]),
-      typename K::Point_3(bb.get_corner(0)[0], bb.get_corner(0)[1],
-                          bb.get_corner(1)[2]),
-      typename K::Point_3(bb.get_corner(0)[0], bb.get_corner(0)[1],
-                          bb.get_corner(0)[2]),
-      typename K::Point_3(bb.get_corner(0)[0], bb.get_corner(1)[1],
-                          bb.get_corner(0)[2]));
+      typename K::Point_3(bb.get_corner_1()[0], bb.get_corner_0()[1],
+                          bb.get_corner_0()[2]),
+      typename K::Point_3(bb.get_corner_0()[0], bb.get_corner_0()[1],
+                          bb.get_corner_1()[2]),
+      typename K::Point_3(bb.get_corner_0()[0], bb.get_corner_0()[1],
+                          bb.get_corner_0()[2]),
+      typename K::Point_3(bb.get_corner_0()[0], bb.get_corner_1()[1],
+                          bb.get_corner_0()[2]));
   Halfedge_handle g = h->next()->opposite()->next();  // Fig. (a)
   p.split_edge(h->next());
   p.split_edge(g->next());
   p.split_edge(g);  // Fig. (b)
   h->next()->vertex()->point() = typename K::Point_3(
-      bb.get_corner(1)[0], bb.get_corner(0)[1], bb.get_corner(1)[2]);
+      bb.get_corner_1()[0], bb.get_corner_0()[1], bb.get_corner_1()[2]);
   g->next()->vertex()->point() = typename K::Point_3(
-      bb.get_corner(0)[0], bb.get_corner(1)[1], bb.get_corner(1)[2]);
+      bb.get_corner_0()[0], bb.get_corner_1()[1], bb.get_corner_1()[2]);
   g->opposite()->vertex()->point() = typename K::Point_3(
-      bb.get_corner(1)[0], bb.get_corner(1)[1], bb.get_corner(0)[2]);
+      bb.get_corner_1()[0], bb.get_corner_1()[1], bb.get_corner_0()[2]);
   // Fig. (c)
   Halfedge_handle f =
       p.split_facet(g->next(), g->next()->next()->next());  // Fig. (d)
   Halfedge_handle e = p.split_edge(f);
   e->vertex()->point() =
-      typename K::Point_3(bb.get_corner(1)[0], bb.get_corner(1)[1],
-                          bb.get_corner(1)[2]);  // Fig. (e)
+      typename K::Point_3(bb.get_corner_1()[0], bb.get_corner_1()[1],
+                          bb.get_corner_1()[2]);  // Fig. (e)
   p.split_facet(e, f->next()->next());           // Fig. (f)
   CGAL_postcondition(p.is_valid());
   return p;

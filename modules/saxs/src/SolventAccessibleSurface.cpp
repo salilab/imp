@@ -1,7 +1,7 @@
 /**
  * \file SolventAccessibleSurface \brief
  *
- * Copyright 2007-2025 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,7 +21,7 @@ namespace {
     static const double DEFAULT_SPACING = 2.0;
     // Limit memory usage to ~20GiB
     static const unsigned max_extent = 1000000000;
-    algebra::Vector3D box_span = bb.get_corner(1) - bb.get_corner(0);
+    algebra::Vector3D box_span = bb.get_corner_1() - bb.get_corner_0();
     double dx = std::abs(box_span[0]);
     double dy = std::abs(box_span[1]);
     double dz = std::abs(box_span[2]);
@@ -62,8 +62,8 @@ Vector<double> SolventAccessibleSurface::get_solvent_accessibility(
     // query
     algebra::BoundingBox3D bb(coordinates[i]);
     bb += radius;
-    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
-                        ub = grid.get_extended_index(bb.get_corner(1));
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner_0()),
+                        ub = grid.get_extended_index(bb.get_corner_1());
     Vector<int> neighbours1, neighbours2;
     for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
          it != grid.indexes_end(lb, ub); ++it) {

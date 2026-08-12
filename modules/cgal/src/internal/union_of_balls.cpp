@@ -3,7 +3,7 @@
  *  \brief computation of molecular volumetrics :
  *   surface and area of an union of balls
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>
@@ -1931,16 +1931,18 @@ std::pair<double, double> get_surface_area_and_volume(
     }
     bb += 1;
     T.insert(Wpoint(
-        Point(bb.get_corner(0)[0], bb.get_corner(0)[1], bb.get_corner(0)[2]),
+        Point(bb.get_corner_0()[0], bb.get_corner_0()[1], bb.get_corner_0()[2]),
         0));
     if (T.dimension() < 3) {
       T.insert(Wpoint(
-          Point(bb.get_corner(0)[0], bb.get_corner(1)[1], bb.get_corner(0)[2]),
+          Point(bb.get_corner_0()[0], bb.get_corner_1()[1],
+                bb.get_corner_0()[2]),
           0));
     }
     if (T.dimension() < 3) {
       T.insert(Wpoint(
-          Point(bb.get_corner(0)[0], bb.get_corner(0)[1], bb.get_corner(1)[2]),
+          Point(bb.get_corner_0()[0], bb.get_corner_0()[1],
+                bb.get_corner_1()[2]),
           0));
     }
   }

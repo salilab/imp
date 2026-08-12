@@ -4,7 +4,7 @@
  * projection directions on a sphere
  *
  *  \authors Dina Schneidman
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -57,8 +57,8 @@ void ProjectionSphere::get_adjacent_rotations_and_axes(const IMP::algebra::Vecto
   for (unsigned int i = 0; i < curr_axes.size(); i++) {
     IMP::algebra::BoundingBox3D bb(curr_axes[i]);
     bb += radius;
-    Grid::ExtendedIndex lb = grid_.get_extended_index(bb.get_corner(0)),
-                        ub = grid_.get_extended_index(bb.get_corner(1));
+    Grid::ExtendedIndex lb = grid_.get_extended_index(bb.get_corner_0()),
+                        ub = grid_.get_extended_index(bb.get_corner_1());
 
     for (Grid::IndexIterator it = grid_.indexes_begin(lb, ub);
        it != grid_.indexes_end(lb, ub); ++it) {

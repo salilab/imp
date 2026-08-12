@@ -1,7 +1,7 @@
 /**
  *  \file grid_range_D.h   \brief Simple D vector class.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,13 +48,13 @@ class GridIteratorD {
   const GridIteratorD &operator++() {
     for (unsigned int i = 0; i < data_->bb.get_dimension(); ++i) {
       cur_[i] += data_->step;
-      if (cur_[i] > data_->bb.get_corner(1)[i]) {
-        cur_[i] = data_->bb.get_corner(0)[i];
+      if (cur_[i] > data_->bb.get_corner_1()[i]) {
+        cur_[i] = data_->bb.get_corner_0()[i];
       } else {
         return *this;
       }
     }
-    cur_ = data_->bb.get_corner(1);
+    cur_ = data_->bb.get_corner_1();
     return *this;
   }
 
@@ -100,10 +100,10 @@ class GridRangeD {
       : data_(new GridRangeData<D>(bb, step)) {}
 #if !defined(SWIG)
   const_iterator begin() const {
-    return iterator(data_, data_->bb.get_corner(0));
+    return iterator(data_, data_->bb.get_corner_0());
   }
   const_iterator end() const {
-    return iterator(data_, data_->bb.get_corner(1));
+    return iterator(data_, data_->bb.get_corner_1());
   }
 #endif
   Vector<VectorD<D> > get() const {

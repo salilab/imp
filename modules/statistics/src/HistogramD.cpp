@@ -1,7 +1,7 @@
 /**
  *  \file Histogram.cpp  \brief simple histogram class
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/statistics/HistogramD.h>
@@ -19,6 +19,6 @@ double get_quantile(const Histogram1D &h, double fraction) {
       return h.get_counts().get_center(gi)[0];
     }
   }
-  return h.get_counts().get_bounding_box().get_corner(1)[0];
+  return h.get_counts().get_bounding_box().get_corner_1()[0];
 }
 IMPSTATISTICS_END_NAMESPACE

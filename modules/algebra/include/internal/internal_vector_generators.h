@@ -1,7 +1,7 @@
 /**
  *  \file cgal_predicates.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2024 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
@@ -26,10 +26,10 @@
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 template <int D>
 inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
-  VectorD<D> ret = bb.get_corner(0);  // some appropriate vector
+  VectorD<D> ret = bb.get_corner_0();  // some appropriate vector
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
-    ::boost::random::uniform_real_distribution<> rand(bb.get_corner(0)[i],
-                                                      bb.get_corner(1)[i]);
+    ::boost::random::uniform_real_distribution<> rand(bb.get_corner_0()[i],
+                                                      bb.get_corner_1()[i]);
     ret[i] = rand(random_number_generator);
   }
   return ret;
@@ -276,8 +276,8 @@ struct RandomVectorOnBB {
   static VectorD<D> get(BoundingBoxD<D> bb) {
     IMP_USAGE_CHECK(D > 0, "Does not work in runtime D yet");
     boost::scoped_array<double> areas(new double[bb.get_dimension() * 2]);
-    VectorD<D> lb = bb.get_corner(0);
-    VectorD<D> ub = bb.get_corner(1);
+    VectorD<D> lb = bb.get_corner_0();
+    VectorD<D> ub = bb.get_corner_1();
     for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
       areas[i] = 1;
       for (unsigned int j = 1; j < bb.get_dimension(); ++j) {

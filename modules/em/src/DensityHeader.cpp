@@ -2,7 +2,7 @@
  *  \file DensityHeader.cpp
  *  \brief Metadata for a density file.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -151,8 +151,8 @@ void DensityHeader::update_cell_dimensions() {
 DensityHeader create_density_header(const algebra::BoundingBoxD<3> &bb,
                                     float spacing) {
   DensityHeader header;
-  algebra::Vector3D origin = bb.get_corner(0);
-  algebra::Vector3D top = bb.get_corner(1);
+  algebra::Vector3D origin = bb.get_corner_0();
+  algebra::Vector3D top = bb.get_corner_1();
   header.set_xorigin(origin[0]);
   header.set_yorigin(origin[1]);
   header.set_zorigin(origin[2]);

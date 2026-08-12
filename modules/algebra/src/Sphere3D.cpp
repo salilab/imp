@@ -2,7 +2,7 @@
  *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Sphere3D.h"
 #include <IMP/Index.h>
@@ -29,7 +29,7 @@ Sphere3D get_enclosing_sphere(const Sphere3Ds &ss) {
   for (unsigned int i = 1; i < ss.size(); ++i) {
     bb += get_bounding_box(ss[i]);
   }
-  Vector3D c = .5 * (bb.get_corner(0) + bb.get_corner(1));
+  Vector3D c = .5 * (bb.get_corner_0() + bb.get_corner_1());
   double r = 0;
   for (unsigned int i = 0; i < ss.size(); ++i) {
     double d = (c - ss[i].get_center()).get_magnitude();

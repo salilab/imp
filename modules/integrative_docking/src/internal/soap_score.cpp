@@ -2,7 +2,7 @@
  * \file IMP/integrative_docking/soap_score.cpp
  * \brief
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -39,8 +39,8 @@ double soap_score(const IMP::score_functor::Soap* soap_score,
     // access grid to see if interface atom
     IMP::algebra::BoundingBox3D bb(v);
     bb += distance_threshold;
-    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
-                        ub = grid.get_extended_index(bb.get_corner(1));
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner_0()),
+                        ub = grid.get_extended_index(bb.get_corner_1());
     for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
          it != grid.indexes_end(lb, ub); ++it) {
       for (unsigned int vIndex = 0; vIndex < grid[*it].size(); vIndex++) {
@@ -94,8 +94,8 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
     // access grid to see if interface atom
     IMP::algebra::BoundingBox3D bb(v);
     bb += distance_threshold;
-    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
-                        ub = grid.get_extended_index(bb.get_corner(1));
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner_0()),
+                        ub = grid.get_extended_index(bb.get_corner_1());
     for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
          it != grid.indexes_end(lb, ub); ++it) {
       for (unsigned int vIndex = 0; vIndex < grid[*it].size(); vIndex++) {

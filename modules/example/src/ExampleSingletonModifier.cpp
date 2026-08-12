@@ -3,7 +3,7 @@
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,13 +20,13 @@ void ExampleSingletonModifier::apply_index(Model *m,
   core::XYZ d(m, pi);
   for (unsigned int i = 0; i < 3; ++i) {
     // shift the coordinate until it is in the box
-    while (d.get_coordinate(i) < bb_.get_corner(0)[i]) {
+    while (d.get_coordinate(i) < bb_.get_corner_0()[i]) {
       d.set_coordinate(i, d.get_coordinate(i) +
-                              (bb_.get_corner(1)[i] - bb_.get_corner(0)[i]));
+                              (bb_.get_corner_1()[i] - bb_.get_corner_0()[i]));
     }
-    while (d.get_coordinate(i) > bb_.get_corner(1)[i]) {
+    while (d.get_coordinate(i) > bb_.get_corner_1()[i]) {
       d.set_coordinate(i, d.get_coordinate(i) -
-                              (bb_.get_corner(1)[i] - bb_.get_corner(0)[i]));
+                              (bb_.get_corner_1()[i] - bb_.get_corner_0()[i]));
     }
   }
 }

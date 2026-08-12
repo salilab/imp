@@ -2,7 +2,7 @@
  *  \file VolumeRestraint.cpp
  *  \brief A restraint that prevents spheres from inter-penetrating.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,7 +37,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       XYZR d(_1);
       bb3+= algebra::get_bounding_box(d.get_sphere());
     });
-  algebra::Vector3D diag= bb3.get_corner(1)-bb3.get_corner(0);
+  algebra::Vector3D diag= bb3.get_corner_1()-bb3.get_corner_0();
   double ms= std::max(diag[0], std::max(diag[1], diag[2]));
   Ints volumes(sc_->get_number_of_particles(), 0),
     areas(sc_->get_number_of_particles(), 0);
@@ -45,8 +45,8 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   int count=0;
   if (ms >.0001) {
     algebra::Vector3D vms(ms,ms,ms);
-    bb3= algebra::BoundingBox3D(bb3.get_corner(0)-.1*vms,
-                                bb3.get_corner(0)+1.2*vms);
+    bb3= algebra::BoundingBox3D(bb3.get_corner_0()-.1*vms,
+                                bb3.get_corner_0()+1.2*vms);
     IMP_LOG_VERBOSE( "Bounding box is " << bb3 << std::endl);
     grid_.set_bounding_box(bb3);
     std::fill(grid_.all_voxels_begin(), grid_.all_voxels_end(), -1);
@@ -62,9 +62,9 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         algebra::Sphere3D s= d.get_sphere();
         algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
         Grid::ExtendedIndex vl
-          = grid_.get_extended_index(bb.get_corner(0));
+          = grid_.get_extended_index(bb.get_corner_0());
         Grid::ExtendedIndex vu
-          = grid_.get_extended_index(bb.get_corner(1));
+          = grid_.get_extended_index(bb.get_corner_1());
         //std::cout << vl << " " << vu << std::endl;
         for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
              it != grid_.indexes_end(vl, vu); ++it) {

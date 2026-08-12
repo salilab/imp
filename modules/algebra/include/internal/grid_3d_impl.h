@@ -1,7 +1,7 @@
 /**
  *  \file grid_3d_impl.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,7 @@ void compute_voxel(
     const Vector3D &v, int *ivox, Vector3D &remainder) {
   // std::cout << "getting " << v << std::endl;
   for (unsigned int i = 0; i < 3; ++i) {
-    double fvox = (v[i] - g.get_bounding_box().get_corner(0)[i]) *
+    double fvox = (v[i] - g.get_bounding_box().get_corner_0()[i]) *
                   g.get_inverse_unit_cell()[i];
     ivox[i] = static_cast<int>(std::floor(fvox));
     // std::cout << "setting ivox " << i << " to "

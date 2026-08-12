@@ -1,7 +1,7 @@
 /**
  *  \file test_grid.cpp   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra/standard_grids.h>
@@ -14,12 +14,12 @@ typedef DenseGrid3D<int> Grid;
 
 namespace {
 bool intersects(BoundingBox3D a, BoundingBox3D b) {
-  Vector3D mn(std::max(a.get_corner(0)[0], b.get_corner(0)[0]),
-              std::max(a.get_corner(0)[1], b.get_corner(0)[1]),
-              std::max(a.get_corner(0)[2], b.get_corner(0)[2]));
-  Vector3D mx(std::min(a.get_corner(1)[0], b.get_corner(1)[0]),
-              std::min(a.get_corner(1)[1], b.get_corner(1)[1]),
-              std::min(a.get_corner(1)[2], b.get_corner(1)[2]));
+  Vector3D mn(std::max(a.get_corner_0()[0], b.get_corner_0()[0]),
+              std::max(a.get_corner_0()[1], b.get_corner_0()[1]),
+              std::max(a.get_corner_0()[2], b.get_corner_0()[2]));
+  Vector3D mx(std::min(a.get_corner_1()[0], b.get_corner_1()[0]),
+              std::min(a.get_corner_1()[1], b.get_corner_1()[1]),
+              std::min(a.get_corner_1()[2], b.get_corner_1()[2]));
   return (mn[0] <= mx[0] && mn[1] <= mx[1] && mn[2] <= mx[2]);
 }
 

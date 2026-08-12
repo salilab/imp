@@ -2,7 +2,7 @@
  *  \file vector_search.cpp
  *  \brief Support for rigid bodies.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,8 +37,8 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   double distance2 = get_squared(distance);
   IMP_LOG_VERBOSE(
       "Searching from " << bb << " which is "
-                        << grid_.get_extended_index(bb.get_corner(0)) << " to "
-                        << grid_.get_extended_index(bb.get_corner(1))
+                        << grid_.get_extended_index(bb.get_corner_0()) << " to "
+                        << grid_.get_extended_index(bb.get_corner_1())
                         << std::endl);
   for (Grid::IndexIterator it = grid_.indexes_begin(bb);
        it != grid_.indexes_end(bb); ++it) {

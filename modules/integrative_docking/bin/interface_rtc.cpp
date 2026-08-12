@@ -200,8 +200,8 @@ int main(int argc, char** argv) {
     // access grid to see if interface atom
     IMP::algebra::BoundingBox3D bb(coordinates2[ligand_atom_index]);
     bb += radius;
-    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
-                        ub = grid.get_extended_index(bb.get_corner(1));
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner_0()),
+                        ub = grid.get_extended_index(bb.get_corner_1());
     for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
          it != grid.indexes_end(lb, ub); ++it) {
       for (unsigned int vIndex = 0; vIndex < grid[*it].size(); vIndex++) {

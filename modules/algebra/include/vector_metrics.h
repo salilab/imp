@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/vector_metrics.h   \brief Functions to generate vectors.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,7 +72,7 @@ class IMPALGEBRAEXPORT MaxVectorKDMetric : public VectorKDMetric {
     IMP_USAGE_CHECK(!vs.empty(), "Needs things to have a centroid");
     BoundingBoxKD bb = std::accumulate(vs.begin(), vs.end(),
                                        BoundingBoxKD(vs[0].get_dimension()));
-    return .5 * (bb.get_corner(0) + bb.get_corner(1));
+    return .5 * (bb.get_corner_0() + bb.get_corner_1());
   }
   IMP_OBJECT_METHODS(MaxVectorKDMetric);
 };

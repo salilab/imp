@@ -217,7 +217,7 @@ void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
   FloatKeys xyzks = XYZ::get_xyz_keys();
   for (unsigned int i = 0; i < xyzks.size(); ++i) {
     default_parameters_.bounds_[xyzks[i]] =
-        std::make_pair(bb.get_corner(0)[i], bb.get_corner(1)[i]);
+        std::make_pair(bb.get_corner_0()[i], bb.get_corner_1()[i]);
   }
 }
 

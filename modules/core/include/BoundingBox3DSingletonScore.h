@@ -2,7 +2,7 @@
  *  \file IMP/core/BoundingBox3DSingletonScore.h
  *  \brief Score particles based on a bounding box
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H
@@ -115,11 +115,11 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
   algebra::Vector3D cp;
   bool outside = false;
   for (unsigned int i = 0; i < 3; ++i) {
-    if (bb_.get_corner(0)[i] > d.get_coordinate(i)) {
-      cp[i] = bb_.get_corner(0)[i];
+    if (bb_.get_corner_0()[i] > d.get_coordinate(i)) {
+      cp[i] = bb_.get_corner_0()[i];
       outside = true;
-    } else if (bb_.get_corner(1)[i] < d.get_coordinate(i)) {
-      cp[i] = bb_.get_corner(1)[i];
+    } else if (bb_.get_corner_1()[i] < d.get_coordinate(i)) {
+      cp[i] = bb_.get_corner_1()[i];
       outside = true;
     } else {
       cp[i] = d.get_coordinate(i);

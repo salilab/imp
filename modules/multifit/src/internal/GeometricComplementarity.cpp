@@ -1,7 +1,7 @@
 /**
  *  \file GeometricComplementarity.cpp   \brief Geometric complementarity.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -163,8 +163,8 @@ IMP::algebra::DenseGrid3D<float> get_complementarity_grid(
   sdm->resample();
   IMP::algebra::BoundingBox3D bb = IMP::em::get_bounding_box(sdm);
   IMP_LOG_VERBOSE(__FUNCTION__ << ": Sampled bounding box is "
-                               << bb.get_corner(0) << " to " << bb.get_corner(1)
-                               << '\n');
+                               << bb.get_corner_0() << " to "
+                               << bb.get_corner_1() << '\n');
   IMP::algebra::DenseGrid3D<float> grid(params.voxel_size, bb);
   IMP_GRID3D_FOREACH_VOXEL(
       grid, IMP_UNUSED(loop_voxel_index);
@@ -216,8 +216,8 @@ typedef IMP::algebra::DenseGrid3D<float> Grid;
 namespace {
 algebra::Sphere3D get_bounding_sphere(const Grid &g) {
   algebra::BoundingBox3D bb = algebra::get_bounding_box(g);
-  algebra::Vector3D center = .5 * (bb.get_corner(0) + bb.get_corner(1));
-  double r = algebra::get_distance(center, bb.get_corner(0));
+  algebra::Vector3D center = .5 * (bb.get_corner_0() + bb.get_corner_1());
+  double r = algebra::get_distance(center, bb.get_corner_0());
   return algebra::Sphere3D(center, r);
 }
 }

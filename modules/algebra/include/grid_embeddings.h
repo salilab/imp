@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_embeddings.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -62,12 +62,12 @@ class DefaultEmbeddingD {
   void initialize_from_box(Ints ns, const BoundingBoxD<D> &bb) {
     Floats nuc(bb.get_dimension());
     for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
-      double side = bb.get_corner(1)[i] - bb.get_corner(0)[i];
+      double side = bb.get_corner_1()[i] - bb.get_corner_0()[i];
       IMP_USAGE_CHECK(side > 0, "Can't have flat grid");
       nuc[i] = side / ns[i];
     }
     set_unit_cell(VectorD<D>(nuc.begin(), nuc.end()));
-    set_origin(bb.get_corner(0));
+    set_origin(bb.get_corner_0());
   }
 
  public:
@@ -221,12 +221,12 @@ class LogEmbeddingD {
   void initialize_from_box(Ints ns, const BoundingBoxD<D> &bb) {
     Floats nuc(bb.get_dimension());
     for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
-      double side = bb.get_corner(1)[i] - bb.get_corner(0)[i];
+      double side = bb.get_corner_1()[i] - bb.get_corner_0()[i];
       IMP_USAGE_CHECK(side > 0, "Can't have flat grid");
       nuc[i] = side / ns[i];
     }
     set_unit_cell(VectorD<D>(nuc.begin(), nuc.end()));
-    set_origin(bb.get_corner(0));
+    set_origin(bb.get_corner_0());
   }
 
  public:
@@ -249,21 +249,22 @@ class LogEmbeddingD {
   */
   LogEmbeddingD(const BoundingBoxD<D> &bb, const VectorD<D> &bases,
                 const Ints &counts, bool bound_centers = false) {
-    set_origin(bb.get_corner(0));
-    VectorD<D> cell = bb.get_corner(0);
+    set_origin(bb.get_corner_0());
+    VectorD<D> cell = bb.get_corner_0();
     for (unsigned int i = 0; i < bases.get_dimension(); ++i) {
       IMP_ALWAYS_CHECK(bases[i] > 0,
                        "LogEmbedding base #" << i << " cannot be negative",
                        IMP::ValueException);
       // cell[i](1-base[i]^counts[i])/(1-base[i])=width[i]
       if (bases[i] != 1) {
-        cell[i] = (bb.get_corner(1)[i] - bb.get_corner(0)[i]) * (bases[i] - 1) /
+        cell[i] = (bb.get_corner_1()[i]
+                   - bb.get_corner_0()[i]) * (bases[i] - 1) /
                   (std::pow(bases[i], counts[i]) - 1.0);
       } else {
-        cell[i] = (bb.get_corner(1)[i] - bb.get_corner(0)[i]) / counts[i];
+        cell[i] = (bb.get_corner_1()[i] - bb.get_corner_0()[i]) / counts[i];
       }
       IMP_INTERNAL_CHECK(
-          .9 * cell[i] < bb.get_corner(1)[i] - bb.get_corner(0)[i],
+          .9 * cell[i] < bb.get_corner_1()[i] - bb.get_corner_0()[i],
           "Too large a cell side");
       IMP_INTERNAL_CHECK(cell[i] > 0, "Non-positive cell side");
     }
@@ -278,13 +279,13 @@ class LogEmbeddingD {
       VectorD<D> orig = uc;
       for (unsigned int i = 0; i < uc.get_dimension(); ++i) {
         uc[i] =
-            (bb.get_corner(1)[i] - bb.get_corner(0)[i]) / extents[i] * uc[i];
+            (bb.get_corner_1()[i] - bb.get_corner_0()[i]) / extents[i] * uc[i];
         if (base_[i] == 1) {
-          orig[i] = bb.get_corner(0)[i] - .5 * uc[i];
+          orig[i] = bb.get_corner_0()[i] - .5 * uc[i];
         } else {
           /*orig[i]+ uc[i]*(1.0-std::pow(base_[i], index[i]))
             /(1.0-base_[i])==bb[i]*/
-          orig[i] = bb.get_corner(0)[i] -
+          orig[i] = bb.get_corner_0()[i] -
                     uc[i] * (1.0 - std::pow(bases[i], .5)) / (1.0 - bases[i]);
         }
       }

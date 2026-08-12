@@ -172,8 +172,8 @@ int main(int argc, char **argv) {
           transforms[i] * coordinates2[ligand_atom_index];
       IMP::algebra::BoundingBox3D bb(v);
       bb += radius;
-      Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
-                          ub = grid.get_extended_index(bb.get_corner(1));
+      Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner_0()),
+                          ub = grid.get_extended_index(bb.get_corner_1());
       // std::vector<int> neighbours1, neighbours2;
       for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
            it != grid.indexes_end(lb, ub); ++it) {

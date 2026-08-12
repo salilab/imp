@@ -2,7 +2,7 @@
  *  \file internal/grid_close_pairs_impl.h
  *  \brief Implementation of close pairs finder that is based on a grid hierarchy
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -108,8 +108,8 @@ struct BoundingBoxTraits {
     return algebra::get_maximum_length(*(get_it(which) + i)) / 2.0;
   }
   algebra::Vector3D get_center(unsigned int i, int which) const {
-    return algebra::Vector3D(.5 * ((get_it(which) + i)->get_corner(0) +
-                                   (get_it(which) + i)->get_corner(1)));
+    return algebra::Vector3D(.5 * ((get_it(which) + i)->get_corner_0() +
+                                   (get_it(which) + i)->get_corner_1()));
   }
   bool get_is_close(unsigned int a, unsigned int b) const {
     algebra::BoundingBox3D ag = *(it0_ + a) + d_;
@@ -408,7 +408,7 @@ struct Helper {
       } else {
         Grid gg = create_grid(
             bbs[i], std::max(tr.get_distance() + 2 * bin_ubs[i],
-                             .01 * (bbs[i].get_corner(1) - bbs[i].get_corner(0))
+                         .01 * (bbs[i].get_corner_1() - bbs[i].get_corner_0())
                                        .get_magnitude()));
         fill_grid(bin_contents_g[i], tr, gg);
         for (typename Grid::AllConstIterator it = gg.all_begin();
