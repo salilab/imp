@@ -22,8 +22,6 @@ class Tests(IMP.test.TestCase):
                     # print v
                     val = IMP.em.get_density(m, v)
                     mval = m.get_value(m.xyz_ind2voxel(i, j, k))
-                    if i % 4 == 0 and j % 4 == 0 and k % 4 == 0:
-                        print(i, j, k, v, val, mval)
                     self.assertAlmostEqual(
                         val, mval, delta=(val + mval) * .1 + .1)
                     self.assertEqual(
@@ -59,9 +57,7 @@ class Tests(IMP.test.TestCase):
                                   random.uniform(0, 1))
         side = m.get_spacing()
         prod = fs * side
-        print(type(prod))
         v = self.get_center(m, indexes[0], indexes[1], indexes[2]) + prod
-        print(type(v))
         pt = v
         val = IMP.em.get_density(m, pt)
         lb = 100000000
