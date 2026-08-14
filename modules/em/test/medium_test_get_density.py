@@ -49,26 +49,30 @@ class Tests(IMP.test.TestCase):
                             m, self.get_center(m, i, j, k)
                             + IMP.algebra.Vector3D(0, 0, -wid[2])), 0)
 
-        indexes = [random.randint(0, m.get_header().get_nx()),
-                   random.randint(0, m.get_header().get_ny()),
-                   random.randint(0, m.get_header().get_nz())]
+        # Choose a random voxel in the grid. Avoid the far edge so that
+        # we don't go outside the grid in our simple interpolation below
+        indexes = [random.randint(0, m.get_header().get_nx() - 2),
+                   random.randint(0, m.get_header().get_ny() - 2),
+                   random.randint(0, m.get_header().get_nz() - 2)]
+        # Choose a random point in the voxel
         fs = IMP.algebra.Vector3D(random.uniform(0, 1),
                                   random.uniform(0, 1),
                                   random.uniform(0, 1))
         side = m.get_spacing()
         prod = fs * side
-        v = self.get_center(m, indexes[0], indexes[1], indexes[2]) + prod
-        pt = v
+        pt = self.get_center(m, indexes[0], indexes[1], indexes[2]) + prod
         val = IMP.em.get_density(m, pt)
+        # get_density interpolates based on surrounding voxels. Check this
+        # by verifying that the density value is within the range spanned
+        # by these voxels.
         lb = 100000000
         ub = -lb
-        for i in range(0, 1):
-            for j in range(0, 1):
-                for k in range(0, 1):
+        for i in range(0, 2):
+            for j in range(0, 2):
+                for k in range(0, 2):
                     p = m.get_value(
-                        indexes[0] + i,
-                        indexes[1] + j,
-                        indexes[2] + k)
+                        m.xyz_ind2voxel(indexes[0] + i, indexes[1] + j,
+                                        indexes[2] + k))
                     if p < lb:
                         lb = p
                     if p > ub:
