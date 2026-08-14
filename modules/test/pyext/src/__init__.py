@@ -31,7 +31,7 @@ skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
 
-def unstable(reason="unstable test; enable by setting $IMP_UNSTABLE_TESTS"):
+def unstable(test_item):
     """Mark a test as 'unstable', i.e. that it fails randomly.
 
        'unstable' tests are tests that do not reliably pass or fail, such
@@ -39,7 +39,9 @@ def unstable(reason="unstable test; enable by setting $IMP_UNSTABLE_TESTS"):
        optimization and then assert on the results. This decorator can be
        used to mark such tests. They are skipped by default. To run the
        tests anyway, set the IMP_UNSTABLE_TESTS environment variable."""
-    return skipUnless('IMP_UNSTABLE_TESTS' in os.environ, reason)
+    reason = "unstable test; enable by setting $IMP_UNSTABLE_TESTS"
+    tf = unittest.skipUnless('IMP_UNSTABLE_TESTS' in os.environ, reason)
+    return tf(test_item)
 
 
 class _TempDir:
