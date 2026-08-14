@@ -2,7 +2,7 @@ import IMP.rmf
 import IMP.test
 import IMP.core
 import RMF
-from IMP.algebra import *
+import sys
 
 
 class Tests(IMP.test.TestCase):

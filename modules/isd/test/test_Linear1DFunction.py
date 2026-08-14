@@ -1,12 +1,12 @@
 # general imports
-from numpy import *
-
+from numpy import random
+from math import isnan
 
 # imp general
 import IMP
 
 # our project
-from IMP.isd import *
+from IMP.isd import Nuisance, Linear1DFunction
 
 # unit testing framework
 import IMP.test

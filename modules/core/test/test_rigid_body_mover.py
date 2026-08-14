@@ -3,7 +3,7 @@ import IMP.core
 import IMP.atom
 import IMP.algebra
 import pickle
-from math import *
+from math import sqrt, acos
 try:
     import jax
     import jax.random

@@ -4,7 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.multifit
-from load_anchor_graph import *
+from load_anchor_graph import load_anchor_graph
 
 
 class Tests(IMP.test.TestCase):

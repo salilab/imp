@@ -1,16 +1,18 @@
 # general imports
-from numpy import *
-from random import *
-
+from numpy import linspace, logspace, transpose, diag, dot, array, linalg, exp
+from math import isnan, log, pi, sqrt
+from random import uniform, randint
 
 # imp general
 import IMP
 
 # our project
-from IMP.isd import *
+from IMP.isd import Scale, Linear1DFunction, Nuisance, Covariance1DFunction
+from IMP.isd import Switching
 
 # unit testing framework
 import IMP.test
+
 IMP.set_log_level(0)
 # IMP.set_log_level(IMP.VERBOSE)
 

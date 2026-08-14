@@ -3,7 +3,9 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.container
-from IMP.algebra import *
+from IMP.algebra import (
+    Vector3D, get_identity_rotation_3d, Transformation3D,
+    ReferenceFrame3D, get_random_vector_in, get_unit_sphere_3d)
 
 
 class Tests(IMP.test.TestCase):

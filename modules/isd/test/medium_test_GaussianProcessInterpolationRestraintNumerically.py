@@ -1,7 +1,6 @@
 # general imports
-from numpy import *
-from random import *
-
+from numpy import linalg, array, linspace
+from random import uniform, randint
 
 # imp general
 import IMP
@@ -9,7 +8,8 @@ import IMP.gsl
 import IMP.core
 
 # our project
-from IMP.isd import *
+from IMP.isd import Covariance1DFunction, Scale, Switching
+from IMP.isd import GeneralizedGuinierPorodFunction
 
 # unit testing framework
 import IMP.test

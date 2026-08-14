@@ -5,7 +5,9 @@ displayit = False
 if displayit:
     import IMP.display
 
-from IMP.algebra import *
+from IMP.algebra import (
+    BoundingBox3D, Vector3D, LogEmbedding3D, DenseIntLogGrid3D,
+    ExtendedGridIndex3D)
 import pickle
 
 

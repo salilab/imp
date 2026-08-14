@@ -1,6 +1,7 @@
-from numpy import *
+from math import isnan, exp, sqrt
+from numpy import linspace
 import IMP
-from IMP.isd import *
+from IMP.isd import Linear1DFunction, Nuisance, Scale, Covariance1DFunction
 import IMP.test
 
 
@@ -454,7 +455,7 @@ class Tests(IMP.test.TestCase):
         self.fail("Do some mathematica first")
         skipnan = 0
         for s in linspace(0.01, 10, num=10):
-            self.sig.set_nuisance(l)
+            self.sig.set_nuisance(s)
             observed = self.gpi.get_degrees_of_freedom()
             expected = None
             if isnan(expected):

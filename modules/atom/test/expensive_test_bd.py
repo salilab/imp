@@ -6,7 +6,7 @@ import IMP.statistics
 import math
 try:
     import sympy
-    from sympy.physics.units import *
+    from sympy.physics.units import femto, joule, newton, meter, nano, second
     use_sympy = True
 except ImportError:
     use_sympy = False

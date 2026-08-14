@@ -1,5 +1,5 @@
 # general imports
-from numpy import *
+from math import pi, sqrt, log, exp
 from random import uniform
 
 

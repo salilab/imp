@@ -1,4 +1,4 @@
-from numpy import *
+from math import pi, log, exp, sqrt
 from random import uniform
 import pickle
 import IMP

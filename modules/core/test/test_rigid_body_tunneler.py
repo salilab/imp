@@ -1,7 +1,7 @@
 import IMP.test
 import IMP.core
-
-from numpy import *
+from math import pi, sqrt
+from numpy import allclose, array, zeros, linalg, asarray, sin, arccos, random
 
 
 class RigidBodyTunnelerTest(IMP.test.TestCase):

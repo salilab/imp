@@ -1,4 +1,4 @@
-from numpy import *
+from math import log, exp
 from random import uniform
 import pickle
 import IMP

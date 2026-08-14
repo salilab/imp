@@ -1,4 +1,5 @@
-from numpy import *
+from numpy import mean, var
+from math import exp, pi, log
 import IMP
 import IMP.test
 import IMP.isd

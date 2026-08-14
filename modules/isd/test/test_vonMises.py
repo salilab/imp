@@ -1,5 +1,5 @@
 # general imports
-from numpy import *
+from math import pi, exp, cos, log, sin
 from random import uniform
 
 # imp general

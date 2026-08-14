@@ -1,12 +1,12 @@
 # general imports
-from numpy import *
-
+from math import isnan, exp
+from numpy import ndenumerate, linspace, random
 
 # imp general
 import IMP
 
 # our project
-from IMP.isd import *
+from IMP.isd import Covariance1DFunction, Scale
 
 # unit testing framework
 import IMP.test

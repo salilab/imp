@@ -1,6 +1,6 @@
 # general imports
-from math import *
-from numpy import *
+from math import pi, exp, acos, sqrt, log
+from numpy import array, cos, sin
 from random import uniform, randint, gauss
 
 # imp general

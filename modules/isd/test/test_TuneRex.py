@@ -1,6 +1,6 @@
 import os
 import numpy.random as random
-from numpy import *
+from numpy import array, transpose
 
 import IMP
 import IMP.isd.Replica

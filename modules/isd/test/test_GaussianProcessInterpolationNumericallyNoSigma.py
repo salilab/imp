@@ -1,6 +1,7 @@
-from numpy import *
+from numpy import linspace
 import IMP
-from IMP.isd import *
+from IMP.isd import Covariance1DFunction, Scale, Switching
+from IMP.isd import GeneralizedGuinierPorodFunction
 import IMP.test
 
 

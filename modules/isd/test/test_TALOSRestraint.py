@@ -1,5 +1,5 @@
 # general imports
-from math import *
+from math import pi, exp, log, cos, sqrt, acos, sin
 import math
 from random import gauss, uniform, randint
 
