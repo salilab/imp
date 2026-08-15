@@ -199,10 +199,14 @@ class JAXWarning(UserWarning):
 
 %extend IMP::RestraintSet {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_restraint_jax_funcs_keys(self):
         jis = [r.get_derived_object()._get_jax() for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
+        return funcs, keys
+
+    def _get_jax(self):
+        funcs, keys = self._get_restraint_jax_funcs_keys()
         def jax_sf(jm):
             if funcs:
                 return sum(f(jm) for f in funcs)

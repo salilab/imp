@@ -1,7 +1,12 @@
 import IMP
+import math
 import IMP.isd
 import IMP.test
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class LogRestraint(IMP.Restraint):
@@ -143,6 +148,21 @@ class Tests(IMP.test.TestCase):
         dump = pickle.dumps(rs)
         newrs = pickle.loads(dump)
         self.assertAlmostEqual(newrs.evaluate(False), -55.262, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of LogWrapper"""
+        m = IMP.Model()
+        for (prob, exp_score) in [(10.0, -6.9077554),
+                                  (0.1, -2.3025851),
+                                  (0.0, math.inf)]:
+            r0 = IMP._ConstRestraint(m, [], 100)
+            r1 = IMP._ConstRestraint(m, [], prob)
+            lw = IMP.isd.LogWrapper([r0, r1], 1.0)
+            imp_score = lw.evaluate(False)
+            jax_score = lw._evaluate_jax()
+            self.assertAlmostEqual(imp_score, exp_score, delta=1e-4)
+            self.assertAlmostEqual(imp_score, jax_score, delta=1e-4)
 
 
 if __name__ == '__main__':
