@@ -15,3 +15,15 @@
         return self._wrap_jax(f, keys=[Scale.get_scale_key()])
   %}
 }
+
+%extend IMP::isd::JeffreysRestraint {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.numpy as jnp
+        indexes = jnp.array([self.get_index()])
+        def score(jm):
+            nuisance = jm['nuisance'][indexes]
+            return jnp.sum(jnp.log(nuisance))
+        return self._wrap_jax(score, keys=[Scale.get_scale_key()])
+  %}
+}

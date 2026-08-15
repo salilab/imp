@@ -1,9 +1,13 @@
-from math import log, exp
-from random import uniform
+import math
+import random
 import pickle
 import IMP
 from IMP.isd import Scale
 import IMP.test
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -20,7 +24,7 @@ class Tests(IMP.test.TestCase):
     def testValueP(self):
         "Test if JeffreysRestraint probability is 1/scale"
         for i in range(100):
-            no = uniform(0.1, 100)
+            no = random.uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),
                                    1.0 / no, delta=0.001)
@@ -28,16 +32,16 @@ class Tests(IMP.test.TestCase):
     def testValueE(self):
         "Test if JeffreysRestraint score is log(scale)"
         for i in range(100):
-            no = uniform(0.1, 100)
+            no = random.uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
-                                   log(no), delta=0.001)
+                                   math.log(no), delta=0.001)
 
     def testDerivative(self):
         "Test the derivative of JeffreysRestraint"
         sf = IMP.core.RestraintsScoringFunction([self.J])
         for i in range(100):
-            no = uniform(0.1, 100)
+            no = random.uniform(0.1, 100)
             self.sigma.set_scale(no)
             sf.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
@@ -77,18 +81,19 @@ class Tests(IMP.test.TestCase):
     def testSanityEP(self):
         "Test if JeffreysRestraint score is -log(prob)"
         for i in range(100):
-            no = uniform(0.1, 100)
+            no = random.uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
-                                   -log(self.J.get_probability()))
+                                   -math.log(self.J.get_probability()))
 
     def testSanityPE(self):
         "Test if JeffreysRestraint prob is exp(-score)"
         for i in range(100):
-            no = uniform(0.1, 100)
+            no = random.uniform(0.1, 100)
             self.sigma.set_scale(no)
-            self.assertAlmostEqual(self.J.get_probability(),
-                                   exp(-self.J.unprotected_evaluate(self.DA)))
+            self.assertAlmostEqual(
+                self.J.get_probability(),
+                math.exp(-self.J.unprotected_evaluate(self.DA)))
 
     def test_serialize(self):
         """Test (un-)serialize of JeffreysRestraint"""
@@ -111,6 +116,25 @@ class Tests(IMP.test.TestCase):
         newr, = newsf.restraints
         self.assertEqual(newr.get_name(), "foo")
         self.assertAlmostEqual(newr.evaluate(True), 3.912, delta=0.001)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of JeffreysRestraint"""
+        sf = IMP.core.RestraintsScoringFunction([self.J])
+        ji = self.J._get_jax()
+        score_f = jax.jit(ji.score_func)
+        deriv_f = jax.jit(jax.grad(ji.score_func))
+
+        for i in range(10):
+            no = random.uniform(0.1, 100)
+            self.sigma.set_scale(no)
+            jm = ji.get_jax_model()
+            imp_score = sf.evaluate(True)
+            jax_score = score_f(jm)
+            imp_deriv = self.sigma.get_scale_derivative()
+            jax_deriv = deriv_f(jm)['nuisance']
+            self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
+            self.assertAlmostEqual(imp_deriv, jax_deriv, delta=1e-3)
 
 
 if __name__ == '__main__':

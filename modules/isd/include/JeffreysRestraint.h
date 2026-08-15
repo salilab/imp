@@ -2,7 +2,7 @@
  *  \file IMP/isd/JeffreysRestraint.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,6 +40,9 @@ class IMPISDEXPORT JeffreysRestraint : public Restraint {
   virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(JeffreysRestraint);
+
+  //! Return the particle that this restraint acts on
+  ParticleIndex get_index() const { return pi_; }
 
   /* call for probability */
   virtual double get_probability() const {
