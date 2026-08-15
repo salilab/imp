@@ -2,6 +2,10 @@ import IMP
 import IMP.isd
 import IMP.test
 import pickle
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 def _make_test_restraint():
@@ -64,6 +68,24 @@ class Tests(IMP.test.TestCase):
         newr, = newsf.restraints
         self.assertEqual(newr.get_name(), "foo")
         self.assertAlmostEqual(newr.evaluate(True), 12500.0, delta=0.001)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation of UniformPrior"""
+        m, sigma, r = _make_test_restraint()
+
+        ji = r._get_jax()
+        score_f = jax.jit(ji.score_func)
+
+        for (nuis, exp_score) in [(90., 0.),
+                                  (105., 12500.),
+                                  (0.001, 0.0405)]:
+            sigma.set_scale(nuis)
+            jm = ji.get_jax_model()
+            imp_score = r.evaluate(False)
+            jax_score = score_f(jm)
+            self.assertAlmostEqual(imp_score, exp_score, delta=1e-3)
+            self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
 
 if __name__ == '__main__':

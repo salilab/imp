@@ -2,7 +2,7 @@
  *  \file IMP/isd/UniformPrior.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,6 +50,15 @@ public:
   {
     return exp(-unprotected_evaluate(nullptr));
   }
+
+  //! Return the lower and upper bounds
+  FloatRange get_range() const { return FloatRange(lowerb_, upperb_); }
+
+  //! Return the force constant
+  double get_k() const { return k_; }
+
+  //! Return the particle that this prior acts on
+  ParticleIndex get_index() const { return pi_; }
 
   //! \return Information for writing to RMF files
   RestraintInfo *get_static_info() const override;

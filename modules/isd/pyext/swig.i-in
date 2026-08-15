@@ -324,3 +324,5 @@ def create_model_and_particles():
 %include "IMP/isd/GammaPrior.h"
 %include "IMP/isd/em_utilities.h"
 %include "IMP/isd/ResidueProteinProximityRestraint.h"
+
+%include "IMP_isd.jax.i"
