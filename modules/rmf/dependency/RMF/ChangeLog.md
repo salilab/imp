@@ -1,6 +1,9 @@
 Change Log {#changelog}
 ==========
 
+# 1.7.2 - 2026-08-07 # {#changelog_1_7_2}
+- Fix build with SWIG 4.5 or later.
+
 # 1.7.1 - 2026-04-29 # {#changelog_1_7_1}
 - Fix build with Boost 1.89 or later.
 - Minor build and documentation fixes.

@@ -1,3 +1,9 @@
+rmf (1.7.2-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * RMF 1.7.2 release
+
+ -- Ben Webb <benjamin.webb@ucsf.edu>  Fri, 07 Aug 2026 15:42:03 -0700
+
 rmf (1.7.1-1~@CODENAME@) @CODENAME@; urgency=low
 
   * RMF 1.7.1 release
