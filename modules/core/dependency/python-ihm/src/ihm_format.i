@@ -411,7 +411,7 @@ static struct category_handler_data *do_add_handler(
     const char *key_name;
     PyObject *o = PySequence_GetItem(keywords, i);
     if (PyUnicode_Check(o)) {
-      key_name = PyUnicode_AsUTF8(o);
+      key_name = PyUnicode_AsUTF8AndSize(o, NULL);
       if (PySet_Contains(int_keywords, o) == 1) {
         hd->keywords[i] = ihm_keyword_int_new(category, key_name);
       } else if (PySet_Contains(float_keywords, o) == 1) {

@@ -893,7 +893,13 @@ class ReplaceCategoryFilter(Filter):
             writer = CifWriter(fh)
             self.dumper.finalize(self.system)
             self.dumper.dump(self.system, writer)
-            return self._RawCifToken(fh.getvalue())
+            cif = fh.getvalue()
+            # Strip _CifLoopWriter prefix and suffix, if any
+            if cif.startswith('#\n'):
+                cif = cif[2:]
+            if cif.endswith('#\n'):
+                cif = cif[:-2]
+            return self._RawCifToken(cif)
 
     def filter_category(self, tok):
         if self.match_token_category(tok):

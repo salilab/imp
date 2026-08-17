@@ -1263,14 +1263,29 @@ loop_
 _cat5.bar
 _cat5.baz
 a b
+#
+_cat6.a 1
+#
+loop_
+_cat7.bar
+_cat7.baz
+a b
+#
 """
         d = ihm.dumper._CommentDumper()
+        colld = ihm.dumper._CollectionDumper()
         s = ihm.System()
         s.comments.extend(['comment1', 'comment2'])
+        c = ihm.Collection('foo', name='bar', details='more text')
+        s.collections.append(c)
         r = ihm.format.CifTokenReader(StringIO(cif))
         filters = [ihm.format.ReplaceCategoryFilter("cat1"),
                    ihm.format.ReplaceCategoryFilter("_cat2", raw_cif='FOO'),
                    ihm.format.ReplaceCategoryFilter("cat3", dumper=d,
+                                                    system=s),
+                   ihm.format.ReplaceCategoryFilter("cat6", dumper=colld,
+                                                    system=s),
+                   ihm.format.ReplaceCategoryFilter("cat7", dumper=colld,
                                                     system=s)]
         tokens = list(r.read_file(filters))
         new_cif = "".join(x.as_mmcif() for x in tokens)
@@ -1289,6 +1304,20 @@ loop_
 _cat5.bar
 _cat5.baz
 a b
+#
+loop_
+_ihm_entry_collection.id
+_ihm_entry_collection.name
+_ihm_entry_collection.details
+foo bar 'more text'
+#
+loop_
+_ihm_entry_collection.id
+_ihm_entry_collection.name
+_ihm_entry_collection.details
+foo bar 'more text'
+
+#
 """)
 
     def test_category_token_group(self):
