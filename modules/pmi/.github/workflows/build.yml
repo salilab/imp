@@ -36,7 +36,7 @@ jobs:
         make
         ./setup_environment.sh pytest --cov=.. --cov-branch --cov-report=xml -v ../test/test_*.py ../test/medium_test_*.py test/*/*.py
         flake8 ../pyext/src/
-        flake8 ../test --ignore=F841,E501,E265,E305,E231,E225,E226,E116,E128,W503,W504,E126,E402,E127,E741,F403,F405,E261,E251,E722
+        flake8 ../test --ignore=F841,E501,E265,E305,E231,E225,E226,E116,E128,W503,W504,E126,E402,E127,E741,E261,E722
         ${GCC/gcc/gcov} $(find . -name "*.gcno")
     - uses: codecov/codecov-action@v7
       env:

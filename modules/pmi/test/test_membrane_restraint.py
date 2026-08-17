@@ -188,7 +188,7 @@ class MembraneRestraint(IMP.test.TestCase):
         mr = IMP.pmi.restraints.basic.MembraneRestraint(hier,
                                                      objects_inside=[(11,30,'helix')],
                                                      objects_above=[(1,10,'helix')],
-                                                     objects_below = [(31,40,'helix')])
+                                                     objects_below=[(31,40,'helix')])
 
         p_inside = mr.get_particles_inside()
         self.assertEqual(len(p_inside), 20)

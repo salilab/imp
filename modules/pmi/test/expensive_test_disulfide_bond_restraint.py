@@ -7,7 +7,7 @@ import IMP.pmi.io
 import IMP.pmi.io.crosslink
 import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
-from math import *
+from math import log, exp, pi
 
 
 def sphere_cap(r1, r2, d):

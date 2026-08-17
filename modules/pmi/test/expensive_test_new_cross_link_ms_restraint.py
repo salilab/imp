@@ -12,7 +12,7 @@ import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.macros
 import ihm.cross_linkers
-from math import *
+from math import log, exp, pi
 try:
     import IMP.mpi
     rem = IMP.mpi.ReplicaExchange()
@@ -166,8 +166,8 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         for molecule in mols:
-            dof.create_rigid_body(molecule,
-                                  nonrigid_parts = molecule.get_non_atomic_residues())
+            dof.create_rigid_body(
+                molecule, nonrigid_parts=molecule.get_non_atomic_residues())
         return hier,dof
 
     def init_representation_beads_pmi2(self,m):

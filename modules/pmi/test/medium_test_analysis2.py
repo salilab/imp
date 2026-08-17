@@ -78,16 +78,14 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        dof.create_rigid_body(m1,nonrigid_parts = m1.get_non_atomic_residues(),
+        dof.create_rigid_body(m1, nonrigid_parts=m1.get_non_atomic_residues(),
                               max_trans=0.1)
-        dof.create_rigid_body(m2,nonrigid_parts = m2.get_non_atomic_residues(),
+        dof.create_rigid_body(m2, nonrigid_parts=m2.get_non_atomic_residues(),
                               max_trans=0.1)
 
-        dr = IMP.pmi.restraints.basic.DistanceRestraint(root_hier = hier,
-                                                        tuple_selection1=(1,1,"Prot1",0),
-                                                        tuple_selection2=(1,1,"Prot2",0),
-                                                        distancemin=5,
-                                                        distancemax=15)
+        dr = IMP.pmi.restraints.basic.DistanceRestraint(
+            root_hier=hier, tuple_selection1=(1,1,"Prot1",0),
+            tuple_selection2=(1,1,"Prot2",0), distancemin=5, distancemax=15)
         dr.add_to_model()
 
         with IMP.allow_deprecated():
@@ -130,16 +128,14 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        dof.create_rigid_body(m1,nonrigid_parts = m1.get_non_atomic_residues(),
-                              max_trans=0.1)
-        dof.create_rigid_body(m2,nonrigid_parts = m2.get_non_atomic_residues(),
-                              max_trans=0.1)
+        dof.create_rigid_body(
+            m1, nonrigid_parts=m1.get_non_atomic_residues(), max_trans=0.1)
+        dof.create_rigid_body(
+            m2, nonrigid_parts=m2.get_non_atomic_residues(), max_trans=0.1)
 
-        dr = IMP.pmi.restraints.basic.DistanceRestraint(root_hier = hier,
-                                                        tuple_selection1=("Prot1",1,1),
-                                                        tuple_selection2=("Prot2",1,1),
-                                                        distancemin=5,
-                                                        distancemax=15)
+        dr = IMP.pmi.restraints.basic.DistanceRestraint(
+            root_hier=hier, tuple_selection1=("Prot1",1,1),
+            tuple_selection2=("Prot2",1,1), distancemin=5, distancemax=15)
         dr.add_to_model()
 
         with IMP.allow_deprecated():
@@ -167,10 +163,12 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mv1,rb1 = dof.create_rigid_body(m1,nonrigid_parts = m1.get_non_atomic_residues(),
-                                        max_trans=0.000001)
-        mv2,rb2 = dof.create_rigid_body(m2,nonrigid_parts = m2.get_non_atomic_residues(),
-                                        max_trans=0.000001)
+        mv1,rb1 = dof.create_rigid_body(
+            m1, nonrigid_parts=m1.get_non_atomic_residues(),
+            max_trans=0.000001)
+        mv2,rb2 = dof.create_rigid_body(
+            m2, nonrigid_parts=m2.get_non_atomic_residues(),
+            max_trans=0.000001)
 
         trans = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(100,0,0))
         IMP.core.transform(rb2,trans)

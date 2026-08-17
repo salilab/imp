@@ -110,15 +110,12 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,m1,m2,m3 = self.init_topology_clones(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb1_movers,rb1 = dof.create_rigid_body(m1,
-                                             nonrigid_parts = m1.get_non_atomic_residues(),
-                                             name="test RB 1")
-        rb2_movers,rb2 = dof.create_rigid_body(m2,
-                                             nonrigid_parts = m2.get_non_atomic_residues(),
-                                             name="test RB 2")
-        rb3_movers,rb3 = dof.create_rigid_body(m3,
-                                             nonrigid_parts = m3.get_non_atomic_residues(),
-                                             name="test RB 3")
+        rb1_movers,rb1 = dof.create_rigid_body(
+            m1, nonrigid_parts=m1.get_non_atomic_residues(), name="test RB 1")
+        rb2_movers,rb2 = dof.create_rigid_body(
+            m2, nonrigid_parts=m2.get_non_atomic_residues(), name="test RB 2")
+        rb3_movers,rb3 = dof.create_rigid_body(
+            m3, nonrigid_parts=m3.get_non_atomic_residues(), name="test RB 3")
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),12)
 
@@ -150,9 +147,9 @@ class Tests(IMP.test.TestCase):
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         # Test do-nothing if no rigid parts were passed
         self.assertEqual(dof.create_rigid_body([], [], name='test RB'), [])
-        rb_movers,rb = dof.create_rigid_body(molecule,
-                                             nonrigid_parts = molecule.get_non_atomic_residues(),
-                                             name="test RB")
+        rb_movers,rb = dof.create_rigid_body(
+            molecule, nonrigid_parts=molecule.get_non_atomic_residues(),
+            name="test RB")
         self.assertEqual(rb.get_name(), "test RB")
         self.assertEqual(rb_movers[0].get_name(), "test RB")
         mvs = dof.get_movers()
@@ -175,9 +172,9 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,molecule = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb_movers,rb = dof.create_rigid_body(molecule,
-                                             nonrigid_parts = molecule.get_non_atomic_residues(),
-                                             name="test RB")
+        rb_movers,rb = dof.create_rigid_body(
+            molecule, nonrigid_parts=molecule.get_non_atomic_residues(),
+            name="test RB")
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),4)
 
@@ -217,9 +214,9 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,molecule = self.init_topology_helix(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb_movers,rb = dof.create_rigid_body(molecule,
-                                             nonrigid_parts = molecule.get_non_atomic_residues(),
-                                             name="test RB")
+        rb_movers,rb = dof.create_rigid_body(
+            molecule, nonrigid_parts=molecule.get_non_atomic_residues(),
+            name="test RB")
 
         mvs = dof.get_movers()
         all_members = rb.get_member_indexes()
@@ -295,8 +292,8 @@ class Tests(IMP.test.TestCase):
         nn1 = 3
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mvs,rb = dof.create_rigid_body(m1,
-                                    nonrigid_parts = m1.get_non_atomic_residues())
+        mvs,rb = dof.create_rigid_body(
+            m1, nonrigid_parts=m1.get_non_atomic_residues())
         self.assertEqual(len(mvs),4)
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
@@ -332,12 +329,12 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb1_mov,rb1 = dof.create_rigid_body(mols[0],
-                                        nonrigid_parts = mols[0].get_non_atomic_residues())
-        rb2_mov,rb2 = dof.create_rigid_body(mols[1],
-                                        nonrigid_parts = mols[1].get_non_atomic_residues())
-        rb3_mov,rb3 = dof.create_rigid_body(mols[2],
-                                        nonrigid_parts = mols[2].get_non_atomic_residues())
+        rb1_mov,rb1 = dof.create_rigid_body(
+            mols[0], nonrigid_parts=mols[0].get_non_atomic_residues())
+        rb2_mov,rb2 = dof.create_rigid_body(
+            mols[1], nonrigid_parts=mols[1].get_non_atomic_residues())
+        rb3_mov,rb3 = dof.create_rigid_body(
+            mols[2], nonrigid_parts=mols[2].get_non_atomic_residues())
         srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
                                                 chain_max_length=2)
         # rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
@@ -350,12 +347,12 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb1_mov,rb1 = dof.create_rigid_body(mols[0],
-                                        nonrigid_parts = mols[0].get_non_atomic_residues())
-        rb2_mov,rb2 = dof.create_rigid_body(mols[1],
-                                        nonrigid_parts = mols[1].get_non_atomic_residues())
-        rb3_mov,rb3 = dof.create_rigid_body(mols[2],
-                                        nonrigid_parts = mols[2].get_non_atomic_residues())
+        rb1_mov,rb1 = dof.create_rigid_body(
+            mols[0], nonrigid_parts=mols[0].get_non_atomic_residues())
+        rb2_mov,rb2 = dof.create_rigid_body(
+            mols[1], nonrigid_parts=mols[1].get_non_atomic_residues())
+        rb3_mov,rb3 = dof.create_rigid_body(
+            mols[2], nonrigid_parts=mols[2].get_non_atomic_residues())
         srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
                                                 chain_max_length=2)
         # rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
@@ -507,14 +504,14 @@ class Tests(IMP.test.TestCase):
 
         # create movers and constraints
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb1_movers = dof.create_rigid_body(m1,
-                                           nonrigid_parts = m1.get_non_atomic_residues())
-        rb2_movers = dof.create_rigid_body(m2,
-                                           nonrigid_parts = m2.get_non_atomic_residues())
-        dof.create_rigid_body(m3,
-                              nonrigid_parts = m3.get_non_atomic_residues())
-        dof.create_rigid_body(m4,
-                              nonrigid_parts = m4.get_non_atomic_residues())
+        rb1_movers = dof.create_rigid_body(
+            m1, nonrigid_parts=m1.get_non_atomic_residues())
+        rb2_movers = dof.create_rigid_body(
+            m2, nonrigid_parts=m2.get_non_atomic_residues())
+        dof.create_rigid_body(
+            m3, nonrigid_parts=m3.get_non_atomic_residues())
+        dof.create_rigid_body(
+            m4, nonrigid_parts=m4.get_non_atomic_residues())
 
         sym_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         inverse_sym_trans=sym_trans.get_inverse()
@@ -615,8 +612,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_by_type(hier,IMP.atom.STATE_TYPE)),2)
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        dof.create_rigid_body(m1,nonrigid_parts = atomic_res)
-        dof.create_rigid_body(m2,nonrigid_parts = atomic_res2)
+        dof.create_rigid_body(m1,nonrigid_parts=atomic_res)
+        dof.create_rigid_body(m2,nonrigid_parts=atomic_res2)
 
         rex = IMP.pmi.macros.ReplicaExchange(
             mdl, root_hier=hier, monte_carlo_sample_objects=dof.get_movers(),

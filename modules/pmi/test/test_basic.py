@@ -33,11 +33,9 @@ class Tests(IMP.test.TestCase):
         m3 = m2.create_clone('C')
         hier = s.build()
 
-        dr = IMP.pmi.restraints.basic.DistanceRestraint(root_hier = hier,
-                                                        tuple_selection1=(1,1,"Prot1",0),
-                                                        tuple_selection2=(1,1,"Prot2",1),
-                                                        distancemin=5,
-                                                        distancemax=15)
+        dr = IMP.pmi.restraints.basic.DistanceRestraint(
+            root_hier=hier, tuple_selection1=(1,1,"Prot1",0),
+            tuple_selection2=(1,1,"Prot2",1), distancemin=5, distancemax=15)
         dr.add_to_model()
         rs = dr.get_restraint().get_restraints()
         self.assertEqual(len(rs),2)
