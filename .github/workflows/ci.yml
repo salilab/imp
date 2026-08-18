@@ -43,7 +43,6 @@ jobs:
           cmake_build: Release
           max_checks: NONE
           max_log: NONE
-          extra_cmake_flags: "-DIMP_PY_LIMITED_API=3.10"
         - os: macos-latest
           python-version: "3.14"
           cxxflags: "-std=c++17 --coverage"
@@ -87,7 +86,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.cmake_build }}" -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4 -DIMP_MAX_CHECKS="${{ matrix.max_checks }}" -DIMP_MAX_LOG="${{ matrix.max_log }}" ${{ matrix.extra_cmake_flags }}
+          PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.cmake_build }}" -DCMAKE_CXX_FLAGS="${{ matrix.cxxflags }}" -DCGAL_DIR="${{ matrix.cgaldir }}" -DCMAKE_LINKER_FLAGS="${{ matrix.linkflags }}" -DIMP_TIMEOUT_FACTOR=4 -DIMP_MAX_CHECKS="${{ matrix.max_checks }}" -DIMP_MAX_LOG="${{ matrix.max_log }}"
           make -k -j 2
           cd ..
       - name: Test IMP
