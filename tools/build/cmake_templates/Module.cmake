@@ -22,7 +22,8 @@ if(${status} EQUAL 0)
     COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/setup_swig_wrappers.py
     %(build_dir)s --module=%(name)s
     --datapath=${IMP_DATAPATH}
-    --source=${CMAKE_SOURCE_DIR})
+    --source=${CMAKE_SOURCE_DIR}
+    --py_limited_api=${IMP_PY_LIMITED_API})
 
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)

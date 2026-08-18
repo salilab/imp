@@ -6,6 +6,7 @@
 import os.path
 import datetime
 import tools
+import re
 from argparse import ArgumentParser
 
 
@@ -40,7 +41,7 @@ def write_module_swig(m, contents, skip_import=False):
         contents.append("%%import \"IMP_%(module)s.i\"" % {"module": m.name})
 
 
-def build_wrapper(module, finder, sorted, target, source):
+def build_wrapper(module, finder, sorted, target, source, limapi):
     if not module.configured.ok or module.python_only:
         return
     contents = []
@@ -57,18 +58,27 @@ def build_wrapper(module, finder, sorted, target, source):
 # Copyright 2007-%d IMP Inventors. All rights reserved.
 
 %%}
+""" % (swig_module_name, year))  # noqa: E501
 
+    if limapi:
+        contents.append("/* Work with any Python version >= %d.%d */"
+                        % limapi)
+        contents.append("%%begin %%{\n"
+                        "#define Py_LIMITED_API 0x%02x%02x0000\n%%}"
+                        % limapi)
+
+    contents.append("""
 /* '#' formats in parsing or building Python values
    (e.g. in PyObject_CallFunction) use Py_ssize_t, not int, for lengths
    in Python >= 2.5 */
-%%begin %%{
+%begin %{
 #define PY_SSIZE_T_CLEAN
-%%}
+%}
 
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
-%%warnfilter(321,302,314);
+%warnfilter(321,302,314);
 
-%%{
+%{
 #include <boost/version.hpp>
 #include <boost/exception/all.hpp>
 
@@ -84,8 +94,8 @@ extern "C"
 // suppress warning
 SWIGEXPORT
 PyObject* SWIG_init();
-%%}
-""" % (swig_module_name, year))  # noqa: E501
+%}
+""")  # noqa: E501
     # some of the typemap code ends up before this is swig sees the
     # typemaps first
     all_deps = [x for x in finder.get_dependent_modules([module])
@@ -154,10 +164,22 @@ parser.add_argument("-s", "--source",
                     dest="source", help="Where to find IMP source.")
 parser.add_argument("-m", "--module",
                     dest="module", default="", help="Only run on one module.")
+parser.add_argument(
+    "--py_limited_api", dest="limapi", default="",
+    help="If set, build Python extension modules using the Python limited API "
+         "at given version (e.g. '3.10').")
 
 
 def main():
     args = parser.parse_args()
+    if args.limapi:
+        pyver = re.match(r'(\d+)\.(\d+)$', args.limapi)
+        if not pyver:
+            raise ValueError("Cannot parse Python limited API (%r) as "
+                             "an X.Y version number" % args.limapi)
+        limapi = (int(pyver.group(1)), int(pyver.group(2)))
+    else:
+        limapi = None
     sorted_order = tools.get_sorted_order()
 
     if args.module != "":
@@ -167,7 +189,7 @@ def main():
         module = mf[args.module]
         build_wrapper(module, mf, sorted_order,
                       os.path.join("swig", "IMP_" + module.name + ".i"),
-                      args.source)
+                      args.source, limapi)
 
 
 if __name__ == '__main__':

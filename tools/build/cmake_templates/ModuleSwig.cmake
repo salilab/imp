@@ -69,8 +69,16 @@ if(WIN32 AND NOT CYGWIN)
   set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".pyd")
 endif()
 
-if(IMP_USE_PYTHON_SOABI AND NOT WIN32 AND DEFINED PYTHON_SOABI AND NOT PYTHON_SOABI STREQUAL "")
-  set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".${PYTHON_SOABI}.so")
+if(IMP_PY_LIMITED_API)
+  if(WIN32 AND NOT CYGWIN)
+    set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".abi3.pyd")
+  else()
+    set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".abi3.so")
+  endif()
+else()
+  if(IMP_USE_PYTHON_SOABI AND NOT WIN32 AND DEFINED PYTHON_SOABI AND NOT PYTHON_SOABI STREQUAL "")
+    set_target_properties(IMP.%(name)s-python PROPERTIES SUFFIX ".${PYTHON_SOABI}.so")
+  endif()
 endif()
 
 target_link_libraries(IMP.%(name)s-python
