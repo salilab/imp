@@ -126,7 +126,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         # HMC
         pos = []
         ene = []
-        for i in range(1000):
+        for i in range(5000):
             self.hmc.optimize(1)
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene.append(self.sf.evaluate(False))
@@ -141,7 +141,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         mc.set_kt(1.0)
         pos2 = []
         ene2 = []
-        for i in range(2000):
+        for i in range(5000):
             mc.optimize(1)
             pos2.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene2.append(self.sf.evaluate(False))
