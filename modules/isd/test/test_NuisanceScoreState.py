@@ -135,8 +135,8 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis.set_lower(lower)
         nuis.set_upper(upper)
         nuis.set_upper(80.0)
-        nmv = IMP.core.NormalMover([nuis],
-                                   IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+        nmv = IMP.core.NormalMover(
+            [nuis], IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
         mc.set_scoring_function([self.rs])
         mc.set_return_best(False)
@@ -158,8 +158,8 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nuis.set_upper(upper)
         nuis.set_upper(80.0)
         nuis.set_nuisance_is_optimized(True)
-        nmv = IMP.core.NormalMover([nuis],
-                                   IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
+        nmv = IMP.core.NormalMover(
+            [nuis], IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
         mc.set_return_best(False)
         mc.set_kt(1.0)
