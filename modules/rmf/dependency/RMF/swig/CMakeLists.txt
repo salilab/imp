@@ -1,6 +1,20 @@
 FIND_PACKAGE(SWIG 1.3.40 REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
 
+if(NOT "${RMF_PY_LIMITED_API}" STREQUAL "")
+  if (SWIG_VERSION VERSION_LESS 4.2)
+    message(FATAL_ERROR "Python limited API requires SWIG 4.2 or later")
+  endif()
+
+  if(RMF_PY_LIMITED_API MATCHES "^([0-9]+)\\.([0-9]+)$")
+    math(EXPR LIMITED_HEX "((${CMAKE_MATCH_1} << 24) + (${CMAKE_MATCH_2} << 16))"
+	 OUTPUT_FORMAT HEXADECIMAL)
+    add_compile_definitions("Py_LIMITED_API=${LIMITED_HEX}")
+  else()
+    message(FATAL_ERROR "Cannot parse Python limited API (\"${RMF_PY_LIMITED_API}\") as an X.Y version number")
+  endif()
+endif()
+
 add_definitions(-DRMF_SWIG_WRAPPER)
 
 set(CMAKE_SWIG_OUTDIR "${PROJECT_BINARY_DIR}")
@@ -99,6 +113,20 @@ IF(APPLE)
   SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
     "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
 ENDIF(APPLE)
+
+if(NOT "${RMF_PY_LIMITED_API}" STREQUAL "")
+  if(WIN32 AND NOT CYGWIN)
+    set_target_properties(${SWIG_MODULE_RMF_REAL_NAME} PROPERTIES SUFFIX
+                          ".abi3.pyd")
+    set_target_properties(${SWIG_MODULE_RMF_HDF5_REAL_NAME} PROPERTIES SUFFIX
+                          ".abi3.pyd")
+  else()
+    set_target_properties(${SWIG_MODULE_RMF_REAL_NAME} PROPERTIES SUFFIX
+                          ".abi3.so")
+    set_target_properties(${SWIG_MODULE_RMF_HDF5_REAL_NAME} PROPERTIES SUFFIX
+                          ".abi3.so")
+  endif()
+endif()
 
 INSTALL(TARGETS ${SWIG_MODULE_RMF_HDF5_REAL_NAME} DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
 INSTALL(FILES "${CMAKE_BINARY_DIR}/lib/RMF_HDF5.py" DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

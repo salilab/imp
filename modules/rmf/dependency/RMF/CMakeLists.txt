@@ -62,6 +62,7 @@ find_package(Boost COMPONENTS filesystem thread program_options iostreams
 include(FindHDF5)
 find_package(HDF5)
 
+set(RMF_PY_LIMITED_API "" CACHE STRING "If set, build Python extension modules using the Python limited API at given version (e.g. '3.10') (requires SWIG 4.2 or later)")
 if("${HDF5_INCLUDE_DIRS}" MATCHES .*NOTFOUND)
 set(RMF_DEPRECATED_BACKENDS 0 CACHE BOOL "Whether to build deprecated backends.")
 set(HDF5_LIBRARIES "" CACHE INTERNAL "" FORCE)
