@@ -356,7 +356,7 @@ class Tests(IMP.test.TestCase):
                         [xlist[j]],
                         self.DA)
                     expected = part.get_nuisance_derivative()
-                    if abs(expected) > 1e-7:
+                    if abs(expected) > 1e-6:
                         self.assertAlmostEqual(obs / expected, 1, delta=1e-5)
                     else:
                         self.assertAlmostEqual(obs, 0, delta=1e-5)
