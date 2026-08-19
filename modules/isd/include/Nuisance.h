@@ -2,7 +2,7 @@
  *  \file IMP/isd/Nuisance.h
  *  \brief A decorator for nuisance parameters particles
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_NUISANCE_H
@@ -92,7 +92,7 @@ class IMPISDEXPORT Nuisance : public Decorator {
 
 IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+//! Constrain a Nuisance to lie within its bounds
 class IMPISDEXPORT NuisanceScoreState : public ScoreState {
   ParticleIndex pi_;
 
@@ -102,14 +102,15 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState {
   }
   IMP_OBJECT_SERIALIZE_DECL(NuisanceScoreState);
 
- private:
+ public:
   NuisanceScoreState(Particle *p)
       : ScoreState(p->get_model(), "NuisanceScoreState%1%"),
         pi_(p->get_index()) {}
 
   NuisanceScoreState() {}
 
- public:
+  ParticleIndex get_index() const { return pi_; }
+
   friend class Nuisance;
   virtual void do_before_evaluate() override;
   virtual void do_after_evaluate(DerivativeAccumulator *da) override;
@@ -117,7 +118,6 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState {
   virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(NuisanceScoreState);
 };
-#endif
 
 IMPISD_END_NAMESPACE
 

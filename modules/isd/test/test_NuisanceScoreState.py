@@ -40,19 +40,31 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         p = IMP.Particle(self.m)
         n = Nuisance.setup_particle(p, 1.0)
         self.assertFalse(n.get_has_upper())
+        self.assertEqual(len(self.m.get_ordered_score_states()), 0)
         n.set_upper(0.5)
+        # Setting upper should create a NuisanceScoreState acting on p
+        self.assertEqual(len(self.m.get_ordered_score_states()), 1)
+        nss, = self.m.get_ordered_score_states()
+        nss = nss.get_derived_object()
+        self.assertEqual(nss.get_index(), p.get_index())
+        del nss
         self.assertTrue(n.get_has_upper())
         n.remove_upper()
         self.assertFalse(n.get_has_upper())
+        self.assertEqual(len(self.m.get_ordered_score_states()), 0)
 
     def test_nuisance_get_has_lower(self):
         p = IMP.Particle(self.m)
         n = Nuisance.setup_particle(p, 1.0)
         self.assertFalse(n.get_has_lower())
+        self.assertEqual(len(self.m.get_ordered_score_states()), 0)
         n.set_lower(0.5)
+        # Setting lower should create a NuisanceScoreState
+        self.assertEqual(len(self.m.get_ordered_score_states()), 1)
         self.assertTrue(n.get_has_lower())
         n.remove_lower()
         self.assertFalse(n.get_has_lower())
+        self.assertEqual(len(self.m.get_ordered_score_states()), 0)
 
     def test_nuisance_up(self):
         n = IMP.Particle(self.m)
