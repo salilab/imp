@@ -242,8 +242,11 @@ class JAXWarning(UserWarning):
            an equivalent function using [JAX](https://docs.jax.dev/)
            that modifies the JAX Model. See also _wrap_jax.
         """
-        raise NotImplementedError(
-            f"No JAX implementation for {self} ({type(self)})")
+        if self.get_is_ignored_by_jax():
+            return self._wrap_jax(lambda jm: jm)
+        else:
+            raise NotImplementedError(
+                f"No JAX implementation for {self} ({type(self)})")
   %}
 }
 

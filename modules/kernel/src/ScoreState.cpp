@@ -1,7 +1,7 @@
 /**
  *  \file ScoreState.cpp \brief Shared score state.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,7 +21,8 @@ static const std::string str_before_evaluate("before_evaluate");
 static const std::string str_after_evaluate("after_evaluate");
 
 ScoreState::ScoreState(Model *m, std::string name)
-    : ModelObject(m, name), update_order_(-1), can_skip_(false) {}
+    : ModelObject(m, name), update_order_(-1), can_skip_(false),
+      is_ignored_by_jax_(false) {}
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;

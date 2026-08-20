@@ -24,7 +24,11 @@ class ContainerScoreState : public ScoreState {
  public:
   ContainerScoreState(Container *back)
       : ScoreState(back->get_model(), back->get_name() + "State"),
-        back_(back) {}
+        back_(back) {
+    // currently, all users of this class are classes that don't make sense
+    // in JAX
+    is_ignored_by_jax_ = true;
+  }
   virtual void do_before_evaluate() override {
     IMP_CHECK_OBJECT(back_);
     return back_->do_score_state_before_evaluate();

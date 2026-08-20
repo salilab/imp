@@ -1,7 +1,7 @@
 /**
  *  \file IMP/ScoreState.h   \brief Shared score state.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -67,6 +67,11 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   }
 
  protected:
+  // true iff this ScoreState explicitly has a null JAX implementation
+  // (usually because it makes no sense for JAX). This flag is always set
+  // in the constructor (and nowhere else) so is not serialized.
+  bool is_ignored_by_jax_;
+
   //! Set whether we can skip during model evaluation if appropriate
   /** This should be set only once before the state is used (ideally in the
       constructor), and can be used for ScoreStates that can safely be
@@ -78,7 +83,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 
  public:
   ScoreState(Model *m, std::string name);
-  ScoreState() {}
+  ScoreState() : is_ignored_by_jax_(false) {}
   //! Force update of the structure.
   void before_evaluate();
 
@@ -97,6 +102,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   bool get_has_update_order() const { return update_order_ != -1; }
   unsigned int get_update_order() const { return update_order_; }
   virtual void handle_set_has_required_score_states(bool tf) override;
+  bool get_is_ignored_by_jax() const { return is_ignored_by_jax_; }
 
 #endif
 
