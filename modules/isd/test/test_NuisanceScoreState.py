@@ -198,6 +198,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         newm.update()
         self.assertAlmostEqual(newnuis.get_nuisance(), 1., delta=1e-5)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score_state(self):
         """Test JAX implementation of NuisanceScoreState"""
         import numpy as np
