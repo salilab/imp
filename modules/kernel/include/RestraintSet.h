@@ -2,7 +2,7 @@
  *  \file IMP/RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,7 +61,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
-  RestraintSet() {}
+  RestraintSet() { is_aggregate_ = true; }
 
   double unprotected_evaluate(DerivativeAccumulator *da) const override;
 

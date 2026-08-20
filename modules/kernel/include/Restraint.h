@@ -350,6 +350,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
      last_score_ = last_last_score_ = BAD_SCORE;
      cached_internal_scoring_function_ = nullptr;
    }
+   // Note that is_aggregate_ is not read or written here, as it is only
+   // ever set in the constructor
  }
 
 };
