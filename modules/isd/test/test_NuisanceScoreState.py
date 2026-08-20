@@ -3,6 +3,11 @@ import IMP
 import IMP.core
 from IMP.isd import Nuisance, Scale, Switching
 import IMP.test
+try:
+    import jax
+    import IMP._jax_util
+except ImportError:
+    jax = None
 
 
 class XTransRestraint(IMP.Restraint):
@@ -192,6 +197,54 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         # Updating the new model should enforce the upper bound there:
         newm.update()
         self.assertAlmostEqual(newnuis.get_nuisance(), 1., delta=1e-5)
+
+    def test_jax_score_state(self):
+        """Test JAX implementation of NuisanceScoreState"""
+        import numpy as np
+        # Nuisance particles used as bounds for other particles
+        lbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 4.0)
+        hbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 11.0)
+        all_n = [lbound_p, hbound_p]
+
+        for lows in ([], [3.0], [lbound_p], [3.0, lbound_p], [lbound_p, 3.0]):
+            for highs in ([], [10.0], [hbound_p], [10.0, hbound_p],
+                          [hbound_p, 10.0]):
+                for val in (1.0, 5.0, 20.0):
+                    n = Nuisance.setup_particle(IMP.Particle(self.m), val)
+                    for low in lows:
+                        n.set_lower(low)
+                    for high in highs:
+                        n.set_upper(high)
+                    all_n.append(n)
+        # All starting nuisance values
+        imp_nuisances = [n.get_nuisance() for n in all_n]
+
+        keys = set()
+        apply_funcs = []
+        for ss in self.m.get_ordered_score_states():
+            ji = ss.get_derived_object()._get_jax()
+            keys.update(ji._keys)
+            apply_funcs.append(ji.apply_func)
+
+        jm = IMP._jax_util._get_jax_model(self.m, keys)
+        # Compare JAX starting nuisance values with IMP
+        self.assertTrue(np.allclose(jm['nuisance'], imp_nuisances))
+
+        # Apply constraints with JAX
+        def apply_all_constraints(jm):
+            for f in apply_funcs:
+                jm = f(jm)
+            return jm
+
+        apply_func = jax.jit(apply_all_constraints)
+        jm = apply_func(jm)
+
+        # Apply constraints with IMP
+        self.rs.evaluate(False)
+
+        # Compare JAX final nuisance values with IMP
+        imp_nuisances = [n.get_nuisance() for n in all_n]
+        self.assertTrue(np.allclose(jm['nuisance'], imp_nuisances))
 
 
 if __name__ == '__main__':

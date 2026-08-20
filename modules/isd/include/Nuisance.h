@@ -50,6 +50,8 @@ class IMPISDEXPORT Nuisance : public Decorator {
    * created on-the-fly.
    */
   bool get_has_lower() const;
+  bool get_has_lower_float() const;
+  bool get_has_lower_particle() const;
   Float get_lower() const;
   static FloatKey get_lower_key();
   static ParticleIndexKey get_lower_particle_key();
@@ -58,6 +60,8 @@ class IMPISDEXPORT Nuisance : public Decorator {
   void remove_lower();
 
   bool get_has_upper() const;
+  bool get_has_upper_float() const;
+  bool get_has_upper_particle() const;
   Float get_upper() const;
   static FloatKey get_upper_key();
   static ParticleIndexKey get_upper_particle_key();

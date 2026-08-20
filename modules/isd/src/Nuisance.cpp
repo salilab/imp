@@ -2,7 +2,7 @@
  *  \file Nuisance.cpp
  *  \brief defines a one-dimensional nuisance parameter (sigma, gamma, ...)
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,10 +37,21 @@ void Nuisance::set_nuisance(Float d) {
 }
 
 bool Nuisance::get_has_lower() const {
-  Pointer<Particle> p = get_particle();
+  Particle * p = get_particle();
   return p->has_attribute(get_lower_key()) ||
          p->has_attribute(get_lower_particle_key());
 }
+
+bool Nuisance::get_has_lower_float() const {
+  Particle * p = get_particle();
+  return p->has_attribute(get_lower_key());
+}
+
+bool Nuisance::get_has_lower_particle() const {
+  Particle * p = get_particle();
+  return p->has_attribute(get_lower_particle_key());
+}
+
 Float Nuisance::get_lower() const {
   Particle *p = get_particle();
   FloatKey lk(get_lower_key());
@@ -72,7 +83,7 @@ FloatKey Nuisance::get_lower_key() {
   return k;
 }
 ParticleIndexKey Nuisance::get_lower_particle_key() {
-  static ParticleIndexKey k("lower");
+  static ParticleIndexKey k("p_lower");
   return k;
 }
 void Nuisance::set_lower(Float d) {
@@ -99,10 +110,21 @@ void Nuisance::remove_lower() {
 }
 
 bool Nuisance::get_has_upper() const {
-  Pointer<Particle> p = get_particle();
+  Particle *p = get_particle();
   return p->has_attribute(get_upper_key()) ||
          p->has_attribute(get_upper_particle_key());
 }
+
+bool Nuisance::get_has_upper_float() const {
+  Particle *p = get_particle();
+  return p->has_attribute(get_upper_key());
+}
+
+bool Nuisance::get_has_upper_particle() const {
+  Particle *p = get_particle();
+  return p->has_attribute(get_upper_particle_key());
+}
+
 Float Nuisance::get_upper() const {
   Particle *p = get_particle();
   FloatKey ku(get_upper_key());
@@ -134,7 +156,7 @@ FloatKey Nuisance::get_upper_key() {
   return k;
 }
 ParticleIndexKey Nuisance::get_upper_particle_key() {
-  static ParticleIndexKey k("upper");
+  static ParticleIndexKey k("p_upper");
   return k;
 }
 void Nuisance::set_upper(Float d) {
