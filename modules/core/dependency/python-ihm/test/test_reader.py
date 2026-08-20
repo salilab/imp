@@ -223,13 +223,23 @@ _ihm_entry_collection.id
 _ihm_entry_collection.name
 _ihm_entry_collection.details
 foo bar 'more text'
+c2id c2name c2details
+#
+_ihm_entry_collection_mapping.collection_id c2id
+_ihm_entry_collection_mapping.entry_id      entry1
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            c, = s.collections
-            self.assertEqual(c.id, 'foo')
-            self.assertEqual(c.name, 'bar')
-            self.assertEqual(c.details, 'more text')
+            c1, c2 = s.collections
+            self.assertEqual(c1.id, 'foo')
+            self.assertEqual(c1.name, 'bar')
+            self.assertEqual(c1.details, 'more text')
+            self.assertEqual(c1.entries, [])
+
+            self.assertEqual(c2.id, 'c2id')
+            self.assertEqual(c2.name, 'c2name')
+            self.assertEqual(c2.details, 'c2details')
+            self.assertEqual(c2.entries, ['entry1'])
 
     def test_software_handler(self):
         """Test SoftwareHandler"""

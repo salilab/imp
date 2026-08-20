@@ -1908,11 +1908,20 @@ class Collection:
        :param str id: Unique identifier (assigned by the archive).
        :param str name: Short name for the collection.
        :param str details: Longer description of the collection.
+       :param list entries: Explicit list of entry IDs in this collection;
+              if empty, just the current entry is assumed.
 
        See also :attr:`System.collections`.
     """
-    def __init__(self, id, name=None, details=None):
+    def __init__(self, id, name=None, details=None, entries=None):
         self.id, self.name, self.details = id, name, details
+        self.entries = entries or []
+
+    def __set_id(self, val):
+        self.id = val
+
+    # SystemReader wants to set _id, not id
+    _id = property(lambda s: s.id, __set_id)
 
 
 class BranchDescriptor:

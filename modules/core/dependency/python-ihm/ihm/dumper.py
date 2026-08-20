@@ -92,10 +92,21 @@ class _EntryDumper(Dumper):
 
 class _CollectionDumper(Dumper):
     def dump(self, system, writer):
+        self.dump_summary(system, writer)
+        self.dump_mapping(system, writer)
+
+    def dump_summary(self, system, writer):
         with writer.loop("_ihm_entry_collection",
                          ["id", "name", "details"]) as lp:
             for c in system.collections:
                 lp.write(id=c.id, name=c.name, details=c.details)
+
+    def dump_mapping(self, system, writer):
+        with writer.loop("_ihm_entry_collection_mapping",
+                         ["collection_id", "entry_id"]) as lp:
+            for c in system.collections:
+                for eid in (c.entries or [system.id]):
+                    lp.write(collection_id=c.id, entry_id=eid)
 
 
 class _AuditConformDumper(Dumper):

@@ -1311,11 +1311,23 @@ _ihm_entry_collection.name
 _ihm_entry_collection.details
 foo bar 'more text'
 #
+#
+loop_
+_ihm_entry_collection_mapping.collection_id
+_ihm_entry_collection_mapping.entry_id
+foo model
+#
 loop_
 _ihm_entry_collection.id
 _ihm_entry_collection.name
 _ihm_entry_collection.details
 foo bar 'more text'
+#
+#
+loop_
+_ihm_entry_collection_mapping.collection_id
+_ihm_entry_collection_mapping.entry_id
+foo model
 
 #
 """)

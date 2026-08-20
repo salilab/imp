@@ -1464,8 +1464,13 @@ C 3 ZN 1 6 6 ZN C .
 
     def test_collection_dumper(self):
         """Test CollectionDumper"""
-        system = ihm.System()
+        system = ihm.System(id='1abc')
+        # Collection with no explicit entries (will use system ID)
         c = ihm.Collection('foo', name='bar', details='more text')
+        system.collections.append(c)
+        # Collection with explicit entries
+        c = ihm.Collection('coll2', name='cname2', details='cdetails2',
+                           entries=['2xyz', '3hjk'])
         system.collections.append(c)
         dumper = ihm.dumper._CollectionDumper()
         out = _get_dumper_output(dumper, system)
@@ -1475,6 +1480,15 @@ _ihm_entry_collection.id
 _ihm_entry_collection.name
 _ihm_entry_collection.details
 foo bar 'more text'
+coll2 cname2 cdetails2
+#
+#
+loop_
+_ihm_entry_collection_mapping.collection_id
+_ihm_entry_collection_mapping.entry_id
+foo 1abc
+coll2 2xyz
+coll2 3hjk
 #
 """)
 

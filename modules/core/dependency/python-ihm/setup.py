@@ -17,6 +17,20 @@ if '--without-ext' in copy_args:
     build_ext = False
     copy_args.remove('--without-ext')
 
+# Allow building with Python limited API
+if '--py_limited_api' in copy_args:
+    copy_args.remove('--py_limited_api')
+    # We require Python 3.11 or later since we use PyBUF_WRITE which only
+    # became part of the stable API in 3.11
+    ext_limited_args = {
+        'define_macros': [("Py_LIMITED_API", "0x030B0000")],
+        'py_limited_api': True}
+    setup_limited_args = {
+        'options': {"bdist_wheel": {"py_limited_api": "cp311"}}}
+else:
+    ext_limited_args = {}
+    setup_limited_args = {}
+
 if sys.platform == 'win32':
     # Our use of strdup, strerror should be safe - no need for the Windows
     # compiler to warn about it; we want to use the POSIX name for strdup too
@@ -36,7 +50,8 @@ if build_ext:
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',
                                 '-nodefaultdtor', '-noproxy'],
-                     optional=True)]
+                     optional=True,
+                     **ext_limited_args)]
 else:
     mod = []
 
@@ -61,4 +76,5 @@ setup(name='ihm',
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering",
-      ])
+      ],
+      **setup_limited_args)

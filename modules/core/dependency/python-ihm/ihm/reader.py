@@ -481,6 +481,10 @@ class SystemReader:
         self.revisions = IDMapper(self.system.revisions, ihm.Revision,
                                   *(None,) * 4)
 
+        #: Mapping from ID to :class:`ihm.Collection` objects
+        self.collections = IDMapper(self.system.collections, ihm.Collection,
+                                    None)
+
         #: Mapping from ID to :class:`ihm.Entity` objects
         self.entities = IDMapper(self.system.entities, _make_new_entity)
 
@@ -1060,8 +1064,17 @@ class _CollectionHandler(Handler):
     category = '_ihm_entry_collection'
 
     def __call__(self, id, name, details):
-        c = ihm.Collection(id=id, name=name, details=details)
-        self.system.collections.append(c)
+        c = self.sysr.collections.get_by_id(id)
+        c.name = name
+        c.details = details
+
+
+class _CollectionMappingHandler(Handler):
+    category = '_ihm_entry_collection_mapping'
+
+    def __call__(self, collection_id, entry_id):
+        c = self.sysr.collections.get_by_id(collection_id)
+        c.entries.append(entry_id)
 
 
 class _StructHandler(Handler):
@@ -4154,7 +4167,8 @@ class IHMVariant(Variant):
     system_reader = SystemReader
 
     _handlers = [
-        _CollectionHandler, _StructHandler, _SoftwareHandler, _CitationHandler,
+        _CollectionHandler, _CollectionMappingHandler, _StructHandler,
+        _SoftwareHandler, _CitationHandler,
         _DatabaseHandler, _DatabaseStatusHandler,
         _AuditAuthorHandler, _AuditRevisionHistoryHandler,
         _AuditRevisionDetailsHandler, _AuditRevisionGroupHandler,
