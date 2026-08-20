@@ -140,7 +140,7 @@ class StandardsTest(IMP.test.TestCase):
         "Test that module function names follow the standards"
         exceptions = %(function_name_exceptions)s
         return self.assertFunctionNames(%(module)s, exceptions,
-                                        spelling_exceptions)
+                                        spelling_exceptions + ['jax'])
 
     def test_show(self):
         "Test all objects have show"
