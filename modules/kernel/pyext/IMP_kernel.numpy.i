@@ -273,6 +273,18 @@ PyObject *_get_ints_numpy(IMP::Model *m, IMP::IntKey k, PyObject *m_pyobj,
            read_only);
 }
 
+PyObject *_get_particle_indexes_numpy(IMP::Model *m, IMP::ParticleIndexKey k,
+                                      PyObject *m_pyobj, bool read_only)
+{
+  unsigned sz = m->IMP::internal::ParticleAttributeTable::get_attribute_size(k);
+  // Particle indexes are just integers
+  static_assert(sizeof(ParticleIndex) == sizeof(int));
+  return _get_ints_data_numpy(m_pyobj, sz,
+   sz == 0 ? nullptr
+    : (int *)m->IMP::internal::ParticleAttributeTable::access_attribute_data(k),
+   read_only);
+}
+
 PyObject *_get_vector3ds_numpy(IMP::Model *m, IMP::Vector3DKey k,
                                PyObject *m_pyobj, bool read_only)
 {
@@ -397,7 +409,8 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
                            Vector3DKey: _get_vector3ds_numpy,
                            Vector3DDerivKey: _get_vector3dderiv_numpy,
                            Vector4DKey: _get_vector4ds_numpy,
-                           Vector4DDerivKey: _get_vector4dderiv_numpy}
+                           Vector4DDerivKey: _get_vector4dderiv_numpy,
+                           ParticleIndexKey: _get_particle_indexes_numpy}
         return _numpy_meth_map[type(k)](self, k, self, read_only)
 
     def get_floats_numpy(self, k, read_only=False):

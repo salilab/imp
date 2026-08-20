@@ -338,6 +338,39 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(c), 0) # no Vector3D for this model
         return m1, m2, p1, p2, p3
 
+    def test_numpy_particle_indexes(self):
+        """Test numpy methods for ParticleIndexKey"""
+        m1 = IMP.Model("numpy particle_index")
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+
+        m2 = IMP.Model("numpy no particle_index")
+        p12 = IMP.Particle(m2)
+
+        k = IMP.ParticleIndexKey("myf")
+        p1.add_attribute(k, p1)
+        p2.add_attribute(k, p2)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m1.get_numpy(k)
+            self.assertIs(n.base, m1)
+            self.assertEqual(len(n), 2) # no ParticleIndex attribute for p3
+            self.assertEqual(n[0], p1.get_index())
+            self.assertEqual(n[1], p2.get_index())
+            n[0] = p2.get_index()
+            n[1] = p1.get_index()
+            self.assertEqual(p1.get_value(k), p2)
+            self.assertEqual(p2.get_value(k), p1)
+
+            # Read-only array should raise ValueError on assignment
+            n = m1.get_numpy(k, read_only=True)
+            self.assertRaises(ValueError, n.__setitem__, 0, p1.get_index())
+
+            n = m2.get_numpy(k)
+            self.assertIs(n.base, m2)
+            self.assertEqual(len(n), 0) # no ParticleIndex key for this model
+
 
 if __name__ == '__main__':
     IMP.test.main()
