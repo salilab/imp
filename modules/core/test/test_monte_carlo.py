@@ -332,6 +332,8 @@ class Tests(IMP.test.TestCase):
         m, mc = _setup_jax_mc()
         # Initialize, get score of starting configuration
         ji = mc._get_jax()
+        # No ScoreStates, so no score state keys
+        self.assertEqual(ji._get_score_state_keys(), frozenset())
         X = ji.get_jax_model()
         f = jax.jit(ji.init_func)
         mc_state = f(X, key=jax.random.key(42))

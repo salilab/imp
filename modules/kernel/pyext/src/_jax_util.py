@@ -195,12 +195,19 @@ class JAXOptimizerInfo:
                 jax_optstates.append(j)
         return jax_optstates
 
+    def _get_score_state_keys(self):
+        """Get keys used by all ScoreStates"""
+        m = self._opt.get_model()
+        return frozenset(k for ss in m.get_ordered_score_states()
+                         for k in ss.get_derived_object()._get_jax()._keys)
+
     def get_jax_model(self):
         """Get Model data as a tree of NumPy arrays"""
-        # Add keys used by the scoring function to those we need ourselves
-        # todo: add any keys used by ScoreStates
+        # Add keys used by the scoring function and ScoreStates to those we
+        # need ourselves
         ji = self._sf._get_jax()
-        return _get_jax_model(ji.m, ji._keys | self._keys)
+        sskeys = self._get_score_state_keys()
+        return _get_jax_model(ji.m, ji._keys | self._keys | sskeys)
 
 
 class JAXOptimizerStateInfo:
