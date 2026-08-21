@@ -278,7 +278,8 @@ PyObject *_get_particle_indexes_numpy(IMP::Model *m, IMP::ParticleIndexKey k,
 {
   unsigned sz = m->IMP::internal::ParticleAttributeTable::get_attribute_size(k);
   // Particle indexes are just integers
-  static_assert(sizeof(ParticleIndex) == sizeof(int));
+  static_assert(sizeof(ParticleIndex) == sizeof(int),
+                "ParticleIndex size != int size");
   return _get_ints_data_numpy(m_pyobj, sz,
    sz == 0 ? nullptr
     : (int *)m->IMP::internal::ParticleAttributeTable::access_attribute_data(k),
