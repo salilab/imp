@@ -45,13 +45,13 @@ LogNormalMover::LogNormalMover(Model *m, ParticleIndex pi,
 LogNormalMover::LogNormalMover(const ParticlesTemp &sc, const FloatKeys &vars,
                                double max)
     : MonteCarloMover(sc[0]->get_model(), "LogNormalMover%1%") {
-  initialize(get_indexes(sc), vars, max);
+  initialize(::IMP::get_indexes(sc), vars, max);
 }
 
 // backwards compat
 LogNormalMover::LogNormalMover(const ParticlesTemp &sc, double max)
     : MonteCarloMover(sc[0]->get_model(), "XYZLogNormalMover%1%") {
-  initialize(get_indexes(sc), XYZ::get_xyz_keys(), max);
+  initialize(::IMP::get_indexes(sc), XYZ::get_xyz_keys(), max);
 }
 
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)

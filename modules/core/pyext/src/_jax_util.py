@@ -332,3 +332,41 @@ def _dihedral(rij, rkj, rkl):
 def _get_angle_difference(a1, a2):
     """Get smallest angle difference (between -pi and +pi) between a1 and a2"""
     return jnp.mod(a2 - a1 + math.pi, 2.0 * math.pi) - math.pi
+
+
+def _get_offset_propose_func(indexes, keys, offset_func):
+    """Get a MonteCarloMover propose function that applies an offset to the
+       given particle indexes and attributes"""
+    from IMP.core import RigidBodyMember, XYZ
+
+    # We work on XYZ coordinates, internal coordinates, or arbitrary sets
+    # of non-special-cased FloatKeys:
+    keys = frozenset(keys)
+    if keys == frozenset(XYZ.get_xyz_keys()):
+        str_keys = 'xyz'
+        keys = []
+    elif keys == frozenset(RigidBodyMember.get_internal_coordinate_keys()):
+        str_keys = 'intcoord'
+        keys = ['rigid_bodies']
+    else:
+        for k in keys:
+            if k.get_index() < 7:
+                raise NotImplementedError(
+                    f"No implementation for special FloatKey {k}")
+        str_keys = [k.get_string() for k in keys]
+
+    def propose_func(jm, key):
+        if str_keys == 'xyz':
+            key, v = offset_func(key, (len(indexes), 3))
+            jm['xyz'] = jm['xyz'].at[indexes].add(v)
+        elif str_keys == 'intcoord':
+            rbs = jm['rigid_bodies']
+            key, v = offset_func(key, (len(indexes), 3))
+            rbs.intcoord = rbs.intcoord.at[indexes].add(v)
+        else:
+            for k in str_keys:
+                key, v = offset_func(key, len(indexes))
+                jm[k] = jm[k].at[indexes].add(v)
+        return jm, key, 1.0
+
+    return propose_func, keys

@@ -651,3 +651,41 @@
         return self._wrap_jax(apply_func, keys=['rigid_bodies'])
   %}
 }
+
+%extend IMP::core::NormalMover {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.random
+        from IMP.core._jax_util import _get_offset_propose_func
+        keys = self.get_keys()
+        sigma = self.get_sigma()
+
+        def offset_func(key, shape):
+            key, subkey = jax.random.split(key)
+            return key, jax.random.normal(subkey, shape) * sigma
+
+        propose_func, keys = _get_offset_propose_func(
+            self.get_indexes(), keys, offset_func)
+
+        return self._wrap_jax(lambda key: key, propose_func, keys=keys)
+  %}
+}
+
+%extend IMP::core::LogNormalMover {
+  %pythoncode %{
+    def _get_jax(self):
+        import jax.random
+        from IMP.core._jax_util import _get_offset_propose_func
+        keys = self.get_keys()
+        sigma = self.get_sigma()
+
+        def offset_func(key, shape):
+            key, subkey = jax.random.split(key)
+            return key, jax.random.lognormal(subkey, sigma, shape)
+
+        propose_func, keys = _get_offset_propose_func(
+            self.get_indexes(), keys, offset_func)
+
+        return self._wrap_jax(lambda key: key, propose_func, keys=keys)
+  %}
+}
