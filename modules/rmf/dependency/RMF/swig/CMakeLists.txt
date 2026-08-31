@@ -114,18 +114,11 @@ IF(APPLE)
     "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
 ENDIF(APPLE)
 
-if(NOT "${RMF_PY_LIMITED_API}" STREQUAL "")
-  if(WIN32 AND NOT CYGWIN)
-    set_target_properties(${SWIG_MODULE_RMF_REAL_NAME} PROPERTIES SUFFIX
-                          ".abi3.pyd")
-    set_target_properties(${SWIG_MODULE_RMF_HDF5_REAL_NAME} PROPERTIES SUFFIX
-                          ".abi3.pyd")
-  else()
-    set_target_properties(${SWIG_MODULE_RMF_REAL_NAME} PROPERTIES SUFFIX
-                          ".abi3.so")
-    set_target_properties(${SWIG_MODULE_RMF_HDF5_REAL_NAME} PROPERTIES SUFFIX
-                          ".abi3.so")
-  endif()
+if(NOT "${RMF_PY_LIMITED_API}" STREQUAL "" AND (NOT WIN32 OR CYGWIN))
+  set_target_properties(${SWIG_MODULE_RMF_REAL_NAME} PROPERTIES SUFFIX
+                        ".abi3.so")
+  set_target_properties(${SWIG_MODULE_RMF_HDF5_REAL_NAME} PROPERTIES SUFFIX
+                        ".abi3.so")
 endif()
 
 INSTALL(TARGETS ${SWIG_MODULE_RMF_HDF5_REAL_NAME} DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
