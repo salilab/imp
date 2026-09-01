@@ -3,8 +3,6 @@
 """Rebuild the python-ihm _format.pyd extension (which is built for
    Python 3.9) for both Python 3.10 and the Python limited API."""
 
-import os
-import re
 import subprocess
 from pathlib import Path
 
