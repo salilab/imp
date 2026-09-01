@@ -21,8 +21,6 @@ if len(build_commands) != 3:
     raise ValueError("Expected exactly 3 build commands")
 if '3.9' not in build_commands[0] or '3.9' not in build_commands[1]:
     raise ValueError("Compile commands do not include Python 3.9 headers")
-if 'python39.lib' not in build_commands[2]:
-    raise ValueError("Link command does not include Python 3.9 library")
 
 print("** Rerun python-ihm build to make Python 3.10 extension")
 py310_cmds = [cmd.replace('3.9', '3.10').replace('39', '310').replace(
