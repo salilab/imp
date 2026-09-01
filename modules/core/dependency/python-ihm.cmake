@@ -1,5 +1,7 @@
 set(IMP_USE_SYSTEM_IHM off CACHE BOOL "Use an external (system) copy of python-ihm, rather than that bundled with IMP.")
 
+set(IHM_PY_LIMITED_API "" CACHE STRING "If set, build python-ihm extension module using the Python limited API at given version (e.g. '3.11') (requires SWIG 4.2 or later and Python 3.11 or later)")
+
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/python-ihm" "ok=True\n")
 
 if(EXISTS ${CMAKE_BINARY_DIR}/lib/ihm
@@ -56,6 +58,16 @@ endfunction(link_python_ihm_pys)
 link_python_ihm_pys("ihm" "lib/ihm")
 link_python_ihm_pys("ihm/util" "lib/ihm/util")
 
+if(NOT "${IHM_PY_LIMITED_API}" STREQUAL "")
+  if(IHM_PY_LIMITED_API MATCHES "^([0-9]+)\\.([0-9]+)$")
+    math(EXPR LIMITED_HEX "((${CMAKE_MATCH_1} << 24) + (${CMAKE_MATCH_2} << 16))"
+         OUTPUT_FORMAT HEXADECIMAL)
+    add_compile_definitions("Py_LIMITED_API=${LIMITED_HEX}")
+  else()
+    message(FATAL_ERROR "Cannot parse Python limited API (\"${IHM_PY_LIMITED_API}\") as an X.Y version number")
+  endif()
+endif()
+
 # Install Python modules
 install_deref(${CMAKE_BINARY_DIR}/lib/ihm * ${CMAKE_INSTALL_PYTHONDIR}/ihm)
 install_deref(${CMAKE_BINARY_DIR}/lib/ihm/util * ${CMAKE_INSTALL_PYTHONDIR}/ihm/util)
@@ -106,6 +118,10 @@ set_property(TARGET "ihm-python" PROPERTY FOLDER "ihm")
 
 if(WIN32 AND NOT CYGWIN)
   set_target_properties(ihm-python PROPERTIES SUFFIX ".pyd")
+endif()
+
+if(NOT "${IHM_PY_LIMITED_API}" STREQUAL "" AND (NOT WIN32 OR CYGWIN))
+  set_target_properties(ihm-python PROPERTIES SUFFIX ".abi3.so")
 endif()
 
 # Install C extension
