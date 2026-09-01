@@ -32,7 +32,7 @@ def _add_pyext_to_path():
         # Add Python version-specific directory to search path; we only
         # need to do this for Python 3.9 or 3.10 as for 3.11 and later we
         # use the Python limited API
-        if sys.version_info[:2] in [(3, 9), (3, 10]:
+        if sys.version_info[:2] in [(3, 9), (3, 10)]:
             pyextdir = pydir + '\\python%d.%d' % sys.version_info[:2]
             if pyextdir not in sys.path:
                 sys.path.insert(1, pyextdir)
@@ -60,7 +60,7 @@ def _add_pyext_to_path():
         # Add Python version-specific directory to search path; we only
         # need to do this for Python 3.9 or 3.10 as for 3.11 and later we
         # use the Python limited API
-        if sys.version_info[:2] in [(3, 9), (3, 10]:
+        if sys.version_info[:2] in [(3, 9), (3, 10)]:
             pyextdir = rmf_dir + '\\python%d.%d' % sys.version_info[:2]
             if pyextdir not in sys.path:
                 sys.path.insert(1, pyextdir)
