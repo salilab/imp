@@ -31,12 +31,8 @@ def _add_pyext_to_path():
         pydir = imp_dir[:-4]
         # Strip '\python\IMP' suffix to get directory containing DLLs
         dlldir = imp_dir[:-11] + '\\bin'
-        # Add DLL directory to PATH so Windows can find them
-        if dlldir not in os.environ['PATH']:
-            os.environ['PATH'] = dlldir + ';' + os.environ['PATH']
-        # Python 3.8 or later don't look in PATH for DLLs
-        if hasattr(os, 'add_dll_directory'):
-            __dll_directory = os.add_dll_directory(dlldir)
+        # Add DLL directory to search path so Windows can find them
+        __dll_directory = os.add_dll_directory(dlldir)
 _add_pyext_to_path()
 
 """
@@ -52,12 +48,8 @@ def _add_pyext_to_path():
     if hasattr(sys, 'dllhandle') and len(rmf_dir) > 4:
         # Strip '\python' suffix to get directory containing DLLs
         dlldir = rmf_dir[:-7] + '\\bin'
-        # Add DLL directory to PATH so Windows can find them
-        if dlldir not in os.environ['PATH']:
-            os.environ['PATH'] = dlldir + ';' + os.environ['PATH']
-        # Python 3.8 or later don't look in PATH for DLLs
-        if hasattr(os, 'add_dll_directory'):
-            __dll_directory = os.add_dll_directory(dlldir)
+        # Add DLL directory to search path so Windows can find them
+        __dll_directory = os.add_dll_directory(dlldir)
 _add_pyext_to_path()
 
 """
