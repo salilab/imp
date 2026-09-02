@@ -1,6 +1,6 @@
 set(IMP_USE_SYSTEM_IHM off CACHE BOOL "Use an external (system) copy of python-ihm, rather than that bundled with IMP.")
 
-set(IHM_PY_LIMITED_API "" CACHE STRING "If set, build python-ihm extension module using the Python limited API at given version (e.g. '3.11') (requires SWIG 4.2 or later and Python 3.11 or later)")
+set(IHM_PY_LIMITED_API "" CACHE STRING "If set, build python-ihm extension module using the Python limited API at given version (e.g. '3.10') (requires SWIG 4.2 or later and Python 3.10 or later)")
 
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/python-ihm" "ok=True\n")
 
