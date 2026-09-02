@@ -29,13 +29,6 @@ def _add_pyext_to_path():
     if hasattr(sys, 'dllhandle') and len(imp_dir) > 4:
         # Strip '\IMP' suffix from directory
         pydir = imp_dir[:-4]
-        # Add Python version-specific directory to search path; we only
-        # need to do this for Python 3.9 or 3.10 as for 3.11 and later we
-        # use the Python limited API
-        if sys.version_info[:2] in [(3, 9), (3, 10)]:
-            pyextdir = pydir + '\\python%d.%d' % sys.version_info[:2]
-            if pyextdir not in sys.path:
-                sys.path.insert(1, pyextdir)
         # Strip '\python\IMP' suffix to get directory containing DLLs
         dlldir = imp_dir[:-11] + '\\bin'
         # Add DLL directory to PATH so Windows can find them
@@ -57,13 +50,6 @@ def _add_pyext_to_path():
     rmf_dir = os.path.abspath(os.path.dirname(__file__))
     # Make sure we're on a Windows system
     if hasattr(sys, 'dllhandle') and len(rmf_dir) > 4:
-        # Add Python version-specific directory to search path; we only
-        # need to do this for Python 3.9 or 3.10 as for 3.11 and later we
-        # use the Python limited API
-        if sys.version_info[:2] in [(3, 9), (3, 10)]:
-            pyextdir = rmf_dir + '\\python%d.%d' % sys.version_info[:2]
-            if pyextdir not in sys.path:
-                sys.path.insert(1, pyextdir)
         # Strip '\python' suffix to get directory containing DLLs
         dlldir = rmf_dir[:-7] + '\\bin'
         # Add DLL directory to PATH so Windows can find them

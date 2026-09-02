@@ -5,8 +5,9 @@
 # First run the following in the binary directory to install files:
 # cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/python \
 #                    -DPYTHON_LIBRARIES= \
-#                    -DIMP_PY_LIMITED_API=3.9 \
-#                    -DRMF_PY_LIMITED_API=3.9
+#                    -DIMP_PY_LIMITED_API=3.10 \
+#                    -DRMF_PY_LIMITED_API=3.10 \
+#                    -DIHM_PY_LIMITED_API=3.10
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Then run (still in the binary directory)
@@ -24,12 +25,6 @@ VER=$1
 BITS=$2
 ROOT=w32-inst
 TOOLDIR=`dirname $0`
-
-# The python-ihm _format.pyd extension is built for Python 3.9 only
-# (IMP and RMF extensions use the Python limited API so should work for
-# Python 3.9 or any later version). Rebuild it for 3.10, and for the
-# limited API (which requires 3.11+).
-${TOOLDIR}/make_python_ihm.py || exit 1
 
 # Put things in more w32-like arrangement
 mv ${ROOT}/usr/local/include ${ROOT}/usr/local/bin ${ROOT} || exit 1
@@ -76,18 +71,10 @@ for app in ${ROOT}/bin/*; do
   fi
 done
 
-# Make Python version-specific directories for extensions (.pyd). We only
-# need these for python-ihm for Python 3.9 and 3.10, as IMP and RMF use the
-# Python limited API for 3.9+ and python-ihm uses it for 3.11+
-mkdir ${ROOT}/python/python3.9 || exit 1
-mkdir ${ROOT}/python/python3.10 || exit 1
-for SUBDIR in python/python3.9 python/python3.10 python; do
-  mkdir ${ROOT}/${SUBDIR}/_ihm_pyd || exit 1
-  echo "pass" > ${ROOT}/${SUBDIR}/_ihm_pyd/__init__.py || exit 1
-done
-mv ${ROOT}/python/ihm/_format.pyd ${ROOT}/python/python3.9/_ihm_pyd/ || exit 1
-cp lib/ihm/_format310.pyd ${ROOT}/python/python3.10/_ihm_pyd/_format.pyd || exit 1
-cp lib/ihm/_format_lim.pyd ${ROOT}/python/_ihm_pyd/_format.pyd || exit 1
+# Put python-ihm extension in _ihm_pyd subdir
+mkdir ${ROOT}/python/_ihm_pyd || exit 1
+echo "pass" > ${ROOT}/python/_ihm_pyd/__init__.py || exit 1
+mv ${ROOT}/python/ihm/_format.pyd ${ROOT}/python/_ihm_pyd/ || exit 1
 
 # Patch ihm to find _format.pyd
 perl -pi -e 's/from \. import _format/from _ihm_pyd import _format/' \
@@ -190,10 +177,8 @@ done
 # of MS-MPI - we don't bundle it.
 echo "msmpi.dll" >> w32.dlls
 
-# Add DLLs of our prerequisites (Python).
-for PYVER in 39 10 3; do
-  echo "python${PYVER}.dll" >> w32.dlls
-done
+# Add DLLs of our prerequisites (Python stable API).
+echo "python3.dll" >> w32.dlls
 
 if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
   echo "The following non-standard libraries are linked against, and were"
