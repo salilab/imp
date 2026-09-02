@@ -1114,27 +1114,39 @@ x . 'single' "double"
         cif = """
 data_foo_bar
 #
-_cat1.foo ?
+_cat1.foo ?  
 #
 loop_
 _foo.bar
 _foo.baz
 a b c d
 x y
-"""
+_cat2.bar ?
+"""  # noqa: W291
         r = ihm.format.CifTokenReader(StringIO(cif))
         tokens = list(r.read_file())
         self.assertIsInstance(tokens[5], ihm.format._CategoryTokenGroup)
+        # cat1.foo has trailing whitespace
+        self.assertEqual(tokens[5].whitespace.as_mmcif(), "  ")
         self.assertIsInstance(tokens[8], ihm.format._LoopHeaderTokenGroup)
         self.assertIsInstance(tokens[9], ihm.format._LoopRowTokenGroup)
         self.assertIsInstance(tokens[10], ihm.format._LoopRowTokenGroup)
         self.assertIsInstance(tokens[11], ihm.format._LoopRowTokenGroup)
+        self.assertIsInstance(tokens[13], ihm.format._CategoryTokenGroup)
+        # cat2.bar has no trailing whitespace
+        self.assertIsNone(tokens[13].whitespace)
         new_cif = "".join(x.as_mmcif() for x in tokens)
         self.assertEqual(new_cif, cif)
 
     def test_cif_token_reader_missing_value(self):
         """Key without a value should be an error"""
         cif = "_exptl.method\n"
+        r = ihm.format.CifTokenReader(StringIO(cif))
+        self.assertRaises(ihm.format.CifParserError, list, r.read_file())
+
+    def test_cif_token_reader_category_no_eol(self):
+        """Category must end in end-of-line"""
+        cif = '_foo.bar foo bar baz\n'
         r = ihm.format.CifTokenReader(StringIO(cif))
         self.assertRaises(ihm.format.CifParserError, list, r.read_file())
 
@@ -1338,12 +1350,15 @@ foo model
         space = ihm.format._WhitespaceToken("   ")
         val = ihm.format._TextValueToken("baz", quote=None)
         tg = ihm.format._CategoryTokenGroup(
-            var, ihm.format._SpacedToken([space], val))
+            var, ihm.format._SpacedToken([space], val), None)
         self.assertEqual(str(tg), "<_CategoryTokenGroup(_foo.bar, baz)>")
         self.assertEqual(tg.as_mmcif(), '_foo.bar   baz\n')
         self.assertEqual(tg.category, "_foo")
         self.assertEqual(tg.keyword, "bar")
         self.assertEqual(tg.value, "baz")
+        tg = ihm.format._CategoryTokenGroup(
+            var, ihm.format._SpacedToken([space], val), space)
+        self.assertEqual(tg.as_mmcif(), '_foo.bar   baz   \n')
         tg.value = None
         self.assertIsNone(tg.value)
 
@@ -1406,7 +1421,7 @@ x y
         space = ihm.format._WhitespaceToken("   ")
         val = ihm.format._TextValueToken("baz", quote=None)
         tg = ihm.format._CategoryTokenGroup(
-            var, ihm.format._SpacedToken([space], val))
+            var, ihm.format._SpacedToken([space], val), None)
         # Value does not match
         f = ihm.format.ChangeValueFilter("_foo.bar", old='old', new='new')
         new_tg = f.filter_category(tg)

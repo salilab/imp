@@ -570,15 +570,18 @@ class _PreservingCifTokenizer(_CifTokenizer):
 
 class _CategoryTokenGroup:
     """A group of tokens which set a single data item"""
-    def __init__(self, vartoken, valtoken):
+    def __init__(self, vartoken, valtoken, whitespace):
         self.vartoken, self.valtoken = vartoken, valtoken
+        self.whitespace = whitespace
 
     def __str__(self):
         return ("<_CategoryTokenGroup(%s, %s)>"
                 % (self.vartoken.as_mmcif(), self.valtoken.token.as_mmcif()))
 
     def as_mmcif(self):
-        return self.vartoken.as_mmcif() + self.valtoken.as_mmcif() + "\n"
+        return (self.vartoken.as_mmcif() + self.valtoken.as_mmcif()
+                + (self.whitespace.as_mmcif() if self.whitespace else "")
+                + "\n")
 
     def __set_value(self, val):
         self.valtoken.value = val
@@ -1037,11 +1040,17 @@ class CifTokenReader(_PreservingCifTokenizer):
                 "No valid value found for %s.%s on line %d"
                 % (vartoken.category, vartoken.keyword, self._linenum))
         eoltok = self._get_token()
+        # Handle whitespace at the end of the line, if any
+        if isinstance(eoltok, _WhitespaceToken):
+            whitespace = eoltok
+            eoltok = self._get_token()
+        else:
+            whitespace = None
         if not isinstance(eoltok, _EndOfLineToken):
             raise CifParserError(
                 "No end of line after %s.%s on line %d"
                 % (vartoken.category, vartoken.keyword, self._linenum))
-        return _CategoryTokenGroup(vartoken, spval)
+        return _CategoryTokenGroup(vartoken, spval, whitespace)
 
     def _read_loop(self, looptoken):
         """Handle a loop_ construct"""

@@ -58,6 +58,13 @@ static void handle_error(struct ihm_error *err)
 
 %{
 
+/* PyBUF_WRITE didn't officially enter the Python limited API until 3.11,
+   but it's just a constant and that constant's value has never changed.
+   Allow building with the 3.10 limited API (used by IMP). */
+#if defined(Py_LIMITED_API) && Py_LIMITED_API+0 < 0x030B0000
+#define PyBUF_WRITE 0x200
+#endif
+
 /* Read data from a Python filelike object, in text mode */
 static ssize_t pyfile_text_read_callback(char *buffer, size_t buffer_len,
                                          void *data, struct ihm_error **err)
