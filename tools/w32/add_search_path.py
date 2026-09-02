@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-"""Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and
-   DLLs in Python version-specific directories. These directories are created
-   by the .exe Windows installers, and are not in the standard Python search
-   path, so need to be added. We need to patch IMP/__init__.py so we add
-   paths before any usage of any IMP module, and RMF.py too in case RMF
-   is imported before IMP.
+"""Patch IMP, ihm and RMF SWIG wrappers to add the directory containing
+   IMP and RMF DLLs to the search path. We need to patch IMP/__init__.py
+   so we add paths before any usage of any IMP module, and RMF.py too in
+   case RMF is imported before IMP.
 
    Note that we used to simply use the 'patch' utility to do this, but the
    SWIG folks changed the header of their output files, which confused patch.
