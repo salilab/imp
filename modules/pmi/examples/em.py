@@ -21,6 +21,12 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.em
 import sys
+try:
+    import sklearn
+except ImportError:
+    print("To run this example, please first install the 'sklearn'")
+    print("Python module.")
+    sys.exit(0)
 
 IMP.setup_from_argv(sys.argv, "Set up the EM restraint")
 

@@ -10,8 +10,9 @@ class Tests(IMP.test.TestCase):
     def test_analysis_replica_exchange(self):
         try:
             import matplotlib  # noqa: F401
+            import scipy  # noqa: F401
         except ImportError:
-            self.skipTest("no matplotlib package")
+            self.skipTest("no matplotlib or scipy package")
         if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
             self.skipTest("test too slow to run in debug mode")
         model=IMP.Model()
