@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Patch IMP, ihm and RMF SWIG wrappers to add the directory containing
+"""Patch IMP and RMF SWIG wrappers to add the directory containing
    IMP and RMF DLLs to the search path. We need to patch IMP/__init__.py
    so we add paths before any usage of any IMP module, and RMF.py too in
    case RMF is imported before IMP.
@@ -10,7 +10,7 @@
    Instead, we look for import lines, and add our code after the first block
    of imports (which import standard Python modules such as 'sys').
    This ensures that the search path is properly set up before we try to
-   import IMP/ihm/RMF extensions, but doesn't come before the comment header
+   import IMP/RMF extensions, but doesn't come before the comment header
    or any __future__ imports (which must come first).
 """
 
@@ -55,9 +55,6 @@ _add_pyext_to_path()
 
 def add_search_path(filename):
     patch = RMF_PATCH if 'RMF' in filename else IMP_PATCH
-    if 'ihm' in filename:
-        # Note that this works because "IMP" and "ihm" are both 3 letters long
-        patch = patch.replace('IMP', 'ihm')
     with open(filename) as fh:
         contents = fh.readlines()
     # An 'import block' is considered to be a set of lines beginning with

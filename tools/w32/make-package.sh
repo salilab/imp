@@ -51,9 +51,8 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 # Remove .pyc files
 find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
 
-# Patch IMP/__init__.py, ihm/__init__.py, and RMF.py so they can find Python
-# version-specific extensions and the IMP/RMF DLLs
-${TOOLDIR}/add_search_path.py ${ROOT}/python/IMP/__init__.py ${ROOT}/python/RMF.py ${ROOT}/python/ihm/__init__.py || exit 1
+# Patch IMP/__init__.py and RMF.py so they can find the IMP/RMF DLLs
+${TOOLDIR}/add_search_path.py ${ROOT}/python/IMP/__init__.py ${ROOT}/python/RMF.py || exit 1
 
 # If there are any Python applications that don't have a file extension,
 # add .py extension and drop in wrapper so users can run them without an
@@ -70,15 +69,6 @@ for app in ${ROOT}/bin/*; do
     fi
   fi
 done
-
-# Put python-ihm extension in _ihm_pyd subdir
-mkdir ${ROOT}/python/_ihm_pyd || exit 1
-echo "pass" > ${ROOT}/python/_ihm_pyd/__init__.py || exit 1
-mv ${ROOT}/python/ihm/_format.pyd ${ROOT}/python/_ihm_pyd/ || exit 1
-
-# Patch ihm to find _format.pyd
-perl -pi -e 's/from \. import _format/from _ihm_pyd import _format/' \
-     ${ROOT}/python/ihm/format.py || exit 1
 
 # Remove scratch module and example application/dependency
 # (if installed)
