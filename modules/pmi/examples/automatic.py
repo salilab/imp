@@ -17,9 +17,9 @@ import os
 import sys
 
 IMP.setup_from_argv(sys.argv, "Automatic setup of a large system")
-if IMP.get_is_quick_test():
+if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
     print("This example is too slow to test in debug mode - run without")
-    print("internal tests enabled, or without the --run-quick-test flag")
+    print("internal tests enabled")
     sys.exit(0)
 
 # This is the topology table format.
