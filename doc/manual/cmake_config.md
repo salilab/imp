@@ -53,6 +53,7 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time, or `ALL` to do this for all modules.
 - `IMP_USE_SYSTEM_RMF`: Set to `on` to build %IMP using an external (system) copy of the RMF library, instead of that bundled with IMP itself.
 - `IMP_USE_SYSTEM_IHM`: Set to `on` to build %IMP using an external (system) copy of the python-ihm library, instead of that bundled with IMP itself.
+- `IMP_PY_LIMITED_API`: Set to a Python version (e.g. `3.10`) to build %IMP Python extensions using the [Python limited API](https://docs.python.org/3/c-api/stable.html) so that they work with that Python version or any later version (by default, extensions work only with the same version of Python that %IMP was built with). The `RMF_PY_LIMITED_API` and `IHM_PY_LIMITED_API` flags work similarly for bundled RMF and python-ihm.
 
 There also are a [variety of standard cmake options](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
 which control the build. For example:
