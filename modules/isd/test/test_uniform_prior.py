@@ -84,6 +84,8 @@ class Tests(IMP.test.TestCase):
             jm = ji.get_jax_model()
             imp_score = r.evaluate(False)
             jax_score = score_f(jm)
+            # Score should be a scalar, not an array
+            self.assertEqual(jax_score.shape, ())
             self.assertAlmostEqual(imp_score, exp_score, delta=1e-3)
             self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
