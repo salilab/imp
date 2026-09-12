@@ -35,7 +35,7 @@
         funcs, keys = self._get_restraint_jax_funcs_keys()
         def jax_sf(jm):
             scores = jnp.asarray([f(jm) for f in funcs])
-            return -jnp.log(jnp.prod(scores))
+            return -jnp.sum(jnp.log(scores))
         return self._wrap_jax(jax_sf, keys=keys)
   %}
 }
