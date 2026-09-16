@@ -1,6 +1,40 @@
 import jax.random
 import jax.tree_util
 import IMP
+import jax.numpy as jnp
+
+
+class Space:
+    """The space in which restraints is evaluated. See FreeSpace for the
+       default unbounded space, or PeriodicSpace for a space that implements
+       periodic boundary conditions."""
+
+    def distance(dr):
+        """Given an array of particle-particle vectors, return an array
+           of distances."""
+        pass
+
+
+class FreeSpace(Space):
+    """An unbounded space with no periodic boundary conditions."""
+
+    @staticmethod
+    def distance(dr):
+        return jnp.linalg.norm(dr, axis=1)
+
+
+class PeriodicSpace(Space):
+    """An space with periodic boundary conditions.
+
+       @param side A 3D vector of the periodic boundary box dimensions.
+    """
+
+    def __init__(self, side):
+        self.side = jnp.asarray(side)
+
+    def distance(self, dr):
+        p_dr = jnp.mod(dr + self.side * 0.5, self.side) - 0.5 * self.side
+        return jnp.linalg.norm(p_dr, axis=1)
 
 
 def get_random_key():
