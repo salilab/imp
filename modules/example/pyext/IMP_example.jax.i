@@ -9,6 +9,11 @@
 // providing a _get_jax() method in the Python class that returns
 // one or more JAX functions.
 
+%pythonbegin %{ 
+  import functools
+  import IMP._jax_util
+%}
+
 %extend IMP::example::ExampleRestraint {
   %pythoncode %{
     def _get_jax(self):
@@ -18,7 +23,6 @@
            The JAX Model (here called `jm`) is a JAX object which contains
            the same information as the IMP Model, as a simple Python dict.
            For example, jm['xyz'] is an N x 3 array of XYZ coordinates."""
-        import functools
         def jax_restraint(jm, k, pi):
             # Get the xyz coordinates for particle pi in the JAX Model
             xyz = jm['xyz'][pi]
@@ -44,7 +48,6 @@
            Similar to a Restraint, we must return a single JAX function which
            takes as input a JAX Model. However, in this case the function
            must return a new JAX Model, with the constraint applied."""
-        import functools
         def apply_func(jm, key, index):
             # JAX arrays are immutable so we cannot simply say
             # jm[key][index] += 1
@@ -67,7 +70,6 @@
   %pythoncode %{
     def _get_jax(self, m, indexes):
         """Implementation of the modifier using JAX"""
-        import functools
         import jax.numpy as jnp
         def apply_func(jm, box):
             jm['xyz'] = jm['xyz'].at[indexes].set(
@@ -82,7 +84,7 @@
 
 %extend IMP::example::ExamplePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         """Implementation of the score using JAX.
            A PairScore takes as input the JAX Model, and returns the score
            for a given set of particle pair indexes. Unlike an IMP C++
@@ -90,10 +92,9 @@
            takes multiple indexes, as an Nx2 array, and should return an
            N-element array of scores."""
         import jax.numpy as jnp
-        import functools
         def pair_score(jm, x0, k):
             xyzs = jm['xyz'][indexes]
-            diff = jnp.linalg.norm(xyzs[:,0] - xyzs[:,1], axis=1) - x0
+            diff = space.distance(xyzs[:,0] - xyzs[:,1]) - x0
             return 0.5 * k * diff * diff
         f = functools.partial(pair_score, x0=self.get_mean(),
                               k=self.get_force_constant())
@@ -109,7 +110,6 @@
            Unlike an IMP C++ UnaryFunction (which takes a single feature),
            the JAX score takes multiple features, as an N-element array,
            and should return an N-element array of scores."""
-        import functools
         def score(feature, center, k):
             return 0.5 * k * (feature - center) ** 2
         return functools.partial(score, center=self.get_center(),

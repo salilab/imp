@@ -286,7 +286,7 @@ def _get_dihedrals(m, angle_indexes):
                       bonded_indexes=jnp.asarray(bonded))
 
 
-def _get_lennard_jones_score(lj, indexes):
+def _get_lennard_jones_score(lj, indexes, space):
     """Get a suitable JAX scoring function for the given LennardJones score"""
     def score(jm, aij, bij, repulsive_weight, attractive_weight,
               smoothing_function):
@@ -296,7 +296,7 @@ def _get_lennard_jones_score(lj, indexes):
         maxij = jnp.max(lj_types, axis=1)
         minij = jnp.min(lj_types, axis=1)
         lj_type_pair = (maxij+1)*maxij // 2 + minij
-        dists = jnp.linalg.norm(xyzs[:, 0] - xyzs[:, 1], axis=1)
+        dists = space.distance(xyzs[:, 0] - xyzs[:, 1])
         A = aij[lj_type_pair] * repulsive_weight
         B = bij[lj_type_pair] * attractive_weight
         scores = A / dists**12 - B / dists**6

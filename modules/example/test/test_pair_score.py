@@ -34,6 +34,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
+        """Test JAX implementation"""
         import jax.numpy as jnp
         m = IMP.Model()
         p1 = m.add_particle("p1")
@@ -46,6 +47,23 @@ class Tests(IMP.test.TestCase):
         X = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         self.assertAlmostEqual(f(X), 51.08, delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX implementation with PBC"""
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        m = IMP.Model()
+        p1 = m.add_particle("p1")
+        p2 = m.add_particle("p2")
+        d1 = IMP.core.XYZ.setup_particle(m, p1, IMP.algebra.Vector3D(1,2,3))
+        d2 = IMP.core.XYZ.setup_particle(m, p2, IMP.algebra.Vector3D(4,5,6))
+        p = IMP.example.ExamplePairScore(2.0, 10.0)
+
+        ji = p._get_jax(m, jnp.array([[p1, p2]]), space=space)
+        X = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        self.assertAlmostEqual(f(X), 0.35898393, delta=1e-3)
 
 
 if __name__ == '__main__':

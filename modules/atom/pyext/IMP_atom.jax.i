@@ -1,5 +1,6 @@
 %pythonbegin %{
   import functools
+  import IMP._jax_util
 %}
 
 %extend IMP::atom::MolecularDynamics {
@@ -45,7 +46,7 @@
 
 %extend IMP::atom::CoulombPairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import math
         import jax
         import jax.numpy as jnp
@@ -66,7 +67,7 @@
             xyzs = jm['xyz'][indexes]
             qs = jm['charge'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1)
+            drs = space.distance(diff)
             scores = factor * jnp.prod(qs, axis=1) / drs
             return smoothing_function(scores, drs)
         return self._wrap_jax(m, score, keys=[Charged.get_charge_key()])
@@ -75,25 +76,27 @@
 
 %extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::ForceSwitch> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import IMP.atom._jax_util
-        score = IMP.atom._jax_util._get_lennard_jones_score(self, indexes)
+        score = IMP.atom._jax_util._get_lennard_jones_score(
+            self, indexes, space)
         return self._wrap_jax(m, score, keys=[LennardJonesTyped.get_type_key()])
   %}
 }
 
 %extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::SmoothingFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import IMP.atom._jax_util
-        score = IMP.atom._jax_util._get_lennard_jones_score(self, indexes)
+        score = IMP.atom._jax_util._get_lennard_jones_score(
+            self, indexes, space)
         return self._wrap_jax(m, score, keys=[LennardJonesTyped.get_type_key()])
   %}
 }
 
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import numpy as np
         import jax.lax
         import jax.numpy as jnp
@@ -102,7 +105,7 @@
                       second_derivs):
             # Score a single atom pair
             xyz = jnp.asarray(jm['xyz'])[index]
-            dr = jnp.linalg.norm(xyz[1] - xyz[0])
+            dr = space.distance(jnp.atleast_2d(xyz[1] - xyz[0]))[0]
             def spline_score():
                 dope_type_pair = jnp.asarray(jm['dope atom type'])
                 # Get index into values/second_derivs tables

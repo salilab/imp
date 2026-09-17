@@ -105,6 +105,25 @@ class Tests(IMP.test.TestCase):
                         score = sf.evaluate(False)
                         self.assertAlmostEqual(score, j(X), delta=1e-2)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Check JAX implementation of CoulombPairScore with PBC"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        m, sf, d0, d1, c = make_test_pair_score()
+        c.set_relative_dielectric(1.0)
+        d0.set_charge(1.0)
+        d1.set_charge(1.0)
+        d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
+        d1.set_coordinates(IMP.algebra.Vector3D(9,0,0))
+        ji = c._get_jax(
+            m, jnp.array([[d0.get_particle_index(), d1.get_particle_index()]]),
+            space=space)
+        j = jax.jit(ji.score_func)
+        X = ji.get_jax_model()
+        self.assertAlmostEqual(j(X), 331.8469, delta=1e-3)
+
     def test_derivatives(self):
         """Check derivatives of CoulombPairScore"""
         m, sf, d0, d1, c = make_test_pair_score(4.0, 6.0)

@@ -140,6 +140,25 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(imp_score, 28.7538, delta=0.1)
         self.assertAlmostEqual(imp_score, jax_score, delta=0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Check JAX implementation of LennardJonesTypedPairScore with PBC"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([5., 5., 5.])
+        m, sf, t0, t1, d0, d1, c = make_test_pair_score()
+        d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 8))
+        t0.set_radius(1.5)
+        t1.set_radius(2.5)
+        t0.set_well_depth(1.0)
+        t1.set_well_depth(2.0)
+        ji = c._get_jax(
+            m, jnp.array([[d0.get_particle_index(),
+                           d1.get_particle_index()]]), space=space)
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        self.assertAlmostEqual(f(jm), 5611.599, delta=1e-3)
+
     def test_cast(self):
         """Test LennardJonesTypedPairScore.get_from()"""
         sm = IMP.atom.ForceSwitch(7.0, 9.0)
