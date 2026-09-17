@@ -66,7 +66,11 @@ IMP_NOT_SERIALIZABLE(IMP::InputAdaptor);
           # so just return the base class
           return self
       elif modname == 'IMP' and type_name == 'GenericRestraintsScoringFunction':
-          type_name = '_RestraintsScoringFunction'
+          # Just use the base class for the common single-restraint case
+          if self.get_single_restraint():
+              return self
+          else:
+              type_name = '_RestraintsScoringFunction'
       modobj = sys.modules[modname]
       clsobj = getattr(modobj, type_name)
       return clsobj.get_from(self)

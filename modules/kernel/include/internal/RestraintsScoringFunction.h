@@ -98,6 +98,14 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
     restraints_.clear();
   }
 
+  Restraint *get_single_restraint() const override {
+    if (restraints_.size() == 1) {
+      return restraints_[0];
+    } else {
+      return nullptr;
+    }
+  }
+
   Restraint *get_restraint(unsigned int i) const {
     return restraints_[i];
   }

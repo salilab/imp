@@ -106,6 +106,11 @@ class Tests(IMP.test.TestCase):
         self.assertIs(type(sf), IMP.ScoringFunction)
         self.assertAlmostEqual(sf._evaluate_jax(space=space), 3.0, delta=1e-3)
 
+        # Test scoring function created from Restraint
+        sf = rs.create_scoring_function().get_derived_object()
+        self.assertIs(type(sf), IMP.ScoringFunction)
+        self.assertAlmostEqual(sf._evaluate_jax(space=space), 3.0, delta=1e-3)
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_multiple_score_periodic(self):
         """Test JAX PBC score of implicit multiple RestraintsScoringFunction"""
