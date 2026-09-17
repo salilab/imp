@@ -367,6 +367,9 @@ class ReplicaExchange:
         self.vars["use_nestor"] = self.nest = use_nestor
         self.nestor_restraints = nestor_restraints
         self.nestor_rmf_fname = nestor_rmf_fname_prefix
+        if use_jax:
+            # Currently, we don't support PBC, only the unbounded space
+            self._jax_space = self._get_jax_free_space()
 
     def set_restart(self, frames, restart_dir="restart"):
         """Enable a simulation to be restarted if it is interrupted.
@@ -478,9 +481,16 @@ class ReplicaExchange:
             sampler_md.set_simulated_annealing(tmin, tmax, nfmin, nfmax)
         return sampler_md
 
-    def _get_jax_model(self, sampler_mc):
+    def _get_jax_free_space(self):
+        # Currently, only the default unbounded space is supported
+        import IMP._jax_util
+        return IMP._jax_util.FreeSpace
+
+    def _get_jax_data(self, sampler_mc):
         if self.use_jax:
-            return sampler_mc.get_jax_model()
+            return IMP.pmi.tools._JAXData(
+                model=sampler_mc.get_jax_model(),
+                space=self._jax_space)
 
     def execute_macro(self):
         # Are we restarting a failed simulation?
@@ -564,7 +574,7 @@ class ReplicaExchange:
                 output.init_stat2(low_temp_stat_file,
                                   stat_file.objects,
                                   extralabels=["rmf_file", "rmf_frame_index"],
-                                  jax_model=self._get_jax_model(sampler_mc),
+                                  jax_data=self._get_jax_data(sampler_mc),
                                   append=restarted)
                 # todo: also truncate outputs from MD?
                 if restarted and sampler_mc:
@@ -587,7 +597,7 @@ class ReplicaExchange:
             if not self.test_mode:
                 output.init_stat2(replica_stat_file, [rex],
                                   extralabels=["score"],
-                                  jax_model=self._get_jax_model(sampler_mc),
+                                  jax_data=self._get_jax_data(sampler_mc),
                                   append=restarted)
                 if restarted:
                     output._truncate_stat2_nline(
@@ -760,13 +770,13 @@ class ReplicaExchange:
                     if stat_file.objects is not None:
                         output.write_stat2(
                             low_temp_stat_file,
-                            jax_model=self._get_jax_model(sampler_mc))
+                            jax_data=self._get_jax_data(sampler_mc))
                 ntimes_at_low_temp += 1
 
             if not self.test_mode and not self.nest:
                 output.write_stat2(
                     replica_stat_file,
-                    jax_model=self._get_jax_model(sampler_mc))
+                    jax_data=self._get_jax_data(sampler_mc))
             if self.vars["replica_exchange_swap"]:
                 rex.swap_temp(i, score)
 

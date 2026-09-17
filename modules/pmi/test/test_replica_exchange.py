@@ -48,7 +48,7 @@ class JAXDistanceRestraint(IMP.Restraint):
     def do_get_inputs(self):
         return [self.p1, self.p2]
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
         import functools
 

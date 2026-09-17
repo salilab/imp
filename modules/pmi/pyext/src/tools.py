@@ -16,9 +16,14 @@ import ast
 from time import process_time
 import RMF
 import IMP.rmf
-from collections import defaultdict, OrderedDict
+from collections import defaultdict, OrderedDict, namedtuple
 import warnings
 import numbers
+
+
+# Keep track of JAX data (the actual model coordinates, plus the
+# space we are working in)
+_JAXData = namedtuple('_JAXData', ('model', 'space'))
 
 
 def _get_system_for_hier(hier):
@@ -1640,15 +1645,15 @@ class RestraintStatScorer:
         self._weight_object = weight_object
         self._jax_score = None
 
-    def __call__(self, jm=None):
-        """Get the score for the current JAX Model if `jm` is given,
+    def __call__(self, jax_data=None):
+        """Get the score for the given JAX data if `jax_data` is given,
            otherwise for the current IMP Model."""
-        if jm is not None:
+        if jax_data is not None:
             if self._jax_score is None:
                 import jax
-                ji = self.restraint._get_jax()
+                ji = self.restraint._get_jax(space=jax_data.space)
                 self._jax_score = jax.jit(ji.score_func)
-            return self._jax_score(jm)
+            return self._jax_score(jax_data.model)
         else:
             weight = self._weight_object.weight
             return weight * self.restraint.unprotected_evaluate(None)

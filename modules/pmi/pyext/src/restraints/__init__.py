@@ -112,7 +112,7 @@ class RestraintBase:
         scorers = [RestraintStatScorer(rs.get_name() + suffix, self, rs)
                    for rs in self.restraint_sets] + [scorer]
 
-        return lambda jm: {s.name: str(s(jm)) for s in scorers}
+        return lambda jd: {s.name: str(s(jd)) for s in scorers}
 
     def _create_restraint_set(self, name=None, cls=IMP.RestraintSet):
         """Create ``IMP.RestraintSet``."""

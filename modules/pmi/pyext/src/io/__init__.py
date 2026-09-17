@@ -552,13 +552,13 @@ class _TotalScorer:
         self._jax_score = None
         self.name = name
 
-    def __call__(self, jm=None):
-        if jm is not None:
+    def __call__(self, jax_data=None):
+        if jax_data is not None:
             if self._jax_score is None:
                 import jax
-                ji = self._restraint._get_jax()
+                ji = self._restraint._get_jax(jax_data.space)
                 self._jax_score = jax.jit(ji.score_func)
-            return self._jax_score(jm)
+            return self._jax_score(jax_data.model)
         else:
             return self._restraint.evaluate(False)
 
@@ -571,4 +571,4 @@ class TotalScoreOutput:
 
     def get_output(self):
         scorer = _TotalScorer("Total_Score", self.rs)
-        return lambda jm: {scorer.name: str(scorer(jm))}
+        return lambda jd: {scorer.name: str(scorer(jd))}
