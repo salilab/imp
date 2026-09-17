@@ -4,7 +4,7 @@
 
 %extend IMP::isd::UniformPrior {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
         def score(jm, lb, ub, k, index):
             nuisance = jm['nuisance'][index]

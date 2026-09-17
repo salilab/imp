@@ -72,9 +72,10 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of UniformPrior"""
+        import IMP._jax_util
         m, sigma, r = _make_test_restraint()
 
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         score_f = jax.jit(ji.score_func)
 
         for (nuis, exp_score) in [(90., 0.),
