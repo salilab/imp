@@ -63,6 +63,19 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(imp_score, exp_score, delta=1e-4)
             self.assertAlmostEqual(imp_score, jax_score, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX HarmonicUpperBoundSphereDistancePairScore impl with PBC"""
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        m, p1, p2, s = make_score()
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
+                        space=space)
+        jax_s = jax.jit(ji.score_func)
+        jm = ji.get_jax_model()
+        jax_score = jax_s(jm)
+        self.assertAlmostEqual(jax_score, 2.2029414, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

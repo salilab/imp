@@ -58,6 +58,24 @@ class Tests(IMP.test.TestCase):
             jax_score = s(jm)
             self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test the box score with JAX with PBC"""
+        import IMP._jax_util
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        d = IMP.core.XYZ.setup_particle(p)
+        d.set_coordinates(IMP.algebra.Vector3D(0., 0., 0.))
+        bbi = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(10, 10, 10),
+                                        IMP.algebra.Vector3D(20, 20, 20))
+        s = IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0, 1), bbi)
+        ji = s._get_jax(m, jnp.array([p.get_index()]), space=space)
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        self.assertAlmostEqual(f(jm), 6.0, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

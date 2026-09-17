@@ -5,6 +5,7 @@ import IMP.container
 import pickle
 try:
     import jax
+    import IMP._jax_util
 except ImportError:
     jax = None
 
@@ -66,6 +67,19 @@ class Tests(IMP.test.TestCase):
         j = jax.jit(ji.score_func)
         # Compare JAX with IMP C++ implementation
         self.assertAlmostEqual(j(X), r.evaluate(False), delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_restraint_periodic(self):
+        """Test JAX DistanceToSingletonScore with PBC"""
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        m, p, s = make_score()
+
+        ji = s._get_jax(m, jnp.array([p.get_index()]), space=space)
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        jax_score = f(jm)
+        self.assertAlmostEqual(jax_score, 2.0, delta=0.01)
 
 
 if __name__ == '__main__':

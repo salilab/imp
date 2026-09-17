@@ -62,6 +62,19 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(imp_score, 0.0, delta=1e-3)
         self.assertAlmostEqual(imp_score, j(jm), delta=1e-3)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX implementation of SoftSpherePairScore with PBC"""
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([1., 1., 1.])
+        m, p1, p2, s = make_score()
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
+                        space=space)
+        jax_s = jax.jit(ji.score_func)
+        jm = ji.get_jax_model()
+        jax_score = jax_s(jm)
+        self.assertAlmostEqual(jax_score, 4.5, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

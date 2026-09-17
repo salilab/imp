@@ -71,7 +71,7 @@ class JAXWarning(UserWarning):
         from IMP._jax_util import JAXScoreInfo
         return JAXScoreInfo(m, score_func=score_func, keys=keys)
 
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=None):
         """Return a JAX implementation of this PairScore.
            Implement this method in a PairScore subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
@@ -80,6 +80,8 @@ class JAXWarning(UserWarning):
 
            @param m The IMP.Model that the score will act on.
            @param indexes The ParticlePairIndexes that the score will act on.
+           @param space The space in which the score is evaluated
+                  (e.g. a periodic box). See IMP._jax_util.Space.
         """
         raise NotImplementedError(
             f"No JAX implementation for {self} ({type(self)})")
@@ -93,7 +95,7 @@ class JAXWarning(UserWarning):
         from IMP._jax_util import JAXScoreInfo
         return JAXScoreInfo(m, score_func=score_func, keys=keys)
 
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=None):
         """See IMP::PairScore::_get_jax"""
         raise NotImplementedError(
             f"No JAX implementation for {self} ({type(self)})")
@@ -102,7 +104,7 @@ class JAXWarning(UserWarning):
 
 %extend IMP::internal::_ConstSingletonScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=None):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model or indexes
         return self._wrap_jax(m, lambda jm: value)
@@ -111,7 +113,7 @@ class JAXWarning(UserWarning):
 
 %extend IMP::internal::_ConstPairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=None):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model or indexes
         return self._wrap_jax(m, lambda jm: value)

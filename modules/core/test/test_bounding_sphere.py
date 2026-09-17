@@ -100,6 +100,27 @@ class Tests(IMP.test.TestCase):
         d2_xyzr.set_coordinates(IMP.algebra.Vector3D(12, 14, 16))
         check_scores(192.00458)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX BoundingSphere3DSingletonScore with PBC"""
+        import jax.numpy as jnp
+        space = IMP._jax_util.PeriodicSpace([20., 20., 20.])
+
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1_xyz = IMP.core.XYZ.setup_particle(
+            p1, IMP.algebra.Vector3D(12, 14, 16))
+
+        sphere = IMP.algebra.Sphere3D(
+            IMP.algebra.Vector3D(1, 2, 3), 4)
+        s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Harmonic(0, 1),
+                                                    sphere)
+        ji = s._get_jax(m, [p1.get_index()], space=space)
+        jm = ji.get_jax_model()
+        f = jax.jit(ji.score_func)
+        jax_score = f(jm)
+        self.assertAlmostEqual(jax_score, 49.28645, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

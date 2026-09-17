@@ -1,5 +1,6 @@
 %pythonbegin %{
   import functools
+  import IMP._jax_util
 %}
 
 %extend IMP::core::Harmonic {
@@ -139,11 +140,11 @@
 
 %extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def score(jm, point, uf):
             xyzs = jm['xyz'][indexes]
-            drs = jnp.linalg.norm(xyzs - point, axis=1)
+            drs = space.distance(xyzs - point)
             return uf(drs)
         uf = self.get_unary_function().get_derived_object()
         f = functools.partial(score, point=jnp.array(self.get_point()),
@@ -154,7 +155,7 @@
 
 %extend IMP::core::GenericBoundingBox3DSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def score(jm, box_min, box_max, uf):
             xyzs = jm['xyz'][indexes]
@@ -164,8 +165,7 @@
             # The implementation here is *probably* faster on a GPU since
             # we reduce the use of conditionals, and JAX will likely skip
             # the sqrt if uf is a harmonic, but this should be benchmarked.
-            drs = jnp.linalg.norm(
-                xyzs - jnp.clip(xyzs, box_min, box_max), axis=1)
+            drs = space.distance(xyzs - jnp.clip(xyzs, box_min, box_max))
             return uf(drs)
         uf = self.get_unary_function().get_derived_object()
         bb = self.get_bounding_box()
@@ -178,17 +178,17 @@
 
 %extend IMP::core::GenericBoundingSphere3DSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         import jax.lax
         def score_with_radius(jm, inds, center, radius):
             xyzs = jm['xyz'][inds]
             radii = jm['r'][inds]
-            drs = jnp.linalg.norm(xyzs - center) + radii - radius
+            drs = space.distance(xyzs - center) + radii - radius
             return jax.lax.select(drs < 0.000001, jnp.zeros_like(drs), uf(drs))
         def score_without_radius(jm, inds, center, radius):
             xyzs = jm['xyz'][inds]
-            drs = jnp.linalg.norm(xyzs - center) - radius
+            drs = space.distance(xyzs - center) - radius
             return jax.lax.select(drs < 0.000001, jnp.zeros_like(drs), uf(drs))
         without_radii_inds = []
         with_radii_inds = []
@@ -246,12 +246,12 @@
 
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def jax_harmonic_distance_pair_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1)
+            drs = space.distance(diff)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_harmonic_distance_pair_score,
                               d=self.get_x0(), k=self.get_k())
@@ -261,13 +261,13 @@
 
 %extend IMP::core::HarmonicSphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def jax_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            drs = space.distance(diff) - rs.sum(axis=1)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
         return self._wrap_jax(m, f)
@@ -276,14 +276,14 @@
 
 %extend IMP::core::HarmonicUpperBoundSphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            drs = space.distance(diff) - rs.sum(axis=1)
             return 0.5 * k * jax.lax.min(d - drs, 0.0) ** 2
         f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
         return self._wrap_jax(m, f)
@@ -292,14 +292,14 @@
 
 %extend IMP::core::SoftSpherePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, k):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            drs = space.distance(diff) - rs.sum(axis=1)
             return 0.5 * k * jax.lax.min(drs, 0.0) ** 2
         f = functools.partial(jax_score, k=self.get_k())
         return self._wrap_jax(m, f)
@@ -308,13 +308,13 @@
 
 %extend IMP::core::SphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def jax_score(jm, uf):
             xyzs = jm['xyz'][indexes]
             rs = jm['r'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1) - rs.sum(axis=1)
+            drs = space.distance(diff) - rs.sum(axis=1)
             return uf(drs)
         sfnc = self.get_score_functor()
         uf = sfnc.get_unary_function().get_derived_object()
@@ -325,12 +325,12 @@
 
 %extend IMP::core::DistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
         import jax.numpy as jnp
         def jax_score(jm, uf):
             xyzs = jm['xyz'][indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1)
+            drs = space.distance(diff)
             return uf(drs)
         sfnc = self.get_score_functor()
         uf = sfnc.get_unary_function().get_derived_object()
@@ -355,7 +355,6 @@
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self):
-        import IMP._jax_util
         jis = [r.get_derived_object()._get_jax() for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
