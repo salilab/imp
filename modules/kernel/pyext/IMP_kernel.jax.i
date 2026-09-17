@@ -144,9 +144,9 @@ class JAXWarning(UserWarning):
 
 %extend IMP::ScoringFunction {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space=None):
         import IMP._jax_util
-        space = IMP._jax_util.FreeSpace
+        space = space or IMP._jax_util.FreeSpace
         r = self.get_single_restraint()
         if r is None:
             raise NotImplementedError(
@@ -154,13 +154,18 @@ class JAXWarning(UserWarning):
         else:
             return r.get_derived_object()._get_jax(space)
 
-    def _evaluate_jax(self):
+    def _evaluate_jax(self, space=None):
         """Similar to evaluate(False), but using JAX.
            This is intended to be useful for testing purposes. It will likely
            not be particularly fast as it will copy the IMP Model and
-           jax.jit-compile the scoring function each time."""
+           jax.jit-compile the scoring function each time.
+
+           @param space The space in which the scoring function is evaluated
+                  (e.g. a periodic box). See IMP._jax_util.Space. If not
+                  specified, an unbounded (free) space is used.
+        """
         import jax
-        ji = self._get_jax()
+        ji = self._get_jax(space)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         return j(jm)
@@ -295,9 +300,9 @@ class JAXWarning(UserWarning):
 
 %extend IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints> {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space=None):
         import IMP._jax_util
-        space = IMP._jax_util.FreeSpace
+        space = space or IMP._jax_util.FreeSpace
         jis = [r.get_derived_object()._get_jax(space) for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)

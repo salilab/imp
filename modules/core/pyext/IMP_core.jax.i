@@ -354,9 +354,9 @@
 
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space=None):
         import IMP._jax_util
-        space = IMP._jax_util.FreeSpace
+        space = space or IMP._jax_util.FreeSpace
         jis = [r.get_derived_object()._get_jax(space=space)
                for r in self.restraints]
         funcs = [j.score_func for j in jis]

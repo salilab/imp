@@ -209,6 +209,24 @@ class Tests(IMP.test.TestCase):
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 60.0, delta=0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score_periodic(self):
+        """Test JAX RestraintsScoringFunction score with PBC"""
+        import IMP._jax_util
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        dr = IMP.core.DistanceRestraint(m, uf, p1, p2)
+        sf = IMP.core.RestraintsScoringFunction([dr])
+
+        # In periodic space, distance is 3.0, not 7.0
+        jax_score = sf._evaluate_jax(space=space)
+        self.assertAlmostEqual(jax_score, 3.0, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

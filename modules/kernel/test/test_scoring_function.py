@@ -81,6 +81,48 @@ class Tests(IMP.test.TestCase):
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 138.0, delta=0.1)
 
+    def _make_jax_distance_restraint(self):
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        r = IMP.core.DistanceRestraint(m, uf, p1, p2)
+        rs = IMP.RestraintSet(m, 1.0)
+        rs.add_restraint(r)
+        return m, r, rs
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_single_score_periodic(self):
+        """Test JAX PBC score of implicit single RestraintScoringFunction"""
+        import IMP._jax_util
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        # Returns two particles at 0,0,0 and 7,0,0
+        m, r, rs = self._make_jax_distance_restraint()
+        # In periodic space, distance is 3.0, not 7.0
+        # Test scoring function created from RestraintSet
+        sf = rs.create_scoring_function().get_derived_object()
+        self.assertIs(type(sf), IMP.ScoringFunction)
+        self.assertAlmostEqual(sf._evaluate_jax(space=space), 3.0, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multiple_score_periodic(self):
+        """Test JAX PBC score of implicit multiple RestraintsScoringFunction"""
+        import IMP._jax_util
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        # Returns two particles at 0,0,0 and 7,0,0
+        m, r, rs = self._make_jax_distance_restraint()
+
+        c = IMP.core.ConjugateGradients()
+        c.set_scoring_function([r, r])
+        sf = c.get_scoring_function().get_derived_object()
+        self.assertIsInstance(sf, IMP._RestraintsScoringFunction)
+
+        # In periodic space, distance is 3.0, not 7.0, but there are
+        # two restraints
+        self.assertAlmostEqual(sf._evaluate_jax(space=space), 6.0, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()
