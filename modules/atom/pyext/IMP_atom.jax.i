@@ -104,7 +104,7 @@
                       second_derivs):
             # Score a single atom pair
             xyz = jnp.asarray(jm['xyz'])[index]
-            dr = space.distance(jnp.atleast_2d(xyz[1] - xyz[0]))[0]
+            dr = space.distance(xyz[1] - xyz[0])
             def spline_score():
                 dope_type_pair = jnp.asarray(jm['dope atom type'])
                 # Get index into values/second_derivs tables

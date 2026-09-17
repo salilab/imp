@@ -17,6 +17,9 @@ class Tests(IMP.test.TestCase):
         drs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         dists = jnp.array([3.74165, 8.77496])
         self.assertTrue(jnp.allclose(space.distance(drs), dists))
+        # Should work for a single vector too
+        dr = jnp.array([1., 2., 3.])
+        self.assertAlmostEqual(space.distance(dr), dists[0], delta=1e-3)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space(self):
@@ -32,6 +35,10 @@ class Tests(IMP.test.TestCase):
         drs = jnp.array([[9., 2., 3.], [24., 5., 6.]])
         dists = jnp.array([3.74165, 8.77496])
         self.assertTrue(jnp.allclose(space.distance(drs), dists))
+
+        # Should work for a single vector too
+        dr = jnp.array([9., 2., 3.])
+        self.assertAlmostEqual(space.distance(dr), dists[0], delta=1e-3)
 
 
 if __name__ == '__main__':

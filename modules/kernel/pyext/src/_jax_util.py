@@ -10,8 +10,9 @@ class Space:
        periodic boundary conditions."""
 
     def distance(dr):
-        """Given an array of particle-particle vectors, return an array
-           of distances."""
+        """If given an array of particle-particle vectors, return an array
+           of distances. If given a single particle-paticle vector, return
+           a single distance."""
         pass
 
 
@@ -20,7 +21,7 @@ class FreeSpace(Space):
 
     @staticmethod
     def distance(dr):
-        return jnp.linalg.norm(dr, axis=1)
+        return jnp.linalg.norm(dr, axis=-1)
 
 
 class PeriodicSpace(Space):
@@ -34,7 +35,7 @@ class PeriodicSpace(Space):
 
     def distance(self, dr):
         p_dr = jnp.mod(dr + self.side * 0.5, self.side) - 0.5 * self.side
-        return jnp.linalg.norm(p_dr, axis=1)
+        return jnp.linalg.norm(p_dr, axis=-1)
 
 
 def get_random_key():
