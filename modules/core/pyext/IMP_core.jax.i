@@ -1,6 +1,5 @@
 %pythonbegin %{
   import functools
-  import IMP._jax_util
 %}
 
 %extend IMP::core::Harmonic {
@@ -140,7 +139,7 @@
 
 %extend IMP::core::GenericDistanceToSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def score(jm, point, uf):
             xyzs = jm['xyz'][indexes]
@@ -155,7 +154,7 @@
 
 %extend IMP::core::GenericBoundingBox3DSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def score(jm, box_min, box_max, uf):
             xyzs = jm['xyz'][indexes]
@@ -178,7 +177,7 @@
 
 %extend IMP::core::GenericBoundingSphere3DSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import jax.lax
         def score_with_radius(jm, inds, center, radius):
@@ -246,7 +245,7 @@
 
 %extend IMP::core::HarmonicDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_harmonic_distance_pair_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
@@ -261,7 +260,7 @@
 
 %extend IMP::core::HarmonicSphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, d, k):
             xyzs = jm['xyz'][indexes]
@@ -276,7 +275,7 @@
 
 %extend IMP::core::HarmonicUpperBoundSphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, d, k):
@@ -292,7 +291,7 @@
 
 %extend IMP::core::SoftSpherePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, k):
@@ -308,7 +307,7 @@
 
 %extend IMP::core::SphereDistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, uf):
             xyzs = jm['xyz'][indexes]
@@ -325,7 +324,7 @@
 
 %extend IMP::core::DistancePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, uf):
             xyzs = jm['xyz'][indexes]

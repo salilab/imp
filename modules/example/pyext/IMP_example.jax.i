@@ -11,7 +11,6 @@
 
 %pythonbegin %{ 
   import functools
-  import IMP._jax_util
 %}
 
 %extend IMP::example::ExampleRestraint {
@@ -84,7 +83,7 @@
 
 %extend IMP::example::ExamplePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         """Implementation of the score using JAX.
            A PairScore takes as input the JAX Model, and returns the score
            for a given set of particle pair indexes. Unlike an IMP C++

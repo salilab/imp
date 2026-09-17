@@ -8,12 +8,12 @@ from dataclasses import dataclass
 import IMP._jax_util
 
 
-def _get_jax_restraint(r):
+def _get_jax_restraint(r, space=IMP._jax_util.FreeSpace):
     """Return a JAX implementation for SingletonRestraint,
        PairRestraint, etc."""
     score = r.get_score_object().get_derived_object()
     indexes = jnp.array([r.get_index()])
-    ji = score._get_jax(r.get_model(), indexes)
+    ji = score._get_jax(r.get_model(), indexes, space)
     score_jax = ji.score_func
 
     def jax_restraint(jm):

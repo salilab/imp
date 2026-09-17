@@ -1,4 +1,5 @@
 import jax.numpy as jnp
+import IMP._jax_util
 
 
 def _get_static_container_contents(c):
@@ -12,12 +13,12 @@ def _get_static_container_contents(c):
         return c.get_derived_object()._get_static_contents()
 
 
-def _get_jax_container_restraint(r):
+def _get_jax_container_restraint(r, space=IMP._jax_util.FreeSpace):
     """Return a JAX implementation for SingletonsRestraint,
        PairsRestraint, etc."""
     indexes = _get_static_container_contents(r.get_container())
     score = r.get_score_object().get_derived_object()
-    ji = score._get_jax(r.get_model(), indexes)
+    ji = score._get_jax(r.get_model(), indexes, space)
     score_jax = ji.score_func
 
     def jax_restraint(jm):

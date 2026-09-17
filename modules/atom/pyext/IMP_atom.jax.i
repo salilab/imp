@@ -1,6 +1,5 @@
 %pythonbegin %{
   import functools
-  import IMP._jax_util
 %}
 
 %extend IMP::atom::MolecularDynamics {
@@ -46,7 +45,7 @@
 
 %extend IMP::atom::CoulombPairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import math
         import jax
         import jax.numpy as jnp
@@ -76,7 +75,7 @@
 
 %extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::ForceSwitch> {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import IMP.atom._jax_util
         score = IMP.atom._jax_util._get_lennard_jones_score(
             self, indexes, space)
@@ -86,7 +85,7 @@
 
 %extend IMP::atom::LennardJonesTypedPairScore<IMP::atom::SmoothingFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import IMP.atom._jax_util
         score = IMP.atom._jax_util._get_lennard_jones_score(
             self, indexes, space)
@@ -96,7 +95,7 @@
 
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes, space=IMP._jax_util.FreeSpace):
+    def _get_jax(self, m, indexes, space):
         import numpy as np
         import jax.lax
         import jax.numpy as jnp
