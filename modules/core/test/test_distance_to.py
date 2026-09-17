@@ -72,7 +72,6 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_restraint_periodic(self):
         """Test JAX DistanceToSingletonScore with PBC"""
-        import jax.numpy as jnp
         space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
         m, p, s = make_score()
         r = IMP.core.SingletonRestraint(m, s, p)

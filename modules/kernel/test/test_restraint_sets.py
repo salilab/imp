@@ -324,5 +324,6 @@ class Tests(IMP.test.TestCase):
         # In periodic space, distance is 3.0, not 7.0
         self.assertAlmostEqual(jax_score, 3.0, delta=1e-3)
 
+
 if __name__ == '__main__':
     IMP.test.main()
