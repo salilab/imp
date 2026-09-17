@@ -1,5 +1,4 @@
 import jax.numpy as jnp
-import IMP._jax_util
 
 
 def _get_static_container_contents(c):
