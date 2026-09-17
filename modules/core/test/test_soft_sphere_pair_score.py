@@ -46,10 +46,11 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of SoftSpherePairScore"""
+        import IMP._jax_util
         m, p1, p2, s = make_score()
         r = IMP.core.PairRestraint(m, s, (p1, p2))
         imp_score = r.evaluate(False)
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         # Check score with overlapping spheres
@@ -66,6 +67,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_periodic(self):
         """Test JAX implementation of SoftSpherePairScore with PBC"""
         import jax.numpy as jnp
+        import IMP._jax_util
         space = IMP._jax_util.PeriodicSpace([1., 1., 1.])
         m, p1, p2, s = make_score()
         ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),

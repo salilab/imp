@@ -85,6 +85,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_multiple(self):
         """Test JAX implementation of WeightedSum, multiple scores"""
+        import IMP._jax_util
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
         sf = IMP.core.WeightedSum([f1, f2], [.3, .7])
@@ -97,7 +98,7 @@ class Tests(IMP.test.TestCase):
         # here:
         r = IMP.container.SingletonsRestraint(ss, [p1, p2])
         imp_score = r.evaluate(False)
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         jsf = jax.jit(ji.score_func)
         jax_score = jsf(jm)

@@ -41,7 +41,7 @@ class XTransRestraint(IMP.Restraint):
                 m.add_to_derivative(xkey, pi, self.strength, accum)
         return e
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
         indexes = self.get_model().get_particle_indexes()
         strength = self.strength

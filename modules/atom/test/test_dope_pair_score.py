@@ -28,6 +28,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Check JAX implementation of DopePairScore"""
+        import IMP._jax_util
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         IMP.atom.add_dope_score_data(mh)
@@ -39,7 +40,7 @@ class Tests(IMP.test.TestCase):
         score = d.evaluate(False)
         self.assertAlmostEqual(score, 1062.8766, delta=5.0)
 
-        ji = d._get_jax()
+        ji = d._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(jm), score, delta=1.0)

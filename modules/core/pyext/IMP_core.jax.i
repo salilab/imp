@@ -340,13 +340,12 @@
 
 %extend IMP::core::DistanceRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
         import IMP._jax_util
         ps = self.get_score_object()
         indexes = jnp.array([self.get_index()])
-        ji = ps._get_jax(self.get_model(), indexes,
-                         space=IMP._jax_util.FreeSpace)
+        ji = ps._get_jax(self.get_model(), indexes, space=space)
         def score(jm):
             return jnp.sum(ji.score_func(jm))
         return self._wrap_jax(score)
@@ -356,7 +355,10 @@
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self):
-        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+        import IMP._jax_util
+        space = IMP._jax_util.FreeSpace
+        jis = [r.get_derived_object()._get_jax(space=space)
+               for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
         def jax_sf(jm):
@@ -368,17 +370,17 @@
 
 %extend IMP::core::SingletonRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         from . import _jax_util
-        return _jax_util._get_jax_restraint(self)
+        return _jax_util._get_jax_restraint(self, space)
   %}
 }
 
 %extend IMP::core::PairRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         from . import _jax_util
-        return _jax_util._get_jax_restraint(self)
+        return _jax_util._get_jax_restraint(self, space)
   %}
 }
 

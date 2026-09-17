@@ -39,6 +39,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test the box score with JAX"""
+        import IMP._jax_util
         m = IMP.Model()
         p = IMP.Particle(m)
         d = IMP.core.XYZ.setup_particle(p)
@@ -47,7 +48,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0, 1), bbi)
         r = IMP.core.SingletonRestraint(m, s, p)
 
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         s = jax.jit(ji.score_func)
 

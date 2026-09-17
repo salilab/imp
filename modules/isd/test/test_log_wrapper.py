@@ -2,6 +2,7 @@ import IMP
 import math
 import IMP.isd
 import IMP.test
+import IMP.core
 import pickle
 try:
     import jax
@@ -163,6 +164,24 @@ class Tests(IMP.test.TestCase):
             jax_score = lw._evaluate_jax()
             self.assertAlmostEqual(imp_score, exp_score, delta=1e-4)
             self.assertAlmostEqual(imp_score, jax_score, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX implementation of LogWrapper with PBC"""
+        import IMP._jax_util
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        dr = IMP.core.DistanceRestraint(m, uf, p1, p2)
+        lw = IMP.isd.LogWrapper([dr], 1.0)
+        jax_score = lw._evaluate_jax(space=space)
+
+        # In periodic space, distance is 3.0, not 7.0
+        self.assertAlmostEqual(jax_score, -math.log(3.0), delta=1e-3)
 
 
 if __name__ == '__main__':

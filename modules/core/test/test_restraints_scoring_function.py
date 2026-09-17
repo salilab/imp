@@ -36,7 +36,7 @@ class TestJAXKeyRestraint(IMP.Restraint):
         super().__init__(m, name)
         self.ps = ps
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         def jax_restraint(jm):
             return 1.0
         return self._wrap_jax(jax_restraint, keys=[idkey])

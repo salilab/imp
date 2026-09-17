@@ -13,7 +13,7 @@ def _get_static_container_contents(c):
         return c.get_derived_object()._get_static_contents()
 
 
-def _get_jax_container_restraint(r, space=IMP._jax_util.FreeSpace):
+def _get_jax_container_restraint(r, space):
     """Return a JAX implementation for SingletonsRestraint,
        PairsRestraint, etc."""
     indexes = _get_static_container_contents(r.get_container())

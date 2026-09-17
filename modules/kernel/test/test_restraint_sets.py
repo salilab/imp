@@ -278,6 +278,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score(self):
         """Test JAX RestraintSet score"""
+        import IMP._jax_util
         m = IMP.Model()
         p = IMP.Particle(m)
         r1 = IMP._ConstRestraint(m, [p], 42)
@@ -287,7 +288,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(m)
         r.set_weight(4.0)
         r.add_restraints([r1, r2])
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         self.assertAlmostEqual(j(X), 552.0, delta=0.1)
@@ -296,7 +297,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(m)
         for weight in (1.0, 4.0):
             r.set_weight(weight)
-            ji = r._get_jax()
+            ji = r._get_jax(space=IMP._jax_util.FreeSpace)
             X = ji.get_jax_model()
             j = jax.jit(ji.score_func)
             g = jax.jit(jax.grad(ji.score_func))
@@ -304,6 +305,24 @@ class Tests(IMP.test.TestCase):
             dX = g(X)
             self.assertEqual(dX['xyz'].shape, (0, 3))
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score_periodic(self):
+        """Test JAX RestraintSet score with PBC"""
+        import IMP._jax_util
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        dr = IMP.core.DistanceRestraint(m, uf, p1, p2)
+        rs = IMP.RestraintSet(m, 1.0)
+        rs.add_restraint(dr)
+        jax_score = rs._evaluate_jax(space=space)
+
+        # In periodic space, distance is 3.0, not 7.0
+        self.assertAlmostEqual(jax_score, 3.0, delta=1e-3)
 
 if __name__ == '__main__':
     IMP.test.main()

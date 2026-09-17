@@ -58,7 +58,8 @@ class Tests(IMP.test.TestCase):
 
         # No support yet for JAX scores on rigid body local coordinates
         m, p1, s, r = make_score(IMP.FloatKey("local_x"))
-        self.assertRaises(NotImplementedError, r._get_jax)
+        self.assertRaises(NotImplementedError, r._get_jax,
+                          space=IMP._jax_util.FreeSpace)
 
 
 if __name__ == '__main__':

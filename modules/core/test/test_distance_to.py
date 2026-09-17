@@ -59,10 +59,11 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_restraint(self):
         """Test JAX DistanceToSingletonScore in a SingletonRestraint"""
+        import IMP._jax_util
         m, p, s = make_score()
         r = IMP.core.SingletonRestraint(m, s, p)
 
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         X = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         # Compare JAX with IMP C++ implementation
@@ -74,11 +75,13 @@ class Tests(IMP.test.TestCase):
         import jax.numpy as jnp
         space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
         m, p, s = make_score()
+        r = IMP.core.SingletonRestraint(m, s, p)
 
-        ji = s._get_jax(m, jnp.array([p.get_index()]), space=space)
+        ji = r._get_jax(space=space)
         jm = ji.get_jax_model()
-        f = jax.jit(ji.score_func)
-        jax_score = f(jm)
+        j = jax.jit(ji.score_func)
+
+        jax_score = j(jm)
         self.assertAlmostEqual(jax_score, 2.0, delta=0.01)
 
 

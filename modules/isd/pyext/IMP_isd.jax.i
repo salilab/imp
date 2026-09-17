@@ -18,7 +18,7 @@
 
 %extend IMP::isd::JeffreysRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
         indexes = jnp.array([self.get_index()])
         def score(jm):
@@ -30,9 +30,9 @@
 
 %extend IMP::isd::LogWrapper {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.numpy as jnp
-        funcs, keys = self._get_restraint_jax_funcs_keys()
+        funcs, keys = self._get_restraint_jax_funcs_keys(space)
         def jax_sf(jm):
             scores = jnp.asarray([f(jm) for f in funcs])
             return -jnp.sum(jnp.log(scores))

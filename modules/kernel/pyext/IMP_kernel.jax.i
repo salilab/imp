@@ -23,22 +23,31 @@ class JAXWarning(UserWarning):
         return JAXRestraintInfo(m=self.get_model(), score_func=score_func,
                                 weight=self.get_weight(), keys=keys)
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         """Return a JAX implementation of this Restraint.
            Implement this method in a Restraint subclass to provide
            an equivalent function using [JAX](https://docs.jax.dev/)
            that scores the current JAX Model. See also _wrap_jax.
+
+           @param space The space in which the restraint is evaluated
+                  (e.g. a periodic box). See IMP._jax_util.Space.
         """
         raise NotImplementedError(
             f"No JAX implementation for {self} ({type(self)})")
 
-    def _evaluate_jax(self):
+    def _evaluate_jax(self, space=None):
         """Similar to evaluate(False), but using JAX.
            This is intended to be useful for testing purposes. It will likely
            not be particularly fast as it will copy the IMP Model and
-           jax.jit-compile the scoring function each time."""
+           jax.jit-compile the scoring function each time.
+
+           @param space The space in which the restraint is evaluated
+                  (e.g. a periodic box). See IMP._jax_util.Space. If not
+                  specified, an unbounded (free) space is used.
+        """
         import jax
-        ji = self._get_jax()
+        import IMP._jax_util
+        ji = self._get_jax(space=space or IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         return j(jm)
@@ -47,7 +56,7 @@ class JAXWarning(UserWarning):
 
 %extend IMP::internal::_ConstRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         value = self.get_value()
         # We always return `value` regardless of the JAX Model
         return self._wrap_jax(lambda jm: value)
@@ -136,12 +145,14 @@ class JAXWarning(UserWarning):
 %extend IMP::ScoringFunction {
   %pythoncode %{
     def _get_jax(self):
+        import IMP._jax_util
+        space = IMP._jax_util.FreeSpace
         r = self.get_single_restraint()
         if r is None:
             raise NotImplementedError(
                 f"No JAX implementation for {self} ({type(self)})")
         else:
-            return r.get_derived_object()._get_jax()
+            return r.get_derived_object()._get_jax(space)
 
     def _evaluate_jax(self):
         """Similar to evaluate(False), but using JAX.
@@ -201,14 +212,14 @@ class JAXWarning(UserWarning):
 
 %extend IMP::RestraintSet {
   %pythoncode %{
-    def _get_restraint_jax_funcs_keys(self):
-        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+    def _get_restraint_jax_funcs_keys(self, space):
+        jis = [r.get_derived_object()._get_jax(space) for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
         return funcs, keys
 
-    def _get_jax(self):
-        funcs, keys = self._get_restraint_jax_funcs_keys()
+    def _get_jax(self, space):
+        funcs, keys = self._get_restraint_jax_funcs_keys(space)
         def jax_sf(jm):
             if funcs:
                 return sum(f(jm) for f in funcs)
@@ -286,7 +297,8 @@ class JAXWarning(UserWarning):
   %pythoncode %{
     def _get_jax(self):
         import IMP._jax_util
-        jis = [r.get_derived_object()._get_jax() for r in self.restraints]
+        space = IMP._jax_util.FreeSpace
+        jis = [r.get_derived_object()._get_jax(space) for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)
         def jax_sf(jm):

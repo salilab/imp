@@ -4,6 +4,7 @@ import IMP.core
 import pickle
 try:
     import jax
+    import IMP._jax_util
 except ImportError:
     jax = None
 
@@ -49,7 +50,7 @@ class Tests(IMP.test.TestCase):
         """Test JAX HarmonicUpperBoundSphereDistancePairScore impl"""
         m, p1, p2, s = make_score()
         r = IMP.core.PairRestraint(m, s, (p1, p2))
-        ji = r._get_jax()
+        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
         j = jax.jit(ji.score_func)
 
         for coord, exp_score in (((5.0, 6.0, 7.0), 19.6791),

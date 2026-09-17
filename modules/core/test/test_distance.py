@@ -187,11 +187,12 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of DistanceRestraint"""
+        import IMP._jax_util
         uf = IMP.core.Harmonic(1.0, 0.1)
         rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
                                          self.particles[0], self.particles[1])
         imp_score = rsr.evaluate(False)
-        ji = rsr._get_jax()
+        ji = rsr._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         jax_score = f(jm)

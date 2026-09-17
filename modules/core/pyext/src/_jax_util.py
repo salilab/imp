@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import IMP._jax_util
 
 
-def _get_jax_restraint(r, space=IMP._jax_util.FreeSpace):
+def _get_jax_restraint(r, space):
     """Return a JAX implementation for SingletonRestraint,
        PairRestraint, etc."""
     score = r.get_score_object().get_derived_object()

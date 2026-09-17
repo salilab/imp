@@ -50,17 +50,17 @@
 
 %extend IMP::container::SingletonsRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         from . import _jax_util
-        return _jax_util._get_jax_container_restraint(self)
+        return _jax_util._get_jax_container_restraint(self, space)
   %}
 }
 
 %extend IMP::container::PairsRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         from . import _jax_util
-        return _jax_util._get_jax_container_restraint(self)
+        return _jax_util._get_jax_container_restraint(self, space)
   %}
 }
 
