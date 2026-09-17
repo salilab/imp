@@ -36,6 +36,7 @@ class Tests(IMP.test.TestCase):
     def test_jax(self):
         """Test JAX implementation"""
         import jax.numpy as jnp
+        import IMP._jax_util
         m = IMP.Model()
         p1 = m.add_particle("p1")
         p2 = m.add_particle("p2")
@@ -43,7 +44,8 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZ.setup_particle(m, p2, IMP.algebra.Vector3D(4,5,6))
         p = IMP.example.ExamplePairScore(2.0, 10.0)
 
-        ji = p._get_jax(m, jnp.array([[p1, p2]]))
+        ji = p._get_jax(m, jnp.array([[p1, p2]]),
+                        space=IMP._jax_util.FreeSpace)
         X = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         self.assertAlmostEqual(f(X), 51.08, delta=0.01)
@@ -52,6 +54,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_periodic(self):
         """Test JAX implementation with PBC"""
         import jax.numpy as jnp
+        import IMP._jax_util
         space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
         m = IMP.Model()
         p1 = m.add_particle("p1")

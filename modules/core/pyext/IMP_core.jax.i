@@ -216,7 +216,7 @@
 
 %extend IMP::core::GenericAttributeSingletonScore<UnaryFunction> {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space):
         def score_float_key(jm, key, uf):
             return uf(jm[key][indexes])
 
@@ -342,9 +342,11 @@
   %pythoncode %{
     def _get_jax(self):
         import jax.numpy as jnp
+        import IMP._jax_util
         ps = self.get_score_object()
         indexes = jnp.array([self.get_index()])
-        ji = ps._get_jax(self.get_model(), indexes)
+        ji = ps._get_jax(self.get_model(), indexes,
+                         space=IMP._jax_util.FreeSpace)
         def score(jm):
             return jnp.sum(ji.score_func(jm))
         return self._wrap_jax(score)

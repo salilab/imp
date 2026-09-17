@@ -47,9 +47,11 @@ class Tests(IMP.test.TestCase):
     def test_jax(self):
         """Test JAX implementation of DistancePairScore"""
         import jax.numpy as jnp
+        import IMP._jax_util
         m, p1, p2, s = make_score()
         imp_score = s.evaluate_index(m, (p1, p2), None)
-        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]))
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
+                        space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         jax_score = f(jm)
@@ -59,6 +61,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_periodic(self):
         """Test JAX implementation of DistancePairScore with PBC"""
         import jax.numpy as jnp
+        import IMP._jax_util
         space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
         m, p1, p2, s = make_score()
         ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),

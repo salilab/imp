@@ -231,13 +231,13 @@
 
 %extend IMP::atom::BondSingletonScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         from IMP.atom._jax_util import _get_bonds
         def score(jm, bonds, uf):
             xyzs = jm['xyz'][bonds.bonded_indexes]
             diff = xyzs[:,0] - xyzs[:,1]
-            drs = jnp.linalg.norm(diff, axis=1)
+            drs = space.distance(diff)
             return uf(bonds.stiffness * (drs - bonds.length))
         uf = self.get_unary_function().get_derived_object()
         f = functools.partial(score, bonds=_get_bonds(m, indexes),
@@ -248,7 +248,7 @@
 
 %extend IMP::atom::AngleSingletonScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import IMP.core._jax_util
         from IMP.atom._jax_util import _get_angles
@@ -269,7 +269,7 @@
 
 %extend IMP::atom::DihedralSingletonScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import IMP.core._jax_util
         from IMP.atom._jax_util import _get_dihedrals
@@ -289,7 +289,7 @@
 
 %extend IMP::atom::ImproperSingletonScore {
   %pythoncode %{
-    def _get_jax(self, m, indexes):
+    def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         import IMP.core._jax_util
         from IMP.atom._jax_util import _get_dihedrals
