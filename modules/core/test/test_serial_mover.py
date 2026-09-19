@@ -5,6 +5,7 @@ import IMP.algebra
 import pickle
 try:
     import jax
+    import IMP._jax_util
 except ImportError:
     jax = None
 
@@ -16,7 +17,7 @@ class JAXMover(IMP.core.MonteCarloMover):
         self.ratio = ratio
         self._key = key
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         def init_func(key):
             return self.state
 
@@ -50,7 +51,7 @@ class Test(IMP.test.TestCase):
         for i in range(5):
             mvs.append(JAXMover(m, i * 100, 0.2 * i, [fk1, fk2][i % 2]))
         mvr = IMP.core.SerialMover(mvs)
-        ji = mvr._get_jax()
+        ji = mvr._get_jax(space=IMP._jax_util.FreeSpace)
         self.assertEqual(ji._keys, frozenset([fk1, fk2]))
         init_func = jax.jit(ji.init_func)
         sms = init_func(jax.random.key(42))

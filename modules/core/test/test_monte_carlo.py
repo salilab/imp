@@ -29,7 +29,7 @@ class JAXOptimizerState(IMP.OptimizerState):
         return IMP._jax_util.JAXOptimizerStateInfo(self, init_func, apply_func)
 
 
-def setup_system(coords, use_container):
+def setup_system(coords, use_container, max_move=0.05):
     m = IMP.Model()
     mc = IMP.core.MonteCarlo(m)
     ps = []
@@ -72,10 +72,10 @@ def setup_system(coords, use_container):
         rs.add_restraints([rs1, rs2])
         rs.set_weight(0.8)
     mc.set_scoring_function(rs)
-    ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
-    ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
+    ms = [IMP.core.BallMover(m, x, max_move) for x in ps[:5]]
+    ms.append(IMP.core.BallMover(m, ps[5:8], max_move))
     # No restraints on ps[9], so this should not change the score
-    ms.append(IMP.core.BallMover(m, ps[9], 0.05))
+    ms.append(IMP.core.BallMover(m, ps[9], max_move))
     mv = IMP.core.SerialMover(ms)
     mc.add_mover(mv)
     # Always reject upwards moves
@@ -416,6 +416,47 @@ class Tests(IMP.test.TestCase):
         # High level
         m, mc = make_mc()
         mc._optimize_jax(2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic_movers(self):
+        """Test that JAX movers respect periodic boundaries"""
+        import IMP._jax_util
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                       IMP.algebra.Vector3D(10,10,10))
+
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
+        m, mc = setup_system(coords, use_container='pair', max_move=30.0)
+        # Don't restrain particle moves
+        r = IMP._ConstRestraint(m, [], 1.0)
+        mc.set_scoring_function(r)
+        # Accept all moves
+        mc.set_kt(1e9)
+        mc._optimize_jax(
+            100, space=IMP._jax_util.PeriodicSpace([20., 20., 20.]))
+
+        # All particles should be inside the periodic box
+        self.assertGreaterEqual(m.get_spheres_numpy()[0].min(), 0.0)
+        self.assertLessEqual(m.get_spheres_numpy()[0].max(), 20.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic_score(self):
+        """Test that JAX MonteCarlo score respects periodic boundaries"""
+        import IMP._jax_util
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        r = IMP.core.DistanceRestraint(m, uf, p1, p2)
+
+        mc = IMP.core.MonteCarlo(m)
+        mc.set_scoring_function(r)
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        final_score = mc._optimize_jax(1, space=space)
+
+        # In periodic space, distance is 3.0, not 7.0
+        self.assertAlmostEqual(final_score, 3.0, delta=1e-3)
 
 
 if __name__ == '__main__':

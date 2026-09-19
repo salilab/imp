@@ -65,10 +65,11 @@ class _MonteCarlo:
 
 
 class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
-    def __init__(self, mc):
-        super().__init__(mc)
+    def __init__(self, mc, space):
+        super().__init__(mc, space)
         score_func = self.score_func
-        movers = [mover.get_derived_object()._get_jax() for mover in mc.movers]
+        movers = [mover.get_derived_object()._get_jax(self._space)
+                  for mover in mc.movers]
         self._keys = frozenset(x for m in movers for x in m._keys)
         _temperature = mc.get_kt()
         return_best = mc.get_return_best()
@@ -176,9 +177,10 @@ def _sync_stats(imp_mc, jax_mc, movers, mover_sync_funcs):
 
 class _JAXOptimizer:
     """Helper base class to run an IMP Optimizer using JAX."""
-    def __init__(self, opt, max_steps):
+    def __init__(self, opt, max_steps, space):
         self.opt = opt
-        self._jax_info = opt._get_jax()
+        self._space = space or IMP._jax_util.FreeSpace
+        self._jax_info = opt._get_jax(space=self._space)
 
         # Get all OptimizerStates that have no explicit JAX implementation
         self._imp_opt_states = [s for s in opt.optimizer_states
@@ -246,15 +248,15 @@ class _SyncIMPModel:
 
 class _MCJAXOptimizer(_JAXOptimizer):
     """Do MC sampling with JAX, and update the IMP Model with the result"""
-    def __init__(self, mc, max_steps):
-        super().__init__(mc, max_steps)
+    def __init__(self, mc, max_steps, space):
+        super().__init__(mc, max_steps, space)
         ji = self._jax_info
         self.init_func = jax.jit(ji.init_func)
         self.apply_func = jax.jit(
             lambda jm: jax.lax.fori_loop(0, self.inner_steps,
                                          lambda i, jm: ji.apply_func(jm), jm))
         self._movers = [mover.get_derived_object() for mover in mc.movers]
-        self._mover_sync_funcs = [mover._get_jax().sync_func
+        self._mover_sync_funcs = [mover._get_jax(self._space).sync_func
                                   for mover in self._movers]
 
     def optimize(self, mc_state):

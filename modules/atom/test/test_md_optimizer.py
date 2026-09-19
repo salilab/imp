@@ -507,6 +507,62 @@ class Tests(IMP.test.TestCase):
         make_md()
         self.md._optimize_jax(2)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic_sampling(self):
+        """Test that JAX MD sampling respects periodic boundaries"""
+        import IMP._jax_util
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                       IMP.algebra.Vector3D(10,10,10))
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
+
+        m = IMP.Model()
+        # Gently push all particles away from the origin
+        uf = IMP.core.Linear(0., -1.0)
+        s = IMP.core.DistanceToSingletonScore(uf, IMP.algebra.Vector3D(0,0,0))
+        ps = []
+        for c in coords:
+            p = IMP.Particle(m)
+            _ = IMP.atom.Mass.setup_particle(p, 1.0)
+            xyz = IMP.core.XYZ.setup_particle(p, c)
+            xyz.set_coordinates_are_optimized(True)
+            ps.append(p)
+        lsc = IMP.container.ListSingletonContainer(m, ps)
+        r = IMP.container.SingletonsRestraint(s, lsc)
+
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_velocity_cap(42.0)
+        md.set_temperature(390.0)
+        md.set_maximum_time_step(10.0)
+        md.set_scoring_function(r)
+
+        space = IMP._jax_util.PeriodicSpace([20., 20., 20.])
+        md._optimize_jax(100, space=space)
+
+        # All particles should be inside the periodic box
+        self.assertGreaterEqual(m.get_spheres_numpy()[0].min(), 0.0)
+        self.assertLessEqual(m.get_spheres_numpy()[0].max(), 20.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic_score(self):
+        """Test that JAX MD score respects periodic boundaries"""
+        import IMP._jax_util
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        _ = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        r = IMP.core.DistanceRestraint(m, uf, p1, p2)
+
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_scoring_function(r)
+        # Nothing should move since we have no optimizable XYZ+Mass particles
+        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        score = md._optimize_jax(4, space=space)
+
+        # In periodic space, distance is 3.0, not 7.0
+        self.assertAlmostEqual(score, 3.0, delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -5,6 +5,7 @@ import IMP.container
 import pickle
 try:
     import jax
+    import IMP._jax_util
 except ImportError:
     jax = None
 
@@ -86,7 +87,7 @@ class NormalMoverTest(IMP.test.TestCase):
         """Test (Log)NormalMover JAX implementation with one FloatKey"""
         import IMP._jax_util
         m, mv, pa, att = self._make_stuff()
-        ji = mv._get_jax()
+        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -102,7 +103,7 @@ class NormalMoverTest(IMP.test.TestCase):
         """Test (Log)NormalMover JAX implementation with XYZ keys"""
         import IMP._jax_util
         m, mv, pa = self._make_xyz_stuff()
-        ji = mv._get_jax()
+        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -117,9 +118,8 @@ class NormalMoverTest(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_intcoord_keys(self):
         """Test (Log)NormalMover JAX with internal coordinate keys"""
-        import IMP._jax_util
         m, mv, pa = self._make_intcoord_stuff()
-        ji = mv._get_jax()
+        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -141,7 +141,8 @@ class NormalMoverTest(IMP.test.TestCase):
         xyz.set_coordinates_are_optimized(True)
         mv = self.mv(m, pa, [xyz.get_coordinate_key(0)], 1.0)
         # Currently not possible to move just "x"
-        self.assertRaises(NotImplementedError, mv._get_jax)
+        self.assertRaises(NotImplementedError, mv._get_jax,
+                          space=IMP._jax_util.FreeSpace)
 
 
 class LogNormalMoverTest(NormalMoverTest):

@@ -434,11 +434,14 @@
 
 %extend IMP::core::MonteCarloMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         """Return a JAX implementation of this mover.
            Implement this method in a MonteCarloMover subclass to provide
            equivalent functionality using [JAX](https://docs.jax.dev/).
            See _wrap_jax for more information.
+
+           @param space The space in which the mover operates
+                  (e.g. a periodic box). See IMP._jax_util.Space.
         """
         raise NotImplementedError(f"No JAX implementation for {self}")
 
@@ -479,7 +482,7 @@
 
 %extend IMP::core::BallMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.random
         from IMP.algebra._jax_util import get_random_vector_in_3d_sphere
         indexes = self.get_indexes()
@@ -502,9 +505,9 @@
             v = get_random_vector_in_3d_sphere(subkey, radius)
             if intcoord:
                 rbs = jm['rigid_bodies']
-                rbs.intcoord = rbs.intcoord.at[indexes].add(v)
+                rbs.intcoord = space.shift_indexes(rbs.intcoord, indexes, v)
             else:
-                jm['xyz'] = jm['xyz'].at[indexes].add(v)
+                jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, v)
             return jm, key, 1.0
         return self._wrap_jax(init_func, propose_func,
                               keys=['rigid_bodies'] if intcoord else None)
@@ -513,7 +516,7 @@
 
 %extend IMP::core::RigidBodyMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.random
         import IMP.core._jax_rigid
         from IMP.algebra._jax_util import (get_random_vector_on_3d_sphere,
@@ -535,8 +538,9 @@
 
             if max_translation > 0:
                 key, subkey = jax.random.split(key)
-                tf.translation += get_random_vector_in_3d_sphere(
-                    subkey, max_translation)[0]
+                tf.translation = space.shift(
+                    tf.translation,
+                    get_random_vector_in_3d_sphere(subkey, max_translation)[0])
             if max_angle > 0:
                 key, subkey1, subkey2 = jax.random.split(key, 3)
                 axis_norm = get_random_vector_on_3d_sphere(subkey1, 1.0)[0]
@@ -553,12 +557,12 @@
 
 %extend IMP::core::SerialMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.random
         import jax.lax
         import jax.numpy as jnp
         from IMP.core._jax_util import _SerialMover
-        movers = [m.get_derived_object()._get_jax()
+        movers = [m.get_derived_object()._get_jax(space)
                   for m in self.get_movers()]
 
         def sub_propose_func(jm, sms, i):
@@ -607,16 +611,16 @@
 
 %extend IMP::core::MonteCarlo {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space=None):
         from IMP.core._jax_util import _MCJAXInfo
-        return _MCJAXInfo(self)
+        return _MCJAXInfo(self, space)
 
-    def _get_jax_optimizer(self, max_steps):
+    def _get_jax_optimizer(self, max_steps, space=None):
         import IMP.core._jax_util
-        return IMP.core._jax_util._MCJAXOptimizer(self, max_steps)
+        return IMP.core._jax_util._MCJAXOptimizer(self, max_steps, space)
 
-    def _optimize_jax(self, max_steps):
-        opt = self._get_jax_optimizer(max_steps)
+    def _optimize_jax(self, max_steps, space=None):
+        opt = self._get_jax_optimizer(max_steps, space=space)
         score, mc_state = opt.optimize(opt.get_initial_state())
         return score
   %}
@@ -656,7 +660,7 @@
 
 %extend IMP::core::NormalMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.random
         from IMP.core._jax_util import _get_offset_propose_func
         keys = self.get_keys()
@@ -675,7 +679,7 @@
 
 %extend IMP::core::LogNormalMover {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         import jax.random
         from IMP.core._jax_util import _get_offset_propose_func
         keys = self.get_keys()

@@ -12,14 +12,15 @@ from IMP.core._jax_util import _JAXOptimizer
 _deriv_to_acceleration = -4.1868e-4
 
 
-def _propagate_coordinates(jm, indexes, mass, time_step, velocity_cap=None):
+def _propagate_coordinates(jm, indexes, mass, time_step, space,
+                           velocity_cap=None):
     linvel = jm['linvel'].at[indexes]
     dcoord = jm["xyz'"][indexes]
     v = linvel.get() + time_step * 0.5 * dcoord * _deriv_to_acceleration / mass
     if velocity_cap is not None:
         v = jnp.clip(v, -velocity_cap, velocity_cap)
     jm['linvel'] = linvel.set(v)
-    jm['xyz'] = jm['xyz'].at[indexes].add(v * time_step)
+    jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, v * time_step)
 
 
 def _propagate_velocities(jm, indexes, mass, time_step):
@@ -71,8 +72,8 @@ class _MolecularDynamics:
 
 
 class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
-    def __init__(self, md):
-        super().__init__(md)
+    def __init__(self, md, space):
+        super().__init__(md, space)
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
         deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
@@ -84,6 +85,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         else:
             velocity_cap = None
         jax_optstates = self._setup_jax_optimizer_states()
+        space = self._space
 
         def init_func(jm, key):
             jm["xyz'"] = deriv_func(jm)["xyz"]
@@ -105,7 +107,7 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             # the 2D coordinate/velocity arrays
             mass = mass.reshape(mass.shape[0], 1)
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
-            _propagate_coordinates(jm, indexes, mass, ms.time_step,
+            _propagate_coordinates(jm, indexes, mass, ms.time_step, space,
                                    velocity_cap)
             # Get new derivatives at t+(delta t)
             jm["xyz'"] = deriv_func(jm)["xyz"]
@@ -135,8 +137,8 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
 class _MDJAXOptimizer(_JAXOptimizer):
     """Do MD sampling with JAX, and update the IMP Model with the result"""
-    def __init__(self, md, max_steps):
-        super().__init__(md, max_steps)
+    def __init__(self, md, max_steps, space):
+        super().__init__(md, max_steps, space)
         ji = self._jax_info
         self.init_func = jax.jit(ji.init_func)
         self.score_func = jax.jit(ji.score_func)
