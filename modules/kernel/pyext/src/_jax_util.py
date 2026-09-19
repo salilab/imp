@@ -194,7 +194,7 @@ class _NullScoringFunction:
     def __init__(self, m):
         self.m = m
 
-    def _get_jax(self):
+    def _get_jax(self, space=None):
         # Always return a score of zero, and reference the optimizer's model
         return JAXRestraintInfo(m=self.m, score_func=lambda jm: 0.0,
                                 weight=1.0)
