@@ -103,7 +103,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Test JAX BoundingSphere3DSingletonScore with PBC"""
-        space = IMP._jax_util.PeriodicSpace([20., 20., 20.])
+        space = IMP.jax.PeriodicSpace([20., 20., 20.])
 
         m = IMP.Model()
         p1 = IMP.Particle(m)

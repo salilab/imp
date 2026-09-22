@@ -120,9 +120,9 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of JeffreysRestraint"""
-        import IMP._jax_util
+        import IMP.jax
         sf = IMP.core.RestraintsScoringFunction([self.J])
-        ji = self.J._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = self.J._get_jax(space=IMP.jax.FreeSpace)
         score_f = jax.jit(ji.score_func)
         deriv_f = jax.jit(jax.grad(ji.score_func))
 

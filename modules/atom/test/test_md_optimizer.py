@@ -535,7 +535,7 @@ class Tests(IMP.test.TestCase):
         md.set_maximum_time_step(10.0)
         md.set_scoring_function(r)
 
-        space = IMP._jax_util.PeriodicSpace([20., 20., 20.])
+        space = IMP.jax.PeriodicSpace([20., 20., 20.])
         md._optimize_jax(100, space=space)
 
         # All particles should be inside the periodic box
@@ -557,7 +557,7 @@ class Tests(IMP.test.TestCase):
         md = IMP.atom.MolecularDynamics(m)
         md.set_scoring_function(r)
         # Nothing should move since we have no optimizable XYZ+Mass particles
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         score = md._optimize_jax(4, space=space)
 
         # In periodic space, distance is 3.0, not 7.0

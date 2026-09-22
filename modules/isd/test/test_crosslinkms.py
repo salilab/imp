@@ -7,7 +7,7 @@ from random import sample
 from math import pi, log, exp
 try:
     import jax
-    import IMP._jax_util
+    import IMP.jax
 except ImportError:
     jax = None
 
@@ -167,7 +167,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         dr_lp = IMP.isd.CrossLinkMSRestraint(m, length, slope, True)
         dr_lp.add_contribution((p1, p2), (sigma1, sigma2), psi)
         if jax:
-            ji = dr_lp._get_jax(space=IMP._jax_util.FreeSpace)
+            ji = dr_lp._get_jax(space=IMP.jax.FreeSpace)
             X = ji.get_jax_model()
             jax_score_func = jax.jit(ji.score_func)
 
@@ -353,7 +353,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         dr_lp.add_contribution((p1, p1), (sigma1, sigma1), psi)
 
         if jax:
-            ji = dr_lp._get_jax(space=IMP._jax_util.FreeSpace)
+            ji = dr_lp._get_jax(space=IMP.jax.FreeSpace)
             X = ji.get_jax_model()
             jax_score_func = jax.jit(ji.score_func)
 

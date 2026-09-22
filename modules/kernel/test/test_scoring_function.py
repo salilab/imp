@@ -96,8 +96,8 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_single_score_periodic(self):
         """Test JAX PBC score of implicit single RestraintScoringFunction"""
-        import IMP._jax_util
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         # Returns two particles at 0,0,0 and 7,0,0
         m, r, rs = self._make_jax_distance_restraint()
         # In periodic space, distance is 3.0, not 7.0
@@ -114,8 +114,8 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_multiple_score_periodic(self):
         """Test JAX PBC score of implicit multiple RestraintsScoringFunction"""
-        import IMP._jax_util
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         # Returns two particles at 0,0,0 and 7,0,0
         m, r, rs = self._make_jax_distance_restraint()
 

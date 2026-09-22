@@ -212,8 +212,8 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score_periodic(self):
         """Test JAX RestraintsScoringFunction score with PBC"""
-        import IMP._jax_util
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         m = IMP.Model()
         p1 = IMP.Particle(m)
         d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))

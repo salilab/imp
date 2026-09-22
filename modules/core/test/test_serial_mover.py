@@ -51,7 +51,7 @@ class Test(IMP.test.TestCase):
         for i in range(5):
             mvs.append(JAXMover(m, i * 100, 0.2 * i, [fk1, fk2][i % 2]))
         mvr = IMP.core.SerialMover(mvs)
-        ji = mvr._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mvr._get_jax(space=IMP.jax.FreeSpace)
         self.assertEqual(ji._keys, frozenset([fk1, fk2]))
         init_func = jax.jit(ji.init_func)
         sms = init_func(jax.random.key(42))

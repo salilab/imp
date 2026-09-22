@@ -5,6 +5,7 @@ import jax.random
 import jax.tree_util
 import jax.numpy as jnp
 from dataclasses import dataclass
+import IMP.jax
 import IMP._jax_util
 
 
@@ -179,7 +180,7 @@ class _JAXOptimizer:
     """Helper base class to run an IMP Optimizer using JAX."""
     def __init__(self, opt, max_steps, space):
         self.opt = opt
-        self._space = space or IMP._jax_util.FreeSpace
+        self._space = space or IMP.jax.FreeSpace
         self._jax_info = opt._get_jax(space=self._space)
 
         # Get all OptimizerStates that have no explicit JAX implementation

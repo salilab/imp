@@ -80,7 +80,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of BondSingletonScore"""
-        import IMP._jax_util
+        import IMP.jax
         m = IMP.Model()
         bonds = []
         # Include bond with negative length (should score zero) and
@@ -101,7 +101,7 @@ class Tests(IMP.test.TestCase):
         ss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0.1, 1.2))
         r = IMP.container.SingletonsRestraint(ss, lsc)
         imp_score = r.evaluate(False)
-        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = r._get_jax(space=IMP.jax.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         jax_score = j(jm)

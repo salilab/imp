@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 try:
     import jax
-    import IMP._jax_util
+    import IMP.jax
     import jax.numpy as jnp
 except ImportError:
     jax = None
@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_free_space_distance(self):
         """Test JAX FreeSpace distance"""
-        space = IMP._jax_util.FreeSpace
+        space = IMP.jax.FreeSpace
         drs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         dists = jnp.array([3.74165, 8.77496])
         self.assertTrue(jnp.allclose(space.distance(drs), dists))
@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_free_space_shift(self):
         """Test JAX FreeSpace shift"""
-        space = IMP._jax_util.FreeSpace
+        space = IMP.jax.FreeSpace
         rs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         drs = jnp.array([[10., 20., 30.], [40., 50., 60.]])
         new_rs = space.shift(rs, drs)
@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_free_space_shift_indexes(self):
         """Test JAX FreeSpace shift_indexes"""
-        space = IMP._jax_util.FreeSpace
+        space = IMP.jax.FreeSpace
         rs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         indexes = jnp.array([0])
         drs = jnp.array([[10., 20., 30.]])
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space_distance(self):
         """Test JAX PeriodicSpace distance"""
-        space = IMP._jax_util.PeriodicSpace([10., 20., 30.])
+        space = IMP.jax.PeriodicSpace([10., 20., 30.])
         # For vector components less than half the box size, distances
         # should be the same as FreeSpace
         drs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space_shift(self):
         """Test JAX PeriodicSpace shift"""
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         rs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         drs = jnp.array([[7., 8., 9.], [10., 11., 12.]])
         new_rs = space.shift(rs, drs)
@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space_shift_indexes(self):
         """Test JAX PeriodicSpace shift_indexes"""
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         rs = jnp.array([[1., 2., 3.], [4., 5., 6.]])
         indexes = jnp.array([0])
         drs = jnp.array([[7., 8., 9.]])

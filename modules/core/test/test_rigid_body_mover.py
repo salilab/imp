@@ -7,7 +7,7 @@ from math import sqrt, acos
 try:
     import jax
     import jax.random
-    import IMP._jax_util
+    import IMP.jax
 except ImportError:
     jax = None
 
@@ -148,7 +148,7 @@ class Tests(IMP.test.TestCase):
         r0 = rb.get_coordinates()
         rot0 = rb.get_rotation()
 
-        ji = rb_mover._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = rb_mover._get_jax(space=IMP.jax.FreeSpace)
         self.assertEqual(ji._keys, frozenset(["rigid_bodies"]))
         jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
 
@@ -172,7 +172,7 @@ class Tests(IMP.test.TestCase):
         r0 = rb.get_coordinates()
         rot0 = rb.get_rotation()
 
-        ji = rb_mover._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = rb_mover._get_jax(space=IMP.jax.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
 
         init_func = jax.jit(ji.init_func)

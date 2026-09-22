@@ -4,7 +4,7 @@ import IMP.core
 import pickle
 try:
     import jax
-    import IMP._jax_util
+    import IMP.jax
 except ImportError:
     jax = None
 
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         """Test JAX HarmonicUpperBoundSphereDistancePairScore impl"""
         m, p1, p2, s = make_score()
         r = IMP.core.PairRestraint(m, s, (p1, p2))
-        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = r._get_jax(space=IMP.jax.FreeSpace)
         j = jax.jit(ji.score_func)
 
         for coord, exp_score in (((5.0, 6.0, 7.0), 19.6791),
@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_periodic(self):
         """Test JAX HarmonicUpperBoundSphereDistancePairScore impl with PBC"""
         import jax.numpy as jnp
-        space = IMP._jax_util.PeriodicSpace([10., 10., 10.])
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
         m, p1, p2, s = make_score()
         ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
                         space=space)

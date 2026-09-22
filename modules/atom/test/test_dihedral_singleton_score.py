@@ -61,13 +61,13 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax(self):
         """Test JAX implementation of DihedralSingletonScore"""
-        import IMP._jax_util
+        import IMP.jax
         m, dih = make_dihedrals()
         ss = IMP.atom.DihedralSingletonScore()
         lsc = IMP.container.ListSingletonContainer(m, dih)
         r = IMP.container.SingletonsRestraint(ss, lsc)
         imp_score = r.evaluate(False)
-        ji = r._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = r._get_jax(space=IMP.jax.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         jax_score = j(jm)

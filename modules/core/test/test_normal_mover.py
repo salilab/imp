@@ -5,7 +5,7 @@ import IMP.container
 import pickle
 try:
     import jax
-    import IMP._jax_util
+    import IMP.jax
 except ImportError:
     jax = None
 
@@ -85,9 +85,9 @@ class NormalMoverTest(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_one_float_key(self):
         """Test (Log)NormalMover JAX implementation with one FloatKey"""
-        import IMP._jax_util
+        import IMP.jax
         m, mv, pa, att = self._make_stuff()
-        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -101,9 +101,9 @@ class NormalMoverTest(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_xyz_keys(self):
         """Test (Log)NormalMover JAX implementation with XYZ keys"""
-        import IMP._jax_util
+        import IMP.jax
         m, mv, pa = self._make_xyz_stuff()
-        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -119,7 +119,7 @@ class NormalMoverTest(IMP.test.TestCase):
     def test_jax_intcoord_keys(self):
         """Test (Log)NormalMover JAX with internal coordinate keys"""
         m, mv, pa = self._make_intcoord_stuff()
-        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
         jm = IMP._jax_util._get_jax_model(m, ji._keys)
         init_func = jax.jit(ji.init_func)
         propose_func = jax.jit(ji.propose_func)
@@ -142,7 +142,7 @@ class NormalMoverTest(IMP.test.TestCase):
         mv = self.mv(m, pa, [xyz.get_coordinate_key(0)], 1.0)
         # Currently not possible to move just "x"
         self.assertRaises(NotImplementedError, mv._get_jax,
-                          space=IMP._jax_util.FreeSpace)
+                          space=IMP.jax.FreeSpace)
 
 
 class LogNormalMoverTest(NormalMoverTest):

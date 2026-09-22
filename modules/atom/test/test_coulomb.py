@@ -108,9 +108,9 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Check JAX implementation of CoulombPairScore with PBC"""
-        import IMP._jax_util
+        import IMP.jax
         import jax.numpy as jnp
-        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        space = IMP.jax.PeriodicSpace([4., 4., 4.])
         m, sf, d0, d1, c = make_test_pair_score()
         c.set_relative_dielectric(1.0)
         d0.set_charge(1.0)

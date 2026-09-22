@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZ.setup_particle(m, p2)
         mv = IMP.core.BallMover(m, (p1, p2), 1.0)
         X = {'xyz': jnp.array(m.get_spheres_numpy()[0])}
-        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
         self.assertEqual(ji._keys, frozenset())
 
         init_func = jax.jit(ji.init_func)
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         p1.add_attribute(k, 1.0)
         mv = IMP.core.BallMover(m, p1, [k], 1.0)
         self.assertRaises(NotImplementedError, mv._get_jax,
-                          space=IMP._jax_util.FreeSpace)
+                          space=IMP.jax.FreeSpace)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_int_coord(self):
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         mv = IMP.core.BallMover(
             m, p1, IMP.core.RigidBodyMember.get_internal_coordinate_keys(),
             1.0)
-        ji = mv._get_jax(space=IMP._jax_util.FreeSpace)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
         self.assertEqual(ji._keys, frozenset(('rigid_bodies',)))
         jm = IMP._jax_util._get_jax_model(m, ['rigid_bodies'])
 

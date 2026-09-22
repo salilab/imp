@@ -46,8 +46,8 @@ class JAXWarning(UserWarning):
                   specified, an unbounded (free) space is used.
         """
         import jax
-        import IMP._jax_util
-        ji = self._get_jax(space=space or IMP._jax_util.FreeSpace)
+        import IMP.jax
+        ji = self._get_jax(space=space or IMP.jax.FreeSpace)
         jm = ji.get_jax_model()
         j = jax.jit(ji.score_func)
         return j(jm)
@@ -145,8 +145,8 @@ class JAXWarning(UserWarning):
 %extend IMP::ScoringFunction {
   %pythoncode %{
     def _get_jax(self, space=None):
-        import IMP._jax_util
-        space = space or IMP._jax_util.FreeSpace
+        import IMP.jax
+        space = space or IMP.jax.FreeSpace
         r = self.get_single_restraint()
         if r is None:
             raise NotImplementedError(
@@ -301,8 +301,8 @@ class JAXWarning(UserWarning):
 %extend IMP::internal::GenericRestraintsScoringFunction<::IMP::Restraints> {
   %pythoncode %{
     def _get_jax(self, space=None):
-        import IMP._jax_util
-        space = space or IMP._jax_util.FreeSpace
+        import IMP.jax
+        space = space or IMP.jax.FreeSpace
         jis = [r.get_derived_object()._get_jax(space) for r in self.restraints]
         funcs = [j.score_func for j in jis]
         keys = frozenset(x for j in jis for x in j._keys)

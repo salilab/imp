@@ -63,10 +63,10 @@ class Tests(IMP.test.TestCase):
     def test_jax(self):
         """Test JAX implementation"""
         import jax.numpy as jnp
-        import IMP._jax_util
+        import IMP.jax
         m, p1, p2, s = make_score()
         ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
-                        space=IMP._jax_util.FreeSpace)
+                        space=IMP.jax.FreeSpace)
         jax_s = jax.jit(ji.score_func)
         X = ji.get_jax_model()
         imp_score_val = s.evaluate_index(m, (p1, p2), None)
@@ -99,8 +99,8 @@ class Tests(IMP.test.TestCase):
     def test_jax_periodic(self):
         """Test JAX implementation with PBC"""
         import jax.numpy as jnp
-        import IMP._jax_util
-        space = IMP._jax_util.PeriodicSpace([4., 4., 4.])
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([4., 4., 4.])
         m, p1, p2, s = make_score()
         ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
                         space=space)

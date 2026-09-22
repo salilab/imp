@@ -143,9 +143,9 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Check JAX implementation of LennardJonesTypedPairScore with PBC"""
-        import IMP._jax_util
+        import IMP.jax
         import jax.numpy as jnp
-        space = IMP._jax_util.PeriodicSpace([5., 5., 5.])
+        space = IMP.jax.PeriodicSpace([5., 5., 5.])
         m, sf, t0, t1, d0, d1, c = make_test_pair_score()
         d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 8))
         t0.set_radius(1.5)
