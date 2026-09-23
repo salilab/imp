@@ -359,14 +359,9 @@ class Tests(IMP.test.TestCase):
         self.assertLess(jnp.linalg.norm(new_jm["xyz"][1] - new_jm["xyz"][0]),
                         0.5)
 
-    @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_jax_high_level(self):
-        """Test high-level JAX implementation of MonteCarlo"""
-        m, mc = _setup_jax_mc(use_serial_mover=True)
-        mc.set_return_best(True)
-        mc._optimize_jax(2000)
-
-        # Check MC stats
+    def _check_jax_stats_first_optimize(self, mc):
+        """Check MC stats after the first optimize call"""
+        # Check the MC object itself
         self.assertEqual(mc.get_number_of_proposed_steps(), 2000)
         self.assertLessEqual(mc.get_number_of_downward_steps()
                              + mc.get_number_of_upward_steps(), 2000)
@@ -384,13 +379,27 @@ class Tests(IMP.test.TestCase):
                          + bm2.get_number_of_accepted(),
                          sm.get_number_of_accepted())
 
-        mc.optimize_jax(100)
-        # MonteCarlo stats should be for just this optimize run (100 steps)
-        self.assertEqual(mc.get_number_of_proposed_steps(), 100)
+    def _check_jax_stats_second_optimize(self, mc):
+        """Check MC stats after the second optimize call"""
+        # MonteCarlo stats should be for just this optimize run (2000 steps)
+        self.assertEqual(mc.get_number_of_proposed_steps(), 2000)
+        sm, = mc.movers
+        bm1, bm2 = sm.get_derived_object().get_movers()
         # Individual mover stats should be cumulative
-        self.assertEqual(sm.get_number_of_proposed(), 2100)
-        self.assertEqual(bm1.get_number_of_proposed(), 1050)
-        self.assertEqual(bm2.get_number_of_proposed(), 1050)
+        self.assertEqual(sm.get_number_of_proposed(), 4000)
+        self.assertEqual(bm1.get_number_of_proposed(), 2000)
+        self.assertEqual(bm2.get_number_of_proposed(), 2000)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_high_level(self):
+        """Test high-level JAX implementation of MonteCarlo"""
+        m, mc = _setup_jax_mc(use_serial_mover=True)
+        mc.set_return_best(True)
+        mc._optimize_jax(2000)
+        self._check_jax_stats_first_optimize(mc)
+
+        mc._optimize_jax(2000)
+        self._check_jax_stats_second_optimize(mc)
 
         # Particles should now be close
         d0 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(0)))
@@ -398,6 +407,24 @@ class Tests(IMP.test.TestCase):
         self.assertLess(
             IMP.algebra.get_distance(d0.get_coordinates(),
                                      d1.get_coordinates()), 0.5)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_get_jax_optimizer(self):
+        """Test medium-level JAX implementation of MonteCarlo"""
+        m, mc = _setup_jax_mc(use_serial_mover=True)
+        mc.set_return_best(True)
+
+        # This is like the high-level case except that we only
+        # initialize the JAX optimizer object once, rather than per
+        # optimize() call. This is how it is used in PMI.
+        jaxopt = mc._get_jax_optimizer(2000)
+        jax_state = jaxopt.get_initial_state()
+
+        score, jax_state = jaxopt.optimize(jax_state)
+        self._check_jax_stats_first_optimize(mc)
+
+        score, jax_state = jaxopt.optimize(jax_state)
+        self._check_jax_stats_second_optimize(mc)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_optimizer_state(self):
