@@ -200,10 +200,15 @@ class Tests(IMP.test.TestCase):
                          mv.get_number_of_accepted())
         for i in range(0, 10):
             mc.optimize(100)
+            # MonteCarlo stats should be for just this optimize run (100 steps)
             self.assertEqual(mc.get_number_of_accepted_steps(),
                              mc.get_number_of_upward_steps() +
                              mc.get_number_of_downward_steps())
             self.assertEqual(mc.get_number_of_proposed_steps(), 100)
+            # Individual mover stats should be cumulative
+            self.assertEqual(mv.get_number_of_proposed(), (i + 2) * 100)
+            self.assertEqual(sum(bm.get_number_of_accepted() for bm in ms),
+                             mv.get_number_of_accepted())
 
     def test_restraint_set_moved_same_trajectory(self):
         """MonteCarlo trajectory should not be changed by set_score_moved()
@@ -378,6 +383,15 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(bm1.get_number_of_accepted()
                          + bm2.get_number_of_accepted(),
                          sm.get_number_of_accepted())
+
+        mc.optimize_jax(100)
+        # MonteCarlo stats should be for just this optimize run (100 steps)
+        self.assertEqual(mc.get_number_of_proposed_steps(), 100)
+        # Individual mover stats should be cumulative
+        self.assertEqual(sm.get_number_of_proposed(), 2100)
+        self.assertEqual(bm1.get_number_of_proposed(), 1050)
+        self.assertEqual(bm2.get_number_of_proposed(), 1050)
+
         # Particles should now be close
         d0 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(0)))
         d1 = IMP.core.XYZ(m.get_particle(IMP.ParticleIndex(1)))
