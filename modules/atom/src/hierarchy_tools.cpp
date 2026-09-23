@@ -241,7 +241,7 @@ Hierarchy create_protein(Model *m, std::string name, double resolution,
 namespace {
 
 // create a particle which approximates the input set
-Hierarchy create_approximation_of_residues(const Hierarchies &t) {
+Hierarchy create_approximation_of_residues(const Hierarchies &t, Model *mm) {
   static WarningContext wc;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < t.size(); ++i) {
@@ -270,7 +270,6 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
       v += get_volume_measurement(ss, 5.0);
     }
   }
-  Model *mm = t[0]->get_model();
   Particle *p = new Particle(mm);
   ParticlesTemp children;
   for (unsigned int i = 0; i < t.size(); ++i) {
@@ -293,7 +292,7 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
 
 namespace {
 Hierarchy create_simplified_along_backbone(Chain in, int num_res,
-                                           bool keep_detailed) {
+                                           bool keep_detailed, Model *m) {
   if (in.get_number_of_children() == 0) {
     return Hierarchy();
   }
@@ -305,26 +304,28 @@ Hierarchy create_simplified_along_backbone(Chain in, int num_res,
   for (i = ib; i < ie; i += num_res) {
     rs.push_back(IntRange(i, std::min(i + num_res, ie)));
   }
-  return create_simplified_along_backbone(in, rs, keep_detailed);
+  return create_simplified_along_backbone(in, rs, keep_detailed, m);
 }
 }
 
 Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
-                                           bool keep_detailed) {
+                                           bool keep_detailed, Model *m) {
+  IMP_USAGE_CHECK(!keep_detailed || !m,
+        "keep_detailed cannot be used in combination with a specified Model");
   Hierarchies chains = get_by_type(in, CHAIN_TYPE);
   if (chains.size() > 1) {
     Hierarchy root = Hierarchy::setup_particle(
-        new Particle(in->get_model(), in->get_name()));
+        new Particle(m, in->get_name()));
     for (unsigned int i = 0; i < chains.size(); ++i) {
       Chain chain(chains[i].get_particle());
       root.add_child(
-          create_simplified_along_backbone(chain, num_res, keep_detailed));
+          create_simplified_along_backbone(chain, num_res, keep_detailed, m));
     }
     return root;
   } else if (chains.size() == 1) {
     // make sure to cast it to chain to get the right overload
     return create_simplified_along_backbone(Chain(chains[0]), num_res,
-                                            keep_detailed);
+                                            keep_detailed, m);
   } else {
     IMP_THROW("No chains to simplify", ValueException);
   }
@@ -332,8 +333,14 @@ Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
 
 Hierarchy create_simplified_along_backbone(Chain in,
                                            const IntRanges &residue_segments,
-                                           bool keep_detailed) {
+                                           bool keep_detailed,
+					   Model *m) {
   IMP_USAGE_CHECK(in.get_is_valid(true), "Chain " << in << " is not valid.");
+  IMP_USAGE_CHECK(!keep_detailed || !m,
+        "keep_detailed cannot be used in combination with a specified Model");
+  if (!m) {
+    m = in.get_model();
+  }
   if (in.get_number_of_children() == 0 || residue_segments.empty()) {
     IMP_LOG_TERSE("Nothing to simplify in "
                   << (in ? in->get_name() : "nullptr") << " with "
@@ -353,7 +360,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
   }
   unsigned int cur_segment = 0;
   Hierarchies cur;
-  Hierarchy root = create_clone_one(in);
+  Hierarchy root = create_clone_one(in, m);
   for (unsigned int i = 0; i < in.get_number_of_children(); ++i) {
     Hierarchy child = in.get_child(i);
     int index = Residue(child).get_index();
@@ -367,7 +374,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
       IMP_LOG_VERBOSE("Added particle for "
                       << residue_segments[cur_segment].first << "..."
                       << residue_segments[cur_segment].second << std::endl);
-      Hierarchy cur_approx = create_approximation_of_residues(cur);
+      Hierarchy cur_approx = create_approximation_of_residues(cur, m);
       root.add_child(cur_approx);
       if (keep_detailed) {
         for (unsigned int j = 0; j < cur.size(); ++j) {
@@ -381,7 +388,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
     cur.push_back(child);
   }
   if (!cur.empty()) {
-    root.add_child(create_approximation_of_residues(cur));
+    root.add_child(create_approximation_of_residues(cur, m));
   }
   /*#ifdef IMP_ATOM_USE_IMP_CGAL
   double ov= get_volume(in);

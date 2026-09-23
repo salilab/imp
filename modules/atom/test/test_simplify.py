@@ -53,6 +53,27 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(segs),
                          len(IMP.core.get_leaves(mh_simp)))
 
+    def test_simplify_by_residue_model(self):
+        """Test protein simplification by residues into a separate model"""
+        m1 = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m1)
+        chains = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
+        old_num_particles = len(m1.get_particle_indexes())
+        m2 = IMP.Model()
+        # Should not be able to specify model with keep_detailed=True
+        self.assertRaisesUsageException(
+            IMP.atom.create_simplified_along_backbone,
+            IMP.atom.Chain(chains[0].get_particle()), 5, True, m2)
+
+        mh_simp = IMP.atom.create_simplified_along_backbone(
+            IMP.atom.Chain(chains[0].get_particle()), 5, False, m2)
+        self.assertEqual(len(IMP.atom.get_leaves(mh_simp)), 2)
+
+        # Particles should all be in m2, not m1
+        self.assertIs(mh_simp.get_model(), m2)
+        self.assertEqual(len(m1.get_particle_indexes()), old_num_particles)
+        self.assertEqual(len(m2.get_particle_indexes()), 4)
+
     def test_simplify_by_volume(self):
         """Test protein simplification by volume"""
         IMP.set_log_level(IMP.SILENT)  # VERBOSE)

@@ -74,17 +74,24 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
 
     If keep_detailed is true, then the original high resolution structure
     particles are added as children of the simplified structure.
+
+    A Model can be specified to create the simplified hierarchy in (if not
+    specified, it will be created in the same Model as the original Hierarchy).
+    A different Model cannot be specified if keep_detailed is true.
+
     @{
 */
 /** Simplify every num_res into one particle.*/
 IMPATOMEXPORT Hierarchy
     create_simplified_along_backbone(Hierarchy input, int num_res,
-                                     bool keep_detailed = false);
+                                     bool keep_detailed=false,
+                                     Model *m=nullptr);
 /** Simplify by breaking at the boundaries provided.*/
 IMPATOMEXPORT Hierarchy
     create_simplified_along_backbone(Chain input,
                                      const IntRanges &residue_segments,
-                                     bool keep_detailed = false);
+                                     bool keep_detailed=false,
+                                     Model *m=nullptr);
 /** @} */
 
 /** Create a new hierarchy that approximates the volume occupied by the old one.
