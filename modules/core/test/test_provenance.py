@@ -260,6 +260,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(m.get_particle_indexes()), 14)
         self.check_provenance(newprov)
 
+    def test_clone_model(self):
+        """Test create_clone into different model"""
+        m1 = IMP.Model()
+        prov = self.add_provenance(m1)
+        self.check_provenance(prov)
+        self.assertEqual(len(m1.get_particle_indexes()), 7)
+
+        m2 = IMP.Model()
+        newprov = IMP.core.create_clone(prov, m2)
+        self.assertEqual(len(m1.get_particle_indexes()), 7)
+        self.assertEqual(len(m2.get_particle_indexes()), 7)
+        self.check_provenance(newprov)
+
     def test_get_all_provenance(self):
         """Test get_all_provenance()"""
         m = IMP.Model()

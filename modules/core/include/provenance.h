@@ -2,7 +2,7 @@
  *  \file IMP/core/provenance.h
  *  \brief Classes to track how the model was created.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_PROVENANCE_H
@@ -662,7 +662,11 @@ IMPCOREEXPORT void add_provenance(Model *m, ParticleIndex pi,
                                   Provenance p);
 
 //! Clone provenance (including previous provenance)
-IMPCOREEXPORT Provenance create_clone(Provenance p);
+/** @param p The Provenance to clone.
+    @param m The Model to create the clone in (if not specified, it will
+           be created in the same Model as the original Provenance).
+ */
+IMPCOREEXPORT Provenance create_clone(Provenance p, Model *m=nullptr);
 
 IMPCORE_END_NAMESPACE
 

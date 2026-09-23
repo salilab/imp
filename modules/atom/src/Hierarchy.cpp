@@ -1,7 +1,7 @@
 /**
  *  \file Hierarchy.cpp   \brief Decorator for helping deal with a hierarchy.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -432,8 +432,8 @@ namespace {
 
 Hierarchy clone_internal(Hierarchy d,
                          std::map<Particle *, Particle *> &map,
-                         bool recurse) {
-  Particle *p = new Particle(d.get_model());
+                         bool recurse, Model *m) {
+  Particle *p = new Particle(m);
   p->set_name(d->get_name());
   map[d.get_particle()] = p;
   Hierarchy nd;
@@ -468,7 +468,7 @@ Hierarchy clone_internal(Hierarchy d,
   }
   if (core::Provenanced::get_is_setup(d.get_particle())) {
     core::Provenanced pd(d.get_particle());
-    core::Provenance prov = core::create_clone(pd.get_provenance());
+    core::Provenance prov = core::create_clone(pd.get_provenance(), m);
     core::Provenanced::setup_particle(p, prov);
   }
 
@@ -489,7 +489,7 @@ Hierarchy clone_internal(Hierarchy d,
   p->set_name(d.get_particle()->get_name());
   if (recurse) {
     for (unsigned int i = 0; i < d.get_number_of_children(); ++i) {
-      Hierarchy nc = clone_internal(d.get_child(i), map, true);
+      Hierarchy nc = clone_internal(d.get_child(i), map, true, m);
       nd.add_child(nc);
     }
     if (Representation::get_is_setup(d.get_particle())) {
@@ -497,7 +497,7 @@ Hierarchy clone_internal(Hierarchy d,
       Floats res_b = r.get_resolutions(BALLS);         // first one is base
       Hierarchies hs_b = r.get_representations(BALLS); //last one is base
       for (unsigned int i=0;i<hs_b.size()-1;i++){
-        Hierarchy nc = clone_internal(hs_b[i],map,true);
+        Hierarchy nc = clone_internal(hs_b[i],map,true,m);
         Representation(p).add_representation(nc.get_particle(),
                                              BALLS,
                                              res_b[i+1]);
@@ -505,7 +505,7 @@ Hierarchy clone_internal(Hierarchy d,
       Floats res_d = r.get_resolutions(DENSITIES);
       Hierarchies hs_d = r.get_representations(DENSITIES);
       for (unsigned int i=0;i<hs_d.size();i++){
-        Hierarchy nd = clone_internal(hs_d[i],map,true);
+        Hierarchy nd = clone_internal(hs_d[i],map,true,m);
         Representation(p).add_representation(nd.get_particle(),
                                              DENSITIES,
                                              res_d[i]);
@@ -516,9 +516,12 @@ Hierarchy clone_internal(Hierarchy d,
 }
 }
 
-Hierarchy create_clone(Hierarchy d) {
+Hierarchy create_clone(Hierarchy d, Model *m) {
+  if (!m) {
+    m = d.get_model();
+  }
   std::map<Particle *, Particle *> map;
-  Hierarchy nh = clone_internal(d, map, true);
+  Hierarchy nh = clone_internal(d, map, true, m);
   Bonds bds = get_internal_bonds(d);
   for (unsigned int i = 0; i < bds.size(); ++i) {
     Bonded e0 = bds[i].get_bonded(0);
@@ -541,9 +544,12 @@ Hierarchy create_clone(Hierarchy d) {
   return nh;
 }
 
-Hierarchy create_clone_one(Hierarchy d) {
+Hierarchy create_clone_one(Hierarchy d, Model *m) {
+  if (!m) {
+    m = d.get_model();
+  }
   std::map<Particle *, Particle *> map;
-  return clone_internal(d, map, false);
+  return clone_internal(d, map, false, m);
 }
 
 struct True {

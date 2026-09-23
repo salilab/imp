@@ -11,8 +11,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 
-Provenance clone_one(Provenance prov) {
-  Particle *p = new IMP::Particle(prov.get_model());
+Provenance clone_one(Provenance prov, Model *m) {
+  Particle *p = new IMP::Particle(m);
   p->set_name(prov->get_name());
 
   if (StructureProvenance::get_is_setup(prov.get_particle())) {
@@ -224,14 +224,17 @@ void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   }
 }
 
-Provenance create_clone(Provenance prov) {
-  Provenance root = clone_one(prov);
+Provenance create_clone(Provenance prov, Model *m) {
+  if (!m) {
+    m = prov.get_model();
+  }
+  Provenance root = clone_one(prov, m);
 
   Provenance newprov = root;
   while (prov) {
     Provenance previous = prov.get_previous();
     if (previous) {
-      Provenance newprevious = clone_one(previous);
+      Provenance newprevious = clone_one(previous, m);
       newprov.set_previous(newprevious);
       newprov = newprevious;
     }

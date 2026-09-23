@@ -2,7 +2,7 @@
  *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -460,17 +460,25 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
     Residue, Domain, Mass, and provenance data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
+    @param d The Hierarchy to clone.
+    @param m The Model to create the clone in (if not specified, it will
+           be created in the same Model as the original Hierarchy).
+
     \relates Hierarchy
 */
-IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
+IMPATOMEXPORT Hierarchy create_clone(Hierarchy d, Model *m=nullptr);
 
 //! Clone the node in the Hierarchy
 /** This method copies the Atom,
     Residue, Chain, Domain, Mass, and provenance data and the particle name.
 
+    @param d The Hierarchy to clone.
+    @param m The Model to create the clone in (if not specified, it will
+           be created in the same Model as the original Hierarchy).
+
     \relates Hierarchy
 */
-IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
+IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d, Model *m=nullptr);
 
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are

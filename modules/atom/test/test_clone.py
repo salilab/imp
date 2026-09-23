@@ -21,6 +21,18 @@ class Tests(IMP.test.TestCase):
         mh = None
         self.assertEqual(0, len(m.get_particle_indexes()))
 
+    def test_clone_model(self):
+        """Check clone into different Model"""
+        m1 = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m1)
+        self.assertEqual(len(m1.get_particle_indexes()), 80)
+
+        m2 = IMP.Model()
+        mhc = IMP.atom.create_clone(mh, m2)
+        self.assertEqual(len(m1.get_particle_indexes()), 80)
+        self.assertEqual(len(m2.get_particle_indexes()),
+                         len(m1.get_particle_indexes()))
+
     def test_clone_mass(self):
         """Test clone of particles that have mass but are not atoms"""
         m = IMP.Model()
