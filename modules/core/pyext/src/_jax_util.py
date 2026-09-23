@@ -25,11 +25,12 @@ def _get_jax_restraint(r, space):
 class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
     def __init__(self, init_func, propose_func, accept_func, sync_func,
-                 keys):
+                 reset_stats_func, keys):
         self.init_func = init_func
         self.propose_func = propose_func
         self.accept_func = accept_func
         self.sync_func = sync_func
+        self.reset_stats_func = reset_stats_func
         self._keys = frozenset(keys or ())
 
 
@@ -91,6 +92,16 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 temperature=_temperature)
             for js in jax_optstates:
                 ms = js.init_func(ms)
+            return ms
+
+        def reset_stats_func(ms):
+            ms.accepted_steps = 0
+            ms.downward_steps_taken = 0
+            ms.upward_steps_taken = 0
+            ms.rejected_steps = 0
+            ms.mover_state = [m.reset_stats_func(mvst)
+                              if m.reset_stats_func else mvst
+                              for (m, mvst) in zip(movers, ms.mover_state)]
             return ms
 
         def apply_func(ms):
@@ -159,6 +170,7 @@ class _MCJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
         self.init_func = init_func
         self.apply_func = apply_func
+        self.reset_stats_func = reset_stats_func
 
 
 def _sync_stats(imp_mc, jax_mc, movers, mover_sync_funcs):
@@ -253,6 +265,7 @@ class _MCJAXOptimizer(_JAXOptimizer):
         super().__init__(mc, max_steps, space)
         ji = self._jax_info
         self.init_func = jax.jit(ji.init_func)
+        self._reset_stats_func = jax.jit(ji.reset_stats_func)
         self.apply_func = jax.jit(
             lambda jm: jax.lax.fori_loop(0, self.inner_steps,
                                          lambda i, jm: ji.apply_func(jm), jm))
@@ -264,6 +277,7 @@ class _MCJAXOptimizer(_JAXOptimizer):
         """Run max_steps of sampling with JAX and update the IMP Model with
            the result. Return the final score and the new JAX optimizer
            object."""
+        mc_state = self._reset_stats_func(mc_state)
         m = self.opt.get_model()
         sync_model = _SyncIMPModel(m, mc_state.jm)
         for _ in self._loop():

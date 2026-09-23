@@ -446,7 +446,7 @@
         raise NotImplementedError(f"No JAX implementation for {self}")
 
     def _wrap_jax(self, init_func, propose_func, accept_func=None,
-                  sync_func=None, keys=None):
+                  sync_func=None, reset_stats_func=None, keys=None):
         """Create the return value for _get_jax.
            Use this method in _get_jax() to wrap the JAX functions
            with other mover-specific information.
@@ -470,13 +470,17 @@
                   at the end of a Monte Carlo sampling run to sync mover
                   data back to IMP. It is called with the persistent state
                   and the IMP Mover object.
+           @param reset_stats_func If provided, a JAX function which is called
+                  at the beginning of a Monte Carlo run to reset this mover's
+                  statistics. It is called with the persistent state object and
+                  should return a new state.
            @param keys If given, a set of IMP::Key objects describing Model
                   attributes (other than xyz and radius) that are altered
                   by this mover.
         """
         from IMP.core._jax_util import JAXMoverInfo
         return JAXMoverInfo(init_func, propose_func, accept_func, sync_func,
-                            keys)
+                            reset_stats_func, keys)
   %}
 }
 
@@ -586,6 +590,14 @@
                 proposed_mover_steps=jnp.zeros(len(movers), dtype=int),
                 accepted_mover_steps=jnp.zeros(len(movers), dtype=int))
 
+        def reset_stats_func(sms):
+            sms.mover_state = [m.reset_stats_func(ms)
+                               if m.reset_stats_func else ms
+                               for (m, ms) in zip(movers, sms.mover_state)]
+            sms.proposed_mover_steps = jnp.zeros(len(movers), dtype=int)
+            sms.accepted_mover_steps = jnp.zeros(len(movers), dtype=int)
+            return sms
+
         def propose_func(jm, sms):
             sms.imov = jnp.mod(sms.imov + 1, len(movers))
             return jax.lax.switch(sms.imov, sub_propose_funcs, jm, sms)
@@ -605,6 +617,7 @@
 
         return self._wrap_jax(
             init_func, propose_func, accept_func, sync_func,
+            reset_stats_func=reset_stats_func,
             keys=frozenset(x for m in movers for x in m._keys))
   %}
 }
