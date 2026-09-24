@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_score_jax(self):
         """Test JAX score of crosslinking restraint"""
-        import IMP.jax
+        import IMP._jax_util
         m = IMP.Model()
         hier, dof = self.make_repr(m)
         xl, cldb = self.setup_crosslinks_beads(hier)
@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
 
         rs = IMP.pmi.tools.get_restraint_set(m)
         exp_score = -0.13949
-        ji = rs._get_jax(space=IMP.jax.FreeSpace)
+        ji = rs._get_jax(space=IMP._jax_util.FreeSpace)
         jm = ji.get_jax_model()
         score_f = jax.jit(ji.score_func)
         jax_score = score_f(jm)

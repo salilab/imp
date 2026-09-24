@@ -483,8 +483,8 @@ class ReplicaExchange:
 
     def _get_jax_free_space(self):
         # Currently, only the default unbounded space is supported
-        import IMP.jax
-        return IMP.jax.FreeSpace
+        import IMP._jax_util
+        return IMP._jax_util.FreeSpace
 
     def _get_jax_data(self, sampler_mc):
         if self.use_jax:
