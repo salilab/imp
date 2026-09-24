@@ -139,7 +139,9 @@ public:
   IMP_OBJECT_METHODS(_RigidBodyNormalizeConstraint);
 };
 
-/* Make a simple subclass rather than using
+/** Set global coordinates from internal coordinates of a single rigid body.
+
+   We make a simple subclass rather than using
    IMP::internal::create_tuple_constraint(), so that we can serialize it */
 class IMPCOREEXPORT _RigidBodyPositionConstraint
 #ifdef SWIG

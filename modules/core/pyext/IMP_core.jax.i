@@ -658,16 +658,18 @@
   %pythoncode %{
     def _get_jax(self):
         import jax
-        def apply_func(jm):
-            # Assume that constraint acts on all rigid bodies
-            bodies = jm['rigid_bodies'].bodies
+        from IMP.core import _jax_rigid
+        def apply_func(jm, index):
+            body = jm['rigid_bodies'].bodies[index]
             # todo: this could perhaps be better parallelized, as in most
             # cases (at least, without nested rigid bodies) the update of
             # one rigid body does not affect members of another body
-            for body in bodies:
-                jm = body.update_members(jm)
-            return jm
-        return self._wrap_jax(apply_func, keys=['rigid_bodies'])
+            return body.update_members(jm)
+        # Get rigid body index from particle index
+        pindex = self.get_index()
+        rbindex = _jax_rigid._get_rigid_body_index(self.get_model(), pindex)
+        f = functools.partial(apply_func, index=rbindex)
+        return self._wrap_jax(f, keys=['rigid_bodies'])
   %}
 }
 

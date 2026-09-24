@@ -339,14 +339,20 @@ class Tests(IMP.test.TestCase):
         h = IMP.core.Hierarchy(p)
         children = h.get_children()
         cs0_index = int(children[0].get_particle_index())
-        cs = IMP.core.XYZs(children)
+        cs = IMP.core.XYZs(children[:5])
         rbd = IMP.core.RigidBody.setup_particle(p, cs)
 
-        # _RigidBodyPositionConstraint should have been created automatically;
-        # find it by name
-        ss, = [s.get_derived_object() for s in m.get_ordered_score_states()
-               if s.get_name().endswith('rigid body positions')]
-        ji = ss._get_jax()
+        cs = IMP.core.XYZs(children[5:])
+        p = IMP.Particle(m)
+        rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        # _RigidBodyPositionConstraint should have been created automatically
+        # (one per rigid body); find them by name and particle index
+        ss = [s.get_derived_object() for s in m.get_ordered_score_states()
+              if s.get_name().endswith('rigid body positions')]
+        self.assertEqual(len(ss), 2)
+        ss = sorted(ss, key=lambda s: s.get_index())
+        ji = ss[0]._get_jax()
         jm = ji.get_jax_model()
         apply_func = jax.jit(ji.apply_func)
 
