@@ -161,6 +161,8 @@ class System(_SystemBase):
            @param name  The name of the top-level hierarchy node.
         """
         super().__init__(model)
+        # A second Model used for temporary storage of starting models
+        self._start_model = IMP.Model()
         self._number_of_states = 0
         self._protocol_output = []
         self.states = []
@@ -203,6 +205,8 @@ class System(_SystemBase):
             self.built = True
             for po in self._protocol_output:
                 po.finalize_build()
+            # Free memory used by starting models
+            del self._start_model
         return self.hier
 
     def add_protocol_output(self, p):
@@ -239,6 +243,8 @@ class State(_SystemBase):
         self._protocol_output = []
         for p in system._protocol_output:
             self._add_protocol_output(p, system)
+
+    _start_model = property(lambda self: self.system._start_model)
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
@@ -452,6 +458,8 @@ class Molecule(_SystemBase):
             r = TempResidue(self, s, ns+1, ns, alphabet)
             self.residues.append(r)
 
+    _start_model = property(lambda self: self.state._start_model)
+
     def __repr__(self):
         return self.state.__repr__() + '.' + self.get_name() + '.' + \
                str(IMP.atom.Copy(self.hier).get_copy_index())
@@ -585,7 +593,7 @@ class Molecule(_SystemBase):
         self.pdb_fn = pdb_fn
 
         # get IMP.atom.Residues from the pdb file
-        rhs = system_tools.get_structure(self.model, pdb_fn, chain_id,
+        rhs = system_tools.get_structure(self._start_model, pdb_fn, chain_id,
                                          res_range, offset,
                                          ca_only=ca_only)
         self.coord_finder.add_residues(rhs)
@@ -873,7 +881,7 @@ class Molecule(_SystemBase):
             # the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
-                    _build_ideal_helix(self.model, rep.residues,
+                    _build_ideal_helix(self._start_model, rep.residues,
                                        self.coord_finder)
 
             # build all the representations
@@ -1263,7 +1271,7 @@ class TempResidue:
         # these are expected to change
         self._structured = False
         self.hier = IMP.atom.Residue.setup_particle(
-            IMP.Particle(molecule.model), self.rtype, index)
+            IMP.Particle(molecule._start_model), self.rtype, index)
 
     def __str__(self):
         return str(self.state_index) + "_" + self.molecule.get_name() + "_" \
@@ -1297,8 +1305,12 @@ class TempResidue:
     def get_residue_type(self):
         return self.rtype
 
-    def get_hierarchy(self):
-        return self.hier
+    def get_hierarchy(self, model=None):
+        if model is not None and self.hier.get_model() != model:
+            # Need to clone if it needs to be in a different model
+            return IMP.atom.create_clone(self.hier, model)
+        else:
+            return self.hier
 
     def get_molecule(self):
         return self.molecule

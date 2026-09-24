@@ -269,6 +269,7 @@ def build_representation(parent, rep, coord_finder, rephandler):
     atomic_res = 0
     ca_res = 1
     model = parent.hier.get_model()
+    _start_model = parent._start_model
     color = _get_color_for_representation(rep)
 
     # first get the primary representation (currently, the smallest bead size)
@@ -367,9 +368,9 @@ def build_representation(parent, rep, coord_finder, rephandler):
         elif name_count == 3:
             name_all += '...'
         name_count += 1
-        segp = IMP.Particle(model, name)
-        IMP.atom.Fragment.setup_particle(segp, res_nums)
         if not single_node:
+            segp = IMP.Particle(model, name)
+            IMP.atom.Fragment.setup_particle(segp, res_nums)
             this_representation = IMP.atom.Representation.setup_particle(
                 segp, primary_resolution)
             built_reps.append(this_representation)
@@ -385,22 +386,22 @@ def build_representation(parent, rep, coord_finder, rephandler):
                 # if structured, merge particles as needed
                 if resolution == atomic_res:
                     for residue in frag_res:
-                        this_resolution.add_child(residue.get_hierarchy())
+                        this_resolution.add_child(residue.get_hierarchy(model))
                 elif resolution == ca_res and rep.bead_ca_centers:
                     beads = build_ca_centers(model, frag_res)
                     for bead in beads:
                         this_resolution.add_child(bead)
                 else:
-                    tempc = IMP.atom.Chain.setup_particle(IMP.Particle(model),
-                                                          "X")
+                    tempc = IMP.atom.Chain.setup_particle(
+                        IMP.Particle(_start_model), "X")
                     for residue in frag_res:
-                        tempc.add_child(IMP.atom.create_clone(residue.hier))
+                        tempc.add_child(residue.hier)
                     beads = IMP.atom.create_simplified_along_backbone(
-                        tempc, resolution)
+                        tempc, resolution, False, model)
                     for bead in beads.get_children():
                         this_resolution.add_child(bead)
-                    del tempc
-                    del beads
+                    _start_model.remove_particle(tempc.get_particle_index())
+                    model.remove_particle(beads.get_particle_index())
             else:
                 # if unstructured, create necklace
                 input_coord = coord_finder.find_nearest_coord(
