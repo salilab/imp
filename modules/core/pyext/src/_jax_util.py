@@ -230,10 +230,13 @@ class _SyncIMPModel:
        This is intended to be called during sampling, and will copy
        XYZ coordinates and rigid body information"""
 
-    def __init__(self, imp_model, jax_model):
+    def __init__(self, imp_model, jax_model, mover_keys):
         from . import _jax_rigid
         self._imp_model = imp_model
         self._xyz = imp_model.get_spheres_numpy()[0]
+        # Sync arbitrary FloatKeys moved by Movers too (e.g. Nuisances)
+        self._floats = [k.get_string() for k in mover_keys
+                        if isinstance(k, IMP.FloatKey)]
         self._rigid_bodies = 'rigid_bodies' in jax_model
         if self._rigid_bodies:
             self._non_rigid = jax_model['rigid_bodies'].non_rigid_members
@@ -250,6 +253,8 @@ class _SyncIMPModel:
 
     def __call__(self, jm):
         self._xyz[:] = jm['xyz']
+        for f in self._floats:
+            jm[f].sync()
         if self._rigid_bodies:
             rbs = jm['rigid_bodies']
             self._quaternion[self._rigid_body_indexes] = rbs.quaternion
@@ -272,6 +277,7 @@ class _MCJAXOptimizer(_JAXOptimizer):
         self._movers = [mover.get_derived_object() for mover in mc.movers]
         self._mover_sync_funcs = [mover._get_jax(self._space).sync_func
                                   for mover in self._movers]
+        self._mover_keys = ji._keys
 
     def optimize(self, mc_state):
         """Run max_steps of sampling with JAX and update the IMP Model with
@@ -279,7 +285,7 @@ class _MCJAXOptimizer(_JAXOptimizer):
            object."""
         mc_state = self._reset_stats_func(mc_state)
         m = self.opt.get_model()
-        sync_model = _SyncIMPModel(m, mc_state.jm)
+        sync_model = _SyncIMPModel(m, mc_state.jm, self._mover_keys)
         for _ in self._loop():
             mc_state = self.apply_func(mc_state)
             # Resync IMP Model arrays with JAX

@@ -19,6 +19,8 @@ def _get_jax_model(m, keys):
         if k == 'rigid_bodies':
             from IMP.core._jax_rigid import _get_rigid_bodies
             jm['rigid_bodies'] = _get_rigid_bodies(m)
+        elif isinstance(k, IMP.FloatKey):
+            jm[k.get_string()] = IMP.jax._CompactArray.from_model(m, k)
         else:
             jm[k.get_string()] = m.get_numpy(k)
     return jm

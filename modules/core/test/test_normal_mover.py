@@ -99,6 +99,24 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertGreater(abs(old - new), 1e-7)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_one_float_key_optimize(self):
+        """Test (Log)NormalMover JAX implementation MC optimize"""
+        import IMP.jax
+        m, mv, pa, att = self._make_stuff()
+        mc = IMP.core.MonteCarlo(m)
+        mc.add_mover(mv)
+        # Don't restrain particle moves
+        r = IMP._ConstRestraint(m, [], 1.0)
+        mc.set_scoring_function(r)
+        mc.set_kt(1e9)
+        mc.set_return_best(False)
+        before = m.get_attribute(att, pa)
+        mc._optimize_jax(10)
+        after = m.get_attribute(att, pa)
+        # Original IMP attribute should have moved (at least a little) too
+        self.assertGreater(abs(before - after), 0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_xyz_keys(self):
         """Test (Log)NormalMover JAX implementation with XYZ keys"""
         import IMP.jax
