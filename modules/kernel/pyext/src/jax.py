@@ -155,3 +155,6 @@ class _AtIdxCompactArray:
 
     def set(self, v):
         return self._new(self.arr.data.at[self.rows].set(v))
+
+    def add(self, v):
+        return self._new(self.arr.data.at[self.rows].add(v))

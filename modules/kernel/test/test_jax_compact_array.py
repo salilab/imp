@@ -57,6 +57,13 @@ class Tests(IMP.test.TestCase):
         ca = f(ca)
         self.assertAlmostEqual(ca[10], 42.0, delta=1e-4)
 
+        def add_to_a(a):
+            return a.at[10].add(20.0)
+
+        f = jax.jit(add_to_a)
+        ca = f(ca)
+        self.assertAlmostEqual(ca[10], 62.0, delta=1e-4)
+
         # Only JAX arrays should be changed, not the original IMP data
         self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()), 2.0,
                                delta=1e-4)
@@ -65,7 +72,7 @@ class Tests(IMP.test.TestCase):
 
         # We should be able to sync back to the IMP original array
         ca.sync()
-        self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()), 42.0,
+        self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()), 62.0,
                                delta=1e-4)
         self.assertAlmostEqual(m.get_attribute(fk, p2.get_index()), 9.0,
                                delta=1e-4)
