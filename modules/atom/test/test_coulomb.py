@@ -95,7 +95,6 @@ class Tests(IMP.test.TestCase):
             c.set_relative_dielectric(eps)
             ji = sf._get_jax()
             j = jax.jit(ji.score_func)
-            X = ji.get_jax_model()
             for q0 in (2.0, -1.0, 0.0):
                 d0.set_charge(q0)
                 for q1 in (2.0, -1.0, 0.0):
@@ -103,6 +102,7 @@ class Tests(IMP.test.TestCase):
                     for dist in (0.5, 1.0, 2.0, 3.0):
                         place_xyzs(d0, d1, box, dist)
                         score = sf.evaluate(False)
+                        X = ji.get_jax_model()
                         self.assertAlmostEqual(score, j(X), delta=1e-2)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
