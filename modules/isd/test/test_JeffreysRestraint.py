@@ -135,7 +135,7 @@ class Tests(IMP.test.TestCase):
             imp_deriv = self.sigma.get_scale_derivative()
             jax_deriv = deriv_f(jm)['nuisance']
             self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
-            self.assertAlmostEqual(imp_deriv, jax_deriv, delta=1e-3)
+            self.assertAlmostEqual(imp_deriv, jax_deriv.data[0], delta=1e-3)
 
 
 if __name__ == '__main__':
