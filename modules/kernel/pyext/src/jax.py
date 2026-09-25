@@ -104,11 +104,12 @@ class _CompactArray:
         full_view = m.get_numpy(fk)
         # IMP uses infinity to represent particles without the attribute
         indexes = np.nonzero(full_view != np.inf)[0]
-        # Any particle not in `indexes` is mapped to outside the range
-        # of the data array
+        # Any particle not in `indexes` is mapped to the last element,
+        # which is inf (just as in the original full view)
         remap = np.full(len(full_view), len(full_view) + 1, dtype=np.int32)
         remap[indexes] = np.arange(len(indexes), dtype=np.int32)
-        return cls(full_view[indexes], full_view, indexes, remap)
+        return cls(np.concatenate((full_view[indexes], np.array([np.inf]))),
+                   full_view, indexes, remap)
 
     def tree_flatten(self):
         # Convert to JAX. Only `data` is sent to the device; everything
@@ -131,7 +132,7 @@ class _CompactArray:
 
     def sync(self):
         """Copy the JAX data back to the IMP Model"""
-        self.full_view[self.indexes] = self.data
+        self.full_view[self.indexes] = self.data[:-1]
 
 
 class _AtCompactArray:
