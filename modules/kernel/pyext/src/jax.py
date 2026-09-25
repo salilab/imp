@@ -76,6 +76,22 @@ def get_random_key():
     return jax.random.key(IMP.random_number_generator())
 
 
+class _Remap:
+    """A mapping from full particle indexes to and from the compact array.
+       This is used in _CompactArray, below. It is hashed by identity so
+       that it (unlike the arrays it contains) can be used as pytree aux data.
+
+       @param full_view A NumPy view of the entire IMP Model.
+       @param indexes A NumPy array of indexes of the particles that
+              have the attribute.
+       @param mapping A NumPy array that maps original Particle indexes
+              to indexes into the `data` array.
+       """
+    def __init__(self, full_view, indexes, mapping):
+        self.full_view, self.indexes = full_view, indexes
+        self.mapping = mapping
+
+
 @jax.tree_util.register_pytree_node_class
 class _CompactArray:
     """Access an IMP Model Float attribute as a compacted or sparse array.
@@ -87,14 +103,11 @@ class _CompactArray:
        to and from the GPU.
 
        @param data Compact array of only the used particles.
-       @param full_view A NumPy view of the entire IMP Model.
-       @param indexes A NumPy array of indexes of the particles that
-              have the attribute.
-       @param remap A NumPy array that maps original Particle indexes
-              to indexes into the `data` array.
+       @param remap A _Remap object that maps full particle indexes to and
+              from the compact array.
        """
-    def __init__(self, data, full_view, indexes, remap):
-        self.full_view, self.indexes = full_view, indexes
+
+    def __init__(self, data, remap):
         self.data, self.remap = data, remap
 
     @classmethod
@@ -106,24 +119,27 @@ class _CompactArray:
         indexes = np.nonzero(full_view != np.inf)[0]
         # Any particle not in `indexes` is mapped to the last element,
         # which is inf (just as in the original full view)
-        remap = np.full(len(full_view), len(full_view) + 1, dtype=np.int32)
-        remap[indexes] = np.arange(len(indexes), dtype=np.int32)
+        mapping = np.full(len(full_view), len(full_view) + 1, dtype=np.int32)
+        mapping[indexes] = np.arange(len(indexes), dtype=np.int32)
+        remap = _Remap(full_view, indexes, mapping)
         return cls(np.concatenate((full_view[indexes], np.array([np.inf]))),
-                   full_view, indexes, remap)
+                   remap)
 
     def tree_flatten(self):
         # Convert to JAX. Only `data` is sent to the device; everything
-        # else is static
-        return (self.data,), (self.full_view, self.indexes, self.remap)
+        # else is static (aux data)
+        return (self.data,), self.remap
 
     @classmethod
     def tree_unflatten(cls, aux_data, children):
-        full_view, indexes, remap = aux_data
-        return cls(children[0], full_view, indexes, remap)
+        return cls(data=children[0], remap=aux_data)
+
+    def _map(self, idx):
+        return self.remap.mapping[idx]
 
     def __getitem__(self, idx):
         """Lookup by particle index"""
-        return self.data[self.remap[idx]]
+        return self.data[self._map(idx)]
 
     @property
     def at(self):
@@ -132,7 +148,7 @@ class _CompactArray:
 
     def sync(self):
         """Copy the JAX data back to the IMP Model"""
-        self.full_view[self.indexes] = self.data[:-1]
+        self.remap.full_view[self.remap.indexes] = self.data[:-1]
 
 
 class _AtCompactArray:
@@ -141,7 +157,7 @@ class _AtCompactArray:
         self.arr = arr
 
     def __getitem__(self, idx):
-        return _AtIdxCompactArray(self.arr, self.arr.remap[idx])
+        return _AtIdxCompactArray(self.arr, self.arr._map(idx))
 
 
 class _AtIdxCompactArray:
@@ -150,8 +166,7 @@ class _AtIdxCompactArray:
         self.arr, self.rows = arr, rows
 
     def _new(self, data):
-        return _CompactArray(data, self.arr.full_view, self.arr.indexes,
-                             self.arr.remap)
+        return _CompactArray(data, self.arr.remap)
 
     def set(self, v):
         return self._new(self.arr.data.at[self.rows].set(v))
