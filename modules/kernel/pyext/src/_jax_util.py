@@ -1,12 +1,4 @@
-import jax.random
-import jax.tree_util
-import IMP
 import IMP.jax
-
-
-def get_random_key():
-    """Get a new JAX random key seeded from IMP's RNG"""
-    return jax.random.key(IMP.random_number_generator())
 
 
 def _get_jax_model(m, keys):

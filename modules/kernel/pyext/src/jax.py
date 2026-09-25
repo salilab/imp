@@ -8,6 +8,8 @@
 """
 
 import jax.numpy as jnp
+import jax.random
+import IMP
 
 
 class Space:
@@ -65,3 +67,8 @@ class PeriodicSpace(Space):
     def shift_indexes(self, r, indexes, dr):
         newr = jnp.mod(r[indexes] + dr, self.side)
         return r.at[indexes].set(newr)
+
+
+def get_random_key():
+    """Get a new JAX random key seeded from IMP's random number generator"""
+    return jax.random.key(IMP.random_number_generator())

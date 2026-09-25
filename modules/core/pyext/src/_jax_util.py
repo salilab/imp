@@ -210,7 +210,7 @@ class _JAXOptimizer:
     def get_initial_state(self):
         """Get the JAX optimizer object for the current IMP Model"""
         jm = self._jax_info.get_jax_model()
-        return self.init_func(jm, key=IMP._jax_util.get_random_key())
+        return self.init_func(jm, key=IMP.jax.get_random_key())
 
     def _loop(self):
         """Run the outer loop (in Python) of the Optimizer. On each yield,
