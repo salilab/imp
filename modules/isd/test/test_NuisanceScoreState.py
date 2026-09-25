@@ -229,7 +229,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
 
         jm = IMP._jax_util._get_jax_model(self.m, keys)
         # Compare JAX starting nuisance values with IMP
-        self.assertTrue(np.allclose(jm['nuisance'], imp_nuisances))
+        self.assertTrue(np.allclose(jm['nuisance'].data[:-1], imp_nuisances))
 
         # Apply constraints with JAX
         def apply_all_constraints(jm):

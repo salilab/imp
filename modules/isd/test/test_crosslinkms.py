@@ -7,6 +7,7 @@ from random import sample
 from math import pi, log, exp
 try:
     import jax
+    import jax.numpy as jnp
     import IMP.jax
 except ImportError:
     jax = None
@@ -198,6 +199,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         self.assertAlmostEqual(score,scoretest,places=4)
                         self.assertAlmostEqual(score_lp,scoretest,places=4)
                         if jax:
+                            # Update JAX nuisance values to match
+                            X['nuisance'].data = jnp.array([s1, s2, p1, 0.0])
                             score_jax = jax_score_func(X)
                             self.assertAlmostEqual(score_lp,
                                                    score_jax, delta=1e-3)
@@ -380,6 +383,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                     self.assertAlmostEqual(score,scoretest,places=4)
                     self.assertAlmostEqual(score_lp,scoretest,places=4)
                     if jax:
+                        # Update JAX nuisance values to match
+                        X['nuisance'].data = jnp.array([s1, p1, 0.0])
                         score_jax = jax_score_func(X)
                         self.assertAlmostEqual(score_lp, score_jax, delta=1e-3)
 
