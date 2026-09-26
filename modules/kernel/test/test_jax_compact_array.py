@@ -29,10 +29,10 @@ class Tests(IMP.test.TestCase):
         # data should include the two particles with the attribute plus
         # an 'inf' row for out of range indexes
         self.assertEqual(ca.data.shape, (3,))
-        self.assertEqual(ca.indexes.shape, (2,))
-        self.assertEqual(ca.remap.shape, (17,))
-        self.assertEqual(ca.full_view.shape, (17,))
-        self.assertFalse(ca.full_view.flags.owndata)
+        self.assertEqual(ca.remap.indexes.shape, (2,))
+        self.assertEqual(ca.remap.mapping.shape, (17,))
+        self.assertEqual(ca.remap.full_view.shape, (17,))
+        self.assertFalse(ca.remap.full_view.flags.owndata)
 
         # We should be able to read CompactArray like any other JAX PyTree
         # using original indexes
