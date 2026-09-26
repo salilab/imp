@@ -1,6 +1,31 @@
 import IMP.jax
 
 
+class _DenseKey:
+    """Wrapper class to force FloatKeys to be treated as dense arrays.
+
+       By default FloatKeys are wrapped with CompactArray, which includes
+       only particles that have the attribute, and particle indexes are
+       statically mapped to the compact storage. This doesn't work though
+       for cases where particle indexes aren't known until runtime (e.g. when
+       ParticleKeys are employed). In this case the FloatKey can be wrapped
+       with this class, which will force the entire attribute array to be
+       passed to and from JAX."""
+    def __init__(self, key):
+        if not isinstance(key, IMP.FloatKey):
+            raise TypeError("DenseKey only implemented for FloatKeys")
+        self.key = key
+
+    def __repr__(self):
+        return "DenseKey(%s)" % str(self.key)
+
+    def __hash__(self):
+        return hash((self.__class__, self.key))
+
+    def __eq__(self, other):
+        return type(other) is type(self) and other.key == self.key
+
+
 def _get_jax_model(m, keys):
     """Convert an IMP Model object into a corresponding JAX model object
        suitable for use in JAX code. This is a simple dict. The dict keys are
@@ -15,10 +40,17 @@ def _get_jax_model(m, keys):
        rigid bodies is also included."""
     xyz, r = m.get_spheres_numpy()
     jm = {"xyz": xyz, "r": r}
+    # If a given key is given both as default (sparse) and DenseKey,
+    # DenseKey should take precedence
+    keys = frozenset(keys) - frozenset(k.key for k in keys
+                                       if isinstance(k, _DenseKey))
+
     for k in keys:
         if k == 'rigid_bodies':
             from IMP.core._jax_rigid import _get_rigid_bodies
             jm['rigid_bodies'] = _get_rigid_bodies(m)
+        elif isinstance(k, _DenseKey):
+            jm[k.key.get_string()] = m.get_numpy(k.key)
         elif isinstance(k, IMP.FloatKey):
             jm[k.get_string()] = IMP.jax._CompactArray.from_model(m, k)
         else:

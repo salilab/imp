@@ -46,6 +46,7 @@
         import jax.lax
         import math
         import jax.numpy as jnp
+        import IMP._jax_util
         def apply_func(jm, index, upper_f, upper_p, lower_f, lower_p):
             nuisances = jm['nuisance']
             up = jm['upper'][index] if upper_f else math.inf
@@ -60,9 +61,15 @@
         p = self.get_index()
         m = self.get_model()
         n = Nuisance(m, p)
-        keys = [n.get_nuisance_key()]
         upper_f, upper_p = n.get_has_upper_float(), n.get_has_upper_particle()
         lower_f, lower_p = n.get_has_lower_float(), n.get_has_lower_particle()
+        if upper_p or lower_p:
+            # These particle indexes can change during a simulation, so
+            # we can't use the default CompactArray for nuisances (which
+            # statically maps indexes beforehand)
+            keys = [IMP._jax_util._DenseKey(n.get_nuisance_key())]
+        else:
+            keys = [n.get_nuisance_key()]
         if upper_f:
             keys.append(n.get_upper_key())
         if upper_p:

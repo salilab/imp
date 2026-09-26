@@ -198,27 +198,16 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         newm.update()
         self.assertAlmostEqual(newnuis.get_nuisance(), 1., delta=1e-5)
 
-    @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_jax_score_state(self):
-        """Test JAX implementation of NuisanceScoreState"""
-        import numpy as np
-        # Nuisance particles used as bounds for other particles
-        lbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 4.0)
-        hbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 11.0)
-        all_n = [lbound_p, hbound_p]
-
-        for lows in ([], [3.0], [lbound_p], [3.0, lbound_p], [lbound_p, 3.0]):
-            for highs in ([], [10.0], [hbound_p], [10.0, hbound_p],
-                          [hbound_p, 10.0]):
-                for val in (1.0, 5.0, 20.0):
+    def setup_jax_score_states(self, all_lows, all_highs, vals, all_n):
+        for lows in all_lows:
+            for highs in all_highs:
+                for val in vals:
                     n = Nuisance.setup_particle(IMP.Particle(self.m), val)
                     for low in lows:
                         n.set_lower(low)
                     for high in highs:
                         n.set_upper(high)
                     all_n.append(n)
-        # All starting nuisance values
-        imp_nuisances = [n.get_nuisance() for n in all_n]
 
         keys = set()
         apply_funcs = []
@@ -228,8 +217,6 @@ class TestNuisanceScoreState(IMP.test.TestCase):
             apply_funcs.append(ji.apply_func)
 
         jm = IMP._jax_util._get_jax_model(self.m, keys)
-        # Compare JAX starting nuisance values with IMP
-        self.assertTrue(np.allclose(jm['nuisance'].data[:-1], imp_nuisances))
 
         # Apply constraints with JAX
         def apply_all_constraints(jm):
@@ -238,14 +225,59 @@ class TestNuisanceScoreState(IMP.test.TestCase):
             return jm
 
         apply_func = jax.jit(apply_all_constraints)
-        jm = apply_func(jm)
+        return jm, apply_func
 
-        # Apply constraints with IMP
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score_state_dense(self):
+        """Test JAX implementation of NuisanceScoreState (dense)"""
+        import numpy as np
+        # Nuisance particles used as bounds for other particles.
+        # Since the ScoreState relies on particle indexes which are not known
+        # until run time, it forces use of the entire (dense) nuisance array
+        lbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 4.0)
+        hbound_p = Nuisance.setup_particle(IMP.Particle(self.m), 11.0)
+        all_n = [lbound_p, hbound_p]
+
+        jm, apply_func = self.setup_jax_score_states(
+            all_lows=([], [3.0], [lbound_p], [3.0, lbound_p], [lbound_p, 3.0]),
+            all_highs=([], [10.0], [hbound_p], [10.0, hbound_p],
+                       [hbound_p, 10.0]),
+            vals=(1.0, 5.0, 20.0),
+            all_n=all_n)
+
+        # Compare JAX starting nuisance values with IMP
+        imp_nuisances = [n.get_nuisance() for n in all_n]
+        self.assertTrue(np.allclose(jm['nuisance'], imp_nuisances))
+
+        # Apply constraints both with JAX and IMP
+        jm = apply_func(jm)
         self.rs.evaluate(False)
 
         # Compare JAX final nuisance values with IMP
         imp_nuisances = [n.get_nuisance() for n in all_n]
         self.assertTrue(np.allclose(jm['nuisance'], imp_nuisances))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score_state_sparse(self):
+        """Test JAX implementation of NuisanceScoreState (sparse)"""
+        import numpy as np
+        all_n = []
+
+        jm, apply_func = self.setup_jax_score_states(
+            all_lows=([], [3.0]), all_highs=([], [10.0]),
+            vals=(1.0, 5.0, 20.0), all_n=all_n)
+
+        # Compare JAX starting nuisance values with IMP
+        imp_nuisances = [n.get_nuisance() for n in all_n]
+        self.assertTrue(np.allclose(jm['nuisance'].data[:-1], imp_nuisances))
+
+        # Apply constraints both with JAX and IMP
+        jm = apply_func(jm)
+        self.rs.evaluate(False)
+
+        # Compare JAX final nuisance values with IMP
+        imp_nuisances = [n.get_nuisance() for n in all_n]
+        self.assertTrue(np.allclose(jm['nuisance'].data[:-1], imp_nuisances))
 
 
 if __name__ == '__main__':
