@@ -339,18 +339,23 @@ class Tests(IMP.test.TestCase):
         h = IMP.core.Hierarchy(p)
         children = h.get_children()
         cs0_index = int(children[0].get_particle_index())
-        cs = IMP.core.XYZs(children[:5])
+        cs = IMP.core.XYZs(children[:4])
         rbd = IMP.core.RigidBody.setup_particle(p, cs)
 
-        cs = IMP.core.XYZs(children[5:])
+        cs = IMP.core.XYZs(children[4:7])
         p = IMP.Particle(m)
         rbd = IMP.core.RigidBody.setup_particle(p, cs)
+
+        cs = IMP.core.XYZs(children[7:])
+        p = IMP.Particle(m)
+        nested_rbd = IMP.core.RigidBody.setup_particle(p, cs)
+        rbd.add_member(nested_rbd)
 
         # _RigidBodyPositionConstraint should have been created automatically
         # (one per rigid body); find them by name and particle index
         ss = [s.get_derived_object() for s in m.get_ordered_score_states()
               if s.get_name().endswith('rigid body positions')]
-        self.assertEqual(len(ss), 2)
+        self.assertEqual(len(ss), 3)
         ss = sorted(ss, key=lambda s: s.get_index())
         ji = ss[0]._get_jax()
         jm = ji.get_jax_model()
@@ -364,6 +369,12 @@ class Tests(IMP.test.TestCase):
         newxyz = jm['xyz'][cs0_index]
 
         np.testing.assert_allclose(oldxyz, newxyz, rtol=1e-5)
+
+        # Test update of body that contains a nested rigid body
+        ji = ss[1]._get_jax()
+        jm = ji.get_jax_model()
+        apply_func = jax.jit(ji.apply_func)
+        jm = apply_func(jm)
 
 
 if __name__ == '__main__':
