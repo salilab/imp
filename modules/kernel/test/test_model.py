@@ -686,11 +686,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(rbs.bodies), 3)
         body2 = rbs.bodies[2]
         # rb3 should contain rb2
-        self.assertEqual(body2.body_member_rb_indexes, [1])
-        self.assertEqual(body2.body_member_nrb_indexes, [0])
+        self.assertEqual(body2.nested_bodies.rb_indexes, [1])
+        self.assertEqual(body2.nested_bodies.nrb_indexes, [0])
         self.assertEqual(rbs.lquaternion.shape, (1, 4))
         self.assertEqual(rbs.particle_from_nrb_index, [9])
-        self.assertEqual(rbs.nrb_index_from_particle, {9: 0})
 
         # Test that applying rigid body transformation to all members
         # (including rigid bodies) yields the correct global coordinates
