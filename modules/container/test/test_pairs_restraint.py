@@ -39,10 +39,15 @@ class Tests(IMP.test.TestCase):
 
         # If we move a particle but don't report it (e.g. start of
         # MC optimize() with reset_pis from the end of a previous optimize(),
-        # that will be lost) we should get the old (wrong) score:
+        # that will be lost) we should get the old (wrong) score; this will
+        # be caught by an internal check in debug mode
         d2.set_coordinates(IMP.algebra.Vector3D(7,0,0))
-        self.assertAlmostEqual(sf.evaluate_moved(False, [], []), 5.0,
-                               delta=1e-6)
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.assertRaises(IMP.InternalException, sf.evaluate_moved,
+                              False, [], [])
+        else:
+            self.assertAlmostEqual(sf.evaluate_moved(False, [], []), 5.0,
+                                   delta=1e-6)
 
         # Reset of caches should force a full evaluation
         sf.clear_moved_cache()
