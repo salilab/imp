@@ -1,9 +1,20 @@
 import numpy as np
 import jax.numpy as jnp
 import jax.tree_util
+import jax.tree
+import dataclasses
 from dataclasses import dataclass
 from IMP.algebra._jax_util import Transformation3D
 import IMP
+
+
+# jax.tree.static requires jax 0.9 or later; add it to older versions
+if not hasattr(jax.tree, 'static'):
+    def _jax_tree_static(**kwargs):
+        metadata = {"static": True, **(kwargs.pop('metadata', {}) or {})}
+        return dataclasses.field(metadata=metadata, **kwargs)
+
+    jax.tree.static = _jax_tree_static
 
 
 @dataclass
