@@ -2,7 +2,7 @@
  *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -117,6 +117,12 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       may be overridden by restraints to be more efficient, e.g. by
       skipping terms that involve unchanged particles.
 
+      This function is intended to be called in a loop within an
+      optimizer that moves only a subset of particles each time,
+      e.g. Monte Carlo. Before the first call (where the state of the model
+      is unknown) you should call clear_moved_cache() otherwise out of date
+      information may be used.
+
       \param da Object to accumulate derivatives, or nullptr.
       \param moved_pis Particles that have moved since the last
              scoring function evaluation.
@@ -132,6 +138,11 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     IMP_UNUSED(moved_pis);
     IMP_UNUSED(reset_pis);
     return unprotected_evaluate(da);
+  }
+
+  //! Clear any caches used by unprotected_evaluate_moved().
+  virtual void clear_moved_cache() {
+    last_score_ = last_last_score_ = BAD_SCORE;
   }
 
   /** The function calling this will treat any score >= get_maximum_score

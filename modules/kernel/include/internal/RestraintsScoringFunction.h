@@ -70,6 +70,12 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
                              ss, get_model());
   }
 
+  void clear_moved_cache() override {
+    for (auto it = restraints_.begin(); it != restraints_.end(); ++it) {
+      (*it)->clear_moved_cache();
+    }
+  }
+
   Restraints create_restraints() const override {
     IMP_OBJECT_LOG;
     IMP_NEW(RestraintSet, rs, (get_model(), weight_, get_name() + " wrapper"));

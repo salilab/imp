@@ -30,6 +30,9 @@ class NullScoringFunction : public ScoringFunction {
   virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp();
   }
+
+  void clear_moved_cache() override {}
+
   IMP_OBJECT_METHODS(NullScoringFunction);
 };
 

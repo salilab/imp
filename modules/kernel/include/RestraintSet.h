@@ -100,6 +100,14 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
                   ScoreAccumulator sa,
                   const ParticleIndexes &moved_pis,
                   const ParticleIndexes &reset_pis) const override;
+
+ public:
+  void clear_moved_cache() override {
+    Restraint::clear_moved_cache();
+    for (auto it = restraints_begin(); it != restraints_end(); ++it) {
+      (*it)->clear_moved_cache();
+    }
+  }
 #endif
 };
 

@@ -61,6 +61,8 @@ class RestraintScoringFunction : public ScoringFunction {
 
   RestraintScoringFunction() {}
 
+  void clear_moved_cache() override { r_->clear_moved_cache(); }
+
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) override;
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
@@ -124,6 +126,9 @@ class WrappedRestraintScoringFunction : public ScoringFunction {
                                     const ScoreStatesTemp &ss) override;
   Restraints create_restraints() const override;
   virtual ModelObjectsTemp do_get_inputs() const override;
+
+  void clear_moved_cache() override { r_->clear_moved_cache(); }
+
   IMP_OBJECT_METHODS(WrappedRestraintScoringFunction);
 };
 

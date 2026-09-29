@@ -228,6 +228,10 @@ class AccumulatorScoreModifier : public Score::Modifier {
     sa_.add_score(score);
   }
 
+  virtual void clear_moved_cache() {
+    total_last_score_ = BAD_SCORE;
+  }
+
   virtual void apply_indexes_moved(
       Model *m, const Vector<typename Score::IndexArgument,
                    IMP_VECTOR_ALLOCATOR<typename Score::IndexArgument>> &a,

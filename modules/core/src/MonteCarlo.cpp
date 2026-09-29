@@ -158,8 +158,16 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   reset_pis_.clear();
   ParticleIndexes movable = get_movable_particles();
 
+  if (score_moved_) {
+    /* We don't know what moved in the model between the last call to
+       move-aware MC and this one (or the last step of the previous MC may
+       have been rejected, and reset_pis was lost), so clear any caches (which
+       will force a full scoring function evaluation on the first step) */
+    get_scoring_function()->clear_moved_cache();
+  }
+
   // provide a way of feeding in this value
-  last_energy_ = do_evaluate(movable, true);
+  last_energy_ = do_evaluate(movable, false);
   if (return_best_) {
     best_ = new Configuration(get_model());
     best_energy_ = last_energy_;

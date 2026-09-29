@@ -145,6 +145,11 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
              bool derivatives, const ParticleIndexes &moved_pis,
              const ParticleIndexes &reset_pis);
 
+  //! Clear any caches used by evaluate_moved.
+  /** Typically this only clears Restraint information, as changes to
+      ScoreStates are handled automatically by the dependencies trigger. */
+  virtual void clear_moved_cache() = 0;
+
   /** Return true if the last evaluate satisfied all the restraint
       thresholds.*/
   bool get_had_good_score() const { return es_.good; }

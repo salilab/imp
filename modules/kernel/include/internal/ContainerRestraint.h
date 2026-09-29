@@ -2,7 +2,7 @@
  *  \file internal/ContainerRestraint.h
  *  \brief Templated alternative to SingletonsRestraint, etc.
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -53,6 +53,11 @@ class ContainerRestraint : public Restraint {
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
                 const ParticleIndexes &moved_pis,
                 const ParticleIndexes &reset_pis) const override;
+
+  void clear_moved_cache() override {
+    Restraint::clear_moved_cache();
+    acc_->clear_moved_cache();
+  }
 
   ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ContainerRestraint);
