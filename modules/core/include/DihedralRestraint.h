@@ -2,7 +2,7 @@
  *  \file IMP/core/DihedralRestraint.h
  *  \brief Dihedral restraint between four particles.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,16 +10,28 @@
 #define IMPCORE_DIHEDRAL_RESTRAINT_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/core/DihedralQuadScore.h>
 
+#include <IMP/core/QuadRestraint.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Restraint.h>
-#include <IMP/Particle.h>
-#include <IMP/generic.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
 //! Dihedral restraint between four particles
-class IMPCOREEXPORT DihedralRestraint : public Restraint {
+/** \see DihedralQuadScore
+ */
+class IMPCOREEXPORT DihedralRestraint : public QuadRestraint {
+  friend class cereal::access;
+
+  template<class Archive> void serialize(Archive &ar) {
+    ar(cereal::base_class<QuadRestraint>(this));
+  }
+
+  IMP_OBJECT_SERIALIZE_DECL(DihedralRestraint);
+
  public:
   //! Create the dihedral restraint.
   /** \param[in] m Model.
@@ -34,15 +46,9 @@ class IMPCOREEXPORT DihedralRestraint : public Restraint {
                     ParticleIndexAdaptor p2,
                     ParticleIndexAdaptor p3,
                     ParticleIndexAdaptor p4);
+  DihedralRestraint() {}
 
-  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
-      const override;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(DihedralRestraint);
-
- private:
-  IMP::PointerMember<UnaryFunction> score_func_;
-  ParticleIndex p_[4];
 };
 
 IMPCORE_END_NAMESPACE

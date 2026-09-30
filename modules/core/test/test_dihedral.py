@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import math
+import pickle
 
 
 class Tests(IMP.test.TestCase):
@@ -33,7 +34,7 @@ class Tests(IMP.test.TestCase):
                                          particles[0], particles[1],
                                          particles[2], particles[3])]
         sf = IMP.core.RestraintsScoringFunction(rs)
-        return model, sf
+        return model, rs[3], sf
 
     def test_score(self):
         """Check score of dihedral restraints"""
@@ -41,10 +42,10 @@ class Tests(IMP.test.TestCase):
         for i in range(len(angles)):
             # Score of model with the same angle as the scoring function's mean
             # should be zero:
-            model, sf = self._setup_particles(angles[i], angles[i])
+            model, rsr, sf = self._setup_particles(angles[i], angles[i])
             self.assertLess(sf.evaluate(False), 1e-6)
             # When the angle is different, score should be far from zero:
-            model, sf = self._setup_particles(angles[i], angles[-i - 1])
+            model, rsr, sf = self._setup_particles(angles[i], angles[-i - 1])
             self.assertGreater(sf.evaluate(False), 10.0)
             # Optimizing should reduce the score to zero:
             opt = IMP.core.ConjugateGradients(model)
@@ -52,6 +53,17 @@ class Tests(IMP.test.TestCase):
             opt.optimize(50)
             self.assertLess(opt.optimize(50), 1e-6)
             self.assertLess(sf.evaluate(False), 1e-6)
+
+    def test_pickle_polymorphic(self):
+        """Test (un-)pickle of DihedralRestraint via polymorphic pointer"""
+        model, rsr, sf = self._setup_particles(0., 0.25 * math.pi)
+        rsr.set_name("foo")
+        self.assertAlmostEqual(rsr.evaluate(False), 18.2001, delta=1e-3)
+        dump = pickle.dumps(sf)
+        newsf = pickle.loads(dump)
+        newrsr = newsf.restraints[-1]
+        self.assertEqual(newrsr.get_name(), "foo")
+        self.assertAlmostEqual(newrsr.evaluate(False), 18.2001, delta=1e-3)
 
 
 if __name__ == '__main__':

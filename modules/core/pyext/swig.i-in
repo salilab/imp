@@ -8,6 +8,7 @@ IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, AngleTripletScore, AngleTripletScores);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DihedralQuadScore, DihedralQuadScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, SerialMover, SerialMovers);
@@ -35,7 +36,7 @@ IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DerivativesToRefined, DerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
-IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
+IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DihedralRestraint, DihedralRestraints);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, DistanceRestraint, DistanceRestraints);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
@@ -222,6 +223,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
+%include "IMP/core/DihedralQuadScore.h"
 %include "IMP/core/GenericAttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
 %include "IMP/core/SerialMover.h"
@@ -244,7 +246,6 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/DiameterRestraint.h"
 %include "IMP/core/Transform.h"
 %include "IMP/core/symmetry.h"
-%include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
@@ -353,6 +354,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/predicates.h"
 
 %include "IMP/core/AngleRestraint.h"
+%include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
 %include "IMP/core/RigidBodyTunneler.h"
 %include "IMP/core/RigidBodyUmbrella.h"
