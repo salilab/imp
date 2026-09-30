@@ -41,17 +41,32 @@ class Tests(IMP.test.TestCase):
         rb = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(
             objects=hier_dict["Rpb3"][29:40])
         rb.add_to_model()
-        print(rb.get_output())
+        out = rb.get_output()(None)
+        self.assertAlmostEqual(float(out['_TotalScore']), 0.016708,
+                               delta=1e-4)
 
         ra = IMP.pmi.restraints.stereochemistry.ResidueAngleRestraint(
             objects=hier_dict["Rpb3"][29:40])
         ra.add_to_model()
-        print(ra.get_output())
+        out = ra.get_output()(None)
+        self.assertAlmostEqual(float(out['_TotalScore']), 1.0178198,
+                               delta=1e-4)
 
+        # Test default (all trans)
         rd = IMP.pmi.restraints.stereochemistry.ResidueDihedralRestraint(
             objects=hier_dict["Rpb3"][29:40])
         rd.add_to_model()
-        print(rd.get_output())
+        out = rd.get_output()(None)
+        self.assertAlmostEqual(float(out['_TotalScore']), 51.451047,
+                               delta=1e-4)
+
+        # Specify cis or trans
+        rd = IMP.pmi.restraints.stereochemistry.ResidueDihedralRestraint(
+            objects=hier_dict["Rpb3"][29:40], stringsequence='TTTTCCTT')
+        rd.add_to_model()
+        out = rd.get_output()(None)
+        self.assertAlmostEqual(float(out['_TotalScore']), 44.721909,
+                               delta=1e-4)
 
 
 if __name__ == '__main__':
