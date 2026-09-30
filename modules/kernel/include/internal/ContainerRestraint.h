@@ -44,7 +44,7 @@ class ContainerRestraint : public Restraint {
   ContainerRestraint(Score *ss, Container *pc,
                      std::string name = "GroupnamesRestraint %1%");
 
-  ContainerRestraint() {}
+  ContainerRestraint() { is_custom_reset_ = true; }
 
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
@@ -100,7 +100,11 @@ ContainerRestraint<Score, C>::ContainerRestraint(Score *ss, C *pc,
     : Restraint(pc->get_model(), name),
       pc_(pc),
       ss_(ss),
-      acc_(create_accumulator_score_modifier(ss, pc)) {}
+      acc_(create_accumulator_score_modifier(ss, pc)) {
+  // AccumulatorScoreModifier maintains caches of moved particles that must
+  // be properly updated on a reset move
+  is_custom_reset_ = true;
+}
 
 template <class Score, class C>
 double ContainerRestraint<Score, C>::get_last_score() const {

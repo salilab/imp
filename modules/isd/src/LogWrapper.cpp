@@ -2,7 +2,7 @@
  *  \file isd/LogWrapper.cpp
  *  \brief Calculate the -Log of a list of restraints.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -134,9 +134,10 @@ double LogWrapper::unprotected_evaluate_moved(
         prob *= rsrval;
       } else if (reset_set.find(r) != reset_set.end()) {
         // If reset, we can use the last-but-one score, unless it is an
-        // aggregate restraint (e.g. a RestraintSet), in which case
-        // have the restraint itself figure out what to return
-        if (r->get_is_aggregate()) {
+        // aggregate restraint (e.g. a RestraintSet) or it does its own reset
+	// logic (e.g. ContainerRestraint), in which case have the restraint
+	// itself figure out what to return
+        if (r->get_is_aggregate() || r->get_is_custom_reset()) {
           double rsrval = r->unprotected_evaluate_moved(
                           accum, moved_pis, reset_pis);
           r->set_last_score(rsrval);

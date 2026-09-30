@@ -301,6 +301,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   //! Return whether this restraint wraps a number of other restraints
   bool get_is_aggregate() const { return is_aggregate_; }
 
+  //! Return whether this restraint provides custom logic for reset moves
+  bool get_is_custom_reset() const { return is_custom_reset_; }
+
   /** Return whether this restraint violated its maximum last time it was
       evaluated.
    */
@@ -339,7 +342,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   }
 
  protected:
-  bool is_aggregate_;
+  bool is_aggregate_, is_custom_reset_;
 
  private:
   ScoringFunction *create_internal_scoring_function() const;
@@ -361,8 +364,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
      last_score_ = last_last_score_ = BAD_SCORE;
      cached_internal_scoring_function_ = nullptr;
    }
-   // Note that is_aggregate_ is not read or written here, as it is only
-   // ever set in the constructor
+   // Note that flags (is_aggregate_, is_custom_reset_) are not read or
+   // written here, as they are only ever set in the constructor
  }
 
 };

@@ -1,7 +1,7 @@
 /**
  *  \file RestraintSet.cpp   \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,12 +24,14 @@ RestraintSet::RestraintSet(Model *m, double weight,
     : Restraint(m, name) {
   set_weight(weight);
   is_aggregate_ = true;
+  is_custom_reset_ = true;
 }
 
 RestraintSet::RestraintSet(Model *m, const std::string &name)
     : Restraint(m, name) {
   set_weight(1.0);
   is_aggregate_ = true;
+  is_custom_reset_ = true;
 }
 
 RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
@@ -38,6 +40,7 @@ RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
   set_weight(weight);
   set_restraints(rs);
   is_aggregate_ = true;
+  is_custom_reset_ = true;
 }
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint *, Restraints);
@@ -133,14 +136,19 @@ void RestraintSet::do_add_score_and_derivatives_moved(
           r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
         }
       } else if (reset_set.find(r) != reset_set.end()) {
-        // If reset, we can use the last-but-one score
-        double score = r->get_last_last_score();
-        add_last_score_restraint(r, sa,
+        // If reset, we can use the last-but-one score, unless the restraint
+        // does its own reset logic
+        if (r->get_is_custom_reset()) {
+          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+        } else {
+          double score = r->get_last_last_score();
+          add_last_score_restraint(r, sa,
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-                                 moved_pis, reset_pis,
+                                   moved_pis, reset_pis,
 #endif
-                                 score);
-        r->set_last_score(score);
+                                   score);
+          r->set_last_score(score);
+        }
       } else {
         // If not moved, we can use the last score
         add_last_score_restraint(r, sa,

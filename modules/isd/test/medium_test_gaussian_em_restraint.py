@@ -173,10 +173,12 @@ class Tests(IMP.test.TestCase):
     def test_serialize(self):
         """Test (un-)serialize of GaussianEMRestraint"""
         origscore = self.gem.evaluate(False)
+        self.assertTrue(self.gem.get_is_custom_reset())
         dump = pickle.dumps(self.gem)
         newgem = pickle.loads(dump)
         newscore = newgem.evaluate(False)
         self.assertAlmostEqual(newscore, origscore, delta=1e-3)
+        self.assertTrue(newgem.get_is_custom_reset())
 
     def test_serialize_polymorphic(self):
         """Test (un-)serialize of GaussianEMRestraint via polymorphic ptr"""

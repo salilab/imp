@@ -69,7 +69,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
                       bool update_model=true, bool backbone_slope=false,
                       bool local=false,
                       std::string name="GaussianEMRestraint%1%");
-  GaussianEMRestraint() {}
+  GaussianEMRestraint() { is_custom_reset_ = true; }
 
   //! Returns exp(score)
   double get_probability() const {

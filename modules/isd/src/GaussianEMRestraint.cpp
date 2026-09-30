@@ -68,6 +68,12 @@ GaussianEMRestraint::GaussianEMRestraint(
   slope_(slope),
   update_model_(update_model),
   local_(local){
+    // We maintain our own close pairs containers, which might get updated
+    // during a Monte Carlo move. To keep the same scores between full scoring
+    // and move-aware scoring, force a rescore (rather than using old cached
+    // values) when an MC move is rejected:
+    is_custom_reset_ = true;
+
     msize_=model_ps.size();
     dsize_=density_ps.size();
 
