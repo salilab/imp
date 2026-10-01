@@ -8,6 +8,8 @@ import IMP.pmi.io
 import IMP.pmi.restraints
 import IMP.pmi.restraints.basic
 import IMP.rmf
+import IMP.pmi.dof
+import IMP.pmi.tools
 import math
 import sys
 
@@ -21,10 +23,9 @@ class MembraneRestraintPrototype(IMP.Restraint):
                  softness=3.0,
                  plateau=0.0000000001,
                  linear=0.02):
-        '''
+        """
         input a list of particles, the slope and theta of the sigmoid potential
-        theta is the cutoff distance for a protein-protein contact
-        '''
+        """
         super().__init__(m, "MembraneRestraintPrototype_ %1%")
         self.set_was_used(True)
         self.thickness = thickness
@@ -121,11 +122,8 @@ class MembraneRestraint(IMP.test.TestCase):
 
     def test_above(self):
         m = IMP.Model()
-
         atom = IMP.Particle(m)
-
         d = IMP.core.XYZ.setup_particle(atom)
-
         p = IMP.Particle(m)
 
         z_center = IMP.isd.Nuisance.setup_particle(p)
@@ -148,11 +146,8 @@ class MembraneRestraint(IMP.test.TestCase):
 
     def test_below(self):
         m = IMP.Model()
-
         atom = IMP.Particle(m)
-
         d = IMP.core.XYZ.setup_particle(atom)
-
         p = IMP.Particle(m)
 
         z_center = IMP.isd.Nuisance.setup_particle(p)
@@ -174,30 +169,182 @@ class MembraneRestraint(IMP.test.TestCase):
                     r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
                     delta=1e-4)
 
-    def test_pmi_selection(self):
+    def test_membrane_side_info(self):
+        """Restrained particles record their side and the membrane center"""
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
         st = s.create_state()
-        len_helix = 40
-        mol = st.create_molecule("helix",sequence='A'*len_helix, chain_id='A')
-        mol.add_representation(mol,
-                           resolutions=[1],
-                           ideal_helix=True)
+        mol = st.create_molecule("helix", sequence='A' * 40, chain_id='A')
+        mol.add_representation(mol, resolutions=[1], ideal_helix=True)
+        hier = s.build()
+        # residue 10 is both above and inside.
+        # Inside overwrites
+        mr = IMP.pmi.restraints.basic.MembraneRestraint(
+            hier, objects_above=[(1, 10, 'helix')],
+            objects_inside=[(10, 30, 'helix')],
+            objects_below=[(31, 40, 'helix')], center=5.0)
+        side_key = IMP.pmi.tools._membrane_side_key
+        center_key = IMP.pmi.tools._membrane_center_key
+        self.assertIsInstance(side_key, IMP.SparseIntKey)
+        self.assertIsInstance(center_key, IMP.SparseFloatKey)
+
+        def sides(first, last):
+            sel = IMP.atom.Selection(hier, molecule='helix',
+                                     residue_indexes=range(first, last + 1))
+            return set(p.get_value(side_key)
+                       for p in sel.get_selected_particles())
+        self.assertEqual(sides(1, 9), {1})
+        self.assertEqual(sides(10, 30), {0})
+        self.assertEqual(sides(31, 40), {-1})
+        for p in mr.get_particles_inside():
+            self.assertAlmostEqual(p.get_value(center_key), 5.0, delta=1e-6)
+
+    def _make_membrane_helix(self, center=0.0):
+        """Helix 1-30 in one rigid body (1-10 above, 11-20 inside, 21-30
+        below), 31-40 flexible beads"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
+        mol = st.create_molecule("helix", sequence='A' * 40, chain_id='A')
+        mol.add_representation(mol[0:30], resolutions=[1], ideal_helix=True)
+        mol.add_representation(mol[30:40], resolutions=[1])
         hier = s.build()
 
-        mr = IMP.pmi.restraints.basic.MembraneRestraint(hier,
-                                                     objects_inside=[(11,30,'helix')],
-                                                     objects_above=[(1,10,'helix')],
-                                                     objects_below=[(31,40,'helix')])
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        rb = dof.create_rigid_body(mol[0:30])[1]
+        dof.create_flexible_beads(mol[30:40])
+        IMP.pmi.restraints.basic.MembraneRestraint(
+            hier, objects_above=[(1, 10, 'helix')],
+            objects_inside=[(11, 20, 'helix')],
+            objects_below=[(21, 30, 'helix')], center=center)
+        beads = [IMP.core.XYZ(p) for p in IMP.atom.Selection(
+            hier, molecule='helix',
+            residue_indexes=range(31, 41)).get_selected_particles()]
+        IMP.random_number_generator.seed(7)
+        t = IMP.algebra.Transformation3D(
+            IMP.algebra.get_random_rotation_3d(),
+            IMP.algebra.Vector3D(40, -70, 120))
+        IMP.core.transform(rb, t)
+        for b in beads:
+            IMP.core.transform(b, t)
+        return m, hier, rb, beads
 
-        p_inside = mr.get_particles_inside()
-        self.assertEqual(len(p_inside), 20)
+    def _get_centroid(self, hier, first, last):
+        sel = IMP.atom.Selection(hier, molecule='helix',
+                                 residue_indexes=range(first, last + 1))
+        return IMP.algebra.get_centroid(
+            [IMP.core.XYZ(p).get_coordinates()
+             for p in sel.get_selected_particles()])
 
-        p_above = mr.get_particles_above()
-        self.assertEqual(len(p_above), 10)
+    def test_place_in_membrane(self):
+        """Rigid body is turned right way up and centered in the membrane"""
+        for center in (0.0, 12.0):
+            m, hier, rb, beads = self._make_membrane_helix(center)
+            member = IMP.core.XYZ(rb.get_rigid_members()[0])
+            bead_distances = [IMP.core.get_distance(member, b) for b in beads]
+            IMP.pmi.tools.place_in_membrane(hier)
+            inside = self._get_centroid(hier, 11, 20)
+            normal = (self._get_centroid(hier, 1, 10)
+                      - self._get_centroid(hier, 21, 30)).get_unit_vector()
+            self.assertAlmostEqual(inside[2], center, delta=1e-4)
+            self.assertAlmostEqual(normal[2], 1.0, delta=1e-4)
+            # flexible beads move with the rigid body
+            for b, d in zip(beads, bead_distances):
+                self.assertAlmostEqual(IMP.core.get_distance(member, b), d,
+                                       delta=1e-4)
 
-        p_below = mr.get_particles_below()
-        self.assertEqual(len(p_below), 10)
+    def test_place_in_membrane_several_restraints(self):
+        """A rigid body over two molecules, each with its own restraint
+        """
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
+        for name in ('top', 'bottom'):
+            mol = st.create_molecule(name, sequence='A' * 20)
+            mol.add_representation(mol, resolutions=[1], ideal_helix=True)
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        rb = dof.create_rigid_body(
+            IMP.atom.Selection(hier).get_selected_particles())[1]
+        # 'top' has no particles below, 'bottom' none above
+        IMP.pmi.restraints.basic.MembraneRestraint(
+            hier, objects_above=[(1, 10, 'top')],
+            objects_inside=[(11, 20, 'top')])
+        IMP.pmi.restraints.basic.MembraneRestraint(
+            hier, objects_below=[(11, 20, 'bottom')],
+            objects_inside=[(1, 10, 'bottom')])
+        IMP.random_number_generator.seed(3)
+        IMP.core.transform(rb, IMP.algebra.Transformation3D(
+            IMP.algebra.get_random_rotation_3d(),
+            IMP.algebra.Vector3D(0, 0, 80)))
+        IMP.pmi.tools.place_in_membrane([hier])
+
+        def centroid(name, first, last):
+            sel = IMP.atom.Selection(hier, molecule=name,
+                                     residue_indexes=range(first, last + 1))
+            return IMP.algebra.get_centroid(
+                [IMP.core.XYZ(p).get_coordinates()
+                 for p in sel.get_selected_particles()])
+        normal = (centroid('top', 1, 10)
+                  - centroid('bottom', 11, 20)).get_unit_vector()
+        self.assertAlmostEqual(normal[2], 1.0, delta=1e-4)
+
+    def test_shuffle_in_membrane(self):
+        """Shuffling moves only x, y: z and orientation are kept"""
+        m, hier, rb, beads = self._make_membrane_helix()
+        IMP.pmi.tools.place_in_membrane(hier)
+        coords = [IMP.core.XYZ(p).get_coordinates()
+                  for p in rb.get_rigid_members()]
+        rotation = rb.get_reference_frame().get_transformation_to() \
+            .get_rotation()
+        IMP.pmi.tools.shuffle_in_membrane(
+            hier, bounding_box=((100, 100), (200, 200)))
+        inside = self._get_centroid(hier, 11, 20)
+        self.assertTrue(100 <= inside[0] <= 200 and 100 <= inside[1] <= 200)
+        for p, c in zip(rb.get_rigid_members(), coords):
+            self.assertAlmostEqual(IMP.core.XYZ(p).get_z(), c[2], delta=1e-4)
+        new_rotation = rb.get_reference_frame().get_transformation_to() \
+            .get_rotation()
+        self.assertLess(IMP.algebra.get_distance(rotation, new_rotation), 1e-4)
+
+    def test_shuffle_in_membrane_no_overlap(self):
+        """Bodies shuffled in the membrane do not overlap"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        mols = []
+        for name in ('h1', 'h2', 'h3'):
+            mol = st.create_molecule(name, sequence='A' * 30)
+            mol.add_representation(mol, resolutions=[1], ideal_helix=True)
+            mols.append(mol)
+
+        hier = s.build()
+        rbs = [dof.create_rigid_body(mol)[1] for mol in mols]
+        for name in ('h1', 'h2', 'h3'):
+            IMP.pmi.restraints.basic.MembraneRestraint(
+                hier, objects_above=[(1, 10, name)],
+                objects_inside=[(11, 20, name)],
+                objects_below=[(21, 30, name)])
+        IMP.pmi.tools.place_in_membrane(hier)
+        IMP.random_number_generator.seed(5)
+        IMP.pmi.tools.shuffle_in_membrane(
+            hier, bounding_box=((-300, -300), (300, 300)))
+
+        def disc(rb):
+            xy = [IMP.algebra.Vector2D(IMP.core.XYZ(p).get_x(),
+                                       IMP.core.XYZ(p).get_y())
+                  for p in rb.get_rigid_members()]
+            center = IMP.algebra.get_centroid(
+                [IMP.algebra.Vector3D(v[0], v[1], 0) for v in xy])
+            center = IMP.algebra.Vector2D(center[0], center[1])
+            return center, max(IMP.algebra.get_distance(center, v)
+                               for v in xy)
+        discs = [disc(rb) for rb in rbs]
+        for i in range(len(discs)):
+            for j in range(i + 1, len(discs)):
+                (ci, ri), (cj, rj) = discs[i], discs[j]
+                self.assertGreater(IMP.algebra.get_distance(ci, cj), ri + rj)
 
 if __name__ == '__main__':
     IMP.test.main()

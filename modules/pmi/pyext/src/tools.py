@@ -1461,6 +1461,134 @@ def shuffle_configuration(objects,
         return debug
 
 
+# Sparse keys
+_membrane_side_key = IMP.SparseIntKey("pmi_membrane_side")
+_membrane_center_key = IMP.SparseFloatKey("pmi_membrane_center")
+
+
+def _set_membrane_side(p, side, center):
+    """Get membrane side as MembraneRestraint
+    (1 above, 0 inside, -1 below) and the membrane center, for
+    place_in_membrane()."""
+    for key, value in ((_membrane_side_key, side),
+                       (_membrane_center_key, center)):
+        if p.has_attribute(key):
+            p.set_value(key, value)
+        else:
+            p.add_attribute(key, value)
+
+
+def place_in_membrane(objects):
+    """Place rigid bodies with MembraneRestraints on them in the membrane
+
+    @param objects Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or
+               a list/set of them
+    """
+    z_axis = IMP.algebra.Vector3D(0, 0, 1)
+    for body in _get_membrane_rigid_bodies(objects):
+        inside = _get_centroid(body['inside'])
+        rotation = IMP.algebra.get_rotation_taking_first_to_second(
+            _get_membrane_normal(body, inside), z_axis)
+        target = IMP.algebra.Vector3D(inside[0], inside[1], body['center'])
+        _transform_body(body, IMP.algebra.Transformation3D(
+            rotation, target - rotation.get_rotated(inside)))
+
+
+def shuffle_in_membrane(objects, bounding_box=((-300, -300), (300, 300)),
+                        niterations=1000):
+    """Move the rigid bodies in the membrane to random x, y positions.
+
+    No rotation, and z is kept, so bodies placed with place_in_membrane()
+    @param objects Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or
+               a list/set of them
+    @param bounding_box ((x1, y1), (x2, y2)) to place the bodies in
+    @param niterations Tries to avoid overlap between bodies
+    """
+    bb = IMP.algebra.BoundingBox2D(IMP.algebra.Vector2D(*bounding_box[0]),
+                                   IMP.algebra.Vector2D(*bounding_box[1]))
+    placed = []
+    for body in _get_membrane_rigid_bodies(objects):
+        inside = _get_centroid(body['inside'])
+        center = IMP.algebra.Vector2D(inside[0], inside[1])
+        members = list(body['rb'].get_rigid_members()) + body['beads']
+        radius = max(
+            IMP.algebra.get_distance(
+                center, IMP.algebra.Vector2D(IMP.core.XYZ(p).get_x(),
+                                             IMP.core.XYZ(p).get_y()))
+            for p in members)
+        for i in range(niterations):
+            xy = IMP.algebra.get_random_vector_in(bb)
+            if all(IMP.algebra.get_distance(xy, other) > radius + r
+                   for other, r in placed):
+                break
+        placed.append((xy, radius))
+        _transform_body(body, IMP.algebra.Transformation3D(
+            IMP.algebra.Vector3D(xy[0] - inside[0], xy[1] - inside[1], 0)))
+
+
+def _get_membrane_rigid_bodies(objects):
+    """Rigid bodies in objects with particles restrained inside a membrane,
+    with their restrained particles by side and the flexible beads of their
+    molecules."""
+    hierarchies = input_adaptor(objects, pmi_resolution='all', flatten=True)
+    rigid_bodies, beads = get_rbs_and_beads(hierarchies)
+    beads = [p for p in beads if not IMP.core.NonRigidMember.get_is_setup(p)]
+    bodies = []
+    for rb in rigid_bodies:
+        body = {'rb': rb, 'inside': [], 'above': [], 'below': [],
+                'centers': set(), 'molecules': set()}
+        for p in rb.get_rigid_members():
+            p = p.get_particle()
+            if not p.has_attribute(_membrane_side_key):
+                continue
+            side = {1: 'above', 0: 'inside', -1: 'below'}[
+                p.get_value(_membrane_side_key)]
+            body[side].append(p)
+            body['centers'].add(p.get_value(_membrane_center_key))
+            h = IMP.atom.Hierarchy(p)
+            body['molecules'].add((IMP.atom.get_molecule_name(h),
+                                   IMP.atom.get_copy_index(h)))
+        if not body['inside']:
+            continue
+        if len(body['centers']) != 1:
+            raise ValueError("Rigid body %s is in MembraneRestraints with "
+                             "different centers: %s"
+                             % (rb.get_name(), sorted(body['centers'])))
+        body['center'] = body['centers'].pop()
+        body['beads'] = [
+            p for p in beads
+            if (IMP.atom.get_molecule_name(IMP.atom.Hierarchy(p)),
+                IMP.atom.get_copy_index(IMP.atom.Hierarchy(p)))
+            in body['molecules']]
+        bodies.append(body)
+    return bodies
+
+
+def _get_centroid(particles):
+    return IMP.algebra.get_centroid(
+        [IMP.core.XYZ(p).get_coordinates() for p in particles])
+
+
+def _get_membrane_normal(body, inside):
+    """Membrane normal of a body, pointing to the side above."""
+    if not body['above'] and not body['below']:
+        # only particles inside: their main axis, sign unknown
+        coords = [IMP.core.XYZ(p).get_coordinates() for p in body['inside']]
+        return IMP.algebra.get_principal_components(
+            coords).get_principal_component(0)
+    above = _get_centroid(body['above']) if body['above'] else inside
+    below = _get_centroid(body['below']) if body['below'] else inside
+    return (above - below).get_unit_vector()
+
+
+def _transform_body(body, transformation):
+    IMP.core.transform(body['rb'], transformation)
+    for p in body['beads']:
+        IMP.core.transform(IMP.core.XYZ(p), transformation)
+
+
 class ColorHierarchy:
 
     def __init__(self, hier):

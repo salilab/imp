@@ -565,10 +565,9 @@ class _TotalScorer:
 
 class TotalScoreOutput:
     """A helper output for model evaluation"""
-    def __init__(self, model):
-        self.model = model
-        self.rs = IMP.pmi.tools.get_restraint_set(self.model)
+    def __init__(self, total_score_obj):
+        self._total_score_obj = total_score_obj
 
     def get_output(self):
-        scorer = _TotalScorer("Total_Score", self.rs)
-        return lambda jd: {scorer.name: str(scorer(jd))}
+        # Just pass the score returned from MD or MC to stat file
+        return {'Total_Score': str(self._total_score_obj.score)}

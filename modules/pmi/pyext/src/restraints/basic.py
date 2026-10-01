@@ -354,35 +354,58 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
                                        self.plateau,
                                        self.linear)
 
+        self.particles_above = []
+        self.particles_inside = []
+        self.particles_below = []
+
         # Particles above
         if objects_above:
             for obj in objects_above:
-                if isinstance(obj, tuple):
-                    self.particles_above = self._select_from_tuple(obj)
-
+                if isinstance(obj, (tuple, list)):
+                    particles = self._select_from_tuple(obj)
                 elif isinstance(obj, str):
-                    self.particles_above = self._select_from_string(obj)
-                mr.add_particles_above(self.particles_above)
+                    particles = self._select_from_string(obj)
+                else:
+                    raise TypeError("MembraneRestraint objects must be "
+                                    "(start, end, molecule) or a molecule "
+                                    "name, got %r" % (obj,))
+                mr.add_particles_above(particles)
+                self.particles_above += particles
 
         # Particles inside
         if objects_inside:
             for obj in objects_inside:
-                if isinstance(obj, tuple):
-                    self.particles_inside = self._select_from_tuple(obj)
-
+                if isinstance(obj, (tuple, list)):
+                    particles = self._select_from_tuple(obj)
                 elif isinstance(obj, str):
-                    self.particles_inside = self._select_from_string(obj)
-                mr.add_particles_inside(self.particles_inside)
+                    particles = self._select_from_string(obj)
+                else:
+                    raise TypeError("MembraneRestraint objects must be "
+                                    "(start, end, molecule) or a molecule "
+                                    "name, got %r" % (obj,))
+                mr.add_particles_inside(particles)
+                self.particles_inside += particles
 
         # Particles below
         if objects_below:
             for obj in objects_below:
-                if isinstance(obj, tuple):
-                    self.particles_below = self._select_from_tuple(obj)
-
+                if isinstance(obj, (tuple, list)):
+                    particles = self._select_from_tuple(obj)
                 elif isinstance(obj, str):
-                    self.particles_below = self._select_from_string(obj)
-                mr.add_particles_below(self.particles_below)
+                    particles = self._select_from_string(obj)
+                else:
+                    raise TypeError("MembraneRestraint objects must be "
+                                    "(start, end, molecule) or a molecule "
+                                    "name, got %r" % (obj,))
+                mr.add_particles_below(particles)
+                self.particles_below += particles
+
+        # Record the side on the particles, for place_in_membrane()
+        for side, particles in ((1, self.particles_above),
+                                (-1, self.particles_below),
+                                (0, self.particles_inside)):
+            for p in particles:
+                IMP.pmi.tools._set_membrane_side(p, side, self.center)
 
         self.rs.add_restraint(mr)
 
@@ -409,7 +432,8 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
             resolution=self.resolution).get_selected_particles()
         return particles
 
-    def create_membrane_density(self, file_out='membrane_localization.mrc'):
+    def create_membrane_density(self, xy_size=50,
+                                file_out='membrane_localization.mrc'):
         """Create an MRC density file to visualize the membrane."""
         offset = 5.0 * self.thickness
         apix = 3.0
@@ -417,9 +441,10 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
 
         # Create a density header of the requested size
         bbox = IMP.algebra.BoundingBox3D(
-            IMP.algebra.Vector3D(-self.center - offset, -self.center - offset,
+            IMP.algebra.Vector3D(-self.center - xy_size,
+                                 -self.center - xy_size,
                                  -self.center - offset),
-            IMP.algebra.Vector3D(self.center + offset, self.center + offset,
+            IMP.algebra.Vector3D(self.center + xy_size, self.center + xy_size,
                                  self.center + offset))
         dheader = IMP.em.create_density_header(bbox, apix)
         dheader.set_resolution(resolution)

@@ -154,6 +154,13 @@ class _RestartRun:
         return rex.replica_exchange_object.get_number_of_replicas()
 
 
+class _TotalScoreObject:
+    """A simple wrapper object for the total score. It contains a
+       single attribute, `score`."""
+    def __init__(self):
+        self.score = None
+
+
 class ReplicaExchange:
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
@@ -291,14 +298,15 @@ class ReplicaExchange:
         else:
             self.output_objects = output_objects
         self.rmf_output_objects = rmf_output_objects
+        self._total_score_obj = _TotalScoreObject()
         if (isinstance(root_hier, IMP.atom.Hierarchy)
                 and not root_hier.get_parent()):
             if self.output_objects is not None:
                 self.output_objects.append(
-                    IMP.pmi.io.TotalScoreOutput(self.model))
+                    IMP.pmi.io.TotalScoreOutput(self._total_score_obj))
             if self.rmf_output_objects is not None:
                 self.rmf_output_objects.append(
-                    IMP.pmi.io.TotalScoreOutput(self.model))
+                    IMP.pmi.io.TotalScoreOutput(self._total_score_obj))
             self.root_hier = root_hier
             states = IMP.atom.get_by_type(root_hier, IMP.atom.STATE_TYPE)
             self.vars["number_of_states"] = len(states)
@@ -723,6 +731,8 @@ class ReplicaExchange:
                 mpivs.set_value("score", score)
             if not self.nest:
                 output.set_output_entry("score", score)
+            # Pass score to TotalScore stat file entry
+            self._total_score_obj.score = score
 
             my_temp_index = int(rex.get_my_temp() * temp_index_factor)
 
