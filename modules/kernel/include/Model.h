@@ -2,7 +2,7 @@
  *  \file IMP/Model.h
  *  \brief Storage of a model, its restraints, constraints and particles.
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -179,6 +179,12 @@ class IMPKERNELEXPORT Model : public Object
   // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
 
+  // cache of ordered ScoreStates
+  ScoreStatesTemp ordered_score_states_cache_;
+
+  // time when ordered_score_states_cache was last updated, or 0
+  unsigned ordered_score_states_cache_age_;
+
   void register_unique_id();
 
   friend class cereal::access;
@@ -252,6 +258,7 @@ class IMPKERNELEXPORT Model : public Object
       saved_dependencies_age_ = 0;
       dependencies_saved_ = false;
       moved_particles_cache_age_ = 0;
+      ordered_score_states_cache_age_ = 0;
     }
   }
 

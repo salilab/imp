@@ -25,6 +25,7 @@ Model::Model(std::string name)
   saved_dependencies_age_ = 0;
   dependencies_saved_ = false;
   moved_particles_cache_age_ = 0;
+  ordered_score_states_cache_age_ = 0;
   unique_id_ = model_map_.add_new_model(this);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(

@@ -109,6 +109,35 @@ class Tests(IMP.test.TestCase):
         # p5 does not affect any can_skip state
         assert_score_states(r.evaluate_moved, [noskip], [p5], [])
 
+    def test_get_ordered_score_states(self):
+        """Test Model.get_ordered_score_states()"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+        p4 = IMP.Particle(m)
+        p5 = IMP.Particle(m)
+        log = []
+        # Each new ScoreState should show up immediately in
+        # m.get_ordered_score_states()
+        s2 = LoggingScoreState(m, log, inputs=[p2], outputs=[p3],
+                               suffix='s2')
+        self.assertEqual(len(m.get_ordered_score_states()), 1)
+        s3 = LoggingScoreState(m, log, inputs=[p3], outputs=[p4],
+                               suffix='s3')
+        self.assertEqual(len(m.get_ordered_score_states()), 2)
+        s4 = LoggingScoreState(m, log, inputs=[p4], outputs=[p5],
+                               suffix='s3')
+        self.assertEqual(len(m.get_ordered_score_states()), 3)
+        s1 = LoggingScoreState(m, log, inputs=[p1], outputs=[p2],
+                               suffix='s12')
+        self.assertEqual(len(m.get_ordered_score_states()), 4)
+        m.update()
+        # Increasing model age should not change the number
+        self.assertEqual(len(m.get_ordered_score_states()), 4)
+        # Should give us the cached value
+        self.assertEqual(len(m.get_ordered_score_states()), 4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

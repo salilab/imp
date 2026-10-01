@@ -2,7 +2,7 @@
  *  \file Model_dependencies.cpp
  *  \brief Logic to track dependencies between ModelObjects
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -261,17 +261,27 @@ void Model::update() {
 
 ScoreStatesTemp Model::get_ordered_score_states() {
   IMP_CHECK_OBJECT(this);
-  set_has_all_dependencies(true);
-  ScoreStatesTemp sst;
-  for(DependencyGraph::value_type & vt : dependency_graph_) {
-    ModelObject *mo = const_cast<ModelObject *>(vt.first);
-    ScoreState *ss = dynamic_cast<ScoreState *>(mo);
-    if (ss) {
-      do_set_has_required_score_states(ss, true);
-      sst.push_back(ss);
+
+  // Invalidate our cache if it is out of date with model dependencies;
+  // or it doesn't exist; or ScoreStates and/or dependencies have changed
+  // since the last call to Model.update()
+  if (ordered_score_states_cache_age_ != dependencies_age_
+      || ordered_score_states_cache_age_ == 0
+      || ordered_score_states_cache_age_ == get_age()) {
+    set_has_all_dependencies(true);
+    ScoreStatesTemp sst;
+    for(DependencyGraph::value_type & vt : dependency_graph_) {
+      ModelObject *mo = const_cast<ModelObject *>(vt.first);
+      ScoreState *ss = dynamic_cast<ScoreState *>(mo);
+      if (ss) {
+        do_set_has_required_score_states(ss, true);
+        sst.push_back(ss);
+      }
     }
+    ordered_score_states_cache_ = get_update_order(sst);
+    ordered_score_states_cache_age_ = dependencies_age_;
   }
-  return get_update_order(sst);
+  return ordered_score_states_cache_;
 }
 
 void Model::do_set_has_dependencies(const ModelObject *mo, bool tf) {
