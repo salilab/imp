@@ -2,7 +2,7 @@
  *  \file IMP/atom/pdb.h
  *  \brief Functions to read PDBs
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,6 +27,7 @@
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <limits>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -35,6 +36,7 @@ class IMPATOMEXPORT PDBRecord : public Value {
   const std::string *line_;
   internal::StringCifKeyword *group_, *element_, *atom_name_, *alt_loc_id_,
                        *residue_name_, *auth_chain_, *chain_, *auth_seq_id_;
+  internal::IntCifKeyword *seq_id_;
   bool use_line_, use_keywords_;
 public:
   PDBRecord() : use_line_(false), use_keywords_(false) {}
@@ -54,6 +56,7 @@ public:
                     internal::StringCifKeyword &residue_name,
                     internal::StringCifKeyword &auth_chain,
                     internal::StringCifKeyword &chain,
+                    internal::IntCifKeyword &seq_id,
                     internal::StringCifKeyword &auth_seq_id);
 #endif
 
@@ -83,6 +86,9 @@ public:
 
   //! Returns the element as a string
   std::string get_element() const;
+
+  //! Returns the residue number as an integer
+  int get_residue_number() const;
 
   IMP_SHOWABLE_INLINE(PDBRecord, { out << "PDBRecord"; });
 };
@@ -401,6 +407,21 @@ class PPDBSelector : public NonAlternativePDBSelector {
     return (type[1] == 'P' && type[2] == ' ' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(PPDBSelector)
+};
+
+//! Select all residue numbers in the given range (inclusive)
+class ResidueRangePDBSelector : public PDBSelector {
+  int low_, high_;
+ public:
+  ResidueRangePDBSelector(int low, int high=std::numeric_limits<int>::max(),
+               std::string name = "ResidueRangePDBSelector%1%")
+      : PDBSelector(name), low_(low), high_(high) {}
+
+  bool get_is_selected(const PDBRecord &record) const override {
+    int resnum = record.get_residue_number();
+    return resnum >= low_ && resnum <= high_;
+  }
+  IMP_OBJECT_METHODS(ResidueRangePDBSelector)
 };
 
 //! Select atoms which are selected by both selectors

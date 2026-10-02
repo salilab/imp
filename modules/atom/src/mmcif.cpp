@@ -2,7 +2,7 @@
  *  \file mmcif.cpp
  *  \brief Functions to read PDBs in mmCIF format
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -95,7 +95,8 @@ public:
         cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
     pdb_record_.set_keywords(group_, element_, atom_name_, alt_loc_id_,
-                             residue_name_, auth_chain_, chain_, auth_seq_id_);
+                             residue_name_, auth_chain_, chain_, seq_id_,
+                             auth_seq_id_);
     curr_chain_ = "";
     curr_seq_id_ = 0;
     curr_auth_seq_id_ = 0;

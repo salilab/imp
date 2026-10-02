@@ -200,6 +200,36 @@ class Tests(IMP.test.TestCase):
                                m, IMP.atom.ATOMPDBSelector())
         self.assertEqual(len(IMP.atom.get_leaves(mp)), 300)
 
+    def test_residue_range_pdb_selector(self):
+        """Test ResidueRangePDBSelector"""
+        m = IMP.Model()
+        # Input contains residues 11-16; only 12-15 should be returned
+        mp = IMP.atom.read_pdb(self.get_input_file_name("resrangetest.pdb"),
+                               m, IMP.atom.ResidueRangePDBSelector(12, 15))
+        rs = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual([IMP.atom.Residue(r).get_index() for r in rs],
+                         [12, 13, 14, 15])
+
+        # High end of range can be skipped
+        mp = IMP.atom.read_pdb(self.get_input_file_name("resrangetest.pdb"),
+                               m, IMP.atom.ResidueRangePDBSelector(14))
+        rs = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual([IMP.atom.Residue(r).get_index() for r in rs],
+                         [14, 15, 16])
+
+        # Similar input but residue #14 is missing auth_seq_id; will use
+        # seq_id (4) instead
+        mp = IMP.atom.read_mmcif(self.get_input_file_name("resrangetest.cif"),
+                               m, IMP.atom.ResidueRangePDBSelector(12, 15))
+        rs = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual([IMP.atom.Residue(r).get_index() for r in rs],
+                         [12, 13, 15])
+
+        mp = IMP.atom.read_mmcif(self.get_input_file_name("resrangetest.cif"),
+                               m, IMP.atom.ResidueRangePDBSelector(1, 10))
+        rs = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual([IMP.atom.Residue(r).get_index() for r in rs], [4])
+
     def test_sel_logic(self):
         """Test boolean logic selectors"""
         m = IMP.Model()

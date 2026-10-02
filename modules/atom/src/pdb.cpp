@@ -1,7 +1,7 @@
 /**
- *  \file PDBParser.h   \brief A class for reading PDB files
+ *  \file pdb.cpp   \brief A class for reading PDB files
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>
@@ -46,6 +46,7 @@ void PDBRecord::set_keywords(internal::StringCifKeyword &group,
                              internal::StringCifKeyword &residue_name,
                              internal::StringCifKeyword &auth_chain,
                              internal::StringCifKeyword &chain,
+                             internal::IntCifKeyword &seq_id,
                              internal::StringCifKeyword &auth_seq_id) {
   group_ = &group;
   element_ = &element;
@@ -54,6 +55,7 @@ void PDBRecord::set_keywords(internal::StringCifKeyword &group,
   residue_name_ = &residue_name;
   auth_chain_ = &auth_chain;
   chain_ = &chain;
+  seq_id_ = &seq_id;
   auth_seq_id_ = &auth_seq_id;
   use_keywords_ = true;
   use_line_ = false;
@@ -149,6 +151,22 @@ std::string PDBRecord::get_element() const {
     return ret;
   } else {
     return element_->get();
+  }
+}
+
+int PDBRecord::get_residue_number() const {
+  IMP_INTERNAL_CHECK(use_line_ || use_keywords_,
+          "The PDB record contains neither PDB nor mmCIF information");
+  if (use_line_) {
+    return internal::atom_residue_number(*line_);
+  } else {
+    // use author-provided seq_id if available
+    std::string auth_seq_id_str = auth_seq_id_->get();
+    const char *start = auth_seq_id_str.c_str();
+    char *endptr;
+    int auth_seq_id = strtol(start, &endptr, 10);
+    if (endptr == start) auth_seq_id = seq_id_->get();
+    return auth_seq_id;
   }
 }
 
