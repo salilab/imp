@@ -81,12 +81,21 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
     else:
         sel = IMP.atom.get_default_pdb_selector()
 
+    # If IMP has ResidueRangePDBSelector, use it to restrict what we read in
+    has_rsr_rng = hasattr(IMP.atom, 'ResidueRangePDBSelector')
+
+    if has_rsr_rng and res_range:
+        if res_range[1] == "END":
+            sel &= IMP.atom.ResidueRangePDBSelector(res_range[0])
+        else:
+            sel &= IMP.atom.ResidueRangePDBSelector(*res_range)
+
     reader = read_file if model_num is None else read_multi_file
     mh = reader(pdb_fn, model, IMP.atom.ChainPDBSelector([chain_id]) & sel)
     if model_num is not None:
         mh = mh[model_num]
 
-    if res_range == [] or res_range is None:
+    if res_range == [] or res_range is None or has_rsr_rng:
         ps = _select_ca_or_p(mh, chain=chain_id)
     else:
         start = res_range[0]

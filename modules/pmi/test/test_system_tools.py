@@ -63,11 +63,16 @@ class Tests(IMP.test.TestCase):
                 ca_only=True)
         self.assertEqual(len(rs), 2)
 
-        # Invalid range
+        # No CA or P atoms in the structure
         with self.assertWarns(IMP.pmi.StructureWarning):
             rs = IMP.pmi.topology.system_tools.get_structure(
-                   m, self.get_input_file_name('mini.pdb'), 'A', [40, 50])
+                    m, self.get_input_file_name('no_ca_p.pdb'), 'A')
             self.assertEqual(len(rs), 0)
+
+        # Invalid range
+        self.assertRaises(
+            ValueError, IMP.pmi.topology.system_tools.get_structure,
+            m, self.get_input_file_name('mini.pdb'), 'A', [40, 50])
 
     def test_get_structure_mmcif(self):
         """Test get_structure given a single-model mmCIF"""
@@ -81,10 +86,10 @@ class Tests(IMP.test.TestCase):
                 ca_only=True)
         self.assertEqual(len(rs), 2)
 
-        with self.assertWarns(IMP.pmi.StructureWarning):
-            rs = IMP.pmi.topology.system_tools.get_structure(
-                   m, self.get_input_file_name('mini.cif'), 'A', [40, 50])
-            self.assertEqual(len(rs), 0)
+        # Invalid range
+        self.assertRaises(
+            ValueError, IMP.pmi.topology.system_tools.get_structure,
+            m, self.get_input_file_name('mini.cif'), 'A', [40, 50])
 
     def test_get_structure_multi_pdb(self):
         """Test get_structure given a multi-model PDB"""
