@@ -81,10 +81,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
     else:
         sel = IMP.atom.get_default_pdb_selector()
 
-    # If IMP has ResidueRangePDBSelector, use it to restrict what we read in
-    has_rsr_rng = hasattr(IMP.atom, 'ResidueRangePDBSelector')
-
-    if has_rsr_rng and res_range:
+    if res_range:
         if res_range[1] == "END":
             sel &= IMP.atom.ResidueRangePDBSelector(res_range[0])
         else:
@@ -95,16 +92,7 @@ def get_structure(model, pdb_fn, chain_id, res_range=None, offset=0,
     if model_num is not None:
         mh = mh[model_num]
 
-    if res_range == [] or res_range is None or has_rsr_rng:
-        ps = _select_ca_or_p(mh, chain=chain_id)
-    else:
-        start = res_range[0]
-        end = res_range[1]
-        if end == "END":
-            end = IMP.atom.Residue(
-                mh.get_children()[0].get_children()[-1]).get_index()
-        ps = _select_ca_or_p(mh, chain=chain_id,
-                             residue_indexes=range(start, end+1))
+    ps = _select_ca_or_p(mh, chain=chain_id)
     ret = []
 
     for p in ps:

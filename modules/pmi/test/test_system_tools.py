@@ -63,6 +63,11 @@ class Tests(IMP.test.TestCase):
                 ca_only=True)
         self.assertEqual(len(rs), 2)
 
+        # Partially overlapping range
+        rs = IMP.pmi.topology.system_tools.get_structure(
+                m, self.get_input_file_name('mini.pdb'), 'A', [6, 15])
+        self.assertEqual(len(rs), 3)
+
         # No CA or P atoms in the structure
         with self.assertWarns(IMP.pmi.StructureWarning):
             rs = IMP.pmi.topology.system_tools.get_structure(
