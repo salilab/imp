@@ -112,63 +112,49 @@
         return ret
 
     def _get_jax(self, space):
-        import jax.lax
         import jax.numpy as jnp
         import math
 
         def sphere_cap(r1, r2, d):
-            def short_range(r1, r2, d):
-                return jax.lax.min(4.0 / 3.0 * math.pi * r1 * r1 * r1,
-                                   4.0 / 3.0 * math.pi * r2 * r2 * r2)
-            def mid_range(r1, r2, d):
-                return ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
-                        (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
-                         + 6 * r1 * r2 - 3 * r2 * r2))
-            def long_range(r1, r2, d):
-                return jax.lax.cond(d >= r1 + r2, lambda a,b,c: 0.,
-                                    mid_range, r1, r2, d)
-            return jax.lax.cond(
+            short_range = jnp.minimum(4.0 / 3.0 * math.pi * r1 * r1 * r1,
+                                      4.0 / 3.0 * math.pi * r2 * r2 * r2)
+            mid_range = ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
+                         (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
+                          + 6 * r1 * r2 - 3 * r2 * r2))
+            return jnp.where(
                 d <= jnp.absolute(r1 - r2), short_range,
-                long_range, r1, r2, d)
+                jnp.where(d >= r1 + r2, 0., mid_range))
 
         def get_probability(xyz, r, scale, ps, ncontrib, sigma, psi, length,
                             slope):
-            def short_range(length, dist, sigmai, sigmaj, voli, volj):
-                xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
-                         * (length / 2.) * (length / 2.))
-                return jax.lax.min(voli, xlvol), jax.lax.min(volj, xlvol)
-
-            def long_range(length, dist, sigmai, sigmaj, voli, volj):
-                di = dist - sigmaj - length / 2.
-                dj = dist - sigmai - length / 2.
-                return (sphere_cap(sigmai, length / 2., abs(di)),
-                        sphere_cap(sigmaj, length / 2., abs(dj)))
-
-            def dist_diff(xyz, r, ps, k):
-                return space.distance(xyz[ps[k, 0]] - xyz[ps[k, 1]])
-
-            def dist_same(xyz, r, ps, k):
+            onemprob = 1.0
+            for k in range(ncontrib):
                 # If the residues are assigned to the same particle-domain
                 # get the distance as if the residue positions were randomly
                 # taken from within the sphere representing the domain
                 # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
-                return 36.0 / 35.0 * r[ps[k, 0]];
-
-            onemprob = 1.0
-            for k in range(ncontrib):
-                dist = jax.lax.cond(ps[k, 0] == ps[k, 1], dist_same,
-                                    dist_diff, xyz, r, ps, k)
-                dist = jax.lax.max(dist, 0.0001)
+                dist = jnp.where(ps[k, 0] == ps[k, 1],
+                                 36.0 / 35.0 * r[ps[k, 0]],
+                                 space.distance(xyz[ps[k, 0]] - xyz[ps[k, 1]]))
+                dist = jnp.maximum(dist, 0.0001)
                 psik = scale[psi[k]]
                 sigmai = scale[sigma[k, 0]]
                 sigmaj = scale[sigma[k, 1]]
 
                 voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
                 volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+                xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
+                         * (length / 2.) * (length / 2.))
 
-                fi, fj = jax.lax.cond(dist < sigmai + sigmaj,
-                                      short_range, long_range, length,
-                                      dist, sigmai, sigmaj, voli, volj)
+                close = dist < sigmai + sigmaj
+                fi = jnp.where(
+                    close, jnp.minimum(voli, xlvol),
+                    sphere_cap(sigmai, length / 2.,
+                               jnp.abs(dist - sigmaj - length / 2.)))
+                fj = jnp.where(
+                    close, jnp.minimum(volj, xlvol),
+                    sphere_cap(sigmaj, length / 2.,
+                               jnp.abs(dist - sigmai - length / 2.)))
 
                 pofr = fi * fj / voli / volj
                 if slope is not None:
