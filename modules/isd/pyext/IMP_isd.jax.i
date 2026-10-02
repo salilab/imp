@@ -125,46 +125,43 @@
                 d <= jnp.absolute(r1 - r2), short_range,
                 jnp.where(d >= r1 + r2, 0., mid_range))
 
-        def get_probability(xyz, r, scale, ps, ncontrib, sigma, psi, length,
+        def get_probability(xyz, r, scale, ps, sigma, psi, length,
                             slope):
-            onemprob = 1.0
-            for k in range(ncontrib):
-                # If the residues are assigned to the same particle-domain
-                # get the distance as if the residue positions were randomly
-                # taken from within the sphere representing the domain
-                # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
-                dist = jnp.where(ps[k, 0] == ps[k, 1],
-                                 36.0 / 35.0 * r[ps[k, 0]],
-                                 space.distance(xyz[ps[k, 0]] - xyz[ps[k, 1]]))
-                dist = jnp.maximum(dist, 0.0001)
-                psik = scale[psi[k]]
-                sigmai = scale[sigma[k, 0]]
-                sigmaj = scale[sigma[k, 1]]
+            # If the residues are assigned to the same particle-domain
+            # get the distance as if the residue positions were randomly
+            # taken from within the sphere representing the domain
+            # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
+            dist = jnp.where(ps[:, 0] == ps[:, 1],
+                             36.0 / 35.0 * r[ps[:, 0]],
+                             space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]]))
+            dist = jnp.maximum(dist, 0.0001)
+            psi = scale[psi]
+            sigmai = scale[sigma[:, 0]]
+            sigmaj = scale[sigma[:, 1]]
 
-                voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
-                volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
-                xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
-                         * (length / 2.) * (length / 2.))
+            voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
+            volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+            xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
+                     * (length / 2.) * (length / 2.))
 
-                close = dist < sigmai + sigmaj
-                fi = jnp.where(
-                    close, jnp.minimum(voli, xlvol),
-                    sphere_cap(sigmai, length / 2.,
-                               jnp.abs(dist - sigmaj - length / 2.)))
-                fj = jnp.where(
-                    close, jnp.minimum(volj, xlvol),
-                    sphere_cap(sigmaj, length / 2.,
-                               jnp.abs(dist - sigmai - length / 2.)))
+            close = dist < sigmai + sigmaj
+            fi = jnp.where(
+                close, jnp.minimum(voli, xlvol),
+                sphere_cap(sigmai, length / 2.,
+                           jnp.abs(dist - sigmaj - length / 2.)))
+            fj = jnp.where(
+                close, jnp.minimum(volj, xlvol),
+                sphere_cap(sigmaj, length / 2.,
+                           jnp.abs(dist - sigmai - length / 2.)))
 
-                pofr = fi * fj / voli / volj
-                if slope is not None:
-                    prior = jnp.exp(-slope * dist)
-                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
-                                           + pofr * (1 - psik)) * prior)
-                else:
-                    onemprob = onemprob * (1.0 - (psik * (1.0 - pofr)
-                                           + pofr * (1 - psik)))
-            return 1.0 - onemprob
+            pofr = fi * fj / voli / volj
+            term = psi * (1.0 - pofr) + pofr * (1.0 - psi)
+            if slope is not None:
+                prior = jnp.exp(-slope * dist)
+                term = term * prior
+            onemprob = 1.0 - term
+
+            return 1.0 - jnp.prod(onemprob)
 
         if self.get_is_length_variable():
             raise NotImplementedError("Only implemented for fixed-length")
@@ -173,12 +170,11 @@
         pis = self._get_contributions_particles_numpy()
         get_log_prob = self.get_log_prob()
         length = self.get_length()
-        ncontrib = len(sigma)
         slope = self.get_slope() if self.get_has_slope() else None
 
         def jax_restraint(X):
             prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
-                                   ncontrib, sigma, psi, length, slope)
+                                   sigma, psi, length, slope)
             if get_log_prob:
                 return -jnp.log(prob)
             else:
