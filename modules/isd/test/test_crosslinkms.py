@@ -205,6 +205,43 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             self.assertAlmostEqual(score_lp,
                                                    score_jax, delta=1e-3)
 
+    def test_score_multiple(self):
+        """Test crosslink restraint with multiple contributions"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+
+        slope = 0.01
+        length = 10
+
+        xyz1 = IMP.core.XYZ.setup_particle(p1)
+        xyz2 = IMP.core.XYZ.setup_particle(p2)
+        xyz3 = IMP.core.XYZ.setup_particle(p3)
+
+        xyz1.set_coordinates((0, 5, 0))
+        xyz2.set_coordinates((5, 0, 0))
+        xyz3.set_coordinates((0, 0, 15))
+
+        sigma1 = setupnuisance(m, 5, 0, 100, False)
+        sigma2 = setupnuisance(m, 5, 0, 100, False)
+        psi1 = setupnuisance(m, 0.1, 0.0, 0.5, False)
+        psi2 = setupnuisance(m, 0.2, 0.0, 0.5, False)
+
+        dr1 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+        dr1.add_contribution((p1, p2), (sigma1, sigma2), psi1)
+        dr1.add_contribution((p2, p3), (sigma1, sigma2), psi2)
+
+        dr2 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+        dr2.add_contribution((p1, p3), (sigma1, sigma2), psi1)
+        lw = IMP.isd.LogWrapper([dr1, dr2], 1.0)
+
+        imp_score = lw.evaluate(False)
+        self.assertAlmostEqual(imp_score, 2.25585, delta=1e-3)
+        if jax:
+            jax_score = lw._evaluate_jax()
+            self.assertAlmostEqual(jax_score, imp_score, delta=1e-3)
+
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
         m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()
