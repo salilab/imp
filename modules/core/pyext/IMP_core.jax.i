@@ -328,7 +328,7 @@
         import jax.numpy as jnp
         def jax_score(jm, uf):
             xyzs = jm['xyz'][...,indexes,:]
-            diff = xyzs[...,0] - xyzs[...,1]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
             drs = space.distance(diff)
             return uf(drs)
         sfnc = self.get_score_functor()

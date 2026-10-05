@@ -216,8 +216,8 @@ class Tests(IMP.test.TestCase):
         orig_xyz = np.copy(jm['xyz'])
 
         # Get IMP score for 2nd coordinate set
-        IMP.core.XYZ(self.particles[0]).set_coordinates((-6., 0., 0.))
-        IMP.core.XYZ(self.particles[2]).set_coordinates((6., 0., 0.))
+        IMP.core.XYZ(self.particles[0]).set_coordinates((-6., 2., 0.))
+        IMP.core.XYZ(self.particles[2]).set_coordinates((6., 0., 4.))
         imp_score2 = rsr.evaluate(False)
 
         # Add both coordinate sets to JAX model
