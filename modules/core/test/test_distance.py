@@ -200,6 +200,35 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(jax_score.shape, ())
         self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_coord(self):
+        """Test JAX implementation of DistanceRestraint, multiple coordset"""
+        import IMP.jax
+        import numpy as np
+
+        # First coordinate set
+        uf = IMP.core.Harmonic(1.0, 0.1)
+        rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
+                                         self.particles[0], self.particles[1])
+        imp_score1 = rsr.evaluate(False)
+        ji = rsr._get_jax(space=IMP.jax.FreeSpace)
+        jm = ji.get_jax_model()
+        orig_xyz = np.copy(jm['xyz'])
+
+        # Get IMP score for 2nd coordinate set
+        IMP.core.XYZ(self.particles[0]).set_coordinates((-6., 0., 0.))
+        IMP.core.XYZ(self.particles[2]).set_coordinates((6., 0., 0.))
+        imp_score2 = rsr.evaluate(False)
+
+        # Add both coordinate sets to JAX model
+        jm['xyz'] = np.stack((orig_xyz, jm['xyz']))
+        f = jax.jit(ji.score_func)
+        jax_score = f(jm)
+        # Restraint should return a 1D JAX array as the score
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(imp_score1, jax_score[0], delta=1e-3)
+        self.assertAlmostEqual(imp_score2, jax_score[1], delta=1e-3)
+
 
 if __name__ == '__main__':
     IMP.test.main()

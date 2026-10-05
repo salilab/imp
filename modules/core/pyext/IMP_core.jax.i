@@ -327,8 +327,8 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, uf):
-            xyzs = jm['xyz'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
+            xyzs = jm['xyz'][...,indexes,:]
+            diff = xyzs[...,0] - xyzs[...,1]
             drs = space.distance(diff)
             return uf(drs)
         sfnc = self.get_score_functor()
@@ -347,7 +347,7 @@
         indexes = jnp.array([self.get_index()])
         ji = ps._get_jax(self.get_model(), indexes, space=space)
         def score(jm):
-            return jnp.sum(ji.score_func(jm))
+            return jnp.sum(ji.score_func(jm), axis=-1)
         return self._wrap_jax(score)
   %}
 }
