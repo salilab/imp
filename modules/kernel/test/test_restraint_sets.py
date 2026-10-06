@@ -305,6 +305,16 @@ class Tests(IMP.test.TestCase):
             dX = g(X)
             self.assertEqual(dX['xyz'].shape, (0, 3))
 
+        # RestraintSet of weight zero should score zero
+        m = IMP.Model()
+        r = IMP.RestraintSet(m)
+        p = IMP.Particle(m)
+        r1 = IMP._ConstRestraint(m, [p], 42)
+        r1.set_weight(2.0)
+        r.add_restraint(r1)
+        r.set_weight(0.0)
+        self.assertAlmostEqual(r._evaluate_jax(), 0.0, delta=1e-4)
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score_periodic(self):
         """Test JAX RestraintSet score with PBC"""

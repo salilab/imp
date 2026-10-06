@@ -93,6 +93,8 @@ class JAXRestraintInfo:
         self.m = m
         if weight == 1.0:
             self.score_func = score_func
+        elif weight == 0.0:
+            self.score_func = lambda jm: 0.0
         else:
             self.score_func = lambda jm: weight * score_func(jm)
         self._keys = frozenset(keys or ())
