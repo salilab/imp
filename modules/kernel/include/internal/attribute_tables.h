@@ -923,7 +923,7 @@ class FloatAttributeTable {
 
   int get_number_of_attribute_sets(FloatKey k) const {
     if (k.get_index() >= 7) {
-      int ind = k.get_index() - 7;
+      unsigned ind = k.get_index() - 7;
       if (data_.size() <= ind) {
         return 1;
       } else {
@@ -941,7 +941,7 @@ class FloatAttributeTable {
 
   void set_number_of_attribute_sets(FloatKey k, int nsets) {
     if (k.get_index() >= 7) {
-      int ind = k.get_index() - 7;
+      unsigned ind = k.get_index() - 7;
       if (data_.size() <= ind) {
         data_.access_data().resize(ind + 1);
       } else {
@@ -960,7 +960,7 @@ class FloatAttributeTable {
 
   void set_active_attribute_set(FloatKey k, int set) {
     if (k.get_index() >= 7) {
-      int ind = k.get_index() - 7;
+      unsigned ind = k.get_index() - 7;
       if (data_.size() <= ind) {
         data_.access_data().resize(ind + 1);
       }
