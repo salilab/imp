@@ -541,8 +541,8 @@ class IMPKERNELEXPORT Model : public Object
       cannot be added if there is more than one attribute set. Set the
       attributes for the first set before increasing the number of sets.
 
-      Currently, only Float attributes support attribute sets, not including
-      XYZ coordinates, radii, or internal coordinates.
+      Currently, only Float attributes and spheres (XYZ coordinates, radii)
+      support attribute sets, not including internal coordinates.
       @{
    */
 
@@ -558,6 +558,19 @@ class IMPKERNELEXPORT Model : public Object
   /** Only a single attribute set can be active at a time. All get or set
       of particle attributes will use the active set. */
   void set_active_attribute_set(FloatKey k, int set);
+
+  //! Get the current number of sphere attribute sets (normally 1)
+  int get_number_of_sphere_attribute_sets() const;
+
+  //! Set the number of sphere attribute sets
+  /** The Model must contain at least one set, and this value can only be
+      changed when set 0 is active. */
+  void set_number_of_sphere_attribute_sets(int nsets);
+
+  //! Set the currently active sphere attribute set
+  /** Only a single attribute set can be active at a time. All get or set
+      of particle coordinates/radii will use the active set. */
+  void set_active_sphere_attribute_set(int set);
 
   /** @} */
 

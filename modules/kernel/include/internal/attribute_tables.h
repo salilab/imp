@@ -396,7 +396,7 @@ IMP_SWAP_1(SparseBasicAttributeTable);
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
   // vector<algebra::Sphere3D> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, algebra::Sphere3D,
+  MultiIndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
               sphere_equal<algebra::Sphere3D>> spheres_;
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
@@ -777,6 +777,12 @@ class FloatAttributeTable {
   algebra::Sphere3D* access_spheres_data(){
     return spheres_.data();
   }
+  algebra::Sphere3D const* access_full_spheres_data() const {
+    return spheres_.full_data();
+  }
+  algebra::Sphere3D* access_full_spheres_data() {
+    return spheres_.full_data();
+  }
   unsigned get_sphere_derivatives_size() const {
     return sphere_derivatives_.size();
   }
@@ -929,6 +935,10 @@ class FloatAttributeTable {
     }
   }
 
+  int get_number_of_sphere_attribute_sets() const {
+    return spheres_.get_number_of_sets();
+  }
+
   void set_number_of_attribute_sets(FloatKey k, int nsets) {
     if (k.get_index() >= 7) {
       int ind = k.get_index() - 7;
@@ -944,6 +954,10 @@ class FloatAttributeTable {
     }
   }
 
+  void set_number_of_sphere_attribute_sets(int nsets) {
+    spheres_.set_number_of_sets(nsets, get_invalid_sphere());
+  }
+
   void set_active_attribute_set(FloatKey k, int set) {
     if (k.get_index() >= 7) {
       int ind = k.get_index() - 7;
@@ -955,6 +969,10 @@ class FloatAttributeTable {
       IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
                 TypeException);
     }
+  }
+
+  void set_active_sphere_attribute_set(int set) {
+    spheres_.set_active_set(set);
   }
 
   void set_range(FloatKey k, FloatRange fr) { ranges_[k.get_index()] = fr; }

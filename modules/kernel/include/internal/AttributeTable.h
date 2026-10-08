@@ -179,7 +179,7 @@ class MultiIndexVector {
   //! Get the number of attribute sets (we generally start with 1)
   int get_number_of_sets() const { return nsets_; }
 
-  void set_number_of_sets(int nsets, const double &fill_value) {
+  void set_number_of_sets(int nsets, const T &fill_value) {
     IMP_USAGE_CHECK(nsets >= 1, "Cannot have less than 1 set");
     IMP_USAGE_CHECK(active_set_ == 0,
                     "Cannot set number of sets when active set is not 0");
@@ -195,7 +195,7 @@ class MultiIndexVector {
     set_front_pointer();
   }
 
-  void resize(size_t count, const double &fill_value) {
+  void resize(size_t count, const T &fill_value) {
     if (nsets_ == 1) {
       size_ = count;
       full_vector_.resize(count, fill_value);
