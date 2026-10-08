@@ -159,8 +159,8 @@ class MultiIndexVector {
 
  public:
   typedef T& reference;
-  typedef P::const_iterator const_iterator;
-  typedef P::iterator iterator;
+  typedef typename P::const_iterator const_iterator;
+  typedef typename P::iterator iterator;
 
   MultiIndexVector() : active_set_(0), size_(0), nsets_(1) {
     set_front_pointer();
