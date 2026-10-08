@@ -52,6 +52,50 @@ class Tests(IMP.test.TestCase):
         m.add_attribute(isk, p.get_index(), [IntLike(9)])
         self.assertEqual(m.get_attribute(isk, p.get_index()), [9])
 
+    def test_float_attribute_sets(self):
+        """Test attribute sets of FloatKeys"""
+        m = IMP.Model()
+        fk = IMP.FloatKey("fk")
+        # Before any attributes added, nset==1
+        self.assertEqual(m.get_number_of_attribute_sets(fk), 1)
+
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(fk, p1.get_index(), 42.0)
+        m.add_attribute(fk, p2.get_index(), 99.0)
+        self.assertEqual(m.get_number_of_attribute_sets(fk), 1)
+
+        m.set_number_of_attribute_sets(fk, 4)
+        self.assertEqual(m.get_number_of_attribute_sets(fk), 4)
+
+        self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()),
+                               42.0, delta=1e-5)
+        self.assertRaisesUsageException(m.set_active_attribute_set, fk, -1)
+        self.assertRaisesUsageException(m.set_active_attribute_set, fk, 1000)
+        m.set_active_attribute_set(fk, 2)
+
+        # Check values in different sets
+        m.add_attribute(fk, p1.get_index(), 19.0)
+        self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()),
+                               19.0, delta=1e-5)
+        m.set_active_attribute_set(fk, 0)
+        self.assertAlmostEqual(m.get_attribute(fk, p1.get_index()),
+                               42.0, delta=1e-5)
+
+        m.set_active_attribute_set(fk, 2)
+        # Cannot change number of sets when we're using the non-default set
+        self.assertRaisesUsageException(m.set_number_of_attribute_sets, fk, 1)
+
+        # Cannot add attributes when we have more than one set
+        p3 = IMP.Particle(m)
+        self.assertRaises(IndexError, m.add_attribute,
+                          fk, p3.get_index(), 42.0)
+
+        # Methods don't currently work on xyz, radius, internal coordinates
+        self.assertRaises(TypeError, m.get_number_of_attribute_sets, xkey)
+        self.assertRaises(TypeError, m.set_number_of_attribute_sets, xkey, 2)
+        self.assertRaises(TypeError, m.set_active_attribute_set, xkey, 2)
+
     @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
     def test_numpy_int(self):
         """Test using numpy arrays as input/output for Ints attributes"""

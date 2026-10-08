@@ -532,6 +532,35 @@ class IMPKERNELEXPORT Model : public Object
   void set_is_optimized(FloatKey, ParticleIndex, bool);
   void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
                          const DerivativeAccumulator &da);
+
+  /** \name Attribute sets
+      Normally the Model contains a single set of attributes. However, more
+      can be added if needed for certain applications.
+
+      Note that currently, for performance reasons, particle attributes
+      cannot be added if there is more than one attribute set. Set the
+      attributes for the first set before increasing the number of sets.
+
+      Currently, only Float attributes support attribute sets, not including
+      XYZ coordinates, radii, or internal coordinates.
+      @{
+   */
+
+  //! Get the current number of attribute sets (normally 1)
+  int get_number_of_attribute_sets(FloatKey k) const;
+
+  //! Set the number of attribute sets
+  /** The Model must contain at least one set, and this value can only be
+      changed when set 0 is active. */
+  void set_number_of_attribute_sets(FloatKey k, int nsets);
+
+  //! Set the currently active attribute set
+  /** Only a single attribute set can be active at a time. All get or set
+      of particle attributes will use the active set. */
+  void set_active_attribute_set(FloatKey k, int set);
+
+  /** @} */
+
 #endif
 
   //! Get the particle from an index.

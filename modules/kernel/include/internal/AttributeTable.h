@@ -114,9 +114,79 @@ struct ArrayTraits {
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
+// A view into an IndexVector that contains one or more sets of
+// attributes, exposing a single active set at a time. The sets are
+// stored contiguously in memory, as a large 1D array.
+template <class Tag, class T, class Allocator = std::allocator<T>,
+          class Equal = std::equal_to<T>>
+class MultiIndexVector {
+  typedef IndexVector<Tag, T, Allocator, Equal> V;
+  typedef Vector<T, Allocator> P;
+
+  // The full IndexVector of size_ particle attributes over nsets_
+  // attribute sets
+  V full_vector_;
+  // The position in full_vector_ of the start of the active set
+  // ( = size_ * set_index)
+  size_t offset_;
+  size_t size_;
+  int nsets_;
+
+  friend class cereal::access;
+  template<class Archive> void serialize(Archive &ar) {
+    ar(offset_, size_, nsets_, full_vector_);
+  }
+
+ public:
+  typedef T& reference;
+  typedef P::const_iterator const_iterator;
+  typedef P::iterator iterator;
+
+  MultiIndexVector() : offset_(0), size_(0), nsets_(1) {}
+  IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < size_,
+              return full_vector_.data()[offset_ + get_as_unsigned_int(i)]);
+
+  T* data() { return full_vector_.data() + offset_; }
+  const T* data() const { return full_vector_.data() + offset_; }
+
+  std::size_t size() const { return size_; }
+
+  //! Get the number of attribute sets (we generally start with 1)
+  int get_number_of_sets() const { return nsets_; }
+
+  void set_number_of_sets(int nsets, const double &fill_value) {
+    IMP_USAGE_CHECK(nsets >= 1, "Cannot have less than 1 set");
+    IMP_USAGE_CHECK(offset_ == 0,
+                    "Cannot set number of sets when active set is not 0");
+    nsets_ = nsets;
+    full_vector_.resize(size_ * nsets, fill_value);
+  }
+
+  void set_active_set(int set) {
+    IMP_USAGE_CHECK(set >= 0 && set < nsets_, "Invalid set index");
+    offset_ = size_ * set;
+  }
+
+  void resize(size_t count, const double &fill_value) {
+    if (nsets_ == 1) {
+      size_ = count;
+      full_vector_.resize(count, fill_value);
+    } else {
+      IMP_THROW("Cannot add particles when using more than one attribute set",
+                IndexException);
+    }
+  }
+
+  iterator begin() { return full_vector_.begin() + offset_; }
+  iterator end() { return full_vector_.begin() + offset_ + size_; }
+  const_iterator begin() const { return full_vector_.begin() + offset_; }
+  const_iterator end() const { return full_vector_.begin() + offset_ + size_; }
+};
+
 //! traits for a table of Float attribute (a C/C++ double type),
 //! see also DefaultTraits
 struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
+  typedef MultiIndexVector<ParticleIndexTag, double> Container;
   static double get_invalid() {
     /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
     /*if (std::numeric_limits<float>::has_quiet_NaN) {
@@ -134,11 +204,10 @@ struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
       } else*/
     return f < std::numeric_limits<double>::max();
   }
-  //  //! allow direct const access to the container data
-  //  static double const* access_container_data(Container const& c) { return c.data(); }
-  //  //! allow direct non-const access to the container data
-  //  static double*       access_container_data(Container&       c) { return c.data(); }
-
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 struct ParticleAttributeTableTraits

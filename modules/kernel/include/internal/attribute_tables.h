@@ -908,6 +908,48 @@ class FloatAttributeTable {
   }
   /** @} */
 
+  int get_number_of_attribute_sets(FloatKey k) const {
+    if (k.get_index() >= 7) {
+      int ind = k.get_index() - 7;
+      if (data_.size() <= ind) {
+        return 1;
+      } else {
+        return data_.access_data()[ind].get_number_of_sets();
+      }
+    } else {
+      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+                TypeException);
+    }
+  }
+
+  void set_number_of_attribute_sets(FloatKey k, int nsets) {
+    if (k.get_index() >= 7) {
+      int ind = k.get_index() - 7;
+      if (data_.size() <= ind) {
+        data_.access_data().resize(ind + 1);
+      } else {
+        data_.access_data()[ind].set_number_of_sets(
+            nsets, internal::FloatAttributeTableTraits::get_invalid());
+      }
+    } else {
+      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+                TypeException);
+    }
+  }
+
+  void set_active_attribute_set(FloatKey k, int set) {
+    if (k.get_index() >= 7) {
+      int ind = k.get_index() - 7;
+      if (data_.size() <= ind) {
+        data_.access_data().resize(ind + 1);
+      }
+      data_.access_data()[ind].set_active_set(set);
+    } else {
+      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+                TypeException);
+    }
+  }
+
   void set_range(FloatKey k, FloatRange fr) { ranges_[k.get_index()] = fr; }
   FloatRange get_range(FloatKey k) {
     FloatRange ret = ranges_[k.get_index()];
