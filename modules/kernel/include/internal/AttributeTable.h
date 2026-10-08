@@ -126,15 +126,35 @@ class MultiIndexVector {
   // The full IndexVector of size_ particle attributes over nsets_
   // attribute sets
   V full_vector_;
-  // The position in full_vector_ of the start of the active set
-  // ( = size_ * set_index)
+  int active_set_;
+  // Pointer into full_vector_ of the start of the active set
+  // ( = size_ * active_set_)
+  T *front_pointer_;
   size_t offset_;
   size_t size_;
   int nsets_;
 
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
-    ar(offset_, size_, nsets_, full_vector_);
+    ar(nsets_, full_vector_);
+    if (nsets_ > 1) {
+      ar(active_set_);
+    } else {
+      if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+        active_set_ = 0;
+      }
+    }
+    if (std::is_base_of<cereal::detail::InputArchiveBase, Archive>::value) {
+      size_ = full_vector_.size() / nsets_;
+      set_front_pointer();
+    }
+  }
+
+  void set_front_pointer() {
+    offset_ = size_ * active_set_;
+    // Since we keep a raw pointer, must reset it whenever full_vector_'s
+    // storage potentially changes, e.g. after any resize
+    front_pointer_ = full_vector_.data() + offset_;
   }
 
  public:
@@ -142,12 +162,14 @@ class MultiIndexVector {
   typedef P::const_iterator const_iterator;
   typedef P::iterator iterator;
 
-  MultiIndexVector() : offset_(0), size_(0), nsets_(1) {}
+  MultiIndexVector() : active_set_(0), size_(0), nsets_(1) {
+    set_front_pointer();
+  }
   IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < size_,
-              return full_vector_.data()[offset_ + get_as_unsigned_int(i)]);
+              return front_pointer_[get_as_unsigned_int(i)]);
 
-  T* data() { return full_vector_.data() + offset_; }
-  const T* data() const { return full_vector_.data() + offset_; }
+  T* data() { return front_pointer_; }
+  const T* data() const { return front_pointer_; }
 
   T* full_data() { return full_vector_.data(); }
   const T* full_data() const { return full_vector_.data(); }
@@ -159,21 +181,25 @@ class MultiIndexVector {
 
   void set_number_of_sets(int nsets, const double &fill_value) {
     IMP_USAGE_CHECK(nsets >= 1, "Cannot have less than 1 set");
-    IMP_USAGE_CHECK(offset_ == 0,
+    IMP_USAGE_CHECK(active_set_ == 0,
                     "Cannot set number of sets when active set is not 0");
     nsets_ = nsets;
+    active_set_ = 0;
     full_vector_.resize(size_ * nsets, fill_value);
+    set_front_pointer();
   }
 
   void set_active_set(int set) {
     IMP_USAGE_CHECK(set >= 0 && set < nsets_, "Invalid set index");
-    offset_ = size_ * set;
+    active_set_ = set;
+    set_front_pointer();
   }
 
   void resize(size_t count, const double &fill_value) {
     if (nsets_ == 1) {
       size_ = count;
       full_vector_.resize(count, fill_value);
+      set_front_pointer();
     } else {
       IMP_THROW("Cannot add particles when using more than one attribute set",
                 IndexException);

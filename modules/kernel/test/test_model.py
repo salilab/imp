@@ -399,6 +399,25 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
                                delta=0.1)
 
+    def test_serialize_float_attributes_sets(self):
+        """Check that multiple sets of float attributes are (de-)serialized"""
+        m = IMP.Model()
+        fk = IMP.FloatKey("hi")
+        p = IMP.Particle(m)
+        m.add_attribute(fk, p.get_index(), 5.4)
+        m.set_number_of_attribute_sets(fk, 2)
+        m.set_active_attribute_set(fk, 1)
+        m.add_attribute(fk, p.get_index(), 9.9)
+
+        dump = pickle.dumps(m)
+        m2 = pickle.loads(dump)
+        self.assertEqual(m2.get_number_of_attribute_sets(fk), 2)
+        self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 9.9,
+                               delta=0.1)
+        m2.set_active_attribute_set(fk, 0)
+        self.assertAlmostEqual(m2.get_attribute(fk, p.get_index()), 5.4,
+                               delta=0.1)
+
     def test_serialize_sparse_float_attributes(self):
         """Check that Model sparse float attributes are (de-)serialized"""
         m = IMP.Model()
