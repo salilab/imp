@@ -12,7 +12,7 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 void LennardJonesParameters::precalculate(int i) {
   LennardJonesType *ti = get(i);
-  for (int j = 0; j < types_.size(); ++j) {
+  for (unsigned j = 0; j < types_.size(); ++j) {
     LennardJonesType *tj = get(j);
     int ind = get_parameter_index(i, j);
 
