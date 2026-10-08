@@ -2,8 +2,8 @@
 
 
 %{
-PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data,
-                                 bool read_only)
+PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, int nsets,
+                                 double *data, bool read_only)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (numpy_import_retval != 0) {
@@ -12,14 +12,22 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data,
     return NULL;
   }
 
-  npy_intp dims[1];
-  dims[0] = sz;
+  int ndim;
+  npy_intp dims[2];
+  if (nsets > 1) {
+    ndim = 2;
+    dims[0] = nsets;
+    dims[1] = sz;
+  } else {
+    ndim = 1;
+    dims[0] = sz;
+  }
 
   /* Note that attribute tables are C-style contiguous so no special strides or
      other flags need to be passed to NumPy */
-  PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, NULL,
-                              data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
-                              NULL);
+  PyObject *obj = PyArray_New(&PyArray_Type, ndim, dims,
+                              NPY_DOUBLE, NULL, data, 0,
+                              read_only ? 0 : NPY_ARRAY_WRITEABLE, NULL);
   if (!obj) {
     return NULL;
   }
@@ -248,7 +256,7 @@ PyObject *_get_derivatives_numpy(IMP::Model *m, IMP::FloatKey k,
                                  PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->get_derivative_size(k);
-  return _get_floats_data_numpy(m_pyobj, sz,
+  return _get_floats_data_numpy(m_pyobj, sz, 0,
                              sz == 0 ? nullptr : m->access_derivative_data(k),
                              read_only);
 }
@@ -257,10 +265,11 @@ PyObject *_get_floats_numpy(IMP::Model *m, IMP::FloatKey k, PyObject *m_pyobj,
                             bool read_only)
 {
   unsigned sz = m->IMP::internal::FloatAttributeTable::get_attribute_size(k);
-  return _get_floats_data_numpy(m_pyobj, sz,
-           sz == 0 ? nullptr
-             : m->IMP::internal::FloatAttributeTable::access_attribute_data(k),
-           read_only);
+  int nsets = m->get_number_of_attribute_sets(k);
+  return _get_floats_data_numpy(m_pyobj, sz, nsets,
+       sz == 0 ? nullptr
+         : m->IMP::internal::FloatAttributeTable::access_full_attribute_data(k),
+       read_only);
 }
 
 PyObject *_get_ints_numpy(IMP::Model *m, IMP::IntKey k, PyObject *m_pyobj,

@@ -149,6 +149,9 @@ class MultiIndexVector {
   T* data() { return full_vector_.data() + offset_; }
   const T* data() const { return full_vector_.data() + offset_; }
 
+  T* full_data() { return full_vector_.data(); }
+  const T* full_data() const { return full_vector_.data(); }
+
   std::size_t size() const { return size_; }
 
   //! Get the number of attribute sets (we generally start with 1)
@@ -208,6 +211,11 @@ struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
+  //! allow direct const access to the full container data (all sets)
+  static ContainerConstDataAccess access_full_container_data(Container const& c) { return c.full_data(); }
+  //! allow direct non-const access to the full container data (all sets)
+  static ContainerDataAccess access_full_container_data(Container&       c) { return c.full_data(); }
 };
 
 struct ParticleAttributeTableTraits

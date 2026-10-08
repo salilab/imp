@@ -834,6 +834,13 @@ class FloatAttributeTable {
     return internal::FloatAttributeTableTraits::access_container_data
       ((data_.access_data())[ki]);
   }
+  double* access_full_attribute_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    "coordinates and radius should be accessed by specialized methods");
+    unsigned int ki= k.get_index()-7;
+    return internal::FloatAttributeTableTraits::access_full_container_data
+      ((data_.access_data())[ki]);
+  }
   //! Get the size of the derivative table for the given key.
   //! 0 is returned if the derivative does not exist in the model.
   unsigned get_derivative_size(FloatKey k) const {

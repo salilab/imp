@@ -96,6 +96,15 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(TypeError, m.set_number_of_attribute_sets, xkey, 2)
         self.assertRaises(TypeError, m.set_active_attribute_set, xkey, 2)
 
+        # NumPy view should return all 4 sets
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m.get_numpy(fk)
+            self.assertFalse(n.flags.owndata)
+            self.assertEqual(n.shape, (4, 2))
+            self.assertAlmostEqual(n[0,0], 42.0, delta=1e-4)
+            self.assertAlmostEqual(n[0,1], 99.0, delta=1e-4)
+            self.assertAlmostEqual(n[2,0], 19.0, delta=1e-4)
+
     @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
     def test_numpy_int(self):
         """Test using numpy arrays as input/output for Ints attributes"""
