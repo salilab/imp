@@ -123,6 +123,9 @@ class MultiIndexVector {
   typedef IndexVector<Tag, T, Allocator, Equal> V;
   typedef Vector<T, Allocator> P;
 
+  // Note that we provide a custom operator= so that must be updated
+  // if any members here are changed
+
   // The full IndexVector of size_ particle attributes over nsets_
   // attribute sets
   V full_vector_;
@@ -167,6 +170,25 @@ class MultiIndexVector {
   }
   IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < size_,
               return front_pointer_[get_as_unsigned_int(i)]);
+
+  // Update front pointer after copy constructor
+  MultiIndexVector(const MultiIndexVector& s)
+          : full_vector_(s.full_vector_), active_set_(s.active_set_),
+            size_(s.size_), nsets_(s.nsets_) {
+    // pointer points into s; update it to point into this
+    set_front_pointer();
+  }
+
+  // Update front pointer after assignment from another object
+  MultiIndexVector& operator=(const MultiIndexVector& s) {
+    full_vector_ = s.full_vector_;
+    active_set_ = s.active_set_;
+    size_ = s.size_;
+    nsets_ = s.nsets_;
+    // pointer points into s; update it to point into this
+    set_front_pointer();
+    return *this;
+  }
 
   T* data() { return front_pointer_; }
   const T* data() const { return front_pointer_; }
