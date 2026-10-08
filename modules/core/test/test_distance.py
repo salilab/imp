@@ -201,29 +201,28 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(imp_score, jax_score, delta=1e-3)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_jax_multi_coord(self):
-        """Test JAX implementation of DistanceRestraint, multiple coordset"""
+    def test_jax_multi(self):
+        """Test JAX implementation of DistanceRestraint, multi attrsets"""
         import IMP.jax
         import numpy as np
 
-        # First coordinate set
+        # First attribute set
         uf = IMP.core.Harmonic(1.0, 0.1)
         rsr = IMP.core.DistanceRestraint(self.imp_model, uf,
                                          self.particles[0], self.particles[1])
         imp_score1 = rsr.evaluate(False)
-        ji = rsr._get_jax(space=IMP.jax.FreeSpace)
-        jm = ji.get_jax_model()
-        orig_xyz = np.copy(jm['xyz'])
 
-        # Get IMP score for 2nd coordinate set
-        IMP.core.XYZ(self.particles[0]).set_coordinates((-6., 2., 0.))
-        IMP.core.XYZ(self.particles[2]).set_coordinates((6., 0., 4.))
+        # Get IMP score for 2nd attribute set
+        self.imp_model.set_number_of_sphere_attribute_sets(2)
+        self.imp_model.set_active_sphere_attribute_set(1)
+        IMP.core.XYZR.setup_particle(
+            self.particles[0], IMP.algebra.Sphere3D((-6., 2., 0.), 1.))
+        IMP.core.XYZR.setup_particle(
+            self.particles[1], IMP.algebra.Sphere3D((6., 2., 4.), 2.))
         imp_score2 = rsr.evaluate(False)
 
-        # Add both coordinate sets to JAX model
-        jm['xyz'] = np.stack((orig_xyz, jm['xyz']))
-        f = jax.jit(ji.score_func)
-        jax_score = f(jm)
+        # Get JAX scores for both attribute sets
+        jax_score = rsr._evaluate_jax()
         # Restraint should return a 1D JAX array as the score
         self.assertEqual(jax_score.shape, (2,))
         self.assertAlmostEqual(imp_score1, jax_score[0], delta=1e-3)
