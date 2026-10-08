@@ -32,9 +32,10 @@
   %pythoncode %{
     def _get_jax(self, space):
         import jax.numpy as jnp
-        funcs, keys = self._get_restraint_jax_funcs_keys(space)
+        multi_funcs, funcs, keys = self._get_restraint_jax_funcs_keys(space)
         def jax_sf(jm):
-            scores = jnp.asarray([f(jm) for f in funcs])
+            scores = jnp.concatenate([f(jm) for f in multi_funcs]
+                                     + [jnp.asarray([f(jm) for f in funcs])])
             return -jnp.sum(jnp.log(scores))
         return self._wrap_jax(jax_sf, keys=keys)
   %}

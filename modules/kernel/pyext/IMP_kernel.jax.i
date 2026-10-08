@@ -23,6 +23,30 @@ class JAXWarning(UserWarning):
         return JAXRestraintInfo(m=self.get_model(), score_func=score_func,
                                 weight=self.get_weight(), keys=keys)
 
+    @classmethod
+    def _wrap_jax_multi(cls, restraint, score_func, keys=None):
+        """Create the return value for _get_jax_multi.
+           This is similar to _wrap_jax but is used to handle the JAX scoring
+           function for multiple restraints at once. It is designed to be
+           called from the _get_jax_multi class method (if implemented).
+           _get_jax_multi is called (typically by RestraintSet) once for
+           each type of restraint, and is given a list of all restraints.
+           It should return a JAX function that scores some of the restraints
+           using _wrap_jax_multi (or None), and a list of the remaining
+           unhandled restraints.
+
+           @param restraint Any one of the restraints that is being scored.
+           @param score_func A function implemented using JAX that takes
+                  a single argument (the current JAX Model) and returns
+                  an array of scores (one per restraint). Note that this array
+                  should be weighted by the restraint weights; that is not
+                  done in this method.
+           @param keys As for _wrap_jax().
+        """
+        from IMP._jax_util import JAXRestraintInfo
+        return JAXRestraintInfo(m=restraint.get_model(), score_func=score_func,
+                                weight=1.0, keys=keys)
+
     def _get_jax(self, space):
         """Return a JAX implementation of this Restraint.
            Implement this method in a Restraint subclass to provide
@@ -218,16 +242,29 @@ class JAXWarning(UserWarning):
 %extend IMP::RestraintSet {
   %pythoncode %{
     def _get_restraint_jax_funcs_keys(self, space):
-        jis = [r.get_derived_object()._get_jax(space) for r in self.restraints]
+        restraints = [r.get_derived_object() for r in self.restraints]
+        # First, give restraints a chance to more efficiently fuse
+        # themselves using the _get_jax_multi class method
+        jax_multi_cls = frozenset(type(r) for r in restraints
+                                  if hasattr(r, '_get_jax_multi'))
+        multi_jis = []
+        for c in jax_multi_cls:
+            ji, restraints = c._get_jax_multi(restraints, space)
+            if ji:
+                multi_jis.append(ji)
+        multi_funcs = [j.score_func for j in multi_jis]
+        # Any remaining restraints are handled individually
+        jis = [r._get_jax(space) for r in restraints]
         funcs = [j.score_func for j in jis]
-        keys = frozenset(x for j in jis for x in j._keys)
-        return funcs, keys
+        keys = frozenset(x for j in multi_jis + jis for x in j._keys)
+        return multi_funcs, funcs, keys
 
     def _get_jax(self, space):
-        funcs, keys = self._get_restraint_jax_funcs_keys(space)
+        multi_funcs, funcs, keys = self._get_restraint_jax_funcs_keys(space)
         def jax_sf(jm):
-            if funcs:
-                return sum(f(jm) for f in funcs)
+            if funcs or multi_funcs:
+                return (sum(f(jm) for f in funcs)
+                        + sum(sum(f(jm)) for f in multi_funcs))
             else:
                 # sum([]) returns int, but we must return float
                 return 0.

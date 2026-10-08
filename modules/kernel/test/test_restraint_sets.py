@@ -8,6 +8,31 @@ except ImportError:
     jax = None
 
 
+class JAXMultiConstRestraint(IMP.Restraint):
+    def __init__(self, m, ps, value, multi_value):
+        super().__init__(m, "JAXMultiConstRestraint%1%")
+        self.m, self.ps = m, ps
+        self.value, self.multi_value = value, multi_value
+
+    def do_get_inputs(self):
+        return self.ps
+
+    def _get_jax(self, space):
+        return self._wrap_jax(lambda jm: self.value)
+
+    @classmethod
+    def _get_jax_multi(cls, restraints, space):
+        import jax.numpy as jnp
+        ours, rest = [], []
+        for r in restraints:
+            (ours if isinstance(r, cls) else rest).append(r)
+        if ours:
+            values = jnp.array([r.multi_value * r.get_weight() for r in ours])
+            return cls._wrap_jax_multi(ours[0], lambda jm: values), rest
+        else:
+            return None, restraints
+
+
 class LinkScoreState(IMP.ScoreState):
     """ScoreState that links one particle to another"""
 
@@ -333,6 +358,28 @@ class Tests(IMP.test.TestCase):
 
         # In periodic space, distance is 3.0, not 7.0
         self.assertAlmostEqual(jax_score, 3.0, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_score_multi(self):
+        """Test JAX RestraintSet with _get_jax_multi()"""
+        import IMP.jax
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        r1 = JAXMultiConstRestraint(m, [p], 42.0, 100.0)
+        r1.set_weight(2.0)
+        r2 = JAXMultiConstRestraint(m, [p], 18.0, 200.0)
+        r2.set_weight(3.0)
+        r = IMP.RestraintSet(m)
+        r.set_weight(4.0)
+        r.add_restraints([r1, r2])
+        # JAXMultiConstRestraint deliberately returns a different score
+        # via _get_jax() or _get_jax_multi() so that we can test them here
+        # (normally they should return the same value)
+        # Score via _get_jax():
+        self.assertAlmostEqual(
+            (r1._evaluate_jax() + r2._evaluate_jax()) * 4.0, 552.0, delta=1e-4)
+        # RestraintSet should fuse the two restraints using _get_jax_multi():
+        self.assertAlmostEqual(r._evaluate_jax(), 3200.0, delta=1e-4)
 
 
 if __name__ == '__main__':
