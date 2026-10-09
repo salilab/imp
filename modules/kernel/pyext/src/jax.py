@@ -116,14 +116,23 @@ class _CompactArray:
            given IMP Model `m`."""
         full_view = m.get_numpy(fk)
         # IMP uses infinity to represent particles without the attribute
-        indexes = np.nonzero(full_view != np.inf)[0]
+        if full_view.ndim == 2:
+            # If we are using multiple attribute sets, get indexes
+            # over all sets
+            indexes = np.unique(np.nonzero(full_view != np.inf)[-1])
+        else:
+            indexes = np.nonzero(full_view != np.inf)[0]
         # Any particle not in `indexes` is mapped to the last element,
         # which is inf (just as in the original full view)
-        mapping = np.full(len(full_view), len(full_view) + 1, dtype=np.int32)
+        len_map = full_view.shape[-1]
+        mapping = np.full(len_map, len_map + 1, dtype=np.int32)
         mapping[indexes] = np.arange(len(indexes), dtype=np.int32)
         remap = _Remap(full_view, indexes, mapping)
-        return cls(np.concatenate((full_view[indexes], np.array([np.inf]))),
-                   remap)
+        infpad = np.array([np.inf])
+        if full_view.ndim == 2:
+            infpad = np.broadcast_to(infpad, (full_view.shape[0], 1))
+        concat = np.concatenate((full_view[...,indexes], infpad), axis=-1)
+        return cls(concat, remap)
 
     def tree_flatten(self):
         # Convert to JAX. Only `data` is sent to the device; everything
@@ -139,7 +148,10 @@ class _CompactArray:
 
     def __getitem__(self, idx):
         """Lookup by particle index"""
-        return self.data[self._map(idx)]
+        if isinstance(idx, tuple):
+            return self.data[idx[:-1] + (self._map(idx[-1]),)]
+        else:
+            return self.data[self._map(idx)]
 
     @property
     def at(self):
