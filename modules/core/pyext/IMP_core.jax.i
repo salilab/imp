@@ -230,8 +230,8 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_harmonic_distance_pair_score(jm, d, k):
-            xyzs = jm['xyz'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
+            xyzs = jm['xyz'][...,indexes,:]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
             drs = space.distance(diff)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_harmonic_distance_pair_score,
@@ -245,10 +245,10 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, d, k):
-            xyzs = jm['xyz'][indexes]
-            rs = jm['r'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
-            drs = space.distance(diff) - rs.sum(axis=1)
+            xyzs = jm['xyz'][...,indexes,:]
+            rs = jm['r'][...,indexes]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
+            drs = space.distance(diff) - rs.sum(axis=-1)
             return 0.5 * k * (d - drs)**2
         f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
         return self._wrap_jax(m, f)
@@ -261,10 +261,10 @@
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, d, k):
-            xyzs = jm['xyz'][indexes]
-            rs = jm['r'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
-            drs = space.distance(diff) - rs.sum(axis=1)
+            xyzs = jm['xyz'][...,indexes,:]
+            rs = jm['r'][...,indexes]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
+            drs = space.distance(diff) - rs.sum(axis=-1)
             return 0.5 * k * jax.lax.min(d - drs, 0.0) ** 2
         f = functools.partial(jax_score, d=self.get_x0(), k=self.get_k())
         return self._wrap_jax(m, f)
@@ -277,10 +277,10 @@
         import jax.numpy as jnp
         import jax.lax
         def jax_score(jm, k):
-            xyzs = jm['xyz'][indexes]
-            rs = jm['r'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
-            drs = space.distance(diff) - rs.sum(axis=1)
+            xyzs = jm['xyz'][...,indexes,:]
+            rs = jm['r'][...,indexes]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
+            drs = space.distance(diff) - rs.sum(axis=-1)
             return 0.5 * k * jax.lax.min(drs, 0.0) ** 2
         f = functools.partial(jax_score, k=self.get_k())
         return self._wrap_jax(m, f)
@@ -292,10 +292,10 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def jax_score(jm, uf):
-            xyzs = jm['xyz'][indexes]
-            rs = jm['r'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
-            drs = space.distance(diff) - rs.sum(axis=1)
+            xyzs = jm['xyz'][...,indexes,:]
+            rs = jm['r'][...,indexes]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
+            drs = space.distance(diff) - rs.sum(axis=-1)
             return uf(drs)
         sfnc = self.get_score_functor()
         uf = sfnc.get_unary_function().get_derived_object()

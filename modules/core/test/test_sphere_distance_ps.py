@@ -8,7 +8,7 @@ except ImportError:
     jax = None
 
 
-def make_score(uf):
+def make_score(uf, multi=False):
     m = IMP.Model()
     s = IMP.core.SphereDistancePairScore(uf)
     p1 = IMP.Particle(m)
@@ -17,6 +17,15 @@ def make_score(uf):
     p2 = IMP.Particle(m)
     IMP.core.XYZR.setup_particle(
         p2, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5., 6., 7.), 2.0))
+
+    if multi:
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZR.setup_particle(
+            p1, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(8., 0., 0.), 1.0))
+        IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(15., 6., 7.), 2.0))
+
     return m, p1, p2, s
 
 
@@ -164,6 +173,25 @@ class Tests(IMP.test.TestCase):
         jm = ji.get_jax_model()
         jax_score = jax_s(jm)
         self.assertAlmostEqual(jax_score, -7.6515303, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi(self):
+        """Test JAX implementation with multiple attrsets"""
+        import jax.numpy as jnp
+        import IMP.jax
+        m, p1, p2, s = make_score(IMP.core.Linear(2.0, 3.0), multi=True)
+        ji = s._get_jax(m, jnp.array([[p1.get_index(), p2.get_index()]]),
+                        space=IMP.jax.FreeSpace)
+        m.set_active_sphere_attribute_set(0)
+        imp_score1 = s.evaluate_index(m, (p1, p2), None)
+        m.set_active_sphere_attribute_set(1)
+        imp_score2 = s.evaluate_index(m, (p1, p2), None)
+        jax_s = jax.jit(ji.score_func)
+        jm = ji.get_jax_model()
+        jax_score = jax_s(jm)
+        self.assertEqual(jax_score.shape, (2,1 ))
+        self.assertAlmostEqual(jax_score[0,0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1,0], imp_score2, delta=1e-4)
 
 
 if __name__ == '__main__':
