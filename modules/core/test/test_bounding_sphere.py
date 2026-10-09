@@ -155,6 +155,37 @@ class Tests(IMP.test.TestCase):
         jax_score = f(jm)
         self.assertAlmostEqual(jax_score, 49.28645, delta=1e-3)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi(self):
+        """Test JAX BoundingSphere3DSingletonScore with multi attrsets"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1_xyz = IMP.core.XYZ.setup_particle(
+            p1, IMP.algebra.Vector3D(0, 10, 0))
+        p2 = IMP.Particle(m)
+        d2_xyzr = IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D((0, 16, 0), 3.0))
+
+        sphere = IMP.algebra.Sphere3D(
+            IMP.algebra.Vector3D(0, 2, 0), 4)
+        s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Linear(0, 1),
+                                                    sphere)
+        r = IMP.container.SingletonsRestraint(s, [p1, p2])
+
+        imp_score1 = r.evaluate(False)
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        d1_xyz = IMP.core.XYZ.setup_particle(
+            p1, IMP.algebra.Vector3D(0, 20, 0))
+        d2_xyzr = IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D((0, 26, 0), 3.0))
+        imp_score2 = r.evaluate(False)
+
+        jax_score = r._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

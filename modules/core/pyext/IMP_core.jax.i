@@ -181,8 +181,8 @@
         import numpy as np
         import jax.numpy as jnp
         def score(jm, use_radii, center, radius, uf):
-            xyzs = jm['xyz'][indexes]
-            radii = jnp.where(use_radii, jm['r'][indexes], 0.0)
+            xyzs = jm['xyz'][...,indexes,:]
+            radii = jnp.where(use_radii, jm['r'][...,indexes], 0.0)
             drs = space.distance(xyzs - center) + radii - radius
             return jnp.where(drs < 0.000001, 0.0, uf(drs))
         use_radii = np.array([XYZR.get_is_setup(m, IMP.ParticleIndex(ind))
