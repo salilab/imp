@@ -131,7 +131,7 @@ class _CompactArray:
         infpad = np.array([np.inf])
         if full_view.ndim == 2:
             infpad = np.broadcast_to(infpad, (full_view.shape[0], 1))
-        concat = np.concatenate((full_view[...,indexes], infpad), axis=-1)
+        concat = np.concatenate((full_view[..., indexes], infpad), axis=-1)
         return cls(concat, remap)
 
     def tree_flatten(self):
