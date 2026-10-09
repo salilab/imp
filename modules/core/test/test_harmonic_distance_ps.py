@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
         jax_s = jax.jit(ji.score_func)
         jm = ji.get_jax_model()
         jax_score = jax_s(jm)
-        self.assertEqual(jax_score.shape, (2,1 ))
+        self.assertEqual(jax_score.shape, (2,1))
         self.assertAlmostEqual(jax_score[0,0], imp_score1, delta=1e-4)
         self.assertAlmostEqual(jax_score[1,0], imp_score2, delta=1e-4)
 
