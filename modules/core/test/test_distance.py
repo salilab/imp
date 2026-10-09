@@ -204,7 +204,6 @@ class Tests(IMP.test.TestCase):
     def test_jax_multi(self):
         """Test JAX implementation of DistanceRestraint, multi attrsets"""
         import IMP.jax
-        import numpy as np
 
         # First attribute set
         uf = IMP.core.Harmonic(1.0, 0.1)
