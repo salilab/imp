@@ -17,12 +17,16 @@ class PythonExampleRestraint(IMP.Restraint):
             d.add_to_derivative(2, deriv, sa.get_derivative_accumulator())
         sa.add_score(score)
 
-    def _get_jax(self):
+    def _get_jax(self, space):
         """Implementation of the restraint using JAX"""
         import functools
+        import IMP.jax
         def jax_restraint(X, k, pi):
-            xyz = X['xyz'][pi]
-            return 0.5 * k * xyz[2] * xyz[2]
+            xyz = X['xyz'][...,pi,:]
+            return 0.5 * k * xyz[...,2] * xyz[...,2]
+        if space is not IMP.jax.FreeSpace:
+            raise NotImplementedError(
+                "PythonExampleRestraint does not support periodic boundaries")
         f = functools.partial(jax_restraint, k=self.k, pi=self.p)
         return self._wrap_jax(f)
 

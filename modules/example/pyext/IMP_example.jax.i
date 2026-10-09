@@ -15,19 +15,37 @@
 
 %extend IMP::example::ExampleRestraint {
   %pythoncode %{
-    def _get_jax(self):
+    def _get_jax(self, space):
         """Implementation of the restraint using JAX.
            For a Restraint, we must return a single JAX function which
            takes a single argument, the JAX Model, and returns its score.
            The JAX Model (here called `jm`) is a JAX object which contains
            the same information as the IMP Model, as a simple Python dict.
-           For example, jm['xyz'] is an N x 3 array of XYZ coordinates."""
+           For example, jm['xyz'] is (usually) an N x 3 array of
+           XYZ coordinates - unless multiple coordinate/attribute sets are
+           being scored simultaneously in parallel, in which case it is
+           an M x N x 3 array, where M is the number of sets.
+
+           All JAX restraints should support periodic boundary conditions
+           (PBC), which are controlled by the `space` object, an instance
+           of the IMP.jax.Space class which provides PBC-aware distance
+           calculation and displacement functions. If the restraint does not
+           support PBC, raise a NotImplementedError instead.
+        """
+        import IMP.jax
         def jax_restraint(jm, k, pi):
             # Get the xyz coordinates for particle pi in the JAX Model
-            xyz = jm['xyz'][pi]
+            # The ellipsis (...) operator here ensures that we handle both
+            # 2D coordinate arrays from a plain model or 3D arrays from
+            # a model containing multiple attribute sets.
+            xyz = jm['xyz'][...,pi,:]
             # Score the Z coordinate. Note that we do not need to calculate
             # its first derivatives; this is handled automatically by JAX.
-            return 0.5 * k * xyz[2] * xyz[2]
+            return 0.5 * k * xyz[...,2] * xyz[...,2]
+        # We don't support periodic boundary conditions here
+        if space is not IMP.jax.FreeSpace:
+            raise NotImplementedError(
+                "ExampleRestraint does not support periodic boundaries")
         # We must return a function which takes only one argument, `jm`.
         # Here we use functools.partial to "bake in" the other parameters
         # k and pi, getting their values from the IMP Restraint object.
@@ -89,11 +107,13 @@
            for a given set of particle pair indexes. Unlike an IMP C++
            PairScore (which takes a single pair of indexes), the JAX score
            takes multiple indexes, as an Nx2 array, and should return an
-           N-element array of scores."""
+           N-element array of scores. (If multiple attribute sets are being
+           used, it will take an MxNx2 array of indexes and should return
+           an MxN array of scores.)"""
         import jax.numpy as jnp
         def pair_score(jm, x0, k):
-            xyzs = jm['xyz'][indexes]
-            diff = space.distance(xyzs[:,0] - xyzs[:,1]) - x0
+            xyzs = jm['xyz'][...,indexes,:]
+            diff = space.distance(xyzs[...,0,:] - xyzs[...,1,:]) - x0
             return 0.5 * k * diff * diff
         f = functools.partial(pair_score, x0=self.get_mean(),
                               k=self.get_force_constant())
