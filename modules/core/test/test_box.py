@@ -48,16 +48,20 @@ class Tests(IMP.test.TestCase):
         s = IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0, 1), bbi)
         r = IMP.core.SingletonRestraint(m, s, p)
 
-        ji = r._get_jax(space=IMP.jax.FreeSpace)
-        jm = ji.get_jax_model()
-        s = jax.jit(ji.score_func)
-
-        for pt in ((11, 12, 13), (1, 2, 3), (30, 40, 50)):
-            coord = IMP.algebra.Vector3D(pt)
-            d.set_coordinates(coord)
-            imp_score = r.evaluate(False)
-            jax_score = s(jm)
-            self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
+        pts = ((11, 12, 13), (1, 2, 3), (30, 40, 50))
+        m.set_number_of_sphere_attribute_sets(len(pts))
+        imp_scores = []
+        for i, pt in enumerate(pts):
+            m.set_active_sphere_attribute_set(i)
+            if IMP.core.XYZ.get_is_setup(p):
+                d = IMP.core.XYZ(p)
+            else:
+                d = IMP.core.XYZ.setup_particle(p)
+            d.set_coordinates(IMP.algebra.Vector3D(pt))
+            imp_scores.append(r.evaluate(False))
+        jax_score = r._evaluate_jax()
+        for i in range(len(pts)):
+            self.assertAlmostEqual(jax_score[i], imp_scores[i], delta=1e-4)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):

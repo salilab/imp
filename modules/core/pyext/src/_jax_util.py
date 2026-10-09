@@ -18,7 +18,7 @@ def _get_jax_restraint(r, space):
     score_jax = ji.score_func
 
     def jax_restraint(jm):
-        return jnp.sum(score_jax(jm))
+        return jnp.sum(score_jax(jm), axis=-1)
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 

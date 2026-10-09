@@ -10,12 +10,17 @@ except ImportError:
     jax = None
 
 
-def make_score():
+def make_score(multi=False):
     m = IMP.Model()
     func = IMP.core.Harmonic(1.0, 4.0)
     s = IMP.core.DistanceToSingletonScore(func, IMP.algebra.Vector3D(0,0,0))
     p = IMP.Particle(m)
     IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(4,0,0))
+    if multi:
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(14,0,0))
+        m.set_active_sphere_attribute_set(0)
     return m, p, s
 
 
@@ -60,14 +65,16 @@ class Tests(IMP.test.TestCase):
     def test_jax_restraint(self):
         """Test JAX DistanceToSingletonScore in a SingletonRestraint"""
         import IMP.jax
-        m, p, s = make_score()
+        m, p, s = make_score(multi=True)
         r = IMP.core.SingletonRestraint(m, s, p)
-
-        ji = r._get_jax(space=IMP.jax.FreeSpace)
-        X = ji.get_jax_model()
-        j = jax.jit(ji.score_func)
+        jax_score = r._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        imp_score1 = r.evaluate(False)
+        m.set_active_sphere_attribute_set(1)
+        imp_score2 = r.evaluate(False)
         # Compare JAX with IMP C++ implementation
-        self.assertAlmostEqual(j(X), r.evaluate(False), delta=0.01)
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=0.01)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=0.01)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_restraint_periodic(self):

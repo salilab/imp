@@ -142,7 +142,7 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def score(jm, point, uf):
-            xyzs = jm['xyz'][indexes]
+            xyzs = jm['xyz'][...,indexes,:]
             drs = space.distance(xyzs - point)
             return uf(drs)
         uf = self.get_unary_function().get_derived_object()
@@ -157,7 +157,7 @@
     def _get_jax(self, m, indexes, space):
         import jax.numpy as jnp
         def score(jm, box_min, box_max, uf):
-            xyzs = jm['xyz'][indexes]
+            xyzs = jm['xyz'][...,indexes,:]
             # This calculates the distance and the score for every point,
             # even those inside the box. IMP just returns zero for points
             # inside the box, skipping the distance calculation.
