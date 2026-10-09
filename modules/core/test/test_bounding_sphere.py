@@ -71,8 +71,42 @@ class Tests(IMP.test.TestCase):
             self._test_sphere_(bsii)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
-    def test_jax(self):
-        """Test JAX BoundingSphere3DSingletonScore"""
+    def test_jax_bare(self):
+        """Test bare JAX BoundingSphere3DSingletonScore"""
+        import jax.numpy as jnp
+        import IMP.jax
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1_xyz = IMP.core.XYZ.setup_particle(
+            p1, IMP.algebra.Vector3D(10, 0, 0))
+        p2 = IMP.Particle(m)
+        d2_xyzr = IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D((0, 0, 16), 3.0))
+        p3 = IMP.Particle(m)
+        d3_xyz = IMP.core.XYZ.setup_particle(
+            p3, IMP.algebra.Vector3D(20, 0, 0))
+        p4 = IMP.Particle(m)
+        d4_xyzr = IMP.core.XYZR.setup_particle(
+            p4, IMP.algebra.Sphere3D((0, 0, 26), 3.0))
+
+        sphere = IMP.algebra.Sphere3D(
+            IMP.algebra.Vector3D(0, 0, 0), 4)
+        s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Linear(0, 1),
+                                                    sphere)
+        ji = s._get_jax(m, jnp.array([p1.get_index(), p2.get_index(),
+                                      p3.get_index(), p4.get_index()]),
+                        space=IMP.jax.FreeSpace)
+        j = jax.jit(ji.score_func)
+        jm = ji.get_jax_model()
+        jax_score = j(jm)
+        self.assertEqual(jax_score.shape, (4,))
+        for i, p in enumerate((p1, p2, p3, p4)):
+            imp_score = s.evaluate_index(m, p, None)
+            self.assertAlmostEqual(imp_score, jax_score[i], delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_in_restraint(self):
+        """Test JAX BoundingSphere3DSingletonScore in a restraint"""
         m = IMP.Model()
         p1 = IMP.Particle(m)
         d1_xyz = IMP.core.XYZ.setup_particle(p1)
@@ -103,6 +137,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Test JAX BoundingSphere3DSingletonScore with PBC"""
+        import jax.numpy as jnp
         space = IMP.jax.PeriodicSpace([20., 20., 20.])
 
         m = IMP.Model()
@@ -114,7 +149,7 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.Vector3D(1, 2, 3), 4)
         s = IMP.core.BoundingSphere3DSingletonScore(IMP.core.Harmonic(0, 1),
                                                     sphere)
-        ji = s._get_jax(m, [p1.get_index()], space=space)
+        ji = s._get_jax(m, jnp.asarray([p1.get_index()]), space=space)
         jm = ji.get_jax_model()
         f = jax.jit(ji.score_func)
         jax_score = f(jm)
