@@ -218,10 +218,10 @@
   %pythoncode %{
     def _get_jax(self, m, indexes, space):
         def score_float_key(jm, key, uf):
-            return uf(jm[key][indexes])
+            return uf(jm[key][...,indexes])
 
         def score_xyz_key(jm, xyz_index, uf):
-            return uf(jm['xyz'][indexes, xyz_index])
+            return uf(jm['xyz'][..., indexes, xyz_index])
 
         uf = self.get_unary_function().get_derived_object()._get_jax()
         key = self.get_key()
