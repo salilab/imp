@@ -92,7 +92,6 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_compact_array_multi(self):
         """Test JAX CompactArray class with multiple attribute sets"""
-        import numpy as np
         # Make a Model with fk particles at indexes 10, 16
         # in two attribute sets
         m, p1, p2 = _make_model(multi=True)
