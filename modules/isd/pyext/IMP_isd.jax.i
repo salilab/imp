@@ -88,32 +88,71 @@
 
 %extend IMP::isd::CrossLinkMSRestraint {
   %pythoncode %{
-    def _get_contributions_sigma_numpy(self):
+    @staticmethod
+    def _get_contributions_sigma_numpy(rs):
+        """Get the particle indexes for all sigma nuisances for all
+           contributions to the given list of restraints."""
         import numpy
-        n = self.get_number_of_contributions()
-        ret = numpy.empty((n, 2), int)
-        for i in range(n):
-            ret[i] = self.get_contribution_sigma_indexes(i)
+        import itertools
+        nconts = [r.get_number_of_contributions() for r in rs]
+        ret = numpy.empty((sum(nconts), 2), int)
+        i = itertools.count(0)
+        for (ncont, r) in zip(nconts, rs):
+            for c in range(ncont):
+                ret[next(i)] = r.get_contribution_sigma_indexes(c)
         return ret
 
-    def _get_contributions_psi_numpy(self):
+    @staticmethod
+    def _get_contributions_psi_numpy(rs):
+        """Get the particle indexes for psi sigma nuisances for all
+           contributions to the given list of restraints."""
         import numpy
-        n = self.get_number_of_contributions()
-        ret = numpy.empty(n, int)
-        for i in range(n):
-            ret[i] = self.get_contribution_psi_index(i)
+        import itertools
+        nconts = [r.get_number_of_contributions() for r in rs]
+        ret = numpy.empty(sum(nconts), int)
+        i = itertools.count(0)
+        for (ncont, r) in zip(nconts, rs):
+            for c in range(ncont):
+                ret[next(i)] = r.get_contribution_psi_index(c)
         return ret
 
-    def _get_contributions_particles_numpy(self):
+    @staticmethod
+    def _get_contributions_particles_numpy(rs):
+        """Get the particle indexes for crosslink endpoints for all
+           contributions to the given list of restraints."""
         import numpy
-        n = self.get_number_of_contributions()
-        ret = numpy.empty((n, 2), int)
-        for i in range(n):
-            ret[i] = self.get_contribution_particle_indexes(i)
+        import itertools
+        nconts = [r.get_number_of_contributions() for r in rs]
+        ret = numpy.empty((sum(nconts), 2), int)
+        i = itertools.count(0)
+        for (ncont, r) in zip(nconts, rs):
+            for c in range(ncont):
+                ret[next(i)] = r.get_contribution_particle_indexes(c)
         return ret
 
-    def _get_jax(self, space):
+    @staticmethod
+    def _get_contributions_segments(rs):
+        """Map each contribution to the corresponding restraint index,
+           suitable for use by jax.ops.segment_prod()."""
+        import numpy
+        import itertools
+        nconts = [r.get_number_of_contributions() for r in rs]
+        # If every restraint has only a single contribution, skip
+        # and return None; segment ids aren't needed
+        if any(n > 1 for n in nconts):
+            segs = []
+            segment = itertools.count(0)
+            for ncont in nconts:
+                segs.extend([next(segment)] * ncont)
+            return numpy.array(segs)
+
+    @classmethod
+    def _get_jax_for_restraints(cls, rs, space):
+        """Get a JAX function that scores the given list of crosslink
+           restraints. They must all have the same length, slope and
+           get_log_prob flag."""
         import jax.numpy as jnp
+        import jax.ops
         import math
 
         def sphere_cap(r1, r2, d):
@@ -127,7 +166,7 @@
                 jnp.where(d >= r1 + r2, 0., mid_range))
 
         def get_probability(xyz, r, scale, ps, sigma, psi, length,
-                            slope):
+                            slope, segments, numrsr):
             # If the residues are assigned to the same particle-domain
             # get the distance as if the residue positions were randomly
             # taken from within the sphere representing the domain
@@ -162,26 +201,42 @@
                 term = term * prior
             onemprob = 1.0 - term
 
-            return 1.0 - jnp.prod(onemprob)
+            if segments is None:
+                # If only one contribution to each restraint, we are done
+                return 1.0 - onemprob
+            else:
+                # Otherwise, take the product of all contributions to each
+                # restraint
+                return 1.0 - jax.ops.segment_prod(onemprob, segments, numrsr,
+                                                  indices_are_sorted=True)
 
-        if self.get_is_length_variable():
-            raise NotImplementedError("Only implemented for fixed-length")
-        sigma = self._get_contributions_sigma_numpy()
-        psi = self._get_contributions_psi_numpy()
-        pis = self._get_contributions_particles_numpy()
-        get_log_prob = self.get_log_prob()
-        length = self.get_length()
-        slope = self.get_slope() if self.get_has_slope() else None
+        for r in rs:
+            if r.get_is_length_variable():
+                raise NotImplementedError("Only implemented for fixed-length")
+        sigma = cls._get_contributions_sigma_numpy(rs)
+        psi = cls._get_contributions_psi_numpy(rs)
+        pis = cls._get_contributions_particles_numpy(rs)
+        segments = cls._get_contributions_segments(rs)
+        get_log_prob = rs[0].get_log_prob()
+        length = rs[0].get_length()
+        slope = rs[0].get_slope() if rs[0].get_has_slope() else None
 
         def jax_restraint(X):
             prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
-                                   sigma, psi, length, slope)
+                                   sigma, psi, length, slope, segments,
+                                   len(rs))
             if get_log_prob:
                 return -jnp.log(prob)
             else:
                 return prob
 
-        return self._wrap_jax(jax_restraint,
-                              keys=[IMP.isd.Scale.get_scale_key()])
+        # Note that we don't weight the restraint anywhere. This matches
+        # the behavior of the C++ restraint.
+        return cls._wrap_jax_multi(rs[0], jax_restraint,
+                                   keys=[IMP.isd.Scale.get_scale_key()])
+
+    def _get_jax(self, space):
+        return self._get_jax_for_restraints([self], space)
+
   %}
 }

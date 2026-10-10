@@ -229,6 +229,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         psi2 = setupnuisance(m, 0.2, 0.0, 0.5, False)
 
         dr1 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+        # Weights should be ignored
+        dr1.set_weight(9999.0)
         dr1.add_contribution((p1, p2), (sigma1, sigma2), psi1)
         dr1.add_contribution((p2, p3), (sigma1, sigma2), psi2)
 
