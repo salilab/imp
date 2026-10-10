@@ -34,9 +34,11 @@
         import jax.numpy as jnp
         multi_funcs, funcs, keys = self._get_restraint_jax_funcs_keys(space)
         def jax_sf(jm):
-            scores = jnp.concatenate([f(jm) for f in multi_funcs]
-                                     + [jnp.asarray([f(jm) for f in funcs])])
-            return -jnp.sum(jnp.log(scores))
+            rets = [f(jm) for f in multi_funcs]
+            if funcs:
+                rets.append(jnp.asarray([f(jm) for f in funcs]))
+            scores = jnp.concatenate(rets)
+            return -jnp.sum(jnp.log(scores), axis=-1)
         return self._wrap_jax(jax_sf, keys=keys)
   %}
 }
@@ -172,12 +174,13 @@
             # taken from within the sphere representing the domain
             # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
             dist = jnp.where(ps[:, 0] == ps[:, 1],
-                             36.0 / 35.0 * r[ps[:, 0]],
-                             space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]]))
+                             36.0 / 35.0 * r[..., ps[:, 0]],
+                             space.distance(xyz[..., ps[:, 0], :]
+                                            - xyz[..., ps[:, 1], :]))
             dist = jnp.maximum(dist, 0.0001)
-            psi = scale[psi]
-            sigmai = scale[sigma[:, 0]]
-            sigmaj = scale[sigma[:, 1]]
+            psi = scale[..., psi]
+            sigmai = scale[..., sigma[:, 0]]
+            sigmaj = scale[..., sigma[:, 1]]
 
             voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
             volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
@@ -207,8 +210,8 @@
             else:
                 # Otherwise, take the product of all contributions to each
                 # restraint
-                return 1.0 - jax.ops.segment_prod(onemprob, segments, numrsr,
-                                                  indices_are_sorted=True)
+                return 1.0 - jax.ops.segment_prod(onemprob.T, segments, numrsr,
+                                                  indices_are_sorted=True).T
 
         for r in rs:
             if r.get_is_length_variable():

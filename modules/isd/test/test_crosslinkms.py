@@ -26,6 +26,41 @@ def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
     return nuisance
 
 
+def setup_system():
+    slope = 0.01
+    length = 10
+
+    m = IMP.Model()
+    p1 = IMP.Particle(m)
+    p2 = IMP.Particle(m)
+    p3 = IMP.Particle(m)
+
+    xyz1 = IMP.core.XYZ.setup_particle(p1)
+    xyz2 = IMP.core.XYZ.setup_particle(p2)
+    xyz3 = IMP.core.XYZ.setup_particle(p3)
+
+    xyz1.set_coordinates((0, 5, 0))
+    xyz2.set_coordinates((5, 0, 0))
+    xyz3.set_coordinates((0, 0, 15))
+
+    sigma1 = setupnuisance(m, 5, 0, 100, False)
+    sigma2 = setupnuisance(m, 5, 0, 100, False)
+    psi1 = setupnuisance(m, 0.1, 0.0, 0.5, False)
+    psi2 = setupnuisance(m, 0.2, 0.0, 0.5, False)
+
+    dr1 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+    # Weights should be ignored
+    dr1.set_weight(9999.0)
+    dr1.add_contribution((p1, p2), (sigma1, sigma2), psi1)
+    dr1.add_contribution((p2, p3), (sigma1, sigma2), psi2)
+
+    dr2 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
+    dr2.add_contribution((p1, p3), (sigma1, sigma2), psi1)
+    lw = IMP.isd.LogWrapper([dr1, dr2], 1.0)
+
+    return m, p1, p2, p3, sigma1, sigma2, psi1, psi2, lw
+
+
 def make_test_restraint():
     m = IMP.Model()
     p1 = IMP.Particle(m)
@@ -207,42 +242,41 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
     def test_score_multiple(self):
         """Test crosslink restraint with multiple contributions"""
-        m = IMP.Model()
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
-        p3 = IMP.Particle(m)
-
-        slope = 0.01
-        length = 10
-
-        xyz1 = IMP.core.XYZ.setup_particle(p1)
-        xyz2 = IMP.core.XYZ.setup_particle(p2)
-        xyz3 = IMP.core.XYZ.setup_particle(p3)
-
-        xyz1.set_coordinates((0, 5, 0))
-        xyz2.set_coordinates((5, 0, 0))
-        xyz3.set_coordinates((0, 0, 15))
-
-        sigma1 = setupnuisance(m, 5, 0, 100, False)
-        sigma2 = setupnuisance(m, 5, 0, 100, False)
-        psi1 = setupnuisance(m, 0.1, 0.0, 0.5, False)
-        psi2 = setupnuisance(m, 0.2, 0.0, 0.5, False)
-
-        dr1 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
-        # Weights should be ignored
-        dr1.set_weight(9999.0)
-        dr1.add_contribution((p1, p2), (sigma1, sigma2), psi1)
-        dr1.add_contribution((p2, p3), (sigma1, sigma2), psi2)
-
-        dr2 = IMP.isd.CrossLinkMSRestraint(m, length, slope)
-        dr2.add_contribution((p1, p3), (sigma1, sigma2), psi1)
-        lw = IMP.isd.LogWrapper([dr1, dr2], 1.0)
+        m, p1, p2, p3, sigma1, sigma2, psi1, psi2, lw = setup_system()
 
         imp_score = lw.evaluate(False)
         self.assertAlmostEqual(imp_score, 2.25585, delta=1e-3)
         if jax:
             jax_score = lw._evaluate_jax()
             self.assertAlmostEqual(jax_score, imp_score, delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_score_multi_attrset(self):
+        """Test JAX implementation with multiple attrsets"""
+        import IMP.jax
+        m, p1, p2, p3, sigma1, sigma2, psi1, psi2, lw = setup_system()
+        # First attribute set
+        imp_score1 = lw.evaluate(False)
+
+        # Second attribute set
+        fk = IMP.isd.Scale.get_scale_key()
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_number_of_attribute_sets(fk, 2)
+        m.set_active_sphere_attribute_set(1)
+        m.set_active_attribute_set(fk, 1)
+
+        IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 6, 0))
+        IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(6, 0, 0))
+        IMP.core.XYZ.setup_particle(p3, IMP.algebra.Vector3D(0, 0, 16))
+        IMP.isd.Scale.setup_particle(sigma1, 10)
+        IMP.isd.Scale.setup_particle(sigma2, 10)
+        IMP.isd.Scale.setup_particle(psi1, 0.3)
+        IMP.isd.Scale.setup_particle(psi2, 0.4)
+        imp_score2 = lw.evaluate(False)
+        jax_score = lw._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
