@@ -232,11 +232,27 @@
 
         # Note that we don't weight the restraint anywhere. This matches
         # the behavior of the C++ restraint.
-        return cls._wrap_jax_multi(rs[0], jax_restraint,
-                                   keys=[IMP.isd.Scale.get_scale_key()])
+        return cls._wrap_jax_multiple(rs[0], jax_restraint,
+                                      keys=[IMP.isd.Scale.get_scale_key()])
 
     def _get_jax(self, space):
         return self._get_jax_for_restraints([self], space)
+
+    @classmethod
+    def _get_jax_multiple(cls, restraints, space):
+        import IMP._jax_util
+        # Get all groups of crosslink restraints that have the same length
+        # and slope (to 4 decimal places) and get_log_prob flag
+        def rsrkey(r):
+            if type(r) is cls:
+                return ("%.4f" % r.get_length(),
+                        "%.4f" % r.get_slope() if r.get_has_slope() else None,
+                        r.get_log_prob())
+        groups, ungrouped = IMP._jax_util.get_grouped_restraints(
+            restraints, rsrkey)
+
+        return ([cls._get_jax_for_restraints(g, space) for g in groups],
+                ungrouped)
 
   %}
 }
