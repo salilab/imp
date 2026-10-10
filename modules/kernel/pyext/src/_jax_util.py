@@ -1,3 +1,4 @@
+import collections
 import IMP.jax
 
 
@@ -257,3 +258,21 @@ class JAXOptimizerStateInfo:
         self.period = optstate.get_period()
         self.init_func = init_func
         self.apply_func = apply_func
+
+
+def get_grouped_restraints(rs, keyfunc):
+    """Get groups of comparable restraints, plus ungrouped restraints
+
+       @param rs List of restraints
+       @param keyfunc Function which returns an ID if given a restraint
+
+       @return A list of lists of grouped restraints (all restraints for
+               which keyfunc returns the same value) plus a list of all
+               ungrouped restraints (those for which keyfunc returns None)
+    """
+    d = collections.OrderedDict()
+    for r in rs:
+        key = keyfunc(r)
+        d.setdefault(key, []).append(r)
+    ungrouped = d.pop(None, [])
+    return list(d.values()), ungrouped
