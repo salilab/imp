@@ -24,16 +24,16 @@ class JAXWarning(UserWarning):
                                 weight=self.get_weight(), keys=keys)
 
     @classmethod
-    def _wrap_jax_multi(cls, restraint, score_func, keys=None):
-        """Create the return value for _get_jax_multi.
+    def _wrap_jax_multiple(cls, restraint, score_func, keys=None):
+        """Create the return value for _get_jax_multiple.
            This is similar to _wrap_jax but is used to handle the JAX scoring
            function for multiple restraints at once. It is designed to be
-           called from the _get_jax_multi class method (if implemented).
-           _get_jax_multi is called (typically by RestraintSet) once for
+           called from the _get_jax_multiple class method (if implemented).
+           _get_jax_multiple is called (typically by RestraintSet) once for
            each type of restraint, and is given a list of all restraints.
-           It should return a JAX function that scores some of the restraints
-           using _wrap_jax_multi (or None), and a list of the remaining
-           unhandled restraints.
+           It should return a list of JAX functions that score some of the
+           restraints using _wrap_jax_multiple (or None), and a list of the
+           remaining unhandled restraints.
 
            @param restraint Any one of the restraints that is being scored.
            @param score_func A function implemented using JAX that takes
@@ -244,14 +244,14 @@ class JAXWarning(UserWarning):
     def _get_restraint_jax_funcs_keys(self, space):
         restraints = [r.get_derived_object() for r in self.restraints]
         # First, give restraints a chance to more efficiently fuse
-        # themselves using the _get_jax_multi class method
+        # themselves using the _get_jax_multiple class method
         jax_multi_cls = frozenset(type(r) for r in restraints
-                                  if hasattr(r, '_get_jax_multi'))
+                                  if hasattr(r, '_get_jax_multiple'))
         multi_jis = []
         for c in jax_multi_cls:
-            ji, restraints = c._get_jax_multi(restraints, space)
-            if ji:
-                multi_jis.append(ji)
+            jis, restraints = c._get_jax_multiple(restraints, space)
+            if jis:
+                multi_jis.extend(jis)
         multi_funcs = [j.score_func for j in multi_jis]
         # Any remaining restraints are handled individually
         jis = [r._get_jax(space) for r in restraints]

@@ -21,14 +21,14 @@ class JAXMultiConstRestraint(IMP.Restraint):
         return self._wrap_jax(lambda jm: self.value)
 
     @classmethod
-    def _get_jax_multi(cls, restraints, space):
+    def _get_jax_multiple(cls, restraints, space):
         import jax.numpy as jnp
         ours, rest = [], []
         for r in restraints:
             (ours if isinstance(r, cls) else rest).append(r)
         if ours:
             values = jnp.array([r.multi_value * r.get_weight() for r in ours])
-            return cls._wrap_jax_multi(ours[0], lambda jm: values), rest
+            return [cls._wrap_jax_multiple(ours[0], lambda jm: values)], rest
         else:
             return None, restraints
 
@@ -361,7 +361,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_score_multi(self):
-        """Test JAX RestraintSet with _get_jax_multi()"""
+        """Test JAX RestraintSet with _get_jax_multiple()"""
         import IMP.jax
         m = IMP.Model()
         p = IMP.Particle(m)
@@ -373,12 +373,13 @@ class Tests(IMP.test.TestCase):
         r.set_weight(4.0)
         r.add_restraints([r1, r2])
         # JAXMultiConstRestraint deliberately returns a different score
-        # via _get_jax() or _get_jax_multi() so that we can test them here
+        # via _get_jax() or _get_jax_multiple() so that we can test them here
         # (normally they should return the same value)
         # Score via _get_jax():
         self.assertAlmostEqual(
             (r1._evaluate_jax() + r2._evaluate_jax()) * 4.0, 552.0, delta=1e-4)
-        # RestraintSet should fuse the two restraints using _get_jax_multi():
+        # RestraintSet should fuse the two restraints using
+        # _get_jax_multiple():
         self.assertAlmostEqual(r._evaluate_jax(), 3200.0, delta=1e-4)
 
 
