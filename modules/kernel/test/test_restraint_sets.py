@@ -9,6 +9,7 @@ except ImportError:
 
 
 class JAXMultiConstRestraint(IMP.Restraint):
+    """Like IMP._ConstRestraint but supporting get_jax_multiple()"""
     def __init__(self, m, ps, value, multi_value):
         super().__init__(m, "JAXMultiConstRestraint%1%")
         self.m, self.ps = m, ps

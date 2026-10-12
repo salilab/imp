@@ -276,3 +276,25 @@ def get_grouped_restraints(rs, keyfunc):
         d.setdefault(key, []).append(r)
     ungrouped = d.pop(None, [])
     return list(d.values()), ungrouped
+
+
+def get_restraints_jax_funcs_keys(restraints, space):
+    """Get the JAX functions and the needed model keys for the
+       given list of restraints."""
+    # First, give restraints a chance to more efficiently fuse
+    # themselves using the _get_jax_multiple class method
+    jax_multi_cls = frozenset(type(r) for r in restraints
+                              if hasattr(r, '_get_jax_multiple'))
+    multi_jis = []
+    for c in jax_multi_cls:
+        jis, restraints = c._get_jax_multiple(restraints, space)
+        # get_jax_multiple should return a list of JAX objects; the score_func
+        # in each one should return a list of scores (one per restraint)
+        if jis:
+            multi_jis.extend(jis)
+    multi_funcs = [j.score_func for j in multi_jis]
+    # Any remaining restraints are handled individually
+    jis = [r._get_jax(space) for r in restraints]
+    funcs = [j.score_func for j in jis]
+    keys = frozenset(x for j in multi_jis + jis for x in j._keys)
+    return multi_funcs, funcs, keys

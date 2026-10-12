@@ -241,30 +241,19 @@ class JAXWarning(UserWarning):
 
 %extend IMP::RestraintSet {
   %pythoncode %{
-    def _get_restraint_jax_funcs_keys(self, space):
-        restraints = [r.get_derived_object() for r in self.restraints]
-        # First, give restraints a chance to more efficiently fuse
-        # themselves using the _get_jax_multiple class method
-        jax_multi_cls = frozenset(type(r) for r in restraints
-                                  if hasattr(r, '_get_jax_multiple'))
-        multi_jis = []
-        for c in jax_multi_cls:
-            jis, restraints = c._get_jax_multiple(restraints, space)
-            if jis:
-                multi_jis.extend(jis)
-        multi_funcs = [j.score_func for j in multi_jis]
-        # Any remaining restraints are handled individually
-        jis = [r._get_jax(space) for r in restraints]
-        funcs = [j.score_func for j in jis]
-        keys = frozenset(x for j in multi_jis + jis for x in j._keys)
-        return multi_funcs, funcs, keys
-
     def _get_jax(self, space):
-        multi_funcs, funcs, keys = self._get_restraint_jax_funcs_keys(space)
+        import jax.numpy as jnp
+        import IMP._jax_util
+        restraints = [r.get_derived_object() for r in self.restraints]
+        multi_funcs, funcs, keys = IMP._jax_util.get_restraints_jax_funcs_keys(
+            restraints, space)
         def jax_sf(jm):
             if funcs or multi_funcs:
-                return (sum(f(jm) for f in funcs)
-                        + sum(sum(f(jm)) for f in multi_funcs))
+                rets = [f(jm) for f in multi_funcs]
+                if funcs:
+                    rets.append(jnp.asarray([f(jm) for f in funcs]))
+                scores = jnp.concatenate(rets)
+                return jnp.sum(scores, axis=-1)
             else:
                 # sum([]) returns int, but we must return float
                 return 0.

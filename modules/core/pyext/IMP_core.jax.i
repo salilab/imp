@@ -337,14 +337,19 @@
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self, space=None):
+        import jax.numpy as jnp
         import IMP.jax
+        import IMP._jax_util
+        restraints = [r.get_derived_object() for r in self.restraints]
         space = space or IMP.jax.FreeSpace
-        jis = [r.get_derived_object()._get_jax(space=space)
-               for r in self.restraints]
-        funcs = [j.score_func for j in jis]
-        keys = frozenset(x for j in jis for x in j._keys)
+        multi_funcs, funcs, keys = IMP._jax_util.get_restraints_jax_funcs_keys(
+            restraints, space)
         def jax_sf(jm):
-            return sum(f(jm) for f in funcs)
+            rets = [f(jm) for f in multi_funcs]
+            if funcs:
+                rets.append(jnp.asarray([f(jm) for f in funcs]))
+            scores = jnp.concatenate(rets)
+            return jnp.sum(scores, axis=-1)
         return IMP._jax_util.JAXRestraintInfo(
             m=self.get_model(), score_func=jax_sf, weight=1.0, keys=keys)
   %}

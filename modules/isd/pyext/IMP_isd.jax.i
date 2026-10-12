@@ -32,7 +32,10 @@
   %pythoncode %{
     def _get_jax(self, space):
         import jax.numpy as jnp
-        multi_funcs, funcs, keys = self._get_restraint_jax_funcs_keys(space)
+        import IMP._jax_util
+        restraints = [r.get_derived_object() for r in self.restraints]
+        multi_funcs, funcs, keys = IMP._jax_util.get_restraints_jax_funcs_keys(
+            restraints, space)
         def jax_sf(jm):
             rets = [f(jm) for f in multi_funcs]
             if funcs:
