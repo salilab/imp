@@ -35,6 +35,9 @@ class OpenCubicSpline
   Floats get_second_derivatives() const {
     return get_score().get_second_derivatives();
   }
+  // Report our own type and module (not those of ScoreUnaryFunction) so
+  // that get_derived_object() finds the Python class, e.g. for JAX
+  IMP_OBJECT_METHODS(OpenCubicSpline);
 };
 
 IMPCORE_END_NAMESPACE

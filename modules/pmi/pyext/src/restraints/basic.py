@@ -602,50 +602,155 @@ class ResidueProteinProximityRestraint(IMP.pmi.restraints.RestraintBase):
 
         return output
 
-class PMFRestraint(IMP.Restraint):
-    """Restrain particles based on a PMF lookup table with dynamic pair updates"""
 
-    def __init__(self, m, particles, pmf_file, distance_cutoff=None, weight=1.0, label="None"):
-        IMP.Restraint.__init__(self, m, "PMFRestraint %1%")
+class PMFRestraint(IMP.pmi.restraints.RestraintBase):
+    """Score every pair of particles with a tabulated potential of mean
+    force (PMF) W(r) of their center-center distance r.
 
-        self.m = m
-        self.weight = weight
-        self.label = label
+    The score is sum over pairs i<j of W(r_ij)/kT, where pairs with
+    r_ij >= `distance_cutoff` contribute nothing. With a Monte Carlo
+    temperature of 1, an isolated pair is therefore sampled with
+    p(r) proportional to g(r) = exp(-W(r)/kT).
 
-        # Create the C++ restraint
-        self.pmf = IMP.isd.PMFRestraint(self.m, pmf_file, distance_cutoff or 0.0)
+    The table is interpolated with a cubic spline, so the score has
+    continuous derivatives. Below the first tabulated distance the PMF
+    is held at its first value, which means it does **not** keep
+    particles apart; use an excluded volume restraint for that.
 
-        if distance_cutoff is not None:
-            # Set up containers for dynamic pair updates
-            self.lsc = IMP.container.ListSingletonContainer(
-                self.m, [p.get_index() for p in particles])
-            self.cpc = IMP.container.ClosePairContainer(self.lsc, distance_cutoff)
-            self.pmf.set_containers(self.lsc, self.cpc)
-            print(f"Set up dynamic pair generation with distance cutoff {distance_cutoff}Å")
+    Pairs are found with an IMP.container.ClosePairContainer, so they
+    are updated as particles move.
+    """
+    _include_in_rmf = True
+    # Molar gas constant, used to convert a PMF to units of kT
+    _gas_constant = {'kJ/mol': 8.314462618e-3, 'kcal/mol': 1.987204259e-3}
+
+    def __init__(self, particles, pmf_file, distance_cutoff, units,
+                 temperature=None, slack=None, weight=1.0, label=None):
+        """Constructor.
+        @param particles List of particles (or hierarchies), one per body
+               whose positions were used to build the PMF, e.g. one
+               centroid particle per receptor
+        @param pmf_file Table of distance and PMF values (see read_table())
+        @param distance_cutoff Distance beyond which pairs are not scored
+        @param units Units of the PMF values: 'kT', 'kJ/mol' or 'kcal/mol'
+        @param temperature Temperature (K) the PMF was computed at;
+               needed to convert kJ/mol or kcal/mol to kT
+        @param slack Slack of the close pair container; defaults to 10%
+               of the cutoff
+        @param weight Weight of the restraint
+        @param label Extra text to label the restraint so that it is
+               searchable in the output
+        """
+        particles = [p.get_particle() if hasattr(p, 'get_particle') else p
+                     for p in particles]
+        if len(particles) < 2:
+            raise ValueError("PMFRestraint needs at least two particles")
+        for p in particles:
+            if not IMP.core.XYZ.get_is_setup(p):
+                raise TypeError("Particle %s has no coordinates" % p)
+        m = particles[0].get_model()
+        super().__init__(m, name="PMFRestraint", label=label, weight=weight)
+
+        self.distances, self.values = self.read_table(pmf_file)
+        rmin, spacing, pmf = self.tabulate(
+            self.distances, self.values, distance_cutoff, units, temperature)
+        self.distance_cutoff = distance_cutoff
+
+        # extend=True holds W at its end values outside the grid; the last
+        # value is zero, so pairs at or beyond the cutoff score zero
+        self.spline = IMP.core.OpenCubicSpline(pmf, rmin, spacing, True)
+        ps = IMP.core.DistancePairScore(self.spline)
+        lsc = IMP.container.ListSingletonContainer(
+            m, IMP.get_indexes(particles))
+        if slack is None:
+            slack = 0.1 * distance_cutoff
+        self.cpc = IMP.container.ClosePairContainer(
+            lsc, distance_cutoff, slack)
+        self.rs.add_restraint(IMP.container.PairsRestraint(
+            ps, self.cpc, "PMFRestraint" + self._label_suffix))
+
+    def get_pmf(self, distance):
+        """Get the PMF (in kT) that is applied at a given distance"""
+        return self.spline.evaluate(distance)
+
+    @staticmethod
+    def read_table(filename):
+        """Read a two-column (distance, PMF) table.
+
+        Columns may be separated by commas or whitespace. Blank lines,
+        lines starting with '#' and non-numeric lines (e.g. a CSV header)
+        are skipped. Any further columns are ignored.
+        @return sorted lists of distances and PMF values
+        """
+        rows = []
+        with open(filename) as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                fields = line.replace(',', ' ').split()
+                try:
+                    rows.append((float(fields[0]), float(fields[1])))
+                except (ValueError, IndexError):
+                    continue
+        rows.sort()
+        if len(rows) < 2:
+            raise ValueError("PMF table %s has fewer than two data rows"
+                             % filename)
+        for (r1, _), (r2, _) in zip(rows, rows[1:]):
+            if r1 == r2:
+                raise ValueError("PMF table %s has duplicate distance %g"
+                                 % (filename, r1))
+        return [r for r, _ in rows], [w for _, w in rows]
+
+    @classmethod
+    def tabulate(cls, distances, values, distance_cutoff, units,
+                 temperature=None, spacing=None):
+        """Put a PMF on an evenly spaced grid, in units of kT, shifted to
+        zero at the cutoff.
+
+        @param distances Sorted distances of the input table
+        @param values PMF values at those distances
+        @param distance_cutoff Distance beyond which the PMF is zero. The
+               PMF is shifted by -W(distance_cutoff) so that it is
+               continuous there.
+        @param units Units of `values`: 'kT', 'kJ/mol' or 'kcal/mol'
+        @param temperature Temperature (K) used to make the table; required
+               unless units is 'kT'
+        @param spacing Grid spacing; defaults to the median spacing of the
+               input table
+        @return (minimum distance, grid spacing, list of PMF values in kT)
+        """
+        if units == 'kT':
+            scale = 1.0
+        elif units in cls._gas_constant:
+            if not temperature or temperature <= 0:
+                raise ValueError("A positive temperature is needed to "
+                                 "convert a PMF in %s to kT" % units)
+            scale = 1.0 / (cls._gas_constant[units] * temperature)
         else:
-            # Manual pair addition
-            if isinstance(particles[0], (list, tuple)):
-                for pair in particles:
-                    if len(pair) == 2:
-                        self.pmf.add_particle_pair(pair[0], pair[1])
-            else:
-                for i in range(len(particles)):
-                    for j in range(i + 1, len(particles)):
-                        print(f"Adding pair: {particles[i].get_name()} - {particles[j].get_name()}")
-                        self.pmf.add_particle_pair(particles[i], particles[j])
+            raise ValueError("Unknown PMF units %r; use 'kT', 'kJ/mol' or "
+                             "'kcal/mol'" % units)
+        rmin = distances[0]
+        if not rmin < distance_cutoff <= distances[-1]:
+            raise ValueError(
+                "distance_cutoff %g must lie inside the PMF table range "
+                "(%g, %g]" % (distance_cutoff, rmin, distances[-1]))
+        if spacing is None:
+            steps = sorted(b - a for a, b in zip(distances, distances[1:]))
+            spacing = steps[len(steps) // 2]
+        # Choose the grid so that its last point lies exactly on the cutoff
+        npoints = max(int(math.ceil((distance_cutoff - rmin) / spacing
+                                    - 1e-9)) + 1, 2)
+        spacing = (distance_cutoff - rmin) / (npoints - 1)
 
-    def unprotected_evaluate(self, da):
-        return self.weight * self.pmf.unprotected_evaluate(da)
-
-    def do_get_inputs(self):
-        return self.pmf.get_inputs()
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self)
-
-    def get_output(self):
-        output = {}
-        score = self.weight * self.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["PMFRestraint_" + self.label] = str(score)
-        return output
+        # Linear interpolation of the table, walking along the sorted grid
+        grid, j = [], 1
+        for i in range(npoints):
+            r = rmin + i * spacing
+            while j < len(distances) - 1 and distances[j] < r:
+                j += 1
+            t = (r - distances[j - 1]) / (distances[j] - distances[j - 1])
+            grid.append(scale * (values[j - 1]
+                                 + t * (values[j] - values[j - 1])))
+        return rmin, spacing, [w - grid[-1] for w in grid]
