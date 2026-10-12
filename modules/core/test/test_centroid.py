@@ -4,6 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import pickle
+import random
 try:
     import jax
 except ImportError:
@@ -59,6 +60,48 @@ class Tests(IMP.test.TestCase):
         m.update()
         imp_coord = IMP.core.XYZ(p).get_coordinates()
         self.assertLess(IMP.algebra.get_distance(jax_coord, imp_coord), 0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX implementation of centroid with multi attrsets"""
+        import jax.numpy as jnp
+        # First attrset
+        m = IMP.Model()
+        ps = IMP.core.create_xyzr_particles(m, 10, 1)
+        for p in ps:
+            IMP.atom.Mass.setup_particle(p, 100.0)
+        fpr = IMP.core.FixedRefiner(ps)
+        cp = IMP.core.Centroid.setup_particle(IMP.Particle(m), fpr)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        for p in ps:
+            IMP.core.XYZ.setup_particle(
+                p, [random.uniform(0., 10.) for _ in range(3)])
+        IMP.core.XYZ.setup_particle(cp)
+
+        # Apply JAX constraint to JAX model
+        ji = m.get_score_states()[0].get_derived_object()._get_jax()
+        jm = ji.get_jax_model()
+        jm['xyz'] = jnp.asarray(jm['xyz'])
+        j = jax.jit(ji.apply_func)
+        jm = j(jm)
+        jax_coords = jm['xyz'][...,-1,:]
+        self.assertEqual(jax_coords.shape, (2, 3))
+
+        # Compare with IMP C++ constraint
+        m.set_active_sphere_attribute_set(0)
+        m.update()
+        imp_coord1 = IMP.core.XYZ(cp).get_coordinates()
+
+        m.set_active_sphere_attribute_set(1)
+        m.update()
+        imp_coord2 = IMP.core.XYZ(cp).get_coordinates()
+        self.assertLess(IMP.algebra.get_distance(
+            IMP.algebra.Vector3D(jax_coords[0]), imp_coord1), 0.01)
+        self.assertLess(IMP.algebra.get_distance(
+            IMP.algebra.Vector3D(jax_coords[1]), imp_coord2), 0.01)
 
     def test_pickle_custom_weight(self):
         """Test (un-)pickle of CentroidOfRefined with custom weight key"""

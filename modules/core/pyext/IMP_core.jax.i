@@ -393,15 +393,16 @@
         def apply_func_unweighted(jm):
             for ind, ref in zip(indexes, refined):
                 xyz = jm['xyz']
-                jm['xyz'] = xyz.at[ind].set(jnp.average(xyz[ref], axis=0))
+                jm['xyz'] = xyz.at[...,ind,:].set(
+                    jnp.average(xyz[...,ref,:], axis=-2))
             return jm
 
         def apply_func_weighted(jm, weight_key):
             for ind, ref in zip(indexes, refined):
                 xyz = jm['xyz']
                 weights = jm[weight_key][ref]
-                jm['xyz'] = xyz.at[ind].set(
-                    jnp.average(xyz[ref], axis=0, weights=weights))
+                jm['xyz'] = xyz.at[...,ind,:].set(
+                    jnp.average(xyz[...,ref,:], axis=-2, weights=weights))
             return jm
 
         keys = frozenset(self.get_keys())
