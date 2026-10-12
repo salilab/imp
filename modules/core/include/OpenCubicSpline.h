@@ -24,7 +24,7 @@ class OpenCubicSpline
  public:
   OpenCubicSpline(const Floats &values, Float minrange, Float spacing,
                   bool extend = false)
-      : P(S(values, minrange, spacing, extend)) {}
+      : P(S(values, minrange, spacing, extend), "OpenCubicSpline%1%") {}
 
   Float get_minrange() const { return get_score().get_minrange(); }
   Float get_spacing() const { return get_score().get_spacing(); }
@@ -35,6 +35,8 @@ class OpenCubicSpline
   Floats get_second_derivatives() const {
     return get_score().get_second_derivatives();
   }
+
+  IMP_OBJECT_METHODS(OpenCubicSpline);
 };
 
 IMPCORE_END_NAMESPACE

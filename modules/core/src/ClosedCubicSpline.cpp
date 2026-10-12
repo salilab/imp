@@ -11,7 +11,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 ClosedCubicSpline::ClosedCubicSpline(const Floats &values, double minrange,
                                      double spacing)
-    : values_(values), minrange_(minrange), spacing_(spacing) {
+    : UnaryFunction("ClosedCubicSpline%1%"), values_(values),
+      minrange_(minrange), spacing_(spacing) {
   int npoints = values_.size();
   maxrange_ = minrange_ + spacing_ * npoints;
 

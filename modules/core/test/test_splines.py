@@ -93,6 +93,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
         v2 = s.get_second_derivatives()
         self.assertEqual(len(v2), 3)
+        self.assertTrue(s.get_name().startswith("ClosedCubicSpline"))
+        self.assertIs(type(s.get_derived_object()), IMP.core.ClosedCubicSpline)
 
     def test_open_accessors(self):
         """Test OpenCubicSpline accessors"""
@@ -105,6 +107,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(v[0], 1.0, delta=1e-4)
         v2 = s.get_second_derivatives()
         self.assertEqual(len(v2), 3)
+        self.assertTrue(s.get_name().startswith("OpenCubicSpline"))
+        self.assertIs(type(s.get_derived_object()), IMP.core.OpenCubicSpline)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_closed_jax(self):
