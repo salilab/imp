@@ -347,8 +347,8 @@
         def jax_sf(jm):
             rets = [f(jm) for f in multi_funcs]
             if funcs:
-                rets.append(jnp.asarray([f(jm) for f in funcs]))
-            scores = jnp.concatenate(rets)
+                rets.append(jnp.stack([f(jm) for f in funcs], axis=-1))
+            scores = jnp.concatenate(rets, axis=-1)
             return jnp.sum(scores, axis=-1)
         return IMP._jax_util.JAXRestraintInfo(
             m=self.get_model(), score_func=jax_sf, weight=1.0, keys=keys)
