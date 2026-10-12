@@ -39,8 +39,8 @@
         def jax_sf(jm):
             rets = [f(jm) for f in multi_funcs]
             if funcs:
-                rets.append(jnp.asarray([f(jm) for f in funcs]))
-            scores = jnp.concatenate(rets)
+                rets.append(jnp.stack([f(jm) for f in funcs], axis=-1))
+            scores = jnp.concatenate(rets, axis=-1)
             return -jnp.sum(jnp.log(scores), axis=-1)
         return self._wrap_jax(jax_sf, keys=keys)
   %}

@@ -183,6 +183,34 @@ class Tests(IMP.test.TestCase):
         # In periodic space, distance is 3.0, not 7.0
         self.assertAlmostEqual(jax_score, -math.log(3.0), delta=1e-3)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX LogWrapper with multiple attribute sets"""
+        import IMP.jax
+
+        # First set
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        p2 = IMP.Particle(m)
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(7, 0, 0))
+        uf = IMP.core.Linear(0.0, 1.0)
+        dr = IMP.core.DistanceRestraint(m, uf, p1, p2)
+        lw = IMP.isd.LogWrapper([dr], 1.0)
+        imp_score1 = lw.evaluate(False)
+
+        # Second set
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        d1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0, 0, 0))
+        d2 = IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(17, 0, 0))
+        imp_score2 = lw.evaluate(False)
+
+        jax_score = lw._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()
