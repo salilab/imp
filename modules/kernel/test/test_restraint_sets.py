@@ -383,6 +383,35 @@ class Tests(IMP.test.TestCase):
         # _get_jax_multiple():
         self.assertAlmostEqual(r._evaluate_jax(), 3200.0, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX RestraintSet with multiple attribute sets"""
+        import IMP.jax
+
+        # First set
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(4,0,0))
+
+        func = IMP.core.Harmonic(1.0, 4.0)
+        s = IMP.core.DistanceToSingletonScore(
+            func, IMP.algebra.Vector3D(0,0,0))
+        r = IMP.core.SingletonRestraint(m, s, p)
+        rs = IMP.RestraintSet(m)
+        rs.restraints.append(r)
+        imp_score1 = rs.evaluate(False)
+
+        # Second set
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(14,0,0))
+        imp_score2 = rs.evaluate(False)
+
+        jax_score = rs._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()
