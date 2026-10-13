@@ -40,6 +40,7 @@ class Tests(IMP.test.TestCase):
         ca = IMP.jax._CompactArray.from_model(m, fk)
         # data should include the two particles with the attribute plus
         # an 'inf' row for out of range indexes
+        self.assertEqual(ca.shape, (17,))
         self.assertEqual(ca.data.shape, (3,))
         self.assertEqual(ca.remap.indexes.shape, (2,))
         self.assertEqual(ca.remap.mapping.shape, (17,))
@@ -97,6 +98,7 @@ class Tests(IMP.test.TestCase):
         m, p1, p2 = _make_model(multi=True)
 
         ca = IMP.jax._CompactArray.from_model(m, fk)
+        self.assertEqual(ca.shape, (2, 17))
         self.assertEqual(ca.data.shape, (2, 3))
         self.assertEqual(ca.remap.indexes.shape, (2,))
         self.assertEqual(ca.remap.mapping.shape, (17,))
@@ -108,6 +110,15 @@ class Tests(IMP.test.TestCase):
 
         f = jax.jit(get_sum)
         self.assertAlmostEqual(f(ca), 11.0, delta=1e-4)
+
+        # We should be able to modify CompactArray using at()
+        def modify_a(a):
+            return a.at[:,10].set([4.0, 9.0])
+
+        f = jax.jit(modify_a)
+        ca = f(ca)
+        self.assertAlmostEqual(ca[0,10], 4.0, delta=1e-4)
+        self.assertAlmostEqual(ca[1,10], 9.0, delta=1e-4)
 
 
 if __name__ == '__main__':

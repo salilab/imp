@@ -110,6 +110,8 @@ class _CompactArray:
     def __init__(self, data, remap):
         self.data, self.remap = data, remap
 
+    shape = property(lambda s: s.remap.full_view.shape)
+
     @classmethod
     def from_model(cls, m, fk):
         """Create a new CompactArray for the given FloatKey `fk` in the
@@ -146,12 +148,15 @@ class _CompactArray:
     def _map(self, idx):
         return self.remap.mapping[idx]
 
+    def _full_map(self, idx):
+        if isinstance(idx, tuple):
+            return idx[:-1] + (self._map(idx[-1]),)
+        else:
+            return self._map(idx)
+
     def __getitem__(self, idx):
         """Lookup by particle index"""
-        if isinstance(idx, tuple):
-            return self.data[idx[:-1] + (self._map(idx[-1]),)]
-        else:
-            return self.data[self._map(idx)]
+        return self.data[self._full_map(idx)]
 
     @property
     def at(self):
@@ -169,7 +174,7 @@ class _AtCompactArray:
         self.arr = arr
 
     def __getitem__(self, idx):
-        return _AtIdxCompactArray(self.arr, self.arr._map(idx))
+        return _AtIdxCompactArray(self.arr, self.arr._full_map(idx))
 
 
 class _AtIdxCompactArray:
