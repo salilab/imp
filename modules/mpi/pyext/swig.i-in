@@ -1,3 +1,10 @@
+%pythonbegin %{
+import os
+if 'IMP_NO_MPI' in os.environ:
+    raise ImportError(
+        "IMP.mpi module disabled by IMP_NO_MPI environment variable")
+%}
+
 IMP_SWIG_OBJECT_SERIALIZE(IMP::mpi, ReplicaExchange, ReplicaExchanges);
 //IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 //IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)

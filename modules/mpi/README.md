@@ -7,6 +7,10 @@ run [cmake](@ref cmake_config). (There is no need to build
 all of IMP with `mpic++` - that would force all of IMP to need the MPI library,
 not just the IMP.mpi module.)
 
+Some parts of %IMP (for example, IMP.pmi) will try to import IMP.mpi and then
+use MPI functionality if it is available. To explicitly disable it at runtime,
+set the `IMP_NO_MPI` environment variable.
+
 # Info
 
 _Author(s)_: Max Bonomi
