@@ -14,21 +14,30 @@ class NormalMoverTest(IMP.test.TestCase):
 
     mv = IMP.core.NormalMover
 
-    def _make_stuff(self):
+    def _make_stuff(self, multi=False):
         m = IMP.Model()
         pa = m.add_particle("p")
         att = IMP.FloatKey("test")
         m.add_attribute(att, pa, 5.0)
         m.set_is_optimized(att, pa, True)
+        if multi:
+            m.set_number_of_attribute_sets(att, 2)
+            m.set_active_attribute_set(att, 1)
+            m.add_attribute(att, pa, 7.0)
         mv = self.mv(m, pa, [att], 1.0)
         return m, mv, pa, att
 
-    def _make_xyz_stuff(self):
+    def _make_xyz_stuff(self, multi=False):
         m = IMP.Model()
         pa = m.add_particle("p")
         xyz = IMP.core.XYZ.setup_particle(
             m, pa, IMP.algebra.Vector3D(5.0, 6.0, 7.0))
         xyz.set_coordinates_are_optimized(True)
+        if multi:
+            m.set_number_of_sphere_attribute_sets(2)
+            m.set_active_sphere_attribute_set(1)
+            xyz = IMP.core.XYZ.setup_particle(
+                m, pa, IMP.algebra.Vector3D(8.0, 9.0, 10.0))
         mv = self.mv(m, pa, 1.0)
         return m, mv, pa
 
@@ -99,6 +108,23 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertGreater(abs(old - new), 1e-7)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_one_float_key_multi_attrset(self):
+        """Test (Log)NormalMover JAX, one FloatKey, multi attrsets"""
+        import IMP.jax
+        m, mv, pa, att = self._make_stuff(multi=True)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
+        jm = IMP._jax_util._get_jax_model(m, ji._keys)
+        init_func = jax.jit(ji.init_func)
+        propose_func = jax.jit(ji.propose_func)
+
+        mvs = init_func(jax.random.key(42))
+        new_jm, mvs, ratio = propose_func(jm, mvs)
+        old = jm['test'][...,0]
+        new = new_jm['test'][...,0]
+        for i in range(2):
+            self.assertGreater(abs(old[i] - new[i]), 1e-7)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_one_float_key_optimize(self):
         """Test (Log)NormalMover JAX implementation MC optimize"""
         import IMP.jax
@@ -132,6 +158,24 @@ class NormalMoverTest(IMP.test.TestCase):
             old = jm['xyz'][0][i]
             new = new_jm['xyz'][0][i]
             self.assertGreater(abs(old - new), 1e-7)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_xyz_keys_multi_attr(self):
+        """Test (Log)NormalMover JAX, XYZ keys, multi attrsets"""
+        import IMP.jax
+        m, mv, pa = self._make_xyz_stuff(multi=True)
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
+        jm = IMP._jax_util._get_jax_model(m, ji._keys)
+        init_func = jax.jit(ji.init_func)
+        propose_func = jax.jit(ji.propose_func)
+
+        mvs = init_func(jax.random.key(42))
+        new_jm, mvs, ratio = propose_func(jm, mvs)
+        for i in range(2):
+            for j in range(3):
+                old = jm['xyz'][i,0,j]
+                new = new_jm['xyz'][i,0,j]
+                self.assertGreater(abs(old - new), 1e-7)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_intcoord_keys(self):
