@@ -382,7 +382,7 @@ def _get_offset_propose_func(indexes, keys, offset_func):
         if str_keys == 'xyz':
             val = jm['xyz']
             key, v = offset_func(key, val.shape[:-2] + (len(indexes), 3))
-            jm['xyz'] = val.at[...,indexes,:].add(v)
+            jm['xyz'] = val.at[..., indexes, :].add(v)
         elif str_keys == 'intcoord':
             rbs = jm['rigid_bodies']
             key, v = offset_func(key, (len(indexes), 3))
@@ -391,7 +391,7 @@ def _get_offset_propose_func(indexes, keys, offset_func):
             for k in str_keys:
                 val = jm[k]
                 key, v = offset_func(key, val.shape[:-1] + (len(indexes),))
-                jm[k] = val.at[...,indexes].add(v)
+                jm[k] = val.at[..., indexes].add(v)
         return jm, key, 1.0
 
     return propose_func, keys
