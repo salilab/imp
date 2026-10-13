@@ -392,11 +392,13 @@ class ReplicaExchange:
             try:
                 import IMP.mpi
                 print('ReplicaExchange: MPI was found. '
-                      'Using Parallel Replica Exchange')
+                      'Using Parallel Replica Exchange.')
+                print('(MPI can be explicitly disabled by setting '
+                      'the IMP_NO_MPI\nenvironment variable.)')
                 self.rem = IMP.mpi.ReplicaExchange()
             except ImportError:
                 print('ReplicaExchange: Could not find MPI. '
-                      'Using Serial Replica Exchange')
+                      'Using Serial Replica Exchange.')
                 self.rem = _SerialReplicaExchange()
 
         else:

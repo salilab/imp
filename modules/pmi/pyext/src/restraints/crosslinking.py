@@ -86,6 +86,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.rspsi = self._create_restraint_set("PriorPsi")
         self.rssig = self._create_restraint_set("PriorSig")
         self.rslin = self._create_restraint_set("Linear")
+        # These are only dummy restraints, so their score can be skipped
+        self.rslin.set_weight(0.0)
         # Add custom metadata (will be saved in RMF output)
         self.rs.set_metadata(self.database.name, length, slope)
         if linker:
