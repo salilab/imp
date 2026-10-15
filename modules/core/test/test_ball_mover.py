@@ -45,6 +45,36 @@ class Tests(IMP.test.TestCase):
         self.assertLessEqual(jnp.linalg.norm(newX['xyz'][0]), 1.0)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_xyz_multiattr(self):
+        """Test JAX BallMover on XYZ particles, multiple attrsets"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZ.setup_particle(m, p1)
+        p2 = IMP.Particle(m)
+        d2 = IMP.core.XYZ.setup_particle(m, p2)
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        d1 = IMP.core.XYZ.setup_particle(m, p1)
+        d2 = IMP.core.XYZ.setup_particle(m, p2)
+
+        mv = IMP.core.BallMover(m, (p1, p2), 1.0)
+        jm = {'xyz': jnp.array(m.get_spheres_numpy()[0])}
+        ji = mv._get_jax(space=IMP.jax.FreeSpace)
+        init_func = jax.jit(ji.init_func)
+        mvs = init_func(jax.random.key(42))
+
+        j = jax.jit(ji.propose_func)
+        new_jm, mvs, ratio = j(jm, mvs)
+        self.assertEqual(new_jm['xyz'].shape, (2, 2, 3))
+        self.assertAlmostEqual(ratio, 1.0, delta=1e-5)
+        # Both particles in each attrset should be moved in the same fashion
+        self.assertTrue(jnp.allclose(new_jm['xyz'][0, 0], new_jm['xyz'][0, 1]))
+        self.assertTrue(jnp.allclose(new_jm['xyz'][1, 0], new_jm['xyz'][1, 1]))
+        # Each attrset should be moved differently
+        self.assertFalse(
+            jnp.allclose(new_jm['xyz'][0, 0], new_jm['xyz'][1, 0]))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_float_attr(self):
         """Test JAX implementation of BallMover on arbitrary attributes"""
         m = IMP.Model()

@@ -494,12 +494,17 @@
 
         def propose_func(jm, key):
             key, subkey = jax.random.split(key)
-            v = get_random_vector_in_3d_sphere(subkey, radius)
             if intcoord:
                 rbs = jm['rigid_bodies']
-                rbs.intcoord = space.shift_indexes(rbs.intcoord, indexes, v)
+                val = rbs.intcoord
             else:
-                jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, v)
+                val = jm['xyz']
+            v = get_random_vector_in_3d_sphere(
+                subkey, radius, shape=val.shape[:-2] + (1,))
+            if intcoord:
+                rbs.intcoord = space.shift_indexes(val, indexes, v)
+            else:
+                jm['xyz'] = space.shift_indexes(val, indexes, v)
             return jm, key, 1.0
         return self._wrap_jax(init_func, propose_func,
                               keys=['rigid_bodies'] if intcoord else None)
