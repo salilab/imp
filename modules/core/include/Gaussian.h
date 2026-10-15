@@ -20,6 +20,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include "internal/rigid_bodies.h"
 #include <Eigen/Dense>
+#include <limits>
 #include <cereal/access.hpp>
 #include <cereal/types/base_class.hpp>
 
@@ -30,6 +31,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** little class to store an Eigen::Matrix3d */
 class IMPCOREEXPORT Matrix3D : public IMP::Object{
   Eigen::Matrix3d mat_;
+  // For a cached global covariance, the orientation (rigid body quaternion)
+  // it was computed for. Not serialized; NaN means unknown.
+  algebra::Vector4D quaternion_;
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
@@ -44,11 +48,35 @@ class IMPCOREEXPORT Matrix3D : public IMP::Object{
 
  public:
   Matrix3D(Eigen::Matrix3d mat,
-           std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat){ }
+           std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat),
+           quaternion_(get_unknown_quaternion()) { }
 
-  Matrix3D() : IMP::Object("") {}
+  Matrix3D(Eigen::Matrix3d mat, const algebra::Vector4D &quaternion,
+           std::string name="Matrix3DDensityMap%1%")
+      : Object(name), mat_(mat), quaternion_(quaternion) {}
+
+  Matrix3D() : IMP::Object(""), quaternion_(get_unknown_quaternion()) {}
 
   Eigen::Matrix3d get_mat() const {return mat_;}
+
+  //! Replace the matrix, and the orientation it was computed for
+  void set_mat(const Eigen::Matrix3d &mat,
+               const algebra::Vector4D &quaternion) {
+    mat_ = mat;
+    quaternion_ = quaternion;
+  }
+
+  //! Return true if this matrix was computed for the given orientation
+  bool get_is_for_quaternion(const algebra::Vector4D &q) const {
+    return quaternion_[0] == q[0] && quaternion_[1] == q[1]
+           && quaternion_[2] == q[2] && quaternion_[3] == q[3];
+  }
+
+ private:
+  static algebra::Vector4D get_unknown_quaternion() {
+    double nan = std::numeric_limits<double>::quiet_NaN();
+    return algebra::Vector4D(nan, nan, nan, nan);
+  }
 };
 
 #endif
@@ -90,14 +118,20 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   }
 
   //! retrieve global covariance
+  /** This is R diag(variances) R^T for the current orientation R of the
+      Gaussian. It is cached, and recomputed whenever the orientation has
+      changed since (e.g. because a parent rigid body moved). */
   Eigen::Matrix3d get_global_covariance() {
+    Model *m = get_model();
     ObjectKey k = get_global_covariance_key();
     ParticleIndex pi = get_particle_index();
-    if (!get_model()->get_has_attribute(k, pi)) {
-      update_global_covariance();
+    if (m->get_has_attribute(k, pi)) {
+      Matrix3D *global = static_cast<Matrix3D*>(m->get_attribute(k, pi));
+      if (global->get_is_for_quaternion(get_rotation_quaternion())) {
+        return global->get_mat();
+      }
     }
-    Matrix3D* global = (Matrix3D*)get_model()->get_attribute(k, pi);
-    return global->get_mat();
+    return get_updated_global_covariance();
   };
 
   //! create Gaussian3D from these attributes
@@ -125,8 +159,9 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   }
 
   //! set the global-frame covariance. does NOT update local frame!
+  /** The value is used until the orientation of the Gaussian changes. */
   void set_global_covariance(Eigen::Matrix3d covar){
-    IMP_NEW(Matrix3D,global,(covar));
+    IMP_NEW(Matrix3D,global,(covar, get_rotation_quaternion()));
     ObjectKey k = get_global_covariance_key();
     ParticleIndex pi = get_particle_index();
     if (!get_model()->get_has_attribute(k, pi)) {
@@ -139,6 +174,20 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
   //! update the global covariance
   void update_global_covariance();
+
+#ifndef SWIG
+ private:
+  // update_global_covariance(), then return it (kept out of line)
+  Eigen::Matrix3d get_updated_global_covariance();
+
+  // current orientation, read in place (no copy) as this is on a hot path
+  const algebra::Vector4D &get_rotation_quaternion() const {
+    return access_quaternion_data(static_cast<const Model *>(get_model()))
+        [get_particle_index().get_index()];
+  }
+
+ public:
+#endif
 
 
   ////! Evaluate the Gaussian at a point?
