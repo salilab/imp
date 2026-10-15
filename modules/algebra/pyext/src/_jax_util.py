@@ -102,8 +102,8 @@ def _quaternion_multiply(q1, q2):
 
 
 def _quaternion_normalize(q):
-    """Normalize and return a single quaternion"""
-    norm = jnp.linalg.norm(q)
+    """Normalize and return a quaternion (or array of quaternions)"""
+    norm = jnp.linalg.norm(q, axis=-1, keepdims=True)
     return jnp.where(norm < 1e-3, jnp.array([1., 0., 0., 0.]), q / norm)
 
 

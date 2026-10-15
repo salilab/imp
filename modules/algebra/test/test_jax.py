@@ -20,6 +20,14 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(jnp.allclose(_quaternion_normalize(q),
                                      jnp.array([1.0, 0.0, 0.0, 0.0])))
 
+        # Array of quaternions
+        q = jnp.array([[0.3, 0.3, 0.3, 0.3], [1.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 0.0, 0.0]])
+        self.assertTrue(jnp.allclose(_quaternion_normalize(q),
+                                     jnp.array([[0.5, 0.5, 0.5, 0.5],
+                                                [1., 0., 0., 0.],
+                                                [1., 0., 0., 0.]])))
+
 
 if __name__ == '__main__':
     IMP.test.main()
