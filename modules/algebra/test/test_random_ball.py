@@ -42,9 +42,9 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_sphere_jax(self):
         """Test the JAX creation of points on a sphere"""
-        from IMP.algebra import _jax_util
+        from IMP.algebra.jax import get_random_vector_on_3d_sphere
         import jax.numpy as jnp
-        j = jax.jit(functools.partial(_jax_util.get_random_vector_on_3d_sphere,
+        j = jax.jit(functools.partial(get_random_vector_on_3d_sphere,
                                       shape=20000))
         k = jax.random.key(42)
         v = j(k, radius=1.0)
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
                                      atol=0.01))
 
         # Test return of multi-dimensional data
-        j = jax.jit(functools.partial(_jax_util.get_random_vector_on_3d_sphere,
+        j = jax.jit(functools.partial(get_random_vector_on_3d_sphere,
                                       shape=(5, 4)))
         v = j(k, radius=1.0)
         self.assertEqual(v.shape, (5, 4, 3))
