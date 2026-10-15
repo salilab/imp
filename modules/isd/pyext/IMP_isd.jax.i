@@ -160,15 +160,54 @@
         import jax.ops
         import math
 
-        def sphere_cap(r1, r2, d):
-            short_range = jnp.minimum(4.0 / 3.0 * math.pi * r1 * r1 * r1,
-                                      4.0 / 3.0 * math.pi * r2 * r2 * r2)
-            mid_range = ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
-                         (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
-                          + 6 * r1 * r2 - 3 * r2 * r2))
+        # 4-point Gauss-Legendre nodes and weights on [-1, 1]
+        gl_x = jnp.array([-0.8611363115940526, -0.3399810435848563,
+                          0.3399810435848563, 0.8611363115940526])
+        gl_w = jnp.array([0.3478548451374538, 0.6521451548625461,
+                          0.6521451548625461, 0.3478548451374538])
+
+        def lens_volume(a, b, r):
+            # Volume of the intersection of two balls of radii a and b
+            # whose centers are r apart
+            rmin = jnp.minimum(a, b)
+            r_safe = jnp.where(r > 0., r, 1.)
+            mid_range = (math.pi * (a + b - r) * (a + b - r)
+                         * (r * r + 2. * r * (a + b) - 3. * (a - b) * (a - b))
+                         / (12. * r_safe))
             return jnp.where(
-                d <= jnp.absolute(r1 - r2), short_range,
-                jnp.where(d >= r1 + r2, 0., mid_range))
+                r >= a + b, 0.,
+                jnp.where(r <= jnp.abs(a - b),
+                          4. / 3. * math.pi * rmin * rmin * rmin, mid_range))
+
+        def sphere_area_within(r, dist, length):
+            # Area of the part of a sphere of radius r, centered at the
+            # origin, within length of a point at distance dist
+            mid_range = (math.pi * r * (length * length - (r - dist) ** 2)
+                         / dist)
+            outside = (r <= dist - length) | (r >= dist + length)
+            return jnp.where(r + dist <= length, 4. * math.pi * r * r,
+                             jnp.where(outside, 0., mid_range))
+
+        def forward_model_probability(dist, sigmai, sigmaj, length):
+            # See get_forward_model_probability() in CrossLinkMSRestraint.cpp
+            rmax = sigmai + sigmaj
+            points = jnp.stack([jnp.zeros_like(rmax), rmax,
+                                jnp.abs(sigmai - sigmaj),
+                                jnp.abs(dist - length), dist + length],
+                               axis=-1)
+            points = jnp.sort(jnp.clip(points, 0., rmax[..., None]), axis=-1)
+            half = 0.5 * (points[..., 1:] - points[..., :-1])
+            mid = 0.5 * (points[..., 1:] + points[..., :-1])
+            r = mid[..., None] + half[..., None] * gl_x
+            integrand = (lens_volume(sigmai[..., None, None],
+                                     sigmaj[..., None, None], r)
+                         * sphere_area_within(r, dist[..., None, None],
+                                              length))
+            integral = jnp.sum(half[..., None] * gl_w * integrand,
+                               axis=(-2, -1))
+            voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
+            volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+            return jnp.clip(integral / voli / volj, 0., 1.)
 
         def get_probability(xyz, r, scale, ps, sigma, psi, length,
                             slope, segments, numrsr):
@@ -185,22 +224,7 @@
             sigmai = scale[..., sigma[:, 0]]
             sigmaj = scale[..., sigma[:, 1]]
 
-            voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
-            volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
-            xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
-                     * (length / 2.) * (length / 2.))
-
-            close = dist < sigmai + sigmaj
-            fi = jnp.where(
-                close, jnp.minimum(voli, xlvol),
-                sphere_cap(sigmai, length / 2.,
-                           jnp.abs(dist - sigmaj - length / 2.)))
-            fj = jnp.where(
-                close, jnp.minimum(volj, xlvol),
-                sphere_cap(sigmaj, length / 2.,
-                           jnp.abs(dist - sigmai - length / 2.)))
-
-            pofr = fi * fj / voli / volj
+            pofr = forward_model_probability(dist, sigmai, sigmaj, length)
             term = psi * (1.0 - pofr) + pofr * (1.0 - psi)
             if slope is not None:
                 prior = jnp.exp(-slope * dist)
