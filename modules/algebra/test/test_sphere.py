@@ -109,6 +109,11 @@ class Tests(IMP.test.TestCase):
         expected_p = inner_box_volume / s_volume
         observed_p = float(n) / float(20000)
         self.assertAlmostEqual(expected_p, observed_p, delta=0.1)
+        # Test return of multi-dimensional data
+        j = jax.jit(functools.partial(_jax_util.get_random_vector_in_3d_sphere,
+                                      shape=(5, 4)))
+        v = j(k, radius=1.0)
+        self.assertEqual(v.shape, (5, 4, 3))
 
     def test_io(self):
         """Check I/O of Sphere3Ds"""

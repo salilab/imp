@@ -52,6 +52,12 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(jnp.allclose(v.std(axis=0), jnp.full(3, 0.58),
                                      atol=0.01))
 
+        # Test return of multi-dimensional data
+        j = jax.jit(functools.partial(_jax_util.get_random_vector_on_3d_sphere,
+                                      shape=(5, 4)))
+        v = j(k, radius=1.0)
+        self.assertEqual(v.shape, (5, 4, 3))
+
 
 if __name__ == '__main__':
     IMP.test.main()

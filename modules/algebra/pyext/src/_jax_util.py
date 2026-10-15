@@ -8,6 +8,9 @@ from dataclasses import dataclass
 def get_random_vector_in_3d_sphere(key, radius, shape=1):
     """Return a random vector uniformly distributed in a 3-dimensional
        sphere of given radius at the origin"""
+    # Need to reverse the shape since we return the transpose
+    if isinstance(shape, tuple):
+        shape = shape[::-1]
     k1, k2, k3 = jax.random.split(key, 3)
     phi = jax.random.uniform(k1, shape=shape,
                              minval=0., maxval=2. * math.pi)
@@ -48,6 +51,9 @@ def get_random_vector_in_sphere(key, n, radius):
 def get_random_vector_on_3d_sphere(key, radius, shape=1):
     """Return a random vector uniformly distributed on the surface of
        a 3-dimensional sphere of given radius at the origin"""
+    # Need to reverse the shape since we return the transpose
+    if isinstance(shape, tuple):
+        shape = shape[::-1]
     k1, k2 = jax.random.split(key, 2)
     phi = jax.random.uniform(k1, shape=shape,
                              minval=0., maxval=2. * math.pi)
