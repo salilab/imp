@@ -47,7 +47,7 @@ class FreeSpace(Space):
 
     @staticmethod
     def shift_indexes(r, indexes, dr):
-        return r.at[indexes].add(dr)
+        return r.at[..., indexes, :].add(dr)
 
 
 class PeriodicSpace(Space):
@@ -67,8 +67,8 @@ class PeriodicSpace(Space):
         return jnp.mod(r + dr, self.side)
 
     def shift_indexes(self, r, indexes, dr):
-        newr = jnp.mod(r[indexes] + dr, self.side)
-        return r.at[indexes].set(newr)
+        newr = jnp.mod(r[..., indexes, :] + dr, self.side)
+        return r.at[..., indexes, :].set(newr)
 
 
 def get_random_key():

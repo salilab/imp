@@ -42,6 +42,14 @@ class Tests(IMP.test.TestCase):
         expected_rs = jnp.array([[11., 22., 33.], [4., 5., 6.]])
         self.assertTrue(jnp.allclose(new_rs, expected_rs))
 
+        # Test with multi dimensional data
+        multi_rs = jnp.array([[[1., 2., 3.], [4., 5., 6.]],
+                              [[7., 8., 9.], [10., 11., 12.]]])
+        new_rs = space.shift_indexes(multi_rs, indexes, drs)
+        expected_rs = jnp.array([[[11., 22., 33.], [4., 5., 6.]],
+                                 [[17., 28., 39.], [10., 11., 12.]]])
+        self.assertTrue(jnp.allclose(new_rs, expected_rs))
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space_distance(self):
         """Test JAX PeriodicSpace distance"""
@@ -80,6 +88,14 @@ class Tests(IMP.test.TestCase):
         drs = jnp.array([[7., 8., 9.]])
         new_rs = space.shift_indexes(rs, indexes, drs)
         expected_rs = jnp.array([[8., 0., 2.], [4., 5., 6.]])
+        self.assertTrue(jnp.allclose(new_rs, expected_rs))
+
+        # Test with multi dimensional data
+        multi_rs = jnp.array([[[1., 2., 3.], [4., 5., 6.]],
+                              [[2., 4., 6.], [6., 7., 8.]]])
+        new_rs = space.shift_indexes(multi_rs, indexes, drs)
+        expected_rs = jnp.array([[[8., 0., 2.], [4., 5., 6.]],
+                                 [[9., 2., 5.], [6., 7., 8.]]])
         self.assertTrue(jnp.allclose(new_rs, expected_rs))
 
 
