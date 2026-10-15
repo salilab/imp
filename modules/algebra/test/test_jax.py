@@ -9,6 +9,7 @@ except ImportError:
 
 class Tests(IMP.test.TestCase):
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_quaternion_normalize(self):
         """Test _quaternion_normalize()"""
         from IMP.algebra.jax import _quaternion_normalize
