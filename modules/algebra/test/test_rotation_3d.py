@@ -276,7 +276,7 @@ class Tests(IMP.test.TestCase):
     def test_jax_get_rotation_about_normalized_axis(self):
         """Check JAX get_rotation_about_normalized_axis()"""
         import jax.numpy as jnp
-        from IMP.algebra._jax_util import get_rotation_about_normalized_axis
+        from IMP.algebra.jax import get_rotation_about_normalized_axis
         r0 = IMP.algebra.get_random_rotation_3d()
         aa = IMP.algebra.get_axis_and_angle(r0)
         axis = aa[0]

@@ -1,3 +1,12 @@
+"""@namespace IMP.algebra.jax
+   @brief Utility functions for the JAX Python library.
+
+   This provides various algebraic and geometric functions that are
+   similar to those in IMP.algebra but are implemented using the
+   [JAX](https://docs.jax.dev/) Python library. They are intended to
+   support code in other IMP modules that is implemented in JAX.
+"""
+
 import math
 import jax.lax
 import jax.numpy as jnp

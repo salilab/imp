@@ -4,7 +4,7 @@ import jax.tree_util
 import jax.tree
 import dataclasses
 from dataclasses import dataclass
-from IMP.algebra._jax_util import Transformation3D
+from IMP.algebra.jax import Transformation3D
 import IMP
 
 

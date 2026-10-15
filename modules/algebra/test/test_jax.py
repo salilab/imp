@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def test_quaternion_normalize(self):
         """Test _quaternion_normalize()"""
-        from IMP.algebra._jax_util import _quaternion_normalize
+        from IMP.algebra.jax import _quaternion_normalize
         # Single quaternion
         q = jnp.array([0.3, 0.3, 0.3, 0.3])
         self.assertTrue(jnp.allclose(_quaternion_normalize(q),

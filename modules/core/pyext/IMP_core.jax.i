@@ -476,7 +476,7 @@
   %pythoncode %{
     def _get_jax(self, space):
         import jax.random
-        from IMP.algebra._jax_util import get_random_vector_in_3d_sphere
+        from IMP.algebra.jax import get_random_vector_in_3d_sphere
         indexes = self.get_indexes()
         keys = frozenset(self.get_keys())
         if keys == frozenset(IMP.core.XYZ.get_xyz_keys()):
@@ -516,10 +516,10 @@
     def _get_jax(self, space):
         import jax.random
         import IMP.core._jax_rigid
-        from IMP.algebra._jax_util import (get_random_vector_on_3d_sphere,
-                                           get_random_vector_in_3d_sphere,
-                                           get_rotation_about_normalized_axis,
-                                           _quaternion_multiply)
+        from IMP.algebra.jax import (get_random_vector_on_3d_sphere,
+                                     get_random_vector_in_3d_sphere,
+                                     get_rotation_about_normalized_axis,
+                                     _quaternion_multiply)
         max_angle = self.get_maximum_rotation()
         max_translation = self.get_maximum_translation()
         particle_index = self.get_index()
@@ -635,7 +635,7 @@
 %extend IMP::core::internal::_RigidBodyNormalizeConstraint {
   %pythoncode %{
     def _get_jax(self):
-        from IMP.algebra._jax_util import _quaternion_normalize
+        from IMP.algebra.jax import _quaternion_normalize
         import jax
         def apply_func(jm):
             # Assume that constraint acts on all rigid bodies
