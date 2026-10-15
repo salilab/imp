@@ -103,14 +103,8 @@ def _quaternion_multiply(q1, q2):
 
 def _quaternion_normalize(q):
     """Normalize and return a single quaternion"""
-    def zero_quat(q, norm):
-        return jnp.array([1., 0., 0., 0.])
-
-    def norm_quat(q, norm):
-        return q / norm
-
     norm = jnp.linalg.norm(q)
-    return jax.lax.cond(norm < 1e-3, zero_quat, norm_quat, q, norm)
+    return jnp.where(norm < 1e-3, jnp.array([1., 0., 0., 0.]), q / norm)
 
 
 @jax.tree_util.register_dataclass
