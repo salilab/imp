@@ -49,10 +49,13 @@ class Tests(IMP.test.TestCase):
                                               IMP.core.XYZR(m, l1)), 0)
 
         def test_not_empty():
+            # Pairs are dropped from the list only once they are 4*slack
+            # apart, and each particle can move by up to slack before the
+            # list is next updated
             for l0 in ps0:
                 for l1 in ps1:
                     if IMP.core.get_distance(IMP.core.XYZR(m, l0),
-                                             IMP.core.XYZR(m, l1)) < 2.5 * slack:
+                                             IMP.core.XYZR(m, l1)) < 6 * slack:
                         return
             self.assert_(False)
 
