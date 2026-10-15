@@ -162,6 +162,35 @@ class Tests(IMP.test.TestCase):
             r[2,0] = 4.5
             self.assertAlmostEqual(d1.get_radius(), 4.5, delta=1e-4)
 
+    def test_internal_coordinate_attribute_sets(self):
+        """Test attribute sets of internal coordinates"""
+        m = IMP.Model()
+        # Before any attributes added, nset==1
+        self.assertEqual(
+            m.get_number_of_internal_coordinate_attribute_sets(), 1)
+
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        d1 = IMP.core.XYZR.setup_particle(
+            p1, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5.0, 7.0, 9.0), 1.5))
+        d2 = IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 2.5))
+        p3 = IMP.Particle(m)
+        rbd = IMP.core.RigidBody.setup_particle(p3, (p1, p2))
+        self.assertEqual(
+            m.get_number_of_internal_coordinate_attribute_sets(), 1)
+
+        m.set_number_of_internal_coordinate_attribute_sets(4)
+        self.assertEqual(
+            m.get_number_of_internal_coordinate_attribute_sets(), 4)
+
+        self.assertTrue(IMP.core.RigidBodyMember.get_is_setup(p1))
+        self.assertRaisesUsageException(
+            m.set_active_internal_coordinate_attribute_set, -1)
+        self.assertRaisesUsageException(
+            m.set_active_internal_coordinate_attribute_set, 1000)
+        m.set_active_internal_coordinate_attribute_set(2)
+
     @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
     def test_numpy_int(self):
         """Test using numpy arrays as input/output for Ints attributes"""

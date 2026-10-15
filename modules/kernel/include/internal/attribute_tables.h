@@ -402,7 +402,7 @@ class FloatAttributeTable {
   IndexVector<ParticleIndexTag, algebra::Sphere3D,
               IMP_VECTOR_ALLOCATOR<algebra::Sphere3D>,
               sphere_equal<algebra::Sphere3D>> sphere_derivatives_;
-  IndexVector<ParticleIndexTag, Vector3D,
+  MultiIndexVector<ParticleIndexTag, Vector3D,
               std::allocator<Vector3D>,
               vector_equal<Vector3D>> internal_coordinates_;
   IndexVector<ParticleIndexTag, Vector3D,
@@ -930,13 +930,17 @@ class FloatAttributeTable {
         return data_.access_data()[ind].get_number_of_sets();
       }
     } else {
-      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+      IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
                 TypeException);
     }
   }
 
   int get_number_of_sphere_attribute_sets() const {
     return spheres_.get_number_of_sets();
+  }
+
+  int get_number_of_internal_coordinate_attribute_sets() const {
+    return internal_coordinates_.get_number_of_sets();
   }
 
   void set_number_of_attribute_sets(FloatKey k, int nsets) {
@@ -949,13 +953,18 @@ class FloatAttributeTable {
             nsets, internal::FloatAttributeTableTraits::get_invalid());
       }
     } else {
-      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+      IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
                 TypeException);
     }
   }
 
   void set_number_of_sphere_attribute_sets(int nsets) {
     spheres_.set_number_of_sets(nsets, get_invalid_sphere());
+  }
+
+  void set_number_of_internal_coordinate_attribute_sets(int nsets) {
+    internal_coordinates_.set_number_of_sets(
+                     nsets, get_invalid_sphere().get_center());
   }
 
   void set_active_attribute_set(FloatKey k, int set) {
@@ -966,13 +975,17 @@ class FloatAttributeTable {
       }
       data_.access_data()[ind].set_active_set(set);
     } else {
-      IMP_THROW("Currently not supported for xyz, radii, internal coordinates",
+      IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
                 TypeException);
     }
   }
 
   void set_active_sphere_attribute_set(int set) {
     spheres_.set_active_set(set);
+  }
+
+  void set_active_internal_coordinate_attribute_set(int set) {
+    internal_coordinates_.set_active_set(set);
   }
 
   void set_range(FloatKey k, FloatRange fr) { ranges_[k.get_index()] = fr; }
