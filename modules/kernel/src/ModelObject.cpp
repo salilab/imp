@@ -78,8 +78,8 @@ const ScoreStatesTemp &ModelObject::get_required_score_states() const {
 }
 
 void ModelObject::validate_inputs() const {
-  if (!get_has_dependencies()) return;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (!get_has_dependencies()) return;
     ModelObjectsTemp ret = do_get_inputs();
     std::sort(ret.begin(), ret.end());
     ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
@@ -101,8 +101,8 @@ void ModelObject::validate_inputs() const {
 }
 
 void ModelObject::validate_outputs() const {
-  if (!get_has_dependencies()) return;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (!get_has_dependencies()) return;
     IMP_CHECK_OBJECT(this);
     ModelObjectsTemp ret = do_get_outputs();
     std::sort(ret.begin(), ret.end());
