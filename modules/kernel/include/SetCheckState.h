@@ -39,13 +39,14 @@ class IMPKERNELEXPORT SetCheckState : public RAII {
                                                        level_ = DEFAULT_CHECK;
                                                        obj_ = nullptr;
                                                      },
-  { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { if (level_ != DEFAULT_CHECK) do_reset(); },
+  do_show(out););
 
   //! Construct it with the desired level and target
   SetCheckState(CheckLevel l) {
     obj_ = nullptr;
     level_ = DEFAULT_CHECK;
-    set(l);
+    if (l != DEFAULT_CHECK) set(l);
   }
   void set(CheckLevel l);
 };

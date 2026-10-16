@@ -21,11 +21,6 @@ void SetLogState::do_set(Object *o, LogLevel l) {
   }
 }
 
-SetLogState::SetLogState(LogLevel l) {
-  obj_ = nullptr;
-  level_ = DEFAULT;
-  set(l);
-}
 void SetLogState::set(LogLevel l) {
   reset();
   if (l != DEFAULT) {
