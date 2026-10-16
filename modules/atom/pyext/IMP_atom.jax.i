@@ -93,8 +93,8 @@
 %extend IMP::atom::DopePairScore {
   %pythoncode %{
     def _get_jax(self, m, indexes, space):
+        import jax
         import numpy as np
-        import jax.lax
         import jax.numpy as jnp
         from IMP.core._jax_util import _spline
         def score_one(jm, index, minrange, maxrange, spacing, values,
@@ -102,22 +102,21 @@
             # Score a single atom pair
             xyz = jnp.asarray(jm['xyz'])[index]
             dr = space.distance(xyz[1] - xyz[0])
-            def spline_score():
-                dope_type_pair = jnp.asarray(jm['dope atom type'])
-                # Get index into values/second_derivs tables
-                i = jnp.max(dope_type_pair[index])
-                j = jnp.min(dope_type_pair[index])
-                dope_type = i * (i + 1) // 2 + j
-                # tabulated values are for the center of each bin, but
-                # _spline works with the values at the low side of each bin
-                x = dr - 0.5 * spacing
-                # determine bin index and thus the cubic fragment to use:
-                lowbin = jnp.array((x - minrange) / spacing, dtype=int)
-                return _spline(x, minrange, lowbin, lowbin + 1, spacing,
-                               values[dope_type], second_derivs[dope_type])
-            def maybe_score():
-                return jax.lax.cond(dr <= minrange, lambda: 0.0, spline_score)
-            return jax.lax.cond(dr >= maxrange, lambda: 0.0, maybe_score)
+            dope_type_pair = jnp.asarray(jm['dope atom type'])
+            # Get index into values/second_derivs tables
+            i = jnp.max(dope_type_pair[index])
+            j = jnp.min(dope_type_pair[index])
+            dope_type = i * (i + 1) // 2 + j
+            # tabulated values are for the center of each bin, but
+            # _spline works with the values at the low side of each bin
+            x = dr - 0.5 * spacing
+            # determine bin index and thus the cubic fragment to use:
+            lowbin = jnp.array((x - minrange) / spacing, dtype=int)
+            spline_score = _spline(x, minrange, lowbin, lowbin + 1, spacing,
+                                   values[dope_type], second_derivs[dope_type])
+            return jnp.where(
+                dr <= minrange, 0.,
+                jnp.where(dr >= maxrange, 0., spline_score))
         sf = self.get_score_functor()
         if sf.get_is_bipartite() or not sf.get_is_interpolated():
             raise TypeError("Only implemented for unipartite splines")
