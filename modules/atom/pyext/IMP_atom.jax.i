@@ -100,9 +100,9 @@
         def score_one(jm, index, minrange, maxrange, spacing, values,
                       second_derivs):
             # Score a single atom pair
-            xyz = jnp.asarray(jm['xyz'])[index]
-            dr = space.distance(xyz[1] - xyz[0])
-            dope_type_pair = jnp.asarray(jm['dope atom type'])
+            xyz = jm['xyz'][...,index,:]
+            dr = space.distance(xyz[...,1,:] - xyz[...,0,:])
+            dope_type_pair = jm['dope atom type']
             # Get index into values/second_derivs tables
             i = jnp.max(dope_type_pair[index])
             j = jnp.min(dope_type_pair[index])
@@ -137,7 +137,8 @@
             spacing=sf.get_spacing(), values=jnp.asarray(values),
             second_derivs=jnp.asarray(second_derivs))
         # Vectorize to take multiple indexes (second argument)
-        vf = jax.vmap(f, in_axes=(None, 0))
+        # The values should show up in the last axis (-1)
+        vf = jax.vmap(f, in_axes=(None, 0), out_axes=-1)
         return self._wrap_jax(m, lambda jm: vf(jm, indexes),
                               keys=(sf.get_dope_type_key(),))
   %}
