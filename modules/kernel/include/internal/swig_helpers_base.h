@@ -19,6 +19,7 @@
 #include "IMP/Vector.h"
 #include <vector>
 #include <cstdio>
+#include <sstream>
 
 #if IMP_KERNEL_HAS_NUMPY
 // Silence warnings about old NumPy API
@@ -95,6 +96,24 @@ struct PyPointer : boost::noncopyable {
 };
 typedef PyPointer<true> PyReceivePointer;
 typedef PyPointer<false> PyOwnerPointer;
+
+// Read-only streambuf over the contents of a Python bytes object, so that
+// they can be read without a copy
+class PyBytesInputBuffer : public std::streambuf {
+ public:
+  PyBytesInputBuffer(char *buf, Py_ssize_t len) { setg(buf, buf, buf + len); }
+};
+
+// Output-only stringbuf (like std::ostringstream's) whose contents can be
+// copied straight into a Python bytes object (str() would make an extra copy)
+class PyBytesOutputBuffer : public std::stringbuf {
+ public:
+  PyBytesOutputBuffer() : std::stringbuf(std::ios_base::out) {}
+  // Returns nullptr, with a Python exception set, on failure
+  PyObject *get_bytes() const {
+    return PyBytes_FromStringAndSize(pbase(), pptr() - pbase());
+  }
+};
 
 #define IMP_PYTHON_CALL(call)                                           \
   {                                                                     \
