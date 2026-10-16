@@ -500,9 +500,7 @@ private:
       }
     }
 
-    for (long i = 0; i < size; ++i) {
-      ar(data_[i]);
-    }
+    ar(cereal::binary_data(data_.get(), size * sizeof(double)));
   }
 };
 
