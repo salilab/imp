@@ -39,10 +39,14 @@ class IMPKERNELEXPORT SetLogState : public RAII {
                                                    level_ = DEFAULT;
                                                    obj_ = nullptr;
                                                  },
-  { do_set(o, l); }, { do_reset(); }, do_show(out););
+  { do_set(o, l); }, { if (level_ != DEFAULT) do_reset(); }, do_show(out););
 
   //! Construct with the desired level and target
-  SetLogState(LogLevel l);
+  SetLogState(LogLevel l) {
+    obj_ = nullptr;
+    level_ = DEFAULT;
+    if (l != DEFAULT) set(l);
+  }
   void set(LogLevel l);
 };
 
