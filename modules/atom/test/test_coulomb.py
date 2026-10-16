@@ -106,6 +106,30 @@ class Tests(IMP.test.TestCase):
                         self.assertAlmostEqual(score, j(X), delta=1e-2)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attrset(self):
+        """Check JAX CoulombPairScore, multiple attrsets"""
+        m, sf, d0, d1, c = make_test_pair_score()
+        IMP.core.XYZ(d0).set_coordinates((0., 0., 0.))
+        IMP.core.XYZ(d1).set_coordinates((8., 0., 0.))
+        c.set_relative_dielectric(1.0)
+        d0.set_charge(2.0)
+        d1.set_charge(2.0)
+        imp_score1 = sf.evaluate(False)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZR.setup_particle(d0)
+        IMP.core.XYZR.setup_particle(
+            d1, IMP.algebra.Sphere3D((6., 0., 0.), 1.0))
+        imp_score2 = sf.evaluate(False)
+
+        jax_score = sf._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Check JAX implementation of CoulombPairScore with PBC"""
         import IMP.jax

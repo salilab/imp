@@ -141,6 +141,30 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(imp_score, jax_score, delta=0.1)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Check JAX LennardJonesTypedPairScore, multi attrsets"""
+        m, sf, t0, t1, d0, d1, c = make_test_pair_score()
+        d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 3))
+        t0.set_radius(1.5)
+        t1.set_radius(2.5)
+        t0.set_well_depth(1.0)
+        t1.set_well_depth(2.0)
+        imp_score1 = sf.evaluate(False)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZR.setup_particle(d0)
+        IMP.core.XYZR.setup_particle(
+            d1, IMP.algebra.Sphere3D((4., 0., 0.), 1.0))
+        imp_score2 = sf.evaluate(False)
+        jax_score = sf._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(imp_score1, 28.7538, delta=0.1)
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_periodic(self):
         """Check JAX implementation of LennardJonesTypedPairScore with PBC"""
         import IMP.jax

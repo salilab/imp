@@ -60,11 +60,11 @@
         # an array instead using jax.vmap
         smoothing_function = jax.vmap(sf._get_jax())
         def score(jm):
-            xyzs = jm['xyz'][indexes]
-            qs = jm['charge'][indexes]
-            diff = xyzs[:,0] - xyzs[:,1]
+            xyzs = jm['xyz'][...,indexes,:]
+            qs = jm['charge'][...,indexes]
+            diff = xyzs[...,0,:] - xyzs[...,1,:]
             drs = space.distance(diff)
-            scores = factor * jnp.prod(qs, axis=1) / drs
+            scores = factor * jnp.prod(qs, axis=-1) / drs
             return smoothing_function(scores, drs)
         return self._wrap_jax(m, score, keys=[Charged.get_charge_key()])
   %}
