@@ -22,22 +22,19 @@
 %extend IMP::atom::ForceSwitch {
   %pythoncode %{
     def _get_jax(self):
-        import jax.lax
+        import jax.numpy as jnp
         min_distance = self.get_min_distance()
         max_distance = self.get_max_distance()
         dist_dif = max_distance - min_distance
         value_prefactor = 1.0 / (dist_dif * dist_dif * dist_dif)
         deriv_prefactor = 6.0 * value_prefactor
-        def mid_range_score(d):
-            x = max_distance - d
-            return (value_prefactor * x * x *
-                    (max_distance + 2.0 * d - 3.0 * min_distance))
-        def not_short_range_score(d):
-            return jax.lax.cond(d > max_distance, lambda d: 0.0,
-                                mid_range_score, d)
         def jax_func(score, d):
-            factor = jax.lax.cond(d <= min_distance, lambda d: 1.0,
-                                  not_short_range_score, d)
+            x = max_distance - d
+            mid_range = (value_prefactor * x * x *
+                         (max_distance + 2.0 * d - 3.0 * min_distance))
+            factor = jnp.where(
+                d <= min_distance, 1.0,
+                jnp.where(d > max_distance, 0.0, mid_range))
             return score * factor
         return jax_func
   %}
