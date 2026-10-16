@@ -766,16 +766,11 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %extend Namespace::Name {
   /* Get contents as a binary blob (for serialization) */
   PyObject *_get_as_binary() const {
-    std::ostringstream oss;
+    PyBytesOutputBuffer buf;
+    std::ostream oss(&buf);
     cereal::BinaryOutputArchive ba(oss);
     ba(*self);
-    std::string s = oss.str();
-    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
-    if (p) {
-      return p;
-    } else {
-      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
-    }
+    return buf.get_bytes();
   }
 
   /* Set contents from a binary blob (for unserialization) */
@@ -785,8 +780,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
     if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
       throw IMP::IndexException("PyBytes_AsStringAndSize failed");
     }
-    std::string s(buf, len);
-    std::istringstream iss(s);
+    PyBytesInputBuffer inbuf(buf, len);
+    std::istream iss(&inbuf);
     cereal::BinaryInputArchive ba(iss);
     ba(*self);
   }
@@ -817,16 +812,11 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %extend Namespace::Name {
   /* Get contents as a binary blob (for serialization) */
   PyObject *_get_as_binary() const {
-    std::ostringstream oss;
+    PyBytesOutputBuffer buf;
+    std::ostream oss(&buf);
     cereal::BinaryOutputArchive ba(oss);
     ba(*self);
-    std::string s = oss.str();
-    PyObject *p = PyBytes_FromStringAndSize(s.data(), s.size());
-    if (p) {
-      return p;
-    } else {
-      throw IMP::IndexException("PyBytes_FromStringAndSize failed");
-    }
+    return buf.get_bytes();
   }
 
   /* Set contents from a binary blob (for unserialization) */
@@ -836,8 +826,8 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
     if (PyBytes_AsStringAndSize(p, &buf, &len) < 0) {
       throw IMP::IndexException("PyBytes_AsStringAndSize failed");
     }
-    std::string s(buf, len);
-    std::istringstream iss(s);
+    PyBytesInputBuffer inbuf(buf, len);
+    std::istream iss(&inbuf);
     cereal::BinaryInputArchive ba(iss);
     ba(*self);
   }
