@@ -248,6 +248,42 @@ class Tests(IMP.test.TestCase):
         dmap = IMP.isd.gmm_tools.gmm2map(self.model_ps,1.0,fast=False)
         dmap.set_was_used(True)
 
+    def test_score_independent_of_history(self):
+        """Test that the score does not depend on close pair list history"""
+        m = IMP.Model()
+
+        def gaussian(x, radius):
+            p = IMP.Particle(m)
+            IMP.core.Gaussian.setup_particle(p, IMP.algebra.Gaussian3D(
+                IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(
+                    IMP.algebra.Vector3D(x, 0, 0))),
+                IMP.algebra.Vector3D(9, 9, 9)))
+            IMP.atom.Mass.setup_particle(p, 1000.)
+            IMP.core.XYZR.setup_particle(p, radius)
+            return p.get_index()
+
+        def make_restraint(cutoff):
+            return IMP.isd.GaussianEMRestraint(m, model, density, sigma,
+                                               cutoff, cutoff, 0., False,
+                                               False, False)
+        sigma = IMP.isd.Scale.setup_particle(
+            IMP.Particle(m), 1.).get_particle_index()
+        # Each case moves the second model Gaussian by less than the close
+        # pair containers' slack (1A), so that the pair with the second
+        # density Gaussian (model-density) or with the first model Gaussian
+        # (model-model) crosses the list edge without a list update
+        for cutoff, model_x, density_x, new_x in [
+                (10., (0., -36.5), (0., -60.), -35.6),
+                (0., (0., 7.5), (0., 8.), 8.4)]:
+            model = [gaussian(x, 3.) for x in model_x]
+            density = [gaussian(x, 9.) for x in density_x]
+            r = make_restraint(cutoff)
+            r.evaluate(False)
+            IMP.core.XYZ(m, model[1]).set_x(new_x)
+            self.assertAlmostEqual(r.evaluate(False),
+                                   make_restraint(cutoff).evaluate(False),
+                                   delta=1e-8)
+
 
 class LocalTests(IMP.test.TestCase):
     def test_local_score(self):
