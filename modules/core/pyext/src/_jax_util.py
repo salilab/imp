@@ -333,8 +333,8 @@ def _angle(rij, rkj):
     """Return the N angles (in radians) between Nx3 vectors rij and rkj."""
     scalar_product = jnp.vecdot(rij, rkj)
     # Avoid division by zero if colinear
-    mag_product = jnp.clip(jnp.linalg.norm(rij, axis=1)
-                           * jnp.linalg.norm(rkj, axis=1), 1e-6)
+    mag_product = jnp.clip(jnp.linalg.norm(rij, axis=-1)
+                           * jnp.linalg.norm(rkj, axis=-1), 1e-6)
     # Clip to valid domain for cos
     cosangle = jnp.clip(scalar_product / mag_product, -1.0, 1.0)
     return jnp.acos(cosangle)

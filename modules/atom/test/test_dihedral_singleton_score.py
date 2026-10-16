@@ -11,6 +11,7 @@ except ImportError:
 def make_dihedrals():
     m = IMP.Model()
     dihs = []
+    ps = []
     for stiffness in (5.0, -3.0, 0.0):
         p1 = IMP.Particle(m)
         xyz1 = IMP.core.XYZ.setup_particle(p1, IMP.algebra.Vector3D(0,0,0))
@@ -26,14 +27,15 @@ def make_dihedrals():
         dih.set_multiplicity(1)
         dih.set_stiffness(stiffness)
         dihs.append(dih)
-    return m, dihs
+        ps.append((p1, p2, p3, p4))
+    return m, ps, dihs
 
 
 class Tests(IMP.test.TestCase):
 
     def test_pickle(self):
         """Test (un-)pickle of DihedralSingletonScore"""
-        m, dih = make_dihedrals()
+        m, _, dih = make_dihedrals()
         ss = IMP.atom.DihedralSingletonScore()
         ss.set_name('foo')
         self.assertAlmostEqual(ss.evaluate_index(m, dih[0], None), 19.717,
@@ -47,7 +49,7 @@ class Tests(IMP.test.TestCase):
 
     def test_pickle_polymorphic(self):
         """Test (un-)pickle of DihedralSingletonScore via polymorphic pointer"""
-        m, dih = make_dihedrals()
+        m, _, dih = make_dihedrals()
         ss = IMP.atom.DihedralSingletonScore()
         ss.set_name('foo')
         lsc = IMP.container.ListSingletonContainer(m, dih)
@@ -62,7 +64,7 @@ class Tests(IMP.test.TestCase):
     def test_jax(self):
         """Test JAX implementation of DihedralSingletonScore"""
         import IMP.jax
-        m, dih = make_dihedrals()
+        m, _, dih = make_dihedrals()
         ss = IMP.atom.DihedralSingletonScore()
         lsc = IMP.container.ListSingletonContainer(m, dih)
         r = IMP.container.SingletonsRestraint(ss, lsc)
@@ -73,6 +75,29 @@ class Tests(IMP.test.TestCase):
         jax_score = j(jm)
         self.assertAlmostEqual(imp_score, 21.619, delta=0.01)
         self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX DihedralSingletonScore, multiple attrsets"""
+        import IMP.jax
+        m, ps, dih = make_dihedrals()
+        ss = IMP.atom.DihedralSingletonScore()
+        r = IMP.core.SingletonRestraint(m, ss, dih[0])
+        imp_score1 = r.evaluate(False)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZ.setup_particle(ps[0][0])
+        IMP.core.XYZ.setup_particle(ps[0][1])
+        IMP.core.XYZ.setup_particle(ps[0][2], (0.5, 0., 0.))
+        IMP.core.XYZ.setup_particle(ps[0][3], (0., 0.5, 0.))
+        imp_score2 = r.evaluate(False)
+
+        jax_score = r._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
 
 if __name__ == '__main__':

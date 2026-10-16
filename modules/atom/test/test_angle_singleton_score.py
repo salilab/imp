@@ -11,6 +11,7 @@ except ImportError:
 def _setup_angles():
     m = IMP.Model()
     angles = []
+    ps = []
     for coord in [[[0, 0, 0], [0, 0, 3], [0, 3, 0]],  # 90 degrees
                   [[0, 0, 0], [0, 0, 0], [0, 0, 0]],  # colinear
                   [[0, 0, 0], [0, 0, 3], [0, 3, 0]]]: # 90 degrees
@@ -28,16 +29,17 @@ def _setup_angles():
         d1.set_coordinates(IMP.algebra.Vector3D(coord[1]))
         d2.set_coordinates(IMP.algebra.Vector3D(coord[2]))
         angles.append(angle)
+        ps.append((p0, p1, p2))
     # Negative stiffness, should be ignored
     angles[2].set_stiffness(-1.0)
-    return m, angles
+    return m, ps, angles
 
 
 class Tests(IMP.test.TestCase):
 
     def test_angle_ss(self):
         """Test AngleSingletonScore"""
-        m, angles = _setup_angles()
+        m, _, angles = _setup_angles()
         ss = IMP.atom.AngleSingletonScore(IMP.core.Linear(0, 1))
         self.assertAlmostEqual(ss.evaluate_index(m, angles[0], None),
                                -2.5 * math.pi, delta=1e-4)
@@ -50,7 +52,7 @@ class Tests(IMP.test.TestCase):
     def test_jax(self):
         """Test JAX implementation of AngleSingletonScore"""
         import IMP.jax
-        m, angles = _setup_angles()
+        m, _, angles = _setup_angles()
         lsc = IMP.container.ListSingletonContainer(m, angles)
         ss = IMP.atom.AngleSingletonScore(IMP.core.Linear(0, 1))
         r = IMP.container.SingletonsRestraint(ss, lsc)
@@ -61,6 +63,28 @@ class Tests(IMP.test.TestCase):
         jax_score = j(jm)
         self.assertAlmostEqual(imp_score, -7.5 * math.pi, delta=0.01)
         self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX AngleSingletonScore, multiple attrsets"""
+        import IMP.jax
+        m, ps, angles = _setup_angles()
+        ss = IMP.atom.AngleSingletonScore(IMP.core.Linear(0, 1))
+        r = IMP.core.SingletonRestraint(m, ss, angles[0])
+        imp_score1 = r.evaluate(False)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZ.setup_particle(ps[0][0])
+        IMP.core.XYZ.setup_particle(ps[0][1])
+        IMP.core.XYZ.setup_particle(ps[0][2], (0.5, 0., 0.))
+        imp_score2 = r.evaluate(False)
+
+        jax_score = r._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
 
 if __name__ == '__main__':

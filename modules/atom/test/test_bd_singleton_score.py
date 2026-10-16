@@ -108,6 +108,34 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(imp_score, 243.132, delta=0.01)
         self.assertAlmostEqual(imp_score, jax_score, delta=0.01)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_multi_attr(self):
+        """Test JAX BondSingletonScore, multiple attrsets"""
+        import IMP.jax
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
+        d0 = IMP.core.XYZ.setup_particle(p0)
+        d1 = IMP.core.XYZ.setup_particle(p1)
+        b0 = IMP.atom.Bonded.setup_particle(p0)
+        b1 = IMP.atom.Bonded.setup_particle(p1)
+        b = IMP.atom.create_custom_bond(b0, b1, 1.0, 2.0)
+        ss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0.1, 1.2))
+        r = IMP.core.SingletonRestraint(m, ss, b)
+        imp_score1 = r.evaluate(False)
+
+        # Second attrset
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        IMP.core.XYZ.setup_particle(p0)
+        IMP.core.XYZ.setup_particle(p1, (0.5, 0., 0.))
+        imp_score2 = r.evaluate(False)
+
+        jax_score = r._evaluate_jax()
+        self.assertEqual(jax_score.shape, (2,))
+        self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
+        self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()
