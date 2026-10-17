@@ -22,6 +22,11 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(groups, [['rsr:B:42'], ['rsr:A:4', 'rsr:A:2']])
         self.assertEqual(ungrouped, ['other:A:2', 'other:A:4'])
 
+        groups, ungrouped = IMP._jax_util.get_grouped_restraints(
+            rs, keyfunc, minsize=2)
+        self.assertEqual(groups, [['rsr:A:4', 'rsr:A:2']])
+        self.assertEqual(ungrouped, ['rsr:B:42', 'other:A:2', 'other:A:4'])
+
 
 if __name__ == '__main__':
     IMP.test.main()

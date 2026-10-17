@@ -44,7 +44,7 @@ def _get_jax_multi_restraint(rcls, restraints, space):
             return r.get_score_object().get_derived_object()
 
     groups, ungrouped = IMP._jax_util.get_grouped_restraints(
-        restraints, rsrkey)
+        restraints, rsrkey, minsize=2)
     return [get_jax_multiple(g) for g in groups], ungrouped
 
 

@@ -260,11 +260,13 @@ class JAXOptimizerStateInfo:
         self.apply_func = apply_func
 
 
-def get_grouped_restraints(rs, keyfunc):
+def get_grouped_restraints(rs, keyfunc, minsize=1):
     """Get groups of comparable restraints, plus ungrouped restraints
 
        @param rs List of restraints
        @param keyfunc Function which returns an ID if given a restraint
+       @param minsize The smallest number of restraints that can constitute
+              a group
 
        @return A list of lists of grouped restraints (all restraints for
                which keyfunc returns the same value) plus a list of all
@@ -274,7 +276,10 @@ def get_grouped_restraints(rs, keyfunc):
     for r in rs:
         key = keyfunc(r)
         d.setdefault(key, []).append(r)
-    ungrouped = d.pop(None, [])
+    ungrouped = []
+    for k in list(d.keys()):
+        if k is None or len(d[k]) < minsize:
+            ungrouped.extend(d.pop(k))
     return list(d.values()), ungrouped
 
 
