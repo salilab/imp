@@ -22,6 +22,32 @@ def _get_jax_restraint(r, space):
     return r._wrap_jax(jax_restraint, keys=ji._keys)
 
 
+def _get_jax_multi_restraint(rcls, restraints, space):
+    """Return a JAX implementation for multiple SingletonRestraint,
+       PairRestraint, etc."""
+    def get_jax_multiple(group):
+        first_r = group[0]
+        score = first_r.get_score_object().get_derived_object()
+        indexes = jnp.array([r.get_index() for r in group])
+        weights = jnp.array([r.get_weight() for r in group])
+        ji = score._get_jax(first_r.get_model(), indexes, space)
+        score_jax = ji.score_func
+
+        def jax_restraint(jm):
+            return score_jax(jm) * weights
+        return rcls._wrap_jax_multiple(first_r, jax_restraint,
+                                       keys=ji._keys)
+
+    # Get all groups of restraints that use the same score object
+    def rsrkey(r):
+        if type(r) is rcls:
+            return r.get_score_object().get_derived_object()
+
+    groups, ungrouped = IMP._jax_util.get_grouped_restraints(
+        restraints, rsrkey)
+    return [get_jax_multiple(g) for g in groups], ungrouped
+
+
 class JAXMoverInfo:
     """Information about a JAX implementation of a MonteCarloMover."""
     def __init__(self, init_func, propose_func, accept_func, sync_func,

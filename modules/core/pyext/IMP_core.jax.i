@@ -360,6 +360,11 @@
     def _get_jax(self, space):
         from . import _jax_util
         return _jax_util._get_jax_restraint(self, space)
+
+    @classmethod
+    def _get_jax_multiple(cls, restraints, space):
+        from . import _jax_util
+        return _jax_util._get_jax_multi_restraint(cls, restraints, space)
   %}
 }
 
@@ -368,6 +373,11 @@
     def _get_jax(self, space):
         from . import _jax_util
         return _jax_util._get_jax_restraint(self, space)
+
+    @classmethod
+    def _get_jax_multiple(cls, restraints, space):
+        from . import _jax_util
+        return _jax_util._get_jax_multi_restraint(cls, restraints, space)
   %}
 }
 
