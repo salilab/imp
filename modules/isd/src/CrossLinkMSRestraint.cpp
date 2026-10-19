@@ -15,10 +15,90 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/Restraint.h>
 #include <cmath>
+#include <algorithm>
 #include <limits.h>
 #include <boost/math/special_functions/erf.hpp>
 
 IMPISD_BEGIN_NAMESPACE
+
+namespace {
+
+// Volume of the intersection of two balls of radii a and b whose centers
+// are r apart
+double get_lens_volume(double a, double b, double r) {
+  if (r >= a + b) {
+    return 0.;
+  } else if (r <= std::abs(a - b)) {
+    double rmin = std::min(a, b);
+    return 4. / 3. * IMP::PI * rmin * rmin * rmin;
+  } else {
+    return IMP::PI * (a + b - r) * (a + b - r)
+           * (r * r + 2. * r * (a + b) - 3. * (a - b) * (a - b)) / (12. * r);
+  }
+}
+
+// Area of the part of a sphere of radius r, centered at the origin, that
+// lies within distance length of a point at distance dist from the origin
+double get_sphere_area_within(double r, double dist, double length) {
+  if (r + dist <= length) {
+    return 4. * IMP::PI * r * r;
+  } else if (r <= dist - length || r >= dist + length) {
+    return 0.;
+  } else {
+    return IMP::PI * r * (length * length - (r - dist) * (r - dist)) / dist;
+  }
+}
+
+// Probability that two points, drawn uniformly from balls of radii sigmai
+// and sigmaj whose centers are dist apart, are closer than length
+// (the forward model of Erzberger et al. 2014 and Robinson et al. 2015).
+// The difference of the two points has density
+// lens(sigmai, sigmaj, r) / (Vi * Vj) at any point a distance r from the
+// origin (Vi = 4/3 pi sigmai^3), so this is the integral over r, from 0 to
+// sigmai + sigmaj, of that density times the area of the sphere of radius
+// r that lies within length of a point dist away from its center.
+// The lens volume changes formula at r = |sigmai - sigmaj| and
+// sigmai + sigmaj, and the area at r = |dist - length| and dist + length.
+// Between these breakpoints their product is a polynomial in r of degree
+// at most 6 (the 1/r of the partial lens cancels against the factor r in
+// both 4 pi r^2 and the spherical cap), so 4-point Gauss-Legendre
+// quadrature on each piece is exact.
+double get_forward_model_probability(double dist, double sigmai,
+                                     double sigmaj, double length) {
+  // 4-point Gauss-Legendre rule on [-1, 1], exact for polynomials of degree
+  // <= 7: the nodes are the roots of P4(t) = (35 t^4 - 30 t^2 + 3) / 8 and
+  // the weights are 2 / ((1 - t^2) P4'(t)^2), that is
+  //   t = +-sqrt(3/7 + (2/7) sqrt(6/5)), w = (18 - sqrt(30)) / 36
+  //   t = +-sqrt(3/7 - (2/7) sqrt(6/5)), w = (18 + sqrt(30)) / 36
+  // (Abramowitz & Stegun 1964, Table 25.4, p. 916).
+  static const double gl_x[4] = {-0.8611363115940526, -0.3399810435848563,
+                                 0.3399810435848563, 0.8611363115940526};
+  static const double gl_w[4] = {0.3478548451374538, 0.6521451548625461,
+                                 0.6521451548625461, 0.3478548451374538};
+  double rmax = sigmai + sigmaj;
+  double points[5] = {0., rmax, std::abs(sigmai - sigmaj),
+                      std::abs(dist - length), dist + length};
+  for (double &p : points) {
+    p = std::max(0., std::min(rmax, p));
+  }
+  std::sort(points, points + 5);
+  double integral = 0.;
+  for (unsigned int i = 0; i < 4; ++i) {
+    double half = 0.5 * (points[i + 1] - points[i]);
+    if (half <= 0.) continue;
+    double mid = 0.5 * (points[i + 1] + points[i]);
+    for (unsigned int k = 0; k < 4; ++k) {
+      double r = mid + half * gl_x[k];
+      integral += half * gl_w[k] * get_lens_volume(sigmai, sigmaj, r)
+                  * get_sphere_area_within(r, dist, length);
+    }
+  }
+  double voli = 4. / 3. * IMP::PI * sigmai * sigmai * sigmai;
+  double volj = 4. / 3. * IMP::PI * sigmaj * sigmaj * sigmaj;
+  return std::max(0., std::min(1., integral / voli / volj));
+}
+
+}  // namespace
 
 CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, double length,
                                            bool get_log_prob,
@@ -75,47 +155,15 @@ double CrossLinkMSRestraint::get_probability() const {
         double sigmaj = isd::Scale(get_model(),
                                    std::get<1>(sigmas)).get_scale();
 
-        double voli = 4.0 / 3.0 * IMP::PI * sigmai * sigmai * sigmai;
-        double volj = 4.0 / 3.0 * IMP::PI * sigmaj * sigmaj * sigmaj;
+        double pofr = get_forward_model_probability(dist, sigmai, sigmaj,
+                                                    length);
 
-        double fi = 0;
-        double fj = 0;
-
-        if (dist < sigmai + sigmaj) {
-            double xlvol = 4.0 / 3.0 * IMP::PI * (length / 2) * (length / 2) *
-                           (length / 2);
-            fi = std::min(voli, xlvol);
-            fj = std::min(volj, xlvol);
-        } else {
-            double di = dist - sigmaj - length / 2;
-            double dj = dist - sigmai - length / 2;
-            fi = sphere_cap(sigmai, length / 2, std::abs(di));
-            fj = sphere_cap(sigmaj, length / 2, std::abs(dj));
-        }
-
-        double pofr = fi * fj / voli / volj;
-        
         if (constr_ == 2) {
             double prior=exp(-slope_*dist);
             onemprob = onemprob * (1.0 - (psi * (1.0 - pofr) + pofr * (1 - psi)) * prior);
         } else {
             onemprob = onemprob * (1.0 - (psi * (1.0 - pofr) + pofr * (1 - psi)) );
         }    
-
-        // double tau=std::sqrt(sigmai*sigmai+sigmaj*sigmaj);
-        // double lmd=(length_-dist)/std::sqrt(2)/tau;
-        // double lpd=(length_+dist)/std::sqrt(2)/tau;
-        // double erfm=terf(lmd);
-        // double erfp=terf(lpd);
-        // double expm=texp(-lmd*lmd);
-        // double expp=texp(-lpd*lpd);
-        // double
-        // pofr=2*(2*(expp-expm)*tau+std::sqrt(2*IMP::PI)
-        //      *dist*(erfm+erfp))/4/std::sqrt(2*IMP::PI)/dist;
-
-        // std::cout << pofr << " " << expm << " " << expp << " " << erfp <<
-        // std::endl ;
-        
     }
 
     double prob = 1.0 - onemprob;
@@ -124,21 +172,6 @@ double CrossLinkMSRestraint::get_probability() const {
     
     // std::cout << prob << std::endl ;
     return prob;
-}
-
-double CrossLinkMSRestraint::sphere_cap(float r1, float r2, float d) const {
-    double sc = 0;
-    if (d <= std::max(r1, r2) - std::min(r1, r2)) {
-        sc = std::min(4.0 / 3 * IMP::PI * r1 * r1 * r1,
-                      4.0 / 3 * IMP::PI * r2 * r2 * r2);
-    } else if (d >= r1 + r2) {
-        sc = 0;
-    } else {
-        sc = (IMP::PI / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
-             (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2 + 6 * r1 * r2 -
-              3 * r2 * r2);
-    }
-    return sc;
 }
 
 double CrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
