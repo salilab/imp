@@ -53,13 +53,24 @@ double get_sphere_area_within(double r, double dist, double length) {
 // and sigmaj whose centers are dist apart, are closer than length
 // (the forward model of Erzberger et al. 2014 and Robinson et al. 2015).
 // The difference of the two points has density
-// lens(sigmai, sigmaj, r) / (Vi * Vj) at distance r, so this is the
-// integral over r of that density times the area of the sphere of radius
-// r that lies within length of a point dist away from its center. Between
-// the breakpoints the integrand is a polynomial of degree at most 6, so
-// 4-point Gauss-Legendre quadrature on each piece is exact.
+// lens(sigmai, sigmaj, r) / (Vi * Vj) at any point a distance r from the
+// origin (Vi = 4/3 pi sigmai^3), so this is the integral over r, from 0 to
+// sigmai + sigmaj, of that density times the area of the sphere of radius
+// r that lies within length of a point dist away from its center.
+// The lens volume changes formula at r = |sigmai - sigmaj| and
+// sigmai + sigmaj, and the area at r = |dist - length| and dist + length.
+// Between these breakpoints their product is a polynomial in r of degree
+// at most 6 (the 1/r of the partial lens cancels against the factor r in
+// both 4 pi r^2 and the spherical cap), so 4-point Gauss-Legendre
+// quadrature on each piece is exact.
 double get_forward_model_probability(double dist, double sigmai,
                                      double sigmaj, double length) {
+  // 4-point Gauss-Legendre rule on [-1, 1], exact for polynomials of degree
+  // <= 7: the nodes are the roots of P4(t) = (35 t^4 - 30 t^2 + 3) / 8 and
+  // the weights are 2 / ((1 - t^2) P4'(t)^2), that is
+  //   t = +-sqrt(3/7 + (2/7) sqrt(6/5)), w = (18 - sqrt(30)) / 36
+  //   t = +-sqrt(3/7 - (2/7) sqrt(6/5)), w = (18 + sqrt(30)) / 36
+  // (Abramowitz & Stegun 1964, Table 25.4, p. 916).
   static const double gl_x[4] = {-0.8611363115940526, -0.3399810435848563,
                                  0.3399810435848563, 0.8611363115940526};
   static const double gl_w[4] = {0.3478548451374538, 0.6521451548625461,

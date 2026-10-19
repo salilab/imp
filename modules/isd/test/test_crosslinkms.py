@@ -283,8 +283,11 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         # Spheres entirely within, or entirely beyond, the linker length
         self.assertAlmostEqual(get_f(10., 2., 3., 15.5), 1., delta=1e-8)
         self.assertAlmostEqual(get_f(20.5, 2., 3., 15.), 0., delta=1e-8)
-        # Concentric spheres of radius sigma: closed form
-        # x^3 - 9/16 x^4 + 1/32 x^6 with x = length / sigma (for x <= 2)
+        # Concentric spheres of radius sigma: the distance between two
+        # independent uniform points in a ball of radius sigma has the
+        # distribution function x^3 - 9/16 x^4 + 1/32 x^6, with
+        # x = length / sigma <= 2 (Deltheil 1926; Hammersley 1950,
+        # Ann. Math. Statist. 21, 447)
         for sigma in (10.5, 12., 15., 21.):
             x = 21. / sigma
             self.assertAlmostEqual(get_f(0., sigma, sigma, 21.),

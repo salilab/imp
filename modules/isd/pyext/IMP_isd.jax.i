@@ -160,7 +160,11 @@
         import jax.ops
         import math
 
-        # 4-point Gauss-Legendre nodes and weights on [-1, 1]
+        # 4-point Gauss-Legendre nodes and weights on [-1, 1], as in
+        # get_forward_model_probability() in CrossLinkMSRestraint.cpp:
+        # t = +-sqrt(3/7 + (2/7) sqrt(6/5)), w = (18 - sqrt(30)) / 36 and
+        # t = +-sqrt(3/7 - (2/7) sqrt(6/5)), w = (18 + sqrt(30)) / 36
+        # (Abramowitz & Stegun 1964, Table 25.4, p. 916).
         gl_x = jnp.array([-0.8611363115940526, -0.3399810435848563,
                           0.3399810435848563, 0.8611363115940526])
         gl_w = jnp.array([0.3478548451374538, 0.6521451548625461,
