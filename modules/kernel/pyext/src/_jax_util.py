@@ -40,7 +40,7 @@ def _get_jax_model(m, keys):
        If the key "rigid_bodies" is given, information on all of the Model's
        rigid bodies is also included."""
     xyz, r = m.get_spheres_numpy()
-    jm = {"xyz": xyz, "r": r}
+    jm = IMP.jax._JAXModel(xyz=xyz, r=r)
     # If a given key is given both as default (sparse) and DenseKey,
     # DenseKey should take precedence
     keys = frozenset(keys) - frozenset(k.key for k in keys

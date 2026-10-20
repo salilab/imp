@@ -636,6 +636,27 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(id(newm), id(m))
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_get_jax_model(self):
+        """Test _get_jax_model"""
+        import IMP._jax_util
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        jm = IMP._jax_util._get_jax_model(m, ())
+        self.assertTrue(isinstance(jm, IMP.jax._JAXModel))
+        self.assertTrue('r' in jm)
+        self.assertFalse('not-attr' in jm)
+        jm['foo'] = 42
+        self.assertEqual(jm['foo'], 42)
+        self.assertEqual(len(jm.keys()), 3)
+        self.assertEqual(len(jm.values()), 3)
+        self.assertEqual(len(jm.items()), 3)
+
+        new_jm = jm.copy()
+        self.assertTrue(isinstance(new_jm, IMP.jax._JAXModel))
+        self.assertTrue('r' in new_jm)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_get_jax_model_rigid_bodies(self):
         """Test _get_jax_model with rigid bodies"""
         import IMP._jax_util

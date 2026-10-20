@@ -190,3 +190,53 @@ class _AtIdxCompactArray:
 
     def add(self, v):
         return self._new(self.arr.data.at[self.rows].add(v))
+
+
+@jax.tree_util.register_pytree_node_class
+class _JAXModel:
+    """JAX equivalent of an IMP Model.
+       This acts like a regular Python dict.
+       @see IMP._jax_util._get_jax_model
+    """
+    def __init__(self, multi_attr_keys=None, **kwargs):
+        self._d = dict(**kwargs)
+        self.multi_attr_keys = frozenset(multi_attr_keys or ())
+
+    def __getitem__(self, k):
+        return self._d[k]
+
+    def __setitem__(self, k, v):
+        self._d[k] = v
+
+    def __contains__(self, k):
+        return k in self._d
+
+    def keys(self):
+        return self._d.keys()
+
+    def items(self):
+        return self._d.items()
+
+    def values(self):
+        return self._d.values()
+
+    def copy(self):
+        m = _JAXModel(multi_attr_keys=self.multi_attr_keys)
+        m._d = self._d.copy()
+        return m
+
+    def __str__(self):
+        return str(self._d)
+
+    def tree_flatten(self):
+        d_leaves, d_treedef = jax.tree.flatten(self._d)
+        return (d_leaves, (d_treedef, self.multi_attr_keys))
+
+    @classmethod
+    def tree_unflatten(cls, aux_data, children):
+        d_leaves = children
+        d_treedef, multi_attr_keys = aux_data
+        c = cls()
+        c._d = jax.tree.unflatten(d_treedef, d_leaves)
+        c.multi_attr_keys = multi_attr_keys
+        return c
