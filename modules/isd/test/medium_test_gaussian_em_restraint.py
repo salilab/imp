@@ -199,6 +199,18 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(score, pyscore, delta=0.02)
             self.assertAlmostEqual(cc, pycc, delta=0.02)
 
+    def test_gem_score_rigid_body(self):
+        """test GMM score when the model Gaussians are in a rigid body"""
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(self.m),
+                                               self.model_ps)
+        for nt in range(10):
+            IMP.core.transform(rb, IMP.algebra.Transformation3D(
+                IMP.algebra.get_random_rotation_3d(),
+                IMP.algebra.Vector3D(0, 0, 0)))
+            score = self.sf.evaluate(False)
+            pycc, pyscore = gem_score(self.model_ps, self.density_ps)
+            self.assertAlmostEqual(score, pyscore, delta=1e-6)
+
     def test_gem_score_with_slope(self):
         """test accuracy of GMM score using slope"""
         reset_coords(self.model_ps,self.orig_coords)

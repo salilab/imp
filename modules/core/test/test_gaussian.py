@@ -126,6 +126,43 @@ class TestGaussian(IMP.test.TestCase):
         rbd.add_non_rigid_member(p)
         self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
 
+    def assert_global_covariance_current(self, g):
+        cached = np.asarray(g.get_global_covariance())
+        current = np.asarray(IMP.algebra.get_covariance(g.get_gaussian()))
+        self.assertLess(np.abs(cached - current).max(), 1e-8)
+
+    def test_global_covariance_rigid_body(self):
+        """Global covariance follows the rotation of a parent rigid body"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        g = IMP.core.Gaussian.setup_particle(p, IMP.algebra.Gaussian3D(
+            IMP.algebra.ReferenceFrame3D(), [100., 4., 1.]))
+        anchor = IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                             IMP.algebra.Vector3D(5, 0, 0))
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [p, anchor])
+        self.assert_global_covariance_current(g)
+        for i in range(5):
+            rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(
+                IMP.algebra.Transformation3D(
+                    IMP.algebra.get_random_rotation_3d(),
+                    IMP.algebra.Vector3D(i, 0, 0))))
+            m.update()
+            self.assert_global_covariance_current(g)
+
+    def test_global_covariance_set_reference_frame(self):
+        """Global covariance follows the Gaussian's own reference frame"""
+        m = IMP.Model()
+        g = IMP.core.Gaussian.setup_particle(IMP.Particle(m),
+            IMP.algebra.Gaussian3D(IMP.algebra.ReferenceFrame3D(),
+                                   [100., 4., 1.]))
+        self.assert_global_covariance_current(g)
+        for i in range(5):
+            g.set_reference_frame(IMP.algebra.ReferenceFrame3D(
+                IMP.algebra.Transformation3D(
+                    IMP.algebra.get_random_rotation_3d(),
+                    IMP.algebra.Vector3D(0, i, 0))))
+            self.assert_global_covariance_current(g)
+
     def test_copy_gaussian(self):
         """test creation of gaussian with get and set"""
         m = IMP.Model()
