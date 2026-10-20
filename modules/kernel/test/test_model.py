@@ -646,6 +646,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(isinstance(jm, IMP.jax._JAXModel))
         self.assertTrue('r' in jm)
         self.assertFalse('not-attr' in jm)
+        self.assertEqual(jm.multi_attr_keys, frozenset())
         jm['foo'] = 42
         self.assertEqual(jm['foo'], 42)
         self.assertEqual(len(jm.keys()), 3)
@@ -655,6 +656,21 @@ class Tests(IMP.test.TestCase):
         new_jm = jm.copy()
         self.assertTrue(isinstance(new_jm, IMP.jax._JAXModel))
         self.assertTrue('r' in new_jm)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_get_jax_model_multi_attr(self):
+        """Test _get_jax_model with multiple attrsets"""
+        import IMP._jax_util
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        # Second set
+        m.set_number_of_sphere_attribute_sets(2)
+        m.set_active_sphere_attribute_set(1)
+        d1 = IMP.core.XYZR.setup_particle(p1)
+
+        jm = IMP._jax_util._get_jax_model(m, ())
+        self.assertEqual(jm.multi_attr_keys, frozenset(('xyz', 'r')))
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_get_jax_model_rigid_bodies(self):
