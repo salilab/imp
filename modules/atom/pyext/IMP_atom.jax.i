@@ -147,7 +147,6 @@
 %extend IMP::atom::VelocityScalingOptimizerState {
   %pythoncode %{
     def _get_jax(self, state_index):
-        import jax.lax
         import jax.numpy as jnp
         temperature = self.get_temperature()
         indexes = jnp.asarray(IMP.get_indexes(self.get_particles()))
@@ -155,14 +154,15 @@
         def scale_velocities(md, tkinetic):
             scale = jnp.sqrt(temperature / tkinetic)
             linvel = md.jm['linvel'].at[indexes]
-            md.jm['linvel'] = linvel.multiply(scale)
-            return md
+            return linvel.multiply(scale)
 
         def apply_func(md):
             ekinetic = md.get_kinetic_energy()
             tkinetic = md.get_kinetic_temperature(ekinetic)
-            return jax.lax.cond(tkinetic > 1e-8, scale_velocities,
-                                lambda md, tk: md, md, tkinetic)
+            md.jm['linvel'] = jnp.where(
+                tkinetic > 1e-8,
+                scale_velocities(md, tkinetic), md.jm['linvel'])
+            return md
         return self._wrap_jax(lambda x: x, apply_func)
   %}
 }
