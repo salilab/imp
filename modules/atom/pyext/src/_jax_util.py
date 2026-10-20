@@ -84,7 +84,15 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             velocity_cap = jnp.array([velocity_cap] * 3)
         else:
             velocity_cap = None
+        # Get all JAX periodic actions ("optimizer states")
         jax_optstates = self._setup_jax_optimizer_states()
+        # Split into those which run on every step (the default)
+        # and those which only run periodically
+        jax_opt_1_states = []
+        jax_opt_x_states = []
+        for x in jax_optstates:
+            (jax_opt_1_states if x.period == 1 else jax_opt_x_states).append(x)
+
         space = self._space
 
         def init_func(jm, key):
@@ -113,7 +121,9 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             # Get velocities at t+(delta t)
             _propagate_velocities(jm, indexes, mass, ms.time_step)
             steps = ms.steps
-            for js in jax_optstates:
+            for js in jax_opt_1_states:
+                ms = js.apply_func(ms)
+            for js in jax_opt_x_states:
                 ms = jax.lax.cond(steps % js.period == 0, js.apply_func,
                                   lambda x: x, ms)
             return ms
