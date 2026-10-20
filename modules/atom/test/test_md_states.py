@@ -1,3 +1,4 @@
+import functools
 import IMP
 import IMP.test
 import IMP.core
@@ -121,6 +122,50 @@ class Tests(IMP.test.TestCase):
         ts = md.get_kinetic_temperature(md.get_kinetic_energy())
         self.assertAlmostEqual(ts, 298.0, delta=0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_berendsen_thermostat_multi(self):
+        """Test JAX Berendsen thermostat with multiple attrsets"""
+        import jax.numpy as jnp
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(0.1, 0, 0)]],
+                                     copies=10)
+        scaler = IMP.atom.BerendsenThermostatOptimizerState(ps, 298.0, 8.0)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_maximum_time_step(4.0)
+        md.set_scoring_function([])
+        md.add_optimizer_state(scaler)
+        ji = md._get_jax()
+        jm = ji.get_jax_model()
+        # Artificially create two attribute sets in the JAX model
+        jm['xyz'] = jnp.stack((jm['xyz'], jm['xyz']))
+
+        init = jax.jit(ji.init_func)
+        mds = init(jm, key=jax.random.key(42))
+        mds.jm['linvel'] = jnp.stack((mds.jm['linvel'],
+                                      mds.jm['linvel'] * 3.0))
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertEqual(temp.shape, (2,))
+        # velocity*3, so temperature*9
+        self.assertAlmostEqual(temp[1] / temp[0], 9.0, delta=1e-3)
+
+        def run_opt(jm, apply_func, nsteps):
+            return jax.lax.fori_loop(0, nsteps, apply_func, jm)
+
+        jit_apply_func = jax.jit(functools.partial(
+            run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=10))
+
+        # After 10 steps, both temperatures should be approaching the
+        # set temperature but the 2nd replica should be hotter
+        mds = jit_apply_func(mds)
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertGreater(temp[1], temp[0])
+
+        # After 10 steps, both replicas should be at the set temperature
+        mds = jit_apply_func(mds)
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertAlmostEqual(temp[0], 298.0, delta=0.5)
+        self.assertAlmostEqual(temp[1], 298.0, delta=0.5)
+
     def test_langevin_thermostat(self):
         """Test Langevin thermostat"""
         # Need many particles due to random forces
@@ -157,6 +202,41 @@ class Tests(IMP.test.TestCase):
         md._optimize_jax(100)
         ts = md.get_kinetic_temperature(md.get_kinetic_energy())
         self.assertAlmostEqual(ts, 298.0, delta=50.0)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_langevin_thermostat_multi(self):
+        """Test JAX Langevin thermostat with multi attrsets"""
+        import jax.numpy as jnp
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(0.1, 0, 0)]],
+                                     copies=100)
+        scaler = IMP.atom.LangevinThermostatOptimizerState(m, ps, 298.0, 0.1)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_maximum_time_step(4.0)
+        # Test MD with NullScoringFunction
+        md.set_scoring_function([])
+        md.add_optimizer_state(scaler)
+        ji = md._get_jax()
+        jm = ji.get_jax_model()
+        # Artificially create two attribute sets in the JAX model
+        jm['xyz'] = jnp.stack((jm['xyz'], jm['xyz']))
+
+        init = jax.jit(ji.init_func)
+        mds = init(jm, key=jax.random.key(42))
+        mds.jm['linvel'] = jnp.stack((mds.jm['linvel'],
+                                      mds.jm['linvel'] * 3.0))
+
+        def run_opt(jm, apply_func, nsteps):
+            return jax.lax.fori_loop(0, nsteps, apply_func, jm)
+
+        jit_apply_func = jax.jit(functools.partial(
+            run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=10))
+
+        mds = jit_apply_func(mds)
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertEqual(temp.shape, (2,))
+        # Each replica should be scaled separately
+        self.assertNotEqual(temp[0], temp[1])
 
 
 if __name__ == '__main__':

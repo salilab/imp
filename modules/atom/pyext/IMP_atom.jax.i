@@ -178,6 +178,8 @@
             tkinetic = md.get_kinetic_temperature(ekinetic)
             scale = jnp.sqrt(1.0 + (md.time_step / tau)
                              * (temperature / tkinetic - 1.0))
+            if md.jm['linvel'].ndim > 2:
+                scale = scale[:, jnp.newaxis, jnp.newaxis]
             linvel = md.jm['linvel'].at[..., indexes, :]
             md.jm['linvel'] = linvel.multiply(scale)
             return md
