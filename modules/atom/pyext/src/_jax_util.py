@@ -74,6 +74,9 @@ class _MolecularDynamics:
 class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     def __init__(self, md, space):
         super().__init__(md, space)
+        self._keys = frozenset(
+            (IMP._jax_util._DenseKey(IMP.atom.Mass.get_mass_key()),
+             IMP.atom.LinearVelocity.get_velocity_key()))
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
         deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
@@ -133,15 +136,6 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
         # Force MolecularDynamics to create linvel for all particles
         _ = md.get_simulation_particle_indexes()
-
-    def get_jax_model(self):
-        jm = super().get_jax_model()
-        m = self._opt.get_model()
-        jm['mass'] = m.get_floats_numpy(IMP.atom.Mass.get_mass_key())
-        jm['linvel'] = jax.numpy.array(
-            m.get_vector3ds_numpy(IMP.atom.LinearVelocity.get_velocity_key()))
-        jm['xyz'] = jax.numpy.array(jm['xyz'])
-        return jm
 
 
 class _MDJAXOptimizer(_JAXOptimizer):
