@@ -171,7 +171,13 @@ void ClosePairContainer::do_incremental() {
   pf.push_back(new core::AllSamePairPredicate());
   pf.back()->set_was_used(true);
   cpf_->set_pair_filters(pf);
-  cpf_->set_distance(distance_ + 2 * slack_);
+  // Every pair not in the list must be at least distance + 2*slack apart
+  // at the particles' backup positions; since no particle is more than slack
+  // from its backup, that means every pair closer than distance is listed.
+  // Only the moved particles' backups are reset here, and a particle that
+  // didn't move can still be up to slack from its backup, so new pairs
+  // must be searched for out to distance + 3*slack.
+  cpf_->set_distance(distance_ + 3 * slack_);
   ParticleIndexPairs ret;
   // Go over particles that moved
   IMP_CONTAINER_ACCESS(SingletonContainer, moved_, {
@@ -190,7 +196,10 @@ void ClosePairContainer::do_incremental() {
       InList::destroy(il);*/
     ParticleIndexPairs cur;
     swap(cur);
-    core::internal::FarParticle fp(get_model(), distance_ + 2 * slack_);
+    // A dropped pair may include two particles that didn't move (and whose
+    // backups were not reset), each up to slack from its backup, so only
+    // pairs at least distance + 4*slack apart can safely be dropped.
+    core::internal::FarParticle fp(get_model(), distance_ + 4 * slack_);
     cur.erase(std::remove_if(cur.begin(), cur.end(), fp),
               cur.end());
     swap(cur);
