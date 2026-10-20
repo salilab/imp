@@ -178,7 +178,7 @@
             tkinetic = md.get_kinetic_temperature(ekinetic)
             scale = jnp.sqrt(1.0 + (md.time_step / tau)
                              * (temperature / tkinetic - 1.0))
-            linvel = md.jm['linvel'].at[indexes]
+            linvel = md.jm['linvel'].at[..., indexes, :]
             md.jm['linvel'] = linvel.multiply(scale)
             return md
 
@@ -209,13 +209,13 @@
             c2 = jnp.sqrt((1.0 - c1) * gas_constant * temperature)
             md.optimizer_states[state_index], subkey = jax.random.split(
                 md.optimizer_states[state_index])
-            sample = jax.random.normal(subkey, shape=(len(indexes), 3))
-            mass = md.jm['mass'][indexes]
-            linvel = md.jm['linvel'].at[indexes]
+            indshape = md.jm['linvel'].shape[:-2] + (len(indexes),)
+            sample = jax.random.normal(subkey, shape=indshape + (3,))
+            mass = md.jm['mass'][..., indexes]
+            linvel = md.jm['linvel'].at[..., indexes, :]
             md.jm['linvel'] = linvel.set(
                 c1 * linvel.get()
-                 + c2 * jnp.sqrt((c1 + 1.0) / mass).reshape(len(indexes), 1)
-                      * sample)
+                 + c2 * jnp.sqrt((c1 + 1.0) / mass)[:, jnp.newaxis] * sample)
             return md
 
         f = functools.partial(

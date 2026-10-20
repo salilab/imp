@@ -14,8 +14,8 @@ _deriv_to_acceleration = -4.1868e-4
 
 def _propagate_coordinates(jm, indexes, mass, time_step, space,
                            velocity_cap=None):
-    linvel = jm['linvel'].at[indexes]
-    dcoord = jm["xyz'"][indexes]
+    linvel = jm['linvel'].at[..., indexes, :]
+    dcoord = jm["xyz'"][..., indexes, :]
     v = linvel.get() + time_step * 0.5 * dcoord * _deriv_to_acceleration / mass
     if velocity_cap is not None:
         v = jnp.clip(v, -velocity_cap, velocity_cap)
@@ -24,8 +24,8 @@ def _propagate_coordinates(jm, indexes, mass, time_step, space,
 
 
 def _propagate_velocities(jm, indexes, mass, time_step):
-    linvel = jm['linvel'].at[indexes]
-    dcoord = jm["xyz'"][indexes]
+    linvel = jm['linvel'].at[..., indexes, :]
+    dcoord = jm["xyz'"][..., indexes, :]
     jm['linvel'] = linvel.add(
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
@@ -58,10 +58,10 @@ class _MolecularDynamics:
         conversion = 1.0 / 4.1868e-4
 
         indexes = self.simulation_indexes
-        velocity = self.jm['linvel'][indexes]
-        mass = self.jm['mass'][indexes]
+        velocity = self.jm['linvel'][..., indexes, :]
+        mass = self.jm['mass'][..., indexes]
         return 0.5 * conversion * jnp.sum(
-            mass * jnp.sum(jnp.square(velocity), axis=1))
+            mass * jnp.sum(jnp.square(velocity), axis=-1), axis=-1)
 
     def get_kinetic_temperature(self, ekinetic):
         """Return the current kinetic temperature of the system"""
@@ -102,10 +102,9 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             jm = ms.jm
             indexes = ms.simulation_indexes
             ms.steps += 1
-            mass = jm['mass'][indexes]
-            # Make mass 2D so propagate functions can broadcast it over
-            # the 2D coordinate/velocity arrays
-            mass = mass.reshape(mass.shape[0], 1)
+            # Make mass at least 2D so propagate functions can broadcast it
+            # over the 2D coordinate/velocity arrays
+            mass = jm['mass'][..., indexes, jnp.newaxis]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
             _propagate_coordinates(jm, indexes, mass, ms.time_step, space,
                                    velocity_cap)
