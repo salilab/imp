@@ -153,14 +153,19 @@
 
         def scale_velocities(md, tkinetic):
             scale = jnp.sqrt(temperature / tkinetic)
-            linvel = md.jm['linvel'].at[indexes]
+            linvel = md.jm['linvel'].at[..., indexes, :]
+            if md.jm['linvel'].ndim > 2:
+                scale = scale[:, jnp.newaxis, jnp.newaxis]
             return linvel.multiply(scale)
 
         def apply_func(md):
             ekinetic = md.get_kinetic_energy()
             tkinetic = md.get_kinetic_temperature(ekinetic)
+            cond = tkinetic > 1e-8
+            if md.jm['linvel'].ndim > 2:
+                cond = cond[:, jnp.newaxis, jnp.newaxis]
             md.jm['linvel'] = jnp.where(
-                tkinetic > 1e-8,
+                cond,
                 scale_velocities(md, tkinetic), md.jm['linvel'])
             return md
         return self._wrap_jax(lambda x: x, apply_func)

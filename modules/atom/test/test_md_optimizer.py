@@ -442,6 +442,41 @@ class Tests(IMP.test.TestCase):
         self.md._optimize_jax(10)
         self._check_temperature(298.0, 0.1)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_rescaling_multi(self):
+        """Test JAX thermostatting of multi attrsets by velocity rescaling"""
+        import jax.numpy as jnp
+        self.make_model()
+        self.md.set_scoring_function([])
+        self.md.assign_velocities(100.0)
+        scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
+                                                        self.particles, 298.0)
+        self.md.add_optimizer_state(scaler)
+        ji = self.md._get_jax()
+        jm = ji.get_jax_model()
+        # Artificially create two attribute sets in the JAX model
+        jm['xyz'] = jnp.stack((jm['xyz'], jm['xyz']))
+
+        init = jax.jit(ji.init_func)
+        mds = init(jm, key=jax.random.key(42))
+        mds.jm['linvel'] = jnp.stack((mds.jm['linvel'],
+                                      mds.jm['linvel'] * 3.0))
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertEqual(temp.shape, (2,))
+        # velocity*3, so temperature*9
+        self.assertAlmostEqual(temp[1] / temp[0], 9.0, delta=1e-3)
+
+        def run_opt(jm, apply_func, nsteps):
+            return jax.lax.fori_loop(0, nsteps, apply_func, jm)
+
+        jit_apply_func = jax.jit(functools.partial(
+            run_opt, apply_func=lambda i, x: ji.apply_func(x), nsteps=10))
+        mds = jit_apply_func(mds)
+        temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
+        self.assertEqual(temp.shape, (2,))
+        self.assertAlmostEqual(temp[0], 298.0, delta=1e-2)
+        self.assertAlmostEqual(temp[1], 298.0, delta=1e-2)
+
     def test_linear_velocity_numpy(self):
         """Test access to linear velocities from NumPy"""
         self.make_model()
