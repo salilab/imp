@@ -229,7 +229,10 @@ class _JAXModel:
         return str(self._d)
 
     def tree_flatten(self):
-        d_leaves, d_treedef = jax.tree.flatten(self._d)
+        # Treat None as a leaf otherwise we cannot use JAXModel objects
+        # with None values as input to jax.vmap's in_axes:
+        d_leaves, d_treedef = jax.tree.flatten(
+            self._d, is_leaf=lambda x: x is None)
         return (d_leaves, (d_treedef, self.multi_attr_keys))
 
     @classmethod
@@ -240,3 +243,21 @@ class _JAXModel:
         c._d = jax.tree.unflatten(d_treedef, d_leaves)
         c.multi_attr_keys = multi_attr_keys
         return c
+
+    def get_vmap_axes(self):
+        """Return a suitable value for jax.vmap's in_axes.
+           If multiple attribute sets are being used, jax.vmap should
+           be used on restraints, scores, etc. to extend the functions
+           (that act on a single attribute set) to work on all sets.
+           This method returns a suitable value for in_axes for the JAX
+           model itself. If no attribute sets are being used, return None."""
+        if not self.multi_attr_keys:
+            return None
+        d = _JAXModel(multi_attr_keys=self.multi_attr_keys)
+        for k, v in self.items():
+            val = 0 if k in self.multi_attr_keys else None
+            # Need to match pytree of the original CompactArray
+            if isinstance(v, _CompactArray):
+                val = _CompactArray(val, v.remap)
+            d[k] = val
+        return d

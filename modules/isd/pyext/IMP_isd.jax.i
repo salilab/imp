@@ -177,13 +177,12 @@
             # taken from within the sphere representing the domain
             # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
             dist = jnp.where(ps[:, 0] == ps[:, 1],
-                             36.0 / 35.0 * r[..., ps[:, 0]],
-                             space.distance(xyz[..., ps[:, 0], :]
-                                            - xyz[..., ps[:, 1], :]))
+                             36.0 / 35.0 * r[ps[:, 0]],
+                             space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]]))
             dist = jnp.maximum(dist, 0.0001)
-            psi = scale[..., psi]
-            sigmai = scale[..., sigma[:, 0]]
-            sigmaj = scale[..., sigma[:, 1]]
+            psi = scale[psi]
+            sigmai = scale[sigma[:, 0]]
+            sigmaj = scale[sigma[:, 1]]
 
             voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
             volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj

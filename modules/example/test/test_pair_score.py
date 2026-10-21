@@ -72,7 +72,7 @@ class Tests(IMP.test.TestCase):
         ji = p._get_jax(m, jnp.array([[p1, p2]]),
                         space=IMP.jax.FreeSpace)
         jm = ji.get_jax_model()
-        f = jax.jit(ji.score_func)
+        f = jax.jit(jax.vmap(ji.score_func, in_axes=(jm.get_vmap_axes(),)))
         jax_score = f(jm)
         self.assertEqual(jax_score.shape, (2, 1))
         self.assertAlmostEqual(jax_score[0], imp_score1, delta=0.01)

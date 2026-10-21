@@ -35,13 +35,10 @@
         import IMP.jax
         def jax_restraint(jm, k, pi):
             # Get the xyz coordinates for particle pi in the JAX Model
-            # The ellipsis (...) operator here ensures that we handle both
-            # 2D coordinate arrays from a plain model or 3D arrays from
-            # a model containing multiple attribute sets.
-            xyz = jm['xyz'][...,pi,:]
+            xyz = jm['xyz'][pi]
             # Score the Z coordinate. Note that we do not need to calculate
             # its first derivatives; this is handled automatically by JAX.
-            return 0.5 * k * xyz[...,2] * xyz[...,2]
+            return 0.5 * k * xyz[2] * xyz[2]
         # We don't support periodic boundary conditions here
         if space is not IMP.jax.FreeSpace:
             raise NotImplementedError(
@@ -107,13 +104,11 @@
            for a given set of particle pair indexes. Unlike an IMP C++
            PairScore (which takes a single pair of indexes), the JAX score
            takes multiple indexes, as an Nx2 array, and should return an
-           N-element array of scores. (If multiple attribute sets are being
-           used, it will take an MxNx2 array of indexes and should return
-           an MxN array of scores.)"""
+           N-element array of scores."""
         import jax.numpy as jnp
         def pair_score(jm, x0, k):
-            xyzs = jm['xyz'][...,indexes,:]
-            diff = space.distance(xyzs[...,0,:] - xyzs[...,1,:]) - x0
+            xyzs = jm['xyz'][indexes]
+            diff = space.distance(xyzs[:,0] - xyzs[:,1]) - x0
             return 0.5 * k * diff * diff
         f = functools.partial(pair_score, x0=self.get_mean(),
                               k=self.get_force_constant())

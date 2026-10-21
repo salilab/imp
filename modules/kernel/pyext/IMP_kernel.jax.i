@@ -73,7 +73,12 @@ class JAXWarning(UserWarning):
         import IMP.jax
         ji = self._get_jax(space=space or IMP.jax.FreeSpace)
         jm = ji.get_jax_model()
-        j = jax.jit(ji.score_func)
+        axes = jm.get_vmap_axes()
+        if axes is None:
+            j = jax.jit(ji.score_func)
+        else:
+            # Extend restraint to work on multiple attribute sets if necessary
+            j = jax.jit(jax.vmap(ji.score_func, in_axes=(axes,)))
         return j(jm)
   %}
 }
@@ -191,7 +196,13 @@ class JAXWarning(UserWarning):
         import jax
         ji = self._get_jax(space)
         jm = ji.get_jax_model()
-        j = jax.jit(ji.score_func)
+        axes = jm.get_vmap_axes()
+        if axes is None:
+            j = jax.jit(ji.score_func)
+        else:
+            # Extend scoring function to work on multiple attribute
+            # sets if necessary
+            j = jax.jit(jax.vmap(ji.score_func, in_axes=(axes,)))
         return j(jm)
   %}
 }

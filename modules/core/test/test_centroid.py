@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         ji = m.get_score_states()[0].get_derived_object()._get_jax()
         jm = ji.get_jax_model()
         jm['xyz'] = jnp.asarray(jm['xyz'])
-        j = jax.jit(ji.apply_func)
+        j = jax.jit(jax.vmap(ji.apply_func, in_axes=(jm.get_vmap_axes(),)))
         jm = j(jm)
         jax_coords = jm['xyz'][...,-1,:]
         self.assertEqual(jax_coords.shape, (2, 3))
