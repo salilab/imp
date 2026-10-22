@@ -657,6 +657,11 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(isinstance(new_jm, IMP.jax._JAXModel))
         self.assertTrue('r' in new_jm)
 
+        jm = IMP._jax_util._get_jax_model(m, keys=(), attributes=False)
+        self.assertIsNone(jm['r'])
+        self.assertIsNone(jm['xyz'])
+        self.assertEqual(jm.multi_attr_keys, frozenset())
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_get_jax_model_multi_attr(self):
         """Test _get_jax_model with multiple attrsets"""

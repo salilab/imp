@@ -27,7 +27,7 @@ class _DenseKey:
         return type(other) is type(self) and other.key == self.key
 
 
-def _get_jax_model(m, keys):
+def _get_jax_model(m, keys, attributes=True):
     """Convert an IMP Model object into a corresponding JAX model object
        suitable for use in JAX code. This is a simple dict. The dict keys are
        particle attribute names. Each dict value is usually a flat NumPy array
@@ -38,8 +38,14 @@ def _get_jax_model(m, keys):
        the IMP Model, or they may be copies (in which case if a JAX optimizer
        or ScoreState changes the values they may need to copied back to IMP).
        If the key "rigid_bodies" is given, information on all of the Model's
-       rigid bodies is also included."""
-    xyz, r = m.get_spheres_numpy()
+       rigid bodies is also included.
+
+       If `attributes` is False, no actual attribute values will be present
+       in the model; it will contain only metadata."""
+    if attributes:
+        xyz, r = m.get_spheres_numpy()
+    else:
+        xyz = r = None
     multi_attr_keys = []
     if m.get_number_of_sphere_attribute_sets() > 1:
         multi_attr_keys.extend(('xyz', 'r'))
@@ -53,15 +59,20 @@ def _get_jax_model(m, keys):
         mkey = None
         if k == 'rigid_bodies':
             from IMP.core._jax_rigid import _get_rigid_bodies
-            jm['rigid_bodies'] = _get_rigid_bodies(m)
+            jm['rigid_bodies'] = _get_rigid_bodies(m) if attributes else None
         elif isinstance(k, _DenseKey):
-            jm[k.key.get_string()] = m.get_numpy(k.key)
+            val = m.get_numpy(k.key) if attributes else None
+            jm[k.key.get_string()] = val
             mkey = k.key
         elif isinstance(k, IMP.FloatKey):
-            jm[k.get_string()] = IMP.jax._CompactArray.from_model(m, k)
+            if attributes:
+                val = IMP.jax._CompactArray.from_model(m, k)
+            else:
+                val = None
+            jm[k.get_string()] = val
             mkey = k
         else:
-            jm[k.get_string()] = m.get_numpy(k)
+            jm[k.get_string()] = m.get_numpy(k) if attributes else None
         if mkey and m.get_number_of_attribute_sets(mkey) > 1:
             multi_attr_keys.append(mkey.get_string())
     jm.multi_attr_keys = frozenset(multi_attr_keys)
@@ -241,13 +252,14 @@ class JAXOptimizerInfo:
         return frozenset(k for ss in m.get_ordered_score_states()
                          for k in ss.get_derived_object()._get_jax()._keys)
 
-    def get_jax_model(self):
+    def get_jax_model(self, *args, **kwargs):
         """Get Model data as a tree of NumPy arrays"""
         # Add keys used by the scoring function and ScoreStates to those we
         # need ourselves
         ji = self._sf._get_jax(space=self._space)
         sskeys = self._get_score_state_keys()
-        return _get_jax_model(ji.m, ji._keys | self._keys | sskeys)
+        return _get_jax_model(ji.m, ji._keys | self._keys | sskeys,
+                              *args, **kwargs)
 
 
 class JAXOptimizerStateInfo:
