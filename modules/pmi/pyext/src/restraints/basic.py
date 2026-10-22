@@ -776,6 +776,7 @@ class PMFRestraint(IMP.pmi.restraints.RestraintBase):
                                  + t * (values[j] - values[j - 1])))
         return rmin, spacing, [w - grid[-1] for w in grid]
 
+
 def _com_groups(hierarchies, resolution, per_copy=True):
     """Model and groups of a selection, one group per molecule copy (or a
     single group with per_copy=False). Each group is (particle indexes,
@@ -923,4 +924,3 @@ class COMDistanceRestraint(IMP.pmi.restraints.RestraintBase):
             self.com_restraint.add_pair_term(
                 g1, g2, IMP.core.HarmonicLowerBound(distance_min, k))
         self.rs.add_restraint(self.com_restraint)
-
