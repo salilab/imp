@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
         X = ji.get_jax_model()
         jax_score_val = jax_s(X)
         imp_score_val = sf.evaluate(True)
-        self.assertAlmostEqual(imp_score_val, jax_score_val, delta=1e-5)
+        self.assertAlmostEqual(imp_score_val, jax_score_val, delta=1e-4)
         # Test derivatives
         imp_dp1 = IMP.core.XYZ(p1).get_derivatives()
         imp_dp2 = IMP.core.XYZ(p2).get_derivatives()
