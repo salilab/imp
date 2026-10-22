@@ -147,25 +147,27 @@
 %extend IMP::atom::VelocityScalingOptimizerState {
   %pythoncode %{
     def _get_jax(self, state_index):
+        import jax
         import jax.numpy as jnp
         temperature = self.get_temperature()
         indexes = jnp.asarray(IMP.get_indexes(self.get_particles()))
 
-        def scale_velocities(md, tkinetic):
+        def scale_velocities(linvel, tkinetic):
             scale = jnp.sqrt(temperature / tkinetic)
-            linvel = md.jm['linvel'].at[indexes]
-            return linvel.multiply(scale)
+            return jnp.where(tkinetic > 1e-8,
+                             linvel.at[indexes].multiply(scale), linvel)
 
         def apply_func(md):
             ekinetic = md.get_kinetic_energy()
             tkinetic = md.get_kinetic_temperature(ekinetic)
-            cond = tkinetic > 1e-8
-            if md.jm['linvel'].ndim > 2:
-                cond = cond[:, jnp.newaxis, jnp.newaxis]
-            md.jm['linvel'] = jnp.where(
-                cond,
-                scale_velocities(md, tkinetic), md.jm['linvel'])
+            scale = scale_velocities
+            # If we have multiple attribute sets, vmap our scale function
+            # to apply to all of them
+            if hasattr(tkinetic, 'ndim') and tkinetic.ndim >= 1:
+                scale = jax.vmap(scale_velocities, in_axes=0)
+            md.jm['linvel'] = scale(md.jm['linvel'], tkinetic)
             return md
+
         return self._wrap_jax(lambda x: x, apply_func)
   %}
 }
@@ -173,16 +175,21 @@
 %extend IMP::atom::BerendsenThermostatOptimizerState {
   %pythoncode %{
     def _get_jax(self, state_index):
-        import jax.lax
+        import jax
         import jax.numpy as jnp
+
+        def scale_velocities(linvel, factor, indexes):
+            return linvel.at[indexes].multiply(factor)
 
         def apply_func(md, temperature, tau, indexes):
             ekinetic = md.get_kinetic_energy()
             tkinetic = md.get_kinetic_temperature(ekinetic)
-            scale = jnp.sqrt(1.0 + (md.time_step / tau)
-                             * (temperature / tkinetic - 1.0))
-            linvel = md.jm['linvel'].at[indexes]
-            md.jm['linvel'] = linvel.multiply(scale)
+            factor = jnp.sqrt(1.0 + (md.time_step / tau)
+                              * (temperature / tkinetic - 1.0))
+            scale = scale_velocities
+            if hasattr(tkinetic, 'ndim') and tkinetic.ndim >= 1:
+                scale = jax.vmap(scale_velocities, in_axes=(0, 0, None))
+            md.jm['linvel'] = scale(md.jm['linvel'], factor, indexes)
             return md
 
         f = functools.partial(
@@ -196,7 +203,6 @@
 %extend IMP::atom::LangevinThermostatOptimizerState {
   %pythoncode %{
     def _get_jax(self, state_index):
-        import jax.lax
         import jax.numpy as jnp
         import jax.random
         gas_constant = 8.31441e-7
@@ -212,9 +218,10 @@
             c2 = jnp.sqrt((1.0 - c1) * gas_constant * temperature)
             md.optimizer_states[state_index], subkey = jax.random.split(
                 md.optimizer_states[state_index])
-            sample = jax.random.normal(subkey, shape=(len(indexes), 3))
-            mass = md.jm['mass'][indexes]
-            linvel = md.jm['linvel'].at[indexes]
+            indshape = md.jm['linvel'].shape[:-2] + (len(indexes),)
+            sample = jax.random.normal(subkey, shape=indshape + (3,))
+            mass = md.jm['mass'][..., indexes]
+            linvel = md.jm['linvel'].at[..., indexes, :]
             md.jm['linvel'] = linvel.set(
                 c1 * linvel.get()
                  + c2 * jnp.sqrt((c1 + 1.0) / mass)[:, jnp.newaxis] * sample)

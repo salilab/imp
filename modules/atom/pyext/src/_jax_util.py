@@ -79,9 +79,17 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         self._keys = frozenset(
             (IMP._jax_util._DenseKey(IMP.atom.Mass.get_mass_key()),
              IMP.atom.LinearVelocity.get_velocity_key()))
+        axes = self.get_jax_model(attributes=False).get_vmap_axes()
+        if axes and 'linvel' in axes:
+            # Temporary hack; 'linvel' should be multi attr also
+            axes['linvel'] = axes['xyz']
+            axes.multi_attr_keys = axes.multi_attr_keys.union(('linvel',))
+
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
         deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
+        if axes is not None:
+            deriv_func = jax.vmap(deriv_func, in_axes=(axes,))
         velocity_cap = md.get_velocity_cap()
         # Would like to use math.isfinite here but it is not guaranteed
         # that a C++ "infinite" value is also considered to be math.inf

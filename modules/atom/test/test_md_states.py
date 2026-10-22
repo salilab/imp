@@ -134,15 +134,19 @@ class Tests(IMP.test.TestCase):
         md.set_maximum_time_step(4.0)
         md.set_scoring_function([])
         md.add_optimizer_state(scaler)
+        m.set_number_of_sphere_attribute_sets(2)
+        xyz, _ = m.get_spheres_numpy()
+        xyz[1, ...] = xyz[0, ...]
+
         ji = md._get_jax()
         jm = ji.get_jax_model()
         # Artificially create two attribute sets in the JAX model
-        jm['xyz'] = jnp.stack((jm['xyz'], jm['xyz']))
+        jm['linvel'] = jnp.stack((jm['linvel'],
+                                  jm['linvel'] * 3.0))
+        jm.multi_attr_keys = frozenset(('xyz', 'r', 'linvel'))
 
         init = jax.jit(ji.init_func)
         mds = init(jm, key=jax.random.key(42))
-        mds.jm['linvel'] = jnp.stack((mds.jm['linvel'],
-                                      mds.jm['linvel'] * 3.0))
         temp = mds.get_kinetic_temperature(mds.get_kinetic_energy())
         self.assertEqual(temp.shape, (2,))
         # velocity*3, so temperature*9
@@ -216,15 +220,19 @@ class Tests(IMP.test.TestCase):
         # Test MD with NullScoringFunction
         md.set_scoring_function([])
         md.add_optimizer_state(scaler)
+        m.set_number_of_sphere_attribute_sets(2)
+        xyz, _ = m.get_spheres_numpy()
+        xyz[1, ...] = xyz[0, ...]
+
         ji = md._get_jax()
         jm = ji.get_jax_model()
         # Artificially create two attribute sets in the JAX model
-        jm['xyz'] = jnp.stack((jm['xyz'], jm['xyz']))
+        jm['linvel'] = jnp.stack((jm['linvel'],
+                                  jm['linvel'] * 3.0))
+        jm.multi_attr_keys = frozenset(('xyz', 'r', 'linvel'))
 
         init = jax.jit(ji.init_func)
         mds = init(jm, key=jax.random.key(42))
-        mds.jm['linvel'] = jnp.stack((mds.jm['linvel'],
-                                      mds.jm['linvel'] * 3.0))
 
         def run_opt(jm, apply_func, nsteps):
             return jax.lax.fori_loop(0, nsteps, apply_func, jm)
