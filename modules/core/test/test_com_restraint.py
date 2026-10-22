@@ -55,24 +55,28 @@ class Tests(IMP.test.TestCase):
         f = IMP.core.Harmonic(0.0, 1.0)  # 0.5 * feature^2
         point = IMP.algebra.Vector3D(1, 1, 1)
         direction = IMP.algebra.Vector3D(0, 1, 1)
-        com_p = lambda: weighted_centroid(ps, wp)
+        u = direction.get_unit_vector()
+
+        def feature():
+            c = weighted_centroid(ps, wp)
+            if kind == 'point':
+                return IMP.algebra.get_distance(c, point)
+            elif kind == 'plane':
+                return (c - point) * u
+            elif kind == 'axis':
+                d = c - point
+                return (d - u * (d * u)).get_magnitude()
+            else:
+                return IMP.algebra.get_distance(c, weighted_centroid(qs, wq))
+
         if kind == 'point':
             r.add_point_term(g, point, f)
-            feature = lambda: IMP.algebra.get_distance(com_p(), point)
         elif kind == 'plane':
             r.add_plane_term(g, point, direction, f)
-            feature = lambda: (com_p() - point) * direction.get_unit_vector()
         elif kind == 'axis':
             r.add_axis_term(g, point, direction, f)
-            u = direction.get_unit_vector()
-
-            def feature():
-                d = com_p() - point
-                return (d - u * (d * u)).get_magnitude()
         else:
             r.add_pair_term(g, h, f)
-            feature = lambda: IMP.algebra.get_distance(
-                com_p(), weighted_centroid(qs, wq))
         return m, r, ps + qs, feature
 
     def test_terms(self):
@@ -108,8 +112,11 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         random.seed(3)
         IMP.random_number_generator.seed(3)
-        rand = lambda: (random.uniform(-20, 20), random.uniform(-20, 20),
-                        random.uniform(-20, 20))
+
+        def rand():
+            return (random.uniform(-20, 20), random.uniform(-20, 20),
+                    random.uniform(-20, 20))
+
         body = make_particles(m, [rand() for _ in range(5)])
         rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), body)
         beads = make_particles(m, [rand() for _ in range(4)])
