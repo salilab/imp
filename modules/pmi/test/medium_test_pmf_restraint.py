@@ -165,7 +165,9 @@ class Tests(IMP.test.TestCase):
         expected = 0.
         for i in range(len(coords)):
             for j in range(i + 1, len(coords)):
-                expected += self.expected(math.dist(coords[i], coords[j]))
+                expected += self.expected(IMP.algebra.get_distance(
+                    IMP.algebra.Vector3D(coords[i]),
+                    IMP.algebra.Vector3D(coords[j])))
         # loose tolerance: natural spline is a little off at the table start
         self.assertAlmostEqual(score(r), expected, delta=1e-3)
 
