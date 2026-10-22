@@ -12,10 +12,10 @@ from IMP.core._jax_util import _JAXOptimizer
 _deriv_to_acceleration = -4.1868e-4
 
 
-def _propagate_coordinates(jm, indexes, mass, time_step, space,
+def _propagate_coordinates(jm, indexes, mass, time_step, space, derivs,
                            velocity_cap=None):
     linvel = jm['linvel'].at[..., indexes, :]
-    dcoord = jm["xyz'"][..., indexes, :]
+    dcoord = derivs[..., indexes, :]
     v = linvel.get() + time_step * 0.5 * dcoord * _deriv_to_acceleration / mass
     if velocity_cap is not None:
         v = jnp.clip(v, -velocity_cap, velocity_cap)
@@ -23,9 +23,9 @@ def _propagate_coordinates(jm, indexes, mass, time_step, space,
     jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, v * time_step)
 
 
-def _propagate_velocities(jm, indexes, mass, time_step):
+def _propagate_velocities(jm, indexes, mass, time_step, derivs):
     linvel = jm['linvel'].at[..., indexes, :]
-    dcoord = jm["xyz'"][..., indexes, :]
+    dcoord = derivs[..., indexes, :]
     jm['linvel'] = linvel.add(
         time_step * 0.5 * dcoord * _deriv_to_acceleration / mass)
 
@@ -50,6 +50,8 @@ class _MolecularDynamics:
     degrees_of_freedom: int
     # Time between integrator steps
     time_step: float
+    # First derivatives of Cartesian coordinates
+    derivs: jax.Array
 
     def get_kinetic_energy(self):
         """Return the current kinetic energy of the system, in kcal/mol"""
@@ -99,12 +101,12 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
         space = self._space
 
         def init_func(jm, key):
-            jm["xyz'"] = deriv_func(jm)["xyz"]
             s = _MolecularDynamics(
                 jm=jm, steps=0, optimizer_states=[None] * len(jax_optstates),
                 simulation_indexes=md.get_simulation_particle_indexes(),
                 degrees_of_freedom=md.get_degrees_of_freedom(),
-                rkey=key, time_step=md.get_maximum_time_step())
+                rkey=key, time_step=md.get_maximum_time_step(),
+                derivs=deriv_func(jm)["xyz"])
             for js in jax_optstates:
                 s = js.init_func(s)
             return s
@@ -118,11 +120,11 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             mass = jm['mass'][..., indexes, jnp.newaxis]
             # Get coordinates at t+(delta t) and velocities at t+(delta t/2)
             _propagate_coordinates(jm, indexes, mass, ms.time_step, space,
-                                   velocity_cap)
+                                   ms.derivs, velocity_cap)
             # Get new derivatives at t+(delta t)
-            jm["xyz'"] = deriv_func(jm)["xyz"]
+            ms.derivs = deriv_func(jm)["xyz"]
             # Get velocities at t+(delta t)
-            _propagate_velocities(jm, indexes, mass, ms.time_step)
+            _propagate_velocities(jm, indexes, mass, ms.time_step, ms.derivs)
             steps = ms.steps
             for js in jax_opt_1_states:
                 ms = js.apply_func(ms)
@@ -165,7 +167,7 @@ class _MDJAXOptimizer(_JAXOptimizer):
             jm = md_state.jm
             linvel[:] = jm['linvel']
             xyz[:] = jm['xyz']
-            dxyz[:] = jm["xyz'"]
+            dxyz[:] = md_state.derivs
         score, md_state.jm = self.score_func(md_state.jm)
         return score, md_state
 
