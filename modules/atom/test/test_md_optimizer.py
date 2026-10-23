@@ -104,7 +104,7 @@ class Tests(IMP.test.TestCase):
 
     """Test molecular dynamics optimizer"""
 
-    def make_model(self):
+    def make_model(self, multi=False):
         """Set up particles and optimizer"""
         self.model = IMP.Model()
         self.particles = []
@@ -112,6 +112,14 @@ class Tests(IMP.test.TestCase):
                                                          -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.atom.MolecularDynamics(self.model)
+
+        if multi:
+            self.md.assign_velocities(100.0)
+            self.model.set_number_of_sphere_attribute_sets(2)
+            xyz, _ = self.model.get_spheres_numpy()
+            xyz[1, ...] = xyz[0, ...]
+            lk = IMP.atom.LinearVelocity.get_velocity_key()
+            self.model.set_number_of_attribute_sets(lk, 2)
 
     def test_standard_object_methods(self):
         """Check MD standard object methods"""
@@ -445,22 +453,16 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_rescaling_multi(self):
         """Test JAX thermostatting of multi attrsets by velocity rescaling"""
-        import jax.numpy as jnp
-        self.make_model()
+        self.make_model(multi=True)
         self.md.set_scoring_function([])
         self.md.assign_velocities(100.0)
         scaler = IMP.atom.VelocityScalingOptimizerState(self.model,
                                                         self.particles, 298.0)
         self.md.add_optimizer_state(scaler)
-        self.model.set_number_of_sphere_attribute_sets(2)
-        xyz, _ = self.model.get_spheres_numpy()
-        xyz[1, ...] = xyz[0, ...]
 
         ji = self.md._get_jax()
         jm = ji.get_jax_model()
-        jm['linvel'] = jnp.stack((jm['linvel'],
-                                  jm['linvel'] * 3.0))
-        jm.multi_attr_keys = frozenset(('xyz', 'r', 'linvel'))
+        jm['linvel'][1,:] = jm['linvel'][0,:] * 3.0
 
         init = jax.jit(ji.init_func)
         mds = init(jm, jax.random.key(42))

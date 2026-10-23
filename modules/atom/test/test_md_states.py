@@ -125,7 +125,6 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_berendsen_thermostat_multi(self):
         """Test JAX Berendsen thermostat with multiple attrsets"""
-        import jax.numpy as jnp
         m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(0.1, 0, 0)]],
                                      copies=10)
@@ -134,16 +133,16 @@ class Tests(IMP.test.TestCase):
         md.set_maximum_time_step(4.0)
         md.set_scoring_function([])
         md.add_optimizer_state(scaler)
+        md.assign_velocities(100.0)
         m.set_number_of_sphere_attribute_sets(2)
         xyz, _ = m.get_spheres_numpy()
         xyz[1, ...] = xyz[0, ...]
+        lk = IMP.atom.LinearVelocity.get_velocity_key()
+        m.set_number_of_attribute_sets(lk, 2)
 
         ji = md._get_jax()
         jm = ji.get_jax_model()
-        # Artificially create two attribute sets in the JAX model
-        jm['linvel'] = jnp.stack((jm['linvel'],
-                                  jm['linvel'] * 3.0))
-        jm.multi_attr_keys = frozenset(('xyz', 'r', 'linvel'))
+        jm['linvel'][1,:] = jm['linvel'][0,:] * 3.0
 
         init = jax.jit(ji.init_func)
         mds = init(jm, key=jax.random.key(42))
@@ -210,7 +209,6 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_jax_langevin_thermostat_multi(self):
         """Test JAX Langevin thermostat with multi attrsets"""
-        import jax.numpy as jnp
         m, ps = self.setup_particles([[IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(0.1, 0, 0)]],
                                      copies=100)
@@ -220,16 +218,16 @@ class Tests(IMP.test.TestCase):
         # Test MD with NullScoringFunction
         md.set_scoring_function([])
         md.add_optimizer_state(scaler)
+        md.assign_velocities(100.0)
         m.set_number_of_sphere_attribute_sets(2)
         xyz, _ = m.get_spheres_numpy()
         xyz[1, ...] = xyz[0, ...]
+        lk = IMP.atom.LinearVelocity.get_velocity_key()
+        m.set_number_of_attribute_sets(lk, 2)
 
         ji = md._get_jax()
         jm = ji.get_jax_model()
-        # Artificially create two attribute sets in the JAX model
-        jm['linvel'] = jnp.stack((jm['linvel'],
-                                  jm['linvel'] * 3.0))
-        jm.multi_attr_keys = frozenset(('xyz', 'r', 'linvel'))
+        jm['linvel'][1,:] = jm['linvel'][0,:] * 3.0
 
         init = jax.jit(ji.init_func)
         mds = init(jm, key=jax.random.key(42))

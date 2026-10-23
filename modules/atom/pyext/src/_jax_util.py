@@ -80,10 +80,6 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
             (IMP._jax_util._DenseKey(IMP.atom.Mass.get_mass_key()),
              IMP.atom.LinearVelocity.get_velocity_key()))
         axes = self.get_jax_model(attributes=False).get_vmap_axes()
-        if axes and 'linvel' in axes:
-            # Temporary hack; 'linvel' should be multi attr also
-            axes['linvel'] = axes['xyz']
-            axes.multi_attr_keys = axes.multi_attr_keys.union(('linvel',))
 
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
