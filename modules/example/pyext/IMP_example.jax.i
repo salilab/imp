@@ -21,10 +21,7 @@
            takes a single argument, the JAX Model, and returns its score.
            The JAX Model (here called `jm`) is a JAX object which contains
            the same information as the IMP Model, as a simple Python dict.
-           For example, jm['xyz'] is (usually) an N x 3 array of
-           XYZ coordinates - unless multiple coordinate/attribute sets are
-           being scored simultaneously in parallel, in which case it is
-           an M x N x 3 array, where M is the number of sets.
+           For example, jm['xyz'] is an N x 3 array of XYZ coordinates.
 
            All JAX restraints should support periodic boundary conditions
            (PBC), which are controlled by the `space` object, an instance
