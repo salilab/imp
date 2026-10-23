@@ -53,6 +53,58 @@ class Tests(IMP.test.TestCase):
         m.add_attribute(isk, p.get_index(), [IntLike(9)])
         self.assertEqual(m.get_attribute(isk, p.get_index()), [9])
 
+    def test_vector3d_attribute_sets(self):
+        """Test attribute sets of Vector3DKeys"""
+        self._test_vectord_attribute_sets(IMP.Vector3DKey, IMP.Vector3D, 3)
+
+    def test_vector4d_attribute_sets(self):
+        """Test attribute sets of Vector4DKeys"""
+        self._test_vectord_attribute_sets(IMP.Vector4DKey, IMP.Vector4D, 4)
+
+    def test_vector3d_deriv_attribute_sets(self):
+        """Test attribute sets of Vector3DDerivKeys"""
+        self._test_vectord_attribute_sets(
+            IMP.Vector3DDerivKey, IMP.Vector3D, 3)
+
+    def test_vector4d_deriv_attribute_sets(self):
+        """Test attribute sets of Vector4DDerivKeys"""
+        self._test_vectord_attribute_sets(
+            IMP.Vector4DDerivKey, IMP.Vector4D, 4)
+
+    def _test_vectord_attribute_sets(self, key_type, vector_type, dim):
+        m = IMP.Model()
+        vk = key_type("fk")
+        # Before any attributes added, nset==1
+        self.assertEqual(m.get_number_of_attribute_sets(vk), 1)
+
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(vk, p1.get_index(), vector_type([42.] * dim))
+        m.add_attribute(vk, p2.get_index(), vector_type([99.] * dim))
+        self.assertEqual(m.get_number_of_attribute_sets(vk), 1)
+
+        m.set_number_of_attribute_sets(vk, 4)
+        self.assertEqual(m.get_number_of_attribute_sets(vk), 4)
+
+        self.assertAlmostEqual(m.get_attribute(vk, p1.get_index())[0],
+                               42.0, delta=1e-5)
+        self.assertRaisesUsageException(m.set_active_attribute_set, vk, -1)
+        self.assertRaisesUsageException(m.set_active_attribute_set, vk, 1000)
+        m.set_active_attribute_set(vk, 2)
+
+        # Cannot change number of sets when we're using the non-default set
+        self.assertRaisesUsageException(m.set_number_of_attribute_sets, vk, 1)
+
+        # Cannot add attributes when we have more than one set
+        p3 = IMP.Particle(m)
+        self.assertRaises(IndexError, m.add_attribute,
+                          vk, p3.get_index(), vector_type([42.] * dim))
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m.get_numpy(vk)
+            self.assertEqual(n.shape, (4, 2, dim))
+            self.assertAlmostEqual(n[0, 0, 2], 42.0, delta=1e-4)
+            self.assertAlmostEqual(n[0, 1, 1], 99.0, delta=1e-4)
+
     def test_float_attribute_sets(self):
         """Test attribute sets of FloatKeys"""
         m = IMP.Model()

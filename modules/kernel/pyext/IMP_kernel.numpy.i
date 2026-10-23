@@ -88,7 +88,7 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data,
 #endif
 }
 
-PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
+PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz, int nsets,
                                     Vector3D *data, bool read_only)
 {
 #if IMP_KERNEL_HAS_NUMPY
@@ -98,13 +98,22 @@ PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
     return NULL;
   }
 
-  npy_intp dims[2];
-  dims[0] = sz;
-  dims[1] = 3;
+  int ndim;
+  npy_intp dims[3];
+  if (nsets > 1) {
+    ndim = 3;
+    dims[0] = nsets;
+    dims[1] = sz;
+    dims[2] = 3;
+  } else {
+    ndim = 2;
+    dims[0] = sz;
+    dims[1] = 3;
+  }
 
   static_assert(sizeof(Vector3D) == 3 * sizeof(double),
                 "Vector3D size != 3 * double size");
-  PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
+  PyObject *obj = PyArray_New(&PyArray_Type, ndim, dims, NPY_DOUBLE, NULL,
                               data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
                               NULL);
   if (!obj) {
@@ -128,7 +137,7 @@ PyObject *_get_vector3ds_data_numpy(PyObject *m_pyobj, unsigned sz,
 #endif
 }
 
-PyObject *_get_vector4ds_data_numpy(PyObject *m_pyobj, unsigned sz,
+PyObject *_get_vector4ds_data_numpy(PyObject *m_pyobj, unsigned sz, int nsets,
                                     Vector4D *data, bool read_only)
 {
 #if IMP_KERNEL_HAS_NUMPY
@@ -138,13 +147,22 @@ PyObject *_get_vector4ds_data_numpy(PyObject *m_pyobj, unsigned sz,
     return NULL;
   }
 
-  npy_intp dims[2];
-  dims[0] = sz;
-  dims[1] = 4;
+  int ndim;
+  npy_intp dims[3];
+  if (nsets > 1) {
+    ndim = 3;
+    dims[0] = nsets;
+    dims[1] = sz;
+    dims[2] = 4;
+  } else {
+    ndim = 2;
+    dims[0] = sz;
+    dims[1] = 4;
+  }
 
   static_assert(sizeof(Vector4D) == 4 * sizeof(double),
                 "Vector4D size != 4 * double size");
-  PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
+  PyObject *obj = PyArray_New(&PyArray_Type, ndim, dims, NPY_DOUBLE, NULL,
                               data, 0, read_only ? 0 : NPY_ARRAY_WRITEABLE,
                               NULL);
   if (!obj) {
@@ -309,10 +327,11 @@ PyObject *_get_vector3ds_numpy(IMP::Model *m, IMP::Vector3DKey k,
                                PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->IMP::internal::Vector3DAttributeTable::get_attribute_size(k);
-  return _get_vector3ds_data_numpy(m_pyobj, sz,
-       sz == 0 ? nullptr
-        : m->IMP::internal::Vector3DAttributeTable::access_attribute_data(k),
-       read_only);
+  int nsets = m->get_number_of_attribute_sets(k);
+  return _get_vector3ds_data_numpy(m_pyobj, sz, nsets,
+     sz == 0 ? nullptr
+      : m->IMP::internal::Vector3DAttributeTable::access_full_attribute_data(k),
+     read_only);
 }
 
 PyObject *_get_vector3dderiv_numpy(IMP::Model *m, IMP::Vector3DDerivKey k,
@@ -320,9 +339,10 @@ PyObject *_get_vector3dderiv_numpy(IMP::Model *m, IMP::Vector3DDerivKey k,
 {
   unsigned sz
       = m->IMP::internal::Vector3DDerivAttributeTable::get_attribute_size(k);
-  return _get_vector3ds_data_numpy(m_pyobj, sz,
+  int nsets = m->get_number_of_attribute_sets(k);
+  return _get_vector3ds_data_numpy(m_pyobj, sz, nsets,
     sz == 0 ? nullptr
-      : m->IMP::internal::Vector3DDerivAttributeTable::access_attribute_data(k),
+      : m->IMP::internal::Vector3DDerivAttributeTable::access_full_attribute_data(k),
     read_only);
 }
 
@@ -332,7 +352,7 @@ PyObject *_get_vector3dderiv_derivatives_numpy(
 {
   unsigned sz
       = m->IMP::internal::Vector3DDerivAttributeTable::get_derivative_size(k);
-  return _get_vector3ds_data_numpy(m_pyobj, sz,
+  return _get_vector3ds_data_numpy(m_pyobj, sz, 0,
     sz == 0 ? nullptr
      : m->IMP::internal::Vector3DDerivAttributeTable::access_derivative_data(k),
     read_only);
@@ -342,9 +362,10 @@ PyObject *_get_vector4ds_numpy(IMP::Model *m, IMP::Vector4DKey k,
                                PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->IMP::internal::Vector4DAttributeTable::get_attribute_size(k);
-  return _get_vector4ds_data_numpy(m_pyobj, sz,
+  int nsets = m->get_number_of_attribute_sets(k);
+  return _get_vector4ds_data_numpy(m_pyobj, sz, nsets,
        sz == 0 ? nullptr
-        : m->IMP::internal::Vector4DAttributeTable::access_attribute_data(k),
+        : m->IMP::internal::Vector4DAttributeTable::access_full_attribute_data(k),
        read_only);
 }
 
@@ -353,9 +374,10 @@ PyObject *_get_vector4dderiv_numpy(IMP::Model *m, IMP::Vector4DDerivKey k,
 {
   unsigned sz
       = m->IMP::internal::Vector4DDerivAttributeTable::get_attribute_size(k);
-  return _get_vector4ds_data_numpy(m_pyobj, sz,
+  int nsets = m->get_number_of_attribute_sets(k);
+  return _get_vector4ds_data_numpy(m_pyobj, sz, nsets,
     sz == 0 ? nullptr
-      : m->IMP::internal::Vector4DDerivAttributeTable::access_attribute_data(k),
+      : m->IMP::internal::Vector4DDerivAttributeTable::access_full_attribute_data(k),
     read_only);
 }
 
@@ -365,7 +387,7 @@ PyObject *_get_vector4dderiv_derivatives_numpy(
 {
   unsigned sz
       = m->IMP::internal::Vector4DDerivAttributeTable::get_derivative_size(k);
-  return _get_vector4ds_data_numpy(m_pyobj, sz,
+  return _get_vector4ds_data_numpy(m_pyobj, sz, 0,
     sz == 0 ? nullptr
      : m->IMP::internal::Vector4DDerivAttributeTable::access_derivative_data(k),
     read_only);
@@ -392,7 +414,7 @@ PyObject *_get_internal_coordinates_numpy(IMP::Model *m, PyObject *m_pyobj,
                                           bool read_only)
 {
   unsigned sz = m->get_internal_coordinates_size();
-  return _get_vector3ds_data_numpy(m_pyobj, sz,
+  return _get_vector3ds_data_numpy(m_pyobj, sz, 0,
        sz == 0 ? nullptr : m->access_internal_coordinates_data(), read_only);
 }
 
@@ -400,7 +422,7 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
                 IMP::Model *m, PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->get_internal_coordinate_derivatives_size();
-  return _get_vector3ds_data_numpy(m_pyobj, sz,
+  return _get_vector3ds_data_numpy(m_pyobj, sz, 0,
        sz == 0 ? nullptr : m->access_internal_coordinate_derivatives_data(),
        read_only);
 }

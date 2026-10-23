@@ -354,8 +354,8 @@ struct VectorDAttributeTableTraits {
   typedef K Key;
   typedef VectorD<D> Value;
   typedef VectorD<D> PassValue;
-  typedef IndexVector<ParticleIndexTag, Value, std::allocator<Value>,
-                      vector_equal<Value>> Container;
+  typedef MultiIndexVector<ParticleIndexTag, Value, std::allocator<Value>,
+                           vector_equal<Value>> Container;
   typedef PassValue const* ContainerConstDataAccess;
   typedef Value* ContainerDataAccess;
 
@@ -393,6 +393,11 @@ struct VectorDAttributeTableTraits {
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container& c) {
     return c.data();
+  }
+
+  //! allow direct non-const access to the full container data (all sets)
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.full_data();
   }
 };
 

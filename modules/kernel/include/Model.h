@@ -368,6 +368,11 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_SPARSE_IMPORT(internal::SparseParticleAttributeTable);
   IMP_MODEL_DERIV_IMPORT(internal::Vector3DDerivAttributeTable);
   IMP_MODEL_DERIV_IMPORT(internal::Vector4DDerivAttributeTable);
+  IMP_MODEL_ATTRIBUTE_SET_IMPORT(internal::FloatAttributeTable);
+  IMP_MODEL_ATTRIBUTE_SET_IMPORT(internal::Vector3DAttributeTable);
+  IMP_MODEL_ATTRIBUTE_SET_IMPORT(internal::Vector4DAttributeTable);
+  IMP_MODEL_ATTRIBUTE_SET_IMPORT(internal::Vector3DDerivAttributeTable);
+  IMP_MODEL_ATTRIBUTE_SET_IMPORT(internal::Vector4DDerivAttributeTable);
 
   void zero_derivatives() {
     internal::FloatAttributeTable::zero_derivatives();
@@ -533,6 +538,10 @@ class IMPKERNELEXPORT Model : public Object
   void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
                          const DerivativeAccumulator &da);
 
+  using internal::FloatAttributeTable::get_number_of_attribute_sets;
+  using internal::FloatAttributeTable::set_number_of_attribute_sets;
+  using internal::FloatAttributeTable::set_active_attribute_set;
+
   /** \name Attribute sets
       Normally the Model contains a single set of attributes. However, more
       can be added if needed for certain applications.
@@ -584,6 +593,16 @@ class IMPKERNELEXPORT Model : public Object
   /** Only a single attribute set can be active at a time. All get or set
       of particle internal coordinates will use the active set. */
   void set_active_internal_coordinate_attribute_set(int set);
+
+#define IMP_MODEL_ATTRIBUTE_SET_METHODS(Type)                     \
+  int get_number_of_attribute_sets(Type##Key k) const;    \
+  void set_number_of_attribute_sets(Type##Key k, int nsets); \
+  void set_active_attribute_set(Type##Key k, int set);    \
+
+  IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector3D);
+  IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector4D);
+  IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector3DDeriv);
+  IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector4DDeriv);
 
   /** @} */
 

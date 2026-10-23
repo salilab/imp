@@ -228,6 +228,13 @@ class BasicAttributeTable {
     return Traits::access_container_data(data_[ki]);
   }
 
+  typename Traits::ContainerDataAccess access_full_attribute_data(Key k) {
+    unsigned int ki = k.get_index();
+    IMP_USAGE_CHECK(ki < data_.size(),
+         "trying to access an attribute that was not added to this model");
+    return Traits::access_full_container_data(data_[ki]);
+  }
+
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
@@ -284,6 +291,51 @@ class BasicAttributeTable {
   unsigned int size(unsigned int i) const { return data_[i].size(); }
 };
 IMP_SWAP_1(BasicAttributeTable);
+
+/** A template for storing a table that holds multiple attribute sets for
+    the attribute
+*/
+template <class Traits>
+class MultiBasicAttributeTable : public BasicAttributeTable<Traits> {
+ public:
+  typedef typename Traits::Key Key;
+  typedef BasicAttributeTable<Traits> P;
+
+  MultiBasicAttributeTable() : BasicAttributeTable<Traits>() {}
+
+  void set_number_of_attribute_sets(Key k, int nsets) {
+    unsigned ind = k.get_index();
+    if (P::size() <= ind) {
+      P::access_data().resize(ind + 1);
+    }
+    P::access_data()[ind].set_number_of_sets(nsets, Traits::get_invalid());
+  }
+
+  int get_number_of_attribute_sets(Key k) const {
+    unsigned ind = k.get_index();
+    if (P::size() <= ind) {
+      return 1;
+    } else {
+      return P::access_data()[ind].get_number_of_sets();
+    }
+  }
+
+  void set_active_attribute_set(Key k, int set) {
+    unsigned ind = k.get_index();
+    if (P::size() <= ind) {
+      P::access_data().resize(ind + 1);
+    }
+    P::access_data()[ind].set_active_set(set);
+  }
+
+  typename Traits::ContainerDataAccess access_full_attribute_data(Key k) {
+    unsigned int ki = k.get_index();
+    IMP_USAGE_CHECK(ki < P::size(),
+             "trying to access an attribute that was not added to this model");
+    return Traits::access_full_container_data(P::access_data()[ki]);
+  }
+};
+IMP_SWAP_1(MultiBasicAttributeTable);
 
 /** a template for storing a table that holds the values of multiple attributes
     for multiple particles, using sparse storage.
@@ -948,10 +1000,9 @@ class FloatAttributeTable {
       unsigned ind = k.get_index() - 7;
       if (data_.size() <= ind) {
         data_.access_data().resize(ind + 1);
-      } else {
-        data_.access_data()[ind].set_number_of_sets(
-            nsets, internal::FloatAttributeTableTraits::get_invalid());
       }
+      data_.access_data()[ind].set_number_of_sets(
+          nsets, internal::FloatAttributeTableTraits::get_invalid());
     } else {
       IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
                 TypeException);
@@ -1212,6 +1263,10 @@ class VectorDDerivAttributeTable {
     return data_.access_attribute_data(k);
   }
 
+  VectorD<D>* access_full_attribute_data(Key k) {
+    return data_.access_full_attribute_data(k);
+  }
+
   VectorD<D> const* access_derivative_data(Key k) const {
     return derivatives_.access_attribute_data(k);
   }
@@ -1232,6 +1287,32 @@ class VectorDDerivAttributeTable {
     data_.clear_attributes(particle);
     derivatives_.clear_attributes(particle);
     optimizeds_.clear_attributes(particle);
+  }
+
+  void set_number_of_attribute_sets(Key k, int nsets) {
+    unsigned ind = k.get_index();
+    if (data_.size() <= ind) {
+      data_.access_data().resize(ind + 1);
+    }
+    data_.access_data()[ind].set_number_of_sets(
+        nsets, internal::VectorDAttributeTableTraits<D, K>::get_invalid());
+  }
+
+  int get_number_of_attribute_sets(Key k) const {
+    unsigned ind = k.get_index();
+    if (data_.size() <= ind) {
+      return 1;
+    } else {
+      return data_.access_data()[ind].get_number_of_sets();
+    }
+  }
+
+  void set_active_attribute_set(Key k, int set) {
+    unsigned ind = k.get_index();
+    if (data_.size() <= ind) {
+      data_.access_data().resize(ind + 1);
+    }
+    data_.access_data()[ind].set_active_set(set);
   }
 
   IMP::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
@@ -1274,11 +1355,11 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
     ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
     ParticlesAttributeTable;
-typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<3, Vector3DKey>>
+typedef MultiBasicAttributeTable<internal::VectorDAttributeTableTraits<3, Vector3DKey>>
     Vector3DAttributeTable;
 typedef VectorDDerivAttributeTable<3, Vector3DDerivKey>
     Vector3DDerivAttributeTable;
-typedef BasicAttributeTable<internal::VectorDAttributeTableTraits<4, Vector4DKey>>
+typedef MultiBasicAttributeTable<internal::VectorDAttributeTableTraits<4, Vector4DKey>>
     Vector4DAttributeTable;
 typedef VectorDDerivAttributeTable<4, Vector4DDerivKey>
     Vector4DDerivAttributeTable;
@@ -1328,9 +1409,14 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::get_has_attribute;   \
   using Base::set_attribute;       \
   using Base::get_attribute
+#define IMP_MODEL_ATTRIBUTE_SET_IMPORT(Base)     \
+  using Base::get_number_of_attribute_sets;   \
+  using Base::set_number_of_attribute_sets;   \
+  using Base::set_active_attribute_set
 #else
 #define IMP_MODEL_IMPORT(Base)
 #define IMP_MODEL_SPARSE_IMPORT(Base)
+#define IMP_MODEL_ATTRIBUTE_SET_IMPORT(Base)
 #endif
 
 #endif /* IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H */
