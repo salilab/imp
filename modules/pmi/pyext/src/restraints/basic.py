@@ -775,3 +775,152 @@ class PMFRestraint(IMP.pmi.restraints.RestraintBase):
             grid.append(scale * (values[j - 1]
                                  + t * (values[j] - values[j - 1])))
         return rmin, spacing, [w - grid[-1] for w in grid]
+
+
+def _com_groups(hierarchies, resolution, per_copy=True):
+    """Model and groups of a selection, one group per molecule copy (or a
+    single group with per_copy=False). Each group is (particle indexes,
+    masses), the weights of IMP.core.COMRestraint.add_group."""
+    hiers = IMP.pmi.tools.input_adaptor(hierarchies, resolution, flatten=True)
+    model = hiers[0].get_model()
+    groups = {}
+    for h in hiers:
+        if not IMP.atom.Mass.get_is_setup(h):
+            raise ValueError("Particle %s has no mass" % h.get_name())
+        key = ((IMP.atom.get_molecule_name(h), IMP.atom.get_copy_index(h))
+               if per_copy else None)
+        pis, masses = groups.setdefault(key, ([], []))
+        pis.append(h.get_particle_index())
+        masses.append(IMP.atom.Mass(h).get_mass())
+    return model, [groups[k] for k in sorted(groups, key=str)]
+
+
+class COMSlabRestraint(IMP.pmi.restraints.RestraintBase):
+    """Keep the center of mass of each molecule copy between two planes
+    z = z_low and z = z_top, with soft walls.
+
+    Each wall scores log(1 + exp(-d / softness)), d being the distance of the
+    center of mass inside the wall: about 0 well inside, log(2) on the wall,
+    and growing linearly outside, so a copy far away is still pulled back.
+    Only the center of mass is restrained, so parts of a molecule may lie
+    outside. Scored by IMP.core.COMRestraint, which recomputes only the
+    copies that moved.
+    """
+
+    def __init__(self, hierarchies, z_low, z_top, softness=5.0, resolution=1,
+                 weight=1.0, label=None):
+        """Setup the restraint.
+        @param hierarchies Can be one of the following inputs: IMP Hierarchy,
+               PMI System/State/Molecule/TempResidue, or a list/set of them
+        @param z_low Lower plane
+        @param z_top Upper plane
+        @param softness Width of the soft walls
+        @param resolution Select which resolutions to act upon
+        @param weight Weight of restraint
+        @param label A unique label to be used in outputs and
+                     particle/restraint names.
+        """
+        if not z_low < z_top:
+            raise ValueError("COMSlabRestraint needs z_low < z_top, got %s, %s"
+                             % (z_low, z_top))
+        model, groups = _com_groups(hierarchies, resolution)
+        super().__init__(model, label=label, weight=weight)
+        self.com_restraint = IMP.core.COMRestraint(model)
+        wall = IMP.core.SoftLowerBound(softness)
+        for pis, masses in groups:
+            g = self.com_restraint.add_group(pis, masses)
+            self.com_restraint.add_plane_term(
+                g, IMP.algebra.Vector3D(0, 0, z_low),
+                IMP.algebra.Vector3D(0, 0, 1), wall)
+            self.com_restraint.add_plane_term(
+                g, IMP.algebra.Vector3D(0, 0, z_top),
+                IMP.algebra.Vector3D(0, 0, -1), wall)
+        self.rs.add_restraint(self.com_restraint)
+
+
+class COMCylinderBarrier(IMP.pmi.restraints.RestraintBase):
+    """Keep the center of mass of each molecule copy inside a cylinder.
+
+    Like ExternalBarrier, but the boundary is a cylinder of the given radius
+    around an axis (by default the z axis through the origin), closed by caps
+    at z_low and z_top along the axis, and only the center of mass of each
+    copy is kept inside: 0.5 * k * d^2 for each wall it is past by d.
+    Scored by IMP.core.COMRestraint, which recomputes only the copies that
+    moved.
+    """
+
+    def __init__(self, hierarchies, radius, z_low, z_top, k=10.0,
+                 center=None, axis=None, resolution=10, weight=1.0,
+                 label=None):
+        """Setup the restraint.
+        @param hierarchies Can be one of the following inputs: IMP Hierarchy,
+               PMI System/State/Molecule/TempResidue, or a list/set of them
+        @param radius Radius of the cylinder
+        @param z_low Lower cap, measured along the axis from center
+        @param z_top Upper cap, measured along the axis from center
+        @param k Force constant of the walls (ExternalBarrier uses 10)
+        @param center A point on the axis (IMP.algebra.Vector3D); the origin
+               by default
+        @param axis Direction of the axis (IMP.algebra.Vector3D); z by default
+        @param resolution Select which resolutions to act upon
+        @param weight Weight of restraint
+        @param label A unique label to be used in outputs and
+                     particle/restraint names.
+        """
+        if not z_low < z_top:
+            raise ValueError("COMCylinderBarrier needs z_low < z_top, got "
+                             "%s, %s" % (z_low, z_top))
+        center = center or IMP.algebra.Vector3D(0, 0, 0)
+        axis = (axis or IMP.algebra.Vector3D(0, 0, 1)).get_unit_vector()
+        model, groups = _com_groups(hierarchies, resolution)
+        super().__init__(model, label=label, weight=weight)
+        self.com_restraint = IMP.core.COMRestraint(model)
+        wall = IMP.core.HarmonicUpperBound(radius, k)
+        cap = IMP.core.HarmonicLowerBound(0.0, k)
+        for pis, masses in groups:
+            g = self.com_restraint.add_group(pis, masses)
+            self.com_restraint.add_axis_term(g, center, axis, wall)
+            self.com_restraint.add_plane_term(g, center + axis * z_low,
+                                              axis, cap)
+            self.com_restraint.add_plane_term(g, center + axis * z_top,
+                                              axis * -1.0, cap)
+        self.rs.add_restraint(self.com_restraint)
+
+
+class COMDistanceRestraint(IMP.pmi.restraints.RestraintBase):
+    """Restrain the distance between the centers of mass of two selections.
+
+    Each selection is one group (all its particles, whatever molecule or
+    copy). The distance is kept between distance_min and distance_max with
+    harmonic walls, 0.5 * k * d^2 past either bound.
+    """
+
+    def __init__(self, hierarchies1, hierarchies2, distance_min=0.0,
+                 distance_max=None, k=1.0, resolution=1, weight=1.0,
+                 label=None):
+        """Setup the restraint.
+        @param hierarchies1, hierarchies2 The two selections; each can be an
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a
+               list/set of them
+        @param distance_min Lower bound of the distance (0: none)
+        @param distance_max Upper bound of the distance (None: none)
+        @param k Force constant of the walls
+        @param resolution Select which resolutions to act upon
+        @param weight Weight of restraint
+        @param label A unique label to be used in outputs and
+                     particle/restraint names.
+        """
+        model, (group1,) = _com_groups(hierarchies1, resolution,
+                                       per_copy=False)
+        _, (group2,) = _com_groups(hierarchies2, resolution, per_copy=False)
+        super().__init__(model, label=label, weight=weight)
+        self.com_restraint = IMP.core.COMRestraint(model)
+        g1 = self.com_restraint.add_group(*group1)
+        g2 = self.com_restraint.add_group(*group2)
+        if distance_max is not None:
+            self.com_restraint.add_pair_term(
+                g1, g2, IMP.core.HarmonicUpperBound(distance_max, k))
+        if distance_min > 0:
+            self.com_restraint.add_pair_term(
+                g1, g2, IMP.core.HarmonicLowerBound(distance_min, k))
+        self.rs.add_restraint(self.com_restraint)
