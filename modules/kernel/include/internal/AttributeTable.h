@@ -93,6 +93,11 @@ struct DefaultTraits {
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
 };
 
 template <class T, class K, class Allocator = std::allocator<T>>
@@ -112,6 +117,11 @@ struct ArrayTraits {
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
 };
 
 // A view into an IndexVector that contains one or more sets of
@@ -295,6 +305,11 @@ struct ObjectAttributeTableTraits {
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
+
 };
 
 struct WeakObjectAttributeTableTraits {
@@ -313,6 +328,11 @@ struct WeakObjectAttributeTableTraits {
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
 };
 
 struct ObjectsAttributeTableTraits {
@@ -337,6 +357,11 @@ struct ObjectsAttributeTableTraits {
   static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
 };
 
 struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {};
@@ -426,6 +451,11 @@ struct GenericBoolAttributeTableTraits : public DefaultTraits<bool, K> {
   ContainerConstDataAccess access_container_data(Container const& c) { return c; }
   //! allow direct non-const access to the container data
   static ContainerDataAccess access_container_data(Container&       c) { return c; }
+
+  //! allow direct non-const access to the entire container data
+  static ContainerDataAccess access_full_container_data(Container& c) {
+    return c.data();
+  }
 
 };
 
