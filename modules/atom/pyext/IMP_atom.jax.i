@@ -19,6 +19,23 @@
   %}
 }
 
+%extend IMP::atom::BrownianDynamics {
+  %pythoncode %{
+    def _get_jax(self, space=None):
+        from IMP.atom._jax_util import _BDJAXInfo
+        return _BDJAXInfo(self, space)
+
+    def _get_jax_optimizer(self, max_steps, space=None):
+        import IMP.atom._jax_util
+        return IMP.atom._jax_util._BDJAXOptimizer(self, max_steps, space)
+
+    def _optimize_jax(self, max_steps, space=None):
+        opt = self._get_jax_optimizer(max_steps, space=space)
+        score, bd_state = opt.optimize(opt.get_initial_state())
+        return score
+  %}
+}
+
 %extend IMP::atom::ForceSwitch {
   %pythoncode %{
     def _get_jax(self):

@@ -176,6 +176,155 @@ class _MDJAXOptimizer(_JAXOptimizer):
         return score, md_state
 
 
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _BrownianDynamics:
+    """Track the state of a BrownianDynamics optimization using JAX"""
+
+    # Current JAX Model
+    jm: dict
+    # Number of steps taken
+    steps: int
+    # JAX random number key
+    rkey: jax.Array
+    # Any persistent state used by OptimizerStates. Each OptimizerState's
+    # _get_jax() method is given a unique index into this list.
+    optimizer_states: list
+    # Indexes of all particles subject to BD
+    simulation_indexes: jax.Array
+    # Time between integrator steps
+    time_step: float
+    # First derivatives of Cartesian coordinates, as calculated at the
+    # start of the most recent step
+    derivs: jax.Array
+
+
+class _BDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
+    def __init__(self, bd, space):
+        super().__init__(bd, space)
+        dkey = IMP.atom.Diffusion.get_diffusion_coefficient_key()
+        self._keys = frozenset((IMP._jax_util._DenseKey(dkey),))
+        m = bd.get_model()
+        simulation_indexes = bd.get_simulation_particle_indexes()
+        if any(IMP.atom.RigidBodyDiffusion.get_is_setup(m, pi)
+               for pi in simulation_indexes):
+            raise NotImplementedError(
+                "JAX BrownianDynamics does not support rigid bodies")
+        axes = self.get_jax_model(attributes=False).get_vmap_axes()
+
+        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
+        if axes is not None:
+            deriv_func = jax.vmap(deriv_func, in_axes=(axes,))
+        max_step = bd.get_maximum_move()
+        # Would like to use math.isfinite here but it is not guaranteed
+        # that a C++ "infinite" value is also considered to be math.inf
+        if max_step > 1e20:
+            max_step = None
+        srk = bd.get_use_stochastic_runge_kutta()
+        ikt = 1.0 / bd.get_kt()
+        dkey = dkey.get_string()
+        # Get all JAX periodic actions ("optimizer states")
+        jax_optstates = self._setup_jax_optimizer_states()
+        jax_opt_1_states = []
+        jax_opt_x_states = []
+        for x in jax_optstates:
+            (jax_opt_1_states if x.period == 1 else jax_opt_x_states).append(x)
+
+        space = self._space
+
+        def get_force_dx(jm, derivs, indexes, diff, time_step):
+            # Force translation term in the Ermak-McCammon equation
+            return -derivs[..., indexes, :] * diff * time_step * ikt
+
+        def init_func(jm, key):
+            s = _BrownianDynamics(
+                jm=jm, steps=0, optimizer_states=[None] * len(jax_optstates),
+                simulation_indexes=simulation_indexes,
+                rkey=key, time_step=bd.get_maximum_time_step(),
+                derivs=deriv_func(jm)["xyz"])
+            for js in jax_optstates:
+                s = js.init_func(s)
+            return s
+
+        def apply_func(bs):
+            jm = bs.jm
+            indexes = bs.simulation_indexes
+            bs.steps += 1
+            # Make diffusion coefficient at least 2D so it can broadcast
+            # over the 2D coordinate arrays
+            diff = jm[dkey][..., indexes, jnp.newaxis]
+            bs.derivs = deriv_func(jm)["xyz"]
+            force_dx = get_force_dx(jm, bs.derivs, indexes, diff,
+                                    bs.time_step)
+            bs.rkey, subkey = jax.random.split(bs.rkey)
+            # std-dev for random translation in the Ermak-Mccammon equation
+            sigma = jnp.sqrt(2.0 * diff * bs.time_step)
+            random_dx = sigma * jax.random.normal(
+                subkey, shape=force_dx.shape)
+            dx = random_dx + force_dx
+            if max_step is not None and not srk:
+                dx = jnp.clip(dx, -max_step, max_step)
+            jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, dx)
+            if srk:
+                # Stochastic Runge-Kutta correction using forces at the
+                # new position
+                new_force_dx = get_force_dx(jm, deriv_func(jm)["xyz"],
+                                            indexes, diff, bs.time_step)
+                dx = 0.5 * (new_force_dx - force_dx)
+                if max_step is not None:
+                    dx = jnp.clip(dx, -max_step, max_step)
+                jm['xyz'] = space.shift_indexes(jm['xyz'], indexes, dx)
+            steps = bs.steps
+            for js in jax_opt_1_states:
+                bs = js.apply_func(bs)
+            for js in jax_opt_x_states:
+                bs = jax.lax.cond(steps % js.period == 0, js.apply_func,
+                                  lambda x: x, bs)
+            return bs
+
+        self.init_func = init_func
+        self.apply_func = apply_func
+
+
+class _BDJAXOptimizer(_JAXOptimizer):
+    """Do BD sampling with JAX, and update the IMP Model with the result"""
+    def __init__(self, bd, max_steps, space):
+        super().__init__(bd, max_steps, space)
+        ji = self._jax_info
+        self.init_func = jax.jit(ji.init_func)
+        self.score_func = jax.jit(ji.score_func)
+        self.apply_func = jax.jit(
+            lambda jm: jax.lax.fori_loop(0, self.inner_steps,
+                                         lambda i, jm: ji.apply_func(jm), jm))
+
+    def _loop(self):
+        # Keep the Simulator's current time up to date, so that any IMP
+        # OptimizerStates (e.g. RMF writers) see the correct time
+        bd = self.opt
+        time_step = bd.get_maximum_time_step()
+        for i in super()._loop():
+            yield i
+            bd.set_current_time(bd.get_current_time()
+                                + self.inner_steps * time_step)
+
+    def optimize(self, bd_state):
+        """Run max_steps of sampling with JAX and update the IMP Model with
+           the result. Return the final score and the new JAX optimizer
+           object."""
+        m = self.opt.get_model()
+        xyz = m.get_spheres_numpy()[0]
+        dxyz = m.get_sphere_derivatives_numpy()[0]
+
+        for _ in self._loop():
+            bd_state = self.apply_func(bd_state)
+            # Resync IMP Model arrays with JAX
+            xyz[:] = bd_state.jm['xyz']
+            dxyz[:] = bd_state.derivs
+        score, bd_state.jm = self.score_func(bd_state.jm)
+        return score, bd_state
+
+
 @jax.tree_util.register_dataclass
 @dataclass
 class _Bonds:
