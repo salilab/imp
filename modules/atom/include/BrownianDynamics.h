@@ -110,8 +110,14 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   //! sets the maximum move in A along either x,y or z axes
   void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A; }
 
+  //! Get the maximum move in A along either x,y or z axes
+  double get_maximum_move() const { return max_step_in_A_; }
+
   //! Set whether to use the stochastic Runge Kutta scheme
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
+
+  //! Get whether to use the stochastic Runge Kutta scheme
+  bool get_use_stochastic_runge_kutta() const { return srk_; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
 
