@@ -158,14 +158,13 @@
         import jax.numpy as jnp
         def score(jm, box_min, box_max, uf):
             xyzs = jm['xyz'][indexes]
-            # This calculates the distance and the score for every point,
-            # even those inside the box. IMP just returns zero for points
-            # inside the box, skipping the distance calculation.
-            # The implementation here is *probably* faster on a GPU since
-            # we reduce the use of conditionals, and JAX will likely skip
-            # the sqrt if uf is a harmonic, but this should be benchmarked.
-            drs = space.distance(xyzs - jnp.clip(xyzs, box_min, box_max))
-            return uf(drs)
+            diff = xyzs - jnp.clip(xyzs, box_min, box_max)
+            outside = jnp.any(diff != 0., axis=-1)
+            # Avoid taking the distance of a zero vector for points inside
+            # the box, since the gradient of sqrt(0) is infinite (NaN)
+            safe_diff = jnp.where(outside[..., jnp.newaxis], diff, 1.)
+            drs = jnp.where(outside, space.distance(safe_diff), 0.)
+            return jnp.where(outside, uf(drs), 0.)
         uf = self.get_unary_function().get_derived_object()
         bb = self.get_bounding_box()
         f = functools.partial(score, box_min=jnp.asarray(bb.get_corner(0)),
