@@ -1,6 +1,6 @@
 /**
  *  \file internal/close_pairs_helpers.h
- *  \brief utilities for rigid bodies.
+ *  \brief Helper functions for close pairs.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
