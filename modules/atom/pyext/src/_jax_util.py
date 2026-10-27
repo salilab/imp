@@ -176,7 +176,6 @@ class _MDJAXOptimizer(_JAXOptimizer):
         return score, md_state
 
 
-
 @jax.tree_util.register_dataclass
 @dataclass
 class _BrownianDynamics:
