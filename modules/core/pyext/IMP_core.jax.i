@@ -333,6 +333,28 @@
   %}
 }
 
+%extend IMP::core::ExcludedVolumeRestraint {
+  %pythoncode %{
+    def _get_jax(self, space):
+        import jax.numpy as jnp
+        # We need all indexes for JAX but ExcludedVolumeRestraint does not
+        # provide a suitable method, so make a temporary ClosePairContainer
+        # instead with the same set of indexes (we use all pairs for JAX so
+        # the cutoff and slack are unimportant here)
+        c = IMP.container.ClosePairContainer(self.get_container(), 10.0, 1.0)
+        c.pair_filters.extend(self.pair_filters)
+        indexes = c._get_static_contents()
+
+        score = self.get_score_object().get_derived_object()
+        ji = score._get_jax(self.get_model(), indexes, space)
+        score_jax = ji.score_func
+
+        def jax_restraint(jm):
+            return jnp.sum(score_jax(jm), axis=-1)
+        return self._wrap_jax(jax_restraint, keys=ji._keys)
+  %}
+}
+
 %extend IMP::core::RestraintsScoringFunction {
   %pythoncode %{
     def _get_jax(self, space=None):

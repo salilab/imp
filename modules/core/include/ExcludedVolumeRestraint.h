@@ -2,7 +2,7 @@
  *  \file IMP/core/ExcludedVolumeRestraint.h
  *  \brief Prevent spheres from inter-penetrating
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H
@@ -86,6 +86,12 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
                           std::string name = "ExcludedVolumeRestraint%1%");
 
   void clear_caches() override;
+
+  // Get the SoftSpherePairScore used in this restraint
+  IMP::core::SoftSpherePairScore *get_score_object() const { return ssps_; }
+
+  // Get the SingletonContainer used in this restraint
+  SingletonContainer *get_container() const { return sc_; }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,

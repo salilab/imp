@@ -2,6 +2,10 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.container
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -43,6 +47,19 @@ class Tests(IMP.test.TestCase):
         print("pairs are", ppi)
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test that JAX implementation matches IMP"""
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
+        h = IMP.get_particles(m, IMP._create_particles_from_pdb(
+            self.get_input_file_name("1z5s_A.pdb"), m))
+        l0 = h[0:30]
+        r = IMP.core.ExcludedVolumeRestraint(l0, 1, 0)
+        imp_score = r.evaluate(False)
+        jax_score = r._evaluate_jax()
+        self.assertAlmostEqual(jax_score, imp_score, delta=1e-4)
 
 
 if __name__ == '__main__':
