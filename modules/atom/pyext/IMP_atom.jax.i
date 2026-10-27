@@ -23,6 +23,12 @@
   %pythoncode %{
     def _get_jax(self, space=None):
         from IMP.atom._jax_util import _BDJAXInfo
+        # Subclasses like BrownianDynamicsTAMD have subtly different
+        # dynamics, so they should get their own JAX implementations,
+        # not reuse ours:
+        if type(self) is not BrownianDynamics:
+            raise NotImplementedError(
+                f"No JAX implementation for {self} ({type(self)})")
         return _BDJAXInfo(self, space)
 
     def _get_jax_optimizer(self, max_steps, space=None):

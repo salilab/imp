@@ -4,6 +4,10 @@ import IMP.core
 import IMP.atom
 import IMP.rmf
 import RMF
+try:
+    import jax
+except ImportError:
+    jax = None
 
 
 class Tests(IMP.test.TestCase):
@@ -161,6 +165,15 @@ class Tests(IMP.test.TestCase):
 #            if(energy < e_threshold):
 #                break
 #        self.assertLess(energy, e_threshold)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax(self):
+        """Test JAX implementation"""
+        m = IMP.Model()
+        bd = IMP.atom.BrownianDynamicsTAMD(m)
+        # No JAX implementation for BrownianDynamicsTAMD (and we should not
+        # get the BrownianDynamics base class implementation either)
+        self.assertRaises(NotImplementedError, bd._get_jax)
 
 
 if __name__ == '__main__':
