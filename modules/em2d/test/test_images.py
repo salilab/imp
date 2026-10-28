@@ -8,8 +8,8 @@ import random
 
 class Tests(IMP.test.TestCase):
 
-    def test_read_and_write_opencv_images(self):
-        """Test read/write for the images using OpenCV data storage"""
+    def test_read_and_write_images(self):
+        """Test read/write of Spider images"""
         srw = em2d.SpiderImageReaderWriter()
         img = em2d.Image()
         img.read(
@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rows, 128, "Error reading image")
         self.assertEqual(cols, 128, "Error reading image")
 
-        temp = "opencv_test_image.spi"
+        temp = "test_image.spi"
         img.write(temp, srw)
 
         img2 = em2d.Image()

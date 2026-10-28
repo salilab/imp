@@ -60,11 +60,12 @@ will not build, and some will not function optimally.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
 - [GSL](\ref GSL) (1.13 or later): needed to use the IMP.gsl module.
-- [OpenCV](\ref OpenCV) (3.0 or later): needed to use the IMP.em2d module or the
-  [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
-  line tools.
 - [FFTW](http://www.fftw.org): needed to use the IMP.em2d or IMP.multifit
   modules or the [multifit](@ref multifit_3sfd) command line tool.
+- [libtiff](https://libtiff.gitlab.io/libtiff/) and
+  [libjpeg](https://libjpeg-turbo.org/): needed (together with FFTW) to use
+  the IMP.em2d module or the [idock](@ref idock_pcsk9) and
+  [emagefit](@ref emagefit_3sfd) command line tools.
 - [libTAU](https://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
@@ -100,7 +101,7 @@ All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the
 following should install most of the prerequisites:
 
-        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel opencv-devel python3-numpy
+        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel libtiff-devel libjpeg-turbo-devel python3-numpy
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
@@ -119,17 +120,17 @@ such as
   do
 
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake hdf5 swig fftw mpfr opencv libtau eigen
+        brew install boost gmp google-perftools cgal graphviz gsl cmake hdf5 swig fftw mpfr libtiff jpeg-turbo libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](https://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
 
-        sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
+        sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja tiff libjpeg-turbo protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
 - [Conda](https://docs.conda.io/en/latest/) Once you installed conda (typically via the Miniconda or Anaconda distributions), do 
 
-        conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libopencv eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy cereal
+        conda create -n IMP_BUILD -c conda-forge python cxx-compiler c-compiler llvm-openmp swig cmake ninja numpy rmf ihm boost-cpp hdf5 libtiff libjpeg-turbo eigen fftw gsl libcblas  cgal-cpp gmp mpfr mpich numpy cereal
         conda activate IMP_BUILD
         conda install -c anaconda protobuf libprotobuf
 

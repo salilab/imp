@@ -1,6 +1,20 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The IMP::em2d module no longer uses OpenCV. Instead, it requires libtiff
+  and libjpeg (in addition to FFTW). Image data are now stored as Eigen
+  arrays (IMP::em2d::DoubleMatrix) rather than OpenCV matrices, so C++ code
+  that passes `cv::Mat` to the IMP::em2d API needs to be updated (Python code
+  is unaffected). Image rotation and polar resampling now use exact bilinear
+  interpolation, so their results (and those of image alignment) may differ
+  slightly from before. Serialized (e.g. pickled) IMP::em2d objects that
+  contain matrices, such as IMP::em2d::SegmentationParameters, cannot be
+  read if they were written by earlier versions of IMP.
+- Several bugs in IMP::em2d were fixed, including memory corruption in
+  IMP::em2d::get_histogram(), out-of-bounds accesses for non-square images,
+  and subpixel refinement of translational alignment using the wrong axis.
+
 # 2.25.0 - 2026-08-05 # {#changelog_2_25_0}
 - The IMP::em2d module has dropped support for building with OpenCV 2, but
   now supports OpenCV 5.

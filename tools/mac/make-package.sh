@@ -162,12 +162,6 @@ if [ "${TARGET_OSX_VER}" != "10.4" ]; then
                 /usr/local/lib/libgsl.0.dylib \
                 /usr/local/lib/libgslcblas.0.dylib \
                 /usr/local/lib/libhdf5.103.dylib \
-                /usr/local/lib/libopencv_highgui.2.4.13.dylib \
-                /usr/local/lib/libopencv_highgui.2.4.dylib \
-                /usr/local/lib/libopencv_core.2.4.13.dylib \
-                /usr/local/lib/libopencv_core.2.4.dylib \
-                /usr/local/lib/libopencv_imgproc.2.4.13.dylib \
-                /usr/local/lib/libopencv_imgproc.2.4.dylib \
                 /usr/local/lib/libjpeg.9.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
@@ -189,9 +183,6 @@ else
                 /opt/local/lib/libgsl.0.dylib \
                 /opt/local/lib/libgslcblas.0.dylib \
                 /opt/local/lib/libhdf5.7.dylib \
-                /opt/local/lib/libopencv_highgui.2.3.dylib \
-                /opt/local/lib/libopencv_core.2.3.dylib \
-                /opt/local/lib/libopencv_imgproc.2.3.dylib \
                 /opt/local/lib/libz.1.dylib \
                 /opt/local/lib/libjpeg.8.dylib \
                 /opt/local/lib/libtiff.3.dylib \
@@ -233,9 +224,6 @@ for lib in ${BUNDLED_LIBS}; do
 done
 
 # Save space by replacing duplicates with symlinks
-for lib in highgui core imgproc; do
-  (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_${lib}.2.4.dylib && ln -sf libopencv_${lib}.2.4.13.dylib libopencv_${lib}.2.4.dylib)
-done
 (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.0.dylib libCGAL.11.dylib)
 
 # Make sure we don't link against any non-standard libraries that aren't bundled

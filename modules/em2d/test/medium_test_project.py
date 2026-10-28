@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def test_random_projection_generation(self):
         """Generation of random projection from a PDB file with em2d images"""
-        testfile = "opencv_test.spi"
+        testfile = "projection_test.spi"
         if os.path.isfile(testfile):
             # delete the file to check
             os.remove(testfile)

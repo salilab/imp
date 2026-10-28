@@ -29,8 +29,11 @@ As a side note, the class Image has a header that is specific for EM
 images, but if you don't care for that information, you can use the
 class to deal with any sort of image, not only EM.
 
-# OpenCV # {#OpenCV}
-The module works with OpenCV 2.1 or above.
+# Dependencies
+The module requires [FFTW](http://www.fftw.org) and the
+[libtiff](https://libtiff.gitlab.io/libtiff/) and
+[libjpeg](https://libjpeg-turbo.org/) libraries (for reading and writing
+TIFF and JPEG images). Earlier versions also required OpenCV.
 
 # Info
 

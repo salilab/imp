@@ -13,7 +13,7 @@ class IMPMockTests(unittest.TestCase):
         self.assertRaises(ImportError, __import__, 'IMP.scratch')
         # We bundle CGAL now, so everyone should have IMP.cgal
         import IMP.cgal
-        # We bundle OpenCV now, so everyone should have IMP.em2d
+        # IMP.em2d only needs FFTW, libtiff and libjpeg, which everyone has
         import IMP.em2d
         # We build our own Eigen on RHEL, so everyone should have IMP.isd
         import IMP.isd
