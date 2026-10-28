@@ -74,7 +74,8 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
           if (vj > 0) {
             pj = ret[vj - 1];
           } else {
-            pj = ret[-vj - 1];
+            // the opposite of a point
+            pj = -ret[-vj - 1];
           }
           double d = (pj - pi).get_magnitude();
           if (counts[vi - 1] < d) {
