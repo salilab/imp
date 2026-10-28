@@ -231,6 +231,8 @@ int get_optimal_dft_size(int n) {
 
 void get_autocorrelation2d_no_preprocessing(const DoubleMatrix &M,
                                             DoubleMatrix &corr) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   IMP_LOG_VERBOSE("Computing 2D autocorrelation no preprocessing" << std::endl);
   IMP_USAGE_CHECK(((M.rows() != 0) && (M.cols() != 0)),
                   "em2d:get_autocorrelation2d: Output matrix is empty");
@@ -294,6 +296,8 @@ void get_fft_using_optimal_size(const DoubleMatrix &m, DoubleMatrix &M) {
 
 void get_spectrum(const DoubleMatrix &m, DoubleMatrix &real,
                   DoubleMatrix &imag) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   // Shift to get a centered spectrum
   DoubleMatrix shifted(m.rows(), m.cols());
   for (int i = 0; i < m.rows(); ++i) {

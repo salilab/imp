@@ -45,56 +45,6 @@ DoubleMatrix quaternion_to_matrix(const algebra::VectorD<4> &v) {
 
 } // anonymous namespace
 
-void semispherical_spiral_distribution(const unsigned long N,
-                                       algebra::SphericalVector3Ds &vs,
-                                       double r) {
-  vs.resize(N);
-  double zenith, azimuth;
-  for (unsigned long k = 1; k <= N; ++k) {
-    double h = 2 * (static_cast<double>(k) - 1) / (2 * N - 1) - 1.0;
-    zenith = acos(h);
-    if (k == 1) {
-      azimuth = 0;
-    } else {
-      azimuth = (vs[k - 2][2] +
-                 3.6 / sqrt(static_cast<double>(N) * 2 * (1.0 - h * h)));
-      int div = azimuth / (2 * PI);
-      azimuth -= div * 2 * PI;
-    }
-    // Set the values the spherical vector
-    vs[k - 1][0] = r;
-    vs[k - 1][1] = zenith;
-    vs[k - 1][2] = azimuth;
-  }
-}
-
-void spherical_spiral_distribution(const unsigned long N,
-                                   algebra::SphericalVector3Ds &vs,
-                                   double radius) {
-  vs.resize(N);
-  double zenith, azimuth;
-  for (unsigned long k = 1; k <= N; ++k) {
-    double h = -1 + 2 * (static_cast<double>(k) - 1) / (N - 1);
-    zenith = acos(h);
-    if (k == 1 || k == N) {
-      azimuth = 0;
-    } else {
-      azimuth =
-          (vs[k - 2][2] + 3.6 / sqrt(static_cast<double>(N) * (1 - h * h)));
-      //       int div = azimuth/(2*PI);
-      //       azimuth -= div*2*PI;
-      int div = static_cast<int>(azimuth / (2 * PI));
-      azimuth -= static_cast<double>(div) * (2 * PI);
-    }
-    // Set the values the spherical vector
-    vs[k - 1][0] = radius;
-    vs[k - 1][1] = zenith;
-    //    vs[k-1][1]=(-1)*zenith;
-    vs[k - 1][2] = azimuth;
-  }
-}
-
-// It is based on a different algorithm than the previous function
 void spherical_even_distribution(const unsigned long N,
                                  algebra::SphericalVector3Ds &vs) {
   vs.resize(N);

@@ -285,6 +285,8 @@ void do_remove_small_objects(IntMatrix &m, double percentage, int background,
 }
 
 void do_histogram_stretching(DoubleMatrix &m, int boxes, int offset) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
 
   // Number of possible values for the histogram and maximum value for
   // the stretched image
@@ -343,6 +345,8 @@ void do_histogram_stretching(DoubleMatrix &m, int boxes, int offset) {
 
 void do_dilate_and_shrink_warp(DoubleMatrix &m, const DoubleMatrix &greyscale,
                                DoubleMatrix &kernel) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
 
   IMP_USAGE_CHECK((m.rows() == greyscale.rows()) &&
                       (m.cols() == greyscale.cols()),
@@ -536,6 +540,8 @@ void do_fill_holes(const DoubleMatrix &m, DoubleMatrix &result, double h) {
 }
 
 void get_domes(DoubleMatrix &m, DoubleMatrix &result, double h) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   DoubleMatrix marker;
   marker = m - h;
   do_morphologic_reconstruction(m, marker, 8);
@@ -664,6 +670,8 @@ void apply_mask(const DoubleMatrix &m, DoubleMatrix &result,
 void apply_circular_mask(const DoubleMatrix &mat, DoubleMatrix &result,
                          int radius,
                          double val) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   IntMatrix mask = create_circular_mask(mat.rows(), mat.cols(), radius);
   apply_mask(mat, result, mask, val);
 }
@@ -854,6 +862,8 @@ void do_morphologic_contrast_enhancement(const DoubleMatrix &m,
                                          DoubleMatrix &result,
                                          const DoubleMatrix &kernel,
                                          unsigned int iterations) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   // Bovik, pg 143
 
   internal::FloatMatrix dilated, eroded;
@@ -877,6 +887,8 @@ void do_morphologic_contrast_enhancement(const DoubleMatrix &m,
 
 void get_morphologic_gradient(const DoubleMatrix &m, DoubleMatrix &result,
                               const DoubleMatrix &kernel) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   // Bovik, pg 147
 
   internal::FloatMatrix dilated, eroded;
@@ -893,6 +905,8 @@ void get_morphologic_gradient(const DoubleMatrix &m, DoubleMatrix &result,
 
 double get_overlap_percentage(DoubleMatrix &m1, DoubleMatrix &m2,
                               const IntPair &center) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
 
   internal::CenteredMat M1(m1, center.first, center.second);
   internal::CenteredMat M2(m2);

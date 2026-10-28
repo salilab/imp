@@ -114,6 +114,8 @@ IMPEM2DEXPORT void apply_mask(const DoubleMatrix &m, DoubleMatrix &result,
 
 //! Applies a circular to a matrix. The center of the mask is the center of the
 //! matrix.
+//! \deprecated_at{2.26} This function is not used in IMP, and will be removed.
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void apply_circular_mask(const DoubleMatrix &mat,
                                        DoubleMatrix &result,
                                        int radius, double value = 0.0);
@@ -146,6 +148,8 @@ IMPEM2DEXPORT void do_remove_small_objects(IntMatrix &m, double percentage,
                                            int background = 0,
                                            int foreground = 1);
 
+//! \deprecated_at{2.26} This function is not used in IMP, and will be removed.
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void do_histogram_stretching(DoubleMatrix &m, int boxes,
                                            int offset);
 
@@ -155,7 +159,9 @@ IMPEM2DEXPORT void do_histogram_stretching(DoubleMatrix &m, int boxes,
   \param[in] grayscale grayscale matrix that controls the shrinking
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 void IMPEM2DEXPORT do_dilate_and_shrink_warp(DoubleMatrix &m,
                                              const DoubleMatrix &grayscale,
                                              DoubleMatrix &kernel);
@@ -230,7 +236,9 @@ IMPEM2DEXPORT void do_fill_holes(const DoubleMatrix &m, DoubleMatrix &result,
   \param[in] result the result matrix
   \param[in] h the height
   \note The function does not work in-place
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void get_domes(DoubleMatrix &m, DoubleMatrix &result, double h);
 
 //! Combines the fill holes and thresholding operations together with normalize
@@ -331,7 +339,9 @@ IMPEM2DEXPORT void apply_threshold(DoubleMatrix &m, DoubleMatrix &result,
   \param[out] result
   \param[in] kernel morphologic kernel to use
   \param[in] iterations Higher number, more contrast
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void do_morphologic_contrast_enhancement(
     const DoubleMatrix &m, DoubleMatrix &result, const DoubleMatrix &kernel,
     unsigned int iterations);
@@ -339,7 +349,9 @@ IMPEM2DEXPORT void do_morphologic_contrast_enhancement(
   \param[in] m Input matrix
   \param[out] result
   \param[in] kernel morphologic kernel
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void get_morphologic_gradient(const DoubleMatrix &m,
                                             DoubleMatrix &result,
                                             const DoubleMatrix &kernel);
@@ -354,7 +366,9 @@ IMPEM2DEXPORT void get_morphologic_gradient(const DoubleMatrix &m,
   \param[in] center Indicates the position of m1 where to put
              the center m2. E.g., if center is (32,16) the center
              of m2 will be in the pixel (32,16) of m1.
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT double get_overlap_percentage(DoubleMatrix &m1, DoubleMatrix &m2,
                                             const IntPair &center);
 

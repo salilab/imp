@@ -2,7 +2,7 @@
  *  \file IMP/em2d/hierarchical_clustering.h
  *  \brief Agglomerative clustering algorithm
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,8 +23,12 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+//! \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 template <class T>
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 void print_vector(const std::vector<T> &v) {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(
+      2.26, "This function is not used in IMP, and will be removed.");
   for (unsigned int i = 0; i < v.size(); ++i) {
     std::cout << v[i] << " , ";
   }

@@ -31,7 +31,9 @@ IMPEM2DEXPORT void do_matrix_to_image_flip(DoubleMatrix &m);
   \param[in]  M matrix containing the dft
    \param[out] corr the matrix to store the autocorrelation. Must have the
     proper dimensions when passed
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
 */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void get_autocorrelation2d_no_preprocessing(const DoubleMatrix &M,
                                                           DoubleMatrix &corr);
 
@@ -78,7 +80,9 @@ IMPEM2DEXPORT void get_fft_using_optimal_size(const DoubleMatrix &m,
 /** @param m The input matrix
     @param real The matrix with the real part of the FFT matrix
     @param imag The imaginary part of the FFT matrix
+  \deprecated_at{2.26} This function is not used in IMP, and will be removed.
  */
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.26)
 IMPEM2DEXPORT void get_spectrum(const DoubleMatrix &m, DoubleMatrix &real,
                                 DoubleMatrix &imag);
 

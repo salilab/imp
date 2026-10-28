@@ -18,24 +18,6 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-//! Distributes N points into a semisphere following an spiral from the
-//! pole. Zenith = [0,PI/2) and azimuth = [0,2PI)
-/**
-   \param[in] N number of points
-   \param[out] vs A vector of SphericalVector3D classes
-   \param[in] r radius of the sphere
-   \note Saff, The Mathematical Intelligencer (1997)
-**/
-IMPEM2DEXPORT
-void semispherical_spiral_distribution(const unsigned long N,
-                                       algebra::SphericalVector3Ds &vs,
-                                       double r = 1.0);
-
-IMPEM2DEXPORT
-void spherical_spiral_distribution(const unsigned long N,
-                                   algebra::SphericalVector3Ds &vs,
-                                   double r = 1.0);
-
 //! Distributes N points into a sphere evenly. Fast algorithm that almost
 //! guarantees similar distance from one point to the nearest one
 IMPEM2DEXPORT
