@@ -155,15 +155,16 @@ void do_dilate_and_shrink_warp(cv::Mat &m, const cv::Mat &greyscale,
     for (int i = 0; i < greyscale.rows; ++i) {
       for (int j = 0; j < greyscale.cols; ++j) {
         cvPixel p(i, j);
-        if (algebra::get_rounded(mask.at<double>(p)) == background) {
-          temp.at<double>(p) = background;
-        } else if (algebra::get_rounded(boundary.at<double>(p)) == foreground &&
-                   greyscale.at<double>(p) < mean) {
+        if (algebra::get_rounded(mask.at<double>(p.x, p.y)) == background) {
+          temp.at<double>(p.x, p.y) = background;
+        } else if (algebra::get_rounded(boundary.at<double>(p.x, p.y)) ==
+                       foreground &&
+                   greyscale.at<double>(p.x, p.y) < mean) {
           // boundary pixel below the mean, erode
-          temp.at<double>(p) = background;
+          temp.at<double>(p.x, p.y) = background;
           new_size_in_pixels--;
         } else {
-          temp.at<double>(p) = foreground;
+          temp.at<double>(p.x, p.y) = foreground;
         }
       }
     }
@@ -203,13 +204,20 @@ void do_combined_fill_holes_and_threshold(cv::Mat &m, cv::Mat &result,
   do_normalize(result);
 }
 
-void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
-                                   int neighbors_mode) {
+namespace {
 
-  IMP_USAGE_CHECK(
-      (mask.rows == marker.rows) && (mask.cols == marker.cols),
-      "em2d::morphologic_reconstruction: Matrices have different size.");
+template <class T>
+cv::Mat_<T> get_transposed(const cv::Mat_<T> &m) {
+  cv::Mat_<T> t(m.cols, m.rows);
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) t(j, i) = m(i, j);
+  }
+  return t;
+}
 
+void do_raster_morphologic_reconstruction(const cv::Mat &mask,
+                                          cv::Mat &marker,
+                                          int neighbors_mode) {
   // Scan in raster order
   for (int i = 0; i < mask.rows; ++i) {
     for (int j = 0; j < mask.cols; ++j) {
@@ -217,15 +225,16 @@ void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
       cvPixels neighbors =
           internal::get_neighbors2d(p, mask, neighbors_mode, 1);
       Floats marker_values;
-      marker_values.push_back(marker.at<double>(p));
+      marker_values.push_back(marker.at<double>(p.x, p.y));
       for (cvPixels::iterator it = neighbors.begin(); it != neighbors.end();
            ++it) {
-        marker_values.push_back(marker.at<double>(*it));
+        marker_values.push_back(marker.at<double>(it->x, it->y));
       }
       double max_val =
           *std::max_element(marker_values.begin(), marker_values.end());
       // Reconstruction
-      marker.at<double>(p) = std::min(max_val, mask.at<double>(p));
+      marker.at<double>(p.x, p.y) =
+          std::min(max_val, mask.at<double>(p.x, p.y));
     }
   }
 
@@ -237,18 +246,19 @@ void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
       cvPixels neighbors =
           internal::get_neighbors2d(p, mask, neighbors_mode, -1);
       // Compute maximum
-      double max_val = marker.at<double>(p);
+      double max_val = marker.at<double>(p.x, p.y);
       for (cvPixels::iterator it = neighbors.begin(); it != neighbors.end();
            ++it) {
-        max_val = std::max(marker.at<double>(*it), max_val);
+        max_val = std::max(marker.at<double>(it->x, it->y), max_val);
         // Check if propagation is required
-        if ((marker.at<double>(*it) < marker.at<double>(p)) &&
-            (marker.at<double>(*it) < mask.at<double>(*it))) {
+        if ((marker.at<double>(it->x, it->y) < marker.at<double>(p.x, p.y)) &&
+            (marker.at<double>(it->x, it->y) < mask.at<double>(it->x, it->y))) {
           propagated_pixels.push(p);
         }
       }
       // Reconstruction
-      marker.at<double>(p) = std::min(max_val, mask.at<double>(p));
+      marker.at<double>(p.x, p.y) =
+          std::min(max_val, mask.at<double>(p.x, p.y));
     }
   }
 
@@ -261,14 +271,38 @@ void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
     double delta = 0.04;
     for (cvPixels::iterator it = neighbors.begin(); it != neighbors.end();
          ++it) {
-      if ((marker.at<double>(*it) < marker.at<double>(p)) &&
-          abs(marker.at<double>(*it) - mask.at<double>(*it)) > delta) {
-        marker.at<double>(*it) =
-            std::min(marker.at<double>(p), mask.at<double>(*it));
+      if ((marker.at<double>(it->x, it->y) < marker.at<double>(p.x, p.y)) &&
+          abs(marker.at<double>(it->x, it->y) -
+              mask.at<double>(it->x, it->y)) > delta) {
+        marker.at<double>(it->x, it->y) = std::min(
+            marker.at<double>(p.x, p.y), mask.at<double>(it->x, it->y));
         propagated_pixels.push(*it);
       }
     }
   }
+}
+
+}  // namespace
+
+void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
+                                   int neighbors_mode) {
+
+  IMP_USAGE_CHECK(
+      (mask.rows == marker.rows) && (mask.cols == marker.cols),
+      "em2d::morphologic_reconstruction: Matrices have different size.");
+  IMP_USAGE_CHECK(mask.type() == CV_64FC1 && marker.type() == CV_64FC1,
+                  "em2d::morphologic_reconstruction: Matrices must be of "
+                  "type CV_64FC1");
+
+  /* This reconstruction is approximate (see delta in the propagation step),
+     so its result depends on the scan order. The original implementation
+     indexed pixels transposed, and so scanned the image column by column.
+     To keep the same results, scan the transposed matrices in raster order.
+   */
+  cv::Mat mask_t = get_transposed<double>(mask);
+  cv::Mat marker_t = get_transposed<double>(marker);
+  do_raster_morphologic_reconstruction(mask_t, marker_t, neighbors_mode);
+  get_transposed<double>(marker_t).copyTo(marker);
 }
 
 void do_fill_holes(const cv::Mat &m, cv::Mat &result, double h) {
@@ -311,21 +345,23 @@ void get_diffusion_filtering_partial_derivative(const cv::Mat &m, cv::Mat &der,
   double Ix, Iy, Ixx, Iyy, Ixy, h;
   cv::Mat_<double> M = m;  // for convenience with the notation (does not copy)
   cv::Mat_<double> Der = der;  // same here
+  // Value at a pixel, which holds (row, column)
+  auto at = [&M](const cvPixel &q) { return M(q.x, q.y); };
   for (int i = 0; i < M.rows; ++i) {
     for (int j = 0; j < M.cols; ++j) {
       cvPixel p(i, j);
       cvPixels ns = internal::get_neighbors2d(p, m, 8, 0, true);
       // partial derivatives of m using finite differences
-      Ix = (M(ns[2]) - M(p)) / dx;
-      Iy = (M(ns[4]) - M(p)) / dy;
+      Ix = (at(ns[2]) - at(p)) / dx;
+      Iy = (at(ns[4]) - at(p)) / dy;
       h = 1 / (1 + Ix * Ix + Iy * Iy);  // edge indicator function (h)
       // Second derivatives with finite differences
-      Ixx = (M(ns[2]) + M(ns[6]) - 2 * M(p)) / dxdx;
-      Iyy = (M(ns[4]) + M(ns[0]) - 2 * M(p)) / dydy;
-      Ixy = (M(ns[3]) + M(ns[7]) - M(ns[1]) - M(ns[5])) / (4 * dxdy);
-      Der(p) = s * h * (Ixx + Iyy) +
-               c * (-2) * h * h *
-                   (Ix * Ix * Ixx + Iy * Iy * Iyy + 2 * Ix * Iy * Ixy);
+      Ixx = (at(ns[2]) + at(ns[6]) - 2 * at(p)) / dxdx;
+      Iyy = (at(ns[4]) + at(ns[0]) - 2 * at(p)) / dydy;
+      Ixy = (at(ns[3]) + at(ns[7]) - at(ns[1]) - at(ns[5])) / (4 * dxdy);
+      Der(p.x, p.y) = s * h * (Ixx + Iyy) +
+                      c * (-2) * h * h *
+                          (Ix * Ix * Ixx + Iy * Iy * Iyy + 2 * Ix * Iy * Ixy);
     }
   }
 }
@@ -384,11 +420,16 @@ void do_segmentation(const cv::Mat &m, cv::Mat &result,
 }
 
 int do_labeling(const cvIntMat &m, cvIntMat &mat_to_label) {
-  mat_to_label.create(m.rows, m.cols);
+  /* The labeling depends on the scan order. The original implementation
+     indexed pixels transposed, and so scanned the image column by column.
+     To keep the same results, label the transposed matrix in raster order.
+   */
+  cvIntMat m_t = get_transposed<int>(m), labels_t(m.cols, m.rows);
   Ints union_find_tree;
-  internal::do_binary_matrix_scan(m, mat_to_label, union_find_tree);
+  internal::do_binary_matrix_scan(m_t, labels_t, union_find_tree);
   internal::do_flatten_labels(union_find_tree);
-  internal::set_final_labels(mat_to_label, union_find_tree);
+  internal::set_final_labels(labels_t, union_find_tree);
+  get_transposed<int>(labels_t).copyTo(mat_to_label);
   int labels = *max_element(union_find_tree.begin(), union_find_tree.end());
   return labels;
 }
@@ -687,7 +728,7 @@ MatchTemplateResults get_best_template_matches(const cv::Mat &m,
   for (int i = 0; i < result.rows; ++i) {
     for (int j = 0; j < result.cols; ++j) {
       cvPixel p(i, j);
-      float v = result.at<float>(p);
+      float v = result.at<float>(p.x, p.y);
       if (locations.size() == 0) {
         locations.push_back(p);
         max_values.push_back(v);
@@ -721,9 +762,9 @@ MatchTemplateResults get_best_template_matches(const cv::Mat &m,
 
   // int l = 0;
   for (; itp != locations.end(); ++itp, ++itv) {
-    IMP_LOG_VERBOSE("pixel (" << itp->y << "," << itp->x << ") = " << *itv
+    IMP_LOG_VERBOSE("pixel (" << itp->x << "," << itp->y << ") = " << *itv
                               << std::endl);
-    MatchTemplateResult info(IntPair(itp->y, itp->x), *itv);
+    MatchTemplateResult info(IntPair(itp->x, itp->y), *itv);
     best_locations.push_back(info);
 
     /* Write the template on top of the image

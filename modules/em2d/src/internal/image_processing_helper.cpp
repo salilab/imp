@@ -92,7 +92,7 @@ void set_final_labels(cvIntMat &mat_to_label, Ints &Labels) {
   for (int i = 0; i < mat_to_label.rows; ++i) {
     for (int j = 0; j < mat_to_label.cols; ++j) {
       cvPixel p(i, j);
-      mat_to_label(p) = Labels[mat_to_label(p)];
+      mat_to_label(p.x, p.y) = Labels[mat_to_label(p.x, p.y)];
     }
   }
 }
@@ -115,19 +115,20 @@ int do_union(Ints &Labels, int i, int j) {
 //! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, cvIntMat &mat_to_label) {
 
-  mat_to_label(p) = mat_to_label(a);
+  mat_to_label(p.x, p.y) = mat_to_label(a.x, a.y);
 }
 
 //! Decision tree copy function
 void do_copy_tree(const cvPixel &p, const cvPixel &a, const cvPixel &c,
                   cvIntMat &mat_to_label, Ints &Labels) {
-  mat_to_label(p) = do_union(Labels, mat_to_label(c), mat_to_label(a));
+  mat_to_label(p.x, p.y) =
+      do_union(Labels, mat_to_label(c.x, c.y), mat_to_label(a.x, a.y));
 }
 
 //! Sets a new label for a pixel
 int get_new_label(const cvPixel &p, cvIntMat &mat_to_label, Ints &Labels,
                   int label) {
-  mat_to_label(p) = label;
+  mat_to_label(p.x, p.y) = label;
   Labels.push_back(label);
   int next_label = label + 1;
   return next_label;
@@ -173,9 +174,9 @@ void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
   for (int i = 0; i < m.rows; ++i) {
     for (int j = 0; j < m.cols; ++j) {
       cvPixel p(i, j);
-      int val = m(p);
+      int val = m(p.x, p.y);
       if (val == background) {
-        mat_to_label(p) = background;
+        mat_to_label(p.x, p.y) = background;
       } else {
         cvPixels ns = get_neighbors2d(p, m, 8, 1, false);
         // fake neighbors to take into account exceptions
@@ -229,7 +230,7 @@ int get_label_using_decision_tree(const cvPixel &p, cvPixels &neighbors,
   int neigh_vals[4];
   for (int i = 0; i < 4; ++i) {
     if (!(neighbors[i] == null_pixel)) {
-      neigh_vals[i] = m(neighbors[i]);
+      neigh_vals[i] = m(neighbors[i].x, neighbors[i].y);
     } else {
       neigh_vals[i] = background;
     }
@@ -315,8 +316,8 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
 algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
   algebra::Vector2D center(0., 0.);
   double denominator = 0.0;
-  for (int i = 1; i <= m.cols; ++i) {
-    for (int j = 1; j <= m.rows; ++j) {
+  for (int i = 1; i <= m.rows; ++i) {
+    for (int j = 1; j <= m.cols; ++j) {
       //      double value = m.at<double>(i-1,j-1);
       double value = m.at<double>(i - 1, j - 1);
       denominator += value;
