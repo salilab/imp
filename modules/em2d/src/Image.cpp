@@ -7,9 +7,11 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/Pointer.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/exception.h"
+#include <algorithm>
+#include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -42,23 +44,23 @@ void Image::set_size(int rows, int cols) {
 }
 
 void Image::set_size_data(int rows, int cols) {
-  data_.create(rows, cols, CV_64FC1);
+  data_.resize(rows, cols);
 }
 
 void Image::set_size(Image *img) {
-  set_size(img->get_data().rows, img->get_data().cols);
+  set_size(img->get_data().rows(), img->get_data().cols());
 }
 
-void Image::set_data(const cv::Mat &mat) {
-  mat.copyTo(data_);
+void Image::set_data(const DoubleMatrix &mat) {
+  data_ = mat;
   update_header();
 }
 
 void Image::update_header() {
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);
   header_.set_number_of_slices(1.0);
-  header_.set_number_of_rows(data_.rows);
-  header_.set_number_of_columns(data_.cols);
+  header_.set_number_of_rows(data_.rows());
+  header_.set_number_of_columns(data_.cols());
   header_.set_header();  // Initialize header
 }
 
@@ -113,7 +115,7 @@ void add_noise(Image *im1, double op1, double op2, const String &mode,
 }
 
 void do_subtract_images(Image *first, Image *second, Image *result) {
-  cv::Mat result_matrix;
+  DoubleMatrix result_matrix;
   internal::do_transform(first->get_data(), second->get_data(), result_matrix,
                          [](double a, double b) { return a - b; });
   result->set_data(result_matrix);
@@ -121,21 +123,25 @@ void do_subtract_images(Image *first, Image *second, Image *result) {
 
 void do_remove_small_objects(Image *input, double percentage, int background,
                              int foreground) {
-  cv::Mat aux;
-  input->get_data().convertTo(aux, CV_16SC1);  // aux now is ints
-  cvIntMat Aux = aux;
+  // Convert to ints, rounding and saturating to 16 bits as before (when
+  // this converted to OpenCV 16-bit matrices)
+  IntMatrix Aux = input->get_data().unaryExpr([](double v) {
+    if (std::isnan(v)) return -32768;
+    return static_cast<int>(
+        std::nearbyint(std::min(std::max(v, -32768.), 32767.)));
+  });
   do_remove_small_objects(Aux, percentage, background, foreground);
-  Aux.convertTo(input->get_data(), CV_64FC1);  // back to doubles
+  input->get_data() = Aux.cast<double>();  // back to doubles
 }
 
 void crop(Image *img, const IntPair &center, int size) {
-  cv::Mat cropped = crop(img->get_data(), center, size);
+  DoubleMatrix cropped = crop(img->get_data(), center, size);
   img->set_data(cropped);
 };
 
 void apply_mean_outside_mask(Image *img, double radius) {
   if (radius < 0) IMP_THROW("Negative radius", ValueException);
-  cvIntMat mask =
+  IntMatrix mask =
       create_circular_mask(img->get_header().get_number_of_rows(),
                            img->get_header().get_number_of_columns(), radius);
   double dmean = get_mean(img->get_data(), mask);

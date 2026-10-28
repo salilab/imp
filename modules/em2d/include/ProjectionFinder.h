@@ -2,7 +2,7 @@
  *  \file IMP/em2d/ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_FINDER_H
@@ -13,7 +13,7 @@
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionMask.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
@@ -187,9 +187,9 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::Object {
 
   //! Computes the weighted centroid and the FFT of the polar-resampled
   //!  autocorrelation.
-  void do_preprocess_for_fast_coarse_registration(const cv::Mat &m,
+  void do_preprocess_for_fast_coarse_registration(const DoubleMatrix &m,
                                                   algebra::Vector2D &center,
-                                                  cv::Mat &POLAR_AUTOC);
+                                                  DoubleMatrix &POLAR_AUTOC);
   //! Main parameters
   em2d::Images subjects_;
   em2d::Images variances_;
@@ -204,10 +204,10 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::Object {
 
   unsigned int number_of_optimized_projections_;
   // FFT of subjects (storing the FFT of projections is not necessary
-  std::vector<cv::Mat> SUBJECTS_;
+  std::vector<DoubleMatrix> SUBJECTS_;
   // FFT of the autocorrelation resampled images
-  std::vector<cv::Mat> SUBJECTS_POLAR_AUTOC_;
-  std::vector<cv::Mat> PROJECTIONS_POLAR_AUTOC_;
+  std::vector<DoubleMatrix> SUBJECTS_POLAR_AUTOC_;
+  std::vector<DoubleMatrix> PROJECTIONS_POLAR_AUTOC_;
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
   PolarResamplingParameters polar_params_;

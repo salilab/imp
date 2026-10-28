@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.em2d as em2d
+import io
 import os
 import random
 
@@ -33,6 +34,33 @@ class Tests(IMP.test.TestCase):
                     msg="Generated image is different from stored")
 
         os.remove(temp)
+
+    def test_show_matrix(self):
+        """Test showing a matrix"""
+        img = em2d.Image(2, 3)
+        for i in range(2):
+            for j in range(3):
+                img.set_value(i, j, i * 3 + j + 0.5)
+        sio = io.StringIO()
+        em2d.show(img.get_data(), sio)
+        self.assertEqual(sio.getvalue(), "0.5 1.5 2.5 \n3.5 4.5 5.5 \n\n")
+
+    def test_write_matrix(self):
+        """Test writing a matrix to a Spider image"""
+        img = em2d.Image(3, 4)
+        for i in range(3):
+            for j in range(4):
+                img.set_value(i, j, i * 4 - j + 0.25)
+        with IMP.test.temporary_directory() as tmpdir:
+            fn = os.path.join(tmpdir, "matrix.spi")
+            em2d.write_matrix(img.get_data(), fn)
+            img2 = em2d.Image(fn, em2d.SpiderImageReaderWriter())
+            self.assertEqual(int(img2.get_header().get_number_of_rows()), 3)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_columns()), 4)
+            for i in range(3):
+                for j in range(4):
+                    self.assertEqual(img2(i, j), img(i, j))
 
     def test_variance_filter(self):
         """Test that the variance filter is working"""

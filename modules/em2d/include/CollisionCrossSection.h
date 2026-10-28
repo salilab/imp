@@ -2,7 +2,7 @@
  *  \file IMP/em2d/CollisionCrossSection.h
  *  \brief
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,7 +58,7 @@ class IMPEM2DEXPORT CollisionCrossSection : public IMP::Object {
   /** \param[in] m The projected area is computed for this matrix
       \return Values of the area
   */
-  double get_projected_area(const cv::Mat &m) const;
+  double get_projected_area(const DoubleMatrix &m) const;
 
   unsigned int n_projections_;
   double resolution_;
@@ -66,7 +66,7 @@ class IMPEM2DEXPORT CollisionCrossSection : public IMP::Object {
   unsigned int img_size_;
   bool particles_set_;
   em2d::RegistrationResults regs_;
-  cv::Mat average_projection_;
+  DoubleMatrix average_projection_;
   em2d::MasksManagerPtr masks_manager_;
   double collision_cross_section_;
 };

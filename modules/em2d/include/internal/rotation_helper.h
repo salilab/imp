@@ -2,14 +2,14 @@
  *  \file rotation_helper.h
  *  \brief Functions related with rotations in em2d
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_INTERNAL_ROTATION_HELPER_H
 #define IMPEM2D_INTERNAL_ROTATION_HELPER_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/algebra/algebra_config.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/algebra/Vector3D.h"

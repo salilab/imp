@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/align2D.h
  *  \brief Alignment of images in 2D
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_ALIGN_2D_H
@@ -30,8 +30,8 @@ typedef std::pair<algebra::Transformation2D, double> ResultAlign2D;
              to m_to_align after alignment
   \return The result. Check the definition of  ResultAlign2D
 */
-IMPEM2DEXPORT ResultAlign2D get_complete_alignment(const cv::Mat &input,
-                                                   cv::Mat &m_to_align,
+IMPEM2DEXPORT ResultAlign2D get_complete_alignment(const DoubleMatrix &input,
+                                                   DoubleMatrix &m_to_align,
                                                    bool apply = false);
 
 //! Aligns two matrices rotationally. Based on the autocorrelation function
@@ -43,9 +43,8 @@ IMPEM2DEXPORT ResultAlign2D get_complete_alignment(const cv::Mat &input,
              to m_to_align after alignment
   \return The result. Check the definition of  ResultAlign2D
 */
-IMPEM2DEXPORT em2d::ResultAlign2D get_rotational_alignment(const cv::Mat &input,
-                                                           cv::Mat &m_to_align,
-                                                           bool apply = false);
+IMPEM2DEXPORT em2d::ResultAlign2D get_rotational_alignment(
+    const DoubleMatrix &input, DoubleMatrix &m_to_align, bool apply = false);
 
 //! Aligns two matrices translationally
 /*!
@@ -55,9 +54,8 @@ IMPEM2DEXPORT em2d::ResultAlign2D get_rotational_alignment(const cv::Mat &input,
              to m_to_align after alignment
   \return The result. Check the definition of  ResultAlign2D
 */
-IMPEM2DEXPORT ResultAlign2D get_translational_alignment(const cv::Mat &input,
-                                                        cv::Mat &m_to_align,
-                                                        bool apply = false);
+IMPEM2DEXPORT ResultAlign2D get_translational_alignment(
+    const DoubleMatrix &input, DoubleMatrix &m_to_align, bool apply = false);
 
 //! Aligns two matrices rotationally and translationally without
 //! performing preprocessing. Preprocessed data must be provided.
@@ -71,8 +69,9 @@ IMPEM2DEXPORT ResultAlign2D get_translational_alignment(const cv::Mat &input,
   \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT em2d::ResultAlign2D get_complete_alignment_no_preprocessing(
-    const cv::Mat &input, const cv::Mat &INPUT, const cv::Mat &POLAR1,
-    cv::Mat &m_to_align, const cv::Mat &POLAR2, bool apply = false);
+    const DoubleMatrix &input, const DoubleMatrix &INPUT,
+    const DoubleMatrix &POLAR1, DoubleMatrix &m_to_align,
+    const DoubleMatrix &POLAR2, bool apply = false);
 
 //! Computes the rotational alignment for two autocorrelation matrices
 //! It is assumed that the arguments are FFTs
@@ -82,8 +81,8 @@ IMPEM2DEXPORT em2d::ResultAlign2D get_complete_alignment_no_preprocessing(
   \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D
-    get_rotational_alignment_no_preprocessing(const cv::Mat &POLAR1,
-                                              const cv::Mat &POLAR2);
+    get_rotational_alignment_no_preprocessing(const DoubleMatrix &POLAR1,
+                                              const DoubleMatrix &POLAR2);
 
 //! Aligns two matrices translationally without preprocessing. The preprocessed
 //! data must be provided.
@@ -93,8 +92,8 @@ IMPEM2DEXPORT ResultAlign2D
   \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D
-    get_translational_alignment_no_preprocessing(const cv::Mat &M1,
-                                                 const cv::Mat &M2);
+    get_translational_alignment_no_preprocessing(const DoubleMatrix &M1,
+                                                 const DoubleMatrix &M2);
 
 //! Aligns two matrices (rotation and translation) using centers and
 //! no preprocessing. Preprocessed data must be provided.
@@ -108,7 +107,7 @@ IMPEM2DEXPORT ResultAlign2D
 IMPEM2DEXPORT ResultAlign2D
     get_complete_alignment_with_centers_no_preprocessing(
         const algebra::Vector2D &center1, const algebra::Vector2D &center2,
-        const cv::Mat &AUTOC_POLAR1, const cv::Mat &AUTOC_POLAR2);
+        const DoubleMatrix &AUTOC_POLAR1, const DoubleMatrix &AUTOC_POLAR2);
 
 IMPEM2D_END_NAMESPACE
 

@@ -13,20 +13,20 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-double get_cross_correlation_coefficient(const cv::Mat &m1, const cv::Mat &m2) {
-  IMP_USAGE_CHECK(m1.rows == m2.rows && m1.cols == m2.cols,
+double get_cross_correlation_coefficient(const DoubleMatrix &m1,
+                                         const DoubleMatrix &m2) {
+  IMP_USAGE_CHECK(m1.rows() == m2.rows() && m1.cols() == m2.cols(),
                   "em2d:get_cross_correlation_coefficient: Matrices have "
                   "different size.");
   double mean1, stddev1, mean2, stddev2;
   internal::get_mean_and_stddev(m1, mean1, stddev1);
   internal::get_mean_and_stddev(m2, mean2, stddev2);
   double c = 0.;
-  for (int i = 0; i < m1.rows; ++i) {
-    const double *p1 = m1.ptr<double>(i);
-    const double *p2 = m2.ptr<double>(i);
-    for (int j = 0; j < m1.cols; ++j) c += (p1[j] - mean1) * (p2[j] - mean2);
+  for (Eigen::Index i = 0; i < m1.size(); ++i) {
+    c += (m1.data()[i] - mean1) * (m2.data()[i] - mean2);
   }
-  double ccc = c / (m1.rows * m1.cols * stddev1 * stddev2);
+  double ccc = c / (static_cast<int>(m1.rows() * m1.cols()) * stddev1 *
+                    stddev2);
   return ccc;
 }
 
@@ -77,14 +77,14 @@ double get_global_score(const RegistrationResults &RRs) {
 
 double MeanAbsoluteDifference::get_private_score(Image *image,
                                                  Image *projection) const {
+  const DoubleMatrix &img = image->get_data();
+  const DoubleMatrix &prj = projection->get_data();
+  IMP_USAGE_CHECK(img.size() == prj.size(),
+                  "MeanAbsoluteDifference: Images have different size");
   double result = 0.0;
-  cvDoubleConstMatIterator img_it = image->get_data().begin<double>();
-  cvDoubleConstMatIterator prj_it = projection->get_data().begin<double>();
   double n = 0;
-  for (; img_it != image->get_data().end<double>() ||
-             prj_it != projection->get_data().end<double>();
-       ++img_it, ++prj_it) {
-    result += std::abs(*img_it - *prj_it);
+  for (Eigen::Index i = 0; i < img.size(); ++i) {
+    result += std::abs(img.data()[i] - prj.data()[i]);
     n += 1.0;
   }
   result = result / n;
@@ -93,16 +93,16 @@ double MeanAbsoluteDifference::get_private_score(Image *image,
 
 double ChiSquaredScore::get_private_score(Image *image,
                                           Image *projection) const {
+  const DoubleMatrix &img = image->get_data();
+  const DoubleMatrix &prj = projection->get_data();
+  const DoubleMatrix &var = variance_->get_data();
+  IMP_USAGE_CHECK(img.size() == prj.size() && img.size() == var.size(),
+                  "ChiSquaredScore: Images have different size");
   double result = 0.0;
-  cvDoubleConstMatIterator img_it = image->get_data().begin<double>();
-  cvDoubleConstMatIterator prj_it = projection->get_data().begin<double>();
-  cvDoubleConstMatIterator var_it = variance_->get_data().begin<double>();
   double n = 0;
-  for (; img_it != image->get_data().end<double>() ||
-             prj_it != projection->get_data().end<double>();
-       ++img_it, ++prj_it, ++var_it) {
-    double aux = (*img_it - *prj_it);
-    result += aux * aux / (*var_it);
+  for (Eigen::Index i = 0; i < img.size(); ++i) {
+    double aux = (img.data()[i] - prj.data()[i]);
+    result += aux * aux / var.data()[i];
     n += 1.0;
   }
   result = result / n;

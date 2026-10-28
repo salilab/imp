@@ -8,7 +8,7 @@
 #define IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"
@@ -39,7 +39,9 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   /*!
       \param[in] m Matrix that is going to be resampled
   */
-  PolarResamplingParameters(const cv::Mat &m) { setup(m.rows, m.cols); }
+  PolarResamplingParameters(const DoubleMatrix &m) {
+    setup(m.rows(), m.cols());
+  }
 
   ~PolarResamplingParameters() {};
 
@@ -118,48 +120,29 @@ class IMPEM2DEXPORT PolarResamplingParameters {
 
   //! After the number of radius and angles values are set, this function
   //! Builds a map of resampling coordinates. This map is very useful for
-  void create_maps_for_resampling() {
-    if (n_angles_ == 0) {
-      IMP_THROW("Number of sampling points for the angle is zero",
-                IMP::ValueException);
-    }
-    // create the appropriate map
-    polar_map_.create(n_rings_, n_angles_, CV_32FC2);  // 2 channels, floats
-    // Build a map to use with the OpenCV the cv::remap
-    //  function for polar resampling
-    cv::Vec2d v;
-    for (unsigned int i = 0; i < n_rings_; ++i) {
-      for (unsigned int j = 0; j < n_angles_; ++j) {
-        double r = get_radius(i);
-        double theta = j * angle_step_;
-        // row and col of input to use
-        double row = static_cast<double>(matrix_rows_) / 2.0 + r * sin(theta);
-        double col = static_cast<double>(matrix_cols_) / 2.0 + r * cos(theta);
-        polar_map_.at<cv::Vec2f>(i, j)[0] = static_cast<float>(row);
-        polar_map_.at<cv::Vec2f>(i, j)[1] = static_cast<float>(col);
-      }
-    }
-    // Convert to fast maps
-    cv::Mat empty;
-    cv::convertMaps(polar_map_, empty, map_16SC2_, map_16UC1_, CV_16SC2);
-  }
+  //! speeding up the resampling (see do_resample_polar())
+  void create_maps_for_resampling();
 
-  //! Get the samplings maps of type CV_16SC2 and CV_16UC1
-  //! (this map combination is faster for remapping. See OpenCV help for remap()
-  void get_resampling_maps(cv::Mat &m1, cv::Mat &m2) const {
+#ifndef SWIG
+  //! Get the maps used for fast resampling with OpenCV's remap()
+  /** The first map has the (fixed-point) coordinates of each sample, as pairs
+      of shorts; the second map has the interpolation coefficients.
+      \note For internal use.
+   */
+  void get_resampling_maps(internal::RowMajorArray<short> &m1,
+                           internal::RowMajorArray<unsigned short> &m2) const {
     m1 = map_16SC2_;
     m2 = map_16UC1_;
   }
 
-  //! Obtain the resampling map of type CV_32FC2 (floats, slower that those
-  //! obtained with   get_resampling_maps()
-  void get_resampling_map(cv::Mat &m1) const {
-    IMP_LOG_VERBOSE("returning resampling map "
-                    << polar_map_.rows << "x" << polar_map_.cols << " depth "
-                    << polar_map_.depth() << " type " << polar_map_.type()
-                    << std::endl);
+  //! Get the map of the (row, column) coordinates of each sample
+  /** The coordinates are stored as pairs of floats.
+      \note For internal use.
+   */
+  void get_resampling_map(internal::RowMajorArray<float> &m1) const {
     m1 = polar_map_;
   }
+#endif
 
   void show(std::ostream &out) const {
     out << "starting_radius = " << starting_radius_ << std::endl;
@@ -173,11 +156,11 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   }
 
  protected:
-  cv::Mat polar_map_;       // CV_23CF, map in floats.
-  cv::Mat map_16SC2_;       // Map for speed up resampling (see OpenCV help for
-                            // remap)
-  cv::Mat map_16UC1_;       // Map for speed up resampling (see OpenCV help for
-                            // remap)
+  // Map of the (row, column) coordinates of each sample (pairs of floats)
+  internal::RowMajorArray<float> polar_map_;
+  // Maps for speeding up resampling (see OpenCV's convertMaps())
+  internal::RowMajorArray<short> map_16SC2_;
+  internal::RowMajorArray<unsigned short> map_16UC1_;
   double starting_radius_;  // starting radius for the polar resampling
   double ending_radius_;    // ending radius for the polar resampling
   // Number of sampling points for radius and angles

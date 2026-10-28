@@ -1,10 +1,10 @@
 /**
- *  \file opencv_interface.h
- *  \brief Interface with OpenCV
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  \file Matrix.cpp
+ *  \brief Matrices used to store image data
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/Pointer.h"
@@ -13,17 +13,17 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-void show(const cv::Mat &m, std::ostream &out) {
-  for (int i = 0; i < m.rows; ++i) {
-    for (int j = 0; j < m.cols; ++j) {
-      out << m.at<double>(i, j) << " ";
+void show(const DoubleMatrix &m, std::ostream &out) {
+  for (int i = 0; i < m.rows(); ++i) {
+    for (int j = 0; j < m.cols(); ++j) {
+      out << m(i, j) << " ";
     }
     out << std::endl;
   }
   out << std::endl;
 }
 
-void write_matrix(cv::Mat &m, std::string name) {
+void write_matrix(const DoubleMatrix &m, std::string name) {
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
   IMP_NEW(em2d::Image, output_img, ());
   output_img->set_was_used(true);

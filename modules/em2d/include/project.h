@@ -1,14 +1,14 @@
 /**
  *  \file IMP/em2d/project.h
  *  \brief Generation of projections from models or density maps
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECT_H
 #define IMPEM2D_PROJECT_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
@@ -170,7 +170,7 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,
   \note See the function get_projection() for the rest of the parameters
 */
 IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
-                                        cv::Mat &m2,
+                                        DoubleMatrix &m2,
                                         const algebra::Rotation3D &R,
                                         const algebra::Vector3D &translation,
                                         const ProjectingOptions &options,

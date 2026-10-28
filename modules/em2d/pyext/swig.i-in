@@ -1,7 +1,7 @@
 %import "RMF.i"
 %{
 #include "RMF.h"
-#include <IMP/em2d/opencv_interface.h>
+#include <IMP/em2d/Matrix.h>
 %}
 
 IMP_SWIG_VALUE_SERIALIZE(IMP::em2d, PolarResamplingParameters,
@@ -68,7 +68,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 
 
 // IF swig complaints about something not found, check the order of these files
-%include "IMP/em2d/opencv_interface.h"
+%include "IMP/em2d/Matrix.h"
 %include "IMP/em2d/ImageReaderWriter.h"
 %include "IMP/em2d/PolarResamplingParameters.h"
 %include "IMP/em2d/image_processing.h"

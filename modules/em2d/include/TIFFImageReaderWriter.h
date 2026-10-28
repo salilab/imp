@@ -21,20 +21,20 @@ class IMPEM2DEXPORT TIFFImageReaderWriter : public ImageReaderWriter {
   TIFFImageReaderWriter() {}
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const override {
+            DoubleMatrix &data) const override {
     this->read_from_ints(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const override {
+             const DoubleMatrix &data) const override {
     this->write_to_ints(filename, header, data);
   }
 
   void write_to_floats(const String &, em::ImageHeader &,
-                       const cv::Mat &) const override {}
+                       const DoubleMatrix &) const override {}
 
   void read_from_floats(const String &, em::ImageHeader &,
-                        cv::Mat &) const override {}
+                        DoubleMatrix &) const override {}
 
   //! Reads an image file in TIFF format
   /*!
@@ -48,7 +48,7 @@ class IMPEM2DEXPORT TIFFImageReaderWriter : public ImageReaderWriter {
       format. Eg, Spider.
   */
   void read_from_ints(const String &filename, em::ImageHeader &header,
-                      cv::Mat &data) const override;
+                      DoubleMatrix &data) const override;
 
   //! Writes an EM image in TIFF format
   /*!
@@ -59,7 +59,7 @@ class IMPEM2DEXPORT TIFFImageReaderWriter : public ImageReaderWriter {
               You might be discarding float information.
    */
   void write_to_ints(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const override;
+                     const DoubleMatrix &data) const override;
 
   IMP_OBJECT_METHODS(TIFFImageReaderWriter);
 };

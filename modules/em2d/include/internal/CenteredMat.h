@@ -1,14 +1,14 @@
 /**
  *  \file IMP/em2d/internal/CenteredMat.h
- *  \brief Decorator for OpenCV matrix to use relative coordinates
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  \brief Decorator for a matrix to use relative coordinates
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_INTERNAL_CENTERED_MAT_H
 #define IMPEM2D_INTERNAL_CENTERED_MAT_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/exception.h"
 #include "IMP/macros.h"
 #include "IMP/showable_macros.h"
@@ -16,7 +16,7 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-//! Decorator for a cv::Mat to use coordinates with respect to a point
+//! Decorator for a matrix to use coordinates with respect to a point
 /** Almost always that point is the center */
 class CenteredMat {
 
@@ -25,14 +25,14 @@ class CenteredMat {
   /** @param m The matrix
       @note The center pixel is not provided. It is assumed
             to be the center of the matrix. */
-  CenteredMat(cv::Mat &m) {
-    // m is not copied, just a reference is added.
+  CenteredMat(DoubleMatrix &m) {
+    // m is not copied, just a pointer to it is kept.
 
-    IMP_USAGE_CHECK((m.rows != 0 && m.cols != 0),
+    IMP_USAGE_CHECK((m.rows() != 0 && m.cols() != 0),
                     "CenteredMat: Matrix passed is empty");
-    centered_ = m;
-    center_row_ = static_cast<int>(0.5 * m.rows);
-    center_col_ = static_cast<int>(0.5 * m.cols);
+    centered_ = &m;
+    center_row_ = static_cast<int>(0.5 * m.rows());
+    center_col_ = static_cast<int>(0.5 * m.cols());
     set_starts_and_ends();
   }
 
@@ -41,10 +41,10 @@ class CenteredMat {
       @param center_row - The row for the point used as center of CenteredMat
       @param center_col - The column for the point used as center of CenteredMat
    */
-  CenteredMat(cv::Mat &m, int center_row, int center_col) {
-    centered_ = m;
-    if (center_row >= 0 && center_row < m.rows && center_col >= 0 &&
-        center_col < m.cols) {
+  CenteredMat(DoubleMatrix &m, int center_row, int center_col) {
+    centered_ = &m;
+    if (center_row >= 0 && center_row < m.rows() && center_col >= 0 &&
+        center_col < m.cols()) {
       center_row_ = center_row;
       center_col_ = center_col;
     } else {
@@ -91,14 +91,14 @@ class CenteredMat {
     //    if (!get_is_in_range(i,j)) {
     //      IMP_THROW("CenteredMat () : Index out of range",ValueException);
     //    }
-    return centered_.at<double>(center_row_ + i, center_col_ + j);
+    return (*centered_)(center_row_ + i, center_col_ + j);
   }
 
   //! Shows information about the class
   /** @param out Stream used to show the information
    */
   void do_show(std::ostream &out) const {
-    out << "Matrix of size: (" << centered_.rows << "," << centered_.cols
+    out << "Matrix of size: (" << centered_->rows() << "," << centered_->cols()
         << ") centered mat at: (" << center_row_ << "," << center_col_
         << ") start (" << start_[0] << "," << start_[1] << ") end (" << end_[0]
         << "," << end_[1] << ")" << std::endl;
@@ -113,12 +113,12 @@ class CenteredMat {
   void set_starts_and_ends() {
     start_[0] = -center_row_;
     start_[1] = -center_col_;
-    end_[0] = centered_.rows - 1 - center_row_;
-    end_[1] = centered_.cols - 1 - center_col_;
+    end_[0] = centered_->rows() - 1 - center_row_;
+    end_[1] = centered_->cols() - 1 - center_col_;
   }
 
   int center_row_, center_col_;  // center pixel
-  cv::Mat centered_;
+  DoubleMatrix *centered_;  // not owned
   // starts and ends
   int start_[2], end_[2];
 };

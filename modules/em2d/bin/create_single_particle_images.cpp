@@ -12,7 +12,7 @@
 #include <IMP/em2d/filenames_manipulation.h>
 #include <IMP/em2d/internal/Image2D.h>
 
-#include <IMP/em2d/opencv_interface.h>
+#include <IMP/em2d/Matrix.h>
 #include <IMP/em2d/Image.h>
 #include <IMP/em2d/image_processing.h>
 
@@ -120,7 +120,7 @@ namespace {
       
       for(int jj = 0; jj < rows; jj++){
 	for(int kk = 0; kk < cols; kk++){
-	  double pixel = projections[projnum]->get_data().at<double>(jj,kk);
+	  double pixel = projections[projnum]->get_data()(jj,kk);
 	  std::fprintf(fp, "%i ", (int) ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0));
 	  //std::cerr << ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0) << std::endl;
 	  if(kk > 0 && kk % 12 == 0)  std::fprintf(fp, "\n");
@@ -189,7 +189,7 @@ namespace {
 
       for(int jj = 0; jj < pheight; jj++){
         for(int kk = 0; kk < pwidth; kk++){
-	  fftin[kk+pwidth*jj] = projections[projnum]->get_data().at<double>(jj,kk);
+	  fftin[kk+pwidth*jj] = projections[projnum]->get_data()(jj,kk);
 	}
       }
       fftw_execute(p);

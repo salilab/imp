@@ -68,7 +68,8 @@ TIFF *open_tiff_file(const String &filename, const char *mode,
    libtiff's conversion to RGBA (which handles the many TIFF variants) and
    then converting to gray in the same way as OpenCV. Return false on
    failure, with the error message (if any) in message. */
-bool read_tiff_grayscale(TIFF *tif, cv::Mat &pixels, std::string &message) {
+bool read_tiff_grayscale(TIFF *tif, internal::UCharMatrix &pixels,
+                         std::string &message) {
   uint32_t width = 0, height = 0;
   TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width);
   TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &height);
@@ -82,9 +83,9 @@ bool read_tiff_grayscale(TIFF *tif, cv::Mat &pixels, std::string &message) {
                                  ORIENTATION_TOPLEFT, 0)) {
     return false;
   }
-  pixels.create(height, width, CV_8UC1);
+  pixels.resize(height, width);
   for (uint32_t i = 0; i < height; ++i) {
-    unsigned char *out = pixels.ptr<unsigned char>(i);
+    unsigned char *out = pixels.data() + i * pixels.cols();
     for (uint32_t j = 0; j < width; ++j) {
       uint32_t p = rgba[static_cast<size_t>(i) * width + j];
       out[j] = static_cast<unsigned char>(
@@ -97,26 +98,30 @@ bool read_tiff_grayscale(TIFF *tif, cv::Mat &pixels, std::string &message) {
 
 /* Write an 8-bit grayscale image with the same settings OpenCV used (LZW
    compression with horizontal prediction, strips of about 8KB) */
-bool write_tiff_grayscale(TIFF *tif, const cv::Mat &pixels) {
+bool write_tiff_grayscale(TIFF *tif, const internal::UCharMatrix &pixels) {
   int rows_per_strip =
-      std::max(1, std::min(pixels.rows, (1 << 13) / pixels.cols));
-  if (!TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, pixels.cols) ||
-      !TIFFSetField(tif, TIFFTAG_IMAGELENGTH, pixels.rows) ||
+      std::max(1, static_cast<int>(std::min<Eigen::Index>(
+                      pixels.rows(), (1 << 13) / pixels.cols())));
+  if (!TIFFSetField(tif, TIFFTAG_IMAGEWIDTH,
+                    static_cast<uint32_t>(pixels.cols())) ||
+      !TIFFSetField(tif, TIFFTAG_IMAGELENGTH,
+                    static_cast<uint32_t>(pixels.rows())) ||
       !TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8) ||
       !TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 1) ||
       !TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW) ||
       !TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK) ||
       !TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG) ||
-      !TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, rows_per_strip) ||
+      !TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP,
+                    static_cast<uint32_t>(rows_per_strip)) ||
       !TIFFSetField(tif, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT) ||
       !TIFFSetField(tif, TIFFTAG_PREDICTOR, PREDICTOR_HORIZONTAL)) {
     return false;
   }
   // libtiff may modify the row when applying the predictor, so copy it
-  std::vector<unsigned char> row(pixels.cols);
-  for (int i = 0; i < pixels.rows; ++i) {
-    const unsigned char *p = pixels.ptr<unsigned char>(i);
-    std::copy(p, p + pixels.cols, row.begin());
+  std::vector<unsigned char> row(pixels.cols());
+  for (int i = 0; i < pixels.rows(); ++i) {
+    const unsigned char *p = pixels.data() + i * pixels.cols();
+    std::copy(p, p + pixels.cols(), row.begin());
     if (TIFFWriteScanline(tif, row.data(), i, 0) < 0) return false;
   }
   return true;
@@ -126,11 +131,11 @@ bool write_tiff_grayscale(TIFF *tif, const cv::Mat &pixels) {
 
 void TIFFImageReaderWriter::read_from_ints(const String &filename,
                                            em::ImageHeader &header,
-                                           cv::Mat &data) const {
+                                           DoubleMatrix &data) const {
   IMP_LOG_VERBOSE("reading with TIFFImageReaderWriter" << std::endl);
   std::string message;
   TIFF *tif = open_tiff_file(filename, "r", message);
-  cv::Mat pixels;
+  internal::UCharMatrix pixels;
   bool ok = tif && read_tiff_grayscale(tif, pixels, message);
   if (tif) TIFFClose(tif);
   if (!ok) {
@@ -145,7 +150,7 @@ void TIFFImageReaderWriter::read_from_ints(const String &filename,
 
 void TIFFImageReaderWriter::write_to_ints(const String &filename,
                                           em::ImageHeader &header,
-                                          const cv::Mat &data) const {
+                                          const DoubleMatrix &data) const {
   IMP_UNUSED(header);
   // discard header
   IMP_LOG(IMP::WARNING,
@@ -163,12 +168,12 @@ void TIFFImageReaderWriter::write_to_ints(const String &filename,
         IOException);
   }
 
-  if (data.empty()) {
+  if (data.size() == 0) {
     IMP_THROW("TIFFImageReaderWriter: Cannot write an empty image",
               IOException);
   }
   // Convert the data value to 8-bit so it can be written as TIFF
-  cv::Mat TIFF_data;
+  internal::UCharMatrix TIFF_data;
   internal::get_8bit_scaled(data, TIFF_data);
   std::string message;
   TIFF *tif = open_tiff_file(filename, "w", message);

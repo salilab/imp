@@ -2,7 +2,7 @@
  *  \file RigidBodiesImageFitRestraint
  *  \brief
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -42,7 +42,7 @@ RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
   IMP_LOG_TERSE(
       "RigidBodiesImageFitRestraint: Image for projection "
       "created. Size: "
-      << projection_->get_data().rows << "x" << projection_->get_data().cols
+      << projection_->get_data().rows() << "x" << projection_->get_data().cols()
       << std::endl);
 }
 

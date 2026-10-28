@@ -2,7 +2,7 @@
  *  \file IMP/em2d/image_processing.h
  *  \brief Image processing functions
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_PROCESSING_H
@@ -10,7 +10,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/base_types.h"
 #include <algorithm>
 #include <cmath>
@@ -34,7 +34,7 @@ private:
   double diffusion_beta;
   double diffusion_timesteps;
   double fill_holes_stddevs;
-  cv::Mat opening_kernel;
+  DoubleMatrix opening_kernel;
   double remove_sizing_percentage;
   int binary_background;
   int binary_foreground;
@@ -49,12 +49,12 @@ private:
         binary_background(0),
         binary_foreground(1),
         threshold(0.0) {
-    opening_kernel = cv::Mat::ones(3, 3, CV_64FC1);
+    opening_kernel = DoubleMatrix::Ones(3, 3);
   }
 
   SegmentationParameters(double apix, double diff_beta,
                          unsigned int diff_timesteps, double fh_stddevs,
-                         const cv::Mat &kr, int background, int foreground)
+                         const DoubleMatrix &kr, int background, int foreground)
       : image_pixel_size(apix),
         diffusion_beta(diff_beta),
         diffusion_timesteps(diff_timesteps),
@@ -69,8 +69,8 @@ private:
     out << "diffusion_beta " << diffusion_beta << std::endl;
     out << "diffusion_timesteps " << diffusion_timesteps << std::endl;
     out << "fill_holes_stddevs " << fill_holes_stddevs << std::endl;
-    out << "Opening kernel " << opening_kernel.rows << "x"
-        << opening_kernel.cols << std::endl;
+    out << "Opening kernel " << opening_kernel.rows() << "x"
+        << opening_kernel.cols() << std::endl;
     out << "binary_background " << binary_background << std::endl;
     out << "binary_foreground " << binary_foreground << std::endl;
   }
@@ -109,12 +109,13 @@ IMP_VALUES(MatchTemplateResult, MatchTemplateResults);
              is the value of m.
   \param[in] val value to apply when the mask is 0
 */
-IMPEM2DEXPORT void apply_mask(const cv::Mat &m, cv::Mat &result,
-                              const cvIntMat &mask, double val);
+IMPEM2DEXPORT void apply_mask(const DoubleMatrix &m, DoubleMatrix &result,
+                              const IntMatrix &mask, double val);
 
 //! Applies a circular to a matrix. The center of the mask is the center of the
 //! matrix.
-IMPEM2DEXPORT void apply_circular_mask(const cv::Mat &mat, cv::Mat &result,
+IMPEM2DEXPORT void apply_circular_mask(const DoubleMatrix &mat,
+                                       DoubleMatrix &result,
                                        int radius, double value = 0.0);
 
 /*! Mean of an matrix inside a mask
@@ -122,7 +123,7 @@ IMPEM2DEXPORT void apply_circular_mask(const cv::Mat &mat, cv::Mat &result,
   \param[in] mask If a pixel is not zero, is considered for computing the mean
   \returns The mean
 */
-IMPEM2DEXPORT double get_mean(const cv::Mat &mat, const cvIntMat &mask);
+IMPEM2DEXPORT double get_mean(const DoubleMatrix &mat, const IntMatrix &mask);
 
 /*! Creates a circular matrix that is a mask
   \param[in] rows
@@ -131,7 +132,7 @@ IMPEM2DEXPORT double get_mean(const cv::Mat &mat, const cvIntMat &mask);
              center of the matrix
   \returns A binary matrix (0/1) with value 1 inside the radius
 */
-IMPEM2DEXPORT cvIntMat create_circular_mask(int rows, int cols, int radius);
+IMPEM2DEXPORT IntMatrix create_circular_mask(int rows, int cols, int radius);
 
 //! Removes small objects from a matrix of integers.
 /*!
@@ -141,11 +142,12 @@ IMPEM2DEXPORT cvIntMat create_circular_mask(int rows, int cols, int radius);
   \param[in] background value for the background after removed
   \param[in] foreground value for the foreground after removed
 */
-IMPEM2DEXPORT void do_remove_small_objects(cvIntMat &m, double percentage,
+IMPEM2DEXPORT void do_remove_small_objects(IntMatrix &m, double percentage,
                                            int background = 0,
                                            int foreground = 1);
 
-IMPEM2DEXPORT void do_histogram_stretching(cv::Mat &m, int boxes, int offset);
+IMPEM2DEXPORT void do_histogram_stretching(DoubleMatrix &m, int boxes,
+                                           int offset);
 
 //! (U. Adiga, 2005)
 /*!
@@ -154,9 +156,9 @@ IMPEM2DEXPORT void do_histogram_stretching(cv::Mat &m, int boxes, int offset);
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
 */
-void IMPEM2DEXPORT do_dilate_and_shrink_warp(cv::Mat &m,
-                                             const cv::Mat &grayscale,
-                                             cv::Mat &kernel);
+void IMPEM2DEXPORT do_dilate_and_shrink_warp(DoubleMatrix &m,
+                                             const DoubleMatrix &grayscale,
+                                             DoubleMatrix &kernel);
 
 //! morphologic grayscale reconstruction (L Vincent, 1993)
 /*!
@@ -166,8 +168,8 @@ void IMPEM2DEXPORT do_dilate_and_shrink_warp(cv::Mat &m,
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
              doing the morphologic reconstruction (values: 4, 8).
 */
-void IMPEM2DEXPORT do_morphologic_reconstruction(const cv::Mat &mask,
-                                                 cv::Mat &marker,
+void IMPEM2DEXPORT do_morphologic_reconstruction(const DoubleMatrix &mask,
+                                                 DoubleMatrix &marker,
                                                  int neighbors_mode = 4);
 
 //! Labeling function for a matrix
@@ -177,7 +179,7 @@ void IMPEM2DEXPORT do_morphologic_reconstruction(const cv::Mat &mask,
   \param[out] mat_to_label matrix it is returned as a matrix of ints
   \return labels The number of labels in the image
 */
-IMPEM2DEXPORT int do_labeling(const cvIntMat &m, cvIntMat &mat_to_label);
+IMPEM2DEXPORT int do_labeling(const IntMatrix &m, IntMatrix &mat_to_label);
 
 //! Segmentation of images
 /*!
@@ -185,7 +187,7 @@ IMPEM2DEXPORT int do_labeling(const cvIntMat &m, cvIntMat &mat_to_label);
   \param[in] result The segmented image, with the shape of the molecule
   \param[in] params
 */
-IMPEM2DEXPORT void do_segmentation(const cv::Mat &m, cv::Mat &result,
+IMPEM2DEXPORT void do_segmentation(const DoubleMatrix &m, DoubleMatrix &result,
                                    const SegmentationParameters &params);
 
 //! Smoothing filter by application of the reaction-diffusion
@@ -195,7 +197,8 @@ IMPEM2DEXPORT void do_segmentation(const cv::Mat &m, cv::Mat &result,
               0 - pure reaction, 90 - pure diffusion
   \note The function only works for matrices containing doubles
 */
-IMPEM2DEXPORT void apply_diffusion_filter(const cv::Mat &m, cv::Mat &result,
+IMPEM2DEXPORT void apply_diffusion_filter(const DoubleMatrix &m,
+                                          DoubleMatrix &result,
                                           double beta, double pixelsize,
                                           unsigned int time_steps);
 
@@ -209,7 +212,7 @@ IMPEM2DEXPORT void apply_diffusion_filter(const cv::Mat &m, cv::Mat &result,
   \param[in] ang - parameter for weight diffusion and edge detection (90-0)
 */
 IMPEM2DEXPORT void get_diffusion_filtering_partial_derivative(
-    const cv::Mat &m, cv::Mat &der, double dx, double dy, double ang);
+    const DoubleMatrix &m, DoubleMatrix &der, double dx, double dy, double ang);
 
 //! Fills the holes in the matrix m of height h
 /*!
@@ -218,7 +221,8 @@ IMPEM2DEXPORT void get_diffusion_filtering_partial_derivative(
   \param[in] h the height
   \note The function does not work in-place
 */
-IMPEM2DEXPORT void do_fill_holes(const cv::Mat &m, cv::Mat &result, double h);
+IMPEM2DEXPORT void do_fill_holes(const DoubleMatrix &m, DoubleMatrix &result,
+                                 double h);
 
 //! Gets the domes of m with height h
 /*!
@@ -227,7 +231,7 @@ IMPEM2DEXPORT void do_fill_holes(const cv::Mat &m, cv::Mat &result, double h);
   \param[in] h the height
   \note The function does not work in-place
 */
-IMPEM2DEXPORT void get_domes(cv::Mat &m, cv::Mat &result, double h);
+IMPEM2DEXPORT void get_domes(DoubleMatrix &m, DoubleMatrix &result, double h);
 
 //! Combines the fill holes and thresholding operations together with normalize
 /*!
@@ -238,8 +242,8 @@ IMPEM2DEXPORT void get_domes(cv::Mat &m, cv::Mat &result, double h);
   \note The function does normalize -> fill_holes -> normalize -> threshold ->
     normalize
 */
-IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(cv::Mat &m,
-                                                        cv::Mat &result,
+IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(DoubleMatrix &m,
+                                                        DoubleMatrix &result,
                                                         double n_stddevs,
                                                         double threshold = 0.0);
 
@@ -249,7 +253,7 @@ IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(cv::Mat &m,
   \param[in] bins Number of bins to use in the histogram
   \return vector with the values for each bin
 */
-IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
+IMPEM2DEXPORT Floats get_histogram(const DoubleMatrix &m, int bins);
 
 //! Variance filter for an image. Computes the variance for each pixel using
 //! the surrounding ones.
@@ -259,8 +263,9 @@ IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
  \param[in] kernelsize The variance is computed using kernelsize x kernelsize
              pixels around each one. Kernelsize can only be odd.
 */
-IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
-                                         cv::Mat &filtered, int kernelsize);
+IMPEM2DEXPORT void apply_variance_filter(const DoubleMatrix &input,
+                                         DoubleMatrix &filtered,
+                                         int kernelsize);
 
 //!Add noise to the values of a matrix.
 /*!
@@ -279,7 +284,7 @@ IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
 
    \endcode
 */
-IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
+IMPEM2DEXPORT void add_noise(DoubleMatrix &v, double op1, double op2,
                              const String &mode = "uniform", double df = 3);
 
 //! Resamples a matrix to polar coordinates.
@@ -292,16 +297,17 @@ IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
             PolarResamplingParameters class
 */
 IMPEM2DEXPORT void do_resample_polar(
-    const cv::Mat &input, cv::Mat &resampled,
+    const DoubleMatrix &input, DoubleMatrix &resampled,
     const PolarResamplingParameters &polar_params);
 
 //! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
-IMPEM2DEXPORT void do_normalize(cv::Mat &m);
+IMPEM2DEXPORT void do_normalize(DoubleMatrix &m);
 
 //! Applies a transformation to a matrix. First rotates the matrix using the
 //! matrix center as the origin of the rotation, and then applies
 //! the translation
-IMPEM2DEXPORT void get_transformed(const cv::Mat &input, cv::Mat &transformed,
+IMPEM2DEXPORT void get_transformed(const DoubleMatrix &input,
+                                   DoubleMatrix &transformed,
                                    const algebra::Transformation2D &T);
 
 /*! Extends the borders of an image
@@ -309,13 +315,13 @@ IMPEM2DEXPORT void get_transformed(const cv::Mat &input, cv::Mat &transformed,
  \param[in] dst The image destination
  \param[in] pix number of pixels to extend the borders
 */
-IMPEM2DEXPORT void do_extend_borders(cv::Mat &orig, cv::Mat &dst,
+IMPEM2DEXPORT void do_extend_borders(DoubleMatrix &orig, DoubleMatrix &dst,
                                      unsigned int pix);
 
 /*! Applies a threshold to an image
   `threshold` is a value such that all pixels below this value are set to zero
 */
-IMPEM2DEXPORT void apply_threshold(cv::Mat &m, cv::Mat &result,
+IMPEM2DEXPORT void apply_threshold(DoubleMatrix &m, DoubleMatrix &result,
                                    double threshold = 0.0);
 
 /*! morphologic enhancement of the contrast
@@ -326,17 +332,17 @@ IMPEM2DEXPORT void apply_threshold(cv::Mat &m, cv::Mat &result,
   \param[in] kernel morphologic kernel to use
   \param[in] iterations Higher number, more contrast
 */
-IMPEM2DEXPORT void do_morphologic_contrast_enhancement(const cv::Mat &m,
-                                                       cv::Mat &result,
-                                                       const cv::Mat &kernel,
-                                                       unsigned int iterations);
+IMPEM2DEXPORT void do_morphologic_contrast_enhancement(
+    const DoubleMatrix &m, DoubleMatrix &result, const DoubleMatrix &kernel,
+    unsigned int iterations);
 /*! Morphologic gradient: dilation-erosion
   \param[in] m Input matrix
   \param[out] result
   \param[in] kernel morphologic kernel
 */
-IMPEM2DEXPORT void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
-                                            const cv::Mat &kernel);
+IMPEM2DEXPORT void get_morphologic_gradient(const DoubleMatrix &m,
+                                            DoubleMatrix &result,
+                                            const DoubleMatrix &kernel);
 
 /*! Get the percentage of overlap between two matrices.
   Two images are overlapping in a pixel if both have values > 0.
@@ -349,7 +355,7 @@ IMPEM2DEXPORT void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
              the center m2. E.g., if center is (32,16) the center
              of m2 will be in the pixel (32,16) of m1.
 */
-IMPEM2DEXPORT double get_overlap_percentage(cv::Mat &m1, cv::Mat &m2,
+IMPEM2DEXPORT double get_overlap_percentage(DoubleMatrix &m1, DoubleMatrix &m2,
                                             const IntPair &center);
 
 /*! Gets the n first matches between an image and a template
@@ -358,7 +364,7 @@ IMPEM2DEXPORT double get_overlap_percentage(cv::Mat &m1, cv::Mat &m2,
   \param[in] n Number of positions to recover
 */
 IMPEM2DEXPORT MatchTemplateResults
-    get_best_template_matches(const cv::Mat &m, const cv::Mat &templ,
+    get_best_template_matches(const DoubleMatrix &m, const DoubleMatrix &templ,
                               unsigned int n);
 
 /*! Crop an image
@@ -367,7 +373,8 @@ IMPEM2DEXPORT MatchTemplateResults
   \param[in] size The size of the new image
   \return A matrix with the cropped region
 */
-IMPEM2DEXPORT cv::Mat crop(const cv::Mat &m, const IntPair &center, int size);
+IMPEM2DEXPORT DoubleMatrix crop(const DoubleMatrix &m, const IntPair &center,
+                                int size);
 
 IMPEM2D_END_NAMESPACE
 

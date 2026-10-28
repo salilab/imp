@@ -45,7 +45,7 @@ unsigned char get_gray_from_cmyk(int c, int m, int y, int k) {
    success, otherwise the error message. Color images are converted to
    grayscale by libjpeg; CMYK images (which libjpeg cannot convert) in the
    same way as OpenCV did. */
-std::string read_jpeg_grayscale(std::FILE *f, cv::Mat &pixels) {
+std::string read_jpeg_grayscale(std::FILE *f, internal::UCharMatrix &pixels) {
   jpeg_decompress_struct cinfo;
   ErrorManager err;
   cinfo.err = jpeg_std_error(&err.pub);
@@ -61,10 +61,11 @@ std::string read_jpeg_grayscale(std::FILE *f, cv::Mat &pixels) {
   bool cmyk = cinfo.num_components == 4;
   cinfo.out_color_space = cmyk ? JCS_CMYK : JCS_GRAYSCALE;
   jpeg_start_decompress(&cinfo);
-  pixels.create(cinfo.output_height, cinfo.output_width, CV_8UC1);
+  pixels.resize(cinfo.output_height, cinfo.output_width);
   if (cmyk) cmyk_row.resize(4 * cinfo.output_width);
   while (cinfo.output_scanline < cinfo.output_height) {
-    unsigned char *out = pixels.ptr<unsigned char>(cinfo.output_scanline);
+    unsigned char *out =
+        pixels.data() + cinfo.output_scanline * pixels.cols();
     JSAMPROW row = cmyk ? cmyk_row.data() : out;
     jpeg_read_scanlines(&cinfo, &row, 1);
     if (cmyk) {
@@ -81,7 +82,8 @@ std::string read_jpeg_grayscale(std::FILE *f, cv::Mat &pixels) {
 
 /* Write an 8-bit grayscale image to a JPG file with quality 100. Return an
    empty string on success, otherwise the error message. */
-std::string write_jpeg_grayscale(std::FILE *f, const cv::Mat &pixels) {
+std::string write_jpeg_grayscale(std::FILE *f,
+                                 const internal::UCharMatrix &pixels) {
   jpeg_compress_struct cinfo;
   ErrorManager err;
   cinfo.err = jpeg_std_error(&err.pub);
@@ -92,8 +94,8 @@ std::string write_jpeg_grayscale(std::FILE *f, const cv::Mat &pixels) {
   }
   jpeg_create_compress(&cinfo);
   jpeg_stdio_dest(&cinfo, f);
-  cinfo.image_width = pixels.cols;
-  cinfo.image_height = pixels.rows;
+  cinfo.image_width = pixels.cols();
+  cinfo.image_height = pixels.rows();
   cinfo.input_components = 1;
   cinfo.in_color_space = JCS_GRAYSCALE;
   jpeg_set_defaults(&cinfo);
@@ -101,7 +103,7 @@ std::string write_jpeg_grayscale(std::FILE *f, const cv::Mat &pixels) {
   jpeg_start_compress(&cinfo, TRUE);
   while (cinfo.next_scanline < cinfo.image_height) {
     JSAMPROW row = const_cast<unsigned char *>(
-        pixels.ptr<unsigned char>(cinfo.next_scanline));
+        pixels.data() + cinfo.next_scanline * pixels.cols());
     jpeg_write_scanlines(&cinfo, &row, 1);
   }
   jpeg_finish_compress(&cinfo);
@@ -113,7 +115,7 @@ std::string write_jpeg_grayscale(std::FILE *f, const cv::Mat &pixels) {
 
 void JPGImageReaderWriter::read_from_ints(const String &filename,
                                           em::ImageHeader &header,
-                                          cv::Mat &data) const {
+                                          DoubleMatrix &data) const {
   IMP_LOG_VERBOSE("reading with JPGImageReaderWriter" << std::endl);
   std::FILE *f = std::fopen(filename.c_str(), "rb");
   if (!f) {
@@ -121,7 +123,7 @@ void JPGImageReaderWriter::read_from_ints(const String &filename,
                                               << ": cannot open file",
               IOException);
   }
-  cv::Mat pixels;
+  internal::UCharMatrix pixels;
   std::string error = read_jpeg_grayscale(f, pixels);
   std::fclose(f);
   if (!error.empty()) {
@@ -135,7 +137,7 @@ void JPGImageReaderWriter::read_from_ints(const String &filename,
 
 void JPGImageReaderWriter::write_to_ints(const String &filename,
                                          em::ImageHeader &header,
-                                         const cv::Mat &data) const {
+                                         const DoubleMatrix &data) const {
   IMP_UNUSED(header);
   // discard header
   IMP_LOG(IMP::WARNING,
@@ -153,12 +155,12 @@ void JPGImageReaderWriter::write_to_ints(const String &filename,
         IOException);
   }
 
-  if (data.empty()) {
+  if (data.size() == 0) {
     IMP_THROW("JPGImageReaderWriter: Cannot write an empty image",
               IOException);
   }
   // Convert the data value to 8-bit so it can be written as JPG
-  cv::Mat jpg_data;
+  internal::UCharMatrix jpg_data;
   internal::get_8bit_scaled(data, jpg_data);
   std::FILE *f = std::fopen(filename.c_str(), "wb");
   if (!f) {

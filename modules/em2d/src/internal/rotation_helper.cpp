@@ -2,7 +2,7 @@
  *  \file rotation_helper.cp
  *  \brief Functions related with rotations in em2d
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/internal/rotation_helper.h"
@@ -29,17 +29,17 @@ int previous(int axis) {
   }
 }
 
-cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v) {
-  cv::Mat M(3, 3, CV_64FC1);
-  M.at<double>(0, 0) = v[0] * v[0] + v[1] * v[1] - v[2] * v[2] - v[3] * v[3];
-  M.at<double>(0, 1) = 2 * (v[1] * v[2] - v[0] * v[3]);
-  M.at<double>(0, 2) = 2 * (v[1] * v[3] + v[0] * v[2]);
-  M.at<double>(1, 0) = 2 * (v[1] * v[2] + v[0] * v[3]);
-  M.at<double>(1, 1) = v[0] * v[0] - v[1] * v[1] + v[2] * v[2] - v[3] * v[3];
-  M.at<double>(1, 2) = 2 * (v[2] * v[3] - v[0] * v[1]);
-  M.at<double>(2, 0) = 2 * (v[1] * v[3] - v[0] * v[2]);
-  M.at<double>(2, 1) = 2 * (v[2] * v[3] + v[0] * v[1]);
-  M.at<double>(2, 2) = v[0] * v[0] - v[1] * v[1] - v[2] * v[2] + v[3] * v[3];
+DoubleMatrix quaternion_to_matrix(const algebra::VectorD<4> &v) {
+  DoubleMatrix M(3, 3);
+  M(0, 0) = v[0] * v[0] + v[1] * v[1] - v[2] * v[2] - v[3] * v[3];
+  M(0, 1) = 2 * (v[1] * v[2] - v[0] * v[3]);
+  M(0, 2) = 2 * (v[1] * v[3] + v[0] * v[2]);
+  M(1, 0) = 2 * (v[1] * v[2] + v[0] * v[3]);
+  M(1, 1) = v[0] * v[0] - v[1] * v[1] + v[2] * v[2] - v[3] * v[3];
+  M(1, 2) = 2 * (v[2] * v[3] - v[0] * v[1]);
+  M(2, 0) = 2 * (v[1] * v[3] - v[0] * v[2]);
+  M(2, 1) = 2 * (v[2] * v[3] + v[0] * v[1]);
+  M(2, 2) = v[0] * v[0] - v[1] * v[1] - v[2] * v[2] + v[3] * v[3];
   return M;
 }
 
@@ -142,7 +142,7 @@ algebra::Rotation3D get_rotation_from_projection_direction(
 algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
                                                  int a1, int a2) {
   algebra::VectorD<4> q = R.get_quaternion();
-  cv::Mat M = quaternion_to_matrix(q);
+  DoubleMatrix M = quaternion_to_matrix(q);
   double epsilon = 1e-4;
   double theta, phi, psi, cos_auxiliar_angle, sin_auxiliar_angle;
   bool positive_orientation = true;
@@ -161,22 +161,22 @@ algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
   a2 -= 1;
   c -= 1;
 
-  theta = acos(M.at<double>(a1, a1));
-  if (abs(M.at<double>(a1, a1)) < (1 - epsilon)) {
-    cos_auxiliar_angle = M.at<double>(a1, c);
+  theta = acos(M(a1, a1));
+  if (abs(M(a1, a1)) < (1 - epsilon)) {
+    cos_auxiliar_angle = M(a1, c);
     if (!positive_orientation) {
       cos_auxiliar_angle = -cos_auxiliar_angle;
     }
-    phi = atan2(M.at<double>(a1, a2), cos_auxiliar_angle);
-    sin_auxiliar_angle = M.at<double>(a2, a1);
-    cos_auxiliar_angle = M.at<double>(c, a1);
+    phi = atan2(M(a1, a2), cos_auxiliar_angle);
+    sin_auxiliar_angle = M(a2, a1);
+    cos_auxiliar_angle = M(c, a1);
     if (positive_orientation) {
       cos_auxiliar_angle = -cos_auxiliar_angle;
     }
   } else {
     phi = 0.0;
-    cos_auxiliar_angle = M.at<double>(a2, a2);
-    sin_auxiliar_angle = M.at<double>(c, a2);
+    cos_auxiliar_angle = M(a2, a2);
+    sin_auxiliar_angle = M(c, a2);
     if (!positive_orientation) {
       sin_auxiliar_angle = -sin_auxiliar_angle;
     }

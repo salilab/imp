@@ -1,13 +1,13 @@
 /**
  *  \file internal/Fine2DRegistrationRestraint.cpp
  *  \brief Finely refine the angles and translations of a set of subject images
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/internal/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/scores2D.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/log.h"
@@ -104,7 +104,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                          PP_.get_translation(), options, masks_);
     score = score_function_->get_score(subject_, projection_);
   }
-  catch (cv::Exception &e) {
+  catch (UsageException &e) {
     IMP_LOG(WARNING,
             "Fine2DRegistration. Error computing the score: "
             "Returning 1 (maximum score). Most probably because projecting "
