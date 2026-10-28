@@ -67,7 +67,7 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
         } else {
           continue;
         }
-        for (unsigned int j = 0; i < D; ++i) {
+        for (unsigned int j = 0; j < D; ++j) {
           if (i == j) continue;
           int vj = indexes[facet[j]];
           algebra::VectorD<D> pj;
