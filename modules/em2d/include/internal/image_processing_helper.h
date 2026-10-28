@@ -126,6 +126,16 @@ IMPEM2DEXPORT void get_min_and_max(const cv::Mat &m, double *min, double *max,
 //! Get the mean and the (population) standard deviation of a matrix
 void get_mean_and_stddev(const cv::Mat &m, double &mean, double &stddev);
 
+//! Scale a matrix of doubles to 8 bits, for writing to an image file
+/** The minimum value is mapped to 0 and the maximum to 255. Values are
+    rounded to the nearest integer (ties to even), and NaN becomes 0, as for
+    cv::Mat::convertTo().
+ */
+void get_8bit_scaled(const cv::Mat &data, cv::Mat &pixels);
+
+//! Get a matrix of doubles from 8-bit pixels read from an image file
+void get_from_8bit(const cv::Mat &pixels, cv::Mat &data);
+
 //! Correlation of a template with a matrix of doubles, computed by FFT
 /** corr(i, j) is the sum over (a, b) of templ(a, b) * m(i + a, j + b), for
     every position (i, j) where the template is inside m.

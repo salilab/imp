@@ -1,0 +1,5 @@
+full_name="libtiff"
+pkg_config_name="libtiff-4"
+libraries="tiff"
+headers="tiffio.h"
+body='TIFFGetVersion();'

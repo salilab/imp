@@ -8,15 +8,13 @@
 #define IMPEM2D_JPG_IMAGE_READER_WRITER_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
-#include "IMP/em2d/internal/image_processing_helper.h"
+#include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em/ImageHeader.h"
-#include <boost/filesystem.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Class to read and write EM images in JPG format.
-class JPGImageReaderWriter : public ImageReaderWriter {
+class IMPEM2DEXPORT JPGImageReaderWriter : public ImageReaderWriter {
  public:
   JPGImageReaderWriter() {}
 
@@ -35,22 +33,13 @@ class JPGImageReaderWriter : public ImageReaderWriter {
     \param[in] filename file to read
     \param[in] header header to store the info
     \param[in] data a matrix to store the grid of data of the image
+    \note Color images are converted to grayscale.
     \warning:  The header passed is filled with standard values
       If you need full header information you must work with other
       format. Eg, Spider.
   */
   void read_from_ints(const String &filename, em::ImageHeader &header,
-                      cv::Mat &data) const override {
-    IMP_LOG_VERBOSE("reading with JPGImageReaderWriter" << std::endl);
-    // read
-    cv::Mat temp = cv::imread(filename, 0);
-    if (temp.empty()) {
-      IMP_THROW("Error reading from JPG Image " << filename, IOException);
-    }
-    temp.assignTo(data, CV_64FC1);
-    // fill the header with default values
-    header.clear();
-  }
+                      cv::Mat &data) const override;
 
   void write_to_floats(const String &, em::ImageHeader &,
                        const cv::Mat &) const override {}
@@ -67,43 +56,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
               You might be discarding float information.
    */
   void write_to_ints(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const override {
-    IMP_UNUSED(header);
-    // discard header
-    IMP_LOG(IMP::WARNING,
-            "Writing with JPGImageReaderWriter "
-            "discards image header "
-                << std::endl);
-    // check extension
-    String ext = boost::filesystem::path(filename).extension().string();
-    IMP_LOG_VERBOSE("JPGImageReaderWriter writing to " << filename
-                                                        << std::endl);
-    if (ext != ".jpg" && ext != ".jpeg") {
-      IMP_THROW(
-          "JPGImageReaderWriter: The filename extension is not .jpg "
-          "or .jpeg",
-          IOException);
-    }
-
-    // Convert the data value to 8-bit so it can be written as JPG
-    cv::Mat jpg_data;
-    double max, min;
-    internal::get_min_and_max(data, &min, &max);
-    double jpg_max = 255;
-    double jpg_min = 0;
-    double alpha = (jpg_max - jpg_min) / (max - min);
-    double beta = jpg_min - alpha * min;
-    data.convertTo(jpg_data, CV_8UC1, alpha, beta);
-    // write image
-    std::vector<int> flags;
-#if CV_VERSION_MAJOR >= 3
-    flags.push_back(cv::IMWRITE_JPEG_QUALITY);
-#else
-    flags.push_back(CV_IMWRITE_JPEG_QUALITY);
-#endif
-    flags.push_back(100);  // 100% quality image
-    cv::imwrite(filename, jpg_data, flags);
-  }
+                     const cv::Mat &data) const override;
 
   IMP_OBJECT_METHODS(JPGImageReaderWriter);
 };

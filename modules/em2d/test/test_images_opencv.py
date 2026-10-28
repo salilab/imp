@@ -184,6 +184,22 @@ class Tests(IMP.test.TestCase):
         img1 = em2d.Image(fn_img1, trw)
         self.assertRaises(IOError, img1.write, "temp.xxx", trw)
 
+    def test_read_write_errors(self):
+        """Test errors reading or writing JPG and TIFF images"""
+        img = em2d.Image(4, 5)
+        img.set_value(1, 2, 1.0)
+        for rw, ext in ((em2d.JPGImageReaderWriter(), ".jpg"),
+                        (em2d.TIFFImageReaderWriter(), ".tif")):
+            self.assertRaises(IOError, em2d.Image, "nonexistent" + ext, rw)
+            with IMP.test.temporary_directory() as tmpdir:
+                bad = os.path.join(tmpdir, "bad" + ext)
+                with open(bad, "w") as fh:
+                    fh.write("not an image")
+                self.assertRaises(IOError, em2d.Image, bad, rw)
+                self.assertRaises(
+                    IOError, img.write,
+                    os.path.join(tmpdir, "nonexistent", "out" + ext), rw)
+
     def test_do_extend_borders(self):
         """Test that extending the borders of an image is done correctly"""
         srw = em2d.SpiderImageReaderWriter()

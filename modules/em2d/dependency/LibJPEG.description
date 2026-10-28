@@ -1,0 +1,6 @@
+full_name="libjpeg"
+pkg_config_name="libjpeg"
+libraries="jpeg"
+# jpeglib.h needs stdio.h to be included first
+headers="cstdio:jpeglib.h"
+body='struct jpeg_error_mgr err; jpeg_std_error(&err);'

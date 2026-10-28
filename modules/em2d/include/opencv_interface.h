@@ -13,7 +13,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/core/version.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
 
 // OpenCV 5 includes
 #if !defined(CV_VERSION_EPOCH) && CV_VERSION_MAJOR >= 5

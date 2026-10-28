@@ -365,6 +365,37 @@ void get_min_and_max(const cv::Mat &m, double *min, double *max,
   if (max_col) *max_col = col;
 }
 
+void get_8bit_scaled(const cv::Mat &data, cv::Mat &pixels) {
+  double max, min;
+  get_min_and_max(data, &min, &max);
+  double alpha = 255. / (max - min);
+  double beta = 0. - alpha * min;
+  pixels.create(data.rows, data.cols, CV_8UC1);
+  for (int i = 0; i < data.rows; ++i) {
+    const double *in = data.ptr<double>(i);
+    unsigned char *out = pixels.ptr<unsigned char>(i);
+    for (int j = 0; j < data.cols; ++j) {
+      double v = in[j] * alpha + beta;
+      if (std::isnan(v) || v <= 0.) {
+        out[j] = 0;
+      } else if (v >= 255.) {
+        out[j] = 255;
+      } else {
+        out[j] = static_cast<unsigned char>(std::nearbyint(v));
+      }
+    }
+  }
+}
+
+void get_from_8bit(const cv::Mat &pixels, cv::Mat &data) {
+  data.create(pixels.rows, pixels.cols, CV_64FC1);
+  for (int i = 0; i < pixels.rows; ++i) {
+    const unsigned char *in = pixels.ptr<unsigned char>(i);
+    double *out = data.ptr<double>(i);
+    for (int j = 0; j < pixels.cols; ++j) out[j] = in[j];
+  }
+}
+
 void get_mean_and_stddev(const cv::Mat &m, double &mean, double &stddev) {
   IMP_USAGE_CHECK(m.type() == CV_64FC1,
                   "em2d:get_mean_and_stddev: Matrix must be of type CV_64FC1");
