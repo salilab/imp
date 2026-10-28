@@ -321,8 +321,9 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
       //      double value = m.at<double>(i-1,j-1);
       double value = m.at<double>(i - 1, j - 1);
       denominator += value;
-      center[0] += value * i;
-      center[1] += value * j;
+      // i is the row and j the column
+      center[0] += value * j;
+      center[1] += value * i;
     }
   }
   // Adjust center for the fact that the  indices of m start at 0.

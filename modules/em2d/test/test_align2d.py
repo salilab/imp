@@ -69,6 +69,26 @@ class Tests(IMP.test.TestCase):
             msg="2nd coordinate is incorrect: Applied %f Determined %f"
                 % (trans[1], determined_trans[1]))
 
+    def test_subpixel_translational_alignment(self):
+        """Test the axis of subpixel refinement in translational alignment"""
+        def blob(row, col):
+            img = IMP.em2d.Image(64, 64)
+            for i in range(64):
+                for j in range(64):
+                    img.set_value(i, j, math.exp(
+                        -((i - row) ** 2 + (j - col) ** 2) / 8.))
+            return img
+        reference = blob(32., 32.)
+        # Shift by a whole number of rows but a fraction of a column
+        moved = blob(33., 35.3)
+        result = IMP.em2d.get_translational_alignment(
+            reference.get_data(), moved.get_data())
+        # The translation is (column, row) and moves the blob back
+        shift = result[0].get_translation()
+        self.assertAlmostEqual(shift[1], -1., delta=1e-6)
+        self.assertLess(shift[0], -3.01)
+        self.assertGreater(shift[0], -3.5)
+
     def test_complete_alignment(self):
         """ Test the complete alignment in 2D routine (new) """
         random.seed()

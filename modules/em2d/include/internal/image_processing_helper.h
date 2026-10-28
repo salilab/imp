@@ -109,6 +109,7 @@ void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
 algebra::Vector2D get_peak(cv::Mat &m, double *value);
 
 //! computes the weighted centroid of a matrix, with the values of the matrix
+/** The centroid is returned as (column, row). */
 algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
 //! Get the smallest and largest values of a matrix of doubles
