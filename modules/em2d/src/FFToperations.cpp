@@ -10,6 +10,10 @@
 #include <fftw3.h>
 #include <algorithm>
 #include <complex>
+#include <map>
+#include <mutex>
+#include <new>
+#include <utility>
 #include <vector>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -18,25 +22,95 @@ namespace {
 
 typedef std::complex<double> Complex;
 
-// Destroys an FFTW plan when it goes out of scope
-class FFTWPlan {
-  fftw_plan plan_;
-  FFTWPlan(const FFTWPlan &);
-  FFTWPlan &operator=(const FFTWPlan &);
+/* Allocates with fftw_malloc, so that every array passed to FFTW has the
+   same (SIMD) alignment as the arrays the cached plans were created with,
+   as fftw_execute_dft_r2c() and fftw_execute_dft_c2r() require. */
+template <class T>
+struct FFTWAllocator {
+  typedef T value_type;
+  FFTWAllocator() {}
+  template <class U>
+  FFTWAllocator(const FFTWAllocator<U> &) {}
+  T *allocate(std::size_t n) {
+    void *p = fftw_malloc(n * sizeof(T));
+    if (!p) throw std::bad_alloc();
+    return static_cast<T *>(p);
+  }
+  void deallocate(T *p, std::size_t) { fftw_free(p); }
+};
+
+template <class T, class U>
+bool operator==(const FFTWAllocator<T> &, const FFTWAllocator<U> &) {
+  return true;
+}
+
+template <class T, class U>
+bool operator!=(const FFTWAllocator<T> &, const FFTWAllocator<U> &) {
+  return false;
+}
+
+typedef std::vector<double, FFTWAllocator<double> > RealArray;
+typedef std::vector<Complex, FFTWAllocator<Complex> > ComplexArray;
+
+/* FFTW plans for 2D real transforms, created once for each size and then
+   reused. Creating a plan is expensive and not thread-safe, so it is
+   serialized here; executing a plan on new arrays is thread-safe. */
+class PlanCache {
+  typedef std::pair<int, int> Size;
+  std::map<Size, fftw_plan> forward_, inverse_;
+  std::mutex mutex_;
+
+  static void destroy(std::map<Size, fftw_plan> &plans) {
+    for (auto &p : plans) fftw_destroy_plan(p.second);
+  }
 
  public:
-  explicit FFTWPlan(fftw_plan plan) : plan_(plan) {
-    IMP_INTERNAL_CHECK(plan_, "FFTW could not create a plan");
+  ~PlanCache() {
+    destroy(forward_);
+    destroy(inverse_);
   }
-  ~FFTWPlan() { fftw_destroy_plan(plan_); }
-  void execute() { fftw_execute(plan_); }
+
+  /* Plans are made on scratch arrays allocated like the ones they will be
+     executed on. FFTW_ESTIMATE is used as it is fast and deterministic. */
+  fftw_plan get_forward(int rows, int cols) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    fftw_plan &plan = forward_[Size(rows, cols)];
+    if (!plan) {
+      RealArray in(rows * cols);
+      ComplexArray out(rows * (cols / 2 + 1));
+      plan = fftw_plan_dft_r2c_2d(rows, cols, &in[0],
+                                  reinterpret_cast<fftw_complex *>(&out[0]),
+                                  FFTW_ESTIMATE);
+      IMP_INTERNAL_CHECK(plan, "FFTW could not create a plan");
+    }
+    return plan;
+  }
+
+  fftw_plan get_inverse(int rows, int cols) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    fftw_plan &plan = inverse_[Size(rows, cols)];
+    if (!plan) {
+      ComplexArray in(rows * (cols / 2 + 1));
+      RealArray out(rows * cols);
+      plan = fftw_plan_dft_c2r_2d(rows, cols,
+                                  reinterpret_cast<fftw_complex *>(&in[0]),
+                                  &out[0], FFTW_ESTIMATE);
+      IMP_INTERNAL_CHECK(plan, "FFTW could not create a plan");
+    }
+    return plan;
+  }
 };
+
+PlanCache &get_plan_cache() {
+  static PlanCache cache;
+  return cache;
+}
 
 /* Non-redundant half of the 2D DFT of a real rows x cols matrix, as used by
    FFTW: rows x (cols/2 + 1) complex values, stored row-major. */
 struct HalfSpectrum {
   int rows, cols, half_cols;
-  std::vector<Complex> data;
+  ComplexArray data;
   HalfSpectrum(int r, int c)
       : rows(r), cols(c), half_cols(c / 2 + 1), data(r * (c / 2 + 1)) {}
   Complex &operator()(int k, int l) { return data[k * half_cols + l]; }
@@ -52,17 +126,15 @@ void check_is_double(const cv::Mat &m, const char *function) {
 
 // DFT of m, zero-padded to rows x cols
 HalfSpectrum get_forward_dft(const cv::Mat &m, int rows, int cols) {
-  std::vector<double> in(rows * cols, 0.);
+  RealArray in(rows * cols, 0.);
   for (int i = 0; i < m.rows; ++i) {
     for (int j = 0; j < m.cols; ++j) {
       in[i * cols + j] = m.at<double>(i, j);
     }
   }
   HalfSpectrum H(rows, cols);
-  FFTWPlan plan(fftw_plan_dft_r2c_2d(
-      rows, cols, &in[0], reinterpret_cast<fftw_complex *>(&H.data[0]),
-      FFTW_ESTIMATE));
-  plan.execute();
+  fftw_execute_dft_r2c(get_plan_cache().get_forward(rows, cols), &in[0],
+                       reinterpret_cast<fftw_complex *>(&H.data[0]));
   return H;
 }
 
@@ -70,11 +142,9 @@ HalfSpectrum get_forward_dft(const cv::Mat &m, int rows, int cols) {
    result.rows x result.cols values in result, which must be allocated.
    H is used as scratch space. */
 void get_inverse_dft(HalfSpectrum &H, cv::Mat &result) {
-  std::vector<double> out(H.rows * H.cols);
-  FFTWPlan plan(fftw_plan_dft_c2r_2d(
-      H.rows, H.cols, reinterpret_cast<fftw_complex *>(&H.data[0]), &out[0],
-      FFTW_ESTIMATE));
-  plan.execute();
+  RealArray out(H.rows * H.cols);
+  fftw_execute_dft_c2r(get_plan_cache().get_inverse(H.rows, H.cols),
+                       reinterpret_cast<fftw_complex *>(&H.data[0]), &out[0]);
   double scale = 1. / (static_cast<double>(H.rows) * H.cols);
   for (int i = 0; i < result.rows; ++i) {
     for (int j = 0; j < result.cols; ++j) {
