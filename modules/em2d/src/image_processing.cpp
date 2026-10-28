@@ -7,7 +7,6 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/CenteredMat.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
-#include "IMP/em2d/internal/opencv_helper.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/eigen_analysis.h"
@@ -233,6 +232,24 @@ void get_normalized_correlation(DoubleMatrix m, DoubleMatrix templ,
       result(i, j) = static_cast<float>(num);
     }
   }
+}
+
+/* Value of m at a (fractional) row and column, by bilinear interpolation.
+   Positions outside the matrix wrap around (as OpenCV's BORDER_WRAP). */
+double get_bilinear_sample(const DoubleMatrix &m, double row, double col) {
+  long rows = m.rows(), cols = m.cols();
+  auto wrap = [](long p, long n) {
+    p %= n;
+    return p < 0 ? p + n : p;
+  };
+  double r0 = std::floor(row), c0 = std::floor(col);
+  double fr = row - r0, fc = col - c0;
+  long i0 = wrap(static_cast<long>(r0), rows);
+  long i1 = wrap(static_cast<long>(r0) + 1, rows);
+  long j0 = wrap(static_cast<long>(c0), cols);
+  long j1 = wrap(static_cast<long>(c0) + 1, cols);
+  return (1 - fr) * ((1 - fc) * m(i0, j0) + fc * m(i0, j1)) +
+         fr * ((1 - fc) * m(i1, j0) + fc * m(i1, j1));
 }
 
 }  // namespace
@@ -774,8 +791,7 @@ IMP_GCC_PUSH_POP(diagnostic pop)
 void do_resample_polar(const DoubleMatrix &input, DoubleMatrix &resampled,
                        const PolarResamplingParameters &polar_params) {
 
-  internal::RowMajorArray<short> map_16SC2;
-  internal::RowMajorArray<unsigned short> map_16UC1;
+  internal::FloatMatrix map;
   // If the resampling parameters are not initialized, build a polar map for
   // the resampling.
   if (polar_params.get_is_setup() == false) {
@@ -783,19 +799,20 @@ void do_resample_polar(const DoubleMatrix &input, DoubleMatrix &resampled,
     p.setup(input.rows(), input.cols());
     p.set_estimated_number_of_angles(std::min(input.rows(), input.cols()));
     p.create_maps_for_resampling();
-    p.get_resampling_maps(map_16SC2, map_16UC1);
+    p.get_resampling_map(map);
   } else {
-    polar_params.get_resampling_maps(map_16SC2, map_16UC1);
+    polar_params.get_resampling_map(map);
   }
-  // remap does not work with doubles, convert
-  internal::FloatMatrix temp = input.cast<float>();
-  internal::FloatMatrix temp2(map_16UC1.rows(), map_16UC1.cols());
-  cv::Mat cv_temp2 = internal::get_cv_mat(temp2, CV_32F);
-  cv::remap(internal::get_cv_mat(temp, CV_32F),
-            cv_temp2, internal::get_cv_mat(map_16SC2, CV_16S, 2),
-            internal::get_cv_mat(map_16UC1, CV_16U), cv::INTER_LINEAR,
-            cv::BORDER_WRAP);
-  resampled = temp2.cast<double>();  // convert back
+  // Sample the input at each point of the map. As before (when this used
+  // OpenCV's remap(), which takes (x, y) coordinates), the row coordinates
+  // of the map are used as columns, and vice versa.
+  DoubleMatrix out(map.rows(), map.cols() / 2);
+  for (int i = 0; i < out.rows(); ++i) {
+    for (int j = 0; j < out.cols(); ++j) {
+      out(i, j) = get_bilinear_sample(input, map(i, 2 * j + 1), map(i, 2 * j));
+    }
+  }
+  resampled = out;
 }
 
 void do_normalize(DoubleMatrix &m) {
@@ -816,20 +833,33 @@ void do_normalize(DoubleMatrix &m) {
 //! Transform a matrix (the translation is interpreted as cols,rows)
 void get_transformed(const DoubleMatrix &input, DoubleMatrix &transformed,
                      const algebra::Transformation2D &T) {
-  cv::Point2f center(input.rows() / 2.0, input.cols() / 2.0);
-  double angle = 180. * T.get_rotation().get_angle() / PI;
-  cv::Mat rot_mat = cv::getRotationMatrix2D(center, angle, 1.0);
-  // Careful here. OpenCV convention interprets a translation as col,row
-  rot_mat.at<double>(0, 2) += T.get_translation()[0];
-  rot_mat.at<double>(1, 2) += T.get_translation()[1];
-  cv::Size dsize(input.cols(), input.rows());
-  // WarpAffine calls remap, that does not work with doubles. Use floats
-  internal::FloatMatrix temp = input.cast<float>();
-  internal::FloatMatrix temp2(input.rows(), input.cols());
-  cv::Mat cv_temp2 = internal::get_cv_mat(temp2, CV_32F);
-  cv::warpAffine(internal::get_cv_mat(temp, CV_32F), cv_temp2, rot_mat, dsize,
-                 cv::INTER_LINEAR, cv::BORDER_WRAP);
-  transformed = temp2.cast<double>();  // convert back
+  /* The transformation maps the input to the output with (x, y) coordinates,
+     where x is the column and y the row, as with OpenCV's
+     getRotationMatrix2D() and warpAffine(), which this used before.
+     As before, the center of rotation is (x, y) = (rows/2, cols/2), at float
+     precision, and the translation is (x, y). */
+  double cx = static_cast<float>(input.rows() / 2.0);
+  double cy = static_cast<float>(input.cols() / 2.0);
+  double alpha = std::cos(T.get_rotation().get_angle());
+  double beta = std::sin(T.get_rotation().get_angle());
+  double m00 = alpha, m01 = beta;
+  double m02 = (1 - alpha) * cx - beta * cy + T.get_translation()[0];
+  double m10 = -beta, m11 = alpha;
+  double m12 = beta * cx + (1 - alpha) * cy + T.get_translation()[1];
+  // Invert it, to get the input position of each output pixel
+  double d = m00 * m11 - m01 * m10;
+  d = d != 0 ? 1. / d : 0.;
+  double i00 = m11 * d, i01 = -m01 * d, i10 = -m10 * d, i11 = m00 * d;
+  double i02 = -i00 * m02 - i01 * m12, i12 = -i10 * m02 - i11 * m12;
+  DoubleMatrix out(input.rows(), input.cols());
+  for (int y = 0; y < out.rows(); ++y) {
+    for (int x = 0; x < out.cols(); ++x) {
+      double sx = i00 * x + i01 * y + i02;
+      double sy = i10 * x + i11 * y + i12;
+      out(y, x) = get_bilinear_sample(input, sy, sx);
+    }
+  }
+  transformed = out;
 }
 
 // Using Centered Mat does not allow the first argument to be const.

@@ -124,17 +124,6 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   void create_maps_for_resampling();
 
 #ifndef SWIG
-  //! Get the maps used for fast resampling with OpenCV's remap()
-  /** The first map has the (fixed-point) coordinates of each sample, as pairs
-      of shorts; the second map has the interpolation coefficients.
-      \note For internal use.
-   */
-  void get_resampling_maps(internal::RowMajorArray<short> &m1,
-                           internal::RowMajorArray<unsigned short> &m2) const {
-    m1 = map_16SC2_;
-    m2 = map_16UC1_;
-  }
-
   //! Get the map of the (row, column) coordinates of each sample
   /** The coordinates are stored as pairs of floats.
       \note For internal use.
@@ -158,9 +147,6 @@ class IMPEM2DEXPORT PolarResamplingParameters {
  protected:
   // Map of the (row, column) coordinates of each sample (pairs of floats)
   internal::RowMajorArray<float> polar_map_;
-  // Maps for speeding up resampling (see OpenCV's convertMaps())
-  internal::RowMajorArray<short> map_16SC2_;
-  internal::RowMajorArray<unsigned short> map_16UC1_;
   double starting_radius_;  // starting radius for the polar resampling
   double ending_radius_;    // ending radius for the polar resampling
   // Number of sampling points for radius and angles
@@ -172,7 +158,7 @@ private:
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(polar_map_, map_16SC2_, map_16UC1_, starting_radius_,
+    ar(polar_map_, starting_radius_,
        ending_radius_, n_rings_, n_angles_, matrix_rows_, matrix_cols_,
        parameters_set_, radius_step_, angle_step_);
   }

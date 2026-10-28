@@ -1,6 +1,6 @@
 /**
  *  \file IMP/em2d/Image.h
- *  \brief IMP images for Electron Microscopy using openCV matrices
+ *  \brief IMP images for Electron Microscopy
  *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 

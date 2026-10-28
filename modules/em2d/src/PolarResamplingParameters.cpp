@@ -5,7 +5,6 @@
 */
 
 #include "IMP/em2d/PolarResamplingParameters.h"
-#include "IMP/em2d/internal/opencv_helper.h"
 #include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -28,18 +27,6 @@ void PolarResamplingParameters::create_maps_for_resampling() {
       polar_map_(i, 2 * j + 1) = static_cast<float>(col);
     }
   }
-  // Convert to fast maps (written directly to map_16SC2_ and map_16UC1_)
-  map_16SC2_.resize(n_rings_, 2 * n_angles_);
-  map_16UC1_.resize(n_rings_, n_angles_);
-  cv::Mat empty;
-  cv::Mat map = internal::get_cv_mat(polar_map_, CV_32F, 2);
-  cv::Mat map1 = internal::get_cv_mat(map_16SC2_, CV_16S, 2);
-  cv::Mat map2 = internal::get_cv_mat(map_16UC1_, CV_16U);
-  cv::convertMaps(map, empty, map1, map2, CV_16SC2);
-  IMP_INTERNAL_CHECK(
-      map1.data == reinterpret_cast<uchar *>(map_16SC2_.data()) &&
-          map2.data == reinterpret_cast<uchar *>(map_16UC1_.data()),
-      "convertMaps did not write to the maps");
 }
 
 IMPEM2D_END_NAMESPACE

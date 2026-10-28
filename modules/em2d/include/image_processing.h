@@ -300,7 +300,7 @@ IMPEM2DEXPORT void do_resample_polar(
     const DoubleMatrix &input, DoubleMatrix &resampled,
     const PolarResamplingParameters &polar_params);
 
-//! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
+//! Normalize a matrix to mean 0 and stddev 1. It is done in place
 IMPEM2DEXPORT void do_normalize(DoubleMatrix &m);
 
 //! Applies a transformation to a matrix. First rotates the matrix using the
