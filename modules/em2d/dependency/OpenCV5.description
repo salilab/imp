@@ -1,7 +1,7 @@
 full_name="OpenCV 5 or later"
 pkg_config_name="opencv5"
-libraries="opencv_core:opencv_imgproc:opencv_highgui:opencv_imgcodecs:opencv_geometry"
-headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/highgui/highgui.hpp:opencv2/core/version.hpp"
+libraries="opencv_core:opencv_imgproc:opencv_imgcodecs:opencv_geometry"
+headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/imgcodecs.hpp:opencv2/core/version.hpp"
 body="""
 #if CV_MAJOR_VERSION>=5
 new cv::Mat();
