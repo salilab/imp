@@ -18,11 +18,200 @@
 #include "boost/random.hpp"
 #include "boost/version.hpp"
 #include <algorithm>
+#include <limits>
 #include <list>
 #include <queue>
 #include <cmath>
+#include <utility>
+#include <vector>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+namespace {
+
+typedef std::vector<std::pair<int, int> > Offsets;
+
+/* Offsets (row, column) of the structuring element (the nonzero entries of
+   kernel) relative to its anchor, the kernel center. An empty kernel is a
+   3x3 square, as for cv::dilate and cv::erode. */
+Offsets get_element_offsets(const cv::Mat &kernel) {
+  Offsets offsets;
+  if (kernel.empty()) {
+    for (int i = -1; i <= 1; ++i) {
+      for (int j = -1; j <= 1; ++j) offsets.push_back(std::make_pair(i, j));
+    }
+    return offsets;
+  }
+  IMP_USAGE_CHECK(kernel.channels() == 1,
+                  "em2d: Kernel must have a single channel");
+  int anchor_row = kernel.rows / 2, anchor_col = kernel.cols / 2;
+  for (int i = 0; i < kernel.rows; ++i) {
+    for (int j = 0; j < kernel.cols; ++j) {
+      double v = 0.;
+      switch (kernel.depth()) {
+        case CV_8U:
+          v = kernel.at<unsigned char>(i, j);
+          break;
+        case CV_32S:
+          v = kernel.at<int>(i, j);
+          break;
+        case CV_32F:
+          v = kernel.at<float>(i, j);
+          break;
+        case CV_64F:
+          v = kernel.at<double>(i, j);
+          break;
+        default:
+          IMP_THROW("em2d: Unsupported kernel type", ValueException);
+      }
+      if (v != 0) {
+        offsets.push_back(std::make_pair(i - anchor_row, j - anchor_col));
+      }
+    }
+  }
+  return offsets;
+}
+
+/* Grayscale dilation (maximum over the structuring element) or erosion
+   (minimum), as cv::dilate and cv::erode with their default arguments.
+   Pixels outside the image are ignored. NaN values are not supported.
+   result can be m. */
+template <class T>
+void do_morphology(const cv::Mat &m, cv::Mat &result, const cv::Mat &kernel,
+                   bool dilate) {
+  Offsets offsets = get_element_offsets(kernel);
+  cv::Mat out(m.rows, m.cols, m.type());
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) {
+      T value = dilate ? std::numeric_limits<T>::lowest()
+                       : std::numeric_limits<T>::max();
+      for (const auto &o : offsets) {
+        int r = i + o.first, c = j + o.second;
+        if (r < 0 || r >= m.rows || c < 0 || c >= m.cols) continue;
+        T v = m.at<T>(r, c);
+        if (dilate ? v > value : v < value) value = v;
+      }
+      out.at<T>(i, j) = value;
+    }
+  }
+  out.copyTo(result);
+}
+
+void do_morphology(const cv::Mat &m, cv::Mat &result, const cv::Mat &kernel,
+                   bool dilate) {
+  if (m.type() == CV_64FC1) {
+    do_morphology<double>(m, result, kernel, dilate);
+  } else {
+    IMP_USAGE_CHECK(m.type() == CV_32FC1,
+                    "em2d: Matrix must be of type CV_64FC1 or CV_32FC1");
+    do_morphology<float>(m, result, kernel, dilate);
+  }
+}
+
+void do_dilate(const cv::Mat &m, cv::Mat &result, const cv::Mat &kernel) {
+  do_morphology(m, result, kernel, true);
+}
+
+void do_erode(const cv::Mat &m, cv::Mat &result, const cv::Mat &kernel) {
+  do_morphology(m, result, kernel, false);
+}
+
+/* Index into a sequence of length n, reflecting at the ends without
+   repeating the end values (as cv::BORDER_REFLECT_101) */
+int get_reflected(int p, int n) {
+  if (n == 1) return 0;
+  while (p < 0 || p >= n) {
+    if (p < 0) p = -p;
+    if (p >= n) p = 2 * n - p - 2;
+  }
+  return p;
+}
+
+/* Mean over a ksize x ksize window around each pixel of a matrix of
+   doubles, with reflected borders. The sums are done in the same order as
+   cv::boxFilter, to give the same results. */
+void apply_box_filter(const cv::Mat &m, cv::Mat &result, int ksize) {
+  IMP_USAGE_CHECK(m.type() == CV_64FC1,
+                  "em2d: Matrix must be of type CV_64FC1");
+  IMP_USAGE_CHECK(ksize > 0, "em2d: Kernel size must be positive");
+  int rows = m.rows, cols = m.cols, anchor = ksize / 2;
+  // Horizontal sums, for every row of the vertically extended matrix
+  int ext_rows = rows + ksize - 1;
+  std::vector<std::vector<double> > row_sums(ext_rows,
+                                             std::vector<double>(cols));
+  std::vector<double> ext_row(cols + ksize - 1);
+  for (int er = 0; er < ext_rows; ++er) {
+    const double *src = m.ptr<double>(get_reflected(er - anchor, rows));
+    for (int j = 0; j < cols + ksize - 1; ++j) {
+      ext_row[j] = src[get_reflected(j - anchor, cols)];
+    }
+    std::vector<double> &d = row_sums[er];
+    if (ksize <= 5) {
+      for (int j = 0; j < cols; ++j) {
+        double s = ext_row[j];
+        for (int k = 1; k < ksize; ++k) s += ext_row[j + k];
+        d[j] = s;
+      }
+    } else {
+      // running sum
+      double s = 0.;
+      for (int j = 0; j < ksize; ++j) s += ext_row[j];
+      d[0] = s;
+      for (int j = 0; j + 1 < cols; ++j) {
+        s += ext_row[j + ksize] - ext_row[j];
+        d[j + 1] = s;
+      }
+    }
+  }
+  // Vertical running sums
+  double scale = 1. / (ksize * ksize);
+  cv::Mat out(rows, cols, CV_64FC1);
+  std::vector<double> sum(cols, 0.);
+  for (int er = 0; er < ksize - 1; ++er) {
+    for (int j = 0; j < cols; ++j) sum[j] += row_sums[er][j];
+  }
+  for (int i = 0; i < rows; ++i) {
+    const std::vector<double> &added = row_sums[i + ksize - 1];
+    const std::vector<double> &removed = row_sums[i];
+    double *d = out.ptr<double>(i);
+    for (int j = 0; j < cols; ++j) {
+      double s = sum[j] + added[j];
+      d[j] = scale != 1 ? s * scale : s;
+      sum[j] = s - removed[j];
+    }
+  }
+  out.copyTo(result);
+}
+
+/* Set the pixels of a filled circle centered at column x and row y to
+   value, giving the same pixels as cv::circle(m, cv::Point(x, y), radius,
+   value, -1) */
+void do_draw_filled_circle(cv::Mat &m, int x, int y, int radius,
+                           double value) {
+  auto fill_row = [&m, value](int row, int col1, int col2) {
+    if (row < 0 || row >= m.rows) return;
+    for (int c = std::max(col1, 0); c <= std::min(col2, m.cols - 1); ++c) {
+      m.at<double>(row, c) = value;
+    }
+  };
+  // Midpoint circle algorithm
+  int err = 0, dx = radius, dy = 0, plus = 1, minus = (radius << 1) - 1;
+  while (dx >= dy) {
+    fill_row(y - dy, x - dx, x + dx);
+    fill_row(y + dy, x - dx, x + dx);
+    fill_row(y - dx, x - dy, x + dy);
+    fill_row(y + dx, x - dy, x + dy);
+    dy++;
+    err += plus;
+    plus += 2;
+    int mask = (err <= 0) - 1;
+    err -= minus & mask;
+    dx += mask;
+    minus -= mask & 2;
+  }
+}
+
+}  // namespace
 
 void do_remove_small_objects(cvIntMat &m, double percentage, int background,
                              int foreground) {
@@ -131,7 +320,7 @@ void do_dilate_and_shrink_warp(cv::Mat &m, const cv::Mat &greyscale,
          it != temp.end<double>(); ++it) {
       if (algebra::get_rounded(*it) > background) size_in_pixels++;
     }
-    cv::dilate(temp, mask, kernel);
+    do_dilate(temp, mask, kernel);
 
     // Compute mean of the grayscale inside the mask and its size
     double mean = 0.0;
@@ -180,12 +369,14 @@ void do_dilate_and_shrink_warp(cv::Mat &m, const cv::Mat &greyscale,
 
 void apply_threshold(cv::Mat &m, cv::Mat &result, double threshold) {
 
-  cv::Mat temp, temp2;
-  m.convertTo(temp, CV_32FC1);  // float, threshold does not work with doubles
-  // Remove everything below threshold
-  double dummy = 0.0;
-  cv::threshold(temp, temp2, threshold, dummy, cv::THRESH_TOZERO);
-  temp2.convertTo(result, CV_64FC1);
+  // Remove everything below threshold. Values are rounded to float
+  // precision, as before (this used cv::threshold, which does not work
+  // with doubles).
+  float t = static_cast<float>(threshold);
+  internal::do_transform(m, result, [t](double x) {
+    float v = static_cast<float>(x);
+    return v > t ? static_cast<double>(v) : 0.;
+  });
 }
 
 void do_combined_fill_holes_and_threshold(cv::Mat &m, cv::Mat &result,
@@ -402,18 +593,17 @@ void do_segmentation(const cv::Mat &m, cv::Mat &result,
                                        temp1,  // result with holes filled
                                        params.fill_holes_stddevs,
                                        params.threshold);
-  // opening
+  // opening (erosion followed by dilation), in floats as before
   temp1.convertTo(aux, CV_32FC1);
-  cv::morphologyEx(aux,   // input
-                   aux2,  // result, opened
-                   cv::MORPH_OPEN, params.opening_kernel);
-  // threshold the opened image to binary
-  double threshold = 0.0;  // for making binary images
-  cv::threshold(aux2, aux, threshold, params.binary_foreground,
-                cv::THRESH_BINARY);
-  // convert to ints to remove small objects
-  aux.convertTo(aux2, CV_16SC1);  // aux2 now is ints
-  cvIntMat Aux = aux2;
+  do_erode(aux, aux2, params.opening_kernel);
+  do_dilate(aux2, aux, params.opening_kernel);
+  // threshold the opened image to binary ints, to remove small objects
+  cvIntMat Aux(aux.rows, aux.cols);
+  for (int i = 0; i < aux.rows; ++i) {
+    for (int j = 0; j < aux.cols; ++j) {
+      Aux(i, j) = aux.at<float>(i, j) > 0.f ? params.binary_foreground : 0;
+    }
+  }
   do_remove_small_objects(Aux, params.remove_sizing_percentage,
                           params.binary_background, params.binary_foreground);
   apply_mask(m, result, Aux, 0.0);  // Aux is the mask
@@ -481,9 +671,8 @@ cvIntMat create_circular_mask(int rows, int cols, int radius) {
   if (radius < 0) IMP_THROW("Negative radius", ValueException);
   // cv::Mat mask = cv::Mat::zeros(rows, cols, CV_16UC1);
   cv::Mat mask = cv::Mat::zeros(rows, cols, CV_64FC1);
-  cv::Point center(floor(rows / 2.), floor(cols / 2.));
-  cv::Scalar color(100, 0, 0, 0);
-  cv::circle(mask, center, radius, color, -1);
+  // Note that the circle is centered at column rows/2 and row cols/2
+  do_draw_filled_circle(mask, floor(rows / 2.), floor(cols / 2.), radius, 100);
   return mask;
 }
 
@@ -511,25 +700,24 @@ Floats get_histogram(const cv::Mat &m, int bins) {
 void apply_variance_filter(const cv::Mat &input, cv::Mat &filtered,
                            int kernelsize) {
   // Compute the mean for each value with a filter
-  cv::Size ksize(kernelsize, kernelsize);
-  cv::Point anchor(-1, -1);
-  //  cv::boxFilter(input, filtered,input.depth(),
-  //                ksize,anchor,true,cv::BORDER_WRAP);
   // Get the squared means
   IMP_LOG_VERBOSE("Getting squared means" << std::endl);
 
-  cv::Mat means;
-  cv::boxFilter(input, means, input.depth(), ksize, anchor, true);
-  cv::Mat squared_means = means.mul(means);
+  auto square = [](double x) { return x * x; };
+  cv::Mat means, squared_means;
+  apply_box_filter(input, means, kernelsize);
+  internal::do_transform(means, squared_means, square);
 
   // Get the means of squares
   IMP_LOG_VERBOSE("Getting means of the squares" << std::endl);
 
-  cv::Mat squares = input.mul(input);
+  cv::Mat squares;
+  internal::do_transform(input, squares, square);
   // make filtered contain the means of the squares
-  cv::boxFilter(squares, filtered, squares.depth(), ksize, anchor, true);
+  apply_box_filter(squares, filtered, kernelsize);
   // Variance
-  filtered = filtered - squared_means;
+  internal::do_transform(filtered, squared_means, filtered,
+                         [](double a, double b) { return a - b; });
 
   IMP_LOG_VERBOSE("Adjusting variance for numerical instability " << std::endl);
   for (cvDoubleMatIterator it = filtered.begin<double>();
@@ -647,17 +835,18 @@ void do_morphologic_contrast_enhancement(const cv::Mat &m, cv::Mat &result,
                                          unsigned int iterations) {
   // Bovik, pg 143
 
-  cv::Mat dilated, eroded, condition;
+  cv::Mat dilated, eroded;
   cv::Mat temp;
-  m.convertTo(temp, CV_32FC1);  // dilate and erode don't work with doubles
+  m.convertTo(temp, CV_32FC1);  // in floats, as before
 
   for (unsigned int i = 0; i < iterations; ++i) {
-    cv::dilate(temp, dilated, kernel);
-    cv::erode(temp, eroded, kernel);
-    condition = (eroded + dilated) * 0.5;
+    do_dilate(temp, dilated, kernel);
+    do_erode(temp, eroded, kernel);
     for (int i = 0; i < temp.rows; ++i) {
       for (int j = 0; j < temp.cols; ++j) {
-        temp.at<float>(i, j) = temp.at<float>(i, j) < condition.at<float>(i, j)
+        float condition =
+            (eroded.at<float>(i, j) + dilated.at<float>(i, j)) * 0.5f;
+        temp.at<float>(i, j) = temp.at<float>(i, j) < condition
                                    ? eroded.at<float>(i, j)
                                    : dilated.at<float>(i, j);
       }
@@ -670,12 +859,16 @@ void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
                               const cv::Mat &kernel) {
   // Bovik, pg 147
 
-  cv::Mat dilated, eroded, condition;
+  cv::Mat dilated, eroded;
   cv::Mat temp;
-  m.convertTo(temp, CV_32FC1);  // dilate and erode don't work with doubles
-  cv::dilate(temp, dilated, kernel);
-  cv::erode(temp, eroded, kernel);
-  temp = dilated - eroded;
+  m.convertTo(temp, CV_32FC1);  // in floats, as before
+  do_dilate(temp, dilated, kernel);
+  do_erode(temp, eroded, kernel);
+  for (int i = 0; i < temp.rows; ++i) {
+    for (int j = 0; j < temp.cols; ++j) {
+      temp.at<float>(i, j) = dilated.at<float>(i, j) - eroded.at<float>(i, j);
+    }
+  }
   temp.convertTo(result, CV_64FC1);
 }
 
