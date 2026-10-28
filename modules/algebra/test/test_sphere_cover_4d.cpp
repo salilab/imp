@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
   IMP::algebra::SphereD<4> unit(IMP::algebra::get_zero_vector_d<4>(), 1.0);
   IMP::algebra::SphereD<4> other(VectorD<4>(1.0, -2.0, 0.5, 3.0), 2.5);
   // Hemisphere covers need at least 4 points (the basis vectors), and
-  // full sphere covers at least 8 (the basis vectors and their opposites)
+  // full sphere covers at least 8 (the basis vectors and their opposites),
+  // or an even number of points
   for (unsigned int n : {4, 5, 10, 30, 60}) {
     for (const IMP::algebra::SphereD<4> &s : {unit, other}) {
       check_cover(IMP::algebra::get_uniform_upper_hemisphere_cover(s, n), s, n,
@@ -60,6 +61,12 @@ int main(int argc, char *argv[]) {
                     false);
       }
     }
+  }
+  // Full sphere covers with fewer points than the basis vectors and their
+  // opposites
+  for (unsigned int n : {2, 4, 6}) {
+    check_cover(IMP::algebra::get_uniform_surface_cover(unit, n), unit, n,
+                false);
   }
   return 0;
 }

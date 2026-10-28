@@ -18,6 +18,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <IMP/algebra/vector_generators.h>
 #include <CGAL/Epick_d.h>
 #include <CGAL/Triangulation.h>
+#include <algorithm>
 #include <vector>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
@@ -85,7 +86,10 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
         }
       }
     }
-    for (unsigned int i = 0; i < (ALL ? 2 * D : D); ++i) {
+    // The first points (the basis vectors, and their opposites for a full
+    // sphere) are kept fixed; there may be fewer points than this
+    for (unsigned int i = 0; i < std::min<unsigned int>(n, ALL ? 2 * D : D);
+         ++i) {
       sums[i] = ret[i];
     }
     for (unsigned int i = (ALL ? 2 * D : D); i < ret.size(); ++i) {
