@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/FFToperations.h
  *  \brief Operations involving FFT
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FF_TOPERATIONS_H
@@ -12,6 +12,12 @@
 #include <IMP/log_macros.h>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+//! Get the smallest size >= n that can be transformed efficiently by FFT
+/** This is the smallest number >= n whose only prime factors are 2, 3 and 5
+    (the same as cv::getOptimalDFTSize).
+ */
+IMPEM2DEXPORT int get_optimal_dft_size(int n);
 
 /**
  * Transforms a matrix as is given by FFT functions, into a image

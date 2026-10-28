@@ -1,45 +1,192 @@
 /**
  *  \file FFToperations.cpp
  *  \brief operations involving FFT
- Copyright 2007-2022 IMP Inventors. All rights reserved.
+ Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/log.h"
 #include "IMP/Pointer.h"
+#include <fftw3.h>
+#include <algorithm>
+#include <complex>
+#include <vector>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+namespace {
+
+typedef std::complex<double> Complex;
+
+// Destroys an FFTW plan when it goes out of scope
+class FFTWPlan {
+  fftw_plan plan_;
+  FFTWPlan(const FFTWPlan &);
+  FFTWPlan &operator=(const FFTWPlan &);
+
+ public:
+  explicit FFTWPlan(fftw_plan plan) : plan_(plan) {
+    IMP_INTERNAL_CHECK(plan_, "FFTW could not create a plan");
+  }
+  ~FFTWPlan() { fftw_destroy_plan(plan_); }
+  void execute() { fftw_execute(plan_); }
+};
+
+/* Non-redundant half of the 2D DFT of a real rows x cols matrix, as used by
+   FFTW: rows x (cols/2 + 1) complex values, stored row-major. */
+struct HalfSpectrum {
+  int rows, cols, half_cols;
+  std::vector<Complex> data;
+  HalfSpectrum(int r, int c)
+      : rows(r), cols(c), half_cols(c / 2 + 1), data(r * (c / 2 + 1)) {}
+  Complex &operator()(int k, int l) { return data[k * half_cols + l]; }
+  const Complex &operator()(int k, int l) const {
+    return data[k * half_cols + l];
+  }
+};
+
+void check_is_double(const cv::Mat &m, const char *function) {
+  IMP_USAGE_CHECK(m.type() == CV_64FC1,
+                  "em2d:" << function << ": Matrix must be of type CV_64FC1");
+}
+
+// DFT of m, zero-padded to rows x cols
+HalfSpectrum get_forward_dft(const cv::Mat &m, int rows, int cols) {
+  std::vector<double> in(rows * cols, 0.);
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) {
+      in[i * cols + j] = m.at<double>(i, j);
+    }
+  }
+  HalfSpectrum H(rows, cols);
+  FFTWPlan plan(fftw_plan_dft_r2c_2d(
+      rows, cols, &in[0], reinterpret_cast<fftw_complex *>(&H.data[0]),
+      FFTW_ESTIMATE));
+  plan.execute();
+  return H;
+}
+
+/* Inverse DFT of H, scaled by 1/(rows*cols). Stores the top-left
+   result.rows x result.cols values in result, which must be allocated.
+   H is used as scratch space. */
+void get_inverse_dft(HalfSpectrum &H, cv::Mat &result) {
+  std::vector<double> out(H.rows * H.cols);
+  FFTWPlan plan(fftw_plan_dft_c2r_2d(
+      H.rows, H.cols, reinterpret_cast<fftw_complex *>(&H.data[0]), &out[0],
+      FFTW_ESTIMATE));
+  plan.execute();
+  double scale = 1. / (static_cast<double>(H.rows) * H.cols);
+  for (int i = 0; i < result.rows; ++i) {
+    for (int j = 0; j < result.cols; ++j) {
+      result.at<double>(i, j) = out[i * H.cols + j] * scale;
+    }
+  }
+}
+
+// A := A * conj(B), the equivalent of cv::mulSpectrums(A, B, A, 0, true)
+void do_multiply_by_conjugate(HalfSpectrum &A, const HalfSpectrum &B) {
+  for (unsigned int i = 0; i < A.data.size(); ++i) {
+    A.data[i] *= std::conj(B.data[i]);
+  }
+}
+
+/* OpenCV's packed (CCS) format for the DFT of a real rows x cols matrix
+   stores a rows x cols real matrix. Columns 0 and (if cols is even) cols-1
+   hold the DFT columns l=0 and l=cols/2, which are conjugate-symmetric in
+   k, so only half of each is stored: Re(0), Re(1), Im(1), Re(2), Im(2), ...
+   and Re(rows/2) last if rows is even. The other columns hold Re, Im pairs
+   of DFT columns l = 1 .. (cols-1)/2 for every row. */
+void do_pack_column(const HalfSpectrum &H, int l, cv::Mat &ccs, int col) {
+  ccs.at<double>(0, col) = H(0, l).real();
+  for (int k = 1; k <= (H.rows - 1) / 2; ++k) {
+    ccs.at<double>(2 * k - 1, col) = H(k, l).real();
+    ccs.at<double>(2 * k, col) = H(k, l).imag();
+  }
+  if (H.rows % 2 == 0) {
+    ccs.at<double>(H.rows - 1, col) = H(H.rows / 2, l).real();
+  }
+}
+
+void do_unpack_column(const cv::Mat &ccs, int col, HalfSpectrum &H, int l) {
+  H(0, l) = Complex(ccs.at<double>(0, col), 0.);
+  for (int k = 1; k <= (H.rows - 1) / 2; ++k) {
+    Complex c(ccs.at<double>(2 * k - 1, col), ccs.at<double>(2 * k, col));
+    H(k, l) = c;
+    H(H.rows - k, l) = std::conj(c);
+  }
+  if (H.rows % 2 == 0) {
+    H(H.rows / 2, l) = Complex(ccs.at<double>(H.rows - 1, col), 0.);
+  }
+}
+
+// Stores the top-left ccs.rows x ccs.cols values of H in CCS format
+void do_pack_ccs(const HalfSpectrum &H, cv::Mat &ccs) {
+  cv::Mat full(H.rows, H.cols, CV_64FC1);
+  do_pack_column(H, 0, full, 0);
+  for (int k = 0; k < H.rows; ++k) {
+    for (int l = 1; l <= (H.cols - 1) / 2; ++l) {
+      full.at<double>(k, 2 * l - 1) = H(k, l).real();
+      full.at<double>(k, 2 * l) = H(k, l).imag();
+    }
+  }
+  if (H.cols % 2 == 0) {
+    do_pack_column(H, H.cols / 2, full, H.cols - 1);
+  }
+  full(cv::Rect(0, 0, ccs.cols, ccs.rows)).copyTo(ccs);
+}
+
+HalfSpectrum get_unpacked_ccs(const cv::Mat &ccs) {
+  HalfSpectrum H(ccs.rows, ccs.cols);
+  do_unpack_column(ccs, 0, H, 0);
+  for (int k = 0; k < H.rows; ++k) {
+    for (int l = 1; l <= (H.cols - 1) / 2; ++l) {
+      H(k, l) = Complex(ccs.at<double>(k, 2 * l - 1),
+                        ccs.at<double>(k, 2 * l));
+    }
+  }
+  if (H.cols % 2 == 0) {
+    do_unpack_column(ccs, H.cols - 1, H, H.cols / 2);
+  }
+  return H;
+}
+
+bool get_is_5_smooth(int n) {
+  const int factors[] = {2, 3, 5};
+  for (int f : factors) {
+    while (n % f == 0) n /= f;
+  }
+  return n == 1;
+}
+
+}  // namespace
+
+int get_optimal_dft_size(int n) {
+  IMP_USAGE_CHECK(n >= 0, "em2d:get_optimal_dft_size: Negative size");
+  int size = std::max(n, 1);
+  while (!get_is_5_smooth(size)) ++size;
+  return size;
+}
 
 void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
   IMP_LOG_VERBOSE("Computing 2D autocorrelation no preprocessing" << std::endl);
   IMP_USAGE_CHECK(((M.rows != 0) && (M.cols != 0)),
                   "em2d:get_autocorrelation2d: Output matrix is empty");
-  cv::Mat temp;
-  cv::mulSpectrums(M, M, temp, 0, true);
-  cv::idft(temp, temp, cv::DFT_SCALE + cv::DFT_REAL_OUTPUT);
-  temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
+  check_is_double(M, "get_autocorrelation2d_no_preprocessing");
+  HalfSpectrum H = get_unpacked_ccs(M);
+  do_multiply_by_conjugate(H, H);
+  get_inverse_dft(H, corr);
   do_matrix_to_image_flip(corr);
 }
 
 void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr) {
   IMP_LOG_VERBOSE("Computing 2D autocorrelation " << std::endl);
-  // resize the output array if needed
-  cv::Size dftSize;
-  // compute the optimal size for faster DFT transform
-  dftSize.width = cv::getOptimalDFTSize(m.cols);
-  dftSize.height = cv::getOptimalDFTSize(m.rows);
-  // temporary
-  cv::Mat tempA(dftSize, m.type(), cv::Scalar::all(0));
-  // copy A to the top-left corner of tempA
-  cv::Mat roiA(tempA, cv::Rect(0, 0, m.cols, m.rows));
-  m.copyTo(roiA);
-  cv::dft(tempA, tempA, 0, m.rows);
-  cv::Mat temp;
-  cv::mulSpectrums(tempA, tempA, temp, 0, true);
-
-  cv::idft(temp, temp, cv::DFT_SCALE + cv::DFT_REAL_OUTPUT);
+  check_is_double(m, "get_autocorrelation2d");
+  // pad to the optimal size for a faster DFT
+  HalfSpectrum H = get_forward_dft(m, get_optimal_dft_size(m.rows),
+                                   get_optimal_dft_size(m.cols));
+  do_multiply_by_conjugate(H, H);
   corr.create(m.rows, m.cols, m.type());
-  temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
+  get_inverse_dft(H, corr);
   em2d::do_matrix_to_image_flip(corr);
 }
 
@@ -49,40 +196,16 @@ void get_correlation2d(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 
   IMP_USAGE_CHECK(((A.rows == B.rows) && (A.cols == B.cols)),
                   "em2d:get_correlation2d: Matrices have different size.");
-  // resize the output array if needed
+  check_is_double(A, "get_correlation2d");
+  check_is_double(B, "get_correlation2d");
+  // pad to the optimal size for a faster DFT
+  int rows = get_optimal_dft_size(A.rows);
+  int cols = get_optimal_dft_size(A.cols);
+  HalfSpectrum HA = get_forward_dft(A, rows, cols);
+  HalfSpectrum HB = get_forward_dft(B, rows, cols);
+  do_multiply_by_conjugate(HA, HB);
   corr.create(A.rows, A.cols, A.type());
-  cv::Size dftSize;
-  // compute the optimal size for faster DFT transform
-  dftSize.width = cv::getOptimalDFTSize(A.cols);
-  dftSize.height = cv::getOptimalDFTSize(A.rows);
-
-  // temporary matrices
-  cv::Mat tempA(dftSize, A.type(), cv::Scalar::all(0));
-  cv::Mat tempB(dftSize, B.type(), cv::Scalar::all(0));
-
-  // copy A and B to the top-left corners of tempA and tempB, respectively
-  cv::Mat roiA(tempA, cv::Rect(0, 0, A.cols, A.rows));
-  A.copyTo(roiA);
-  cv::Mat roiB(tempB, cv::Rect(0, 0, B.cols, B.rows));
-  B.copyTo(roiB);
-
-  // FFT the padded A & B in-place;
-  // use "nonzeroRows" hint for faster processing
-  cv::dft(tempA, tempA, 0, A.rows);
-  cv::dft(tempB, tempB, 0, B.rows);
-
-  // multiply the spectrums;
-  // the function handles packed spectrum representations well
-  cv::mulSpectrums(tempA, tempB, tempA, 0, true);
-
-  // inverse transform
-  // Even though all the result rows will be non-zero,
-  // we need only the first corr.rows of them, and thus we
-  // pass nonzeroRows == corr.rows
-  cv::dft(tempA, tempA, cv::DFT_INVERSE + cv::DFT_SCALE, corr.rows);
-
-  // now copy the result back to C.
-  tempA(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
+  get_inverse_dft(HA, corr);
   do_matrix_to_image_flip(corr);
 }
 
@@ -93,73 +216,52 @@ void get_correlation2d_no_preprocessing(const cv::Mat &M1, const cv::Mat &M2,
 
   IMP_USAGE_CHECK(((M1.rows == M2.rows) && (M1.cols == M2.cols)),
                   "em2d:get_correlation2d: Matrices have different size.");
-
-  cv::Mat temp;
-  cv::mulSpectrums(M1, M2, temp, 0, true);
-  cv::idft(temp, temp, cv::DFT_SCALE + cv::DFT_REAL_OUTPUT);
-  // now copy the result to corr
-  temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
+  check_is_double(M1, "get_correlation2d_no_preprocessing");
+  check_is_double(M2, "get_correlation2d_no_preprocessing");
+  HalfSpectrum H1 = get_unpacked_ccs(M1);
+  HalfSpectrum H2 = get_unpacked_ccs(M2);
+  do_multiply_by_conjugate(H1, H2);
+  get_inverse_dft(H1, corr);
   do_matrix_to_image_flip(corr);
 }
 
 void get_fft_using_optimal_size(const cv::Mat &m, cv::Mat &M) {
-  // get the optimal size
-  cv::Size dftSize;
-  dftSize.width = cv::getOptimalDFTSize(m.cols);
-  dftSize.height = cv::getOptimalDFTSize(m.rows);
-  // create a temporal matrix with the optimal size and copy m to the region
-  cv::Mat temp(dftSize, m.type(), cv::Scalar::all(0));
-  // copy A and B to the top-left corners of tempA and tempB, respectively
-  cv::Mat region(temp, cv::Rect(0, 0, m.cols, m.rows));
-  m.copyTo(region);
-  cv::dft(temp, temp, 0, m.rows);  // quick fft given the optimal size
-  // Copy to M
-  temp(cv::Rect(0, 0, m.cols, m.rows)).copyTo(M);
+  check_is_double(m, "get_fft_using_optimal_size");
+  HalfSpectrum H = get_forward_dft(m, get_optimal_dft_size(m.rows),
+                                   get_optimal_dft_size(m.cols));
+  // Keep only the top-left region of the packed spectrum, with the size of m
+  M.create(m.rows, m.cols, CV_64FC1);
+  do_pack_ccs(H, M);
 }
 
 void get_spectrum(const cv::Mat &m, cv::Mat &real, cv::Mat &imag) {
-  cv::Size dftSize;
-  // compute the optimal size for faster DFT transform
-  dftSize.width = cv::getOptimalDFTSize(m.cols);
-  dftSize.height = cv::getOptimalDFTSize(m.rows);
-  // temporary
-
-  cv::Mat real_temp(dftSize, m.type(), cv::Scalar::all(0));
-  cv::Mat roiA(real_temp, cv::Rect(0, 0, m.cols, m.rows));
-
+  check_is_double(m, "get_spectrum");
   // Shift to get a centered spectrum
+  cv::Mat shifted(m.rows, m.cols, CV_64FC1);
   for (int i = 0; i < m.rows; ++i) {
     for (int j = 0; j < m.cols; ++j) {
       if ((i + j) % 2 == 1) {  // the sum is an odd number
-        roiA.at<double>(i, j) = (-1) * m.at<double>(i, j);
+        shifted.at<double>(i, j) = (-1) * m.at<double>(i, j);
       } else {
-        roiA.at<double>(i, j) = m.at<double>(i, j);
+        shifted.at<double>(i, j) = m.at<double>(i, j);
       }
     }
   }
-
-  cv::Mat imag_temp(dftSize, m.type(), cv::Scalar::all(0.0));
-  // Merge and dft
-  cv::Mat temp, TEMP;
-  cv::Mat imgs[] = {real_temp, imag_temp};
-  cv::merge(imgs, 2, temp);
-  cv::dft(temp, TEMP, cv::DFT_COMPLEX_OUTPUT, m.rows);
-  // Real and imaginary
-  // recover real part from the first channel
-  // both source and destination matrices must be allocated
-  int rows = temp.rows;
-  int cols = temp.cols;
-  cv::Mat TEMP_1st_channel(rows, cols, m.type());  // real
-  cv::Mat TEMP_2nd_channel(rows, cols, m.type());  // imag
-  cv::Mat output[] = {TEMP_1st_channel, TEMP_2nd_channel};
-  const int fromTo[] = {0, 0,
-                        1, 1};  // see mixChannels help, continuous numbers
-  cv::mixChannels(&TEMP, 1, output, 2, fromTo, 2);
-  // resize the output arrays if needed
+  int rows = get_optimal_dft_size(m.rows);
+  int cols = get_optimal_dft_size(m.cols);
+  HalfSpectrum H = get_forward_dft(shifted, rows, cols);
+  // Recover the full spectrum using that it is conjugate-symmetric
   real.create(m.rows, m.cols, m.type());
   imag.create(m.rows, m.cols, m.type());
-  TEMP_1st_channel(cv::Rect(0, 0, real.cols, real.rows)).copyTo(real);
-  TEMP_2nd_channel(cv::Rect(0, 0, imag.cols, imag.rows)).copyTo(imag);
+  for (int k = 0; k < m.rows; ++k) {
+    for (int l = 0; l < m.cols; ++l) {
+      Complex c = l < H.half_cols
+                      ? H(k, l)
+                      : std::conj(H((rows - k) % rows, cols - l));
+      real.at<double>(k, l) = c.real();
+      imag.at<double>(k, l) = c.imag();
+    }
+  }
 }
 
 void do_matrix_to_image_flip(cv::Mat &m) {

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/PolarResamplingParameters.h
  *  \brief Functions related with rotations in em2d
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
@@ -9,6 +9,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/FFToperations.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"
 #include "IMP/log.h"
@@ -53,7 +54,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
     matrix_cols_ = cols;
     ending_radius_ =
         std::min(rows / 2., cols / 2.);  // maximum radius, half the size
-    n_rings_ = cv::getOptimalDFTSize((int)ending_radius_);
+    n_rings_ = get_optimal_dft_size((int)ending_radius_);
     radius_step_ =
         (ending_radius_ - starting_radius_) / (static_cast<double>(n_rings_));
     parameters_set_ = true;
@@ -94,7 +95,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   //! use for the resampling, and the function computes the optimal number
   //! for an FFT based on this approximated number
   void set_estimated_number_of_angles(unsigned int aprox_value) {
-    n_angles_ = cv::getOptimalDFTSize(aprox_value);
+    n_angles_ = get_optimal_dft_size(aprox_value);
     angle_step_ = (2 * PI) / static_cast<double>(n_angles_);
   }
 
