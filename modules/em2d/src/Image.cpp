@@ -115,10 +115,10 @@ void add_noise(Image *im1, double op1, double op2, const String &mode,
 }
 
 void do_subtract_images(Image *first, Image *second, Image *result) {
-  DoubleMatrix result_matrix;
-  internal::do_transform(first->get_data(), second->get_data(), result_matrix,
-                         [](double a, double b) { return a - b; });
-  result->set_data(result_matrix);
+  const DoubleMatrix &a = first->get_data(), &b = second->get_data();
+  IMP_USAGE_CHECK(a.rows() == b.rows() && a.cols() == b.cols(),
+                  "do_subtract_images: Images have different size.");
+  result->set_data(a - b);
 }
 
 void do_remove_small_objects(Image *input, double percentage, int background,

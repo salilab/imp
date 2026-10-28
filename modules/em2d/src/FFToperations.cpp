@@ -123,11 +123,8 @@ struct HalfSpectrum {
 // DFT of m, zero-padded to rows x cols
 HalfSpectrum get_forward_dft(const DoubleMatrix &m, int rows, int cols) {
   RealArray in(rows * cols, 0.);
-  for (int i = 0; i < m.rows(); ++i) {
-    for (int j = 0; j < m.cols(); ++j) {
-      in[i * cols + j] = m(i, j);
-    }
-  }
+  Eigen::Map<DoubleMatrix>(in.data(), rows, cols)
+      .topLeftCorner(m.rows(), m.cols()) = m;
   HalfSpectrum H(rows, cols);
   fftw_execute_dft_r2c(get_plan_cache().get_forward(rows, cols), &in[0],
                        reinterpret_cast<fftw_complex *>(&H.data[0]));
@@ -142,11 +139,9 @@ void get_inverse_dft(HalfSpectrum &H, DoubleMatrix &result) {
   fftw_execute_dft_c2r(get_plan_cache().get_inverse(H.rows, H.cols),
                        reinterpret_cast<fftw_complex *>(&H.data[0]), &out[0]);
   double scale = 1. / (static_cast<double>(H.rows) * H.cols);
-  for (int i = 0; i < result.rows(); ++i) {
-    for (int j = 0; j < result.cols(); ++j) {
-      result(i, j) = out[i * H.cols + j] * scale;
-    }
-  }
+  result = Eigen::Map<DoubleMatrix>(out.data(), H.rows, H.cols)
+               .topLeftCorner(result.rows(), result.cols()) *
+           scale;
 }
 
 // A := A * conj(B), the equivalent of OpenCV's mulSpectrums(A, B, A, 0, true)

@@ -62,6 +62,40 @@ class Tests(IMP.test.TestCase):
                 for j in range(4):
                     self.assertEqual(img2(i, j), img(i, j))
 
+    def test_read_and_write_byte_swapped_images(self):
+        """Test read/write of byte-swapped Spider images"""
+        normal_rw = em2d.SpiderImageReaderWriter()
+        # filename, skip_type_check, force_reversed, skip_extra_checkings
+        swapped_rw = em2d.SpiderImageReaderWriter("", False, True, True)
+        img = em2d.Image(
+            self.get_input_file_name("1z5s-projection-0.spi"), normal_rw)
+        rows = int(img.get_header().get_number_of_rows())
+        cols = int(img.get_header().get_number_of_columns())
+        with IMP.test.temporary_directory() as tmpdir:
+            normal_fn = os.path.join(tmpdir, "normal.spi")
+            swapped_fn = os.path.join(tmpdir, "swapped.spi")
+            img.write(normal_fn, normal_rw)
+            img.write(swapped_fn, swapped_rw)
+            with open(normal_fn, 'rb') as fh:
+                normal = fh.read()
+            with open(swapped_fn, 'rb') as fh:
+                swapped = fh.read()
+            # The image data (at the end of the file, after the header) are
+            # stored as floats, with the bytes of each reversed
+            self.assertEqual(len(normal), len(swapped))
+            data_start = len(normal) - rows * cols * 4
+            for k in range(data_start, len(normal), 4):
+                self.assertEqual(normal[k:k + 4], swapped[k:k + 4][::-1])
+            # The byte-swapped image reads back to the same values
+            img2 = em2d.Image(swapped_fn, swapped_rw)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_rows()), rows)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_columns()), cols)
+            for i in range(rows):
+                for j in range(cols):
+                    self.assertEqual(img(i, j), img2(i, j))
+
     def test_variance_filter(self):
         """Test that the variance filter is working"""
         srw = em2d.SpiderImageReaderWriter()

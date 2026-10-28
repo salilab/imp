@@ -167,29 +167,6 @@ void get_from_8bit(const UCharMatrix &pixels, DoubleMatrix &data);
 void get_template_correlation(const DoubleMatrix &m, const DoubleMatrix &templ,
                               DoubleMatrix &corr);
 
-//! Set result(i, j) = f(m(i, j)) for every element of a matrix of doubles
-/** result is allocated if needed, and can be m itself. */
-template <class F>
-void do_transform(const DoubleMatrix &m, DoubleMatrix &result, F f) {
-  result.resize(m.rows(), m.cols());
-  for (Eigen::Index i = 0; i < m.size(); ++i) {
-    result.data()[i] = f(m.data()[i]);
-  }
-}
-
-//! Set result(i, j) = f(a(i, j), b(i, j)) for every element of two matrices
-/** result is allocated if needed, and can be a or b. */
-template <class F>
-void do_transform(const DoubleMatrix &a, const DoubleMatrix &b,
-                  DoubleMatrix &result, F f) {
-  IMP_USAGE_CHECK(a.rows() == b.rows() && a.cols() == b.cols(),
-                  "em2d:do_transform: Matrices have different size.");
-  result.resize(a.rows(), a.cols());
-  for (Eigen::Index i = 0; i < a.size(); ++i) {
-    result.data()[i] = f(a.data()[i], b.data()[i]);
-  }
-}
-
 IMPEM2D_END_INTERNAL_NAMESPACE
 
 #endif /* IMPEM2D_INTERNAL_IMAGE_PROCESSING_HELPER_H */

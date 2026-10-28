@@ -155,13 +155,10 @@ inline void do_place(DoubleMatrix &mask, DoubleMatrix &m,
   int row = vi + center[0];
   int col = vj + center[1];
 
-  for (int i = start_i; i <= end_i; ++i) {
-    int p = i + row;
-    for (int j = start_j; j <= end_j; ++j) {
-      m(p, j + col) +=
-          mask(i + mcenter[0], j + mcenter[1]);
-    }
-  }
+  if (end_i < start_i || end_j < start_j) return;
+  int n_rows = end_i - start_i + 1, n_cols = end_j - start_j + 1;
+  m.block(start_i + row, start_j + col, n_rows, n_cols) +=
+      mask.block(start_i + mcenter[0], start_j + mcenter[1], n_rows, n_cols);
 }
 
 //! Management of projection masks

@@ -373,8 +373,7 @@ void do_dilate_and_shrink_warp(DoubleMatrix &m, const DoubleMatrix &greyscale,
       }
     }
     mean /= (double)new_size_in_pixels++;
-    internal::do_transform(mask, temp, boundary,
-                           [](double a, double b) { return a - b; });
+    boundary = mask - temp;
 
     //    xxx.set_data(boundary);
     //    xxx.write("boundary.spi",srw);
@@ -412,7 +411,7 @@ void apply_threshold(DoubleMatrix &m, DoubleMatrix &result, double threshold) {
   // precision, as before (this used cv::threshold, which does not work
   // with doubles).
   float t = static_cast<float>(threshold);
-  internal::do_transform(m, result, [t](double x) {
+  result = m.unaryExpr([t](double x) {
     float v = static_cast<float>(x);
     return v > t ? static_cast<double>(v) : 0.;
   });
@@ -529,24 +528,18 @@ void do_fill_holes(const DoubleMatrix &m, DoubleMatrix &result, double h) {
   internal::get_min_and_max(m, &min_m, &max_m);
   double max_plus_h = max_m + h;
   DoubleMatrix mask, marker;
-  // this does max_plus_h-m
-  internal::do_transform(m, mask,
-                         [max_plus_h](double x) { return max_plus_h - x; });
+  mask = max_plus_h - m;
   // The result is the marker. It should be max_plus_m - m - h, but is the same
-  // this does max_m-m
-  internal::do_transform(m, marker, [max_m](double x) { return max_m - x; });
+  marker = max_m - m;
   do_morphologic_reconstruction(mask, marker, 8);
-  // result = max_plus_h - marker
-  internal::do_transform(marker, result,
-                         [max_plus_h](double x) { return max_plus_h - x; });
+  result = max_plus_h - marker;
 }
 
 void get_domes(DoubleMatrix &m, DoubleMatrix &result, double h) {
   DoubleMatrix marker;
-  internal::do_transform(m, marker, [h](double x) { return x - h; });
+  marker = m - h;
   do_morphologic_reconstruction(m, marker, 8);
-  internal::do_transform(m, marker, result,
-                         [](double a, double b) { return a - b; });
+  result = m - marker;
 }
 
 void get_diffusion_filtering_partial_derivative(const DoubleMatrix &m,
@@ -602,8 +595,7 @@ void apply_diffusion_filter(const DoubleMatrix &m, DoubleMatrix &result,
   for (unsigned int t = 0; t < time_steps; ++t) {
     get_diffusion_filtering_partial_derivative(result, derivative_time, dx, dy,
                                                angle);
-    internal::do_transform(result, derivative_time, result,
-                           [dt](double r, double d) { return r + d * dt; });
+    result += derivative_time * dt;
   }
 }
 
@@ -732,27 +724,20 @@ void apply_variance_filter(const DoubleMatrix &input, DoubleMatrix &filtered,
   // Get the squared means
   IMP_LOG_VERBOSE("Getting squared means" << std::endl);
 
-  auto square = [](double x) { return x * x; };
-  DoubleMatrix means, squared_means;
+  DoubleMatrix means;
   apply_box_filter(input, means, kernelsize);
-  internal::do_transform(means, squared_means, square);
+  DoubleMatrix squared_means = means.square();
 
   // Get the means of squares
   IMP_LOG_VERBOSE("Getting means of the squares" << std::endl);
 
-  DoubleMatrix squares;
-  internal::do_transform(input, squares, square);
   // make filtered contain the means of the squares
-  apply_box_filter(squares, filtered, kernelsize);
+  apply_box_filter(input.square(), filtered, kernelsize);
   // Variance
-  internal::do_transform(filtered, squared_means, filtered,
-                         [](double a, double b) { return a - b; });
+  filtered -= squared_means;
 
   IMP_LOG_VERBOSE("Adjusting variance for numerical instability " << std::endl);
-  for (double *it = filtered.data();
-       it != filtered.data() + filtered.size(); ++it) {
-    if (*it < 0) *it = 0;
-  }
+  filtered = (filtered < 0).select(0., filtered);
 }
 
 IMP_GCC_PUSH_POP(diagnostic push)
@@ -820,14 +805,9 @@ void do_normalize(DoubleMatrix &m) {
   internal::get_mean_and_stddev(m, mean, stddev);
   IMP_LOG_VERBOSE("Matrix of mean: " << mean << " stddev " << stddev
                                      << " normalized. " << std::endl);
-  // Write to a new matrix, as before, rather than changing any data that
-  // m shares with other matrices. Multiply by 1/stddev rather than dividing,
-  // as OpenCV's m / stddev did, to get the same results.
-  DoubleMatrix normalized;
-  internal::do_transform(m, normalized, [mean, stddev](double x) {
-    return (x - mean) * (1. / stddev);
-  });
-  m = normalized;
+  // Multiply by 1/stddev rather than dividing, as OpenCV's m / stddev did, to
+  // get the same results as before.
+  m = (m - mean) * (1. / stddev);
 }
 
 //! Transform a matrix (the translation is interpreted as cols,rows)
@@ -862,17 +842,12 @@ void get_transformed(const DoubleMatrix &input, DoubleMatrix &transformed,
   transformed = out;
 }
 
-// Using Centered Mat does not allow the first argument to be const.
-void do_extend_borders(DoubleMatrix &orig, DoubleMatrix &dst,
+void do_extend_borders(const DoubleMatrix &orig, DoubleMatrix &dst,
                        unsigned int pix) {
-  dst = DoubleMatrix::Zero(orig.rows() + 2 * pix, orig.cols() + 2 * pix);
-  internal::CenteredMat Orig(orig);
-  internal::CenteredMat Dst(dst);
-  for (int i = Orig.get_start(0); i <= Orig.get_end(0); ++i) {
-    for (int j = Orig.get_start(1); j <= Orig.get_end(1); ++j) {
-      Dst(i, j) = Orig(i, j);
-    }
-  }
+  DoubleMatrix out = DoubleMatrix::Zero(orig.rows() + 2 * pix,
+                                        orig.cols() + 2 * pix);
+  out.block(pix, pix, orig.rows(), orig.cols()) = orig;
+  dst = out;
 }
 
 void do_morphologic_contrast_enhancement(const DoubleMatrix &m,

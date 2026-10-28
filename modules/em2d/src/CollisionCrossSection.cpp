@@ -67,12 +67,7 @@ void CollisionCrossSection::set_model_particles(
 
 double CollisionCrossSection::get_projected_area(const DoubleMatrix &m) const {
   // compute the ccs
-  unsigned int pixels_above_zero = 0;
-  for (int i = 0; i < m.rows(); ++i) {
-    for (int j = 0; j < m.cols(); ++j) {
-      if (m(i, j) > 0) pixels_above_zero++;
-    }
-  }
+  unsigned int pixels_above_zero = (m > 0).count();
   return pixels_above_zero * pixel_size_ * pixel_size_;
 }
 

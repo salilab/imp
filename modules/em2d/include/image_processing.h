@@ -315,8 +315,8 @@ IMPEM2DEXPORT void get_transformed(const DoubleMatrix &input,
  \param[in] dst The image destination
  \param[in] pix number of pixels to extend the borders
 */
-IMPEM2DEXPORT void do_extend_borders(DoubleMatrix &orig, DoubleMatrix &dst,
-                                     unsigned int pix);
+IMPEM2DEXPORT void do_extend_borders(const DoubleMatrix &orig,
+                                     DoubleMatrix &dst, unsigned int pix);
 
 /*! Applies a threshold to an image
   `threshold` is a value such that all pixels below this value are set to zero

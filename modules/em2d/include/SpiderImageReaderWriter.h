@@ -107,18 +107,13 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
     // Adjust size of the matrix according to the header
     unsigned int rows = (int)header.get_number_of_rows();
     unsigned int cols = (int)header.get_number_of_columns();
-    data.resize(rows, cols);
-    // Read with casting (data are stored in row-major order)
-    float aux;
-    for (double *it = data.data(); it != data.data() + data.size(); ++it) {
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        in.read(reinterpret_cast<char *>(&aux), sizeof(float));
-      } else {
-        algebra::reversed_read(reinterpret_cast<char *>(&aux), sizeof(float), 1,
-                               in, true);
-      }
-      (*it) = static_cast<double>(aux);
-    }
+    // Read with casting (data are stored as floats, in row-major order)
+    Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        floats = Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic,
+                              Eigen::RowMajor>::Zero(rows, cols);
+    algebra::reversed_read(floats.data(), sizeof(float), floats.size(), in,
+                           force_reversed_ ^ algebra::get_is_big_endian());
+    data = floats.cast<double>();
     in.close();
   }
 
@@ -135,17 +130,11 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
     //! The image header is already in Spider format, just write it
     header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
 
-    float aux;
-    for (const double *it = data.data(); it != data.data() + data.size();
-         ++it) {
-      aux = (float)(*it);
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        out.write(reinterpret_cast<char *>(&aux), sizeof(float));
-      } else {
-        algebra::reversed_write(reinterpret_cast<char *>(&aux), sizeof(float),
-                                1, out, true);
-      }
-    }
+    // Write as floats, in row-major order
+    Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        floats = data.cast<float>();
+    algebra::reversed_write(floats.data(), sizeof(float), floats.size(), out,
+                            force_reversed_ ^ algebra::get_is_big_endian());
     out.close();
   }
 
