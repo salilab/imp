@@ -17,6 +17,7 @@
 #include "IMP/random.h"
 #include "boost/random.hpp"
 #include "boost/version.hpp"
+#include <algorithm>
 #include <list>
 #include <queue>
 #include <cmath>
@@ -446,6 +447,7 @@ cvIntMat create_circular_mask(int rows, int cols, int radius) {
 }
 
 Floats get_histogram(const cv::Mat &m, int bins) {
+  IMP_USAGE_CHECK(bins > 0, "get_histogram: Number of bins must be positive");
   Floats histogram(bins);
   double min, max;
   internal::get_min_and_max(m, &min, &max);
@@ -454,7 +456,12 @@ Floats get_histogram(const cv::Mat &m, int bins) {
   long n_points = m.rows * m.cols;
   for (cvDoubleConstMatIterator it = m.begin<double>(); it != m.end<double>();
        ++it) {
-    int index = floor((*it - min) / step);
+    // The maximum value is on the upper edge of the last bin, so belongs in
+    // it. If all values are the same (step is 0), use the first bin.
+    int index = 0;
+    if (step > 0) {
+      index = std::min(static_cast<int>(floor((*it - min) / step)), bins - 1);
+    }
     histogram[index] += 1.f / static_cast<double>(n_points);
   }
   return histogram;
