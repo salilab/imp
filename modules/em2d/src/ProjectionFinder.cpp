@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.cpp
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
@@ -504,11 +504,7 @@ double ProjectionFinder::get_fine_registration_time() const {
 
 void ProjectionFinder::do_preprocess_for_fast_coarse_registration(
     const cv::Mat &m, algebra::Vector2D &center, cv::Mat &POLAR_AUTOC) {
-  // Make the matrix positive to compute the weighted centroid
-  double min_value = 0;
-  cv::minMaxLoc(m, &min_value);
   cv::Mat result;
-  result -= min_value;
   center = internal::get_weighted_centroid(m);
   // Center the image in the weighted centroid
   algebra::Transformation2D T((-1) * center);

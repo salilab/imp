@@ -1,13 +1,14 @@
 /*!
  *  \file Image.cpp
  *  \brief Management of IMP images for Electron Microscopy
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/Pointer.h"
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -62,9 +63,8 @@ void Image::update_header() {
 }
 
 FloatRange Image::get_min_and_max_values() const {
-  cv::Point minLoc, maxLoc;  // dummy here
   double min, max;
-  cv::minMaxLoc(data_, &min, &max, &minLoc, &maxLoc);
+  internal::get_min_and_max(data_, &min, &max);
   return FloatRange(min, max);
 }
 
@@ -96,7 +96,7 @@ void do_normalize(Image *im, bool force) {
     im->get_header().set_fAv(0.0);
     im->get_header().set_fSig(1.0);
     double minVal, maxVal;
-    cv::minMaxLoc(im->get_data(), &minVal, &maxVal);
+    internal::get_min_and_max(im->get_data(), &minVal, &maxVal);
     im->get_header().set_fFmin(minVal);
     im->get_header().set_fFmax(maxVal);
   }
@@ -114,7 +114,8 @@ void add_noise(Image *im1, double op1, double op2, const String &mode,
 
 void do_subtract_images(Image *first, Image *second, Image *result) {
   cv::Mat result_matrix;
-  cv::subtract(first->get_data(), second->get_data(), result_matrix);
+  internal::do_transform(first->get_data(), second->get_data(), result_matrix,
+                         [](double a, double b) { return a - b; });
   result->set_data(result_matrix);
 }
 

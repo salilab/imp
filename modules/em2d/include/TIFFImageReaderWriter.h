@@ -2,7 +2,7 @@
  *  \file IMP/em2d/TIFFImageReaderWriter.h
  *  \brief Management of reading/writing TIFF images
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,7 @@
 #define IMPEM2D_TIFF_IMAGE_READER_WRITER_H
 
 #include "IMP/em2d/ImageReaderWriter.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include <boost/filesystem.hpp>
 #include <IMP/log_macros.h>
 
@@ -89,15 +90,13 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
     // Convert the data value to 16-bit so it can be written as TIFF
     cv::Mat TIFF_data;
     double max, min;
-    cv::minMaxLoc(data, &min, &max);
+    internal::get_min_and_max(data, &min, &max);
     double TIFF_max = 255;
     double TIFF_min = 0;
     double alpha = (TIFF_max - TIFF_min) / (max - min);
     double beta = TIFF_min - alpha * min;
     data.convertTo(TIFF_data, CV_8UC1, alpha, beta);
     // write image
-    cv::minMaxLoc(TIFF_data, &min, &max);
-
     cv::imwrite(filename, TIFF_data);
   }
 

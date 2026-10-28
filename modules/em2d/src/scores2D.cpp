@@ -2,7 +2,7 @@
  *  \file scores2D.cpp
  *  \brief Scoring functions for 2D
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/scores2D.h"
@@ -14,13 +14,19 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 double get_cross_correlation_coefficient(const cv::Mat &m1, const cv::Mat &m2) {
-  cv::Scalar mean1, stddev1, mean2, stddev2;
-  internal::my_meanStdDev(m1, mean1, stddev1);
-  internal::my_meanStdDev(m2, mean2, stddev2);
-  cv::Mat cc;
-  cv::multiply(m1 - mean1[0], m2 - mean2[0], cc);
-  cv::Scalar c = cv::sum(cc);
-  double ccc = c[0] / (cc.rows * cc.cols * stddev1[0] * stddev2[0]);
+  IMP_USAGE_CHECK(m1.rows == m2.rows && m1.cols == m2.cols,
+                  "em2d:get_cross_correlation_coefficient: Matrices have "
+                  "different size.");
+  double mean1, stddev1, mean2, stddev2;
+  internal::get_mean_and_stddev(m1, mean1, stddev1);
+  internal::get_mean_and_stddev(m2, mean2, stddev2);
+  double c = 0.;
+  for (int i = 0; i < m1.rows; ++i) {
+    const double *p1 = m1.ptr<double>(i);
+    const double *p2 = m2.ptr<double>(i);
+    for (int j = 0; j < m1.cols; ++j) c += (p1[j] - mean1) * (p2[j] - mean2);
+  }
+  double ccc = c / (m1.rows * m1.cols * stddev1 * stddev2);
   return ccc;
 }
 

@@ -1,7 +1,7 @@
 /**
  *  \file image_processing.cpp
  *  \brief image processing for EM
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/image_processing.h"
@@ -58,7 +58,7 @@ void do_histogram_stretching(cv::Mat &m, int boxes, int offset) {
   // Number of possible values for the histogram and maximum value for
   // the stretched image
   double max_val, min_val;
-  cv::minMaxLoc(m, &min_val, &max_val);
+  internal::get_min_and_max(m, &min_val, &max_val);
   double maxmin = max_val - min_val;
   // Histogram of boxes possible values
   Ints hist(boxes, 0);
@@ -144,7 +144,8 @@ void do_dilate_and_shrink_warp(cv::Mat &m, const cv::Mat &greyscale,
       }
     }
     mean /= (double)new_size_in_pixels++;
-    cv::subtract(mask, temp, boundary);
+    internal::do_transform(mask, temp, boundary,
+                           [](double a, double b) { return a - b; });
 
     //    xxx.set_data(boundary);
     //    xxx.write("boundary.spi",srw);
@@ -271,24 +272,27 @@ void do_morphologic_reconstruction(const cv::Mat &mask, cv::Mat &marker,
 
 void do_fill_holes(const cv::Mat &m, cv::Mat &result, double h) {
   double max_m, min_m;
-  cv::minMaxLoc(m, &min_m, &max_m);
+  internal::get_min_and_max(m, &min_m, &max_m);
   double max_plus_h = max_m + h;
   cv::Mat mask, marker;
-  cv::Scalar s(max_plus_h, 0, 0, 0);
-  cv::subtract(s, m, mask);  // this does max_plus_h-m
+  // this does max_plus_h-m
+  internal::do_transform(m, mask,
+                         [max_plus_h](double x) { return max_plus_h - x; });
   // The result is the marker. It should be max_plus_m - m - h, but is the same
-  cv::Scalar sc(max_m, 0, 0, 0);
-  cv::subtract(sc, m, marker);  // this does max_m-m
+  // this does max_m-m
+  internal::do_transform(m, marker, [max_m](double x) { return max_m - x; });
   do_morphologic_reconstruction(mask, marker, 8);
-  cv::subtract(s, marker, result);  // result = max_plus_h - marker
+  // result = max_plus_h - marker
+  internal::do_transform(marker, result,
+                         [max_plus_h](double x) { return max_plus_h - x; });
 }
 
 void get_domes(cv::Mat &m, cv::Mat &result, double h) {
-  cv::Scalar s(h, 0, 0, 0);
   cv::Mat marker;
-  cv::subtract(m, h, marker);
+  internal::do_transform(m, marker, [h](double x) { return x - h; });
   do_morphologic_reconstruction(m, marker, 8);
-  cv::subtract(m, marker, result);
+  internal::do_transform(m, marker, result,
+                         [](double a, double b) { return a - b; });
 }
 
 void get_diffusion_filtering_partial_derivative(const cv::Mat &m, cv::Mat &der,
@@ -340,7 +344,8 @@ void apply_diffusion_filter(const cv::Mat &m, cv::Mat &result, double beta,
   for (unsigned int t = 0; t < time_steps; ++t) {
     get_diffusion_filtering_partial_derivative(result, derivative_time, dx, dy,
                                                angle);
-    result += derivative_time * dt;
+    internal::do_transform(result, derivative_time, result,
+                           [dt](double r, double d) { return r + d * dt; });
   }
 }
 
@@ -443,7 +448,7 @@ cvIntMat create_circular_mask(int rows, int cols, int radius) {
 Floats get_histogram(const cv::Mat &m, int bins) {
   Floats histogram(bins);
   double min, max;
-  cv::minMaxLoc(m, &min, &max, nullptr, nullptr);
+  internal::get_min_and_max(m, &min, &max);
   // Step
   double step = (max - min) / static_cast<double>(bins);
   long n_points = m.rows * m.cols;
@@ -543,12 +548,18 @@ void do_resample_polar(const cv::Mat &input, cv::Mat &resampled,
 }
 
 void do_normalize(cv::Mat &m) {
-  cv::Scalar mean, stddev;
-  internal::my_meanStdDev(m, mean, stddev);
-  IMP_LOG_VERBOSE("Matrix of mean: " << mean[0] << " stddev " << stddev[0]
+  double mean, stddev;
+  internal::get_mean_and_stddev(m, mean, stddev);
+  IMP_LOG_VERBOSE("Matrix of mean: " << mean << " stddev " << stddev
                                      << " normalized. " << std::endl);
-  m = m - mean[0];
-  m = m / stddev[0];
+  // Write to a new matrix, as before, rather than changing any data that
+  // m shares with other matrices. Multiply by 1/stddev rather than dividing,
+  // as OpenCV's m / stddev did, to get the same results.
+  cv::Mat normalized;
+  internal::do_transform(m, normalized, [mean, stddev](double x) {
+    return (x - mean) * (1. / stddev);
+  });
+  m = normalized;
 }
 
 //! Transform a matrix (the translation is interpreted as cols,rows)

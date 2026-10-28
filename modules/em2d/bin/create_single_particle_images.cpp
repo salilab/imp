@@ -1,7 +1,7 @@
 /**
  *  \file  create_single_particle_images.cpp
  *  \brief Generation of projections from models or density maps or pure noisy images
- *  Copyright 2007-2022 IMP Inventors. All rights reserved. 
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved. 
 */
 
 
@@ -106,8 +106,8 @@ namespace {
     //Create an image file for each projection
     for(int projnum=0; projnum < NoP; projnum++){
       
-      double MaxValue, MinValue;
-      cv::minMaxLoc(projections[projnum]->get_data(), &MinValue, &MaxValue);
+      IMP::FloatRange range = projections[projnum]->get_min_and_max_values();
+      double MinValue = range.first, MaxValue = range.second;
       std::stringstream stream;
       stream << rootname << "-" << projnum << ".pgm";
       const std::string filename0 = stream.str();

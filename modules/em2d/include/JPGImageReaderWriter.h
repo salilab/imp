@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/JPGImageReaderWriter.h
  *  \brief Management of JPG format for EM images
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_JPG_IMAGE_READER_WRITER_H
@@ -9,6 +9,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/em/ImageHeader.h"
 #include <boost/filesystem.hpp>
 
@@ -87,7 +88,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
     // Convert the data value to 8-bit so it can be written as JPG
     cv::Mat jpg_data;
     double max, min;
-    cv::minMaxLoc(data, &min, &max);
+    internal::get_min_and_max(data, &min, &max);
     double jpg_max = 255;
     double jpg_min = 0;
     double alpha = (jpg_max - jpg_min) / (max - min);

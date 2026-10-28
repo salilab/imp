@@ -2,7 +2,7 @@
  *  \file image_processing_helper.h
  *  \brief
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -111,8 +111,50 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value);
 //! computes the weighted centroid of a matrix, with the values of the matrix
 algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
-void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean,
-                   cv::Scalar &stddev);
+//! Get the smallest and largest values of a matrix of doubles
+/** Optionally also get the row and column of the largest value (the first
+    one, in row-major order, if there are several). As for cv::minMaxLoc,
+    NaN values are ignored (so if all values are NaN, min is +inf, max is
+    -inf, and the row and column are 0), and for an empty matrix both values
+    are 0 and the row and column are -1.
+ */
+IMPEM2DEXPORT void get_min_and_max(const cv::Mat &m, double *min, double *max,
+                                   int *max_row = nullptr,
+                                   int *max_col = nullptr);
+
+//! Get the mean and the (population) standard deviation of a matrix
+void get_mean_and_stddev(const cv::Mat &m, double &mean, double &stddev);
+
+//! Set result(i, j) = f(m(i, j)) for every element of a matrix of doubles
+/** result is allocated if needed, and can be m itself. */
+template <class F>
+void do_transform(const cv::Mat &m, cv::Mat &result, F f) {
+  IMP_USAGE_CHECK(m.type() == CV_64FC1,
+                  "em2d:do_transform: Matrix must be of type CV_64FC1");
+  result.create(m.rows, m.cols, CV_64FC1);
+  for (int i = 0; i < m.rows; ++i) {
+    const double *in = m.ptr<double>(i);
+    double *out = result.ptr<double>(i);
+    for (int j = 0; j < m.cols; ++j) out[j] = f(in[j]);
+  }
+}
+
+//! Set result(i, j) = f(a(i, j), b(i, j)) for every element of two matrices
+/** result is allocated if needed, and can be a or b. */
+template <class F>
+void do_transform(const cv::Mat &a, const cv::Mat &b, cv::Mat &result, F f) {
+  IMP_USAGE_CHECK(a.type() == CV_64FC1 && b.type() == CV_64FC1,
+                  "em2d:do_transform: Matrices must be of type CV_64FC1");
+  IMP_USAGE_CHECK(a.rows == b.rows && a.cols == b.cols,
+                  "em2d:do_transform: Matrices have different size.");
+  result.create(a.rows, a.cols, CV_64FC1);
+  for (int i = 0; i < a.rows; ++i) {
+    const double *in_a = a.ptr<double>(i);
+    const double *in_b = b.ptr<double>(i);
+    double *out = result.ptr<double>(i);
+    for (int j = 0; j < a.cols; ++j) out[j] = f(in_a[j], in_b[j]);
+  }
+}
 
 IMPEM2D_END_INTERNAL_NAMESPACE
 

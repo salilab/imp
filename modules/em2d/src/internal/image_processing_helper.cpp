@@ -2,7 +2,7 @@
  *  \file image_processing_helper.cpp
  *  \brief Helper functions for the image_processing main file
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,8 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/exception.h"
 #include <IMP/log.h>
+#include <cmath>
+#include <limits>
 #include <vector>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
@@ -268,8 +270,8 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
 
   algebra::Vector2D peak;
   double minVal, maxVal;
-  cv::Point minLoc, maxLoc;
-  cv::minMaxLoc(m, &minVal, &maxVal, &minLoc, &maxLoc);
+  int row, col;
+  get_min_and_max(m, &minVal, &maxVal, &row, &col);
   *value = maxVal;
   // Perform a weighted centroiding with the neighbours to find the actual
   // maximum value. Performs as well as parabolic fit (Paulo, Opt. Eng. 2007)
@@ -277,7 +279,6 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
   int col0 = 0, row0 = 0;
   int coln = m.cols - 1;
   int rown = m.rows - 1;
-  int col = maxLoc.x, row = maxLoc.y;
 
   if ((row == row0 && col == col0) || (col == col0 && row == rown) ||
       (col == coln && row == row0) || (col == coln && row == rown)) {
@@ -331,12 +332,55 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
   return center;
 }
 
-void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean, cv::Scalar &stddev) {
-  mean = cv::mean(m);
-  cv::Mat square;
-  cv::pow(m - mean[0], 2, square);
-  cv::Scalar sum = cv::sum(square);
-  stddev[0] = std::sqrt(sum[0] / (m.rows * m.cols));
+void get_min_and_max(const cv::Mat &m, double *min, double *max,
+                     int *max_row, int *max_col) {
+  IMP_USAGE_CHECK(m.type() == CV_64FC1,
+                  "em2d:get_min_and_max: Matrix must be of type CV_64FC1");
+  if (m.empty()) {
+    *min = *max = 0.;
+    if (max_row) *max_row = -1;
+    if (max_col) *max_col = -1;
+    return;
+  }
+  double lo = std::numeric_limits<double>::infinity();
+  double hi = -std::numeric_limits<double>::infinity();
+  int row = 0, col = 0;
+  for (int i = 0; i < m.rows; ++i) {
+    const double *p = m.ptr<double>(i);
+    for (int j = 0; j < m.cols; ++j) {
+      // Comparisons with NaN are false, so NaN values are skipped
+      if (p[j] < lo) lo = p[j];
+      if (p[j] > hi) {
+        hi = p[j];
+        row = i;
+        col = j;
+      }
+    }
+  }
+  *min = lo;
+  *max = hi;
+  if (max_row) *max_row = row;
+  if (max_col) *max_col = col;
+}
+
+void get_mean_and_stddev(const cv::Mat &m, double &mean, double &stddev) {
+  IMP_USAGE_CHECK(m.type() == CV_64FC1,
+                  "em2d:get_mean_and_stddev: Matrix must be of type CV_64FC1");
+  double n = static_cast<double>(m.rows) * m.cols;
+  double sum = 0.;
+  for (int i = 0; i < m.rows; ++i) {
+    const double *p = m.ptr<double>(i);
+    for (int j = 0; j < m.cols; ++j) sum += p[j];
+  }
+  mean = sum / n;
+  double sum_squares = 0.;
+  for (int i = 0; i < m.rows; ++i) {
+    const double *p = m.ptr<double>(i);
+    for (int j = 0; j < m.cols; ++j) {
+      sum_squares += (p[j] - mean) * (p[j] - mean);
+    }
+  }
+  stddev = std::sqrt(sum_squares / n);
 }
 
 IMPEM2D_END_INTERNAL_NAMESPACE
