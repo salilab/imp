@@ -211,6 +211,59 @@ void do_draw_filled_circle(cv::Mat &m, int x, int y, int radius,
   }
 }
 
+/* Normalized cross-correlation of templ at every position in m (both
+   matrices of doubles), as a matrix of floats, as
+   cv::matchTemplate(m, templ, result, cv::TM_CCORR_NORMED) */
+void get_normalized_correlation(cv::Mat m, cv::Mat templ, cv::Mat &result) {
+  // As OpenCV, if the template is the larger, swap the roles
+  if (m.rows < templ.rows || m.cols < templ.cols) {
+    IMP_USAGE_CHECK(m.rows <= templ.rows && m.cols <= templ.cols,
+                    "em2d: Template must be larger or smaller than the image "
+                    "in both dimensions");
+    std::swap(m, templ);
+  }
+  cv::Mat corr;
+  internal::get_template_correlation(m, templ, corr);
+  double templ_sum2 = 0.;
+  for (int a = 0; a < templ.rows; ++a) {
+    for (int b = 0; b < templ.cols; ++b) {
+      templ_sum2 += templ.at<double>(a, b) * templ.at<double>(a, b);
+    }
+  }
+  double templ_norm = std::sqrt(templ_sum2);
+  // Integral image of the squares, for the norm of each window
+  cv::Mat sq = cv::Mat::zeros(m.rows + 1, m.cols + 1, CV_64FC1);
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) {
+      double v = m.at<double>(i, j);
+      sq.at<double>(i + 1, j + 1) = v * v + sq.at<double>(i, j + 1) +
+                                    sq.at<double>(i + 1, j) -
+                                    sq.at<double>(i, j);
+    }
+  }
+  result.create(corr.rows, corr.cols, CV_32FC1);
+  for (int i = 0; i < corr.rows; ++i) {
+    for (int j = 0; j < corr.cols; ++j) {
+      double num = corr.at<double>(i, j);
+      double window_sum2 = sq.at<double>(i + templ.rows, j + templ.cols) -
+                           sq.at<double>(i, j + templ.cols) -
+                           sq.at<double>(i + templ.rows, j) +
+                           sq.at<double>(i, j);
+      // Normalize, treating values just out of [-1, 1] (from rounding) and
+      // empty windows as OpenCV does
+      double t = window_sum2 > 0 ? std::sqrt(window_sum2) * templ_norm : 0.;
+      if (std::abs(num) < t) {
+        num /= t;
+      } else if (std::abs(num) < t * 1.125) {
+        num = num > 0 ? 1 : -1;
+      } else {
+        num = 0;
+      }
+      result.at<float>(i, j) = static_cast<float>(num);
+    }
+  }
+}
+
 }  // namespace
 
 void do_remove_small_objects(cvIntMat &m, double percentage, int background,
@@ -900,14 +953,12 @@ MatchTemplateResults get_best_template_matches(const cv::Mat &m,
                                                const cv::Mat &templ,
                                                unsigned int n) {
   cv::Mat result, aux_m, aux_templ;
-  m.convertTo(aux_m, CV_32FC1);          // float, matchTemplate
-  templ.convertTo(aux_templ, CV_32FC1);  // float, matchTemplate
-
-#if CV_VERSION_MAJOR >= 3
-  cv::matchTemplate(aux_m, aux_templ, result, cv::TM_CCORR_NORMED);
-#else
-  cv::matchTemplate(aux_m, aux_templ, result, CV_TM_CCORR_NORMED);
-#endif
+  // Round to floats, as before (when this used cv::matchTemplate)
+  m.convertTo(aux_m, CV_32FC1);
+  templ.convertTo(aux_templ, CV_32FC1);
+  aux_m.convertTo(aux_m, CV_64FC1);
+  aux_templ.convertTo(aux_templ, CV_64FC1);
+  get_normalized_correlation(aux_m, aux_templ, result);
   /* Write the image with the correlations
   IMP_NEW(Image, img, ());
   cv::Mat temp;

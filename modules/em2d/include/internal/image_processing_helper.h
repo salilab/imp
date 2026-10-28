@@ -126,6 +126,13 @@ IMPEM2DEXPORT void get_min_and_max(const cv::Mat &m, double *min, double *max,
 //! Get the mean and the (population) standard deviation of a matrix
 void get_mean_and_stddev(const cv::Mat &m, double &mean, double &stddev);
 
+//! Correlation of a template with a matrix of doubles, computed by FFT
+/** corr(i, j) is the sum over (a, b) of templ(a, b) * m(i + a, j + b), for
+    every position (i, j) where the template is inside m.
+ */
+void get_template_correlation(const cv::Mat &m, const cv::Mat &templ,
+                              cv::Mat &corr);
+
 //! Set result(i, j) = f(m(i, j)) for every element of a matrix of doubles
 /** result is allocated if needed, and can be m itself. */
 template <class F>

@@ -5,6 +5,7 @@
 */
 
 #include "IMP/em2d/FFToperations.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/log.h"
 #include "IMP/Pointer.h"
 #include <fftw3.h>
@@ -350,5 +351,27 @@ void do_matrix_to_image_flip(cv::Mat &m) {
     }
   }
 }
+
+namespace internal {
+
+void get_template_correlation(const cv::Mat &m, const cv::Mat &templ,
+                              cv::Mat &corr) {
+  check_is_double(m, "get_template_correlation");
+  check_is_double(templ, "get_template_correlation");
+  IMP_USAGE_CHECK(templ.rows <= m.rows && templ.cols <= m.cols,
+                  "em2d:get_template_correlation: Template is larger than "
+                  "the matrix");
+  // m is padded to at least its own size and the template with zeros, so
+  // the positions where the template is inside m do not wrap around
+  int rows = get_optimal_dft_size(m.rows);
+  int cols = get_optimal_dft_size(m.cols);
+  HalfSpectrum HM = get_forward_dft(m, rows, cols);
+  HalfSpectrum HT = get_forward_dft(templ, rows, cols);
+  do_multiply_by_conjugate(HM, HT);
+  corr.create(m.rows - templ.rows + 1, m.cols - templ.cols + 1, CV_64FC1);
+  get_inverse_dft(HM, corr);
+}
+
+}  // namespace internal
 
 IMPEM2D_END_NAMESPACE
