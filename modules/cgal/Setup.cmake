@@ -1,6 +1,13 @@
 include(FindCGAL)
 
 if (${CGAL_FOUND})
+  if ("${CGAL_CREATED_VERSION_NUM}" VERSION_LESS "4.6")
+    message(STATUS "CGAL version ${CGAL_CREATED_VERSION_NUM} was found, but IMP requires 4.6 or later")
+    set(CGAL_FOUND FALSE)
+  endif()
+endif()
+
+if (${CGAL_FOUND})
 file(WRITE "${CMAKE_BINARY_DIR}/build_info/CGAL" "ok=True")
 set(CGAL_DONT_OVERRIDE_CMAKE_FLAGS TRUE CACHE BOOL "Don't override flags")
 # Ignore CGAL_CXX_FLAGS from previous cmake run, if any

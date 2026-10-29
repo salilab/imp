@@ -35,7 +35,7 @@ BuildRequires: boost-devel >= 1.53
 BuildRequires: RMF-devel >= 1.7
 BuildRequires: python3-ihm
 Requires: python3-ihm
-BuildRequires: CGAL-devel
+BuildRequires: CGAL-devel >= 4.6
 
 BuildRequires: libtiff-devel, libjpeg-turbo-devel
 
@@ -94,7 +94,7 @@ Requires:      boost-devel, hdf5-devel, protobuf-devel, RMF-devel, cereal-devel
 Requires:      ann-devel
 %endif
 Requires:      python3-devel, python3-ihm
-Requires:      CGAL-devel
+Requires:      CGAL-devel >= 4.6
 
 %description devel
 This package contains the include files for building applications that link

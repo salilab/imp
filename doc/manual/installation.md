@@ -55,7 +55,7 @@ will not build, and some will not function optimally.
   and [Graphviz](https://www.graphviz.org/): required for building
   documentation.
 - [Modeller](\ref modeller): needed to use the IMP.modeller module.
-- [CGAL](\ref CGAL): enables faster geometric operations, such as
+- [CGAL](\ref CGAL) (4.6 or later): enables faster geometric operations, such as
   nonbonded lists.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
