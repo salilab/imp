@@ -92,10 +92,11 @@ we employed is as follows:
   - (Optional) Get and install
     [libTAU](https://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
-  - (Optional) Get the [OpenCV source code](https://opencv.org/)
-    and build it by [following these instructions](https://docs.opencv.org/3.4.15/d3/d52/tutorial_windows_install.html#tutorial_windows_install_build)
-     - Copy each `opencv_*.lib` to a similar file without the version extension
-       (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
+  - (Optional) Get [libtiff](https://libtiff.gitlab.io/libtiff/) and
+    [libjpeg](https://libjpeg-turbo.org/), which (together with FFTW) are
+    needed for the IMP.em2d module
+     - Copy or rename the libraries if necessary to `tiff.lib` and
+       `jpeg.lib` to help cmake find them
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up %IMP by running something similar to

@@ -2,7 +2,7 @@
  *  \file CollisionCrossSection
  *  \brief Routines for Ion Mobility Mass Spectrometry
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ CollisionCrossSection::CollisionCrossSection(unsigned int n_projections,
       img_size_(projection_image_size),
       particles_set_(false) {
   regs_ = em2d::get_evenly_distributed_registration_results(n_projections_);
-  average_projection_.create(img_size_, img_size_, CV_64FC1);
+  average_projection_.resize(img_size_, img_size_);
   masks_manager_ = MasksManagerPtr(new MasksManager);
   masks_manager_->setup_kernel(resolution_, pixel_size_);
 }
@@ -65,14 +65,9 @@ void CollisionCrossSection::set_model_particles(
   particles_set_ = true;
 }
 
-double CollisionCrossSection::get_projected_area(const cv::Mat &m) const {
+double CollisionCrossSection::get_projected_area(const DoubleMatrix &m) const {
   // compute the ccs
-  unsigned int pixels_above_zero = 0;
-  for (int i = 0; i < m.rows; ++i) {
-    for (int j = 0; j < m.cols; ++j) {
-      if (m.at<double>(i, j) > 0) pixels_above_zero++;
-    }
-  }
+  unsigned int pixels_above_zero = (m > 0).count();
   return pixels_above_zero * pixel_size_ * pixel_size_;
 }
 

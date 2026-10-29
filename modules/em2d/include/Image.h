@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/Image.h
- *  \brief IMP images for Electron Microscopy using openCV matrices
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  \brief IMP images for Electron Microscopy
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_H
@@ -10,7 +10,7 @@
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/ImageReaderWriter.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/ImageHeader.h"
@@ -48,13 +48,13 @@ class IMPEM2DEXPORT Image : public IMP::Object {
    * Access to the matrix of data
    * @return A reference to the matrix of data
    */
-  cv::Mat &get_data() { return data_; }
+  DoubleMatrix &get_data() { return data_; }
 
   /**
    * Sets the entire data of the matrix
-   * @param mat CV matrix containing the data for an image
+   * @param mat matrix containing the data for an image
    */
-  void set_data(const cv::Mat &mat);
+  void set_data(const DoubleMatrix &mat);
 
   /**
    * Sets the image to zero
@@ -66,10 +66,7 @@ class IMPEM2DEXPORT Image : public IMP::Object {
    * @param val Value to use
    * xxx
    */
-  void set_value(double val) {
-    cv::Scalar s(val, 0, 0, 0);
-    data_ = s;
-  }
+  void set_value(double val) { data_.setConstant(val); }
 
   /**
    * Sets the value for a pixel
@@ -77,7 +74,7 @@ class IMPEM2DEXPORT Image : public IMP::Object {
    * @param j column
    * @param val value
    */
-  void set_value(int i, int j, double val) { data_.at<double>(i, j) = val; }
+  void set_value(int i, int j, double val) { data_(i, j) = val; }
 
   /**
    * Recover the value of a pixel
@@ -85,7 +82,7 @@ class IMPEM2DEXPORT Image : public IMP::Object {
    * @param j column
    * @return the value
    */
-  double operator()(int i, int j) const { return data_.at<double>(i, j); }
+  double operator()(int i, int j) const { return data_(i, j); }
 
   /**
    * Access to the image header
@@ -180,8 +177,7 @@ class IMPEM2DEXPORT Image : public IMP::Object {
   //! Name of the image. Frequently it will be the name of the file
   String name_;
   //! Matrix with the data for the image
-  //  cv::Mat data_;
-  cv::Mat data_;
+  DoubleMatrix data_;
   //! Header for the image with all the pertinent information
   em::ImageHeader header_;
 

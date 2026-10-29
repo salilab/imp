@@ -1,7 +1,7 @@
 /**
  *  \file  create_single_particle_images.cpp
  *  \brief Generation of projections from models or density maps or pure noisy images
- *  Copyright 2007-2022 IMP Inventors. All rights reserved. 
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved. 
 */
 
 
@@ -12,7 +12,7 @@
 #include <IMP/em2d/filenames_manipulation.h>
 #include <IMP/em2d/internal/Image2D.h>
 
-#include <IMP/em2d/opencv_interface.h>
+#include <IMP/em2d/Matrix.h>
 #include <IMP/em2d/Image.h>
 #include <IMP/em2d/image_processing.h>
 
@@ -106,8 +106,8 @@ namespace {
     //Create an image file for each projection
     for(int projnum=0; projnum < NoP; projnum++){
       
-      double MaxValue, MinValue;
-      cv::minMaxLoc(projections[projnum]->get_data(), &MinValue, &MaxValue);
+      IMP::FloatRange range = projections[projnum]->get_min_and_max_values();
+      double MinValue = range.first, MaxValue = range.second;
       std::stringstream stream;
       stream << rootname << "-" << projnum << ".pgm";
       const std::string filename0 = stream.str();
@@ -120,7 +120,7 @@ namespace {
       
       for(int jj = 0; jj < rows; jj++){
 	for(int kk = 0; kk < cols; kk++){
-	  double pixel = projections[projnum]->get_data().at<double>(jj,kk);
+	  double pixel = projections[projnum]->get_data()(jj,kk);
 	  std::fprintf(fp, "%i ", (int) ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0));
 	  //std::cerr << ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0) << std::endl;
 	  if(kk > 0 && kk % 12 == 0)  std::fprintf(fp, "\n");
@@ -189,7 +189,7 @@ namespace {
 
       for(int jj = 0; jj < pheight; jj++){
         for(int kk = 0; kk < pwidth; kk++){
-	  fftin[kk+pwidth*jj] = projections[projnum]->get_data().at<double>(jj,kk);
+	  fftin[kk+pwidth*jj] = projections[projnum]->get_data()(jj,kk);
 	}
       }
       fftw_execute(p);

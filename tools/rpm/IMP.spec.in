@@ -39,8 +39,7 @@ BuildRequires: cmake >= 3.14
 BuildRequires: boost-devel >= 1.53
 BuildRequires: CGAL-devel
 
-# RHEL 7 and 8 have OpenCV in base; it is in EPEL for RHEL 9, 10
-BuildRequires: opencv-devel
+BuildRequires: libtiff-devel, libjpeg-turbo-devel
 
 # Bundle libTAU library with IMP so folks don't need to get it separately
 %define bundled libTAU\\.so
@@ -103,7 +102,6 @@ Requires:      ann-devel
 %endif
 Requires:      python3-devel
 Requires:      CGAL-devel
-Requires:      opencv-devel
 
 %description devel
 This package contains the include files for building applications that link

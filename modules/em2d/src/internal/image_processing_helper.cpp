@@ -2,21 +2,23 @@
  *  \file image_processing_helper.cpp
  *  \brief Helper functions for the image_processing main file
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include "IMP/em2d/internal/image_processing_helper.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/exception.h"
 #include <IMP/log.h>
+#include <cmath>
+#include <limits>
 #include <vector>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-cvPixels get_neighbors2d(const cvPixel &p, const cv::Mat &m, int mode, int sign,
-                         bool cycle) {
-  cvPixels neighbors, final_neighbors;
+Pixels get_neighbors2d_of_size(const Pixel &p, int rows, int cols, int mode,
+                               int sign, bool cycle) {
+  Pixels neighbors, final_neighbors;
   if (mode != 4 && mode != 8)
     IMP_THROW("Mode must be either 4 or 8", ValueException);
   if (sign != 1 && sign != 0 && sign != -1)
@@ -24,55 +26,55 @@ cvPixels get_neighbors2d(const cvPixel &p, const cv::Mat &m, int mode, int sign,
 
   if (mode == 4) {
     if (sign == 0) {
-      neighbors.push_back(p + cvPixel(-1, 0));
-      neighbors.push_back(p + cvPixel(0, 1));
-      neighbors.push_back(p + cvPixel(1, 0));
-      neighbors.push_back(p + cvPixel(0, -1));
+      neighbors.push_back(p + Pixel(-1, 0));
+      neighbors.push_back(p + Pixel(0, 1));
+      neighbors.push_back(p + Pixel(1, 0));
+      neighbors.push_back(p + Pixel(0, -1));
     } else if (sign == 1) {
-      neighbors.push_back(p + cvPixel(0, 1));
-      neighbors.push_back(p + cvPixel(1, 0));
+      neighbors.push_back(p + Pixel(0, 1));
+      neighbors.push_back(p + Pixel(1, 0));
     } else {
-      neighbors.push_back(p + cvPixel(-1, 0));
-      neighbors.push_back(p + cvPixel(0, -1));
+      neighbors.push_back(p + Pixel(-1, 0));
+      neighbors.push_back(p + Pixel(0, -1));
     }
   } else {
     if (sign == 0) {
-      neighbors.push_back(p + cvPixel(-1, 0));
-      neighbors.push_back(p + cvPixel(-1, 1));
-      neighbors.push_back(p + cvPixel(0, 1));
-      neighbors.push_back(p + cvPixel(1, 1));
-      neighbors.push_back(p + cvPixel(1, 0));
-      neighbors.push_back(p + cvPixel(1, -1));
-      neighbors.push_back(p + cvPixel(0, -1));
-      neighbors.push_back(p + cvPixel(-1, -1));
+      neighbors.push_back(p + Pixel(-1, 0));
+      neighbors.push_back(p + Pixel(-1, 1));
+      neighbors.push_back(p + Pixel(0, 1));
+      neighbors.push_back(p + Pixel(1, 1));
+      neighbors.push_back(p + Pixel(1, 0));
+      neighbors.push_back(p + Pixel(1, -1));
+      neighbors.push_back(p + Pixel(0, -1));
+      neighbors.push_back(p + Pixel(-1, -1));
     } else if (sign == 1) {
-      neighbors.push_back(p + cvPixel(-1, 0));
-      neighbors.push_back(p + cvPixel(-1, 1));
-      neighbors.push_back(p + cvPixel(0, -1));
-      neighbors.push_back(p + cvPixel(-1, -1));
+      neighbors.push_back(p + Pixel(-1, 0));
+      neighbors.push_back(p + Pixel(-1, 1));
+      neighbors.push_back(p + Pixel(0, -1));
+      neighbors.push_back(p + Pixel(-1, -1));
     } else {
-      neighbors.push_back(p + cvPixel(0, 1));
-      neighbors.push_back(p + cvPixel(1, 1));
-      neighbors.push_back(p + cvPixel(1, 0));
-      neighbors.push_back(p + cvPixel(1, -1));
+      neighbors.push_back(p + Pixel(0, 1));
+      neighbors.push_back(p + Pixel(1, 1));
+      neighbors.push_back(p + Pixel(1, 0));
+      neighbors.push_back(p + Pixel(1, -1));
     }
   }
 
   if (cycle) {
     // Cycle indexes out of the matrix
     for (unsigned int i = 0; i < neighbors.size(); ++i) {
-      cvPixel q = neighbors[i];
-      if (q.x < 0) q.x = m.rows - 1;
-      if (q.x >= m.rows) q.x = 0;
-      if (q.y < 0) q.y = m.cols - 1;
-      if (q.y >= m.cols) q.y = 0;
+      Pixel q = neighbors[i];
+      if (q.row < 0) q.row = rows - 1;
+      if (q.row >= rows) q.row = 0;
+      if (q.col < 0) q.col = cols - 1;
+      if (q.col >= cols) q.col = 0;
       final_neighbors.push_back(q);
     }
   } else {
     // Clean neighbors with indexes out of the matrix
     for (unsigned int i = 0; i < neighbors.size(); ++i) {
-      cvPixel q = neighbors[i];
-      if (q.x >= 0 && q.x < m.rows && q.y >= 0 && q.y < m.cols) {
+      Pixel q = neighbors[i];
+      if (q.row >= 0 && q.row < rows && q.col >= 0 && q.col < cols) {
         final_neighbors.push_back(q);
       }
     }
@@ -86,11 +88,11 @@ FUNCTIONS FOR THE LABELING ALGORITHM
 
 ***************************/
 
-void set_final_labels(cvIntMat &mat_to_label, Ints &Labels) {
-  for (int i = 0; i < mat_to_label.rows; ++i) {
-    for (int j = 0; j < mat_to_label.cols; ++j) {
-      cvPixel p(i, j);
-      mat_to_label(p) = Labels[mat_to_label(p)];
+void set_final_labels(IntMatrix &mat_to_label, Ints &Labels) {
+  for (int i = 0; i < mat_to_label.rows(); ++i) {
+    for (int j = 0; j < mat_to_label.cols(); ++j) {
+      Pixel p(i, j);
+      mat_to_label(p.row, p.col) = Labels[mat_to_label(p.row, p.col)];
     }
   }
 }
@@ -111,21 +113,22 @@ int do_union(Ints &Labels, int i, int j) {
 }
 
 //! Decision tree copy function
-void do_copy_tree(const cvPixel &p, const cvPixel &a, cvIntMat &mat_to_label) {
+void do_copy_tree(const Pixel &p, const Pixel &a, IntMatrix &mat_to_label) {
 
-  mat_to_label(p) = mat_to_label(a);
+  mat_to_label(p.row, p.col) = mat_to_label(a.row, a.col);
 }
 
 //! Decision tree copy function
-void do_copy_tree(const cvPixel &p, const cvPixel &a, const cvPixel &c,
-                  cvIntMat &mat_to_label, Ints &Labels) {
-  mat_to_label(p) = do_union(Labels, mat_to_label(c), mat_to_label(a));
+void do_copy_tree(const Pixel &p, const Pixel &a, const Pixel &c,
+                  IntMatrix &mat_to_label, Ints &Labels) {
+  mat_to_label(p.row, p.col) =
+      do_union(Labels, mat_to_label(c.row, c.col), mat_to_label(a.row, a.col));
 }
 
 //! Sets a new label for a pixel
-int get_new_label(const cvPixel &p, cvIntMat &mat_to_label, Ints &Labels,
+int get_new_label(const Pixel &p, IntMatrix &mat_to_label, Ints &Labels,
                   int label) {
-  mat_to_label(p) = label;
+  mat_to_label(p.row, p.col) = label;
   Labels.push_back(label);
   int next_label = label + 1;
   return next_label;
@@ -160,7 +163,7 @@ void do_flatten_labels(Ints &Labels) {
   }
 }
 
-void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
+void do_binary_matrix_scan(const IntMatrix &m, IntMatrix &mat_to_label,
                            Ints &Labels) {
   // value for the background and first label
   int background = 0;
@@ -168,17 +171,17 @@ void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
   Labels[0] = background;
   int label = 1;
   // scan
-  for (int i = 0; i < m.rows; ++i) {
-    for (int j = 0; j < m.cols; ++j) {
-      cvPixel p(i, j);
-      int val = m(p);
+  for (int i = 0; i < m.rows(); ++i) {
+    for (int j = 0; j < m.cols(); ++j) {
+      Pixel p(i, j);
+      int val = m(p.row, p.col);
       if (val == background) {
-        mat_to_label(p) = background;
+        mat_to_label(p.row, p.col) = background;
       } else {
-        cvPixels ns = get_neighbors2d(p, m, 8, 1, false);
+        Pixels ns = get_neighbors2d(p, m, 8, 1, false);
         // fake neighbors to take into account exceptions
-        cvPixels neighbors(4);
-        cvPixel q(NO_VALUE, NO_VALUE);
+        Pixels neighbors(4);
+        Pixel q(NO_VALUE, NO_VALUE);
         switch (ns.size()) {
           case 0:
             // Corner pixel, no raster neighbors and 4 NO_VALUE ones
@@ -218,16 +221,16 @@ void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
   }
 }
 
-int get_label_using_decision_tree(const cvPixel &p, cvPixels &neighbors,
-                                  int background, const cvIntMat &m,
-                                  cvIntMat &mat_to_label, Ints &Labels,
+int get_label_using_decision_tree(const Pixel &p, Pixels &neighbors,
+                                  int background, const IntMatrix &m,
+                                  IntMatrix &mat_to_label, Ints &Labels,
                                   int label) {
   // Set the values considering the null pixels as background
-  cvPixel null_pixel(NO_VALUE, NO_VALUE);
+  Pixel null_pixel(NO_VALUE, NO_VALUE);
   int neigh_vals[4];
   for (int i = 0; i < 4; ++i) {
     if (!(neighbors[i] == null_pixel)) {
-      neigh_vals[i] = m(neighbors[i]);
+      neigh_vals[i] = m(neighbors[i].row, neighbors[i].col);
     } else {
       neigh_vals[i] = background;
     }
@@ -262,22 +265,21 @@ int get_label_using_decision_tree(const cvPixel &p, cvPixels &neighbors,
   return label;
 }
 
-algebra::Vector2D get_peak(cv::Mat &m, double *value) {
+algebra::Vector2D get_peak(const DoubleMatrix &m, double *value) {
   // Find maximum value and location
   IMP_LOG_VERBOSE("starting peak search on a matrix " << std::endl);
 
   algebra::Vector2D peak;
   double minVal, maxVal;
-  cv::Point minLoc, maxLoc;
-  cv::minMaxLoc(m, &minVal, &maxVal, &minLoc, &maxLoc);
+  int row, col;
+  get_min_and_max(m, &minVal, &maxVal, &row, &col);
   *value = maxVal;
   // Perform a weighted centroiding with the neighbours to find the actual
   // maximum value. Performs as well as parabolic fit (Paulo, Opt. Eng. 2007)
   // Careful here. I interpret translations as row,col, and OpenCV as col,row
   int col0 = 0, row0 = 0;
-  int coln = m.cols - 1;
-  int rown = m.rows - 1;
-  int col = maxLoc.x, row = maxLoc.y;
+  int coln = m.cols() - 1;
+  int rown = m.rows() - 1;
 
   if ((row == row0 && col == col0) || (col == col0 && row == rown) ||
       (col == coln && row == row0) || (col == coln && row == rown)) {
@@ -287,15 +289,15 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
   } else if (row == row0 || row == rown) {
     // row borders, average
     peak[1] = row;
-    double w1 = m.at<double>(row, col - 1);
-    double w2 = m.at<double>(row, col);
-    double w3 = m.at<double>(row, col + 1);
+    double w1 = m(row, col - 1);
+    double w2 = m(row, col);
+    double w3 = m(row, col + 1);
     peak[0] = ((col - 1) * w1 + col * w2 + (col + 1) * w3) / (w1 + w2 + w3);
   } else if (col == col0 || col == coln) {
     // Column borders, average
-    double w1 = m.at<double>(row - 1, col);
-    double w2 = m.at<double>(row, col);
-    double w3 = m.at<double>(row + 1, col);
+    double w1 = m(row - 1, col);
+    double w2 = m(row, col);
+    double w3 = m(row + 1, col);
     peak[1] = ((row - 1) * w1 + row * w2 + (row + 1) * w3) / (w1 + w2 + w3);
     peak[0] = col;
   } else {
@@ -303,7 +305,7 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
     unsigned int row_origin = row - 1;
     unsigned int col_origin = col - 1;
     // Weight on a region 3x3
-    cv::Mat region(m, cv::Rect(col_origin, row_origin, 3, 3));
+    DoubleMatrix region = m.block(row_origin, col_origin, 3, 3);
     algebra::Vector2D v = internal::get_weighted_centroid(region);
     peak[0] = col_origin + v[0];
     peak[1] = row_origin + v[1];
@@ -311,16 +313,16 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value) {
   return peak;
 }
 
-algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
+algebra::Vector2D get_weighted_centroid(const DoubleMatrix &m) {
   algebra::Vector2D center(0., 0.);
   double denominator = 0.0;
-  for (int i = 1; i <= m.cols; ++i) {
-    for (int j = 1; j <= m.rows; ++j) {
-      //      double value = m.at<double>(i-1,j-1);
-      double value = m.at<double>(i - 1, j - 1);
+  for (int i = 1; i <= m.rows(); ++i) {
+    for (int j = 1; j <= m.cols(); ++j) {
+      double value = m(i - 1, j - 1);
       denominator += value;
-      center[0] += value * i;
-      center[1] += value * j;
+      // i is the row and j the column
+      center[0] += value * j;
+      center[1] += value * i;
     }
   }
   // Adjust center for the fact that the  indices of m start at 0.
@@ -331,12 +333,71 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
   return center;
 }
 
-void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean, cv::Scalar &stddev) {
-  mean = cv::mean(m);
-  cv::Mat square;
-  cv::pow(m - mean[0], 2, square);
-  cv::Scalar sum = cv::sum(square);
-  stddev[0] = std::sqrt(sum[0] / (m.rows * m.cols));
+void get_min_and_max(const DoubleMatrix &m, double *min, double *max,
+                     int *max_row, int *max_col) {
+  if (m.size() == 0) {
+    *min = *max = 0.;
+    if (max_row) *max_row = -1;
+    if (max_col) *max_col = -1;
+    return;
+  }
+  double lo = std::numeric_limits<double>::infinity();
+  double hi = -std::numeric_limits<double>::infinity();
+  int row = 0, col = 0;
+  for (int i = 0; i < m.rows(); ++i) {
+    for (int j = 0; j < m.cols(); ++j) {
+      double v = m(i, j);
+      // Comparisons with NaN are false, so NaN values are skipped
+      if (v < lo) lo = v;
+      if (v > hi) {
+        hi = v;
+        row = i;
+        col = j;
+      }
+    }
+  }
+  *min = lo;
+  *max = hi;
+  if (max_row) *max_row = row;
+  if (max_col) *max_col = col;
+}
+
+void get_8bit_scaled(const DoubleMatrix &data, UCharMatrix &pixels) {
+  double max, min;
+  get_min_and_max(data, &min, &max);
+  double alpha = 255. / (max - min);
+  double beta = 0. - alpha * min;
+  pixels.resize(data.rows(), data.cols());
+  for (Eigen::Index i = 0; i < data.size(); ++i) {
+    double v = data.data()[i] * alpha + beta;
+    unsigned char &out = pixels.data()[i];
+    if (std::isnan(v) || v <= 0.) {
+      out = 0;
+    } else if (v >= 255.) {
+      out = 255;
+    } else {
+      out = static_cast<unsigned char>(std::nearbyint(v));
+    }
+  }
+}
+
+void get_from_8bit(const UCharMatrix &pixels, DoubleMatrix &data) {
+  data = pixels.cast<double>();
+}
+
+void get_mean_and_stddev(const DoubleMatrix &m, double &mean,
+                         double &stddev) {
+  double n = static_cast<double>(m.rows()) * m.cols();
+  double sum = 0.;
+  // Sum in row-major order
+  for (Eigen::Index i = 0; i < m.size(); ++i) sum += m.data()[i];
+  mean = sum / n;
+  double sum_squares = 0.;
+  for (Eigen::Index i = 0; i < m.size(); ++i) {
+    double d = m.data()[i] - mean;
+    sum_squares += d * d;
+  }
+  stddev = std::sqrt(sum_squares / n);
 }
 
 IMPEM2D_END_INTERNAL_NAMESPACE

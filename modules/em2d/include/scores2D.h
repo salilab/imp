@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/scores2D.h
  *  \brief Scoring functions for 2D
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SCORES_2D_H
@@ -9,7 +9,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/Image.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/Object.h"
 #include <IMP/warning_macros.h>
@@ -35,8 +35,8 @@ IMPEM2DEXPORT double get_average_shift_error(
     const RegistrationResults &computed_RRs);
 
 //! Computes the cross-correlation coefficient between to matrices
-IMPEM2DEXPORT double get_cross_correlation_coefficient(const cv::Mat &m1,
-                                                       const cv::Mat &m2);
+IMPEM2DEXPORT double get_cross_correlation_coefficient(const DoubleMatrix &m1,
+                                                       const DoubleMatrix &m2);
 
 //! Get the global score given a set of individual registration results
 //! from images

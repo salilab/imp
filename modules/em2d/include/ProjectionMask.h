@@ -1,14 +1,14 @@
 /**
  *  \file IMP/em2d/ProjectionMask.h
  *  \brief projection masks
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_MASK_H
 #define IMPEM2D_PROJECTION_MASK_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/em/exp.h"
 #include "IMP/algebra/Vector3D.h"
@@ -54,7 +54,7 @@ class IMPEM2DEXPORT ProjectionMask {
     \param[out] m matrix where the values of the mask are added.
     \param[in] v pixel where to apply the values. Currently used as integer.
   */
-  void apply(cv::Mat &m, const algebra::Vector2D &v);
+  void apply(DoubleMatrix &m, const algebra::Vector2D &v);
 
   void show(std::ostream &out = std::cout) const;
 
@@ -63,7 +63,7 @@ class IMPEM2DEXPORT ProjectionMask {
  protected:
   int dim_;              // dimension of the mask
   double sq_pixelsize_;  // Used to save multiplications
-  cv::Mat data_;         // actual matrix with the mask
+  DoubleMatrix data_;         // actual matrix with the mask
 private:
   friend class cereal::access;
 
@@ -113,7 +113,8 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] m matrix
   \param[in] v Pixel of the matrix dest where the center of m is put.
 */
-inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
+inline void do_place(DoubleMatrix &mask, DoubleMatrix &m,
+                     const algebra::Vector2D &v) {
 
   // v is the vector of coordinates respect to the center of the matrix m
   int vi = algebra::get_rounded(v[0]);
@@ -121,14 +122,14 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
 
   // Centers for the matrix
   int center[2];
-  center[0] = static_cast<int>(0.5 * m.rows);
-  center[1] = static_cast<int>(0.5 * m.cols);
+  center[0] = static_cast<int>(0.5 * m.rows());
+  center[1] = static_cast<int>(0.5 * m.cols());
 
   int start[2], end[2];
   start[0] = -center[0];
   start[1] = -center[1];
-  end[0] = m.rows - 1 - center[0];
-  end[1] = m.cols - 1 - center[1];
+  end[0] = m.rows() - 1 - center[0];
+  end[1] = m.cols() - 1 - center[1];
 
   // Check range: If the vector is outside the matrix, don't do anything.
   if (vi < start[0] || vi > end[0]) return;
@@ -136,14 +137,14 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
 
   // Centers for the mask
   int mcenter[2];
-  mcenter[0] = static_cast<int>(0.5 * mask.rows);
-  mcenter[1] = static_cast<int>(0.5 * mask.cols);
+  mcenter[0] = static_cast<int>(0.5 * mask.rows());
+  mcenter[1] = static_cast<int>(0.5 * mask.cols());
 
   int mstart[2], mend[2];
   mstart[0] = -mcenter[0];
   mstart[1] = -mcenter[1];
-  mend[0] = mask.rows - 1 - mcenter[0];
-  mend[1] = mask.cols - 1 - mcenter[1];
+  mend[0] = mask.rows() - 1 - mcenter[0];
+  mend[1] = mask.cols() - 1 - mcenter[1];
 
   // Get the admissible range for the mask
   int start_i = std::max(start[0] - vi, mstart[0]);
@@ -154,13 +155,10 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
   int row = vi + center[0];
   int col = vj + center[1];
 
-  for (int i = start_i; i <= end_i; ++i) {
-    int p = i + row;
-    for (int j = start_j; j <= end_j; ++j) {
-      m.at<double>(p, j + col) +=
-          mask.at<double>(i + mcenter[0], j + mcenter[1]);
-    }
-  }
+  if (end_i < start_i || end_j < start_j) return;
+  int n_rows = end_i - start_i + 1, n_cols = end_j - start_j + 1;
+  m.block(start_i + row, start_j + col, n_rows, n_cols) +=
+      mask.block(start_i + mcenter[0], start_j + mcenter[1], n_rows, n_cols);
 }
 
 //! Management of projection masks

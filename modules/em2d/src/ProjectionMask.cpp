@@ -1,7 +1,7 @@
 /**
  *  \file ProjectionMask.cpp
  *  \brief projection masks
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionMask.h"
@@ -20,12 +20,12 @@ ProjectionMask::ProjectionMask(const em::KernelParameters& kparams,
   sq_pixelsize_ = pixelsize * pixelsize;
   dim_ = floor(kparams.get_rkdist() / pixelsize);
   int mask_size = 2 * dim_ + 1;  // enough to go from -dim to dim
-  data_.create(mask_size, mask_size, CV_64FC1);
-  data_.setTo(0.0);
+  data_.resize(mask_size, mask_size);
+  data_.setZero();
   create(kparams, mass);
 }
 
-void ProjectionMask::apply(cv::Mat &m, const algebra::Vector2D &v) {
+void ProjectionMask::apply(DoubleMatrix &m, const algebra::Vector2D &v) {
   do_place(data_, m, v);
 }
 
@@ -58,7 +58,8 @@ void ProjectionMask::create(const em::KernelParameters &kparams,
 }
 
 void ProjectionMask::show(std::ostream &out) const {
-  out << "ProjectionMask size " << data_.rows << "x" << data_.cols << std::endl;
+  out << "ProjectionMask size " << data_.rows() << "x" << data_.cols()
+      << std::endl;
 }
 
 ProjectionMaskPtr MasksManager::find_mask(double mass) {

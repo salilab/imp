@@ -1,7 +1,7 @@
 /**
  *  \file project.cpp
  *  \brief Generation of projections from models or density maps
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/project.h"
@@ -97,13 +97,13 @@ void get_projection(em2d::Image *img, const ParticlesTemp &ps,
   }
 }
 
-void do_project_particles(const ParticlesTemp &ps, cv::Mat &m2,
+void do_project_particles(const ParticlesTemp &ps, DoubleMatrix &m2,
                           const algebra::Rotation3D &R,
                           const algebra::Vector3D &translation,
                           const ProjectingOptions &options,
                           MasksManagerPtr masks) {
   IMP_LOG_VERBOSE("Projecting particles" << std::endl);
-  if (m2.empty()) {
+  if (m2.size() == 0) {
     IMP_THROW("Cannot project on a empty matrix", ValueException);
   }
   if (masks == MasksManagerPtr()) {
@@ -119,7 +119,7 @@ void do_project_particles(const ParticlesTemp &ps, cv::Mat &m2,
   algebra::Vector3D centroid = core::get_centroid(xyzrs);
 
   // clear data before creating a new projection
-  if (options.clear_matrix_before_projecting) m2.setTo(0.0);
+  if (options.clear_matrix_before_projecting) m2.setZero();
   // Project
   double invp = 1.0 / options.pixel_size;
 

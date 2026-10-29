@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/ImageReaderWriter.h
  *  \brief Virtual class for reader/writers of images
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_READER_WRITER_H
@@ -9,7 +9,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/Object.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em/ImageHeader.h"
 #include <iostream>
 
@@ -20,22 +20,22 @@ class ImageReaderWriter : public IMP::Object {
  public:
   ImageReaderWriter() : Object("ImageReaderWriter%1%") {}
   virtual void read(const String &filename, em::ImageHeader &header,
-                    cv::Mat &data) const = 0;
+                    DoubleMatrix &data) const = 0;
 
   virtual void read_from_floats(const String &filename, em::ImageHeader &header,
-                                cv::Mat &data) const = 0;
+                                DoubleMatrix &data) const = 0;
 
   virtual void read_from_ints(const String &filename, em::ImageHeader &header,
-                              cv::Mat &data) const = 0;
+                              DoubleMatrix &data) const = 0;
 
   virtual void write(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const = 0;
+                     const DoubleMatrix &data) const = 0;
 
   virtual void write_to_floats(const String &filename, em::ImageHeader &header,
-                               const cv::Mat &data) const = 0;
+                               const DoubleMatrix &data) const = 0;
 
   virtual void write_to_ints(const String &filename, em::ImageHeader &header,
-                             const cv::Mat &data) const = 0;
+                             const DoubleMatrix &data) const = 0;
 
   IMP_OBJECT_METHODS(ImageReaderWriter);
 };

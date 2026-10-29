@@ -1,14 +1,15 @@
 import IMP
 import IMP.test
 import IMP.em2d as em2d
+import io
 import os
 import random
 
 
 class Tests(IMP.test.TestCase):
 
-    def test_read_and_write_opencv_images(self):
-        """Test read/write for the images using OpenCV data storage"""
+    def test_read_and_write_images(self):
+        """Test read/write of Spider images"""
         srw = em2d.SpiderImageReaderWriter()
         img = em2d.Image()
         img.read(
@@ -20,7 +21,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(rows, 128, "Error reading image")
         self.assertEqual(cols, 128, "Error reading image")
 
-        temp = "opencv_test_image.spi"
+        temp = "test_image.spi"
         img.write(temp, srw)
 
         img2 = em2d.Image()
@@ -33,6 +34,67 @@ class Tests(IMP.test.TestCase):
                     msg="Generated image is different from stored")
 
         os.remove(temp)
+
+    def test_show_matrix(self):
+        """Test showing a matrix"""
+        img = em2d.Image(2, 3)
+        for i in range(2):
+            for j in range(3):
+                img.set_value(i, j, i * 3 + j + 0.5)
+        sio = io.StringIO()
+        em2d.show(img.get_data(), sio)
+        self.assertEqual(sio.getvalue(), "0.5 1.5 2.5 \n3.5 4.5 5.5 \n\n")
+
+    def test_write_matrix(self):
+        """Test writing a matrix to a Spider image"""
+        img = em2d.Image(3, 4)
+        for i in range(3):
+            for j in range(4):
+                img.set_value(i, j, i * 4 - j + 0.25)
+        with IMP.test.temporary_directory() as tmpdir:
+            fn = os.path.join(tmpdir, "matrix.spi")
+            em2d.write_matrix(img.get_data(), fn)
+            img2 = em2d.Image(fn, em2d.SpiderImageReaderWriter())
+            self.assertEqual(int(img2.get_header().get_number_of_rows()), 3)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_columns()), 4)
+            for i in range(3):
+                for j in range(4):
+                    self.assertEqual(img2(i, j), img(i, j))
+
+    def test_read_and_write_byte_swapped_images(self):
+        """Test read/write of byte-swapped Spider images"""
+        normal_rw = em2d.SpiderImageReaderWriter()
+        # filename, skip_type_check, force_reversed, skip_extra_checkings
+        swapped_rw = em2d.SpiderImageReaderWriter("", False, True, True)
+        img = em2d.Image(
+            self.get_input_file_name("1z5s-projection-0.spi"), normal_rw)
+        rows = int(img.get_header().get_number_of_rows())
+        cols = int(img.get_header().get_number_of_columns())
+        with IMP.test.temporary_directory() as tmpdir:
+            normal_fn = os.path.join(tmpdir, "normal.spi")
+            swapped_fn = os.path.join(tmpdir, "swapped.spi")
+            img.write(normal_fn, normal_rw)
+            img.write(swapped_fn, swapped_rw)
+            with open(normal_fn, 'rb') as fh:
+                normal = fh.read()
+            with open(swapped_fn, 'rb') as fh:
+                swapped = fh.read()
+            # The image data (at the end of the file, after the header) are
+            # stored as floats, with the bytes of each reversed
+            self.assertEqual(len(normal), len(swapped))
+            data_start = len(normal) - rows * cols * 4
+            for k in range(data_start, len(normal), 4):
+                self.assertEqual(normal[k:k + 4], swapped[k:k + 4][::-1])
+            # The byte-swapped image reads back to the same values
+            img2 = em2d.Image(swapped_fn, swapped_rw)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_rows()), rows)
+            self.assertEqual(
+                int(img2.get_header().get_number_of_columns()), cols)
+            for i in range(rows):
+                for j in range(cols):
+                    self.assertEqual(img(i, j), img2(i, j))
 
     def test_variance_filter(self):
         """Test that the variance filter is working"""
@@ -183,6 +245,22 @@ class Tests(IMP.test.TestCase):
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1 = em2d.Image(fn_img1, trw)
         self.assertRaises(IOError, img1.write, "temp.xxx", trw)
+
+    def test_read_write_errors(self):
+        """Test errors reading or writing JPG and TIFF images"""
+        img = em2d.Image(4, 5)
+        img.set_value(1, 2, 1.0)
+        for rw, ext in ((em2d.JPGImageReaderWriter(), ".jpg"),
+                        (em2d.TIFFImageReaderWriter(), ".tif")):
+            self.assertRaises(IOError, em2d.Image, "nonexistent" + ext, rw)
+            with IMP.test.temporary_directory() as tmpdir:
+                bad = os.path.join(tmpdir, "bad" + ext)
+                with open(bad, "w") as fh:
+                    fh.write("not an image")
+                self.assertRaises(IOError, em2d.Image, bad, rw)
+                self.assertRaises(
+                    IOError, img.write,
+                    os.path.join(tmpdir, "nonexistent", "out" + ext), rw)
 
     def test_do_extend_borders(self):
         """Test that extending the borders of an image is done correctly"""

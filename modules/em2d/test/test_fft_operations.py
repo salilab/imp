@@ -9,7 +9,7 @@ import IMP.em
 class Tests(IMP.test.TestCase):
 
     def test_get_autocorrelation2d(self):
-        """ Test autocorrelation of an image using OpenCV"""
+        """ Test autocorrelation of an image"""
         name = self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em2d.SpiderImageReaderWriter()
         image = IMP.em2d.Image(name, srw)

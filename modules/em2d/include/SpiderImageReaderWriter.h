@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/SpiderImageReaderWriter.h
  *  \brief Management of Images in Spider format
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
@@ -9,7 +9,7 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/ImageReaderWriter.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em/ImageHeader.h"
 #include "IMP/em/header_converters.h"
 #include <IMP/algebra/utility.h>
@@ -65,20 +65,20 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
   }
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const override {
+            DoubleMatrix &data) const override {
     this->read_from_floats(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const override {
+             const DoubleMatrix &data) const override {
     this->write_to_floats(filename, header, data);
   }
 
   void read_from_ints(const String &, em::ImageHeader &,
-                      cv::Mat &) const override {}
+                      DoubleMatrix &) const override {}
 
   void write_to_ints(const String &, em::ImageHeader &,
-                     const cv::Mat &) const override {}
+                     const DoubleMatrix &) const override {}
 
   //! Reads an image file in Spider format and stores the content
   //! int the header and data parameters
@@ -88,7 +88,7 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
     \param[in] data a matrix to store the grid of data of the image
   */
   void read_from_floats(const String &filename, em::ImageHeader &header,
-                        cv::Mat &data) const override {
+                        DoubleMatrix &data) const override {
     IMP_LOG_VERBOSE("reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
@@ -107,19 +107,13 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
     // Adjust size of the matrix according to the header
     unsigned int rows = (int)header.get_number_of_rows();
     unsigned int cols = (int)header.get_number_of_columns();
-    data.create(rows, cols, CV_64FC1);
-    // Read with casting
-    float aux;
-    for (cvDoubleMatIterator it = data.begin<double>();
-         it != data.end<double>(); ++it) {
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        in.read(reinterpret_cast<char *>(&aux), sizeof(float));
-      } else {
-        algebra::reversed_read(reinterpret_cast<char *>(&aux), sizeof(float), 1,
-                               in, true);
-      }
-      (*it) = static_cast<double>(aux);
-    }
+    // Read with casting (data are stored as floats, in row-major order)
+    Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        floats = Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic,
+                              Eigen::RowMajor>::Zero(rows, cols);
+    algebra::reversed_read(floats.data(), sizeof(float), floats.size(), in,
+                           force_reversed_ ^ algebra::get_is_big_endian());
+    data = floats.cast<double>();
     in.close();
   }
 
@@ -130,23 +124,17 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
    *  \param[in] data a matrix with the grid of data of the image
    */
   void write_to_floats(const String &filename, em::ImageHeader &header,
-                       const cv::Mat &data) const override {
+                       const DoubleMatrix &data) const override {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it
     header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
 
-    float aux;
-    for (cvDoubleConstMatIterator it = data.begin<double>();
-         it != data.end<double>(); ++it) {
-      aux = (float)(*it);
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        out.write(reinterpret_cast<char *>(&aux), sizeof(float));
-      } else {
-        algebra::reversed_write(reinterpret_cast<char *>(&aux), sizeof(float),
-                                1, out, true);
-      }
-    }
+    // Write as floats, in row-major order
+    Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        floats = data.cast<float>();
+    algebra::reversed_write(floats.data(), sizeof(float), floats.size(), out,
+                            force_reversed_ ^ algebra::get_is_big_endian());
     out.close();
   }
 

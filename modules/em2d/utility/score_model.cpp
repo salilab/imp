@@ -2,7 +2,7 @@
  *  \file main.cpp
  *  \brief Scoring of models against 2D-EM projections
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/em2d_config.h"
@@ -12,7 +12,7 @@
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/scores2D.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"

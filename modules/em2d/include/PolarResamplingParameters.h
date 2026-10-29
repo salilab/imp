@@ -1,14 +1,15 @@
 /**
  *  \file IMP/em2d/PolarResamplingParameters.h
  *  \brief Functions related with rotations in em2d
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 #define IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 
 #include <IMP/em2d/em2d_config.h>
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
+#include "IMP/em2d/FFToperations.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"
 #include "IMP/log.h"
@@ -38,7 +39,9 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   /*!
       \param[in] m Matrix that is going to be resampled
   */
-  PolarResamplingParameters(const cv::Mat &m) { setup(m.rows, m.cols); }
+  PolarResamplingParameters(const DoubleMatrix &m) {
+    setup(m.rows(), m.cols());
+  }
 
   ~PolarResamplingParameters() {};
 
@@ -53,7 +56,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
     matrix_cols_ = cols;
     ending_radius_ =
         std::min(rows / 2., cols / 2.);  // maximum radius, half the size
-    n_rings_ = cv::getOptimalDFTSize((int)ending_radius_);
+    n_rings_ = get_optimal_dft_size((int)ending_radius_);
     radius_step_ =
         (ending_radius_ - starting_radius_) / (static_cast<double>(n_rings_));
     parameters_set_ = true;
@@ -94,7 +97,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   //! use for the resampling, and the function computes the optimal number
   //! for an FFT based on this approximated number
   void set_estimated_number_of_angles(unsigned int aprox_value) {
-    n_angles_ = cv::getOptimalDFTSize(aprox_value);
+    n_angles_ = get_optimal_dft_size(aprox_value);
     angle_step_ = (2 * PI) / static_cast<double>(n_angles_);
   }
 
@@ -117,48 +120,18 @@ class IMPEM2DEXPORT PolarResamplingParameters {
 
   //! After the number of radius and angles values are set, this function
   //! Builds a map of resampling coordinates. This map is very useful for
-  void create_maps_for_resampling() {
-    if (n_angles_ == 0) {
-      IMP_THROW("Number of sampling points for the angle is zero",
-                IMP::ValueException);
-    }
-    // create the appropriate map
-    polar_map_.create(n_rings_, n_angles_, CV_32FC2);  // 2 channels, floats
-    // Build a map to use with the OpenCV the cv::remap
-    //  function for polar resampling
-    cv::Vec2d v;
-    for (unsigned int i = 0; i < n_rings_; ++i) {
-      for (unsigned int j = 0; j < n_angles_; ++j) {
-        double r = get_radius(i);
-        double theta = j * angle_step_;
-        // row and col of input to use
-        double row = static_cast<double>(matrix_rows_) / 2.0 + r * sin(theta);
-        double col = static_cast<double>(matrix_cols_) / 2.0 + r * cos(theta);
-        polar_map_.at<cv::Vec2f>(i, j)[0] = static_cast<float>(row);
-        polar_map_.at<cv::Vec2f>(i, j)[1] = static_cast<float>(col);
-      }
-    }
-    // Convert to fast maps
-    cv::Mat empty;
-    cv::convertMaps(polar_map_, empty, map_16SC2_, map_16UC1_, CV_16SC2);
-  }
+  //! speeding up the resampling (see do_resample_polar())
+  void create_maps_for_resampling();
 
-  //! Get the samplings maps of type CV_16SC2 and CV_16UC1
-  //! (this map combination is faster for remapping. See OpenCV help for remap()
-  void get_resampling_maps(cv::Mat &m1, cv::Mat &m2) const {
-    m1 = map_16SC2_;
-    m2 = map_16UC1_;
-  }
-
-  //! Obtain the resampling map of type CV_32FC2 (floats, slower that those
-  //! obtained with   get_resampling_maps()
-  void get_resampling_map(cv::Mat &m1) const {
-    IMP_LOG_VERBOSE("returning resampling map "
-                    << polar_map_.rows << "x" << polar_map_.cols << " depth "
-                    << polar_map_.depth() << " type " << polar_map_.type()
-                    << std::endl);
+#ifndef SWIG
+  //! Get the map of the (row, column) coordinates of each sample
+  /** The coordinates are stored as pairs of floats.
+      \note For internal use.
+   */
+  void get_resampling_map(internal::RowMajorArray<float> &m1) const {
     m1 = polar_map_;
   }
+#endif
 
   void show(std::ostream &out) const {
     out << "starting_radius = " << starting_radius_ << std::endl;
@@ -172,11 +145,8 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   }
 
  protected:
-  cv::Mat polar_map_;       // CV_23CF, map in floats.
-  cv::Mat map_16SC2_;       // Map for speed up resampling (see OpenCV help for
-                            // remap)
-  cv::Mat map_16UC1_;       // Map for speed up resampling (see OpenCV help for
-                            // remap)
+  // Map of the (row, column) coordinates of each sample (pairs of floats)
+  internal::RowMajorArray<float> polar_map_;
   double starting_radius_;  // starting radius for the polar resampling
   double ending_radius_;    // ending radius for the polar resampling
   // Number of sampling points for radius and angles
@@ -188,7 +158,7 @@ private:
   friend class cereal::access;
 
   template<class Archive> void serialize(Archive &ar) {
-    ar(polar_map_, map_16SC2_, map_16UC1_, starting_radius_,
+    ar(polar_map_, starting_radius_,
        ending_radius_, n_rings_, n_angles_, matrix_rows_, matrix_cols_,
        parameters_set_, radius_step_, angle_step_);
   }

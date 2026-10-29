@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.cpp
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
@@ -14,7 +14,7 @@
 #include "IMP/em2d/internal/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/TIFFImageReaderWriter.h"
-#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Matrix.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/atom/Mass.h"
@@ -47,8 +47,8 @@ void ProjectionFinder::set_subjects(const em2d::Images &subjects) {
     IMP_THROW("Passing empty set of subjects", ValueException);
   }
   if (polar_params_.get_is_setup() == false) {
-    polar_params_.setup(subjects[0]->get_data().rows,
-                        subjects[0]->get_data().cols);
+    polar_params_.setup(subjects[0]->get_data().rows(),
+                        subjects[0]->get_data().cols());
     polar_params_.set_estimated_number_of_angles(
         subjects[0]->get_header().get_number_of_columns());
     polar_params_.create_maps_for_resampling();
@@ -96,8 +96,8 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
   }
 
   if (polar_params_.get_is_setup() == false) {
-    polar_params_.setup(projections[0]->get_data().rows,
-                        projections[0]->get_data().cols);
+    polar_params_.setup(projections[0]->get_data().rows(),
+                        projections[0]->get_data().cols());
     polar_params_.set_estimated_number_of_angles(
         projections[0]->get_header().get_number_of_columns());
     polar_params_.create_maps_for_resampling();
@@ -158,7 +158,7 @@ void ProjectionFinder::do_preprocess_projection(unsigned int j) {
                                                               << std::endl);
   // FFT PREPROCESSING
   if (params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
-    cv::Mat autoc, polar_autoc;
+    DoubleMatrix autoc, polar_autoc;
     em2d::get_autocorrelation2d(projections_[j]->get_data(), autoc);
     em2d::do_resample_polar(autoc, polar_autoc, polar_params_);
     get_fft_using_optimal_size(polar_autoc, PROJECTIONS_POLAR_AUTOC_[j]);
@@ -175,7 +175,7 @@ void ProjectionFinder::do_preprocess_subject(unsigned int i) {
   IMP_LOG_TERSE("ProjectionFinder: Preprocessing subject " << i << std::endl);
 
   if (params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
-    cv::Mat autoc, polar_autoc;
+    DoubleMatrix autoc, polar_autoc;
     get_fft_using_optimal_size(subjects_[i]->get_data(), SUBJECTS_[i]);
     get_autocorrelation2d(subjects_[i]->get_data(), autoc);
     do_resample_polar(autoc, polar_autoc, polar_params_);
@@ -217,7 +217,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
       // get_complete_alignment_with_centers_no_preprocessing returns a value of
       // Cross correlation from the rotational alignment but not the ccc.
       // compute the ccc here:
-      cv::Mat aux;
+      DoubleMatrix aux;
       get_transformed(projections_[j]->get_data(), aux, RA.first);
       RA.second =
           get_cross_correlation_coefficient(subjects_[i]->get_data(), aux);
@@ -257,7 +257,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
       projection_index = j;
     }
     ///******/
-    //    cv::Mat xx;
+    //    DoubleMatrix xx;
     //    get_transformed(projections_[j]->get_data(),xx,RA.first);
     //    std::ostringstream strmm;
     //    strmm << "individual-" << i << "-" << j << ".spi";
@@ -503,18 +503,15 @@ double ProjectionFinder::get_fine_registration_time() const {
 }
 
 void ProjectionFinder::do_preprocess_for_fast_coarse_registration(
-    const cv::Mat &m, algebra::Vector2D &center, cv::Mat &POLAR_AUTOC) {
-  // Make the matrix positive to compute the weighted centroid
-  double min_value = 0;
-  cv::minMaxLoc(m, &min_value);
-  cv::Mat result;
-  result -= min_value;
+    const DoubleMatrix &m, algebra::Vector2D &center,
+    DoubleMatrix &POLAR_AUTOC) {
+  DoubleMatrix result;
   center = internal::get_weighted_centroid(m);
   // Center the image in the weighted centroid
   algebra::Transformation2D T((-1) * center);
   get_transformed(m, result, T);
   // Get the autocorrelation in polar coordinates and its FFT
-  cv::Mat autoc, polar_autoc;
+  DoubleMatrix autoc, polar_autoc;
   get_autocorrelation2d(result, autoc);
   do_resample_polar(autoc, polar_autoc, polar_params_);
   get_fft_using_optimal_size(polar_autoc, POLAR_AUTOC);
