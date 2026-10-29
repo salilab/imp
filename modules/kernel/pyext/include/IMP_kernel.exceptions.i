@@ -95,8 +95,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 #include <boost/version.hpp>
 #if !defined(BOOST_FILESYSTEM_VERSION)
 #define BOOST_FILESYSTEM_VERSION 3
-#include <boost/filesystem.hpp>
 #endif
+#include <boost/filesystem.hpp>
 
   /* Code to convert C++ exceptions into scripting language errors. Saves
      having lots of catch statements in every single wrapper. */
