@@ -5,6 +5,8 @@ import IMP.test
 import pickle
 from random import sample
 from math import pi, log, exp
+import functools
+import numpy as np
 try:
     import jax
     import jax.numpy as jnp
@@ -86,6 +88,55 @@ def make_test_restraint():
     return m, p1, p2, sigma1, sigma2, psi, dr
 
 
+def lens_volume(a, b, r):
+    """Volume of the intersection of balls of radii a and b, r apart"""
+    rmin = np.minimum(a, b)
+    rs = np.where(r > 0., r, 1.)
+    mid = (pi * (a + b - r) ** 2 * (r * r + 2. * r * (a + b)
+                                     - 3. * (a - b) ** 2) / (12. * rs))
+    return np.where(r >= a + b, 0.,
+                    np.where(r <= abs(a - b), 4. / 3. * pi * rmin ** 3, mid))
+
+
+def sphere_area_within(r, d, radius):
+    """Area of the sphere of radius r, centered at the origin, that lies
+       inside the ball of the given radius centered at distance d"""
+    mid = pi * r * (radius * radius - (r - d) ** 2) / d
+    return np.where(r + d <= radius, 4. * pi * r * r,
+                    np.where((r <= d - radius) | (r >= d + radius),
+                             0., mid))
+
+
+@functools.lru_cache(maxsize=None)
+def forward_model(dist, sigmai, sigmaj, length):
+    """Probability that two points, uniform in spheres of radii sigmai and
+       sigmaj whose centers are dist apart, are closer than length.
+
+       This integrates over the distance s of the first point from the
+       center of the second sphere: s has density
+       sphere_area_within(s, dist, sigmai) / Vi, and the probability that
+       the second point is within length of the first is
+       lens_volume(sigmaj, length, s) / Vj. (The C++ code integrates over
+       the distance between the two points instead.)"""
+    smax = dist + sigmai
+    points = sorted(set([0., smax] + [x for x in (abs(dist - sigmai),
+                                                  abs(sigmaj - length),
+                                                  sigmaj + length)
+                                      if 0. < x < smax]))
+    total = 0.
+    for lo, hi in zip(points[:-1], points[1:]):
+        # Composite Simpson's rule on each smooth piece
+        s = np.linspace(lo, hi, 81)
+        f = (sphere_area_within(s, dist, sigmai)
+             * lens_volume(sigmaj, length, s))
+        h = (hi - lo) / 80.
+        total += h / 3. * (f[0] + f[-1] + 4. * f[1:-1:2].sum()
+                           + 2. * f[2:-1:2].sum())
+    voli = 4.0 / 3.0 * pi * sigmai ** 3
+    volj = 4.0 / 3.0 * pi * sigmaj ** 3
+    return total / voli / volj
+
+
 class CrossLinkMS:
     """Defining a dummy python restraint
     with the same interface as the one that has to be tested
@@ -109,30 +160,13 @@ class CrossLinkMS:
             else:
                 R=IMP.core.XYZR(p1).get_radius()
                 dist=36.0/35.0*R
-            if dist <= 0.001:
-                dist = 0.001
+            if dist <= 0.0001:
+                dist = 0.0001
             psi = psi.get_scale()
             sigmai = sigma1.get_scale()
             sigmaj = sigma2.get_scale()
 
-            voli = 4.0 / 3.0 * pi * sigmai * sigmai * sigmai
-            volj = 4.0 / 3.0 * pi * sigmaj * sigmaj * sigmaj
-
-            fi = 0
-            fj = 0
-
-            if dist < sigmai + sigmaj:
-                xlvol = 4.0 / 3.0 * pi * (self.length / 2) * (self.length / 2) * \
-                    (self.length / 2)
-                fi = min(voli, xlvol)
-                fj = min(volj, xlvol)
-            else:
-                di = dist - sigmaj - self.length / 2
-                dj = dist - sigmai - self.length / 2
-                fi = self.sphere_cap(sigmai, self.length / 2, abs(di))
-                fj = self.sphere_cap(sigmaj, self.length / 2, abs(dj))
-
-            pofr = fi * fj / voli / volj
+            pofr = forward_model(dist, sigmai, sigmaj, self.length)
             onemprob = onemprob * \
                 (1.0 - (psi * (1.0 - pofr) + pofr * (1 - psi))
                  * exp(-self.slope * dist))
@@ -140,19 +174,6 @@ class CrossLinkMS:
         prob = 1.0 - onemprob
 
         return prob
-
-    def sphere_cap(self,r1, r2, d):
-        sc = 0.0
-        if d <= max(r1, r2) - min(r1, r2):
-            sc = min(4.0 / 3 * pi * r1 * r1 * r1,
-                     4.0 / 3 * pi * r2 * r2 * r2)
-        elif d >= r1 + r2:
-            sc = 0
-        else:
-            sc = (pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) * \
-                 (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2 + 6 * r1 * r2 -
-                  3 * r2 * r2)
-        return sc
 
 
 class TestXLRestraintSimple(IMP.test.TestCase):
@@ -240,12 +261,65 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             self.assertAlmostEqual(score_lp,
                                                    score_jax, delta=1e-3)
 
+    def test_forward_model(self):
+        """Test the forward model against the published definition"""
+        m = IMP.Model()
+        p1 = IMP.core.XYZ.setup_particle(IMP.Particle(m))
+        p2 = IMP.core.XYZ.setup_particle(IMP.Particle(m))
+        sigma1 = setupnuisance(m, 1., 0, 100, False)
+        sigma2 = setupnuisance(m, 1., 0, 100, False)
+        psi = setupnuisance(m, 0., 0., 0.5, False)
+
+        def get_f(dist, s1, s2, length):
+            # With psi = 0, no slope and one contribution, the restraint
+            # returns the forward model itself
+            r = IMP.isd.CrossLinkMSRestraint(m, length)
+            r.add_contribution((p1, p2), (sigma1, sigma2), psi)
+            p2.set_coordinates(IMP.algebra.Vector3D(dist, 0., 0.))
+            sigma1.set_scale(s1)
+            sigma2.set_scale(s2)
+            return r.get_probability()
+
+        # Spheres entirely within, or entirely beyond, the linker length
+        self.assertAlmostEqual(get_f(10., 2., 3., 15.5), 1., delta=1e-8)
+        self.assertAlmostEqual(get_f(20.5, 2., 3., 15.), 0., delta=1e-8)
+        # Concentric spheres of radius sigma: the distance between two
+        # independent uniform points in a ball of radius sigma has the
+        # distribution function x^3 - 9/16 x^4 + 1/32 x^6, with
+        # x = length / sigma <= 2 (Deltheil 1926; Hammersley 1950,
+        # Ann. Math. Statist. 21, 447)
+        for sigma in (10.5, 12., 15., 21.):
+            x = 21. / sigma
+            self.assertAlmostEqual(get_f(0., sigma, sigma, 21.),
+                                   x ** 3 - 9. / 16. * x ** 4 + x ** 6 / 32.,
+                                   delta=1e-8)
+        # Brute-force sampling of the definition
+        rng = np.random.RandomState(42)
+
+        def sample_ball(radius, n):
+            v = rng.normal(size=(n, 3))
+            v /= np.linalg.norm(v, axis=1)[:, None]
+            return v * (radius * rng.uniform(size=n) ** (1. / 3.))[:, None]
+        n = 400000
+        for dist, s1, s2, length in [(21., 5., 5., 21.), (18., 12., 12., 21.),
+                                     (24., 5., 5., 21.), (10., 3., 8., 27.),
+                                     (30., 13.5, 13.5, 27.)]:
+            x1 = sample_ball(s1, n)
+            x2 = sample_ball(s2, n) + np.array([dist, 0., 0.])
+            mc = np.mean(np.linalg.norm(x1 - x2, axis=1) < length)
+            # Standard error is at most 0.0008
+            self.assertAlmostEqual(get_f(dist, s1, s2, length), mc,
+                                   delta=0.004)
+            self.assertAlmostEqual(get_f(dist, s1, s2, length),
+                                   forward_model(dist, s1, s2, length),
+                                   delta=1e-6)
+
     def test_score_multiple(self):
         """Test crosslink restraint with multiple contributions"""
         m, p1, p2, p3, sigma1, sigma2, psi1, psi2, lw = setup_system()
 
         imp_score = lw.evaluate(False)
-        self.assertAlmostEqual(imp_score, 2.25585, delta=1e-3)
+        self.assertAlmostEqual(imp_score, 2.71145, delta=1e-3)
         if jax:
             jax_score = lw._evaluate_jax()
             self.assertAlmostEqual(jax_score, imp_score, delta=1e-3)
