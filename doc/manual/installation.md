@@ -39,7 +39,7 @@ In order to build %IMP from source, you will need:
 - [CMake](https://cmake.org) (3.14 or later)
 - [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
-- [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
+- [Eigen](https://eigen.tuxfamily.org/) (3.3 or later)
 - [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (1.8 or later)
 - [cereal](https://uscilab.github.io/cereal/)
 - [Python](https://www.python.org) (3.7 or later, or 3.6 with the [dataclasses](https://pypi.org/project/dataclasses/) Python backport)

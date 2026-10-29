@@ -380,7 +380,7 @@ if(NOT IMP_STATIC)
   find_package(OpenMP3)
 endif()
 
-find_package(Eigen3 3.0 REQUIRED)
+find_package(Eigen3 3.3 REQUIRED)
 # Add Eigen3 to 'system' include path. Amongst other things, this will suppress
 # many compiler warnings about Eigen code which a) clutter the output and
 # b) we're not going to fix, since Eigen isn't our code.

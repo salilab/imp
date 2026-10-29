@@ -19,7 +19,7 @@ BuildRequires: python3-devel
 BuildRequires: gcc-c++, hdf5-devel >= 1.8
 BuildRequires: swig >= 3.0
 BuildRequires: gsl-devel, fftw-devel
-BuildRequires: zlib-devel, sed, eigen3-devel, cereal-devel
+BuildRequires: zlib-devel, sed, eigen3-devel >= 3.3, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 BuildRequires: ann-devel
 %endif
@@ -95,8 +95,8 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
-Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel, cereal-devel
-Requires:      boost-devel, hdf5-devel, protobuf-devel
+Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel >= 3.3
+Requires:      boost-devel, hdf5-devel, protobuf-devel, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 Requires:      ann-devel
 %endif
