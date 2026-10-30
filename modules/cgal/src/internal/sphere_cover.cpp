@@ -16,59 +16,67 @@
 
 IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <IMP/algebra/vector_generators.h>
-#include <CGAL/Cartesian_d.h>
-#include <CGAL/Convex_hull_d.h>
-#include <CGAL/Gmpq.h>
-#include <CGAL/Optimisation_d_traits_d.h>
-#include <CGAL/Min_sphere_d.h>
-#include <CGAL/K_neighbor_search.h>
-#include <CGAL/Lazy_exact_nt.h>
-#include <CGAL/Search_traits_2.h>
+#include <CGAL/Epick_d.h>
+#include <CGAL/Triangulation.h>
+#include <algorithm>
+#include <vector>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 template <int D>
 void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
                                 bool ALL) {
   unsigned int n = ret.size();
-  typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq>> K;
-  typedef typename K::Point_d P;
-  typedef ::CGAL::Convex_hull_d<K> CH;
-  typedef CH::Vertex_handle VertexHandle;
+  // The convex hull is computed from a triangulation of the points; only
+  // predicates are needed, which Epick_d evaluates exactly
+  typedef ::CGAL::Epick_d< ::CGAL::Dimension_tag<D>> K;
+  typedef ::CGAL::Triangulation<K> T;
+  typedef typename T::Point P;
+  typedef typename T::Vertex_handle VertexHandle;
+  typedef typename T::Full_cell_iterator FullCellIterator;
 
-  std::map<VertexHandle, int> indexes;
   for (unsigned int rep = 0; rep < 10 * D; ++rep) {
-    CH ch(D);
+    T t(D);
+    std::map<VertexHandle, int> indexes;
     for (unsigned int i = 0; i < ret.size(); ++i) {
-      P p(D, ret[i].begin(), ret[i].end());
-      VertexHandle vh = ch.insert(p);
+      P p(ret[i].begin(), ret[i].end());
+      VertexHandle vh = t.insert(p);
       indexes[vh] = i + 1;
       if (!ALL) {
         algebra::VectorD<D> nr = -ret[i];
-        P opp_p(D, nr.begin(), nr.end());
-        VertexHandle opp_vh = ch.insert(opp_p);
+        P opp_p(nr.begin(), nr.end());
+        VertexHandle opp_vh = t.insert(opp_p);
         indexes[opp_vh] = -static_cast<int>(i) - 1;
       }
     }
     IMP::Vector<algebra::VectorD<D>> sums(n, algebra::get_zero_vector_d<D>());
     Floats counts(n, 0);
-    for (CH::Facet_iterator it = ch.facets_begin(); it != ch.facets_end();
-         ++it) {
+    // Each facet of the convex hull is the finite part of an infinite full
+    // cell of the triangulation (if the points span all D dimensions)
+    std::vector<VertexHandle> facet;
+    for (FullCellIterator it = t.full_cells_begin();
+         t.current_dimension() == D && it != t.full_cells_end(); ++it) {
+      if (!t.is_infinite(it)) continue;
+      facet.clear();
+      for (int k = 0; k <= D; ++k) {
+        if (!t.is_infinite(it->vertex(k))) facet.push_back(it->vertex(k));
+      }
       for (unsigned int i = 0; i < D; ++i) {
-        int vi = indexes[ch.vertex_of_facet(it, i)];
+        int vi = indexes[facet[i]];
         algebra::VectorD<D> pi;
         if (vi > 0) {
           pi = ret[vi - 1];
         } else {
           continue;
         }
-        for (unsigned int j = 0; i < D; ++i) {
+        for (unsigned int j = 0; j < D; ++j) {
           if (i == j) continue;
-          int vj = indexes[ch.vertex_of_facet(it, j)];
+          int vj = indexes[facet[j]];
           algebra::VectorD<D> pj;
           if (vj > 0) {
             pj = ret[vj - 1];
           } else {
-            pj = ret[-vj - 1];
+            // the opposite of a point
+            pj = -ret[-vj - 1];
           }
           double d = (pj - pi).get_magnitude();
           if (counts[vi - 1] < d) {
@@ -78,7 +86,10 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D>> &ret,
         }
       }
     }
-    for (unsigned int i = 0; i < (ALL ? 2 * D : D); ++i) {
+    // The first points (the basis vectors, and their opposites for a full
+    // sphere) are kept fixed; there may be fewer points than this
+    for (unsigned int i = 0; i < std::min<unsigned int>(n, ALL ? 2 * D : D);
+         ++i) {
       sums[i] = ret[i];
     }
     for (unsigned int i = (ALL ? 2 * D : D); i < ret.size(); ++i) {
