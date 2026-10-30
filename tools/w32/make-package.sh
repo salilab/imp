@@ -109,6 +109,8 @@ cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/libmpfr-4.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/libTAU1.dll \
+   ${DLLSRC}/libjpeg.dll \
+   ${DLLSRC}/tiff.dll \
    ${DLLSRC}/zlib1.dll ${ROOT}/bin || exit 1
 
 # Check all installed binaries for DLL dependencies, to make sure we
