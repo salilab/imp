@@ -379,10 +379,11 @@ _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
-1 1 A 33 424 C 33 424 100.000 1 1 1
-2 1 A 429 488 G 482 551 10.000 1 2 1
-3 2 A 33 424 C 33 424 100.000 1 1 1
-4 2 A 429 488 G 482 551 10.000 1 2 1
+_ihm_starting_comparative_models.details
+1 1 A 33 424 C 33 424 100.000 1 1 1 .
+2 1 A 429 488 G 482 551 10.000 1 2 1 .
+3 2 A 33 424 C 33 424 100.000 1 1 1 .
+4 2 A 429 488 G 482 551 10.000 1 2 1 .
 #
 #
 loop_
