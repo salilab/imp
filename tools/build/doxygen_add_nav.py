@@ -227,9 +227,10 @@ class Docs:
             for source_subdir in source_subdirs:
                 for source in glob.glob(os.path.join(top_source_dir,
                                                      source_subdir, pattern)):
-                    # Ignore toplevel README and CONTRIBUTING
+                    # Ignore toplevel .md files
                     if source_subdir == '.' \
                        and (source.endswith('README.md')
+                            or source.endswith('CLAUDE.md')
                             or source.endswith('CONTRIBUTING.md')):
                         continue
                     page = get_page_from_source(source, id_re, self.page_by_id)
