@@ -223,20 +223,22 @@ def _invert_ranges(ranges, end, start=1):
         yield (start, end)
 
 
-def _pred_ranges(ranges, end):
-    """Given a sorted list of non-overlapping ranges, yield a new list which
-       covers the range 1-end. Each element in the new list contains a new
-       third bool member which is True iff the element was in the original
-       list. For example, if end=4,
-       [(2, 3)] -> [(1, 1, False), (2, 3, True), (4, 4, False)]"""
+def _pred_id_ranges(id_ranges, end):
+    """Given a sorted list of ranges with IDs, yield a new list which covers
+       the range 1-end. The IDs in the new list are the IDs from the original
+       list, or None. In addition, a new bool item is returned, True only if
+       there is at least one model ID.
+       For example, if end=4,
+       [(2, 3, 'x')] -> [(1, 1, False, None), (2, 3, True, 'x'),
+                         (4, 4, False, None)]"""
     start = 1
-    for r in ranges:
+    for r in id_ranges:
         if r[0] > start:
-            yield (start, r[0] - 1, False)
-        yield (r[0], r[1], True)
+            yield (start, r[0] - 1, False, None)
+        yield (r[0], r[1], True, r[2])
         start = r[1] + 1
     if end >= start:
-        yield (start, end, False)
+        yield (start, end, False, None)
 
 
 def _combine_ranges(ranges):
@@ -253,6 +255,60 @@ def _combine_ranges(ranges):
             yield current
             current = r
     yield current
+
+
+def _sorted_nonoverlap_id_ranges(id_ranges):
+    """Sort the input ranges with IDs and remove any overlaps with the
+       same ID; yield the result.
+       For example, [(8, 10, 'x'), (1, 2, 'y'), (3, 4, 'y'), (5, 6, 'z')]
+                    -> [(1, 4, 'y'), (5, 6, 'z'), (8, 10, 'x')]"""
+    id_ranges = sorted(id_ranges)
+    if not id_ranges:
+        return
+    current = id_ranges[0]
+    for r in id_ranges[1:]:
+        if current[1] + 1 >= r[0] and r[2] == current[2]:
+            current = (current[0], max(r[1], current[1]), current[2])
+        else:
+            yield current
+            current = r
+    yield current
+
+
+def _combine_id_ranges(id_ranges):
+    """Sort the input ranges with IDs into non-overlapping ranges per ID;
+       yield the result.
+       For example, [(8, 10, 'x'), (1, 2, 'y'), (3, 4, 'z'), (2, 3, 'z')]
+                    -> [(1, 1, 'y'), (2, 2, 'y,z'), (3, 4, 'z'),
+                        (8, 10, 'x')]"""
+    id_ranges = list(_sorted_nonoverlap_id_ranges(id_ranges))
+    if not id_ranges:
+        return
+    yield_end = 0
+    for i_r, r in enumerate(id_ranges):
+        start, end, r_id = r
+        start = max(start, yield_end + 1)
+        # Get subranges of r and their IDs
+        while start <= end:
+            ids = set([r_id])
+            new_end = end
+            for r2 in id_ranges[i_r + 1:]:
+                start2, end2, id2 = r2
+                # If r2 has same start as r1, adjust end to cover overlap
+                if start2 <= start:
+                    if end2 >= start:
+                        new_end = min(new_end, end2)
+                        ids.add(id2)
+                # If only partial overlap, exclude this range; we will
+                # look at it again later
+                elif start2 <= new_end:
+                    new_end = start2 - 1
+                # Otherwise, no overlap (and no further ranges will overlap)
+                else:
+                    break
+            yield start, new_end, ",".join("%s" % d for d in sorted(ids))
+            yield_end = new_end
+            start = new_end + 1
 
 
 def _make_range_from_list(rr):

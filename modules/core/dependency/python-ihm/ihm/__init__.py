@@ -19,7 +19,7 @@ import collections
 import warnings
 from . import util
 
-__version__ = '2.11'
+__version__ = '2.12'
 
 
 class __UnknownValue:
@@ -1585,18 +1585,25 @@ class Entity:
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(entity=self, seq_id=seq_id)
 
+    def _is_unknown(self):
+        """Return True iff the sequence consists solely of unknown (UNK)
+           residues, so that it says nothing about the entity's identity"""
+        return (len(self.sequence) > 0
+                and all(s.id == 'UNK' for s in self.sequence))
+
     # Entities are considered identical if they have the same sequence,
-    # unless they are branched
+    # unless they are branched or their sequence is unknown
     def __eq__(self, other):
         if not isinstance(other, Entity):
             return False
-        if self.is_branched() or other.is_branched():
+        if (self.is_branched() or other.is_branched()
+                or self._is_unknown() or other._is_unknown()):
             return self is other
         else:
             return self.sequence == other.sequence
 
     def __hash__(self):
-        if self.is_branched():
+        if self.is_branched() or self._is_unknown():
             return hash(id(self))
         else:
             return hash(self.sequence)
@@ -1886,16 +1893,18 @@ class ChemDescriptor:
        :param str smiles_canonical: Canonical SMILES string
        :param str inchi: IUPAC INCHI descriptor
        :param str inchi_key: Hashed INCHI key
+       :param str details: Any additional free text information
 
        See also :attr:`System.orphan_chem_descriptors`.
     """
     def __init__(self, auth_name, chem_comp_id=None, chemical_name=None,
                  common_name=None, smiles=None, smiles_canonical=None,
-                 inchi=None, inchi_key=None):
+                 inchi=None, inchi_key=None, details=None):
         self.auth_name, self.chem_comp_id = auth_name, chem_comp_id
         self.chemical_name, self.common_name = chemical_name, common_name
         self.smiles, self.smiles_canonical = smiles, smiles_canonical
         self.inchi, self.inchi_key = inchi, inchi_key
+        self.details = details
 
 
 class Collection:

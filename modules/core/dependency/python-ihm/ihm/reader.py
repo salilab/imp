@@ -1305,13 +1305,13 @@ class _ChemDescriptorHandler(Handler):
     category = '_ihm_chemical_component_descriptor'
 
     def __call__(self, id, auth_name, chemical_name, common_name,
-                 smiles, smiles_canonical, inchi, inchi_key):
+                 smiles, smiles_canonical, inchi, inchi_key, details):
         d = self.sysr.chem_descriptors.get_by_id(id)
         self.copy_if_present(
             d, locals(),
             keys=('auth_name', 'chemical_name',
                   'common_name', 'smiles', 'smiles_canonical', 'inchi',
-                  'inchi_key'))
+                  'inchi_key', 'details'))
 
 
 class _EntityHandler(Handler):
@@ -1387,7 +1387,7 @@ class _StructRefHandler(Handler):
             and x[1] is not ihm.reference.Sequence)
 
     def __call__(self, id, entity_id, db_name, db_code, pdbx_db_accession,
-                 pdbx_seq_one_letter_code, details):
+                 pdbx_db_isoform, pdbx_seq_one_letter_code, details):
         # todo: handle things that aren't sequences
         e = self.sysr.entities.get_by_id(entity_id)
         typ = self.type_map.get(db_name.lower())
@@ -1399,6 +1399,7 @@ class _StructRefHandler(Handler):
         self.copy_if_present(
             ref, locals(), keys=('db_name', 'db_code', 'details'),
             mapkeys={'pdbx_db_accession': 'accession',
+                     'pdbx_db_isoform': 'isoform',
                      'pdbx_seq_one_letter_code': '_partial_sequence'})
         e.references.append(ref)
 
@@ -1910,7 +1911,8 @@ class _StartingComparativeModelsHandler(Handler):
                  starting_model_seq_id_end: int,
                  template_seq_id_begin: int, template_seq_id_end: int,
                  template_sequence_identity: float,
-                 template_sequence_identity_denominator: int):
+                 template_sequence_identity_denominator: int,
+                 details):
         m = self.sysr.starting_models.get_by_id(starting_model_id)
         dataset = self.sysr.datasets.get_by_id(template_dataset_list_id)
         aln = self.sysr.external_files.get_by_id_or_none(alignment_file_id)
@@ -1921,7 +1923,7 @@ class _StartingComparativeModelsHandler(Handler):
             template_sequence_identity, template_sequence_identity_denominator)
         t = ihm.startmodel.Template(
             dataset, asym_id, seq_id_range, template_seq_id_range,
-            identity, aln)
+            identity, aln, details=details)
         m.templates.append(t)
 
     def finalize(self):
@@ -2183,12 +2185,12 @@ class _NotModeledResidueRangeHandler(Handler):
     category = '_ihm_residues_not_modeled'
 
     def __call__(self, model_id, asym_id, seq_id_begin, seq_id_end,
-                 reason):
+                 reason, details):
         model = self.sysr.models.get_by_id(model_id)
         asym = self.sysr.asym_units.get_by_id(asym_id)
         # Allow for out-of-range seq_ids for now
         rr = ihm.model.NotModeledResidueRange(
-            asym, int(seq_id_begin), int(seq_id_end))
+            asym, int(seq_id_begin), int(seq_id_end), details=details)
         # Default to "Other" if invalid reason read
         try:
             rr.reason = reason
@@ -2592,24 +2594,32 @@ class _PseudoSiteHandler(Handler):
         p.description = description
 
 
-def _make_harmonic(low, up):
-    return ihm.restraint.HarmonicDistanceRestraint(up if low is None else low)
+def _make_harmonic(low, up, low_esd=None, up_esd=None, mean=None,
+                   mean_esd=None):
+    if mean is None:
+        mean = up if low is None else low
+    return ihm.restraint.HarmonicDistanceRestraint(mean, esd=mean_esd)
 
 
-def _make_upper_bound(low, up):
-    return ihm.restraint.UpperBoundDistanceRestraint(up)
+def _make_upper_bound(low, up, low_esd=None, up_esd=None, mean=None,
+                      mean_esd=None):
+    return ihm.restraint.UpperBoundDistanceRestraint(up, esd=up_esd)
 
 
-def _make_lower_bound(low, up):
-    return ihm.restraint.LowerBoundDistanceRestraint(low)
+def _make_lower_bound(low, up, low_esd=None, up_esd=None, mean=None,
+                      mean_esd=None):
+    return ihm.restraint.LowerBoundDistanceRestraint(low, esd=low_esd)
 
 
-def _make_lower_upper_bound(low, up):
+def _make_lower_upper_bound(low, up, low_esd=None, up_esd=None, mean=None,
+                            mean_esd=None):
     return ihm.restraint.LowerUpperBoundDistanceRestraint(
-        distance_lower_limit=low, distance_upper_limit=up)
+        distance_lower_limit=low, distance_upper_limit=up,
+        distance_lower_limit_esd=low_esd, distance_upper_limit_esd=up_esd)
 
 
-def _make_unknown_distance(low, up):
+def _make_unknown_distance(low, up, low_esd=None, up_esd=None, mean=None,
+                           mean_esd=None):
     return ihm.restraint.DistanceRestraint()
 
 
@@ -2627,7 +2637,12 @@ class _DerivedDistanceRestraintHandler(Handler):
     def __call__(self, id, group_id, dataset_list_id, feature_id_1,
                  feature_id_2, restraint_type, group_conditionality,
                  probability: float, mic_value: float,
-                 distance_lower_limit: float, distance_upper_limit: float):
+                 random_exclusion_fraction: float,
+                 distance_lower_limit: float, distance_upper_limit: float,
+                 distance_lower_limit_esd: float,
+                 distance_upper_limit_esd: float,
+                 distance_threshold_mean: float,
+                 distance_threshold_esd: float):
         r = self.sysr.dist_restraints.get_by_id(id)
         if group_id is not None:
             rg = self.sysr.dist_restraint_groups.get_by_id(group_id)
@@ -2635,11 +2650,14 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         r.feature1 = self.sysr.features.get_by_id(feature_id_1)
         r.feature2 = self.sysr.features.get_by_id(feature_id_2)
-        r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit)
+        r.distance = _handle_distance[restraint_type](
+            distance_lower_limit, distance_upper_limit,
+            distance_lower_limit_esd, distance_upper_limit_esd,
+            distance_threshold_mean, distance_threshold_esd)
         r.restrain_all = self._cond_map[group_conditionality]
         r.probability = probability
         r.mic_value = mic_value
+        r.random_exclusion_fraction = random_exclusion_fraction
 
 
 class _HDXRestraintHandler(Handler):
@@ -3373,6 +3391,12 @@ class _MultiStateSchemeConnectivityHandler(Handler):
 class _KineticRateHandler(Handler):
     category = '_ihm_kinetic_rate'
 
+    # Map equilibrium type to EquilibriumConstant subclass
+    _eq_type_map = dict(
+        (x[1].method.lower(), x[1])
+        for x in inspect.getmembers(ihm.multi_state_scheme, inspect.isclass)
+        if issubclass(x[1], ihm.multi_state_scheme.EquilibriumConstant))
+
     def __call__(self, id,
                  transition_rate_constant,
                  equilibrium_constant,
@@ -3386,31 +3410,14 @@ class _KineticRateHandler(Handler):
         k = self.sysr.kinetic_rates.get_by_id(id)
         # if information for an equilibrium is given, create an object
         eq_const = None
-        if (equilibrium_constant is not None) \
-                and (equilibrium_constant_determination_method is not None):
-            if equilibrium_constant_determination_method == 'equilibrium ' \
-                                                            'constant is ' \
-                                                            'determined from '\
-                                                            'population':
-                eq_const = \
-                    ihm.multi_state_scheme.PopulationEquilibriumConstant(
-                        value=equilibrium_constant,
-                        unit=equilibrium_constant_unit)
-            elif equilibrium_constant_determination_method == 'equilibrium ' \
-                                                              'constant is ' \
-                                                              'determined ' \
-                                                              'from kinetic ' \
-                                                              'rates, ' \
-                                                              'kAB/kBA':
-                eq_const = \
-                    ihm.multi_state_scheme.KineticRateEquilibriumConstant(
-                        value=equilibrium_constant,
-                        unit=equilibrium_constant_unit)
-            else:
-                eq_const = \
-                    ihm.multi_state_scheme.EquilibriumConstant(
-                        value=equilibrium_constant,
-                        unit=equilibrium_constant_unit)
+        if (equilibrium_constant is not None
+                and equilibrium_constant_determination_method is not None):
+            typ = (equilibrium_constant_determination_method.lower()
+                   if equilibrium_constant_determination_method else 'other')
+            cls = self._eq_type_map.get(
+                typ, ihm.multi_state_scheme.EquilibriumConstant)
+            eq_const = cls(value=equilibrium_constant,
+                           unit=equilibrium_constant_unit)
         # Add the content
         k.transition_rate_constant = transition_rate_constant
         k.equilibrium_constant = eq_const

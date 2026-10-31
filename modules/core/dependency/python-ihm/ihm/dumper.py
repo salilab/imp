@@ -116,8 +116,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.28",
-                     dict_location=self.URL % "44ed2c3")
+            lp.write(dict_name="mmcif_ihm.dic", dict_version="1.29",
+                     dict_location=self.URL % "630553d")
 
 
 class _StructDumper(Dumper):
@@ -376,7 +376,7 @@ class _ChemDescriptorDumper(Dumper):
                 "_ihm_chemical_component_descriptor",
                 ["id", "auth_name", "chemical_name",
                  "common_name", "smiles", "smiles_canonical", "inchi",
-                 "inchi_key"]) as lp:
+                 "inchi_key", "details"]) as lp:
             # note that we don't write out chem_comp_id; this is no longer
             # present in the dictionary
             for d in self._descriptor_by_id:
@@ -384,7 +384,7 @@ class _ChemDescriptorDumper(Dumper):
                          chemical_name=d.chemical_name,
                          common_name=d.common_name, smiles=d.smiles,
                          smiles_canonical=d.smiles_canonical, inchi=d.inchi,
-                         inchi_key=d.inchi_key)
+                         inchi_key=d.inchi_key, details=d.details)
 
 
 class _EntityDumper(Dumper):
@@ -713,14 +713,15 @@ class _StructRefDumper(Dumper):
         with writer.loop(
                 "_struct_ref",
                 ["id", "entity_id", "db_name", "db_code", "pdbx_db_accession",
-                 "pdbx_align_begin", "pdbx_seq_one_letter_code",
-                 "details"]) as lp:
+                 "pdbx_db_isoform", "pdbx_align_begin",
+                 "pdbx_seq_one_letter_code", "details"]) as lp:
             for e, r in self._refs_by_id:
                 if self._check:
                     self._check_reference_sequence(e, r)
                 db_begin = min(a.db_begin for a in r._get_alignments())
                 lp.write(id=r._id, entity_id=e._id, db_name=r.db_name,
                          db_code=r.db_code, pdbx_db_accession=r.accession,
+                         pdbx_db_isoform=r.isoform,
                          pdbx_align_begin=db_begin, details=r.details,
                          pdbx_seq_one_letter_code=self._get_sequence(r))
         self.dump_seq(system, writer)
@@ -919,27 +920,32 @@ class _EntityBranchDumper(Dumper):
 
 class _PolySeqSchemeDumper(Dumper):
     """Output the _pdbx_poly_seq_scheme table.
-       This is needed because it is a parent category of atom_site."""
+       This is needed because it is a parent category of atom_site.
+       This class only outputs PDBx data items (and is also used outside
+       of python-ihm, such as in python-modelcif). For IHMCIF output,
+       use _IHMPolySeqSchemeDumper instead."""
+    _keywords = ["asym_id", "entity_id", "seq_id", "mon_id",
+                 "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
+                 "auth_mon_id", "pdb_strand_id",
+                 "pdb_ins_code"]
+
     def dump(self, system, writer):
-        with writer.loop("_pdbx_poly_seq_scheme",
-                         ["asym_id", "entity_id", "seq_id", "mon_id",
-                          "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
-                          "auth_mon_id", "pdb_strand_id",
-                          "pdb_ins_code"]) as lp:
+        with writer.loop("_pdbx_poly_seq_scheme", self._keywords) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if not entity.is_polymeric():
                     continue
-                for start, end, modeled in self._get_ranges(system, asym):
+                for (start, end, modeled,
+                     model_ids) in self._get_ranges(system, asym):
                     for num in range(start, end + 1):
                         comp = entity.sequence[num - 1]
                         auth_comp_id = comp.id
                         pdb_seq_num, auth_seq_num, ins = \
                             asym._get_pdb_auth_seq_id_ins_code(num)
                         if not modeled:
-                            # If a residue wasn't modeled, PDB convention is
-                            # to state ? for auth_seq_num, pdb_mon_id,
-                            # auth_mon_id.
+                            # If a residue wasn't modeled in any models,
+                            # PDB convention is to state ? for auth_seq_num,
+                            # pdb_mon_id, auth_mon_id.
                             # See, e.g., https://files.rcsb.org/view/8QB4.cif
                             auth_comp_id = ihm.unknown
                             auth_seq_num = ihm.unknown
@@ -953,13 +959,16 @@ class _PolySeqSchemeDumper(Dumper):
                                  pdb_seq_num=pdb_seq_num,
                                  auth_seq_num=auth_seq_num, mon_id=comp.id,
                                  pdb_mon_id=auth_comp_id,
-                                 auth_mon_id=auth_comp_id, pdb_ins_code=ins)
+                                 auth_mon_id=auth_comp_id, pdb_ins_code=ins,
+                                 ihm_model_id_list=model_ids)
 
     def _get_ranges(self, system, asym):
-        """Get a list of (seq_id_begin, seq_id_end, modeled) residue ranges
-           for the given asym. The list is guaranteed to be sorted and to cover
-           all residues in the asym. `modeled` is True if no Model has any
-           residue in that range in a NotModeledResidueRange."""
+        """Get a list of (seq_id_begin, seq_id_end, modeled, model_ids)
+           residue ranges for the given asym. The list is guaranteed to be
+           sorted and to cover all residues in the asym. `model_ids` is a list
+           of all Models (as a comma-separated string of model IDs) that have
+           no residue in that range in a NotModeledResidueRange, or None if
+           the residues are not modeled in any Model."""
         _all_modeled = []
         num_models = 0
         for group, model in system._all_models():
@@ -975,14 +984,20 @@ class _PolySeqSchemeDumper(Dumper):
                 (rr.seq_id_begin, rr.seq_id_end)
                 for rr in ranges if rr.asym_unit is asym)
             # Invert to get a list of modeled ranges for this model
-            _all_modeled.extend(util._invert_ranges(_all_not_modeled,
-                                                    len(asym.entity.sequence)))
-        # If no models, there are no "not modeled residues", so say everything
-        # was modeled
+            for rng in util._invert_ranges(_all_not_modeled,
+                                           len(asym.entity.sequence)):
+                _all_modeled.append((rng[0], rng[1], model._id))
+        # If no models, there are no explicitly "not modeled residues",
+        # so say everything was modeled (even though there are no model IDs)
         if num_models == 0:
-            _all_modeled = [(1, len(asym.entity.sequence))]
-        return util._pred_ranges(util._combine_ranges(_all_modeled),
-                                 len(asym.entity.sequence))
+            return [(1, len(asym.entity.sequence), True, None)]
+        return util._pred_id_ranges(util._combine_id_ranges(_all_modeled),
+                                    len(asym.entity.sequence))
+
+
+class _IHMPolySeqSchemeDumper(_PolySeqSchemeDumper):
+    """Output the _pdbx_poly_seq_scheme table."""
+    _keywords = _PolySeqSchemeDumper._keywords + ["ihm_model_id_list"]
 
 
 class _NonPolySchemeDumper(Dumper):
@@ -1526,7 +1541,7 @@ class _StartingModelDumper(Dumper):
                  "template_seq_id_end", "template_sequence_identity",
                  "template_sequence_identity_denominator",
                  "template_dataset_list_id",
-                 "alignment_file_id"]) as lp:
+                 "alignment_file_id", "details"]) as lp:
             ordinal = itertools.count(1)
             for sm in self._starting_models_by_id:
                 for template in sm.templates:
@@ -1557,7 +1572,8 @@ class _StartingModelDumper(Dumper):
                  template_dataset_list_id=template.dataset._id
                  if template.dataset else None,
                  alignment_file_id=template.alignment_file._id
-                 if template.alignment_file else None)
+                 if template.alignment_file else None,
+                 details=template.details)
 
     def dump_coords(self, system, writer):
         """Write out coordinate information"""
@@ -2082,7 +2098,8 @@ class _NotModeledResidueRangeDumper(Dumper):
         with writer.loop("_ihm_residues_not_modeled",
                          ["id", "model_id", "entity_description",
                           "entity_id", "asym_id", "seq_id_begin", "seq_id_end",
-                          "comp_id_begin", "comp_id_end", "reason"]) as lp:
+                          "comp_id_begin", "comp_id_end", "reason",
+                          "details"]) as lp:
             for group, model in system._all_models():
                 for rr in model.not_modeled_residue_ranges:
                     e = rr.asym_unit.entity
@@ -2097,7 +2114,7 @@ class _NotModeledResidueRangeDumper(Dumper):
                              seq_id_end=rr.seq_id_end,
                              comp_id_begin=_get_comp_id(e, rr.seq_id_begin),
                              comp_id_end=_get_comp_id(e, rr.seq_id_end),
-                             reason=rr.reason)
+                             reason=rr.reason, details=rr.details)
 
 
 class _EnsembleDumper(Dumper):
@@ -2805,7 +2822,11 @@ class _DerivedDistanceRestraintDumper(Dumper):
         with writer.loop("_ihm_derived_distance_restraint",
                          ["id", "group_id", "feature_id_1", "feature_id_2",
                           "restraint_type", "distance_lower_limit",
-                          "distance_upper_limit", "probability", "mic_value",
+                          "distance_upper_limit", "distance_lower_limit_esd",
+                          "distance_upper_limit_esd",
+                          "distance_threshold_mean", "distance_threshold_esd",
+                          "probability", "mic_value",
+                          "random_exclusion_fraction",
                           "group_conditionality", "dataset_list_id"]) as lp:
             for r in self._restraints_by_id:
                 lp.write(id=r._id, feature_id_1=r.feature1._id,
@@ -2814,7 +2835,16 @@ class _DerivedDistanceRestraintDumper(Dumper):
                          restraint_type=r.distance.restraint_type,
                          distance_lower_limit=r.distance.distance_lower_limit,
                          distance_upper_limit=r.distance.distance_upper_limit,
+                         distance_lower_limit_esd=(
+                             r.distance.distance_lower_limit_esd),
+                         distance_upper_limit_esd=(
+                             r.distance.distance_upper_limit_esd),
+                         distance_threshold_mean=(
+                             r.distance.distance_threshold_mean),
+                         distance_threshold_esd=(
+                             r.distance.distance_threshold_esd),
                          probability=r.probability, mic_value=r.mic_value,
+                         random_exclusion_fraction=r.random_exclusion_fraction,
                          group_conditionality=condmap[r.restrain_all],
                          dataset_list_id=r.dataset._id if r.dataset else None)
 
@@ -4246,7 +4276,7 @@ class IHMVariant(Variant):
         _EntitySrcNatDumper, _EntitySrcSynDumper, _StructRefDumper,
         _EntityPolyDumper, _EntityNonPolyDumper, _EntityPolySeqDumper,
         _EntityPolySegmentDumper, _EntityBranchListDumper, _EntityBranchDumper,
-        _StructAsymDumper, _PolySeqSchemeDumper,
+        _StructAsymDumper, _IHMPolySeqSchemeDumper,
         _NonPolySchemeDumper, _BranchSchemeDumper, _BranchDescriptorDumper,
         _BranchLinkDumper, _AssemblyDumper, _ExternalReferenceDumper,
         _DatasetDumper, _ModelRepresentationDumper, _StartingModelDumper,

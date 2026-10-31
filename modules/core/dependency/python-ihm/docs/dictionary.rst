@@ -22,3 +22,5 @@ The :mod:`ihm.dictionary` Python module
 .. autofunction:: read
 
 .. autoexception:: ValidatorError
+
+.. autoexception:: ValidatorWarning

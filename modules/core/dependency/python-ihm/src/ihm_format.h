@@ -79,6 +79,16 @@ struct ihm_keyword {
     double fval;
     bool bval;
   } data;
+  /* The length of data.str (not including the null terminator), if
+     this is a string keyword with a value */
+  size_t str_len;
+  /* If data.str is an entry in a BinaryCIF StringArray dictionary, its
+     index in that dictionary; otherwise -1 */
+  int str_index;
+  /* The number of entries in that dictionary, and an ID that is unique to
+     that dictionary within the reader (valid only if str_index >= 0) */
+  size_t str_dict_size;
+  unsigned long str_dict_id;
   /* If true, we own the memory for data */
   bool own_data;
   /* true iff this keyword is in the file (not necessarily with a value) */

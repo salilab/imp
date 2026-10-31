@@ -74,7 +74,13 @@ class Tests(unittest.TestCase):
 
     def test_distance_restraint(self):
         """Test DistanceRestraint class"""
-        _ = ihm.restraint.DistanceRestraint()  # does nothing
+        r = ihm.restraint.DistanceRestraint()
+        self.assertIsNone(r.distance_lower_limit)
+        self.assertIsNone(r.distance_upper_limit)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertIsNone(r.distance_upper_limit_esd)
+        self.assertIsNone(r.distance_threshold_mean)
+        self.assertIsNone(r.distance_threshold_esd)
 
     def test_harmonic_distance_restraint(self):
         """Test HarmonicDistanceRestraint class"""
@@ -82,7 +88,15 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
         self.assertAlmostEqual(r.distance_lower_limit, 42.0, delta=0.1)
         self.assertAlmostEqual(r.distance_upper_limit, 42.0, delta=0.1)
+        self.assertAlmostEqual(r.distance_threshold_mean, 42.0, delta=0.1)
+        self.assertIsNone(r.esd)
+        self.assertIsNone(r.distance_threshold_esd)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertIsNone(r.distance_upper_limit_esd)
         self.assertEqual(r.restraint_type, "harmonic")
+        r = ihm.restraint.HarmonicDistanceRestraint(42.0, esd=1.5)
+        self.assertAlmostEqual(r.esd, 1.5, delta=0.1)
+        self.assertAlmostEqual(r.distance_threshold_esd, 1.5, delta=0.1)
 
     def test_upper_bound_distance_restraint(self):
         """Test UpperBoundDistanceRestraint class"""
@@ -90,7 +104,15 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
         self.assertIsNone(r.distance_lower_limit)
         self.assertAlmostEqual(r.distance_upper_limit, 42.0, delta=0.1)
+        self.assertIsNone(r.esd)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertIsNone(r.distance_upper_limit_esd)
+        self.assertIsNone(r.distance_threshold_mean)
+        self.assertIsNone(r.distance_threshold_esd)
         self.assertEqual(r.restraint_type, "upper bound")
+        r = ihm.restraint.UpperBoundDistanceRestraint(42.0, esd=1.5)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertAlmostEqual(r.distance_upper_limit_esd, 1.5, delta=0.1)
 
     def test_lower_bound_distance_restraint(self):
         """Test LowerBoundDistanceRestraint class"""
@@ -98,14 +120,31 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
         self.assertAlmostEqual(r.distance_lower_limit, 42.0, delta=0.1)
         self.assertIsNone(r.distance_upper_limit)
+        self.assertIsNone(r.esd)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertIsNone(r.distance_upper_limit_esd)
+        self.assertIsNone(r.distance_threshold_mean)
+        self.assertIsNone(r.distance_threshold_esd)
         self.assertEqual(r.restraint_type, "lower bound")
+        r = ihm.restraint.LowerBoundDistanceRestraint(42.0, esd=1.5)
+        self.assertAlmostEqual(r.distance_lower_limit_esd, 1.5, delta=0.1)
+        self.assertIsNone(r.distance_upper_limit_esd)
 
     def test_lower_upper_bound_distance_restraint(self):
         """Test LowerUpperBoundDistanceRestraint class"""
         r = ihm.restraint.LowerUpperBoundDistanceRestraint(20.0, 30.0)
         self.assertAlmostEqual(r.distance_lower_limit, 20.0, delta=0.1)
         self.assertAlmostEqual(r.distance_upper_limit, 30.0, delta=0.1)
+        self.assertIsNone(r.distance_lower_limit_esd)
+        self.assertIsNone(r.distance_upper_limit_esd)
+        self.assertIsNone(r.distance_threshold_mean)
+        self.assertIsNone(r.distance_threshold_esd)
         self.assertEqual(r.restraint_type, "lower and upper bound")
+        r = ihm.restraint.LowerUpperBoundDistanceRestraint(
+            20.0, 30.0, distance_lower_limit_esd=1.5,
+            distance_upper_limit_esd=2.5)
+        self.assertAlmostEqual(r.distance_lower_limit_esd, 1.5, delta=0.1)
+        self.assertAlmostEqual(r.distance_upper_limit_esd, 2.5, delta=0.1)
 
     def test_cross_link_restraint(self):
         """Test CrossLinkRestraint class"""

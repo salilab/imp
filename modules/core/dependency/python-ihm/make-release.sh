@@ -4,6 +4,9 @@
 # - Check spelling with
 #   codespell . --skip '*.cif' -L assertIn
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
+# - Run util/check-supported-items.py to make sure that we read/write all
+#   data items defined in the dictionary
+#   (cd util; PYTHONPATH=.. python3 check-supported-items.py)
 # - Run util/validate-outputs.py to make sure all example outputs validate
 #   (cd util; PYTHONPATH=.. python3 validate-outputs.py)
 # - Run util/check-db-entries.py to check against some real archive structures

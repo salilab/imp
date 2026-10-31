@@ -1,3 +1,19 @@
+2.12 - 2026-10-07
+=================
+  - Add support for the latest IHMCIF dictionary, which now includes
+    information on heterogeneous composition in the
+    ``_pdbx_poly_seq_scheme.ihm_model_id_list`` data item (#198).
+  - An explicit crosslinker type of "Other" is now preserved on output
+    rather than being replaced by the name of the chemical descriptor (#195).
+  - All stock citations in the :mod:`ihm.citations` module now include
+    journal ISSNs.
+  - The :class:`ihm.Collection` class can now be given an explicit list of
+    entry IDs, which is stored in the ``_ihm_entry_collection_mapping``
+    mmCIF table.
+  - The C extension can now be built with the
+    `Python limited API <https://docs.python.org/3/c-api/stable.html>`_
+    version 3.11 or later.
+
 2.11 - 2026-06-05
 =================
   - Hydroxyl radical footprinting data is now supported with the

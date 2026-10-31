@@ -221,31 +221,30 @@ class EquilibriumConstant:
     :param float value: The value of the equilibrium constant
     :param str unit: Unit of the equilibrium constant. Depending on what
      the process describes, a unit might be applicable or not"""
+    method = 'other'
+
     def __init__(self, value, unit=None):
-        self.method = 'equilibrium constant is determined from another ' \
-                      'method not listed'
         self.value = value
         self.unit = unit
 
     def __eq__(self, other):
-        if other is None:
-            return False
-        return self.__dict__ == other.__dict__
+        return type(other) is type(self) and self.__dict__ == other.__dict__
 
 
 class PopulationEquilibriumConstant(EquilibriumConstant):
     """An equilibrium constant determined from population"""
+    method = 'from population'
+
     def __init__(self, value, unit=None):
         super().__init__(value, unit)
-        self.method = 'equilibrium constant is determined from population'
 
 
 class KineticRateEquilibriumConstant(EquilibriumConstant):
     """An equilibrium constant determined from kinetic rates as kAB/kBA"""
+    method = 'from kinetic rates'
+
     def __init__(self, value, unit=None):
         super().__init__(value, unit)
-        self.method = 'equilibrium constant is determined from kinetic ' \
-                      'rates, kAB/kBA'
 
 
 class RelaxationTime:

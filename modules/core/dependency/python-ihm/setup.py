@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "2.11"
+VERSION = "2.12"
 
 copy_args = sys.argv[1:]
 
@@ -55,26 +55,13 @@ if build_ext:
 else:
     mod = []
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
+# setuptools < 61 (e.g. on RHEL 8/9 or Ubuntu 22.04) ignores [project] in
+# pyproject.toml, so keep here what it needs to build the package
 setup(name='ihm',
       version=VERSION,
       script_args=copy_args,
-      description='Package for handling IHM mmCIF and BinaryCIF files',
-      long_description=long_description,
-      long_description_content_type="text/markdown",
-      author='Ben Webb',
-      author_email='benmwebb@gmail.com',
-      url='https://github.com/ihmwg/python-ihm',
       ext_modules=mod,
       packages=['ihm', 'ihm.util'],
       install_requires=['msgpack'],
       license='MIT',
-      classifiers=[
-          "Programming Language :: Python :: 3",
-          "Operating System :: OS Independent",
-          "Intended Audience :: Science/Research",
-          "Topic :: Scientific/Engineering",
-      ],
       **setup_limited_args)

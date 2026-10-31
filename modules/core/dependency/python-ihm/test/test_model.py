@@ -190,9 +190,10 @@ class Tests(unittest.TestCase):
         """Test construction of NotModeledResidueRange"""
         e = ihm.Entity('ACGT')
         asym = ihm.AsymUnit(e, 'foo')
-        rr = ihm.model.NotModeledResidueRange(asym, 1, 2)
+        rr = ihm.model.NotModeledResidueRange(asym, 1, 2, details='foo')
         self.assertEqual(rr.seq_id_begin, 1)
         self.assertEqual(rr.seq_id_end, 2)
+        self.assertEqual(rr.details, 'foo')
         # Cannot create reversed range
         self.assertRaises(ValueError, ihm.model.NotModeledResidueRange,
                           asym, 3, 1)

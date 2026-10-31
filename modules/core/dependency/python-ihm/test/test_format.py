@@ -503,6 +503,55 @@ save_
                            {'_foo': h})
             self.assertEqual(h.data, [{'bar': '1', 'baz': '2'}])
 
+    def test_loop_row_layout(self):
+        """Check loop rows split over lines, or sharing a line"""
+        class SlowStringIO(StringIO):
+            # Return a single character per read, so that the line
+            # buffer is moved as each new line is read
+            def read(self, size=-1):
+                return super().read(1)
+
+        cif = ("loop_\n_foo.bar\n_foo.baz\n_foo.var1\n"
+               "1 one x1\n"
+               "2 two\nx2\n"
+               "3\n;multi\nline\n;\nx3\n"
+               "4 four x4 5 five x5\n"
+               "6 'quoted value' \"q6\"\n"
+               "loop_\n_bar.var2\n"
+               "solo1\nsolo2\n;solo\n3\n;\n")
+        for fh in (StringIO(cif), SlowStringIO(cif)):
+            h1 = GenericHandler()
+            h2 = GenericHandler()
+            r = ihm.format.CifReader(fh, {'_foo': h1, '_bar': h2})
+            r.read_file()
+            self.assertEqual(h1.data, [
+                {'bar': '1', 'baz': 'one', 'var1': 'x1'},
+                {'bar': '2', 'baz': 'two', 'var1': 'x2'},
+                {'bar': '3', 'baz': 'multi\nline', 'var1': 'x3'},
+                {'bar': '4', 'baz': 'four', 'var1': 'x4'},
+                {'bar': '5', 'baz': 'five', 'var1': 'x5'},
+                {'bar': '6', 'baz': 'quoted value', 'var1': 'q6'}])
+            self.assertEqual(h2.data, [{'var2': 'solo1'}, {'var2': 'solo2'},
+                                       {'var2': 'solo\n3'}])
+
+    def test_loop_repeated_values(self):
+        """Check handling of values repeated in successive loop rows"""
+        cif = ("loop_\n_foo.bar\n_foo.baz\n"
+               "abc xyz\nabc xyz\nabcd uvw\nabc ?\n'' .\nabc xyz\n")
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif(cif, real_file, {'_foo': h})
+            self.assertEqual(h.data, [
+                {'bar': 'abc', 'baz': 'xyz'}, {'bar': 'abc', 'baz': 'xyz'},
+                {'bar': 'abcd', 'baz': 'uvw'},
+                {'bar': 'abc', 'baz': ihm.unknown}, {'bar': ''},
+                {'bar': 'abc', 'baz': 'xyz'}])
+            if _format is not None:
+                # The C parser should reuse the same object for a
+                # repeated value
+                self.assertIs(h.data[0]['bar'], h.data[1]['bar'])
+                self.assertIs(h.data[0]['baz'], h.data[1]['baz'])
+
     def test_keyword_free(self):
         """Make sure keyword data is cleaned up"""
         for real_file in (True, False):

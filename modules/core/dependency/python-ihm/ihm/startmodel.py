@@ -60,10 +60,11 @@ class Template:
        :param alignment_file: Reference to the external file containing the
               template-target alignment.
        :type alignment_file: :class:`~ihm.location.Location`
+       :type str details: Additional free text information.
     """
 
     def __init__(self, dataset, asym_id, seq_id_range, template_seq_id_range,
-                 sequence_identity, alignment_file=None):
+                 sequence_identity, alignment_file=None, details=None):
         self.dataset, self.asym_id = dataset, asym_id
         self.seq_id_range = seq_id_range
         self.template_seq_id_range = template_seq_id_range
@@ -71,6 +72,7 @@ class Template:
             sequence_identity = SequenceIdentity(sequence_identity)
         self.sequence_identity = sequence_identity
         self.alignment_file = alignment_file
+        self.details = details
 
 
 class StartingModel:

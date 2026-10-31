@@ -5,6 +5,7 @@ import ihm.format
 import ihm.format_bcif
 import re
 import itertools
+import warnings
 
 from ihm.reader import Handler
 
@@ -52,6 +53,12 @@ class ValidatorError(Exception):
     pass
 
 
+class ValidatorWarning(UserWarning):
+    """Warning emitted for an optional category or keyword that is missing
+       from a file. See :meth:`Dictionary.validate`."""
+    pass
+
+
 class _ValidatorCategoryHandler(Handler):
     # Handle special values for CIF data items ('.', '?', or missing entirely)
     # explicitly, rather the default behavior (mapping to None or '?')
@@ -78,9 +85,14 @@ class _ValidatorCategoryHandler(Handler):
 
 class _ValidatorReader:
     """Track information used for validation while reading an mmCIF file"""
-    def __init__(self, dictionary):
+    def __init__(self, dictionary, track_keywords=False):
         self.dictionary = dictionary
         self._seen_categories = set()
+        if track_keywords:
+            # (category, keyword) pairs present in the file
+            self._seen_keywords = set()
+        else:
+            self._seen_keywords = None
         self._unknown_categories = set()
         self._unknown_keywords = set()
         # Keep track of all values (IDs) seen for keys that are involved in
@@ -94,6 +106,9 @@ class _ValidatorReader:
     def validate_data(self, category, keywords, args, link_keys):
         self._seen_categories.add(category.name)
         for key, value in zip(keywords, args):
+            if (self._seen_keywords is not None
+                    and not isinstance(value, _NotInFileCif)):
+                self._seen_keywords.add((category.name, key))
             if key in link_keys and not isinstance(value, _CifSpecialValue):
                 self._seen_ids["_%s.%s" % (category.name, key)].add(value)
             kwobj = category.keywords[key]
@@ -162,6 +177,30 @@ class _ValidatorReader:
                 "The following keywords are not defined in the dictionary: %s"
                 % ", ".join(sorted(self._unknown_keywords)))
 
+    def warn_missing(self, warn_missing_category, warn_missing_keyword):
+        """Warn about any optional categories or keywords missing from the
+           file, if the given callables ask for it. For missing keywords,
+           this requires that the constructor was called with
+           `track_keywords=True`."""
+        for cat in sorted(self.dictionary.categories.values(),
+                          key=lambda c: c.name):
+            if cat.name in self._seen_categories:
+                if warn_missing_keyword is None:
+                    continue
+                for key in sorted(cat.keywords.keys()):
+                    if (not cat.keywords[key].mandatory
+                            and (cat.name, key) not in self._seen_keywords
+                            and warn_missing_keyword(cat.name, key)):
+                        warnings.warn(
+                            "Optional keyword %s.%s is not in the file "
+                            "(but its category is)" % (cat.name, key),
+                            ValidatorWarning, stacklevel=3)
+            elif (warn_missing_category is not None and not cat.mandatory
+                  and warn_missing_category(cat.name)):
+                warnings.warn(
+                    "Optional category %s is not in the file" % cat.name,
+                    ValidatorWarning, stacklevel=3)
+
     def report_errors(self):
         self._check_mandatory_categories()
         self._check_linked_items()
@@ -221,18 +260,36 @@ class Dictionary:
         d += other
         return d
 
-    def validate(self, fh, format='mmCIF'):
+    def validate(self, fh, format='mmCIF', warn_missing_category=None,
+                 warn_missing_keyword=None):
         """Validate the given file against this dictionary.
+
+           Optionally, a :class:`ValidatorWarning` can also be emitted for
+           optional (non-mandatory) categories or keywords that are missing
+           from the file. This can be useful to determine whether a file
+           contains all of the data defined in the dictionary; it is primarily
+           used by python-ihm developers to test the library itself, using the
+           script `util/check-supported-items.py`.
 
            :param file fh: The file handle to read from.
            :param str format: The format of the file. This can be 'mmCIF' (the
               default) for the (text-based) mmCIF format or 'BCIF' for
               BinaryCIF.
+           :param warn_missing_category: If given, a Python callable which is
+              called with the name of each optional category (without the
+              leading underscore) that is not present in the file. If it
+              returns True, a warning is emitted for that category.
+           :param warn_missing_keyword: If given, a Python callable which is
+              called with the names of the category and keyword for each
+              optional keyword that is not present in the file, but whose
+              category is present. If it returns True, a warning is emitted
+              for that keyword.
            :raises: :class:`ValidatorError` if the file fails to validate.
         """
         reader_map = {'mmCIF': ihm.format.CifReader,
                       'BCIF': ihm.format_bcif.BinaryCifReader}
-        s = _ValidatorReader(self)
+        s = _ValidatorReader(
+            self, track_keywords=warn_missing_keyword is not None)
         uchandler = _UnknownCategoryHandler(s)
         ukhandler = _UnknownKeywordHandler(s)
         r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
@@ -243,6 +300,7 @@ class Dictionary:
         # Read all data blocks
         while r.read_file():
             pass
+        s.warn_missing(warn_missing_category, warn_missing_keyword)
         s.report_errors()
 
 

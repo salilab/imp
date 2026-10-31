@@ -24,6 +24,7 @@
 # include <unistd.h>
 #endif
 #include <errno.h>
+#include <limits.h>
 #include <assert.h>
 #include "cmp.h"
 
@@ -425,6 +426,8 @@ struct ihm_reader {
   int num_blocks_left;
   /* Any errors raised in the CMP read callback */
   struct ihm_error *cmp_read_err;
+  /* The ID of the last BinaryCIF StringArray dictionary read */
+  unsigned long str_dict_id;
 };
 
 typedef enum {
@@ -442,6 +445,8 @@ typedef enum {
 struct ihm_token {
   ihm_token_type type;
   char *str;
+  /* The length of str (not including the null terminator) */
+  size_t len;
 };
 
 /* Free memory used by a struct ihm_category */
@@ -486,6 +491,7 @@ static struct ihm_keyword *ihm_keyword_new(struct ihm_category *category,
   key->name = strdup(name);
   key->own_data = false;
   key->in_file = false;
+  key->str_index = -1;
   ihm_mapping_insert(category->keyword_map, key->name, key);
   key->own_data = false;
   return key;
@@ -535,11 +541,12 @@ static void set_keyword_to_default(struct ihm_keyword *key)
   key->own_data = false;
 }
 
-/* Set the value of a given keyword from the given string */
+/* Set the value of a given keyword from the given string of length len */
 static void set_value_from_string(struct ihm_reader *reader,
                                   struct ihm_category *category,
                                   struct ihm_keyword *key, char *str,
-                                  bool own_data, struct ihm_error **err)
+                                  size_t len, bool own_data,
+                                  struct ihm_error **err)
 {
   char *ch;
   /* If a key is duplicated, overwrite it with the new value */
@@ -552,10 +559,13 @@ static void set_value_from_string(struct ihm_reader *reader,
   case IHM_STRING:
     key->own_data = own_data;
     if (own_data) {
-      key->data.str = strdup(str);
+      key->data.str = (char *)ihm_malloc(len + 1);
+      memcpy(key->data.str, str, len + 1);
     } else {
       key->data.str = str;
     }
+    key->str_len = len;
+    key->str_index = -1;
     key->omitted = key->unknown = false;
     break;
   case IHM_INT:
@@ -699,7 +709,7 @@ static ssize_t expand_buffer(struct ihm_file *fh, struct ihm_error **err)
    the end of the file.
    On error, false is returned and err is set.
  */
-static bool ihm_file_read_line(struct ihm_file *fh, int *eof,
+static bool ihm_file_read_line(struct ihm_file *fh, bool *eof,
                                struct ihm_error **err)
 {
   size_t line_end;
@@ -764,6 +774,7 @@ struct ihm_reader *ihm_reader_new(struct ihm_file *fh, bool binary)
   reader->unknown_keyword_free_func = NULL;
 
   reader->num_blocks_left = -1;
+  reader->str_dict_id = 0;
   reader->cmp_read_err = NULL;
   return reader;
 }
@@ -860,6 +871,7 @@ static size_t handle_quoted_token(struct ihm_reader *reader,
        "?" or ".", not an unknown/omitted value */
     t.type = MMCIF_TOKEN_VALUE;
     t.str = line + start_pos + 1;
+    t.len = tok_end - start_pos - 1;
     line[tok_end] = '\0';
     ihm_array_append(reader->tokens, &t);
     return tok_end + 1;         /* step past the closing quote */
@@ -893,18 +905,19 @@ static size_t get_next_token(struct ihm_reader *reader, char *line,
     struct ihm_token t;
     int tok_end = start_pos + strcspn(pt, " \t");
     t.str = line + start_pos;
+    t.len = tok_end - start_pos;
     line[tok_end] = '\0';
-    if (strcmp(t.str, "loop_") == 0) {
+    if (t.len == 5 && memcmp(t.str, "loop_", 5) == 0) {
       t.type = MMCIF_TOKEN_LOOP;
-    } else if (strncmp(t.str, "data_", 5) == 0) {
+    } else if (t.len >= 5 && memcmp(t.str, "data_", 5) == 0) {
       t.type = MMCIF_TOKEN_DATA;
-    } else if (strncmp(t.str, "save_", 5) == 0) {
+    } else if (t.len >= 5 && memcmp(t.str, "save_", 5) == 0) {
       t.type = MMCIF_TOKEN_SAVE;
     } else if (t.str[0] == '_') {
       t.type = MMCIF_TOKEN_VARIABLE;
-    } else if (t.str[0] == '.' && t.str[1] == '\0') {
+    } else if (t.len == 1 && t.str[0] == '.') {
       t.type = MMCIF_TOKEN_OMITTED;
-    } else if (t.str[0] == '?' && t.str[1] == '\0') {
+    } else if (t.len == 1 && t.str[0] == '?') {
       t.type = MMCIF_TOKEN_UNKNOWN;
     } else {
       /* Note that we do no special processing for other reserved words
@@ -945,7 +958,7 @@ static char *line_pt(struct ihm_reader *reader)
 static void read_multiline_token(struct ihm_reader *reader,
                                  int ignore_multiline, struct ihm_error **err)
 {
-  int eof = 0;
+  bool eof = false;
   int start_linenum = reader->linenum;
   while (!eof) {
     reader->linenum++;
@@ -955,6 +968,7 @@ static void read_multiline_token(struct ihm_reader *reader,
       struct ihm_token t;
       t.type = MMCIF_TOKEN_VALUE;
       t.str = reader->tmp_str->str;
+      t.len = reader->tmp_str->len;
       ihm_array_clear(reader->tokens);
       ihm_array_append(reader->tokens, &t);
       reader->token_index = 0;
@@ -992,7 +1006,7 @@ static struct ihm_token *get_token(struct ihm_reader *reader,
                                    int ignore_multiline,
                                    struct ihm_error **err)
 {
-  int eof = 0;
+  bool eof = false;
   if (reader->tokens->len <= reader->token_index) {
     do {
       /* No tokens left - read the next non-blank line in */
@@ -1067,7 +1081,8 @@ static void read_value(struct ihm_reader *reader,
     if (key) {
       struct ihm_token *val_token = get_token(reader, false, err);
       if (val_token && val_token->type == MMCIF_TOKEN_VALUE) {
-        set_value_from_string(reader, category, key, val_token->str, true, err);
+        set_value_from_string(reader, category, key, val_token->str,
+                              val_token->len, true, err);
       } else if (val_token && val_token->type == MMCIF_TOKEN_OMITTED) {
         set_omitted_value(key);
       } else if (val_token && val_token->type == MMCIF_TOKEN_UNKNOWN) {
@@ -1223,17 +1238,24 @@ static void read_loop_data(struct ihm_reader *reader,
                            struct ihm_error **err)
 {
   while (!*err) {
-    /* Does the current line contain an entire row in the loop? */
-    int oneline = get_num_line_tokens(reader) >= len;
+    /* Does the current line contain an entire row in the loop? If so, values
+       can point directly into the line buffer rather than being copied. */
+    bool oneline = false;
     unsigned i;
     for (i = 0; !*err && i < len; ++i) {
       struct ihm_token *token = get_token(reader, false, err);
       if (*err) {
         break;
-      } else if (token && token->type == MMCIF_TOKEN_VALUE) {
+      }
+      /* Check only after reading the first token of the row, since that
+         may have required reading in a new line */
+      if (i == 0 && token) {
+        oneline = get_num_line_tokens(reader) + 1 >= len;
+      }
+      if (token && token->type == MMCIF_TOKEN_VALUE) {
         if (keywords[i]) {
           set_value_from_string(reader, category, keywords[i], token->str,
-                                !oneline, err);
+                                token->len, !oneline, err);
         }
       } else if (token && token->type == MMCIF_TOKEN_OMITTED) {
         if (keywords[i]) {
@@ -1360,7 +1382,8 @@ static void sort_mappings(struct ihm_reader *reader)
 static bool read_mmcif_file(struct ihm_reader *reader, bool *more_data,
                             struct ihm_error **err)
 {
-  int ndata = 0, in_save = 0;
+  int ndata = 0;
+  bool in_save = false;
   struct ihm_token *token;
   sort_mappings(reader);
   while (!*err && (token = get_token(reader, true, err))) {
@@ -1767,6 +1790,13 @@ struct bcif_data {
   union bcif_data_c data;
   /* The size of the data (e.g. array dimension) */
   size_t size;
+  /* For string data decoded from a StringArray: the index of each element
+     in the string dictionary (or -1 if it is not in the dictionary), the
+     number of entries in the dictionary, and an ID unique to the dictionary.
+     str_index is NULL for any other data. */
+  int32_t *str_index;
+  size_t str_dict_size;
+  unsigned long str_dict_id;
 };
 
 /* Initialize a new bcif_data */
@@ -1774,6 +1804,9 @@ static void bcif_data_init(struct bcif_data *d)
 {
   d->type = BCIF_DATA_NULL;
   d->size = 0;
+  d->str_index = NULL;
+  d->str_dict_size = 0;
+  d->str_dict_id = 0;
 }
 
 /* Free memory used by a bcif_data */
@@ -1813,6 +1846,8 @@ static void bcif_data_free(struct bcif_data *d)
     free(d->data.string);
     break;
   }
+  free(d->str_index);
+  d->str_index = NULL;
 }
 
 /* Overwrite bcif_data with new raw data */
@@ -1950,8 +1985,8 @@ static struct bcif_column *bcif_column_new()
 static void bcif_column_free(struct bcif_column *col)
 {
   free(col->name);
-  bcif_data_init(&col->data);
-  bcif_data_init(&col->mask_data);
+  bcif_data_free(&col->data);
+  bcif_data_free(&col->mask_data);
 
   while(col->first_encoding) {
     struct bcif_encoding *enc = col->first_encoding;
@@ -2238,6 +2273,9 @@ static bool handle_byte_array_size(struct bcif_data *d, size_t type_size,
     return false;
   }
 
+  // size should now be number of types, not number of raw bytes
+  d->size /= type_size;
+
   /* If we're on a bigendian platform, byteswap the array (ByteArray is
      always little endian) */
   if ((int)(*((unsigned char *)&ul)) == 0 && type_size > 1) {
@@ -2245,13 +2283,12 @@ static bool handle_byte_array_size(struct bcif_data *d, size_t type_size,
     for (i = 0, start = 0; i < d->size; ++i, start += type_size) {
       for (j = 0; j < type_size / 2; ++j) {
         char tmp = d->data.raw[start + j];
-        d->data.raw[start + j] = d->data.raw[start + type_size - j];
-        d->data.raw[start + type_size - j] = tmp;
+        d->data.raw[start + j] = d->data.raw[start + type_size - 1 - j];
+        d->data.raw[start + type_size - 1 - j] = tmp;
       }
     }
   }
 
-  d->size /= type_size;
   return true;
 }
 
@@ -2623,8 +2660,8 @@ static bool decode_bcif_string_array(struct bcif_data *d,
                                      struct ihm_error **err)
 {
   char *newstring, **strarr;
-  int32_t stringsz;
-  size_t i;
+  int32_t stringsz, *str_index;
+  size_t i, num_strings;
   int *starts, start;
   if (!require_bcif_data_is_int32(d)) {
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
@@ -2636,6 +2673,10 @@ static bool decode_bcif_string_array(struct bcif_data *d,
                   "StringArray not given integers as offsets");
     return false;
   }
+  if (enc->offsets.size == 0) {
+    ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "StringArray has no offsets");
+    return false;
+  }
   /* Make sure offsets are in range */
   stringsz = strlen(enc->string_data);
   for (i = 0; i < enc->offsets.size; ++i) {
@@ -2643,7 +2684,7 @@ static bool decode_bcif_string_array(struct bcif_data *d,
         || get_int_data(&enc->offsets, i) > stringsz) {
       ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
                     "StringArray offset %d out of range 0-%d",
-                    get_int_data(&enc->offsets, i), 0, stringsz);
+                    get_int_data(&enc->offsets, i), stringsz);
       return false;
     }
   }
@@ -2667,21 +2708,28 @@ static bool decode_bcif_string_array(struct bcif_data *d,
   }
   free(enc->string_data);
   enc->string_data = newstring;
+  /* n+1 offsets delimit n strings */
+  num_strings = enc->offsets.size - 1;
   strarr = (char **)ihm_malloc(d->size * sizeof(char *));
+  str_index = (int32_t *)ihm_malloc(d->size * sizeof(int32_t));
   for (i = 0; i < d->size; ++i) {
     int32_t strnum = get_int_data(d, i);
     /* If strnum out of range, return a null string (this usually corresponds
        to masked data) */
-    if (strnum < 0 || (size_t)strnum >= enc->offsets.size) {
+    if (strnum < 0 || (size_t)strnum >= num_strings) {
       strarr[i] = "";
+      str_index[i] = -1;
     } else {
       strarr[i] = enc->string_data + starts[strnum];
+      str_index[i] = strnum;
     }
   }
   free(starts);
   bcif_data_free(d);
   d->type = BCIF_DATA_STRING;
   d->data.string = strarr;
+  d->str_index = str_index;
+  d->str_dict_size = num_strings;
   return true;
 }
 
@@ -2746,12 +2794,17 @@ static bool check_bcif_columns(struct ihm_reader *reader,
 }
 
 /* Decode and check the column's data */
-static bool process_column_data(struct bcif_column *col,
+static bool process_column_data(struct ihm_reader *reader,
+                                struct bcif_column *col,
                                 struct ihm_error **err)
 {
   if (!decode_bcif_data(&col->data, col->first_encoding, err)) return false;
+  if (col->data.str_index) {
+    col->data.str_dict_id = ++reader->str_dict_id;
+  }
   switch(col->data.type) {
   case BCIF_DATA_INT32:
+  case BCIF_DATA_UINT32:
   case BCIF_DATA_INT8:
   case BCIF_DATA_UINT8:
   case BCIF_DATA_INT16:
@@ -2810,6 +2863,7 @@ static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
        not the keyword */
     key->own_data = false;
     key->data.str = str;
+    key->str_len = strlen(str);
     key->omitted = false;
     break;
   case IHM_INT:
@@ -2856,7 +2910,7 @@ static void set_value_from_bcif_double(struct ihm_keyword *key, double fval,
   case IHM_STRING:
     /* We (not the keyword) own buffer */
     key->own_data = false;
-    sprintf(buffer, "%g", fval);
+    key->str_len = sprintf(buffer, "%g", fval);
     key->data.str = buffer;
     break;
   case IHM_INT:
@@ -2882,7 +2936,7 @@ static void set_value_from_bcif_int(struct ihm_keyword *key, int32_t ival,
   case IHM_STRING:
     /* We (not the keyword) own buffer */
     key->own_data = false;
-    sprintf(buffer, "%d", ival);
+    key->str_len = sprintf(buffer, "%d", ival);
     key->data.str = buffer;
     break;
   case IHM_INT:
@@ -2890,6 +2944,37 @@ static void set_value_from_bcif_int(struct ihm_keyword *key, int32_t ival,
     break;
   case IHM_FLOAT:
     key->data.fval = ival;
+    break;
+  case IHM_BOOL:
+    key->omitted = true;
+    break;
+  }
+}
+
+static void set_value_from_bcif_uint(struct ihm_keyword *key, uint32_t uval,
+                                     char *buffer, struct ihm_error **err)
+{
+  /* Values too large for an int cannot be stored in an integer keyword */
+  if (key->type == IHM_INT && uval > INT_MAX) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "Value %lu is out of range for an integer in file",
+                  (unsigned long)uval);
+    return;
+  }
+  key->omitted = key->unknown = false;
+  key->in_file = true;
+  switch(key->type) {
+  case IHM_STRING:
+    /* We (not the keyword) own buffer */
+    key->own_data = false;
+    key->str_len = sprintf(buffer, "%lu", (unsigned long)uval);
+    key->data.str = buffer;
+    break;
+  case IHM_INT:
+    key->data.ival = uval;
+    break;
+  case IHM_FLOAT:
+    key->data.fval = uval;
     break;
   case IHM_BOOL:
     key->omitted = true;
@@ -2910,11 +2995,17 @@ static void set_value_from_data(struct ihm_reader *reader,
     key->data.str = NULL;
   }
 
+  key->str_index = -1;
   /* BinaryCIF data is typed (not always a string like mmCIF), so we may
      need to convert to the desired output type. */
   switch(data->type) {
   case BCIF_DATA_STRING:
     set_value_from_bcif_string(key, data->data.string[irow], err);
+    if (key->type == IHM_STRING && data->str_index) {
+      key->str_index = data->str_index[irow];
+      key->str_dict_size = data->str_dict_size;
+      key->str_dict_id = data->str_dict_id;
+    }
     break;
   case BCIF_DATA_FLOAT:
     /* promote to double */
@@ -2941,6 +3032,9 @@ static void set_value_from_data(struct ihm_reader *reader,
     break;
   case BCIF_DATA_INT32:
     set_value_from_bcif_int(key, data->data.int32[irow], buffer);
+    break;
+  case BCIF_DATA_UINT32:
+    set_value_from_bcif_uint(key, data->data.uint32[irow], buffer, err);
     break;
   default:
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
@@ -2997,7 +3091,7 @@ static bool process_bcif_category(struct ihm_reader *reader,
   if (!check_bcif_columns(reader, cat, ihm_cat, err)) return false;
   for (col = cat->first_column; col; col = col->next) {
     if (!col->keyword) continue;
-    if (!process_column_data(col, err)
+    if (!process_column_data(reader, col, err)
         || !process_column_mask(col, err)) return false;
     /* Make buffer for value as a string; should be long enough to
        store any int or double */

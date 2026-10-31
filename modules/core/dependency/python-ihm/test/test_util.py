@@ -199,19 +199,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(list(ihm.util._invert_ranges(inrng, 4, start=1)),
                          [(1, 4)])
 
-    def test_pred_ranges(self):
-        """Test _pred_ranges function"""
-        inrng = [(2, 3)]
-        self.assertEqual(list(ihm.util._pred_ranges(inrng, 4)),
-                         [(1, 1, False), (2, 3, True), (4, 4, False)])
-        inrng = [(1, 1), (4, 7)]
-        self.assertEqual(list(ihm.util._pred_ranges(inrng, 8)),
-                         [(1, 1, True), (2, 3, False), (4, 7, True),
-                          (8, 8, False)])
-        inrng = [(2, 2), (4, 7)]
-        self.assertEqual(list(ihm.util._pred_ranges(inrng, 7)),
-                         [(1, 1, False), (2, 2, True), (3, 3, False),
-                          (4, 7, True)])
+    def test_pred_id_ranges(self):
+        """Test _pred_id_ranges function"""
+        inrng = [(2, 3, 'a')]
+        self.assertEqual(list(ihm.util._pred_id_ranges(inrng, 4)),
+                         [(1, 1, False, None), (2, 3, True, 'a'),
+                          (4, 4, False, None)])
+        inrng = [(1, 1, 'a'), (4, 7, 'b')]
+        self.assertEqual(list(ihm.util._pred_id_ranges(inrng, 8)),
+                         [(1, 1, True, 'a'), (2, 3, False, None),
+                          (4, 7, True, 'b'), (8, 8, False, None)])
+        inrng = [(2, 2, 'a'), (4, 7, 'b')]
+        self.assertEqual(list(ihm.util._pred_id_ranges(inrng, 7)),
+                         [(1, 1, False, None), (2, 2, True, 'a'),
+                          (3, 3, False, None), (4, 7, True, 'b')])
 
     def test_combine_ranges(self):
         """Test _combine_ranges function"""
@@ -226,6 +227,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(list(ihm.util._combine_ranges(inrng)),
                          [(1, 2), (4, 4)])
         self.assertEqual(list(ihm.util._combine_ranges([])), [])
+
+    def test_sorted_nonoverlap_id_ranges(self):
+        """Test _sorted_nonoverlap_id_ranges function"""
+        inrng = [(8, 10, 'a'), (1, 2, 'a'), (3, 4, 'a')]
+        self.assertEqual(list(ihm.util._sorted_nonoverlap_id_ranges(inrng)),
+                         [(1, 4, 'a'), (8, 10, 'a')])
+        inrng = [(8, 10, 'a'), (1, 2, 'a'), (3, 4, 'b')]
+        self.assertEqual(list(ihm.util._sorted_nonoverlap_id_ranges(inrng)),
+                         [(1, 2, 'a'), (3, 4, 'b'), (8, 10, 'a')])
+        inrng = [(1, 10, 'a'), (3, 4, 'a')]
+        self.assertEqual(list(ihm.util._sorted_nonoverlap_id_ranges(inrng)),
+                         [(1, 10, 'a')])
+        inrng = [(1, 10, 'a'), (3, 4, 'b')]
+        self.assertEqual(list(ihm.util._sorted_nonoverlap_id_ranges(inrng)),
+                         [(1, 10, 'a'), (3, 4, 'b')])
+        self.assertEqual(list(ihm.util._sorted_nonoverlap_id_ranges([])), [])
+
+    def test_combine_id_ranges(self):
+        """Test _combine_id_ranges function"""
+        inrng = [(1, 30, 'd'), (1, 50, 'a'), (1, 60, 'c'), (2, 40, 'b'),
+                 (80, 100, 'e')]
+        self.assertEqual(list(ihm.util._combine_id_ranges(inrng)),
+                         [(1, 1, 'a,c,d'), (2, 30, 'a,b,c,d'),
+                          (31, 40, 'a,b,c'), (41, 50, 'a,c'),
+                          (51, 60, 'c'), (80, 100, 'e')])
+        inrng = [(8, 10, 'x'), (1, 2, 'y'), (3, 4, 'z'), (2, 3, 'z')]
+        self.assertEqual(list(ihm.util._combine_id_ranges(inrng)),
+                         [(1, 1, 'y'), (2, 2, 'y,z'),
+                          (3, 4, 'z'), (8, 10, 'x')])
+        self.assertEqual(list(ihm.util._combine_id_ranges([])), [])
 
     def test_make_range_from_list(self):
         """Test _make_range_from_list function"""

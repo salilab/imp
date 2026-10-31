@@ -1,3 +1,21 @@
 [build-system]
 requires = ["setuptools >= 42.0.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ihm"
+dynamic = ["version", "license", "dependencies"]
+authors = [
+    {name="Ben Webb", email="benmwebb@gmail.com"}
+]
+readme = "README.md"
+description = 'Package for handling IHM mmCIF and BinaryCIF files'
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+homepage = 'https://github.com/ihmwg/python-ihm'

@@ -312,11 +312,13 @@ class NotModeledResidueRange:
        :param int seq_id_end: Ending residue in the range.
        :param str reason: Optional text describing why the residues were
               not modeled.
+       :param str details: Any additional free text.
     """
-    def __init__(self, asym_unit, seq_id_begin, seq_id_end, reason=None):
+    def __init__(self, asym_unit, seq_id_begin, seq_id_end, reason=None,
+                 details=None):
         self.asym_unit = asym_unit
         self.seq_id_begin, self.seq_id_end = seq_id_begin, seq_id_end
-        self.reason = reason
+        self.reason, self.details = reason, details
         _check_residue_range((seq_id_begin, seq_id_end), asym_unit.entity)
 
     reason = _text_choice_property(

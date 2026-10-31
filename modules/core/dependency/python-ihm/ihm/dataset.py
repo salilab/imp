@@ -21,9 +21,10 @@ class Dataset:
     _allow_duplicates = False
 
     # Datasets compare equal iff they are the same class, have the
-    # same attributes, and allow_duplicates=False
+    # same attributes, and allow_duplicates=False. A dataset without a
+    # location has nothing to identify it, so it is equal only to itself.
     def _eq_vals(self):
-        if self._allow_duplicates:
+        if self._allow_duplicates or self.location is None:
             return id(self)
         else:
             return tuple([self.__class__]

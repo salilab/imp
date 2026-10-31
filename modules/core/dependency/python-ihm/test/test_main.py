@@ -248,6 +248,15 @@ class Tests(unittest.TestCase):
         # Branched entities never compare equal unless they are the same object
         self.assertEqual(sugar, sugar)
         self.assertNotEqual(sugar, sugar2)
+        # Neither do entities of only unknown residues
+        unk1 = ihm.Entity(['UNK'] * 4)
+        unk2 = ihm.Entity(['UNK'] * 4)
+        self.assertEqual(unk1, unk1)
+        self.assertNotEqual(unk1, unk2)
+        self.assertNotEqual(hash(unk1), hash(unk2))
+        # A partially known sequence still compares by sequence
+        self.assertEqual(ihm.Entity(['UNK', 'A']),
+                         ihm.Entity(['UNK', 'A']))
         # seq_id does not exist for nonpolymers
         self.assertEqual(heme.seq_id_range, (None, None))
         # We do have an internal seq_id_range for branched entities

@@ -145,6 +145,12 @@ class Tests(unittest.TestCase):
         self._mocked_uniprot_urlopen('P52891.fasta', r.add_missing_sequence)
         self.assertEqual(r.sequence, 'MEL')
         self.assertEqual(r.details, 'foo')
+        # If an isoform is given, its sequence should be fetched
+        r = ihm.reference.UniProtSequence(
+            db_code='NUP84_YEAST', accession='P52891', sequence=None,
+            isoform='testacc')
+        self._mocked_uniprot_urlopen('P52891.fasta', r.add_missing_sequence)
+        self.assertEqual(len(r.sequence), 726)
 
 
 if __name__ == '__main__':

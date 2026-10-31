@@ -408,7 +408,7 @@ class Tests(unittest.TestCase):
             contents = fh.readlines()
         ind = contents.index('_struct_ref.details\n')
         self.assertEqual(
-            contents[ind + 1], '1 1 UNP Q90VU7_HV1 Q90VU7 26 AADG\n')
+            contents[ind + 1], '1 1 UNP Q90VU7_HV1 Q90VU7 . 26 AADG\n')
         os.unlink('output.cif')
 
     def test_non_utf8_encoded(self):

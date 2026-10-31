@@ -30,11 +30,14 @@ class Sequence(Reference):
        :param str sequence: The complete sequence, as a string of
               one-letter codes.
        :param str details: Longer text describing the sequence.
+       :param str isoform: The database code for the isoform of the
+              sequence, if it is not the canonical one (e.g. Q15370-2).
     """
 
-    def __init__(self, db_name, db_code, accession, sequence, details=None):
+    def __init__(self, db_name, db_code, accession, sequence, details=None,
+                 isoform=None):
         self.db_name, self.db_code = db_name, db_code
-        self.accession = accession
+        self.accession, self.isoform = accession, isoform
         self.sequence, self.details = sequence, details
 
         #: All alignments between the reference and entity sequences, as
@@ -44,7 +47,8 @@ class Sequence(Reference):
 
     def _signature(self):
         # Ignore "details"
-        return ((self.db_name, self.db_code, self.accession, self.sequence)
+        return ((self.db_name, self.db_code, self.accession, self.isoform,
+                 self.sequence)
                 + tuple(a._signature() for a in self.alignments))
 
     def _get_alignments(self):
@@ -69,8 +73,10 @@ class UniProtSequence(Sequence):
 
     _db_name = 'UNP'
 
-    def __init__(self, db_code, accession, sequence, details=None):
-        super().__init__(self._db_name, db_code, accession, sequence, details)
+    def __init__(self, db_code, accession, sequence, details=None,
+                 isoform=None):
+        super().__init__(self._db_name, db_code, accession, sequence, details,
+                         isoform)
 
     def __str__(self):
         return "<ihm.reference.UniProtSequence(%r)>" % self.accession
@@ -99,12 +105,13 @@ class UniProtSequence(Sequence):
             return cls(code, accession, seq, details)
 
     def add_missing_sequence(self):
-        """Fill in any missing sequence information.
+        """Fill in any missing sequence information (of the isoform,
+           if one is given).
            This is done by querying the UniProt web API, so requires network
            access.
         """
         if not self.sequence:
-            acc = self.from_accession(self.accession)
+            acc = self.from_accession(self.isoform or self.accession)
             self.sequence = acc.sequence
             # If we are missing details too, use that from UniProt
             if not self.details:

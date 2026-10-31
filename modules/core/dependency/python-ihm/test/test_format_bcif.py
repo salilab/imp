@@ -57,10 +57,23 @@ class GenericHandler:
         self.data.append(d)
 
 
+class EncodeAsUint32:
+    """Request that a value be encoded by BinaryCIF as 32-bit unsigned"""
+    def __init__(self, val):
+        self.val = val
+
+
 def _encode_int(rows):
     d = {'data': struct.pack('%db' % len(rows), *rows),
          'encoding': [{'kind': 'ByteArray',
                        'type': ihm.format_bcif._Uint8}]}
+    return d, None
+
+
+def _encode_uint32(rows):
+    d = {'data': struct.pack('<%di' % len(rows), *rows),
+         'encoding': [{'kind': 'ByteArray',
+                       'type': ihm.format_bcif._Uint32}]}
     return d, None
 
 
@@ -120,6 +133,8 @@ class Category:
     def _encode_rows(self, rows):
         if len(rows) and isinstance(rows[0], int):
             return _encode_int(rows)
+        elif len(rows) and isinstance(rows[0], EncodeAsUint32):
+            return _encode_uint32([r.val for r in rows])
         elif len(rows) and isinstance(rows[0], float):
             return _encode_float(rows)
         else:
@@ -287,12 +302,12 @@ class Tests(unittest.TestCase):
                 return {'data': self.raw_data,
                         'encoding': enc}, None
 
-        def get_decoded(data_type, raw_data, enc=None):
-            cat = MyCategory('_exptl', {'method': []}, raw_data, data_type,
+        def get_decoded(data_type, raw_data, enc=None, key='method'):
+            cat = MyCategory('_exptl', {key: []}, raw_data, data_type,
                              enc=enc)
             h = GenericHandler()
             self._read_bcif([Block([cat])], {'_exptl': h})
-            return [x['method'] for x in h.data]
+            return [x[key] for x in h.data]
 
         # type 3 (signed int)
         data = get_decoded(ihm.format_bcif._Int32, b'\x00\x01\x01\x05')
@@ -345,10 +360,22 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data[0], str)
         self.assertAlmostEqual(float(data[0]), 42.0, delta=0.1)
 
-        # unsupported type (32-bit unsigned int)
-        self.assertRaises(_format.FileFormatError,
-                          get_decoded, ihm.format_bcif._Uint32,
-                          struct.pack('<I', 5))
+        # type 6 (32-bit unsigned int)
+        data = get_decoded(ihm.format_bcif._Uint32,
+                           struct.pack('<3I', 5, 2**31, 2**32 - 1))
+        self.assertEqual(data, ['5', '2147483648', '4294967295'])
+
+        # 32-bit unsigned int can be coerced to int or float
+        data = get_decoded(ihm.format_bcif._Uint32,
+                           struct.pack('<2I', 5, 2**31 - 1), key='intkey1')
+        self.assertEqual(data, [5, 2**31 - 1])
+        data = get_decoded(ihm.format_bcif._Uint32,
+                           struct.pack('<2I', 5, 2**32 - 1), key='floatkey1')
+        self.assertEqual(data, [5.0, 4294967295.0])
+        # Values too large for int cannot be coerced to int
+        self.assertRaises(ValueError, get_decoded,
+                          ihm.format_bcif._Uint32, struct.pack('<I', 2**31),
+                          key='intkey1')
 
     def test_integer_packing_decoder_signed(self):
         """Test IntegerPacking decoder with signed data"""
@@ -517,25 +544,17 @@ class Tests(unittest.TestCase):
                                   {'boolkey1': False},
                                   {'boolkey1': 'OM'}])
 
-        # Float will be mapped to omitted (None, or handler.omitted)
-        cat = Category('_foo', {'boolkey1': [42.34]})
-        h = GenericHandler()
-        self._read_bcif([Block([cat])], {'_foo': h})
-        self.assertEqual(h.data, [{}])
-        h = GenericHandler()
-        h.omitted = 'OM'
-        self._read_bcif([Block([cat])], {'_foo': h})
-        self.assertEqual(h.data, [{'boolkey1': 'OM'}])
-
-        # Int will be mapped to omitted (None)
-        cat = Category('_foo', {'boolkey1': [42]})
-        h = GenericHandler()
-        self._read_bcif([Block([cat])], {'_foo': h})
-        self.assertEqual(h.data, [{}])
-        h = GenericHandler()
-        h.omitted = 'OM'
-        self._read_bcif([Block([cat])], {'_foo': h})
-        self.assertEqual(h.data, [{'boolkey1': 'OM'}])
+        # Float, Int and UInt32 will be mapped to omitted
+        # (None, or handler.omitted)
+        for val in (42.34, 42, EncodeAsUint32(42)):
+            cat = Category('_foo', {'boolkey1': [val]})
+            h = GenericHandler()
+            self._read_bcif([Block([cat])], {'_foo': h})
+            self.assertEqual(h.data, [{}])
+            h = GenericHandler()
+            h.omitted = 'OM'
+            self._read_bcif([Block([cat])], {'_foo': h})
+            self.assertEqual(h.data, [{'boolkey1': 'OM'}])
 
     def test_omitted_unknown(self):
         """Test handling of omitted/unknown data"""
@@ -927,14 +946,50 @@ class Tests(unittest.TestCase):
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
                           d, {'_foo': h})
 
-        # Out-of-range indices return empty strings
-        for data in (struct.pack('b', 40), struct.pack('b', -32)):
+        # Offsets cannot be empty
+        d = make_bcif(data=b'\x00\x01', data_type=ihm.format_bcif._Uint8,
+                      offsets=b'', offsets_type=ihm.format_bcif._Uint8)
+        h = GenericHandler()
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw,
+                          d, {'_foo': h})
+
+        # Out-of-range indices return empty strings (3 offsets delimit
+        # only 2 strings, so index 2 is out of range)
+        for data in (struct.pack('b', 40), struct.pack('b', -32),
+                     struct.pack('b', 2)):
             d = make_bcif(data=data, data_type=ihm.format_bcif._Int8,
                           offsets=b'\x00\x01\x03',
                           offsets_type=ihm.format_bcif._Uint8)
             h = GenericHandler()
             self._read_bcif_raw(d, {'_foo': h})
             self.assertEqual(h.data, [{'bar': ''}])
+
+    @unittest.skipIf(_format is None, "No C tokenizer")
+    def test_string_array_dictionary_c(self):
+        """Test reuse of strings from a BinaryCIF StringArray dictionary"""
+        def make_category(string_data, indices):
+            uint8 = {'kind': 'ByteArray', 'type': ihm.format_bcif._Uint8}
+            c = {'name': 'bar',
+                 'data': {'data': bytes(indices),
+                          'encoding':
+                          [{'kind': 'StringArray', 'stringData': string_data,
+                            'dataEncoding': [uint8],
+                            'offsetEncoding': [uint8],
+                            'offsets': b'\x00\x01\x03'}]}}
+            return {'name': '_foo', 'columns': [c]}
+
+        # Two categories with different dictionaries, so strings from the
+        # first must not be reused for the second
+        d = {'dataBlocks': [{'categories': [make_category('aAB', [1, 0, 1]),
+                                            make_category('xYZ', [1, 0, 1])]}]}
+        h = GenericHandler()
+        self._read_bcif_raw(d, {'_foo': h})
+        self.assertEqual(h.data, [{'bar': 'AB'}, {'bar': 'a'}, {'bar': 'AB'},
+                                  {'bar': 'YZ'}, {'bar': 'x'}, {'bar': 'YZ'}])
+        # The same dictionary entry should be the same Python object, even
+        # if not in successive rows
+        self.assertIs(h.data[0]['bar'], h.data[2]['bar'])
+        self.assertIs(h.data[3]['bar'], h.data[5]['bar'])
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_fixed_point_encoding_c(self):

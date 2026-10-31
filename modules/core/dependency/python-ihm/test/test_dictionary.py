@@ -2,6 +2,7 @@ import utils
 import os
 import unittest
 import sys
+import warnings
 from io import StringIO, BytesIO
 from test_format_bcif import MockMsgPack, MockFh, _add_msgpack
 
@@ -343,6 +344,84 @@ _test_mandatory_category.bar 2
         # mandatory 'bar' is missing entirely
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
                           StringIO("_test_mandatory_category.foo xy"))
+
+    def _validate_warnings(self, d, cif, **kwargs):
+        """Validate and return the messages of any ValidatorWarnings"""
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            d.validate(StringIO(cif), **kwargs)
+        self.assertTrue(all(issubclass(x.category,
+                                       ihm.dictionary.ValidatorWarning)
+                            for x in w))
+        return [str(x.message) for x in w]
+
+    def test_validate_warn_missing_category(self):
+        """Test warnings for missing optional categories"""
+        d = make_test_dictionary()
+        cif = "_test_mandatory_category.bar 1"
+        # No warnings by default
+        self.assertEqual(self._validate_warnings(d, cif), [])
+        # Callable is only asked about optional categories
+        seen = []
+
+        def warn(cat):
+            seen.append(cat)
+            return True
+        w = self._validate_warnings(d, cif, warn_missing_category=warn)
+        self.assertEqual(seen, ['test_optional_category'])
+        self.assertEqual(w, ['Optional category test_optional_category '
+                             'is not in the file'])
+        # No warning if callable returns False
+        w = self._validate_warnings(d, cif,
+                                    warn_missing_category=lambda c: False)
+        self.assertEqual(w, [])
+        # No warning if the category is present
+        w = self._validate_warnings(
+            d, cif + "\n_test_optional_category.bar enum1",
+            warn_missing_category=warn)
+        self.assertEqual(w, [])
+
+    def test_validate_warn_missing_keyword(self):
+        """Test warnings for missing optional keywords"""
+        d = make_test_dictionary()
+        cif = "_test_mandatory_category.bar 1"
+        seen = []
+
+        def warn(cat, key):
+            seen.append((cat, key))
+            return True
+        # Callable is only asked about optional keywords in categories
+        # that are present in the file
+        w = self._validate_warnings(d, cif, warn_missing_keyword=warn)
+        self.assertEqual(seen, [('test_mandatory_category', 'foo')])
+        self.assertEqual(w, ['Optional keyword test_mandatory_category.foo '
+                             'is not in the file (but its category is)'])
+        # No warning if callable returns False
+        w = self._validate_warnings(d, cif,
+                                    warn_missing_keyword=lambda c, k: False)
+        self.assertEqual(w, [])
+        # Keywords with omitted or unknown values are present in the file
+        for val in ('.', '?', 'xy'):
+            w = self._validate_warnings(
+                d, cif + "\n_test_mandatory_category.foo " + val,
+                warn_missing_keyword=warn)
+            self.assertEqual(w, [])
+
+    def test_validate_warn_missing_with_errors(self):
+        """Test warnings for missing items when validation also fails"""
+        d = make_test_dictionary()
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
+                              StringIO("_test_optional_category.bar enum1"),
+                              warn_missing_category=lambda c: True,
+                              warn_missing_keyword=lambda c, k: True)
+        self.assertEqual(
+            sorted(str(x.message) for x in w),
+            ['Optional keyword test_optional_category.baz is not in the '
+             'file (but its category is)',
+             'Optional keyword test_optional_category.foo is not in the '
+             'file (but its category is)'])
 
     def test_validate_enumeration(self):
         """Test validation of enumerated values"""

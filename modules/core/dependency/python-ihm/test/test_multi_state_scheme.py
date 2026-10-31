@@ -349,19 +349,13 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(e1, ihm.multi_state_scheme.EquilibriumConstant)
         self.assertEqual(e1.value, 1.0)
         self.assertEqual(e1.unit, 'a')
-        self.assertEqual(
-            e1.method,
-            'equilibrium constant is determined from another method '
-            'not listed')
+        self.assertEqual(e1.method, 'other')
 
         e2 = ihm.multi_state_scheme.EquilibriumConstant(value=2.0)
         self.assertIsInstance(e2, ihm.multi_state_scheme.EquilibriumConstant)
         self.assertEqual(e2.value, 2.0)
         self.assertIsNone(e2.unit)
-        self.assertEqual(
-            e2.method,
-            'equilibrium constant is determined from another method '
-            'not listed')
+        self.assertEqual(e2.method, 'other')
 
         e3 = ihm.multi_state_scheme.PopulationEquilibriumConstant(value=3.0,
                                                                   unit='b')
@@ -370,9 +364,7 @@ class Tests(unittest.TestCase):
             ihm.multi_state_scheme.PopulationEquilibriumConstant)
         self.assertEqual(e3.value, 3.0)
         self.assertEqual(e3.unit, 'b')
-        self.assertEqual(
-            e3.method,
-            'equilibrium constant is determined from population')
+        self.assertEqual(e3.method, 'from population')
 
         e4 = ihm.multi_state_scheme.KineticRateEquilibriumConstant(value=4.0,
                                                                    unit='c')
@@ -381,9 +373,7 @@ class Tests(unittest.TestCase):
             ihm.multi_state_scheme.KineticRateEquilibriumConstant)
         self.assertEqual(e4.value, 4.0)
         self.assertEqual(e4.unit, 'c')
-        self.assertEqual(
-            e4.method,
-            'equilibrium constant is determined from kinetic rates, kAB/kBA')
+        self.assertEqual(e4.method, 'from kinetic rates')
 
     def test_equilibrium_constant_eq(self):
         """Test equality of EquilibriumConstant objects"""
@@ -462,8 +452,7 @@ class Tests(unittest.TestCase):
             equilibrium_constant=e1)
         self.assertEqual(k2.equilibrium_constant.value, 1.0)
         self.assertEqual(k2.equilibrium_constant.unit, "unit")
-        self.assertEqual(k2.equilibrium_constant.method,
-                         'equilibrium constant is determined from population')
+        self.assertEqual(k2.equilibrium_constant.method, 'from population')
         # Initialization with all values given
         k3 = ihm.multi_state_scheme.KineticRate(
             transition_rate_constant=0.5,
@@ -474,8 +463,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(k3.transition_rate_constant, 0.5)
         self.assertEqual(k3.equilibrium_constant.value, 1.0)
         self.assertEqual(k3.equilibrium_constant.unit, "unit")
-        self.assertEqual(k3.equilibrium_constant.method,
-                         'equilibrium constant is determined from population')
+        self.assertEqual(k3.equilibrium_constant.method, 'from population')
         self.assertEqual(k3.details, "details1")
         self.assertEqual(k3.dataset_group, 'dataset_group1')
         self.assertEqual(k3.external_file, 'file1')

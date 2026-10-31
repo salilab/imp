@@ -51,6 +51,15 @@ class Tests(unittest.TestCase):
         d2._allow_duplicates = True
         self.assertNotEqual(d, d2)
 
+    def test_dataset_no_location(self):
+        """Test Dataset base class with no location"""
+        d = ihm.dataset.Dataset(None, details='foo')
+        self.assertEqual(d._eq_vals(), id(d))
+        self.assertEqual(d, d)
+
+        d2 = ihm.dataset.Dataset(None, details='bar')
+        self.assertNotEqual(d, d2)
+
     def test_add_primary_no_parents(self):
         """Test add_primary() method, no parents"""
         l1 = ihm.location.PDBLocation('1abc', version='foo', details='bar')
