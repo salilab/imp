@@ -8,6 +8,7 @@ from pathlib import Path
 import ihm.format
 import ihm.location
 import ihm.dataset
+import ihm.startmodel
 from io import StringIO
 
 
@@ -712,8 +713,18 @@ _ihm_sphere_obj_site.model_id
         d = ihm.dumper._StartingModelDumper()
         d.finalize(po.system)
         d.dump(po.system, w)
+        # Determine whether we're using a version of python-ihm that
+        # supports 'details' for templates
+        t = ihm.startmodel.Template(
+            dataset=None, asym_id=None, seq_id_range=(1, 1),
+            template_seq_id_range=(1, 1), sequence_identity=100.0)
+        if hasattr(t, 'details'):
+            details_header = "\n_ihm_starting_comparative_models.details"
+            details_value = " ."
+        else:
+            details_header = details_value = ""
         out = fh.getvalue()
-        self.assertEqual(out, """#
+        self.assertEqual(out, f"""#
 loop_
 _ihm_starting_model_details.starting_model_id
 _ihm_starting_model_details.entity_id
@@ -749,11 +760,11 @@ _ihm_starting_comparative_models.template_seq_id_end
 _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
-_ihm_starting_comparative_models.alignment_file_id
-1 1 A 33 424 C 33 424 100.000 1 1 2
-2 1 A 429 488 G 482 551 10.000 1 2 2
-3 2 A 26 417 C 33 424 100.000 1 1 2
-4 2 A 422 481 G 482 551 10.000 1 2 2
+_ihm_starting_comparative_models.alignment_file_id{details_header}
+1 1 A 33 424 C 33 424 100.000 1 1 2{details_value}
+2 1 A 429 488 G 482 551 10.000 1 2 2{details_value}
+3 2 A 26 417 C 33 424 100.000 1 1 2{details_value}
+4 2 A 422 481 G 482 551 10.000 1 2 2{details_value}
 #
 #
 loop_
