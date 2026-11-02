@@ -99,6 +99,39 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
         self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_planar_derivatives(self):
+        """Test JAX DihedralSingletonScore derivatives at planar dihedrals"""
+        import IMP.jax
+        # Dihedrals of 0 and pi; acos-based implementations give NaN here
+        for last_coord in ((1., 1., 0.), (1., -1., 0.)):
+            m = IMP.Model()
+            coords = ((0., 1., 0.), (0., 0., 0.), (1., 0., 0.), last_coord)
+            xyzs = [IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                                IMP.algebra.Vector3D(*c))
+                    for c in coords]
+            for xyz in xyzs:
+                xyz.set_coordinates_are_optimized(True)
+            dih = IMP.atom.Dihedral.setup_particle(IMP.Particle(m), *xyzs)
+            dih.set_ideal(0.5)
+            dih.set_multiplicity(1)
+            dih.set_stiffness(2.)
+            ss = IMP.atom.DihedralSingletonScore()
+            r = IMP.core.SingletonRestraint(m, ss, dih)
+            # Get C++ score and derivatives
+            r.evaluate(True)
+            ji = r._get_jax(space=IMP.jax.FreeSpace)
+            # Compare JAX against C++ derivatives
+            derivs = jax.grad(ji.score_func)(ji.get_jax_model())['xyz']
+            for xyz in xyzs:
+                self.assertLess(
+                    IMP.algebra.get_distance(
+                        xyz.get_derivatives(),
+                        IMP.algebra.Vector3D(
+                            *[float(x) for x in
+                              derivs[xyz.get_particle_index()]])),
+                    1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

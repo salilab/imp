@@ -355,15 +355,30 @@ def _spline(feature, minrange, lowbin, highbin, spacing, values,
             * (spacing * spacing) / 6.)
 
 
+def _safe_norm(v):
+    """Return the magnitude of the Nx3 vectors v. Unlike jnp.linalg.norm, this
+       has a gradient of zero (rather than NaN) for zero-length vectors."""
+    squared = jnp.vecdot(v, v)
+    nonzero = squared > 0.
+    return jnp.where(nonzero, jnp.sqrt(jnp.where(nonzero, squared, 1.)), 0.)
+
+
+def _safe_atan2(y, x):
+    """Like jnp.arctan2, but return pi/2 with a gradient of zero if x and y
+       are both close to zero. The acos-based C++ code acts similarly, and uses
+       the same threshold on the product of vector magnitudes,
+       sqrt(x^2 + y^2)."""
+    degenerate = x * x + y * y <= 1e-24
+    return jnp.where(degenerate, 0.5 * math.pi,
+                     jnp.arctan2(jnp.where(degenerate, 1., y),
+                                 jnp.where(degenerate, 1., x)))
+
+
 def _angle(rij, rkj):
     """Return the N angles (in radians) between Nx3 vectors rij and rkj."""
-    scalar_product = jnp.vecdot(rij, rkj)
-    # Avoid division by zero if colinear
-    mag_product = jnp.clip(jnp.linalg.norm(rij, axis=-1)
-                           * jnp.linalg.norm(rkj, axis=-1), 1e-6)
-    # Clip to valid domain for cos
-    cosangle = jnp.clip(scalar_product / mag_product, -1.0, 1.0)
-    return jnp.acos(cosangle)
+    # Unlike acos(), the gradient of atan2() is finite for colinear vectors,
+    # and it does not lose precision for near-colinear vectors
+    return _safe_atan2(_safe_norm(jnp.cross(rij, rkj)), jnp.vecdot(rij, rkj))
 
 
 def _dihedral(rij, rkj, rkl):
@@ -371,11 +386,10 @@ def _dihedral(rij, rkj, rkl):
        rkj and rkl."""
     v1 = jnp.cross(rij, rkj)
     v2 = jnp.cross(rkj, rkl)
-    angle = _angle(v1, v2)
-    # Get sign
-    v0 = jnp.cross(v1, v2)
-    sign = jnp.vecdot(rkj, v0)
-    return jnp.copysign(angle, sign)
+    # sin(dihedral) and cos(dihedral), both scaled by |v1||v2|. atan2() has
+    # a finite gradient at 0 and pi, unlike acos().
+    return _safe_atan2(_safe_norm(rkj) * jnp.vecdot(rij, v2),
+                       jnp.vecdot(v1, v2))
 
 
 def _get_angle_difference(a1, a2):

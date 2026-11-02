@@ -86,6 +86,26 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
         self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_colinear_derivatives(self):
+        """Test JAX AngleSingletonScore derivatives for colinear atoms"""
+        import IMP.jax
+        m = IMP.Model()
+        ds = [IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.Vector3D(x, 0., 0.))
+              for x in (1., 0., -1.)]
+        angle = IMP.atom.Angle.setup_particle(IMP.Particle(m), *ds)
+        angle.set_ideal(math.pi)
+        angle.set_stiffness(1.0)
+        ss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0, 1))
+        r = IMP.core.SingletonRestraint(m, ss, angle)
+        ji = r._get_jax(space=IMP.jax.FreeSpace)
+        derivs = jax.grad(ji.score_func)(ji.get_jax_model())['xyz']
+        # acos-based implementations give NaN here
+        for d in ds:
+            for x in derivs[d.get_particle_index()]:
+                self.assertAlmostEqual(float(x), 0., delta=1e-6)
+
 
 if __name__ == '__main__':
     IMP.test.main()
