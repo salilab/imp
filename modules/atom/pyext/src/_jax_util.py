@@ -83,7 +83,8 @@ class _MDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
 
         # score_func returns both score and a modified JAX Model, but
         # deriv_func only wants the first scalar argument (the score)
-        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
+        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0],
+                              allow_int=True)
         if axes is not None:
             deriv_func = jax.vmap(deriv_func, in_axes=(axes,))
         velocity_cap = md.get_velocity_cap()
@@ -212,7 +213,8 @@ class _BDJAXInfo(IMP._jax_util.JAXOptimizerInfo):
                 "JAX BrownianDynamics does not support rigid bodies")
         axes = self.get_jax_model(attributes=False).get_vmap_axes()
 
-        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0])
+        deriv_func = jax.grad(lambda jm: self.score_func(jm)[0],
+                              allow_int=True)
         if axes is not None:
             deriv_func = jax.vmap(deriv_func, in_axes=(axes,))
         max_step = bd.get_maximum_move()
