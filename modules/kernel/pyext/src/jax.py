@@ -25,6 +25,14 @@ class Space:
            a single distance."""
         pass
 
+    def displacement(dr):
+        """If given an array of particle-particle vectors, return an array
+           of the corresponding displacement vectors in this space (e.g. the
+           vectors between the closest periodic images of the particles).
+           If given a single particle-particle vector, return a single
+           displacement vector."""
+        pass
+
     def shift(r, dr):
         """Shift r by dr and return new r"""
         pass
@@ -40,6 +48,10 @@ class FreeSpace(Space):
     @staticmethod
     def distance(dr):
         return jnp.linalg.norm(dr, axis=-1)
+
+    @staticmethod
+    def displacement(dr):
+        return dr
 
     @staticmethod
     def shift(r, dr):
@@ -60,8 +72,10 @@ class PeriodicSpace(Space):
         self.side = jnp.asarray(side)
 
     def distance(self, dr):
-        p_dr = jnp.mod(dr + self.side * 0.5, self.side) - 0.5 * self.side
-        return jnp.linalg.norm(p_dr, axis=-1)
+        return jnp.linalg.norm(self.displacement(dr), axis=-1)
+
+    def displacement(self, dr):
+        return jnp.mod(dr + self.side * 0.5, self.side) - 0.5 * self.side
 
     def shift(self, r, dr):
         return jnp.mod(r + dr, self.side)

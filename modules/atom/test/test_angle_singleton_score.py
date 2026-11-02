@@ -106,6 +106,28 @@ class Tests(IMP.test.TestCase):
             for x in derivs[d.get_particle_index()]:
                 self.assertAlmostEqual(float(x), 0., delta=1e-6)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX AngleSingletonScore with periodic boundaries"""
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
+        m = IMP.Model()
+        ds = [IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.Vector3D(*c))
+              for c in ((10.5, 0., 0.), (9.5, 0., 0.), (9., 1., 0.))]
+        angle = IMP.atom.Angle.setup_particle(IMP.Particle(m), *ds)
+        angle.set_ideal(0.5)
+        angle.set_stiffness(2.0)
+        ss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0, 1))
+        r = IMP.core.SingletonRestraint(m, ss, angle)
+        imp_score = r.evaluate(False)
+        # Put each atom in the periodic cell, splitting the angle across
+        # the boundary; the score should not change
+        ds[0].set_coordinates(IMP.algebra.Vector3D(0.5, 0., 0.))
+        ji = r._get_jax(space)
+        jax_score = jax.jit(ji.score_func)(ji.get_jax_model())
+        self.assertAlmostEqual(jax_score, imp_score, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

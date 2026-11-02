@@ -78,6 +78,31 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
         self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_periodic(self):
+        """Test JAX ImproperSingletonScore with periodic boundaries"""
+        import IMP.jax
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
+        m = IMP.Model()
+        xyzs = [IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                            IMP.algebra.Vector3D(*c))
+                for c in ((9., 1., 0.), (9., 0., 0.), (10.5, 0., 0.),
+                          (10.5, 0.5, 0.8))]
+        dih = IMP.atom.Dihedral.setup_particle(IMP.Particle(m), *xyzs)
+        dih.set_ideal(0.5)
+        dih.set_multiplicity(1)
+        dih.set_stiffness(2.)
+        ss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
+        r = IMP.core.SingletonRestraint(m, ss, dih)
+        imp_score = r.evaluate(False)
+        # Put each atom in the periodic cell, splitting the dihedral across
+        # the boundary; the score should not change
+        xyzs[2].set_coordinates(IMP.algebra.Vector3D(0.5, 0., 0.))
+        xyzs[3].set_coordinates(IMP.algebra.Vector3D(0.5, 0.5, 0.8))
+        ji = r._get_jax(space)
+        jax_score = jax.jit(ji.score_func)(ji.get_jax_model())
+        self.assertAlmostEqual(jax_score, imp_score, delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

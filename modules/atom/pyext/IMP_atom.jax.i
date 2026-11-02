@@ -283,8 +283,8 @@
         from IMP.atom._jax_util import _get_angles
         def score(jm, angles, uf):
             xyzs = jm['xyz'][angles.bonded_indexes]
-            rij = xyzs[:,0] - xyzs[:,1]
-            rkj = xyzs[:,2] - xyzs[:,1]
+            rij = space.displacement(xyzs[:,0] - xyzs[:,1])
+            rkj = space.displacement(xyzs[:,2] - xyzs[:,1])
             angle = IMP.core._jax_util._angle(rij, rkj)
             angle_diff = IMP.core._jax_util._get_angle_difference(
                 angle, angles.ideal)
@@ -304,9 +304,9 @@
         from IMP.atom._jax_util import _get_dihedrals
         def score(jm, dihedrals):
             xyzs = jm['xyz'][dihedrals.bonded_indexes]
-            rij = xyzs[:,0] - xyzs[:,1]
-            rkj = xyzs[:,2] - xyzs[:,1]
-            rkl = xyzs[:,2] - xyzs[:,3]
+            rij = space.displacement(xyzs[:,0] - xyzs[:,1])
+            rkj = space.displacement(xyzs[:,2] - xyzs[:,1])
+            rkl = space.displacement(xyzs[:,2] - xyzs[:,3])
             dihedral = IMP.core._jax_util._dihedral(rij, rkj, rkl)
             b = 0.5 * dihedrals.stiffness * jnp.abs(dihedrals.stiffness)
             return jnp.abs(b) + b * jnp.cos(dihedral * dihedrals.multiplicity
@@ -324,9 +324,9 @@
         from IMP.atom._jax_util import _get_dihedrals
         def score(jm, dihedrals, uf):
             xyzs = jm['xyz'][dihedrals.bonded_indexes]
-            rij = xyzs[:,0] - xyzs[:,1]
-            rkj = xyzs[:,2] - xyzs[:,1]
-            rkl = xyzs[:,2] - xyzs[:,3]
+            rij = space.displacement(xyzs[:,0] - xyzs[:,1])
+            rkj = space.displacement(xyzs[:,2] - xyzs[:,1])
+            rkl = space.displacement(xyzs[:,2] - xyzs[:,3])
             dihedral = IMP.core._jax_util._dihedral(rij, rkj, rkl)
             angle_diff = IMP.core._jax_util._get_angle_difference(
                 dihedral, dihedrals.ideal)

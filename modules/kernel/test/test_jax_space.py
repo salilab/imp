@@ -70,6 +70,29 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(space.distance(dr), dists[0], delta=1e-3)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_free_space_displacement(self):
+        """Test JAX FreeSpace displacement"""
+        drs = jnp.array([[9., 2., 3.], [24., 5., 6.]])
+        self.assertTrue(jnp.allclose(IMP.jax.FreeSpace.displacement(drs), drs))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_periodic_space_displacement(self):
+        """Test JAX PeriodicSpace displacement"""
+        space = IMP.jax.PeriodicSpace([10., 20., 30.])
+        # Components less than half the box size should not change
+        drs = jnp.array([[1., 2., 3.], [4., -5., 6.]])
+        self.assertTrue(jnp.allclose(space.displacement(drs), drs))
+
+        # Components should wrap over half the box size, preserving their sign
+        drs = jnp.array([[9., 2., 3.], [24., -15., 26.]])
+        expected = jnp.array([[-1., 2., 3.], [4., 5., -4.]])
+        self.assertTrue(jnp.allclose(space.displacement(drs), expected))
+
+        # Should work for a single vector too
+        dr = jnp.array([9., 2., 3.])
+        self.assertTrue(jnp.allclose(space.displacement(dr), expected[0]))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_periodic_space_shift(self):
         """Test JAX PeriodicSpace shift"""
         space = IMP.jax.PeriodicSpace([10., 10., 10.])
