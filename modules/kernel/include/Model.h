@@ -541,6 +541,8 @@ class IMPKERNELEXPORT Model : public Object
   using internal::FloatAttributeTable::get_number_of_attribute_sets;
   using internal::FloatAttributeTable::set_number_of_attribute_sets;
   using internal::FloatAttributeTable::set_active_attribute_set;
+  using internal::FloatAttributeTable::set_attribute_sets_external;
+  using internal::FloatAttributeTable::get_attribute_sets_external;
 
   /** \name Attribute sets
       Normally the Model contains a single set of attributes. However, more
@@ -558,14 +560,30 @@ class IMPKERNELEXPORT Model : public Object
   //! Get the current number of attribute sets (normally 1)
   int get_number_of_attribute_sets(FloatKey k) const;
 
+  //! Set whether the attribute sets are stored externally or not
+  /** If external is false, the attribute values are stored in the Model
+      object itself. If set to true, the values are expected to be stored
+      elsewhere (for example in a NumPy array). */
+  void set_attribute_sets_external(FloatKey k, bool external);
+
+  //! Return whether the attribute sets are stored externally
+  bool get_attribute_sets_external(FloatKey k) const;
+
   //! Set the number of attribute sets
   /** The Model must contain at least one set, and this value can only be
       changed when set 0 is active. */
   void set_number_of_attribute_sets(FloatKey k, int nsets);
 
+  //! Return whether the sphere attribute sets are stored externally
+  bool get_sphere_attribute_sets_external() const;
+
+  //! Set whether the sphere attribute sets are stored externally
+  void set_sphere_attribute_sets_external(bool external);
+
   //! Set the currently active attribute set
   /** Only a single attribute set can be active at a time. All get or set
-      of particle attributes will use the active set. */
+      of particle attributes will use the active set. This is only supported
+      for attributes stored internally. */
   void set_active_attribute_set(FloatKey k, int set);
 
   //! Get the current number of sphere attribute sets (normally 1)
@@ -589,6 +607,12 @@ class IMPKERNELEXPORT Model : public Object
       changed when set 0 is active. */
   void set_number_of_internal_coordinate_attribute_sets(int nsets);
 
+  //! Return whether internal coordinate attribute sets are stored externally
+  bool get_internal_coordinate_attribute_sets_external() const;
+
+  //! Set whether internal coordinate attribute sets are stored externally
+  void set_internal_coordinate_attribute_sets_external(bool external);
+
   //! Set the currently active internal coordinate attribute set
   /** Only a single attribute set can be active at a time. All get or set
       of particle internal coordinates will use the active set. */
@@ -598,6 +622,8 @@ class IMPKERNELEXPORT Model : public Object
   int get_number_of_attribute_sets(Type##Key k) const;    \
   void set_number_of_attribute_sets(Type##Key k, int nsets); \
   void set_active_attribute_set(Type##Key k, int set);    \
+  void set_attribute_sets_external(Type##Key k, bool external);    \
+  bool get_attribute_sets_external(Type##Key k) const;    \
 
   IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector3D);
   IMP_MODEL_ATTRIBUTE_SET_METHODS(Vector4D);

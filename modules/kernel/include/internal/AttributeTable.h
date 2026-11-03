@@ -146,10 +146,11 @@ class MultiIndexVector {
   size_t offset_;
   size_t size_;
   int nsets_;
+  bool external_;
 
   friend class cereal::access;
   template<class Archive> void serialize(Archive &ar) {
-    ar(nsets_, full_vector_);
+    ar(nsets_, full_vector_, external_);
     if (nsets_ > 1) {
       ar(active_set_);
     } else {
@@ -175,7 +176,7 @@ class MultiIndexVector {
   typedef typename P::const_iterator const_iterator;
   typedef typename P::iterator iterator;
 
-  MultiIndexVector() : active_set_(0), size_(0), nsets_(1) {
+  MultiIndexVector() : active_set_(0), size_(0), nsets_(1), external_(false) {
     set_front_pointer();
   }
   IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < size_,
@@ -217,15 +218,29 @@ class MultiIndexVector {
                     "Cannot set number of sets when active set is not 0");
     nsets_ = nsets;
     active_set_ = 0;
-    full_vector_.resize(size_ * nsets, fill_value);
+    if (!external_) {
+      full_vector_.resize(size_ * nsets, fill_value);
+    }
     set_front_pointer();
   }
 
   void set_active_set(int set) {
     IMP_USAGE_CHECK(set >= 0 && set < nsets_, "Invalid set index");
+    IMP_USAGE_CHECK(!external_,
+                    "Cannot change active set when using external storage");
     active_set_ = set;
     set_front_pointer();
   }
+
+  void set_sets_external(bool external) {
+    IMP_USAGE_CHECK(nsets_ == 1,
+                    "Cannot change external flag unless number of sets is 1");
+    IMP_USAGE_CHECK(active_set_ == 0,
+                    "Cannot change external flag when active set is not 0");
+    external_ = external;
+  }
+
+  bool get_sets_external() const { return external_; }
 
   void resize(size_t count, const T &fill_value) {
     if (nsets_ == 1) {
@@ -233,6 +248,7 @@ class MultiIndexVector {
       full_vector_.resize(count, fill_value);
       set_front_pointer();
     } else {
+      // we *could* allow this when using external storage
       IMP_THROW("Cannot add particles when using more than one attribute set",
                 IndexException);
     }

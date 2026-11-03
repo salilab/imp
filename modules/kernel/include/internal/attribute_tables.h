@@ -311,6 +311,23 @@ class MultiBasicAttributeTable : public BasicAttributeTable<Traits> {
     P::access_data()[ind].set_number_of_sets(nsets, Traits::get_invalid());
   }
 
+  void set_attribute_sets_external(Key k, bool external) {
+    unsigned ind = k.get_index();
+    if (P::size() <= ind) {
+      P::access_data().resize(ind + 1);
+    }
+    P::access_data()[ind].set_sets_external(external);
+  }
+
+  bool get_attribute_sets_external(Key k) const {
+    unsigned ind = k.get_index();
+    if (P::size() <= ind) {
+      return false;
+    } else {
+      return P::access_data()[ind].get_sets_external();
+    }
+  }
+
   int get_number_of_attribute_sets(Key k) const {
     unsigned ind = k.get_index();
     if (P::size() <= ind) {
@@ -991,8 +1008,24 @@ class FloatAttributeTable {
     return spheres_.get_number_of_sets();
   }
 
+  void set_sphere_attribute_sets_external(bool external) {
+    spheres_.set_sets_external(external);
+  }
+
+  bool get_sphere_attribute_sets_external() const {
+    return spheres_.get_sets_external();
+  }
+
   int get_number_of_internal_coordinate_attribute_sets() const {
     return internal_coordinates_.get_number_of_sets();
+  }
+
+  void set_internal_coordinate_attribute_sets_external(bool external) {
+    internal_coordinates_.set_sets_external(external);
+  }
+
+  bool get_internal_coordinate_attribute_sets_external() const {
+    return internal_coordinates_.get_sets_external();
   }
 
   void set_number_of_attribute_sets(FloatKey k, int nsets) {
@@ -1003,6 +1036,33 @@ class FloatAttributeTable {
       }
       data_.access_data()[ind].set_number_of_sets(
           nsets, internal::FloatAttributeTableTraits::get_invalid());
+    } else {
+      IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
+                TypeException);
+    }
+  }
+
+  void set_attribute_sets_external(FloatKey k, bool external) {
+    if (k.get_index() >= 7) {
+      unsigned ind = k.get_index() - 7;
+      if (data_.size() <= ind) {
+        data_.access_data().resize(ind + 1);
+      }
+      data_.access_data()[ind].set_sets_external(external);
+    } else {
+      IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
+                TypeException);
+    }
+  }
+
+  bool get_attribute_sets_external(FloatKey k) const {
+    if (k.get_index() >= 7) {
+      unsigned ind = k.get_index() - 7;
+      if (data_.size() <= ind) {
+        return false;
+      } else {
+        return data_.access_data()[ind].get_sets_external();
+      }
     } else {
       IMP_THROW("Use specialized methods for xyz, radii, internal coordinates",
                 TypeException);
@@ -1307,6 +1367,23 @@ class VectorDDerivAttributeTable {
     }
   }
 
+  void set_attribute_sets_external(Key k, bool external) {
+    unsigned ind = k.get_index();
+    if (data_.size() <= ind) {
+      data_.access_data().resize(ind + 1);
+    }
+    data_.access_data()[ind].set_sets_external(external);
+  }
+
+  bool get_attribute_sets_external(Key k) const {
+    unsigned ind = k.get_index();
+    if (data_.size() <= ind) {
+      return false;
+    } else {
+      return data_.access_data()[ind].get_sets_external();
+    }
+  }
+
   void set_active_attribute_set(Key k, int set) {
     unsigned ind = k.get_index();
     if (data_.size() <= ind) {
@@ -1412,6 +1489,8 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
 #define IMP_MODEL_ATTRIBUTE_SET_IMPORT(Base)     \
   using Base::get_number_of_attribute_sets;   \
   using Base::set_number_of_attribute_sets;   \
+  using Base::set_attribute_sets_external;   \
+  using Base::get_attribute_sets_external;   \
   using Base::set_active_attribute_set
 #else
 #define IMP_MODEL_IMPORT(Base)

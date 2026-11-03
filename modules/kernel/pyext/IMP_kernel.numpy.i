@@ -293,7 +293,10 @@ PyObject *_get_floats_numpy(IMP::Model *m, IMP::FloatKey k, PyObject *m_pyobj,
                             bool read_only)
 {
   unsigned sz = m->IMP::internal::FloatAttributeTable::get_attribute_size(k);
-  int nsets = m->get_number_of_attribute_sets(k);
+  int nsets = 1;
+  if (!m->get_attribute_sets_external(k)) {
+    nsets = m->get_number_of_attribute_sets(k);
+  }
   return _get_floats_data_numpy(m_pyobj, sz, nsets,
        sz == 0 ? nullptr
          : m->IMP::internal::FloatAttributeTable::access_full_attribute_data(k),
@@ -327,7 +330,10 @@ PyObject *_get_vector3ds_numpy(IMP::Model *m, IMP::Vector3DKey k,
                                PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->IMP::internal::Vector3DAttributeTable::get_attribute_size(k);
-  int nsets = m->get_number_of_attribute_sets(k);
+  int nsets = 1;
+  if (!m->get_attribute_sets_external(k)) {
+    nsets = m->get_number_of_attribute_sets(k);
+  }
   return _get_vector3ds_data_numpy(m_pyobj, sz, nsets,
      sz == 0 ? nullptr
       : m->IMP::internal::Vector3DAttributeTable::access_full_attribute_data(k),
@@ -339,7 +345,10 @@ PyObject *_get_vector3dderiv_numpy(IMP::Model *m, IMP::Vector3DDerivKey k,
 {
   unsigned sz
       = m->IMP::internal::Vector3DDerivAttributeTable::get_attribute_size(k);
-  int nsets = m->get_number_of_attribute_sets(k);
+  int nsets = 1;
+  if (!m->get_attribute_sets_external(k)) {
+    nsets = m->get_number_of_attribute_sets(k);
+  }
   return _get_vector3ds_data_numpy(m_pyobj, sz, nsets,
     sz == 0 ? nullptr
       : m->IMP::internal::Vector3DDerivAttributeTable::access_full_attribute_data(k),
@@ -362,7 +371,10 @@ PyObject *_get_vector4ds_numpy(IMP::Model *m, IMP::Vector4DKey k,
                                PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->IMP::internal::Vector4DAttributeTable::get_attribute_size(k);
-  int nsets = m->get_number_of_attribute_sets(k);
+  int nsets = 1;
+  if (!m->get_attribute_sets_external(k)) {
+    nsets = m->get_number_of_attribute_sets(k);
+  }
   return _get_vector4ds_data_numpy(m_pyobj, sz, nsets,
        sz == 0 ? nullptr
         : m->IMP::internal::Vector4DAttributeTable::access_full_attribute_data(k),
@@ -374,7 +386,10 @@ PyObject *_get_vector4dderiv_numpy(IMP::Model *m, IMP::Vector4DDerivKey k,
 {
   unsigned sz
       = m->IMP::internal::Vector4DDerivAttributeTable::get_attribute_size(k);
-  int nsets = m->get_number_of_attribute_sets(k);
+  int nsets = 1;
+  if (!m->get_attribute_sets_external(k)) {
+    nsets = m->get_number_of_attribute_sets(k);
+  }
   return _get_vector4ds_data_numpy(m_pyobj, sz, nsets,
     sz == 0 ? nullptr
       : m->IMP::internal::Vector4DDerivAttributeTable::access_full_attribute_data(k),
@@ -396,7 +411,10 @@ PyObject *_get_vector4dderiv_derivatives_numpy(
 PyObject *_get_spheres_numpy(IMP::Model *m, PyObject *m_pyobj, bool read_only)
 {
   unsigned sz = m->get_spheres_size();
-  int nsets = m->get_number_of_sphere_attribute_sets();
+  int nsets = 1;
+  if (!m->get_sphere_attribute_sets_external()) {
+    nsets = m->get_number_of_sphere_attribute_sets();
+  }
   return _get_spheres_data_numpy(m_pyobj, sz, nsets,
                sz == 0 ? nullptr : m->access_full_spheres_data(), read_only);
 }
@@ -446,7 +464,11 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
 
     def get_numpy(self, k, read_only=False):
         """Get the model's attribute array for any type of Key
-           k as a NumPy array. See Model::get_ints_numpy() for more details."""
+           k as a NumPy array. See Model::get_ints_numpy() for more details.
+           If this Key has multiple attribute sets defined for it,
+           a multi-dimensional view over all sets is returned. If the storage
+           of these sets is external, a read-only view is returned where each
+           row points to data currently in the model for the first set."""
         _numpy_meth_map = {IntKey: _get_ints_numpy,
                            FloatKey: _get_floats_numpy,
                            Vector3DKey: _get_vector3ds_numpy,
@@ -454,7 +476,12 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
                            Vector4DKey: _get_vector4ds_numpy,
                            Vector4DDerivKey: _get_vector4dderiv_numpy,
                            ParticleIndexKey: _get_particle_indexes_numpy}
-        return _numpy_meth_map[type(k)](self, k, self, read_only)
+        n = _numpy_meth_map[type(k)](self, k, self, read_only)
+        if self.get_attribute_sets_external(k):
+            nsets = self.get_number_of_attribute_sets(k)
+            return numpy.broadcast_to(n, (nsets,) + n.shape)
+        else:
+            return n
 
     def get_floats_numpy(self, k, read_only=False):
         """Get the model's attribute array for FloatKey k as a NumPy array.
@@ -481,7 +508,13 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
            stored separately from those for other FloatKeys. This function
            returns a tuple of two NumPy arrays, the first of coordinates and
            the second of radii. See Model::get_ints_numpy() for more details."""
-        return _get_spheres_numpy(self, self, read_only)
+        xyz, r = _get_spheres_numpy(self, self, read_only)
+        if self.get_sphere_attribute_sets_external():
+            nsets = self.get_number_of_sphere_attribute_sets()
+            return (numpy.broadcast_to(xyz, (nsets,) + xyz.shape),
+                    numpy.broadcast_to(r, (nsets,) + r.shape))
+        else:
+            return xyz, r
 
     def get_sphere_derivatives_numpy(self, read_only=False):
         """Get the model's XYZR attribute derivatives arrays as NumPy arrays.

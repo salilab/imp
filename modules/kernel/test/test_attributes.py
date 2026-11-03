@@ -56,19 +56,27 @@ class Tests(IMP.test.TestCase):
     def test_vector3d_attribute_sets(self):
         """Test attribute sets of Vector3DKeys"""
         self._test_vectord_attribute_sets(IMP.Vector3DKey, IMP.Vector3D, 3)
+        self._test_vectord_external_attribute_sets(IMP.Vector3DKey,
+                                                   IMP.Vector3D, 3)
 
     def test_vector4d_attribute_sets(self):
         """Test attribute sets of Vector4DKeys"""
         self._test_vectord_attribute_sets(IMP.Vector4DKey, IMP.Vector4D, 4)
+        self._test_vectord_external_attribute_sets(IMP.Vector3DKey,
+                                                   IMP.Vector3D, 3)
 
     def test_vector3d_deriv_attribute_sets(self):
         """Test attribute sets of Vector3DDerivKeys"""
         self._test_vectord_attribute_sets(
             IMP.Vector3DDerivKey, IMP.Vector3D, 3)
+        self._test_vectord_external_attribute_sets(
+            IMP.Vector3DDerivKey, IMP.Vector3D, 3)
 
     def test_vector4d_deriv_attribute_sets(self):
         """Test attribute sets of Vector4DDerivKeys"""
         self._test_vectord_attribute_sets(
+            IMP.Vector4DDerivKey, IMP.Vector4D, 4)
+        self._test_vectord_external_attribute_sets(
             IMP.Vector4DDerivKey, IMP.Vector4D, 4)
 
     def _test_vectord_attribute_sets(self, key_type, vector_type, dim):
@@ -101,6 +109,33 @@ class Tests(IMP.test.TestCase):
                           vk, p3.get_index(), vector_type([42.] * dim))
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m.get_numpy(vk)
+            self.assertEqual(n.shape, (4, 2, dim))
+            self.assertAlmostEqual(n[0, 0, 2], 42.0, delta=1e-4)
+            self.assertAlmostEqual(n[0, 1, 1], 99.0, delta=1e-4)
+
+    def _test_vectord_external_attribute_sets(self, key_type,
+                                              vector_type, dim):
+        m = IMP.Model()
+        vk = key_type("fk")
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(vk, p1.get_index(), vector_type([42.] * dim))
+        m.add_attribute(vk, p2.get_index(), vector_type([99.] * dim))
+        m.set_attribute_sets_external(vk, True)
+        m.set_number_of_attribute_sets(vk, 4)
+        self.assertTrue(m.get_attribute_sets_external(vk))
+        # Can't change active set when external
+        self.assertRaisesUsageException(m.set_active_attribute_set, vk, 2)
+        # Can't change external flag when sets>1
+        self.assertRaisesUsageException(
+            m.set_attribute_sets_external, vk, False)
+        self.assertRaisesUsageException(
+            m.set_attribute_sets_external, vk, True)
+        # NumPy view should return all 4 sets, readonly
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m.get_numpy(vk)
+            self.assertFalse(n.flags.owndata)
+            self.assertFalse(n.flags.writeable)
             self.assertEqual(n.shape, (4, 2, dim))
             self.assertAlmostEqual(n[0, 0, 2], 42.0, delta=1e-4)
             self.assertAlmostEqual(n[0, 1, 1], 99.0, delta=1e-4)
@@ -157,6 +192,65 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(n[0,0], 42.0, delta=1e-4)
             self.assertAlmostEqual(n[0,1], 99.0, delta=1e-4)
             self.assertAlmostEqual(n[2,0], 19.0, delta=1e-4)
+
+    def test_float_external_attribute_sets(self):
+        """Test external attribute sets of FloatKeys"""
+        m = IMP.Model()
+        fk = IMP.FloatKey("fk")
+
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        m.add_attribute(fk, p1.get_index(), 42.0)
+        m.add_attribute(fk, p2.get_index(), 99.0)
+        m.set_attribute_sets_external(fk, True)
+        m.set_number_of_attribute_sets(fk, 4)
+        self.assertTrue(m.get_attribute_sets_external(fk))
+        # Can't change active set when external
+        self.assertRaisesUsageException(m.set_active_attribute_set, fk, 2)
+        # Can't change external flag when sets>1
+        self.assertRaisesUsageException(
+            m.set_attribute_sets_external, fk, False)
+        self.assertRaisesUsageException(
+            m.set_attribute_sets_external, fk, True)
+        # NumPy view should return all 4 sets, readonly
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m.get_numpy(fk)
+            self.assertFalse(n.flags.owndata)
+            self.assertFalse(n.flags.writeable)
+            self.assertEqual(n.shape, (4, 2))
+            self.assertAlmostEqual(n[0,0], 42.0, delta=1e-4)
+            self.assertAlmostEqual(n[0,1], 99.0, delta=1e-4)
+
+    def test_sphere_external_attribute_sets(self):
+        """Test external attribute sets of spheres"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        d1 = IMP.core.XYZR.setup_particle(
+            p1, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5.0, 7.0, 9.0), 1.5))
+        d2 = IMP.core.XYZR.setup_particle(
+            p2, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 2.5))
+        m.set_sphere_attribute_sets_external(True)
+        m.set_number_of_sphere_attribute_sets(4)
+        self.assertTrue(m.get_sphere_attribute_sets_external())
+        # Can't change active set when external
+        self.assertRaisesUsageException(m.set_active_sphere_attribute_set, 2)
+        # Can't change external flag when sets>1
+        self.assertRaisesUsageException(
+            m.set_sphere_attribute_sets_external, False)
+        self.assertRaisesUsageException(
+            m.set_sphere_attribute_sets_external, True)
+        # NumPy view should return all 4 sets, readonly
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            xyz, r = m.get_spheres_numpy()
+            self.assertFalse(xyz.flags.owndata)
+            self.assertFalse(xyz.flags.writeable)
+            self.assertFalse(r.flags.owndata)
+            self.assertFalse(r.flags.writeable)
+            self.assertEqual(xyz.shape, (4, 2, 3))
+            self.assertEqual(r.shape, (4, 2))
+            self.assertAlmostEqual(xyz[0,0,0], 5.0, delta=1e-4)
+            self.assertAlmostEqual(xyz[2,0,0], 5.0, delta=1e-4)
 
     def test_sphere_attribute_sets(self):
         """Test attribute sets of spheres"""
