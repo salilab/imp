@@ -469,15 +469,17 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
            a multi-dimensional view over all sets is returned. If the storage
            of these sets is external, a read-only view is returned where each
            row points to data currently in the model for the first set."""
-        _numpy_meth_map = {IntKey: _get_ints_numpy,
-                           FloatKey: _get_floats_numpy,
-                           Vector3DKey: _get_vector3ds_numpy,
-                           Vector3DDerivKey: _get_vector3dderiv_numpy,
-                           Vector4DKey: _get_vector4ds_numpy,
-                           Vector4DDerivKey: _get_vector4dderiv_numpy,
-                           ParticleIndexKey: _get_particle_indexes_numpy}
-        n = _numpy_meth_map[type(k)](self, k, self, read_only)
-        if self.get_attribute_sets_external(k):
+        _numpy_meth_map = {IntKey: (_get_ints_numpy, False),
+                           FloatKey: (_get_floats_numpy, True),
+                           Vector3DKey: (_get_vector3ds_numpy, True),
+                           Vector3DDerivKey: (_get_vector3dderiv_numpy, True),
+                           Vector4DKey: (_get_vector4ds_numpy, True),
+                           Vector4DDerivKey: (_get_vector4dderiv_numpy, True),
+                           ParticleIndexKey: (_get_particle_indexes_numpy,
+                                              False)}
+        func, can_external = _numpy_meth_map[type(k)]
+        n = func(self, k, self, read_only)
+        if can_external and self.get_attribute_sets_external(k):
             nsets = self.get_number_of_attribute_sets(k)
             return numpy.broadcast_to(n, (nsets,) + n.shape)
         else:
