@@ -185,7 +185,7 @@ class MultiIndexVector {
   // Update front pointer after copy constructor
   MultiIndexVector(const MultiIndexVector& s)
           : full_vector_(s.full_vector_), active_set_(s.active_set_),
-            size_(s.size_), nsets_(s.nsets_) {
+            size_(s.size_), nsets_(s.nsets_), external_(s.external_) {
     // pointer points into s; update it to point into this
     set_front_pointer();
   }
