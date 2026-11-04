@@ -244,11 +244,13 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
 {
   std::istream *in = (std::istream *)data;
   in->read(buffer, buffer_len);
-  if (in) {
-    return in->gcount();
-  } else {
+  // A short read at the end of the file sets both eofbit and failbit,
+  // but is not an error
+  if (in->bad() || (in->fail() && !in->eof())) {
     ihm_error_set(err, IHM_ERROR_IO, "IHM IO error");
     return -1;
+  } else {
+    return in->gcount();
   }
 }
 
