@@ -1599,7 +1599,11 @@ static bool read_bcif_array(struct ihm_reader *reader, uint32_t *array_size,
  */
 static bool skip_bcif_object(struct ihm_reader *reader, struct ihm_error **err)
 {
-  if (!cmp_skip_object(&reader->cmp, NULL)) {
+  /* cmp_skip_object is documented to accept NULL for its second parameter,
+     but it tries to dereference it; work around this by giving it an
+     empty object */
+  cmp_object_t empty;
+  if (!cmp_skip_object(&reader->cmp, &empty)) {
     if (!ihm_error_move(err, &reader->cmp_read_err)) {
       ihm_error_set(err, IHM_ERROR_FILE_FORMAT, "Could not skip object; %s",
                     cmp_strerror(&reader->cmp));

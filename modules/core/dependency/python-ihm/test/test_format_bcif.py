@@ -592,6 +592,12 @@ class Tests(unittest.TestCase):
         # Skipped object of bad type
         d = {'unknown-keyword': BAD_MSGPACK_TYPE}
         self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
+        # Skipped object of list type
+        d = {'unknown-keyword': []}
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
+        # Skipped object of map type
+        d = {'unknown-keyword': {}}
+        self.assertRaises(_format.FileFormatError, self._read_bcif_raw, d, {})
 
     @unittest.skipIf(_format is None, "No C tokenizer")
     def test_bad_block(self):
