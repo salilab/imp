@@ -2,7 +2,7 @@
  *  \file PDBParser.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,14 +51,12 @@ Particle* atom_particle(Model* m, const std::string& atom_type,
     }
   }
   // new particle
-  Particle* p = new Particle(m);
+  Particle* p = new Particle(m, "Atom " + string_name + " of residue "
+                                + std::to_string(residue_index));
   p->add_attribute(get_pdb_index_key(), atom_index);
   algebra::Vector3D v(x, y, z);
   // atom decorator
   Atom d = Atom::setup_particle(p, atom_name);
-  std::ostringstream oss;
-  oss << "Atom " + atom_name.get_string() << " of residue " << residue_index;
-  p->set_name(oss.str());
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(atom_index);
   d.set_occupancy(occupancy);

@@ -1,5 +1,6 @@
 import IMP
 import IMP.test
+import os
 import IMP.atom
 import IMP.core
 
@@ -450,6 +451,36 @@ class Tests(IMP.test.TestCase):
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
         self.assertEqual(chains[0].get_sequence_offset(), 286)
+
+    def test_atom_particle_names(self):
+        """Check names of atom particles read from mmCIF"""
+        cif = """
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+ATOM 1 C CA ALA A 1 5 1.0 2.0 3.0
+ATOM 2 C . ALA A 1 5 1.0 2.0 3.0
+HETATM 3 O O HOH B 1 7 4.0 5.0 6.0
+"""
+        with IMP.test.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'test.cif')
+            with open(fname, 'w') as fh:
+                fh.write(cif)
+            m = IMP.Model()
+            mp = IMP.atom.read_mmcif(fname, m, IMP.atom.AllPDBSelector())
+        atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        self.assertEqual([a.get_name() for a in atoms],
+                         ["Atom CA of residue 5", "Atom UNK of residue 5",
+                          "Atom HET:O of residue 7"])
 
 
 if __name__ == '__main__':
