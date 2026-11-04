@@ -170,7 +170,7 @@ class Key : public Value {
       }
 #endif
 
-  static unsigned int add_key(std::string sc) {
+  static unsigned int add_key(const std::string &sc) {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key))
@@ -194,7 +194,7 @@ class Key : public Value {
   }
 
   //! Return true if there already is a key with that string
-  static bool get_key_exists(std::string sc) {
+  static bool get_key_exists(const std::string &sc) {
     bool val;
     IMP_OMP_PRAGMA(critical(imp_key))
     val = get_map().find(sc) != get_map().end();
