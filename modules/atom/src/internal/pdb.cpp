@@ -27,28 +27,23 @@ Particle* atom_particle(Model* m, const std::string& atom_type,
                         int atom_index, int residue_index,
                         double x, double y, double z,
                         double occupancy, double temp_factor) {
-  AtomType atom_name;
   std::string string_name = atom_type;
   // determine AtomType
   if (is_hetatm) {
     string_name = "HET:" + string_name;
-    if (!get_atom_type_exists(string_name)) {
-      atom_name = add_atom_type(string_name, element);
-    } else {
-      atom_name = AtomType(string_name);
-    }
   } else {  // ATOM line
     boost::trim(string_name);
     if (string_name.empty()) {
       string_name = "UNK";
     }
-    if (!AtomType::get_key_exists(string_name)) {
+  }
+  AtomType atom_name = AtomType::get_existing_key(string_name);
+  if (atom_name == AtomType()) {
+    if (!is_hetatm) {
       IMP_LOG_VERBOSE("ATOM record type not found: \""
                       << string_name << "\" in PDB file " << std::endl);
-      atom_name = add_atom_type(string_name, element);
-    } else {
-      atom_name = AtomType(string_name);
     }
+    atom_name = add_atom_type(string_name, element);
   }
   // new particle
   Particle* p = new Particle(m, "Atom " + string_name + " of residue "

@@ -96,10 +96,11 @@ class Key : public Value {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key)) {
-      if (get_map().find(sc) == get_map().end()) {
+      auto it = get_map().find(sc);
+      if (it == get_map().end()) {
         val = get_key_data().add_key(sc);
       } else {
-        val = get_map().find(sc)->second;
+        val = it->second;
       }
     }
     return val;
@@ -176,6 +177,20 @@ class Key : public Value {
     IMP_LOG_PROGRESS("Key::add_key " << sc  << " ID " << ID << std::endl);
     val = get_key_data().add_key(sc);
     return val;
+  }
+
+  //! Get the existing key with the given name, or a default key if none exists
+  /** This is cheaper than calling get_key_exists() and then constructing
+      the Key, since it only needs to look up the name once. */
+  static Key get_existing_key(std::string const& sc) {
+    Key ret;
+    IMP_OMP_PRAGMA(critical(imp_key)) {
+      auto it = get_map().find(sc);
+      if (it != get_map().end()) {
+        ret = Key(static_cast<unsigned int>(it->second));
+      }
+    }
+    return ret;
   }
 
   //! Return true if there already is a key with that string

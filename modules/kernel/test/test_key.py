@@ -14,6 +14,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.IntKey("2"), k2)
         self.assertNotEqual(k2, ak1)
 
+    def test_key(self):
+        """Test Key class methods"""
+        self.assertFalse(IMP.FloatKey.get_key_exists("not-exist-key"))
+        k = IMP.FloatKey.get_existing_key("not-exist-key")
+        self.assertEqual(k, IMP.FloatKey())
+
+        fk = IMP.FloatKey("exist-key")
+        self.assertTrue(IMP.FloatKey.get_key_exists("exist-key"))
+        k = IMP.FloatKey.get_existing_key("exist-key")
+        self.assertEqual(k, fk)
+
 
 if __name__ == '__main__':
     IMP.test.main()

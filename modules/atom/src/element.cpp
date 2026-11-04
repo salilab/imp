@@ -1,7 +1,7 @@
 /**
  * \file Element \brief
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -105,9 +105,8 @@ Element ElementTable::get_element(const std::string& s) const {
   }
   std::string copy_s = s;
   boost::to_upper(copy_s);
-  if (string_2_element_.find(copy_s) == string_2_element_.end())
-    return UNKNOWN_ELEMENT;
-  return string_2_element_.find(copy_s)->second;
+  auto it = string_2_element_.find(copy_s);
+  return it == string_2_element_.end() ? UNKNOWN_ELEMENT : it->second;
 }
 
 std::string ElementTable::get_name(Element e) const {
