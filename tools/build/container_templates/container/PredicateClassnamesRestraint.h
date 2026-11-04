@@ -2,7 +2,7 @@
  *  \file IMP/container/PredicateClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2023 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/container/internal/robin_map_cereal.h>
+#include <IMP/container/internal/dense_hash_map_cereal.h>
 #include <IMP/ClassnamePredicate.h>
 #include "generic.h"
 #include <cereal/access.hpp>
@@ -89,7 +90,12 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
                                std::string name =
                                    "PredicateClassnamesRestraint %1%");
 
-  PredicateClassnamesRestraint() {}
+  PredicateClassnamesRestraint() {
+#ifdef IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
+    lists_.set_empty_key(-1);
+    scores_.set_empty_key(-1);
+#endif
+  }
 
   /** Apply the passed score to all pairs whose predicate values match
       the passed value.*/
