@@ -1,7 +1,7 @@
 /**
  * \file charmm_topology.cpp \brief Classes for handling CHARMM-style topology.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/exception.h>
@@ -135,7 +135,12 @@ void add_residue_impropers(
         // CHARMM ideal value is in angles; convert to radians
         id.set_ideal(p.ideal / 180.0 * PI);
         id.set_multiplicity(p.multiplicity);
-        id.set_stiffness(std::sqrt(p.force_constant * 2.0));
+        // Keep the sign of any negative force constant
+        if (p.force_constant < 0.0) {
+          id.set_stiffness(-std::sqrt(-p.force_constant * 2.0));
+        } else {
+          id.set_stiffness(std::sqrt(p.force_constant * 2.0));
+        }
         ps.push_back(id);
       }
       catch (const IndexException &) {

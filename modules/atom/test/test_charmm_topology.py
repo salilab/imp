@@ -4,6 +4,8 @@ import IMP.core
 import IMP.atom
 import string
 import pickle
+import math
+import os
 
 
 class Tests(IMP.test.TestCase):
@@ -98,6 +100,55 @@ class Tests(IMP.test.TestCase):
             # Almost all atoms should be placed using internal coordinates,
             # rather than randomly, so should have reasonable bond lengths
             self.assertLessEqual(len(bad), 2)
+
+    def test_negative_improper_force_constant(self):
+        """Check impropers with negative force constants"""
+        with IMP.test.temporary_directory() as tmpdir:
+            top = os.path.join(tmpdir, 'top.inp')
+            par = os.path.join(tmpdir, 'par.inp')
+            with open(top, 'w') as fh:
+                fh.write("""
+RESI GLY 0.0
+ATOM N CX 0.0
+ATOM CA CX 0.0
+ATOM C CX 0.0
+ATOM O CY 0.0
+IMPR N CA C O
+IMPR O C CA N
+""")
+            with open(par, 'w') as fh:
+                fh.write("""
+IMPROPER
+CX CX CX CY -10.0 0 0.0
+NONBONDED
+x
+CX 0.0 -0.1 2.0
+END
+""")
+            ff = IMP.atom.CHARMMParameters(top, par)
+        topology = IMP.atom.CHARMMTopology(ff)
+        topology.add_sequence('G')
+        m = IMP.Model()
+        h = topology.create_hierarchy(m)
+        topology.add_atom_types(h)
+        topology.add_coordinates(h)
+        impropers = topology.add_impropers(h)
+        self.assertEqual(len(impropers), 2)
+        for p in impropers:
+            self.assertAlmostEqual(IMP.atom.Dihedral(p).get_stiffness(),
+                                   -math.sqrt(20.0), delta=1e-5)
+
+    def test_bundled_negative_improper_force_constant(self):
+        """Check impropers for residues with negative force constants"""
+        ff = IMP.atom.get_all_atom_CHARMM_parameters()
+        for resnam in ('NIC', 'NICH', 'NAD', 'NADH'):
+            topology = IMP.atom.CHARMMTopology(ff)
+            topology.add_sequence('(%s)' % resnam)
+            m = IMP.Model()
+            h = topology.create_hierarchy(m)
+            topology.add_atom_types(h)
+            topology.add_coordinates(h)
+            self.assertGreater(len(topology.add_impropers(h)), 0)
 
     def test_segments_python_list(self):
         """Test the Python list-like CHARMMTopology.segments member"""

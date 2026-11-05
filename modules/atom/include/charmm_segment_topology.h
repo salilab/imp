@@ -2,7 +2,7 @@
  * \file IMP/atom/charmm_segment_topology.h
  * \brief Classes for handling CHARMM-style topology of segments.
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -235,6 +235,12 @@ private:
 
       The list of newly-created Dihedral particles can be passed to a
       ImproperSingletonScore to score each improper dihedral.
+
+      \note A negative CHARMM force constant gives a negative stiffness.
+            However, ImproperSingletonScore passes stiffness * difference
+            to its UnaryFunction, so a function such as core::Harmonic that
+            is even in its argument gives the same score as for a positive
+            stiffness of the same magnitude, not the inverted well of CHARMM.
 
       \return a list of the generated Dihedral decorators.
 
