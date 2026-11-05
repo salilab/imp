@@ -2,7 +2,7 @@
  *  \file IMP/Object.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2025 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -110,7 +110,9 @@ using Pointer::release() to safely return the new object without freeing it.
 */
 class IMPKERNELEXPORT Object : public NonCopyable {
   std::string name_;
+#if IMP_KERNEL_HAS_LOG4CXX
   boost::scoped_array<char> quoted_name_;
+#endif
 
   static unsigned int live_objects_;
   mutable int count_;
@@ -240,7 +242,9 @@ class IMPKERNELEXPORT Object : public NonCopyable {
   void ref() const { ++count_; }
   void unref() const;
   void release() const;
+#if IMP_KERNEL_HAS_LOG4CXX
   const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
+#endif
 
   /** \see IMP_OBJECT_SERIALIZE_DECL */
   static bool register_serialize(const std::type_info &t, std::string name,

@@ -2,7 +2,7 @@
  *  \file Object.cpp
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -110,11 +110,13 @@ void Object::set_name(std::string in_name) {
 
 void Object::set_name_internal(std::string in_name) {
   name_ = in_name;
+#if IMP_KERNEL_HAS_LOG4CXX
   quoted_name_.reset(new char[name_.size() + 3]);
   quoted_name_[0] = '"';
   std::copy(name_.begin(), name_.end(), quoted_name_.get() + 1);
   quoted_name_[name_.size() + 1] = '"';
   quoted_name_[name_.size() + 2] = '\0';
+#endif
 }
 
 void Object::show(std::ostream &out) const {
