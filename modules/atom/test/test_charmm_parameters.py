@@ -370,6 +370,43 @@ BOND CA PATGLY
                 pass
             f = IMP.atom.CHARMMParameters(top)
 
+    def test_similar_type_names(self):
+        """Parameters should be separate for similar atom type names"""
+        with IMP.test.temporary_directory() as tmpdir:
+            top = os.path.join(tmpdir, 'top.inp')
+            par = os.path.join(tmpdir, 'par.inp')
+            with open(top, 'w') as fh:
+                fh.write("MASS 1 C 12.011 C\n")
+            # The concatenation of each pair or triple of names is the same
+            with open(par, 'w') as fh:
+                fh.write("""
+BONDS
+C CT1 100.0 1.1
+CC T1 200.0 2.2
+
+ANGLES
+C CC T1 10.0 90.0
+CC C T1 20.0 120.0
+
+NONBONDED
+x
+C 0.0 -0.1 2.0
+END
+""")
+            f = IMP.atom.CHARMMParameters(top, par)
+        self.assertAlmostEqual(f.get_bond_parameters('C', 'CT1').ideal, 1.1,
+                               delta=1e-5)
+        self.assertAlmostEqual(f.get_bond_parameters('CT1', 'C').ideal, 1.1,
+                               delta=1e-5)
+        self.assertAlmostEqual(f.get_bond_parameters('CC', 'T1').ideal, 2.2,
+                               delta=1e-5)
+        self.assertAlmostEqual(
+            f.get_angle_parameters('C', 'CC', 'T1').ideal, 90.0, delta=1e-5)
+        self.assertAlmostEqual(
+            f.get_angle_parameters('T1', 'CC', 'C').ideal, 90.0, delta=1e-5)
+        self.assertAlmostEqual(
+            f.get_angle_parameters('CC', 'C', 'T1').ideal, 120.0, delta=1e-5)
+
 
 if __name__ == '__main__':
     IMP.test.main()

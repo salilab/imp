@@ -2,7 +2,7 @@
  *  \file charmm_helpers.h
  *  \brief Helpers for the CHARMM forcefield support.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,9 @@
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
+
+#include <string>
+#include <tuple>
 
 IMPATOM_BEGIN_NAMESPACE
 class CHARMMParameters;
@@ -37,7 +40,7 @@ class CHARMMBondNames {
     return a_ == other.a_ && b_ == other.b_;
   }
   inline bool operator<(const CHARMMBondNames &other) const {
-    return a_ + b_ < other.a_ + other.b_;
+    return std::tie(a_, b_) < std::tie(other.a_, other.b_);
   }
 };
 
@@ -56,7 +59,7 @@ class CHARMMAngleNames {
     return a_ == other.a_ && b_ == other.b_ && c_ == other.c_;
   }
   inline bool operator<(const CHARMMAngleNames &other) const {
-    return a_ + b_ + c_ < other.a_ + other.b_ + other.c_;
+    return std::tie(a_, b_, c_) < std::tie(other.a_, other.b_, other.c_);
   }
 };
 
