@@ -2221,13 +2221,16 @@ class _MultiStateDumper(Dumper):
     def dump_summary(self, system, writer):
         with writer.loop("_ihm_multi_state_modeling",
                          ["state_id", "state_group_id",
-                          "population_fraction", "state_type", "state_name",
+                          "population_fraction", "population_fraction_sd",
+                          "state_type", "state_name",
                           "experiment_type", "details"]) as lp:
             for state_group in system.state_groups:
                 for state in state_group:
+                    pop_frac_sd = state.population_fraction_sd
                     lp.write(state_id=state._id,
                              state_group_id=state_group._id,
                              population_fraction=state.population_fraction,
+                             population_fraction_sd=pop_frac_sd,
                              state_type=state.type,
                              state_name=state.name,
                              experiment_type=state.experiment_type,

@@ -3457,7 +3457,8 @@ _ihm_entity_poly_segment.comp_id_end
         state2.append(ihm.model.ModelGroup(name="group3"))
         sg1.extend((state1, state2))
 
-        state3 = ihm.model.State(population_fraction=0.4)
+        state3 = ihm.model.State(population_fraction=0.4,
+                                 population_fraction_sd=0.1)
         state3.append(ihm.model.ModelGroup(name="group4"))
         sg2.append(state3)
 
@@ -3473,13 +3474,14 @@ loop_
 _ihm_multi_state_modeling.state_id
 _ihm_multi_state_modeling.state_group_id
 _ihm_multi_state_modeling.population_fraction
+_ihm_multi_state_modeling.population_fraction_sd
 _ihm_multi_state_modeling.state_type
 _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 . 'complex formation' unbound 'Fraction of bulk' 'Unbound molecule 1'
-2 1 . 'complex formation' bound 'Fraction of bulk' 'Unbound molecule 2'
-3 2 0.400 . . . .
+1 1 . . 'complex formation' unbound 'Fraction of bulk' 'Unbound molecule 1'
+2 1 . . 'complex formation' bound 'Fraction of bulk' 'Unbound molecule 2'
+3 2 0.400 0.100 . . . .
 #
 #
 loop_

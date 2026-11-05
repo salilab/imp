@@ -1824,13 +1824,15 @@ loop_
 _ihm_multi_state_modeling.state_id
 _ihm_multi_state_modeling.state_group_id
 _ihm_multi_state_modeling.population_fraction
+_ihm_multi_state_modeling.population_fraction_sd
 _ihm_multi_state_modeling.state_type
 _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 0.4 'complex formation' 'unbound' 'Fraction of bulk'  'unbound molecule 1'
-2 1 .  'complex formation' 'unbound' 'Fraction of bulk'  'unbound molecule 2'
-3 1 .  'complex formation' 'bound' 'Fraction of bulk'
+1 1 0.4 0.1 'complex formation' 'unbound' 'Fraction of bulk'
+'unbound molecule 1'
+2 1 . . 'complex formation' 'unbound' 'Fraction of bulk'  'unbound molecule 2'
+3 1 . . 'complex formation' 'bound' 'Invalid experiment type'
 'bound molecules 1 and 2'
 #
 loop_
@@ -1846,6 +1848,7 @@ _ihm_multi_state_model_group_link.model_group_id
             sg, = s.state_groups
             s1, s2, s3, = sg
             self.assertAlmostEqual(s1.population_fraction, 0.4, delta=0.1)
+            self.assertAlmostEqual(s1.population_fraction_sd, 0.1, delta=0.1)
             self.assertEqual(s1.type, 'complex formation')
             self.assertEqual(s1.name, 'unbound')
             self.assertEqual(len(s1), 1)
@@ -1855,8 +1858,10 @@ _ihm_multi_state_model_group_link.model_group_id
             self.assertEqual(s1.details, 'unbound molecule 1')
 
             self.assertIsNone(s2.population_fraction)
+            self.assertIsNone(s2.population_fraction_sd)
             self.assertEqual(len(s2), 1)
             self.assertEqual(len(s3), 2)
+            self.assertEqual(s3.experiment_type, 'Invalid experiment type')
 
     def test_not_modeled_residue_range_handler(self):
         """Test NotModeledResidueRangeHandler"""

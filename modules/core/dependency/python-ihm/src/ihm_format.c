@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <assert.h>
+#include <float.h>
 #include "cmp.h"
 
 #define INT_TO_POINTER(i) ((void *) (long) (i))
@@ -151,16 +152,22 @@ static void ihm_array_clear(struct ihm_array *a)
 /* Return a reference to the ith element in the array, cast to the given type */
 #define ihm_array_index(a, t, i) (((t*)(a)->data)[(i)])
 
-/* Add a new element to the end of the array */
-static void ihm_array_append(struct ihm_array *a, void *element)
+/* Add a new uninitialized element to the end of the array, and return a pointer
+   to it (valid only until the array is next modified) */
+static void *ihm_array_append_new(struct ihm_array *a)
 {
   a->len++;
   if (a->len > a->capacity) {
     a->capacity *= 2;
     a->data = ihm_realloc(a->data, a->capacity * a->element_size);
   }
-  memcpy((char *)a->data + (a->len - 1) * a->element_size,
-         element, a->element_size);
+  return (char *)a->data + (a->len - 1) * a->element_size;
+}
+
+/* Add a new element to the end of the array */
+static void ihm_array_append(struct ihm_array *a, void *element)
+{
+  memcpy(ihm_array_append_new(a), element, a->element_size);
 }
 
 /* A variable-length string buffer */
@@ -542,6 +549,69 @@ static void set_keyword_to_default(struct ihm_keyword *key)
 }
 
 /* Set the value of a given keyword from the given string of length len */
+/* Equivalent to strtol(str, endptr, 10), but much faster for the plain integers
+   that make up most mmCIF files. Up to 9 digits always fits in an int (which
+   is what the value is stored in). Anything else, including invalid input,
+   is handled by strtol. */
+static long ihm_strtol(const char *str, char **endptr)
+{
+  const char *pt = str;
+  long value = 0;
+  int ndigit = 0;
+  bool negative = (*pt == '-');
+  if (negative || *pt == '+') {
+    pt++;
+  }
+  for (; *pt >= '0' && *pt <= '9' && ndigit < 9; pt++, ndigit++) {
+    value = value * 10 + (*pt - '0');
+  }
+  if (*pt || ndigit == 0) {
+    return strtol(str, endptr, 10);
+  }
+  *endptr = (char *)pt;
+  return negative ? -value : value;
+}
+
+/* Equivalent to strtod(str, endptr), but much faster for the plain decimals
+   (such as "-12.345") that make up most mmCIF files. Anything else, including
+   invalid input, is handled by strtod.
+   With at most 15 digits, both the digits (as an integer) and the power of ten
+   are exactly representable as doubles. IEEE division is correctly rounded, so
+   their quotient is the same correctly rounded value that strtod returns. This
+   does not hold if intermediates have extra precision (e.g. x87), so we only
+   do this if FLT_EVAL_METHOD says that they don't. */
+static double ihm_strtod(const char *str, char **endptr)
+{
+#if defined(FLT_EVAL_METHOD) && FLT_EVAL_METHOD == 0
+  static const double powers_of_ten[] = {1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7,
+                                         1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14,
+                                         1e15};
+  const char *pt = str;
+  long long digits = 0;
+  int ndigit = 0, nfraction = 0;
+  bool negative = (*pt == '-');
+  if (negative || *pt == '+') {
+    pt++;
+  }
+  for (; *pt >= '0' && *pt <= '9' && ndigit < 15; pt++, ndigit++) {
+    digits = digits * 10 + (*pt - '0');
+  }
+  if (*pt == '.') {
+    pt++;
+    for (; *pt >= '0' && *pt <= '9' && ndigit < 15;
+         pt++, ndigit++, nfraction++) {
+      digits = digits * 10 + (*pt - '0');
+    }
+  }
+  if (!*pt && ndigit > 0) {
+    double value = (double)digits / powers_of_ten[nfraction];
+    *endptr = (char *)pt;
+    return negative ? -value : value;
+  }
+#endif
+  return strtod(str, endptr);
+}
+
 static void set_value_from_string(struct ihm_reader *reader,
                                   struct ihm_category *category,
                                   struct ihm_keyword *key, char *str,
@@ -569,7 +639,7 @@ static void set_value_from_string(struct ihm_reader *reader,
     key->omitted = key->unknown = false;
     break;
   case IHM_INT:
-    key->data.ival = strtol(str, &ch, 10);
+    key->data.ival = ihm_strtol(str, &ch);
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as integer in file, line %d",
@@ -579,7 +649,7 @@ static void set_value_from_string(struct ihm_reader *reader,
     key->omitted = key->unknown = false;
     break;
   case IHM_FLOAT:
-    key->data.fval = strtod(str, &ch);
+    key->data.fval = ihm_strtod(str, &ch);
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as float in file, line %d",
@@ -888,10 +958,14 @@ static size_t get_next_token(struct ihm_reader *reader, char *line,
                              size_t len, size_t start_pos,
                              struct ihm_error **err)
 {
-  /* Skip initial whitespace */
+  /* Skip initial whitespace. This, and finding the end of the token below, are
+     done by hand as they are much faster than strspn and strcspn for the short
+     runs of characters seen here. */
   char *pt = line + start_pos;
-  start_pos += strspn(pt, " \t");
-  pt = line + start_pos;
+  while (*pt == ' ' || *pt == '\t') {
+    pt++;
+  }
+  start_pos = pt - line;
   if (*pt == '\0') {
     return len;
   } else if (*pt == '"') {
@@ -902,30 +976,35 @@ static size_t get_next_token(struct ihm_reader *reader, char *line,
     /* Comment - discard the rest of the line */
     return len;
   } else {
-    struct ihm_token t;
-    int tok_end = start_pos + strcspn(pt, " \t");
-    t.str = line + start_pos;
-    t.len = tok_end - start_pos;
-    line[tok_end] = '\0';
-    if (t.len == 5 && memcmp(t.str, "loop_", 5) == 0) {
-      t.type = MMCIF_TOKEN_LOOP;
-    } else if (t.len >= 5 && memcmp(t.str, "data_", 5) == 0) {
-      t.type = MMCIF_TOKEN_DATA;
-    } else if (t.len >= 5 && memcmp(t.str, "save_", 5) == 0) {
-      t.type = MMCIF_TOKEN_SAVE;
-    } else if (t.str[0] == '_') {
-      t.type = MMCIF_TOKEN_VARIABLE;
-    } else if (t.len == 1 && t.str[0] == '.') {
-      t.type = MMCIF_TOKEN_OMITTED;
-    } else if (t.len == 1 && t.str[0] == '?') {
-      t.type = MMCIF_TOKEN_UNKNOWN;
+    struct ihm_token *t;
+    char *end = pt;
+    int tok_end;
+    while (*end != '\0' && *end != ' ' && *end != '\t') {
+      end++;
+    }
+    tok_end = end - line;
+    t = (struct ihm_token *)ihm_array_append_new(reader->tokens);
+    t->str = pt;
+    t->len = tok_end - start_pos;
+    *end = '\0';
+    if (t->len == 5 && memcmp(t->str, "loop_", 5) == 0) {
+      t->type = MMCIF_TOKEN_LOOP;
+    } else if (t->len >= 5 && memcmp(t->str, "data_", 5) == 0) {
+      t->type = MMCIF_TOKEN_DATA;
+    } else if (t->len >= 5 && memcmp(t->str, "save_", 5) == 0) {
+      t->type = MMCIF_TOKEN_SAVE;
+    } else if (t->str[0] == '_') {
+      t->type = MMCIF_TOKEN_VARIABLE;
+    } else if (t->len == 1 && t->str[0] == '.') {
+      t->type = MMCIF_TOKEN_OMITTED;
+    } else if (t->len == 1 && t->str[0] == '?') {
+      t->type = MMCIF_TOKEN_UNKNOWN;
     } else {
       /* Note that we do no special processing for other reserved words
          (global_, stop_). But the probability of them occurring
          where we expect a value is pretty small. */
-      t.type = MMCIF_TOKEN_VALUE;
+      t->type = MMCIF_TOKEN_VALUE;
     }
-    ihm_array_append(reader->tokens, &t);
     return tok_end + 1;
   }
 }
@@ -2871,7 +2950,7 @@ static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
     key->omitted = false;
     break;
   case IHM_INT:
-    key->data.ival = strtol(str, &ch, 10);
+    key->data.ival = ihm_strtol(str, &ch);
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as integer in file", str);
@@ -2880,7 +2959,7 @@ static void set_value_from_bcif_string(struct ihm_keyword *key, char *str,
     }
     break;
   case IHM_FLOAT:
-    key->data.fval = strtod(str, &ch);
+    key->data.fval = ihm_strtod(str, &ch);
     if (*ch) {
       ihm_error_set(err, IHM_ERROR_VALUE,
                     "Cannot parse '%s' as float in file", str);

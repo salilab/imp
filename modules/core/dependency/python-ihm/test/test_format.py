@@ -706,6 +706,37 @@ oneval
             self.assertRaises(ValueError, self._read_cif, "_foo.floatkey1 str",
                               real_file, {'_foo': h})
 
+    def test_number_formats(self):
+        """Check that numbers in a variety of formats are parsed exactly"""
+        floats = ['0', '-0', '-0.0', '+1.5', '1.', '.5', '-.5', '007.50',
+                  '0.1', '0.3', '2.675', '393.230', '-1016.300',
+                  '999999999999999', '9999999999999999', '0.999999999999999',
+                  '0.9999999999999999', '.000000000000001',
+                  '0.30000000000000004', '1.5e3', '1E-2', '-2.5e+2']
+        ints = ['0', '-0', '+5', '-5', '007', '999999999', '-999999999',
+                '1234567890', '2147483647', '-2147483647']
+        for real_file in (True, False):
+            for val in floats:
+                h = GenericHandler()
+                self._read_cif("_foo.floatkey1 %s" % val, real_file,
+                               {'_foo': h})
+                # Compare reprs so that exact value and sign of zero are
+                # checked
+                self.assertEqual(repr(h.data[0]['floatkey1']),
+                                 repr(float(val)))
+            for val in ints:
+                h = GenericHandler()
+                self._read_cif("_foo.intkey1 %s" % val, real_file, {'_foo': h})
+                self.assertEqual(h.data[0]['intkey1'], int(val))
+            for val in ('-', '+', '1.2.3', '--1', '1-', '12a', '1,5'):
+                h = GenericHandler()
+                self.assertRaises(ValueError, self._read_cif,
+                                  "_foo.floatkey1 %s" % val, real_file,
+                                  {'_foo': h})
+                self.assertRaises(ValueError, self._read_cif,
+                                  "_foo.intkey1 %s" % val, real_file,
+                                  {'_foo': h})
+
     def test_float_keys_loop(self):
         """Check handling of float keywords in loop construct"""
         for real_file in (True, False):
