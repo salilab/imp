@@ -114,17 +114,25 @@ class Tests(IMP.test.TestCase):
         ihm.dumper._ModelDumper().finalize(po.system)  # assign model group IDs
         d.finalize(po.system)
         d.dump(po.system, w)
-        self.assertEqual(fh.getvalue(), """#
+        # Determine whether we're using a version of python-ihm that
+        # supports 'population_fraction_sd' for States
+        s = ihm.model.State()
+        if hasattr(s, 'population_fraction_sd'):
+            sd_header = "\n_ihm_multi_state_modeling.population_fraction_sd"
+            sd_value = " ."
+        else:
+            sd_header = sd_value = ""
+        self.assertEqual(fh.getvalue(), f"""#
 loop_
 _ihm_multi_state_modeling.state_id
 _ihm_multi_state_modeling.state_group_id
-_ihm_multi_state_modeling.population_fraction
+_ihm_multi_state_modeling.population_fraction{sd_header}
 _ihm_multi_state_modeling.state_type
 _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 . . . 'Fraction of bulk' .
-2 1 . . 'state2 long' 'Fraction of bulk' .
+1 1 .{sd_value} . . 'Fraction of bulk' .
+2 1 .{sd_value} . 'state2 long' 'Fraction of bulk' .
 #
 #
 loop_
