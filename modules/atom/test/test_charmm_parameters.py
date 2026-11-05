@@ -354,6 +354,22 @@ BOND CA PATGLY
             # Make sure each new atom type has the correct element
             self.assertEqual(a.get_element(), t.get_element(element))
 
+    def test_no_final_newline(self):
+        """Check reading files that do not end in a newline, or are empty"""
+        with IMP.test.temporary_directory() as tmpdir:
+            top = os.path.join(tmpdir, 'top.inp')
+            par = os.path.join(tmpdir, 'par.inp')
+            with open(top, 'w') as fh:
+                fh.write("RESI HIS 0.0\nATOM CB CH2E 0.0")
+            with open(par, 'w') as fh:
+                fh.write("NONBONDED\nx\nCH2E 0.0 -0.1 2.0")
+            f = IMP.atom.CHARMMParameters(top, par)
+            r = f.get_residue_topology(IMP.atom.HIS)
+            self.assertEqual(r.get_number_of_atoms(), 1)
+            with open(top, 'w') as fh:
+                pass
+            f = IMP.atom.CHARMMParameters(top)
+
 
 if __name__ == '__main__':
     IMP.test.main()

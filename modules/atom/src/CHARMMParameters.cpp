@@ -16,11 +16,20 @@
 #include <boost/assign.hpp>
 #include <boost/version.hpp>
 #include <boost/unordered_map.hpp>
+#include <istream>
 #include <map>
 
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
+// Report any error reading from the stream. Running out of input sets both
+// eofbit and failbit, but is not an error.
+void check_stream_read(const std::istream &in, const TextInput &input_file) {
+  if (in.bad() || (in.fail() && !in.eof())) {
+    IMP_THROW("Error reading from " << input_file.get_name(), IOException);
+  }
+}
+
 CHARMMResidueTopologyBase *get_residue(
     Pointer<CHARMMIdealResidueTopology> &residue,
     Pointer<CHARMMPatch> &patch) {
@@ -350,9 +359,9 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
   Pointer<CHARMMPatch> patch;
 
   ResidueType curr_res_type;
-  while (!input_file.get_stream().eof()) {
-    String line;
-    getline(input_file.get_stream(), line);
+  std::istream &in = input_file.get_stream();
+  String line;
+  while (std::getline(in, line)) {
     boost::trim(line);  // remove all spaces
                         // skip comments or empty lines
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
@@ -445,6 +454,7 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
                                      translate_names_to_pdb);
     }
   }
+  check_stream_read(in, input_file);
   if (residue) {
     add_residue_topology(residue);
   } else if (patch) {
@@ -641,10 +651,9 @@ void CHARMMParameters::read_parameter_file(TextInput input_file) {
     NONBONDED
   } section = NONE;
 
-  while (!input_file.get_stream().eof()) {
-    String line;
-    getline(input_file.get_stream(), line);
-
+  std::istream &in = input_file.get_stream();
+  String line;
+  while (std::getline(in, line)) {
     boost::trim(line);  // remove all spaces
                         // skip comments or empty lines
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
@@ -652,8 +661,7 @@ void CHARMMParameters::read_parameter_file(TextInput input_file) {
     if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE ||
         line.substr(0, NONBONDED_LINE2.length()) == NONBONDED_LINE2) {
       section = NONBONDED;
-      getline(input_file.get_stream(), line);  // remove second line of
-                                               // NONBONDED
+      std::getline(in, line);  // remove second line of NONBONDED
     } else if (line.substr(0, BONDS_LINE.length()) == BONDS_LINE) {
       section = BONDS;
     } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE ||
@@ -691,6 +699,7 @@ void CHARMMParameters::read_parameter_file(TextInput input_file) {
       }
     }
   }
+  check_stream_read(in, input_file);
   if (force_field_2_vdW_.size() == 0) {
     IMP_FAILURE("NONBONDED params not found in CHARMM parameter file");
   }
