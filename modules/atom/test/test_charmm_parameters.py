@@ -304,6 +304,37 @@ class Tests(IMP.test.TestCase):
                             for i in range(rcharmm.get_number_of_removed_atoms())]
             self.assertEqual(atoms_pdb, atoms_charmm)
 
+    def test_patch_after_residue(self):
+        """Patch atoms and bonds should not be assigned to previous residue"""
+        with IMP.test.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'top.inp')
+            with open(fname, 'w') as fh:
+                fh.write("""
+MASS 1 HA 1.008 H
+MASS 2 CT 12.011 C
+
+RESI GLY 0.0
+ATOM CA CT 0.0
+ATOM C CT 0.0
+BOND CA C
+
+PRES PGLY 0.0
+ATOM PATGLY HA 0.0
+ATOM CA CT 0.0
+BOND CA C
+BOND CA PATGLY
+""")
+            ff = IMP.atom.CHARMMParameters(fname)
+        # The bonds and atoms in PGLY should not be added to GLY on read
+        topology = IMP.atom.CHARMMTopology(ff)
+        topology.add_sequence('G')
+        m = IMP.Model()
+        h = topology.create_hierarchy(m)
+        ff.add_bonds(h)
+        atoms = IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 2)
+        self.assertEqual(IMP.atom.Bonded(atoms[0]).get_number_of_bonds(), 1)
+
     def test_charmm_elements(self):
         """Test that new atom types from CHARMM get elements assigned"""
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
