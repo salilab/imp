@@ -469,6 +469,55 @@ DELE ATOM C! a comment
         ca = IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)[0]
         self.assertEqual(IMP.atom.Bonded(ca).get_number_of_bonds(), 2)
 
+    def test_repeated_dihedral_lookup(self):
+        """Repeated dihedral parameter lookups should give the same results"""
+        with IMP.test.temporary_directory() as tmpdir:
+            top = os.path.join(tmpdir, 'top.inp')
+            par = os.path.join(tmpdir, 'par.inp')
+            with open(top, 'w') as fh:
+                fh.write("MASS 1 C 12.011 C\n")
+            with open(par, 'w') as fh:
+                fh.write("""
+DIHEDRALS
+CA CB CC CD 1.0 1 0.0
+CE CB CC CD 2.0 2 10.0
+CD CC CB CA 3.0 3 20.0
+X CB CC X 4.0 4 30.0
+NONBONDED
+x
+C 0.0 -0.1 2.0
+END
+""")
+            f = IMP.atom.CHARMMParameters(top, par)
+
+        def get_force_constants(*types):
+            return [p.force_constant
+                    for p in f.get_dihedral_parameters(*types)]
+
+        for _ in range(2):
+            # Exact matches, including multiple terms and either order
+            self.assertEqual(
+                get_force_constants('CA', 'CB', 'CC', 'CD'), [1.0, 3.0])
+            self.assertEqual(
+                get_force_constants('CD', 'CC', 'CB', 'CA'), [1.0, 3.0])
+            self.assertEqual(
+                get_force_constants('CE', 'CB', 'CC', 'CD'), [2.0])
+            # Permutations of the types are different dihedrals
+            self.assertRaises(IndexError, f.get_dihedral_parameters,
+                              'CB', 'CA', 'CC', 'CD')
+            # Wildcard matches, in either order
+            self.assertEqual(
+                get_force_constants('CF', 'CB', 'CC', 'CG'), [4.0])
+            self.assertEqual(
+                get_force_constants('CG', 'CC', 'CB', 'CF'), [4.0])
+            # A failed lookup should report the requested types each time
+            self.assertRaisesRegex(
+                IndexError, 'CF-CG-CH-CI', f.get_dihedral_parameters,
+                'CF', 'CG', 'CH', 'CI')
+            self.assertRaisesRegex(
+                IndexError, 'CI-CH-CG-CF', f.get_dihedral_parameters,
+                'CI', 'CH', 'CG', 'CF')
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -16,6 +16,8 @@
 #include <cereal/access.hpp>
 #include <IMP/file.h>
 
+#include <array>
+#include <map>
 #include <string>
 // swig is being dumb
 #ifdef SWIG
@@ -101,6 +103,18 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
       DihedralParameters::const_iterator end,
       const internal::CHARMMDihedralNames &dihedral,
       bool allow_wildcards) const;
+
+  CHARMMDihedralParametersList find_dihedral_parameters(
+      const internal::CHARMMDihedralNames &types) const;
+
+  // Results of get_dihedral_parameters(), since searching the list of
+  // parameters is slow, and a system typically contains only a small number
+  // of unique combinations of types. The parameters do not change once the
+  // parameter file has been read, so the cache never needs to be invalidated.
+  // Keys are the atom types in forward or reverse order, whichever sorts
+  // first, since the same parameters match in either order.
+  mutable std::map<std::array<std::string, 4>, CHARMMDihedralParametersList>
+      dihedral_parameters_cache_;
 
  public:
   //! Construction with CHARMM topology (and optionally parameters) file.
@@ -238,42 +252,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
    */
   CHARMMDihedralParametersList get_dihedral_parameters(
       std::string type1, std::string type2, std::string type3,
-      std::string type4) const {
-    CHARMMDihedralParametersList param;
-    internal::CHARMMDihedralNames types =
-        internal::CHARMMDihedralNames(type1, type2, type3, type4);
-    // Look for matches without wildcards
-    DihedralParameters::const_iterator match = find_dihedral(
-        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, false);
-    if (match != dihedral_parameters_.end()) {
-      param.push_back(match->second);
-      while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
-                                    match->first, false)) !=
-             dihedral_parameters_.end()) {
-        param.push_back(match->second);
-      }
-    } else {
-      // If no matches, try again with wildcards
-      match = find_dihedral(
-        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, true);
-      if (match != dihedral_parameters_.end()) {
-        param.push_back(match->second);
-        while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
-                                      match->first, true)) !=
-               dihedral_parameters_.end()) {
-          param.push_back(match->second);
-        }
-      }
-    }
-
-    if (param.size() == 0) {
-      IMP_THROW("No CHARMM parameters found for dihedral "
-                    << type1 << "-" << type2 << "-" << type3 << "-" << type4,
-                IndexException);
-    } else {
-      return param;
-    }
-  }
+      std::string type4) const;
 
   //! Get parameters for the improper between the four given CHARMM atom types.
   /** The atom types may match in either forward or reverse order. When

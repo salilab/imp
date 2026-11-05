@@ -802,6 +802,59 @@ CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
   return best;
 }
 
+CHARMMDihedralParametersList CHARMMParameters::find_dihedral_parameters(
+    const internal::CHARMMDihedralNames &types) const {
+  CHARMMDihedralParametersList param;
+  // Look for matches without wildcards
+  DihedralParameters::const_iterator match = find_dihedral(
+      dihedral_parameters_.begin(), dihedral_parameters_.end(), types, false);
+  if (match != dihedral_parameters_.end()) {
+    param.push_back(match->second);
+    while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
+                                  match->first, false)) !=
+           dihedral_parameters_.end()) {
+      param.push_back(match->second);
+    }
+  } else {
+    // If no matches, try again with wildcards
+    match = find_dihedral(dihedral_parameters_.begin(),
+                          dihedral_parameters_.end(), types, true);
+    if (match != dihedral_parameters_.end()) {
+      param.push_back(match->second);
+      while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
+                                    match->first, true)) !=
+             dihedral_parameters_.end()) {
+        param.push_back(match->second);
+      }
+    }
+  }
+  return param;
+}
+
+CHARMMDihedralParametersList CHARMMParameters::get_dihedral_parameters(
+    std::string type1, std::string type2, std::string type3,
+    std::string type4) const {
+  std::array<std::string, 4> key = {{type1, type2, type3, type4}};
+  std::array<std::string, 4> reverse_key = {{type4, type3, type2, type1}};
+  if (reverse_key < key) {
+    key = reverse_key;
+  }
+  auto it = dihedral_parameters_cache_.find(key);
+  if (it == dihedral_parameters_cache_.end()) {
+    it = dihedral_parameters_cache_
+             .insert(std::make_pair(
+                 key, find_dihedral_parameters(internal::CHARMMDihedralNames(
+                          type1, type2, type3, type4))))
+             .first;
+  }
+  if (it->second.size() == 0) {
+    IMP_THROW("No CHARMM parameters found for dihedral "
+                  << type1 << "-" << type2 << "-" << type3 << "-" << type4,
+              IndexException);
+  }
+  return it->second;
+}
+
 Particles CHARMMParameters::create_angles(Particles bonds) const {
   IMP_OBJECT_LOG;
   Particles ps;
