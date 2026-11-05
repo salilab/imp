@@ -319,6 +319,20 @@ void CHARMMIdealResidueTopology::remove_atom(std::string name) {
 }
 
 namespace {
+// Make sure an AtomType exists for an atom added to a residue by a patch.
+// Ligands use a HET: prefix, as in CHARMMTopology::create_hierarchy().
+void add_patch_atom_type(const CHARMMResidueTopology *res,
+                         const std::string &atom_name, Element element) {
+  unsigned int resind = ResidueType(res->get_type()).get_index();
+  std::string name = atom_name;
+  if (resind > DTHY.get_index()) {
+    name = "HET:" + name;
+  }
+  if (!AtomType::get_key_exists(name)) {
+    add_atom_type(name, element);
+  }
+}
+
 void check_empty_patch(const CHARMMPatch *patch) {
   if (patch->get_number_of_atoms() == 0 &&
       patch->get_number_of_removed_atoms() == 0 &&
@@ -346,6 +360,8 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const {
     catch (ValueException &) {
       res->add_atom(*it);
     }
+    add_patch_atom_type(res, it->get_name(),
+                        get_atom_element(it->get_name()));
   }
 
   // Delete atoms
@@ -412,6 +428,8 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
     catch (ValueException &) {
       resatom.first->add_atom(resatom.second);
     }
+    add_patch_atom_type(resatom.first, resatom.second.get_name(),
+                        get_atom_element(it->get_name()));
   }
 
   // Delete atoms

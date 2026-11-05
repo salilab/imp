@@ -2,7 +2,7 @@
  * \file IMP/atom/charmm_topology.h
  * \brief Classes for handling CHARMM-style topology.
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -386,6 +387,7 @@ class CHARMMResidueTopology;
  */
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   Vector<std::string> deleted_atoms_;
+  std::map<std::string, Element> atom_elements_;
 
  public:
   //! Construct a new, empty patch residue.
@@ -403,6 +405,23 @@ class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
 
   std::string get_removed_atom(unsigned int i) const {
     return deleted_atoms_[i];
+  }
+
+  //! Set the element of the named atom in the patch.
+  /** When the patch is applied, an AtomType is created (if needed) for
+      each atom added to a residue, using this element.
+   */
+  void set_atom_element(std::string name, Element e) {
+    atom_elements_[name] = e;
+  }
+
+  //! Get the element of the named atom in the patch.
+  /** \return UNKNOWN_ELEMENT if no element was set for this atom.
+   */
+  Element get_atom_element(std::string name) const {
+    std::map<std::string, Element>::const_iterator it =
+        atom_elements_.find(name);
+    return it == atom_elements_.end() ? UNKNOWN_ELEMENT : it->second;
   }
 
   //! Apply the patch to the residue, modifying its topology accordingly.

@@ -312,19 +312,60 @@ class Tests(IMP.test.TestCase):
                 fh.write("""
 MASS 1 HA 1.008 H
 MASS 2 CT 12.011 C
-
 RESI GLY 0.0
 ATOM CA CT 0.0
 ATOM C CT 0.0
 BOND CA C
-
 PRES PGLY 0.0
 ATOM PATGLY HA 0.0
 ATOM CA CT 0.0
 BOND CA C
 BOND CA PATGLY
+RESI PTLG 0.0
+ATOM C1 CT 0.0
+PRES PLIG 0.0
+ATOM PATLIG HA 0.0
+PRES PDIS 0.0
+ATOM 1:PATONE HA 0.0
+ATOM 2PATTWO HA 0.0
 """)
             ff = IMP.atom.CHARMMParameters(fname)
+        table = IMP.atom.get_element_table()
+        h = table.get_element('H')
+
+        def check_types(exist, absent):
+            if exist:
+                m = IMP.Model()
+            for typ in exist:
+                self.assertTrue(IMP.atom.AtomType.get_key_exists(typ))
+                a = IMP.atom.Atom.setup_particle(
+                    IMP.Particle(m), IMP.atom.AtomType(typ))
+                self.assertEqual(a.get_element(), h)
+            for typ in absent:
+                self.assertFalse(IMP.atom.AtomType.get_key_exists(typ))
+
+        # AtomTypes for patch atoms should not be created until the patch
+        # is applied, regardless of the type of the preceding residue
+        names = ('PATGLY', 'PATLIG', 'PATONE', 'PATTWO')
+        check_types([], names + tuple('HET:' + n for n in names))
+        # Patches applied to regular residues should create plain types
+        res = IMP.atom.CHARMMResidueTopology(
+            ff.get_residue_topology(IMP.atom.GLY))
+        ff.get_patch('PGLY').apply(res)
+        check_types(['PATGLY'], ['HET:PATGLY'])
+        # Patches applied to ligands should create HET: types
+        res = IMP.atom.CHARMMResidueTopology(
+            ff.get_residue_topology(IMP.atom.ResidueType('PTLG')))
+        ff.get_patch('PLIG').apply(res)
+        check_types(['HET:PATLIG'], ['PATLIG'])
+        # Two-residue patches should create types without the prefix
+        res1 = IMP.atom.CHARMMResidueTopology(
+            ff.get_residue_topology(IMP.atom.GLY))
+        res2 = IMP.atom.CHARMMResidueTopology(
+            ff.get_residue_topology(IMP.atom.ResidueType('PTLG')))
+        ff.get_patch('PDIS').apply(res1, res2)
+        check_types(['PATONE', 'HET:PATTWO'],
+                    ['HET:PATONE', 'PATTWO', '1:PATONE', '2PATTWO'])
         # The bonds and atoms in PGLY should not be added to GLY on read
         topology = IMP.atom.CHARMMTopology(ff)
         topology.add_sequence('G')
@@ -334,6 +375,37 @@ BOND CA PATGLY
         atoms = IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 2)
         self.assertEqual(IMP.atom.Bonded(atoms[0]).get_number_of_bonds(), 1)
+
+    def test_all_atom_patches(self):
+        """Hierarchies can be made using patches from the all-atom topology"""
+        ff = IMP.atom.get_all_atom_CHARMM_parameters()
+
+        def make_residue():
+            return IMP.atom.CHARMMResidueTopology(
+                ff.get_residue_topology(IMP.atom.ALA))
+
+        def check_hierarchy(residues):
+            segment = IMP.atom.CHARMMSegmentTopology()
+            for res in residues:
+                segment.add_residue(res)
+            topology = IMP.atom.CHARMMTopology(ff)
+            topology.add_segment(segment)
+            m = IMP.Model()
+            h = topology.create_hierarchy(m)
+            self.assertEqual(len(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)),
+                             sum(r.get_number_of_atoms() for r in residues))
+
+        for name in ('ACE', 'ACP', 'CT1', 'CT2', 'CT3', 'TP1', 'TP2', 'PURG',
+                     'PURA', '5TER', '5MET', '5PHO', '3TER', '3PHO', '9MG',
+                     '9EG', '1MC', '5MC1', '1MT', '5DP'):
+            res = make_residue()
+            ff.get_patch(name).apply(res)
+            check_hierarchy([res])
+        for name in ('25P1', '25P2'):
+            res1 = make_residue()
+            res2 = make_residue()
+            ff.get_patch(name).apply(res1, res2)
+            check_hierarchy([res1, res2])
 
     def test_charmm_elements(self):
         """Test that new atom types from CHARMM get elements assigned"""

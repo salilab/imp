@@ -503,14 +503,19 @@ void CHARMMParameters::parse_atom_line(const String &line,
   atom.set_charge(atof(split_results[3].c_str()));
   residue->add_atom(atom);
 
-  bool is_patch = dynamic_cast<CHARMMPatch *>(residue) != nullptr;
+  // Patches do not belong to any single residue type, so AtomTypes for
+  // their atoms are only created when the patch is applied
+  if (CHARMMPatch *patch = dynamic_cast<CHARMMPatch *>(residue)) {
+    patch->set_atom_element(
+        atom.get_name(),
+        get_element_for_type(split_results[2], atom_type_to_element_));
+    return;
+  }
 
   AtomType imp_atom_type;
   std::string imp_atom_name = atom.get_name();
   // really need Residue.get_is_protein() and friends here
-  // if a patch residue, assume that the atom types will only be applied
-  // to ATOM residues
-  if (!is_patch && curr_res_type.get_index() >= HOH.get_index()) {
+  if (curr_res_type.get_index() >= HOH.get_index()) {
     imp_atom_name = "HET:" + imp_atom_name;
   }
   if (AtomType::get_key_exists(imp_atom_name)) {
@@ -520,17 +525,14 @@ void CHARMMParameters::parse_atom_line(const String &line,
         imp_atom_name,
         get_element_for_type(split_results[2], atom_type_to_element_));
   }
-  // Patches do not belong to any single residue type
-  if (!is_patch) {
-    // save in map
-    if (atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==
-        atom_res_type_2_force_field_atom_type_.end()) {
-      atom_res_type_2_force_field_atom_type_[curr_res_type] = AtomTypeMap();
-    }
-    atom_res_type_2_force_field_atom_type_[curr_res_type].insert(std::make_pair(
-        imp_atom_type,
-        std::make_pair(atom.get_charmm_type(), atom.get_charge())));
+  // save in map
+  if (atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==
+      atom_res_type_2_force_field_atom_type_.end()) {
+    atom_res_type_2_force_field_atom_type_[curr_res_type] = AtomTypeMap();
   }
+  atom_res_type_2_force_field_atom_type_[curr_res_type].insert(std::make_pair(
+      imp_atom_type,
+      std::make_pair(atom.get_charmm_type(), atom.get_charge())));
 }
 
 void CHARMMParameters::parse_bond_line(const String &line,
