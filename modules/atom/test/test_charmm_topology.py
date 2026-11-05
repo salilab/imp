@@ -1,5 +1,6 @@
 import IMP
 import IMP.test
+import IMP.core
 import IMP.atom
 import string
 import pickle
@@ -77,6 +78,26 @@ class Tests(IMP.test.TestCase):
         t = IMP.atom.CHARMMTopology(ff)
         self.assertRaises(IndexError, t.add_sequence, '(ADE/')
         self.assertEqual(t.get_number_of_segments(), 0)
+
+    def test_nucleic_acid_coordinates(self):
+        """Check coordinates built from all-atom nucleic acid topology"""
+        ff = IMP.atom.get_all_atom_CHARMM_parameters()
+        for seq in ('(ADE)(GUA)(CYT)(URA)', '(DADE)(DGUA)(DCYT)(DTHY)'):
+            topology = IMP.atom.CHARMMTopology(ff)
+            topology.add_sequence(seq)
+            m = IMP.Model()
+            h = topology.create_hierarchy(m)
+            topology.add_atom_types(h)
+            topology.add_coordinates(h)
+            bonds = [IMP.atom.Bond(b) for b in topology.add_bonds(h)]
+            self.assertGreater(len(bonds), 100)
+            bad = [b for b in bonds if b.get_length() > 0
+                   and abs(IMP.core.get_distance(
+                       IMP.core.XYZ(b.get_bonded(0)),
+                       IMP.core.XYZ(b.get_bonded(1))) - b.get_length()) > 0.2]
+            # Almost all atoms should be placed using internal coordinates,
+            # rather than randomly, so should have reasonable bond lengths
+            self.assertLessEqual(len(bad), 2)
 
     def test_segments_python_list(self):
         """Test the Python list-like CHARMMTopology.segments member"""

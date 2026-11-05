@@ -98,6 +98,8 @@ class Tests(IMP.test.TestCase):
                        'DGUA', 'DTHY', 'DURA', 'DCYT', 'DADE',
                        'DG', 'DT', 'DU', 'DC', 'DA']:
             r = p.get_residue_topology(IMP.atom.ResidueType(resnam))
+            # These residues use BILD rather than IC lines
+            self.assertGreater(r.get_number_of_internal_coordinates(), 0)
         self.assertRaises(ValueError, p.get_residue_topology,
                           IMP.atom.ResidueType('garbage'))
 
@@ -221,7 +223,9 @@ class Tests(IMP.test.TestCase):
              DIHE N CA CB CG
              PHI C CA CB CG
              IMPR N CA CB CG
-             IMPH C CA CB CG""")
+             IMPH C CA CB CG
+             IC N CA CB CG 1.0 2.0 3.0 4.0 5.0
+             BILD C CA CB CG 1.0 2.0 3.0 4.0 5.0""")
         with open(parname, 'w') as fh:
             fh.write("""
              BOND
@@ -258,6 +262,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(h.get_number_of_angles(), 2)
         self.assertEqual(h.get_number_of_dihedrals(), 2)
         self.assertEqual(h.get_number_of_impropers(), 2)
+        self.assertEqual(h.get_number_of_internal_coordinates(), 2)
         os.unlink(topname)
         os.unlink(parname)
 

@@ -344,6 +344,7 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
   const String IMPROPER_LINE = "IMPR";
   const String IMPROPER_LINE2 = "IMPH";
   const String IC_LINE = "IC";
+  const String IC_LINE2 = "BILD";
   std::string first_patch = "", last_patch = "";
   Pointer<CHARMMIdealResidueTopology> residue;
   Pointer<CHARMMPatch> patch;
@@ -437,7 +438,8 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
       parse_improper_line(line, get_residue(residue, patch),
                           translate_names_to_pdb);
       // read internal coordinate line
-    } else if (line.substr(0, IC_LINE.length()) == IC_LINE &&
+    } else if ((line.substr(0, IC_LINE.length()) == IC_LINE ||
+                line.substr(0, IC_LINE2.length()) == IC_LINE2) &&
                (residue || patch)) {
       parse_internal_coordinate_line(line, get_residue(residue, patch),
                                      translate_names_to_pdb);
