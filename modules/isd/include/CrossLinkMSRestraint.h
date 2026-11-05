@@ -21,8 +21,14 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! A restraint for ambiguous cross-linking MS data and multiple state approach.
-/** It marginalizes the false positive rate and depends on the expected fpr and
-    an uncertainty parameter beta.
+/** Each contribution k links two particles. Its forward model f_k is that
+    of Erzberger et al. (Cell 2014) and Robinson et al. (eLife 2015): the
+    probability that two points, drawn uniformly from spheres of radius
+    sigma1 and sigma2 centered on the two particles, are closer than the
+    linker length. With psi_k the false positive rate, the restraint returns
+    1 - prod_k (1 - p_k), where p_k = f_k (1 - psi_k) + (1 - f_k) psi_k
+    (multiplied by exp(-slope * d_k) if a slope is given), or the negative
+    log of this if get_log_prob is true.
  */
 class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
@@ -44,8 +50,6 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
          ppis_, sigmass_, lengthi_, psis_, length_, slope_,
          constr_, get_log_prob_, protein1_, protein2_, residue1_, residue2_);
     }
-
-    double sphere_cap(float r1, float r2, float d) const;
 
     IMP_OBJECT_SERIALIZE_DECL(CrossLinkMSRestraint);
 
