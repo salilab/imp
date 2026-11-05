@@ -407,6 +407,68 @@ END
         self.assertAlmostEqual(
             f.get_angle_parameters('CC', 'C', 'T1').ideal, 120.0, delta=1e-5)
 
+    def test_malformed_topology_lines(self):
+        """Lines with the wrong number of fields should raise an error"""
+        with IMP.test.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'top.inp')
+            for line in ('BOND CA', 'BOND CA C N', 'BOND CA C N! comment',
+                         'ANGL CA C', 'ANGL CA C N O',
+                         'DIHE CA C N', 'DIHE CA C N O HA',
+                         'IMPR CA C N', 'IMPR CA C N O HA',
+                         'PATC FIRS', 'PATC FIRS NONE LAST'):
+                with open(fname, 'w') as fh:
+                    fh.write("RESI HIS 0.0\n%s\n" % line)
+                self.assertRaisesRegex(
+                    ValueError, 'Expected fields in groups',
+                    IMP.atom.CHARMMParameters, fname)
+
+    def test_topology_comments(self):
+        """Comments should be ignored in topology lines"""
+        with IMP.test.temporary_directory() as tmpdir:
+            fname = os.path.join(tmpdir, 'top.inp')
+            with open(fname, 'w') as fh:
+                fh.write("""
+RESI GLY 0.0
+ATOM CA CT 0.0
+ATOM C CT 0.0
+BOND CA C ! comment after bond
+BOND C CA! comment after atom
+ANGL CA C N ! a comment
+ANGL C CA N! a comment
+DIHE CA C N O ! a comment
+DIHE C CA N O! a comment
+IMPR CA C N O ! a comment
+IMPR C CA N O! a comment
+PATC FIRS NONE ! a comment
+PATC LAST CTER! a comment
+PRES PGLY 0.0
+DELE ATOM CA ! a comment
+DELE ATOM C! a comment
+""")
+            ff = IMP.atom.CHARMMParameters(fname)
+        r = ff.get_residue_topology(IMP.atom.GLY)
+        self.assertEqual(r.get_number_of_bonds(), 2)
+        self.assertBondBetween(r.get_bond(1), ['C', 'CA'])
+        self.assertEqual(r.get_number_of_angles(), 2)
+        self.assertBondBetween(r.get_angle(1), ['C', 'CA', 'N'])
+        self.assertEqual(r.get_number_of_dihedrals(), 2)
+        self.assertBondBetween(r.get_dihedral(1), ['C', 'CA', 'N', 'O'])
+        self.assertEqual(r.get_number_of_impropers(), 2)
+        self.assertBondBetween(r.get_improper(1), ['C', 'CA', 'N', 'O'])
+        self.assertEqual(r.get_default_first_patch(), '')
+        self.assertEqual(r.get_default_last_patch(), 'CTER')
+        p = ff.get_patch('PGLY')
+        self.assertEqual(p.get_number_of_removed_atoms(), 2)
+        self.assertEqual(p.get_removed_atom(1), 'C')
+        # Bonds should also be available from ForceFieldParameters
+        topology = IMP.atom.CHARMMTopology(ff)
+        topology.add_sequence('G')
+        m = IMP.Model()
+        h = topology.create_hierarchy(m)
+        ff.add_bonds(h)
+        ca = IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)[0]
+        self.assertEqual(IMP.atom.Bonded(ca).get_number_of_bonds(), 2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

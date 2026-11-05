@@ -162,17 +162,33 @@ bool excess_patch_removal(const std::string &atom_name,
   return false;
 }
 
+// Split a topology file line into fields, ignoring any trailing comment
+Strings split_line(const std::string &line) {
+  std::string no_comment = line.substr(0, line.find('!'));
+  boost::trim(no_comment);
+  Strings split_results;
+  boost::split(split_results, no_comment, boost::is_any_of(" \t"),
+               boost::token_compress_on);
+  return split_results;
+}
+
+// Check that a line contains a keyword followed by groups of num fields
+void check_field_groups(const Strings &fields, unsigned int num,
+                        const std::string &line) {
+  if ((fields.size() - 1) % num != 0) {
+    IMP_THROW("Expected fields in groups of " << num << " in line: " << line,
+              ValueException);
+  }
+}
+
 void parse_dele_line(std::string line, CHARMMPatch *patch,
                      bool translate_names_to_pdb) {
-  Vector<std::string> split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
+  Strings split_results = split_line(line);
   if (split_results.size() < 3) return;
 
   // Only DELE ATOM supported for now
   if (split_results[1] == "ATOM") {
     for (unsigned int i = 2; i < split_results.size(); ++i) {
-      if (split_results[i][0] == '!') break;  // comments start
       std::string atom_name =
           get_atom_name(split_results[i], patch, translate_names_to_pdb);
       if (!excess_patch_removal(atom_name, patch, translate_names_to_pdb)) {
@@ -184,12 +200,10 @@ void parse_dele_line(std::string line, CHARMMPatch *patch,
 
 void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
                       bool translate_names_to_pdb) {
-  Vector<std::string> split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
+  Strings split_results = split_line(line);
+  check_field_groups(split_results, 3, line);
 
   for (unsigned int i = 1; i < split_results.size(); i += 3) {
-    if (split_results[i][0] == '!') return;  // comments start
     residue->add_angle(get_atom_names(split_results.begin() + i,
                                       split_results.begin() + i + 3, residue,
                                       translate_names_to_pdb));
@@ -198,12 +212,10 @@ void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
 
 void parse_dihedral_line(std::string line, CHARMMResidueTopologyBase *residue,
                          bool translate_names_to_pdb) {
-  Vector<std::string> split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
+  Strings split_results = split_line(line);
+  check_field_groups(split_results, 4, line);
 
   for (unsigned int i = 1; i < split_results.size(); i += 4) {
-    if (split_results[i][0] == '!') return;  // comments start
     residue->add_dihedral(get_atom_names(split_results.begin() + i,
                                          split_results.begin() + i + 4, residue,
                                          translate_names_to_pdb));
@@ -212,12 +224,10 @@ void parse_dihedral_line(std::string line, CHARMMResidueTopologyBase *residue,
 
 void parse_improper_line(std::string line, CHARMMResidueTopologyBase *residue,
                          bool translate_names_to_pdb) {
-  Vector<std::string> split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
+  Strings split_results = split_line(line);
+  check_field_groups(split_results, 4, line);
 
   for (unsigned int i = 1; i < split_results.size(); i += 4) {
-    if (split_results[i][0] == '!') return;  // comments start
     residue->add_improper(get_atom_names(split_results.begin() + i,
                                          split_results.begin() + i + 4, residue,
                                          translate_names_to_pdb));
@@ -275,11 +285,9 @@ void parse_patch_line(std::string line, std::string &first, std::string &last,
   const std::string FIRST = "FIRS";
   const std::string LAST = "LAST";
 
-  Vector<std::string> split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
+  Strings split_results = split_line(line);
+  check_field_groups(split_results, 2, line);
   for (unsigned int i = 1; i < split_results.size(); i += 2) {
-    if (split_results[i][0] == '!') return;  // comments start
     if (split_results[i].substr(0, FIRST.length()) == FIRST) {
       first = split_results[i + 1];
       if (first == "NONE") {
@@ -529,17 +537,14 @@ void CHARMMParameters::parse_bond_line(const String &line,
                                        ResidueType curr_res_type,
                                        CHARMMResidueTopologyBase *residue,
                                        bool translate_names_to_pdb) {
-  Strings split_results;
-  boost::split(split_results, line, boost::is_any_of(" \t"),
-               boost::token_compress_on);
-  if (split_results.size() < 3) return;  // BOND line has at least 3 fields
+  Strings split_results = split_line(line);
+  check_field_groups(split_results, 2, line);
 
   // Patches do not belong to any single residue type, so their bonds should
   // only be added to the patch itself
   bool is_patch = dynamic_cast<CHARMMPatch *>(residue) != nullptr;
   Vector<Bond> bonds;
   for (unsigned int i = 1; i < split_results.size(); i += 2) {
-    if (split_results[i][0] == '!') return;  // comments start
     Strings atom_names =
         get_atom_names(split_results.begin() + i, split_results.begin() + i + 2,
                        residue, translate_names_to_pdb);
