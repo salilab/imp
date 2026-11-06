@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
 */
 // value in Lazy
 #include <IMP/cgal/internal/polygons.h>
@@ -48,14 +48,12 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
   typedef Kernel::Plane_3 Plane_3;
   typedef Kernel::Segment_3 Segment_3;
   Plane_3 plane(tr<Point_3>(normal * d), tr<Direction_3>(normal));
-  std::cout << "plane " << plane << std::endl;
   algebra::Vector3Ds corners = algebra::get_vertices(bb);
   IntPairs edges = algebra::get_edges(bb);
   Vector<Point_2> intersections;
   for (unsigned int i = 0; i < edges.size(); ++i) {
     Segment_3 s(tr<Point_3>(corners[edges[i].first]),
                 tr<Point_3>(corners[edges[i].second]));
-    std::cout << s << std::endl;
     CGAL::Object o = CGAL::intersection(plane, s);
     if (const Point_3 *ip = CGAL::object_cast<Point_3>(&o)) {
       intersections.push_back(plane.to_2d(*ip));
@@ -66,7 +64,6 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
                          std::back_inserter(ch));
   algebra::Vector3Ds ret;
   for (unsigned int i = 0; i < ch.size(); ++i) {
-    std::cout << "found " << ch[i] << " is " << plane.to_3d(ch[i]) << std::endl;
     ret.push_back(tr<algebra::Vector3D>(plane.to_3d(ch[i])));
   }
   return ret;
