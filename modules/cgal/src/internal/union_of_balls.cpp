@@ -10,29 +10,15 @@
 
 IMP_CLANG_PRAGMA(+diagnostic ignored "-Wconversion")
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-#include <CGAL/Triangulation_vertex_base_3.h>
-#include <CGAL/Alpha_shape_vertex_base_3.h>
-#include <CGAL/Triangulation_cell_base_3.h>
-#include <CGAL/Alpha_shape_cell_base_3.h>
-//#include <CGAL/Triangulation_data_structure_3.h>
-#if CGAL_VERSION_NR <= 1030701000
-#include <CGAL/Weighted_alpha_shape_euclidean_traits_3.h>
-#endif
 #include <CGAL/Regular_triangulation_3.h>
 #include <CGAL/version.h>
-
-#if CGAL_VERSION_NR > 1030701000
 #include <CGAL/Fixed_alpha_shape_3.h>
 #include <CGAL/Fixed_alpha_shape_vertex_base_3.h>
 #include <CGAL/Fixed_alpha_shape_cell_base_3.h>
+#if CGAL_VERSION_NR > 1040911000
+#include <CGAL/Regular_triangulation_vertex_base_3.h>
+#include <CGAL/Regular_triangulation_cell_base_3.h>
 #endif
-
-/* To access specialized predicates for orthocenter localization
- uncomment one of the following :*/
-//#include <CGAL/Regular_triangulation_euclidean_traits_3.h>
-//#include <CGAL/Regular_triangulation_filtered_traits_3.h>
-
-#include <CGAL/Alpha_shape_3.h>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
@@ -44,7 +30,6 @@ typedef Kernel::Vector_3 Vector;
 typedef Kernel::Line_3 Line;
 typedef Kernel::Triangle_3 Triangle3;
 
-// typedef CGAL::Regular_triangulation_euclidean_traits_3<Kernel> Gt;
 #if CGAL_VERSION_NR > 1040911000
 typedef Kernel Gt;
 typedef CGAL::Regular_triangulation_vertex_base_3<Kernel> Vbb;
@@ -54,25 +39,14 @@ typedef CGAL::Fixed_alpha_shape_cell_base_3<Kernel,Fbb> Fb;
 typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
 typedef CGAL::Regular_triangulation_3<Kernel, TDS> Triangulation;
 typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
-#elif CGAL_VERSION_NR > 1030701000
+#else
+// CGAL 4.6 to 4.10 need the regular triangulation traits class
 typedef CGAL::Regular_triangulation_euclidean_traits_3<Kernel> Gt;
 typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
 typedef CGAL::Fixed_alpha_shape_cell_base_3<Gt> Fb;
 typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
 typedef CGAL::Regular_triangulation_3<Gt, TDS> Triangulation;
 typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
-#else
-typedef CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel> Gt;
-typedef CGAL::Triangulation_vertex_base_3<Gt> Vf;
-typedef CGAL::Alpha_shape_vertex_base_3<Gt, Vf> Vb;
-
-typedef CGAL::Triangulation_cell_base_3<Gt> Df;
-typedef CGAL::Alpha_shape_cell_base_3<Gt, Df> Fb;
-typedef CGAL::Triangulation_data_structure_3<Vb, Fb> Tds;
-typedef CGAL::Regular_triangulation_3<Gt, Tds> Triangulation;
-
-typedef CGAL::Alpha_shape_3<Triangulation> Alpha_shape;
-
 #endif
 
 #if CGAL_VERSION_NR > 1040911000
@@ -112,7 +86,7 @@ double safe_sqrt(double v) {
 /*! This class mainly stores geometric functions for the computation
  * of volumetrics on balls and lines it is parameterized with Gt, a
  * Geometrical traits arguments that will most of the time be
- * something like CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel>
+ * something like CGAL::Exact_predicates_inexact_constructions_kernel
  *
  * \todo should singleton this class, what about static members ?
  * \todo should const every functions
@@ -1765,21 +1739,12 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
   // VERTICES (BALLS)
   {
     std::list<Vertex_handle> vertices;
-#if CGAL_VERSION_NR > 1030701000
     A.get_alpha_shape_vertices(std::back_inserter(vertices),
                                Alpha_shape::INTERIOR);
     A.get_alpha_shape_vertices(std::back_inserter(vertices),
                                Alpha_shape::REGULAR);
     A.get_alpha_shape_vertices(std::back_inserter(vertices),
                                Alpha_shape::SINGULAR);
-#else
-    A.get_alpha_shape_vertices(std::back_inserter(vertices),
-                               Alpha_shape::INTERIOR, 0);
-    A.get_alpha_shape_vertices(std::back_inserter(vertices),
-                               Alpha_shape::REGULAR, 0);
-    A.get_alpha_shape_vertices(std::back_inserter(vertices),
-                               Alpha_shape::SINGULAR, 0);
-#endif
     for (Vertex_handle &cit : vertices) {
       tmpV += spacefill.ball_V(cit->point());
       tmpA += spacefill.ball_A(cit->point());
@@ -1793,17 +1758,9 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
   // EDGES
   {
     std::list<Edge> edges;
-#if CGAL_VERSION_NR > 1030701000
     A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::INTERIOR);
     A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::REGULAR);
     A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::SINGULAR);
-#else
-    A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::INTERIOR,
-                            0);
-    A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::REGULAR, 0);
-    A.get_alpha_shape_edges(std::back_inserter(edges), Alpha_shape::SINGULAR,
-                            0);
-#endif
     for (Edge &cit : edges) {
       tmpV -= spacefill.ballInter2_V(cit.first->vertex(cit.second)->point(),
                                      cit.first->vertex(cit.third)->point());
@@ -1836,12 +1793,7 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
 // cit->first->vertex((cit->second+2)&3)->point(),
 // cit->first->vertex((cit->second+3)&3)->point());
 // }
-#if CGAL_VERSION_NR > 1030701000
     A.get_alpha_shape_facets(std::back_inserter(facets), Alpha_shape::SINGULAR);
-#else
-    A.get_alpha_shape_facets(std::back_inserter(facets), Alpha_shape::SINGULAR,
-                             0);
-#endif
     for (Facet &cit : facets) {
       tmpV += spacefill.ballInter3_V(
           cit.first->vertex((cit.second + 1) & 3)->point(),
@@ -1853,13 +1805,7 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
           cit.first->vertex((cit.second + 3) & 3)->point());
     }
     facets.clear();
-#if CGAL_VERSION_NR > 1030701000
     A.get_alpha_shape_facets(std::back_inserter(facets), Alpha_shape::REGULAR);
-
-#else
-    A.get_alpha_shape_facets(std::back_inserter(facets), Alpha_shape::REGULAR,
-                             0);
-#endif
     for (std::list<Facet>::iterator cit = facets.begin(); cit != facets.end();
          ++cit) {
       tmpV += 0.5 * spacefill.ballInter3_V(
@@ -1880,12 +1826,7 @@ std::pair<double, double> computeVolumetrics(Alpha_shape const &A) {
   // TETRAHEDRA
   {
     std::list<Cell_handle> cells;
-#if CGAL_VERSION_NR > 1030701000
     A.get_alpha_shape_cells(std::back_inserter(cells), Alpha_shape::INTERIOR);
-#else
-    A.get_alpha_shape_cells(std::back_inserter(cells), Alpha_shape::INTERIOR,
-                            0);
-#endif
     for (Cell_handle &cit : cells) {
       // tmpA-=
       // ballInter4_A((*cit)->vertex(0)->point(),(*cit)->vertex(1)->point(),
@@ -1946,11 +1887,7 @@ std::pair<double, double> get_surface_area_and_volume(
           0));
     }
   }
-#if CGAL_VERSION_NR > 1030701000
   Alpha_shape A(T, 0);
-#else
-  Alpha_shape A(T, 0, Alpha_shape::GENERAL);
-#endif
   std::pair<double, double> dp = computeVolumetrics(A);
   return std::make_pair(dp.second, dp.first);
 }
