@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     IMP::atom::read_mmcif(in, m);
   } catch (const IMP::IOException &) {
     return 0;
-  } catch (const IMP::Exception &e) {
+  } catch (const std::exception &e) {
     std::cerr << "Wrong exception type: " << e.what() << std::endl;
     return 1;
   }

@@ -31,7 +31,7 @@ bool check_read_error(IMP::TextInput top, IMP::TextInput par) {
     IMP_NEW(IMP::atom::CHARMMParameters, ff, (top, par));
   } catch (const IMP::IOException &) {
     return true;
-  } catch (const IMP::Exception &e) {
+  } catch (const std::exception &e) {
     std::cerr << "Wrong exception type: " << e.what() << std::endl;
     return false;
   }
