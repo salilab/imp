@@ -2,7 +2,7 @@
  *  \file DominoSampler.cpp
  *  \brief Sample best solutions using Domino.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -85,11 +85,7 @@ Assignments DominoSampler::do_get_sample_assignments(
       sfts.push_back(lsft);
     }
     IMP_LOG_TERSE("domino::DominoSampler entering InferenceStatistics\n");
-    {
-      // sillyness for mac os with boost 1.48 bug
-      internal::InferenceStatistics tmp;
-      stats_ = tmp;
-    }
+    stats_ = internal::InferenceStatistics();
     IMP_LOG_TERSE("domino::DominoSampler entering get_best_conformations\n");
     IMP_NEW(PackedAssignmentContainer, as, ());
     as->set_was_used(true);

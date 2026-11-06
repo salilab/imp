@@ -124,13 +124,11 @@ Configuration::Configuration(Model *m, Configuration *base,
   }
 
 #define IMP_CONFIG_COPY_BACK(name, Name, TablePre, Equal) \
-  static_cast<internal::TablePre##AttributeTable &>(*model_) = ncthis->name##_
+  static_cast<internal::TablePre##AttributeTable &>(*model_) = name##_
 
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  // workaround for weird mac os and boost 1.48 bug
-  Configuration *ncthis = const_cast<Configuration *>(this);
   if (!base_) {
     IMP_CONFIG_FOREACH(IMP_CONFIG_COPY_BACK);
   } else {
