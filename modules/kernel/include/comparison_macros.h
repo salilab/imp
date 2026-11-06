@@ -2,7 +2,7 @@
  *  \file IMP/comparison_macros.h
  *  \brief Helper macros for implementing comparisons of \imp objects
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,7 +49,6 @@
 /** @} */
 #elif defined(SWIG)
 #define IMP_SWIG_COMPARISONS(Name)  \
-  int __cmp__(const Name& o) const; \
   bool __eq__(const Name& o) const; \
   bool __ne__(const Name& o) const; \
   bool __lt__(const Name& o) const; \
@@ -75,7 +74,6 @@
   bool __gt__(const Name& o) const { return operator>(o); }         \
   bool __ge__(const Name& o) const { return operator>=(o); }        \
   bool __le__(const Name& o) const { return operator<=(o); }        \
-  int __cmp__(const Name& o) const { return compare(o); }           \
   IMP_HELPER_MACRO_POP_WARNINGS IMP_REQUIRE_SEMICOLON_CLASS(comparisons)
 
 #define IMP_COMPARISONS(Name)                                              \

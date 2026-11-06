@@ -58,7 +58,6 @@ namespace IMP {
   %}
 }
 
-%feature("python:maybecall", "0") IMP::VectorD<D>::__cmp__;
 %feature("python:maybecall", "0") IMP::VectorD<D>::__eq__;
 %extend IMP::VectorD<D> {
   /* Ignore C++ return value from inplace operators, so that SWIG does not
@@ -71,11 +70,6 @@ namespace IMP {
   const IMP::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
   std::string __str__() const {std::ostringstream oss; self->show(oss); return oss.str();}
   std::string __repr__() const {std::ostringstream oss; self->show(oss); return oss.str();}
-  int __cmp__(const IMP::VectorD<D> &) const {
-    IMP_UNUSED(self);
-    IMP_THROW("Geometric primitives cannot be compared",
-              IMP::ValueException);
-  }
   bool __eq__(const IMP::VectorD<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",

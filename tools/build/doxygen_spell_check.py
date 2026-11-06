@@ -94,8 +94,8 @@ class SpellChecker:
 
 def extract_text(node):
     """Extract all human-readable text from a node and its children. This
-       is like ElementTree.itertext() but works with Python 2.6 and excludes
-       some text (such as program listings)"""
+       is like ElementTree.itertext() but excludes some text (such as
+       program listings)"""
     text = []
     if node.tag not in ('programlisting', 'computeroutput', 'ref',
                         'parametername'):

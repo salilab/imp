@@ -215,8 +215,7 @@ class Writer:
                         raise ValueError("Cannot handle sel tuple")
                     asym = self._parse_sel_tuple(sel_tuple[0])
                     # Path is relative to that of the JSON file
-                    # With Python 2, convert mrc from unicode to str
-                    full_mrc = IMP.get_relative_path(json_fname, str(mrc))
+                    full_mrc = IMP.get_relative_path(json_fname, mrc)
                     density = ihm.model.LocalizationDensity(
                         file=ihm.location.OutputFileLocation(
                             path=full_mrc, details='Localization density'),

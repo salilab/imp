@@ -1143,14 +1143,8 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::Vector<Namespace:
 IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,);
 IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,const&);
 IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
-%feature("python:maybecall", "0") Namespace::Namebase##D::__cmp__;
 %feature("python:maybecall", "0") Namespace::Namebase##D::__eq__;
 %extend Namespace::Namebase##D {
-  int __cmp__(const Namebase##D<D> &) const {
-    IMP_UNUSED(self);
-    IMP_THROW("Geometric primitives cannot be compared",
-              IMP::ValueException);
-  }
   bool __eq__(const Namebase##D<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",

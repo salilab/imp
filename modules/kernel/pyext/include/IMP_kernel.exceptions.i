@@ -33,7 +33,6 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
 #else
 do {
   PyObject *base_tuple = PyTuple_Pack(2, imp_exception, PyExc_##PYNAME);
-  /* PyErr_NewException only takes a tuple in Python 2.5 or later. */
   VAR = PyErr_NewException((char *)"_IMP_kernel.CNAME", base_tuple, NULL);
   Py_INCREF(VAR);
   Py_DECREF(base_tuple);

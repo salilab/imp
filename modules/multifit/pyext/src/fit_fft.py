@@ -161,7 +161,7 @@ def run(asmb_fn, options):
             if options.cpus > 1:
                 options.cpus = 1
                 print("""
-The Python 'multiprocessing' module (available in Python 2.6 and later) is
+The Python 'multiprocessing' module is
 needed to run on multiple CPUs, and could not be found
 (Python error: '%s').
 Running on a single processor.""" % multiproc_exception, file=sys.stderr)
