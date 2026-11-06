@@ -12,6 +12,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/ch_graham_andrew.h>
 #include <CGAL/intersections.h>
 #include <CGAL/Handle_hash_function.h>
+#include <CGAL/version.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_2 Point_2;
@@ -54,9 +55,17 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
   for (unsigned int i = 0; i < edges.size(); ++i) {
     Segment_3 s(tr<Point_3>(corners[edges[i].first]),
                 tr<Point_3>(corners[edges[i].second]));
-    CGAL::Object o = CGAL::intersection(plane, s);
-    if (const Point_3 *ip = CGAL::object_cast<Point_3>(&o)) {
-      intersections.push_back(plane.to_2d(*ip));
+    // Result is an optional variant of Point_3 or Segment_3
+    auto result = CGAL::intersection(plane, s);
+    if (result) {
+#if CGAL_VERSION_NR >= 1060000000
+      const Point_3 *ip = std::get_if<Point_3>(&*result);
+#else
+      const Point_3 *ip = boost::get<Point_3>(&*result);
+#endif
+      if (ip) {
+        intersections.push_back(plane.to_2d(*ip));
+      }
     }
   }
   Vector<Point_2> ch;
