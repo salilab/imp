@@ -29,6 +29,11 @@ class FailingStreambuf : public std::streambuf {
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test mmCIF stream read errors");
+  // Skip test on Windows; we usually run under WINE and their stream
+  // implementation doesn't catch exceptions like it is supposed to
+#if defined(_WIN32) || defined(_WIN64)
+  return 0;
+#else
   IMP_NEW(IMP::Model, m, ());
   FailingStreambuf buf;
   std::istream in(&buf);
@@ -42,4 +47,5 @@ int main(int argc, char *argv[]) {
   }
   std::cerr << "No exception raised" << std::endl;
   return 1;
+#endif
 }

@@ -43,6 +43,9 @@ bool check_read_error(IMP::TextInput top, IMP::TextInput par) {
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test CHARMM file read errors");
+  // Skip test on Windows; we usually run under WINE and their stream
+  // implementation doesn't catch exceptions like it is supposed to
+#if !defined(_WIN32) && !defined(_WIN64)
   FailingStreambuf buf;
   std::istream bad_top(&buf), bad_par(&buf);
   std::istringstream good_top(""), good_par("");
@@ -52,5 +55,6 @@ int main(int argc, char *argv[]) {
   if (!check_read_error(IMP::TextInput(good_top), IMP::TextInput(bad_par))) {
     return 1;
   }
+#endif
   return 0;
 }
