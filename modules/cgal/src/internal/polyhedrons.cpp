@@ -18,19 +18,19 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/make_skin_surface_mesh_3.h>
 #include <CGAL/Union_of_balls_3.h>
 #include <CGAL/Gmpq.h>
-#include <CGAL/Surface_mesh_default_triangulation_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
-#include <CGAL/Complex_2_in_triangulation_3.h>
-#include <CGAL/make_surface_mesh.h>
-#include <CGAL/Implicit_surface_3.h>
 #include <CGAL/version.h>
+#include <CGAL/Mesh_triangulation_3.h>
+#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
+#include <CGAL/Mesh_criteria_3.h>
+#include <CGAL/make_mesh_3.h>
+#if CGAL_VERSION_NR >= 1041300000
+#include <CGAL/Labeled_mesh_domain_3.h>
+#else
+#include <CGAL/Implicit_mesh_domain_3.h>
+#endif
 #if CGAL_VERSION_NR < 1050101000
 #include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
-#endif
-#if CGAL_VERSION_NR >= 1041201000
-# include <CGAL/IO/facets_in_complex_2_to_triangle_mesh.h>
-#else
-# include <CGAL/IO/output_surface_facets_to_polyhedron.h>
 #endif
 
 namespace {
@@ -258,15 +258,13 @@ std::pair<algebra::Vector3Ds, Ints> get_skin_surface(
 
 namespace {
 
-typedef CGAL::Surface_mesh_default_triangulation_3 Tr;
+typedef IKernel::Point_3 Point_3;
+typedef IKernel::Sphere_3 Sphere_3;
+typedef IKernel::FT FT;
 
-// c2t3
-typedef CGAL::Complex_2_in_triangulation_3<Tr> C2t3;
-typedef Tr::Geom_traits GT;
-typedef GT::Sphere_3 Sphere_3;
-typedef GT::Point_3 Point_3;
-typedef GT::FT FT;
-
+/* Implicit function for the 3D Mesh Generation package; the domain to be
+   meshed is the region where the function is negative, i.e. where the
+   grid value is greater than the iso level */
 template <class Grid>
 class CGALImplicitSurface {
   const Grid &grid_;
@@ -293,18 +291,16 @@ class CGALImplicitSurface {
   CGALImplicitSurface(const Grid &grid, double iso_level)
       : grid_(grid), d_(iso_level) {}
   FT operator()(const Point_3 &pt) const {
-    double ret = get_trilinearly_interpolated(
-                     grid_, algebra::Vector3D(pt[0], pt[1], pt[2]),
-                     typename Grid::Value(d_ - 1)) -
-                 d_;
-    // std::cout << "trilerp at " << trp(pt) << " is " << ret+d_ << std::endl;
-    return ret;
+    return d_ - get_trilinearly_interpolated(
+                    grid_, algebra::Vector3D(pt[0], pt[1], pt[2]),
+                    typename Grid::Value(d_ - 1));
   }
-  Sphere_3 get_bounding_sphere() const {
+  // Get a sphere bounding the surface; return false if there is no surface
+  bool get_bounding_sphere(Sphere_3 &bs) const {
     bool found;
     algebra::Vector3D center = get_center(found);
     if (!found) {
-      return Sphere_3(Point_3(0, 0, 0), 0);
+      return false;
     }
     algebra::Vector3Ds vt =
         algebra::get_vertices(algebra::get_bounding_box(grid_));
@@ -313,59 +309,87 @@ class CGALImplicitSurface {
       double d = algebra::get_squared_distance(vt[i], center);
       if (d > max2) max2 = d;
     }
-    return Sphere_3(Point_3(center[0], center[1], center[2]), max2);
+    bs = Sphere_3(Point_3(center[0], center[1], center[2]), max2);
+    return true;
   }
 
   double get_scale() const { return grid_.get_unit_cell()[0]; }
 };
 
 template <class Grid>
-void cgal_triangulate_surface(const Grid &grid, double iso_level, C2t3 &c2t3) {
-
-  // defining the surface
-  CGALImplicitSurface<Grid> cs(grid, iso_level);
-  Sphere_3 bs = cs.get_bounding_sphere();
-  // bs= Sphere_3(Point_3(30, 30, 0), 200);
-  IMP_LOG_TERSE("Bounding sphere is" << bs << std::endl);
-  IMP_LOG_TERSE("Scale is " << cs.get_scale() << std::endl);
-  typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid>> Surface_3;
-
-  Surface_3 surface(cs,   // pointer to function
-                    bs);  // bounding sphere
-
-  // defining meshing criteria
-  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(
-      10.,                   // angular bound
-      .5 * cs.get_scale(),   // radius bound
-      .2 * cs.get_scale());  // distance bound
-                             // meshing surface
-  // std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
-  IMP_LOG_TERSE("Beginning surface meshing." << std::endl);
-  CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
-  IMP_LOG_TERSE("Ending surface meshing." << std::endl);
-  // CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
-}
-
-template <class Tr, class F>
-const typename Tr::Vertex_handle get_vertex(const Tr &tr, const F &f,
-                                            unsigned int i) {
-  // return f->first->vertex((f->second+i)%4)->point();
-  return f->first->vertex(tr.vertex_triple_index(f->second, i));
-}
-
-template <class Grid>
 std::pair<algebra::Vector3Ds, Ints> get_iso_surface_t(const Grid &grid,
                                                       double iso_level) {
-  Tr tr;          // 3D-Delaunay triangulation
-  C2t3 c2t3(tr);  // 2D-complex in 3D-Delaunay triangulation
-  cgal_triangulate_surface(grid, iso_level, c2t3);
-  CGAL::Polyhedron_3<GT> poly;
-#if CGAL_VERSION_NR >= 1041201000
-  CGAL::facets_in_complex_2_to_triangle_mesh(c2t3, poly);
+  typedef CGALImplicitSurface<Grid> Function;
+#if CGAL_VERSION_NR >= 1041300000
+  typedef CGAL::Labeled_mesh_domain_3<IKernel> Mesh_domain;
 #else
-  CGAL::output_surface_facets_to_polyhedron(c2t3, poly);
+  typedef CGAL::Implicit_mesh_domain_3<Function, IKernel> Mesh_domain;
 #endif
-  return get_indexed_facets(poly);
+  typedef typename CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+  typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
+  typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
+  typedef typename Mesh_criteria::Facet_criteria Facet_criteria;
+  typedef typename Mesh_criteria::Cell_criteria Cell_criteria;
+
+  Function func(grid, iso_level);
+  Sphere_3 bs;
+  if (!func.get_bounding_sphere(bs)) {
+    return std::make_pair(algebra::Vector3Ds(), Ints());
+  }
+  IMP_LOG_TERSE("Bounding sphere is" << bs << std::endl);
+  IMP_LOG_TERSE("Scale is " << func.get_scale() << std::endl);
+#if CGAL_VERSION_NR >= 1041300000
+  Mesh_domain domain = Mesh_domain::create_implicit_mesh_domain(func, bs);
+#else
+  Mesh_domain domain(func, bs);
+#endif
+
+  // Only the surface is of interest, so put no constraints on the cells
+  Mesh_criteria criteria(Facet_criteria(10.,                    // angle bound
+                                        .5 * func.get_scale(),  // radius bound
+                                        .2 * func.get_scale()), // distance
+                         Cell_criteria(0., 0.));
+  IMP_LOG_TERSE("Beginning surface meshing." << std::endl);
+  C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria,
+                                      CGAL::parameters::no_perturb(),
+                                      CGAL::parameters::no_exude()
+#if CGAL_VERSION_NR >= 1041200000
+                                      , CGAL::parameters::manifold()
+#endif
+                                      );
+  IMP_LOG_TERSE("Ending surface meshing." << std::endl);
+
+  // Extract the boundary facets, oriented so that normals point outwards
+  algebra::Vector3Ds coords;
+  Ints faces;
+  std::map<typename Tr::Vertex_handle, int, AddressLess> vertices;
+  for (typename C3t3::Facets_in_complex_iterator it =
+           c3t3.facets_in_complex_begin();
+       it != c3t3.facets_in_complex_end(); ++it) {
+    typename Tr::Cell_handle c = it->first;
+    int s = it->second;
+    int ind[3];
+    for (unsigned int i = 0; i < 3; ++i) {
+      typename Tr::Vertex_handle vh =
+          c->vertex(Tr::vertex_triple_index(s, i));
+      typename std::map<typename Tr::Vertex_handle, int,
+                        AddressLess>::const_iterator vit = vertices.find(vh);
+      if (vit == vertices.end()) {
+        ind[i] = coords.size();
+        vertices[vh] = ind[i];
+        coords.push_back(trp(vh->point().point()));
+      } else {
+        ind[i] = vit->second;
+      }
+    }
+    // Facet vertices are oriented with normal pointing into cell c
+    if (c3t3.is_in_complex(c)) {
+      std::swap(ind[0], ind[1]);
+    }
+    faces.insert(faces.end(), ind, ind + 3);
+    faces.push_back(-1);
+  }
+  return std::make_pair(coords, faces);
 }
 }
 
