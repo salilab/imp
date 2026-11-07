@@ -84,7 +84,7 @@ def plot_score(pair_score, caption,
         matplotlib.pyplot.plot(X,Y,'-')
         matplotlib.pyplot.title(caption)
         matplotlib.pyplot.xlabel(r"$X_2$ [$\AA$]")
-        matplotlib.pyplot.ylabel("Energy [$kcal \cdot mol^{-1}$]")
+        matplotlib.pyplot.ylabel(r"Energy [$kcal \cdot mol^{-1}$]")
         matplotlib.pyplot.gca().spines['bottom'].set_position(('data', 0))
         matplotlib.pyplot.show()
 
