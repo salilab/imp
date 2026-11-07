@@ -3,7 +3,6 @@
 """@namespace IMP.isd.Entry
    Classes to handle ISD statistics files.
 """
-import collections
 
 
 class Entry:
@@ -24,7 +23,7 @@ class Entry:
     def __init__(self, title, fmt, something, *args, **kwargs):
         self.title = title
         self.format = fmt
-        self.is_function = isinstance(something, collections.Callable)
+        self.is_function = callable(something)
         if self.is_function:
             self.function = something
             self.args = args
