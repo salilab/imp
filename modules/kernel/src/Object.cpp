@@ -52,7 +52,13 @@ Object::~Object() {
                 << " store it.");
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   // if there is no exception currently being handled warn if it was not owned
-  if (!was_owned_ && !std::uncaught_exception()) {
+#if defined(__cpp_lib_uncaught_exceptions) \
+    && __cpp_lib_uncaught_exceptions >= 201411L
+  bool in_exception = std::uncaught_exceptions() > 0;
+#else
+  bool in_exception = std::uncaught_exception();
+#endif
+  if (!was_owned_ && !in_exception) {
     IMP_WARN(
         "Object \"" << get_name() << "\" was never used."
                     << " See the IMP::Object documentation for an explanation."
