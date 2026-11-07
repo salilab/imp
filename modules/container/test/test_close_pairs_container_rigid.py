@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
                     if IMP.core.get_distance(IMP.core.XYZR(m, l0),
                                              IMP.core.XYZR(m, l1)) < 2.5 * slack:
                         return
-            self.assert_(False)
+            self.fail("No close pairs found")
 
         print(ps0, ps1)
         rbm0 = IMP.core.RigidBodyMover(m, rb0, 5, 1)
