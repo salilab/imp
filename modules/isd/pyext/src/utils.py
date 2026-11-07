@@ -94,7 +94,7 @@ class WatchDog(Thread):
 
         self.logfile = logfile
 
-        self.setDaemon(True)
+        self.daemon = True
 
     def stop(self):
         self._stop = True
