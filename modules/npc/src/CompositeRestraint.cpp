@@ -1,7 +1,7 @@
 /**
  *  \file CompositeRestraint.cpp  \brief Composite restraint.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <algorithm>
 
 #include <IMP/random.h>
@@ -145,7 +145,8 @@ namespace {
       update_minimum_subgraph(subset_so_far, g, min_edges, min_score);
     } else if (!candidates.empty()) {
       // Pick one of the candidates at random
-      boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
+      boost::random::uniform_int_distribution<unsigned> randint(
+          0, candidates.size() - 1);
       unsigned cnum = randint(random_number_generator);
       std::set<Vertex> new_to_consider = vertices_not_yet_considered;
       new_to_consider.erase(candidates[cnum]);;
