@@ -21,6 +21,34 @@ class Tests(IMP.test.TestCase):
         dr = jnp.array([1., 2., 3.])
         self.assertAlmostEqual(space.distance(dr), dists[0], delta=1e-3)
 
+    def _check_min_dist(self, space):
+        drs = jnp.array([[1., 2., 3.], [0., 0., 0.], [0.01, 0., 0.]])
+        dists = space.distance(drs, min_dist=0.1)
+        self.assertTrue(jnp.allclose(dists, jnp.array([3.74165, 0.1, 0.1])))
+        # Should work for a single vector too
+        self.assertAlmostEqual(
+            space.distance(jnp.array([0., 0., 0.]), min_dist=0.1), 0.1,
+            delta=1e-6)
+        # Gradient should be finite, and zero where the clamp applies
+        g = jax.grad(lambda d: jnp.sum(space.distance(d, min_dist=0.1)))(drs)
+        self.assertTrue(bool(jnp.all(jnp.isfinite(g))))
+        self.assertTrue(jnp.allclose(g[0], drs[0] / 3.74165))
+        self.assertTrue(jnp.allclose(g[1:], 0.))
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_free_space_distance_min_dist(self):
+        """Test JAX FreeSpace distance with min_dist"""
+        self._check_min_dist(IMP.jax.FreeSpace)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_periodic_space_distance_min_dist(self):
+        """Test JAX PeriodicSpace distance with min_dist"""
+        space = IMP.jax.PeriodicSpace([10., 20., 30.])
+        self._check_min_dist(space)
+        # A vector of exactly one box length is a zero-length displacement
+        d = space.distance(jnp.array([10., 0., 0.]), min_dist=0.1)
+        self.assertAlmostEqual(d, 0.1, delta=1e-6)
+
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_free_space_shift(self):
         """Test JAX FreeSpace shift"""

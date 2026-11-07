@@ -278,6 +278,40 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.assertAlmostEqual(jax_score[0], imp_score1, delta=1e-4)
         self.assertAlmostEqual(jax_score[1], imp_score2, delta=1e-4)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_derivatives_finite(self):
+        """Test JAX derivatives are finite in degenerate configurations"""
+        def get_grad(c1, c2, same_particle):
+            m = IMP.Model()
+            p1 = IMP.core.XYZR.setup_particle(
+                IMP.Particle(m), IMP.algebra.Sphere3D(c1, 4.0))
+            p2 = IMP.core.XYZR.setup_particle(
+                IMP.Particle(m), IMP.algebra.Sphere3D(c2, 4.0))
+            sigma1 = setupnuisance(m, 5, 0, 100, False)
+            sigma2 = setupnuisance(m, 5, 0, 100, False)
+            psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
+            r = IMP.isd.CrossLinkMSRestraint(m, 10.0, 0.01, True)
+            r.add_contribution((p1, p1 if same_particle else p2),
+                               (sigma1, sigma2), psi)
+            ji = r._get_jax(space=IMP.jax.FreeSpace)
+            X = ji.get_jax_model()
+            score = ji.score_func(X)
+            self.assertAlmostEqual(float(jnp.sum(score)),
+                                   r.evaluate(False), delta=1e-4)
+            g = jax.grad(lambda X: jnp.sum(ji.score_func(X)))(X)
+            for leaf in jax.tree_util.tree_leaves(g):
+                self.assertTrue(bool(jnp.all(jnp.isfinite(leaf))),
+                                "Non-finite derivative: %s" % leaf)
+
+        # Coincident particles (zero distance)
+        get_grad((0, 0, 0), (0, 0, 0), False)
+        # Both ends of the cross-link on the same particle
+        get_grad((0, 0, 0), (10, 0, 0), True)
+        # dist == sigma + length/2, so sphere_cap is evaluated at d == 0
+        get_grad((0, 0, 0), (10, 0, 0), False)
+        # Regular configuration
+        get_grad((0, 0, 0), (15, 0, 0), False)
+
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
         m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()

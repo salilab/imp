@@ -163,12 +163,18 @@
         def sphere_cap(r1, r2, d):
             short_range = jnp.minimum(4.0 / 3.0 * math.pi * r1 * r1 * r1,
                                       4.0 / 3.0 * math.pi * r2 * r2 * r2)
-            mid_range = ((math.pi / 12 / d * (r1 + r2 - d) * (r1 + r2 - d)) *
-                         (d * d + 2 * d * r1 - 3 * r1 * r1 + 2 * d * r2
-                          + 6 * r1 * r2 - 3 * r2 * r2))
-            return jnp.where(
-                d <= jnp.absolute(r1 - r2), short_range,
-                jnp.where(d >= r1 + r2, 0., mid_range))
+            is_short = d <= jnp.absolute(r1 - r2)
+            is_long = d >= r1 + r2
+            # Only evaluate the mid-range expression (which divides by d)
+            # where it is actually used; otherwise d==0 in the short-range
+            # branch yields NaN gradients even though the value is unused
+            safe_d = jnp.where(is_short | is_long, 1., d)
+            mid_range = ((math.pi / 12 / safe_d * (r1 + r2 - safe_d)
+                          * (r1 + r2 - safe_d)) *
+                         (safe_d * safe_d + 2 * safe_d * r1 - 3 * r1 * r1
+                          + 2 * safe_d * r2 + 6 * r1 * r2 - 3 * r2 * r2))
+            return jnp.where(is_short, short_range,
+                             jnp.where(is_long, 0., mid_range))
 
         def get_probability(xyz, r, scale, ps, sigma, psi, length,
                             slope, segments, numrsr):
@@ -176,9 +182,13 @@
             # get the distance as if the residue positions were randomly
             # taken from within the sphere representing the domain
             # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
-            dist = jnp.where(ps[:, 0] == ps[:, 1],
-                             36.0 / 35.0 * r[ps[:, 0]],
-                             space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]]))
+            # Let the space clamp the distance, so that the gradient is
+            # zero, rather than NaN, for coincident points and for
+            # same-particle contributions (which don't use the distance)
+            dist = jnp.where(
+                ps[:, 0] == ps[:, 1], 36.0 / 35.0 * r[ps[:, 0]],
+                space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]],
+                               min_dist=0.0001))
             dist = jnp.maximum(dist, 0.0001)
             psi = scale[psi]
             sigmai = scale[sigma[:, 0]]

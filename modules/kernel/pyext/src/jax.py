@@ -14,15 +14,32 @@ import jax.tree_util
 import IMP
 
 
+def _vector_length(dr, min_dist):
+    """Get the length of each vector in `dr`, optionally clamped to be no
+       less than `min_dist`. The squared length is clamped before taking the
+       square root, so that the gradient is zero, rather than NaN, for
+       zero-length vectors."""
+    if min_dist is None:
+        return jnp.linalg.norm(dr, axis=-1)
+    else:
+        return jnp.sqrt(jnp.maximum(jnp.sum(jnp.square(dr), axis=-1),
+                                    min_dist * min_dist))
+
+
 class Space:
     """The space in which restraints are evaluated. See FreeSpace for the
        default unbounded space, or PeriodicSpace for a space that implements
        periodic boundary conditions."""
 
-    def distance(dr):
+    def distance(dr, min_dist=None):
         """If given an array of particle-particle vectors, return an array
            of distances. If given a single particle-particle vector, return
-           a single distance."""
+           a single distance.
+
+           If `min_dist` is given, every returned distance is clamped to be
+           no less than `min_dist`. The gradient is zero (rather than NaN,
+           as for the unclamped distance of a zero-length vector) wherever
+           the clamp applies."""
         pass
 
     def displacement(dr):
@@ -46,8 +63,8 @@ class FreeSpace(Space):
     """An unbounded space with no periodic boundary conditions."""
 
     @staticmethod
-    def distance(dr):
-        return jnp.linalg.norm(dr, axis=-1)
+    def distance(dr, min_dist=None):
+        return _vector_length(dr, min_dist)
 
     @staticmethod
     def displacement(dr):
@@ -71,8 +88,8 @@ class PeriodicSpace(Space):
     def __init__(self, side):
         self.side = jnp.asarray(side)
 
-    def distance(self, dr):
-        return jnp.linalg.norm(self.displacement(dr), axis=-1)
+    def distance(self, dr, min_dist=None):
+        return _vector_length(self.displacement(dr), min_dist)
 
     def displacement(self, dr):
         return jnp.mod(dr + self.side * 0.5, self.side) - 0.5 * self.side
