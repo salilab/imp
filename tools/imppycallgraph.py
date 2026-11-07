@@ -30,7 +30,7 @@ import os
 import re
 import tempfile
 import time
-from distutils import sysconfig
+import sysconfig
 
 # Initialise module variables.
 # TODO Move these into settings
@@ -158,10 +158,7 @@ def is_module_stdlib(file_name):
     """Returns True if the file_name is in the lib directory."""
     # TODO: Move these calls away from this function so it doesn't have to run
     # every time.
-    lib_path = sysconfig.get_python_lib()
-    path = os.path.split(lib_path)
-    if path[1] == 'site-packages':
-        lib_path = path[0]
+    lib_path = sysconfig.get_path('stdlib')
     return file_name.lower().startswith(lib_path.lower())
 
 
