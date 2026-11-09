@@ -312,6 +312,78 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         # Regular configuration
         get_grad((0, 0, 0), (15, 0, 0), False)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_derivatives_multiple(self):
+        """Test JAX derivatives with multiple contributions"""
+        m, p1, p2, p3, sigma1, sigma2, psi1, psi2, lw = setup_system()
+        ji = lw._get_jax(space=IMP.jax.FreeSpace)
+        X = ji.get_jax_model()
+        g = jax.jit(jax.grad(lambda X: jnp.sum(ji.score_func(X))))(X)
+
+        # The C++ restraint does not provide derivatives, so compare
+        # with finite differences of the C++ score. The C++ code does some
+        # calculations in single precision, so use a fairly large step.
+        def numerical_deriv(get, set):
+            h = 1e-3
+            orig = get()
+            set(orig + h)
+            up = lw.evaluate(False)
+            set(orig - h)
+            down = lw.evaluate(False)
+            set(orig)
+            return (up - down) / (2. * h)
+
+        for i, p in enumerate((p1, p2, p3)):
+            xyz = IMP.core.XYZ(p)
+            for k in range(3):
+                d = numerical_deriv(
+                    lambda: xyz.get_coordinate(k),
+                    lambda v: xyz.set_coordinate(k, v))
+                self.assertAlmostEqual(float(g['xyz'][i][k]), d, delta=1e-4)
+        # Nuisance storage is in particle setup order
+        for i, s in enumerate((sigma1, sigma2, psi1, psi2)):
+            d = numerical_deriv(s.get_scale, s.set_scale)
+            self.assertAlmostEqual(float(g['nuisance'].data[i]), d,
+                                   delta=1e-4)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_jax_derivatives_zero_contribution(self):
+        """Test JAX derivatives when one contribution is certain"""
+        m = IMP.Model()
+        ps = [IMP.core.XYZ.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.Vector3D(x, 0, 0))
+              for x in (0, 1, 30, 50)]
+        sigma = setupnuisance(m, 2, 0, 100, False)
+        # With psi=0, no slope, and particles closer than 2*sigma,
+        # the first contribution has probability exactly 1
+        psi1 = setupnuisance(m, 0.0, 0.0, 0.5, False)
+        psi2 = setupnuisance(m, 0.1, 0.0, 0.5, False)
+        r = IMP.isd.CrossLinkMSRestraint(m, 10.0, True)
+        r.add_contribution((ps[0], ps[1]), (sigma, sigma), psi1)
+        r.add_contribution((ps[2], ps[3]), (sigma, sigma), psi2)
+        self.assertAlmostEqual(r.evaluate(False), 0.0, delta=1e-8)
+        # Restraint containing only the other contribution
+        r_other = IMP.isd.CrossLinkMSRestraint(m, 10.0, True)
+        r_other.add_contribution((ps[2], ps[3]), (sigma, sigma), psi2)
+
+        ji = r._get_jax(space=IMP.jax.FreeSpace)
+        X = ji.get_jax_model()
+        self.assertAlmostEqual(float(jnp.sum(ji.score_func(X))), 0.0,
+                               delta=1e-8)
+        g = jax.grad(lambda X: jnp.sum(ji.score_func(X)))(X)
+        for leaf in jax.tree_util.tree_leaves(g):
+            self.assertTrue(bool(jnp.all(jnp.isfinite(leaf))),
+                            "Non-finite derivative: %s" % leaf)
+        # The first contribution's 1-p is psi1, so d(score)/d(psi1) is
+        # the product of 1-p for all other contributions
+        self.assertAlmostEqual(float(g['nuisance'].data[1]),
+                               1.0 - r_other.get_probability(), delta=1e-6)
+        # Score does not depend on anything else
+        self.assertAlmostEqual(float(jnp.sum(jnp.abs(g['xyz']))), 0.0,
+                               delta=1e-8)
+        self.assertAlmostEqual(float(g['nuisance'].data[0]), 0.0, delta=1e-8)
+        self.assertAlmostEqual(float(g['nuisance'].data[2]), 0.0, delta=1e-8)
+
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
         m, p1, p2, sigma1, sigma2, psi, dr = make_test_restraint()

@@ -138,7 +138,7 @@
     @staticmethod
     def _get_contributions_segments(rs):
         """Map each contribution to the corresponding restraint index,
-           suitable for use by jax.ops.segment_prod()."""
+           suitable for use by IMP.isd._jax_util.get_segment_prod()."""
         import numpy
         import itertools
         nconts = [r.get_number_of_contributions() for r in rs]
@@ -157,7 +157,6 @@
            restraints. They must all have the same length, slope and
            get_log_prob flag."""
         import jax.numpy as jnp
-        import jax.ops
         import math
 
         def sphere_cap(r1, r2, d):
@@ -177,7 +176,7 @@
                              jnp.where(is_long, 0., mid_range))
 
         def get_probability(xyz, r, scale, ps, sigma, psi, length,
-                            slope, segments, numrsr):
+                            slope, segment_prod):
             # If the residues are assigned to the same particle-domain
             # get the distance as if the residue positions were randomly
             # taken from within the sphere representing the domain
@@ -216,14 +215,13 @@
                 term = term * prior
             onemprob = 1.0 - term
 
-            if segments is None:
+            if segment_prod is None:
                 # If only one contribution to each restraint, we are done
                 return 1.0 - onemprob
             else:
                 # Otherwise, take the product of all contributions to each
                 # restraint
-                return 1.0 - jax.ops.segment_prod(onemprob.T, segments, numrsr,
-                                                  indices_are_sorted=True).T
+                return 1.0 - segment_prod(onemprob.T).T
 
         for r in rs:
             if r.get_is_length_variable():
@@ -232,14 +230,19 @@
         psi = cls._get_contributions_psi_numpy(rs)
         pis = cls._get_contributions_particles_numpy(rs)
         segments = cls._get_contributions_segments(rs)
+        if segments is None:
+            segment_prod = None
+        else:
+            # jax.ops.segment_prod is not differentiable, so use our own
+            from IMP.isd._jax_util import get_segment_prod
+            segment_prod = get_segment_prod(segments, len(rs))
         get_log_prob = rs[0].get_log_prob()
         length = rs[0].get_length()
         slope = rs[0].get_slope() if rs[0].get_has_slope() else None
 
         def jax_restraint(X):
             prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
-                                   sigma, psi, length, slope, segments,
-                                   len(rs))
+                                   sigma, psi, length, slope, segment_prod)
             if get_log_prob:
                 return -jnp.log(prob)
             else:
