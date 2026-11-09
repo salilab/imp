@@ -84,7 +84,7 @@ void test_optimizer() {
 }
 
 void test_matrix3d() {
-  Eigen::Matrix3d mat;
+  Eigen::Matrix3d mat = Eigen::Matrix3d::Zero();
   mat(0, 1) = 1;
   mat(0, 2) = 2;
   IMP_NEW(IMP::core::Matrix3D, m, (mat));
