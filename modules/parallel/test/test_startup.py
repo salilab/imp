@@ -3,6 +3,16 @@ import IMP.test
 import IMP.parallel
 import _util
 import _tasks
+import socket
+
+
+# In some test environments, we don't have full network support. In this case,
+# fall back to 'localhost'
+HOST = None
+try:
+    _ = socket.gethostbyname_ex(socket.gethostname())
+except socket.gaierror:
+    HOST = 'localhost'
 
 
 class Tests(IMP.test.TestCase):
@@ -11,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
     def test_simple(self):
         """Test that worker tasks can start up and communicate"""
-        m = _util.Manager(output='simple%d.out')
+        m = _util.Manager(output='simple%d.out', host=HOST)
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         for i in range(10):
@@ -22,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_startup(self):
         """Test context startup callable"""
-        m = _util.Manager(output='startup%d.out')
+        m = _util.Manager(output='startup%d.out', host=HOST)
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context(startup=_tasks.SimpleTask(("foo", "bar")))
         c.add_task(_tasks.simple_func)
@@ -36,7 +46,7 @@ class Tests(IMP.test.TestCase):
         def empty_task():
             pass
         m = _util.Manager(python="/path/does/not/exist",
-                          output='heartbeat%d.out')
+                          output='heartbeat%d.out', host=HOST)
         m.heartbeat_timeout = 0.1
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
@@ -47,7 +57,7 @@ class Tests(IMP.test.TestCase):
 
     def test_startup_no_workers(self):
         """Test that startup with no workers causes a failure"""
-        m = _util.Manager()
+        m = _util.Manager(host=HOST)
         c = m.get_context()
         c.add_task(_tasks.simple_func)
         self.assertRaises(IMP.parallel.NoMoreWorkersError, list,
