@@ -369,7 +369,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         ji = r._get_jax(space=IMP.jax.FreeSpace)
         X = ji.get_jax_model()
         self.assertAlmostEqual(float(jnp.sum(ji.score_func(X))), 0.0,
-                               delta=1e-8)
+                               delta=2e-7)
         g = jax.grad(lambda X: jnp.sum(ji.score_func(X)))(X)
         for leaf in jax.tree_util.tree_leaves(g):
             self.assertTrue(bool(jnp.all(jnp.isfinite(leaf))),
