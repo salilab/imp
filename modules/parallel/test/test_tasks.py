@@ -4,6 +4,16 @@ import IMP.parallel
 import sys
 import _util
 import _tasks
+import socket
+
+
+# In some test environments, we don't have full network support. In this case,
+# fall back to 'localhost'
+HOST = None
+try:
+    _ = socket.gethostbyname_ex(socket.gethostname())
+except socket.gaierror:
+    HOST = 'localhost'
 
 
 class Tests(IMP.test.TestCase):
@@ -12,7 +22,7 @@ class Tests(IMP.test.TestCase):
 
     def test_pass_exceptions(self):
         """Test that exceptions can be passed to and from tasks"""
-        m = _util.Manager(output='passexc%d.out')
+        m = _util.Manager(output='passexc%d.out', host=HOST)
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         c.add_task(_tasks.SimpleTask(IndexError("test")))
@@ -22,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_raise_exceptions(self):
         """Test that exceptions raised by a task are propagated"""
-        m = _util.Manager(output='raiseexc%d.out')
+        m = _util.Manager(output='raiseexc%d.out', host=HOST)
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         c.add_task(_tasks.error_task)
@@ -36,7 +46,7 @@ class Tests(IMP.test.TestCase):
             self.skipTest(
                 "Cannot reliably handle NaN and Inf on Irix or Alpha")
 
-        m = _util.Manager(output='floats%d.out')
+        m = _util.Manager(output='floats%d.out', host=HOST)
         m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
 
