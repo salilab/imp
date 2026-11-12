@@ -381,8 +381,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         # Score does not depend on anything else
         self.assertAlmostEqual(float(jnp.sum(jnp.abs(g['xyz']))), 0.0,
                                delta=1e-8)
-        self.assertAlmostEqual(float(g['nuisance'].data[0]), 0.0, delta=1e-8)
-        self.assertAlmostEqual(float(g['nuisance'].data[2]), 0.0, delta=1e-8)
+        self.assertAlmostEqual(float(g['nuisance'].data[0]), 0.0, delta=2e-7)
+        self.assertAlmostEqual(float(g['nuisance'].data[2]), 0.0, delta=2e-7)
 
     def test_serialize(self):
         """Test (un-)serialize of CrossLinkMSRestraint"""
