@@ -30,7 +30,10 @@ class UnitSimplexDTests(IMP.test.TestCase):
 
     @staticmethod
     def _get_normal_thresh(tailprob, sigma=1, dim=1):
-        alpha = (1 - tailprob) ** dim
+        """Get threshold t such that, for `dim` independent normal variables
+           with standard deviation `sigma`, the probability that any of them
+           has |x| > t is `tailprob`."""
+        alpha = (1 - tailprob) ** (1.0 / dim)
         return sigma * np.sqrt(2) * scipy.special.erfinv(alpha)
 
     def test_construction(self):
@@ -160,7 +163,7 @@ class UnitSimplexDTests(IMP.test.TestCase):
                     each_fail_prob, dim=d, sigma=mcse
                 )
                 for i in range(d):
-                    self.assertLessEqual(mean_bary_vs[i], mean_thresh)
+                    self.assertLessEqual(abs(mean_bary_vs[i]), mean_thresh)
 
     def pickle(self):
         """Test (un-)pickle of UnitSimplexD"""
