@@ -594,6 +594,21 @@ class IMPKERNELEXPORT Model : public Object
       changed when set 0 is active. */
   void set_number_of_sphere_attribute_sets(int nsets);
 
+  //! Get the number of XYZ attribute sets
+  /** This can only be used when external storage is being used
+      (for internal storage, use get_number_of_sphere_attribute_sets instead)
+   */
+  int get_number_of_xyz_attribute_sets() const;
+
+  //! Set the number of XYZ attribute sets
+  void set_number_of_xyz_attribute_sets(int nsets);
+
+  //! Get the number of radius attribute sets
+  int get_number_of_radius_attribute_sets() const;
+
+  //! Set the number of radius attribute sets
+  void set_number_of_radius_attribute_sets(int nsets);
+
   //! Set the currently active sphere attribute set
   /** Only a single attribute set can be active at a time. All get or set
       of particle coordinates/radii will use the active set. */

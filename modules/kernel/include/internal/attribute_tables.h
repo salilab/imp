@@ -483,6 +483,9 @@ class FloatAttributeTable {
   // make use bitset
   BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
   FloatRanges ranges_;
+  // For external storage, XYZ and R can have different numbers of
+  // attribute sets (for internal, they must match the number of spheres)
+  int n_xyz_sets_, n_radius_sets_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
       *write_derivatives_mask_;
@@ -494,6 +497,7 @@ class FloatAttributeTable {
     // Note that we don't serialize masks; they are handled by Model
     ar(spheres_, sphere_derivatives_, internal_coordinates_);
     ar(internal_coordinate_derivatives_, data_, derivatives_, optimizeds_);
+    ar(n_xyz_sets_, n_radius_sets_);
   }
 
   algebra::Sphere3D get_invalid_sphere() const {
@@ -514,10 +518,13 @@ class FloatAttributeTable {
     IMP_SWAP_MEMBER(optimizeds_);
     IMP_SWAP_MEMBER(internal_coordinates_);
     IMP_SWAP_MEMBER(internal_coordinate_derivatives_);
+    IMP_SWAP_MEMBER(n_xyz_sets_);
+    IMP_SWAP_MEMBER(n_radius_sets_);
   }
   FloatAttributeTable()
+      : n_xyz_sets_(1), n_radius_sets_(1)
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      : read_mask_(nullptr),
+      , read_mask_(nullptr),
         write_mask_(nullptr),
         add_remove_mask_(nullptr),
         read_derivatives_mask_(nullptr),
@@ -1005,6 +1012,8 @@ class FloatAttributeTable {
   }
 
   int get_number_of_sphere_attribute_sets() const {
+    IMP_USAGE_CHECK(!spheres_.get_sets_external(),
+                    "Only supported for internal storage");
     return spheres_.get_number_of_sets();
   }
 
@@ -1069,7 +1078,35 @@ class FloatAttributeTable {
     }
   }
 
+  int get_number_of_xyz_attribute_sets() const {
+    IMP_USAGE_CHECK(spheres_.get_sets_external(),
+                    "Only supported for external storage");
+    return n_xyz_sets_;
+  }
+
+  void set_number_of_xyz_attribute_sets(int nsets) {
+    IMP_USAGE_CHECK(spheres_.get_sets_external(),
+                    "Only supported for external storage");
+    IMP_USAGE_CHECK(nsets >= 1, "Cannot have less than 1 set");
+    n_xyz_sets_ = nsets;
+  }
+
+  int get_number_of_radius_attribute_sets() const {
+    IMP_USAGE_CHECK(spheres_.get_sets_external(),
+                    "Only supported for external storage");
+    return n_radius_sets_;
+  }
+
+  void set_number_of_radius_attribute_sets(int nsets) {
+    IMP_USAGE_CHECK(spheres_.get_sets_external(),
+                    "Only supported for external storage");
+    IMP_USAGE_CHECK(nsets >= 1, "Cannot have less than 1 set");
+    n_radius_sets_ = nsets;
+  }
+
   void set_number_of_sphere_attribute_sets(int nsets) {
+    IMP_USAGE_CHECK(!spheres_.get_sets_external(),
+                    "Only supported for internal storage");
     spheres_.set_number_of_sets(nsets, get_invalid_sphere());
   }
 

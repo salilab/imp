@@ -512,9 +512,10 @@ PyObject *_get_internal_coordinate_derivatives_numpy(
            the second of radii. See Model::get_ints_numpy() for more details."""
         xyz, r = _get_spheres_numpy(self, self, read_only)
         if self.get_sphere_attribute_sets_external():
-            nsets = self.get_number_of_sphere_attribute_sets()
-            return (numpy.broadcast_to(xyz, (nsets,) + xyz.shape),
-                    numpy.broadcast_to(r, (nsets,) + r.shape))
+            n_xyz_sets = self.get_number_of_xyz_attribute_sets()
+            n_r_sets = self.get_number_of_radius_attribute_sets()
+            return (numpy.broadcast_to(xyz, (n_xyz_sets,) + xyz.shape),
+                    numpy.broadcast_to(r, (n_r_sets,) + r.shape))
         else:
             return xyz, r
 

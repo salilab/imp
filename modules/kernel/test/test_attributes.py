@@ -231,16 +231,21 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZR.setup_particle(
             p2, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1.0, 2.0, 3.0), 2.5))
         m.set_sphere_attribute_sets_external(True)
-        m.set_number_of_sphere_attribute_sets(4)
+        self.assertEqual(m.get_number_of_xyz_attribute_sets(), 1)
+        self.assertEqual(m.get_number_of_radius_attribute_sets(), 1)
+        m.set_number_of_xyz_attribute_sets(4)
+        m.set_number_of_radius_attribute_sets(3)
+        self.assertEqual(m.get_number_of_xyz_attribute_sets(), 4)
+        self.assertEqual(m.get_number_of_radius_attribute_sets(), 3)
         self.assertTrue(m.get_sphere_attribute_sets_external())
+        # Must use xyz/radius methods on external sets, not spheres
+        self.assertRaisesUsageException(
+            m.set_number_of_sphere_attribute_sets, 4)
+        self.assertRaisesUsageException(
+            m.get_number_of_sphere_attribute_sets)
         # Can't change active set when external
         self.assertRaisesUsageException(m.set_active_sphere_attribute_set, 2)
-        # Can't change external flag when sets>1
-        self.assertRaisesUsageException(
-            m.set_sphere_attribute_sets_external, False)
-        self.assertRaisesUsageException(
-            m.set_sphere_attribute_sets_external, True)
-        # NumPy view should return all 4 sets, readonly
+        # NumPy view should return all 4 XYZ sets and 3 R sets, readonly
         if IMP.IMP_KERNEL_HAS_NUMPY:
             xyz, r = m.get_spheres_numpy()
             self.assertFalse(xyz.flags.owndata)
@@ -248,7 +253,7 @@ class Tests(IMP.test.TestCase):
             self.assertFalse(r.flags.owndata)
             self.assertFalse(r.flags.writeable)
             self.assertEqual(xyz.shape, (4, 2, 3))
-            self.assertEqual(r.shape, (4, 2))
+            self.assertEqual(r.shape, (3, 2))
             self.assertAlmostEqual(xyz[0,0,0], 5.0, delta=1e-4)
             self.assertAlmostEqual(xyz[2,0,0], 5.0, delta=1e-4)
 
@@ -268,6 +273,16 @@ class Tests(IMP.test.TestCase):
 
         m.set_number_of_sphere_attribute_sets(4)
         self.assertEqual(m.get_number_of_sphere_attribute_sets(), 4)
+
+        # Must use sphere methods on internal sets, not xyz/radius
+        self.assertRaisesUsageException(
+            m.set_number_of_radius_attribute_sets, 4)
+        self.assertRaisesUsageException(
+            m.get_number_of_radius_attribute_sets)
+        self.assertRaisesUsageException(
+            m.set_number_of_xyz_attribute_sets, 4)
+        self.assertRaisesUsageException(
+            m.get_number_of_xyz_attribute_sets)
 
         self.assertAlmostEqual(d1.get_coordinates()[0], 5.0, delta=1e-5)
         self.assertAlmostEqual(d1.get_radius(), 1.5, delta=1e-5)
