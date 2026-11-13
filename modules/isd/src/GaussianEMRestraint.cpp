@@ -13,6 +13,7 @@
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/isd/em_utilities.h>
+#include <IMP/core/XYZR.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -47,6 +48,20 @@ kahan_vector_sum(KahanVectorAccumulation accumulation,
   result.correction = (t - accumulation.sum) - y;
   result.sum = t;
   return result;
+}
+
+// The close pair containers list every pair closer than their cutoff, plus
+// other pairs that depend on where the particles were when the lists were
+// last updated. Score only pairs whose spheres are closer than the cutoff
+// plus this margin, so that the score depends only on the coordinates. The
+// margin (twice the containers' default slack of 1A) is the set of pairs a
+// freshly updated list holds, so scores are unchanged right after an update.
+const double pair_margin = 2.0;
+
+inline bool get_is_close(Model *m, const ParticleIndexPair &pp,
+                         double cutoff) {
+  return core::get_distance(core::XYZR(m, std::get<0>(pp)),
+                            core::XYZR(m, std::get<1>(pp))) < cutoff;
 }
 
 } // anonymous namespace
@@ -115,11 +130,11 @@ void GaussianEMRestraint::create_containers() {
   md_container_ = new container::CloseBipartitePairContainer(
          new container::ListSingletonContainer(mdl,model_ps_),
          new container::ListSingletonContainer(mdl,density_ps_),
-         density_cutoff_dist_);
+         density_cutoff_dist_ + pair_margin);
 
   mm_container_ = new container::ClosePairContainer(
          new container::ListSingletonContainer(mdl,model_ps_),
-         model_cutoff_dist_);
+         model_cutoff_dist_ + pair_margin);
 }
 
 void GaussianEMRestraint::compute_initial_scores() {
@@ -173,8 +188,10 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     }
   }
 
+  double mm_cutoff = model_cutoff_dist_ + pair_margin;
   IMP_CONTAINER_FOREACH(container::ClosePairContainer,
                           mm_container_,{
+    if (get_is_close(get_model(), _1, mm_cutoff)) {
       Float score = score_gaussian_overlap(get_model(),_1,&deriv);
       mm_score = kahan_sum(mm_score,2*score);
       if (accum) {
@@ -184,16 +201,20 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
         derivs_mm[std::get<1>(_1)] = kahan_vector_sum(
                               derivs_mm[std::get<1>(_1)], 2.0*deriv);
       }
+    }
   });
 
+  double md_cutoff = density_cutoff_dist_ + pair_margin;
   IMP_CONTAINER_FOREACH(container::CloseBipartitePairContainer,
                         md_container_,{
-    Float score = score_gaussian_overlap(get_model(),_1,&deriv);
-    md_score = kahan_sum(md_score,score);
-    if (local_) local_dens.insert(std::get<1>(_1));
-    if (accum) {
-      derivs_md[std::get<0>(_1)] = kahan_vector_sum(
-                                     derivs_md[std::get<0>(_1)], -deriv);
+    if (get_is_close(get_model(), _1, md_cutoff)) {
+      Float score = score_gaussian_overlap(get_model(),_1,&deriv);
+      md_score = kahan_sum(md_score,score);
+      if (local_) local_dens.insert(std::get<1>(_1));
+      if (accum) {
+        derivs_md[std::get<0>(_1)] = kahan_vector_sum(
+                                       derivs_md[std::get<0>(_1)], -deriv);
+      }
     }
   });
 
