@@ -165,7 +165,7 @@ class UnitSimplexDTests(IMP.test.TestCase):
                 for i in range(d):
                     self.assertLessEqual(abs(mean_bary_vs[i]), mean_thresh)
 
-    def pickle(self):
+    def test_pickle(self):
         """Test (un-)pickle of UnitSimplexD"""
         for d, st, args, vt in self.types:
             s1 = st(*args)
