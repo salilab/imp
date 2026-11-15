@@ -7,6 +7,17 @@ The :mod:`ihm.analysis` Python module
 
 .. automodule:: ihm.analysis
 
+.. autoclass:: Feature
+   :members:
+
+.. autoclass:: ScoreFeature
+
+.. autoclass:: RMSDFeature
+
+.. autoclass:: DRMSDFeature
+
+.. autoclass:: NoFeature
+
 .. autoclass:: Step
    :members:
 

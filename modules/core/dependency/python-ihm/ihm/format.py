@@ -203,6 +203,7 @@ class CifWriter(_Writer):
            and not obj.startswith('_') \
            and not obj.startswith('global_') \
            and not obj.startswith('[') \
+           and not obj.startswith(']') \
            and obj[:5] not in ('data_', 'save_', 'loop_', 'stop_', '?', '.'):
             return obj
         elif isinstance(obj, float):

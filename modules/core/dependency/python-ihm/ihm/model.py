@@ -82,7 +82,8 @@ class Model:
        :class:`ModelGroup` objects, which in turn are placed inside
        :class:`State` objects, which are grouped in
        :class:`StateGroup` objects, which are finally added to the system
-       via :attr:`ihm.System.state_groups`.
+       via :attr:`ihm.System.state_groups`. (If this hierarchy is not needed,
+       models can be added directly using :attr:`ihm.System.models`.)
 
        :param assembly: The parts of the system that were modeled.
        :type assembly: :class:`~ihm.Assembly`

@@ -132,14 +132,19 @@ saxsB_rsr.fits[model] = ihm.restraint.SASRestraintFit(chi_value=2.1)
 em_rsr.fits[model] = ihm.restraint.EM3DRestraintFit(
     cross_correlation_coefficient=0.9)
 
-# Similar models can be grouped together. Here we only have a single model
-# in the group
-model_group = ihm.model.ModelGroup([model], name='All models')
+# Once done, we add the model to the System
+system.models.append(model)
 
-# Groups are then placed into states, which can in turn be grouped. In this
-# case we have only a single state:
-state = ihm.model.State([model_group])
-system.state_groups.append(ihm.model.StateGroup([state]))
+# IHMCIF allows for a hierarchy of models. In this case we don't use it
+# since we have only a single model, but models can if desired be grouped
+# together using ModelGroup; those groups can be collected into States;
+# and those States can in turn be grouped into StateGroups. Finally, the
+# System can reference any number of StateGroups. The commented-out code
+# below demonstrates this hierarchy:
+#
+# model_group = ihm.model.ModelGroup([model], name='All models')
+# state = ihm.model.State([model_group])
+# system.state_groups.append(ihm.model.StateGroup([state]))
 
 # Once the system is complete, we can write it out to an mmCIF file:
 with open('output.cif', 'w') as fh:

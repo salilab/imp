@@ -1106,6 +1106,34 @@ _struct_ref_seq_dif.details
 #
 """)
 
+    def test_struct_ref_negative_strand(self):
+        """Test StructRefDumper with alignment to negative strand"""
+        system = ihm.System()
+        r1 = ihm.reference.Sequence(
+            db_name='GB', db_code='testcode', accession='testacc',
+            sequence=None)
+        r1.alignments.append(ihm.reference.Alignment(
+            db_begin=3950328, db_end=3948799, entity_begin=1,
+            entity_end=1530))
+        # Sequence is not checked for negative strand alignments
+        r2 = ihm.reference.Sequence(
+            db_name='GB', db_code='testcode2', accession='testacc2',
+            sequence='ACGU')
+        r2.alignments.append(ihm.reference.Alignment(
+            db_begin=4, db_end=1))
+        system.entities.append(ihm.Entity('A' * 1530, references=[r1]))
+        system.entities.append(ihm.Entity('UGCA', references=[r2]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system)  # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system)  # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertIn("""_struct_ref_seq.db_align_end
+1 1 1 1530 3950328 3948799
+2 2 1 4 4 1
+#""", out)
+
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
         system = ihm.System()
@@ -1758,6 +1786,10 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         loc = ihm.location.InputFileLocation(repo=repo3, path=None,
                                              details='EM micrographs')
         system.locations.append(loc)
+        # Dictionary allows for path to be ? also
+        loc = ihm.location.InputFileLocation(repo=repo3, path=ihm.unknown,
+                                             details='EM micrographs')
+        system.locations.append(loc)
 
         with utils.temporary_directory('') as tmpdir:
             # Force tmpdir to be a relative path (in Python 3.12 or later
@@ -1774,11 +1806,11 @@ _ihm_struct_assembly_details.entity_poly_segment_id
 
             d = ihm.dumper._ExternalReferenceDumper()
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 6)
+            self.assertEqual(len(d._ref_by_id), 7)
             self.assertEqual(len(d._repo_by_id), 4)
             # Repeated calls to finalize() should yield identical results
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 6)
+            self.assertEqual(len(d._ref_by_id), 7)
             self.assertEqual(len(d._repo_by_id), 4)
             out = _get_dumper_output(d, system)
             self.assertEqual(out, """#
@@ -1809,7 +1841,8 @@ _ihm_external_files.details
 3 2 foo/bar/baz 'Modeling or post-processing output' . . .
 4 3 foo.spd 'Input data or restraints' . . 'EM micrographs'
 5 3 . 'Input data or restraints' . . 'EM micrographs'
-6 4 %s 'Modeling workflow or script' . 4 .
+6 3 ? 'Input data or restraints' . . 'EM micrographs'
+7 4 %s 'Modeling workflow or script' . 4 .
 #
 """ % bar.replace(os.sep, '/'))
 
@@ -2387,14 +2420,14 @@ _ihm_starting_model_seq_dif.details
             method='Monte Carlo', num_models_begin=0,
             num_models_end=500, multi_scale=True, ensemble=True, name='s1'))
         p1.steps.append(ihm.protocol.Step(
-            assembly=assembly, dataset_group=dsg,
+            assembly=None, dataset_group=dsg,
             method='Replica exchange', num_models_begin=500,
             num_models_end=2000, multi_scale=True, ensemble=False))
         system.orphan_protocols.append(p1)
 
         p2 = ihm.protocol.Protocol('sampling', details='extra details')
         p2.steps.append(ihm.protocol.Step(
-            assembly=assembly, dataset_group=dsg2,
+            assembly=ihm.unknown, dataset_group=dsg2,
             method='Replica exchange', num_models_begin=2000,
             num_models_end=1000, multi_scale=True,
             software=software, script_file=script,
@@ -2432,8 +2465,8 @@ _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
 1 1 1 42 99 s1 'Monte Carlo' 0 500 YES NO NO YES . . .
-2 1 2 42 99 . 'Replica exchange' 500 2000 YES NO NO NO . . .
-3 2 1 42 101 . 'Replica exchange' 2000 1000 YES NO NO NO 80 90 'test step'
+2 1 2 . 99 . 'Replica exchange' 500 2000 YES NO NO NO . . .
+3 2 1 ? 101 . 'Replica exchange' 2000 1000 YES NO NO NO 80 90 'test step'
 #
 """)
 
@@ -2448,8 +2481,9 @@ _ihm_modeling_protocol_details.description
         a1 = ihm.analysis.Analysis()
         a1.steps.append(ihm.analysis.EmptyStep())
         a2 = ihm.analysis.Analysis()
+        f = ihm.analysis.ScoreFeature(name='my custom score')
         a2.steps.append(ihm.analysis.FilterStep(
-            feature='energy/score', num_models_begin=1000,
+            feature=f, num_models_begin=1000,
             num_models_end=200))
         a2.steps.append(ihm.analysis.ClusterStep(
             feature='RMSD', num_models_begin=200, num_models_end=42))
@@ -2462,7 +2496,7 @@ _ihm_modeling_protocol_details.description
         script = MockObject()
         script._id = 501
         a2.steps.append(ihm.analysis.ValidationStep(
-            feature='energy/score', num_models_begin=42,
+            feature=None, num_models_begin=42,
             num_models_end=42, assembly=asmb1, dataset_group=dg1,
             software=software, script_file=script, details='test step'))
         p1.analyses.extend((a1, a2))
@@ -2482,6 +2516,7 @@ _ihm_modeling_post_process.analysis_id
 _ihm_modeling_post_process.step_id
 _ihm_modeling_post_process.type
 _ihm_modeling_post_process.feature
+_ihm_modeling_post_process.feature_name
 _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 _ihm_modeling_post_process.struct_assembly_id
@@ -2489,10 +2524,10 @@ _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
 _ihm_modeling_post_process.details
-1 1 1 1 none none . . . . . . .
-2 1 2 1 filter energy/score 1000 200 . . . . .
-3 1 2 2 cluster RMSD 200 42 . . . . .
-4 1 2 3 validation energy/score 42 42 101 301 401 501 'test step'
+1 1 1 1 none none . . . . . . . .
+2 1 2 1 filter energy/score 'my custom score' 1000 200 . . . . .
+3 1 2 2 cluster RMSD . 200 42 . . . . .
+4 1 2 3 validation . . 42 42 101 301 401 501 'test step'
 #
 """)
 
@@ -3304,6 +3339,61 @@ _ihm_ensemble_sub_sample.model_group_id
 _ihm_ensemble_sub_sample.file_id
 1 ss1 2 5 0 . .
 2 ss2 2 5 2 42 3
+#
+""")
+
+    def test_ensemble_dumper_post_process(self):
+        """Test EnsembleDumper reference to a post-process step"""
+        system = ihm.System()
+        p1 = ihm.protocol.Protocol('refinement')
+        system.orphan_protocols.append(p1)
+
+        a1 = ihm.analysis.Analysis()
+        a1.steps.append(ihm.analysis.EmptyStep())
+        a2 = ihm.analysis.Analysis()
+        a2.steps.append(ihm.analysis.FilterStep(
+            feature='energy/score', num_models_begin=1000,
+            num_models_end=200))
+        a2.steps.append(ihm.analysis.ClusterStep(
+            feature='RMSD', num_models_begin=200, num_models_end=42))
+        p1.analyses.extend((a1, a2))
+
+        # Each ensemble is the output of a different step of the second
+        # analysis
+        e1 = ihm.model.Ensemble(model_group=None, num_models=200,
+                                post_process=a2.steps[0])
+        e2 = ihm.model.Ensemble(model_group=None, num_models=42,
+                                post_process=a2.steps[1])
+        system.ensembles.extend((e1, e2))
+
+        dumper = ihm.dumper._PostProcessDumper()
+        dumper.finalize(system)  # assign analysis step IDs
+
+        dumper = ihm.dumper._EnsembleDumper()
+        dumper.finalize(system)  # assign ensemble IDs
+
+        # post_process_id should be the _ihm_modeling_post_process.id of
+        # each step (2, 3), not the number of the step within its
+        # analysis (step_id; 1, 2)
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_ensemble_info.ensemble_id
+_ihm_ensemble_info.ensemble_name
+_ihm_ensemble_info.post_process_id
+_ihm_ensemble_info.model_group_id
+_ihm_ensemble_info.ensemble_clustering_method
+_ihm_ensemble_info.ensemble_clustering_feature
+_ihm_ensemble_info.num_ensemble_models
+_ihm_ensemble_info.num_ensemble_models_deposited
+_ihm_ensemble_info.ensemble_precision_value
+_ihm_ensemble_info.ensemble_file_id
+_ihm_ensemble_info.details
+_ihm_ensemble_info.model_group_superimposed_flag
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 . 2 . . . 200 . . . . . NO .
+2 . 3 . . . 42 . . . . . NO .
 #
 """)
 
@@ -4394,10 +4484,26 @@ _ihm_pseudo_site.description
         dataset = MockObject()
         dataset._id = 97
 
-        dist = ihm.restraint.UpperBoundDistanceRestraint(25.0)
-        r = ihm.restraint.CenterGeometricRestraint(
+        dist = ihm.restraint.UpperBoundDistanceRestraint(25.0, esd=2.0)
+        for restrain_all in (True, ihm.unknown):
+            r = ihm.restraint.CenterGeometricRestraint(
+                dataset=dataset, geometric_object=geom, feature=feat,
+                distance=dist, harmonic_force_constant=2.0,
+                restrain_all=restrain_all)
+            system.restraints.append(r)
+
+        dist = ihm.restraint.LowerBoundDistanceRestraint(25.0, esd=1.0)
+        r = ihm.restraint.InnerSurfaceGeometricRestraint(
             dataset=dataset, geometric_object=geom, feature=feat,
-            distance=dist, harmonic_force_constant=2.0, restrain_all=False)
+            distance=dist, harmonic_force_constant=2.0,
+            restrain_all=False)
+        system.restraints.append(r)
+
+        dist = ihm.restraint.LowerUpperBoundDistanceRestraint(15.0, 22.0)
+        r = ihm.restraint.OuterSurfaceGeometricRestraint(
+            dataset=dataset, geometric_object=geom, feature=feat,
+            distance=dist, harmonic_force_constant=2.0,
+            restrain_all=None, probability=0.1, details='some details')
         system.restraints.append(r)
 
         dumper = ihm.dumper._GeometricRestraintDumper()
@@ -4413,10 +4519,18 @@ _ihm_geometric_object_distance_restraint.object_characteristic
 _ihm_geometric_object_distance_restraint.restraint_type
 _ihm_geometric_object_distance_restraint.harmonic_force_constant
 _ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_lower_limit_esd
 _ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit_esd
+_ihm_geometric_object_distance_restraint.distance_probability
 _ihm_geometric_object_distance_restraint.group_conditionality
 _ihm_geometric_object_distance_restraint.dataset_list_id
-1 23 44 center 'upper bound' 2.000 . 25.000 ANY 97
+_ihm_geometric_object_distance_restraint.details
+1 23 44 center 'upper bound' 2.000 . . 25.000 2.000 . ALL 97 .
+2 23 44 center 'upper bound' 2.000 . . 25.000 2.000 . ? 97 .
+3 23 44 'inner surface' 'lower bound' 2.000 25.000 1.000 . . . ANY 97 .
+4 23 44 'outer surface' 'lower and upper bound' 2.000 15.000 . 22.000 . 0.100 .
+97 'some details'
 #
 """)
 
@@ -4438,16 +4552,16 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         harmdist = ihm.restraint.HarmonicDistanceRestraint(6.4, esd=0.5)
         r1 = ihm.restraint.DerivedDistanceRestraint(
             dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
-            probability=0.8)
+            probability=0.8, restrain_all=True)
         r2 = ihm.restraint.DerivedDistanceRestraint(
             dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
-            probability=0.4)
+            probability=0.4, restrain_all=False)
         r3 = ihm.restraint.DerivedDistanceRestraint(
             dataset=dataset, feature1=feat1, feature2=feat2, distance=unkdist,
             probability=0.6, mic_value=0.4, random_exclusion_fraction=0.3)
         r4 = ihm.restraint.DerivedDistanceRestraint(
             dataset=dataset, feature1=feat1, feature2=feat2,
-            distance=harmdist)
+            distance=harmdist, restrain_all=ihm.unknown)
         rg = ihm.restraint.RestraintGroup((r2, r3))
         # r2 is in restraints and groups
         system.restraints.extend((r1, r2, r4))
@@ -4475,9 +4589,9 @@ _ihm_derived_distance_restraint.mic_value
 _ihm_derived_distance_restraint.random_exclusion_fraction
 _ihm_derived_distance_restraint.group_conditionality
 _ihm_derived_distance_restraint.dataset_list_id
-1 . 44 84 'lower bound' 25.000 . 1.500 . . . 0.800 . . . 97
-2 1 44 84 'lower bound' 25.000 . 1.500 . . . 0.400 . . . 97
-3 . 44 84 harmonic 6.400 6.400 . . 6.400 0.500 . . . . 97
+1 . 44 84 'lower bound' 25.000 . 1.500 . . . 0.800 . . ALL 97
+2 1 44 84 'lower bound' 25.000 . 1.500 . . . 0.400 . . ANY 97
+3 . 44 84 harmonic 6.400 6.400 . . 6.400 0.500 . . . ? 97
 4 1 44 84 . . . . . . . 0.600 0.400 0.300 . 97
 #
 """)

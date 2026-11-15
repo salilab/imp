@@ -1,3 +1,31 @@
+2.13 - 2026-11-11
+=================
+  - The new :attr:`ihm.System.models` gives a flat view of every
+    :class:`ihm.model.Model` in the system. Models can be added directly to
+    this convenience list if higher level organization (e.g. into
+    :class:`ihm.model.ModelGroup` or :class:`ihm.model.StateGroup`) is not
+    needed (#206).
+  - :func:`ihm.dictionary.Dictionary.validate` now takes new optional
+    ``warn_missing_category`` and ``warn_missing_keyword`` arguments,
+    which can be used to warn about optional items that are missing (#205).
+  - Many performance improvements and bug fixes in mmCIF and BinaryCIF reading.
+  - :class:`~ihm.restraint.GeometricRestraint` and
+    :class:`~ihm.restraint.DerivedDistanceRestraint` now both support
+    specification of an estimated standard deviation for distances.
+  - Bugfix: improved handling of many optional data items when set to
+    ? (missing) or . (omitted). These would previously cause the reader or
+    writer to fail.
+  - Bugfix: sequences that are entirely UNK are now considered unique,
+    so multiple :class:`ihm.Entity` objects can share the same all-UNK
+    sequence.
+  - Bugfix: :class:`ihm.multi_state_scheme.EquilibriumConstant` and subclasses
+    now write the correct method to output files.
+  - Bugfix: the mapping between database and model sequences (as in the
+    ``struct_ref_seq`` table) now works correctly for negative strands (#208).
+  - Bugfix: datasets without a location are no longer merged into one (#201).
+  - Bugfix: ``ihm_ensemble_info.post_process_id`` now gets the correct
+    ID (#209).
+
 2.12 - 2026-10-07
 =================
   - Add support for the latest IHMCIF dictionary, which now includes

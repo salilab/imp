@@ -129,6 +129,8 @@ class Alignment:
               that is used (defaults to the entire sequence).
        :param int db_end: The last residue in the database sequence
               that is used (or None, the default, to use the entire sequence).
+              This can be less than `db_begin` for an alignment to a
+              negative strand.
        :param int entity_begin: The first residue in the :class:`~ihm.Entity`
               sequence that is taken from the reference (defaults to the entire
               entity sequence).

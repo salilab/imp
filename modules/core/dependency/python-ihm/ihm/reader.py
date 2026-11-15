@@ -1814,15 +1814,32 @@ def _make_feature_segment(asym, rigid, primitive, count, smodel, description):
         count=count, starting_model=smodel, description=description)
 
 
+def _make_omitted_segment(asym, rigid, primitive, count, smodel, description):
+    return ihm.representation._UnknownSegment(
+        asym_unit=asym, rigid=rigid, primitive=primitive,
+        count=count, starting_model=smodel, description=description,
+        granularity=None)
+
+
+def _make_unknown_segment(asym, rigid, primitive, count, smodel, description):
+    return ihm.representation._UnknownSegment(
+        asym_unit=asym, rigid=rigid, primitive=primitive,
+        count=count, starting_model=smodel, description=description,
+        granularity=ihm.unknown)
+
+
 class _ModelRepresentationDetailsHandler(Handler):
     category = '_ihm_model_representation_details'
     ignored_keywords = ['entity_description']
 
-    _rigid_map = {'rigid': True, 'flexible': False, None: None}
+    _rigid_map = {'rigid': True, 'flexible': False, None: None,
+                  ihm.unknown: ihm.unknown}
     _segment_factory = {'by-atom': _make_atom_segment,
                         'by-residue': _make_residue_segment,
                         'multi-residue': _make_multi_residue_segment,
-                        'by-feature': _make_feature_segment}
+                        'by-feature': _make_feature_segment,
+                        None: _make_omitted_segment,
+                        ihm.unknown: _make_unknown_segment}
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -1875,7 +1892,7 @@ class _StartingModelDetailsHandler(Handler):
         self.copy_if_present(
             m, locals(), keys=('description',),
             mapkeys={'starting_model_auth_asym_id': 'asym_id'})
-        if starting_model_sequence_offset is not None:
+        if starting_model_sequence_offset not in (None, ihm.unknown):
             m.offset = int(starting_model_sequence_offset)
 
     def finalize(self):
@@ -1993,25 +2010,36 @@ class _PostProcessHandler(Handler):
                              if issubclass(x[1], ihm.analysis.Step)
                              and x[1] is not ihm.analysis.Step)
 
+        # Map _ihm_modeling_post_process.feature to corresponding subclass
+        # of ihm.analysis.Feature
+        self.feat_map = {x[1].type.lower(): x[1]
+                         for x in inspect.getmembers(ihm.analysis,
+                                                     inspect.isclass)
+                         if issubclass(x[1], ihm.analysis.Feature)}
+
     def __call__(self, protocol_id, analysis_id, type, id,
                  num_models_begin: int, num_models_end: int,
                  struct_assembly_id, dataset_group_id,
-                 software_id, script_file_id, feature, details):
+                 software_id, script_file_id, feature, feature_name, details):
         protocol = self.sysr.protocols.get_by_id(protocol_id)
         analysis = self.sysr.analyses.get_by_id((protocol_id, analysis_id))
         if analysis._id not in [a._id for a in protocol.analyses]:
             protocol.analyses.append(analysis)
 
-        typ = type.lower() if type is not None else 'other'
+        typ = type.lower() if type not in (None, ihm.unknown) else 'other'
         step = self.sysr.analysis_steps.get_by_id(
             id, self.type_map.get(typ, ihm.analysis.Step))
         analysis.steps.append(step)
         step.details = details
+        if feature not in (None, ihm.unknown):
+            # Default invalid feature type to 'other'
+            feat_cls = self.feat_map.get(feature.lower(), ihm.analysis.Feature)
+            feature = feat_cls(name=feature_name)
 
         if typ == 'none':
             # If this step was forward referenced, feature will have been set
-            # to Python None - set it to explicit 'none' instead
-            step.feature = 'none'
+            # to Python None - set it to the correct value
+            step.feature = feature
         else:
             step.num_models_begin = num_models_begin
             step.num_models_end = num_models_end
@@ -2022,11 +2050,7 @@ class _PostProcessHandler(Handler):
             step.software = self.sysr.software.get_by_id_or_none(software_id)
             step.script_file = self.sysr.external_files.get_by_id_or_none(
                 script_file_id)
-            # Default to "other" if invalid method/feature read
-            try:
-                self.copy_if_present(step, locals(), keys=['feature'])
-            except ValueError:
-                step.feature = "other"
+            step.feature = feature
 
 
 class _ModelListHandler(Handler):
@@ -2636,7 +2660,8 @@ _handle_distance = {'harmonic': _make_harmonic,
 
 class _DerivedDistanceRestraintHandler(Handler):
     category = '_ihm_derived_distance_restraint'
-    _cond_map = {'ALL': True, 'ANY': False, None: None}
+    _cond_map = {'ALL': True, 'ANY': False, None: None,
+                 ihm.unknown: ihm.unknown}
 
     def __call__(self, id, group_id, dataset_list_id, feature_id_1,
                  feature_id_2, restraint_type, group_conditionality,
@@ -2842,7 +2867,8 @@ class _PlaneHandler(Handler):
 class _GeometricRestraintHandler(Handler):
     category = '_ihm_geometric_object_distance_restraint'
 
-    _cond_map = {'ALL': True, 'ANY': False, None: None}
+    _cond_map = {'ALL': True, 'ANY': False, None: None,
+                 ihm.unknown: ihm.unknown}
 
     # Map object_characteristic to corresponding subclass
     _type_map = dict((x[1].object_characteristic.lower(), x[1])
@@ -2853,7 +2879,10 @@ class _GeometricRestraintHandler(Handler):
     def __call__(self, object_characteristic, id, dataset_list_id, object_id,
                  feature_id, restraint_type, harmonic_force_constant: float,
                  group_conditionality, distance_lower_limit: float,
-                 distance_upper_limit: float):
+                 distance_upper_limit: float,
+                 distance_lower_limit_esd: float,
+                 distance_upper_limit_esd: float,
+                 distance_probability: float, details):
         typ = (object_characteristic or 'other').lower()
         r = self.sysr.geom_restraints.get_by_id(
             id, self._type_map.get(typ, ihm.restraint.GeometricRestraint))
@@ -2862,8 +2891,13 @@ class _GeometricRestraintHandler(Handler):
         r.feature = self.sysr.features.get_by_id(feature_id)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
                                                       distance_upper_limit)
+        r.distance = _handle_distance[restraint_type](
+            distance_lower_limit, distance_upper_limit,
+            distance_lower_limit_esd, distance_upper_limit_esd)
         r.harmonic_force_constant = harmonic_force_constant
         r.restrain_all = self._cond_map[group_conditionality]
+        r.probability = distance_probability
+        r.details = details
 
 
 class _PolySeqSchemeHandler(Handler):
@@ -3194,7 +3228,8 @@ class _CrossLinkListHandler(Handler):
 class _CrossLinkRestraintHandler(Handler):
     category = '_ihm_cross_link_restraint'
 
-    _cond_map = {'ALL': True, 'ANY': False, None: None}
+    _cond_map = {'ALL': True, 'ANY': False, None: None,
+                 ihm.unknown: ihm.unknown}
     _distance_map = {'harmonic': ihm.restraint.HarmonicDistanceRestraint,
                      'lower bound': ihm.restraint.LowerBoundDistanceRestraint,
                      'upper bound': ihm.restraint.UpperBoundDistanceRestraint}

@@ -24,6 +24,269 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.id, 'model')
         self.assertEqual(s.databases, [])
 
+    def test_system_views_empty(self):
+        """Test System flat views of an empty hierarchy"""
+        s = ihm.System()
+        for view in (s.states, s.model_groups, s.models):
+            self.assertEqual(len(view), 0)
+            self.assertEqual(list(view), [])
+            self.assertEqual(view, [])
+            self.assertEqual(repr(view), '[]')
+            self.assertRaises(IndexError, view.__getitem__, 0)
+        # Examining the views should not change the hierarchy
+        self.assertEqual(s.state_groups, [])
+
+    def test_system_views_contents(self):
+        """Test System flat views of a populated hierarchy"""
+        m1, m2, m3 = [ihm.model.Model(None, None, None) for _ in range(3)]
+        mg1 = ihm.model.ModelGroup([m1, m2])
+        mg2 = ihm.model.ModelGroup([m3])
+        mg3 = ihm.model.ModelGroup()
+        st1 = ihm.model.State([mg1])
+        st2 = ihm.model.State([mg2, mg3])
+        st3 = ihm.model.State()
+        s = ihm.System()
+        s.state_groups.extend([ihm.model.StateGroup([st1]),
+                               ihm.model.StateGroup([st2, st3])])
+        for view, expected in ((s.states, [st1, st2, st3]),
+                               (s.model_groups, [mg1, mg2, mg3]),
+                               (s.models, [m1, m2, m3])):
+            self.assertEqual(len(view), 3)
+            self.assertEqual([id(x) for x in view], [id(x) for x in expected])
+            self.assertIs(view[0], expected[0])
+            self.assertIs(view[-1], expected[-1])
+            self.assertEqual(view[1:], expected[1:])
+            self.assertEqual(view, expected)
+            self.assertEqual(repr(view), repr(expected))
+            self.assertIn(expected[1], view)
+        self.assertEqual(s.models, s.models)
+        self.assertNotEqual(s.models, s.states)
+        self.assertNotEqual(s.models, (m1, m2, m3))
+        self.assertRaises(TypeError, hash, s.models)
+
+    def test_system_views_live(self):
+        """Test that System flat views track changes to the hierarchy"""
+        s = ihm.System()
+        models = s.models
+        m = ihm.model.Model(None, None, None)
+        s.state_groups.append([[[m]]])
+        self.assertEqual(models, [m])
+        s.state_groups = []
+        self.assertEqual(models, [])
+
+    def test_system_views_read_only_attribute(self):
+        """Test that System flat views cannot be replaced"""
+        s = ihm.System()
+        for name in ('states', 'model_groups', 'models'):
+            self.assertRaises(AttributeError, setattr, s, name, [])
+
+    def test_system_models_append_empty(self):
+        """Test append to System.models with an empty hierarchy"""
+        s = ihm.System()
+        m1 = ihm.model.Model(None, None, None)
+        m2 = ihm.model.Model(None, None, None)
+        s.models.append(m1)
+        self.assertEqual(len(s.state_groups), 1)
+        sg = s.state_groups[0]
+        self.assertIsInstance(sg, ihm.model.StateGroup)
+        self.assertEqual(len(sg), 1)
+        self.assertIsInstance(sg[0], ihm.model.State)
+        self.assertIsNone(sg[0].name)
+        self.assertEqual(len(sg[0]), 1)
+        mg = sg[0][0]
+        self.assertIsInstance(mg, ihm.model.ModelGroup)
+        self.assertIsNone(mg.name)
+        self.assertEqual(mg, [m1])
+        # Second append should reuse the same hierarchy
+        s.models.append(m2)
+        self.assertEqual(s.models, [m1, m2])
+        self.assertEqual(len(s.state_groups), 1)
+        self.assertEqual(len(s.states), 1)
+        self.assertEqual(len(s.model_groups), 1)
+        self.assertIs(s.model_groups[0], mg)
+        self.assertEqual(list(s._all_models()), [(mg, m1), (mg, m2)])
+
+    def test_system_model_groups_append_empty(self):
+        """Test append to System.model_groups with an empty hierarchy"""
+        s = ihm.System()
+        mg1 = ihm.model.ModelGroup(name='mg1')
+        mg2 = ihm.model.ModelGroup(name='mg2')
+        s.model_groups.append(mg1)
+        self.assertIsInstance(s.state_groups[0], ihm.model.StateGroup)
+        self.assertIsInstance(s.state_groups[0][0], ihm.model.State)
+        self.assertIs(s.state_groups[0][0][0], mg1)
+        s.model_groups.append(mg2)
+        self.assertEqual(len(s.state_groups), 1)
+        self.assertEqual(len(s.states), 1)
+        self.assertIs(s.model_groups[1], mg2)
+
+    def test_system_states_append_empty(self):
+        """Test append to System.states with an empty hierarchy"""
+        s = ihm.System()
+        st1 = ihm.model.State(name='st1')
+        st2 = ihm.model.State(name='st2')
+        s.states.append(st1)
+        self.assertIsInstance(s.state_groups[0], ihm.model.StateGroup)
+        self.assertIs(s.state_groups[0][0], st1)
+        s.states.append(st2)
+        self.assertEqual(len(s.state_groups), 1)
+        self.assertIs(s.states[1], st2)
+
+    def test_system_views_append_partial(self):
+        """Test System view append that fills in lower levels only"""
+        s = ihm.System()
+        sg = ihm.model.StateGroup()
+        s.state_groups.append(sg)
+        m = ihm.model.Model(None, None, None)
+        s.models.append(m)
+        self.assertEqual(len(s.state_groups), 1)
+        self.assertIs(s.state_groups[0], sg)
+        self.assertEqual(s.models, [m])
+
+        # Existing user-provided objects should be used
+        s = ihm.System()
+        mg = ihm.model.ModelGroup(name='existing')
+        s.state_groups.append(ihm.model.StateGroup([ihm.model.State([mg])]))
+        s.models.append(m)
+        self.assertEqual(mg, [m])
+        self.assertEqual(len(s.model_groups), 1)
+
+    def test_system_views_append_ambiguous(self):
+        """Test System view append with an ambiguous insertion point"""
+        def make_system(state_groups):
+            s = ihm.System()
+            s.state_groups.extend(state_groups)
+            return s
+
+        def snapshot(s):
+            return repr(s.state_groups)
+
+        mg = ihm.model.ModelGroup
+        st = ihm.model.State
+        sg = ihm.model.StateGroup
+        m = ihm.model.Model(None, None, None)
+
+        # Multiple state groups; all views are ambiguous, even if the
+        # view is empty or only one of the groups has any content
+        for groups in ([sg(), sg()],
+                       [sg(), sg([st([mg([m])])])]):
+            s = make_system(groups)
+            before = snapshot(s)
+            for view, obj in ((s.states, st()), (s.model_groups, mg()),
+                              (s.models, m)):
+                with self.assertRaises(ValueError) as cm:
+                    view.append(obj)
+                self.assertIn('ambiguous', str(cm.exception))
+                self.assertIn('StateGroup', str(cm.exception))
+            self.assertEqual(snapshot(s), before)
+
+        # Multiple states in the single state group
+        s = make_system([sg([st(), st()])])
+        before = snapshot(s)
+        s.states.append(st())
+        self.assertEqual(len(s.states), 3)
+        s = make_system([sg([st(), st()])])
+        for view, obj in ((s.model_groups, mg()), (s.models, m)):
+            with self.assertRaises(ValueError) as cm:
+                view.append(obj)
+            self.assertIn('State ', str(cm.exception))
+        self.assertEqual(snapshot(s), before)
+
+        # Multiple model groups in the single state
+        s = make_system([sg([st([mg(), mg()])])])
+        before = snapshot(s)
+        with self.assertRaises(ValueError) as cm:
+            s.models.append(m)
+        self.assertIn('ModelGroup', str(cm.exception))
+        self.assertEqual(snapshot(s), before)
+        s.model_groups.append(mg())
+        self.assertEqual(len(s.model_groups), 3)
+
+    def test_system_models_insert_extend(self):
+        """Test insert and extend on System.models"""
+        s = ihm.System()
+        m1 = ihm.model.Model(None, None, None)
+        m2 = ihm.model.Model(None, None, None)
+        m3 = ihm.model.Model(None, None, None)
+        m4 = ihm.model.Model(None, None, None)
+        s.models.append(m1)
+        s.models.extend((m2, m3))
+        s.models.insert(1, m4)
+        self.assertEqual(len(s.state_groups), 1)
+        self.assertEqual(len(s.state_groups[0]), 1)
+        self.assertEqual(len(s.state_groups[0][0]), 1)
+        mg = s.state_groups[0][0][0]
+        self.assertEqual(len(mg), 4)
+        self.assertIs(mg[0], m1)
+        self.assertIs(mg[1], m4)
+        self.assertIs(mg[2], m2)
+        self.assertIs(mg[3], m3)
+
+    def test_system_views_delitem(self):
+        """Test deletion from System flat views"""
+        def make_system():
+            m1, m2, m3 = [ihm.model.Model(None, None, None)
+                          for _ in range(3)]
+            mg1 = ihm.model.ModelGroup([m1, m2])
+            mg2 = ihm.model.ModelGroup([m3])
+            mg3 = ihm.model.ModelGroup()
+            st1 = ihm.model.State([mg1])
+            st2 = ihm.model.State([mg2, mg3])
+            st3 = ihm.model.State()
+            s = ihm.System()
+            s.state_groups.extend([ihm.model.StateGroup([st1]),
+                                   ihm.model.StateGroup([st2, st3])])
+            return (s, (m1, m2, m3), (mg1, mg2, mg3), (st1, st2, st3))
+
+        # Delete a single model by positive or negative index
+        s, (m1, m2, m3), (mg1, mg2, mg3), _ = make_system()
+        del s.models[1]
+        self.assertEqual(s.models, [m1, m3])
+        self.assertEqual(mg1, [m1])
+        del s.models[-1]
+        self.assertEqual(s.models, [m1])
+        # Empty parents should be left in place
+        self.assertEqual(mg2, [])
+        self.assertEqual(len(s.model_groups), 3)
+        self.assertRaises(IndexError, s.models.__delitem__, 1)
+        self.assertRaises(IndexError, s.models.__delitem__, -2)
+        self.assertEqual(s.models, [m1])
+
+        # Delete a slice spanning multiple parents
+        s, (m1, m2, m3), (mg1, mg2, mg3), _ = make_system()
+        del s.models[1:]
+        self.assertEqual(s.models, [m1])
+        self.assertEqual(mg1, [m1])
+        self.assertEqual(mg2, [])
+        s, (m1, m2, m3), _, _ = make_system()
+        del s.models[::2]
+        self.assertEqual(s.models, [m2])
+        s, _, _, _ = make_system()
+        del s.models[:]
+        self.assertEqual(s.models, [])
+        self.assertEqual(len(s.model_groups), 3)
+
+        # Delete model groups and states
+        s, (m1, m2, m3), (mg1, mg2, mg3), (st1, st2, st3) = make_system()
+        del s.model_groups[1]
+        self.assertEqual(s.model_groups, [mg1, mg3])
+        self.assertEqual(st2, [mg3])
+        self.assertEqual(s.models, [m1, m2])
+        del s.states[0]
+        self.assertEqual(s.states, [st2, st3])
+        self.assertEqual(s.state_groups[0], [])
+        self.assertEqual(s.models, [])
+
+        # The same parent may appear more than once in the hierarchy
+        m1, m2, m3 = [ihm.model.Model(None, None, None) for _ in range(3)]
+        mg = ihm.model.ModelGroup([m1, m2, m3])
+        s = ihm.System()
+        s.state_groups.append(ihm.model.StateGroup([ihm.model.State([mg]),
+                                                    ihm.model.State([mg])]))
+        self.assertEqual(len(s.models), 6)
+        del s.models[1:5]
+        self.assertEqual(mg, [])
+
     def test_chem_comp(self):
         """Test ChemComp class"""
         cc1 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')

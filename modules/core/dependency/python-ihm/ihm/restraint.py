@@ -856,6 +856,8 @@ class GeometricRestraint(Restraint):
        :type distance: :class:`DistanceRestraint`
        :param float harmonic_force_constant: Force constant, if applicable.
        :param bool restrain_all: If True, all distances are restrained.
+       :param float probability: Likelihood that restraint is correct (0. - 1.)
+       :param str details: Additional details regarding the restraint.
     """
     object_characteristic = 'other'
     assembly = None  # no struct_assembly_id for geometric restraints
@@ -866,11 +868,12 @@ class GeometricRestraint(Restraint):
 
     def __init__(self, dataset, geometric_object, feature, distance,
                  harmonic_force_constant=None, restrain_all=None,
-                 pseudo1=None, pseudo2=None):
+                 probability=None, details=None):
         self.dataset = dataset
         self.geometric_object, self.feature = geometric_object, feature
         self.distance, self.restrain_all = distance, restrain_all
         self.harmonic_force_constant = harmonic_force_constant
+        self.probability, self.details = probability, details
     _all_features = property(lambda self: (self.feature,))
 
 

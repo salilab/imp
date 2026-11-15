@@ -1399,8 +1399,10 @@ _ihm_model_representation_details.model_object_count
 _ihm_model_representation_details.description
 1 1 1 Nup84 A 1 sphere . flexible by-feature 1 'test segment'
 2 1 1 Nup84 A 2 sphere 1 rigid by-residue . .
-3 2 1 Nup84 A . atomistic . flexible by-atom . .
-4 3 2 Nup85 B . sphere . . multi-residue . .
+3 2 1 Nup84 A . atomistic . . by-atom . .
+4 3 2 Nup85 B . sphere . ? multi-residue . .
+5 3 2 Nup85 B . sphere . ? ? 42 "unknown granularity"
+6 3 2 Nup85 B . sphere . ? . 42 "omitted granularity"
 """
         # Order of categories should not matter
         for cif in (range_cif + repr_cif, repr_cif + range_cif):
@@ -1431,11 +1433,15 @@ _ihm_model_representation_details.description
                 s1, = r2
                 self.assertEqual(s1.__class__,
                                  ihm.representation.AtomicSegment)
+                self.assertIsNone(s1.rigid)
 
-                self.assertEqual(len(r3), 1)
-                s1, = r3
+                self.assertEqual(len(r3), 3)
+                s1, s2, s3 = r3
                 self.assertEqual(s1.__class__,
                                  ihm.representation.MultiResidueSegment)
+                self.assertIs(s1.rigid, ihm.unknown)
+                self.assertIs(s2.granularity, ihm.unknown)
+                self.assertIsNone(s3.granularity, 'x')
 
     def test_starting_model_details_handler(self):
         """Test StartingModelDetailsHandler"""
@@ -1461,12 +1467,13 @@ _ihm_starting_model_details.dataset_list_id
 _ihm_starting_model_details.description
 1 1 Nup84 A 1 'comparative model' Q 8 4 .
 2 1 Nup84 A . 'comparative model' X . . 'test desc'
+3 1 Nup84 A . 'comparative model' X ? . .
 """
         # Order of the two categories shouldn't matter
         for cif in ps_cif + sm_cif, sm_cif + ps_cif:
             for fh in cif_file_handles(cif):
                 s, = ihm.reader.read(fh)
-                m1, m2 = s.orphan_starting_models
+                m1, m2, m3 = s.orphan_starting_models
                 self.assertEqual(m1.asym_unit._id, 'A')
                 self.assertEqual(m1.asym_unit.seq_id_range, (7, 483))
                 self.assertEqual(m1.asym_id, 'Q')
@@ -1479,6 +1486,8 @@ _ihm_starting_model_details.description
                 self.assertEqual(m2.offset, 0)
                 self.assertIsNone(m2.dataset)
                 self.assertEqual(m2.description, 'test desc')
+
+                self.assertEqual(m3.offset, 0)
 
     def test_starting_computational_models_handler(self):
         """Test StartingComputationModelsHandler"""
@@ -1635,6 +1644,7 @@ _ihm_modeling_post_process.analysis_id
 _ihm_modeling_post_process.step_id
 _ihm_modeling_post_process.type
 _ihm_modeling_post_process.feature
+_ihm_modeling_post_process.feature_name
 _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 _ihm_modeling_post_process.struct_assembly_id
@@ -1642,13 +1652,15 @@ _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
 _ihm_modeling_post_process.details
-1  1   1   1   'filter'  'energy/score'  15000   6520 . . 401 501 .
-2  1   1   2   'cluster' 'invalid'       6520    6520 . . . . .
-3  1   2   1   'filter'  'energy/score'  16000   7520 . . . . .
-4  1   2   2   'filter'  'composition'   7520    5520 . . . . .
-5  1   2   3   'cluster' 'dRMSD'         5520    6520 . . . . .
-6  2   1   1   'filter'  'energy/score'  17000   6520 . . 401 501 .
-7  3   1   1   'none' .         .    . . . . . 'empty step'
+1  1   1   1   'filter'  'energy/score'  . 15000   6520 . . 401 501 .
+2  1   1   2   'cluster' 'invalid'       . 6520    6520 . . . . .
+3  1   2   1   .         'energy/score'  . 16000   7520 . . . . .
+4  1   2   2   ?         'composition'   . 7520    5520 . . . . .
+5  1   2   3   'cluster' 'dRMSD'         . 5520    6520 . . . . .
+6  2   1   1   'filter'  'energy/score' 'custom score' 17000 6520 . . 401 501 .
+7  3   1   1   'none'    .               .    . . . . . . 'empty step'
+8  3   1   2   'none'    ?               .    . . . . . . 'empty step'
+9  3   1   3   'none'    'none'          .    . . . . . . 'empty step'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1663,32 +1675,40 @@ _ihm_modeling_post_process.details
             a1, a2 = p1.analyses
             self.assertEqual(len(a1.steps), 2)
             self.assertEqual(a1.steps[0].__class__, ihm.analysis.FilterStep)
-            self.assertEqual(a1.steps[0].feature, 'energy/score')
+            self.assertEqual(a1.steps[0].feature.type, 'energy/score')
+            self.assertIsNone(a1.steps[0].feature.name)
             self.assertEqual(a1.steps[0].num_models_begin, 15000)
             self.assertEqual(a1.steps[0].num_models_end, 6520)
             self.assertEqual(a1.steps[0].software._id, '401')
             self.assertEqual(a1.steps[0].script_file._id, '501')
             self.assertEqual(a1.steps[1].__class__, ihm.analysis.ClusterStep)
             # invalid feature should be mapped to default
-            self.assertEqual(a1.steps[1].feature, 'other')
+            self.assertEqual(a1.steps[1].feature.type, 'other')
             self.assertEqual(a1.steps[1].num_models_begin, 6520)
             self.assertIsNone(a1.steps[1].software)
             self.assertIsNone(a1.steps[1].script_file)
             self.assertIsNone(a1.steps[1].details)
             self.assertEqual(len(a2.steps), 3)
+            # . or ? types should map to 'other'
+            self.assertEqual(a2.steps[0].type, 'other')
+            self.assertEqual(a2.steps[1].type, 'other')
             self.assertEqual([step.num_models_begin for step in a2.steps],
                              [16000, 7520, 5520])
 
             a1, = p2.analyses
             self.assertEqual(len(a1.steps), 1)
             self.assertEqual(a1.steps[0].__class__, ihm.analysis.FilterStep)
-            self.assertEqual(a1.steps[0].feature, 'energy/score')
+            self.assertEqual(a1.steps[0].feature.type, 'energy/score')
+            self.assertEqual(a1.steps[0].feature.name, 'custom score')
             self.assertEqual(a1.steps[0].num_models_begin, 17000)
 
             a1, = p3.analyses
-            self.assertEqual(len(a1.steps), 1)
+            self.assertEqual(len(a1.steps), 3)
             self.assertEqual(a1.steps[0].__class__, ihm.analysis.EmptyStep)
-            self.assertEqual(a1.steps[0].feature, 'none')
+            # Feature should accept ? or . special values
+            self.assertIsNone(a1.steps[0].feature)
+            self.assertIs(a1.steps[1].feature, ihm.unknown)
+            self.assertIsInstance(a1.steps[2].feature, ihm.analysis.NoFeature)
             self.assertIsNone(a1.steps[0].num_models_begin)
             self.assertIsNone(a1.steps[0].num_models_end)
             self.assertEqual(a1.steps[0].details, 'empty step')
@@ -2815,7 +2835,7 @@ _ihm_derived_distance_restraint.dataset_list_id
 2 . 1 4 'upper bound' . 45.000 . 2.500 0.800 . . ALL 98
 3 1 1 2 'lower and upper bound' 22.000 45.000 1.000 2.000 0.800 . . ANY 99
 4 1 5 3 'harmonic' 35.000 35.000 . . 0.800 . . ALL .
-5 . 6 3 . ? ? ? ? ? . ? ALL .
+5 . 6 3 . ? ? ? ? ? . ? ? .
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known, or if ResidueFeature
@@ -2861,6 +2881,7 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertIsNone(r1.restrain_all)
             self.assertEqual(r2.restrain_all, True)
             self.assertEqual(r3.restrain_all, False)
+            self.assertIs(r5.restrain_all, ihm.unknown)
             self.assertIsInstance(r2.feature2,
                                   ihm.restraint.NonPolyFeature)
             self.assertEqual(len(r2.feature2.objs), 2)
@@ -3130,13 +3151,18 @@ _ihm_geometric_object_distance_restraint.object_characteristic
 _ihm_geometric_object_distance_restraint.restraint_type
 _ihm_geometric_object_distance_restraint.harmonic_force_constant
 _ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_lower_limit_esd
 _ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit_esd
+_ihm_geometric_object_distance_restraint.distance_probability
 _ihm_geometric_object_distance_restraint.group_conditionality
 _ihm_geometric_object_distance_restraint.dataset_list_id
-1 23 44 other 'upper bound' 2.000 . 25.000 ANY 97
-2 23 44 center 'lower bound' 2.000 15.000 . ALL .
-3 23 44 'inner surface' 'lower and upper bound' 2.000 10.000 25.000 . 97
-4 23 44 'outer surface' 'harmonic' 2.000 . 25.000 . 97
+_ihm_geometric_object_distance_restraint.details
+1 23 44 other 'upper bound' 2.000 . . 25.000 1.000 . ANY 97 .
+2 23 44 center 'lower bound' 2.000 15.000 2.000 . . ? ALL . .
+3 23 44 'inner surface' 'lower and upper bound' 2.000 10.000 .
+25.000 . 0.100 . 97 'some details'
+4 23 44 'outer surface' 'harmonic' 2.000 . . 25.000 . . ? 97 .
 #
 """)
         s, = ihm.reader.read(fh)
@@ -3145,13 +3171,20 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         self.assertEqual(r1.dataset._id, '97')
         self.assertEqual(r1.geometric_object._id, '23')
         self.assertEqual(r1.feature._id, '44')
+        self.assertIsNone(r1.details)
+        self.assertIsNone(r1.probability)
         self.assertIsInstance(r1.distance,
                               ihm.restraint.UpperBoundDistanceRestraint)
         self.assertAlmostEqual(r1.distance.distance, 25.000, delta=0.1)
+        self.assertAlmostEqual(r1.distance.esd, 1.000, delta=0.1)
         self.assertAlmostEqual(r1.harmonic_force_constant, 2.000, delta=0.1)
         self.assertEqual(r1.restrain_all, False)
         self.assertEqual(r2.restrain_all, True)
         self.assertIsNone(r3.restrain_all)
+        self.assertIs(r4.restrain_all, ihm.unknown)
+        self.assertAlmostEqual(r2.distance.distance, 15.000, delta=0.1)
+        self.assertAlmostEqual(r2.distance.esd, 2.000, delta=0.1)
+        self.assertIs(r2.probability, ihm.unknown)
 
         self.assertIsInstance(r2, ihm.restraint.CenterGeometricRestraint)
         self.assertIsInstance(r3, ihm.restraint.InnerSurfaceGeometricRestraint)
@@ -3163,6 +3196,8 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
                               ihm.restraint.LowerUpperBoundDistanceRestraint)
         self.assertIsInstance(r4.distance,
                               ihm.restraint.HarmonicDistanceRestraint)
+        self.assertEqual(r3.details, 'some details')
+        self.assertAlmostEqual(r3.probability, 0.1, delta=0.01)
 
     def test_poly_seq_scheme_handler_offset(self):
         """Test PolySeqSchemeHandler with constant offset"""
@@ -3663,6 +3698,9 @@ _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
 1 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
 2.000
+2 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' ANY by-residue 25.0 0.5 1.0 2.0
+3 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' . by-residue 25.0 0.5 1.0 2.0
+4 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' ? by-residue 25.0 0.5 1.0 2.0
 """
         xl_fit = """
 loop_
@@ -3692,7 +3730,7 @@ _ihm_cross_link_result.details
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             r, = s.restraints
-            xl, = r.cross_links
+            xl, xl2, xl3, xl4, = r.cross_links
             # Sort fits by ID
             fits = sorted(xl.fits.items(), key=lambda x: x[0]._id)
             self.assertEqual(len(fits), 4)
@@ -3701,6 +3739,11 @@ _ihm_cross_link_result.details
             self.assertAlmostEqual(fits[0][1].psi, 0.100, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma1, 4.200, delta=0.1)
             self.assertAlmostEqual(fits[0][1].sigma2, 2.100, delta=0.1)
+
+            self.assertEqual(xl.restrain_all, True)
+            self.assertEqual(xl2.restrain_all, False)
+            self.assertIsNone(xl3.restrain_all)
+            self.assertIs(xl4.restrain_all, ihm.unknown)
 
             self.assertEqual(fits[1][0]._id, '301')
             self.assertIsInstance(fits[1][0], ihm.model.Model)

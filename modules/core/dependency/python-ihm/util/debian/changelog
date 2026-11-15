@@ -1,3 +1,9 @@
+python-ihm (2.13-1~@CODENAME@) @CODENAME@; urgency=low
+
+  * python-ihm 2.13 release
+
+ -- Ben Webb <benmwebb@gmail.com>  Wed, 11 Nov 2026 23:27:10 -0800
+
 python-ihm (2.12-1~@CODENAME@) @CODENAME@; urgency=low
 
   * python-ihm 2.12 release

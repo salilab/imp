@@ -16,10 +16,11 @@ import sys
 import urllib.request
 import json
 import collections
+import collections.abc
 import warnings
 from . import util
 
-__version__ = '2.12'
+__version__ = '2.13'
 
 
 class __UnknownValue:
@@ -62,6 +63,119 @@ def _remove_identical(gen):
             continue
         seen_objs[id(obj)] = None
         yield obj
+
+
+class _StateGroupsView(collections.abc.Sequence):
+    """A live, flat, view of one level of the hierarchy below
+       :attr:`System.state_groups`. See :attr:`System.states`,
+       :attr:`System.model_groups`, and :attr:`System.models`.
+
+       :param system: The system whose state groups are viewed.
+       :param str name: The name of the corresponding System attribute.
+       :param int depth: The number of hierarchy levels between
+              `System.state_groups` and the viewed objects, plus one
+              (1 for states, 2 for model groups, 3 for models).
+    """
+    def __init__(self, system, name, depth):
+        self._system, self._name, self._depth = system, name, depth
+
+    def __iter__(self):
+        it = self._system.state_groups
+        for _ in range(self._depth):
+            it = itertools.chain.from_iterable(it)
+        return iter(it)
+
+    def __len__(self):
+        return sum(1 for _ in self)
+
+    def __getitem__(self, index):
+        return list(self)[index]
+
+    def _iter_positions(self):
+        """Yield a (parent, index) pair for each object in the view, where
+           parent[index] is the object."""
+        parents = self._system.state_groups
+        for _ in range(self._depth - 1):
+            parents = itertools.chain.from_iterable(parents)
+        for parent in parents:
+            for i in range(len(parent)):
+                yield parent, i
+
+    def __delitem__(self, index):
+        """Remove one object (or a slice of objects) from the view, by
+           removing it from its immediate parent in the hierarchy.
+           Higher levels of the hierarchy are left in place, even if
+           they become empty."""
+        positions = list(self._iter_positions())
+        if isinstance(index, slice):
+            to_delete = [positions[i]
+                         for i in range(*index.indices(len(positions)))]
+        else:
+            to_delete = [positions[index]]
+        # The same parent object may appear more than once in the hierarchy,
+        # so group by parent identity, ignore duplicate positions, and delete
+        # from the end of each parent so that earlier indices remain valid
+        by_parent = {}
+        for parent, i in to_delete:
+            by_parent.setdefault(id(parent), (parent, set()))[1].add(i)
+        for parent, indices in by_parent.values():
+            for i in sorted(indices, reverse=True):
+                del parent[i]
+
+    def __eq__(self, other):
+        if isinstance(other, _StateGroupsView):
+            other = list(other)
+        return list(self) == other
+
+    __hash__ = None
+
+    def __repr__(self):
+        return repr(list(self))
+
+    def _get_parent(self):
+        """Find the immediate parent, creating intermediates if needed.
+
+           :raises ValueError: if any higher level of the hierarchy contains
+                   more than one object, so that the parent cannot be
+                   determined unambiguously.
+        """
+        import ihm.model
+        parents = self._system.state_groups
+        # Once a level has to be created, all lower levels are necessarily
+        # empty, so we never leave a partly-built hierarchy behind on error.
+        for parent_class in (ihm.model.StateGroup, ihm.model.State,
+                             ihm.model.ModelGroup)[:self._depth]:
+            if len(parents) > 1:
+                raise ValueError(
+                    "Cannot append to System.%s: the insertion point is "
+                    "ambiguous since there are %d %s objects at that level "
+                    "of the System.state_groups hierarchy; add to the "
+                    "desired %s directly instead"
+                    % (self._name, len(parents), parent_class.__name__,
+                       parent_class.__name__))
+            if not parents:
+                parents.append(parent_class())
+            parents = parents[0]
+        return parents
+
+    def append(self, obj):
+        """Add an object to the end of the view, creating any missing
+           higher levels of the hierarchy.
+
+           :raises ValueError: if any higher level of the hierarchy contains
+                   more than one object, so that the insertion point
+                   is ambiguous.
+        """
+        p = self._get_parent()
+        p.append(obj)
+
+    def insert(self, index, obj):
+        p = self._get_parent()
+        p.insert(index, obj)
+
+    def extend(self, iterable):
+        p = self._get_parent()
+        p.extend(iterable)
 
 
 class System:
@@ -258,6 +372,45 @@ class System:
         self._orphan_probe_types = []
 
     _database_status = property(lambda self: self.database_status._map)
+
+    @property
+    def states(self):
+        """All states in :attr:`state_groups`, as a flat sequence of
+           :class:`~ihm.model.State` objects. States can be added to this
+           list if higher level organization (into a
+           :class:`~ihm.model.StateGroup`) is not needed. (A :exc:`ValueError`
+           is raised if there is more than one state group, since it would not
+           be clear which group to add to.)
+
+           See also :attr:`models`, :attr:`model_groups`, :attr:`state_groups`.
+        """
+        return _StateGroupsView(self, 'states', 1)
+
+    @property
+    def model_groups(self):
+        """All model groups in :attr:`state_groups`, as a flat sequence of
+           :class:`~ihm.model.ModelGroup` objects. Groups can be added to this
+           list if higher level organization (e.g. into a
+           :class:`~ihm.model.State`) is not needed. (A :exc:`ValueError`
+           is raised if a hierarchy already exists, since it would not be
+           clear where to add the group.)
+
+           See also :attr:`models`, :attr:`states`, :attr:`state_groups`.
+        """
+        return _StateGroupsView(self, 'model_groups', 2)
+
+    @property
+    def models(self):
+        """All models in :attr:`state_groups`, as a flat sequence of
+           :class:`~ihm.model.Model` objects. Models can be added to this
+           list if higher level organization (e.g. into a
+           :class:`~ihm.model.ModelGroup`) is not needed. (A :exc:`ValueError`
+           is raised if a hierarchy already exists, since it would not be
+           clear where to add the model.)
+
+           See also :attr:`model_groups`, :attr:`states`, :attr:`state_groups`.
+        """
+        return _StateGroupsView(self, 'models', 3)
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""

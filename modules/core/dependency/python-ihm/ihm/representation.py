@@ -23,6 +23,17 @@ class Segment:
         return str(self)
 
 
+class _UnknownSegment(Segment):
+    # Only used for reading mmCIF files that have
+    # _ihm_model_representation_details.model_granularity set to . or ?
+    def __init__(self, asym_unit, rigid, primitive, count, starting_model,
+                 description, granularity):
+        self.asym_unit, self.primitive = asym_unit, primitive
+        self.starting_model, self.rigid = starting_model, rigid
+        self.description, self.count = description, count
+        self.granularity = granularity
+
+
 class AtomicSegment(Segment):
     """Part of the system modeled atomistically, stored in
        a :class:`Representation`.

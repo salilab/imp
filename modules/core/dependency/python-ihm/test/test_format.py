@@ -215,8 +215,14 @@ x
         # data_ should be quoted to distinguish from data blocks
         self.assertEqual(w._repr('data_foo'), "'data_foo'")
         self.assertEqual(w._repr('data_'), "'data_'")
-        # [ is a reserved character and cannot start a nonquoted string
+        # [ and ] are reserved characters and cannot start a nonquoted string
         self.assertEqual(w._repr('[foo'), "'[foo'")
+        self.assertEqual(w._repr('[foo]'), "'[foo]'")
+        self.assertEqual(w._repr('['), "'['")
+        self.assertEqual(w._repr(']foo'), "']foo'")
+        self.assertEqual(w._repr(']'), "']'")
+        # [ and ] are OK elsewhere in a nonquoted string
+        self.assertEqual(w._repr('foo[1]'), "foo[1]")
         # _ indicates an identifier and cannot start a nonquoted string
         self.assertEqual(w._repr('_foo'), "'_foo'")
         # Empty string must be quoted
