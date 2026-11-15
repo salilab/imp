@@ -514,14 +514,20 @@ _ihm_modeling_protocol_details.description
         dumper = ihm.dumper._PostProcessDumper()
         dumper.finalize(c.system)
         out = _get_dumper_output(dumper, c.system)
-        self.assertEqual(out, """#
+        # Newer python-ihm adds feature_name
+        if hasattr(ihm.analysis, 'Feature'):
+            header = '\n_ihm_modeling_post_process.feature_name'
+            val = ' .'
+        else:
+            header = val = ''
+        self.assertEqual(out, f"""#
 loop_
 _ihm_modeling_post_process.id
 _ihm_modeling_post_process.protocol_id
 _ihm_modeling_post_process.analysis_id
 _ihm_modeling_post_process.step_id
 _ihm_modeling_post_process.type
-_ihm_modeling_post_process.feature
+_ihm_modeling_post_process.feature{header}
 _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 _ihm_modeling_post_process.struct_assembly_id
@@ -529,8 +535,8 @@ _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
 _ihm_modeling_post_process.details
-1 1 1 1 filter energy/score 500 400 2 . . . .
-2 2 1 1 cluster RMSD 2000 2000 2 . . . .
+1 1 1 1 filter energy/score{val} 500 400 2 . . . .
+2 2 1 1 cluster RMSD{val} 2000 2000 2 . . . .
 #
 """)
 
