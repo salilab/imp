@@ -13,20 +13,27 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.14"]
+        python-version: ["3.15"]
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v7
       with:
         submodules: true
-    - name: Setup conda and dependencies
+    - name: Setup conda
+      uses: conda-incubator/setup-miniconda@v4
+      with:
+        miniforge-version: latest
+        channels: conda-forge, salilab
+        conda-remove-defaults: "true"
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
       run: |
-        tools/setup_ci.sh ${{ matrix.python-version }}
+        tools/setup_ci.sh
     - name: Test
       run: |
         eval "$(conda shell.bash hook)"
-        conda activate python${{ matrix.python-version }}
+        conda activate test
         rm -f ${CONDA_PREFIX}/lib/libimp_pmi.so* ${CONDA_PREFIX}/lib/_IMP_pmi.so
         # Use same C/C++ compiler as conda
         source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gcc_linux-64.sh

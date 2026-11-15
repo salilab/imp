@@ -969,10 +969,15 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     def __init__(self, pp, cluster_num, model_group, num_deposit):
         with open(str(pp.get_stat_file(cluster_num))) as fh:
             num_models = len(fh.readlines())
+        # Newer python-ihm uses a Feature class for analyses
+        if hasattr(pp.feature, 'type'):
+            feat = pp.feature.type
+        else:
+            feat = pp.feature
         super().__init__(
             num_models=num_models,
             model_group=model_group, post_process=pp,
-            clustering_feature=pp.feature,
+            clustering_feature=feat,
             name=model_group.name)
         self.cluster_num = cluster_num
         self.num_models_deposited = num_deposit
