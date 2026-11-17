@@ -175,13 +175,18 @@ class _MDJAXOptimizer(_JAXOptimizer):
         xyz = m.get_spheres_numpy()[0]
         dxyz = m.get_sphere_derivatives_numpy()[0]
 
+        # Dispatch each block of steps before copying the results of the
+        # previous block back to IMP, so that the device (e.g. GPU) keeps
+        # working while we wait for the copy and run any IMP OptimizerStates
+        blocks = _dispatch_blocks(self.apply_func, md_state, self.n_loops)
+        pending = next(blocks, md_state)
         for _ in self._loop():
-            md_state = self.apply_func(md_state)
+            md_state = pending
+            pending = next(blocks, md_state)
             # Resync IMP Model arrays with JAX
             jm = md_state.jm
-            linvel[:] = jm['linvel']
-            xyz[:] = jm['xyz']
-            dxyz[:] = md_state.derivs
+            linvel[:], xyz[:], dxyz[:] = jax.device_get(
+                (jm['linvel'], jm['xyz'], md_state.derivs))
         score, md_state.jm = self.score_func(md_state.jm)
         return score, md_state
 
