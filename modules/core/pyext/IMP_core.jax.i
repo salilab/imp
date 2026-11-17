@@ -337,6 +337,7 @@
   %pythoncode %{
     def _get_jax(self, space):
         import jax.numpy as jnp
+        import IMP.container
         # We need all indexes for JAX but ExcludedVolumeRestraint does not
         # provide a suitable method, so make a temporary ClosePairContainer
         # instead with the same set of indexes (we use all pairs for JAX so
