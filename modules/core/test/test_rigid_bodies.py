@@ -368,7 +368,11 @@ class Tests(IMP.test.TestCase):
         jm = apply_func(jm)
         newxyz = jm['xyz'][cs0_index]
 
-        np.testing.assert_allclose(oldxyz, newxyz, rtol=1e-5)
+        # Coordinates are O(1) but may be close to zero, so also use an
+        # absolute tolerance based on the precision JAX is using
+        # (float32 or float64)
+        np.testing.assert_allclose(oldxyz, newxyz, rtol=1e-5,
+                                   atol=32 * np.finfo(newxyz.dtype).eps)
 
         # Test update of body that contains a nested rigid body
         ji = ss[1]._get_jax()
