@@ -12,6 +12,15 @@ from IMP.core._jax_util import _JAXOptimizer
 _deriv_to_acceleration = -4.1868e-4
 
 
+def _dispatch_blocks(apply_func, state, n_blocks):
+    """Yield the state after each of n_blocks applications of apply_func.
+       Since JAX dispatches asynchronously, each block is only queued on the
+       device when the next value is requested."""
+    for _ in range(n_blocks):
+        state = apply_func(state)
+        yield state
+
+
 def _propagate_coordinates(jm, indexes, mass, time_step, space, derivs,
                            velocity_cap=None):
     linvel = jm['linvel'].at[..., indexes, :]
@@ -317,11 +326,17 @@ class _BDJAXOptimizer(_JAXOptimizer):
         xyz = m.get_spheres_numpy()[0]
         dxyz = m.get_sphere_derivatives_numpy()[0]
 
+        # Dispatch each block of steps before copying the results of the
+        # previous block back to IMP, so that the device (e.g. GPU) keeps
+        # working while we wait for the copy and run any IMP OptimizerStates
+        blocks = _dispatch_blocks(self.apply_func, bd_state, self.n_loops)
+        pending = next(blocks, bd_state)
         for _ in self._loop():
-            bd_state = self.apply_func(bd_state)
+            bd_state = pending
+            pending = next(blocks, bd_state)
             # Resync IMP Model arrays with JAX
-            xyz[:] = bd_state.jm['xyz']
-            dxyz[:] = bd_state.derivs
+            xyz[:], dxyz[:] = jax.device_get((bd_state.jm['xyz'],
+                                              bd_state.derivs))
         score, bd_state.jm = self.score_func(bd_state.jm)
         return score, bd_state
 
