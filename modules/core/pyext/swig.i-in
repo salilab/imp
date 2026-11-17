@@ -119,6 +119,8 @@ IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates)
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, LateralSurfaceConstraint, LateralSurfaceConstraints);
+IMP_SWIG_OBJECT(IMP::core, COMRestraint, COMRestraints);
+IMP_SWIG_OBJECT(IMP::core, SoftLowerBound, SoftLowerBounds);
 
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
 IMP_SWIG_OBJECT_SERIALIZE( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
@@ -367,6 +369,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/blame.h"
 %include "IMP/core/MultipleBinormalRestraint.h"
 %include "IMP/core/provenance.h"
+%include "IMP/core/COMRestraint.h"
 
 %inline %{
 namespace IMP {
