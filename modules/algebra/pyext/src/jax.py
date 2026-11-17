@@ -132,7 +132,12 @@ class Transformation3DWithMatrix:
 
     def get_transformed(self, v):
         """Transform and return all vectors v"""
-        return jnp.vecmat(v, self.rotation_matrix) + self.translation
+        # Write out the 3x3 product elementwise rather than using a matrix
+        # product, which on GPU may use reduced (TF32 or BF16) precision
+        # for float32 inputs (see https://github.com/salilab/imp/issues/1129)
+        R = self.rotation_matrix
+        return (v[..., 0:1] * R[0] + v[..., 1:2] * R[1] + v[..., 2:3] * R[2]
+                + self.translation)
 
     def __mul__(self, other):
         # Compose with another transformation
