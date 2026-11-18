@@ -2,7 +2,7 @@
  *  \file envelope_penetration.cpp
  *  \brief functions for calculation envelope penetration
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/em/envelope_penetration.h>
@@ -75,10 +75,10 @@ double get_percentage_of_voxels_covered_by_particles(
         // we increment ivox this way to avoid unnecessary multiplication
         // operations.
         ivox = znxny + ivoxy * nx + iminx;
-        for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
-          if (data[ivox] < thr) continue;
-          new_data[ivox] = 1;
-          ivox++;
+        for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++, ivox++) {
+          if (data[ivox] >= thr) {
+            new_data[ivox] = 1;
+          }
         }
       }
     }
@@ -87,6 +87,9 @@ double get_percentage_of_voxels_covered_by_particles(
   long voxs_t = 0;
   for (long ii = 0; ii < dmap->get_number_of_voxels(); ii++) {
     if (data[ii] >= thr) ++voxs_t;
+  }
+  if (voxs_t == 0) {
+    return 0.;
   }
   return get_sum(dmap_ind) / voxs_t;
 }
