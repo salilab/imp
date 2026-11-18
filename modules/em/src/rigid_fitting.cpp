@@ -7,6 +7,8 @@
  */
 
 #include <IMP/em/rigid_fitting.h>
+#include <algorithm>
+#include <cmath>
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/core/RigidBodyMover.h>
@@ -406,12 +408,25 @@ FittingSolutions compute_fitting_scores(
 
 Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
                             FloatKey wei_key) {
-  // create a grid that covers both the particles and the map
-  algebra::BoundingBox3D em_bb = get_bounding_box(em_map, 0.);
-  algebra::BoundingBox3D union_bb =
-      algebra::get_union(em_bb, core::get_bounding_box(core::XYZRs(ps)));
+  // create a grid that covers both the particles and the (whole) map, and
+  // that is aligned with the map's grid
+  double spacing = em_map->get_spacing();
+  algebra::BoundingBox3D em_bb = get_bounding_box(em_map);
+  algebra::BoundingBox3D ps_bb = core::get_bounding_box(core::XYZRs(ps));
+  algebra::Vector3D lower = em_bb.get_corner_0();
+  algebra::Vector3D upper = em_bb.get_corner_1();
+  // offset (in voxels) of the em map within the union map
+  int offset[3];
+  for (unsigned int i = 0; i < 3; ++i) {
+    offset[i] = std::max(0, static_cast<int>(std::ceil(
+        (lower[i] - ps_bb.get_corner_0()[i]) / spacing - 1e-6)));
+    lower[i] -= offset[i] * spacing;
+    int extend = std::max(0, static_cast<int>(std::ceil(
+        (ps_bb.get_corner_1()[i] - upper[i]) / spacing - 1e-6)));
+    upper[i] += extend * spacing;
+  }
   Pointer<em::DensityMap> union_map =
-      create_density_map(union_bb, em_map->get_spacing());
+      create_density_map(algebra::BoundingBox3D(lower, upper), spacing);
   union_map->get_header_writable()->set_resolution(
       em_map->get_header()->get_resolution());
   // create a sampled map
@@ -420,38 +435,19 @@ Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
   model_dens_map->resample();
   // extend the density map to the new dimensions (use the union map)
   union_map->reset_data();
-  const DensityHeader *uheader = union_map->get_header();
-  int onx = em_map->get_header()->get_nx();
-  int ony = em_map->get_header()->get_ny();
-  // int onz=em_map->get_header()->get_nz();
-  int oz_temp, ozy_temp;
-  int uz_temp, uzy_temp;
-  int uz_start, uy_start, ux_start;
-  int uz_end, uy_end, ux_end;
-  union_map->get_header_writable()->compute_xyz_top();
-  algebra::Vector3D half_vox =
-      algebra::Vector3D(1, 1, 1) * union_map->get_spacing() / 2;
-  ux_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 0);
-  uy_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 1);
-  uz_start =
-      union_map->get_dim_index_by_location(em_bb.get_corner_0() + half_vox, 2);
-  ux_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 0);
-  uy_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 1);
-  uz_end =
-      union_map->get_dim_index_by_location(em_bb.get_corner_1() - half_vox, 2);
-  for (int iz = uz_start; iz < uz_end; iz++) {  // z slowest
-    uz_temp = iz * uheader->get_nx() * uheader->get_ny();
-    oz_temp = (iz - uz_start) * onx * ony;
-    for (int iy = uy_start; iy < uy_end; iy++) {
-      uzy_temp = uz_temp + iy * uheader->get_nx();
-      ozy_temp = oz_temp + (iy - uy_start) * onx;
-      for (int ix = ux_start; ix < ux_end; ix++) {
-        union_map->set_value(uzy_temp + ix,
-                             em_map->get_value(ozy_temp + ix - ux_start));
+  const DensityHeader *oheader = em_map->get_header();
+  IMP_INTERNAL_CHECK(
+      union_map->get_header()->get_nx() >= oheader->get_nx() + offset[0] &&
+      union_map->get_header()->get_ny() >= oheader->get_ny() + offset[1] &&
+      union_map->get_header()->get_nz() >= oheader->get_nz() + offset[2],
+      "Union map does not contain the em map");
+  for (int iz = 0; iz < oheader->get_nz(); iz++) {  // z slowest
+    for (int iy = 0; iy < oheader->get_ny(); iy++) {
+      for (int ix = 0; ix < oheader->get_nx(); ix++) {
+        union_map->set_value(
+            union_map->xyz_ind2voxel(ix + offset[0], iy + offset[1],
+                                     iz + offset[2]),
+            em_map->get_value(em_map->xyz_ind2voxel(ix, iy, iz)));
       }
     }
   }

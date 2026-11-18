@@ -43,11 +43,12 @@ class Tests(IMP.test.TestCase):
                 IMP.core.get_leaves(self.mh), self.scene))
         for i, score in enumerate(scores):
             print("score for spacing:", spacings[i], " is:", score)
+        # The map was sampled with spacing 2.0, so that should score best
         for ind in [0, 1, 2, 4, 5, 6]:
             self.assertGreater(
-                scores[i], scores[0],
+                scores[ind], scores[3],
                 "wrong spacing:" + str(spacings[ind])
-                + " has better value than spacing=1.7")
+                + " has better value than spacing=2.0")
         for i in range(6):
             self.assertAlmostEqual(scores[i], scores[i + 1], delta=0.3,
                                    msg="scores should be similar")
