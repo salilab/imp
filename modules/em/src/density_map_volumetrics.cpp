@@ -29,6 +29,7 @@ Float get_threshold_for_approximate_volume(DensityMap* d,
   Float voxelVolume = d->get_spacing() * d->get_spacing() * d->get_spacing();
   long numVoxelsNeeded = desired_volume / voxelVolume;
   long mapSizeInVoxels = d->get_number_of_voxels();
+  IMP_USAGE_CHECK(mapSizeInVoxels > 0, "Density map is empty");
   std::vector<double> data(mapSizeInVoxels);
   // This costly loop could probably be replaced by a memcopy
   // provided I had access to d->data_
@@ -37,8 +38,11 @@ Float get_threshold_for_approximate_volume(DensityMap* d,
   }
   std::sort(data.begin(), data.end());
   // If the volume is bigger than the map, just use the lowest density
-  // voxel as the threshold
-  double threshold = data[std::max(mapSizeInVoxels - numVoxelsNeeded, 0L)];
+  // voxel as the threshold; if it is smaller than a single voxel, use
+  // the highest density voxel
+  long index = std::max(0L, std::min(mapSizeInVoxels - numVoxelsNeeded,
+                                     mapSizeInVoxels - 1));
+  double threshold = data[index];
   return static_cast<Float>(threshold);
 }
 

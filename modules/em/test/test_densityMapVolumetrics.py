@@ -30,6 +30,21 @@ class Tests(IMP.test.TestCase):
                 though M1 and M2 are different : """ +
             str(weight_In_kD) + " != " + str(mass))
 
+    def test_get_threshold_for_small_volume(self):
+        """Check threshold for volumes smaller than one voxel"""
+        dmap = IMP.em.create_density_map(10, 10, 10, 1.0)
+        for i in range(dmap.get_number_of_voxels()):
+            dmap.set_value(i, float(i))
+        # Volume of zero or less than a voxel should give the highest density
+        for vol in (0.0, 0.5):
+            t = IMP.em.get_threshold_for_approximate_volume(dmap, vol)
+            self.assertAlmostEqual(t, 999.0, delta=1e-6)
+        t = IMP.em.get_threshold_for_approximate_volume(dmap, 5.0)
+        self.assertAlmostEqual(t, 995.0, delta=1e-6)
+        # Volume larger than the map should give the lowest density
+        t = IMP.em.get_threshold_for_approximate_volume(dmap, 5000.0)
+        self.assertAlmostEqual(t, 0.0, delta=1e-6)
+
 
 if __name__ == '__main__':
     IMP.test.main()
