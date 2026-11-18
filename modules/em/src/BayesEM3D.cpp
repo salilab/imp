@@ -89,7 +89,13 @@ double bayesem3d_linear_interpolate(const Floats &x_data, const Floats &y_data,
                                     double x, bool extrapolate) {
   int size = x_data.size();
 
-  if (size < 2) IMP_ERROR("The box size cannot be smaller than 2")
+  // Note that IMP_ERROR does not throw in all build configurations
+  if (size < 2) {
+    IMP_THROW("The box size cannot be smaller than 2", ValueException);
+  }
+  if (y_data.size() < x_data.size()) {
+    IMP_THROW("y_data must be at least as large as x_data", ValueException);
+  }
 
   int i = 0;                    // find left end of interval for interpolation
   if (x >= x_data[size - 2]) {  // special case: beyond right end

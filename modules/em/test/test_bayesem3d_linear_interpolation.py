@@ -37,12 +37,18 @@ class Tests(IMP.test.TestCase):
         x = [1]
         y = [3, 2, 0]
 
-        with self.assertRaises(Exception) as context:
+        # This should be a ValueException (not an error that is only
+        # raised in some build configurations)
+        with self.assertRaises(IMP.ValueException) as context:
             IMP.em.bayesem3d_linear_interpolate(x, y, 2.5, False)
 
-        self.assertEqual(
+        self.assertIn(
             "The box size cannot be smaller than 2",
             str(context.exception))
+        # y_data must be at least as large as x_data
+        self.assertRaises(IMP.ValueException,
+                          IMP.em.bayesem3d_linear_interpolate,
+                          [1, 2, 3], [1, 2], 2.5, False)
 
     def test_boundaries_on_the_right(self):
         """Check linear interpolation at the boundaries"""
