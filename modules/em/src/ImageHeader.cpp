@@ -6,10 +6,18 @@
 
 #include "IMP/em/ImageHeader.h"
 #include <IMP/exception.h>
+#include <cstddef>
 #include <ctime>
 #include <string.h>
 
 IMPEM_BEGIN_NAMESPACE
+
+// The byte-swapping code below assumes this layout
+static_assert(offsetof(SpiderHeader, empty)
+              == offsetof(SpiderHeader, fAngle1) + 13 * sizeof(float),
+              "Unexpected SpiderHeader layout");
+static_assert(sizeof(SpiderHeader) - offsetof(SpiderHeader, empty) == 756,
+              "Unexpected SpiderHeader layout");
 
 void ImageHeader::print_hard(std::ostream& out) const {
   out << "fNslice=" << spider_header_.fNslice << std::endl;
@@ -115,11 +123,11 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
     IMP::algebra::reversed_read(&spider_header_, sizeof(float), 36, f, true);
     IMP::algebra::reversed_read(&spider_header_.fGeo_matrix, sizeof(double), 9,
                                 f, true);
-    // 14 is the number of fields in the SpiderHeader struct after fGeo_matrix
-    IMP::algebra::reversed_read(&spider_header_.fAngle1, sizeof(float), 14, f,
+    // 13 is the number of float fields after fGeo_matrix (fAngle1 to Flip)
+    IMP::algebra::reversed_read(&spider_header_.fAngle1, sizeof(float), 13, f,
                                 true);
-    IMP::algebra::reversed_read(&spider_header_.empty, sizeof(char), 752, f,
-                                true);
+    // The rest of the header is characters, which need no swapping
+    f.read(spider_header_.empty, sizeof(char) * 756);
   }
 
   unsigned long usfNcol = (unsigned long)spider_header_.fNcol;
@@ -273,11 +281,11 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed) {
     IMP::algebra::reversed_write(&spider_header_, sizeof(float), 36, f, true);
     IMP::algebra::reversed_write(&spider_header_.fGeo_matrix, sizeof(double), 9,
                                  f, true);
-    // 14 is the number of float fields after fGeo_matrix in the header__ struct
-    IMP::algebra::reversed_write(&spider_header_.fAngle1, sizeof(float), 14, f,
+    // 13 is the number of float fields after fGeo_matrix (fAngle1 to Flip)
+    IMP::algebra::reversed_write(&spider_header_.fAngle1, sizeof(float), 13, f,
                                  true);
-    // 752 is the number of chars to the end of the file
-    f.write(spider_header_.empty, sizeof(char) * 752);
+    // 756 is the number of chars to the end of the header
+    f.write(spider_header_.empty, sizeof(char) * 756);
   } else {
     reversed_ = false;
     f.write(reinterpret_cast<char*>(&spider_header_), sizeof(SpiderHeader));
