@@ -2,7 +2,7 @@
  *  \file MRCReaderWriter.cpp
  *  \brief Classes to read or write MRC files.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -176,6 +176,13 @@ void MRCReaderWriter::read_header() {
     int machinestamp = header.machinestamp;
     byte_swap(ch, 56);
     header.machinestamp = machinestamp;
+  }
+  // Don't trust the number of labels in the file
+  if (header.nlabl < 0 || header.nlabl > IMP_MRC_NUM_LABELS) {
+    IMP_WARN("Invalid number of labels (" << header.nlabl
+             << ") in MRC file " << filename << "; ignoring labels"
+             << std::endl);
+    header.nlabl = 0;
   }
 }
 

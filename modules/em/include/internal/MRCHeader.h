@@ -2,7 +2,7 @@
  *  \file MRCHeader.h
  *  \brief Header information for an MRC file.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,9 @@
 
 #include <IMP/em/em_config.h>
 #include "../DensityHeader.h"
+#include <algorithm>
+#include <cstring>
+#include <string>
 
 IMPEM_BEGIN_INTERNAL_NAMESPACE
 
@@ -121,8 +124,12 @@ class IMPEMEXPORT MRCHeader {
     s << "rms: " << v.rms << std::endl;
     s << "nlabl: " << v.nlabl << std::endl;
     s << "labels : " << v.labels << std::endl;
-    for (int i = 0; i < v.nlabl; i++)
-      s << "labels[" << i << "] = ->" << v.labels[i] << "<-" << std::endl;
+    for (int i = 0; i < std::min(v.nlabl, IMP_MRC_NUM_LABELS); i++) {
+      // labels are fixed-width and not necessarily null-terminated
+      s << "labels[" << i << "] = ->"
+        << std::string(v.labels[i], strnlen(v.labels[i], IMP_MRC_LABEL_SIZE))
+        << "<-" << std::endl;
+    }
     return s;
   }
 };

@@ -2,11 +2,13 @@
  *  \file MRCHeader.cpp
  *  \brief Header information for an MRC file.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/internal/MRCHeader.h>
+#include <algorithm>
+#include <cstring>
 
 IMPEM_BEGIN_INTERNAL_NAMESPACE
 
@@ -63,11 +65,15 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   machinestamp = h.machinestamp;
   rms = h.rms;      // RMS deviation of map from mean density
-  nlabl = h.nlabl;  // Number of labels being used
+  // Number of labels being used
+  nlabl = std::max(0, std::min(h.nlabl, IMP_MRC_NUM_LABELS));
   // Fill empty comments with null character
   memset(&labels[0][0], 0, IMP_MRC_NUM_LABELS * IMP_MRC_LABEL_SIZE);
-  // Copy comments
-  for (int i = 0; i < nlabl; i++) strcpy(labels[i], h.comments[i]);
+  // Copy comments (these are fixed-width fields, and are not necessarily
+  // null-terminated)
+  for (int i = 0; i < nlabl; i++) {
+    strncpy(labels[i], h.comments[i], IMP_MRC_LABEL_SIZE);
+  }
 }
 
 void MRCHeader::convert_crs_to_xyz(int &nx, int &ny, int &nz,
@@ -149,14 +155,17 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   h.machinestamp = machinestamp;
   h.rms = rms;      // RMS deviation of map from mean density
-  h.nlabl = nlabl;  // Number of labels being used
+  // Number of labels being used
+  h.nlabl = std::max(0, std::min(nlabl, IMP_MRC_NUM_LABELS));
   // Fill empty comments with null character
   memset(&h.comments[0][0], 0,
          DensityHeader::COMMENT_FIELD_NUM_OF
          * DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   // Copy comments
+  // Copy comments (these are fixed-width fields, and are not necessarily
+  // null-terminated)
   for (int i = 0; i < h.nlabl; i++) {
-    strncpy(h.comments[i], labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
+    memcpy(h.comments[i], labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   }
 }
 

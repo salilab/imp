@@ -7,6 +7,9 @@
  */
 
 #include <IMP/em/DensityHeader.h>
+#include <algorithm>
+#include <cstring>
+#include <string>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -191,7 +194,13 @@ void DensityHeader::show(std::ostream &out) const {
   out << "machinestamp: " << machinestamp << std::endl;
   out << "rms: " << rms << std::endl;
   out << "nlabl: " << nlabl << std::endl;
-  for (int i = 0; i < nlabl; i++)
-    out << "comments[" << i << "] = ->" << comments[i] << "<-" << std::endl;
+  for (int i = 0; i < std::min(nlabl, static_cast<int>(COMMENT_FIELD_NUM_OF));
+       i++) {
+    // comments are fixed-width and not necessarily null-terminated
+    out << "comments[" << i << "] = ->"
+        << std::string(comments[i],
+                       strnlen(comments[i], COMMENT_FIELD_SINGLE_SIZE))
+        << "<-" << std::endl;
+  }
 }
 IMPEM_END_NAMESPACE
