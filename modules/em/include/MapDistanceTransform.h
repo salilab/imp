@@ -2,7 +2,7 @@
  * \file IMP/em/MapDistanceTransform.h \brief class for computing a distance
  * transform of the density map
  *
- * Copyright 2007-2022 IMP Inventors. All rights reserved.
+ * Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -38,9 +38,12 @@ class IMPEMEXPORT MapDistanceTransform : public IMP::em::DensityMap {
       (-max_float is returned if the point is outside the grid)
   */
   float get_distance_from_envelope(const IMP::algebra::Vector3D& v) const {
-    long index = get_voxel_by_location(v);
-    if (index >= 0 && index < get_number_of_voxels()) return data_[index];
-    return -std::numeric_limits<float>::max();
+    // Check each axis separately (a linear index can be in range even
+    // when the point is outside of the grid)
+    if (!is_part_of_volume(v[0], v[1], v[2])) {
+      return -std::numeric_limits<float>::max();
+    }
+    return data_[get_voxel_by_location(v)];
   }
 
  private:
