@@ -2,12 +2,13 @@
  *  \file masking.cpp
  *  \brief masking tools
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/masking.h>
 #include <IMP/algebra/utility.h>
+#include <iterator>
 #include <IMP/em/exp.h>
 IMPEM_BEGIN_NAMESPACE
 RadiusDependentDistanceMask::RadiusDependentDistanceMask(
@@ -53,18 +54,19 @@ const RadiusDependentDistanceMask *DistanceMask::get_mask(float radius,
   // that with a key that is equal to or greater than the argument key,
   // or that addresses the location succeeding the last element in the
   // map if no match is found for the key.
-  MASK_MAP::const_iterator lower_closest = masks_.lower_bound(radius);
-  MASK_MAP::const_iterator upper_closest = masks_.upper_bound(radius);
+  // Check the closest cached radii on either side of the requested one
+  // (taking care not to dereference end())
+  MASK_MAP::const_iterator upper_closest = masks_.lower_bound(radius);
   const RadiusDependentDistanceMask *closest = nullptr;
-  if (algebra::get_are_almost_equal(radius, upper_closest->first, eps)) {
+  if (upper_closest != masks_.end()
+      && algebra::get_are_almost_equal(radius, upper_closest->first, eps)) {
     closest = upper_closest->second;
     IMP_LOG_VERBOSE("for radius:" << radius << " the closest is:"
                                   << upper_closest->first << std::endl);
-  } else {
-    if (lower_closest != masks_.end()) {
-      if (algebra::get_are_almost_equal(radius, lower_closest->first, eps)) {
-        closest = lower_closest->second;
-      }
+  } else if (upper_closest != masks_.begin()) {
+    MASK_MAP::const_iterator lower_closest = std::prev(upper_closest);
+    if (algebra::get_are_almost_equal(radius, lower_closest->first, eps)) {
+      closest = lower_closest->second;
     }
   }
   if (closest == nullptr) {

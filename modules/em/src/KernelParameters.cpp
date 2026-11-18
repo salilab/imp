@@ -2,12 +2,13 @@
  *  \file KernelParameters.cpp
  *  \brief Calculates and stores Gaussian kernel parameters.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/KernelParameters.h>
 #include <IMP/algebra/utility.h>
+#include <iterator>
 #include <IMP/constants.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -44,21 +45,26 @@ void KernelParameters::init(float resolution) {
 const internal::RadiusDependentKernelParameters &KernelParameters::get_params(
                                               float radius, float eps) {
   IMP_USAGE_CHECK(initialized_, "The Kernel Parameters are not initialized");
-  // we do not use find but use lower_bound and upper_bound to overcome
-  // numerical instabilities
-  KernelMap::iterator lower_closest = radii2params_.lower_bound(radius);
-  KernelMap::iterator upper_closest = radii2params_.upper_bound(radius);
-  if (algebra::get_are_almost_equal(radius, upper_closest->first, eps)) {
+  // we do not use find to overcome numerical instabilities; instead,
+  // check the closest cached radii on either side of the requested one
+  // (taking care not to dereference end())
+  KernelMap::iterator upper_closest = radii2params_.lower_bound(radius);
+  if (upper_closest != radii2params_.end()
+      && algebra::get_are_almost_equal(radius, upper_closest->first, eps)) {
     return *upper_closest->second;
-  } else if (lower_closest != radii2params_.end()
-             && algebra::get_are_almost_equal(radius,
-                                              lower_closest->first, eps)) {
-    return *lower_closest->second;
-  } else {
-    radii2params_[radius] = new internal::RadiusDependentKernelParameters(
-        radius, rsigsq_, timessig_, sq2pi3_, inv_rsigsq_, rnormfac_, rkdist_);
-    return *radii2params_[radius];
   }
+  if (upper_closest != radii2params_.begin()) {
+    KernelMap::iterator lower_closest = std::prev(upper_closest);
+    if (algebra::get_are_almost_equal(radius, lower_closest->first, eps)) {
+      return *lower_closest->second;
+    }
+  }
+  const internal::RadiusDependentKernelParameters *p =
+      new internal::RadiusDependentKernelParameters(
+          radius, rsigsq_, timessig_, sq2pi3_, inv_rsigsq_, rnormfac_,
+          rkdist_);
+  radii2params_[radius] = p;
+  return *p;
 }
 
 //! Create a truncated 3D Gaussian
