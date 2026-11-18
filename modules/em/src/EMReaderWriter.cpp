@@ -2,13 +2,16 @@
  *  \file EMReaderWriter.cpp
  *  \brief Classes to read or write density files in EM format.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/EMReaderWriter.h>
 
 #include <boost/version.hpp>
+#include <cstdint>
+#include <cstring>
+#include <vector>
 
 #if BOOST_VERSION < 106900
 #include <boost/detail/endian.hpp>
@@ -150,14 +153,17 @@ void EMReaderWriter::read_data(std::ifstream &file, float **data,
 
   // a density of a single voxel can be represented in 1 to 4 bytes.
   // header.type provides this information.
-  // 1 : byte
+  // 1 : byte, 2 : short (2-byte) integer, 4 : long (4-byte) integer, 5 : float
   int voxel_data_size;
   switch (header.type) {
     case 1:
       voxel_data_size = sizeof(unsigned char);
       break;
     case 2:
-      voxel_data_size = sizeof(int);
+      voxel_data_size = sizeof(int16_t);
+      break;
+    case 4:
+      voxel_data_size = sizeof(int32_t);
       break;
     case 5:
       voxel_data_size = sizeof(float);
@@ -168,23 +174,44 @@ void EMReaderWriter::read_data(std::ifstream &file, float **data,
                 IOException);
   }
 
-  char *voxeldata = new char[nvox * voxel_data_size];
-  file.read(voxeldata, voxel_data_size * nvox);
-  char *tmp = new char[voxel_data_size];
+  std::vector<char> voxeldata(static_cast<size_t>(nvox) * voxel_data_size);
+  file.read(&voxeldata[0], voxeldata.size());
 #if defined(BOOST_ENDIAN_LITTLE_BYTE) || defined(BOOST_LITTLE_ENDIAN)
   bool need_swap = (header.lswap == 1);
 #else
   bool need_swap = (header.lswap != 1);
 #endif
+  // Use a suitably aligned buffer for byte swapping
+  union {
+    char c[4];
+    unsigned char u8;
+    int16_t i16;
+    int32_t i32;
+    float f;
+  } tmp;
   for (int i = 0; i < nvox; i++) {
-    strncpy(tmp, &(voxeldata[i * voxel_data_size]), voxel_data_size);
+    // Note that the data is binary, so we must not use string functions
+    // (such as strncpy) here, as they would stop at the first zero byte
+    memcpy(tmp.c, &voxeldata[static_cast<size_t>(i) * voxel_data_size],
+           voxel_data_size);
     if (need_swap) {
-      swap(tmp, voxel_data_size);
+      swap(tmp.c, voxel_data_size);
     }
-    memcpy(&((*data)[i]), tmp, voxel_data_size);
+    switch (header.type) {
+      case 1:
+        (*data)[i] = static_cast<float>(tmp.u8);
+        break;
+      case 2:
+        (*data)[i] = static_cast<float>(tmp.i16);
+        break;
+      case 4:
+        (*data)[i] = static_cast<float>(tmp.i32);
+        break;
+      default:
+        (*data)[i] = tmp.f;
+        break;
+    }
   }
-  delete[] tmp;
-  delete[] voxeldata;
 }
 
 IMPEM_END_NAMESPACE
