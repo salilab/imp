@@ -2,20 +2,17 @@
  *  \file PCAFitRestraint.cpp
  *  \brief Calculate match between density and particle PCA
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/em/PCAFitRestraint.h>
 #include <IMP/log.h>
 #include <IMP/em/converters.h>
+#include <IMP/em/internal/pca_utils.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 namespace {
-double get_angle(const algebra::Vector3D &v1, const algebra::Vector3D &v2) {
-  return std::acos((v1 * v2) / (v1.get_magnitude() * v2.get_magnitude()));
-}
-
 algebra::PrincipalComponentAnalysis get_pca_from_particles(
     const core::XYZs &ps_xyz) {
   // find the PCA of the protein
@@ -88,8 +85,8 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                                          << std::endl);
       escore = 1;
     }
-    double angle = get_angle(ps_pca.get_principal_component(i),
-                             dens_pca_.get_principal_component(i));
+    double angle = internal::get_angle(ps_pca.get_principal_component(i),
+                                       dens_pca_.get_principal_component(i));
     if (!((angle < max_angle_diff_) ||
           (angle > (algebra::PI - max_angle_diff_)))) {
       IMP_LOG_VERBOSE("Principal angle " << i << " do not match "
