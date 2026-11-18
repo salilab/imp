@@ -75,7 +75,7 @@ void EMHeader::generate_common_header(DensityHeader &header) {
   header.Tiltangle = Tiltangle;
   header.Tiltaxis = Tiltaxis;
   header.MarkerX = MarkerX;
-  MarkerY = header.MarkerY;
+  header.MarkerY = MarkerY;
   header.lswap = lswap;
 }
 

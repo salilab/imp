@@ -47,6 +47,23 @@ class Tests(IMP.test.TestCase):
             for i, v in enumerate(vals):
                 self.assertAlmostEqual(r.get_value(i), v, delta=1e-6)
 
+    def test_header_fields(self):
+        """EM header fields should survive a write/read round trip"""
+        m = IMP.em.create_density_map(2, 2, 2, 1.0)
+        h = m.get_header_writable()
+        h.MarkerX = 12.
+        h.MarkerY = 34.
+        h.FocusIncrement = 5.
+        h.CountsPerElectron = 7.
+        fname = self.get_tmp_file_name('header.em')
+        IMP.em.write_map(m, fname, IMP.em.EMReaderWriter())
+        r = IMP.em.read_map(fname, IMP.em.EMReaderWriter())
+        rh = r.get_header()
+        self.assertAlmostEqual(rh.MarkerX, 12., delta=1e-4)
+        self.assertAlmostEqual(rh.MarkerY, 34., delta=1e-4)
+        self.assertAlmostEqual(rh.FocusIncrement, 5., delta=1e-4)
+        self.assertAlmostEqual(rh.CountsPerElectron, 7., delta=1e-4)
+
 
 if __name__ == '__main__':
     IMP.test.main()

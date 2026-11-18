@@ -2,7 +2,7 @@
  *  \file EMHeader.h
  *  \brief Header information for files in EM format.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -106,7 +106,8 @@ class IMPEMEXPORT EMHeader {
       emdata[ASTIGAMATISM_OFFSET] = (int)(header.Astigmatism * scale);
       emdata[ASTIGAMATISMANGLE_OFFSET] = (int)header.AstigmatismAngle;
       emdata[FOCUSINCREMENT_OFFSET] = (int)(header.FocusIncrement * scale);
-      emdata[COUNTSPERELECTRON_OFFSET] = (int)(header.FocusIncrement * scale);
+      emdata[COUNTSPERELECTRON_OFFSET] =
+          (int)(header.CountsPerElectron * scale);
       emdata[INTENSITY_OFFSET] = (int)(header.Intensity * scale);
       emdata[ENERGYSLITWIDTH_OFFSET] = (int)header.EnergySlitwidth;
       emdata[ENERGYOFFSET_OFFSET] = (int)header.EnergyOffset;
