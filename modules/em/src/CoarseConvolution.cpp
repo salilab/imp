@@ -2,11 +2,12 @@
  *  \file CoarseConvolution.cpp
  *  \brief Convolutes two grids
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/CoarseConvolution.h>
+#include <IMP/em/internal/map_overlap.h>
 #include <cmath>
 
 IMPEM_BEGIN_NAMESPACE
@@ -43,35 +44,14 @@ float CoarseConvolution::convolution(const DensityMap *f, DensityMap *g,
       }
     }
   } else {  // Compute the CCC taking into account the different origins
-    // Given the same size of the maps and the dimension order, the difference
-    // between two positions in voxels is always the same
-
-    // calculate the difference in voxels between the origin of the  model map
-    // and the origin of the em map.
-    float voxel_size = f_header->get_spacing();
-    int ivoxx_shift = (int)floor(
-        (g_header->get_xorigin() - f_header->get_xorigin()) / voxel_size);
-    int ivoxy_shift = (int)floor(
-        (g_header->get_yorigin() - f_header->get_yorigin()) / voxel_size);
-    int ivoxz_shift = (int)floor(
-        (g_header->get_zorigin() - f_header->get_zorigin()) / voxel_size);
-
-    int j;  // Index for em data
-    int i;  // Index for model data
-            // calculate the shift in index of the origin of model_map in em_map
-    // ( j can be negative)
-    j = ivoxz_shift * f_header->get_nx() * f_header->get_ny() +
-        ivoxy_shift * f_header->get_nx() + ivoxx_shift;
-    for (i = 0; i < nvox; i++) {
-      // if the voxel of the model is above the threshold
-      if (g_data[i] > voxel_data_threshold) {
-        if (j + i >= 0 && j + i < nvox) {
-          if (f_data[j + i] > voxel_data_threshold) {
-            conv += f_data[j + i] * g_data[i];
+    // Only consider voxels of g that lie within f
+    internal::for_each_overlapping_voxel(
+        f_header, g_header, [&](long ifh, long igh) {
+          if (g_data[igh] > voxel_data_threshold &&
+              f_data[ifh] > voxel_data_threshold) {
+            conv += f_data[ifh] * g_data[igh];
           }
-        }
-      }
-    }
+        });
   }
   return conv;
 }

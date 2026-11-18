@@ -2,11 +2,12 @@
  *  \file CoarseCC.cpp
  *  \brief Perform coarse fitting between two density objects.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/CoarseCC.h>
+#include <IMP/em/internal/map_overlap.h>
 #include <cmath>
 #include <IMP/core/utility.h>
 
@@ -67,39 +68,15 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
     }
   } else {  // Compute the CCC taking into account the different origins
     IMP_LOG_VERBOSE("calc CC with different origins" << std::endl);
-    // Given the same size of the maps and the dimension order, the difference
-    // between two positions in voxels is always the same
-
-    // calculate the difference in voxels between the origin of the  model map
-    // and the origin of the em map.
-    float voxel_size = grid1_header->get_spacing();
-    int ivoxx_shift =
-        (int)floor((grid2_header->get_xorigin() - grid1_header->get_xorigin()) /
-                   voxel_size);
-    int ivoxy_shift =
-        (int)floor((grid2_header->get_yorigin() - grid1_header->get_yorigin()) /
-                   voxel_size);
-    int ivoxz_shift =
-        (int)floor((grid2_header->get_zorigin() - grid1_header->get_zorigin()) /
-                   voxel_size);
-
-    long j;  // Index for em data
-    long i;  // Index for model data
-    // calculate the shift in index of the origin of model_map in em_map
-    // ( j can be negative)
-    j = ivoxz_shift * grid1_header->get_nx() * grid1_header->get_ny() +
-        ivoxy_shift * grid1_header->get_nx() + ivoxx_shift;
-    for (i = 0; i < nvox; i++) {
-      // if the voxel of the model is above the threshold
-      if (grid2_data[i] > grid2_voxel_data_threshold) {
-        // Check if the voxel belongs to the em map volume, and only then
-        // compute the correlation
-        if (j + i >= 0 && j + i < nvox) {
-          ccc += grid1_data[j + i] * grid2_data[i];
-          ++num_elements;
-        }
-      }
-    }
+    // Only consider voxels of grid2 that lie within grid1
+    internal::for_each_overlapping_voxel(
+        grid1_header, grid2_header, [&](long i1, long i2) {
+          // if the voxel of the model is above the threshold
+          if (grid2_data[i2] > grid2_voxel_data_threshold) {
+            ccc += grid1_data[i1] * grid2_data[i2];
+            ++num_elements;
+          }
+        });
   }
   IMP_INTERNAL_CHECK(num_elements > 0,
                      "No voxels participated in the calculation"
@@ -235,7 +212,6 @@ double get_coarse_cc_local_coefficient(
     return 0.0;
   }
 
-  long nvox = em_header->get_number_of_voxels();
   double ccc = 0.0;
   double model_mean = 0.;
   double em_mean = 0.;
@@ -244,55 +220,30 @@ double get_coarse_cc_local_coefficient(
   IMP_LOG_VERBOSE("calc local CC with different origins" << std::endl);
   model_map->get_header_writable()->compute_xyz_top();
 
-  // Given the same size of the maps and the dimension order, the difference
-  // between two positions in voxels is always the same
-
-  // calculate the difference in voxels between the origin of the  model map
-  // and the origin of the em map.
-  double voxel_size = em_map->get_header()->get_spacing();
-  int ivoxx_shift = (int)floor(
-      (model_header->get_xorigin() - em_header->get_xorigin()) / voxel_size);
-  int ivoxy_shift = (int)floor(
-      (model_header->get_yorigin() - em_header->get_yorigin()) / voxel_size);
-  int ivoxz_shift = (int)floor(
-      (model_header->get_zorigin() - em_header->get_zorigin()) / voxel_size);
-
-  long j;  // Index for em data
-  long i;  // Index for model data
-           // calculate the shift in index of the origin of model_map in em_map
-           // ( j can be negative)
-  j = ivoxz_shift * em_header->get_nx() * em_header->get_ny() +
-      ivoxy_shift * em_header->get_nx() + ivoxx_shift;
-  int num_elements = 0;  //
-  for (i = 0; i < nvox; i++) {
-    // if the voxel of the model is above the threshold
-    if (model_data[i] > voxel_data_threshold) {
-      // Check if the voxel belongs to the em map volume, and only then
-      // compute the correlation
-      if (j + i >= 0 && j + i < nvox) {
-        num_elements++;
-        em_mean += em_data[j + i];
-        model_mean += model_data[i];
-      }
-    }
-  }
+  // Only consider voxels of the model map that lie within the em map
+  int num_elements = 0;
+  internal::for_each_overlapping_voxel(
+      em_header, model_header, [&](long iem, long imdl) {
+        // if the voxel of the model is above the threshold
+        if (model_data[imdl] > voxel_data_threshold) {
+          num_elements++;
+          em_mean += em_data[iem];
+          model_mean += model_data[imdl];
+        }
+      });
   em_mean = em_mean / num_elements;
   model_mean = model_mean / num_elements;
   em_rms = 0.;
   model_rms = 0.;
-  for (i = 0; i < nvox; i++) {
-    // if the voxel of the model is above the threshold
-    if (model_data[i] > voxel_data_threshold) {
-      // Check if the voxel belongs to the em map volume, and only then
-      // compute the correlation
-      if (j + i >= 0 && j + i < nvox) {
-        ccc += (em_data[j + i] - em_mean) * (model_data[i] - model_mean);
-        em_rms += (em_data[j + i] - em_mean) * (em_data[j + i] - em_mean);
-        model_rms +=
-            (model_data[i] - model_mean) * (model_data[i] - model_mean);
-      }
-    }
-  }
+  internal::for_each_overlapping_voxel(
+      em_header, model_header, [&](long iem, long imdl) {
+        if (model_data[imdl] > voxel_data_threshold) {
+          ccc += (em_data[iem] - em_mean) * (model_data[imdl] - model_mean);
+          em_rms += (em_data[iem] - em_mean) * (em_data[iem] - em_mean);
+          model_rms +=
+              (model_data[imdl] - model_mean) * (model_data[imdl] - model_mean);
+        }
+      });
   em_rms = std::sqrt(em_rms / num_elements);
   model_rms = std::sqrt(model_rms / num_elements);
   IMP_INTERNAL_CHECK(num_elements > 0,

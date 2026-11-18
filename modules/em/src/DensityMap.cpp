@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/DensityMap.h>
+#include <IMP/em/internal/map_overlap.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/XplorReaderWriter.h>
 #include <IMP/em/EMReaderWriter.h>
@@ -1285,30 +1286,16 @@ DensityMap *get_threshold_map(const DensityMap *orig_map, float threshold) {
 }
 
 double convolute(const DensityMap *m1, const DensityMap *m2) {
-  const DensityHeader *h1 = m1->get_header();
-  const DensityHeader *h2 = m2->get_header();
-  double *d1 = m1->get_data();
-  double *d2 = m2->get_data();
-  float voxel_size = m1->get_spacing();
-  int ivoxx_shift =
-      (int)floor((h2->get_xorigin() - h1->get_xorigin()) / voxel_size);
-  int ivoxy_shift =
-      (int)floor((h2->get_yorigin() - h1->get_yorigin()) / voxel_size);
-  int ivoxz_shift =
-      (int)floor((h2->get_zorigin() - h1->get_zorigin()) / voxel_size);
-  long j;  // m1 index
-  long i;  // m2 index
-  long nvox = m1->get_number_of_voxels();
-  // calculate the shift in index of the origin of m2 in m1
-  // ( j can be negative)
-  j = ivoxz_shift * h1->get_nx() * h1->get_ny() + ivoxy_shift * h1->get_nx() +
-      ivoxx_shift;
+  IMP_USAGE_CHECK(m1->same_voxel_size(m2),
+                  "The voxel sizes of the two maps differ ( "
+                      << m1->get_spacing() << " != " << m2->get_spacing());
+  const double *d1 = m1->get_data();
+  const double *d2 = m2->get_data();
   double conv = 0.;
-  for (i = 0; i < nvox; i++) {
-    if (j + i >= 0 && j + i < nvox) {
-      conv += d1[j + i] * d2[i];
-    }
-  }
+  // Only consider voxels of m2 that lie within m1
+  internal::for_each_overlapping_voxel(
+      m1->get_header(), m2->get_header(),
+      [&](long i1, long i2) { conv += d1[i1] * d2[i2]; });
   return conv;
 }
 
