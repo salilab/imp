@@ -2,7 +2,7 @@
  *  \file EMHeader.cpp
  *  \brief Header information for files in EM format.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,9 @@ EMHeader::EMHeader(const DensityHeader &header) {
   ny = header.get_ny();
   nz = header.get_nz();
   magic = header.magic;
-  type = header.get_data_type();
+  // EMReaderWriter always writes float data, regardless of the data type
+  // of the file the map was originally read from
+  type = 5;
   for (short i = 0; i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     comment[i] = header.comments[0][i];
   }

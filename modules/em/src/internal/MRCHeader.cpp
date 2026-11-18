@@ -20,15 +20,9 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   ns = h.get_nz();
   nr = h.get_ny();
   nc = h.get_nx();  // map size
-  // mode
-  if (h.get_data_type() == 0)  // data type not initialized
-    mode = 2;
-  if (h.get_data_type() == 1)
-    mode = 0;  // 8-bits
-  else if (h.get_data_type() == 2)
-    mode = 1;  // 16-bits
-  else if (h.get_data_type() == 5)
-    mode = 2;  // 32-bits
+  // mode: MRCReaderWriter always writes 32-bit float data, regardless of
+  // the data type of the file the map was originally read from
+  mode = 2;
 
   // number of first columns in map (default = 0)
   ncstart = h.nxstart;

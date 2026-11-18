@@ -48,10 +48,6 @@ void EMReaderWriter::write(const char *filename, const float *data,
                            const DensityHeader &header_) {
   std::ofstream s(filename, std::ofstream::out | std::ofstream::binary);
   internal::EMHeader header(header_);
-  // init header data if not set
-  if (header.type == 0) {
-    header.type = 5;
-  }
   write_header(s, header);
   s.write((char *)data, sizeof(float) * header.nx * header.ny * header.nz);
   s.close();
