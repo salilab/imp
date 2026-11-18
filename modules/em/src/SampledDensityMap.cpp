@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/SampledDensityMap.h>
+#include <cmath>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -295,9 +296,11 @@ void SampledDensityMap::project(const ParticlesTemp &ps, int x_margin,
     double x_find = (loc[0] - orig[0]) / spacing;
     double y_find = (loc[1] - orig[1]) / spacing;
     double z_find = (loc[2] - orig[2]) / spacing;
-    x0 = get_dim_index_by_location(loc, 0);
-    y0 = get_dim_index_by_location(loc, 1);
-    z0 = get_dim_index_by_location(loc, 2);
+    // the trilinear weights below assume that x0 <= x_find < x0 + 1, so
+    // use floor (get_dim_index_by_location rounds to the nearest voxel)
+    x0 = static_cast<int>(std::floor(x_find));
+    y0 = static_cast<int>(std::floor(y_find));
+    z0 = static_cast<int>(std::floor(z_find));
     x1 = x0 + 1;
     y1 = y0 + 1;
     z1 = z0 + 1;
