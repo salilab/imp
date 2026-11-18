@@ -1437,6 +1437,13 @@ void DensityMap::convolute_kernel(DensityMap *other, double *kernel,
   }  // for iz,iy,ix
 }
 
+namespace {
+// Clamp a fractional voxel index to [0, n-1]
+double clamp_index(double ind, int n) {
+  return std::max(0., std::min(ind, static_cast<double>(n - 1)));
+}
+}  // namespace
+
 DensityMap *interpolate_map(DensityMap *in_map, double new_spacing) {
   const DensityHeader *in_header = in_map->get_header();
   double in_spacing = in_header->get_spacing();
@@ -1489,10 +1496,11 @@ DensityMap *interpolate_map(DensityMap *in_map, double new_spacing) {
         ret_y_pos = orig_shift[1] + iy * new_spacing;
         ret_z_pos = orig_shift[2] + iz * new_spacing;
 
-        // index of ret location in the in_map
-        in_x_ind = (ret_x_pos / in_spacing);
-        in_y_ind = (ret_y_pos / in_spacing);
-        in_z_ind = (ret_z_pos / in_spacing);
+        // index of ret location in the in_map; clamp to the map, since
+        // rounding error can put the first or last point just outside
+        in_x_ind = clamp_index(ret_x_pos / in_spacing, in_nx);
+        in_y_ind = clamp_index(ret_y_pos / in_spacing, in_ny);
+        in_z_ind = clamp_index(ret_z_pos / in_spacing, in_nz);
         x0 = floor(in_x_ind);
         x1 = ceil(in_x_ind);
         y0 = floor(in_y_ind);
