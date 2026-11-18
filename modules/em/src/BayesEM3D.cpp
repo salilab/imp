@@ -3,7 +3,7 @@
  *  \brief Compute a Bayesian formalism score and its derivatives
  *  to assess degree of match between a tested model and a density object.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -291,11 +291,12 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
   ret->reset_data(0.);
   double *vals = ret->get_data();
 
-  int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
-  int nxny = em_header->get_nx() * em_header->get_ny();
-  int znxny;
+  long ivox;
+  int ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
+  long nxny = static_cast<long>(em_header->get_nx()) * em_header->get_ny();
+  long znxny;
 
-  boost::unordered_set<int> visited_voxels;
+  boost::unordered_set<long> visited_voxels;
 
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
     double px = xyzr[ii].get_x();
@@ -322,14 +323,15 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
           vals[ivox] =
               bayesem3d_get_logsumprodexp(vals[ivox], value[0], 1., value[1]);
 
-          ivox++;
+          // Record the voxel we just wrote to, before moving to the next one
           visited_voxels.insert(ivox);
+          ivox++;
         }
       }
     }
   }
 
-  for (boost::unordered_set<int>::iterator vv = visited_voxels.begin();
+  for (boost::unordered_set<long>::iterator vv = visited_voxels.begin();
        vv != visited_voxels.end(); ++vv) {
     vals[*vv] = exp(vals[*vv]) - 1.;
   }
