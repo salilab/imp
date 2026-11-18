@@ -2,84 +2,92 @@
  *  \file XplorReaderWriter.cpp
  *  \brief Classes to read or write density files in XPLOR format.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/XplorReaderWriter.h>
 #include <cstdlib>
+#include <cstring>
+#include <memory>
+#include <sstream>
+#include <string>
 
 IMPEM_BEGIN_NAMESPACE
+
+namespace {
+// Read a line from the stream, throwing an IOException if we cannot
+std::string get_xplor_line(std::ifstream &XPLORstream) {
+  std::string line;
+  if (!std::getline(XPLORstream, line)) {
+    IMP_THROW("Premature end of XPLOR file header", IOException);
+  }
+  return line;
+}
+}  // namespace
 
 void XplorReaderWriter::read(const char *filename, float **data,
                              DensityHeader &header) {
   std::ifstream XPLORstream(filename);
+  if (!XPLORstream) {
+    IMP_THROW("Unable to open XPLOR file " << filename, IOException);
+  }
   // header
   internal::XplorHeader xheader;
   read_header(XPLORstream, xheader);
   xheader.GenerateCommonHeader(header);
 
   // data
-  int size = xheader.extent[0] * xheader.extent[1] * xheader.extent[2];
-  *data = new float[size];
-  IMP_USAGE_CHECK(*data,
-                  "XplorReader::read can not allocated space for data - the "
-                      << "requested size: " << size * sizeof(float));
-  read_map(XPLORstream, *data, xheader);
+  size_t size = static_cast<size_t>(xheader.extent[0]) * xheader.extent[1]
+                * xheader.extent[2];
+  std::unique_ptr<float[]> grid(new float[size]);
+  read_map(XPLORstream, grid.get(), xheader);
   XPLORstream.close();
+  *data = grid.release();
 }
 
 int XplorReaderWriter::read_header(std::ifstream &XPLORstream,
                                    internal::XplorHeader &header) {
-
-  char line[300];
-  int lineWidth = 300;
-
   // read the configuration values:
   for (int i = 0; i < 4; i++) {
-    XPLORstream.getline(line, lineWidth);
+    get_xplor_line(XPLORstream);
   }
-  char *lineBreaker;
 
-  XPLORstream.getline(line, lineWidth);
-
-  int div, mod, result;
-
-  lineBreaker = strtok(line, " ");
-  for (int j = 0; j < 9; j++) {
-    result = atoi(lineBreaker);
-    div = (int)(floor(j / 3.0));
-    mod = j - 3 * div;
-    if (mod == 0) {
-      header.grid[div] = result;
-    } else if (mod == 1) {
-      header.orig[div] = result;
-    } else  // mod == 2
-      header.top[div] = result;
-    lineBreaker = strtok(nullptr, " ");
+  // read the grid size, origin and top for each axis
+  {
+    std::istringstream iss(get_xplor_line(XPLORstream));
+    for (int j = 0; j < 3; j++) {
+      if (!(iss >> header.grid[j] >> header.orig[j] >> header.top[j])) {
+        IMP_THROW("Malformed XPLOR grid line: expected 9 integers",
+                  IOException);
+      }
+    }
   }
   for (int j = 0; j < 3; j++) {
     header.extent[j] = header.top[j] - header.orig[j] + 1;
+    if (header.grid[j] <= 0 || header.extent[j] <= 0) {
+      IMP_THROW("Invalid XPLOR grid: grid size " << header.grid[j]
+                << ", extent " << header.extent[j], IOException);
+    }
   }
 
   ////////////////////
   // read the unit cell dimensions
   ////////////////////
-  XPLORstream.getline(line, lineWidth);
-
-  lineBreaker = strtok(line, " ");
-
-  float val;
-  for (int j = 0; j < 6; j++) {
-    val = atof(lineBreaker);
-    div = (int)(floor(j / 3.0));
-    mod = j - 3 * div;
-    if (div == 0) {
-      header.cellsize[mod] = val;
-    } else {  // div == 1
-      header.cellangle[mod] = val;
+  {
+    std::istringstream iss(get_xplor_line(XPLORstream));
+    for (int j = 0; j < 3; j++) {
+      if (!(iss >> header.cellsize[j])) {
+        IMP_THROW("Malformed XPLOR unit cell line: expected 6 numbers",
+                  IOException);
+      }
     }
-    lineBreaker = strtok(nullptr, " ");
+    for (int j = 0; j < 3; j++) {
+      if (!(iss >> header.cellangle[j])) {
+        IMP_THROW("Malformed XPLOR unit cell line: expected 6 numbers",
+                  IOException);
+      }
+    }
   }
 
   for (int j = 0; j < 3; j++) {
@@ -91,7 +99,7 @@ int XplorReaderWriter::read_header(std::ifstream &XPLORstream,
   // read the grid order
   //  we do not use this data. We use the user input for the grid order.
   //////////////
-  XPLORstream.getline(line, lineWidth);
+  get_xplor_line(XPLORstream);
 
   return 0;
 }
@@ -100,12 +108,8 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
                                 internal::XplorHeader &header) {
 
   // reading the map according to the grid order.
-  char line[300];
-  int lineWidth = 300;
-  int x, y, z = 0;  // the step size in the three directions on the grid.
-  x = 0;
-  y = 0;
-  z = 0;
+  std::string line;
+  int x = 0, y = 0, z = 0;  // the step size in the three directions
   bool status = false;
 
   // update orig and top according to the values in the map
@@ -114,30 +118,24 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
     header.top[i] = -9999;
   }
 
-  int counter, densNum;
-  bool keep;
   char dens[13];
-  float density;
 
-  while (!XPLORstream.eof()) {
-    XPLORstream.getline(line, lineWidth);
+  // Stop once all sections have been read; anything after that (such as
+  // the -9999 marker and the map mean and standard deviation) is ignored
+  while (z < header.extent[2] && std::getline(XPLORstream, line)) {
     if (!status) {  // status = false means that we moved a section
       status = true;
     } else {
       // each line have strlen/12 density values.
       // We iterate through the line
+      size_t densNum = line.size() / 12;
 
-      counter = 0;
-      keep = true;
-      densNum = strlen(line) / 12;
-
-      while ((counter < densNum) && keep) {
-        memcpy(dens, line + (counter * 12), 12);
+      for (size_t counter = 0; counter < densNum; ++counter) {
+        memcpy(dens, line.data() + (counter * 12), 12);
         dens[12] = '\0';
-        counter++;
-        density = atof(dens);
         data[x + y * header.extent[0] +
-             z * header.extent[0] * header.extent[1]] = density;
+             z * header.extent[0] * header.extent[1]] =
+            static_cast<float>(atof(dens));
         if (x < header.orig[0]) header.orig[0] = x;
         if (y < header.orig[1]) header.orig[1] = y;
         if (z < header.orig[2]) header.orig[2] = z;
@@ -149,10 +147,9 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
         if (x >= header.extent[0]) {
           x = 0;
           y++;
-          if (y >= header.extent[1]) keep = false;
+          if (y >= header.extent[1]) break;
         }
-
-      }  // while counter < densNum
+      }
 
       if (y >= header.extent[1]) {
         x = 0;
@@ -160,7 +157,11 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
         z++;
         status = false;
       }
-    }  // else
+    }
+  }
+  if (z < header.extent[2]) {
+    IMP_THROW("Premature end of XPLOR file: read " << z << " of "
+              << header.extent[2] << " sections", IOException);
   }
   return 0;
 }
