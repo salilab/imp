@@ -1535,7 +1535,7 @@ algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
       for (unsigned int k = 0; k < ret.get_number_of_voxels(2); ++k) {
         G::ExtendedIndex ei(i, j, k);
         G::Index gi = ret.get_index(ei);
-        long vi = in->get_voxel_by_location(i, j, k);
+        long vi = in->xyz_ind2voxel(i, j, k);
         ret[gi] = in->get_value(vi);
       }
     }
