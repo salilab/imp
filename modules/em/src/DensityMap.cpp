@@ -91,12 +91,17 @@ DensityMap::DensityMap(const DensityHeader &header, std::string name)
 }
 
 void DensityMap::set_void_map(int nx, int ny, int nz) {
-  long nvox = nx * ny * nz;
+  long nvox = static_cast<long>(nx) * ny * nz;
   data_.reset(new double[nvox]);
   for (long i = 0; i < nvox; i++) {
     data_[i] = 0.0;
   }
   header_.update_map_dimensions(nx, ny, nz);
+  // Cached voxel locations and statistics are no longer valid
+  reset_all_voxel2loc();
+  calc_all_voxel2loc();
+  rms_calculated_ = false;
+  normalized_ = false;
 }
 
 namespace {
