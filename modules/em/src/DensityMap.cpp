@@ -627,7 +627,9 @@ void DensityMap::pick_max(const DensityMap *other) {
                   "The voxel sizes of the two maps differ ( "
                       << header_.get_spacing()
                       << " != " << other->header_.get_spacing());
-  // TODO - add dimension test
+  // protect against reading out of bounds
+  IMP_USAGE_CHECK(same_dimensions(other),
+                  "pick_max requires maps of the same dimensions");
   long size = header_.get_number_of_voxels();
   double *other_data = other->get_data();
   for (long i = 0; i < size; i++) {
@@ -1300,6 +1302,9 @@ double convolute(const DensityMap *m1, const DensityMap *m2) {
 }
 
 DensityMap *multiply(const DensityMap *m1, const DensityMap *m2) {
+  // protect against reading out of bounds
+  IMP_USAGE_CHECK(m1->same_dimensions(m2),
+                  "multiply requires maps of the same dimensions");
   const DensityHeader *header = m1->get_header();
   Pointer<DensityMap> m_map(
       create_density_map(header->get_nx(), header->get_ny(), header->get_nz(),
@@ -1386,29 +1391,33 @@ DensityMap *get_segment(DensityMap *map_to_segment, algebra::Vector3Ds vecs,
 }
 void DensityMap::convolute_kernel(DensityMap *other, double *kernel,
                                   int dim_len) {
+  // protect against reading out of bounds
+  IMP_USAGE_CHECK(same_dimensions(other),
+                  "convolute_kernel requires maps of the same dimensions");
   reset_data(0.);
   double *other_data = other->get_data();
   // todo - add a test that length is even
-  IMP_USAGE_CHECK((dim_len * dim_len * dim_len) >= 1,
-                  "The input length is wrong\n");
-  unsigned int margin = (dim_len - 1) / 2;
+  IMP_USAGE_CHECK(dim_len >= 1, "The input length is wrong\n");
+  // Use signed arithmetic so that maps smaller than the kernel are handled
+  // (previously nz - margin could wrap around to a huge unsigned value)
+  int margin = (dim_len - 1) / 2;
   // smooth the density using the kernel
   float val;
-  int kernel_ind, ny, nx;
+  long kernel_ind, ny, nx;
   long map_ind;
   nx = header_.get_nx();
   ny = header_.get_ny();
-  for (unsigned int iz = margin; iz < header_.get_nz() - margin; iz++) {
-    for (unsigned int iy = margin; iy < header_.get_ny() - margin; iy++) {
-      for (unsigned int ix = margin; ix < header_.get_nx() - margin; ix++) {
+  for (int iz = margin; iz < header_.get_nz() - margin; iz++) {
+    for (int iy = margin; iy < header_.get_ny() - margin; iy++) {
+      for (int ix = margin; ix < header_.get_nx() - margin; ix++) {
         map_ind = iz * ny * nx + iy * nx + ix;
         val = other_data[map_ind];
         if (val > EPS) {  // smooth this value
-          for (int iz2 = -margin; iz2 <= static_cast<int>(margin); iz2++) {
-            for (int iy2 = -margin; iy2 <= static_cast<int>(margin); iy2++) {
-              kernel_ind =
-                  (iz2 + margin) * dim_len * dim_len + (iy2 + margin) * dim_len;
-              for (int ix2 = -margin; ix2 <= static_cast<int>(margin); ix2++) {
+          for (int iz2 = -margin; iz2 <= margin; iz2++) {
+            for (int iy2 = -margin; iy2 <= margin; iy2++) {
+              kernel_ind = static_cast<long>(iz2 + margin) * dim_len * dim_len
+                           + static_cast<long>(iy2 + margin) * dim_len;
+              for (int ix2 = -margin; ix2 <= margin; ix2++) {
                 data_[(iz + iz2) * ny * nx + (iy + iy2) * nx + ix + ix2] +=
                     val * kernel[kernel_ind + ix2 + margin];
               }

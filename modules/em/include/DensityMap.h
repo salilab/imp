@@ -436,12 +436,14 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Convolute a kernel with a map and write results into current map
   /**
-     \param[in] other the map to convolute
+     \param[in] other the map to convolute. It must have the same dimensions
+                as the current map.
      \param[in] kernel an array of kernel values. The data is in ZYX
      order, Z is the slowest.
      \param[in] dim_len the kernel array
    */
   void convolute_kernel(DensityMap *other, double *kernel, int dim_len);
+
   //! Convolute a kernel with this map and write results to this map
   /**
      \param[in] kernel an array of kernel values. The data is in ZYX
