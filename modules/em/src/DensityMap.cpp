@@ -1012,7 +1012,8 @@ int DensityMap::upper_voxel_shift(double loc, double kdist, double orig,
 }
 
 float DensityMap::get_maximum_value_in_xy_plane(int z_ind) {
-  IMP_USAGE_CHECK(z_ind < header_.get_nz(), "Z index is out of range\n");
+  IMP_USAGE_CHECK(z_ind >= 0 && z_ind < header_.get_nz(),
+                  "Z index is out of range\n");
   float max_val = -INT_MAX;
   int temp_ind;
   int z_val = z_ind * header_.get_ny() * header_.get_nx();
@@ -1028,7 +1029,8 @@ float DensityMap::get_maximum_value_in_xy_plane(int z_ind) {
 }
 
 float DensityMap::get_maximum_value_in_xz_plane(int y_ind) {
-  IMP_USAGE_CHECK(y_ind < header_.get_ny(), "Y index is out of range\n");
+  IMP_USAGE_CHECK(y_ind >= 0 && y_ind < header_.get_ny(),
+                  "Y index is out of range\n");
   float max_val = -INT_MAX;
   int temp_ind;
   int y_val = y_ind * header_.get_nx();
@@ -1044,7 +1046,8 @@ float DensityMap::get_maximum_value_in_xz_plane(int y_ind) {
 }
 
 float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
-  IMP_USAGE_CHECK(x_ind < header_.get_ny(), "X index is out of range\n");
+  IMP_USAGE_CHECK(x_ind >= 0 && x_ind < header_.get_nx(),
+                  "X index is out of range\n");
   float max_val = -INT_MAX;
   int temp_ind;
   for (int iz = 0; iz < header_.get_nz(); iz++) {
