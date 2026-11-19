@@ -3,3 +3,5 @@ Do not modify code in the `modules/pmi`, `modules/rmf/dependency/RMF`, or `modul
 Do not add tabs or trailing whitespace to any source file, unless it is necessary for unit tests to pass. If you modify a line that already includes tabs or trailing whitespace, remove this.
 
 If you modify any IMP .h or .cpp file that contains an "IMP Inventors" copyright notice, update the year range to end at the current year.
+
+If you add any `IMP_ALWAYS_CHECK` checks, they must not use the UsageException or InternalException exceptions as those are reserved for disableable checks.
