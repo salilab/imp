@@ -8,6 +8,7 @@
   */
 IMP_SWIG_BASE_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, CrossLinkMSRestraint, CrossLinkMSRestraints);
+IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, ExactCrossLinkMSRestraint, ExactCrossLinkMSRestraints);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, LogWrapper, LogWrappers);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT_SERIALIZE(IMP::isd, JeffreysRestraint, JeffreysRestraints);
@@ -81,6 +82,7 @@ def create_model_and_particles():
    %include line.*/
 %include "IMP/isd/ISDRestraint.h"
 %include "IMP/isd/CrossLinkMSRestraint.h"
+%include "IMP/isd/ExactCrossLinkMSRestraint.h"
 %include "IMP/isd/LogWrapper.h"
 %include "IMP/isd/UniformPrior.h"
 %include "IMP/isd/Nuisance.h"

@@ -175,24 +175,7 @@
             return jnp.where(is_short, short_range,
                              jnp.where(is_long, 0., mid_range))
 
-        def get_probability(xyz, r, scale, ps, sigma, psi, length,
-                            slope, segment_prod):
-            # If the residues are assigned to the same particle-domain
-            # get the distance as if the residue positions were randomly
-            # taken from within the sphere representing the domain
-            # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
-            # Let the space clamp the distance, so that the gradient is
-            # zero, rather than NaN, for coincident points and for
-            # same-particle contributions (which don't use the distance)
-            dist = jnp.where(
-                ps[:, 0] == ps[:, 1], 36.0 / 35.0 * r[ps[:, 0]],
-                space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]],
-                               min_dist=0.0001))
-            dist = jnp.maximum(dist, 0.0001)
-            psi = scale[psi]
-            sigmai = scale[sigma[:, 0]]
-            sigmaj = scale[sigma[:, 1]]
-
+        def forward_model(dist, sigmai, sigmaj, length):
             voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
             volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
             xlvol = (4.0 / 3.0 * math.pi * (length / 2.)
@@ -208,69 +191,187 @@
                 sphere_cap(sigmaj, length / 2.,
                            jnp.abs(dist - sigmai - length / 2.)))
 
-            pofr = fi * fj / voli / volj
-            term = psi * (1.0 - pofr) + pofr * (1.0 - psi)
-            if slope is not None:
-                prior = jnp.exp(-slope * dist)
-                term = term * prior
-            onemprob = 1.0 - term
+            return fi * fj / voli / volj
 
-            if segment_prod is None:
-                # If only one contribution to each restraint, we are done
-                return 1.0 - onemprob
-            else:
-                # Otherwise, take the product of all contributions to each
-                # restraint
-                return 1.0 - segment_prod(onemprob.T).T
-
-        for r in rs:
-            if r.get_is_length_variable():
-                raise NotImplementedError("Only implemented for fixed-length")
-        sigma = cls._get_contributions_sigma_numpy(rs)
-        psi = cls._get_contributions_psi_numpy(rs)
-        pis = cls._get_contributions_particles_numpy(rs)
-        segments = cls._get_contributions_segments(rs)
-        if segments is None:
-            segment_prod = None
-        else:
-            # jax.ops.segment_prod is not differentiable, so use our own
-            from IMP.isd._jax_util import get_segment_prod
-            segment_prod = get_segment_prod(segments, len(rs))
-        get_log_prob = rs[0].get_log_prob()
-        length = rs[0].get_length()
-        slope = rs[0].get_slope() if rs[0].get_has_slope() else None
-
-        def jax_restraint(X):
-            prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
-                                   sigma, psi, length, slope, segment_prod)
-            if get_log_prob:
-                return -jnp.log(prob)
-            else:
-                return prob
-
-        # Note that we don't weight the restraint anywhere. This matches
-        # the behavior of the C++ restraint.
-        return cls._wrap_jax_multiple(rs[0], jax_restraint,
-                                      keys=[IMP.isd.Scale.get_scale_key()])
+        return _get_crosslink_jax_for_restraints(rs, space, forward_model)
 
     def _get_jax(self, space):
         return self._get_jax_for_restraints([self], space)
 
     @classmethod
     def _get_jax_multiple(cls, restraints, space):
-        import IMP._jax_util
-        # Get all groups of crosslink restraints that have the same length
-        # and slope (to 4 decimal places) and get_log_prob flag
-        def rsrkey(r):
-            if type(r) is cls:
-                return ("%.4f" % r.get_length(),
-                        "%.4f" % r.get_slope() if r.get_has_slope() else None,
-                        r.get_log_prob())
-        groups, ungrouped = IMP._jax_util.get_grouped_restraints(
-            restraints, rsrkey)
-
-        return ([cls._get_jax_for_restraints(g, space) for g in groups],
-                ungrouped)
-
+        return _get_crosslink_jax_multiple(cls, restraints, space)
   %}
 }
+
+%extend IMP::isd::ExactCrossLinkMSRestraint {
+  %pythoncode %{
+    @classmethod
+    def _get_jax_for_restraints(cls, rs, space):
+        """Get a JAX function that scores the given list of crosslink
+           restraints. They must all have the same length, slope and
+           get_log_prob flag."""
+        import jax.numpy as jnp
+        import math
+
+        # 4-point Gauss-Legendre nodes and weights on [-1, 1], as in
+        # get_forward_model_probability() in ExactCrossLinkMSRestraint.cpp:
+        # t = +-sqrt(3/7 + (2/7) sqrt(6/5)), w = (18 - sqrt(30)) / 36 and
+        # t = +-sqrt(3/7 - (2/7) sqrt(6/5)), w = (18 + sqrt(30)) / 36
+        # (Abramowitz & Stegun 1964, Table 25.4, p. 916).
+        gl_x = jnp.array([-0.8611363115940526, -0.3399810435848563,
+                          0.3399810435848563, 0.8611363115940526])
+        gl_w = jnp.array([0.3478548451374538, 0.6521451548625461,
+                          0.6521451548625461, 0.3478548451374538])
+
+        def lens_volume(a, b, r):
+            # Volume of the intersection of two balls of radii a and b
+            # whose centers are r apart. Only divide by r where the
+            # mid-range expression is used, so that gradients are finite.
+            is_long = r >= a + b
+            is_short = r <= jnp.abs(a - b)
+            r_safe = jnp.where(is_long | is_short, a + b, r)
+            rmin = jnp.minimum(a, b)
+            mid_range = (math.pi * (a + b - r_safe) * (a + b - r_safe)
+                         * (r_safe * r_safe + 2. * r_safe * (a + b)
+                            - 3. * (a - b) * (a - b))
+                         / (12. * r_safe))
+            return jnp.where(
+                is_long, 0.,
+                jnp.where(is_short, 4. / 3. * math.pi * rmin * rmin * rmin,
+                          mid_range))
+
+        def sphere_area_within(r, dist, length):
+            # Area of the part of a sphere of radius r, centered at the
+            # origin, within length of a point at distance dist
+            mid_range = (math.pi * r * (length * length - (r - dist) ** 2)
+                         / dist)
+            outside = (r <= dist - length) | (r >= dist + length)
+            return jnp.where(r + dist <= length, 4. * math.pi * r * r,
+                             jnp.where(outside, 0., mid_range))
+
+        def forward_model(dist, sigmai, sigmaj, length):
+            # See get_forward_model_probability() in
+            # ExactCrossLinkMSRestraint.cpp. The integrand is continuous
+            # in r and zero at the upper limit, so differentiating this
+            # piecewise quadrature (with its moving breakpoints) gives the
+            # exact derivatives.
+            rmax = sigmai + sigmaj
+            points = jnp.stack([jnp.zeros_like(rmax), rmax,
+                                jnp.abs(sigmai - sigmaj),
+                                jnp.abs(dist - length), dist + length],
+                               axis=-1)
+            points = jnp.sort(jnp.clip(points, 0., rmax[..., None]),
+                              axis=-1)
+            half = 0.5 * (points[..., 1:] - points[..., :-1])
+            mid = 0.5 * (points[..., 1:] + points[..., :-1])
+            r = mid[..., None] + half[..., None] * gl_x
+            integrand = (lens_volume(sigmai[..., None, None],
+                                     sigmaj[..., None, None], r)
+                         * sphere_area_within(r, dist[..., None, None],
+                                              length))
+            integral = jnp.sum(half[..., None] * gl_w * integrand,
+                               axis=(-2, -1))
+            voli = 4.0 / 3.0 * math.pi * sigmai * sigmai * sigmai
+            volj = 4.0 / 3.0 * math.pi * sigmaj * sigmaj * sigmaj
+            return jnp.clip(integral / voli / volj, 0., 1.)
+
+        return _get_crosslink_jax_for_restraints(rs, space, forward_model)
+
+    def _get_jax(self, space):
+        return self._get_jax_for_restraints([self], space)
+
+    @classmethod
+    def _get_jax_multiple(cls, restraints, space):
+        return _get_crosslink_jax_multiple(cls, restraints, space)
+  %}
+}
+
+%pythoncode %{
+def _get_crosslink_jax_for_restraints(rs, space, forward_model):
+    """Get a JAX function that scores the given list of crosslink
+       restraints (CrossLinkMSRestraint or ExactCrossLinkMSRestraint),
+       using the given forward model. They must all have the same length,
+       slope and get_log_prob flag."""
+    import jax.numpy as jnp
+
+    def get_probability(xyz, r, scale, ps, sigma, psi, length,
+                        slope, segment_prod):
+        # If the residues are assigned to the same particle-domain
+        # get the distance as if the residue positions were randomly
+        # taken from within the sphere representing the domain
+        # Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
+        # Let the space clamp the distance, so that the gradient is
+        # zero, rather than NaN, for coincident points and for
+        # same-particle contributions (which don't use the distance)
+        dist = jnp.where(
+            ps[:, 0] == ps[:, 1], 36.0 / 35.0 * r[ps[:, 0]],
+            space.distance(xyz[ps[:, 0]] - xyz[ps[:, 1]],
+                           min_dist=0.0001))
+        dist = jnp.maximum(dist, 0.0001)
+        psi = scale[psi]
+        sigmai = scale[sigma[:, 0]]
+        sigmaj = scale[sigma[:, 1]]
+
+        pofr = forward_model(dist, sigmai, sigmaj, length)
+        term = psi * (1.0 - pofr) + pofr * (1.0 - psi)
+        if slope is not None:
+            prior = jnp.exp(-slope * dist)
+            term = term * prior
+        onemprob = 1.0 - term
+
+        if segment_prod is None:
+            # If only one contribution to each restraint, we are done
+            return 1.0 - onemprob
+        else:
+            # Otherwise, take the product of all contributions to each
+            # restraint
+            return 1.0 - segment_prod(onemprob.T).T
+
+    for r in rs:
+        if r.get_is_length_variable():
+            raise NotImplementedError("Only implemented for fixed-length")
+    sigma = CrossLinkMSRestraint._get_contributions_sigma_numpy(rs)
+    psi = CrossLinkMSRestraint._get_contributions_psi_numpy(rs)
+    pis = CrossLinkMSRestraint._get_contributions_particles_numpy(rs)
+    segments = CrossLinkMSRestraint._get_contributions_segments(rs)
+    if segments is None:
+        segment_prod = None
+    else:
+        # jax.ops.segment_prod is not differentiable, so use our own
+        from IMP.isd._jax_util import get_segment_prod
+        segment_prod = get_segment_prod(segments, len(rs))
+    get_log_prob = rs[0].get_log_prob()
+    length = rs[0].get_length()
+    slope = rs[0].get_slope() if rs[0].get_has_slope() else None
+
+    def jax_restraint(X):
+        prob = get_probability(X['xyz'], X['r'], X['nuisance'], pis,
+                               sigma, psi, length, slope, segment_prod)
+        if get_log_prob:
+            return -jnp.log(prob)
+        else:
+            return prob
+
+    # Note that we don't weight the restraint anywhere. This matches
+    # the behavior of the C++ restraint.
+    return rs[0]._wrap_jax_multiple(rs[0], jax_restraint,
+                                    keys=[Scale.get_scale_key()])
+
+
+def _get_crosslink_jax_multiple(cls, restraints, space):
+    """Get JAX functions for all restraints of type cls in the list"""
+    import IMP._jax_util
+    # Get all groups of crosslink restraints that have the same length
+    # and slope (to 4 decimal places) and get_log_prob flag
+    def rsrkey(r):
+        if type(r) is cls:
+            return ("%.4f" % r.get_length(),
+                    "%.4f" % r.get_slope() if r.get_has_slope() else None,
+                    r.get_log_prob())
+    groups, ungrouped = IMP._jax_util.get_grouped_restraints(
+        restraints, rsrkey)
+
+    return ([cls._get_jax_for_restraints(g, space) for g in groups],
+            ungrouped)
+%}

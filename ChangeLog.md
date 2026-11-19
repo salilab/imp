@@ -2,6 +2,11 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The new IMP::isd::ExactCrossLinkMSRestraint has the same interface as
+  IMP::isd::CrossLinkMSRestraint but uses the exact forward model of
+  Erzberger et al. (2014) and Robinson et al. (2015), rather than an
+  approximation. Its JAX implementation is differentiable.
+  IMP::isd::CrossLinkMSRestraint is unchanged, for backwards compatibility.
 - The IMP::em2d module no longer uses OpenCV. Instead, it requires libtiff
   and libjpeg (in addition to FFTW). Image data are now stored as Eigen
   arrays (IMP::em2d::DoubleMatrix) rather than OpenCV matrices, so C++ code

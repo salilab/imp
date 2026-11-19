@@ -3,7 +3,7 @@
  *  \brief A pmf based likelihood function
  *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,6 +23,11 @@ IMPISD_BEGIN_NAMESPACE
 //! A restraint for ambiguous cross-linking MS data and multiple state approach.
 /** It marginalizes the false positive rate and depends on the expected fpr and
     an uncertainty parameter beta.
+
+    \note This restraint uses an approximation to the forward model of
+          Erzberger et al. (Cell 2014). It is retained for backwards
+          compatibility; new code should use ExactCrossLinkMSRestraint,
+          which has the same interface.
  */
 class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 

@@ -1,0 +1,183 @@
+/**
+ *  \file IMP/isd/ExactCrossLinkMSRestraint.h
+ *  \brief A restraint for ambiguous cross-linking MS data using the exact
+ *         forward model for uniform spheres.
+ *
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef IMPISD_EXACT_CROSS_LINK_MSRESTRAINT_H
+#define IMPISD_EXACT_CROSS_LINK_MSRESTRAINT_H
+
+#include <IMP/isd/isd_config.h>
+#include <IMP/Restraint.h>
+#include <IMP/particle_index.h>
+#include <IMP/isd/Scale.h>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+
+IMPISD_BEGIN_NAMESPACE
+
+//! A restraint for ambiguous cross-linking MS data and multiple state approach.
+/** This has the same interface as CrossLinkMSRestraint, but uses the exact
+    forward model of Erzberger et al. (Cell 2014) and Robinson et al.
+    (eLife 2015). (CrossLinkMSRestraint uses an approximation to this model,
+    and is retained for backwards compatibility.)
+
+    Each contribution k links two particles. Its forward model f_k is the
+    probability that two points, drawn uniformly from spheres of radius
+    sigma1 and sigma2 centered on the two particles, are closer than the
+    linker length. With psi_k the false positive rate, the restraint returns
+    1 - prod_k (1 - p_k), where p_k = f_k (1 - psi_k) + (1 - f_k) psi_k
+    (multiplied by exp(-slope * d_k) if a slope is given), or the negative
+    log of this if get_log_prob is true.
+
+    If both ends of a contribution are the same particle, the distance
+    is taken to be 36/35 of its radius.
+
+    Like CrossLinkMSRestraint, this restraint does not calculate
+    derivatives in C++. Its JAX implementation is differentiable, however.
+ */
+class IMPISDEXPORT ExactCrossLinkMSRestraint : public Restraint {
+
+    IMP::ParticleIndexPairs ppis_;
+    IMP::ParticleIndexPairs sigmass_;
+    IMP::ParticleIndex lengthi_;
+    IMP::ParticleIndexes psis_;
+    double length_;
+    double slope_;
+    int constr_;
+    bool get_log_prob_;
+    std::string protein1_, protein2_;
+    int residue1_, residue2_;
+
+    friend class cereal::access;
+
+    template<class Archive> void serialize(Archive &ar) {
+      ar(cereal::base_class<Restraint>(this),
+         ppis_, sigmass_, lengthi_, psis_, length_, slope_,
+         constr_, get_log_prob_, protein1_, protein2_, residue1_, residue2_);
+    }
+
+    IMP_OBJECT_SERIALIZE_DECL(ExactCrossLinkMSRestraint);
+
+   public:
+    //! Create the restraint.
+    ExactCrossLinkMSRestraint(IMP::Model* m, double length,
+                              bool get_log_prob = false,
+                              std::string name
+                                  = "ExactCrossLinkMSRestraint%1%");
+
+    ExactCrossLinkMSRestraint(IMP::Model* m,
+                              IMP::ParticleIndexAdaptor lengthi,
+                              bool get_log_prob = false,
+                              std::string name
+                                  = "ExactCrossLinkMSRestraint%1%");
+
+    ExactCrossLinkMSRestraint(IMP::Model* m, double length, double slope,
+                              bool get_log_prob = false,
+                              std::string name
+                                  = "ExactCrossLinkMSRestraint%1%");
+
+    ExactCrossLinkMSRestraint() {}
+
+    /** \name Source information
+        These methods get or set the protein name and residue index of
+        each end of the cross-link, as identified in the experiment
+        (typically these will correspond to the information in a CSV
+        file or similar). This information is not used in modeling, but
+        is written into output RMF files and is needed to generate mmCIF files.
+        %{
+      */
+    //! Set protein name for one end of the cross-link
+    void set_source_protein1(std::string protein1) { protein1_ = protein1; }
+
+    //! Get protein name for one end of the cross-link
+    std::string get_source_protein1() const { return protein1_; }
+
+    //! Set protein name for one end of the cross-link
+    void set_source_protein2(std::string protein2) { protein2_ = protein2; }
+
+    //! Get protein name for one end of the cross-link
+    std::string get_source_protein2() const { return protein2_; }
+
+    //! Set residue number for one end of the cross-link
+    void set_source_residue1(int residue1) { residue1_ = residue1; }
+
+    //! Get residue number for one end of the cross-link
+    int get_source_residue1() const { return residue1_; }
+
+    //! Set residue number for one end of the cross-link
+    void set_source_residue2(int residue2) { residue2_ = residue2; }
+
+    //! Get residue number for one end of the cross-link
+    int get_source_residue2() const { return residue2_; }
+    /** @} */
+
+    void add_contribution(const IMP::ParticleIndexPair& pps,
+                          const IMP::ParticleIndexPair& sigmas,
+                          IMP::ParticleIndex psi) {
+        ppis_.push_back(pps);
+        sigmass_.push_back(sigmas);
+        psis_.push_back(psi);
+    }
+
+    double get_probability() const;
+
+    //! Get the length of this restraint
+    /** Note that if the restraint was constructed with a length Scale,
+        this can change during sampling. */
+    double get_length() const {
+      if (constr_ == 1) {
+        return isd::Scale(get_model(), lengthi_).get_scale();
+      } else {
+        return length_;
+      }
+    }
+
+    //! Return true iff the length is variable (stored in a Scale)
+    bool get_is_length_variable() const {
+      return constr_ == 1;
+    }
+
+    //! Return true iff the restraint has a slope
+    bool get_has_slope() const {
+      return constr_ == 2;
+    }
+
+    double get_slope() const { return slope_; }
+
+    bool get_log_prob() const { return get_log_prob_; }
+
+    //! Get the sigma particle indexes from a contribution
+    ParticleIndexPair get_contribution_sigma_indexes(int i) const {
+      return sigmass_[i];
+    }
+
+    //! Get the psi particle index from a contribution
+    ParticleIndex get_contribution_psi_index(int i) const {
+      return psis_[i];
+    }
+
+    //! Get the particle indexes from a contribution
+    ParticleIndexPair get_contribution_particle_indexes(int i) const {
+      return ppis_[i];
+    }
+
+    unsigned int get_number_of_contributions() const { return ppis_.size(); }
+
+    virtual double unprotected_evaluate(
+        IMP::DerivativeAccumulator* accum) const override;
+    virtual IMP::ModelObjectsTemp do_get_inputs() const override;
+
+    //! \return Information for writing to RMF files
+    RestraintInfo *get_static_info() const override;
+
+    IMP_OBJECT_METHODS(ExactCrossLinkMSRestraint);
+};
+
+IMPISD_END_NAMESPACE
+
+#endif /* IMPISD_EXACT_CROSS_LINK_MSRESTRAINT_H */
