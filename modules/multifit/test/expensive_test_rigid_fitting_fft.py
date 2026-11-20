@@ -13,8 +13,10 @@ class Tests(IMP.test.TestCase):
     def load_density_map(self):
         mrw = IMP.em.MRCReaderWriter()
         scene = IMP.em.read_map(self.get_input_file_name("3points.mrc"), mrw)
-        scene.get_header_writable().set_resolution(8.)
-        scene.update_voxel_size(1.5)
+        scene.get_header_writable().set_resolution(4.)
+        # Note that we do not change the voxel size here, as that would
+        # rescale the map so that it no longer matches the reference
+        # structure
         return scene
 
     def load_protein(self, model, pdb_filename):
@@ -63,7 +65,9 @@ class Tests(IMP.test.TestCase):
             if best_rmsd > rmsd:
                 best_rmsd = rmsd
             IMP.core.transform(self.rb, fit_t_inv)
-        self.assertLess(best_rmsd, 3.5)
+        # The best fit should be close to the reference (incorrect fits,
+        # such as the triangle flipped over, are at least 3A away)
+        self.assertLess(best_rmsd, 1.5)
 
 
 if __name__ == '__main__':
