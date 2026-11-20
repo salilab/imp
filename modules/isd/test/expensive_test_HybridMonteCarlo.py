@@ -96,26 +96,24 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene.append(self.sf.evaluate(False))
         dist = [i.get_magnitude() for i in pos]
-        # mean should be exp(s^2/24) g^(1/6)
-        #e.g. exp(1/24)
-        print(mean(dist), exp(1 / 24.))
-        self.assertAlmostEqual(mean(dist), exp(1 / 24.), delta=0.1)
-        # variance should be exp(s^2/12)(exp(s^2/36)-1)g^(1/3)
-        #e.g. exp(1/12)(exp(1/36)-1)
-        print(var(dist), exp(1 / 12.) * (exp(1 / 36.) - 1))
-        self.assertAlmostEqual(
-            var(dist),
-            exp(1 / 12.) * (exp(1 / 36.) - 1),
-            delta=1e-2)
-        # average energy should be 1/72(s^2+36*(1+log(2*pi))) + log(s)
-        # e.g. 1/72(37+36*log(2*pi))
-        print(mean(ene), 1 / 72. * (37 + 36 * log(2 * pi)))
-        self.assertAlmostEqual(
-            mean(ene),
-            1 / 72. * (37 + 36 * log(2 * pi)),
-            delta=0.18)
+        # The energy is E(r) = 18 (log r)^2 + log(2 pi)/2 (s=g=1), and
+        # the distance r is sampled in 3D, so its density is proportional to
+        # r^2 exp(-E(r)). Hence u = log r is normally distributed, with
+        # mean 1/12 and variance 1/36, i.e. r is lognormal.
+        # mean of r is exp(1/12 + 1/72) = exp(7/72)
+        expected = exp(7 / 72.)
+        print(mean(dist), expected)
+        self.assertAlmostEqual(mean(dist), expected, delta=0.1)
+        # variance of r is exp(1/6 + 1/36)(exp(1/36)-1)
+        expected = exp(7 / 36.) * (exp(1 / 36.) - 1)
+        print(var(dist), expected)
+        self.assertAlmostEqual(var(dist), expected, delta=1e-2)
+        # average energy is 18 <u^2> + log(2 pi)/2
+        #   = 18 (1/36 + 1/144) + log(2 pi)/2 = 5/8 + log(2 pi)/2
+        expected = 5 / 8. + 0.5 * log(2 * pi)
+        print(mean(ene), expected)
+        self.assertAlmostEqual(mean(ene), expected, delta=0.18)
 
-    @IMP.test.unstable
     def test_ensemble_mc(self):
         """test ensemble averages against the standard Monte Carlo"""
         IMP.isd.Nuisance(self.nuisances[0]).set_nuisance_is_optimized(False)
@@ -135,14 +133,16 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         mc = IMP.core.MonteCarlo(self.m)
         mc.set_scoring_function(self.sf)
         mv = IMP.core.NormalMover([self.xyzs[1]], IMP.core.XYZ.get_xyz_keys(),
-                                  0.1)
+                                  0.3)
         mc.add_mover(mv)
         mc.set_return_best(False)
         mc.set_kt(1.0)
         pos2 = []
         ene2 = []
+        # Take several MC steps per sample to reduce the correlation between
+        # samples (and thus the noise in the averages)
         for i in range(5000):
-            mc.optimize(1)
+            mc.optimize(10)
             pos2.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene2.append(self.sf.evaluate(False))
         dist2 = [i.get_magnitude() for i in pos2]
