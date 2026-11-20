@@ -9,6 +9,7 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/flags.h>
 #include <IMP/exception.h>
+#include <IMP/constants.h>
 #include <cmath>
 
 int main(int argc, char *argv[]) {
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
                      "Angle between parallel vectors is " << scaled,
                      IMP::ValueException);
     IMP_ALWAYS_CHECK(!std::isnan(opposite)
-                     && std::abs(opposite - M_PI) < 1e-6,
+                     && std::abs(opposite - IMP::PI) < 1e-6,
                      "Angle between antiparallel vectors is " << opposite,
                      IMP::ValueException);
   }
