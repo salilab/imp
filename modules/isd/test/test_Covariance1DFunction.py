@@ -214,7 +214,6 @@ class Tests(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(LamFunc, lam, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
-    @IMP.test.unstable
     def testDerivOne(self):
         """
         test the derivatives of the function by shuffling all particles
@@ -236,7 +235,7 @@ class Tests(IMP.test.TestCase):
                     if isnan(expected):
                         skipped += 1
                         continue
-                    if expected != 0:
+                    if abs(expected) > 1e-7:
                         self.assertAlmostEqual(
                             observed /
                             expected,
@@ -255,9 +254,9 @@ class Tests(IMP.test.TestCase):
                     if isnan(expected):
                         skipped += 1
                         continue
-                    if expected != 0:
+                    if abs(expected) > 1e-7:
                         self.assertAlmostEqual(
-                            observed / expected, 1.0, delta=0.005)
+                            observed / expected, 1.0, delta=0.001)
                     else:
                         self.assertAlmostEqual(
                             observed, expected, delta=0.001)
