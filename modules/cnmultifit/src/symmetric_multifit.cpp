@@ -1,7 +1,7 @@
 /**
  *  \file symmetric_multifit.cpp  \brief Build cyclic symmetric complexes.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,10 +14,14 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/internal/BoostProgressDisplay.h>
+#if IMP_CNMULTIFIT_HAS_LIBTAU
 #include <libTAU/SymmProgParams.h>
 #include <libTAU/CnResult.h>
 #include <libTAU/SymmAssembly.h>
 #include <libTAU/Parameters.h>
+#else
+#include <IMP/cnmultifit/internal/cn_docking.h>
+#endif
 
 #include <fstream>
 
@@ -82,6 +86,12 @@ struct sort_by_cc {
   }
 };
 
+int is_valid_transformation(const algebra::Transformation3D &t) {
+  algebra::VectorD<4> v = t.get_rotation().get_quaternion();
+  return (std::abs(v.get_squared_magnitude() - 1.0) < .1);
+}
+
+#if IMP_CNMULTIFIT_HAS_LIBTAU
 bool rotation_is_valid(const TAU::Rotation3 &rot) {
   float sqr_mag = 0.;
   for (int i = 0; i < 4; i++) {
@@ -102,11 +112,6 @@ algebra::Transformation3D tau2imp(const TAU::RigidTrans3 &t) {
       algebra::Rotation3D(rot[0], rot[1], rot[2], rot[3]),
       algebra::Vector3D(t.translation()[0], t.translation()[1],
                         t.translation()[2]));
-}
-
-int is_valid_transformation(const algebra::Transformation3D &t) {
-  algebra::VectorD<4> v = t.get_rotation().get_quaternion();
-  return (std::abs(v.get_squared_magnitude() - 1.0) < .1);
 }
 
 multifit::FittingSolutionRecords build_symmetric_assemblies(
@@ -130,6 +135,38 @@ multifit::FittingSolutionRecords build_symmetric_assemblies(
   }
   return fit_recs;
 }
+
+#else
+// Without libTAU, use our own docking
+multifit::FittingSolutionRecords build_symmetric_assemblies(
+    const internal::Parameters &parameters) {
+  parameters.show_density_parameters();
+  IMP_NEW(Model, m, ());
+  atom::Hierarchy h = atom::read_pdb(parameters.get_unit_pdb_fn(), m);
+  ParticlesTemp leaves = core::get_leaves(h);
+  algebra::Vector3Ds coords;
+  bool ca_only = true;
+  for (Particle *p : leaves) {
+    coords.push_back(core::XYZ(p).get_coordinates());
+    if (atom::Atom(p).get_atom_type() != atom::AT_CA) {
+      ca_only = false;
+    }
+  }
+  std::vector<internal::CnDockingSolution> sols =
+      internal::dock_cn(coords, parameters.get_cn_symm(), ca_only);
+  std::cout << "Generated " << sols.size() << " candidate assemblies"
+            << std::endl;
+
+  multifit::FittingSolutionRecords fit_recs;
+  for (unsigned int i = 0; i < sols.size(); i++) {
+    multifit::FittingSolutionRecord rec;
+    rec.set_index(i);
+    rec.set_dock_transformation(sols[i].second);
+    fit_recs.push_back(rec);
+  }
+  return fit_recs;
+}
+#endif
 
 //! Given a set of cyclic models, fit them to the density map
 /**

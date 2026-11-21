@@ -2,6 +2,10 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- libTAU is now an optional dependency of the IMP::cnmultifit module, rather
+  than a required one. If libTAU is not available, IMP::cnmultifit uses its
+  own open implementation of symmetric docking to generate candidate cyclic
+  assemblies. Unlike libTAU, this also supports C2 symmetry.
 - The new IMP::isd::ExactCrossLinkMSRestraint has the same interface as
   IMP::isd::CrossLinkMSRestraint but uses the exact forward model of
   Erzberger et al. (2014) and Robinson et al. (2015), rather than an

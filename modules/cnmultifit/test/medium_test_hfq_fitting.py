@@ -72,12 +72,13 @@ solutions = 5
             with open(self.get_input_file_name('hfq-monomer.pdb')) as fin:
                 with open(monomer, 'w') as fout:
                     fout.write(fin.read())
-            # libTAU needs the molecular surface
-            m = IMP.Model()
-            h = IMP.atom.read_pdb(
-                monomer, m, IMP.atom.NonWaterNonHydrogenPDBSelector())
-            IMP.multifit.write_connolly_surface(
-                IMP.atom.get_leaves(h), monomer + '.ms', 10.0, 1.8)
+            if IMP.cnmultifit.IMP_CNMULTIFIT_HAS_LIBTAU:
+                # libTAU needs the molecular surface
+                m = IMP.Model()
+                h = IMP.atom.read_pdb(
+                    monomer, m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+                IMP.multifit.write_connolly_surface(
+                    IMP.atom.get_leaves(h), monomer + '.ms', 10.0, 1.8)
             self.write_params(monomer)
             IMP.cnmultifit.do_all_fitting('hfq.param')
             with open('multifit.output') as fh:

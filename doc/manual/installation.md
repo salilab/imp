@@ -60,15 +60,17 @@ will not build, and some will not function optimally.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
 - [GSL](\ref GSL) (1.13 or later): needed to use the IMP.gsl module.
-- [FFTW](http://www.fftw.org): needed to use the IMP.em2d or IMP.multifit
-  modules or the [multifit](@ref multifit_3sfd) command line tool.
+- [FFTW](http://www.fftw.org): needed to use the IMP.em2d, IMP.multifit or
+  IMP.cnmultifit modules or the [multifit](@ref multifit_3sfd) or
+  [cnmultifit](@ref cnmultifit_groel) command line tools.
 - [libtiff](https://libtiff.gitlab.io/libtiff/) and
   [libjpeg](https://libjpeg-turbo.org/): needed (together with FFTW) to use
   the IMP.em2d module or the [idock](@ref idock_pcsk9) and
   [emagefit](@ref emagefit_3sfd) command line tools.
-- [libTAU](https://integrativemodeling.org/libTAU.html): needed to use the
-  IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
-  line tool.
+- [libTAU](https://integrativemodeling.org/libTAU.html): if available,
+  the IMP.cnmultifit module and [cnmultifit](@ref cnmultifit_groel) command
+  line tool use it to dock subunits into cyclic assemblies; otherwise, they
+  use their own implementation.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.

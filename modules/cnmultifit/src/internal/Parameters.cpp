@@ -6,7 +6,9 @@
  */
 
 #include <IMP/cnmultifit/internal/Parameters.h>
+#if IMP_CNMULTIFIT_HAS_LIBTAU
 #include <libTAU/Vector3.h>
+#endif
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
@@ -21,7 +23,8 @@ Parameters::Parameters(const char *param_filename)
   parse_symmetry_section(pt);
   parse_density_section(pt);
   parse_fitting_section(pt);
-  // The remaining sections are only used for docking with libTAU
+  // The remaining sections are only used for docking with libTAU, and
+  // are ignored if it is not available
   parse_scoring_section(pt);
   parse_clustering_section(pt);
   parse_base_section(pt);
@@ -46,6 +49,7 @@ void Parameters::parse_files_section(const boost::property_tree::ptree &pt) {
   unit_pdb_ = pt.get<std::string>("files.monomer");
   output_fn_ = pt.get<std::string>("files.output");
   model_fn_ = pt.get<std::string>("files.model");
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.unitPdb = unit_pdb_;
   params_.unitMs = pt.get<std::string>("files.surface");
   params_.protLib = pt.get<std::string>("files.prot_lib");
@@ -54,15 +58,19 @@ void Parameters::parse_files_section(const boost::property_tree::ptree &pt) {
   params_.logParams.intermediate_fn_ =
       pt.get<std::string>("files.intermediate", "");
   params_.logParams.model_fn_ = model_fn_;
+#endif
 }
 
 void Parameters::parse_symmetry_section(const boost::property_tree::ptree &pt) {
   cn_symm_deg_ = pt.get<int>("symmetry.cn");
   dn_symm_deg_ = pt.get<int>("symmetry.dn");
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.dockingParams.symmetryParams.symmetryOf = cn_symm_deg_;
+#endif
 }
 
 void Parameters::parse_scoring_section(const boost::property_tree::ptree &pt) {
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.dockingParams.scoreParams.small_interface_ratio =
       pt.get<float>("scoring.small_interface_ratio");
   params_.dockingParams.scoreParams.max_penetration =
@@ -78,6 +86,9 @@ void Parameters::parse_scoring_section(const boost::property_tree::ptree &pt) {
       pt.get<float>("scoring.weight4");
   params_.dockingParams.scoreParams.weights[4] =
       pt.get<float>("scoring.weight5");
+#else
+  IMP_UNUSED(pt);
+#endif
 }
 
 void Parameters::parse_density_section(const boost::property_tree::ptree &pt) {
@@ -90,44 +101,64 @@ void Parameters::parse_density_section(const boost::property_tree::ptree &pt) {
   origin_ = algebra::Vector3D(origin_x, origin_y, origin_z);
   threshold_ = pt.get<float>("density.threshold");
   pca_matching_thr_ = pt.get<float>("density.pca_matching_threshold");
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.densityParams.map_fn_ = map_fn_;
   params_.densityParams.res_ = resolution_;
   params_.densityParams.spacing_ = spacing_;
   params_.densityParams.origin_ = TAU::Vector3(origin_x, origin_y, origin_z);
   params_.densityParams.thr_ = threshold_;
   params_.densityParams.pca_matching_thr_ = pca_matching_thr_;
+#endif
 }
 
 void Parameters::parse_clustering_section(
     const boost::property_tree::ptree &pt) {
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.dockingParams.clusterParams.maxAngleDiff =
       pt.get<float>("clustering.axis_angle_threshold");
   params_.dockingParams.clusterParams.ignoreClustersSmaller =
       pt.get<int>("clustering.min_size");
   params_.dockingParams.clusterParams.rmsd =
       pt.get<float>("clustering.distance");
+#else
+  IMP_UNUSED(pt);
+#endif
 }
 
 void Parameters::parse_base_section(const boost::property_tree::ptree &pt) {
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   float min_base = pt.get<float>("base.min_distance");
   float max_base = pt.get<float>("base.max_distance");
   params_.dockingParams.baseParams.min_base_dist = min_base * min_base;
   params_.dockingParams.baseParams.max_base_dist = max_base * max_base;
+#else
+  IMP_UNUSED(pt);
+#endif
 }
 
 void Parameters::parse_grid_section(const boost::property_tree::ptree &pt) {
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.gridParams.delta = pt.get<float>("grid.step");
   params_.gridParams.maxDist = pt.get<float>("grid.max_distance");
   params_.gridParams.vfRadius = pt.get<float>("grid.volume_radius");
+#else
+  IMP_UNUSED(pt);
+#endif
 }
 
 void Parameters::parse_surface_section(const boost::property_tree::ptree &pt) {
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   surface_threshold_ = pt.get<double>("surface.threshold");
+#else
+  surface_threshold_ = pt.get<double>("surface.threshold", 0.);
+#endif
 }
 
 void Parameters::parse_fitting_section(const boost::property_tree::ptree &pt) {
   num_sols_ = pt.get<int>("fitting.solutions");
+#if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.fittingParams.num_sols_ = num_sols_;
+#endif
 }
 
 IMPCNMULTIFIT_END_INTERNAL_NAMESPACE
