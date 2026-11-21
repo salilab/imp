@@ -49,7 +49,8 @@ class Tests(IMP.test.TestCase):
 
         xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
             root_hier=root_hier, database=cldb, length=21, label="XL",
-            resolution=1, linker=ihm.cross_linkers.dss, slope=0.01)
+            resolution=1, linker=ihm.cross_linkers.dss, slope=0.01,
+            exact_forward_model=True)
 
         return xl, cldb
 

@@ -114,25 +114,18 @@ class Tests(IMP.test.TestCase):
         ihm.dumper._ModelDumper().finalize(po.system)  # assign model group IDs
         d.finalize(po.system)
         d.dump(po.system, w)
-        # Determine whether we're using a version of python-ihm that
-        # supports 'population_fraction_sd' for States
-        s = ihm.model.State()
-        if hasattr(s, 'population_fraction_sd'):
-            sd_header = "\n_ihm_multi_state_modeling.population_fraction_sd"
-            sd_value = " ."
-        else:
-            sd_header = sd_value = ""
-        self.assertEqual(fh.getvalue(), f"""#
+        self.assertEqual(fh.getvalue(), """#
 loop_
 _ihm_multi_state_modeling.state_id
 _ihm_multi_state_modeling.state_group_id
-_ihm_multi_state_modeling.population_fraction{sd_header}
+_ihm_multi_state_modeling.population_fraction
+_ihm_multi_state_modeling.population_fraction_sd
 _ihm_multi_state_modeling.state_type
 _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 .{sd_value} . . 'Fraction of bulk' .
-2 1 .{sd_value} . 'state2 long' 'Fraction of bulk' .
+1 1 . . . . 'Fraction of bulk' .
+2 1 . . . 'state2 long' 'Fraction of bulk' .
 #
 #
 loop_
@@ -721,18 +714,8 @@ _ihm_sphere_obj_site.model_id
         d = ihm.dumper._StartingModelDumper()
         d.finalize(po.system)
         d.dump(po.system, w)
-        # Determine whether we're using a version of python-ihm that
-        # supports 'details' for templates
-        t = ihm.startmodel.Template(
-            dataset=None, asym_id=None, seq_id_range=(1, 1),
-            template_seq_id_range=(1, 1), sequence_identity=100.0)
-        if hasattr(t, 'details'):
-            details_header = "\n_ihm_starting_comparative_models.details"
-            details_value = " ."
-        else:
-            details_header = details_value = ""
         out = fh.getvalue()
-        self.assertEqual(out, f"""#
+        self.assertEqual(out, """#
 loop_
 _ihm_starting_model_details.starting_model_id
 _ihm_starting_model_details.entity_id
@@ -768,11 +751,12 @@ _ihm_starting_comparative_models.template_seq_id_end
 _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
-_ihm_starting_comparative_models.alignment_file_id{details_header}
-1 1 A 33 424 C 33 424 100.000 1 1 2{details_value}
-2 1 A 429 488 G 482 551 10.000 1 2 2{details_value}
-3 2 A 26 417 C 33 424 100.000 1 1 2{details_value}
-4 2 A 422 481 G 482 551 10.000 1 2 2{details_value}
+_ihm_starting_comparative_models.alignment_file_id
+_ihm_starting_comparative_models.details
+1 1 A 33 424 C 33 424 100.000 1 1 2 .
+2 1 A 429 488 G 482 551 10.000 1 2 2 .
+3 2 A 26 417 C 33 424 100.000 1 1 2 .
+4 2 A 422 481 G 482 551 10.000 1 2 2 .
 #
 #
 loop_

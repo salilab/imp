@@ -19,6 +19,14 @@ import operator
 import warnings
 
 
+def _get_cross_link_restraint_class(exact_forward_model):
+    """Get the crosslink restraint class for the given forward model"""
+    if exact_forward_model:
+        return IMP.isd.ExactCrossLinkMSRestraint
+    else:
+        return IMP.isd.CrossLinkMSRestraint
+
+
 class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """Setup cross-link distance restraints from mass spectrometry data.
     The noise in the data and the structural uncertainty of cross-linked
@@ -29,7 +37,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
     def __init__(self, root_hier, database=None, length=10.0, resolution=None,
                  slope=0.02, label=None, filelabel="None",
-                 attributes_for_label=None, linker=None, weight=1.):
+                 attributes_for_label=None, linker=None, weight=1.,
+                 exact_forward_model=False):
         """Constructor.
         @param root_hier The canonical hierarchy containing all the states
         @param database The IMP.pmi.io.crosslink.CrossLinkDataBase
@@ -53,6 +62,9 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                (see https://python-ihm.readthedocs.io/en/latest/main.html#ihm.ChemDescriptor).
                Common cross-linkers can be found in the `ihm.cross_linkers`
                module.
+        @param exact_forward_model Whether to use the exact forward model,
+               or the approximation to it that was used in IMP 2.25 or earlier.
+               True is recommended for new applications.
         """  # noqa: E501
 
         model = root_hier.get_model()
@@ -71,6 +83,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         if resolution == 0 or resolution is None:
             raise Exception("You must pass a resolution and it can't be zero")
+
+        _xlms_cls = _get_cross_link_restraint_class(exact_forward_model)
 
         indb = open("included." + filelabel + ".xl.db", "w")
         exdb = open("excluded." + filelabel + ".xl.db", "w")  # noqa: F841
@@ -232,10 +246,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     if new_contribution:
                         print("generating a new cross-link restraint")
                         new_contribution = False
-                        dr = IMP.isd.CrossLinkMSRestraint(
-                            self.model,
-                            length,
-                            slope)
+                        dr = _xlms_cls(self.model, length, slope)
                         dr.set_source_protein1(c1)
                         dr.set_source_protein2(c2)
                         dr.set_source_residue1(r1)
@@ -1362,7 +1373,8 @@ class DisulfideCrossLinkRestraint:
                  length=6.5,
                  resolution=1,
                  slope=0.01,
-                 label="None"):
+                 label="None",
+                 exact_forward_model=False):
 
         self.m = representation_or_hier.get_model()
         ps1 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
@@ -1387,6 +1399,8 @@ class DisulfideCrossLinkRestraint:
         self.sigma_is_sampled = False
         self.xl = {}
 
+        _xlms_cls = _get_cross_link_restraint_class(exact_forward_model)
+
         if len(ps1) > 1 or len(ps1) == 0:
             raise ValueError(
                 "DisulfideBondRestraint: ERROR> first selection pattern "
@@ -1408,7 +1422,7 @@ class DisulfideCrossLinkRestraint:
         si = sigma.get_particle().get_index()
         psii = psi.get_particle().get_index()
 
-        dr = IMP.isd.CrossLinkMSRestraint(self.m, length, slope)
+        dr = _xlms_cls(self.m, length, slope)
 
         dr.add_contribution((p1i, p2i), (si, si), psii)
 
