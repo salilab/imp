@@ -142,7 +142,9 @@ multifit::FittingSolutionRecords build_symmetric_assemblies(
     const internal::Parameters &parameters) {
   parameters.show();
   IMP_NEW(Model, m, ());
-  atom::Hierarchy h = atom::read_pdb(parameters.get_unit_pdb_fn(), m);
+  atom::Hierarchy h = atom::read_pdb(
+      parameters.get_unit_pdb_fn(), m,
+      new atom::NonWaterNonHydrogenPDBSelector());
   ParticlesTemp leaves = core::get_leaves(h);
   algebra::Vector3Ds coords;
   bool ca_only = true;
@@ -152,8 +154,9 @@ multifit::FittingSolutionRecords build_symmetric_assemblies(
       ca_only = false;
     }
   }
-  std::vector<internal::CnDockingSolution> sols =
-      internal::dock_cn(coords, parameters.get_cn_symm(), ca_only);
+  std::vector<internal::CnDockingSolution> sols = internal::dock_cn(
+      coords, parameters.get_cn_symm(), ca_only,
+      parameters.get_docking_parameters());
   std::cout << "Generated " << sols.size() << " candidate assemblies"
             << std::endl;
 

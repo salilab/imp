@@ -9,6 +9,7 @@
 #define IMPCNMULTIFIT_PARAMETERS_H
 
 #include <IMP/cnmultifit/cnmultifit_config.h>
+#include <IMP/cnmultifit/internal/cn_docking.h>
 #include <IMP/algebra/Vector3D.h>
 #include <boost/property_tree/ptree.hpp>
 #if IMP_CNMULTIFIT_HAS_LIBTAU
@@ -23,9 +24,10 @@ IMPCNMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 //! Store all parameters used by symmetric MultiFit.
 /** \note If libTAU is available, it is used for the docking and many of
           these parameters are also passed to it, and so are additionally
-          stored in libTAU structs. These docking parameters (scoring,
-          clustering, base, grid and surface sections) are not used if
-          libTAU is not available.
+          stored in libTAU structs. The scoring, clustering, base, grid and
+          surface sections are used by libTAU; the optional docking section
+          controls the open symmetric docking used when libTAU is not
+          available.
  */
 class IMPCNMULTIFITEXPORT Parameters {
  public:
@@ -34,6 +36,10 @@ class IMPCNMULTIFITEXPORT Parameters {
 #if IMP_CNMULTIFIT_HAS_LIBTAU
   const TAU::AlgParams &getAlgParams() const { return params_; }
 #endif
+
+  const CnDockingParameters &get_docking_parameters() const {
+    return docking_params_;
+  }
 
   double get_surface_threshold() const { return surface_threshold_; }
 
@@ -81,10 +87,12 @@ class IMPCNMULTIFITEXPORT Parameters {
   void parse_grid_section(const boost::property_tree::ptree &pt);
   void parse_surface_section(const boost::property_tree::ptree &pt);
   void parse_fitting_section(const boost::property_tree::ptree &pt);
+  void parse_docking_section(const boost::property_tree::ptree &pt);
 
 #if IMP_CNMULTIFIT_HAS_LIBTAU
   TAU::AlgParams params_;
 #endif
+  CnDockingParameters docking_params_;
   std::string unit_pdb_, output_fn_, model_fn_, map_fn_;
   int num_sols_;
   algebra::Vector3D origin_;

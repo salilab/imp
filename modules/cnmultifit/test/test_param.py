@@ -43,6 +43,9 @@ class Tests(IMP.test.TestCase):
         self.assertIn('origin_x = -10.0', contents)
         self.assertIn('origin_y = -20.0', contents)
         self.assertIn('origin_z = -30.0', contents)
+        self.assertIn('[docking]', contents)
+        self.assertIn('angle_step = -1.0', contents)
+        self.assertIn('n_refine = 100', contents)
         os.unlink('test.params')
 
 

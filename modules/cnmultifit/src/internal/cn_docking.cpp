@@ -97,21 +97,22 @@ int get_fft_friendly_size(int n) {
 
 //! Piecewise-linear contact potential
 /** A function of the distance (A) from a neighbor atom to the closest
-    monomer atom: strongly negative for clashes, +1 for contacts, and 0
-    beyond the cutoff. */
+    monomer atom: negative for clashes, +1 for contacts, and 0 beyond
+    the cutoff. Surface clashes are kept moderate and amplified by burial
+    depth inside the molecular surface so deep core penetration is strongly
+    penalized while surface side-chain flexibility / noise is tolerated. */
 class ContactPotential {
   std::vector<std::pair<double, double> > knots_;
 
  public:
   ContactPotential(bool ca_only) {
     if (ca_only) {
-      // One point per residue; CA-CA contacts are ~5-8A
-      knots_ = {{0., -8.}, {2.5, -8.}, {3.5, -1.}, {4.0, 1.},
-                {7.5, 1.}, {8.5, 0.}};
+      // One point per residue; inter-subunit CA-CA contacts are ~4.8-9.5A
+      knots_ = {{0., -8.}, {3.4, -6.}, {4.2, -1.}, {4.8, 1.},
+                {8.8, 1.}, {10.0, 0.}};
     } else {
-      // Heavy atoms; contacts are ~3.3-5A (lenient, as side chains
-      // would rearrange at the interface)
-      knots_ = {{0., -8.}, {1.0, -8.}, {1.8, -3.}, {2.4, 0.},
+      // Heavy atoms; contacts are ~2.6-4.6A with a firm steric wall
+      knots_ = {{0., -5.}, {1.2, -4.5}, {1.8, -2.5}, {2.35, 0.},
                 {2.6, 1.}, {4.6, 1.}, {5.3, 0.}};
     }
   }
@@ -166,6 +167,34 @@ void distance_transform_1d(const std::vector<double> &f,
   }
 }
 
+//! Exact 3D squared Euclidean distance transform in-place
+void distance_transform_3d(std::vector<double> &d2, const int dim[3]) {
+  auto index = [&](int i, int j, int k) {
+    return (static_cast<size_t>(i) * dim[1] + j) * dim[2] + k;
+  };
+  int maxdim = std::max(dim[0], std::max(dim[1], dim[2]));
+  std::vector<double> f(maxdim), d(maxdim), z(maxdim + 1);
+  std::vector<int> v(maxdim);
+  for (int axis = 0; axis < 3; ++axis) {
+    int n = dim[axis];
+    int a1 = (axis + 1) % 3, a2 = (axis + 2) % 3;
+    f.resize(n);
+    d.resize(n);
+    int idx[3];
+    for (idx[a1] = 0; idx[a1] < dim[a1]; ++idx[a1]) {
+      for (idx[a2] = 0; idx[a2] < dim[a2]; ++idx[a2]) {
+        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
+          f[idx[axis]] = d2[index(idx[0], idx[1], idx[2])];
+        }
+        distance_transform_1d(f, d, v, z);
+        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
+          d2[index(idx[0], idx[1], idx[2])] = d[idx[axis]];
+        }
+      }
+    }
+  }
+}
+
 //! Regular 3D grid of floats, stored with z varying fastest
 struct Grid3 {
   int dim[3];
@@ -205,36 +234,60 @@ struct Grid3 {
   }
 };
 
-//! Separable Gaussian smoothing (truncated at 4 sigma, zero outside)
-void gaussian_smooth(Grid3 &g, double sigma) {
-  int radius = static_cast<int>(4. * sigma + 0.5);
+//! Separable Gaussian convolution (truncated at 3 sigma, zero outside).
+/** When normalize is true, acts as a smoothing filter; when false, computes
+    the unnormalized sum of exp(-r^2 / (2*sigma^2)) over splatted atoms. */
+void gaussian_convolve(Grid3 &g, double sigma, bool normalize) {
+  if (sigma <= 0.) return;
+  int radius = static_cast<int>(3.0 * sigma + 0.5);
+  if (radius < 1) return;
   std::vector<double> kernel(2 * radius + 1);
   double sum = 0.;
   for (int i = -radius; i <= radius; ++i) {
     kernel[i + radius] = std::exp(-0.5 * i * i / (sigma * sigma));
     sum += kernel[i + radius];
   }
-  for (double &k : kernel) k /= sum;
+  if (normalize) {
+    for (double &k : kernel) k /= sum;
+  }
   for (int axis = 0; axis < 3; ++axis) {
     int n = g.dim[axis];
-    int a1 = (axis + 1) % 3, a2 = (axis + 2) % 3;
     std::vector<double> line(n), out(n);
-    int idx[3];
-    for (idx[a1] = 0; idx[a1] < g.dim[a1]; ++idx[a1]) {
-      for (idx[a2] = 0; idx[a2] < g.dim[a2]; ++idx[a2]) {
-        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
-          line[idx[axis]] = g(idx[0], idx[1], idx[2]);
-        }
-        for (int i = 0; i < n; ++i) {
-          double s = 0.;
-          int lo = std::max(0, i - radius), hi = std::min(n - 1, i + radius);
-          for (int j = lo; j <= hi; ++j) {
-            s += kernel[j - i + radius] * line[j];
+    if (axis == 2) {
+      // z varies fastest: operate directly on contiguous rows
+      for (int i0 = 0; i0 < g.dim[0]; ++i0) {
+        for (int i1 = 0; i1 < g.dim[1]; ++i1) {
+          float *row = &g.data[g.index(i0, i1, 0)];
+          for (int i = 0; i < n; ++i) {
+            double s = 0.;
+            int lo = std::max(0, i - radius), hi = std::min(n - 1, i + radius);
+            for (int j = lo; j <= hi; ++j) {
+              s += kernel[j - i + radius] * row[j];
+            }
+            out[i] = s;
           }
-          out[i] = s;
+          for (int i = 0; i < n; ++i) row[i] = static_cast<float>(out[i]);
         }
-        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
-          g(idx[0], idx[1], idx[2]) = out[idx[axis]];
+      }
+    } else {
+      int a1 = (axis + 1) % 3, a2 = (axis + 2) % 3;
+      int idx[3];
+      for (idx[a1] = 0; idx[a1] < g.dim[a1]; ++idx[a1]) {
+        for (idx[a2] = 0; idx[a2] < g.dim[a2]; ++idx[a2]) {
+          for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
+            line[idx[axis]] = g(idx[0], idx[1], idx[2]);
+          }
+          for (int i = 0; i < n; ++i) {
+            double s = 0.;
+            int lo = std::max(0, i - radius), hi = std::min(n - 1, i + radius);
+            for (int j = lo; j <= hi; ++j) {
+              s += kernel[j - i + radius] * line[j];
+            }
+            out[i] = s;
+          }
+          for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
+            g(idx[0], idx[1], idx[2]) = static_cast<float>(out[idx[axis]]);
+          }
         }
       }
     }
@@ -243,10 +296,11 @@ void gaussian_smooth(Grid3 &g, double sigma) {
 
 struct Candidate {
   double score;
+  double coarse_score;
   V3 u, t;
-  Candidate() : score(0.) {}
-  Candidate(double score, const V3 &u, const V3 &t)
-      : score(score), u(u), t(t) {}
+  Candidate() : score(0.), coarse_score(0.) {}
+  Candidate(double score, double coarse_score, const V3 &u, const V3 &t)
+      : score(score), coarse_score(coarse_score), u(u), t(t) {}
 };
 
 bool operator<(const Candidate &a, const Candidate &b) {
@@ -359,6 +413,7 @@ std::vector<double> nelder_mead(F f, const std::vector<std::vector<double> >
 
 class CnDocker {
   int cn_;
+  bool ca_only_;
   double angle_;
   ContactPotential pot_;
   CnDockingParameters params_;
@@ -366,9 +421,11 @@ class CnDocker {
   algebra::Vector3Ds x_;  // monomer atoms, centered at the centroid
   double radius_;
   unsigned ring_stride_;
+  unsigned coarse_ring_stride_;
   IMP::PointerMember<algebra::NearestNeighbor3D> nn_;
-  // Fine grid of the contact potential
-  Grid3 fine_;
+  // Fine contact potential grid and a mildly softened grid for pre-refinement
+  // rescoring and broad basin capture
+  Grid3 fine_, soft_;
   V3 fine_lo_;
   // Fourier transform of the periodic coarse grid of the contact potential
   int n_;
@@ -380,9 +437,9 @@ class CnDocker {
   void setup_coarse_grid();
   void splat(const algebra::Vector3Ds &pts);
 
-  double lookup(const V3 &pt) const {
-    V3 g = (pt - fine_lo_) / params_.fine_spacing;
-    return fine_.interpolate(g[0], g[1], g[2]);
+  double lookup(const Grid3 &g, const V3 &pt) const {
+    V3 gc = (pt - fine_lo_) / params_.fine_spacing;
+    return g.interpolate(gc[0], gc[1], gc[2]);
   }
 
   //! Get the point on the symmetry axis closest to the monomer centroid
@@ -399,19 +456,26 @@ class CnDocker {
     return q1 * e1 + q2 * e2;
   }
 
+  double quick_non_neighbor_clash(const V3 &u, const V3 &t) const;
   std::vector<Candidate> coarse_search();
   Candidate refine(const Candidate &c);
-  std::vector<Candidate> cluster(const std::vector<Candidate> &sols) const;
-  Ints get_interface_atoms(const V3 &u, const V3 &t) const;
+  std::vector<Candidate> cluster(const std::vector<Candidate> &sols,
+                                 double rmsd_thr, bool keep_nonpos) const;
+  void get_interface_atoms(const V3 &u, const V3 &t, double margin,
+                           Ints &fwd_atoms, Ints &rev_atoms,
+                           V3 &if_center) const;
 
  public:
   CnDocker(const algebra::Vector3Ds &coords, int cn, bool ca_only,
            const CnDockingParameters &params);
 
-  //! Interface score of the ring with dock transformation (u, t)
-  /** If atoms is non-null, only those monomer atoms are used for the
-      neighbor interface (other atoms are assumed to score 0). */
-  double score(const V3 &u, const V3 &t, const Ints *atoms = nullptr) const;
+  //! Symmetric interface score of the ring with dock transformation (u, t)
+  /** Evaluates both T and T^-1 (for cn >= 3) so the score is invariant to
+      axis orientation (+u vs -u), and adds a clash penalty against
+      non-neighboring subunits for cn >= 4. */
+  double score(const Grid3 &g, const V3 &u, const V3 &t,
+               const Ints *fwd_atoms = nullptr,
+               const Ints *rev_atoms = nullptr) const;
 
   std::vector<Candidate> dock();
 
@@ -421,9 +485,11 @@ class CnDocker {
 
 CnDocker::CnDocker(const algebra::Vector3Ds &coords, int cn, bool ca_only,
                    const CnDockingParameters &params)
-    : cn_(cn), angle_(2. * PI / cn), pot_(ca_only), params_(params) {
+    : cn_(cn), ca_only_(ca_only), angle_(2. * PI / cn), pot_(ca_only),
+      params_(params) {
   IMP_USAGE_CHECK(cn >= 2, "Symmetry degree must be at least 2");
   IMP_USAGE_CHECK(!coords.empty(), "No monomer coordinates given");
+  IMP_USAGE_CHECK(params_.fine_spacing > 0., "fine_spacing must be positive");
   centroid_ = V3(0., 0., 0.);
   for (const V3 &c : coords) centroid_ += c;
   centroid_ /= coords.size();
@@ -438,12 +504,17 @@ CnDocker::CnDocker(const algebra::Vector3Ds &coords, int cn, bool ca_only,
     params_.coarse_spacing = radius_ < 35. ? 2.0 : 2.5;
   }
   if (params_.angle_step <= 0.) {
-    // angular step such that the furthest atom moves ~1.2 voxels
+    // angular step such that the furthest atom moves ~1.2 voxels;
+    // tighten slightly for C2 where the rotation leverage 2*sin(pi/2)=2
+    // is largest
+    double sym_factor = (cn_ == 2) ? 1.25 : 1.0;
     params_.angle_step = std::max(
-        3.5, std::min(5., 180. / PI * 1.2 * params_.coarse_spacing /
-                              std::max(radius_, 1.)));
+        3.5, std::min(5.0 / sym_factor,
+                      180. / PI * 1.2 * params_.coarse_spacing /
+                          (std::max(radius_, 1.) * sym_factor)));
   }
   ring_stride_ = std::max(static_cast<size_t>(1), x_.size() / 500);
+  coarse_ring_stride_ = std::max(static_cast<size_t>(1), x_.size() / 40);
   nn_ = new algebra::NearestNeighbor3D(x_);
   setup_fine_grid();
   setup_coarse_grid();
@@ -451,7 +522,7 @@ CnDocker::CnDocker(const algebra::Vector3Ds &coords, int cn, bool ca_only,
 
 void CnDocker::setup_fine_grid() {
   double s = params_.fine_spacing;
-  double pad = pot_.get_cutoff() + 2. * s;
+  double pad = pot_.get_cutoff() + 3. * s;
   algebra::BoundingBox3D bb(x_);
   fine_lo_ = bb.get_corner(0) - V3(pad, pad, pad);
   V3 hi = bb.get_corner(1) + V3(pad, pad, pad);
@@ -459,9 +530,10 @@ void CnDocker::setup_fine_grid() {
   for (int i = 0; i < 3; ++i) {
     dim[i] = static_cast<int>(std::ceil((hi[i] - fine_lo_[i]) / s)) + 1;
   }
-  // squared distance (in voxels) to the nearest atom-occupied voxel
+  size_t ntot = static_cast<size_t>(dim[0]) * dim[1] * dim[2];
+  // 1) Squared distance (in voxels) to the nearest atom-occupied voxel
   const double big = 1e20;
-  std::vector<double> d2(static_cast<size_t>(dim[0]) * dim[1] * dim[2], big);
+  std::vector<double> d2(ntot, big);
   auto index = [&](int i, int j, int k) {
     return (static_cast<size_t>(i) * dim[1] + j) * dim[2] + k;
   };
@@ -472,31 +544,69 @@ void CnDocker::setup_fine_grid() {
     }
     d2[index(i[0], i[1], i[2])] = 0.;
   }
-  int maxdim = std::max(dim[0], std::max(dim[1], dim[2]));
-  std::vector<double> f(maxdim), d(maxdim), z(maxdim + 1);
-  std::vector<int> v(maxdim);
-  for (int axis = 0; axis < 3; ++axis) {
-    int n = dim[axis];
-    int a1 = (axis + 1) % 3, a2 = (axis + 2) % 3;
-    f.resize(n);
-    d.resize(n);
-    int idx[3];
-    for (idx[a1] = 0; idx[a1] < dim[a1]; ++idx[a1]) {
-      for (idx[a2] = 0; idx[a2] < dim[a2]; ++idx[a2]) {
-        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
-          f[idx[axis]] = d2[index(idx[0], idx[1], idx[2])];
-        }
-        distance_transform_1d(f, d, v, z);
-        for (idx[axis] = 0; idx[axis] < n; ++idx[axis]) {
-          d2[index(idx[0], idx[1], idx[2])] = d[idx[axis]];
+  distance_transform_3d(d2, dim);
+
+  // 2) Burial depth inside the molecular surface (distance from exterior)
+  double r_occ = ca_only_ ? 3.8 : 2.3;
+  double r_occ2_vox = (r_occ / s) * (r_occ / s);
+  std::vector<double> depth2(ntot, big);
+  for (size_t i = 0; i < ntot; ++i) {
+    if (d2[i] > r_occ2_vox) depth2[i] = 0.;
+  }
+  distance_transform_3d(depth2, dim);
+
+  // 3) Smooth local atom density rho(r) = sum_j exp(-|r - x_j|^2 / (2*sig^2))
+  //    to favor well-packed complementary interfaces over grazing contacts
+  Grid3 rho;
+  rho.resize(dim[0], dim[1], dim[2], 0.);
+  for (const V3 &x : x_) {
+    int f[3];
+    double w[3];
+    for (int k = 0; k < 3; ++k) {
+      double g = (x[k] - fine_lo_[k]) / s;
+      f[k] = std::max(0, std::min(dim[k] - 2, static_cast<int>(std::floor(g))));
+      w[k] = g - f[k];
+    }
+    for (int dx = 0; dx < 2; ++dx) {
+      double wx = dx ? w[0] : 1. - w[0];
+      for (int dy = 0; dy < 2; ++dy) {
+        double wy = dy ? w[1] : 1. - w[1];
+        for (int dz = 0; dz < 2; ++dz) {
+          double wz = dz ? w[2] : 1. - w[2];
+          rho(f[0] + dx, f[1] + dy, f[2] + dz) +=
+              static_cast<float>(wx * wy * wz);
         }
       }
     }
   }
+  double rho_sig = ca_only_ ? 3.5 : 2.1;
+  gaussian_convolve(rho, rho_sig / s, false);
+
+  // Combine distance, burial depth and local contact density into fine_
   fine_.resize(dim[0], dim[1], dim[2], 0.);
-  for (size_t i = 0; i < d2.size(); ++i) {
-    fine_.data[i] = pot_(std::sqrt(d2[i]) * s);
+  double density_alpha = ca_only_ ? 0.35 : 0.25;
+  double depth_start = ca_only_ ? 1.5 : 1.0;
+  double depth_slope = ca_only_ ? 2.5 : 3.5;
+  for (size_t i = 0; i < ntot; ++i) {
+    double d = std::sqrt(d2[i]) * s;
+    double dep = std::sqrt(depth2[i]) * s;
+    double v = pot_(d);
+    if (v > 0.) {
+      v *= (1.0 + density_alpha * std::min(static_cast<double>(rho.data[i]), 2.0));
+    } else if (dep > depth_start) {
+      v = std::max(-12., v - depth_slope * (dep - depth_start));
+    }
+    fine_.data[i] = static_cast<float>(v);
   }
+
+  // Mildly softened potential grid for pre-refinement rescoring and
+  // broad-basin first-pass refinement; clip deep-core negatives first so
+  // the core does not bleed into and wipe out the positive contact shell
+  soft_ = fine_;
+  for (float &v : soft_.data) {
+    if (v < -5.f) v = -5.f;
+  }
+  gaussian_convolve(soft_, 0.75 / s, true);
 }
 
 void CnDocker::setup_coarse_grid() {
@@ -515,10 +625,14 @@ void CnDocker::setup_coarse_grid() {
   plan_c2r_ = fftw_plan_dft_c2r_3d(n_, n_, n_, lig_fft_, real_grid_,
                                    FFTW_MEASURE);
 
-  // potential at coarse grid points: average of the fine potential
-  // over the coarse voxel (Gaussian smoothing approximation)
-  Grid3 smooth = fine_;
-  gaussian_smooth(smooth, 0.5 * s / params_.fine_spacing);
+  // Coarse potential: start from clipped/smoothed soft_ (sigma = 0.75A) and
+  // apply only the residual Gaussian smoothing needed to reach 0.4 * s
+  double target_sig = 0.4 * s;
+  Grid3 smooth = soft_;
+  if (target_sig > 0.75) {
+    double rem_sig = std::sqrt(target_sig * target_sig - 0.75 * 0.75);
+    gaussian_convolve(smooth, rem_sig / params_.fine_spacing, true);
+  }
   for (int i = 0; i < n_; ++i) {
     double x = (i >= n_ / 2 ? i - n_ : i) * s;
     for (int j = 0; j < n_; ++j) {
@@ -569,6 +683,23 @@ void CnDocker::splat(const algebra::Vector3Ds &pts) {
   }
 }
 
+double CnDocker::quick_non_neighbor_clash(const V3 &u, const V3 &t) const {
+  if (cn_ < 4) return 0.;
+  Mat3 R1 = get_rotation_matrix(u, angle_);
+  V3 p = get_axis_point(u, t, R1);
+  double total_neg = 0.;
+  for (int k = 2; k <= cn_ / 2; ++k) {
+    Mat3 Rk = get_rotation_matrix(u, angle_ * k);
+    double neg = 0.;
+    for (unsigned i = 0; i < x_.size(); i += coarse_ring_stride_) {
+      double v = lookup(soft_, Rk * (x_[i] - p) + p);
+      if (v < 0.) neg += v;
+    }
+    total_neg += neg * coarse_ring_stride_ * (2 * k < cn_ ? 2 : 1);
+  }
+  return total_neg;
+}
+
 std::vector<Candidate> CnDocker::coarse_search() {
   algebra::Vector3Ds dirs = get_hemisphere_directions(params_.angle_step);
   IMP_LOG_TERSE("Cn docking: coarse search over " << dirs.size()
@@ -578,6 +709,7 @@ std::vector<Candidate> CnDocker::coarse_search() {
   double max_t = 2. * radius_ + pot_.get_cutoff();
   int m = static_cast<int>(std::ceil(max_t / s));
   int nl = 2 * m + 1;
+  size_t nreal = static_cast<size_t>(n_) * n_ * n_;
   size_t ncomplex = static_cast<size_t>(n_) * n_ * (n_ / 2 + 1);
   std::vector<double> vals(nl * nl);
   std::vector<Candidate> cands;
@@ -653,31 +785,83 @@ std::vector<Candidate> CnDocker::coarse_search() {
         if (is_peak) peaks.push_back(std::make_pair(v, a * nl + b));
       }
     }
-    unsigned npeak = std::min(static_cast<size_t>(params_.peaks_per_direction),
-                              peaks.size());
-    std::partial_sort(peaks.begin(), peaks.begin() + npeak, peaks.end(),
+    // Inspect top raw peaks, filter severely self-clashing rings (cn >= 4),
+    // and refine peak position with sub-voxel parabolic interpolation
+    unsigned raw_check = std::min(
+        static_cast<size_t>(params_.peaks_per_direction * 4), peaks.size());
+    std::partial_sort(peaks.begin(), peaks.begin() + raw_check, peaks.end(),
                       [](const std::pair<double, int> &p1,
                          const std::pair<double, int> &p2) {
                         return p1.first > p2.first;
                       });
-    for (unsigned i = 0; i < npeak; ++i) {
+    unsigned kept = 0;
+    for (unsigned i = 0; i < raw_check && kept < params_.peaks_per_direction;
+         ++i) {
       int a = peaks[i].second / nl, b = peaks[i].second % nl;
-      cands.push_back(Candidate(peaks[i].first, u,
-                                (a - m) * s * e1 + (b - m) * s * e2));
+      double da = 0., db = 0.;
+      if (a > 0 && a < nl - 1) {
+        double vm = vals[(a - 1) * nl + b];
+        double v0 = vals[a * nl + b];
+        double vp = vals[(a + 1) * nl + b];
+        double den = vm - 2. * v0 + vp;
+        if (den < -1e-9 && vm > -1e20 && vp > -1e20) {
+          da = std::max(-0.5, std::min(0.5, 0.5 * (vm - vp) / den));
+        }
+      }
+      if (b > 0 && b < nl - 1) {
+        double vm = vals[a * nl + b - 1];
+        double v0 = vals[a * nl + b];
+        double vp = vals[a * nl + b + 1];
+        double den = vm - 2. * v0 + vp;
+        if (den < -1e-9 && vm > -1e20 && vp > -1e20) {
+          db = std::max(-0.5, std::min(0.5, 0.5 * (vm - vp) / den));
+        }
+      }
+      V3 tt = ((a - m) + da) * s * e1 + ((b - m) + db) * s * e2;
+      double csc = peaks[i].first / nreal;
+      if (cn_ >= 4) {
+        double nn_clash = quick_non_neighbor_clash(u, tt);
+        if (nn_clash < -0.75 * std::max(csc, 10.0) && nn_clash < -30.) {
+          continue;
+        }
+        csc += 0.3 * nn_clash;
+      }
+      cands.push_back(Candidate(csc, csc, u, tt));
+      ++kept;
     }
   }
-  std::stable_sort(cands.begin(), cands.end());
+  std::stable_sort(cands.begin(), cands.end(),
+                   [](const Candidate &a, const Candidate &b) {
+                     return a.coarse_score > b.coarse_score;
+                   });
   return cands;
 }
 
-double CnDocker::score(const V3 &u, const V3 &t, const Ints *atoms) const {
+double CnDocker::score(const Grid3 &g, const V3 &u, const V3 &t,
+                       const Ints *fwd_atoms, const Ints *rev_atoms) const {
   Mat3 R = get_rotation_matrix(u, angle_);
   V3 p = get_axis_point(u, t, R);
   double sc = 0.;
-  if (atoms) {
-    for (int i : *atoms) sc += lookup(R * (x_[i] - p) + p);
+  if (cn_ == 2) {
+    if (fwd_atoms) {
+      for (int i : *fwd_atoms) sc += lookup(g, R * (x_[i] - p) + p);
+    } else {
+      for (const V3 &x : x_) sc += lookup(g, R * (x - p) + p);
+    }
   } else {
-    for (const V3 &x : x_) sc += lookup(R * (x - p) + p);
+    Mat3 Rinv = R.get_transpose();
+    double sc_f = 0., sc_r = 0.;
+    if (fwd_atoms && rev_atoms) {
+      for (int i : *fwd_atoms) sc_f += lookup(g, R * (x_[i] - p) + p);
+      for (int i : *rev_atoms) sc_r += lookup(g, Rinv * (x_[i] - p) + p);
+    } else {
+      for (const V3 &x : x_) {
+        V3 dx = x - p;
+        sc_f += lookup(g, R * dx + p);
+        sc_r += lookup(g, Rinv * dx + p);
+      }
+    }
+    sc = 0.5 * (sc_f + sc_r);
   }
   if (cn_ >= 4) {
     // non-neighbors should not clash (only negative terms count);
@@ -686,7 +870,7 @@ double CnDocker::score(const V3 &u, const V3 &t, const Ints *atoms) const {
       Mat3 Rk = get_rotation_matrix(u, angle_ * k);
       double neg = 0.;
       for (unsigned i = 0; i < x_.size(); i += ring_stride_) {
-        double v = lookup(Rk * (x_[i] - p) + p);
+        double v = lookup(g, Rk * (x_[i] - p) + p);
         if (v < 0.) neg += v;
       }
       // pairs k and cn-k are equivalent, except when k == cn/2
@@ -696,69 +880,113 @@ double CnDocker::score(const V3 &u, const V3 &t, const Ints *atoms) const {
   return sc;
 }
 
-Ints CnDocker::get_interface_atoms(const V3 &u, const V3 &t) const {
-  const double margin = 4.0;
+void CnDocker::get_interface_atoms(const V3 &u, const V3 &t, double margin,
+                                   Ints &fwd_atoms, Ints &rev_atoms,
+                                   V3 &if_center) const {
   double cut2 = (pot_.get_cutoff() + margin) * (pot_.get_cutoff() + margin);
   Mat3 R = get_rotation_matrix(u, angle_);
+  Mat3 Rinv = R.get_transpose();
   V3 p = get_axis_point(u, t, R);
-  Ints ret;
+  fwd_atoms.clear();
+  rev_atoms.clear();
+  if_center = V3(0., 0., 0.);
   for (unsigned i = 0; i < x_.size(); ++i) {
-    V3 nb = R * (x_[i] - p) + p;
+    V3 dx = x_[i] - p;
+    V3 nb = R * dx + p;
     unsigned j = nn_->get_nearest_neighbor(nb);
     if (algebra::get_squared_distance(nb, x_[j]) <= cut2) {
-      ret.push_back(i);
+      fwd_atoms.push_back(i);
+      if_center += x_[i];
+    }
+    if (cn_ >= 3) {
+      V3 nbr = Rinv * dx + p;
+      unsigned jr = nn_->get_nearest_neighbor(nbr);
+      if (algebra::get_squared_distance(nbr, x_[jr]) <= cut2) {
+        rev_atoms.push_back(i);
+      }
     }
   }
-  return ret;
+  if (!fwd_atoms.empty()) if_center /= fwd_atoms.size();
 }
 
 Candidate CnDocker::refine(const Candidate &c) {
-  const V3 &u = c.u;
-  V3 e1, e2;
-  get_plane_basis(u, e1, e2);
-  V3 p0 = get_axis_point(u, c.t, get_rotation_matrix(u, angle_));
-  Ints atoms = get_interface_atoms(u, c.t);
-  if (atoms.empty()) {
-    return Candidate(score(u, c.t), u, c.t);
+  V3 cur_u = c.u, cur_t = c.t;
+  double best_sc = score(fine_, cur_u, cur_t);
+  V3 best_u = cur_u, best_t = cur_t;
+
+  auto run_pass = [&](const Grid3 &g, double ang_step_rad, double trans_step,
+                      unsigned max_ev, double margin) {
+    V3 u0 = cur_u, t0 = cur_t;
+    V3 e1, e2;
+    get_plane_basis(u0, e1, e2);
+    Ints fwd_atoms, rev_atoms;
+    V3 q;
+    get_interface_atoms(u0, t0, margin, fwd_atoms, rev_atoms, q);
+    if (fwd_atoms.empty() && rev_atoms.empty()) return;
+    Mat3 R0 = get_rotation_matrix(u0, angle_);
+    V3 R0q = R0 * q;
+    // Parameterize in normalized coordinates with axis tilt pivoted around the
+    // interface centroid q and translation stepped directly in the plane
+    // perpendicular to u (independent of cn and ring radius)
+    auto unpack = [&](const std::vector<double> &v, V3 &uu, V3 &tt) {
+      uu = (u0 + (v[0] * ang_step_rad) * e1 + (v[1] * ang_step_rad) * e2)
+               .get_unit_vector();
+      Mat3 Ru = get_rotation_matrix(uu, angle_);
+      V3 t_piv = t0 - (Ru * q - R0q);
+      tt = t_piv + (v[2] * trans_step) * e1 + (v[3] * trans_step) * e2;
+      tt -= (tt * uu) * uu;
+    };
+    auto f = [&](const std::vector<double> &v) {
+      V3 uu, tt;
+      unpack(v, uu, tt);
+      return -score(g, uu, tt, &fwd_atoms, &rev_atoms);
+    };
+    std::vector<std::vector<double> > simplex = {
+        {0., 0., 0., 0.}, {1., 0., 0., 0.}, {0., 1., 0., 0.},
+        {0., 0., 1., 0.}, {0., 0., 0., 1.}};
+    std::vector<double> opt = nelder_mead(f, simplex, 1e-2, 0.25, max_ev);
+    unpack(opt, cur_u, cur_t);
+  };
+
+  double ang_rad = params_.angle_step * PI / 180.;
+  unsigned ev1 = std::max(30u, params_.refine_max_evaluations / 3);
+  unsigned ev2 = params_.refine_max_evaluations > ev1
+                     ? params_.refine_max_evaluations - ev1
+                     : ev1;
+  // Pass 1: broad capture on softened potential grid
+  run_pass(soft_, 0.65 * ang_rad, 0.75 * params_.coarse_spacing, ev1, 5.5);
+  double sc1 = score(fine_, cur_u, cur_t);
+  if (sc1 > best_sc) {
+    best_sc = sc1;
+    best_u = cur_u;
+    best_t = cur_t;
   }
-  double angle = angle_;
-  // parameters: change in axis direction (2), change in axis position (2)
-  auto unpack = [&](const std::vector<double> &v, V3 &uu, V3 &tt) {
-    uu = (u + v[0] * e1 + v[1] * e2).get_unit_vector();
-    V3 p = p0 + v[2] * e1 + v[3] * e2;
-    p -= (p * uu) * uu;
-    tt = p - get_rotation_matrix(uu, angle) * p;
-  };
-  auto f = [&](const std::vector<double> &v) {
-    V3 uu, tt;
-    unpack(v, uu, tt);
-    return -score(uu, tt, &atoms);
-  };
-  double step = params_.angle_step * PI / 180. / 2.;
-  std::vector<std::vector<double> > simplex = {{0., 0., 0., 0.},
-                                               {step, 0., 0., 0.},
-                                               {0., step, 0., 0.},
-                                               {0., 0., 1., 0.},
-                                               {0., 0., 0., 1.}};
-  std::vector<double> best = nelder_mead(f, simplex, 1e-3, 0.5,
-                                         params_.refine_max_evaluations);
-  V3 uu, tt;
-  unpack(best, uu, tt);
-  return Candidate(score(uu, tt), uu, tt);
+
+  // Pass 2: fine polish on sharp potential grid with refreshed interface atoms
+  run_pass(fine_, 0.35 * ang_rad, 0.35 * params_.coarse_spacing, ev2, 4.0);
+  double sc2 = score(fine_, cur_u, cur_t);
+  if (sc2 > best_sc) {
+    best_sc = sc2;
+    best_u = cur_u;
+    best_t = cur_t;
+  }
+
+  return Candidate(best_sc, c.coarse_score, best_u, best_t);
 }
 
-std::vector<Candidate> CnDocker::cluster(
-    const std::vector<Candidate> &sols) const {
+std::vector<Candidate> CnDocker::cluster(const std::vector<Candidate> &sols,
+                                         double rmsd_thr,
+                                         bool keep_nonpos) const {
   // Greedy clustering (sols sorted by decreasing score) by the RMSD of the
   // placed neighbor (T or T^-1 give the same ring)
-  unsigned step = std::max(static_cast<size_t>(1), x_.size() / 100);
+  unsigned step = std::max(static_cast<size_t>(1), x_.size() / 80);
   algebra::Vector3Ds rep;
   for (unsigned i = 0; i < x_.size(); i += step) rep.push_back(x_[i]);
-  double thr = params_.cluster_rmsd * params_.cluster_rmsd * rep.size();
+  double thr = rmsd_thr * rmsd_thr * rep.size();
   std::vector<algebra::Vector3Ds> kept_pos;
   std::vector<Candidate> ret;
   for (const Candidate &c : sols) {
-    if (c.score <= 0.) continue;
+    if (!keep_nonpos && c.score <= 0.) continue;
     Mat3 R = get_rotation_matrix(c.u, angle_);
     Mat3 Rinv = R.get_transpose();
     V3 p = get_axis_point(c.u, c.t, R);
@@ -791,20 +1019,58 @@ std::vector<Candidate> CnDocker::dock() {
   std::vector<Candidate> cands = coarse_search();
   IMP_LOG_TERSE("Cn docking: " << cands.size() << " FFT candidates"
                 << std::endl);
-  // rescore on the fine grid
+  // rescore on the softened fine grid (tolerant of coarse grid offset)
   if (cands.size() > params_.n_rescore) {
     cands.erase(cands.begin() + params_.n_rescore, cands.end());
   }
-  for (Candidate &c : cands) c.score = score(c.u, c.t);
+  for (Candidate &c : cands) c.score = score(soft_, c.u, c.t);
   std::stable_sort(cands.begin(), cands.end());
-  // refine the best
-  unsigned nrefine = std::min(static_cast<size_t>(params_.n_refine),
-                              cands.size());
-  for (unsigned i = 0; i < nrefine; ++i) {
-    cands[i] = refine(cands[i]);
+
+  // Pre-cluster before refinement so refinement budget covers distinct basins
+  std::vector<Candidate> distinct =
+      cluster(cands, std::max(2.0, params_.cluster_rmsd), true);
+
+  std::vector<size_t> refine_indices;
+  std::vector<bool> picked(distinct.size(), false);
+  unsigned n_soft_pick = (params_.n_refine * 3) / 4;
+  for (size_t i = 0; i < distinct.size() && refine_indices.size() < n_soft_pick;
+       ++i) {
+    picked[i] = true;
+    refine_indices.push_back(i);
   }
-  std::stable_sort(cands.begin(), cands.end());
-  std::vector<Candidate> ret = cluster(cands);
+  // Also refine top distinct clusters by coarse FFT score
+  std::vector<size_t> coarse_ord(distinct.size());
+  for (size_t i = 0; i < distinct.size(); ++i) coarse_ord[i] = i;
+  std::stable_sort(coarse_ord.begin(), coarse_ord.end(),
+                   [&](size_t a, size_t b) {
+                     return distinct[a].coarse_score > distinct[b].coarse_score;
+                   });
+  for (size_t idx : coarse_ord) {
+    if (refine_indices.size() >= params_.n_refine) break;
+    if (picked[idx]) continue;
+    picked[idx] = true;
+    refine_indices.push_back(idx);
+  }
+  for (size_t i = 0;
+       i < distinct.size() && refine_indices.size() < params_.n_refine; ++i) {
+    if (picked[i]) continue;
+    picked[i] = true;
+    refine_indices.push_back(i);
+  }
+
+  for (size_t idx : refine_indices) {
+    distinct[idx] = refine(distinct[idx]);
+  }
+  // Bring the next top unrefined candidates onto the same fine-grid score scale
+  unsigned n_unref = 0;
+  for (size_t i = 0; i < distinct.size() && n_unref < 300; ++i) {
+    if (!picked[i]) {
+      distinct[i].score = score(fine_, distinct[i].u, distinct[i].t);
+      ++n_unref;
+    }
+  }
+  std::stable_sort(distinct.begin(), distinct.end());
+  std::vector<Candidate> ret = cluster(distinct, params_.cluster_rmsd, false);
   IMP_LOG_TERSE("Cn docking: " << ret.size() << " clustered solutions"
                 << std::endl);
   return ret;

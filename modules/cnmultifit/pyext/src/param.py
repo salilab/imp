@@ -170,6 +170,33 @@ solutions = %d
     return msg
 
 
+def get_docking_data():
+    msg = """
+[docking]
+; Parameters for the built-in open symmetric docking (used when libTAU is
+; not available). All keys are optional and fall back to these defaults.
+; Spacing (A) of the coarse FFT grid (<= 0 selects automatically from monomer size)
+coarse_spacing = -1.0
+; Spacing (A) of the fine scoring/refinement grid
+fine_spacing = 0.5
+; Angular spacing (degrees) of sampled symmetry axes (<= 0 selects automatically)
+angle_step = -1.0
+; Number of FFT translation peaks kept per sampled axis direction
+peaks_per_direction = 5
+; Number of top FFT candidates rescored before local refinement
+n_rescore = 2000
+; Number of distinct candidate basins locally refined
+n_refine = 100
+; Maximum function evaluations per local refinement
+refine_max_evaluations = 120
+; Neighbor-subunit RMSD (A) used to cluster candidate rings
+cluster_rmsd = 2.0
+; Maximum number of clustered candidate rings returned
+max_solutions = 5000
+"""
+    return msg
+
+
 def main():
     args = parse_args()
     cn_units = args.degree
@@ -202,6 +229,7 @@ def main():
     f.write(get_grid_data())
     f.write(get_surface_data())
     f.write(get_fitting_data(args.numsols))
+    f.write(get_docking_data())
     f.close()
 
 

@@ -11,10 +11,14 @@ If the closed-source [libTAU](https://integrativemodeling.org/libTAU.html)
 library is available when %IMP is built, its docking is used. Otherwise, an
 open implementation in this module is used instead. This scores the contacts
 between neighboring subunits, using an FFT search over all symmetry axis
-directions and positions followed by local refinement. Unlike libTAU, it can
-also be used for C2 (dimer) symmetry. It ignores the `scoring`, `clustering`,
-`base`, `grid` and `surface` sections of the parameter file, and does not
-need the subunit's molecular surface.
+directions and positions followed by softened rescoring, pre-clustering,
+and two-stage local refinement. Unlike libTAU, it can also be used for C2
+(dimer) symmetry. It ignores the `scoring`, `clustering`, `base`, `grid` and
+`surface` sections of the parameter file, and does not need the subunit's
+molecular surface. Expert users can tune its sampling and refinement via the
+optional `[docking]` section of the parameter file (e.g., decreasing
+`angle_step` or `coarse_spacing`, or increasing `peaks_per_direction`,
+`n_rescore`, or `n_refine` for difficult cases).
 
 cnmultifit: command line tool {#cnmultifit_bin}
 =============================

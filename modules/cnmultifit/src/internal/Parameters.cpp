@@ -23,6 +23,7 @@ Parameters::Parameters(const char *param_filename)
   parse_symmetry_section(pt);
   parse_density_section(pt);
   parse_fitting_section(pt);
+  parse_docking_section(pt);
   // The remaining sections are only used for docking with libTAU, and
   // are ignored if it is not available
   parse_scoring_section(pt);
@@ -159,6 +160,28 @@ void Parameters::parse_fitting_section(const boost::property_tree::ptree &pt) {
 #if IMP_CNMULTIFIT_HAS_LIBTAU
   params_.fittingParams.num_sols_ = num_sols_;
 #endif
+}
+
+void Parameters::parse_docking_section(const boost::property_tree::ptree &pt) {
+  docking_params_.coarse_spacing =
+      pt.get<double>("docking.coarse_spacing", docking_params_.coarse_spacing);
+  docking_params_.fine_spacing =
+      pt.get<double>("docking.fine_spacing", docking_params_.fine_spacing);
+  docking_params_.angle_step =
+      pt.get<double>("docking.angle_step", docking_params_.angle_step);
+  docking_params_.peaks_per_direction = pt.get<unsigned int>(
+      "docking.peaks_per_direction", docking_params_.peaks_per_direction);
+  docking_params_.n_rescore =
+      pt.get<unsigned int>("docking.n_rescore", docking_params_.n_rescore);
+  docking_params_.n_refine =
+      pt.get<unsigned int>("docking.n_refine", docking_params_.n_refine);
+  docking_params_.refine_max_evaluations = pt.get<unsigned int>(
+      "docking.refine_max_evaluations",
+      docking_params_.refine_max_evaluations);
+  docking_params_.cluster_rmsd =
+      pt.get<double>("docking.cluster_rmsd", docking_params_.cluster_rmsd);
+  docking_params_.max_solutions = pt.get<unsigned int>(
+      "docking.max_solutions", docking_params_.max_solutions);
 }
 
 IMPCNMULTIFIT_END_INTERNAL_NAMESPACE

@@ -24,13 +24,13 @@ struct CnDockingParameters {
   //! Spacing (A) of the grid used to score candidates
   double fine_spacing;
   //! Angular spacing (degrees) of sampled symmetry axis directions;
-  //! if <= 0, pick automatically based on the monomer size
+  //! if <= 0, pick automatically based on the monomer size and symmetry
   double angle_step;
   //! Number of peaks kept for each sampled axis direction
   unsigned int peaks_per_direction;
-  //! Number of FFT candidates rescored on the fine grid
+  //! Number of FFT candidates rescored on the softened fine grid
   unsigned int n_rescore;
-  //! Number of top rescored candidates that are locally refined
+  //! Number of top distinct rescored candidates that are locally refined
   unsigned int n_refine;
   //! Maximum number of function evaluations for each refinement
   unsigned int refine_max_evaluations;
@@ -41,7 +41,7 @@ struct CnDockingParameters {
 
   CnDockingParameters()
       : coarse_spacing(-1.), fine_spacing(0.5), angle_step(-1.),
-        peaks_per_direction(4), n_rescore(2000), n_refine(100),
+        peaks_per_direction(5), n_rescore(2000), n_refine(100),
         refine_max_evaluations(120), cluster_rmsd(2.0), max_solutions(5000) {}
 };
 

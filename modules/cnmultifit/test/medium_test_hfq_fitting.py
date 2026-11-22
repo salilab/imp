@@ -8,7 +8,7 @@ import os
 
 class Tests(IMP.test.TestCase):
 
-    def write_params(self, monomer):
+    def write_params(self, monomer, extra=""):
         with open('hfq.param', 'w') as fh:
             fh.write("""[files]
 monomer = %s
@@ -60,8 +60,8 @@ threshold = 1.5
 
 [fitting]
 solutions = 5
-""" % (monomer, monomer, IMP.multifit.get_data_path('chem.lib'),
-                self.get_input_file_name('hfq-15.0.mrc')))
+%s""" % (monomer, monomer, IMP.multifit.get_data_path('chem.lib'),
+         self.get_input_file_name('hfq-15.0.mrc'), extra))
 
     def test_hfq_fitting(self):
         """Test do_all_fitting on the Hfq hexamer (C6) at 15A"""
@@ -94,6 +94,42 @@ solutions = 5
             model_chains = IMP.atom.get_by_type(model, IMP.atom.CHAIN_TYPE)
             self.assertEqual(len(model_chains), 6)
             # The best scoring model should be close to native
+            rmsd = IMP.cnmultifit.get_cn_rmsd(model_chains, ref_chains)
+            self.assertLess(rmsd, 4.0)
+
+    def test_hfq_fitting_custom_docking_params(self):
+        """Test overriding [docking] parameters in the parameter file"""
+        if IMP.cnmultifit.IMP_CNMULTIFIT_HAS_LIBTAU:
+            self.skipTest("Open docking parameters only used without libTAU")
+        with IMP.test.temporary_working_directory():
+            monomer = os.path.abspath('hfq-monomer.pdb')
+            with open(self.get_input_file_name('hfq-monomer.pdb')) as fin:
+                with open(monomer, 'w') as fout:
+                    fout.write(fin.read())
+            extra = """
+[docking]
+coarse_spacing = 2.0
+fine_spacing = 0.5
+angle_step = 5.0
+peaks_per_direction = 4
+n_rescore = 1000
+n_refine = 50
+refine_max_evaluations = 80
+cluster_rmsd = 2.0
+max_solutions = 200
+"""
+            self.write_params(monomer, extra=extra)
+            IMP.cnmultifit.do_all_fitting('hfq.param')
+            with open('intermediate_asmb_sols.out') as fh:
+                # header + at most max_solutions records
+                self.assertLessEqual(len(fh.readlines()), 201)
+            m = IMP.Model()
+            ref = IMP.atom.read_pdb(self.get_input_file_name('hfq-ref.pdb'),
+                                    m, IMP.atom.CAlphaPDBSelector())
+            ref_chains = IMP.atom.get_by_type(ref, IMP.atom.CHAIN_TYPE)
+            model = IMP.atom.read_pdb('asmb.model.0.pdb', m,
+                                      IMP.atom.CAlphaPDBSelector())
+            model_chains = IMP.atom.get_by_type(model, IMP.atom.CHAIN_TYPE)
             rmsd = IMP.cnmultifit.get_cn_rmsd(model_chains, ref_chains)
             self.assertLess(rmsd, 4.0)
 
