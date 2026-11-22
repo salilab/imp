@@ -36,31 +36,36 @@ class Tests(IMP.test.TestCase):
         mhs = IMP.atom.Hierarchies()
         mhs.append(self.mh)
 
-    @IMP.test.unstable
     def test_fast_vs_slow_local_fitting(self):
         """Check that fast and slow local fitting converge to the same score"""
-        rand_translation = 15. * \
-            IMP.algebra.get_random_vector_in(
-                IMP.algebra.get_unit_bounding_box_3d())
+        # Displace the protein by a modest amount; the map is only slightly
+        # larger than the protein, so large displacements move it mostly
+        # out of the density, where the optimization often fails to converge
+        rand_translation = 5. * \
+            IMP.algebra.get_random_vector_on(
+                IMP.algebra.get_unit_sphere_3d())
         rt = IMP.algebra.Transformation3D(
             IMP.algebra.get_identity_rotation_3d(),
             rand_translation)
         IMP.core.transform(self.rb, rt)
         refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         print("calculate fast")
+        # Use several optimization runs so that a single failed or poorly
+        # converged run does not cause the test to fail
+        num_runs = 3
         num_mc = 6
         num_cg = 10
         fr_fast = IMP.em.local_rigid_fitting(
             self.mh,
             refiner,
             self.weight_key,
-            self.scene, [], 1, num_mc, num_cg, 2., .3, True)
+            self.scene, [], num_runs, num_mc, num_cg, 2., .3, True)
         print("calculate slow")
         fr_slow = IMP.em.local_rigid_fitting(
             self.mh,
             refiner,
             self.weight_key,
-            self.scene, [], 1, num_mc, num_cg, 2., .3, False)
+            self.scene, [], num_runs, num_mc, num_cg, 2., .3, False)
         print("fast:", fr_fast.get_score(0), " slow:", fr_slow.get_score(0))
         self.assertAlmostEqual(fr_fast.get_score(0), fr_slow.get_score(0),
                                delta=0.1)

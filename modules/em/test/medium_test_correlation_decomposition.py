@@ -74,20 +74,24 @@ class Tests(IMP.test.TestCase):
         # normalization factor stays the same
         all_t = []
         for i in range(10):
-            # ramdominze the proteins
+            # randomize the proteins
             t = []
-            sphere = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1)
-            for mh in self.mhs:
+            for rb in self.rbs:
                 rand_translation = 5. * \
                     IMP.algebra.get_random_vector_in(
                         IMP.algebra.get_unit_bounding_box_3d())
                 rand_rot = IMP.algebra.get_rotation_about_axis(
-                    IMP.algebra.get_random_vector_in(sphere),
+                    IMP.algebra.get_random_vector_on(
+                        IMP.algebra.get_unit_sphere_3d()),
                     random.uniform(-0.3, 0.3))
+                # Rotate about the rigid body's own center rather than the
+                # origin, which is far from the proteins; otherwise even a
+                # small rotation can move a protein partly out of the map
+                # and change the RMS of the sampled map
                 t.append(
-                    IMP.algebra.Transformation3D(
-                        rand_rot,
-                        rand_translation))
+                    IMP.algebra.Transformation3D(rand_translation)
+                    * IMP.algebra.get_rotation_about_point(
+                        rb.get_coordinates(), rand_rot))
             all_t.append(t)
         rms = []
         for i in range(10):
