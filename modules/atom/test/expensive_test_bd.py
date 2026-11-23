@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.statistics
+import IMP.algebra
 import math
 
 NREPS = 10000
@@ -56,16 +56,14 @@ class Tests(IMP.test.TestCase):
             2. std-dev displacement 3D vector after nsteps
             3. NREPS
         '''
-        ub = IMP.algebra.Vector3D(100, 100, 100)
-        # was .1
-        h = IMP.statistics.Histogram3D(.3, IMP.algebra.BoundingBox3D(-ub, ub))
-        # IMP.benchmark.set_is_profiling(True)
+        coords = []
         for i in range(0, NREPS):
             xyzr.set_coordinates(IMP.algebra.Vector3D(default_coords))
             bd.optimize(nsteps)
-            h.add(xyzr.get_coordinates())
-        mn = h.get_mean()
-        std = h.get_standard_deviation(mn)
+            coords.append(xyzr.get_coordinates())
+        mn = [sum(c[i] for c in coords) / NREPS for i in range(3)]
+        std = [math.sqrt(sum((c[i] - mn[i]) ** 2 for c in coords)
+                         / (NREPS - 1)) for i in range(3)]
         # IMP.benchmark.set_is_profiling(False)
         return (mn, std, NREPS)
 
