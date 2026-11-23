@@ -10,6 +10,13 @@ if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
     NREPS = NREPS // 1000
 NSTEPS = 50
 TIMESTEP = 10000
+# BrownianDynamics uses a simple Euler-Maruyama integrator, which is exact
+# for a constant force but not for the harmonic spring; with TIMESTEP it
+# overestimates the spread of a harmonically-restrained particle by almost
+# 2%, a large fraction of the tolerance used in _check(). Use a smaller
+# timestep for the harmonic test (with the same total simulation time) to
+# reduce this bias to under 0.2%.
+HARMONIC_SUBSTEPS = 10
 D = .0002
 K_HARMONIC = .02 # harmonic force coefficient in kcal/mol/A^2
 F_LINEAR = .1 # constant linear force in kcal/mol/A
@@ -44,11 +51,12 @@ class Tests(IMP.test.TestCase):
         xyzr.set_coordinates_are_optimized(True)
         return (m, xyzr, d, bd)
 
-    def _measure_stats(self, m, xyzr, bd, default_coords=[0,0,0]):
-        ''' optimize NREPS times for NSTEPS using BD
+    def _measure_stats(self, m, xyzr, bd, default_coords=[0,0,0],
+                       nsteps=NSTEPS):
+        ''' optimize NREPS times for nsteps using BD
             return a tuple with:
-            1. mean displacement 3D vector after NSTEPS
-            2. std-dev displacement 3D vector after NSTEPS
+            1. mean displacement 3D vector after nsteps
+            2. std-dev displacement 3D vector after nsteps
             3. NREPS
         '''
         ub = IMP.algebra.Vector3D(100, 100, 100)
@@ -58,7 +66,7 @@ class Tests(IMP.test.TestCase):
         print("Computing mean and std from %d simulations" % NREPS)
         for i in range(0, NREPS):
             xyzr.set_coordinates(IMP.algebra.Vector3D(default_coords))
-            bd.optimize(NSTEPS)
+            bd.optimize(nsteps)
             h.add(xyzr.get_coordinates())
             if (i % 1000 == 0) or (i == NREPS-1):
                 print(i, xyzr.get_coordinates())
@@ -186,8 +194,10 @@ class Tests(IMP.test.TestCase):
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(m, dss, xyzr)
         bd.set_scoring_function([r])
-        mn, std, NREPS = self._measure_stats(m, xyzr, bd,
-                                             default_coords=[X_EQUILIBRIUM_A,0,0])
+        bd.set_maximum_time_step(float(TIMESTEP) / HARMONIC_SUBSTEPS)
+        mn, std, NREPS = self._measure_stats(
+            m, xyzr, bd, default_coords=[X_EQUILIBRIUM_A,0,0],
+            nsteps=NSTEPS * HARMONIC_SUBSTEPS)
         print("Mean / std / sigmah / sigmaf / sigmass")
         print(mn)
         print(std)
