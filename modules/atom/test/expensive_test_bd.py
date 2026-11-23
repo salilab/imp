@@ -4,12 +4,6 @@ import IMP.core
 import IMP.atom
 import IMP.statistics
 import math
-try:
-    import sympy
-    from sympy.physics.units import femto, joule, newton, meter, nano, second
-    use_sympy = True
-except ImportError:
-    use_sympy = False
 
 NREPS = 10000
 if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
@@ -25,18 +19,6 @@ print("KT=%f kcal/mol" % KT_SILLY)
 t = TIMESTEP * NSTEPS
 print("NREPS=%d NSTEPS=%d} dT=%d fs time-per-simulation=%d fs"
       % (NREPS, NSTEPS, TIMESTEP, t))
-
-if use_sympy:
-    timestep_u = TIMESTEP * femto * second
-    t_u = timestep_u * NSTEPS
-    angstrom = sympy.Rational(1, 10) * nano * meter
-    D_u = .0002 * angstrom * angstrom / (femto * second)
-    k_u = IMP.atom.get_spring_constant_in_femto_newtons_per_angstrom(
-        K_HARMONIC) * femto * newton / angstrom
-    f_u = IMP.atom.get_force_in_femto_newtons(F_LINEAR) * femto * newton
-    kT_u = IMP.atom.get_energy_in_femto_joules(KT_SILLY) * femto * joule
-else:
-    angstrom = 1.0
 
 
 class Tests(IMP.test.TestCase):
@@ -111,84 +93,43 @@ class Tests(IMP.test.TestCase):
 
     def _get_sigma_i_free(self):
         ''' get sigma for a single d.o.f. '''
-        if use_sympy:
-            sigma = (2.0 * t_u * D_u) ** sympy.Rational(1, 2)
-            return sigma
-        else:
-            sigma= math.sqrt(2 * t * D)
-            print("Theoretical sigma per d.o.f. for D=%d A^2/fs and t=%d fs "
-                  "FREE sigma=%.2f A" % (D, t, sigma))
-            return sigma
+        sigma = math.sqrt(2 * t * D)
+        print("Theoretical sigma per d.o.f. for D=%g A^2/fs and t=%d fs "
+              "FREE sigma=%.2f A" % (D, t, sigma))
+        return sigma
 
     def _get_sigma_harmonic(self):
         # computes the expected sigma while taking into account the
         # relaxation time for the harmonic spring due to diffuson limit
-        if use_sympy:
-            delta2 = (kT_u / k_u)
-            delta = delta2 ** sympy.Rational(1, 2)
-            print("delta", delta)
-            taut = 2.0 * delta2 / D_u
-            print("taut", taut.evalf())
-            tau = t_u / taut
-            print("tau", tau.evalf())
-            scale = delta2
-            sigma2 = delta2 * (1 - sympy.E ** (-4 * tau))
-            print("sigma2", sigma2.evalf())
-            sigma = sigma2 ** sympy.Rational(1, 2)
-            print("sigma", sigma.evalf())
-            return sigma
-        else:
-            # the sigma for a harmonic spring with spring-constant k should be when the spring energy
-            # k * dX^2/2 equals 0.5*kB*T. So dX=sqrt(kB*T/k)
-            delta2 = KT_SILLY / K_HARMONIC # when the spring energy is 0.5*kB*T
-            delta = math.sqrt(delta2)
-            taut = 2 * delta2 / D # spring relaxation time - time to diffuse delta2 randomly
-            tau = t / taut # number of times relaxed
-            sigma2 = delta2 * (1 - math.exp(-4 * tau))
-            sigma = math.sqrt(sigma2)
-            print("CALCULATED SIGMA %.2f A TAU=%.3f TAUT=%.1f RELAXATION=%.3f"
-                  % (sigma, tau, taut, 1-math.exp(-4*tau)))
-            return sigma
+        # the sigma for a harmonic spring with spring-constant k should be
+        # when the spring energy k * dX^2/2 equals 0.5*kB*T. So dX=sqrt(kB*T/k)
+        delta2 = KT_SILLY / K_HARMONIC # when the spring energy is 0.5*kB*T
+        taut = 2 * delta2 / D # spring relaxation time - time to diffuse delta2 randomly
+        tau = t / taut # number of times relaxed
+        sigma2 = delta2 * (1 - math.exp(-4 * tau))
+        sigma = math.sqrt(sigma2)
+        print("CALCULATED SIGMA %.2f A TAU=%.3f TAUT=%.1f RELAXATION=%.3f"
+              % (sigma, tau, taut, 1-math.exp(-4*tau)))
+        return sigma
 
     def _get_sigma_limit_harmonic(self):
-        if use_sympy:
-            sigmass = kT_u / k_u
-            print("sigma steady state 2", sigmass.evalf())
-            return sigmass ** sympy.Rational(1, 2)
-        else:
-            sigmass = math.sqrt(KT_SILLY / K_HARMONIC) # when the spring energy is 0.5*kB*T
-            print("CALCULATED SIGMA STEADY STATE %.2f A" % sigmass)
-            return sigmass
+        # when the spring energy is 0.5*kB*T
+        sigmass = math.sqrt(KT_SILLY / K_HARMONIC)
+        print("CALCULATED SIGMA STEADY STATE %.2f A" % sigmass)
+        return sigmass
 
     def _check(self, simulated_mn, simulated_std, theoretical_mn, theoretical_std, n):
-        if use_sympy:
-            print([(x.evalf() / angstrom).evalf() for x in theoretical_std])
-            print("mean", simulated_mn, [float((x / angstrom).evalf()) for x in theoretical_mn])
-            print("std", simulated_std, [float((x / angstrom).evalf()) for x in theoretical_std])
+        print("mean", simulated_mn, theoretical_mn)
+        print("std", simulated_std, theoretical_std)
         for i in range(0, 3):
             mn_max_error = 2.0 * simulated_std[i] * 2 / n ** .5  # 2 x s.e.m. estimator from empricial std TODO: x2 for 95% interval, but why multiply by 2 twice?
             sigma_max_error = 2.0 * 2.0 * self._get_sigma_stderr(simulated_std[i], n) # I am multiplying by 4 instead of 2 just to make it work - should see why it's practically large
             print("Max allowed error mean=%.2f A, sigma=%.2f A"
                   % (mn_max_error, sigma_max_error))
-
-            if use_sympy:
-                self.assertAlmostEqual(
-                    simulated_mn[i],
-                    float((theoretical_mn[i] / angstrom).evalf()),
-                    delta=mn_max_error)
-                self.assertAlmostEqual(
-                    simulated_std[i],
-                    float((theoretical_std[i] / angstrom).evalf()),
-                    delta=sigma_max_error)
-            else:
-                self.assertAlmostEqual(
-                    simulated_mn[i],
-                    float(theoretical_mn[i] / angstrom),
-                    delta=mn_max_error)
-                self.assertAlmostEqual(
-                    simulated_std[i],
-                    float(theoretical_std[i] / angstrom),
-                    delta=sigma_max_error)
+            self.assertAlmostEqual(simulated_mn[i], theoretical_mn[i],
+                                   delta=mn_max_error)
+            self.assertAlmostEqual(simulated_std[i], theoretical_std[i],
+                                   delta=sigma_max_error)
 
     def test_free(self):
         """Test brownian free diffusion for an unrestrained particle"""
@@ -200,7 +141,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(m) # "Empty" restraint
         bd.set_scoring_function([r])
         (mn, std, NREPS) = self._measure_stats(m, xyzr, bd)
-        self._check(mn, std, [0 * angstrom, 0 * angstrom, 0 * angstrom],
+        self._check(mn, std, [0, 0, 0],
                     [sigma, sigma, sigma], NREPS)
         print("FINISHED FREE\n\n")
 
@@ -213,10 +154,7 @@ class Tests(IMP.test.TestCase):
         print("Temperature", bd.get_temperature())
         # print D_u, f_u, kT_u
         # print D_u*f_u, f_u/kT_u, 1/kT_u
-        if use_sympy:
-            mean = -D_u * f_u * t_u / kT_u
-        else:
-            mean = -D * F_LINEAR * t / KT_SILLY
+        mean = -D * F_LINEAR * t / KT_SILLY
         print("Theoretical mean x-coordinate: %.2f A" % mean)
         h = IMP.core.Linear(0, F_LINEAR)
         dss = IMP.core.AttributeSingletonScore(
@@ -225,7 +163,7 @@ class Tests(IMP.test.TestCase):
         bd.set_scoring_function([r])
         sigma = self._get_sigma_i_free()
         mn, std, NREPS = self._measure_stats(m, xyzr, bd)
-        self._check(mn, std, [mean, 0 * angstrom, 0 * angstrom],
+        self._check(mn, std, [mean, 0, 0],
                     [sigma, sigma, sigma], NREPS)
         print("FINISHED LINEAR\n")
 
@@ -256,7 +194,7 @@ class Tests(IMP.test.TestCase):
         print(sigmah)
         print(sigmaf)
         print(sigmass)
-        self._check(mn, std, [X_EQUILIBRIUM_A, 0 * angstrom, 0 * angstrom],
+        self._check(mn, std, [X_EQUILIBRIUM_A, 0, 0],
                     [sigmah, sigmaf, sigmaf], NREPS)
         print("FINISHED HARMONIC\n")
 
