@@ -61,7 +61,7 @@ threshold = 1.5
 [fitting]
 solutions = 5
 %s""" % (monomer, monomer, IMP.multifit.get_data_path('chem.lib'),
-         self.get_input_file_name('hfq-15.0.mrc'), extra))
+      self.get_input_file_name('hfq-15.0.mrc'), extra))
 
     def test_hfq_fitting(self):
         """Test do_all_fitting on the Hfq hexamer (C6) at 15A"""
