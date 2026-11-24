@@ -15,7 +15,6 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <benjamin.webb@ucsf.edu>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-Patch1:        imp-no-cnmultifit.patch
 BuildRequires: python3-devel
 BuildRequires: gcc-c++, hdf5-devel >= 1.8
 BuildRequires: swig >= 3.0
@@ -165,8 +164,6 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 
 %prep
 %setup -n imp-%{version}
-# We don't build IMP.cnmultifit, so don't run the tests that require it
-%patch -P 1 -p1
 
 %build
 mkdir imp && mv * imp || :
@@ -187,7 +184,7 @@ cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
              -DIMP_TIMEOUT_FACTOR=4 \
              -DIMP_USE_SYSTEM_RMF=on -DIMP_USE_SYSTEM_IHM=on \
-             -DIMP_DISABLED_MODULES=scratch:cnmultifit
+             -DIMP_DISABLED_MODULES=scratch
 
 # Normally make will stop at the first error. Since an RPM cannot be built
 # if the build did not complete successfully, this is the default here too.

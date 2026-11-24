@@ -23,10 +23,6 @@ BuildRequires: zlib-devel, sed, eigen3-devel >= 3.3, cereal-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 BuildRequires: ann-devel
 %endif
-# Needed to build the cnmultifit module; obtain
-# from https://integrativemodeling.org/libTAU.html
-# (Or, if you don't need cnmultifit, you can comment out this line)
-BuildRequires: libTAU-devel
 
 # Need for npctransport module
 BuildRequires: protobuf-devel
@@ -40,9 +36,6 @@ BuildRequires: boost-devel >= 1.53
 BuildRequires: CGAL-devel >= 4.6
 
 BuildRequires: libtiff-devel, libjpeg-turbo-devel
-
-# Bundle libTAU library with IMP so folks don't need to get it separately
-%define bundled libTAU\\.so
 
 # The IMP kernel links with numpy, so pull that in if available. Many modules
 # also use Python's scipy module, so pull that in (at build time for tests;
@@ -179,11 +172,8 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 # nicely with the new mechanism for adding MPI dependencies
 # (rpm-mpi-hooks package)
 %if 0%{?with_mpich} || 0%{?with_openmpi}
-%global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
-%global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
-%else
-%global __provides_exclude ^libTAU\\.so.*$
-%global __requires_exclude ^libTAU\\.so.*$
+%global __provides_exclude ^libimp_mpi\\.so.*|libimp_spb\\.so.*$
+%global __requires_exclude ^libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %endif
 %else
 %define reqprog %{_builddir}/find-requires-IMP
@@ -192,15 +182,15 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 cat <<EOF > %{reqprog}
 #!/bin/bash
 %if 0%{?rhel} >= 8 && (0%{?with_mpich} || 0%{?with_openmpi})
-%{__find_requires} $@ | grep -v '%{bundled}\\|libmpi\\|libimp_mpi\\|libimp_spb'
+%{__find_requires} $@ | grep -v 'libmpi\\|libimp_mpi\\|libimp_spb'
 %else
-%{__find_requires} $@ | grep -v '%{bundled}'
+%{__find_requires} $@
 %endif
 exit $?
 EOF
 cat <<EOF > %{proprog}
 #!/bin/bash
-%{__find_provides} $@ | grep -v '%{bundled}'
+%{__find_provides} $@
 exit $?
 EOF
 chmod a+x %{reqprog}
@@ -281,11 +271,6 @@ if echo ${version} | grep -q git; then
 else
   echo "https://integrativemodeling.org/%{version}/doc/manual/" >> ${README}
 fi
-# Bundle libTAU from build machine so users don't have to get it separately
-# (can't use %_libdir here since that is dependent on whatever we redefined
-# %_prefix to be, but dependent libraries are always in /usr)
-mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
-cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 # Don't distribute example application or dependency
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \

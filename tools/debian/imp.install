@@ -1,4 +1,3 @@
-usr/lib/*/libTAU.so.*
 usr/lib/*/libimp_kernel.so.*
 usr/lib/*/libimp_@NON_MPI_CPP_MODULES@*.so.*
 usr/lib/*/libRMF*.so.*

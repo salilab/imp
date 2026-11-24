@@ -15,7 +15,7 @@ def python_only(m):
 
 
 all_modules = sorted(d for d in os.listdir('.') if os.path.isdir(d))
-exclude_modules = frozenset(('mpi', 'spb', 'scratch', 'kernel', 'cnmultifit'))
+exclude_modules = frozenset(('mpi', 'spb', 'scratch', 'kernel'))
 
 non_mpi_modules = [m for m in all_modules if m not in exclude_modules]
 non_mpi_cpp_modules = [m for m in non_mpi_modules if not python_only(m)]
