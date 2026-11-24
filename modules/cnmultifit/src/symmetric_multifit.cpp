@@ -140,7 +140,7 @@ multifit::FittingSolutionRecords build_symmetric_assemblies(
 // Without libTAU, use our own docking
 multifit::FittingSolutionRecords build_symmetric_assemblies(
     const internal::Parameters &parameters) {
-  parameters.show_density_parameters();
+  parameters.show();
   IMP_NEW(Model, m, ());
   atom::Hierarchy h = atom::read_pdb(parameters.get_unit_pdb_fn(), m);
   ParticlesTemp leaves = core::get_leaves(h);
