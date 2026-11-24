@@ -7,6 +7,17 @@ import io
 
 class Tests(IMP.test.ApplicationTestCase):
 
+    def setUp(self):
+        super().setUp()
+        # Run each test in its own temporary directory, so that we don't get
+        # confused by other tests that make *_score.res files in the current
+        # directory at the same time as us when running with -j (e.g.
+        # Scorer.score() skips running the scoring binary if its output
+        # file already exists)
+        tmpdir = IMP.test.temporary_working_directory()
+        tmpdir.__enter__()
+        self.addCleanup(tmpdir.__exit__, None, None, None)
+
     def test_wrong_number_args(self):
         """Test idock with wrong number of arguments"""
         p = self.run_python_application('idock', [])
@@ -462,52 +473,46 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_saxs_scorer(self):
         """Test SAXSScorer class"""
-        # Don't get confused by other tests that make *_score.res files at
-        # the same time as us when running with -j
-        with IMP.test.temporary_working_directory():
-            app, idock = self.get_dummy_idock_for_scorer()
-            idock.opts.saxs_file = None
-            self.assertIsNone(app.SAXSScorer.check_options(idock, None))
-            idock.opts.saxs_file = 'test.saxs'
-            idock.opts.saxs_receptor_pdb = idock.opts.saxs_ligand_pdb = None
-            idock.opts.weighted_saxs_score = False
-            s = app.SAXSScorer(idock)
-            s2 = app.SAXSScorer.check_options(idock, None)
-            self.assertIsInstance(s2, app.SAXSScorer)
-            self.assertEqual(s.transforms_needed, 5000)
-            self.assertEqual(s.reverse_zscores, False)
-            self.assertEqual(s.saxs_file, 'test.saxs')
-            self.assertEqual(s.saxs_receptor, 'testrecep')
-            self.assertEqual(s.saxs_ligand, 'testlig')
-            idock.opts.saxs_receptor_pdb = 'testrecep.s'
-            idock.opts.saxs_ligand_pdb = 'testlig.s'
-            s = app.SAXSScorer(idock)
-            self.assertEqual(s.saxs_receptor, 'testrecep.s')
-            self.assertEqual(s.saxs_ligand, 'testlig.s')
-            self.assertEqual(str(s), 'SAXS score')
-            self.assertEqual(self.run_scorer_score(s),
-                             (None, 'saxs_score', ['testrecep.s', 'testlig.s',
-                              'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
-                              '--no_filtering_by_rg', '-a']))
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.saxs_file = None
+        self.assertIsNone(app.SAXSScorer.check_options(idock, None))
+        idock.opts.saxs_file = 'test.saxs'
+        idock.opts.saxs_receptor_pdb = idock.opts.saxs_ligand_pdb = None
+        idock.opts.weighted_saxs_score = False
+        s = app.SAXSScorer(idock)
+        s2 = app.SAXSScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.SAXSScorer)
+        self.assertEqual(s.transforms_needed, 5000)
+        self.assertEqual(s.reverse_zscores, False)
+        self.assertEqual(s.saxs_file, 'test.saxs')
+        self.assertEqual(s.saxs_receptor, 'testrecep')
+        self.assertEqual(s.saxs_ligand, 'testlig')
+        idock.opts.saxs_receptor_pdb = 'testrecep.s'
+        idock.opts.saxs_ligand_pdb = 'testlig.s'
+        s = app.SAXSScorer(idock)
+        self.assertEqual(s.saxs_receptor, 'testrecep.s')
+        self.assertEqual(s.saxs_ligand, 'testlig.s')
+        self.assertEqual(str(s), 'SAXS score')
+        self.assertEqual(self.run_scorer_score(s),
+                         (None, 'saxs_score', ['testrecep.s', 'testlig.s',
+                          'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
+                          '--no_filtering_by_rg', '-a']))
 
     def test_saxs_scorer_weighted(self):
         """Test SAXSScorer class with weighting"""
-        # Don't get confused by other tests that make *_score.res files at
-        # the same time as us when running with -j
-        with IMP.test.temporary_working_directory():
-            app, idock = self.get_dummy_idock_for_scorer()
-            idock.opts.saxs_file = 'test.saxs'
-            idock.opts.saxs_receptor_pdb = 'testrecep.s'
-            idock.opts.saxs_ligand_pdb = 'testlig.s'
-            idock.opts.weighted_saxs_score = True
-            s = app.SAXSScorer(idock)
-            self.assertEqual(s.saxs_receptor, 'testrecep.s')
-            self.assertEqual(s.saxs_ligand, 'testlig.s')
-            self.assertEqual(str(s), 'SAXS score')
-            self.assertEqual(self.run_scorer_score(s),
-                             (None, 'saxs_score', ['testrecep.s', 'testlig.s',
-                              'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
-                              '--no_filtering_by_rg', '-a', '-t']))
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.saxs_file = 'test.saxs'
+        idock.opts.saxs_receptor_pdb = 'testrecep.s'
+        idock.opts.saxs_ligand_pdb = 'testlig.s'
+        idock.opts.weighted_saxs_score = True
+        s = app.SAXSScorer(idock)
+        self.assertEqual(s.saxs_receptor, 'testrecep.s')
+        self.assertEqual(s.saxs_ligand, 'testlig.s')
+        self.assertEqual(str(s), 'SAXS score')
+        self.assertEqual(self.run_scorer_score(s),
+                         (None, 'saxs_score', ['testrecep.s', 'testlig.s',
+                          'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
+                          '--no_filtering_by_rg', '-a', '-t']))
 
     def test_em2d_scorer(self):
         """Test EM2DScorer class"""
@@ -549,24 +554,21 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_cxms_scorer(self):
         """Test CXMSScorer class"""
-        # Don't get confused by other tests that make *_score.res files at
-        # the same time as us when running with -j
-        with IMP.test.temporary_working_directory():
-            app, idock = self.get_dummy_idock_for_scorer()
-            idock.opts.cross_links_file = None
-            self.assertIsNone(app.CXMSScorer.check_options(idock, None))
-            idock.opts.cross_links_file = 'test.cxms'
-            s = app.CXMSScorer(idock)
-            s2 = app.CXMSScorer.check_options(idock, None)
-            self.assertIsInstance(s2, app.CXMSScorer)
-            self.assertEqual(s.transforms_needed, 2000)
-            self.assertEqual(s.reverse_zscores, True)
-            self.assertEqual(s.cross_links_file, 'test.cxms')
-            self.assertEqual(str(s), 'CXMS score')
-            self.assertEqual(self.run_scorer_score(s),
-                             (None, 'cross_links_score',
-                              ['testrecep', 'testlig', 'trans_pd', 'test.cxms',
-                               '-o', 'cxms_score.res']))
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.cross_links_file = None
+        self.assertIsNone(app.CXMSScorer.check_options(idock, None))
+        idock.opts.cross_links_file = 'test.cxms'
+        s = app.CXMSScorer(idock)
+        s2 = app.CXMSScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.CXMSScorer)
+        self.assertEqual(s.transforms_needed, 2000)
+        self.assertEqual(s.reverse_zscores, True)
+        self.assertEqual(s.cross_links_file, 'test.cxms')
+        self.assertEqual(str(s), 'CXMS score')
+        self.assertEqual(self.run_scorer_score(s),
+                         (None, 'cross_links_score',
+                          ['testrecep', 'testlig', 'trans_pd', 'test.cxms',
+                           '-o', 'cxms_score.res']))
 
     def test_get_all_scores_filename(self):
         """Test IDock.get_all_scores_filename()"""
@@ -721,34 +723,31 @@ ligandPdb (str) antibody_cut.pdb
                     shutil.copy(self.get_input_file_name(
                           'clustered_cxms_soap.res'), '.')
 
-        # Don't get confused by other tests that make *_score.res files at
-        # the same time as us when running with -j
-        with IMP.test.temporary_working_directory():
-            old_sys_argv = sys.argv
-            try:
-                sys.argv = [sys.argv[0],
-                            self.get_input_file_name('testrecep.pdb'),
-                            self.get_input_file_name('testlig.pdb'),
-                            '--cxms',
-                            self.get_input_file_name('testcxms.txt')]
-                dock = MockDock()
-                dock.main()
-                with open('results_cxms_soap.txt') as fh:
-                    lines = fh.readlines()
-                self.assertEqual(len(lines), 10)
-                self.assertEqual(lines[3].strip(' \r\n'),
-                             '1 |  -2.873 |  +  | -1.837 |  0.016 | -0.990 | '
-                             '-180.252 | -1.883 |  '
-                             '-1.564 -1.224 1.924 2.454 -2.452 1.471')
-                for f in ['clustered_cxms_soap.res', 'combined_final.res',
-                          'cxms_score.res', 'cxms_scoref.res',
-                          'soap_score.res', 'soap_scoref.res',
-                          'docking.res', 'results_cxms_soap.txt',
-                          'combined_cxms_soap.res', 'trans_for_cluster',
-                          'trans_pd']:
-                    os.unlink(f)
-            finally:
-                sys.argv = old_sys_argv
+        old_sys_argv = sys.argv
+        try:
+            sys.argv = [sys.argv[0],
+                        self.get_input_file_name('testrecep.pdb'),
+                        self.get_input_file_name('testlig.pdb'),
+                        '--cxms',
+                        self.get_input_file_name('testcxms.txt')]
+            dock = MockDock()
+            dock.main()
+            with open('results_cxms_soap.txt') as fh:
+                lines = fh.readlines()
+            self.assertEqual(len(lines), 10)
+            self.assertEqual(lines[3].strip(' \r\n'),
+                         '1 |  -2.873 |  +  | -1.837 |  0.016 | -0.990 | '
+                         '-180.252 | -1.883 |  '
+                         '-1.564 -1.224 1.924 2.454 -2.452 1.471')
+            for f in ['clustered_cxms_soap.res', 'combined_final.res',
+                      'cxms_score.res', 'cxms_scoref.res',
+                      'soap_score.res', 'soap_scoref.res',
+                      'docking.res', 'results_cxms_soap.txt',
+                      'combined_cxms_soap.res', 'trans_for_cluster',
+                      'trans_pd']:
+                os.unlink(f)
+        finally:
+            sys.argv = old_sys_argv
 
 
 if __name__ == '__main__':
