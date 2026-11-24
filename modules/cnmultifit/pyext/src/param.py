@@ -175,11 +175,13 @@ def get_docking_data():
 [docking]
 ; Parameters for the built-in open symmetric docking (used when libTAU is
 ; not available). All keys are optional and fall back to these defaults.
-; Spacing (A) of the coarse FFT grid (<= 0 selects automatically from monomer size)
+; Spacing (A) of the coarse FFT grid (<= 0 selects automatically from
+; monomer size)
 coarse_spacing = -1.0
 ; Spacing (A) of the fine scoring/refinement grid
 fine_spacing = 0.5
-; Angular spacing (degrees) of sampled symmetry axes (<= 0 selects automatically)
+; Angular spacing (degrees) of sampled symmetry axes
+; (<= 0 selects automatically)
 angle_step = -1.0
 ; Number of FFT translation peaks kept per sampled axis direction
 peaks_per_direction = 5
