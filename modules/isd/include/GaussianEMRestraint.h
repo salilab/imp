@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianEMRestraint.h
  *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -104,7 +104,37 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   void set_slope(Float s){slope_=s;}
 
   //! Get restraint slope
-  Float get_slope(){return slope_;}
+  Float get_slope() const {return slope_;}
+
+  //! Get the particles for the model GMM
+  ParticleIndexes get_model_particle_indexes() const { return model_ps_; }
+
+  //! Get the particles for the density GMM
+  ParticleIndexes get_density_particle_indexes() const { return density_ps_; }
+
+  //! Get the model particles that the slope term acts on
+  /** This is all model particles, unless backbone_slope was set
+      in the constructor. */
+  ParticleIndexes get_slope_particle_indexes() const { return slope_ps_; }
+
+  //! Get the cutoff for model-model interactions
+  double get_model_cutoff_distance() const { return model_cutoff_dist_; }
+
+  //! Get the cutoff for model-density interactions
+  double get_density_cutoff_distance() const { return density_cutoff_dist_; }
+
+  //! Return true iff only density particles near the model are considered
+  bool get_is_local() const { return local_; }
+
+  //! Get the precalculated density-density overlap score
+  /** \see compute_initial_scores() */
+  double get_density_density_score() const { return dd_score_; }
+
+  //! Get the precalculated model-model self-overlap score
+  /** This is the sum of the overlaps of each model Gaussian with itself.
+      \see compute_initial_scores() */
+  double get_model_self_score() const { return self_mm_score_; }
+
   virtual double
     unprotected_evaluate(IMP::DerivativeAccumulator *accum) const override;
   virtual IMP::ModelObjectsTemp do_get_inputs() const override;

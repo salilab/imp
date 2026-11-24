@@ -287,6 +287,151 @@
   %}
 }
 
+%extend IMP::isd::GaussianEMRestraint {
+  %pythoncode %{
+    def _get_jax(self, space):
+        """Get a JAX implementation of this restraint.
+
+           Unlike the C++ implementation, which uses close pair containers
+           (which may contain some pairs up to the cutoff plus twice the
+           slack), every model-model and model-density pair is considered
+           here, and only those whose sphere distance is less than the
+           cutoff are scored. Model Gaussian covariances are calculated
+           from the current orientation of each Gaussian, so the score
+           can also be differentiated with respect to orientation. Masses,
+           variances, and density Gaussian covariances are assumed to
+           be fixed.
+
+           Periodic boundary conditions are not supported, since EM
+           density maps are not periodic."""
+        import numpy as np
+        import jax
+        import jax.numpy as jnp
+        import IMP.jax
+        import IMP.core
+        import IMP.atom
+        import IMP.core._jax_rigid
+        from IMP.algebra.jax import _quaternion_to_rotation_matrix
+        from IMP.isd._jax_util import get_gaussian_overlap
+
+        if space is not IMP.jax.FreeSpace:
+            raise NotImplementedError(
+                "GaussianEMRestraint does not support periodic boundaries")
+
+        m = self.get_model()
+
+        def get_indexes(pis):
+            return np.array([int(p) for p in pis], dtype=int)
+
+        model_pis = self.get_model_particle_indexes()
+        density_pis = self.get_density_particle_indexes()
+        model_ps = get_indexes(model_pis)
+        density_ps = get_indexes(density_pis)
+        slope_ps = get_indexes(self.get_slope_particle_indexes())
+        model_mass = np.array([IMP.atom.Mass(m, p).get_mass()
+                               for p in model_pis])
+        density_mass = np.array([IMP.atom.Mass(m, p).get_mass()
+                                 for p in density_pis])
+        model_var = np.array([IMP.core.Gaussian(m, p).get_variances()
+                              for p in model_pis])
+        density_covar = np.array(
+            [np.asarray(IMP.core.Gaussian(m, p).get_global_covariance())
+             for p in density_pis])
+        # Each Gaussian is also a RigidBody; get the index into the
+        # array of rigid body quaternions for each model Gaussian
+        rb_from_particle = {
+            int(p): i for (i, p) in enumerate(
+                IMP.core._jax_rigid._get_rigid_body_indexes(m))}
+        model_rbs = np.array([rb_from_particle[p] for p in model_ps],
+                             dtype=int)
+        md_mass = model_mass[:, np.newaxis] * density_mass[np.newaxis, :]
+        mm_mass = model_mass[:, np.newaxis] * model_mass[np.newaxis, :]
+        # Only score each model-model pair once (the score is doubled below)
+        nmodel = len(model_ps)
+        mm_upper = np.triu(np.ones((nmodel, nmodel), dtype=bool), k=1)
+        model_cutoff = self.get_model_cutoff_distance()
+        density_cutoff = self.get_density_cutoff_distance()
+        slope = self.get_slope()
+        self_mm_score = self.get_model_self_score()
+        local = self.get_is_local()
+        if local:
+            # Precalculate all density-density overlaps; only those for
+            # density particles near the model are used during scoring
+            dxyz = np.array([IMP.core.XYZ(m, p).get_coordinates()
+                             for p in density_pis])
+            dd_matrix = get_gaussian_overlap(
+                dxyz[np.newaxis, :] - dxyz[:, np.newaxis],
+                density_covar[:, np.newaxis] + density_covar[np.newaxis, :],
+                density_mass[:, np.newaxis] * density_mass[np.newaxis, :],
+                xp=np)
+        else:
+            dd_score = self.get_density_density_score()
+
+        def get_close_mask(dist, r1, r2, cutoff):
+            """Get pairs whose sphere distance is less than cutoff"""
+            return dist - r1[:, jnp.newaxis] - r2[jnp.newaxis, :] < cutoff
+
+        def get_model_covariances(jm):
+            quat = jm['rigid_bodies'].quaternion[model_rbs]
+            # Note that this "rotation matrix" is the transpose of that
+            # used in C++ (it is used to transform row vectors), so the
+            # global covariance R diag(var) R^T is M^T diag(var) M
+            rot = jax.vmap(_quaternion_to_rotation_matrix)(quat)
+            return jnp.einsum('nji,nj,njk->nik', rot, model_var, rot)
+
+        def jax_score(jm):
+            xyz = jm['xyz']
+            radius = jm['r']
+            xm = xyz[model_ps]
+            xd = xyz[density_ps]
+            rm = radius[model_ps]
+            rd = radius[density_ps]
+            cm = get_model_covariances(jm)
+
+            # Model-density overlap
+            v_md = space.displacement(
+                xd[jnp.newaxis, :] - xm[:, jnp.newaxis])
+            ov_md = get_gaussian_overlap(
+                v_md, cm[:, jnp.newaxis] + density_covar[jnp.newaxis, :],
+                md_mass)
+            md_mask = get_close_mask(space.distance(v_md), rm, rd,
+                                     density_cutoff)
+            md_score = jnp.sum(jnp.where(md_mask, ov_md, 0.))
+
+            # Model-model overlap
+            v_mm = space.displacement(
+                xm[jnp.newaxis, :] - xm[:, jnp.newaxis])
+            ov_mm = get_gaussian_overlap(
+                v_mm, cm[:, jnp.newaxis] + cm[jnp.newaxis, :], mm_mass)
+            mm_mask = mm_upper & get_close_mask(space.distance(v_mm), rm, rm,
+                                                model_cutoff)
+            mm_score = self_mm_score + 2. * jnp.sum(
+                jnp.where(mm_mask, ov_mm, 0.))
+
+            # Density-density overlap
+            if local:
+                # Only consider density particles near the model
+                local_dens = jnp.any(md_mask, axis=0)
+                dd = jnp.sum(jnp.where(
+                    local_dens[:, jnp.newaxis] & local_dens[jnp.newaxis, :],
+                    dd_matrix, 0.))
+            else:
+                dd = dd_score
+
+            score = -jnp.log(2. * md_score / (mm_score + dd))
+            if slope > 0.:
+                # Clamp the distance so that the gradient is not NaN for
+                # coincident model and density particles
+                dist = space.distance(
+                    xyz[slope_ps][:, jnp.newaxis] - xd[jnp.newaxis, :],
+                    min_dist=1e-8)
+                score = score + slope * jnp.sum(dist)
+            return score
+
+        return self._wrap_jax(jax_score, keys=['rigid_bodies'])
+  %}
+}
+
 %pythoncode %{
 def _get_crosslink_jax_for_restraints(rs, space, forward_model):
     """Get a JAX function that scores the given list of crosslink
