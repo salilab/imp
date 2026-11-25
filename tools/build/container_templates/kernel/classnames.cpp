@@ -1,7 +1,7 @@
 /**
  *  \file ClassnameContainer.cpp   \brief Container for classname.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -193,7 +193,6 @@ Restraints ClassnameScore::create_current_decomposition(
   return do_create_current_decomposition(m, vt);
 }
 
-template<>
-IMP_OBJECT_SERIALIZE_IMPL(IMP::internal::StaticListContainer<IMP::ClassnameContainer>);
+IMP_OBJECT_TEMPLATE_SERIALIZE_IMPL(IMP::internal::StaticListContainer<IMP::ClassnameContainer>);
 
 IMPKERNEL_END_NAMESPACE

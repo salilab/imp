@@ -2,7 +2,7 @@
  *  \file IMP/object_macros.h
  *  \brief Helper macros for implementing \imp Objects.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -95,24 +95,51 @@
 #define IMP_OBJECT_SERIALIZE_DECL(Name)                                 \
 private:                                                                \
   static bool dummy_serialize_init_;                                    \
-  static void save_cereal(Object *o, cereal::BinaryOutputArchive &ar) { \
-    Name *cast = dynamic_cast<Name *>(o);                               \
-    if (!cast) { std::cerr << "bad cast" << std::endl; }                \
-    ar(*cast);                                                          \
-  }                                                                     \
-  static Object *load_cereal(cereal::BinaryInputArchive &ar) {          \
-    std::unique_ptr<Name> p(new Name());                                \
-    ar(*p);                                                             \
-    return p.release();                                                 \
-  }
+  static void save_cereal(Object *o, cereal::BinaryOutputArchive &ar);  \
+  static Object *load_cereal(cereal::BinaryInputArchive &ar);
 
 //! Add machinery needed for serialization of Object pointers
 /** \see IMP_OBJECT_SERIALIZE_DECL
 
+    The serialization functions are defined here (rather than inline in
+    IMP_OBJECT_SERIALIZE_DECL) so that the class's serialize() method,
+    and the static cereal objects it pulls in, are only instantiated once
+    in the library rather than in every file that includes the header.
+
     \param[in] Name The fully-qualified name of the class.
  */
 #define IMP_OBJECT_SERIALIZE_IMPL(Name)                                 \
-bool Name::dummy_serialize_init_ = Object::register_serialize(          \
-           typeid(Name), #Name, Name::save_cereal, Name::load_cereal);
+  IMP_OBJECT_SERIALIZE_IMPL_INTERNAL(, Name)
+
+//! Add machinery needed for serialization of Object pointers
+/** This is the same as IMP_OBJECT_SERIALIZE_IMPL, but should be used for
+    explicit specializations of templated classes (the template<> prefix
+    is added automatically).
+
+    \see IMP_OBJECT_SERIALIZE_DECL
+
+    \param[in] Name The fully-qualified name of the class.
+ */
+#define IMP_OBJECT_TEMPLATE_SERIALIZE_IMPL(Name)                        \
+  IMP_OBJECT_SERIALIZE_IMPL_INTERNAL(template <>, Name)
+
+#ifndef IMP_DOXYGEN
+#define IMP_OBJECT_SERIALIZE_IMPL_INTERNAL(Prefix, Name)                \
+Prefix void Name::save_cereal(IMP::Object *o,                           \
+                              cereal::BinaryOutputArchive &ar) {        \
+  Name *cast = dynamic_cast<Name *>(o);                                 \
+  if (!cast) { std::cerr << "bad cast" << std::endl; }                  \
+  ar(*cast);                                                            \
+}                                                                       \
+Prefix IMP::Object *Name::load_cereal(cereal::BinaryInputArchive &ar) { \
+  std::unique_ptr<Name> p(new Name());                                  \
+  ar(*p);                                                               \
+  return p.release();                                                   \
+}                                                                       \
+Prefix bool Name::dummy_serialize_init_                                 \
+    = IMP::Object::register_serialize(typeid(Name), #Name,              \
+                                      Name::save_cereal,                \
+                                      Name::load_cereal);
+#endif
 
 #endif /* IMPKERNEL_OBJECT_MACROS_H */

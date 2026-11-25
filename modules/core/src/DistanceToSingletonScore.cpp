@@ -2,7 +2,7 @@
  *  \file DistanceToSingletonScore.cpp
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/DistanceToSingletonScore.h>
@@ -28,8 +28,7 @@ Float SphereDistanceToSingletonScore::evaluate_index(
   return v;
 }
 
-template <>
-IMP_OBJECT_SERIALIZE_IMPL(
+IMP_OBJECT_TEMPLATE_SERIALIZE_IMPL(
                IMP::core::GenericDistanceToSingletonScore<IMP::UnaryFunction>);
 
 IMPCORE_END_NAMESPACE
