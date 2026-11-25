@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
- *  Copyright 2007-2022 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2026 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,10 +29,16 @@ class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
 
   //! Set the minimum gradient threshold
   void set_threshold(Float t) { threshold_ = t; }
+  //! Get the minimum gradient threshold
+  Float get_threshold() const { return threshold_; }
   //! The starting step size
   void set_step_size(Float t) { step_size_ = t; }
+  //! Get the starting step size
+  Float get_step_size() const { return step_size_; }
   //! The maximum step size
   void set_maximum_step_size(Float t) { max_step_size_ = t; }
+  //! Get the maximum step size
+  Float get_maximum_step_size() const { return max_step_size_; }
 
  private:
   Float step_size_;

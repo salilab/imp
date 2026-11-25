@@ -663,6 +663,23 @@
   %}
 }
 
+%extend IMP::core::SteepestDescent {
+  %pythoncode %{
+    def _get_jax(self, space=None):
+        from IMP.core._jax_minimize import _SDJAXInfo
+        return _SDJAXInfo(self, space)
+
+    def _get_jax_optimizer(self, max_steps, space=None):
+        from IMP.core._jax_minimize import _SDJAXOptimizer
+        return _SDJAXOptimizer(self, max_steps, space)
+
+    def _optimize_jax(self, max_steps, space=None):
+        opt = self._get_jax_optimizer(max_steps, space=space)
+        score, sd_state = opt.optimize(opt.get_initial_state())
+        return score
+  %}
+}
+
 %extend IMP::core::internal::_RigidBodyNormalizeConstraint {
   %pythoncode %{
     def _get_jax(self):
