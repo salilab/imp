@@ -91,9 +91,29 @@ class Tests(IMP.test.TestCase):
         self.assertGreater(score, 1.0)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_conjugate_gradients(self):
+        """Compare JAX and C++ ConjugateGradients"""
+        (cpp_score, cpp_coords), (jax_score, jax_coords) = self.run_both(
+            IMP.core.ConjugateGradients, 100)
+        # CG should find the global minimum here
+        self.assertAlmostEqual(cpp_score, 0., delta=1e-3)
+        self.assertAlmostEqual(jax_score, 0., delta=1e-3)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_conjugate_gradients_max_change(self):
+        """Test JAX ConjugateGradients with max_change"""
+        def make_opt(m):
+            cg = IMP.core.ConjugateGradients(m)
+            cg.set_max_change(0.05)
+            return cg
+        (cpp_score, cpp_coords), (jax_score, jax_coords) = self.run_both(
+            make_opt, 10)
+        self.assertAlmostEqual(cpp_score, jax_score, delta=1e-2)
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
     def test_fixed_particles(self):
         """Non-optimized particles should not move"""
-        for cls in (IMP.core.SteepestDescent,):
+        for cls in (IMP.core.SteepestDescent, IMP.core.ConjugateGradients):
             m, ps, sf = setup_chain()
             start = ps[0].get_coordinates()
             opt = cls(m)
@@ -106,7 +126,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_float_attribute(self):
         """Test optimization of a non-XYZ attribute"""
-        for cls in (IMP.core.SteepestDescent,):
+        for cls in (IMP.core.SteepestDescent, IMP.core.ConjugateGradients):
             m = IMP.Model()
             k = IMP.FloatKey("foo")
             p = IMP.Particle(m)
@@ -123,7 +143,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_optimizer_states(self):
         """Test that IMP OptimizerStates are called during JAX runs"""
-        for cls in (IMP.core.SteepestDescent,):
+        for cls in (IMP.core.SteepestDescent, IMP.core.ConjugateGradients):
             m, ps, sf = setup_chain()
             opt = cls(m)
             opt.set_scoring_function(sf)
@@ -137,6 +157,16 @@ class Tests(IMP.test.TestCase):
             # (synced) optimization trajectory, so should go down
             self.assertLess(os1.scores[-1], os1.scores[0])
             self.assertLessEqual(score, os1.scores[0])
+
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_cg_no_attributes(self):
+        """JAX ConjugateGradients with nothing to optimize should fail"""
+        m, ps, sf = setup_chain()
+        for p in ps:
+            p.set_coordinates_are_optimized(False)
+        cg = IMP.core.ConjugateGradients(m)
+        cg.set_scoring_function(sf)
+        self.assertRaises(IMP.ModelException, cg._optimize_jax, 10)
 
     @IMP.test.skipIf(jax is None, "No JAX support")
     def test_zero_steps(self):

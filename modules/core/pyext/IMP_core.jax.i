@@ -680,6 +680,23 @@
   %}
 }
 
+%extend IMP::core::ConjugateGradients {
+  %pythoncode %{
+    def _get_jax(self, space=None):
+        from IMP.core._jax_minimize import _CGJAXInfo
+        return _CGJAXInfo(self, space)
+
+    def _get_jax_optimizer(self, max_steps, space=None):
+        from IMP.core._jax_minimize import _CGJAXOptimizer
+        return _CGJAXOptimizer(self, max_steps, space)
+
+    def _optimize_jax(self, max_steps, space=None):
+        opt = self._get_jax_optimizer(max_steps, space=space)
+        score, cg_state = opt.optimize(opt.get_initial_state())
+        return score
+  %}
+}
+
 %extend IMP::core::internal::_RigidBodyNormalizeConstraint {
   %pythoncode %{
     def _get_jax(self):

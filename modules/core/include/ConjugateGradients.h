@@ -39,8 +39,14 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t) { threshold_ = t; }
 
+  //! Get the threshold for the minimum gradient
+  Float get_gradient_threshold() const { return threshold_; }
+
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
+
+  //! Get the limit on how far anything can change each time step
+  Float get_max_change() const { return max_change_; }
 
   virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(ConjugateGradients);

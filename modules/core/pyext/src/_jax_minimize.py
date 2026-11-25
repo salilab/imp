@@ -1,7 +1,7 @@
-"""JAX implementations of IMP.core local optimizers
-   (currently IMP.core.SteepestDescent).
+"""JAX implementations of the IMP.core.SteepestDescent and
+   IMP.core.ConjugateGradients local optimizers.
 
-   These are ports of the C++ algorithms, written as state machines driven
+   Both are ports of the C++ algorithms, written as state machines driven
    by jax.lax.while_loop so that an entire minimization (or a block of it,
    between calls to any IMP OptimizerStates) runs on the device without
    returning to Python. Derivatives are obtained with jax.grad rather than
@@ -14,6 +14,7 @@
    multiple of their period.
 """
 
+import dataclasses
 import functools
 import math
 from dataclasses import dataclass
@@ -303,8 +304,278 @@ class _SDJAXInfo(_LocalOptimizerJAXInfo):
         self.apply_func = apply_func
 
 
+# Estimate of limit of machine precision (as in the C++ code)
+_CG_EPS = 1.2e-7
+
+# Phases of the ConjugateGradients state machine. These correspond to the
+# labels and line search in ConjugateGradients::do_optimize()
+_CG_G20, _CG_G40, _CG_LINE, _CG_END, _CG_DONE = range(5)
+
+
+@jax.tree_util.register_dataclass
+@dataclass
+class _ConjugateGradients:
+    """Track the state of a ConjugateGradients optimization using JAX.
+       Most fields have the same names as variables in the C++ code."""
+    jm: IMP.jax._JAXModel
+    phase: jax.Array
+    # Number of function evaluations, and the maximum number allowed
+    ifun: jax.Array
+    max_steps: jax.Array
+    n_updates: jax.Array
+    done: jax.Array
+    # Current state, its score, and gradient
+    x: jax.Array
+    f: jax.Array
+    dx: jax.Array
+    search: jax.Array
+    estimate: jax.Array
+    destimate: jax.Array
+    resy: jax.Array
+    ressearch: jax.Array
+    w1: jax.Array
+    w2: jax.Array
+    dg: jax.Array
+    dg1: jax.Array
+    dxsq: jax.Array
+    xsq: jax.Array
+    alpha: jax.Array
+    nrst: jax.Array
+    gradient_direction: jax.Array
+    # Line search state
+    ap: jax.Array
+    fp: jax.Array
+    dp: jax.Array
+    minf: jax.Array
+    step: jax.Array
+    ncalls: jax.Array
+
+
+class _CGJAXInfo(_LocalOptimizerJAXInfo):
+    def __init__(self, cg, space):
+        if cg.get_stop_on_good_score():
+            raise NotImplementedError(
+                "JAX ConjugateGradients does not support "
+                "set_stop_on_good_score()")
+        super().__init__(cg, space, scaled=True)
+        if self.attrs.size == 0:
+            raise IMP.ModelException(
+                "There are no optimizable degrees of freedom.")
+        dtype = _get_float_dtype()
+        n = self.attrs.size
+        threshold = _to_float_range(cg.get_gradient_threshold())
+        max_change = cg.get_max_change()
+        # The default max_change is effectively infinite; skip the clamp
+        if max_change > 1e300:
+            max_change = None
+        attrs = self.attrs
+        value_and_grad_x = self.value_and_grad_x
+        replace = dataclasses.replace
+
+        def get_score(x, jm):
+            """Equivalent to ConjugateGradients::get_score(). Return the
+               score, its gradient, the (possibly clamped) values,
+               and the new JAX Model."""
+            if max_change is not None:
+                cur = attrs.get(jm)
+                x = jnp.clip(x, cur - max_change, cur + max_change)
+            (f, jm), dx = value_and_grad_x(x, jm)
+            # The C++ code returns infinity on a ModelException; the nearest
+            # equivalent here is a NaN score
+            f = jnp.where(jnp.isnan(f), jnp.inf, f)
+            return f, dx, x, jm
+
+        def init_func(jm, key, max_steps):
+            x = attrs.get(jm)
+            zero = jnp.asarray(0., dtype=dtype)
+            zeros = jnp.zeros_like(x)
+            return _ConjugateGradients(
+                jm=jm, phase=jnp.asarray(_CG_G20), ifun=jnp.asarray(0),
+                max_steps=jnp.asarray(max_steps), n_updates=jnp.asarray(0),
+                done=jnp.asarray(False), x=x, f=zero, dx=zeros,
+                search=zeros, estimate=x, destimate=zeros, resy=zeros,
+                ressearch=zeros, w1=zero, w2=zero,
+                dg=jnp.asarray(1., dtype=dtype), dg1=zero, dxsq=zero,
+                xsq=zero, alpha=zero, nrst=jnp.asarray(0),
+                gradient_direction=jnp.asarray(True), ap=zero, fp=zero,
+                dp=zero, minf=zero, step=zero, ncalls=jnp.asarray(0))
+
+        def enter_g40(s, phase):
+            """Count the update_states() call made at the top of g40"""
+            return s.n_updates + (phase == _CG_G40).astype(s.n_updates.dtype)
+
+        def g20(s):
+            """Calculate the function and gradient at the initial point
+               and initialize nrst"""
+            f, dx, x, jm = get_score(s.x, s.jm)
+            xsq = jnp.dot(x, x)
+            dg1 = -jnp.dot(dx, dx)
+            dxsq = -dg1
+            # Test if the initial point is the minimizer
+            phase = jnp.where(
+                dxsq <= _CG_EPS * _CG_EPS * jnp.maximum(1.0, xsq),
+                _CG_END, _CG_G40)
+            return replace(
+                s, f=f, dx=dx, x=x, jm=jm, ifun=s.ifun + 1, nrst=n,
+                gradient_direction=True, search=-dx, xsq=xsq, dg1=dg1,
+                dxsq=dxsq, phase=phase, n_updates=enter_g40(s, phase))
+
+        def g40(s):
+            """Begin a major iteration and set up the line search"""
+            alpha = jnp.where(
+                s.gradient_direction, 1.0 / jnp.sqrt(s.dxsq),
+                jnp.where(s.nrst == 1, 1.0, s.alpha * s.dg / s.dg1))
+            return replace(
+                s, alpha=alpha, estimate=s.x, destimate=s.dx,
+                ap=jnp.zeros_like(s.f), fp=s.f, minf=s.f, dp=s.dg1, dg=s.dg1,
+                step=jnp.linalg.norm(s.search), ncalls=s.ifun,
+                phase=_CG_LINE)
+
+        def line_search_failed(s):
+            # Stop if out of function evaluations or if we were already
+            # searching along the gradient; otherwise, restart
+            return replace(s, phase=jnp.where(
+                (s.ifun > s.max_steps) | s.gradient_direction,
+                _CG_END, _CG_G20))
+
+        def line(s):
+            """Do one iteration of the line search"""
+            def trial(s):
+                f, dx, x, jm = get_score(s.estimate + s.alpha * s.search,
+                                         s.jm)
+                s = replace(s, f=f, dx=dx, x=x, jm=jm, ifun=s.ifun + 1)
+                return jax.lax.cond(s.ifun > s.max_steps, line_search_failed,
+                                    line_search_update, s)
+            return jax.lax.cond(s.alpha * s.step <= _CG_EPS,
+                                line_search_failed, trial, s)
+
+        def line_search_update(s):
+            """Decide where to go next, given the score at the trial point"""
+            dal = jnp.dot(s.dx, s.search)
+            ratio = jnp.abs(dal / s.dg)
+            # The search passed through a local max; reduce alpha and restart
+            passed_max = (s.f > s.minf) & (dal < 0.)
+            # Step length criteria met, and line minimum found
+            converged = ((s.f <= s.minf + 0.0001 * s.alpha * s.dg)
+                         & (ratio <= 0.9)
+                         & ((s.ifun - s.ncalls > 1) | (ratio <= _CG_EPS)))
+
+            def restart(s):
+                return replace(s, alpha=s.alpha / 3.0,
+                               ap=jnp.zeros_like(s.ap), fp=s.minf, dp=s.dg)
+
+            def interpolate(s):
+                # Use cubic interpolation to find the trial point
+                alpha, ap, dp = s.alpha, s.ap, s.dp
+                u1 = dp + dal - 3.0 * (s.fp - s.f) / (ap - alpha)
+                u2 = jnp.sqrt(jnp.maximum(u1 * u1 - dp * dal, 0.))
+                at = alpha - (alpha - ap) * (dal + u2 - u1) / (dal - dp
+                                                               + 2. * u2)
+                lo = jnp.minimum(alpha, ap)
+                hi = jnp.maximum(alpha, ap)
+                # Minimum bracketed; make sure trial point is sufficiently
+                # inside the interval
+                at_bracketed = jnp.where((at < 1.01 * lo) | (at > 0.99 * hi),
+                                         (alpha + ap) / 2.0, at)
+                # Not bracketed; double the largest prior point or halve
+                # the smallest, if the trial point is too small or too large
+                adjust = (((dal <= 0.0) | (0.0 >= at) | (at >= 0.99 * lo))
+                          & ((dal > 0.0) | (at <= 1.01 * hi)))
+                at_unbracketed = jnp.where(
+                    adjust, jnp.where(dal <= 0.0, 2.0 * hi, lo / 2.0), at)
+                at = jnp.where(dal / dp <= 0., at_bracketed, at_unbracketed)
+                return replace(s, ap=alpha, fp=s.f, dp=dal, alpha=at)
+
+            return jax.lax.cond(
+                passed_max, restart,
+                lambda s: jax.lax.cond(converged, new_search_direction,
+                                       interpolate, s), s)
+
+        def new_search_direction(s):
+            """The line search has converged. Test for convergence of the
+               algorithm, then compute the new search vector"""
+            dx = s.dx
+            dxsq = jnp.dot(dx, dx)
+            s = replace(s, dxsq=dxsq, xsq=jnp.dot(s.x, s.x))
+
+            def update(s):
+                search = s.search * s.alpha
+                # Test if a Powell restart is indicated
+                rtst = jnp.dot(dx, s.destimate)
+                nrst = jnp.where(jnp.abs(rtst / dxsq) > .2, n, s.nrst)
+                is_restart = nrst == n
+                y = dx - s.destimate
+                # If a restart, save the current d and y as the Beale restart
+                # vectors, and d'y and y'y in w1 and w2
+                ressearch = jnp.where(is_restart, search, s.ressearch)
+                resy = jnp.where(is_restart, y, s.resy)
+                w1 = jnp.where(is_restart, jnp.dot(y, y), s.w1)
+                w2 = jnp.where(is_restart, jnp.dot(search, y), s.w2)
+                # Restart Hessian times the current gradient
+                u1 = -jnp.dot(ressearch, dx) / w1
+                u2 = (2.0 * jnp.dot(ressearch, dx) / w2
+                      - jnp.dot(resy, dx) / w1)
+                estimate = -(w2 / w1) * dx - u1 * resy - u2 * ressearch
+                # If not a restart iteration, calculate the restart Hessian
+                # times the current y ...
+                v1 = -jnp.dot(y, ressearch) / w1
+                v2 = -jnp.dot(y, resy) / w1 + 2.0 * jnp.dot(ressearch, y) / w2
+                v3 = jnp.dot(search, y)
+                step = (w2 / w1) * y + v1 * resy + v2 * ressearch
+                v4 = jnp.dot(step, y)
+                # ... and the doubly updated Hessian times the current
+                # gradient to obtain the search vector
+                z1 = -jnp.dot(search, dx) / v3
+                z2 = ((1.0 + v4 / v3) * jnp.dot(search, dx) / v3
+                      - jnp.dot(step, dx) / v3)
+                estimate = jnp.where(
+                    is_restart, estimate, estimate - z1 * step - z2 * search)
+                destimate = jnp.where(is_restart, s.destimate, step)
+                dg1 = jnp.dot(estimate, dx)
+                # Continue only if this is a descent direction.
+                # Note that the C++ code also overwrites estimate with the
+                # search vector here, so if we stop, the "best estimate"
+                # scored in _CG_END is actually the search vector; we
+                # replicate this for consistency.
+                descent = dg1 <= 0.0
+                phase = jnp.where(descent, _CG_G40, _CG_END)
+                # Ensure at least one restart every n iterations
+                nrst = jnp.where(descent,
+                                 jnp.where(nrst == n, 0, nrst) + 1, nrst)
+                return replace(
+                    s, search=estimate, estimate=estimate,
+                    destimate=destimate, ressearch=ressearch, resy=resy,
+                    w1=w1, w2=w2, dg1=dg1, nrst=nrst,
+                    gradient_direction=s.gradient_direction & ~descent,
+                    phase=phase, n_updates=enter_g40(s, phase))
+
+            return jax.lax.cond(dxsq < threshold,
+                                lambda s: replace(s, phase=_CG_END), update, s)
+
+        def end(s):
+            """If the best estimate is better than the current state, return
+               that; otherwise, restore the current state"""
+            bestf, bdx, best, bjm = get_score(s.estimate, s.jm)
+
+            def restore():
+                f, dx, x, jm = get_score(s.x, bjm)
+                return f, x, dx, jm
+            f, x, dx, jm = jax.lax.cond(bestf < s.f,
+                                        lambda: (bestf, best, bdx, bjm),
+                                        restore)
+            return replace(s, f=f, x=x, dx=dx, jm=jm, phase=_CG_DONE,
+                           done=True, n_updates=s.n_updates + 1)
+
+        def apply_func(s):
+            return jax.lax.switch(s.phase, [g20, g40, line, end, lambda s: s],
+                                  s)
+
+        self.init_func = init_func
+        self.apply_func = apply_func
+
+
 class _LocalJAXOptimizer:
-    """Run a local optimizer (e.g. SteepestDescent) with
+    """Run a local optimizer (SteepestDescent or ConjugateGradients) with
        JAX, and update the IMP Model with the result.
 
        The optimization runs entirely in JAX, except that if any
@@ -367,3 +638,8 @@ class _LocalJAXOptimizer:
 
 class _SDJAXOptimizer(_LocalJAXOptimizer):
     pass
+
+
+class _CGJAXOptimizer(_LocalJAXOptimizer):
+    def _get_score(self, state):
+        return state.f

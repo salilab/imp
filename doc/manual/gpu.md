@@ -9,7 +9,8 @@ To use the JAX support in optimization, first install the JAX library,
 for example with `pip install jax`. Then set up the system as per usual and
 replace any calls to IMP::core::MonteCarlo::optimize,
 IMP::atom::MolecularDynamics::optimize, IMP::atom::BrownianDynamics::optimize,
-or IMP::core::SteepestDescent::optimize with `_optimize_jax()`. If using
+IMP::core::SteepestDescent::optimize, or
+IMP::core::ConjugateGradients::optimize with `_optimize_jax()`. If using
 PMI, JAX can be activated using the ``use_jax`` argument to
 IMP::pmi::macros::ReplicaExchange.
 
