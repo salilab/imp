@@ -345,10 +345,11 @@
         model_rbs = np.array([rb_from_particle[p] for p in model_ps],
                              dtype=int)
         md_mass = model_mass[:, np.newaxis] * density_mass[np.newaxis, :]
-        mm_mass = model_mass[:, np.newaxis] * model_mass[np.newaxis, :]
-        # Only score each model-model pair once (the score is doubled below)
-        nmodel = len(model_ps)
-        mm_upper = np.triu(np.ones((nmodel, nmodel), dtype=bool), k=1)
+        # Only score each model-model pair once (the score is doubled
+        # below). These pairs never change, so use static indexes rather
+        # than a mask so that only the needed overlaps are calculated.
+        mm_i, mm_j = np.triu_indices(len(model_ps), k=1)
+        mm_mass = model_mass[mm_i] * model_mass[mm_j]
         model_cutoff = self.get_model_cutoff_distance()
         density_cutoff = self.get_density_cutoff_distance()
         slope = self.get_slope()
@@ -399,12 +400,10 @@
             md_score = jnp.sum(jnp.where(md_mask, ov_md, 0.))
 
             # Model-model overlap
-            v_mm = space.displacement(
-                xm[jnp.newaxis, :] - xm[:, jnp.newaxis])
-            ov_mm = get_gaussian_overlap(
-                v_mm, cm[:, jnp.newaxis] + cm[jnp.newaxis, :], mm_mass)
-            mm_mask = mm_upper & get_close_mask(space.distance(v_mm), rm, rm,
-                                                model_cutoff)
+            v_mm = space.displacement(xm[mm_j] - xm[mm_i])
+            ov_mm = get_gaussian_overlap(v_mm, cm[mm_i] + cm[mm_j], mm_mass)
+            mm_mask = (space.distance(v_mm) - rm[mm_i] - rm[mm_j]
+                       < model_cutoff)
             mm_score = self_mm_score + 2. * jnp.sum(
                 jnp.where(mm_mask, ov_mm, 0.))
 
