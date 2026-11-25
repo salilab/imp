@@ -20,8 +20,10 @@ class TransformFunct:
         self.q = q_base
 
     def __call__(self, v):
-        self.q[self.qi] = v
-        uv = self.q.get_unit_vector()
+        # Perturb a copy, so that the base quaternion is unchanged
+        q = IMP.algebra.Vector4D(self.q)
+        q[self.qi] = v
+        uv = q.get_unit_vector()
         r = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         rx = r.get_rotated(self.x)
         return rx[self.xi]
@@ -41,8 +43,10 @@ class TransformFunct2:
         self.q = q_base
 
     def __call__(self, v):
-        self.q[self.qi] = v
-        uv = self.q.get_unit_vector()
+        # Perturb a copy, so that the base quaternion is unchanged
+        q = IMP.algebra.Vector4D(self.q)
+        q[self.qi] = v
+        uv = q.get_unit_vector()
         q = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         qp = (q * self.p).get_quaternion()
         return qp[self.pi]
@@ -63,8 +67,10 @@ class TransformFunct3:
         self.q = q_base
 
     def __call__(self, v):
-        self.p[self.qi] = v
-        uv = self.p.get_unit_vector()
+        # Perturb a copy, so that the base quaternion is unchanged
+        p = IMP.algebra.Vector4D(self.p)
+        p[self.qi] = v
+        uv = p.get_unit_vector()
         p = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         qp = (self.q * p).get_quaternion()
         return qp[self.pi]
@@ -74,6 +80,20 @@ class TransformFunct3:
         p = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         return IMP.algebra.get_jacobian_of_composed_wrt_second(
             self.q, p, True)[self.pi][self.qi]
+
+
+def _get_random_rotation_pair():
+    """Get a pair of random rotations q, p suitable for checking derivatives
+       of the composed rotation q*p.
+       Rotation3D canonicalizes its quaternion (so that the first component
+       is non-negative); if the first component of the composed quaternion
+       is close to zero, finite differences cross this discontinuity
+       and so the numerical derivative is meaningless. Avoid this case."""
+    while True:
+        q = IMP.algebra.get_random_rotation_3d()
+        p = IMP.algebra.get_random_rotation_3d()
+        if abs((q * p).get_quaternion()[0]) > 0.1:
+            return q, p
 
 
 class Tests(IMP.test.TestCase):
@@ -150,7 +170,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(vti[1], v[1], delta=.1)
         self.assertAlmostEqual(vti[2], v[2], delta=.1)
 
-    @IMP.test.unstable
     def test_deriv(self):
         """Check the quaternion derivatives"""
         r = IMP.algebra.get_random_rotation_3d()
@@ -169,8 +188,7 @@ class Tests(IMP.test.TestCase):
 
     def test_deriv_quaternion_product_first(self):
         """Check the derivative of composed quaternion wrt first quaternion."""
-        q = IMP.algebra.get_random_rotation_3d()
-        p = IMP.algebra.get_random_rotation_3d()
+        q, p = _get_random_rotation_pair()
         for qi in range(0, 4):
             for pi in range(0, 4):
                 print("qi=" + str(qi) + " and pi= " + str(pi))
@@ -184,8 +202,7 @@ class Tests(IMP.test.TestCase):
 
     def test_deriv_quaternion_product_second(self):
         """Check the derivative of composed quaternion wrt second quaternion."""
-        q = IMP.algebra.get_random_rotation_3d()
-        p = IMP.algebra.get_random_rotation_3d()
+        q, p = _get_random_rotation_pair()
         for qi in range(0, 4):
             for pi in range(0, 4):
                 print("qi=" + str(qi) + " and pi= " + str(pi))
