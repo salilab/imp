@@ -26,34 +26,31 @@ class Tests(IMP.test.TestCase):
         bd = IMP.atom.BrownianDynamics(m)
         bd.set_scoring_function([])
         bd.set_maximum_time_step(dt)
-        angles = []
         rots = []
-        for i in range(0, 3000):
+        # The estimator is the mean of the squared per-step rotation angle,
+        # which has a relative standard deviation of sqrt(2/N) for N steps.
+        # Use enough steps that this is ~0.45%, well below the test tolerances
+        # (with only 3000 steps it was ~2.6%, making the test flaky).
+        for i in range(100000):
             bd.optimize(1)
-            rots.append(
-                rb.get_rotation())
-            angle = IMP.algebra.get_axis_and_angle(rots[-1])
-            angles.append(angle[1])
-        # print angles
-        real_D= dd.get_rotational_diffusion_coefficient()
+            rots.append(rb.get_rotation())
+        real_D = dd.get_rotational_diffusion_coefficient()
         IMP.set_log_level(IMP.PROGRESS)
-        estimate_D= IMP.atom.get_rotational_diffusion_coefficient(rots, dt)
+        estimate_D = IMP.atom.get_rotational_diffusion_coefficient(rots, dt)
         print("Mean rot angle per dt/real rotD/estimated rotD: ",
               IMP.atom.get_diffusion_angle(real_D, dt),
               real_D, estimate_D)
-        self.assertAlmostEqual(real_D, estimate_D,
-                               delta=.05*(real_D+estimate_D))
+        self.assertAlmostEqual(real_D, estimate_D, delta=.05 * real_D)
         return estimate_D
 
     def test_rot(self):
         """Check rigid body brownian dynamics correlation time"""
-        estimate1000= self._do_test_rot(1000)
+        estimate1000 = self._do_test_rot(1000)
 #        self._do_test_rot(100000)
-        estimate10= self._do_test_rot(10)
+        estimate10 = self._do_test_rot(10)
         # verify numerical stability and robustness to step size
-        self.assertAlmostEqual(estimate1000,
-                               estimate10,
-                               delta=.05*(estimate10+estimate1000))
+        self.assertAlmostEqual(estimate1000, estimate10,
+                               delta=.025 * (estimate10 + estimate1000))
 
 
 if __name__ == '__main__':
