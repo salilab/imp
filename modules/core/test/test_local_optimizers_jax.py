@@ -179,6 +179,18 @@ class Tests(IMP.test.TestCase):
         for a, b in zip(start, get_coords(ps)):
             self.assertLess(IMP.algebra.get_distance(a, b), 1e-6)
 
+    @IMP.test.skipIf(jax is None, "No JAX support")
+    def test_periodic_space(self):
+        """JAX local optimizers should not accept periodic boundaries"""
+        import IMP.jax
+        m, ps, sf = setup_chain()
+        space = IMP.jax.PeriodicSpace([10., 10., 10.])
+        for cls in (IMP.core.SteepestDescent, IMP.core.ConjugateGradients):
+            opt = cls(m)
+            opt.set_scoring_function(sf)
+            self.assertRaises(NotImplementedError, opt._optimize_jax, 10,
+                              space=space)
+
 
 if __name__ == '__main__':
     IMP.test.main()

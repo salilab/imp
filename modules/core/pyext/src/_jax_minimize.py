@@ -161,6 +161,12 @@ class _LocalOptimizerJAXInfo(IMP._jax_util.JAXOptimizerInfo):
     """Common setup for JAX local optimizers."""
 
     def __init__(self, opt, space, scaled):
+        # Optimized coordinates are set directly, rather than with
+        # Space.shift(), so they would not be wrapped into a periodic box
+        if not (space is None or space is IMP.jax.FreeSpace
+                or isinstance(space, IMP.jax.FreeSpace)):
+            raise NotImplementedError(
+                "JAX local optimizers do not support periodic boundaries")
         super().__init__(opt, space)
         if self._setup_jax_optimizer_states():
             raise NotImplementedError(
