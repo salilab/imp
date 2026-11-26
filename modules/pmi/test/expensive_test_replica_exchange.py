@@ -11,10 +11,16 @@ import glob
 import time
 import os.path
 
+# Each frame's score is (roughly) an independent sample of the energy of a
+# 1D harmonic oscillator, which has a standard deviation of ~0.7 kT. Use
+# enough frames that the standard error of the mean score (~0.7/sqrt(N)) is
+# well below the 0.1 tolerance used below (with 200 frames it was ~0.05,
+# and the test failed ~6% of the time).
+NUM_FRAMES = 2000
+
 
 class Tests(IMP.test.TestCase):
 
-    @IMP.test.unstable
     def test_macro(self):
         """setting up the representation
         PMI 2 representation. Creates two particles and
@@ -45,7 +51,7 @@ class Tests(IMP.test.TestCase):
                       replica_exchange_maximum_temperature=2.5,
                       number_of_best_scoring_models=10,
                       monte_carlo_steps=30,
-                      number_of_frames=200,
+                      number_of_frames=NUM_FRAMES,
                       write_initial_rmf=True,
                       initial_rmf_name_suffix="initial",
                       stat_file_name_suffix="stat",
@@ -155,7 +161,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(IMP.core.SampleProvenance.get_is_setup(prov))
         samp = IMP.core.SampleProvenance(prov)
         self.assertEqual(samp.get_method(), 'Monte Carlo')
-        self.assertEqual(samp.get_number_of_frames(), 200)
+        self.assertEqual(samp.get_number_of_frames(), NUM_FRAMES)
         self.assertEqual(samp.get_number_of_iterations(), 30)
 
     def test_macro_rmf_stat(self):
@@ -187,7 +193,7 @@ class Tests(IMP.test.TestCase):
             replica_exchange_minimum_temperature=1.0,
             replica_exchange_maximum_temperature=2.5,
             number_of_best_scoring_models=10, monte_carlo_steps=30,
-            number_of_frames=200, write_initial_rmf=True,
+            number_of_frames=NUM_FRAMES, write_initial_rmf=True,
             initial_rmf_name_suffix="initial",
             stat_file_name_suffix="stat", best_pdb_name_suffix="model",
             do_clean_first=True, do_create_directories=True,
