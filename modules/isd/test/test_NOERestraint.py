@@ -218,11 +218,11 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                                        self.V_obs / (gamma * dist ** -6))),
                                    delta=0.001)
 
-    @IMP.test.unstable
     def testSanityEP(self):
         "Test if NOE score is -log(prob)"
         for i in range(100):
-            no = uniform(0.1, 100)
+            # Don't make sigma so small that probability underflows to zero
+            no = uniform(0.2, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.unprotected_evaluate(self.DA),
                                    -log(self.noe.get_probability()), delta=0.001)
